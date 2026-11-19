@@ -903,3 +903,22 @@ test('complete catalog driver and offline reasoning contracts enter the native l
   const source = read('rust/tests/unit/reasoning_contracts.rs');
   for (const path of modules) assert(source.includes('#[path = "' + path + '"]'), path);
 });
+
+
+test('Hive workflow replay keeps every consumed fixture in native admission', {timeout:15000}, () => {
+  const modules = ['issue_1133_hive_mind_three_runs.rs',
+    'issue_1133_hive_mind_three_runs/extended.rs', 'issue_1066_ladder_capability/tool_workspace.rs'];
+  const fixtures = ['atomic-record-append.rs', 'observed-plan-tools.rs',
+    'commit-cue-masking.rs', 'hive-workflow-original-task.json'];
+  for (const path of [...modules.map(path => 'rust/tests/unit/' + path),
+    ...fixtures.map(path => 'rust/tests/fixtures/' + path),
+    'rust/src/agentic_coding/work_item_steps.rs', 'data/meta/work-item-steps.lino'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  assert.equal(admission(['rust/tests/fixtures/unrelated-hive-task.json'])['native-type-check'], false);
+  const source = read('rust/tests/unit/reasoning_contracts.rs');
+  assert(source.includes('mod issue_1133_hive_mind_three_runs;'));
+  for (const path of [modules[2], '../fixtures/observed-plan-tools.rs',
+    '../../src/agentic_coding/work_item_steps.rs'])
+    assert(source.includes('#[path = "' + path + '"]'), path);
+  assert(read('rust/tests/unit/' + modules[0]).includes('mod extended;'));
+});
