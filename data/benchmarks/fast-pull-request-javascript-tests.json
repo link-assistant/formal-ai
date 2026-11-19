@@ -254,6 +254,8 @@
     "rust/tests/web/issue-1589-calendar-currency.test.mjs",
     "rust/tests/web/server-memory-schema.test.mjs",
     "rust/tests/web/hive-work-item-consumer.test.mjs",
-    "rust/tests/web/issue-1168-source-cache.test.mjs"
+    "rust/tests/web/issue-1168-source-cache.test.mjs",
+    "rust/tests/web/solver-event-origin.test.mjs",
+    "rust/tests/web/server-debug-session.test.mjs"
   ]
 }

@@ -35,9 +35,9 @@ translation_blockers
   blockers_per_item 19 9
   blockers_per_item 20 6
   blockers_per_item 21 5
-  blockers_per_item 22 3
+  blockers_per_item 22 2
   blockers_per_item 23 5
-  blockers_per_item 24 3
+  blockers_per_item 24 4
   blockers_per_item 25 3
   blockers_per_item 26 3
   blockers_per_item 27 2
@@ -88,13 +88,13 @@ construct "method call .get()" items 85 only 0
 construct "method call .every()" items 81 only 0
 construct "method call .indexOf()" items 80 only 0
 construct "arrow callback of .sort()" items 79 only 0
-construct "typeof operator" items 72 only 2
+construct "typeof operator" items 73 only 2
 construct "new Map" items 71 only 5
 construct "arrow callback of .every()" items 69 only 0
 construct "method call .set()" items 67 only 0
 construct "method call .flatMap()" items 63 only 0
 construct "try statement" items 62 only 0
-construct "object spread" items 57 only 0
+construct "object spread" items 58 only 0
 construct "arrow callback of .flatMap()" items 52 only 0
 construct "global value Boolean" items 47 only 0
 construct "Object.freeze" items 41 only 0

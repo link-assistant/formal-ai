@@ -7,6 +7,7 @@
 # debug session (js/server/debug-stage-sources.mjs, Rust twin
 # rust/src/server/debug_stage_sources.rs) picks one per stage: the only one,
 # else the one fewest calls from the turn's routed handler, else from the entry.
+# Recorded origin identities resolve their actual append site directly.
 debug_stage_sources
   runtime rust
     keyword fn
@@ -198,6 +199,14 @@ debug_stage_sources
     rust "rust/src/solver_synthesis.rs" "try_synthesize_from_sub_results"
     js "js/worker/formal_ai_worker_candidate_validation.js" "solverPrimeIntervalValidation"
     js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"
+  event "validation:answer"
+    step rule_verification
+    rust "rust/src/solver_helpers/mod.rs" "record_answer_test"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"
+  event "validation:candidate"
+    step rule_verification
+    rust "rust/src/solver_helpers/mod.rs" "record_validation"
+    js "js/worker/formal_ai_worker_candidate_validation.js" "solverPrimeIntervalValidation"
   event "web_search:request"
     step http_chat
     rust "rust/src/solver_handler_how.rs" "record_mechanism_query"

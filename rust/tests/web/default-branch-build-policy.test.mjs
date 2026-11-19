@@ -702,3 +702,19 @@ test('all checked-out shell downloads retain the native retry contract', {timeou
   }
   assert(swept >= 10, 'the sweep must retain the native minimum');
 });
+
+
+test('coreference and debug-session modules remain executable native inputs', {timeout:15000}, () => {
+  for (const path of ['rust/tests/unit/specification/pronoun_topic_follow_up.rs',
+    'rust/tests/unit/specification/debug_session.rs', 'rust/tests/unit/specification/event_source_origin.rs'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  for (const path of ['rust/tests/unit/specification/unrelated.rs', 'rust/tests/fixtures/unrelated.json'])
+    assert.equal(admission([path])['native-type-check'], false, path);
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(step.run, /--test reasoning_contracts(?: |$)/u);
+  assert.match(step.run, /--no-fail-fast/u);
+  const source = read('rust/tests/unit/reasoning_contracts.rs');
+  for (const path of ['specification/pronoun_topic_follow_up.rs', 'specification/debug_session.rs',
+    'specification/reasoning_loop.rs', 'specification/formalization.rs', 'specification/event_source_origin.rs'])
+    assert(source.includes('#[path = "' + path + '"]'), path);
+});

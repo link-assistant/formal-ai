@@ -32,8 +32,8 @@ const SOLVER_ENGINE_LINK_CALCULATOR = "link-calculator";
 const SOLVER_PROMOTIONS_FILE = "handler-promotions.lino";
 const SOLVER_CACHE_POLICY_FILE = "program-cache-policy.lino";
 
-function solverEvent(kind, payload) {
-  return { kind, payload: String(payload === undefined || payload === null ? "" : payload) };
+function solverEvent(kind, payload, sourceOrigin) {
+  return { kind, payload: String(payload === undefined || payload === null ? "" : payload), ...(sourceOrigin === undefined ? {} : { source_origin: sourceOrigin }) };
 }
 
 // ---------------------------------------------------------------- calculator
@@ -317,7 +317,7 @@ function solverEventLog(prompt, answer) {
   // Issue #1550: `record_answer_test` and `record_selection` of the turn.
   const procedure = crateModule(SOLVER_META_EXECUTOR_MODULE);
   if (!events.some((event) => event.kind === SOLVER_EVENT_VALIDATION)) {
-    events.push(solverEvent(SOLVER_EVENT_VALIDATION, procedure.answerValidation(answer.intent, answer.content)));
+    events.push(solverEvent(SOLVER_EVENT_VALIDATION, procedure.answerValidation(answer.intent, answer.content), "validation:answer"));
   }
   events.push(solverEvent("response", answer.responseLink || `${SOLVER_RESPONSE_PREFIX}${answer.intent}`));
   // The `finalize_simple` tail; the `trace` link is the Telegram `/trace` footer.
