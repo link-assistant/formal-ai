@@ -1,0 +1,13 @@
+{
+  "path": "rust/tests/unit/specification/reasoning_paths_procedures.rs",
+  "originalBase": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "originalWholeFileUnchanged": false,
+  "unchangedFromPublishedHead": true,
+  "currentSha256": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6",
+  "originalWholeFileReplayCredit": false,
+  "originalToCurrentDiff": {
+    "file": "original-procedure-diff.txt.gz",
+    "rawSha256": "071ea330def91d04d879b38558027252be942e8499f37a12a8e22eb02e26baa5",
+    "archiveSha256": "01896ab3f82b6a092161852613f007f214aee161e5898370820a73c9c21d848d"
+  }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "file": "initial-check-worker-line-budget.log.gz",
+    "archiveSha256": "b6a2cce61e6d507786e2c3618e6431feb7a38c23ad2d87d5e384a985bde25421",
+    "rawSha256": "820fd6cdd046dbd4e19a67074e7e34b83b80ee287285457f0eec5ce8249e1449"
+  },
+  {
+    "file": "initial-check-worker-line-budget-js-twin.log.gz",
+    "archiveSha256": "3d636a7e7a876557be6029a6f69a2483b54c3e3bcfea900168c5e6c97b206c37",
+    "rawSha256": "20a483460a9f4510cee8a22e55d30f5882026de00dbe484c5ba661ba768fa7b2"
+  }
+]

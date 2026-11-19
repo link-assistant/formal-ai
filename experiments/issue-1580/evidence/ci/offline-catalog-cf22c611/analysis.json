@@ -1,0 +1,123 @@
+{
+  "head": "cf22c611dced4a4e5ad52e8cb41a22c06ed947aa",
+  "workflowCount": 23,
+  "success": 22,
+  "nonPassingRun": 44606365461,
+  "nativeJob": 135851399936,
+  "payloadHashesVerified": 104,
+  "completedGroupSummaries": [
+    {
+      "line": 1651,
+      "passed": 1,
+      "failed": 0,
+      "seconds": 99.28
+    },
+    {
+      "line": 1666,
+      "passed": 9,
+      "failed": 0,
+      "seconds": 7.24
+    },
+    {
+      "line": 1674,
+      "passed": 2,
+      "failed": 0,
+      "seconds": 123.11
+    },
+    {
+      "line": 1702,
+      "passed": 22,
+      "failed": 0,
+      "seconds": 8.14
+    },
+    {
+      "line": 1716,
+      "passed": 8,
+      "failed": 0,
+      "seconds": 93.32
+    },
+    {
+      "line": 1723,
+      "passed": 1,
+      "failed": 0,
+      "seconds": 1.18
+    },
+    {
+      "line": 1733,
+      "passed": 4,
+      "failed": 0,
+      "seconds": 2.28
+    },
+    {
+      "line": 1885,
+      "passed": 131,
+      "failed": 1,
+      "seconds": 588.54
+    }
+  ],
+  "completedGroupPassed": 178,
+  "completedGroupFailed": 1,
+  "observedPassedIncludingPartialGroup": 181,
+  "incompleteSchedulingObservedPasses": 3,
+  "benchmarkCompletionObserved": false,
+  "nativeLibraryLanguageAndHttpStagesReached": false,
+  "freshCatalogArtifactGenerationReached": false,
+  "failureAssertionLines": [
+    1873,
+    1878
+  ],
+  "cancellationLine": 1894,
+  "unchangedDeadlineMinutes": 20,
+  "javascriptShards": [
+    {
+      "record": "job-135851251169",
+      "finalShardSummary": {
+        "tests": {
+          "count": 1516,
+          "line": 4882
+        },
+        "pass": {
+          "count": 1509,
+          "line": 4884
+        },
+        "fail": {
+          "count": 0,
+          "line": 4885
+        },
+        "skipped": {
+          "count": 7,
+          "line": 4887
+        }
+      }
+    },
+    {
+      "record": "job-135851251180",
+      "finalShardSummary": {
+        "tests": {
+          "count": 1402,
+          "line": 3158
+        },
+        "pass": {
+          "count": 1392,
+          "line": 3160
+        },
+        "fail": {
+          "count": 0,
+          "line": 3161
+        },
+        "skipped": {
+          "count": 10,
+          "line": 3163
+        }
+      }
+    }
+  ],
+  "javascriptPassed": 2901,
+  "javascriptSkipped": 17,
+  "strictOriginalSourceReplayUnion": 23,
+  "originalPanicCount": 53,
+  "originalBudgetCriteriaOpen": 3,
+  "wholeLogLiteralReviewComplete": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

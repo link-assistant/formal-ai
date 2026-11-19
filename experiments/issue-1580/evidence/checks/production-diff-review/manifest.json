@@ -12,11 +12,11 @@
     },
     {
       "path": "scripts/ci-pull-request-admission.mjs",
-      "sourceSha256": "970557c729887c6baede7052a210d4dabc7a2bb4962f2d74b0621904c094ddc6",
-      "diffSha256": "7f3eb28707d46b216019e2ac23e1fa894dd1b1052dd33ac3f0bd4b243c14e3ad",
-      "diffLines": 84,
+      "sourceSha256": "1ca7b6ef650e2096bcc0e5887580e01451fcaf0a57c5b24d96fe87047750d9f9",
+      "diffSha256": "07b0313bfc0f42648366fcabccf4bf67cf521a8e4a0bd0e28c98946491b6647d",
+      "diffLines": 101,
       "completeDiffLiterallyRead": true,
-      "completeSourceLiterallyRead": false,
+      "completeSourceLiterallyRead": true,
       "newDefectEstablished": false
     },
     {
@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/native-type-check.yml",
-      "sourceSha256": "f150d63c4cc143db0cfc7afb262e1ed720c510cddab9a0bd4e8c3d3a4eb4a7f3",
-      "diffSha256": "1d3b4949bec5b5a37d8b274b5672a5009255eedbd09fb60e528c0eb5988b4e8f",
+      "sourceSha256": "0af06839dda1b638eb4a990d92199981aa518946a0e7dba2dbdb6091362b2270",
+      "diffSha256": "f5ff9f97623d9bee22f0ff938d086c83f57498d7411c7576000986c192bfcdcc",
       "diffLines": 121,
       "completeDiffLiterallyRead": true,
       "completeSourceLiterallyRead": false,
@@ -225,9 +225,744 @@
       "completeDiffLiterallyRead": true,
       "completeSourceLiterallyRead": false,
       "newDefectEstablished": false
+    },
+    {
+      "path": "js/agentic/crate/cnl_grammar.mjs",
+      "sourceSha256": "16720dc659d43025219b6f9e312941ada9ed0381871f546b1ccfce38f999c517",
+      "diffSha256": "204d4af37448ac1880661078d4c0f417ef92102d5bcdc9ae7a4da8725e2f8e7d",
+      "diffLines": 59,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "CNL and decomposition"
+    },
+    {
+      "path": "js/agentic/crate/cnl_output.mjs",
+      "sourceSha256": "1bbeb36c369b3e33b634f86006b0b23bbe5c496aa77d3c53b1aeb4702f114b55",
+      "diffSha256": "13ba77242c50d6ed2ff9900b8a0cfcb01b17ec34c85422c152d678a3f613fcec",
+      "diffLines": 49,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "CNL and decomposition"
+    },
+    {
+      "path": "rust/src/cnl_output.rs",
+      "sourceSha256": "3deba603f5bb5ef1a07e98cc793d089df5027cb6fd2a886f3adf8b109d1cb45c",
+      "diffSha256": "aa60bae8ec67da3c89765abfd3924c2ec5579008f82787703572505c7d4b4880",
+      "diffLines": 26,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "CNL and decomposition"
+    },
+    {
+      "path": "rust/src/cnl_output/grammar.rs",
+      "sourceSha256": "e20f1d2afdfbc80520cc26a43b7e6e8b2775d0180f1d2890e94881eed4b693a5",
+      "diffSha256": "1c6c4f69978e7b7825b5d822a45f1840e8151fad4faf5cf96b27d5d83fe0b63f",
+      "diffLines": 83,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "CNL and decomposition"
+    },
+    {
+      "path": "js/agentic/crate/solver_event_projection.mjs",
+      "sourceSha256": "6ba75081a62af6edb87bcb1952621d2e45a1c2748aefcaee99d5e63d465bed4d",
+      "diffSha256": "51972d7bf27555bec39f4567c461e72c007cff87e63ce831ac3dd91b6fd4e2cb",
+      "diffLines": 17,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "CNL and decomposition"
+    },
+    {
+      "path": "js/agentic/crate/task_decomposition_cues.mjs",
+      "sourceSha256": "7b3496436daefc32c219d4f1e6f7873eba09f8bb1d41fe591ff0eb46b4b630c1",
+      "diffSha256": "d968cc489f3becdfe074d7563b004b4bf9b9ff03d4ae8d307be0cd5136589046",
+      "diffLines": 40,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "CNL and decomposition"
+    },
+    {
+      "path": "rust/src/meta_executor/decomposition.rs",
+      "sourceSha256": "ab5a5cbe0413f4fbf8823ee257c51811c8026245e01110e2f2cef40532ba9768",
+      "diffSha256": "79c7905ee144e7e3aca7086730dd44caae76f84dc7ba084aad9f04a9d4425bd9",
+      "diffLines": 52,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "CNL and decomposition"
+    },
+    {
+      "path": "js/server/request-context.mjs",
+      "sourceSha256": "9efd4e3559cf3194921a0d1fdd7fd45fcdbe364858bfc681f8e7b46c41b2cb5f",
+      "diffSha256": "b4c53f54fa7319a03a58eb643375a52d52814626418dbf48638379b4b6e69cc7",
+      "diffLines": 64,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "request context and logs"
+    },
+    {
+      "path": "rust/src/protocol/request_context.rs",
+      "sourceSha256": "dff6e7fc4d1116e3fd9561946f81bef1df8bbe903cfbffcd3d7292c22d735a80",
+      "diffSha256": "fe65f7859816ab94d5b94b0ffd40354945d30639f1bb125da5cddc57bb46cb99",
+      "diffLines": 143,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "request context and logs"
+    },
+    {
+      "path": "rust/src/event_log.rs",
+      "sourceSha256": "7dfdcd1b4f6240aa01a222fb29d13eeefb8d7c09a9aacbfc1716958b1f9a384e",
+      "diffSha256": "e03c17d0f87d53d53cd3911abccb3dabe458de7e010a3b7b60c2b0a7e12a67aa",
+      "diffLines": 99,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "request context and logs"
+    },
+    {
+      "path": "js/server/debug-stage.mjs",
+      "sourceSha256": "33901857728ffd84f53e43989d5dd93323a8f95bab1fe7cc3d8f6c92e2024bff",
+      "diffSha256": "356735b3e5440772540116ddcf22418a216d33e1a6640c3f726fd551e5260edc",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "request context and logs"
+    },
+    {
+      "path": "js/server/thinking.mjs",
+      "sourceSha256": "49f6bea5ed468e8b5617bdfdeb51ea7583337afd9edb2fa356442ba12d26fb99",
+      "diffSha256": "786a7a222bc1918ce84286e1586e19cc2d3051aaf79638baa490542d73f62d9a",
+      "diffLines": 12,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "request context and logs"
+    },
+    {
+      "path": "js/server/solver-trace.mjs",
+      "sourceSha256": "775312bb95dc68ff799d3043886d7a50a8542bf382425574b6dc2f185409548e",
+      "diffSha256": "b64cd3228c977c4d4cf14dc08a05cde69c20f992389fcfa11355d111fce5e2a4",
+      "diffLines": 24,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "request context and logs"
+    },
+    {
+      "path": "rust/src/server/debug_stage.rs",
+      "sourceSha256": "d6135c5f09650db3d0873d680c0977aaf24b356254e4d1538bf8e5d2e1170013",
+      "diffSha256": "7bfeda73ab8d86d354a83d0e7dcdea4f030eae1164c38da99e770b1c2185a074",
+      "diffLines": 23,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "request context and logs"
+    },
+    {
+      "path": "rust/src/thinking.rs",
+      "sourceSha256": "f201388abe5b9f7198d684a392d823daafc0aa78f78848c6a48316ad4838bd3b",
+      "diffSha256": "2dfaf772b546e362ca811a12e5ded777ae6325485a70dd62678f4b0997c13bc0",
+      "diffLines": 22,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "request context and logs"
+    },
+    {
+      "path": "rust/src/structured_log.rs",
+      "sourceSha256": "80471b9aa26d614fbacf5a280cd756ea5d1aaf10be52bae8a665937540c1acd6",
+      "diffSha256": "925f203fd900b9b522eac606d7553ec54ab7ddc953e6547244ccc6d6a283c40d",
+      "diffLines": 43,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "request context and logs"
+    },
+    {
+      "path": "rust/src/solver_unknown_reasoning.rs",
+      "sourceSha256": "a51cc2d18cde2168e616842c8a79f00f3a67c3287b484902f0f7fa2155e7f62c",
+      "diffSha256": "7a218143b6e6345eed4847867a2c4926477db85aa7e78c6939025b06ea70a510",
+      "diffLines": 225,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "reasoning and retrieval"
+    },
+    {
+      "path": "rust/src/solver_synthesis.rs",
+      "sourceSha256": "6a760aced69aab589b10733ec96551d8f49879bd03d6a8b54c13962818079569",
+      "diffSha256": "446a2724416f8dbba32a59d4e0cd0274880c3541935a3572e7f67dc3a0ea60ca",
+      "diffLines": 120,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "reasoning and retrieval"
+    },
+    {
+      "path": "rust/src/solver_helpers/mod.rs",
+      "sourceSha256": "81a54103021cc63232c0ff6614154f9cb307e03b755d9bccfd038633b4d045b7",
+      "diffSha256": "4705b51712221a0d8e74589a250191dec584b79135969525009977fc4e36f500",
+      "diffLines": 39,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "reasoning and retrieval"
+    },
+    {
+      "path": "rust/src/unknown_opener.rs",
+      "sourceSha256": "3cdf49c0003be9870482e26b1bf2c55e5488386e93f5730cacac64a5b3274e58",
+      "diffSha256": "6ebdc10a30b0bebde22fdb7cfd8b87a0607f19efbdf819f896a9208ec81339ad",
+      "diffLines": 51,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "reasoning and retrieval"
+    },
+    {
+      "path": "rust/src/concepts.rs",
+      "sourceSha256": "af2d0b603a6b6fa0390036bc0b4c08b32eb94f55ef3b2ca8bd3907a00f9fc0d7",
+      "diffSha256": "9075d506bffd770180f49ccf4378b22325cddd26b6516c7ccda7c3824f0bedca",
+      "diffLines": 26,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "reasoning and retrieval"
+    },
+    {
+      "path": "rust/src/solver.rs",
+      "sourceSha256": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1",
+      "diffSha256": "dda94d954569e66e1405dbf46945affcfecb59eec68f7343ac010c6ced225cd6",
+      "diffLines": 79,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "solver and catalog"
+    },
+    {
+      "path": "rust/src/solver_dispatch.rs",
+      "sourceSha256": "fe44625fcde398568ab1ef37e75031b424615fc6826e7d70e7696d876a100e9c",
+      "diffSha256": "8652d7886d485397868b7f75455ddf43275cb434e251f06eb638f0e9784e9047",
+      "diffLines": 22,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "solver and catalog"
+    },
+    {
+      "path": "rust/src/solver_handlers/verifiable_task.rs",
+      "sourceSha256": "de8e147289af40dbdea905bfe1797ae8b4e2959cef2f2b0db8e2c2bdba02c087",
+      "diffSha256": "5e4fe71851bccf723e18b5e11b74eedbbf503b8fb349aa28c09e805dd3a4153d",
+      "diffLines": 33,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "solver and catalog"
+    },
+    {
+      "path": "rust/src/verifiable_task/quantities.rs",
+      "sourceSha256": "a648b599251f3f3b2ee44531836d0b40d7052a7adda675f8b2c50d669b0fa0e7",
+      "diffSha256": "528e3f4fd6dfbc3165098666c3503038e3c70d6b82d559aa9fb6795a376b702d",
+      "diffLines": 75,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "solver and catalog"
+    },
+    {
+      "path": "rust/src/formalization/mod.rs",
+      "sourceSha256": "e9ebc0a3f1abf69d1a3c9b58f7b44af9b2f99df4a50021ee148f425b40b8df29",
+      "diffSha256": "98e2938ecdb258d52f19319742398d771e19f9af724fc99ac86642be5d82c8c2",
+      "diffLines": 40,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "solver and catalog"
+    },
+    {
+      "path": "rust/src/intent_formalization/obligations.rs",
+      "sourceSha256": "61456f57643cf2c063f0cb6c55693a3d4f86597e3155aeeb8c2e96ce283b525d",
+      "diffSha256": "04e78c22c93ae997726cf86a631454e8d5790c881dcfacd4a6fde7beb49b1761",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "solver and catalog"
+    },
+    {
+      "path": "rust/src/google_trends_catalog.rs",
+      "sourceSha256": "a62d350272a1f9f4499952afbcd46541a0a7f9d705466d8224e2d1e217210023",
+      "diffSha256": "f83e36c2d4135acc8212d52025dc9b48fd7a1828f2edf1e80456ccf984da25f2",
+      "diffLines": 52,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "solver and catalog"
+    },
+    {
+      "path": "data/seed/google-trends-prompts.lino",
+      "sourceSha256": "589a2477b200e941d00f819f0f8c0a7b00855f1961d5a22845dbc273f0cd4faa",
+      "diffSha256": "2ca56fcabe92b43950a6219c06d9c77a5f498905380b19b2061d4dcda51467e6",
+      "diffLines": 18,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "solver and catalog"
+    },
+    {
+      "path": "data/seed/browser-handler-precedence.lino",
+      "sourceSha256": "f7f96bf0a461949f1fc6945f3eb1a4e67547fdd1e236e0cc31f9efd01ae6cb44",
+      "diffSha256": "05e1df4ada98fa899058392c4194ee07bddbc17857449eef77e77c76c087f98b",
+      "diffLines": 29,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "shared seeds"
+    },
+    {
+      "path": "data/seed/client-integrations.lino",
+      "sourceSha256": "c92f90ef37b81806167ae3ff4a0fe7c8c47e0947cafc525c8b01d779f14dc6dd",
+      "diffSha256": "f1594a7cf05106fe6d464955759d0d91f7a4324e3e1a5d2384ad92b795eb954a",
+      "diffLines": 31,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "shared seeds"
+    },
+    {
+      "path": "data/seed/code-review-rules.lino",
+      "sourceSha256": "7b366c4238b778d9fa409e42c30673c45c08ff32e85164d9dbf00acd0abf7122",
+      "diffSha256": "90458d0ad92f89093442a5d0ac01931b39c1af598f704ca677bfa3ac43b5ab4d",
+      "diffLines": 16,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "shared seeds"
+    },
+    {
+      "path": "data/seed/code-task-cues.lino",
+      "sourceSha256": "e8f6600831f5103d4ec6a8c5386e247b5fb60d062e209c78a94eeb3b4d6ad21f",
+      "diffSha256": "f30bf902b5aa488cbe62c6dcdd2aacfb0a5a6665f05811c8af4156e0abf0aca9",
+      "diffLines": 17,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "shared seeds"
+    },
+    {
+      "path": "data/seed/entity-names.lino",
+      "sourceSha256": "1a971fda34e2b3166d7c5c3d6f6965fa3fdbae0c76b84cc4726141dcbbdccafd",
+      "diffSha256": "6ef2083aba27d864c0b3c1937ab7523c623d986fa72b393c3cc74f4d05ad4d30",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "shared seeds"
+    },
+    {
+      "path": "data/seed/handler-promotions.lino",
+      "sourceSha256": "8913405b3a5c273b08437de2fd4db4a064035a867c3841da05f9c7de955da82d",
+      "diffSha256": "5790d3cff3f8eb4155831f17774c7b59acca5171aa8180643db2c8ef526f9682",
+      "diffLines": 29,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "shared seeds"
+    },
+    {
+      "path": "data/seed/handler-rules.lino",
+      "sourceSha256": "eeedc689a3c2849afbf3353c297dd88ec45cc90bd58a6df74d68bc2dff720ca4",
+      "diffSha256": "6eff8ba225e776ab11b9dbed5bba3d9a779cdef670b17160e7df4acb0101d8b2",
+      "diffLines": 156,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "shared seeds"
+    },
+    {
+      "path": "data/seed/roles.lino",
+      "sourceSha256": "0d0a958c605a99b64d8baeccf67305df51559e927eb695d3ce3dab77b3a0e766",
+      "diffSha256": "c0fb0086da2fcc11cfd825849513a3e453b71773ac2228f29abc3b1e6df4730e",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "shared seeds"
+    },
+    {
+      "path": "data/seed/workspace-discovery-contracts.lino",
+      "sourceSha256": "eb025c7a71927f31bea7d476b8d93df0b334c7357c668119b72ebf862bcf1857",
+      "diffSha256": "cc6c9e0aa9ec17a763407926341fed4e0d165a5acac2deee2a9f8221cb3b127b",
+      "diffLines": 16,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "shared seeds"
+    },
+    {
+      "path": "rust/src/solver_handlers/calendar_create.rs",
+      "sourceSha256": "404bd798a61809aa1caeb342edb61ca089a58e87f215bf53f4dfdef2eaabf0a0",
+      "diffSha256": "cd14fefb9439658aa54f44a981a5644a93595d00e446fd834e8d702bd476ce39",
+      "diffLines": 326,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "calendar and live requests"
+    },
+    {
+      "path": "rust/src/solver_handlers/calendar/month.rs",
+      "sourceSha256": "f3bad9b904ff0acc54db41e8bc32b5ef8c03b4898d830e1f8dfd69bade9a9622",
+      "diffSha256": "fd84ec3816d3db3e7ed3611f09e503ccf42ebb5d640799b392f364f379a5029a",
+      "diffLines": 39,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "calendar and live requests"
+    },
+    {
+      "path": "rust/src/solver_handlers/calculator_rate.rs",
+      "sourceSha256": "c5f8a5c025cc495044fe3e105396b5db0eb9f5f967ba103f8de523d58a9242ad",
+      "diffSha256": "1af1159204e9388f7ee4f675770bfef2b67e4dbab35b9c3104b910112a017370",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "calendar and live requests"
+    },
+    {
+      "path": "rust/src/solver_handlers/fact_live_answer.rs",
+      "sourceSha256": "da1aef59d7d953f2d52fa0ee02438f25c4da2f289c4561554f3107071059ab17",
+      "diffSha256": "f4a98bf4a4d22bb13b3ef66241964e37d340b1d2db6e13893a5b758e427cc7e9",
+      "diffLines": 47,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "calendar and live requests"
+    },
+    {
+      "path": "rust/src/solver_handlers/web_requests/live_search.rs",
+      "sourceSha256": "aead837af6b8b0e1bf6b06850edd4d68fcf5c7ea381b53201681e64e0b718f55",
+      "diffSha256": "e029bf08df239173b48a26ee52f4feec1d004548f373d6d22625f05920714602",
+      "diffLines": 22,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "calendar and live requests"
+    },
+    {
+      "path": "js/seed_loader.js",
+      "sourceSha256": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666",
+      "diffSha256": "fc09ed6b60acfd2acd4a996167f925f867d4cfd93c422b8fb9468888442e0369",
+      "diffLines": 39,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "worker inputs and generators"
+    },
+    {
+      "path": "js/server/worker-script-prerequisites.mjs",
+      "sourceSha256": "414f0a7f03d0b5017cee6f3cd6be3e1606411fb2be2301430ac39127bdfd5739",
+      "diffSha256": "8df2f9bf0d4585c171b3bfd44d332f964ea158ef43b40c19b7f32a1984d02f97",
+      "diffLines": 40,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "worker inputs and generators"
+    },
+    {
+      "path": "js/worker-modules.js",
+      "sourceSha256": "d178ff5a1ef77cf665eafea4d86d1dab5781d3accca8d426a5e592132b8973a7",
+      "diffSha256": "bea515b7809f8d61bf02e757528e9316fa82f17f9c4393c0bd6b8b1a3514bc3c",
+      "diffLines": 12,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "worker inputs and generators"
+    },
+    {
+      "path": "js/worker-script-prerequisites.js",
+      "sourceSha256": "ee9255a09ea413140a45a57dc708b8fc8d99ecd6be95610113cca38d2749bb86",
+      "diffSha256": "61c756b8c6b5f72dde4e0f6781899443b90a0c3d685c3018b92508b150b447eb",
+      "diffLines": 40,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "worker inputs and generators"
+    },
+    {
+      "path": "scripts/generate-debug-stage-sources.mjs",
+      "sourceSha256": "b2f0ba2dc4c7c8ebf268504a029607437ba74b18bb5fe38fc116af30e65116cb",
+      "diffSha256": "a31bd178827b34034bee800e170dbc88dd32221770113e75c43ce33478650a98",
+      "diffLines": 112,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "worker inputs and generators"
+    },
+    {
+      "path": "scripts/lib/ci-phase-timing.mjs",
+      "sourceSha256": "f0f50a584724ded2613f577bf382d10bb7e738318b545f7bb922350065a5f26e",
+      "diffSha256": "19d23e2acf7f6def2d63f033ecb9ebe23d73629505c9ae4e61bee4d460d8166a",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "worker inputs and generators"
+    },
+    {
+      "path": "scripts/lib/generated-native-programs.mjs",
+      "sourceSha256": "67c10fcc4810fb2163144fbb8baaf8e83aa96b9cb2964a8ea155639fe07fa831",
+      "diffSha256": "ea46f2b3a439f440b5efa72f0017107dc46196c5ac0d19d7971590c97e27e878",
+      "diffLines": 169,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "worker inputs and generators"
+    },
+    {
+      "path": "scripts/select-focused-tests.mjs",
+      "sourceSha256": "666c11bcafba6ea75ce0d53aee2ea5358e0a24a8a742595b2ecf12e0afa8570f",
+      "diffSha256": "3ec211ac0422402e1bce8c8539a0e123457e017b36844dd3c3a5890d97fe8921",
+      "diffLines": 20,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "reviewGroup": "worker inputs and generators"
+    },
+    {
+      "path": "data/seed/meanings-calendar.lino",
+      "sourceSha256": "f8c5883b99332b5cfd17d470c675bc3c04716181eafe3681e5138fae4f742be5",
+      "diffSha256": "dddc9831017d12407275a1e787e3f424a7fdb546664d4ad6b0a85020cac2f1e5",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/meanings-concept-lookup.lino",
+      "sourceSha256": "a32261b0e61d8c6460c2d8c3afb82e906f77efa8f6ac0e106dd39d671ff598aa",
+      "diffSha256": "0655e31edb603090f64dcbea05ac709aff5d4abe6080dd27d962da71e8e50dce",
+      "diffLines": 17,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/meta-reasoning.lino",
+      "sourceSha256": "6957d59ec39965dbec450128feb50f3134b0ab6c05768fdea72f5cf86440ef0b",
+      "diffSha256": "2d839c2398b836c942486e444d50d95e8254d44b6a6f8b3b899e52d9dbfcfc79",
+      "diffLines": 22,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/multilingual-responses-capabilities.lino",
+      "sourceSha256": "814d60a21e4f9bf575906b1dbbfe41dae66a9306c30e29a0d768d320b165ffbd",
+      "diffSha256": "87e2e562799a0985a474fe8b088ab3a02fc102fb51e26c7c0bb244aa94462354",
+      "diffLines": 45,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/multilingual-responses-text-transform.lino",
+      "sourceSha256": "20150b49b6db8e35cd67d0f75439278591a5c9ead238a017da25fde96aff01b3",
+      "diffSha256": "2b99d4501d783f40068b24ba7e3863af6bed7dfcc2df9ab83bb18aa56deb4b7e",
+      "diffLines": 62,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/multilingual-responses-web.lino",
+      "sourceSha256": "d748b263f6c7445ad9c519fc17bc85a268d25faa67fd4eed1792046e579e1355",
+      "diffSha256": "d8f7735c365c3049a1e6919768ec2eb3663a198584fabd05fb5b101789b82ec3",
+      "diffLines": 33,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/text-formalization.lino",
+      "sourceSha256": "8fc795bb78d575207f97a1f77f2e612a6cf0d81b460b3c433ce3ef7627e54841",
+      "diffSha256": "3a7670b111b8beaf4c4ae74b04a1379961f822df68b0b9c89bee310abc81d62e",
+      "diffLines": 26,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js",
+      "sourceSha256": "098865c48e91125eb8e1a4d8dc43b5bfb217bfabcdff08c08aee0fae7bda3b8a",
+      "diffSha256": "b65277a914c43fa443567956e1c626ebb80300adf8e41d8b7e76b03c2205d1d1",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_calendar_and_proofs.js",
+      "sourceSha256": "1d7da8066790597befaa938c59c7cfc89c0ba3a5ecd22d2160a0186c3297f356",
+      "diffSha256": "85354281da3ade6ac506b4b1012cdf2f09407c681d2684dcfb093eee55bd753e",
+      "diffLines": 165,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_calendar_offset.js",
+      "sourceSha256": "83f5f3e6a2b20a80c9e350a8bfdcfd41efcd3752af5f962fe38a349a32b62464",
+      "diffSha256": "7513884a8533ceb994323101868d38babc68b1fab26b2fc422ecf0638fc9850d",
+      "diffLines": 53,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_candidate_validation.js",
+      "sourceSha256": "b4251997bb19aedf5e20692cbced3c1a7ea75af408d9883c87931b60f61f9e96",
+      "diffSha256": "b7791be19163b516b0b6c75ca42e9cc923cc5dd72c655bab38ac2846e6842a5a",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_concept_queries_and_arithmetic.js",
+      "sourceSha256": "1ea52f2a8913210b64380e9764c0892e67b2334b0aa7557aceb4a35e362d7686",
+      "diffSha256": "5ba73f1f44a02acdd0249ac68de8fcf607ef1cbd2e9b5f81bc99309d4ef2e94f",
+      "diffLines": 22,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_crate_cnl_grammar.js",
+      "sourceSha256": "e768cd126f63179c9ad0f8dde2c555a7758a72cd4d6162242711d9da693e1812",
+      "diffSha256": "ecc6c7702b369b7baaabc9eac276c7cc4920980e5eeb45b14f586478c8eebbc8",
+      "diffLines": 67,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_crate_cnl_output.js",
+      "sourceSha256": "0b2fa69e1faf7ea489e752dd1ddfcaef95f01e7da972c2e042342844dbe19fc8",
+      "diffSha256": "e5e655b2af60bce9c11e9c28dbef98d3dedd29b2c129bc77059420c3b113df59",
+      "diffLines": 49,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_crate_meta_executor.js",
+      "sourceSha256": "06335decb6dbd335da6416f97f7fd781cd680a92ee8625df537b063f99cf0ad2",
+      "diffSha256": "84ccc687a2b28aeeac74ea6360b66f49100297fcf1b35b69c6cf82ce7dc4edba",
+      "diffLines": 144,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_crate_solver_event_projection.js",
+      "sourceSha256": "57a9fe6035414689ca306d357e50ae4d4d9f9ff421bc0ee2d68934f0ec5cb908",
+      "diffSha256": "6800099498f87f029929397fb451e09f4baa0e4999bb0b8701a00568c9b9751d",
+      "diffLines": 17,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_crate_task_decomposition_cues.js",
+      "sourceSha256": "47316904ae0f5bb82df28b4ec82081ea7850a4ed0a0e0ad95ccefb4037174722",
+      "diffSha256": "38d79eb4eb6444e3f3b44c090c405498fd49bb900ba369b95ca9cc93932630a4",
+      "diffLines": 52,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": true,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_quantity_constraints.js",
+      "sourceSha256": "775dc8cabc99382bc740040c787387093c6a307c34befc3af2dbe6dce628bf33",
+      "diffSha256": "0bd85a09a045fd3034fb0740b2b75fa2516f3e4dd971254f6d3c3d1137c9cef4",
+      "diffLines": 16,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_seed_responses_and_language.js",
+      "sourceSha256": "299df7f3d5867650f491096d1ef9b81cd7e48ba151bf6d681ce7d1c0ba7e7b3a",
+      "diffSha256": "06c4e445023c7819655570314b48f23f236ed407911af05d00b202e67f9d8ce5",
+      "diffLines": 33,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_solve.js",
+      "sourceSha256": "460b49f1fc17ec6b0f65f6b3d64ab3973a12d5f87cb49756d27019522a42c287",
+      "diffSha256": "2c37ff1508a996dba48a375397a94933dea23b5309b01dcebbe51cda39be5ad5",
+      "diffLines": 45,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_solver_events.js",
+      "sourceSha256": "3a4a96d3aa7898c9f848ee411cba2bef4ee5af44730d25af862208fb9c830a5f",
+      "diffSha256": "8e82453376e1e0c29defb9558f699a06d66c49aa106f6d63c7bb5ce4ae406204",
+      "diffLines": 24,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/worker/formal_ai_worker_unknown_language.js",
+      "sourceSha256": "cd3df8009683e191e57a14d4843a3a03b4fdf4d67f9b6e205dc746a19367f72a",
+      "diffSha256": "72dfc236352698f408a17b9355411aa9854be3be22c2a9ebd82fc532d4069f79",
+      "diffLines": 35,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "rust/src/source_walk.rs",
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false,
+      "sourceSha256": "c540a67f63609cb231e7b3b56beadd4cfa584b7643d0857a3ece04a3631c5a30",
+      "diffSha256": "b038fe29162991c01bf6008ee07cad8cfaf1c6936bbe44a4df4a26d03de9a274",
+      "diffLines": 21
+    },
+    {
+      "path": "js/worker/formal_ai_worker_source_endpoints.js",
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": true,
+      "newDefectEstablished": false,
+      "sourceSha256": "af9d28a0f508dde226c4b36f8c4b1dd69b35b61235c9332d3e84cee297ce89b9",
+      "diffSha256": "97a31af68b38078b829636bcf05ae22554d18440e1e928f6e19aa5cdecb8c623",
+      "diffLines": 13
+    },
+    {
+      "path": "data/seed/cnl-output.lino",
+      "sourceSha256": "d7bd7c4fb5f48486be1df0b449e1e686e73dbb9fb26535cd6dd3a560b3a81bcb",
+      "diffSha256": "1b5831a61e81abed7a1ce0bfe43918942dccefa83c5d2060139152ba2fd4a81d",
+      "diffLines": 260,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
     }
   ],
-  "selectedPaths": 104,
+  "selectedPaths": 106,
   "wholePullRequestReviewed": false,
   "allPriorFeaturesProvenPreserved": false,
   "fullIssueComplete": false,
