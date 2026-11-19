@@ -121,6 +121,7 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
         crate::coding::composition_search::SearchBounds::default(),
         &concepts.structure_ids(),
     );
+    crate::diagnostic!("trace"; "coding_composition: language={} task={} needs={} programs={}", spec.language, spec.name, concepts.needs.len(), programs.len());
     compose_with_ir(spec, concepts, &catalog, programs)
 }
 
@@ -371,14 +372,20 @@ fn ir_draft(
     {
         return Err(MissingFragment::new(id));
     }
-    if program.type_check(catalog).is_err() {
+    if let Err(error) = program.type_check(catalog) {
+        crate::diagnostic!("trace"; "coding_composition: rejected_ir={} stage=type_check error={error:?}", program.content_id());
         return Ok(None);
     }
     let Some(lowering) = crate::coding::ir_lowering::lowering_for(&spec.language) else {
+        crate::diagnostic!("trace"; "coding_composition: rejected_ir={} stage=backend language={}", program.content_id(), spec.language);
         return Ok(None);
     };
-    let Ok(source) = lowering.lower(&program, catalog) else {
-        return Ok(None);
+    let source = match lowering.lower(&program, catalog) {
+        Ok(source) => source,
+        Err(error) => {
+            crate::diagnostic!("trace"; "coding_composition: rejected_ir={} stage=lowering error={error:?}", program.content_id());
+            return Ok(None);
+        }
     };
     // The prompt's declared surface travels with the derived artifact: a
     // signature the task itself spelled out (annotations, return, imports)
