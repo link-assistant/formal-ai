@@ -892,3 +892,14 @@ test('procedure and concept retrieval contracts retain their native input closur
   assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?: |$)/u);
   assert.equal(step.env.FORMAL_AI_OFFLINE, '1');
 });
+
+
+test('complete catalog driver and offline reasoning contracts enter the native lane', {timeout:15000}, () => {
+  const modules = ['agentic-coding/issue_498_google_trends_catalog.rs',
+    'specification/unknown_reasoning.rs', 'offline_instruction_research.rs'];
+  for (const path of modules)
+    assert.equal(admission(['rust/tests/unit/' + path])['native-type-check'], true, path);
+  assert.equal(admission(['rust/tests/unit/unrelated-offline.rs'])['native-type-check'], false);
+  const source = read('rust/tests/unit/reasoning_contracts.rs');
+  for (const path of modules) assert(source.includes('#[path = "' + path + '"]'), path);
+});

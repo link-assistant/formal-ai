@@ -107,9 +107,12 @@ pub fn answer_unknown_prompt(
         let bare_term_lookup = is_unresolved_bare_term_prompt(prompt, focus);
         (!consult_walk_ran || bare_term_lookup || !question_shape)
             && language_supported
-            && (!config.offline || (bare_term_lookup && focus_is_specific(prompt, focus)))
+            && (!config.offline
+                || (bare_term_lookup && focus_is_specific(prompt, focus))
+                || (!question_shape && is_instruction_shape(prompt)))
     }) {
-        let kind = if is_unresolved_bare_term_prompt(prompt, focus) {
+        let kind = if is_unresolved_bare_term_prompt(prompt, focus) && !is_instruction_shape(prompt)
+        {
             WebSearchQueryKind::UnresolvedBareTerm
         } else {
             WebSearchQueryKind::UnknownReasoningFallback
@@ -732,6 +735,33 @@ fn infer_missing_focus(prompt: &str) -> Option<String> {
 fn is_question_shape(prompt: &str) -> bool {
     crate::intent_formalization::contains_question_mark(prompt)
         || crate::intent_formalization::starts_with_question_word(&normalize_prompt(prompt))
+}
+
+/// A seeded action at either clause edge requests work; an unparsed nominal
+/// phrase still keeps the teaching guide. Offline execution checks only cached
+/// captures through the shared source client and cannot authorize network reads.
+fn is_instruction_shape(prompt: &str) -> bool {
+    let normalized = normalize_prompt(clean_focus(prompt));
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_PROCEDURAL_ACTION_VERB)
+        .into_iter()
+        .any(|form| {
+            let action = normalize_prompt(&form.text);
+            if action.is_empty() {
+                return false;
+            }
+            let cjk = crate::coding::contains_cjk(&action);
+            normalized
+                .strip_prefix(action.as_str())
+                .is_some_and(|rest| {
+                    !rest.trim().is_empty() && (cjk || rest.starts_with(char::is_whitespace))
+                })
+                || normalized
+                    .strip_suffix(action.as_str())
+                    .is_some_and(|rest| {
+                        !rest.trim().is_empty() && (cjk || rest.ends_with(char::is_whitespace))
+                    })
+        })
 }
 
 /// Whether the missing focus names a researchable term rather than restating

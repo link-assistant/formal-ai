@@ -33,3 +33,11 @@ mod concept_lookup_self_use;
 mod procedures;
 #[path = "issue_1138_retrieval_method.rs"]
 mod retrieval_method;
+
+#[path = "agentic-coding/issue_498_google_trends_catalog.rs"]
+mod google_trends_catalog;
+#[path = "specification/unknown_reasoning.rs"]
+mod unknown_reasoning;
+
+#[path = "offline_instruction_research.rs"]
+mod offline_instruction_research;

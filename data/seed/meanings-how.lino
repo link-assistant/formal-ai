@@ -195,6 +195,19 @@ meanings
       action connect
     lexeme es conectar
       action connect
+  calibrate
+    defined-by action
+    defined-by procedural_request
+    role procedural_action_verb
+    precondition "a request names an object to calibrate"
+    effect "binds the requested calibration action for procedural lookup"
+    unit "not applicable"
+    example "Calibrate the measuring instrument"
+    lexeme en calibrate
+    lexeme ru откалибруй откалибруйте откалибровать
+    lexeme hi "कैलिब्रेट करें"
+    lexeme zh 校准
+    lexeme es calibra calibre calibrar
   mechanism_predicate
     defined-by action
     defined-by mechanism_inquiry
