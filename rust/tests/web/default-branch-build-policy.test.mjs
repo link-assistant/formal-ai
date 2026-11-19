@@ -921,6 +921,7 @@ test('Hive workflow replay keeps every consumed fixture in native admission', {t
     '../../src/agentic_coding/work_item_steps.rs'])
     assert(source.includes('#[path = "' + path + '"]'), path);
   assert(read('rust/tests/unit/' + modules[0]).includes('mod extended;'));
+  assert(source.includes('pub mod observed_plan_tools;'), 'retain the shared public helper API');
 });
 
 

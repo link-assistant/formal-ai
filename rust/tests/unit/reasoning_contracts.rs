@@ -46,7 +46,7 @@ mod offline_instruction_research;
 pub mod canonical_work_item_steps;
 mod issue_1133_hive_mind_three_runs;
 #[path = "../fixtures/observed-plan-tools.rs"]
-mod observed_plan_tools;
+pub mod observed_plan_tools;
 #[path = "issue_1066_ladder_capability/tool_workspace.rs"]
 mod tool_workspace;
 
