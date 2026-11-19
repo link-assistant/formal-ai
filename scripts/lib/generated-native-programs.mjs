@@ -1103,7 +1103,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":948,"end":1009
 "formal_ai::thinking::DEFAULT_THINKING_LANGUAGE","canonicalPath":"formal_ai::thinking::DEFAULT_THINKING_LANGUAGE","kind"
 :"nativeConstant","nativeType":"&str","returnType":"string","value":"en","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1614,"end":1663},"sourceWitnesses":[{"path":
-"rust/src/thinking.rs","sha256":"bce5adb875301e2cd98155c354ec06aa2a1f8f09fc0f15d1fb9ce13df333f766"},{"path":
+"rust/src/thinking.rs","sha256":"f201388abe5b9f7198d684a392d823daafc0aa78f78848c6a48316ad4838bd3b"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant DEFAULT-THINKING-LANGUAGE (exported) (type string) (value (string en)))","maintainedJavaScript":
 "export const DEFAULT_THINKING_LANGUAGE = 'en';","maintainedTranslationSha256":
