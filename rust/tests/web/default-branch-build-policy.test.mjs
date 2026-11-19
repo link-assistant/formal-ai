@@ -647,7 +647,7 @@ test('independent native replays continue after a regression fails and preserve 
 
 test('the unchanged shell and download contracts execute in the focused native lane', () => {
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(nativeRegressionSource(step), /--test operational_contracts(?: |$)/u);
+  assert.match(nativeRegressionSource(step), /--test operational_contracts(?:\s|$)/u);
   const manifest = read('rust/Cargo.toml');
   assert.match(manifest, /name = "operational_contracts"\npath = "tests\/unit\/operational_contracts[.]rs"/u);
   const source = read('rust/tests/unit/operational_contracts.rs');
@@ -695,7 +695,7 @@ test('the complete reasoning-loop and interpretation contracts execute in the fo
   for (const path of ['rust/tests/unit/specification/unrelated.rs', 'rust/tests/fixtures/unrelated.json'])
     assert.equal(admission([path])['native-type-check'], false, path);
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?: |$)/u);
+  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?:\s|$)/u);
   assert.match(nativeRegressionSource(step), /--no-fail-fast/u);
   assert.match(read('rust/Cargo.toml'), /name = "reasoning_contracts"\npath = "tests\/unit\/reasoning_contracts[.]rs"/u);
   const source = read('rust/tests/unit/reasoning_contracts.rs');
@@ -746,7 +746,7 @@ test('coreference and debug-session modules remain executable native inputs', {t
   for (const path of ['rust/tests/unit/specification/unrelated.rs', 'rust/tests/fixtures/unrelated.json'])
     assert.equal(admission([path])['native-type-check'], false, path);
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?: |$)/u);
+  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?:\s|$)/u);
   assert.match(nativeRegressionSource(step), /--no-fail-fast/u);
   const source = read('rust/tests/unit/reasoning_contracts.rs');
   for (const path of ['specification/pronoun_topic_follow_up.rs', 'specification/debug_session.rs',
@@ -783,7 +783,7 @@ test('benchmark derivations retain their complete native input closure', {timeou
     .includes('#[path = "specification/benchmarks.rs"]'));
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
     .find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?: |$)/u);
+  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?:\s|$)/u);
   assert.match(nativeRegressionSource(step), /--no-fail-fast/u);
   assert.equal(step.env.FORMAL_AI_OFFLINE, '1');
 });
@@ -820,11 +820,12 @@ test('catalog snapshots and native projection inputs select the complete generat
 });
 
 
-for (const [label, compileStatus, contractStatus, benchmarkStatus, expectedStatus] of [
-  ['overlaps isolated native groups after compiling every target once', 0, 0, 0, 0],
-  ['retains contract failure after waiting for benchmark completion', 0, 17, 0, 17],
-  ['retains benchmark failure after waiting for contract completion', 0, 0, 23, 23],
-  ['does not start native tests after compilation fails', 19, 0, 0, 19],
+for (const [label, compileStatus, contractStatus, benchmarkStatus, interfaceStatus, expectedStatus] of [
+  ['overlaps isolated native groups after compiling every target once', 0, 0, 0, 0, 0],
+  ['retains contract failure after waiting for every group', 0, 17, 0, 0, 17],
+  ['retains benchmark failure after waiting for every group', 0, 0, 23, 0, 23],
+  ['retains interface failure after waiting for every group', 0, 0, 0, 29, 29],
+  ['does not start native tests after compilation fails', 19, 0, 0, 0, 19],
 ]) {
   test('native regression runner ' + label, {timeout:15000}, () => {
     const directory = mkdtempSync(join(tmpdir(), 'formal-ai-native-overlap-'));
@@ -833,25 +834,26 @@ for (const [label, compileStatus, contractStatus, benchmarkStatus, expectedStatu
 import json, os, pathlib, sys, time
 root = pathlib.Path(os.environ['NATIVE_MOCK_DIRECTORY'])
 arguments = sys.argv[1:]
-mode = 'compile' if '--no-run' in arguments else 'contracts' if '--skip' in arguments else 'benchmarks'
+mode = 'compile' if '--no-run' in arguments else 'contracts' if '--skip' in arguments else 'interfaces' if 'interface_contracts' in arguments else 'benchmarks'
 with (root / 'invocations.jsonl').open('a') as stream:
     stream.write(json.dumps({'mode': mode, 'arguments': arguments}) + '\\n')
 if mode == 'compile':
     sys.exit(int(os.environ['NATIVE_MOCK_COMPILE_STATUS']))
 (root / (mode + '.started')).write_text('started')
-other = 'benchmarks' if mode == 'contracts' else 'contracts'
+others = {'benchmarks', 'contracts', 'interfaces'} - {mode}
 for attempt in range(300):
-    if (root / (other + '.started')).exists():
+    if all((root / (other + '.started')).exists() for other in others):
         print('completed fixture ' + mode, flush=True)
         sys.exit(int(os.environ['NATIVE_MOCK_' + mode.upper() + '_STATUS']))
     time.sleep(0.01)
-raise SystemExit('both isolated groups must overlap')
+raise SystemExit('all three isolated groups must overlap')
 `, {mode:0o755});
     try {
       const result = spawnSync('bash', [resolve('scripts/ci-native-regressions.sh')], {cwd:directory,
         env:{...process.env, PATH:directory + ':' + process.env.PATH, RUNNER_TEMP:directory,
           NATIVE_MOCK_DIRECTORY:directory, NATIVE_MOCK_COMPILE_STATUS:String(compileStatus),
-          NATIVE_MOCK_CONTRACTS_STATUS:String(contractStatus), NATIVE_MOCK_BENCHMARKS_STATUS:String(benchmarkStatus)},
+          NATIVE_MOCK_CONTRACTS_STATUS:String(contractStatus), NATIVE_MOCK_BENCHMARKS_STATUS:String(benchmarkStatus),
+          NATIVE_MOCK_INTERFACES_STATUS:String(interfaceStatus)},
         encoding:'utf8', timeout:10000, maxBuffer:65536});
       assert.equal(result.error, undefined, String(result.error));
       assert.equal(result.status, expectedStatus, result.stdout + result.stderr);
@@ -864,17 +866,26 @@ raise SystemExit('both isolated groups must overlap')
       if (compileStatus) {
         assert.equal(calls.length, 1);
       } else {
-        assert.equal(calls.length, 3);
-        assert.deepEqual(calls.slice(1).map(call => call.mode).sort(), ['benchmarks', 'contracts']);
-        for (const call of calls.slice(1)) assert(call.arguments.includes('--test-threads=1'));
+        assert.equal(calls.length, 4);
+        assert.deepEqual(calls.slice(1).map(call => call.mode).sort(), ['benchmarks', 'contracts', 'interfaces']);
+        for (const call of calls.slice(1)) {
+          assert(call.arguments.includes('--test-threads=1'));
+          assert(call.arguments.includes('--nocapture'));
+        }
         const contracts = calls.find(call => call.mode === 'contracts');
         assert(contracts.arguments.includes('--no-fail-fast'));
-        assert(contracts.arguments.includes('interface_contracts'));
+        assert(!contracts.arguments.includes('interface_contracts'));
+        const interfaces = calls.find(call => call.mode === 'interfaces');
+        assert(interfaces.arguments.includes('interface_contracts'));
+        const targets = call => call.arguments.flatMap((arg, i, all) => arg === '--test' ? [all[i + 1]] : []);
+        assert.deepEqual([...targets(contracts), ...targets(interfaces)].sort(), targets(calls[0]).sort(),
+          'the partition executes every compiled target exactly once, with benchmarks filtered separately');
         assert(contracts.arguments.includes('workflow_contracts'));
         assert(contracts.arguments.includes('--skip'));
         assert(contracts.arguments.includes('benchmarks::'));
         assert.match(result.stdout, /completed fixture contracts/u);
         assert.match(result.stdout, /completed fixture benchmarks/u);
+        assert.match(result.stdout, /completed fixture interfaces/u);
       }
     } finally { rmSync(directory, {recursive:true, force:true}); }
   });
@@ -894,7 +905,7 @@ test('procedure and concept retrieval contracts retain their native input closur
   for (const path of modules) assert(source.includes('#[path = "' + path + '"]'), path);
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
     .find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?: |$)/u);
+  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?:\s|$)/u);
   assert.equal(step.env.FORMAL_AI_OFFLINE, '1');
 });
 
@@ -991,7 +1002,7 @@ test('CLI, TUI, memory and retired-handler contracts retain their complete nativ
   assert.match(read('rust/Cargo.toml'), /name = "interface_contracts"\npath = "tests\/integration\/interface_contracts[.]rs"/u);
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
     .find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(nativeRegressionSource(step), /--test interface_contracts(?:[ )]|$)/u);
+  assert.match(nativeRegressionSource(step), /--test interface_contracts(?:[\s)]|$)/u);
   assert.match(nativeRegressionSource(step), /--no-fail-fast/u);
   assert.equal(step.env.FORMAL_AI_OFFLINE, '1');
   const source = read('rust/tests/integration/interface_contracts.rs');
@@ -1053,7 +1064,7 @@ test('complete native release and Pages contracts admit their actual source and 
   const called = workflow('native-type-check.yml');
   const steps = Object.values(called.jobs)[0].steps;
   const execute = steps.find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(nativeRegressionSource(execute), /--test workflow_contracts(?:[ )]|$)/u);
+  assert.match(nativeRegressionSource(execute), /--test workflow_contracts(?:[\s)]|$)/u);
   const checkout = steps.find(step => step.uses?.startsWith('actions/checkout@'));
   for (const path of [
     'experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
