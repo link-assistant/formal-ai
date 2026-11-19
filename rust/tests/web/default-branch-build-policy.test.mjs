@@ -85,6 +85,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
+    'npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies\nmkdir -p node_modules\nln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml\n',
     'bash scripts/ci-native-regressions.sh',
     'regression_status=0\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?\n' +
@@ -147,11 +148,11 @@ test('the focused PR native check limits execution to lint and isolated regressi
     '.github/actions/setup-sccache/action.yml', 'scripts/ci-clippy-profile.sh', 'scripts/ci-pull-request-admission.mjs',
     'scripts/lib/documentation-paths.mjs', 'rust/tests/web/issue-1590-forced-functions.test.mjs',
     'rust/tests/web/issue-1586-structured-output.test.mjs',
-    'rust/tests/web/support/structured-log-fixture.mjs', 'js/server/structured-log.mjs', 'clippy.toml', 'new-top-level/unknown.txt'])
+    'rust/tests/web/support/structured-log-fixture.mjs', 'js/server/structured-log.mjs', '.github/workflows/links.yml', 'clippy.toml', 'new-top-level/unknown.txt'])
     assert.equal(native([path]), true, path);
   for (const path of ['docs/a.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
     'rust/tests/unit/proof_request.rs', 'rust/tests/fixtures/unrelated.json', 'data/parity/unrelated.json', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.txt',
-    '.github/workflows/links.yml', 'package.json', 'bun.lock'])
+    'package.json', 'bun.lock'])
     assert.equal(native([path]), false, path);
   assert.equal(native([]), true, 'an empty observation is unknown, so the check runs');
 });
@@ -859,6 +860,7 @@ raise SystemExit('both isolated groups must overlap')
       assert(calls[0].arguments.includes('--no-run'));
       assert(calls[0].arguments.includes('reasoning_contracts'));
       assert(calls[0].arguments.includes('interface_contracts'));
+      assert(calls[0].arguments.includes('workflow_contracts'));
       if (compileStatus) {
         assert.equal(calls.length, 1);
       } else {
@@ -868,6 +870,7 @@ raise SystemExit('both isolated groups must overlap')
         const contracts = calls.find(call => call.mode === 'contracts');
         assert(contracts.arguments.includes('--no-fail-fast'));
         assert(contracts.arguments.includes('interface_contracts'));
+        assert(contracts.arguments.includes('workflow_contracts'));
         assert(contracts.arguments.includes('--skip'));
         assert(contracts.arguments.includes('benchmarks::'));
         assert.match(result.stdout, /completed fixture contracts/u);
@@ -980,7 +983,7 @@ test('CLI, TUI, memory and retired-handler contracts retain their complete nativ
     "docs/case-studies/issue-552/raw-data/chatgpt-share-6a3825b9.html",
     "docs/case-studies/issue-781/raw-data/chatgpt-web-capture.json",
     "docs/case-studies/issue-699/agent-cli-evidence/handler-migration-batch-report.lino"
-];
+  ];
   for (const path of inputs) assert.equal(admission([path])['native-type-check'], true, path);
   for (const path of ['rust/tests/integration/unrelated-cli.rs', 'rust/tests/support/unrelated.rs',
     'docs/case-studies/unrelated-cli/input.json'])
@@ -1001,4 +1004,69 @@ test('CLI, TUI, memory and retired-handler contracts retain their complete nativ
     assert(source.includes('#[path = "' + path + '"]'), path);
   for (const child of ['fixture_env', 'issue_1582', 'model_metadata'])
     assert(read('rust/tests/integration/with_formal_ai.rs').includes('mod ' + child + ';'), child);
+});
+
+test('complete native release and Pages contracts admit their actual source and fixture closure', {timeout:15000}, () => {
+  const inputs = [
+    "experiments/agent_cli_e2e/mock-meaning-mcp.mjs",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
+    "rust/tests/e2e/playwright.pages.config.js",
+    "rust/tests/e2e/tests/connectivity.spec.js",
+    "rust/tests/e2e/tests/demo.spec.js",
+    "rust/tests/e2e/tests/multilingual-chat.spec.js",
+    "rust/tests/e2e/tests/multilingual-issue-27.spec.js",
+    "rust/tests/e2e/tests/multilingual-memory-settings.spec.js",
+    "rust/tests/e2e/tests/multilingual-wikipedia.spec.js",
+    "rust/tests/unit/ci-cd/staged_release_operations.rs",
+    "rust/tests/unit/ci-cd/workflow_fixtures.rs",
+    "rust/tests/unit/ci-cd/workflow_release.rs",
+    "rust/tests/unit/ci-cd/workflow_release_operations.rs",
+    "rust/tests/unit/ci_gates.rs",
+    "rust/tests/unit/workflow_contracts.rs",
+    "scripts/check-disk-usage-policy.rs",
+    "scripts/checked-release-operation-view.mjs",
+    "scripts/documentation-policy-dependencies/package-lock.json",
+    "scripts/documentation-policy-dependencies/package.json",
+    "scripts/generate-staged-release.mjs",
+    "scripts/governed-github-command-provider.mjs",
+    "scripts/lib/ci-speed-workflows.mjs",
+    "scripts/maintained-staged-authority.mjs",
+    "scripts/native-staged-release-operation-view.mjs",
+    "scripts/refresh-release-specification-witness.mjs",
+    "scripts/release-source-freshness.mjs",
+    "scripts/run-ci-gates.rs",
+    "scripts/staged-caller-authority.mjs"
+  ];
+  for (const path of inputs) assert.equal(admission([path])['native-type-check'], true, path);
+  assert.equal(admission(['.github/workflows/new-release-contract.yml'])['native-type-check'], true,
+    'the retained disk policy discovers every workflow');
+  for (const path of ['scripts/unrelated-workflow-helper.mjs', 'rust/tests/unit/unrelated-workflow.rs',
+    'experiments/agent_cli_e2e/unrelated-fixture.mjs'])
+    assert.equal(admission([path])['native-type-check'], false, path);
+  assert.match(read('rust/Cargo.toml'), /name = "workflow_contracts"\npath = "tests\/unit\/workflow_contracts[.]rs"/u);
+  const source = read('rust/tests/unit/workflow_contracts.rs');
+  for (const name of ['ci_gates', 'workflow_fixtures', 'workflow_release'])
+    assert(source.includes('pub mod ' + name + ';'), name);
+  const called = workflow('native-type-check.yml');
+  const steps = Object.values(called.jobs)[0].steps;
+  const execute = steps.find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(nativeRegressionSource(execute), /--test workflow_contracts(?:[ )]|$)/u);
+  const checkout = steps.find(step => step.uses?.startsWith('actions/checkout@'));
+  for (const path of [
+    'experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
+    'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml',
+    'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml',
+    'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json',
+    'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json'
+  ]) assert(checkout.with['sparse-checkout'].split('\n').includes('/' + path), path);
+  const parser = steps.find(step => step.name === 'Install the pinned workflow parser');
+  assert(parser, 'fresh runners need the parser used by native operation provenance');
+  assert.match(parser.run, /npm ci --ignore-scripts --no-audit --no-fund --prefix scripts\/documentation-policy-dependencies/u);
+  assert.match(parser.run, /ln -s [.]\.\/scripts\/documentation-policy-dependencies\/node_modules\/yaml node_modules\/yaml/u);
+  assert(steps.findIndex(step => step.uses?.startsWith('actions/setup-node@')) < steps.indexOf(parser));
+  assert(steps.indexOf(parser) < steps.indexOf(execute));
+  assert.equal(execute.env.FORMAL_AI_OFFLINE, '1');
 });

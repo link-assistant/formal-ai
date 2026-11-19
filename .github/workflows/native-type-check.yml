@@ -57,6 +57,11 @@ jobs:
             !/dev/log/
             !/experiments/**
             /experiments/**/*.sh
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
           sparse-checkout-cone-mode: false
       - uses: dtolnay/rust-toolchain@stable
         if: ${{ inputs.compile-inputs-changed }}
@@ -72,6 +77,15 @@ jobs:
         id: native-lint
         if: ${{ inputs.compile-inputs-changed }}
         run: bash scripts/ci-clippy-profile.sh --library-and-binaries
+      - uses: actions/setup-node@v7
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        with: {node-version: 22}
+      - name: Install the pinned workflow parser
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies
+          mkdir -p node_modules
+          ln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml
       - name: Verify isolated native behavior regressions
         if: ${{ inputs.compile-inputs-changed }}
         env:
@@ -89,9 +103,6 @@ jobs:
           cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?
           cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?
           exit "$regression_status"
-      - uses: actions/setup-node@v7
-        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
-        with: {node-version: 22}
       - name: Replay the forced function requests against the native CLI
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:

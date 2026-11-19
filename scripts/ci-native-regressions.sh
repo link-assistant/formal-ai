@@ -3,7 +3,7 @@
 # its own serialization lock; every process retains one Rust test thread.
 set -euo pipefail
 
-native_targets=(--test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts --test operational_contracts --test reasoning_contracts --test interface_contracts)
+native_targets=(--test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts --test operational_contracts --test reasoning_contracts --test interface_contracts --test workflow_contracts)
 cargo test --manifest-path rust/Cargo.toml --locked --no-run "${native_targets[@]}"
 benchmark_log="$(mktemp "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/formal-ai-native-benchmarks.XXXXXX.log")"
 benchmark_pid=''

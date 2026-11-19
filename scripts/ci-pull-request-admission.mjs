@@ -23,6 +23,37 @@ const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 't
 // The focused native lane also executes isolated integration targets and an
 // HTTP replay. Changes to their sources or consumed fixtures must run that lane.
 const NATIVE_REGRESSION_INPUTS = new Set([
+  "experiments/agent_cli_e2e/mock-meaning-mcp.mjs",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
+  "rust/tests/e2e/playwright.pages.config.js",
+  "rust/tests/e2e/tests/connectivity.spec.js",
+  "rust/tests/e2e/tests/demo.spec.js",
+  "rust/tests/e2e/tests/multilingual-chat.spec.js",
+  "rust/tests/e2e/tests/multilingual-issue-27.spec.js",
+  "rust/tests/e2e/tests/multilingual-memory-settings.spec.js",
+  "rust/tests/e2e/tests/multilingual-wikipedia.spec.js",
+  "rust/tests/unit/ci-cd/staged_release_operations.rs",
+  "rust/tests/unit/ci-cd/workflow_fixtures.rs",
+  "rust/tests/unit/ci-cd/workflow_release.rs",
+  "rust/tests/unit/ci-cd/workflow_release_operations.rs",
+  "rust/tests/unit/ci_gates.rs",
+  "rust/tests/unit/workflow_contracts.rs",
+  "scripts/check-disk-usage-policy.rs",
+  "scripts/checked-release-operation-view.mjs",
+  "scripts/documentation-policy-dependencies/package-lock.json",
+  "scripts/documentation-policy-dependencies/package.json",
+  "scripts/generate-staged-release.mjs",
+  "scripts/governed-github-command-provider.mjs",
+  "scripts/lib/ci-speed-workflows.mjs",
+  "scripts/maintained-staged-authority.mjs",
+  "scripts/native-staged-release-operation-view.mjs",
+  "scripts/refresh-release-specification-witness.mjs",
+  "scripts/release-source-freshness.mjs",
+  "scripts/run-ci-gates.rs",
+  "scripts/staged-caller-authority.mjs",
   'rust/tests/integration/interface_contracts.rs',
   'rust/tests/integration/formal_ai_cli.rs',
   'rust/tests/integration/http_server.rs',
@@ -125,8 +156,8 @@ export function nativeCompileInput(path) {
   if (path.startsWith('data/')) return path.endsWith('.lino')
     || (path.startsWith('data/cache/') && path.endsWith('.json'))
     || path.startsWith('data/seed/api-cache/');
-  // Its own job definition and the composite actions it runs stay inputs.
-  if (path.startsWith('.github/workflows/')) return ['release.yml', 'native-type-check.yml'].some(file => path === '.github/workflows/' + file);
+  // The native workflow contracts discover every workflow and traverse local calls.
+  if (path.startsWith('.github/workflows/')) return true;
   return !NON_NATIVE_PREFIXES.some(prefix => path.startsWith(prefix));
 }
 // Classify conservatively: extra lightweight checks are cheaper than missed changes.

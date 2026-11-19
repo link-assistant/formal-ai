@@ -183,6 +183,11 @@ path = "tests/unit/operational_contracts.rs"
 name = "reasoning_contracts"
 path = "tests/unit/reasoning_contracts.rs"
 
+# Reuse the complete native workflow and release assertions in the focused lane.
+[[test]]
+name = "workflow_contracts"
+path = "tests/unit/workflow_contracts.rs"
+
 # The focused lane replays CLI/PTY fixtures without the monolithic integration target.
 [[test]]
 name = "interface_contracts"
