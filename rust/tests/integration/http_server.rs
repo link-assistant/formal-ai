@@ -494,19 +494,33 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
                 .unwrap()
                 .map(|entry| entry.unwrap().path())
                 .collect::<Vec<_>>();
-            assert_eq!(files.len(), 2);
-            assert!(
-                files
-                    .iter()
-                    .any(|file| file.to_string_lossy().ends_with(".conversation.lino"))
-            );
+            // The explicit health probe has a transport trace but no user turns.
+            // Keep the two dialog records separate and verify all three files.
+            assert_eq!(files.len(), 3);
+            let mut health_traces = 0;
+            let mut dialog_files = Vec::new();
             for file in files {
-                assert!(
-                    std::fs::read_to_string(file)
-                        .unwrap()
-                        .contains(REQUEST_MARKER)
-                );
+                let content = std::fs::read_to_string(&file).unwrap();
+                let record = formal_ai::dialog_log::structured_log::decode_dialog(content.trim())
+                    .expect("typed dialog record");
+                if record["path"] == "/health" {
+                    health_traces += 1;
+                    assert!(!file.to_string_lossy().ends_with(".conversation.lino"));
+                    assert!(!content.contains(REQUEST_MARKER));
+                } else {
+                    assert!(content.contains(REQUEST_MARKER));
+                    dialog_files.push(file);
+                }
             }
+            assert_eq!(health_traces, 1);
+            assert_eq!(dialog_files.len(), 2);
+            assert_eq!(
+                dialog_files
+                    .iter()
+                    .filter(|file| file.to_string_lossy().ends_with(".conversation.lino"))
+                    .count(),
+                1
+            );
         } else {
             assert!(!dialogs.exists());
             assert!(!scratch.join("dialog-logs").exists());

@@ -374,7 +374,8 @@ fn a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified
             "bash" => "/bin/sh: 1: scalac: not found\n".to_owned(),
             _ => String::new(),
         },
-        8,
+        // Three source probes, three writes, issue read, verifier and final answer.
+        9,
     );
     let answer = answer.expect("the run must end in a final answer");
     assert!(
@@ -384,13 +385,26 @@ fn a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified
         "{planned:?}"
     );
     assert!(!answer.contains("Created and verified"), "{answer}");
+    let failed = messages
+        .iter()
+        .find(|message| {
+            message.role == "tool"
+                && message.content.plain_text() == "/bin/sh: 1: scalac: not found\n"
+        })
+        .expect("the compiler failure result");
+    let failed_call = messages
+        .iter()
+        .flat_map(|message| &message.tool_calls)
+        .find(|call| failed.tool_call_id.as_deref() == Some(call.id.as_str()))
+        .expect("the call correlated with the compiler failure");
+    let failed_arguments: serde_json::Value =
+        serde_json::from_str(&failed_call.function.arguments).unwrap();
+    let failed_command = failed_arguments["command"]
+        .as_str()
+        .expect("failed command");
+    assert!(!failed_command.is_empty());
     assert!(
-        answer.contains(&command_of(
-            planned
-                .iter()
-                .find(|call| call.tool == "bash" && !is_work_item_read(&call.tool, &call.arguments))
-                .expect("the actual failed verifier call")
-        )) && answer.contains("/bin/sh: 1: scalac: not found"),
+        answer.contains(failed_command) && answer.contains("/bin/sh: 1: scalac: not found"),
         "{answer}"
     );
 }
@@ -557,7 +571,9 @@ fn codex_reads_the_issue_through_gh_when_the_only_fetch_tool_is_a_remote_connect
 fn codex_plans_the_work_item_and_never_narrates_the_connector_placeholder() {
     let mut messages = vec![ChatMessage::user(prompt().replace("Scala", "Rust"))];
     let rust = page("Rust");
-    let (planned, answer) = drive(
+    let workspace =
+        crate::offline_delivery::Workspace::for_work_item("Rust", "issue-1133-codex", BRANCH, PR);
+    let (planned, answer) = drive_with_delivery_workspace(
         CODEX_TOOLS.as_slice(),
         &mut messages,
         |tool, arguments| match tool {
@@ -566,7 +582,9 @@ fn codex_plans_the_work_item_and_never_narrates_the_connector_placeholder() {
             "shell" => "Hello, World!\n".to_owned(),
             _ => String::new(),
         },
-        10,
+        // The observed physical delivery takes 17 calls plus its final answer.
+        18,
+        Some(&workspace),
     );
     assert!(
         planned.iter().any(|call| call.tool == "apply_patch"),
@@ -574,7 +592,27 @@ fn codex_plans_the_work_item_and_never_narrates_the_connector_placeholder() {
     );
     let answer = answer.expect("final answer");
     assert!(!answer.contains("command completed. Output"), "{answer}");
-    assert!(answer.contains("Committed and pushed"), "{answer}");
+    let outcome = workspace.outcome();
+    assert_eq!(outcome.commits, 2, "the created work item is committed");
+    assert_eq!(
+        outcome.head, outcome.pushed_head,
+        "the named branch is pushed"
+    );
+    assert_eq!(outcome.status, "", "delivery leaves a clean working tree");
+    for path in [
+        "main.rs",
+        "tests/verify-output.sh",
+        ".github/workflows/main.yml",
+    ] {
+        assert!(outcome.pushed.iter().any(|file| file == path), "{path}");
+    }
+    assert_eq!(outcome.pr["isDraft"], false);
+    assert!(outcome.pr["body"].as_str().unwrap().contains(ISSUE));
+    assert!(answer.contains(&outcome.head), "{answer}");
+    assert!(
+        answer.contains("Owned source, local execution, and the requested workflow were verified"),
+        "{answer}"
+    );
 }
 
 #[test]

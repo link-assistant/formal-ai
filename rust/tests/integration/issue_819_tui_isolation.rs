@@ -65,6 +65,10 @@ fn temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui() {
     .env("HOME", &home)
     .env("PATH", path)
     .env("FORMAL_AI_DIALOG_LOG_DIR", &logs)
+    // Raw request tracing and stderr diagnostics are explicit opt-ins.
+    .env("FORMAL_AI_TRACE_REQUESTS", "1")
+    .env("FORMAL_AI_LOG_LEVEL", "trace")
+    .env("FORMAL_AI_LOG_STDERR", "1")
     .env("FORMAL_AI_TEST_PORT", port.to_string())
     .output()
     .expect("launch wrapper with temporary server in PTY");

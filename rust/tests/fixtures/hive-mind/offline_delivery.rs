@@ -87,6 +87,7 @@ pub struct Workspace {
     pub origin: PathBuf,
     pub bin: PathBuf,
     pub state: PathBuf,
+    branch: String,
 }
 
 impl Drop for Workspace {
@@ -98,6 +99,10 @@ impl Drop for Workspace {
 impl Workspace {
     #[must_use]
     pub fn new(language: &str, label: &str) -> Self {
+        Self::for_work_item(language, label, BRANCH, PR)
+    }
+
+    pub fn for_work_item(language: &str, label: &str, branch: &str, pr: &str) -> Self {
         let root = std::env::temp_dir().join(format!(
             "formal-ai-offline-delivery-{label}-{}",
             std::process::id()
@@ -109,14 +114,14 @@ impl Workspace {
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::create_dir_all(&bin).unwrap();
         git(&root, &["init", "-q", "--bare", origin.to_str().unwrap()]);
-        git(&dir, &["init", "-q", "-b", BRANCH]);
+        git(&dir, &["init", "-q", "-b", branch]);
         git(&dir, &["config", "user.name", "Offline fixture"]);
         git(&dir, &["config", "user.email", "fixture@example.invalid"]);
         std::fs::write(dir.join("README.md"), "# test-hello-world\n").unwrap();
         git(&dir, &["add", "--", "README.md"]);
         git(&dir, &["commit", "-qm", "Initial commit"]);
         git(&dir, &["remote", "add", "origin", origin.to_str().unwrap()]);
-        git(&dir, &["push", "-q", "-u", "origin", BRANCH]);
+        git(&dir, &["push", "-q", "-u", "origin", branch]);
         let state = root.join("gh-state.json");
         let body = ISSUE_BODY.replace("Kotlin", language);
         std::fs::write(
@@ -124,8 +129,8 @@ impl Workspace {
             serde_json::to_string_pretty(&serde_json::json!({
                 "calls": [],
                 "issue": { "title": format!("Implement Hello World in {language}"), "body": body },
-                "branch": BRANCH,
-                "pr": { "title": "[WIP] Implement Hello World", "body": "Work in progress", "isDraft": true, "url": PR },
+                "branch": branch,
+                "pr": { "title": "[WIP] Implement Hello World", "body": "Work in progress", "isDraft": true, "url": pr },
             }))
             .unwrap(),
         )
@@ -143,6 +148,7 @@ impl Workspace {
             origin,
             bin,
             state,
+            branch: branch.to_owned(),
         }
     }
 
@@ -321,7 +327,12 @@ impl Workspace {
             gh_calls,
             status: git(&self.dir, &["status", "--porcelain"]),
             tracked: lines(git(&self.dir, &["ls-files"])),
-            pushed: lines(git(&self.origin, &["ls-tree", "-r", "--name-only", BRANCH])),
+            pushed: lines(git(
+                &self.origin,
+                &["ls-tree", "-r", "--name-only", &self.branch],
+            )),
+            head: git(&self.dir, &["rev-parse", "HEAD"]),
+            pushed_head: git(&self.origin, &["rev-parse", &self.branch]),
             commits: git(&self.dir, &["rev-list", "--count", "HEAD"])
                 .parse()
                 .unwrap(),
@@ -377,6 +388,8 @@ pub struct Outcome {
     pub tracked: Vec<String>,
     pub pushed: Vec<String>,
     pub commits: usize,
+    pub head: String,
+    pub pushed_head: String,
 }
 
 /// The delivered state every Hive Mind client must reach (issue #1162 acceptance 3).

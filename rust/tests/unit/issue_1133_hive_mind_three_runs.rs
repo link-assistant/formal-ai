@@ -356,6 +356,16 @@ fn drive(
     results: impl Fn(&str, &str) -> String,
     max_steps: usize,
 ) -> (Vec<PlannedToolCall>, Option<String>) {
+    drive_with_delivery_workspace(tools, messages, results, max_steps, None)
+}
+
+fn drive_with_delivery_workspace(
+    tools: &[&str],
+    messages: &mut Vec<ChatMessage>,
+    results: impl Fn(&str, &str) -> String,
+    max_steps: usize,
+    delivery: Option<&crate::offline_delivery::Workspace>,
+) -> (Vec<PlannedToolCall>, Option<String>) {
     let mut planned = Vec::new();
     let append = append_provider::AppendWorkspace::new();
     let mut workspace = crate::observed_plan_tools::ToolWorkspace::new("issue-1133-source-probes");
@@ -370,6 +380,11 @@ fn drive(
             Some(AgenticPlan::ToolCalls(calls)) => {
                 let call = calls[0].clone();
                 let args: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+                // Codex echoes the Responses custom-tool projection, not planner JSON.
+                let patch = (call.tool == "apply_patch")
+                    .then(|| formal_ai::protocol_responses::apply_patch_input(&call.arguments))
+                    .flatten();
+                let echoed = patch.as_deref().unwrap_or(&call.arguments);
                 let appended = if matches!(call.tool.as_str(), "Write" | "write")
                     && args["append_mode"] == "atomic_record_append"
                 {
@@ -379,7 +394,31 @@ fn drive(
                 };
                 // Source observations must describe the actual workspace, including ENOENT.
                 // Compiler and network results remain the explicit per-test fixtures.
-                let observed = if appended.is_none()
+                let command = command_of(&call);
+                let actual_delivery = delivery.filter(|_| {
+                    patch.is_some()
+                        || (call.tool == "shell"
+                            && !command.starts_with("gh issue view ")
+                            && command != "sh tests/verify-output.sh")
+                });
+                let observed = if let Some(delivery) = actual_delivery {
+                    let tool = if patch.is_some() { "write" } else { "bash" };
+                    Some(ChatMessage::tool_result(
+                        format!("c{step}"),
+                        &call.tool,
+                        delivery.execute(tool, &args),
+                    ))
+                } else if patch.is_some() {
+                    // Execute the same declared creation through the workspace's
+                    // write/readback adapter while retaining the external tool name.
+                    let creation = PlannedToolCall {
+                        tool: "write".to_owned(),
+                        arguments: call.arguments.clone(),
+                    };
+                    let mut observed = workspace.execute(&format!("c{step}"), &creation);
+                    observed.name = Some(call.tool.clone());
+                    Some(observed)
+                } else if appended.is_none()
                     && (args["command"]
                         .as_str()
                         .is_some_and(|command| command.contains("workspace-source-v1"))
@@ -395,13 +434,7 @@ fn drive(
                     None if observed.is_some() => String::new(),
                     None => results(&call.tool, &call.arguments),
                 };
-                record(
-                    messages,
-                    &format!("c{step}"),
-                    &call,
-                    &call.arguments,
-                    &result,
-                );
+                record(messages, &format!("c{step}"), &call, echoed, &result);
                 if let Some(observed) = observed {
                     *messages.last_mut().expect("recorded source observation") = observed;
                 }

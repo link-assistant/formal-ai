@@ -2,6 +2,7 @@
 // controls; they do not claim released client delivery or autonomous authorship.
 import assert from 'node:assert/strict';
 import {after,before,test} from 'node:test';
+import {spawnSync} from 'node:child_process';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep,planChatStepResolved} from '../../../js/agentic/planner.mjs';
@@ -108,4 +109,53 @@ test('fetched original public task retains the explicitly named CI workflow targ
   const args=JSON.parse(call.arguments);paths.push(args.path??args.file_path);result(messages,call,'written');
  }
  assert.deepEqual(paths,['main.rs','tests/verify-output.sh','ci/test-hello-world.yml']);
+});
+
+
+function nativeFixtureProbe(language,args){
+  const result=spawnSync(process.execPath,['experiments/issue-1580/native-hive-fixture-probe.mjs',language,...args],{
+    encoding:'utf8',timeout:60000,maxBuffer:4*1024*1024,
+    env:{...process.env,NODE_OPTIONS:'--max-old-space-size=256',FORMAL_AI_OFFLINE:'1',FORMAL_AI_LIVE_FETCH:'0'},
+  });
+  assert.equal(result.error,undefined,String(result.error));
+  assert.equal(result.status,0,result.stderr);
+  return JSON.parse(result.stdout);
+}
+
+test('the original Scala compiler failure is correlated with its verifier after physical source probes',{timeout:65000},()=>{
+  const run=nativeFixtureProbe('Scala',['--steps=9']);
+  const final=run.steps.at(-1).plan;
+  assert.equal(final.kind,'final');
+  const failure=run.messages.find(message=>message.role==='tool'&&message.content==='/bin/sh: 1: scalac: not found\n');
+  assert.ok(failure);
+  const call=run.messages.flatMap(message=>message.tool_calls??[]).find(call=>call.id===failure.tool_call_id);
+  const command=JSON.parse(call.function.arguments).command;
+  assert.equal(command,'sh tests/verify-output.sh');
+  assert.ok(final.answer.includes(command));
+  assert.ok(final.answer.includes('/bin/sh: 1: scalac: not found'));
+  assert.doesNotMatch(final.answer,/Created and verified/u);
+});
+
+test('the Codex fixture projects patch calls and observes real Git delivery with explicitly simulated CI',{timeout:65000},()=>{
+  const run=nativeFixtureProbe('Rust',[
+    '--steps=18','--physical-edits','--project-edits','--physical-delivery','--agent-cli-receipts',
+  ]);
+  const patches=run.steps.filter(step=>step.call?.tool==='apply_patch');
+  assert.equal(patches.length,3);
+  for(const step of patches){
+    assert.match(step.wireArguments,/^\*\*\* Begin Patch\n\*\*\* Add File: /u);
+    assert.equal(JSON.parse(step.content).success,true);
+  }
+  const final=run.steps.at(-1).plan;
+  assert.equal(final.result.disposition,'finding');
+  assert.doesNotMatch(final.answer,/command completed\. Output/u);
+  assert.ok(final.answer.includes(run.outcome.head));
+  assert.equal(run.outcome.head,run.outcome.pushedHead);
+  assert.equal(run.outcome.status,'');
+  assert.equal(run.outcome.commits,2);
+  assert.deepEqual(run.outcome.pushed,['.github/workflows/main.yml','main.rs','tests/verify-output.sh']);
+  assert.equal(run.outcome.state.pr.isDraft,false);
+  assert.ok(run.outcome.state.pr.body.endsWith('Resolves '+run.outcome.state.pr.url.replace('/pull/2','/issues/1')));
+  assert.equal(run.compilerAndNetworkAreMocks,true);
+  assert.equal(run.fullIssueComplete,false);
 });
