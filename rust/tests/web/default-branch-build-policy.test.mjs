@@ -12,6 +12,10 @@ import YAML from 'yaml';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
 const workflow = name => YAML.parse(read('.github/workflows/' + name));
+const nativeRegressionSource = step => {
+  assert.equal(step.run, 'bash scripts/ci-native-regressions.sh');
+  return read('scripts/ci-native-regressions.sh');
+};
 function evaluate(expression, event, ref, variables = {}) {
   const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
@@ -65,7 +69,7 @@ test('actual compiler, image, application and deployment entries refuse PR execu
 });
 // Issue #1191: the only PR job that runs the Rust compiler is main's clippy
 // profile on the library and binaries, plus the isolated regression targets.
-// Full suites, product builds and uploads remain main-only.
+// Full suites and product builds remain main-only; fixture data is retained for replay.
 test('the focused PR native check limits execution to lint and isolated regressions', () => {
   const job = workflow('release.yml').jobs['native-type-check'];
   assert.equal(job.uses, './.github/workflows/native-type-check.yml');
@@ -81,16 +85,23 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
-    'cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts --test operational_contracts --test reasoning_contracts -- --test-threads=1',
+    'bash scripts/ci-native-regressions.sh',
     'regression_status=0\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?\n' +
     'exit "$regression_status"\n',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
-    'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs']);
+    'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs',
+    'cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog\n' +
+    'rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"\n' +
+    '{\n' +
+    '  git rev-parse HEAD HEAD^{tree}\n' +
+    '  rustc -vV\n' +
+    '  sha256sum rust/target/debug/examples/dump_google_trends_catalog rust/examples/dump_google_trends_catalog.rs rust/src/google_trends_catalog.rs data/seed/google-trends-prompts.lino\n' +
+    '} > "$CATALOG_OUTPUT/generation-identity.txt"\n']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
-  for (const step of check.steps.filter(step => (step.uses && step.uses !== 'actions/setup-node@v7') || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
+  for (const step of check.steps.filter(step => (step.uses && !['actions/setup-node@v7', 'actions/upload-artifact@v7'].includes(step.uses)) || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
     assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');
@@ -103,11 +114,17 @@ test('the focused PR native check limits execution to lint and isolated regressi
       {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   }
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
-  assert(!check.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
+  assert(!check.steps.some(step => /attest|cache@|cache\/save/u.test(step.uses ?? '')));
+  const uploads = check.steps.filter(step => /upload-artifact/u.test(step.uses ?? ''));
+  assert.equal(uploads.length, 1, 'only the exact fixture projection is retained');
+  assert.equal(uploads[0].uses, 'actions/upload-artifact@v7');
+  assert.equal(uploads[0].with.name, 'google-trends-native-fixtures');
+  assert.equal(uploads[0].with.path, '${{ runner.temp }}/google-trends-fixtures');
+  assert.equal(uploads[0].if, "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
   assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
   assert.deepEqual(check.permissions, {contents: 'read'});
   assert(check['timeout-minutes'] <= 20);
-  assert.equal(check.outputs ?? called.on.workflow_call?.outputs, undefined, 'a lint check publishes no evidence');
+  assert.equal(check.outputs ?? called.on.workflow_call?.outputs, undefined, 'a focused check grants no semantic authorization');
   const selected = (event, ref, result, value) => Boolean(new Script(String(job.if).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']'))
     .runInNewContext({github: {event_name: event, ref}, cancelled: () => false,
@@ -143,7 +160,7 @@ test('isolated native regressions select execution for their sources and embedde
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
     .find(step => step.name === 'Verify isolated native behavior regressions');
   const manifest = read('rust/Cargo.toml').split('[[test]]').slice(1);
-  const targets = [...step.run.matchAll(/--test (\S+)/gu)].map(match => match[1]);
+  const targets = [...new Set([...nativeRegressionSource(step).matchAll(/--test ([A-Za-z_][A-Za-z_0-9]*)/gu)].map(match => match[1]))];
   assert(targets.length > 0);
   for (const target of targets) {
     const block = manifest.find(block => new RegExp('^name = "' + target + '"$', 'mu').test(block));
@@ -603,7 +620,7 @@ test('independent native replays continue after a regression fails and preserve 
   }
   assert.equal(job.steps.find(step => step.name === 'Type-check and lint the library and binaries').id, 'native-lint');
   const isolated = job.steps.find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(isolated.run, /--no-fail-fast/u);
+  assert.match(nativeRegressionSource(isolated), /--no-fail-fast/u);
   assert.equal(isolated['continue-on-error'], undefined);
   for (const step of later) assert.equal(step['continue-on-error'], undefined);
   const binding = later.find(step => step.name === 'Verify native unresolved-language source binding');
@@ -629,7 +646,7 @@ test('independent native replays continue after a regression fails and preserve 
 
 test('the unchanged shell and download contracts execute in the focused native lane', () => {
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(step.run, /--test operational_contracts(?: |$)/u);
+  assert.match(nativeRegressionSource(step), /--test operational_contracts(?: |$)/u);
   const manifest = read('rust/Cargo.toml');
   assert.match(manifest, /name = "operational_contracts"\npath = "tests\/unit\/operational_contracts[.]rs"/u);
   const source = read('rust/tests/unit/operational_contracts.rs');
@@ -677,8 +694,8 @@ test('the complete reasoning-loop and interpretation contracts execute in the fo
   for (const path of ['rust/tests/unit/specification/unrelated.rs', 'rust/tests/fixtures/unrelated.json'])
     assert.equal(admission([path])['native-type-check'], false, path);
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(step.run, /--test reasoning_contracts(?: |$)/u);
-  assert.match(step.run, /--no-fail-fast/u);
+  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?: |$)/u);
+  assert.match(nativeRegressionSource(step), /--no-fail-fast/u);
   assert.match(read('rust/Cargo.toml'), /name = "reasoning_contracts"\npath = "tests\/unit\/reasoning_contracts[.]rs"/u);
   const source = read('rust/tests/unit/reasoning_contracts.rs');
   for (const path of ['specification/reasoning_loop.rs', 'specification/formalization.rs'])
@@ -728,8 +745,8 @@ test('coreference and debug-session modules remain executable native inputs', {t
   for (const path of ['rust/tests/unit/specification/unrelated.rs', 'rust/tests/fixtures/unrelated.json'])
     assert.equal(admission([path])['native-type-check'], false, path);
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(step.run, /--test reasoning_contracts(?: |$)/u);
-  assert.match(step.run, /--no-fail-fast/u);
+  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?: |$)/u);
+  assert.match(nativeRegressionSource(step), /--no-fail-fast/u);
   const source = read('rust/tests/unit/reasoning_contracts.rs');
   for (const path of ['specification/pronoun_topic_follow_up.rs', 'specification/debug_session.rs',
     'specification/reasoning_loop.rs', 'specification/formalization.rs', 'specification/event_source_origin.rs'])
@@ -765,8 +782,8 @@ test('benchmark derivations retain their complete native input closure', {timeou
     .includes('#[path = "specification/benchmarks.rs"]'));
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
     .find(step => step.name === 'Verify isolated native behavior regressions');
-  assert.match(step.run, /--test reasoning_contracts(?: |$)/u);
-  assert.match(step.run, /--no-fail-fast/u);
+  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?: |$)/u);
+  assert.match(nativeRegressionSource(step), /--no-fail-fast/u);
   assert.equal(step.env.FORMAL_AI_OFFLINE, '1');
 });
 
@@ -778,3 +795,82 @@ test('external lookup fixture contracts execute in the focused native lane', {ti
     .includes('#[path = "issue_1173_fallback_executes_search.rs"]'));
   assert(read('rust/tests/unit/reasoning_contracts.rs').includes('mod external_search_fallback;'));
 });
+
+
+test('catalog snapshots and native projection inputs select the complete generation lane', {timeout:15000}, () => {
+  for (const path of ['rust/tests/unit/issue_498_google_trends.rs',
+    'rust/examples/dump_google_trends_catalog.rs', 'data/seed/google-trends-prompts.lino',
+    'docs/case-studies/issue-498/agent-cli-session-google-trends.json'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  assert.equal(admission(['rust/examples/unrelated.rs'])['native-type-check'], false);
+  assert(read('rust/tests/unit/reasoning_contracts.rs')
+    .includes('#[path = "issue_498_google_trends.rs"]'));
+  const steps = Object.values(workflow('native-type-check.yml').jobs)[0].steps;
+  const producer = steps.find(step => step.name === 'Stage deterministic Google Trends fixtures from the native driver');
+  assert.equal(producer.env.FORMAL_AI_OFFLINE, '1');
+  assert.match(producer.run, /cargo build [^\n]*--example dump_google_trends_catalog/u);
+  assert.match(producer.run, /rust\/target\/debug\/examples\/dump_google_trends_catalog "\$CATALOG_OUTPUT"/u);
+  assert.match(producer.run, /git rev-parse HEAD HEAD\^\{tree\}/u);
+  assert.match(producer.run, /sha256sum rust\/target\/debug\/examples\/dump_google_trends_catalog/u);
+  const artifact = steps.find(step => step.name === 'Retain actual Google Trends fixture projections');
+  assert.equal(artifact.with.name, 'google-trends-native-fixtures');
+  assert.equal(artifact.with['if-no-files-found'], 'error');
+  assert.equal(artifact.with.path, '${{ runner.temp }}/google-trends-fixtures');
+});
+
+
+for (const [label, compileStatus, contractStatus, benchmarkStatus, expectedStatus] of [
+  ['overlaps isolated native groups after compiling every target once', 0, 0, 0, 0],
+  ['retains contract failure after waiting for benchmark completion', 0, 17, 0, 17],
+  ['retains benchmark failure after waiting for contract completion', 0, 0, 23, 23],
+  ['does not start native tests after compilation fails', 19, 0, 0, 19],
+]) {
+  test('native regression runner ' + label, {timeout:15000}, () => {
+    const directory = mkdtempSync(join(tmpdir(), 'formal-ai-native-overlap-'));
+    const command = join(directory, 'cargo');
+    writeFileSync(command, `#!/usr/bin/env python3
+import json, os, pathlib, sys, time
+root = pathlib.Path(os.environ['NATIVE_MOCK_DIRECTORY'])
+arguments = sys.argv[1:]
+mode = 'compile' if '--no-run' in arguments else 'contracts' if '--skip' in arguments else 'benchmarks'
+with (root / 'invocations.jsonl').open('a') as stream:
+    stream.write(json.dumps({'mode': mode, 'arguments': arguments}) + '\\n')
+if mode == 'compile':
+    sys.exit(int(os.environ['NATIVE_MOCK_COMPILE_STATUS']))
+(root / (mode + '.started')).write_text('started')
+other = 'benchmarks' if mode == 'contracts' else 'contracts'
+for attempt in range(300):
+    if (root / (other + '.started')).exists():
+        print('completed fixture ' + mode, flush=True)
+        sys.exit(int(os.environ['NATIVE_MOCK_' + mode.upper() + '_STATUS']))
+    time.sleep(0.01)
+raise SystemExit('both isolated groups must overlap')
+`, {mode:0o755});
+    try {
+      const result = spawnSync('bash', [resolve('scripts/ci-native-regressions.sh')], {cwd:directory,
+        env:{...process.env, PATH:directory + ':' + process.env.PATH, RUNNER_TEMP:directory,
+          NATIVE_MOCK_DIRECTORY:directory, NATIVE_MOCK_COMPILE_STATUS:String(compileStatus),
+          NATIVE_MOCK_CONTRACTS_STATUS:String(contractStatus), NATIVE_MOCK_BENCHMARKS_STATUS:String(benchmarkStatus)},
+        encoding:'utf8', timeout:10000, maxBuffer:65536});
+      assert.equal(result.error, undefined, String(result.error));
+      assert.equal(result.status, expectedStatus, result.stdout + result.stderr);
+      const calls = readFileSync(join(directory, 'invocations.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
+      assert.equal(calls[0].mode, 'compile');
+      assert(calls[0].arguments.includes('--no-run'));
+      assert(calls[0].arguments.includes('reasoning_contracts'));
+      if (compileStatus) {
+        assert.equal(calls.length, 1);
+      } else {
+        assert.equal(calls.length, 3);
+        assert.deepEqual(calls.slice(1).map(call => call.mode).sort(), ['benchmarks', 'contracts']);
+        for (const call of calls.slice(1)) assert(call.arguments.includes('--test-threads=1'));
+        const contracts = calls.find(call => call.mode === 'contracts');
+        assert(contracts.arguments.includes('--no-fail-fast'));
+        assert(contracts.arguments.includes('--skip'));
+        assert(contracts.arguments.includes('benchmarks::'));
+        assert.match(result.stdout, /completed fixture contracts/u);
+        assert.match(result.stdout, /completed fixture benchmarks/u);
+      }
+    } finally { rmSync(directory, {recursive:true, force:true}); }
+  });
+}

@@ -5,7 +5,8 @@ name: Native type and lint check
 # (run 43730270231), since no PR job ran rustc. This is the one focused
 # native check a PR runs: main's clippy profile on the library and binaries,
 # called from release.yml on every PR, compiling when a Rust input changed
-# or the classification is unknown. It uploads nothing and records no receipt.
+# or the classification is unknown. Only deterministic fixture data is retained;
+# the focused lane publishes no products or semantic authorization.
 # The isolated regressions verify native calendar, currency, OpenAI, executor and localized procedure behavior.
 # Main still runs full lint, tests and every build.
 on:
@@ -78,7 +79,7 @@ jobs:
           CARGO_PROFILE_TEST_OPT_LEVEL: '0'
           # Routing assertions use committed captures; fixture transports opt in explicitly.
           FORMAL_AI_OFFLINE: '1'
-        run: cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts --test operational_contracts --test reasoning_contracts -- --test-threads=1
+        run: bash scripts/ci-native-regressions.sh
       - name: Verify native unresolved-language source binding
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
@@ -107,3 +108,26 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs
+      - name: Stage deterministic Google Trends fixtures from the native driver
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        env:
+          CARGO_BUILD_JOBS: '2'
+          CARGO_PROFILE_DEV_OPT_LEVEL: '0'
+          FORMAL_AI_OFFLINE: '1'
+          CATALOG_OUTPUT: ${{ runner.temp }}/google-trends-fixtures
+        run: |
+          cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog
+          rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"
+          {
+            git rev-parse HEAD HEAD^{tree}
+            rustc -vV
+            sha256sum rust/target/debug/examples/dump_google_trends_catalog rust/examples/dump_google_trends_catalog.rs rust/src/google_trends_catalog.rs data/seed/google-trends-prompts.lino
+          } > "$CATALOG_OUTPUT/generation-identity.txt"
+      - name: Retain actual Google Trends fixture projections
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: google-trends-native-fixtures
+          path: ${{ runner.temp }}/google-trends-fixtures
+          if-no-files-found: error
+          retention-days: 7

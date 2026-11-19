@@ -5,7 +5,7 @@
 //! variants in every supported language, and answer them through the normal symbolic
 //! engine. The module keeps the live-network part outside tests. A checked-in Trends
 //! RSS snapshot is parsed into `data/seed/google-trends-snapshot.lino`; the catalog is
-//! then a deterministic function of that seed and `FormalAiEngine`.
+//! then a deterministic function of that seed and the explicitly offline solver.
 //!
 //! The multilingual request wording is *data*, not code: the templates live in
 //! `data/seed/google-trends-prompts.lino` and are expanded per topic (per the
@@ -17,9 +17,9 @@ use std::error::Error;
 use std::fmt::{self, Write as _};
 use std::sync::OnceLock;
 
-use crate::engine::FormalAiEngine;
 use crate::seed::parser::{LinoNode, parse_lino};
 use crate::seed::supported_languages;
+use crate::solver::{SolverConfig, UniversalSolver};
 
 /// How many Google Trends topics issue #498 requires the system to answer.
 pub const GOOGLE_TRENDS_TOP_LIMIT: usize = 10;
@@ -241,14 +241,25 @@ fn build_catalog() -> GoogleTrendsCatalog {
     catalog.topics.sort_by_key(|topic| topic.rank);
     catalog.topics.truncate(GOOGLE_TRENDS_TOP_LIMIT);
 
-    let engine = FormalAiEngine;
+    // A committed snapshot must not depend on the process-wide live-retrieval
+    // default. Keep the normal solver/standing-requirement path, with network
+    // access explicitly disabled for this deterministic catalog projection.
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    });
     for topic in &mut catalog.topics {
         topic.prompts = prompt_variants_for_topic(&topic.query);
         topic.answered = topic
             .prompts
             .iter()
             .map(|prompt| {
-                let answer = engine.answer(&prompt.prompt);
+                let answer = crate::dreaming_application::solve_with_standing_requirements(
+                    &solver,
+                    &prompt.prompt,
+                    &[],
+                    &[],
+                );
                 GoogleTrendPromptAnswer {
                     language: prompt.language.clone(),
                     variation_key: prompt.variation_key.clone(),

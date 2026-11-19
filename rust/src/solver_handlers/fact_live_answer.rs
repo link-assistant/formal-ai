@@ -138,15 +138,9 @@ pub fn try_fact_live_answer<T: SourceTransport>(
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
     let question = live_fact_question(prompt)?;
-    // The universal loop must retain the external lookup boundary even when a
-    // missing capture makes this handler fall through. This is a request, not
-    // evidence that a provider answered or that network access was allowed.
-    log.append(
-        "search:external",
-        format!(
-            "wikidata:requested:{}:{}",
-            question.relation, question.subject_term
-        ),
+    log.append_search_request(
+        "wikidata",
+        format!("{}:{}", question.relation, question.subject_term),
     );
     let language = detect_language(prompt).slug();
     log.append("fact_live:relation", question.relation.as_str());
@@ -299,15 +293,8 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
         .or_else(|| explanation_fallback(prompt, log, client))
 }
 
-/// The R8 step of the row.
 #[cfg(feature = "meta-language")]
-fn explanation_fallback<T: SourceTransport>(
-    prompt: &str,
-    log: &mut EventLog,
-    client: &CachedSourceClient<T>,
-) -> Option<SymbolicAnswer> {
-    try_explanation_research(prompt, log, client)
-}
+use self::try_explanation_research as explanation_fallback;
 
 /// Without the page formalizer there is no retrieve-and-formalize path.
 #[cfg(not(feature = "meta-language"))]

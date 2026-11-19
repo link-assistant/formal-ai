@@ -23,3 +23,6 @@ mod web_requests;
 
 #[path = "seed/issue_1172_live_fact_answer.rs"]
 mod live_fact_answer;
+
+#[path = "issue_498_google_trends.rs"]
+mod google_trends;

@@ -41,3 +41,13 @@ google_trend_prompt_template
   language "zh"
   variation "trends_context"
   text "给出 {query} 的 Google Trends 背景?"
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "es"
+  variation "tell_me_about"
+  text "Cuéntame sobre {query}?"
+google_trend_prompt_template
+  record_type "google_trend_prompt_template"
+  language "es"
+  variation "trends_context"
+  text "Dame contexto de Google Trends para {query}?"

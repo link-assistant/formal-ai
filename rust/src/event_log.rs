@@ -54,6 +54,15 @@ impl EventLog {
         id
     }
 
+    /// Record an external lookup request before consulting transport or captures.
+    /// This event records intent; only a captured response establishes evidence.
+    pub fn append_search_request(&mut self, provider: &str, query: impl AsRef<str>) -> String {
+        self.append(
+            "search:external",
+            format!("{provider}:requested:{}", query.as_ref()),
+        )
+    }
+
     /// Record the emitter's identity without changing raw event or evidence ids.
     /// The debug source catalog resolves this identity in each runtime.
     pub fn append_with_origin(
