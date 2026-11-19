@@ -73,3 +73,5 @@ noise handling, event titles or CLI argument parity. All broader acceptance
 criteria remain in the work plan. Independently accepted reasoning remains
 0/20; supplied commands, code and reading earn zero authorship credit. PR #1581
 remains draft and unmerged, and the full issue remains unfinished.
+
+The [native reasoning and download inventory checkpoint](native-reasoning-and-download-inventory-checkpoint.md) records hosted clock success, the complete shell sweep failure and its local repair, and pending execution of the existing 28 reasoning contracts.

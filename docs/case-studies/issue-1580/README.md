@@ -273,3 +273,5 @@ The [native failure collection and scheduling checkpoint](native-failure-collect
 The [calendar dispatch and native success checkpoint](calendar-dispatch-and-native-success-checkpoint.md) records 23 passing workflows and 96 native Rust cases at `86dcf79d`, the locally verified Russian dispatcher repair, and the pending unchanged operational contracts. Full issue acceptance remains unfinished.
 
 The [calendar clock and native checkout checkpoint](calendar-clock-and-native-checkout-checkpoint.md) records the next published CI failure, shared spelled-hour repair, finite checkout regression and pending native validation.
+
+The [native reasoning and download inventory checkpoint](native-reasoning-and-download-inventory-checkpoint.md) records hosted clock success, the complete shell sweep failure and its local repair, and pending execution of the existing 28 reasoning contracts.
