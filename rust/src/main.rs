@@ -80,7 +80,7 @@ const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и р
     about = "Formal symbolic AI implementation"
 )]
 struct Args {
-    /// Print verbose CLI output (enabled by default).
+    /// Print verbose CLI output (wrapper diagnostics need this explicit flag).
     #[arg(long, global = true, default_value_t = true)]
     verbose: bool,
 
@@ -668,10 +668,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     lino_arguments::init();
     // `formal-ai with <tool> …` hands everything after the tool name to that
     // tool, including flags this command also defines globally.
-    let arguments = Args::parse_from(delimit_tool_args(
-        std::env::args_os().collect(),
-        &Args::command(),
-    ));
+    let argv = delimit_tool_args(std::env::args_os().collect(), &Args::command());
+    // The delimiter already separates our options from the client's, so a
+    // client's own --verbose must never opt the wrapper into terminal logs.
+    let explicit_verbose = argv
+        .iter()
+        .take_while(|argument| *argument != "--")
+        .any(|argument| argument == "--verbose");
+    let arguments = Args::parse_from(argv);
     formal_ai::cnl_output::configuration::configure_options(
         arguments.output_standard.as_deref(),
         arguments.lexical_density.as_deref(),
@@ -682,7 +686,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     formal_ai::structured_tracing::install().map_err(std::io::Error::other)?;
     let verbose = arguments.verbose && !arguments.silent;
     formal_ai::dialog_log::configure_verbose(!arguments.silent);
-    formal_ai::dialog_log::structured_log::configure_terminal(verbose);
+    // Keep the default chat verbosity while the wrapper's normal diagnostics
+    // stay in the log files. Explicit wrapper verbosity still mirrors them.
+    let terminal_verbose =
+        verbose && (explicit_verbose || !matches!(&arguments.command, Some(Command::With(_))));
+    formal_ai::dialog_log::structured_log::configure_terminal(terminal_verbose);
     formal_ai::dialog_log::structured_log::configure(
         arguments.silent,
         matches!(arguments.command.as_ref(), Some(Command::Serve(_))),
