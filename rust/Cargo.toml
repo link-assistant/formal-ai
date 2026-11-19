@@ -183,6 +183,11 @@ path = "tests/unit/operational_contracts.rs"
 name = "reasoning_contracts"
 path = "tests/unit/reasoning_contracts.rs"
 
+# The focused lane replays CLI/PTY fixtures without the monolithic integration target.
+[[test]]
+name = "interface_contracts"
+path = "tests/integration/interface_contracts.rs"
+
 [[test]]
 name = "integration"
 path = "tests/integration/mod.rs"

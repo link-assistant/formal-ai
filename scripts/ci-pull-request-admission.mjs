@@ -23,6 +23,23 @@ const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 't
 // The focused native lane also executes isolated integration targets and an
 // HTTP replay. Changes to their sources or consumed fixtures must run that lane.
 const NATIVE_REGRESSION_INPUTS = new Set([
+  'rust/tests/integration/interface_contracts.rs',
+  'rust/tests/integration/formal_ai_cli.rs',
+  'rust/tests/integration/http_server.rs',
+  'rust/tests/integration/pty.rs',
+  'rust/tests/support/structured_stderr.rs',
+  'rust/tests/integration/with_formal_ai.rs',
+  'rust/tests/integration/with_formal_ai/fixture_env.rs',
+  'rust/tests/integration/with_formal_ai/issue_1582.rs',
+  'rust/tests/integration/with_formal_ai/model_metadata.rs',
+  'rust/tests/integration/with_formal_ai_argv.rs',
+  'rust/tests/integration/issue_819_tui_isolation.rs',
+  'rust/tests/integration/issue_1138_family_behaviour.rs',
+  'rust/tests/unit/formal_ai/seed_and_memory.rs',
+  'rust/tests/unit/seed/issue_699_handler_migration.rs',
+  'docs/case-studies/issue-552/raw-data/chatgpt-share-6a3825b9.html',
+  'docs/case-studies/issue-781/raw-data/chatgpt-web-capture.json',
+  'docs/case-studies/issue-699/agent-cli-evidence/handler-migration-batch-report.lino',
   'rust/tests/unit/calendar-currency.rs',
   'rust/tests/unit/openai_forced_functions.rs',
   'rust/tests/unit/cnl_output.rs',

@@ -858,6 +858,7 @@ raise SystemExit('both isolated groups must overlap')
       assert.equal(calls[0].mode, 'compile');
       assert(calls[0].arguments.includes('--no-run'));
       assert(calls[0].arguments.includes('reasoning_contracts'));
+      assert(calls[0].arguments.includes('interface_contracts'));
       if (compileStatus) {
         assert.equal(calls.length, 1);
       } else {
@@ -866,6 +867,7 @@ raise SystemExit('both isolated groups must overlap')
         for (const call of calls.slice(1)) assert(call.arguments.includes('--test-threads=1'));
         const contracts = calls.find(call => call.mode === 'contracts');
         assert(contracts.arguments.includes('--no-fail-fast'));
+        assert(contracts.arguments.includes('interface_contracts'));
         assert(contracts.arguments.includes('--skip'));
         assert(contracts.arguments.includes('benchmarks::'));
         assert.match(result.stdout, /completed fixture contracts/u);
@@ -956,4 +958,47 @@ test('native execution inherits the optimized assertion-preserving repository pr
   assert.match(profile, /^opt-level = 2$/mu);
   assert.match(profile, /^debug-assertions = true$/mu);
   assert.match(profile, /^overflow-checks = true$/mu);
+});
+
+
+test('CLI, TUI, memory and retired-handler contracts retain their complete native closure', {timeout:15000}, () => {
+  const inputs = [
+    "rust/tests/integration/interface_contracts.rs",
+    "rust/tests/integration/formal_ai_cli.rs",
+    "rust/tests/integration/http_server.rs",
+    "rust/tests/integration/pty.rs",
+    "rust/tests/support/structured_stderr.rs",
+    "rust/tests/integration/with_formal_ai.rs",
+    "rust/tests/integration/with_formal_ai/fixture_env.rs",
+    "rust/tests/integration/with_formal_ai/issue_1582.rs",
+    "rust/tests/integration/with_formal_ai/model_metadata.rs",
+    "rust/tests/integration/with_formal_ai_argv.rs",
+    "rust/tests/integration/issue_819_tui_isolation.rs",
+    "rust/tests/integration/issue_1138_family_behaviour.rs",
+    "rust/tests/unit/formal_ai/seed_and_memory.rs",
+    "rust/tests/unit/seed/issue_699_handler_migration.rs",
+    "docs/case-studies/issue-552/raw-data/chatgpt-share-6a3825b9.html",
+    "docs/case-studies/issue-781/raw-data/chatgpt-web-capture.json",
+    "docs/case-studies/issue-699/agent-cli-evidence/handler-migration-batch-report.lino"
+];
+  for (const path of inputs) assert.equal(admission([path])['native-type-check'], true, path);
+  for (const path of ['rust/tests/integration/unrelated-cli.rs', 'rust/tests/support/unrelated.rs',
+    'docs/case-studies/unrelated-cli/input.json'])
+    assert.equal(admission([path])['native-type-check'], false, path);
+  assert.match(read('rust/Cargo.toml'), /name = "interface_contracts"\npath = "tests\/integration\/interface_contracts[.]rs"/u);
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
+    .find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(nativeRegressionSource(step), /--test interface_contracts(?:[ )]|$)/u);
+  assert.match(nativeRegressionSource(step), /--no-fail-fast/u);
+  assert.equal(step.env.FORMAL_AI_OFFLINE, '1');
+  const source = read('rust/tests/integration/interface_contracts.rs');
+  for (const name of ['formal_ai_cli', 'http_server', 'pty', 'structured_stderr',
+    'with_formal_ai', 'with_formal_ai_argv', 'issue_819_tui_isolation',
+    'issue_1138_family_behaviour', 'seed_and_memory', 'handler_migration'])
+    assert(source.includes('pub mod ' + name + ';'), name);
+  for (const path of ['../support/structured_stderr.rs', '../unit/formal_ai/seed_and_memory.rs',
+    '../unit/seed/issue_699_handler_migration.rs'])
+    assert(source.includes('#[path = "' + path + '"]'), path);
+  for (const child of ['fixture_env', 'issue_1582', 'model_metadata'])
+    assert(read('rust/tests/integration/with_formal_ai.rs').includes('mod ' + child + ';'), child);
 });
