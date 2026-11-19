@@ -8,6 +8,8 @@ mod benchmarks;
 mod debug_session;
 #[path = "specification/event_source_origin.rs"]
 mod event_source_origin;
+#[path = "issue_1173_fallback_executes_search.rs"]
+mod external_search_fallback;
 #[path = "specification/formalization.rs"]
 mod formalization;
 #[path = "specification/pronoun_topic_follow_up.rs"]

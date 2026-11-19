@@ -769,3 +769,12 @@ test('benchmark derivations retain their complete native input closure', {timeou
   assert.match(step.run, /--no-fail-fast/u);
   assert.equal(step.env.FORMAL_AI_OFFLINE, '1');
 });
+
+
+test('external lookup fixture contracts execute in the focused native lane', {timeout:15000}, () => {
+  const path = 'rust/tests/unit/issue_1173_fallback_executes_search.rs';
+  assert.equal(admission([path])['native-type-check'], true, path);
+  assert(read('rust/tests/unit/reasoning_contracts.rs')
+    .includes('#[path = "issue_1173_fallback_executes_search.rs"]'));
+  assert(read('rust/tests/unit/reasoning_contracts.rs').includes('mod external_search_fallback;'));
+});

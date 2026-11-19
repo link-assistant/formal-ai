@@ -104,6 +104,12 @@ fn unseeded_capital_is_answered_live_with_its_reference() {
     )
     .expect("a live answer");
     assert_eq!(answer.intent, "fact_query");
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "search:external"
+                && event.payload == "wikidata:requested:capital:australia")
+    );
     assert_eq!(
         answer.answer,
         "Wikidata states that the capital of Australia is Canberra. Source: https://www.example.gov.au/about/capital"
@@ -137,7 +143,7 @@ fn seeded_records_answer_before_the_live_path() {
     assert!(
         log.events()
             .iter()
-            .all(|event| !event.kind.starts_with("fact_live:"))
+            .all(|event| !event.kind.starts_with("fact_live:") && event.kind != "search:external")
     );
 }
 
@@ -155,6 +161,22 @@ fn offline_cache_miss_falls_through() {
             .iter()
             .any(|event| event.kind == "fact_live:unavailable")
     );
+}
+
+#[test]
+fn offline_fact_request_retains_the_external_lookup_boundary() {
+    let mut log = EventLog::new();
+    let offline = CachedSourceClient::new(cache("external-boundary"), FixtureTransport);
+    assert!(
+        try_fact_live_answer("What is the capital of Australia?", &mut log, &offline).is_none()
+    );
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "search:external"
+                && event.payload == "wikidata:requested:capital:australia")
+    );
+    assert!(!log.events().iter().any(|event| event.kind == "source"));
 }
 
 /// R8: the explanation concept is what follows the seeded explain cue.

@@ -1,0 +1,1 @@
+Record external fact and web lookup requests in the universal reasoning trace, including honest offline misses, and replay routing contracts with explicit offline configuration and the current default-on retrieval message.

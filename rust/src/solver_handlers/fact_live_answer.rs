@@ -138,6 +138,16 @@ pub fn try_fact_live_answer<T: SourceTransport>(
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
     let question = live_fact_question(prompt)?;
+    // The universal loop must retain the external lookup boundary even when a
+    // missing capture makes this handler fall through. This is a request, not
+    // evidence that a provider answered or that network access was allowed.
+    log.append(
+        "search:external",
+        format!(
+            "wikidata:requested:{}:{}",
+            question.relation, question.subject_term
+        ),
+    );
     let language = detect_language(prompt).slug();
     log.append("fact_live:relation", question.relation.as_str());
     log.append("fact_live:subject", question.subject_term.as_str());

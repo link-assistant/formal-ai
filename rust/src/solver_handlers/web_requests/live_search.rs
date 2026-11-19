@@ -36,6 +36,9 @@ pub fn execute_web_search_answer<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> SymbolicAnswer {
+    // Record the universal-loop boundary before consulting the capture cache.
+    // Provider execution stays separately attributable to successful captures.
+    log.append("search:external", format!("web_search:requested:{query}"));
     log.append("web_search:request", query.to_owned());
     log.append("web_search:query_kind", query_kind.as_str());
     let language = detect_language(prompt).slug();

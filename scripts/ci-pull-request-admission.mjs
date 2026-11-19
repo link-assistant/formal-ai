@@ -47,6 +47,7 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'rust/tests/unit/web_requests/extended.rs',
   'rust/tests/unit/page_formalization_route.rs',
   'rust/tests/unit/seed/issue_1172_live_fact_answer.rs',
+  'rust/tests/unit/issue_1173_fallback_executes_search.rs',
   'rust/tests/unit/docs_requirements/agent_cli_shell.rs',
   'rust/tests/unit/ci-cd/network_download_retry.rs',
   'README.md',
