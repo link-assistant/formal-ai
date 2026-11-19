@@ -106,7 +106,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');
   assert.deepEqual(check.steps.find(step => step.name === 'Verify isolated native behavior regressions').env,
-    {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0', FORMAL_AI_OFFLINE: '1'});
+    {CARGO_BUILD_JOBS: '2', FORMAL_AI_OFFLINE: '1'});
   assert.equal(called.env.FORMAL_AI_OFFLINE, undefined, 'native CLI transport replays keep the default network policy');
   assert.equal(check.env?.FORMAL_AI_OFFLINE, undefined, 'offline mode belongs to the deterministic behavior step');
   for (const command of runs.filter(command => command.startsWith('node --test '))) {
@@ -187,7 +187,7 @@ test('native unsupported-language regressions execute the captured-source units 
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
     .find(step => step.name === 'Verify native unresolved-language source binding');
   assert.equal(step.if, "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
-  assert.deepEqual(step.env, {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
+  assert.deepEqual(step.env, {CARGO_BUILD_JOBS: '2'});
   assert.deepEqual(step.run.trim().split('\n'), [
     'regression_status=0',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?',
@@ -940,4 +940,19 @@ test('full Hive delivery replay admits its harness and requires real toolchains'
   assert.match(prerequisites, /assert!\([\s\S]*available\(/u);
   for (const tool of ['git', 'node', 'jq', 'python3', 'rustc', 'timeout', 'kotlinc', 'java'])
     assert(prerequisites.includes('"' + tool + '"'), tool);
+});
+
+
+test('native execution inherits the optimized assertion-preserving repository profile', () => {
+  const called = workflow('native-type-check.yml');
+  const job = called.jobs.clippy;
+  assert.equal(job['timeout-minutes'], 20, 'retain the existing deadline');
+  for (const env of [called.env, job.env, ...job.steps.map(step => step.env)].filter(Boolean)) {
+    for (const key of ['CARGO_PROFILE_TEST_OPT_LEVEL', 'CARGO_PROFILE_TEST_DEBUG_ASSERTIONS',
+      'CARGO_PROFILE_TEST_OVERFLOW_CHECKS']) assert.equal(env[key], undefined, key);
+  }
+  const profile = read('rust/Cargo.toml').split('[profile.test]')[1].split('[profile.release]')[0];
+  assert.match(profile, /^opt-level = 2$/mu);
+  assert.match(profile, /^debug-assertions = true$/mu);
+  assert.match(profile, /^overflow-checks = true$/mu);
 });

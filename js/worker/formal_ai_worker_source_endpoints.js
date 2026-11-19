@@ -17,7 +17,7 @@ function sourceWalkEntryUrl(record, subject, language = "") {
     : record.api;
   const host = String(template || "").split("://")[1]?.split("/")[0] || "";
   const bindings = {
-    title: record.id === "wikihow" && language && language !== primary
+    title: record.id === "wikihow" && ["ru", "es"].includes(language || primary)
       ? howToWikiHowSlug(subject) : sourceWalkPageTitle(subject, host.includes("wikihow")),
     query: subject,
     lemma: subject,

@@ -251,10 +251,13 @@ pub(crate) fn wiki_how_title(subject: &str, language: &str) -> String {
     let words = subject
         .split(|character| !is_topic_character(character))
         .filter(|word| !word.is_empty());
-    if language.is_empty() || language == "en" {
-        words.map(capitalize).collect::<Vec<_>>().join("-")
-    } else {
+    // Preserve localized lowercase slugs without applying that convention to
+    // Hindi/Chinese candidates containing Latin words. Their established title
+    // form still capitalizes each word and keeps combining marks intact.
+    if matches!(language, "ru" | "es") {
         words.collect::<Vec<_>>().join("-").to_lowercase()
+    } else {
+        words.map(capitalize).collect::<Vec<_>>().join("-")
     }
 }
 

@@ -76,7 +76,7 @@ jobs:
         if: ${{ inputs.compile-inputs-changed }}
         env:
           CARGO_BUILD_JOBS: '2'
-          CARGO_PROFILE_TEST_OPT_LEVEL: '0'
+          # Inherit profile.test: optimized computation with assertions and overflow checks.
           # Routing assertions use committed captures; fixture transports opt in explicitly.
           FORMAL_AI_OFFLINE: '1'
         run: bash scripts/ci-native-regressions.sh
@@ -84,7 +84,6 @@ jobs:
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
           CARGO_BUILD_JOBS: '2'
-          CARGO_PROFILE_TEST_OPT_LEVEL: '0'
         run: |
           regression_status=0
           cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?
