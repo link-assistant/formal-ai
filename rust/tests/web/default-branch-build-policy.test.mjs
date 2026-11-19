@@ -874,3 +874,21 @@ raise SystemExit('both isolated groups must overlap')
     } finally { rmSync(directory, {recursive:true, force:true}); }
   });
 }
+
+
+test('procedure and concept retrieval contracts retain their native input closure', {timeout:15000}, () => {
+  const modules = ['specification/reasoning_paths_procedures.rs',
+    'solver/issue_1138_self_use_concept_lookup.rs', 'issue_1138_retrieval_method.rs'];
+  for (const path of modules)
+    assert.equal(admission(['rust/tests/unit/' + path])['native-type-check'], true, path);
+  for (const path of ['data/benchmarks/self-use-concept-lookup.lino',
+    'data/seed/multilingual-responses.lino', 'data/meta/response-language-parity-debt.lino'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  assert.equal(admission(['rust/tests/unit/unrelated-retrieval.rs'])['native-type-check'], false);
+  const source = read('rust/tests/unit/reasoning_contracts.rs');
+  for (const path of modules) assert(source.includes('#[path = "' + path + '"]'), path);
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
+    .find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?: |$)/u);
+  assert.equal(step.env.FORMAL_AI_OFFLINE, '1');
+});
