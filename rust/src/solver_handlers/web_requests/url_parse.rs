@@ -78,6 +78,13 @@ pub(in crate::solver_handlers) fn normalize_url_candidate(candidate: &str) -> Op
 
 pub(super) fn looks_like_hostname(value: &str) -> bool {
     let host = value.trim();
+    // Numeric dotted operands are IPv4 addresses, not domain suffixes.
+    if host
+        .chars()
+        .all(|character| character.is_ascii_digit() || character == '.')
+    {
+        return host.parse::<std::net::Ipv4Addr>().is_ok();
+    }
     if !host.contains('.') || host.starts_with('.') || host.ends_with('.') {
         return false;
     }

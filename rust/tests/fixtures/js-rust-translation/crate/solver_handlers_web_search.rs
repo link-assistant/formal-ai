@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=2e43e81142ef770eab2794ac3d4fbd668d4903f175ebcce3559e5205728e0cec bytes=25016
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3bc4bbb367b55ee55c271a1c8f94f8635071f4e7f20c81d05369ed2fb1b7a3c6 bytes=25363
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=9
 
@@ -67,8 +67,8 @@
 // formal-ai:blockers call of an imported function | method call .has() | method call .lastIndexOf() | method call .slice() | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal method call .split()
-// formal-ai:blockers Array.from | arrow callback of .every() | arrow callback of .some() | call of an imported function | method call .every() | method call .some() | method call .split()
+// formal-ai:refusal regular expression
+// formal-ai:blockers Array.from | arrow callback of .every() | arrow callback of .some() | call of an imported function | method call .every() | method call .some() | method call .split() | method call .test() | regular expression
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .split()
