@@ -1,0 +1,38 @@
+{
+  "records": [
+    {
+      "name": "issue",
+      "endpoint": "issues/1580/comments",
+      "file": "issue.json.gz",
+      "count": 1,
+      "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "archiveSha256": "d996d3a37147a526df1fca7610ca1d0edf5638875e5648b8a511c0606aab8d25"
+    },
+    {
+      "name": "conversation",
+      "endpoint": "issues/1581/comments",
+      "file": "conversation.json.gz",
+      "count": 11,
+      "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
+      "archiveSha256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30"
+    },
+    {
+      "name": "inline",
+      "endpoint": "pulls/1581/comments",
+      "file": "inline.json.gz",
+      "count": 0,
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "name": "reviews",
+      "endpoint": "pulls/1581/reviews",
+      "file": "reviews.json.gz",
+      "count": 0,
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}
