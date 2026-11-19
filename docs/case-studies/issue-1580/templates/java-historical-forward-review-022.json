@@ -1,0 +1,48 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 153,
+    "totalPages": 254,
+    "completeFiles": 123,
+    "partialFiles": 1,
+    "literalLines": 8766,
+    "nextForwardPage": 154,
+    "remainingPages": 101,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    154,
+    155,
+    156,
+    157
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+      "newReadLinePieces": [
+        91,
+        114
+      ],
+      "cumulativeReadLinePieces": [
+        1,
+        114
+      ],
+      "totalLinePieces": 145,
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 157,
+    "totalPages": 254,
+    "completeFiles": 123,
+    "partialFiles": 1,
+    "literalLines": 8766,
+    "nextForwardPage": 158,
+    "remainingPages": 97,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "Four pages were literally read without truncation in the preceding research context. This continues the historical registry through piece 114/145, without completing its single source line. Complete line/file counts remain 8,766/123, with one partial file. Current semantic applicability and pages 158\u2013254 remain open. Supplied reading earns zero independent authorship credit."
+  ]
+}

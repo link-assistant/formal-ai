@@ -1,0 +1,18 @@
+[
+  {
+    "name": "before",
+    "exitCode": 1,
+    "file": "before.log.gz",
+    "rawSha256": "ce05b788b82bd16272db26a23510ac7920c74e8eab10f57d25c2e79dc6f81232",
+    "archiveSha256": "763448f6c3d2a6728705596f7b26760dcef7a14ecb2114eb4ea83eb1bd21fa8a",
+    "lines": 52
+  },
+  {
+    "name": "regenerate",
+    "exitCode": 0,
+    "file": "regenerate.log.gz",
+    "rawSha256": "245b2bbd93d0c882ea096ede07385802d5984795dee09d43f5dbd0d04e420746",
+    "archiveSha256": "8617531febebb95f8c91bc47261d1892b82dbd44a577f97b2467507e37815a3d",
+    "lines": 1
+  }
+]

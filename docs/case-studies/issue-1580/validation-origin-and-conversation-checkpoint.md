@@ -19,3 +19,9 @@ The preceding published head `d3adb3ce` completes all 23 workflows successfully.
 All current feedback bodies remain unchanged. Pinned Java historical reading reaches 153/254 continuous pages (registry pieces 1–90/145), still 8,766 complete source lines and 123 complete files plus one partial file. Pages 154–254 and broader semantic applicability remain unfinished.
 
 This is a verification checkpoint, not issue completion. The strict original-source hosted union remains 17/53 pending this new replay, with 36 original panic contracts and three budget failures unqualified. Every broader unfinished criterion stays in the work plan. PR #1581 remains draft and unmerged. Supplied code, scripts, reading and checks earn zero independent authorship credit; accepted independent reasoning remains 0/20.
+
+## Published follow-up
+
+Published `5f64ad16` completes all 23 workflows: 21 succeed, while the stale generated registry and one unchanged contextual program-coreference assertion fail. Actual execution passes 147 Rust cases and four HTTP cases, including all four new origin controls and nine existing debug-session cases. Six pronoun cases pass; `Explain the program?` still reaches a cached general explanation and is unfinished on that head. The strict original-source union remains 17/53. All 96 collection payload hashes are verified.
+
+The [next contextual repair and existing web replay checkpoint](contextual-explanation-and-web-replay-checkpoint.md) records both failures, the complete registry equality proof, preserved original test source and pending hosted repair verification. That later checkpoint also records continuous Java historical review through page 164. The historical local and pending-state observations above describe their original checkpoint; they do not claim the failed published head is green.

@@ -1,0 +1,117 @@
+[
+  {
+    "name": "admission-before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 1,
+    "stdout": {
+      "file": "admission-before.stdout.log.gz",
+      "rawSha256": "c28ac34ed73d6c718c9a5a4df3cf5da81e3db9f9a29b1118492c2961f0f991d6",
+      "archiveSha256": "534463a7e67be5e67dce8e606762a9ed01a7c120747ed973e75f9bedbf4cc39d",
+      "lines": 65
+    },
+    "stderr": {
+      "file": "admission-before.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "rust/tests/unit/reasoning_contracts.rs"
+    ],
+    "exitCode": 1,
+    "stdout": {
+      "file": "rust-format.stdout.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "rust-format.stderr.log.gz",
+      "rawSha256": "164ca376f05a1cd80b82e3d3ab32b77870ad3e81fa89e0bd66518713c93c4c81",
+      "archiveSha256": "afb906ed3b280b888b657c50c3de80ba2d16077c778ba929e99156398c245a8b",
+      "lines": 1
+    }
+  },
+  {
+    "name": "rust-format-repaired",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "rust/tests/unit/reasoning_contracts.rs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "rust-format-repaired.stdout.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "rust-format-repaired.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "rust-format-check",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/tests/unit/reasoning_contracts.rs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "rust-format-check.stdout.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "rust-format-check.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "admission-after",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "admission-after.stdout.log.gz",
+      "rawSha256": "d66f775197a9ff428a41ef9e103de8320f5de094c7f7793a614d4058a518a2aa",
+      "archiveSha256": "005fb916b98ad11473f2d57c50f2b0ff62c4d8b66236ee99f4d47237fb112ce0",
+      "lines": 42
+    },
+    "stderr": {
+      "file": "admission-after.stderr.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  }
+]
