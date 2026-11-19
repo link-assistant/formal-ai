@@ -2,7 +2,7 @@
 
 Published `cf22c611` completes all 23 workflows: 22 succeed and the [CI/CD pipeline](https://github.com/link-assistant/formal-ai/actions/runs/44606365461) is cancelled after the native job reaches its existing 20-minute deadline. All 104 collection payload hashes verify. The separate Layered CI shard totals are 2,901 JavaScript passes and 17 skips; focused nested runs are not counted again.
 
-The native log has 178 passes and one failure across completed groups, plus three observed scheduling passes before cancellation. This is 181 observed passes, not a completed native suite. The benchmark process has no completion receipt. Library, unsupported-language, HTTP and fresh catalog-artifact stages are not reached. The preserved offline calibration assertion, both new offline instruction controls and all five actual Google Trends catalog/session cases pass. The original-source replay union remains 23/53; thirty original panic criteria and three original budget criteria remain unfinished.
+The native log has 178 passes and one failure across completed groups, plus three observed scheduling passes before cancellation. This is 181 observed passes, not a completed native suite. The benchmark process has no completion receipt. Library, unsupported-language, HTTP and fresh catalog-artifact stages are not reached. The preserved offline calibration assertion, both new offline instruction controls and all five actual Google Trends catalog/session cases pass. A later identity crosswalk counts four previously omitted qualifying passes from this run: the strict original-source union is 27/53; twenty-six original panic criteria and three original budget criteria remain unfinished.
 
 ## Failure reproduction and repairs
 

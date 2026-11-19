@@ -279,3 +279,5 @@ The [native reasoning and download inventory checkpoint](native-reasoning-and-do
 The [offline instruction and catalog checkpoint](offline-research-and-catalog-checkpoint.md) records complete `3c52b7f5` execution (202 native passes, one failure and four HTTP passes), the cache-only instruction repair, actual generated catalog/session adoption and pending fresh native replay. Full issue acceptance remains unfinished.
 
 The [Hive replay and native profile checkpoint](hive-replay-and-native-profile-checkpoint.md) records the complete `cf22c611` failures, the assertion-preserving optimization repair, localized title controls and 45 pending native Hive cases. The wider issue remains unfinished.
+
+The [interface replay and compilation checkpoint](interface-replay-and-compile-checkpoint.md) records both `53d8212b` failures, unchanged shared-helper visibility repair, maintained TypeScript regeneration and 77 pending native interface cases. The strict original replay union is 27/53; the wider issue remains unfinished.

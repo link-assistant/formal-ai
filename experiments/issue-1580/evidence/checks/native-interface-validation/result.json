@@ -1,0 +1,95 @@
+{
+  "complete": false,
+  "rows": [
+    {
+      "name": "policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 1,
+      "file": "policy.log.gz",
+      "rawSha256": "ff2120a9c3e7ad69534ace5b799f69da19615325b085158a84e601860b15c26b",
+      "archiveSha256": "a2401a29a2e5537819ca4a9338f354c6c3050d474ec8b1b8c79f1282c3eb22ef",
+      "seconds": 9.613
+    },
+    {
+      "name": "focused-map",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "file": "focused-map.log.gz",
+      "rawSha256": "b5373bb32126da63dbe2eb8225ac9b73a457f88ad552b84bfcffccb11517c97a",
+      "archiveSha256": "ddc6cdb07fa3af6c35b09ad67db45e3adf3a307c8f9921bf1f278f74567f1b23",
+      "seconds": 0.951
+    },
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/interface_contracts.rs"
+      ],
+      "exitCode": 1,
+      "file": "rust-format.log.gz",
+      "rawSha256": "0e89c99572a7b11ae69abeee713904a930627edaa2037e81c5b0cd6e4f3b0140",
+      "archiveSha256": "f31a35d2f711a8586ac6746645893cfaf3deabe8e6f1b32e961476de03b372ba",
+      "seconds": 0.11
+    },
+    {
+      "name": "generated-parity",
+      "argv": [
+        "node",
+        "scripts/translate-es.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "file": "generated-parity.log.gz",
+      "rawSha256": "1580b2bf51099bac3a0c670b8963a461b41f5ca5f09ffc74096d4abc1b19d8fd",
+      "archiveSha256": "470114e67442962d059d5b1f9ab7bd0243317a5033019e789f7d7e52c9fb1820",
+      "seconds": 2.913
+    },
+    {
+      "name": "affected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-runner-labels"
+      ],
+      "exitCode": 0,
+      "file": "affected-gates.log.gz",
+      "rawSha256": "e81f7ff31a6bdddd77f73c6996f920c1d4c8206523de7bc259cd1d15d4b349d6",
+      "archiveSha256": "7eb5e2f38d8416a06d936e65f9e695acf1f462096dba99a974e0db25c42228b7",
+      "seconds": 31.342
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "seconds": 0.237
+    }
+  ],
+  "nativeReplayObserved": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}
