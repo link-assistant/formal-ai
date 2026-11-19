@@ -21,6 +21,21 @@ function evaluate(expression, event, ref, variables = {}) {
     vars:{FORMAL_AI_FULL_PR_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',...variables}, needs,
     inputs:{},cancelled:()=>false,always:()=>true,fromJSON:JSON.parse}, {timeout:100});
 }
+for (const [label, needs, expectedStatus] of [
+  ['successful and skipped dependencies', {lint: {result: 'success'}, test: {result: 'skipped'}}, 0],
+  ['a failed dependency', {lint: {result: 'failure'}}, 1],
+  ['a cancelled dependency', {'native-type-check': {result: 'cancelled'}}, 1],
+]) {
+  test('pipeline status reports ' + label + ' on every branch', {timeout: 15000}, () => {
+    for (const isMain of ['true', 'false']) {
+      const result = spawnSync('bash', ['scripts/check-pipeline-status.sh'], {encoding: 'utf8', timeout: 5000,
+        env: {...process.env, NEEDS_JSON: JSON.stringify(needs), IS_MAIN: isMain}});
+      assert.equal(result.signal, null, result.stderr);
+      assert.equal(result.status, expectedStatus, `IS_MAIN=${isMain}: ${result.stdout}${result.stderr}`);
+      if (expectedStatus) assert.doesNotMatch(result.stdout, /All required jobs succeeded/u);
+    }
+  });
+}
 test('all former heavy PR overrides remain closed, including bot branch dispatch', () => {
   const manifest = JSON.parse(read('data/benchmarks/fast-pull-request-retained-jobs.json'));
   for (const row of manifest.jobs) {
@@ -80,7 +95,9 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');
   assert.deepEqual(check.steps.find(step => step.name === 'Verify isolated native behavior regressions').env,
-    {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
+    {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0', FORMAL_AI_OFFLINE: '1'});
+  assert.equal(called.env.FORMAL_AI_OFFLINE, undefined, 'native CLI transport replays keep the default network policy');
+  assert.equal(check.env?.FORMAL_AI_OFFLINE, undefined, 'offline mode belongs to the deterministic behavior step');
   for (const command of runs.filter(command => command.startsWith('node --test '))) {
     assert.deepEqual(check.steps.find(step => step.run === command).env,
       {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
