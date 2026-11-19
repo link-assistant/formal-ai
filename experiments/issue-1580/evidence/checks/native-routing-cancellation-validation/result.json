@@ -1,0 +1,180 @@
+{
+  "complete": true,
+  "baseHead": "193546c746ab6a88aed96f58ff5d2c4f7a11ff3a",
+  "checks": [
+    {
+      "file": "policy.log.gz",
+      "rawSha256": "4a586946d711382312e379740f4c769ace43744c36dc991b828cfa257387da21",
+      "archiveSha256": "fe34ba4e3e8d55bc5abe6833658f29054fd4d5055ff71bec83f38a4262c7828f",
+      "lines": 45,
+      "name": "policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 8.172
+    },
+    {
+      "file": "focused-map.log.gz",
+      "rawSha256": "e3315e47a72232392abb06cd0d116989c5abdef41dbfa09e2069cbbd1097f2a0",
+      "archiveSha256": "4e3c9050b1000098e68ab74d792d027ca9fc46cef049c6a6b903f35e194ccd1c",
+      "lines": 16,
+      "name": "focused-map",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.835
+    },
+    {
+      "file": "shell-syntax.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "name": "shell-syntax",
+      "argv": [
+        "bash",
+        "-n",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.008
+    },
+    {
+      "file": "shellcheck.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "name": "shellcheck",
+      "argv": [
+        "shellcheck",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.121
+    },
+    {
+      "file": "rust-format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/ci-cd/job_timeouts_as_failures.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.383
+    },
+    {
+      "file": "selected-gates.log.gz",
+      "rawSha256": "d8c5cbc18f90be380adbeb67fedd30d821db3c3a4925cc17fc6a5cf631fd96a3",
+      "archiveSha256": "7bcd72e9bafbcdbe65f30b65bd5ee1a4855bba61edc801764c9f6d2b86437669",
+      "lines": 11,
+      "name": "selected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-ci-speed,check-runner-labels,check-readable-code"
+      ],
+      "exitCode": 0,
+      "seconds": 47.616
+    },
+    {
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.308
+    }
+  ],
+  "gates": [
+    {
+      "file": "gate-check-abbreviations.log.gz",
+      "rawSha256": "9d706e09ccc0e2ed635bd9d6afc31dda7ecccbc5c7033a67d1cb2abd63a79cdc",
+      "archiveSha256": "0d98b455a8ecbd2206064e6f46eb440a146288475047af09290ccbd31eb80221",
+      "lines": 4,
+      "gateName": "check-abbreviations"
+    },
+    {
+      "file": "gate-check-changelog-fragment-js-twin.log.gz",
+      "rawSha256": "dcf80a72b0128ad5e68a8f4e4f51de3cd3d4386acde041a0c43079b5de6fdbc7",
+      "archiveSha256": "cf212b8db84d6e8512f4d0a14432e9fb3006bcd8760a9299f3d06702ff7cb2db",
+      "lines": 2,
+      "gateName": "check-changelog-fragment-js-twin"
+    },
+    {
+      "file": "gate-check-ci-speed.log.gz",
+      "rawSha256": "4188f9e32a92eecb4e097342bac1801ea722d96b348ae3f4eae4820110668a00",
+      "archiveSha256": "4f9860ea104601ac8a2f15c7761e47c89d1c15cee79e4dbb090e16caf808542b",
+      "lines": 34,
+      "gateName": "check-ci-speed"
+    },
+    {
+      "file": "gate-check-file-size-js-twin.log.gz",
+      "rawSha256": "07918a2152b578cba2b518dd25d361689d3c2e6a91848afeb3ac8af20d8aeee9",
+      "archiveSha256": "5ee4009241ee13da1c71e44fd09fb5ba26e15b6bfda355aee981d571bca96f50",
+      "lines": 2,
+      "gateName": "check-file-size-js-twin"
+    },
+    {
+      "file": "gate-check-file-size.log.gz",
+      "rawSha256": "4be86dfa5ae5bcdf5f8d8a0809babff1300ce607d3147c79b081f941ec5094d8",
+      "archiveSha256": "ac753a784d7f6ce89bf18943f1d8cf5658ad5e54ee9603c2ce34f039fa316dd6",
+      "lines": 389,
+      "gateName": "check-file-size"
+    },
+    {
+      "file": "gate-check-readable-code.log.gz",
+      "rawSha256": "c722bbb9dc5c2a857abed16a989df04b67d28ad612d50f2ebc89fbdb4067ae54",
+      "archiveSha256": "19f1800dd4ba8ddd6f7982d2c31482170b4bb3d6d14960daa2fe04749c0dda45",
+      "lines": 2,
+      "gateName": "check-readable-code"
+    },
+    {
+      "file": "gate-check-runner-labels.log.gz",
+      "rawSha256": "be1a0846791ca63b74c1ccae844fb0450a47de65a7b43a484de8d77958221dee",
+      "archiveSha256": "93eab7aab169777b0175a9f6dac96c21e7abc81d471d9f3246a85232cb461b03",
+      "lines": 2,
+      "gateName": "check-runner-labels"
+    },
+    {
+      "file": "gate-check-tests-as-documentation.log.gz",
+      "rawSha256": "4c41d72c51bbe463871ad0778b35e99b4f75ff10bcbbd0578dc223ffc2b13939",
+      "archiveSha256": "4b4edd87795b99b9d73a11eeb5b031911cdd1b3b9661f52ac81122aa3b4491a4",
+      "lines": 6,
+      "gateName": "check-tests-as-docs"
+    },
+    {
+      "file": "gate-check-tests-as-documentation-javascript-twin.log.gz",
+      "rawSha256": "82f197120309e260e1f7655fa313dd31c3bed567b5e00d65149bbec9c8af0ff6",
+      "archiveSha256": "678733a772a9882364c4bd8cb0822ae20823e27212e5ac460dbb280d90e24f4c",
+      "lines": 2,
+      "gateName": "check-tests-as-documentation-javascript-twin"
+    }
+  ],
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

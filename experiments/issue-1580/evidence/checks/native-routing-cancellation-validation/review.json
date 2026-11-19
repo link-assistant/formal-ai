@@ -1,0 +1,39 @@
+{
+  "complete": true,
+  "verifiedPayloads": 16,
+  "focusedJavaScriptPassed": 45,
+  "policyCases": 37,
+  "focusedMapCases": 8,
+  "gateCounts": {
+    "PASS": 9,
+    "FAIL": 0
+  },
+  "sourceHashes": {
+    ".github/workflows/native-type-check.yml": "353de603b06ce3d0e5961f491314bc75b17055b40b06532c02eb05521e6e9c53",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "df5f53e999960768a8c5576bfec1b3559b8f832b9dc039b3169bb7afd7158370",
+    "scripts/check-pipeline-status.sh": "38293cbdfa6d894e17db8bb3c510d0f6d4c8941e2747bb11a9fc98cdd768f352",
+    "rust/tests/unit/ci-cd/job_timeouts_as_failures.rs": "1517f0c3590af3b6aa11e176b7143d260eecc8e56692a081c9eddb35612d9a38",
+    "changelog.d/issue-1580-native-routing-offline.md": "567f4bc1e194ba41f287e131d77e66b27039a12dbdb9e7170e296c65b1569195"
+  },
+  "routingBefore": {
+    "focused": {
+      "pass": 0,
+      "fail": 1
+    },
+    "fullPolicy": {
+      "pass": 32,
+      "fail": 2,
+      "additionalFailure": "Existing VM expression case exceeded its unchanged 100ms clock; subsequent targeted and full runs pass without increasing it."
+    }
+  },
+  "cancellationBefore": {
+    "pass": 2,
+    "fail": 1,
+    "error": "Current PR dependency cancelled but pipeline reported all required jobs succeeded."
+  },
+  "rustBuildPerformed": false,
+  "nativeHostedVerification": "pending",
+  "fullDetailedGateLiteralReviewClaim": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}
