@@ -762,5 +762,16 @@ The broader issue is unfinished and the pull request remains draft and unmerged.
 - [x] Read and retain pinned Java historical pages 146–148, reaching 148/254 continuous pages and partial registry piece 60/145. Complete line/file counts remain 8,766/123; supplied reading earns zero independent authorship credit.
 - [x] Complete the full 139-gate local inventory: 87 checks pass, 52 native/context exclusions, zero failures. Verify every aggregate and detailed payload hash; retain 36 focused passes and both exact failing-before logs.
 - [x] Commit the atomic fixture refresh as `4b96b5219d869ad3d9182bfb66295bf3a3808287` and prepare complete evidence. The publication receipt records actual fresh single-push checks and push execution.
-- [ ] Collect every next-head hosted result and verify this repair before reporting CI green.
+- [x] Collect all 23 d3adb3ce workflows: every workflow passes. Verify all 72 collection payloads, 128 actual Rust passes across 13 result rows and four HTTP passes. The original-source union remains 17/53; no broader completion claim.
 - [ ] Continue every broader original acceptance criterion, including 36 original panic contracts without qualifying unchanged-source replay, three budget failures, full template applicability, runtime and delivery requirements. Keep the PR draft and unmerged; accepted independent reasoning remains 0/20.
+
+
+### Actual validation emitter and conversation regression replay
+
+- [x] Preserve the unchanged debug-session twin's two actual attribution failures: generic arithmetic validation is wrongly mapped to the considered prime validator. Preserve the admission regression (32 pass, one fail) and repaired policy (33 pass).
+- [x] Carry optional append-site origin metadata through raw events, native ordering, thinking curation and localization in both runtimes. Preserve raw validation kinds, payloads, evidence and stable identities; unknown origins remain unavailable. Generate source mappings with the maintained writer.
+- [x] Replay 113 focused JavaScript cases, Rust 2024 formatting and maintained projections. Complete all 139 gates (raw 84 pass / 3 fail / 52 exclusions), repair all three failures without raised ceilings, and verify all 142 detailed/aggregate payload hashes. All 87 executable gates have passing results after focused repairs. Retain exact failures and the complete-object witness proof.
+- [x] Collect all d3adb3ce results and preserve the prior publication receipt. Read and archive Java historical pages 149–153; compare all feedback bodies unchanged.
+- [x] Commit the validation-origin and isolated conversation replay source as `a8643b4a7df4a665fbd1c003040906ccde7fb5d6`; prepare complete evidence and fresh single-push checks. The publication receipt records the actual push outcome.
+- [ ] Verify all 16 added existing conversation/debug cases and four new origin controls in hosted CI, collect every current-head failure, and continue the wider original acceptance criteria.
+- [ ] Continue every broader frozen requirement, 36 original panics without qualifying unchanged-source replay, three budget failures and full template semantic applicability. PR remains draft and unmerged; supplied tests and patches earn zero independent authorship credit (0/20 accepted).

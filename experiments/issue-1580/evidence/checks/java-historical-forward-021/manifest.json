@@ -1,0 +1,216 @@
+{
+  "pinnedHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "pages": [
+    {
+      "page": 149,
+      "parts": 6,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.61/145"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.66/145"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.61/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.62/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.63/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.64/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.65/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.66/145"
+        ]
+      ],
+      "file": "page-149.log.gz",
+      "archiveSha256": "36cd97b3fa3abc4d463184306fe2bf159b6f7d926017bb7b65617f0e4d11a898",
+      "rawSha256": "b6b010fb7e8a4db19ab94101a071b35b9366b4f01e03d3a6d2d1db2877f47d08",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 150,
+      "parts": 6,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.67/145"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.72/145"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.67/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.68/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.69/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.70/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.71/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.72/145"
+        ]
+      ],
+      "file": "page-150.log.gz",
+      "archiveSha256": "91d0e42182b31064a53ce2534b61fb0a1efa7b7e75118f34f42ac0ec354ddf72",
+      "rawSha256": "7b2ab35172bb699b0e6a8e6f56fa691630fd47d9abfccf9b26f3dd3b9d9bf92a",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 151,
+      "parts": 6,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.73/145"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.78/145"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.73/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.74/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.75/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.76/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.77/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.78/145"
+        ]
+      ],
+      "file": "page-151.log.gz",
+      "archiveSha256": "2147e2ce41d7829f329c2cf05f106b0cefc5332667ce86a1fe37c4bd206b3e08",
+      "rawSha256": "91a38e431968b51f361a3deb68e9103d19f734ac2fda1dcdfa5f45cb0798b69e",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 152,
+      "parts": 6,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.79/145"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.84/145"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.79/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.80/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.81/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.82/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.83/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.84/145"
+        ]
+      ],
+      "file": "page-152.log.gz",
+      "archiveSha256": "0bf52628ee0796011a16c3c1eeff24bdddbf67c9907d912b077c0829a884d349",
+      "rawSha256": "7eed38195b15837e1610c69839f6a566911f99938ced30a850610a01b432b498",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 153,
+      "parts": 6,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.85/145"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+        "1.90/145"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.85/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.86/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.87/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.88/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.89/145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+          "1.90/145"
+        ]
+      ],
+      "file": "page-153.log.gz",
+      "archiveSha256": "4dca39155ca64cfe3368ab9ec50e0c688afd0881f5cd3d57211e4de890332992",
+      "rawSha256": "774a447d04be0236f04564fa337251f4b571b27e861dd4fbe919372de1a6ea14",
+      "completeLiteralOutputRead": true
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

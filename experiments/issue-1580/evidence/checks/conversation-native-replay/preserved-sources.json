@@ -1,0 +1,49 @@
+{
+  "sourceHead": "d3adb3ce0b471b94f173b204b1e0091903c8a958",
+  "sources": [
+    {
+      "path": "rust/tests/unit/specification/formalization.rs",
+      "file": "preserved-formalization.rs.gz",
+      "rawSha256": "d7d4870303bb2c05843769a063942f3f75766e9215447088e37671bb688dd7b3",
+      "archiveSha256": "95dc7a42834c208404a8cec8d1d7f41119803ad325990d852c8cd2587d97182e",
+      "originalSha256": "96038b52dc0f1ce195bf9f3034ca7a82a5707c58d3ffacbcb9d59a9f0e5dff65",
+      "entireOriginalFilePreserved": false,
+      "testCount": 11
+    },
+    {
+      "path": "rust/tests/unit/specification/reasoning_loop.rs",
+      "file": "preserved-reasoning-loop.rs.gz",
+      "rawSha256": "3021bacffc77bcc74db3845736f7165df0c126dc274678184bb40daebeab2d49",
+      "archiveSha256": "04354e4a52f42ac9350740aca868d4ad9c84099467bdc79253c4d58adc61f45e",
+      "originalSha256": "3021bacffc77bcc74db3845736f7165df0c126dc274678184bb40daebeab2d49",
+      "entireOriginalFilePreserved": true,
+      "testCount": 17
+    },
+    {
+      "path": "rust/tests/unit/specification/pronoun_topic_follow_up.rs",
+      "file": "preserved-pronoun-topic-follow-up.rs.gz",
+      "rawSha256": "85740d6c2fc1e6a87ddc4d7a6362a95c57f689893a6b8cbf425bd1ab043ebfe7",
+      "archiveSha256": "43f4e207c3dffe2b439c9cb7da472e2af8b4eca2eeec27949213ca2a3564676a",
+      "originalSha256": "85740d6c2fc1e6a87ddc4d7a6362a95c57f689893a6b8cbf425bd1ab043ebfe7",
+      "entireOriginalFilePreserved": true,
+      "testCount": 7
+    },
+    {
+      "path": "rust/tests/unit/specification/debug_session.rs",
+      "file": "preserved-debug-session.rs.gz",
+      "rawSha256": "8faf53bf31998b6212a4ae5feb8eaaa103f9b9c4fa9d7ad82de45dfb8827b680",
+      "archiveSha256": "814163fe9f9dc86cad95598f9266eb0d82f38f24ac426a777abe26fb628dc219",
+      "originalSha256": "8da5534f8a41bab9b89b8dbd25bc93baa1d1e76f2c041c0f70a05e90b39dcaac",
+      "entireOriginalFilePreserved": false,
+      "testCount": 9
+    }
+  ],
+  "completeIncludedTestCount": 44,
+  "addedExistingTests": 16,
+  "pronounTopicOriginalBytesPreserved": true,
+  "debugExpectedEmitterCorrectionPredatesThisChange": true,
+  "cargoManifestChanged": false,
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

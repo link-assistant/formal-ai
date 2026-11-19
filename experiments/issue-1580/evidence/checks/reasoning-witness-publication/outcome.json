@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "head": "d3adb3ce0b471b94f173b204b1e0091903c8a958",
+  "sourceHead": "1ee15aea8e4d25fd80fc0cb323bd6edd99e62c10",
+  "priorPublishedHead": "1ee15aea8e4d25fd80fc0cb323bd6edd99e62c10",
+  "pushExecuted": true,
+  "observedAt": "2026-11-19T14:58:44.520084+00:00",
+  "fullIssueComplete": false,
+  "newNativeExecution": "1ee15aea passes 128 native cases and four HTTP cases; next-head governed witness verification pending",
+  "independentAuthorshipCredit": 0
+}

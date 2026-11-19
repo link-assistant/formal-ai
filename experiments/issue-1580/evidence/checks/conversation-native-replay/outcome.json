@@ -1,0 +1,93 @@
+{
+  "complete": false,
+  "allPassed": false,
+  "sourceHead": "d3adb3ce0b471b94f173b204b1e0091903c8a958",
+  "records": [
+    {
+      "name": "before-admission",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 8.339,
+      "file": "before-admission.log.gz",
+      "rawSha256": "c8e1720f0ecaf69aafce933dacd06c704dc0c72a04a0c9d59cc86ba26550b47b",
+      "archiveSha256": "c8417dc0688c1fb1594b549d0d5d55803a344aae50e0ba8e34b1700cd0cfc1b1",
+      "lines": 64
+    },
+    {
+      "name": "implementation",
+      "argv": [
+        "python3",
+        "/tmp/issue-1580-research/implement-conversation-native-replay.py"
+      ],
+      "exitCode": 0,
+      "seconds": 0.228,
+      "file": "implementation.log.gz",
+      "rawSha256": "ad375dc889497a18d8049bb709cc6620f30d5efc2a12c136a81e511232eaf0d6",
+      "archiveSha256": "b3de5f59ea15b21b6324203d1ff41ba494f9f7043f7bccf72255d4bab80ac1ff",
+      "lines": 49
+    },
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2024",
+        "rust/tests/unit/reasoning_contracts.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.647,
+      "file": "rust-format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    {
+      "name": "after-admission",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.355,
+      "file": "after-admission.log.gz",
+      "rawSha256": "66fe511ee4f48fa3c16c30edf4f5308c4745c0abf5b03a0e8e9d3eb114cf225f",
+      "archiveSha256": "a911a99732a9af97aca06fce9f0a2eba64f1b4df2df822d061ec18b3c6fbfb3f",
+      "lines": 41
+    },
+    {
+      "name": "debug-session-twin",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/server-debug-session.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 13.203,
+      "file": "debug-session-twin.log.gz",
+      "rawSha256": "1904267db9e3bd7d44e5ab88f361772be4596332e8d177bb717be13ac8a226b0",
+      "archiveSha256": "3972bebbb4d83d648ad0c91d9c81e54961c39f931aebefcc1a9d384c86c7f473",
+      "lines": 83
+    }
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}
