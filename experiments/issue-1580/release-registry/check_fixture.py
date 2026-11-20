@@ -22,7 +22,8 @@ def without_cargo_build(args, **kwargs):
 
 
 suite = unittest.TestSuite([module.RegistryRegressions(
-    'test_fixture_can_return_wrong_identity_for_an_unpublished_candidate')])
+    'test_fixture_can_return_wrong_identity_for_an_unpublished_candidate'),
+    module.RegistryRegressions('test_repository_contains_the_writer_status_staging_inputs')])
 with patch.object(module.subprocess, 'run', side_effect=without_cargo_build):
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 print('HTTP fixture check only: no Rust compilation or release CLI execution.')

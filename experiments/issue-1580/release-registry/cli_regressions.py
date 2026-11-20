@@ -4,6 +4,7 @@ import http.client
 import http.server
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import socket
@@ -119,6 +120,9 @@ class RegistryRegressions(unittest.TestCase):
         (self.work / 'src').mkdir()
         (self.work / 'src/lib.rs').write_text('pub fn fixture() {}\n')
         (self.work / 'CHANGELOG.md').write_text('## [1.2.3]\n\nOriginal notes.\n')
+        (self.work / 'docs').mkdir()
+        for path in ['docs/status.md', 'docs/benchmarks.md', 'README.md']:
+            (self.work / path).write_text('# Fixture status surface\n')
         self.git('init', '-q', '-b', 'main')
         self.git('config', 'user.name', 'Fixture')
         self.git('config', 'user.email', 'fixture@example.invalid')
@@ -137,6 +141,15 @@ class RegistryRegressions(unittest.TestCase):
         args = ['--bump-type', 'patch', '--branch', 'main'] if name == 'version-and-commit.rs' else []
         return subprocess.run([str(self.target / 'debug' / name.removesuffix('.rs')), *args], cwd=self.work,
                               env=self.env, capture_output=True, text=True, timeout=40)
+
+    def test_repository_contains_the_writer_status_staging_inputs(self):
+        source = (ROOT / 'scripts/version-and-commit.rs').read_text()
+        declaration = re.search(r'const STATUS_SURFACES:.*?= &\[(.*?)\];', source, re.DOTALL)
+        self.assertIsNotNone(declaration, 'the actual writer declares its status surfaces')
+        paths = re.findall(r'"([^"]+)"', declaration.group(1))
+        self.assertTrue(paths, 'the fixture must exercise the real staging contract')
+        self.git('ls-files', '--error-unmatch', '--', *paths)
+        self.assertEqual(self.git('status', '--porcelain'), '')
 
     def test_fixture_can_return_wrong_identity_for_an_unpublished_candidate(self):
         self.__class__.scope = '/crates/fixture/'
