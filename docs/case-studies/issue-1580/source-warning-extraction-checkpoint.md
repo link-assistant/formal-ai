@@ -152,3 +152,20 @@ groups and 99 after nineteen, with zero ordinary/embedded-data violations.
 The unchanged limits still expose every remaining warning. The current published
 head remains `f8b372ad`; these local figures do not describe a completed hosted
 run. Full issue completion remains false.
+
+## Full-inventory freshness failures and repair
+
+The first complete local inventory has 136/141 gates passing or explicitly
+skipped and five failures. Their logs are retained. Two generators refresh the
+four moved method-event source paths and the native CLI source hash. The runtime
+inventory remains byte-equivalent after normalizing that one hash; no behavior
+or evidence qualification is promoted. A JavaScript citation names the new
+HTML helper owner.
+
+Both variants of the boundary checker reject the two unledgered handler children.
+Their census now includes both with the same migrate dispositions and data
+targets as their parents. Exact measured counts add two files and six structural
+module/import/re-export lines; no domain debt is hidden or reclassified. All
+five failed gates pass, along with three recursive-handler census cases, eight
+runtime-inventory cases, five event-origin cases, translation currency and the
+four source gates. A complete inventory replay is required before publication.

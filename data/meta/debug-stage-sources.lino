@@ -104,8 +104,8 @@ debug_stage_sources
   event "intent"
     step dispatch_handler
     rust "rust/src/cnl_output/controlled.rs" "controlled_solve"
-    rust "rust/src/meta_method_dispatch.rs" "try_diagnostic"
-    rust "rust/src/meta_method_dispatch.rs" "try_learned_method"
+    rust "rust/src/meta_method_dispatch/execution.rs" "try_diagnostic"
+    rust "rust/src/meta_method_dispatch/execution.rs" "try_learned_method"
     rust "rust/src/meta_reasoner/integration.rs" "project"
     rust "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
     rust "rust/src/solver_handlers/mod.rs" "finalize_simple"
@@ -164,8 +164,8 @@ debug_stage_sources
   event "response"
     step deformalize
     rust "rust/src/cnl_output/controlled.rs" "controlled_solve"
-    rust "rust/src/meta_method_dispatch.rs" "try_diagnostic"
-    rust "rust/src/meta_method_dispatch.rs" "try_learned_method"
+    rust "rust/src/meta_method_dispatch/execution.rs" "try_diagnostic"
+    rust "rust/src/meta_method_dispatch/execution.rs" "try_learned_method"
     rust "rust/src/meta_reasoner/integration.rs" "project"
     rust "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
     rust "rust/src/solver_handlers/mod.rs" "finalize_simple"
