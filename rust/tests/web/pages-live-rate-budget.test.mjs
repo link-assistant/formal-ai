@@ -2,6 +2,7 @@
 import './pages-deployment.test.mjs';
 import './pages-artifact-trust.test.mjs';
 import './staged-pages-projection.test.mjs';
+import '../../../experiments/issue-1580/pages-release-failure.test.mjs';
 
 import test from 'node:test';
 import assert from 'node:assert/strict';

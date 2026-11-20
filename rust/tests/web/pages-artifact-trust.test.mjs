@@ -7,8 +7,9 @@ import {createRequire} from 'node:module';
 const YAML=createRequire(import.meta.url)('yaml');
 const workflow = readFileSync(new URL('../../../.github/workflows/pages-artifact.yml', import.meta.url), 'utf8');
 function shellFor(name) {
-  const step = workflow.split('      - name: ' + name + '\n')[1].split('\n      - ')[0];
-  return step.split('        run: |\n')[1].split('\n').map((line) => line.slice(10)).join('\n');
+  const step = YAML.parse(workflow).jobs.build.steps.find(item => item.name === name);
+  assert.equal(typeof step?.run, 'string', 'named workflow shell step required');
+  return step.run;
 }
 test('checkout uses the trusted triggering ref before verification or execution', () => {
   assert.match(workflow, /ref: \$\{\{ github\.ref \}\}/u);

@@ -1,0 +1,32 @@
+[
+  {
+    "path": ".github/workflows/pages-artifact.yml",
+    "beforeSha256": "891d5310f7741fe7a16546bd2b0f425141fb1cc32d878a6a16c55e4316835daf",
+    "afterSha256": "d64fa3345a197526898a70a83cffdc58c99a3ac3b8a2859068617639bc798c58"
+  },
+  {
+    "path": ".github/workflows/release.yml",
+    "beforeSha256": "72506f517784dc861020673f7fd471a2a7b7fce31570e0efdc4d2330ed95e8a8",
+    "afterSha256": "241a81f0ee8b23581f4e10cbfa070d847b696121b01fa5c7c61f73b8f08e6bef"
+  },
+  {
+    "path": "scripts/generate-staged-release.mjs",
+    "beforeSha256": "a697c925fa994d1e1dbfaed915a44934493a88b8fc5a8a1a9a1d0032d37a3d07",
+    "afterSha256": "f4434f6d86538cbbb353cb25c6df3781b383fb94052e1c6681d03da4438c7b88"
+  },
+  {
+    "path": "rust/tests/web/pages-artifact-trust.test.mjs",
+    "beforeSha256": "58c3cb75de1fb2f7cfd64148993907a4132614c0557b76220d308870289d9fe8",
+    "afterSha256": "2de52ae9ac4de72099d33c926ab47860682463c4b969b5a1c81ee41e4ecf068e"
+  },
+  {
+    "path": "rust/tests/web/pages-live-rate-budget.test.mjs",
+    "beforeSha256": "43d96f0dc9056841619dd218f20dd9dd80267c68a6b141434f8884c74dfb915f",
+    "afterSha256": "423343b751252047db6e923b895308921a9c4e4ef374d0d838d53f407d3ccaf3"
+  },
+  {
+    "path": "rust/tests/web/staged-release-activation-transition.test.mjs",
+    "beforeSha256": "6119152b6454d2d28435bdb1c24a921ffd606bb3719a7e5b258efd79fb90f3e8",
+    "afterSha256": "88182bc70819eb00836343040b44cdca9fbec4648a9b1766afd03ade41457170"
+  }
+]

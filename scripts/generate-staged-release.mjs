@@ -249,6 +249,18 @@ export function buildStagedReleaseProjection(source, packet) {
     assert.equal(callerSource.split(original.body).length, 2);
     callerSource = callerSource.replace(original.body, replacement);
   }
+  // Publication failure must not suppress a validated site's build. Keep the
+  // release dependencies only to preserve a successful release's child SHA.
+  const pages = workflowJobs(callerSource).find(job => job.id === 'build-pages');
+  assert.ok(pages, 'source Pages build required');
+  let pagesBody = pages.body;
+  for (const caller of ['auto-release', 'manual-release']) {
+    const prerequisite = " && needs." + caller + ".result == 'success'";
+    assert.equal(pagesBody.split(prerequisite).length, 2, 'unique original publication prerequisite required');
+    pagesBody = pagesBody.replace(prerequisite, '');
+  }
+  assert.equal(callerSource.split(pages.body).length, 2);
+  callerSource = callerSource.replace(pages.body, pagesBody);
   // Pack short JSON fields to a readable width; preserve long data strings whole.
   function format(value, depth = 0) {
     const width = 160;

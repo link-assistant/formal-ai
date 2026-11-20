@@ -60,6 +60,12 @@ test('Actions read is confined to operation-owning prepare leaves and caller cei
     Object.assign(expected.steps[0].with,{'sparse-checkout':'/scripts/detect-code-changes.rs\n/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/scripts/install-rust-script.sh\n/changelog.d/\n','sparse-checkout-cone-mode':false});
     assert.deepEqual(caller.jobs[id],expected);continue;
    }
+   if(id==='build-pages') {
+    const expected=structuredClone(job);
+    expected.if=expected.if.replace(" && needs.auto-release.result == 'success'",'')
+      .replace(" && needs.manual-release.result == 'success'",'');
+    assert.deepEqual(caller.jobs[id],expected);continue;
+   }
    if(!['auto-release','manual-release'].includes(id)){assert.deepEqual(caller.jobs[id],job);continue;}
    assert.deepEqual(caller.jobs[id].permissions,{contents:'write',packages:'write',actions:'read'});
    assert.deepEqual(caller.jobs[id].concurrency,job.concurrency);

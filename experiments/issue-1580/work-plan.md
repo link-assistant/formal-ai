@@ -502,3 +502,7 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
   fails; 49 runner cases, 111 policy cases and 18 retained-profile cases pass.
   The real sparse checkout retains only the new consumed evidence operand.
   Next-head native execution remains pending; overall acceptance remains open.
+
+- Pinned Rust issue-38 comparison reproduces a current Pages publication prerequisite and advancing-branch fallback defect. Five negative-control cases fail before; all 13 focused and 64 existing admission cases pass after the maintained projection and trusted-checkout repair. Staged 3/5/15/18 groups and seven touched gates pass. Preserve both initial harness failures and all source identities; hosted fallback publication and broader acceptance remain open, with zero independent credit.
+
+- Four complete pinned Rust publication/preview history records are read and identity-verified: 324/373 literal files, 37,641 lines; binary visual review is tracked separately. The authenticated preview PNG and empty-assets screenshot are format-verified and viewed, without current delivery credit. Fresh registry responses still show mandatory Chrono in command-stream 1.13.0 and link-calculator 0.24.0 despite the first upstream issue closing; published removal remains unverified. All broader requirements remain open.
