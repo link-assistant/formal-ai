@@ -382,7 +382,7 @@ fn drive_with_delivery_workspace(
                 let args: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
                 // Codex echoes the Responses custom-tool projection, not planner JSON.
                 let patch = (call.tool == "apply_patch")
-                    .then(|| formal_ai::protocol_responses::apply_patch_input(&call.arguments))
+                    .then(|| formal_ai::protocol::apply_patch_input(&call.arguments))
                     .flatten();
                 let echoed = patch.as_deref().unwrap_or(&call.arguments);
                 let appended = if matches!(call.tool.as_str(), "Write" | "write")

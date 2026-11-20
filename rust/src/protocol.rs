@@ -20,7 +20,7 @@ use crate::protocol_policy::{
 use crate::protocol_responses::{custom_response_tool_input, is_custom_response_tool};
 // Public because grounding is a property of the *emitted call*, and issue #1075
 // asks for it to be asserted directly rather than inferred from a transcript.
-pub use crate::protocol_responses::response_arguments_for_tool;
+pub use crate::protocol_responses::{apply_patch_input, response_arguments_for_tool};
 use crate::solver::UniversalSolver;
 
 mod chat_request;
