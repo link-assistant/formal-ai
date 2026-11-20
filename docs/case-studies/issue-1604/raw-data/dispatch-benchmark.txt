@@ -1,0 +1,5 @@
+v26.13.0
+repeated prefix misses, dynamic, 140.8 ms
+repeated prefix misses, compiled, 9.4 ms
+first rule hits, dynamic, 0.1 ms
+first rule hits, compiled, 0.2 ms

@@ -57,10 +57,12 @@ source during discovery would grant those sources the serving process's authorit
 [Cargo manifest](https://doc.rust-lang.org/cargo/reference/manifest.html) ·
 [GitHub repository contents API](https://docs.github.com/en/rest/repos/contents)
 
-Per-rule writes with a fresh rule lookup on each action give different results
-when a rule modifies another rule in the same cycle. A cycle snapshot produces
-independent match inputs and deterministic execution order even when writes
-overlap. SQLite serializes writers and commits the state and receipt together.
+Per-rule writes with a fresh lookup on each action give different results when
+one action changes another action's query input or activation state in the same
+cycle. A regression replays two dependent reads with disjoint writes, plus an
+incompatible write pair. Each query plans against the previous-cycle graph and
+conflicting edits roll back. SQLite serializes writers and commits the state
+and receipt together.
 An out-of-process native ingress can use the same host and database, avoiding two
 separate policy and transaction implementations. A native in-process host would
 require replaying the transaction, guard, and trace corpus against its own storage
@@ -70,10 +72,16 @@ adapter. [SQLite transactions](https://www.sqlite.org/lang_transaction.html) ·
 Rebuilding the product binary per recipe would tie instance policy to a local
 compiler and release process. Compiling the ordered patterns to an instance
 dispatch table preserves priority, steps, and source, and can be reversed
-without losing the original rules. It is possible for simple patterns to run
-faster through the interpreter, so proposals deliberately report usage rather
-than a promised speedup. An observed input comparison and measured runtime cost
-would be separate evidence.
+without losing the original rules. An initial experiment found that the trie
+alone took longer than native literal searches when no rule matched. The
+compiled path now checks the first four priorities directly and can reject a
+miss across the remaining patterns before walking the trie. A bounded replay
+found equal outputs and traces and measured 140.8 ms interpreted and 9.4 ms
+compiled over 50 runs on an input with repeated prefixes and 120 missed
+patterns. The first-priority hit was sub-millisecond in both modes. Proposals
+report usage. Timings are local observations for these inputs.
+[Benchmark](../../../experiments/dynamic-meta/dispatch-benchmark.mjs) ·
+[Captured timings](raw-data/dispatch-benchmark.txt)
 
 ## Requirements and verification
 
@@ -86,7 +94,7 @@ would be separate evidence.
 | Associative package plugins with data, skills, functions, and integrations | Manifests expose dataset substitutions, CRUD-triggered rules, named recipes, and host adapters. Tests register npm, crate, and GitHub origins and inspect typed links. | Any origin can have a companion manifest. Downloaded package code has no automatic execution route. |
 | Event-driven by default for link CRUD, including cascades | Test sequences create a link, update it, create another link, and schedule a delete reaction. Identical sides produce zero events. A repeating cascade rolls back its initiating write. | The mutable workspace has this CRUD path. Append-only conversation memory and prior read-only network views have separate semantics. |
 | Real-time self-modification off by default with configuration and natural language controls | Runtime configuration and confirmed operator commands enable same-package rule activation. Tests observe the old rule set within one cycle and new selection on subsequent events. | Automatic changes select installed rules. Public calls cannot install arbitrary new rule source. |
-| Independent transaction cycles and an upstream workaround when needed | Read-only match planning precedes sequential application. Regression test covers two updates from the same initiating query shape. | Matching can be partitioned. The current bounded scheduler executes locally in deterministic order. [Upstream report](https://github.com/link-foundation/ui/issues/270) |
+| Independent transaction cycles and an upstream workaround when needed | Each rule query plans independently on the cycle snapshot. Regression tests exercise disjoint writes that share a query input and verify atomic rollback for competing writes. | The bounded scheduler evaluates plans locally and applies their edits in deterministic order. [Upstream report](https://github.com/link-foundation/ui/issues/270) |
 | Basic translations across meta, programming, and natural languages | Tests round-trip the four formats in all directions and actually execute JavaScript and Python exports. | The portable fragment is reversible. General source-language imports are outside the fragment. |
 | Overall architecture, vision, and dreaming equilibrium | Architecture guide describes data, authority, wire use, and shutdown. Vision names the usage-to-review loop. Idle review emits proposals. Related issue and PR received comments. | Comments are conditional on this PR landing. [Dreaming issue](https://github.com/link-assistant/formal-ai/issues/1446#issuecomment-7043871386) · [Dreaming PR](https://github.com/link-assistant/formal-ai/pull/1448#issuecomment-7043871367) |
 | Use JavaScript Formal AI for implementation support and fact checks | A real Agent CLI invoked a branch recipe and a documentation audit. An exact-source request wrote executable JavaScript. The branch CLI generated the reviewed source rewrite that renamed a production binding. | Open-ended authoring returned `MissingContract`. The exact-source write also exposed a false-negative terminal verdict. Evidence below. |
@@ -109,6 +117,16 @@ The observed mechanical edits carry zero autonomous-authorship credit.
 [Written source](raw-data/agent-written-frequency.mjs) ·
 [Edit transcript](raw-data/agent-edit-function.jsonl) ·
 [Edited source](raw-data/agent-edited-frequency.mjs)
+
+A retry isolated the terminal verdict to workspace identity. Starting the server
+and CLI in the same private working directory let the existing creation guard
+bind the relative operand to the Agent CLI's absolute write path. The planner
+requested a separate Read and reported the completed change. Node independently
+executed the resulting function on duplicate and empty inputs. The same private
+workspace still returned `MissingContract` on the open-ended request. The
+paired readback exercised the existing guard with supplied source bytes.
+[Literal request](raw-data/agent-paired-readback-request.txt) ·
+[Paired readback transcript](raw-data/agent-paired-readback.jsonl)
 
 The JavaScript branch CLI applied a reviewed replacement recipe to the complete
 `discovery.mjs` source and produced both edits required by the abbreviation gate.

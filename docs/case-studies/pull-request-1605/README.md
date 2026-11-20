@@ -27,3 +27,13 @@ These are baseline observations for the cited commits.
 [Starting CI/CD run](https://github.com/link-assistant/formal-ai/actions/runs/44561254826) ·
 [Starting jobs response](raw-data/initial-ci-jobs.json) ·
 [Default-branch run](https://github.com/link-assistant/formal-ai/actions/runs/44374194864)
+
+The next hosted head, `f676c20f6fe3fbcd71334c33855268deeb620ac7`, ran 25
+workflows. Layered CI's default-branch policy test failed on the new gateway
+replay command, which was missing from its exact command list. The focused
+native check also failed while loading the JavaScript host because its sparse
+checkout omitted `experiments/js_dogfood/drive.mjs`, an existing transitive
+dependency. The checkout includes that subtree and the policy test pins the
+checkout, frozen dependencies, replay command, and native binary path.
+[Layered CI job](https://github.com/link-assistant/formal-ai/actions/runs/44774775512/job/136421751274#step:12:2853) ·
+[CI/CD pipeline](https://github.com/link-assistant/formal-ai/actions/runs/44774775673)

@@ -68,11 +68,13 @@ matched patterns. Rules can filter the event kind and either current endpoint.
 `@id`, `@source`, and `@target` refer to the event link. Delete uses the previous
 link. Updates and deletes also supply `@old-source` and `@old-target`.
 
-The initiating query produces cycle 0. Each next cycle selects matching rules
-from a single snapshot of active rules and previous-cycle events. This matching
-can be partitioned by event. The current host applies matches in deterministic
-event and rule order so overlapping writes have defined results. Actual CRUD
-events are scheduled by default. Set `FORMAL_AI_DYNAMIC_META_TRIGGERS=off` to
+The initiating query produces cycle 0. Each next cycle selects rules and plans
+their queries from a shared snapshot of the graph, active rules, and
+previous-cycle events. Planning can be partitioned by event. The host applies
+edits in event and rule order. Incompatible writes to the same link, competing
+new names or anonymous doublets, and edits that would leave missing references
+roll back the transaction. Actual CRUD events are scheduled by default.
+Set `FORMAL_AI_DYNAMIC_META_TRIGGERS=off` to
 disable cascade scheduling. A single SQLite write transaction commits the graph,
 rule state and receipt together. Excess work or a failed rule rolls back every
 cycle. The trace records the executed query, rule, and before/after doublets.
@@ -118,12 +120,18 @@ matches and replaces its leftmost occurrence. The model is computationally
 universal with unbounded resources. Actual execution returns after a terminal
 rule, no match, a step limit, or an output limit. Import for JavaScript and Python
 accepts the portable template and validates its rule table without evaluating
-source. The runtime reports byte offsets. A comparison reports agreement for
+source. The runtime reports byte offsets. To inspect one step, set `maxSteps`
+to `1`. When the halt reason is `step_limit`, pass the result's `output` as the
+next input to advance the same recipe. A comparison reports agreement for
 the supplied input.
 
 The dynamic runtime interprets rules. `Compile recipe example/normalize`
 builds and persists a failure-linked trie for static dispatch, and
 `Interpret recipe example/normalize` removes that trie while keeping the recipe.
+The compiled path handles the first four priorities with literal searches and
+uses a compiled literal prefilter to skip trie traversal when no lower-priority
+pattern can match. The trie preserves the leftmost occurrence of the highest
+priority match.
 A 64-invocation window with a minimum sample of 16 suggests compiling after at
 least eight uses or interpreting a compiled recipe with at most one use.
 The server recomputes the proposals after successful idle dreaming and stores
