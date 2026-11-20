@@ -1,0 +1,152 @@
+{
+  "witness": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+  "beforeSha256": "e08d3960fe47d0365a81a299b3bf3a59cc6afb851993fda312a4179f82cce2c8",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "totalNativeCases": 1189,
+  "carriedCases": 221,
+  "unsupportedCases": 968,
+  "nativeSourceManifestCount": 133,
+  "completeObjectComparison": true,
+  "onlyCargoFixtureHashesChanged": true,
+  "changes": [
+    {
+      "caseId": "rust/tests/unit/specification/meta_construction.rs::modes_round_trip_through_their_slugs",
+      "fixtureIndex": 7,
+      "beforeSha256": "bd74b9a63d0c4111623a92b6c594b4817f1de52af52c4ba460bc8b8dac28c1b9",
+      "afterSha256": "32ee0fb999d81aa30d6c1fe195ab40d25f4ad59598eedca237907b15e7381cce"
+    },
+    {
+      "caseId": "rust/tests/unit/specification/meta_self_improvement.rs::modes_round_trip_through_their_slugs",
+      "fixtureIndex": 3,
+      "beforeSha256": "bd74b9a63d0c4111623a92b6c594b4817f1de52af52c4ba460bc8b8dac28c1b9",
+      "afterSha256": "32ee0fb999d81aa30d6c1fe195ab40d25f4ad59598eedca237907b15e7381cce"
+    },
+    {
+      "caseId": "rust/tests/unit/specification/selection.rs::modes_round_trip_through_their_slugs",
+      "fixtureIndex": 7,
+      "beforeSha256": "bd74b9a63d0c4111623a92b6c594b4817f1de52af52c4ba460bc8b8dac28c1b9",
+      "afterSha256": "32ee0fb999d81aa30d6c1fe195ab40d25f4ad59598eedca237907b15e7381cce"
+    },
+    {
+      "caseId": "rust/tests/unit/specification/skill_ledger.rs::modes_round_trip_through_their_slugs",
+      "fixtureIndex": 8,
+      "beforeSha256": "bd74b9a63d0c4111623a92b6c594b4817f1de52af52c4ba460bc8b8dac28c1b9",
+      "afterSha256": "32ee0fb999d81aa30d6c1fe195ab40d25f4ad59598eedca237907b15e7381cce"
+    }
+  ],
+  "nativeExecutionObserved": false,
+  "fullIssueComplete": false,
+  "reviewCandidateSerializationSha256": "63f28fb4e9a1433d7a3b4910fc88099e7bfab79f635d72e03caa79830434714b",
+  "afterSha256": "0400d5b28de6935a20287deb569468c5abd40faed5bc998e584e4756cc7cdb09",
+  "complete": true,
+  "completeRefreshedValueComparison": true,
+  "serializedByteComparison": false,
+  "serializationLimit": "The independent candidate and official refresher serialize different reference graphs. Their entire deserialized values match exactly. Byte comparison failure is preserved, not presented as passing.",
+  "observedAt": "2026-11-19T21:44:20.042210+00:00",
+  "records": [
+    {
+      "name": "unicode-before",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 10.051,
+      "file": "unicode-before.log.gz",
+      "rawSha256": "ce375e7772b44283ab8011d1977ac8dd65c09ce9650e8ffe1cd55ca78dad5be1",
+      "archiveSha256": "a7ed095f2c429972d725edcae611c0f86da6c433f1218c35ec568cc51e42cd4a"
+    },
+    {
+      "name": "fixture-before",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 0.228,
+      "file": "fixture-before.log.gz",
+      "rawSha256": "4bf7685e481b26c51394b9766594d25a2c14dbfe8673d8162f3c98b2c792001c",
+      "archiveSha256": "413e12419facaced1fee3859af05d6bcd803bee1c64bbd12e18bf2b8e7fa7109"
+    },
+    {
+      "name": "complete-object-review",
+      "argv": [
+        "node",
+        "/tmp/issue-1580-research/review-native-witness-delta.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 9.16,
+      "file": "complete-object-review.log.gz",
+      "rawSha256": "983b43fc2cffacb0b9a9c21123696756d5ba36a0f9bd21fa5c2c6e1035808c45",
+      "archiveSha256": "29481a880fed47ffe537a307862cc25531dd14b977010591eea796a40f0bef1a"
+    },
+    {
+      "name": "guarded-refresh",
+      "argv": [
+        "node",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+        "--refresh-reviewed-baseline",
+        "--reviewed-reader-sha=861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+        "--previous-baseline-sha=e08d3960fe47d0365a81a299b3bf3a59cc6afb851993fda312a4179f82cce2c8"
+      ],
+      "exitCode": 0,
+      "seconds": 8.491,
+      "file": "guarded-refresh.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "complete-refreshed-values",
+      "argv": [
+        "node",
+        "/tmp/issue-1580-research/verify-refreshed-native-witness.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.139,
+      "file": "complete-refreshed-values.log.gz",
+      "rawSha256": "ccace099371a60f30f03537850389b86bb494cb47006a2a92d4f2567d59d80b5",
+      "archiveSha256": "1dc202fc47f697c6c522520ca943a42e1dbb25bee1a8fb98f9070d3fad941b6c"
+    },
+    {
+      "name": "unicode-after",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.188,
+      "file": "unicode-after.log.gz",
+      "rawSha256": "63f3c3b749a4ce66c93aeba9b1cac2f2621c504ab50f304865bdab57222c7e41",
+      "archiveSha256": "6bff343294bf93434a105dd6a720df5ac234605817951ec7ee377c73f3084107"
+    },
+    {
+      "name": "fixture-after",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.304,
+      "file": "fixture-after.log.gz",
+      "rawSha256": "260c2af8283ff27b6c6ff6f25389df4ecb1e1389e13b8fa330b2782621878d5f",
+      "archiveSha256": "d475f980d8c3f4b69cf60894e81f89942314f3022224ca892d57afc9ceeb1367"
+    }
+  ],
+  "previousArchiveSha256": "b48ccd847a99a61e28170ebc07e9948392c1855029d1d7f2acd0e0a23de0e04f"
+}

@@ -841,3 +841,108 @@ The broader issue is unfinished and the pull request remains draft and unmerged.
 - [x] Complete 65 focused JavaScript cases, seven affected gates, Rust formatting, ShellCheck, generated parity and whitespace. Verify every final source and log hash; no local Rust build.
 - [ ] Commit atomic source steps and complete a fresh single-push gate. Next expected 365 Rust and four HTTP cases remain unobserved until exact-head hosted execution. No local Rust build, deadline increase or warning suppression.
 - [ ] Continue every remaining frozen requirement, complete template applicability and full PR review. Keep PR #1581 draft and unmerged; independent reasoning remains 0/20.
+
+
+### 54. Current-head native interface investigation (in progress)
+
+The complete issue and all available feedback were reread from the authenticated
+`native-remote-refresh` snapshot; the issue still requires all eight template
+comparisons and the entire original workflow inventory. No scope was removed.
+Remote head `09a855c2594e99a06e904d6d3b3269abc79a35f6` completed 23 workflows:
+21 succeeded, Layered CI and CI/CD Pipeline failed. The saved
+`evidence/ci/native-interface-09a855c2/analysis.json` verifies all 108 raw and
+compressed payload hashes across 54 records and maps every observed failure.
+These are observations of that remote head, not of the subsequent local commits.
+
+- [x] Preserve both failed workflow logs and targeted job logs. The native job
+  reports 178 individual passing tests and seven failed tests; its completed
+  target summaries total 119 passes and five failures. The remaining 59 reported
+  passes and two failures are in the 177-test reasoning target canceled at the
+  job deadline. A canceled target is unfinished, not a passing target.
+- [x] Fix canonical IPv4 attachment URL acceptance and invalid octet rejection
+  across Rust, the JavaScript source and the worker, commit `594054c21`.
+  The focused URL regression fails before (10 passed, 4 failed) and passes
+  afterward (14 passed). Official translation regeneration completed with the
+  failed 256 MiB attempt and successful 512 MiB retry both preserved; verification
+  passed. Native loopback fetch verification remains pending on CI.
+- [x] Update stale native transport/chat retention, trace-opt-in TUI and raw
+  Responses Hive fixtures, commit `405ba38ab`. Keep actual physical Git delivery,
+  failed verifier receipts and the original success/no-leak assertions. Focused
+  JavaScript contracts passed 9 and 11 tests. Those results are fixture evidence;
+  the corresponding native executions have not run at these local commits.
+- [x] Shorten the native runner to 51 lines and overlap the isolated benchmark,
+  interface and remaining target groups while retaining every group's status,
+  commit `901854e0c`. The fake-cargo policy regression failed before (four
+  failures) and passed afterward (52 tests). Shell syntax and ShellCheck passed.
+  No job deadline or assertion was relaxed. Hosted critical-path fit is pending.
+- [x] Identify the startup stderr cause: `main.rs` enables global verbosity by
+  default and passed it directly to the structured terminal logger. Commit
+  `d72073e87` preserves chat verbosity and file persistence while requiring
+  explicit wrapper `--verbose` to mirror routine diagnostics. A client flag after
+  the existing parser-generated delimiter does not enable wrapper logging. Keep
+  the original empty-stderr assertion, add actual bytes to its error, and add a
+  native two-scope regression. Rustfmt passed; native execution is pending.
+- [x] Add default-off trace records for actual synthesis ranking, atom/candidate
+  counts and rejected IR type/backend/lowering stages. This is diagnostics only;
+  it creates no candidates and does not repair or satisfy the named-gap failure.
+- [x] Draft a bounded closed-program sequence base case from actual ranked
+  fragment signatures and retain actual content IDs for rejected IR. Missing
+  fragments, type errors, absent backends and lowering gaps remain failed
+  attempts; an empty frontier still creates no attempt. Successful non-Python
+  closure behavior is preserved. The source-derived empty-frontier diagnosis
+  and the unchanged original linked-list contract still need hosted execution.
+- [x] Add seven native regressions and replay both complete existing composition
+  and search modules (32 tests) through an isolated Cargo target. A missing-input
+  admission control fails before repair; the complete 53-case policy file passes
+  afterward. Native tests have not executed at this batch's source identities.
+- [x] Compare every governed V8 value and authorize exactly four changed Cargo
+  manifest fixture hashes. The official guarded writer preserves all other
+  values: 1,189 native cases, 221 carried, 968 unsupported, 133 source entries.
+  Whole-object equality, 34 identifier and two fixture-integrity tests pass.
+- [x] Restore original size boundaries without raised limits: split the native
+  verbosity regression, compact equivalent domain-label validation, and lower
+  the URL parser baseline and core ceiling by one. Thirty URL, eight runtime
+  inventory and eight focused-map tests pass; all seven affected gates pass.
+  Official inventory regeneration changes only the main.rs source digest.
+- [x] Complete all 139 gate entries: the full run records 86 passes, one
+  abbreviation failure and 52 explicit exclusions. Preserve that failure, spell
+  the added rejection binding and archived documentation-log name in full,
+  then pass all five affected gates. All 87 executable gates now have passing
+  results; no ceiling or assertion is raised. Both 87-log inventories verify.
+- [ ] Freshly inspect all feedback, current main ancestry, the branch queues and
+  the complete PR diff; fix every actionable latest-head failure in one batch,
+  then push only the prepared branch. No push occurred during this investigation.
+- [ ] Obtain passing CI for the actual pushed head and complete every wider
+  acceptance criterion still listed above. Do not mark the draft ready or merge.
+
+The strict original native replay union remains 27/53 until exact original
+contracts are crosschecked against successful complete target logs. Partial
+passes and JavaScript fixtures do not increase it. Independent accepted
+authorship remains 0/20. All broader template, live Hive, language, source-provenance
+and original-workflow criteria remain open where prior sections say so. The
+native repair remains unverified on hosted CI; the overall issue is unfinished.
+
+Current focused receipts are retained in
+`evidence/checks/native-interface-failures/final-focused/` and
+`repair-validation/`, including the failed-before admission control and the
+initial exact-baseline ratchet failures. The final focused worker completes
+all twelve commands successfully, including Rust 2024 formatting, ShellCheck,
+shell parsing and whitespace. No local Rust compilation or execution occurs.
+The complete 139-entry inventory and focused artifact-name repair are reviewed;
+all raw/compressed hashes across both 87-log inventories verify. Source commits
+`a9025fa99` and `26e4f6f4a` preserve the boundary and synthesis fixes
+separately. No push has occurred in this round. The full-run raw failure remains
+in its receipt rather than being overwritten by the subsequent passing check.
+
+Fresh issue/conversation/inline/review counts remain 1/11/0/0. GitHub refuses
+`gh pr diff` with HTTP 406 above 300 changed files and caps its file API at
+3,000 entries. The exact remote-base/head local diff contains 18,789 files;
+all 3,000 API paths are present in that diff. This establishes source identity,
+not complete review: 15,789 paths are absent from the capped API response and
+the 283,890-line complete diff has not been entirely read.
+
+The final publication-file pass completes all seven selected gates, including
+fragment/reconstruction checks after the changelog was staged. Both staged and
+unstaged whitespace checks pass. Its exact command and hashes are retained in
+`evidence/checks/native-interface-failures/publication-files/`. This is local
+validation only; publication and current-head hosted verification remain open.

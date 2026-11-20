@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=typed composition regressions execute",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "exitCode": 1,
+  "rawSha256": "6d9b57cd7aaff73deab3eac0541d6df6c0516a6d4d91ec4f9fde1e8280e78b45",
+  "archiveSha256": "d45906d00e6c72797359a1d53378de4553a223b0590456e0fe864b0de13c395d"
+}

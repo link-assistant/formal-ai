@@ -1,0 +1,293 @@
+{
+  "schema": "issue-1580-native-interface-ci-analysis-v1",
+  "head": "09a855c2594e99a06e904d6d3b3269abc79a35f6",
+  "workflowObservation": {
+    "complete": true,
+    "head": "09a855c2594e99a06e904d6d3b3269abc79a35f6",
+    "workflowCount": 23,
+    "success": 21,
+    "failed": [
+      {
+        "id": 44619126037,
+        "name": "Layered CI",
+        "conclusion": "failure",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44619126037"
+      },
+      {
+        "id": 44619126583,
+        "name": "CI/CD Pipeline",
+        "conclusion": "failure",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44619126583"
+      }
+    ],
+    "fullIssueComplete": false,
+    "independentAuthorshipCredit": 0
+  },
+  "custody": {
+    "records": 54,
+    "verifiedPayloads": 108,
+    "allRawAndArchiveHashesVerified": true,
+    "files": [
+      "observation-000.stdout.gz",
+      "observation-000.stderr.gz",
+      "observation-001.stdout.gz",
+      "observation-001.stderr.gz",
+      "observation-002.stdout.gz",
+      "observation-002.stderr.gz",
+      "observation-003.stdout.gz",
+      "observation-003.stderr.gz",
+      "observation-004.stdout.gz",
+      "observation-004.stderr.gz",
+      "observation-005.stdout.gz",
+      "observation-005.stderr.gz",
+      "observation-006.stdout.gz",
+      "observation-006.stderr.gz",
+      "observation-007.stdout.gz",
+      "observation-007.stderr.gz",
+      "observation-008.stdout.gz",
+      "observation-008.stderr.gz",
+      "observation-009.stdout.gz",
+      "observation-009.stderr.gz",
+      "observation-010.stdout.gz",
+      "observation-010.stderr.gz",
+      "observation-011.stdout.gz",
+      "observation-011.stderr.gz",
+      "observation-012.stdout.gz",
+      "observation-012.stderr.gz",
+      "observation-013.stdout.gz",
+      "observation-013.stderr.gz",
+      "observation-014.stdout.gz",
+      "observation-014.stderr.gz",
+      "failed-run-44619126037.stdout.gz",
+      "failed-run-44619126037.stderr.gz",
+      "observation-015.stdout.gz",
+      "observation-015.stderr.gz",
+      "observation-016.stdout.gz",
+      "observation-016.stderr.gz",
+      "observation-017.stdout.gz",
+      "observation-017.stderr.gz",
+      "observation-018.stdout.gz",
+      "observation-018.stderr.gz",
+      "observation-019.stdout.gz",
+      "observation-019.stderr.gz",
+      "observation-020.stdout.gz",
+      "observation-020.stderr.gz",
+      "observation-021.stdout.gz",
+      "observation-021.stderr.gz",
+      "observation-022.stdout.gz",
+      "observation-022.stderr.gz",
+      "observation-023.stdout.gz",
+      "observation-023.stderr.gz",
+      "observation-024.stdout.gz",
+      "observation-024.stderr.gz",
+      "observation-025.stdout.gz",
+      "observation-025.stderr.gz",
+      "observation-026.stdout.gz",
+      "observation-026.stderr.gz",
+      "observation-027.stdout.gz",
+      "observation-027.stderr.gz",
+      "observation-028.stdout.gz",
+      "observation-028.stderr.gz",
+      "observation-029.stdout.gz",
+      "observation-029.stderr.gz",
+      "observation-030.stdout.gz",
+      "observation-030.stderr.gz",
+      "observation-031.stdout.gz",
+      "observation-031.stderr.gz",
+      "observation-032.stdout.gz",
+      "observation-032.stderr.gz",
+      "observation-033.stdout.gz",
+      "observation-033.stderr.gz",
+      "observation-034.stdout.gz",
+      "observation-034.stderr.gz",
+      "observation-035.stdout.gz",
+      "observation-035.stderr.gz",
+      "observation-036.stdout.gz",
+      "observation-036.stderr.gz",
+      "observation-037.stdout.gz",
+      "observation-037.stderr.gz",
+      "observation-038.stdout.gz",
+      "observation-038.stderr.gz",
+      "observation-039.stdout.gz",
+      "observation-039.stderr.gz",
+      "failed-run-44619126583.stdout.gz",
+      "failed-run-44619126583.stderr.gz",
+      "jobs-44619126037.stdout.gz",
+      "jobs-44619126037.stderr.gz",
+      "job-135895935025.stdout.gz",
+      "job-135895935025.stderr.gz",
+      "job-135895935061.stdout.gz",
+      "job-135895935061.stderr.gz",
+      "job-135900237218.stdout.gz",
+      "job-135900237218.stderr.gz",
+      "jobs-44619126583.stdout.gz",
+      "jobs-44619126583.stderr.gz",
+      "job-135895730792.stdout.gz",
+      "job-135895730792.stderr.gz",
+      "job-135896026664.stdout.gz",
+      "job-135896026664.stderr.gz",
+      "job-135896028209.stdout.gz",
+      "job-135896028209.stderr.gz",
+      "job-135896029758.stdout.gz",
+      "job-135896029758.stderr.gz",
+      "job-135897277357.stdout.gz",
+      "job-135897277357.stderr.gz",
+      "job-135907931195.stdout.gz",
+      "job-135907931195.stderr.gz",
+      "pull-request-checks.stdout.gz",
+      "pull-request-checks.stderr.gz"
+    ]
+  },
+  "nativeJob": {
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44619126583/job/135896026664",
+    "log": "job-135896026664.stdout.gz",
+    "lineCount": 2074,
+    "summaries": [
+      {
+        "line": 1692,
+        "text": "2026-11-19T21:35:48.5262827Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 16.14s"
+      },
+      {
+        "line": 1707,
+        "text": "2026-11-19T21:35:50.0282777Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.49s"
+      },
+      {
+        "line": 1715,
+        "text": "2026-11-19T21:36:00.2926866Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.26s"
+      },
+      {
+        "line": 1743,
+        "text": "2026-11-19T21:36:01.4755474Z test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.18s"
+      },
+      {
+        "line": 1830,
+        "text": "2026-11-19T21:41:20.9702186Z thread 'handler_migration::unsupported_write_program_fails_with_a_named_skill_gap' (22066) panicked at tests/integration/../unit/seed/issue_699_handler_migration.rs:231:13:"
+      },
+      {
+        "line": 1836,
+        "text": "2026-11-19T21:41:20.9706799Z thread 'http_server::server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only' (22187) panicked at tests/integration/http_server.rs:497:13:"
+      },
+      {
+        "line": 1843,
+        "text": "2026-11-19T21:41:20.9709822Z thread 'issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui' (26382) panicked at tests/integration/issue_819_tui_isolation.rs:91:5:"
+      },
+      {
+        "line": 1848,
+        "text": "2026-11-19T21:41:20.9713532Z thread 'with_formal_ai::issue_1582::native_fetch_defaults_to_online_and_honors_each_explicit_deny' (26690) panicked at tests/integration/with_formal_ai/issue_1582.rs:277:9:"
+      },
+      {
+        "line": 1884,
+        "text": "2026-11-19T21:41:20.9758851Z thread 'with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down' (26889) panicked at tests/integration/with_formal_ai.rs:580:5:"
+      },
+      {
+        "line": 1895,
+        "text": "2026-11-19T21:41:20.9764213Z test result: FAILED. 72 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 319.49s"
+      },
+      {
+        "line": 1910,
+        "text": "2026-11-19T21:41:38.3846786Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 17.40s"
+      },
+      {
+        "line": 1917,
+        "text": "2026-11-19T21:41:38.5911812Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s"
+      },
+      {
+        "line": 1927,
+        "text": "2026-11-19T21:41:39.0797477Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s"
+      },
+      {
+        "line": 1931,
+        "text": "2026-11-19T21:41:39.0959342Z running 177 tests"
+      },
+      {
+        "line": 1993,
+        "text": "2026-11-19T21:49:19.4306406Z ##[error]The operation was canceled."
+      }
+    ],
+    "individuallyReportedPasses": 178,
+    "individuallyReportedFailures": [
+      {
+        "line": 1771,
+        "text": "2026-11-19T21:36:13.7330995Z test handler_migration::unsupported_write_program_fails_with_a_named_skill_gap ... FAILED"
+      },
+      {
+        "line": 1774,
+        "text": "2026-11-19T21:36:16.1758023Z test http_server::server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only ... FAILED"
+      },
+      {
+        "line": 1778,
+        "text": "2026-11-19T21:40:55.8219468Z test issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui ... FAILED"
+      },
+      {
+        "line": 1802,
+        "text": "2026-11-19T21:41:12.6114271Z test with_formal_ai::issue_1582::native_fetch_defaults_to_online_and_honors_each_explicit_deny ... FAILED"
+      },
+      {
+        "line": 1808,
+        "text": "2026-11-19T21:41:14.4425087Z test with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down ... FAILED"
+      },
+      {
+        "line": 1975,
+        "text": "2026-11-19T21:43:46.6692240Z test issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified ... FAILED"
+      },
+      {
+        "line": 1990,
+        "text": "2026-11-19T21:48:47.7082689Z test issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder ... FAILED"
+      }
+    ],
+    "partialPassesDoNotCompleteCanceledTargets": true,
+    "originalFailureReplayUnionNotYetUpdated": true
+  },
+  "failureInventory": [
+    {
+      "failure": "Unicode-identifier witness and fixture-integrity witness use stale Cargo input identity",
+      "evidence": "failed-run-44619126037.stdout.gz:9665-9713,9772-9780",
+      "localChange": "f5228448097d900ec97c5120864ced1c0c3436e2; further native changes require another official whole-value refresh",
+      "hostedReplay": "pending"
+    },
+    {
+      "failure": "native runner exceeds shell line ceiling: 317 > 300",
+      "evidence": "job-135895730792.stdout.gz:344-346",
+      "localChange": "901854e0c962ca45bb7ae6e5f2d670ef58f80dbb; 51-line runner, focused policy 52 passed; isolated group overlap and failure collection tested",
+      "hostedReplay": "pending"
+    },
+    {
+      "failure": "named skill gap contains no actual program_ir attempt",
+      "evidence": "job-135896026664.stdout.gz:1830-1833",
+      "localChange": "default-off trace draft only; zero-candidate hypothesis unverified by native execution",
+      "status": "open"
+    },
+    {
+      "failure": "health-only dialog fixture expects full conversation persistence",
+      "evidence": "job-135896026664.stdout.gz:1836-1840",
+      "localChange": "405ba38abbd4de06fa7a99d9099b37af5a18bd6c; separate exact transport and opt-in chat contracts; JavaScript 9 passed",
+      "hostedReplay": "pending"
+    },
+    {
+      "failure": "TUI fixture expects trace marker without opting into tracing",
+      "evidence": "job-135896026664.stdout.gz:1843-1845",
+      "localChange": "405ba38abbd4de06fa7a99d9099b37af5a18bd6c; fixture opts into trace capture and retains no-leak assertions",
+      "hostedReplay": "pending"
+    },
+    {
+      "failure": "native loopback URL rejected by numeric-host guard",
+      "evidence": "job-135896026664.stdout.gz:1848-1852",
+      "localChange": "594054c21c3b4dc17c915affc143bcf691702954; canonical IPv4 validation across three paths, 14 JavaScript tests passed",
+      "hostedReplay": "pending"
+    },
+    {
+      "failure": "auto-start wrapper writes routine diagnostics to stderr",
+      "evidence": "job-135896026664.stdout.gz:1884-1886",
+      "localChange": "d72073e877df1864d1547c9a38eb86ecb16608d4; preserve default chat verbosity, require explicit wrapper verbosity for terminal mirroring, exclude client flags after parser-generated delimiter; original strict silence assertion retained; added two-scope native regression",
+      "status": "source fix committed locally; hosted native verification pending"
+    },
+    {
+      "failure": "Scala and Codex native Hive fixtures fail; interface sequential scheduling consumes job budget before remaining stages",
+      "evidence": "job-135896026664.stdout.gz:1975,1990,1993",
+      "localChange": "405ba38abbd4de06fa7a99d9099b37af5a18bd6c updates actual physical raw-Responses fixtures (11 JavaScript checks passed); 901854e0c overlaps isolated groups and retains status; no deadline increase",
+      "hostedReplay": "pending; lib, HTTP and catalog replay stages were skipped at this head"
+    }
+  ],
+  "acceptedIndependentAuthorship": 0,
+  "fullIssueComplete": false
+}
