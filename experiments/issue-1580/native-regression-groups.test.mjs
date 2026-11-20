@@ -1,31 +1,46 @@
 // Exercise the real runner with a finite Cargo stub; no Rust build is performed.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, readFileSync, writeFileSync, rmSync} from 'node:fs';
-import {join, resolve} from 'node:path';
+import {mkdtempSync, mkdirSync, existsSync, readFileSync, writeFileSync, rmSync} from 'node:fs';
+import {join, resolve, dirname} from 'node:path';
 import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
 import YAML from 'yaml';
+import {admission} from '../../scripts/ci-pull-request-admission.mjs';
 const groups = {
   core: ['calendar_currency', 'openai_forced_functions', 'meta_executor_parity', 'synthesis_contracts',
     'cnl_output', 'cnl_parity', 'unknown_reasoning', 'data_files', 'scheduling_contracts',
     'operational_contracts', 'workflow_contracts'],
   coding: ['coding_contracts'], reasoning: ['reasoning_contracts'], hive: ['reasoning_contracts'],
   benchmarks: ['reasoning_contracts'], interfaces: ['interface_contracts'],
+  'hive-1': ['reasoning_contracts'], 'hive-2': ['reasoning_contracts'], 'hive-3': ['reasoning_contracts'],
 };
-function observe(args, status = 0) {
+const hiveNames = [
+  'extended::a_workflow_requirement_adds_the_workflow_in_every_language',
+  'extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder',
+  'extended::the_named_branch_is_pushed_to_in_every_language',
+  'extended::the_named_branch_is_pushed_to_in_russian',
+  'extended::a_future_contract', 'repository_workflows_include_runtime_setup_and_output_verification',
+  'program_output_constraints_do_not_consume_filenames_or_change_case',
+].map(name => 'issue_1133_hive_mind_three_runs::' + name);
+function observe(args, status = 0, {listStatus = 0, names = hiveNames} = {}) {
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-native-group-'));
   try {
     writeFileSync(join(directory, 'cargo'), `#!/usr/bin/env node
 import fs from 'node:fs';
 fs.appendFileSync(process.env.NATIVE_GROUP_CALLS, JSON.stringify(process.argv.slice(2)) + '\\n');
+if (process.argv.includes('--list')) {
+  process.stdout.write(JSON.parse(process.env.NATIVE_GROUP_NAMES).map(name => name + ': test\\n').join(''));
+  process.exit(Number(process.env.NATIVE_GROUP_LIST_STATUS));
+}
 process.exit(Number(process.env.NATIVE_GROUP_STATUS));
 `, {mode: 0o755});
     const calls = join(directory, 'calls.jsonl');
     const result = spawnSync('bash', [resolve('scripts/ci-native-regressions.sh'), ...args], {
       cwd: directory, encoding: 'utf8', timeout: 5000, maxBuffer: 65536,
       env: {...process.env, PATH: directory + ':' + process.env.PATH, RUNNER_TEMP: directory,
-        NATIVE_GROUP_CALLS: calls, NATIVE_GROUP_STATUS: String(status)},
+        NATIVE_GROUP_CALLS: calls, NATIVE_GROUP_STATUS: String(status),
+        NATIVE_GROUP_NAMES: JSON.stringify(names), NATIVE_GROUP_LIST_STATUS: String(listStatus)},
     });
     assert.equal(result.error, undefined, String(result.error));
     let invocations = [];
@@ -34,7 +49,7 @@ process.exit(Number(process.env.NATIVE_GROUP_STATUS));
     return {result, invocations};
   } finally { rmSync(directory, {recursive: true, force: true}); }
 }
-for (const [group, targets] of Object.entries(groups)) {
+for (const [group, targets] of Object.entries(groups).filter(([name]) => !name.startsWith('hive-'))) {
   test('native group ' + group + ' selects only its complete contract family', {timeout: 15000}, () => {
     const {result, invocations} = observe([group]);
     assert.equal(result.status, 0, result.stderr);
@@ -66,7 +81,7 @@ test('native workflow gives every expensive family its own bounded independent j
   const workflow = YAML.parse(readFileSync('.github/workflows/native-type-check.yml', 'utf8'));
   const matrix = workflow.jobs['contract-family'];
   assert(matrix);
-  assert.deepEqual(matrix.strategy.matrix.group, Object.keys(groups).filter(group => group !== 'core'));
+  assert.deepEqual(matrix.strategy.matrix.group, Object.keys(groups).filter(group => !['core', 'hive'].includes(group)));
   assert.equal(matrix.strategy['fail-fast'], false);
   assert.equal(matrix.strategy['max-parallel'], 2);
   assert.equal(matrix.needs, undefined, 'a failed core job must not suppress independent families');
@@ -85,4 +100,95 @@ test('native workflow gives every expensive family its own bounded independent j
   assert.equal(core.steps.find(step => step.name === 'Verify isolated native behavior regressions').run,
     'bash scripts/ci-native-regressions.sh core');
   assert.equal(new Set(Object.values(groups).flat()).size, 14, 'all original Cargo targets remain covered');
+});
+
+function executedShard(observed) {
+  assert.equal(observed.result.status, 0, observed.result.stderr);
+  assert.equal(observed.invocations.length, 2, 'one exact listing and one test execution');
+  const [list, run] = observed.invocations;
+  assert.deepEqual(list.slice(-4), ['--', '--list', '--format', 'terse']);
+  assert.equal(list[list.indexOf('--test') + 2], 'issue_1133_hive_mind_three_runs::');
+  assert.deepEqual(run.slice(0, 7), ['test', '--manifest-path', 'rust/Cargo.toml', '--locked',
+    '--no-fail-fast', '--test', 'reasoning_contracts']);
+  assert.deepEqual(run.slice(7, 9), ['--', '--exact']);
+  assert.deepEqual(run.slice(-2), ['--test-threads=1', '--nocapture']);
+  const names = run.slice(9, -2);
+  assert(names.length > 0, 'an empty shard must never run the entire target');
+  return names;
+}
+test('the three native Hive shards cover the live listing exactly once without renaming cases', {timeout: 15000}, () => {
+  const actual = [1, 2, 3].flatMap(index => executedShard(observe(['hive-' + index])));
+  assert.deepEqual(actual.toSorted(), hiveNames.toSorted());
+  assert.equal(new Set(actual).size, actual.length);
+});
+test('Hive shard selection is deterministic under a reordered native listing', {timeout: 15000}, () => {
+  for (const index of [1, 2, 3]) {
+    assert.deepEqual(executedShard(observe(['hive-' + index])),
+      executedShard(observe(['hive-' + index], 0, {names: [...hiveNames].reverse()})));
+  }
+});
+for (const index of [1, 2, 3]) {
+  test(`Hive shard ${index} preserves listing and execution failures`, {timeout: 15000}, () => {
+    const listing = observe(['hive-' + index], 0, {listStatus: 19});
+    assert.equal(listing.result.status, 19, listing.result.stderr);
+    assert.equal(listing.invocations.length, 1, 'a failed listing cannot start tests');
+    const execution = observe(['hive-' + index], 17);
+    assert.equal(execution.result.status, 17, execution.result.stderr);
+    assert.equal(execution.invocations.length, 2);
+  });
+}
+for (const names of [[], [hiveNames[0], hiveNames[0], hiveNames[1]], ['foreign::case'], [hiveNames[0]]]) {
+  test('Hive refuses empty, duplicate, foreign or insufficient native inventories: ' + JSON.stringify(names),
+    {timeout: 15000}, () => {
+      const observed = observe(['hive-3'], 0, {names});
+      assert.notEqual(observed.result.status, 0, observed.result.stderr);
+      assert.equal(observed.invocations.length, 1);
+    });
+}
+
+test('native Hive duration weights reproduce completed hosted observations', {timeout: 15000}, () => {
+  const observed = spawnSync('python3', ['experiments/issue-1580/derive-native-hive-durations.py', '--check'],
+    {encoding: 'utf8', timeout: 10000, maxBuffer: 65536});
+  assert.equal(observed.status, 0, observed.stderr);
+});
+
+test('the native lane admits changes to the complete Hive planner input closure', () => {
+  for (const path of ['scripts/ci-native-hive-durations.lino', 'scripts/plan-test-shards.mjs',
+    'scripts/lib/ci-speed-durations.mjs', 'scripts/lib/ci-speed-shards.mjs']) {
+    assert.equal(admission([path])['native-type-check'], true, path);
+  }
+});
+
+test('the real JavaScript sparse checkout retains only the Hive weight evidence it consumes', {timeout: 15000}, () => {
+  const workflow = YAML.parse(readFileSync('.github/workflows/layered-ci.yml', 'utf8'));
+  const checkouts = Object.values(workflow.jobs).flatMap(job => job.steps ?? [])
+    .filter(step => step.with?.['sparse-checkout']?.includes('!/experiments/*/evidence/**/*.gz'));
+  assert.equal(checkouts.length, 1);
+  const directory = mkdtempSync(join(tmpdir(), 'formal-ai-hive-checkout-'));
+  const evidence = 'experiments/issue-1580/evidence/ci/native-families-7fce5c19/job-136011692528.stdout.gz';
+  const unrelated = 'experiments/issue-1580/evidence/ci/unrelated-historical.log.gz';
+  const run = (command, args) => {
+    const result = spawnSync(command, args, {cwd: directory, encoding: 'utf8', timeout: 5000,
+      maxBuffer: 65536, env: {...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1'}});
+    assert.equal(result.error, undefined, String(result.error));
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+  };
+  try {
+    run('git', ['init', '--quiet']);
+    for (const path of [evidence, 'scripts/ci-native-hive-durations.lino',
+      'experiments/issue-1580/derive-native-hive-durations.py']) {
+      mkdirSync(dirname(join(directory, path)), {recursive: true});
+      writeFileSync(join(directory, path), readFileSync(path));
+    }
+    writeFileSync(join(directory, unrelated), 'excluded archive');
+    run('git', ['add', '.']);
+    run('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+      'commit', '--quiet', '-m', 'finite checkout fixture']);
+    run('git', ['config', 'core.sparseCheckout', 'true']);
+    writeFileSync(join(directory, '.git/info/sparse-checkout'), checkouts[0].with['sparse-checkout']);
+    run('git', ['read-tree', '-mu', 'HEAD']);
+    assert(existsSync(join(directory, evidence)), 'the real weight derivation input must be checked out');
+    assert(!existsSync(join(directory, unrelated)), 'historical archives stay excluded');
+    run('python3', ['experiments/issue-1580/derive-native-hive-durations.py', '--check']);
+  } finally { rmSync(directory, {recursive: true, force: true}); }
 });

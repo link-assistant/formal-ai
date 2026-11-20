@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "gh",
+    "api",
+    "repos/rust-lang/rust/contents/library/test/src/cli.rs?ref=1.100.0"
+  ],
+  "exitCode": 0,
+  "sourceUrl": "https://github.com/rust-lang/rust/blob/1.100.0/library/test/src/cli.rs",
+  "blobSha": "70462425257a37069fc2fdabf730416d3bae8ef5",
+  "file": "rust-libtest-cli.rs.gz",
+  "rawSha256": "1adf8868847dcd43980c57fc5f8943a64824f1c258b37cd927893a47ec575334",
+  "archiveSha256": "d4ef86e371c101ff37943c44d1ec229ff3ae53d32de08e752cf7ff4d5b347445"
+}

@@ -501,15 +501,47 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
             let mut dialog_files = Vec::new();
             for file in files {
                 let content = std::fs::read_to_string(&file).unwrap();
-                let record = formal_ai::dialog_log::structured_log::decode_dialog(content.trim())
-                    .expect("typed dialog record");
-                if record["path"] == "/health" {
-                    health_traces += 1;
-                    assert!(!file.to_string_lossy().ends_with(".conversation.lino"));
-                    assert!(!content.contains(REQUEST_MARKER));
-                } else {
+                let records = content
+                    .lines()
+                    .map(|line| {
+                        formal_ai::dialog_log::structured_log::decode_dialog(line)
+                            .expect("typed dialog record")
+                    })
+                    .collect::<Vec<_>>();
+                assert!(!records.is_empty(), "capture file must contain records");
+                if file.to_string_lossy().ends_with(".conversation.lino") {
+                    for record in records {
+                        let conversation: formal_ai::dialog_conversation::DialogConversationLog =
+                            serde_json::from_value(record).expect("conversation record");
+                        assert!(!conversation.messages.is_empty());
+                    }
                     assert!(content.contains(REQUEST_MARKER));
                     dialog_files.push(file);
+                } else {
+                    let exchanges = records
+                        .into_iter()
+                        .map(|record| {
+                            serde_json::from_value::<formal_ai::dialog_log::DialogExchangeLog>(
+                                record,
+                            )
+                            .expect("transport record")
+                        })
+                        .collect::<Vec<_>>();
+                    if exchanges[0].exchange.path == "/health" {
+                        health_traces += 1;
+                        // Startup and explicit health probes append to the same file.
+                        assert!(exchanges.len() >= 2);
+                        assert!(exchanges.iter().all(|row| row.exchange.path == "/health"));
+                        assert!(!content.contains(REQUEST_MARKER));
+                    } else {
+                        assert!(
+                            exchanges
+                                .iter()
+                                .all(|row| row.exchange.path == "/v1/chat/completions")
+                        );
+                        assert!(content.contains(REQUEST_MARKER));
+                        dialog_files.push(file);
+                    }
                 }
             }
             assert_eq!(health_traces, 1);
