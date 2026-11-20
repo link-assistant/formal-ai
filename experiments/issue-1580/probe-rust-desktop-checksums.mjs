@@ -24,7 +24,7 @@ function executable(name){
 }
 export function observeRustDesktopChecksums({candidate=false}={}){
   const observations=[];
-  for(const branch of ['sha256sum','shasum'])for(const staleFragment of [false,true]){
+  for(const branch of ['sha256sum','shasum'])for(const staleFragment of [false,true])for(const currentFragment of [false,true]){
     const temporary=mkdtempSync(join(tmpdir(),'issue-1580-rust-desktop-checksums-'));
     try{
       const bin=join(temporary,'bin');mkdirSync(bin);
@@ -33,6 +33,10 @@ export function observeRustDesktopChecksums({candidate=false}={}){
       const assets={'app.zip':Buffer.from([0,1,2,3,255]),'second asset.exe':Buffer.from('finite second asset\n')};
       for(const [name,bytes]of Object.entries(assets))writeFileSync(join(directory,name),bytes);
       if(staleFragment)writeFileSync(join(directory,'SHA256SUMS-previous.partial'),'previous checksum fragment\n');
+      const manifestName='SHA256SUMS-fixture.partial';
+      // A reused output exists before the pipeline forks. With a new output,
+      // find may enumerate before or after the shell creates the destination.
+      if(currentFragment)writeFileSync(join(directory,manifestName),'previous current-target fragment\n');
       let command=step.run;
       if(candidate){
         assert.equal(command.split('find . -type f ').length,3);
@@ -43,7 +47,6 @@ export function observeRustDesktopChecksums({candidate=false}={}){
       const result=spawnSync(executable('bash'),['--noprofile','--norc','-e','-o','pipefail','-c',command],
         {cwd:temporary,env:environment,encoding:'utf8',maxBuffer:131072});
       assert.equal(result.error,undefined,String(result.error));
-      const manifestName='SHA256SUMS-fixture.partial';
       const manifestPath=join(directory,manifestName);
       const manifest=existsSync(manifestPath)?readFileSync(manifestPath,'utf8'):'';
       const entries=manifest.trim().split('\n').filter(Boolean).map(line=>{
@@ -51,7 +54,7 @@ export function observeRustDesktopChecksums({candidate=false}={}){
         const file=join(directory,match[2]);
         return {name:match[2],digest:match[1],matchesCurrentBytes:existsSync(file)&&sha256(readFileSync(file))===match[1]};
       });
-      observations.push({branch,staleFragment,exitCode:result.status,stderr:result.stderr,manifestName,manifest,entries,
+      observations.push({branch,staleFragment,currentFragment,exitCode:result.status,stderr:result.stderr,manifestName,manifest,entries,
         expectedAssetDigests:Object.fromEntries(Object.entries(assets).map(([name,bytes])=>[name,sha256(bytes)]))});
     }finally{rmSync(temporary,{recursive:true,force:true});}
   }
