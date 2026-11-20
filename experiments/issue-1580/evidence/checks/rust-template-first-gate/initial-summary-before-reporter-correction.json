@@ -1,0 +1,153 @@
+{
+  "recordedAt": "2026-11-20T01:28:43.490301+00:00",
+  "pinnedBlobIdentitiesVerified": 373,
+  "executedUnchangedPinnedTestFiles": [
+    {
+      "file": "scripts/detect-javascript.test.mjs",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "scripts/detect-javascript.test.mjs"
+      ],
+      "exitCode": 0,
+      "sourceSha256": "5c1693a24057b3e890a78e0641fdb191e9dd0e21522a5b1abd4e80e00a398585",
+      "counts": {
+        "tests": null,
+        "pass": null,
+        "fail": null,
+        "cancelled": null,
+        "skipped": null,
+        "todo": null
+      },
+      "stdout": {
+        "file": "detect-javascript.test.stdout.gz",
+        "rawSha256": "856fbcb278b665147b6e2a29208bcc3f7ad577b5cafe483188657ca39e88bdd3",
+        "archiveSha256": "3da43af01a1726b0c9fe61e59ae75df2b284be2be7b8909d02bbafb239a8b6fe",
+        "bytes": 1014,
+        "lines": 18
+      },
+      "stderr": {
+        "file": "detect-javascript.test.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      }
+    },
+    {
+      "file": "scripts/javascript-first.test.mjs",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "scripts/javascript-first.test.mjs"
+      ],
+      "exitCode": 0,
+      "sourceSha256": "ccdac8a67e2bab1a4f9257a3d6a01c56d265d71572c26fa59dc8d23fed32a8cb",
+      "counts": {
+        "tests": null,
+        "pass": null,
+        "fail": null,
+        "cancelled": null,
+        "skipped": null,
+        "todo": null
+      },
+      "stdout": {
+        "file": "javascript-first.test.stdout.gz",
+        "rawSha256": "efb717033ea83f4415b729fcdff72bc306261ecb73537ac1f305986b999ca9bb",
+        "archiveSha256": "304c22b0e55ba1d64051c864e73c513e903ddf3ff23595b234dbf732aa803df0",
+        "bytes": 1005,
+        "lines": 20
+      },
+      "stderr": {
+        "file": "javascript-first.test.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      }
+    },
+    {
+      "file": "scripts/javascript-first-auto.test.mjs",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "scripts/javascript-first-auto.test.mjs"
+      ],
+      "exitCode": 0,
+      "sourceSha256": "fee1dd6d9a17aa4dbd7c4bbe7c248cae6e50825909042209f3e41c4f239eee00",
+      "counts": {
+        "tests": null,
+        "pass": null,
+        "fail": null,
+        "cancelled": null,
+        "skipped": null,
+        "todo": null
+      },
+      "stdout": {
+        "file": "javascript-first-auto.test.stdout.gz",
+        "rawSha256": "0b066a110ac3b26fc82d404d292da11523b2dbce55265fe3614158fa418d0249",
+        "archiveSha256": "56506c060d6a6f413bc098b4c1368bf4e254f05144bd5181fda8572b169f0249",
+        "bytes": 1084,
+        "lines": 21
+      },
+      "stderr": {
+        "file": "javascript-first-auto.test.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      }
+    },
+    {
+      "file": "scripts/javascript-first-provenance.test.mjs",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "scripts/javascript-first-provenance.test.mjs"
+      ],
+      "exitCode": 0,
+      "sourceSha256": "16acc9bab5b754793802f6952ecb78ae2f506ca8bb6fca81052e020eedaaaa12",
+      "counts": {
+        "tests": null,
+        "pass": null,
+        "fail": null,
+        "cancelled": null,
+        "skipped": null,
+        "todo": null
+      },
+      "stdout": {
+        "file": "javascript-first-provenance.test.stdout.gz",
+        "rawSha256": "54841204cb06dde7bf1d2844ae455cf23f57e7d5a2e96eb9459f615fedcd7cc8",
+        "archiveSha256": "605f804c18709cae7febbedf8daf84e53eefeb8670e0b92a7bdcde0bcca6acf1",
+        "bytes": 841,
+        "lines": 16
+      },
+      "stderr": {
+        "file": "javascript-first-provenance.test.stderr.gz",
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+        "bytes": 0,
+        "lines": 0
+      }
+    }
+  ],
+  "allFourSuitesPassed": false,
+  "rustBuildExecuted": false,
+  "mavenBuildExecuted": false,
+  "hostedPublicationExecuted": false,
+  "fullTemplateComparisonComplete": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,647 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-20T01:42:05.922555+00:00",
+  "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+  "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+  "treeBlobs": 373,
+  "fullyReadFiles": 32,
+  "fullyReadSourceLines": 4206,
+  "allEightWorkflowsFullyRead": true,
+  "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
+  "files": [
+    {
+      "path": ".github/actions/download-artifact/action.yml",
+      "lines": 44,
+      "sha256": "45ee393d8b4b84ee8e8d42afe4755beb8cf790066a26972d088f2ac7dcbd8b10",
+      "readLogs": [
+        "rust-auxiliary-ci-front.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          44
+        ]
+      ],
+      "literalReadLines": 44,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/actions/setup-buildx-resilient/action.yml",
+      "lines": 51,
+      "sha256": "89a51d45d2681204c18b26245940ad8b908cf12bd2a4993a1c2c84dfd33bb6f3",
+      "readLogs": [
+        "rust-auxiliary-ci-front.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          51
+        ]
+      ],
+      "literalReadLines": 51,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/actions/setup-python/action.yml",
+      "lines": 8,
+      "sha256": "59745a44db00c35cfbd9450c23327b4bdbf46a5a7954a806647b5a9dc56f659f",
+      "readLogs": [
+        "rust-auxiliary-ci-front.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "literalReadLines": 8,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/codeql/codeql-config.yml",
+      "lines": 3,
+      "sha256": "f88d4a292bb64a034d5898b5e8d51fc3fb54642c7507e9ee0a1dccdad902de21",
+      "readLogs": [
+        "rust-auxiliary-links-desktop.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "literalReadLines": 3,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "lines": 60,
+      "sha256": "ae132207518900eb67574cfaadcbd76cbfcb599c110d52fb82ea40294d37965d",
+      "readLogs": [
+        "rust-auxiliary-workflow-lint.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          60
+        ]
+      ],
+      "literalReadLines": 60,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/dependency-policy/check.mjs",
+      "lines": 159,
+      "sha256": "6e8f2f401ec0b350e0064a63276086b8aecf47b60a9e4f1897d015c783c491e7",
+      "readLogs": [
+        "rust-auxiliary-ci-front.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          159
+        ]
+      ],
+      "literalReadLines": 159,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/dependency-policy/check.test.mjs",
+      "lines": 154,
+      "sha256": "aa3b5de5376a7cb5954ebacdeac0625fb4fe600efcfb4e3e04f559cfd770d3c9",
+      "readLogs": [
+        "rust-auxiliary-ci-front.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          154
+        ]
+      ],
+      "literalReadLines": 154,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/scripts/check-secrets.mjs",
+      "lines": 49,
+      "sha256": "44f98dfb575530b0bf6aa83354a1b220bf5d79ccd7114e00bc40fb2ed4d061ab",
+      "readLogs": [
+        "rust-auxiliary-ci-front.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          49
+        ]
+      ],
+      "literalReadLines": 49,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/scripts/check-secrets.test.mjs",
+      "lines": 75,
+      "sha256": "973b47b5e459596c50172d3a6f159587b4939cd4a88c7007dd6e5b4ef7c2a091",
+      "readLogs": [
+        "rust-auxiliary-ci-front.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "literalReadLines": 75,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/workflows/desktop-release.yml",
+      "lines": 262,
+      "sha256": "5bd4231fdd6a757293405fa4e92588299cd186d2b7b4999155c3cd58b8ed071e",
+      "readLogs": [
+        "rust-auxiliary-links-desktop.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          262
+        ]
+      ],
+      "literalReadLines": 262,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/workflows/javascript-first-example.yml",
+      "lines": 103,
+      "sha256": "eb835107a6ca778b7b95288c482b0059b088720800994aa234273fe167141c22",
+      "readLogs": [
+        "rust-first-admission-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          103
+        ]
+      ],
+      "literalReadLines": 103,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/workflows/javascript-first-gate.yml",
+      "lines": 98,
+      "sha256": "454e774537353fe16b77fcc27ce5ca6a354c51bf31613e91d2a5ca4a2aaf23e9",
+      "readLogs": [
+        "rust-first-admission-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          98
+        ]
+      ],
+      "literalReadLines": 98,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/workflows/links.yml",
+      "lines": 201,
+      "sha256": "29ca1b316edef3bd940a319d16d29e301b490c275dc947fa957d70df65534290",
+      "readLogs": [
+        "rust-auxiliary-links-desktop.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          201
+        ]
+      ],
+      "literalReadLines": 201,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "lines": 1599,
+      "sha256": "a117433854c8c790fbb581f060d1d27f924b26da555ad82493cc4b42b429844a",
+      "readLogs": [
+        "rust-release-source-001-450.log.gz",
+        "rust-release-source-451-1000.log.gz",
+        "rust-release-source-1001-1599.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1599
+        ]
+      ],
+      "literalReadLines": 1599,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/workflows/rerun-infrastructure-failures.yml",
+      "lines": 97,
+      "sha256": "4619cbc3cc5d5386f87e027f5bb8c45529a02b2a4f83a002250fa3682a98bd60",
+      "readLogs": [
+        "rust-auxiliary-links-desktop.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          97
+        ]
+      ],
+      "literalReadLines": 97,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "lines": 187,
+      "sha256": "365dd886e302e49f43c625ecf1e7097f0450b355c5fa59f92309aa10f9b791a7",
+      "readLogs": [
+        "rust-auxiliary-workflow-lint.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          187
+        ]
+      ],
+      "literalReadLines": 187,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/workflows/workflows.yml",
+      "lines": 251,
+      "sha256": "beaa77ebe007d8695575bb1d2fd46c9291e28b26ad7f235889fea74e2bb5d858",
+      "readLogs": [
+        "rust-auxiliary-workflow-lint.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          251
+        ]
+      ],
+      "literalReadLines": 251,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/zizmor.yml",
+      "lines": 18,
+      "sha256": "6d2cb4217a13d406451f19e993064dbc3673577e4bf39759e39279e855ee2e44",
+      "readLogs": [
+        "rust-auxiliary-workflow-lint.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          18
+        ]
+      ],
+      "literalReadLines": 18,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/check-dependency-graph.sh",
+      "lines": 44,
+      "sha256": "8e113bc9ff6905044906d0746f9b6aefd88f467b95cd5093de29ef21db7fdfb2",
+      "readLogs": [
+        "rust-artifact-adapters-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          44
+        ]
+      ],
+      "literalReadLines": 44,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/desktop-release-resolve.sh",
+      "lines": 54,
+      "sha256": "9d356f7ef6457691077745efea5115f5a43144391f2e43a02822aa9e119b62af",
+      "readLogs": [
+        "rust-artifact-adapters-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          54
+        ]
+      ],
+      "literalReadLines": 54,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/detect-javascript.mjs",
+      "lines": 32,
+      "sha256": "defdfacd5f5a944a6cab15e0d9775b937c1e1d10ed560e44e5a6c7bf3ea82d33",
+      "readLogs": [
+        "rust-first-admission-second-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          32
+        ]
+      ],
+      "literalReadLines": 32,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/detect-javascript.test.mjs",
+      "lines": 59,
+      "sha256": "5c1693a24057b3e890a78e0641fdb191e9dd0e21522a5b1abd4e80e00a398585",
+      "readLogs": [
+        "rust-first-admission-second-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          59
+        ]
+      ],
+      "literalReadLines": 59,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/extract-artifacts.py",
+      "lines": 74,
+      "sha256": "b934af542a0e194ca09fa6b3e36cdf53ddfa83b778fcecb87a016e0691ac9bf0",
+      "readLogs": [
+        "rust-artifact-adapters-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          74
+        ]
+      ],
+      "literalReadLines": 74,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/javascript-first-auto.test.mjs",
+      "lines": 61,
+      "sha256": "fee1dd6d9a17aa4dbd7c4bbe7c248cae6e50825909042209f3e41c4f239eee00",
+      "readLogs": [
+        "rust-first-admission-second-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          61
+        ]
+      ],
+      "literalReadLines": 61,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/javascript-first-provenance.test.mjs",
+      "lines": 56,
+      "sha256": "16acc9bab5b754793802f6952ecb78ae2f506ca8bb6fca81052e020eedaaaa12",
+      "readLogs": [
+        "rust-first-admission-second-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          56
+        ]
+      ],
+      "literalReadLines": 56,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/javascript-first.test.mjs",
+      "lines": 65,
+      "sha256": "ccdac8a67e2bab1a4f9257a3d6a01c56d265d71572c26fa59dc8d23fed32a8cb",
+      "readLogs": [
+        "rust-first-admission-second-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          65
+        ]
+      ],
+      "literalReadLines": 65,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/package-desktop.sh",
+      "lines": 22,
+      "sha256": "a889c83a11c610b60dcb25cf6b3eb4b947d02c37e2d24002aa99d0ecafd74677",
+      "readLogs": [
+        "rust-artifact-adapters-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "literalReadLines": 22,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/run-javascript-first-auto.mjs",
+      "lines": 40,
+      "sha256": "f7d862bdb2729c6a2424b8c2bdfa3d31c1270785c2da57dd69ae442e14036214",
+      "readLogs": [
+        "rust-first-admission-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          40
+        ]
+      ],
+      "literalReadLines": 40,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/run-javascript-first.sh",
+      "lines": 19,
+      "sha256": "96806c521379fd554a96059245301113dba58518fea2f2805e65406984145455",
+      "readLogs": [
+        "rust-first-admission-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          19
+        ]
+      ],
+      "literalReadLines": 19,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/test-scripts.sh",
+      "lines": 79,
+      "sha256": "2ff2b65cbb6d777df42760e21414f156bef6971ae5c3cb103944bd4049bfcb00",
+      "readLogs": [
+        "rust-first-admission-second-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          79
+        ]
+      ],
+      "literalReadLines": 79,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/unacquired-jobs.py",
+      "lines": 161,
+      "sha256": "cc9acc34a63b60a7193132ea59215c22a9de38542720c3722d501a743227c076",
+      "readLogs": [
+        "rust-artifact-adapters-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          161
+        ]
+      ],
+      "literalReadLines": 161,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/verify-javascript-provenance.mjs",
+      "lines": 21,
+      "sha256": "1d0e85405c97b4eb40f42f31825d9f7e25ed7bc865ab990c7e2abe190a193a1b",
+      "readLogs": [
+        "rust-first-admission-second-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          21
+        ]
+      ],
+      "literalReadLines": 21,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    }
+  ],
+  "practiceDecisions": [
+    {
+      "practice": "Exact candidate identity before native jobs",
+      "templateEvidence": [
+        ".github/workflows/javascript-first-gate.yml",
+        "scripts/verify-javascript-provenance.mjs"
+      ],
+      "assessment": "Pinned upstream helper tests execute unchanged: 43 pass across detection, prerequisite refusal, clean-tree and provenance controls. Formal AI integration equivalence still requires source comparison.",
+      "status": "template-tests-verified-formal-ai-comparison-pending"
+    },
+    {
+      "practice": "Keep PR builds and publication inside repository policy",
+      "templateEvidence": [
+        ".github/workflows/release.yml",
+        ".github/workflows/desktop-release.yml"
+      ],
+      "assessment": "The template builds application/Docker artifacts on PRs. Formal AI explicitly prohibits these effects; preserve its existing default-branch policy and focused native admission.",
+      "status": "policy-difference-preserved"
+    },
+    {
+      "practice": "Hash only published desktop assets",
+      "templateEvidence": [
+        ".github/workflows/desktop-release.yml"
+      ],
+      "assessment": "Both unchanged hash implementations include their own incomplete fragment and old fragments. Four finite cases reproduce the defect; excluding all checksum fragments repairs all four controls. Formal AI already has an explicit artifact selector; its unchanged shell step passes clean/reused-directory controls.",
+      "status": "formal-ai-production-step-verified-template-report-pending",
+      "formalAiPaths": [
+        ".github/workflows/desktop-release.yml",
+        "experiments/issue-1580/template-rust-desktop-checksums.test.mjs"
+      ],
+      "verification": "experiments/issue-1580/evidence/checks/rust-desktop-checksum-comparison/validation.json"
+    },
+    {
+      "practice": "Bound retries to positively identified unacquired hosted runners",
+      "templateEvidence": [
+        ".github/workflows/rerun-infrastructure-failures.yml",
+        "scripts/unacquired-jobs.py"
+      ],
+      "assessment": "Requires failed/cancelled result, no runner/steps and explicit acquisition annotation; only newest same-workflow/branch/event run, at most three attempts. Runtime and Formal AI comparison remain pending.",
+      "status": "source-reviewed-comparison-pending"
+    },
+    {
+      "practice": "Validate artifact paths and reject duplicate destinations before streaming ZIP payloads",
+      "templateEvidence": [
+        ".github/actions/download-artifact/action.yml",
+        "scripts/extract-artifacts.py"
+      ],
+      "assessment": "Digest verification belongs to the download action; the extractor rejects traversal, symlinks and collisions and streams bytes. No hosted archive extraction executed in this batch.",
+      "status": "source-reviewed-comparison-pending"
+    },
+    {
+      "practice": "Enumerate updater coverage across all tracked manifests",
+      "templateEvidence": [
+        ".github/dependabot.yml",
+        ".github/dependency-policy/check.mjs",
+        ".github/dependency-policy/check.test.mjs"
+      ],
+      "assessment": "Manifest coverage, weekly scheduling, cooldown and pinned actions reviewed; Formal AI manifest-coverage and current dependency acceptance are unfinished.",
+      "status": "source-reviewed-comparison-pending"
+    },
+    {
+      "practice": "Preserve failed/unknown external observations",
+      "templateEvidence": [
+        ".github/workflows/security.yml",
+        "scripts/check-dependency-graph.sh",
+        ".github/workflows/links.yml"
+      ],
+      "assessment": "Dependency graph reports unavailable/unknown on PR and fails with an action on main. Broken live links remain failures despite archive availability. Source review is not live API verification.",
+      "status": "source-reviewed-comparison-pending"
+    },
+    {
+      "practice": "Independent warning, secrets, docs and workflow-tool checks",
+      "templateEvidence": [
+        ".github/workflows/workflows.yml",
+        ".github/workflows/release.yml",
+        ".github/secretlint/check.mjs"
+      ],
+      "assessment": "Pinned lint tools, actual warnings and checked Git inventories are separate gates. Remaining transitive scripts, runtime execution and Formal AI counterparts need complete review.",
+      "status": "source-reviewed-comparison-pending"
+    }
+  ],
+  "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
+  "allFilesCompared": false,
+  "allApplicablePracticesImplementedAndVerified": false,
+  "rustBuildExecuted": false,
+  "hostedPublicationExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

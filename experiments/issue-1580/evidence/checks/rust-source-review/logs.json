@@ -1,0 +1,47 @@
+[
+  {
+    "file": "rust-first-admission-read.log.gz",
+    "rawSha256": "b9bf7de3cfa554512e616a0b7603782787008d7fb4685ea19a85fd01d368fced",
+    "archiveSha256": "f4127b47a1273eb1b770a2caef40e54c92dcf11b0b645f0d202ad4606d552baf"
+  },
+  {
+    "file": "rust-first-admission-second-read.log.gz",
+    "rawSha256": "d67efc9ddd0173c4b190d1a6712f2b240820dc60aac0eaa8bb657da221d0c532",
+    "archiveSha256": "a9d862a304000020804ccfd97e29de63a45884bf56f2222168d88dfc8c782e57"
+  },
+  {
+    "file": "rust-auxiliary-workflow-lint.log.gz",
+    "rawSha256": "3a5d3b817187b30df7c2088d29c78f47b830b82f7a95d4a4b0c00f944b70f560",
+    "archiveSha256": "0addeae514f945e1652f34796609d04cf6254a9d76ebd847ecbb8112f9189574"
+  },
+  {
+    "file": "rust-auxiliary-ci-front.log.gz",
+    "rawSha256": "a96e5c9fa7993d9a7188f71881b19a5a30b9a585c2d19a108430f047184b0222",
+    "archiveSha256": "2e1db4782458f2f803cc7a04dbae490c06a10c88170d045269f637ad9a343516"
+  },
+  {
+    "file": "rust-auxiliary-links-desktop.log.gz",
+    "rawSha256": "1c4999e09e286305c9d24c6c1c27206d108e18cf9b44026670ed792e9363e608",
+    "archiveSha256": "d791a8986ce48b5189ddc157e25b735ae8f52eb2497b9d1fbb5110ffdcfec890"
+  },
+  {
+    "file": "rust-release-source-001-450.log.gz",
+    "rawSha256": "23ad69736036ce468a39826e6dc12ca01423a5678f3b37f8849fe40bc88c677d",
+    "archiveSha256": "2384353ad613848bb95a68090499e6d7b08e40e0036be9f2c17f2e9ce3e7ea1a"
+  },
+  {
+    "file": "rust-release-source-451-1000.log.gz",
+    "rawSha256": "2f963b309ccfe88c4b3e18660f152ab1e51f888c53a7b864658e418436f0ed37",
+    "archiveSha256": "8d4fbc6eb2c4e89c85aeca552c6d104dacb6f8bb3c34c7c06a8380df4d4d2bcd"
+  },
+  {
+    "file": "rust-release-source-1001-1599.log.gz",
+    "rawSha256": "745568be134194839cc87fc98639f12630b4025e6c4f88dfe9323721b83cf9b8",
+    "archiveSha256": "869493258d725bfea94b42b8c88aad42b366bc483c53ab11d374a9cf4bde4007"
+  },
+  {
+    "file": "rust-artifact-adapters-read.log.gz",
+    "rawSha256": "7466050aa575611fa5b9365c85cc9a402006307c59e9bb6ee9696d318667c1e1",
+    "archiveSha256": "0ee15538fe002c477a6477ed43d98508b7f6f0ad568893f0eea46180a42164d2"
+  }
+]

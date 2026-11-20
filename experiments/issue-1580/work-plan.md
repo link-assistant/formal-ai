@@ -1039,3 +1039,15 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Reproduce Java release project-version corruption with an unchanged pinned CLI and four disposable local Git repositories: plain project passes; different-parent, equal-parent and leading-comment cases report release success while the project POM stays at 1.2.3. The equal-parent case changes its parent version. Independently parse every result with Python XML ElementTree.
 - [x] Verify a disposable candidate updates only the actual project-version bytes in all four cases. Disabling it produces the expected regression failure (1 pass / 1 fail); enabling it passes both focused tests and all 54 maintained template tests. The candidate has not repaired upstream, and Maven and hosted publication remain unexecuted.
 - [ ] Publish immutable evidence, check current upstream source and existing issues, and report the distinct Java project-version defect. Preserve all wider issue acceptance limits and zero independent authorship credit.
+
+- [x] Publish the reviewed native-family batch at `7fce5c19a7297a121d92eb09e7fefa99ca649eaf` after a clean tree, fresh default-branch ancestry and empty active/queued CI lists. PR #1581 remains draft.
+- [x] Verify current Java template source is unchanged, review all current issue/PR titles and distinct release reports, then report the reproduced project-version defect as https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/32. Immutable probe/regression evidence is published at `ebbf5678fedc4b53c88fe12a549e138d7bcc39e2`. Upstream repair remains unfinished.
+
+### Rust pinned workflow comparison and checksum integrity, 2026-11-20
+
+- [x] Retain literal source review for 32 files / 4206 literal source lines; eight workflows. All 373 identities are reverified; the complete file/practice comparison remains open.
+- [x] Execute four pinned JavaScript prerequisite suites unchanged, sequentially under a 96 MiB Node cap: 43 passes, no failures/skips. Preserve and correct the initial reporter-format counting error without rerunning passing tests.
+- [x] Reproduce desktop checksum self-inclusion on both hash branches and with old fragments; verify finite candidate selection controls and this repository's actual checksum shell step. Three focused and 57 maintained tests pass; disabling the candidate yields the expected one failure. The report-writer newline SyntaxError and its corrected retry remain separate evidence.
+- [ ] Publish immutable checksum evidence and report the distinct upstream defect after checking fresh source, issues and recent related PRs.
+- [ ] Collect every current-head CI result before the next push; core, coding and reasoning families currently pass, while Hive/benchmarks/interfaces remain pending. Keep native original acceptance at 27/53 and independent accepted reasoning at 0/20 until separately qualified.
+- [ ] Complete all remaining template files/practices, original workflow and wider acceptance criteria in this PR; no overall completion is claimed.

@@ -12,3 +12,4 @@ import '../../../experiments/issue-1580/template-python-audit-integrity.test.mjs
 import '../../../experiments/issue-1580/template-python-release-formatting.test.mjs';
 import '../../../experiments/issue-1580/template-php-release-integrity.test.mjs';
 import '../../../experiments/issue-1580/template-php-push-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-rust-desktop-checksums.test.mjs';

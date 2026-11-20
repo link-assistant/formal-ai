@@ -59,6 +59,11 @@
     {
       "issue": 31,
       "scope": "release commit failure does not prevent tag publication"
+    },
+    {
+      "issue": 32,
+      "scope": "release writer selects a parent/comment version instead of the actual project version",
+      "url": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/32"
     }
   ],
   "unexecutedSourceQuestions": [
@@ -82,6 +87,7 @@
     "candidateCasesPreserveUnrelatedBytes": 4,
     "upstreamRepairApplied": false,
     "mavenExecuted": false,
-    "hostedPublicationExecuted": false
+    "hostedPublicationExecuted": false,
+    "upstreamIssue": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/32"
   }
 }
