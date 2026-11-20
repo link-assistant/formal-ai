@@ -64,18 +64,29 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.match(head, /\nconcurrency:\n  group: \$\{\{ github\.workflow \}\}-\$\{\{ github\.ref \}\}-native-type-check\n  cancel-in-progress: \$\{\{ github\.ref != 'refs\/heads\/main' \}\}\n/u);
   const [check, ...others] = Object.values(called.jobs);
   assert.equal(others.length, 0);
+  const nativeReplays = [
+    'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs'];
+  const gatewayReplay = 'bun install --frozen-lockfile --ignore-scripts\n' +
+    "node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs\n";
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
     'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity -- --test-threads=1',
-    'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
-    'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
-    'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs']);
+    ...nativeReplays, gatewayReplay]);
   assert.deepEqual(check.steps.find(step => step.name === 'Verify calendar, currency, forced OpenAI function and CNL behavior').env,
     {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
-  for (const command of runs.slice(2)) {
+  for (const command of nativeReplays) {
     assert.deepEqual(check.steps.find(step => step.run === command).env,
       {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   }
+  assert.deepEqual(check.steps.find(step => step.run === gatewayReplay).env,
+    {FORMAL_AI_DYNAMIC_META_NATIVE: '${{ github.workspace }}/rust/target/debug/formal-ai'});
+  const checkout = check.steps.find(step => step.uses === 'actions/checkout@v7').with;
+  assert.deepEqual(checkout['sparse-checkout'].trim().split('\n'),
+    ['/*', '!/dev/log/', '!/experiments/*', '/experiments/dynamic-meta/', '/experiments/js_dogfood/']);
+  assert.deepEqual(check.steps.find(step => step.uses === 'oven-sh/setup-bun@v2').with,
+    {'bun-version-file': '.bun-version', 'no-cache': true});
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
   assert(!check.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
   assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});

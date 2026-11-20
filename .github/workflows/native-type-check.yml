@@ -47,6 +47,7 @@ jobs:
             !/dev/log/
             !/experiments/*
             /experiments/dynamic-meta/
+            /experiments/js_dogfood/
           sparse-checkout-cone-mode: false
       - uses: dtolnay/rust-toolchain@stable
         with:
