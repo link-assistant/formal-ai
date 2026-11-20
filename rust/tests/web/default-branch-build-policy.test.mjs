@@ -10,6 +10,7 @@ import {Script} from 'node:vm';
 import {builtinModules} from 'node:module';
 import YAML from 'yaml';
 import '../../../experiments/issue-1580/native-regression-groups.test.mjs';
+import '../../../experiments/issue-1580/native-checkout-retry.test.mjs';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
 const workflow = name => YAML.parse(read('.github/workflows/' + name));
@@ -86,7 +87,11 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 1);
   assert.equal(others[0], called.jobs['contract-family']);
   const runs = check.steps.map(step => step.run).filter(Boolean);
-  assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
+  assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), [
+    'if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then\n' +
+    "  echo '::error::Native input checkout failed after two bounded attempts.' >&2\n" +
+    '  exit 1\nfi\n',
+    'bash scripts/ci-clippy-profile.sh --library-and-binaries',
     'npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies\nmkdir -p node_modules\nln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml\n',
     'bash scripts/ci-native-regressions.sh core',
     'regression_status=0\n' +
@@ -105,7 +110,9 @@ test('the focused PR native check limits execution to lint and isolated regressi
     '} > "$CATALOG_OUTPUT/generation-identity.txt"\n']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
   for (const step of check.steps.filter(step => (step.uses && !['actions/setup-node@v7', 'actions/upload-artifact@v7'].includes(step.uses)) || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
-    assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
+    assert.equal(step.if, step.id === 'native-checkout-retry'
+      ? "${{ !cancelled() && steps.native-checkout.outcome == 'failure' && inputs.compile-inputs-changed }}"
+      : '${{ inputs.compile-inputs-changed }}');
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');
   assert.deepEqual(check.steps.find(step => step.name === 'Verify isolated native behavior regressions').env,

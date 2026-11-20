@@ -42,9 +42,14 @@ jobs:
       - name: Report unchanged compile inputs
         if: ${{ !inputs.compile-inputs-changed }}
         run: echo '::notice::Rust compile inputs unchanged; required check is satisfied without compiling.'
-      - uses: actions/checkout@v7
+      # A promisor-blob transfer can fail after the initial fetch succeeds.
+      # Keep the original four-minute checkout allowance across both attempts.
+      - name: Check out native inputs
+        id: native-checkout
+        continue-on-error: true
+        uses: actions/checkout@v7
         if: ${{ inputs.compile-inputs-changed }}
-        timeout-minutes: 4
+        timeout-minutes: 2
         env:
           GIT_HTTP_LOW_SPEED_LIMIT: '1024'
           GIT_HTTP_LOW_SPEED_TIME: '20'
@@ -63,6 +68,40 @@ jobs:
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
           sparse-checkout-cone-mode: false
+      - name: Retry native input checkout once
+        id: native-checkout-retry
+        continue-on-error: true
+        uses: actions/checkout@v7
+        if: ${{ !cancelled() && steps.native-checkout.outcome == 'failure' && inputs.compile-inputs-changed }}
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            !/experiments/**
+            /experiments/**/*.sh
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
+          sparse-checkout-cone-mode: false
+      - name: Require a successful native checkout
+        if: ${{ inputs.compile-inputs-changed }}
+        env:
+          INITIAL_OUTCOME: ${{ steps.native-checkout.outcome }}
+          RETRY_OUTCOME: ${{ steps.native-checkout-retry.outcome }}
+        run: |
+          if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then
+            echo '::error::Native input checkout failed after two bounded attempts.' >&2
+            exit 1
+          fi
       - uses: dtolnay/rust-toolchain@stable
         if: ${{ inputs.compile-inputs-changed }}
         with:
@@ -160,8 +199,13 @@ jobs:
       CARGO_BUILD_JOBS: '2'
       FORMAL_AI_OFFLINE: '1'
     steps:
-      - uses: actions/checkout@v7
-        timeout-minutes: 4
+      # A promisor-blob transfer can fail after the initial fetch succeeds.
+      # Keep the original four-minute checkout allowance across both attempts.
+      - name: Check out native inputs
+        id: native-checkout
+        continue-on-error: true
+        uses: actions/checkout@v7
+        timeout-minutes: 2
         env:
           GIT_HTTP_LOW_SPEED_LIMIT: '1024'
           GIT_HTTP_LOW_SPEED_TIME: '20'
@@ -180,6 +224,39 @@ jobs:
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
           sparse-checkout-cone-mode: false
+      - name: Retry native input checkout once
+        id: native-checkout-retry
+        continue-on-error: true
+        uses: actions/checkout@v7
+        if: ${{ !cancelled() && steps.native-checkout.outcome == 'failure' }}
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            !/experiments/**
+            /experiments/**/*.sh
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
+          sparse-checkout-cone-mode: false
+      - name: Require a successful native checkout
+        env:
+          INITIAL_OUTCOME: ${{ steps.native-checkout.outcome }}
+          RETRY_OUTCOME: ${{ steps.native-checkout-retry.outcome }}
+        run: |
+          if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then
+            echo '::error::Native input checkout failed after two bounded attempts.' >&2
+            exit 1
+          fi
       - uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
       - uses: ./.github/actions/cache-cargo-registry
