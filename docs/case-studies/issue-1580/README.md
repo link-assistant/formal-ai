@@ -306,3 +306,6 @@ the complete 87-pass/53-excluded local gate inventory. Strict original replay
 acceptance remains 31/53; broader criteria and 0/20 independent reasoning stay
 open. Rust literal review is 237/373 files and 34,513 lines, with 136 files and
 applicable practice/runtime verification unfinished.
+
+
+The [Cargo optional-dependency and actual producer checkpoint](codeql-optional-dependency-checkpoint.md) records clean original Actions SARIF on `1fd0c4fd`, the Rust pre-analysis failure and its captured-input regression fix, pending native detector execution, and the precise incomplete review boundary. Rust literal review reaches 243/373 files and 34,777 lines. All broader unfinished criteria remain open.

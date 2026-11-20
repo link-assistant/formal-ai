@@ -438,5 +438,25 @@
     "file": "rust-historical-maintenance-notes-read.log.gz",
     "rawSha256": "92643b02c95f2e483e8ea1d7c88075b52c611e133e9c071d9a5010587a8c06b4",
     "archiveSha256": "973ec8ea819a985c762ed6df23fc23d21972d8d77bd9983322a4e0b8308dfb06"
+  },
+  {
+    "file": "read-small-rust-historical-inputs.log.gz",
+    "rawSha256": "0e82863434e89a92dfd53f91459bac560b1aa0160c775638ac3c58fe6a5ac8e4",
+    "archiveSha256": "ca26691301d3b5a553633db482997e1fdae69b93146831afbf29f526f29cac01"
+  },
+  {
+    "file": "compare-small-rust-history-counterparts.log.gz",
+    "rawSha256": "13edb83308ba04babe53de5f7fff5ce91ad5836c60110bcce55ae0922623027b",
+    "archiveSha256": "4f00af9cf945e9d2caba8d82394d9e79bfe6cd4a48f0ea090b200ef3c1bc3892"
+  },
+  {
+    "file": "inspect-rust-visual-and-review-manifest.log.gz",
+    "rawSha256": "d8b64e24687585a995ff5a1073b838018c239f95963fdc43da69dd1901c241c0",
+    "archiveSha256": "ca4b889f3a50a854186d48af5a87ab83c2bbbc0d52c87a560eb6bd2226cf8c36"
+  },
+  {
+    "file": "inspect-rust-visual-and-review-manifest-corrected.log.gz",
+    "rawSha256": "f08d7eb33fcef1e28919318117981fbca3c4458f8eda086c60b800a4c94844b0",
+    "archiveSha256": "12fb35f868d744b125ae2de0bec5fc359fe79aa837a28e216fb558e215e87fb7"
   }
 ]

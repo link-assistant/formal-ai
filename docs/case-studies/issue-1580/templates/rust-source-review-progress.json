@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T09:30:00.833464+00:00",
+  "observedAt": "2026-11-20T11:08:35.498381+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 237,
-  "fullyReadSourceLines": 34513,
+  "fullyReadFiles": 243,
+  "fullyReadSourceLines": 34777,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -610,6 +610,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/actionlint-image.txt",
+      "lines": 26,
+      "sha256": "d8f7af6eef6e9e95f7dbf02d4d76fe13faa0f16228fcf82c0d87261c5d5b71d0",
+      "readLogs": [
+        "read-small-rust-historical-inputs.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          26
+        ]
+      ],
+      "literalReadLines": 26,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/active-runtime-scan.txt",
       "lines": 6,
       "sha256": "8b29d634e6531fe0f90ef5f47e215be5f1e65e4d5e2be7e3e206569cba7b2fc2",
@@ -623,6 +640,23 @@
         ]
       ],
       "literalReadLines": 6,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/artifact-upstream.json.txt",
+      "lines": 43,
+      "sha256": "3e9e77b2b3600732d02d34f282bf2e704f56bf26876d779e25e912e854b2d973",
+      "readLogs": [
+        "read-small-rust-historical-inputs.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          43
+        ]
+      ],
+      "literalReadLines": 43,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -661,6 +695,40 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/buildkit-image.txt",
+      "lines": 70,
+      "sha256": "2191a5fd96088bc5c2566d098790c3d02374aca24eeee4c3ce25d3b96a1b1ecc",
+      "readLogs": [
+        "read-small-rust-historical-inputs.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          70
+        ]
+      ],
+      "literalReadLines": 70,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/buildkit-release-image.txt",
+      "lines": 70,
+      "sha256": "f0e32983e4b825b0e82c8b2f49c579412c4282c2999d3273a540caaa635e2464",
+      "readLogs": [
+        "read-small-rust-historical-inputs.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          70
+        ]
+      ],
+      "literalReadLines": 70,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/pages-bundle-evidence.txt",
       "lines": 3,
       "sha256": "48caca43397ba22228ccadad10f9c545059d01ff1e5b591b55e751ec92607612",
@@ -674,6 +742,23 @@
         ]
       ],
       "literalReadLines": 3,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pages-upstream.json.txt",
+      "lines": 40,
+      "sha256": "f8807030ffc581430a8e89744dbd048029536cdbe2cb0f0643b2adffbe76cbd7",
+      "readLogs": [
+        "read-small-rust-historical-inputs.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          40
+        ]
+      ],
+      "literalReadLines": 40,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1048,6 +1133,23 @@
         ]
       ],
       "literalReadLines": 239,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-19/pr-114-data/issue-113-details.txt",
+      "lines": 15,
+      "sha256": "b93dca3375b0c69ad14470a9b56f74873b85c82f45f56fd9d8c6350e74f68a20",
+      "readLogs": [
+        "read-small-rust-historical-inputs.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          15
+        ]
+      ],
+      "literalReadLines": 15,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -4791,6 +4893,26 @@
       ],
       "assessment": "Read all 653 numbered lines in twenty pinned historical maintenance notes and report records. Preserve exact revision and run attribution, full failed logs, Cargo graph validation before auditing, extraction warning rejection and production compilation regressions for inline Rust scripts. Reuse upstream-supported HTTP retry/configuration APIs and document transitive constraints; a submitted report does not prove upstream repair. Historical version claims and external authorization rules are evidence about that investigation, not current Formal AI pins or instructions. Counterpart applicability and actual runtime acceptance remain open.",
       "status": "literal-source-comparison-and-counterpart-runtime-pending"
+    },
+    {
+      "practice": "Historical OCI architecture receipts and unsuppressed action runtime warnings",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/actionlint-image.txt",
+        "dev/log/issues/247/pulls/248/artifact-upstream.json.txt",
+        "dev/log/issues/247/pulls/248/buildkit-image.txt",
+        "dev/log/issues/247/pulls/248/buildkit-release-image.txt",
+        "dev/log/issues/247/pulls/248/pages-upstream.json.txt",
+        "docs/case-studies/issue-19/pr-114-data/issue-113-details.txt"
+      ],
+      "assessment": "Six complete historical texts are read (264 lines). The actionlint and BuildKit images distinguish runnable architecture manifests from unknown/unknown attestation manifests; these historical digests do not establish a current registry probe. Formal AI already uses the same pinned actionlint index in workflows.yml, while its BuildKit setup default remains a mutable tag. The two archived upstream reports identify artifact Buffer() and Pages punycode deprecations. A current repository search still finds many DEP0005 suppressions and one DEP0040 suppression, and no local download-artifact composite or extract-artifacts.py counterpart. Adopting verified extraction without warning suppression and inspecting the real emitted diagnostics remain open; the archived reports alone do not prove a current production warning. The old agent/js publishing path incident is historical context, not a request to copy its paths or evidence that Formal AI publication has run. The first diagnostic helper failed on the image row lacking logicalLines before making changes; corrected output is retained.",
+      "status": "literal-history-reviewed-applicable-warning-and-image-practices-open",
+      "formalAiPaths": [
+        ".github/workflows/workflows.yml",
+        ".github/actions/setup-buildx-resilient/action.yml",
+        ".github/workflows/release.yml",
+        "scripts/generate-staged-release.mjs"
+      ],
+      "verification": null
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",

@@ -1,0 +1,96 @@
+{
+  "files": [
+    {
+      "file": "review-current-optional-and-detector.py",
+      "sha256": "4b33c3f5ba2b146dbbedc6cd0d9fc3160cace65348c85fe7aa29f1dc5aabf9d6",
+      "bytes": 757
+    },
+    {
+      "file": "read-small-rust-historical-inputs.py",
+      "sha256": "b288a72f6418c39c97dea1011dc29b54994f4a30d172d0c9309d2e42dc04c7b7",
+      "bytes": 564
+    },
+    {
+      "file": "compare-small-rust-history-counterparts.py",
+      "sha256": "ddd897cac3c6d64694fa3286072bd831e2c40a848f5837813f7d66665394093b",
+      "bytes": 690
+    },
+    {
+      "file": "inspect-rust-visual-and-review-manifest.py",
+      "sha256": "faf2734d2f7b5d0ef42827e58d95dbec161fe3c90def56d51394779b84fdb44b",
+      "bytes": 1030
+    },
+    {
+      "file": "record-small-rust-historical-review.py",
+      "sha256": "a1de3a5cba8c0343cc592e77fc5d33ea182e63ad97f0c2b4f11390b6d53a74c9",
+      "bytes": 6189
+    },
+    {
+      "file": "draft-optional-context-checkpoint.py",
+      "sha256": "49467b1204868a6366966cd95df615fc09e7a60df4023975ac07ee9fbc916175",
+      "bytes": 7362
+    },
+    {
+      "file": "commit-optional-dependency-fix.py",
+      "sha256": "bd5bb559849be00717bc878c81d068f879f7977b0015be5569666f4e53dfad6c",
+      "bytes": 2218
+    },
+    {
+      "file": "draft-optional-cargo-context-regression.py",
+      "sha256": "fb255e0f6ec15cad32c762dd975f557d2991dc1c3da23aa6867140677e075481",
+      "bytes": 6326
+    },
+    {
+      "file": "implement-optional-cargo-contexts.py",
+      "sha256": "d40a7b84dce2cae0346b143728948e4f40dad10021db6ed756437c41b154d8f4",
+      "bytes": 4888
+    },
+    {
+      "file": "assess-rust-context-producer-round.py",
+      "sha256": "022ea575074d6026b01f44ad23f0bcea9b72d0a5906997f8820647e031e92cdf",
+      "bytes": 3140
+    },
+    {
+      "file": "fetch-rust-context-failure-artifact.py",
+      "sha256": "7e549c09d445f40f18d21c855c731c0dbcaae653365e0adf6dec4ae84dbbc39a",
+      "bytes": 1227
+    },
+    {
+      "file": "inspect-rust-context-build-messages.py",
+      "sha256": "05a3dff73c8db74d1a2bb01e21b24674ee2e39753830d430a635f5b118119788",
+      "bytes": 632
+    },
+    {
+      "file": "read-codeql-build-graph-regressions.py",
+      "sha256": "b42c817d80026242d16050ecb19496035e97c77147a11535a7f84dd31d3f9923",
+      "bytes": 904
+    },
+    {
+      "file": "inspect-active-optional-features.py",
+      "sha256": "148c34906c56a7675bea8f5587363fee30c086b0e402c659719a9a095b14b2ff",
+      "bytes": 340
+    },
+    {
+      "file": "inspect-round-remaining-and-audit.py",
+      "sha256": "707a1452030db991f9aaebf73358cf8164672916b5e9c909313fea15fc54f254",
+      "bytes": 995
+    },
+    {
+      "file": "validate-optional-context-publication-evidence.py",
+      "sha256": "0ef81ca3ed90f005731fb87bdbd83cc142a8ec8b501ad6dce7d648a149056b9a",
+      "bytes": 3558
+    },
+    {
+      "file": "repair-optional-context-evidence-names.py",
+      "sha256": "7a95e500756b9d3b2dd13ed5c83ffc578bedf2937e68ac4b9d739bb92819cd5a",
+      "bytes": 1959
+    },
+    {
+      "file": "finish-optional-context-evidence-validation.py",
+      "sha256": "c9ede7aaef122640d7e97bf3b228e394ba949aacef01f597df547bd7f243c251",
+      "bytes": 3772
+    }
+  ],
+  "archiveSha256": "a55c1e14ccda1005af625dcb1e9cf279e45432d450f46c7cf6c5cd6a095dd1c3",
+  "independentFormalAiReasoningCredit": 0
+}
