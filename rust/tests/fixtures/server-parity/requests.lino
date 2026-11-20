@@ -82,6 +82,17 @@ server_parity_requests
     path '/health'
     auth none
     body '{}'
+  request dynamic_meta_disabled
+    route dynamic-meta
+    method POST
+    path '/v1/dynamic-meta'
+    body '{"action":"inspect"}'
+  request dynamic_meta_unauthorized
+    route dynamic-meta
+    method POST
+    path '/v1/dynamic-meta'
+    auth none
+    body '{"action":"inspect"}'
   request models
     route models
     method GET

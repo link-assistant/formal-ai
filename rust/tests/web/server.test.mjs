@@ -45,6 +45,7 @@ const PROBES = {
     body: 'demo_memory\n  event "server_test_event"\n    role "user"\n    content "Server test"\n',
     json: (body) => assert.equal(body.object, "memory.import"),
   },
+  "dynamic-meta": { status: 404, type: "application/json", error: "dynamic-meta-unavailable" },
   anthropic_messages: {
     status: 200,
     type: "application/json",
@@ -102,6 +103,7 @@ before(async () => {
     HOME: home,
     FORMAL_AI_API_BEARER_TOKEN: TOKEN,
     FORMAL_AI_MEMORY_PATH: path.join(home, "memory.lino"),
+    FORMAL_AI_DYNAMIC_META_STORE: "",
     FORMAL_AI_DIALOG_LOG_DIR: path.join(home, "dialogs"),
     FORMAL_AI_RECORD_CHAT: "0",
   };

@@ -296,6 +296,7 @@ test('HTTP credentials and chat route run the installed recipe against the same 
     body: JSON.stringify(payload),
   });
   const payload = { action: 'install', manifest: sampleManifest, confirm: true, admin: true };
+  assert.equal((await fetch(endpoint + '/v1/dynamic-meta', { method: 'OPTIONS' })).status, 204);
   assert.equal((await post('/v1/dynamic-meta', payload)).status, 401);
   assert.equal((await post('/v1/dynamic-meta', payload, bearer)).status, 403);
   assert.equal((await post('/v1/dynamic-meta', payload, operator)).status, 200);

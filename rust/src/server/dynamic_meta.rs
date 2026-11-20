@@ -25,21 +25,28 @@ pub(super) fn route(
     body: &str,
     auth: &ApiAuthConfig,
 ) -> Option<ApiHttpResponse> {
-    let address = std::env::var("FORMAL_AI_DYNAMIC_META_LOOPBACK").ok()?;
-    if super::ephemeral_enabled() || method != "POST" {
+    if method != "POST" {
         return None;
     }
-    let recipe_chat = matches!(
-        path,
-        "/v1/chat/completions" | "/api/openai/v1/chat/completions"
-    ) && auth.bearer_token.is_some()
+    let address = (!super::ephemeral_enabled())
+        .then(|| std::env::var("FORMAL_AI_DYNAMIC_META_LOOPBACK").ok())
+        .flatten();
+    let recipe_chat = address.is_some()
+        && matches!(
+            path,
+            "/v1/chat/completions" | "/api/openai/v1/chat/completions"
+        )
+        && auth.bearer_token.is_some()
         && is_recipe_chat(body);
     if path != PATH && !recipe_chat {
         return None;
     }
-    if recipe_chat && !auth.allows(headers) {
+    if (recipe_chat || address.is_none()) && !auth.allows(headers) {
         return Some(error_response(401, "missing or invalid bearer token"));
     }
+    let Some(address) = address else {
+        return Some(error_response(404, "Dynamic meta endpoint unavailable"));
+    };
     if body.len() > REQUEST_LIMIT {
         return Some(error_response(413, "Dynamic meta request is too large"));
     }
