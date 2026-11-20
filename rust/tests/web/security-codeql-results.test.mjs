@@ -494,6 +494,7 @@ with tempfile.TemporaryDirectory(prefix='macro-probe-') as temporary:
     root = pathlib.Path(temporary)
     database = root / 'database with spaces'
     database.mkdir()
+    (database / 'db-rust').mkdir()
     (database / 'codeql-database.yml').write_text('primaryLanguage: rust\n')
     codeql = root / 'codeql'
     codeql.write_text('''#!/usr/bin/env python3
@@ -501,16 +502,32 @@ import json, pathlib, sys
 root=pathlib.Path(__file__).parent
 mode=(root/'mode').read_text()
 args=sys.argv[1:]
+with (root/'calls.jsonl').open('a') as stream:
+    print(json.dumps(args),file=stream)
 if args[0]=='version':
     print(json.dumps({'version':'fixture-only'}))
+elif args[:2]==['resolve','ram']:
+    assert '--ram=4096' in args and '--off-heap-ram=0' in args
+    assert pathlib.Path(next(a.removeprefix('--dataset=') for a in args if a.startswith('--dataset='))).name=='db-rust'
+    assert '--format=json' in args
+    if mode=='memory-failure':
+        print('actual fixture memory failure',file=sys.stderr)
+        sys.exit(6)
+    values={'undersized-heap':['-J-Xmx1800M'],'excessive-heap':['-J-Xmx8G'],
+            'missing-heap':[],'malformed-memory':{'heap':'unknown'},
+            'nonzero-offheap':['-J-Xmx2400M','--off-heap-ram=512']}
+    print(json.dumps(values.get(mode,['-J-Xmx2400M'])))
 elif args[:2]==['query','run']:
     assert '--threads=2' in args and '--ram=4096' in args and '--max-disk-cache=512' in args
     assert '--warnings=error' in args
-    assert '-J-Xmx3072m' in args, 'query loading needs an explicit heap inside the total evaluator budget'
+    assert '--off-heap-ram=0' in args, 'the child evaluator must resolve the same heap-only policy'
+    assert not any(a.startswith('-J') for a in args), 'launcher heap flags do not survive child sizing'
     assert pathlib.Path(args[-1]).read_bytes()==(root/'query.ql').read_bytes()
     if mode=='query-failure':
         print('actual fixture query failure',file=sys.stderr)
         sys.exit(7)
+    if mode=='query-warning':
+        print('WARNING: fixture runtime allocation incomplete',file=sys.stderr)
     pathlib.Path(next(a.removeprefix('--output=') for a in args if a.startswith('--output='))).write_bytes(b'fixture BQRS')
 elif args[:2]==['bqrs','decode']:
     assert '--entities=all' in args and '--format=json' in args
@@ -529,8 +546,10 @@ else:
     manifest.write_text('name: codeql/rust-queries\nversion: 0.1.47\n')
     (root / 'query.ql').write_bytes(pathlib.Path(sys.argv[1]).with_name('MacroContexts.ql').read_bytes())
     before = {p.relative_to(pack):p.read_bytes() for p in pack.rglob('*') if p.is_file()}
-    for mode in ['success','query-failure','decode-failure','empty','malformed','missing-database','ambiguous-pack']:
+    for mode in ['success','memory-failure','undersized-heap','excessive-heap','missing-heap','malformed-memory','nonzero-offheap',
+                 'query-failure','query-warning','decode-failure','empty','malformed','missing-database','ambiguous-pack']:
         (root / 'mode').write_text(mode)
+        (root / 'calls.jsonl').write_text('')
         output = root / ('output-' + mode)
         other = root / 'qlpacks/codeql/rust-queries/other'
         if mode=='ambiguous-pack':
@@ -546,12 +565,26 @@ else:
         assert result['semanticCoverageProven'] is False
         assert result['independentAuthorshipCredit']==0
         assert before=={p.relative_to(pack):p.read_bytes() for p in pack.rglob('*') if p.is_file()}, mode
+        calls=[json.loads(line) for line in (root/'calls.jsonl').read_text().splitlines()]
+        if mode in ['memory-failure','undersized-heap','excessive-heap','missing-heap','malformed-memory','nonzero-offheap']:
+            assert not any(call[:2]==['query','run'] for call in calls), mode
+        if mode=='memory-failure':
+            assert result['commands'][-1]['exitCode']==6
+            assert (output/'memory.stderr').read_text()=='actual fixture memory failure\n'
+        if mode=='query-warning':
+            assert result['queryRuntimeDiagnostics']==['WARNING: fixture runtime allocation incomplete']
+            assert result['commands'][-1]['name']=='query'
+            assert not any(call[:2]==['bqrs','decode'] for call in calls)
+            assert (output/'macro-contexts.bqrs').read_bytes()==b'fixture BQRS'
         if mode=='query-failure':
             assert result['commands'][-1]['exitCode']==7
             assert (output/'query.stderr').read_text()=='actual fixture query failure\n'
         if mode=='decode-failure':
             assert result['commands'][-1]['exitCode']==9
         if mode=='success':
+            assert result['queryRuntimeDiagnostics']==[]
+            assert result['resolvedMemory']=={'totalMiB':4096,'offHeapMiB':0,'heapMiB':2400,'arguments':['-J-Xmx2400M']}
+            assert [command['name'] for command in result['commands']]==['version','memory','query','decode']
             assert result['rows']==1
             assert (output/'macro-contexts.bqrs').read_bytes()==b'fixture BQRS'
 `;

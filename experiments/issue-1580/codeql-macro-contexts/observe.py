@@ -51,6 +51,24 @@ def observe(codeql, databases, output):
                 (output / name).write_bytes((pack / name).read_bytes())
         (output / "MacroContexts.ql").write_bytes(query.read_bytes())
         run("version", ["version", "--format=json"])
+        # query run sizes a child evaluator again; a launcher -J heap is not inherited.
+        # Resolve the same real dataset policy first, preserving its authoritative output.
+        memory_options = ["--ram=4096", "--off-heap-ram=0"]
+        dataset = database / "db-rust"
+        if not dataset.is_dir():
+            raise ValueError("Missing completed Rust dataset for memory resolution")
+        run("memory", ["resolve", "ram", "--format=json", "--dataset=" + str(dataset), *memory_options])
+        resolved = json.loads((output / "memory.stdout").read_text())
+        if not isinstance(resolved, list) or not all(isinstance(value, str) for value in resolved):
+            raise ValueError("Malformed CodeQL memory resolution")
+        heaps = [re.fullmatch(r"-J=?-Xmx([1-9][0-9]*)([mMgG])", value) for value in resolved]
+        heaps = [match for match in heaps if match]
+        heap_mib = int(heaps[0][1]) * (1024 if heaps[0][2].lower() == "g" else 1) if len(heaps) == 1 else 0
+        manifest["resolvedMemory"] = {"totalMiB": 4096, "offHeapMiB": 0,
+                                      "heapMiB": heap_mib, "arguments": resolved}
+        if not 2048 <= heap_mib <= 4096 or any(value.startswith("--off-heap-ram=") and
+                                             value != "--off-heap-ram=0" for value in resolved):
+            raise ValueError("CodeQL resolved heap cannot cache loading stages inside the requested policy")
         # Inherit the producer's exact bundled dependencies without downloading
         # a different library. The temporary query is removed even on failure.
         with tempfile.TemporaryDirectory(prefix="formal-ai-macro-contexts-", dir=pack) as temporary:
@@ -58,9 +76,13 @@ def observe(codeql, databases, output):
             installed.write_bytes(query.read_bytes())
             run("query", ["query", "run", "--database=" + str(database),
                           "--output=" + str(output / "macro-contexts.bqrs"),
-                          # --ram bounds the evaluator; the CLI loading heap has its own cap.
-                          "-J-Xmx3072m", "--threads=2", "--ram=4096", "--max-disk-cache=512",
+                          "--threads=2", *memory_options, "--max-disk-cache=512",
                           "--warnings=error", str(installed)])
+        diagnostics = [line for line in (output / "query.stderr").read_text().splitlines()
+                       if re.match(r"^(?:WARNING|WARN|ERROR):", line)]
+        manifest["queryRuntimeDiagnostics"] = diagnostics
+        if diagnostics:
+            raise RuntimeError("CodeQL query emitted runtime diagnostics; see preserved query.stderr")
         run("decode", ["bqrs", "decode", "--format=json", "--entities=all",
                        "--output=" + str(output / "macro-contexts.json"), str(output / "macro-contexts.bqrs")])
         decoded = json.loads((output / "macro-contexts.json").read_text())

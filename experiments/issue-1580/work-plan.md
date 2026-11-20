@@ -542,3 +542,10 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [x] Reproduce seven failing bounded controls before the adapter repair. Preserve the final 17 artifact, 18 profile and 50 shard/checkout passing cases, seven touched gates and all initial harness/path failures. Retry actual pinned raw transport at most three times; preserve digest, selector, cancellation, partial-reset and extraction failure boundaries.
 - [ ] Commit the reviewable repair, collect all current producer/native results and all actionable failures, then publish one complete repair batch through the single push gate. Verify actual next-head Windows/Linux/macOS transport and all required checks.
 - [ ] Complete every wider issue criterion; source inventory, passing controls and recovered prerequisites do not establish full issue completion or independent authorship.
+
+### Resolve the actual CodeQL child memory policy
+
+- [x] Preserve and verify all 124 original 90b51590 producer payloads. Original strict SARIF is clean; the explicit launcher heap still leaves the actual 1,800 MB loading warning, and positional matches do not qualify 631 macro semantics.
+- [x] Trace exact pinned launcher/child sizing and run three 128 MiB configuration-only resolver probes. Reproduce the memory-policy regression before replacing launcher flags with shared total/off-heap policy, actual-dataset preflight and fatal retained runtime diagnostics. Preserve 19 passing security groups, 18 profile groups, seven gates, syntax/whitespace checks and both initial harness errors.
+- [ ] Commit the candidate, collect all active native results and batch every actionable failure before one push. Verify the next head's actual database allocation and warning-free hosted query; adapter fixtures and generic allocation probes earn no hosted or semantic credit.
+- [ ] Finish the complete issue scope, eight templates, original budgets, current publication/live delivery and independent reasoning. Full issue completion remains false; independent reasoning stays 0/20.
