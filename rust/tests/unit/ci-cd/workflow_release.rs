@@ -33,7 +33,10 @@ fn pages_deploy_uses_github_pages_workflow_artifact() {
     assert!(pages_build.contains("actions/upload-pages-artifact@v5"));
     assert!(pages_build.contains("path: js"));
     assert!(deploy_demo.contains("id: deployment"));
-    assert!(deploy_demo.contains("actions/deploy-pages@v5"));
+    assert!(deploy_demo.contains("uses: ./.formal-ai-pages-protocol/.github/actions/deploy-pages"));
+    assert!(deploy_demo.contains("ref: '${{ github.workflow_sha }}'"));
+    assert!(deploy_demo.contains("artifact_id: ${{ needs.build-pages.outputs.artifact_id }}"));
+    assert!(deploy_demo.contains("source_sha: ${{ needs.build-pages.outputs.pages_sha }}"));
     assert!(!deploy_demo.contains("peaceiris/actions-gh-pages"));
     assert!(!deploy_demo.contains("publish_dir: js"));
     assert!(!deploy_demo.contains("publish_branch: gh-pages"));
@@ -42,15 +45,15 @@ fn pages_deploy_uses_github_pages_workflow_artifact() {
 /// PR #965 review: "All CI/CD warnings, and errors must be also fixed.
 /// Including all false positives and false negatives."
 ///
-/// `actions/deploy-pages` accepts at most a 600 000 ms wait. On `main` run
+/// The owned Pages protocol preserves the original 600 000 ms polling budget.
+/// With `actions/deploy-pages` on `main` run
 /// 31090830031 the artifact uploaded successfully (15.7 MB, id 8966823763) and
 /// the action then reported `Current status: deployment_queued` for that entire
 /// default before `Timeout reached, aborting!` — a red pipeline caused by
 /// GitHub's Pages deployment queue rather than by anything in the commit. The
 /// next push deployed green with no code change, which is the signature of a
-/// false positive. Pin the documented maximum rather than supplying the
-/// unsupported 1 200 000 ms value that the action silently clamps, and keep
-/// the job's own budget above it.
+/// false positive. Keep the explicit polling budget when selecting the owned
+/// artifact-bound protocol, and keep the job's own budget above it.
 #[test]
 fn pages_deploy_uses_the_actions_maximum_supported_wait() {
     const DEPLOY_ACTION_MAXIMUM_MS: u64 = 600_000;
@@ -59,7 +62,7 @@ fn pages_deploy_uses_the_actions_maximum_supported_wait() {
     let deploy_demo = job_block(&workflow, "deploy-pages");
 
     let timeout_ms = deploy_demo
-        .split("actions/deploy-pages@v5")
+        .split("uses: ./.formal-ai-pages-protocol/.github/actions/deploy-pages")
         .nth(1)
         .and_then(|after| after.split_once("timeout: "))
         // Block (`timeout: 600000`) and flow (`with: {timeout: 600000}`) YAML

@@ -323,6 +323,8 @@ jobs:
             !/experiments/*/evidence/**/*.tgz
             !/experiments/*/evidence/**/*.diff
             /docs/case-studies/issue-717/e2e-npm-ci.log
+            /docs/case-studies/issue-896/self-hosting-authorship/agent-cli.log
+            /docs/case-studies/issue-896/self-hosting-authorship/formal-ai.log
             /docs/case-studies/issue-932/raw-data/verify-*.log
             /docs/case-studies/issue-982/self-hosting/contract/*.gz
             /experiments/issue-1580/evidence/ci/main-826289fc/cli/opencode-interactive-proxy.jsonl.gz

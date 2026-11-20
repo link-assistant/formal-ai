@@ -1154,5 +1154,18 @@ test('published search component regressions and their runtime fixtures select t
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
     .find(step => step.name === 'Verify isolated native behavior regressions');
   assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?:\s|$)/u);
+  // Check acquisition before reading fixtures: a complete local checkout hid this CI failure.
+  const directory = mkdtempSync(join(tmpdir(), 'search-fixture-checkout-'));
+  try {
+    const rules = join(directory, 'rules');
+    writeFileSync(rules, workflow('layered-ci.yml').jobs.js.steps.find(step => step.with?.['sparse-checkout']).with['sparse-checkout']);
+    const excluded = ['docs/case-studies/unrelated/large.log', 'docs/case-studies/unrelated/large.gz'];
+    const result = spawnSync('git', ['sparse-checkout', 'check-rules', '--no-cone', '--rules-file', rules, '-z'], {
+      input: Buffer.from([...inputs, ...excluded].join('\0') + '\0'), timeout: 5000,
+      maxBuffer: 1024 * 1024, encoding: 'utf8',
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(result.stdout.split('\0').filter(Boolean), inputs, 'the hosted sparse checkout must acquire every consumed fixture');
+  } finally { rmSync(directory, {recursive: true, force: true}); }
   for (const fixture of inputs.filter(path => path.startsWith('docs/'))) assert(readFileSync(fixture).length > 0, fixture);
 });
