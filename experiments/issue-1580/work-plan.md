@@ -1104,3 +1104,11 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Read 22 further complete pinned sources and actual Formal AI release counterparts. Rust source review is 78/373 files / 7616 literal lines; the remaining 295 files and applicable practice verification remain open.
 - [x] Preserve the observed harness error from probing absent root Cargo.toml; actual rust/Cargo.toml package/profile/lint metadata was then read successfully.
 - [ ] Repair and verify release-name trust, parsed version identity, fail-closed registry/output handling, and establish equivalent committed binary-lockfile enforcement. Preserve moved-manifest/current-base semantics and source-qualified recovery refusal. No original acceptance or independent authorship credit comes from these supplied review scripts.
+
+### Completed native-family run and continued Rust review, 2026-11-20
+
+- [x] Preserve the completed exact-head 03ff3a8e CI run: 23 workflows, 21 successes; Layered assertion and Hive workflow replay are the two actionable failures. HTTP interfaces pass 78/78; the three Hive shards complete 35/36 without cancellation.
+- [x] Draft the checkout assertion and real-workspace Hive replay repairs with focused controls and unchanged job clocks. Hosted confirmation on the next published head remains pending.
+- [x] Read four further complete pinned Rust helpers: package paths, registry metadata, publication and visibility polling. Literal source review is 82/373 files / 9150 lines; 291 source files and actual practice implementation/verification remain unfinished.
+- [ ] Complete original-contract review and replay: 31/53 have strict qualifying dated published evidence; matching changed test names do not by themselves establish the remaining original contracts. The three original budget cases remain open.
+- [ ] Independent accepted Formal AI reasoning remains 0/20. Supplied commands, code, tests and review scripts receive no independent credit.

@@ -73,5 +73,10 @@
     "file": "formal-release-gate-counterparts-read.log.gz",
     "rawSha256": "24533041c0d243deb3340a1bdbcdf2c7979edcbeef87336dbdaf95c363f5848c",
     "archiveSha256": "d6b3a5c7724b4e3d8f04d00090e671919c14c60d9302ce73a2aeaf25e635f79d"
+  },
+  {
+    "file": "rust-path-registry-read.log.gz",
+    "rawSha256": "45ea1bcfe7457446fac9e6472a779f3d5aefd9fe05f3bcecb462a8570bc47877",
+    "archiveSha256": "18860c757e84cc101613a917b36649c43171070f162c77b81dad77ed9259bba5"
   }
 ]

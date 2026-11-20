@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T02:52:02.958636+00:00",
+  "observedAt": "2026-11-20T03:11:38.949973+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 78,
-  "fullyReadSourceLines": 7616,
+  "fullyReadFiles": 82,
+  "fullyReadSourceLines": 9150,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -1049,6 +1049,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "scripts/publish-crate.rs",
+      "lines": 355,
+      "readLogs": [
+        "rust-path-registry-read.log.gz"
+      ],
+      "sha256": "a1de7709353740174bf9cf00ae09a945630e77d2e92decf667302abff4f61ce1",
+      "literalReadRanges": [
+        [
+          1,
+          355
+        ]
+      ],
+      "literalReadLines": 355,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "scripts/read-job-cancel-in-progress.sh",
       "lines": 60,
       "sha256": "99b592ecdb41d29768f11ace8d88316b4e59d766bd3794511aa8a270dc906a9d",
@@ -1062,6 +1079,23 @@
         ]
       ],
       "literalReadLines": 60,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/registry.rs",
+      "lines": 290,
+      "readLogs": [
+        "rust-path-registry-read.log.gz"
+      ],
+      "sha256": "6d69fe4f11cbe6608bdac87f095c4b1f40080b12b5eec5c23576905bcbda6265",
+      "literalReadRanges": [
+        [
+          1,
+          290
+        ]
+      ],
+      "literalReadLines": 290,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1151,6 +1185,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "scripts/rust-paths.rs",
+      "lines": 347,
+      "readLogs": [
+        "rust-path-registry-read.log.gz"
+      ],
+      "sha256": "ec737d3c36515dd232ecd39beeb87182761b6b1f0ee50276892eba22a7d18a50",
+      "literalReadRanges": [
+        [
+          1,
+          347
+        ]
+      ],
+      "literalReadLines": 347,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "scripts/simulate-fresh-merge.sh",
       "lines": 113,
       "sha256": "d0eaee1d9b44cf64a1b994a4241289ea3cd76eac8c870fc9ba85bd89293f0cb5",
@@ -1215,6 +1266,23 @@
         ]
       ],
       "literalReadLines": 21,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/wait-for-crate.rs",
+      "lines": 542,
+      "readLogs": [
+        "rust-path-registry-read.log.gz"
+      ],
+      "sha256": "62061970a4b80182e9fab9195daf8adb1c898cc33cf8fc644532c052cb728fea",
+      "literalReadRanges": [
+        [
+          1,
+          542
+        ]
+      ],
+      "literalReadLines": 542,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1610,6 +1678,24 @@
       "formalAiPaths": [
         "scripts/check-rust-dependencies.sh",
         "rust/Cargo.lock"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Registry uncertainty, crate publication and package path helpers",
+      "templateEvidence": [
+        "scripts/rust-paths.rs",
+        "scripts/registry.rs",
+        "scripts/publish-crate.rs",
+        "scripts/wait-for-crate.rs"
+      ],
+      "assessment": "Fully read the four complete pinned helpers. Registry metadata parsing, bounded HTTP requests and distinctions between absence and transient/permanent failures are applicable comparison inputs. Sparse visibility currently trusts successful API status without identity proof; package identity uses a table-local regex rather than full TOML. Rate-limit publication deferral, Cargo credential-store fallback and dependent-job ownership need actual Formal AI workflow/counterpart comparison and executable evidence. No implementation or upstream-repair credit is established by this read.",
+      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "formalAiPaths": [
+        "scripts/rust-paths.rs",
+        "scripts/publish-crate.rs",
+        "scripts/wait-for-crate.rs",
+        "scripts/check-release-needed.rs"
       ],
       "verification": null
     }
