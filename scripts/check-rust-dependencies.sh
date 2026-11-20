@@ -48,6 +48,14 @@ if [[ ! -f "$config" ]]; then
   exit 1
 fi
 
+# Complete the inventory before any Cargo command. Process substitution hides
+# failed Git observations, including an error after partial lockfile output.
+tracked_locks="$(git ls-files -- 'Cargo.lock' '*/Cargo.lock')" || {
+  status=$?
+  echo "::error::Unable to enumerate Cargo lockfiles (git ls-files exited $status)." >&2
+  exit "$status"
+}
+
 # The ignored advisory IDs, one per line: everything quoted inside the
 # `ignore = [...]` array, which may be written on one line or across several.
 ignored="$(
@@ -159,7 +167,7 @@ cargo audit --file "$lock" --deny warnings
 # release fails here, and an `unmaintained` notice with no fixed release is
 # reported but does not fail.
 while IFS= read -r each; do
-  [[ "$each" != "$lock" ]] || continue
+  [[ -n "$each" && "$each" != "$lock" ]] || continue
   if [[ ! -f "$each" ]]; then
     echo "::error::$each is committed but not checked out, so its dependencies would go unaudited."
     echo "  Add it to the security workflow's sparse checkout."
@@ -167,4 +175,4 @@ while IFS= read -r each; do
   fi
   echo "Auditing $each"
   cargo audit --file "$each" --deny unsound --deny yanked
-done < <(git ls-files -- 'Cargo.lock' '*/Cargo.lock')
+done <<< "$tracked_locks"

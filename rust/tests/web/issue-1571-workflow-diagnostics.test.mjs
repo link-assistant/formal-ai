@@ -97,7 +97,7 @@ test('the Cargo audit discovers every committed Cargo.lock and holds unshipped o
  const locks=execFileSync('git',['ls-files','--','Cargo.lock','*/Cargo.lock'],{cwd:root,encoding:'utf8'}).trim().split('\n');
  assert.ok(locks.includes('rust/Cargo.lock')&&locks.length>1,locks.join(', '));
  const script=readFileSync(new URL('scripts/check-rust-dependencies.sh',root),'utf8');
- assert.match(script,/done < <\(git ls-files -- 'Cargo\.lock' '\*\/Cargo\.lock'\)/u);
+ assert.match(script,/git ls-files -- 'Cargo\.lock' '\*\/Cargo\.lock'/u);
  assert.match(script,/cargo audit --file "\$each" --deny unsound --deny yanked/u);
  assert.match(script,/::error::\$each is committed but not checked out/u);
 });

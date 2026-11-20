@@ -12,9 +12,10 @@ const config=readFileSync(new URL('.cargo/audit.toml',root),'utf8');
 function withAudit(run){
   const directory=mkdtempSync(join(tmpdir(),'formal-ai-audit-'));
   try{
-    for(const folder of ['bin','.cargo','rust','scripts'])mkdirSync(join(directory,folder));
+    for(const folder of ['bin','.cargo','rust','scripts','extra'])mkdirSync(join(directory,folder));
     copyFileSync(new URL('scripts/check-rust-dependencies.sh',root),join(directory,'scripts/check-rust-dependencies.sh'));
     writeFileSync(join(directory,'rust/Cargo.lock'),'# protocol fixture; no Rust dependency resolution\n');
+    writeFileSync(join(directory,'extra/Cargo.lock'),'# independent committed-lock fixture\n');
     const trace=join(directory,'calls.jsonl');
     writeFileSync(join(directory,'bin/cargo'),`#!${process.execPath}\n`+String.raw`
 const fs=require('node:fs');
@@ -28,7 +29,11 @@ if(args[0]==='tree'){
 }else if(args[0]==='audit')process.exit(Number(process.env.AUDIT_FAILURE??0));
 else process.exit(99);
 `,{mode:0o755});
-    writeFileSync(join(directory,'bin/git'),`#!${process.execPath}\nprocess.stdout.write('rust/Cargo.lock\\n');\n`,{mode:0o755});
+    writeFileSync(join(directory,'bin/git'),`#!${process.execPath}\n`+String.raw`
+if(process.argv[2]!=='ls-files')process.exit(99);
+process.stdout.write(process.env.GIT_INVENTORY_OUTPUT??'rust/Cargo.lock\n');
+process.exit(Number(process.env.GIT_INVENTORY_STATUS??0));
+`,{mode:0o755});
     const invoke=({text=config,...env}={})=>{
       writeFileSync(join(directory,'.cargo/audit.toml'),text);
       writeFileSync(trace,'');
@@ -71,5 +76,36 @@ test('a missing advisory proof is rejected and unrelated audit failures propagat
     const unrelated=invoke({AUDIT_FAILURE:'1'});
     assert.equal(unrelated.status,1,unrelated.stderr);
     assert.ok(unrelated.calls.some(args=>args[0]==='audit'&&args.includes('warnings')));
+  });
+});
+
+for(const [name,output] of [['empty',''],['partial','extra/Cargo.lock\n']]){
+  test(`failed ${name} Git inventory stops before any Cargo command`, {timeout:10000},()=>{
+    withAudit(invoke=>{
+      const result=invoke({GIT_INVENTORY_OUTPUT:output,GIT_INVENTORY_STATUS:'29'});
+      assert.equal(result.status,29,result.stderr+result.stdout);
+      assert.match(result.stderr+result.stdout,/Unable to enumerate.*lockfiles.*29/u);
+      assert.deepEqual(result.calls,[]);
+    });
+  });
+}
+
+test('complete inventory audits every independent lock with its existing policy', {timeout:10000},()=>{
+  withAudit(invoke=>{
+    const result=invoke({GIT_INVENTORY_OUTPUT:'rust/Cargo.lock\nextra/Cargo.lock\n'});
+    assert.equal(result.status,0,result.stderr+result.stdout);
+    assert.deepEqual(result.calls.filter(args=>args[0]==='audit'),[
+      ['audit','--file','rust/Cargo.lock','--deny','warnings'],
+      ['audit','--file','extra/Cargo.lock','--deny','unsound','--deny','yanked'],
+    ]);
+  });
+});
+
+test('a committed lock missing from checkout remains a failing audit', {timeout:10000},()=>{
+  withAudit(invoke=>{
+    const result=invoke({GIT_INVENTORY_OUTPUT:'rust/Cargo.lock\nmissing/Cargo.lock\n'});
+    assert.equal(result.status,1,result.stderr+result.stdout);
+    assert.match(result.stdout,/missing\/Cargo.lock is committed but not checked out/u);
+    assert.equal(result.calls.filter(args=>args[0]==='audit').length,1);
   });
 });
