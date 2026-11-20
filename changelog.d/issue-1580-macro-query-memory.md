@@ -1,0 +1,1 @@
+Keep the optional hosted Rust macro observation within a 3 GiB memory budget so the CodeQL evaluator can retain query-loading stages; preserve its four-minute deadline, two threads, strict compiler warnings and original security report checks.

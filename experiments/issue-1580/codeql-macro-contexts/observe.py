@@ -58,7 +58,7 @@ def observe(codeql, databases, output):
             installed.write_bytes(query.read_bytes())
             run("query", ["query", "run", "--database=" + str(database),
                           "--output=" + str(output / "macro-contexts.bqrs"),
-                          "--threads=2", "--ram=2048", "--max-disk-cache=512",
+                          "--threads=2", "--ram=3072", "--max-disk-cache=512",
                           "--warnings=error", str(installed)])
         run("decode", ["bqrs", "decode", "--format=json", "--entities=all",
                        "--output=" + str(output / "macro-contexts.json"), str(output / "macro-contexts.bqrs")])
