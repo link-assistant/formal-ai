@@ -1306,3 +1306,13 @@ Evidence and reproduction: [Rust context checkpoint](../../docs/case-studies/iss
 - [x] Read and identity-verify six complete Rust historical texts (264 lines); literal coverage is 243/373 files and 34,777 lines. Keep the existing viewed PNG as visual evidence only. The remaining 130 files, all unresolved counterpart practices and runtime acceptance remain unfinished.
 - [ ] Remove verified artifact/Pages warning causes while preserving extraction integrity and publication behavior; existing DEP0005/DEP0040 suppression is not warning resolution. Historical OCI receipts do not verify current mutable BuildKit identity.
 - [ ] Finish all current-head CI, inspect every failure, then publish the complete repair batch only after the single push gate permits it. Execute the corrected native detector and original Rust CodeQL producer on the new head. All broader requirements, strict original-source 31/53 and independent reasoning 0/20 remain open.
+
+## 20 November: actual extractor repair and complete 1fd0c4fd collection
+
+- [x] Finish and preserve every 1fd0c4fd workflow: 23/24 success; read-only Rust producer is the sole failure, with its local optional-edge repair already committed. Verify 350 complete command streams and distinguish quoted shell from emitted diagnostics.
+- [x] Reproduce actual unzip-stream 0.3.4 DEP0005 with finite 64 MiB/5-second input; preserve runtime/version and negative controls.
+- [x] Draft shared raw artifact transport and safe streaming extraction; retain cached replacement and both existing consumer contracts. Fourteen native artifact, seven Python ZIP, nine renderer, 97 maintained policy, 32 docs and eighteen production profile groups pass.
+- [ ] Verify real raw artifact transport on Linux/macOS/Windows, the native detector regressions and original Rust CodeQL producer on the next published head.
+- [ ] Migrate remaining direct artifact consumers, resolve Pages/source-size/dependency warnings, complete all eight template practice comparisons, all remaining original/budget criteria and broader acceptance. No criterion is completed merely by green CI or a source inventory.
+
+The complete checkpoint and immutable receipts are in docs/case-studies/issue-1580/artifact-extraction-checkpoint.md. Independent accepted reasoning remains 0/20; fullIssueComplete remains false.

@@ -309,3 +309,5 @@ applicable practice/runtime verification unfinished.
 
 
 The [Cargo optional-dependency and actual producer checkpoint](codeql-optional-dependency-checkpoint.md) records clean original Actions SARIF on `1fd0c4fd`, the Rust pre-analysis failure and its captured-input regression fix, pending native detector execution, and the precise incomplete review boundary. Rust literal review reaches 243/373 files and 34,777 lines. All broader unfinished criteria remain open.
+
+The [artifact extraction checkpoint](artifact-extraction-checkpoint.md) records all 24 terminal workflows on `1fd0c4fd`, 506 native passes, the bounded real DEP0005 reproduction and the shared consumer repair. Local archive tests pass; the optional Rust context repair, native detector and three hosted artifact transports require the next head. Wider acceptance remains unfinished.
