@@ -663,5 +663,15 @@
     "file": "small-validation-script-tests.log.gz",
     "rawSha256": "664c3472b25e632caf773d8ae0ea9ffbfda028f07e868c7b2e882b3510c0d764",
     "archiveSha256": "a339743ddbfc9464e3646dc9b8c0e749cf4ae1e048d824259e3098255b16da65"
+  },
+  {
+    "file": "dependency-comparison.txt.gz",
+    "rawSha256": "19f866bd1e8eba47d5c6a9a0e9c128530d254bdf92677781e73b823958785368",
+    "archiveSha256": "a4b7f2e86dad36f4da5f41c72d230af3d9b8cce6f0c9493941414d0d54ee01dc"
+  },
+  {
+    "file": "historical-pr-patch.txt.gz",
+    "rawSha256": "89a320b894f9e6a1b62f736ade2c5b0f8bab7b11ba102038a8dd9fcfd8da3cc1",
+    "archiveSha256": "48d77c7053d325a9fe9e6637bbff4ad5842ecd5f66e732c2b47430870e9ca4d9"
   }
 ]

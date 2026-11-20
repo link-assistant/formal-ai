@@ -1,0 +1,36 @@
+{
+  "literalPinnedFilesRead": 345,
+  "literalTextLinesRead": 42721,
+  "newSourceRecords": [
+    {
+      "path": "dev/log/issues/247/pulls/248/dependency-versions.md",
+      "sha256": "19f866bd1e8eba47d5c6a9a0e9c128530d254bdf92677781e73b823958785368",
+      "lines": 300,
+      "bytes": 35639,
+      "chunks": [
+        "lines-0001.txt",
+        "lines-0076.txt",
+        "lines-0151.txt",
+        "lines-0226.txt"
+      ]
+    },
+    {
+      "path": "docs/case-studies/issue-19/pr-114-data/pr-diff.patch",
+      "sha256": "89a320b894f9e6a1b62f736ade2c5b0f8bab7b11ba102038a8dd9fcfd8da3cc1",
+      "lines": 879,
+      "bytes": 31790,
+      "chunks": [
+        "lines-0001.txt",
+        "lines-0151.txt",
+        "lines-0301.txt",
+        "lines-0451.txt",
+        "lines-0601.txt",
+        "lines-0751.txt"
+      ]
+    }
+  ],
+  "historicalDraftEstablishesCurrentRuntime": false,
+  "allTemplatePracticesAdopted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

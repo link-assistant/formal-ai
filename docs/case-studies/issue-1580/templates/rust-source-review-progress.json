@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T19:11:23.517492+00:00",
+  "observedAt": "2026-11-20T19:19:42.696646+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 343,
-  "fullyReadSourceLines": 41542,
+  "fullyReadFiles": 345,
+  "fullyReadSourceLines": 42721,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -1186,6 +1186,23 @@
         ]
       ],
       "literalReadLines": 260,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/dependency-versions.md",
+      "lines": 300,
+      "sha256": "19f866bd1e8eba47d5c6a9a0e9c128530d254bdf92677781e73b823958785368",
+      "readLogs": [
+        "dependency-comparison.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          300
+        ]
+      ],
+      "literalReadLines": 300,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -2492,6 +2509,23 @@
         ]
       ],
       "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-19/pr-114-data/pr-diff.patch",
+      "lines": 879,
+      "sha256": "89a320b894f9e6a1b62f736ade2c5b0f8bab7b11ba102038a8dd9fcfd8da3cc1",
+      "readLogs": [
+        "historical-pr-patch.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          879
+        ]
+      ],
+      "literalReadLines": 879,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -6984,6 +7018,15 @@
       ],
       "assessment": "All 2,526 decoded lines from four immutable gzip streams were literally read. The full validation stream passes two CLI tests, three integration tests and 296 unit tests; it also records checks, documentation and zero-case targets. The three script streams pass their listed standalone Rust, Python and JavaScript suites while still emitting unused serde, chrono and ureq dependency warnings; batch two additionally warns on regex in two scripts. Candidate validation passes 124 JavaScript controls and eight JavaScript-first Rust/doc cases, but its final package upload explicitly aborts due to dry run. These are historical fixtures, not present Formal AI execution or published package proof. Preserve strict warning gates, exact selected revision and prerequisite evidence; current adoption, external publication, all warnings and the remaining template comparison stay open.",
       "status": "complete-literal-decoded-log-review-current-practice-runtime-open"
+    },
+    {
+      "practice": "Preserve dependency parent constraints and working-directory ownership without treating historical drafts as live execution",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/dependency-versions.md",
+        "docs/case-studies/issue-19/pr-114-data/pr-diff.patch"
+      ],
+      "assessment": "All 300 dependency-comparison lines and all 879 historical pull-request patch lines were literally read. The dependency table pins its 2026-11-14 observation and distinguishes registry latest from parent-compatible resolutions, including retained Chrono, platform and npm majors; its statements are historical claims, not a fresh registry/audit observation or accepted mandatory-Chrono removal. The patch documents command-stream virtual cd mutating the parent process, explicit root configuration and cwd restoration before retries; its Rust changelog still uses an unscoped version regex. This PR already separately repairs Cargo package/workspace identity with focused actual native CLI controls. The historical patch is not current runtime or publication evidence. Compare process-owned cwd and failure restoration against actual maintained consumers, preserving exact source identity and tests before adopting any helper. All-template practice acceptance and remaining dependency/runtime criteria remain open.",
+      "status": "complete-literal-historical-contract-document-review-current-practice-runtime-open"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
