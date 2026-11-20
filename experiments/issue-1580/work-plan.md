@@ -1058,3 +1058,9 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Keep process-group liveness checks after the root exits, excluding zombies. Apply the same check during TERM grace and fail explicitly if process inspection fails. Preserve stdout, stderr, compiler-cache reporting, warning-only behavior and the root exit status for completed groups.
 - [x] Verify seven focused controls, ten maintained release controls, twelve cache controls and three budget/registry controls with no skips, plus ShellCheck and shell parsing. The bounded Python fixture acts as a child subreaper and reaps every descendant. Retain the initial NODE_OPTIONS refusal and corrected CLI memory-cap invocation.
 - [ ] Verify the production fix on the next exact-head hosted run. This fixes only one budget criterion; broader acceptance and template comparison remain unfinished.
+
+### Rust status, cancellation and budget helper source review, 2026-11-20
+
+- [x] Fully read six more pinned helpers: terminal pipeline status, cancellation policy parsing, budget lifetime, fresh-base merge simulation, bounded rust-script installation and required documentation validation. Retain all 586 literal lines and exact hashes; the Rust checkpoint now covers 38/373 files and 4792 literal lines.
+- [x] Reproduce the pinned budget helper's live-child early return with the same finite reaped fixture used against this repository. Existing upstream issue 172 is related; no duplicate report or upstream repair is claimed.
+- [ ] Complete the other 335 Rust template files and every applicable practice comparison. Source review, a local repair and passing helper controls do not establish full acceptance.
