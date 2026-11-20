@@ -9,3 +9,5 @@ Separate the unchanged Telegram Markdown renderer into a private module, preserv
 Separate unchanged quotation framing from tool-result normalization to remove its source-size warning while preserving status and citation interpretation.
 
 Separate unchanged file-end insertion and compact anchor selection into a private module to remove the computed workspace change source-size warning.
+
+Separate unchanged search follow-up boundaries and affine arithmetic presentation/comparison helpers into private modules to remove both source-size warnings.

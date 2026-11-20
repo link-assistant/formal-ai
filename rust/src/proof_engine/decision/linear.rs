@@ -1,5 +1,6 @@
 //! Quantifier-free affine real-arithmetic decision procedure.
 
+mod numeric;
 mod proofs;
 mod search;
 
@@ -8,6 +9,10 @@ use std::collections::{BTreeMap, BTreeSet};
 use crate::proof_engine::library::phrase;
 use crate::proof_engine::types::{ProofMethod, ProofOutcome};
 
+use self::numeric::{
+    format_affine, format_assignment, format_atoms, format_number, nearly_equal, nearly_zero,
+    stronger_lower, stronger_upper,
+};
 use self::proofs::{
     linear_entailment_counterexample_proof, linear_entailment_proof, linear_identity_disproof,
     linear_identity_proof, linear_satisfiability_proof, linear_universal_counterexample_proof,
@@ -758,16 +763,6 @@ impl Interval {
     }
 }
 
-fn stronger_lower(candidate: Bound, current: Bound) -> bool {
-    candidate.value > current.value + EPSILON
-        || (nearly_equal(candidate.value, current.value) && candidate.strict && !current.strict)
-}
-
-fn stronger_upper(candidate: Bound, current: Bound) -> bool {
-    candidate.value < current.value - EPSILON
-        || (nearly_equal(candidate.value, current.value) && candidate.strict && !current.strict)
-}
-
 #[derive(Debug, Clone)]
 struct IntervalSystem {
     variable: String,
@@ -897,52 +892,4 @@ fn build_interval_system(atoms: &[LinearAtom]) -> Option<IntervalSystem> {
         variable: variable.unwrap_or_else(|| String::from("x")),
         interval,
     })
-}
-
-fn format_atoms(atoms: &[LinearAtom]) -> String {
-    atoms
-        .iter()
-        .map(|atom| atom.original.as_str())
-        .collect::<Vec<_>>()
-        .join(CONJUNCTION)
-}
-
-fn format_assignment(assignment: &BTreeMap<String, f64>) -> String {
-    assignment
-        .iter()
-        .map(|(name, value)| format!("{name} = {}", format_number(*value)))
-        .collect::<Vec<_>>()
-        .join(", ")
-}
-
-fn format_affine(expression: &AffineExpr) -> String {
-    let mut parts = Vec::new();
-    for (name, coefficient) in &expression.coefficients {
-        parts.push(format!("{}*{}", format_number(*coefficient), name));
-    }
-    if !nearly_zero(expression.constant) || parts.is_empty() {
-        parts.push(format_number(expression.constant));
-    }
-    parts.join(" + ").replace("+ -", "- ")
-}
-
-fn format_number(value: f64) -> String {
-    if nearly_zero(value) {
-        return String::from("0");
-    }
-    if nearly_zero(value.fract()) {
-        return format!("{value:.0}");
-    }
-    format!("{value:.6}")
-        .trim_end_matches('0')
-        .trim_end_matches('.')
-        .to_owned()
-}
-
-fn nearly_zero(value: f64) -> bool {
-    value.abs() < EPSILON
-}
-
-fn nearly_equal(left: f64, right: f64) -> bool {
-    (left - right).abs() < EPSILON
 }
