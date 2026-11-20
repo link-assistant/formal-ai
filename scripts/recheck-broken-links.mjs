@@ -258,20 +258,29 @@ export async function recheckAll(urls, options = {}) {
   let pending = [...urls];
 
   for (let round = 1; round <= attempts && pending.length > 0; round += 1) {
+    const remaining = budgetMs - (now() - started);
+    if (remaining <= 0) break;
     if (round > 1) {
-      // Doubling, so three rounds span a minute rather than ten seconds: the
-      // failure this exists for is a burst, and a burst is outlasted by time.
-      await sleep(waitMs * 2 ** (round - 2));
+      // A retry wait spends the same budget as a request. Stop when the next
+      // wait leaves no time to ask, rather than sleeping past the deadline.
+      const delay = waitMs * 2 ** (round - 2);
+      if (delay >= remaining) break;
+      await sleep(delay);
     }
 
     const stillPending = [];
     for (const url of pending) {
-      if (now() - started >= budgetMs) {
+      const requestBudget = budgetMs - (now() - started);
+      if (requestBudget <= 0) {
         stillPending.push(url);
         continue;
       }
 
-      const result = await probe(url, { fetchImpl, timeoutMs, accept });
+      const result = await probe(url, {
+        fetchImpl,
+        timeoutMs: Math.min(timeoutMs, requestBudget),
+        accept,
+      });
       const record = results.get(url);
       record.outcome = result.outcome;
       record.detail = result.detail;

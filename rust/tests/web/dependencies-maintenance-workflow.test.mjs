@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {execFileSync} from 'node:child_process';
+import {execFileSync,spawnSync} from 'node:child_process';
 import {mkdtempSync,mkdirSync,readFileSync,realpathSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
@@ -7,7 +7,7 @@ import test from 'node:test';
 const workflow=readFileSync(new URL('../../../.github/workflows/dependencies-latest.yml',import.meta.url),'utf8');
 
 function observedLocks(source) {
-  const loop=source.match(/          while IFS= read -r lock; do\n([\s\S]*?)          done < <\(git ls-files -- '\*bun.lock' '\*package-lock.json'\)/u);
+  const loop=source.match(/          while IFS= read -r lock; do\n([\s\S]*?)          done <<< "\$locks"/u);
   assert(loop,'maintained lock re-resolution loop missing');
   const directory=realpathSync(mkdtempSync(path.join(tmpdir(),'formal-ai-maintenance-locks-')));
   mkdirSync(path.join(directory,'nested'));
@@ -36,4 +36,25 @@ test('original nested-only case pattern demonstrably loses both root locks',()=>
 test('history-dependent maintenance gates receive full checkout history',()=>{
   assert.match(workflow,/- uses: actions\/checkout@v7\.0\.1\n        with:\n          fetch-depth: 0/u);
   assert.match(workflow,/Run registered gates \(stage rust\)/u);
+});
+
+function observeInventory(source, failAfterOutput) {
+  const step=source.match(/      - name: Re-resolve the JavaScript lockfiles from the rewritten manifests\n        run: \|\n([\s\S]*?)(?=\n      - name:)/u);
+  assert(step, 'complete resolver step required');
+  const directory=realpathSync(mkdtempSync(path.join(tmpdir(),'formal-ai-lock-observation-')));
+  const shell=`git() { printf 'package-lock.json\\n'; return ${failAfterOutput ? 23 : 0}; }\n`+
+    'npm() { printf "resolved:%s\\n" "$PWD"; }\n'+
+    'bun() { printf "resolved:%s\\n" "$PWD"; }\n'+step[1].replace(/^          /gmu,'');
+  try {
+    return spawnSync('bash',['-c',shell],{cwd:directory,encoding:'utf8',timeout:3000});
+  } finally { rmSync(directory,{recursive:true,force:true}); }
+}
+
+test('failed lock inventory stops before any resolver even after partial output',()=>{
+  const failed=observeInventory(workflow,true);
+  assert.equal(failed.status,23,failed.stderr);
+  assert.equal(failed.stdout,'','an incomplete inventory must not resolve a partial tree');
+  const complete=observeInventory(workflow,false);
+  assert.equal(complete.status,0,complete.stderr);
+  assert.match(complete.stdout,/^resolved:/u);
 });
