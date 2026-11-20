@@ -19,3 +19,5 @@ Regenerate native constant witnesses after the lexeme module extraction; preserv
 Extract unchanged repair-loop notes and text replacement ranges into private modules; preserve existing repair-note public paths.
 
 Separate unchanged controlled-language realization helpers from grammar parsing while retaining their existing public paths.
+
+Separate unchanged CLI solver invocation helpers; regenerate literal-owner paths after source moves without adding allowlisted text.

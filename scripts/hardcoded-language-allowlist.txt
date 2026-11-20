@@ -159,6 +159,7 @@ rust/src/cli_memory.rs	Wrote full memory: {} event(s) + {} seed file(s)
 rust/src/cli_memory.rs	Wrote full-memory backup with {} event(s) to {}.
 rust/src/cli_memory.rs	Wrote {} events (events-only)
 rust/src/cli_shared_dialog.rs	Wrote demo_memory to {}.
+rust/src/cli_solver.rs	the agentic loop did not finish within its turn cap after {} tool call(s)
 rust/src/cli_telegram.rs	Telegram polling mode requires a bot token. Pass --token or set TELEGRAM_BOT_TOKEN.
 rust/src/client_integrations.rs	temporary config path escapes its root: {relative}
 rust/src/client_integrations.rs	temporary config path must be relative: {relative}
@@ -342,7 +343,6 @@ rust/src/links_substitution_query/text.rs	{TWO_SIDES}; each side opens with `(`
 rust/src/links_substitution_query/text.rs	{TWO_SIDES}; found only one
 rust/src/links_substitution_query/text.rs	{TWO_SIDES}; found trailing input
 rust/src/main.rs	Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base covering all nine protocol primitives.
-rust/src/main.rs	the agentic loop did not finish within its turn cap after {} tool call(s)
 rust/src/memory/bundle.rs	  exported_at \"
 rust/src/memory/bundle.rs	  seed_files\n
 rust/src/memory/bundle.rs	Imported bundle was authored against seed version {imported_v} but the running app does not expose a seed version. Update the app to compare.
@@ -670,11 +670,11 @@ rust/src/summarization/file.rs	{path} is an empty {} file
 rust/src/summarization/file.rs	{} is a {} file with {} lines and {} bytes.
 rust/src/summarization/resource.rs	{hidden} more {} omitted for brevity.
 rust/src/summarization/resource.rs	{} is a repository directory with {} {} and {} {} ({} {} total across {} {}).
-rust/src/telegram.rs	</code></pre>\n
 rust/src/telegram.rs	<blockquote expandable>💭 {body}</blockquote>
-rust/src/telegram.rs	<pre><code class=\"{class}\">
 rust/src/telegram.rs	I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.
 rust/src/telegram.rs	formal-ai {FORMAL_AI_VERSION}
+rust/src/telegram/markdown.rs	</code></pre>\n
+rust/src/telegram/markdown.rs	<pre><code class=\"{class}\">
 rust/src/telegram_runtime.rs	curl exited with {status}: {stderr}
 rust/src/translation/cache.rs	failed to create cache directory {}: {error}
 rust/src/translation/cache.rs	failed to write cache body {}: {error}
