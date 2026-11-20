@@ -91,6 +91,26 @@ def rustc_environment(package, target_name):
             "CARGO_CRATE_NAME": target_name.replace("-", "_")}
 
 
+def active_optional_dependencies(package, features):
+    """Expand Cargo features without turning weak dep?/feature forwarding on."""
+    pending, visited, active = list(features), set(), set()
+    definitions = package.get("features", {})
+    while pending:
+        feature = pending.pop()
+        if feature in visited:
+            continue
+        visited.add(feature)
+        if feature.startswith("dep:"):
+            active.add(feature[4:].replace("-", "_"))
+        elif "/" in feature:
+            dependency = feature.split("/", 1)[0]
+            if not dependency.endswith("?"):
+                active.add(dependency.replace("-", "_"))
+        else:
+            pending.extend(definitions.get(feature, []))
+    return active
+
+
 def dependency_graph(metadata, messages, host):
     """Use Cargo's resolved versions, dependency aliases, features and build data."""
     packages = {p["id"]: p for p in metadata["packages"]}
@@ -108,8 +128,23 @@ def dependency_graph(metadata, messages, host):
             macros[pid] = dylibs[0]
 
     def normal_deps(pid):
-        # --filter-platform already discards dependencies for other platforms.
-        return [d for d in nodes[pid]["deps"] if any(k["kind"] is None for k in d["dep_kinds"])]
+        # Cargo metadata retains inactive optional edges, even with platform filtering.
+        # Resolve activation from the owning package, not from a dependency that
+        # another build unit happened to compile (weak forwarding is not activation).
+        package = packages.get(pid, {})
+        active = active_optional_dependencies(package, nodes[pid]["features"])
+        dependencies = []
+        for dep in nodes[pid]["deps"]:
+            targets = {k["target"] for k in dep["dep_kinds"] if k["kind"] is None}
+            if not targets:
+                continue
+            declared = [d for d in package.get("dependencies", [])
+                        if d["kind"] is None and d["target"] in targets
+                        and (d.get("rename") or d["name"]).replace("-", "_") == dep["name"].replace("-", "_")]
+            optional = declared and all(d["optional"] for d in declared)
+            if not optional or dep["name"].replace("-", "_") in active:
+                dependencies.append(dep)
+        return dependencies
 
     reachable = set()
 

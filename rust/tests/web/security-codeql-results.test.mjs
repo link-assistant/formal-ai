@@ -303,6 +303,75 @@ with tempfile.TemporaryDirectory(prefix='rust-graph-') as directory:
 `);
 });
 
+test('Cargo metadata inactive optionals preserve the exact hosted compiled dependency graph', {timeout: 20000}, () => {
+  checkPython(String.raw`
+import gzip
+fixture = json.loads(gzip.decompress(pathlib.Path('rust/tests/fixtures/codeql/hosted-inactive-optional-dependency.json.gz').read_bytes()))
+metadata, messages = fixture['metadata'], fixture['messages']
+graph, dependencies = a.dependency_graph(metadata, messages, 'x86_64-unknown-linux-gnu')
+root_id = metadata['resolve']['root']
+compiled = {m['target']['name'] for m in messages if m['reason'] == 'compiler-artifact' and m['package_id'] != root_id}
+assert len(graph) == 13
+assert {c['display_name'] for c in graph} == compiled
+assert 'serde_core' not in compiled
+assert 'serde_core' in {p['name'] for p in metadata['packages']}
+datetime = next(c for c in graph if c['display_name'] == 'toml_datetime')
+assert datetime['cfg'] == ['feature="alloc"', 'feature="default"', 'feature="std"']
+assert datetime['deps'] == []
+assert {d['name'] for d in dependencies} == {'regex', 'toml_edit'}
+for crate in graph:
+    assert all(0 <= d['crate'] < len(graph) for d in crate['deps'])
+`);
+});
+
+test('optional aliases and feature forwarding retain activated dependencies and required build data', {timeout: 20000}, () => {
+  checkPython(String.raw`
+import gzip, copy
+fixture = json.loads(gzip.decompress(pathlib.Path('rust/tests/fixtures/codeql/hosted-inactive-optional-dependency.json.gz').read_bytes()))
+for label, enabled, definitions, alias, expected in [
+    ('weak only', ['std'], {'std': ['serde_core?/std']}, None, False),
+    ('explicit dep', ['serde'], {'serde': ['dep:serde_core']}, None, True),
+    ('strong forwarding', ['serde'], {'serde': ['serde_core/std']}, None, True),
+    ('nested feature', ['serialization'], {'serialization': ['serde'], 'serde': ['dep:serde_core']}, None, True),
+    ('renamed inactive', ['std'], {'std': ['serialization?/std']}, 'serialization', False),
+    ('renamed active', ['serde'], {'serde': ['dep:serialization']}, 'serialization', True),
+    ('hyphenated alias', ['serde'], {'serde': ['dep:serialization-data']}, 'serialization-data', True),
+]:
+    metadata = copy.deepcopy(fixture['metadata'])
+    messages = copy.deepcopy(fixture['messages'])
+    parent = next(p for p in metadata['packages'] if p['name'] == 'toml_datetime')
+    node = next(n for n in metadata['resolve']['nodes'] if n['id'] == parent['id'])
+    parent['features'], node['features'] = definitions, enabled
+    if alias:
+        parent['dependencies'][0]['rename'] = alias
+        node['deps'][0]['name'] = alias.replace('-', '_')
+    optional = next(p for p in metadata['packages'] if p['name'] == 'serde_core')
+    # Even if another build unit compiled this package, a weak optional edge stays inactive.
+    messages.append(dict(reason='build-script-executed',package_id=optional['id'],cfgs=['generated'],env=[],out_dir='/fixture/generated'))
+    graph, _ = a.dependency_graph(metadata, messages, 'x86_64-unknown-linux-gnu')
+    assert ('serde_core' in {c['display_name'] for c in graph}) == expected, label
+    if expected:
+        crate = next(c for c in graph if c['display_name'] == 'serde_core')
+        assert 'generated' in crate['cfg']
+        assert crate['env']['OUT_DIR'] == '/fixture/generated'
+        messages.pop()
+        try:
+            a.dependency_graph(metadata, messages, 'x86_64-unknown-linux-gnu')
+            raise AssertionError('activated optional build data silently lost: ' + label)
+        except ValueError as error:
+            assert 'Build script output absent' in str(error), str(error)
+# A required dependency cannot disappear because its feature name is absent.
+metadata = copy.deepcopy(fixture['metadata'])
+parent = next(p for p in metadata['packages'] if p['name'] == 'toml_datetime')
+parent['dependencies'][0]['optional'] = False
+try:
+    a.dependency_graph(metadata, fixture['messages'], 'x86_64-unknown-linux-gnu')
+    raise AssertionError('required dependency silently lost')
+except ValueError as error:
+    assert 'Build script output absent' in str(error)
+`);
+});
+
 test('direct-rustc worker context uses the real WASM target and source paths', {timeout: 20000}, () => {
   checkPython(String.raw`
 root = pathlib.Path.cwd()
