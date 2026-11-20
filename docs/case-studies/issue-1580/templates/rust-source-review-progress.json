@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T20:48:42.278017+00:00",
+  "observedAt": "2026-11-20T21:17:10.448072+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 350,
-  "fullyReadSourceLines": 45933,
+  "fullyReadFiles": 351,
+  "fullyReadSourceLines": 49165,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -1228,6 +1228,31 @@
         ]
       ],
       "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/dependencies-after.json",
+      "lines": 3232,
+      "sha256": "cc511e2982325a5e35f9fefc6fc244133e37f760f2343d130dc4ed499d622281",
+      "readLogs": [
+        "rust-dependencies-after-review-first.log.gz",
+        "rust-dependencies-after-review-second.log.gz",
+        "rust-dependencies-after-review-third.log.gz",
+        "rust-dependencies-after-review-fourth.log.gz",
+        "rust-dependencies-after-review-fifth.log.gz",
+        "rust-dependencies-after-review-sixth.log.gz",
+        "rust-dependencies-after-review-seventh.log.gz",
+        "rust-dependencies-after-review-eighth.log.gz",
+        "rust-dependencies-after-review-ninth.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          3232
+        ]
+      ],
+      "literalReadLines": 3232,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -7156,6 +7181,14 @@
         "dev/log/issues/247/pulls/248/dependencies-before.json"
       ],
       "assessment": "The complete 1,510-line historical before-update inventory is literally reviewed through four contiguous byte slices and reassembled to its pinned original identity. Cargo application and standalone script versions differ, and the historical syn duplicate and TOML API generations cannot be treated as one current application dependency graph. npm policy and secretlint lock transitives are separate from root manifest declarations; action tags, immutable commit references and empty detected-tool arrays carry different evidence. Preserve complete inventory collection and exact current lock/manifest checks rather than using this historical snapshot as current package, security or tool availability proof. Current published transitive consumers and release execution remain unverified by this source review.",
+      "status": "literal-source-comparison-and-current-consumer-verification-pending"
+    },
+    {
+      "practice": "Keep manifest ranges, resolved locks, standalone script dependencies and historical dependency snapshots distinct",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/dependencies-after.json"
+      ],
+      "assessment": "The complete 3,232-line historical after-update inventory is literally reviewed through nine contiguous byte slices and reassembled to its pinned original identity. Cargo application and standalone script versions differ: the historical update still has mandatory Chrono 0.4.45 in the three resolved scripts, app syn 3.0.10 and both syn generations in standalone resolutions. These historical inventories cannot be treated as one current application dependency graph or proof that present published transitive consumers removed Chrono. npm policy and secretlint lock transitives are separate from root manifest declarations; action tags, immutable commit references and empty detected-tool arrays carry different evidence. Preserve complete inventory collection and exact current lock/manifest checks rather than using this historical snapshot as current package, security or tool availability proof. Current published transitive consumers and release execution remain unverified by this source review.",
       "status": "literal-source-comparison-and-current-consumer-verification-pending"
     }
   ],
