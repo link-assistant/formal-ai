@@ -7,3 +7,5 @@ Keep lexeme importing below its source-size warning threshold by separating unch
 Separate the unchanged Telegram Markdown renderer into a private module, preserving the existing public entry point and HTML escaping while removing the source-size warning.
 
 Separate unchanged quotation framing from tool-result normalization to remove its source-size warning while preserving status and citation interpretation.
+
+Separate unchanged file-end insertion and compact anchor selection into a private module to remove the computed workspace change source-size warning.
