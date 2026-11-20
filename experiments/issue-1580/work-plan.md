@@ -946,3 +946,75 @@ fragment/reconstruction checks after the changelog was staged. Both staged and
 unstaged whitespace checks pass. Its exact command and hashes are retained in
 `evidence/checks/native-interface-failures/publication-files/`. This is local
 validation only; publication and current-head hosted verification remain open.
+
+## Rust audit inventory and Java historical comparison
+
+The native repair batch is published at `d80aedfe4a8ec2cfbce481f12d966376d59fde20`
+in PR #1581. Fresh preflight verifies a clean tree, current main ancestry and empty
+branch queues. The PR title/body now describe the concrete repair and retain
+`Fixes #1580`; the PR stays draft and the overall issue remains unfinished.
+
+- [x] Draft per-file applicability decisions for all 145 previously reviewed Java
+  historical blobs, with exact pinned identities and existing Formal AI paths.
+  Keep whole-repository semantic acceptance false pending final comparison.
+- [x] Reproduce another incomplete Git inventory false success in the production
+  Rust audit wrapper. The original script returns zero after empty or partial
+  `git ls-files` output with exit 29; the retained seven-case file has five passes
+  and two failures. Process substitution hides that observation from pipefail.
+- [x] Capture the complete inventory with checked status before any Cargo command.
+  Both failures now retain status 29 and invoke no Cargo; the seven-case file
+  passes. Strict primary and experiment-lock audit policies stay intact.
+- [ ] Complete adjacent audit/profile/policy tests, shell checks, touched gates,
+  current-head CI analysis and every remaining wider acceptance criterion.
+
+The original source-shape diagnostic requires the unsafe process substitution;
+its first rerun fails on that exact regex. Update it to preserve both lockfile
+patterns while behavior regressions enforce observation failure propagation.
+No local Rust compilation, dependency resolution or native execution occurs.
+All supplied reasoning retains zero independent authorship credit.
+
+## Current-head CI inventory and audit boundary repair
+
+All 23 workflows at `d80aedfe4a8ec2cfbce481f12d966376d59fde20` complete:
+21 succeed and two fail. Complete failed-run streams, exact job metadata and
+selected job streams are retained under `evidence/ci/native-interface-d80aedfe/`.
+
+- [x] Layered CI job 135989621050, log lines 302–304, identifies exactly two
+  stale TypeScript projections. The official translator reproduces that drift,
+  regenerates those two files and verifies all 729 projections. Commit `6063b869b`.
+- [x] Native job 135986537577 passes library type/lint checks, then fails compiling
+  `reasoning_contracts`: E0603 at log lines 1718–1733, because the Hive fixture
+  references private `protocol_responses` at source line 385. Commit `32ba9f56f`
+  exports the existing canonical patch codec through public `protocol` and uses
+  that boundary. Native behavior never starts in that step; no added native
+  replay or coding-target credit is claimed from this run.
+- [x] Preserve the later successful library/language and HTTP steps separately.
+  Pipeline status correctly fails for the native job; it is not another root
+  cause. The two JavaScript shards pass; neither proves native behavior.
+- [x] Commit the independently reproduced Rust audit inventory repair at
+  `f38bdf2d1`. Both original empty/partial Git-error cases return false success;
+  fixed code propagates status 29 before invoking Cargo. The complete seven-case
+  file, five workflow diagnostics and seventeen fast-profile cases pass. Shell
+  parsing, ShellCheck and eight affected gates pass. The expected pre-regeneration
+  translator failure remains distinct from the successful post-write check.
+- [x] Refresh all four feedback endpoints: 1 issue comment, 11 PR conversation
+  comments, zero inline comments and zero reviews; no new substantive feedback.
+- [x] Check the draft Java historical comparison: all 145 pinned blob/hash pairs
+  match complete content coverage, every comparison path exists, and active plus
+  historical path inventories form a disjoint 207-file union. All eight shared
+  applicability decisions and all 145 path classifications are reviewed; full
+  repository semantic acceptance remains false pending final comparison.
+- [ ] Complete the final protocol/witness checks, archive and review all owned
+  changes, refresh main and empty branch queues, then push one batch and collect
+  every exact-head hosted result. Wider acceptance remains unfinished.
+
+No local Rust build or native execution occurs. The strict original replay union
+remains 27/53 and independently accepted Formal AI reasoning remains 0/20.
+
+Final follow-up checks pass: 53 native admission/policy, 11 append-contract,
+eight selection, 34 identifier/witness and two fixture-integrity cases, with
+seven source/publication gates, Rust 2024 formatting and whitespace checks.
+The exact command/log hashes are retained in `evidence/checks/native-ci-repair/`;
+the earlier stale source-regex failure is retained separately. No governed
+fixture refresh is needed for this public protocol export. Hosted native
+behavior and all wider acceptance criteria remain pending.

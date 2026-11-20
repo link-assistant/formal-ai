@@ -1,0 +1,40 @@
+{
+  "complete": false,
+  "records": [
+    {
+      "name": "cargo-audit-proof",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/cargo-audit-proof.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.169,
+      "rawSha256": "3114629a6a9008fdd749e2d5046b764c9ac4d6fe635658106d85861c28e5539b",
+      "archiveSha256": "a6043ab8813eb70a6d01fc7b5ba12ca8891c1343239a909520c9fb5544748dd9",
+      "lines": 28
+    },
+    {
+      "name": "issue-1571-workflow-diagnostics",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1571-workflow-diagnostics.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 0.429,
+      "rawSha256": "4d6f1b58af4934a5bdc07ce406c10b8850f9babbecc88cd515850984b1e7469a",
+      "archiveSha256": "087c7452c05314e3e6cfa2656c2e0d0b94946b9a54c5647f49869b6ad9e7139a",
+      "lines": 416
+    }
+  ],
+  "error": "Traceback (most recent call last):\n  File \"/tmp/issue-1580-research/validate-rust-audit-inventory.py\", line 16, in <module>\n    record(name,['timeout','600','node','--test','--test-reporter=tap','--test-concurrency=1','rust/tests/web/'+name+'.test.mjs'])\n    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/issue-1580-research/validate-rust-audit-inventory.py\", line 13, in record\n    if r.returncode:raise RuntimeError(name+' failed')\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: issue-1571-workflow-diagnostics failed\n"
+}
