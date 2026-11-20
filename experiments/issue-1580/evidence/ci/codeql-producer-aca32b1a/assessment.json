@@ -1,0 +1,103 @@
+{
+  "head": "aca32b1aa27aee55f1d9443f54d6a1c08f77ccb0",
+  "jobs": {
+    "job-136269105795.stdout.gz": {
+      "lines": 2312,
+      "candidateDiagnosticLines": 0,
+      "emittedWorkflowWarnings": 0,
+      "emittedWorkflowErrors": 0
+    },
+    "job-136269105882.stdout.gz": {
+      "lines": 2005,
+      "candidateDiagnosticLines": 0,
+      "emittedWorkflowWarnings": 0,
+      "emittedWorkflowErrors": 0
+    },
+    "job-136269105488.stdout.gz": {
+      "lines": 559,
+      "candidateDiagnosticLines": 4,
+      "emittedWorkflowWarnings": 0,
+      "emittedWorkflowErrors": 0
+    }
+  },
+  "reports": [
+    {
+      "file": "producer-14627178384-actions.sarif.gz",
+      "rawSha256": "d2b984d72b01509efaaa86201758f199ca5c7d7a2e5e3344f4988832e5dc0f6f",
+      "bytes": 2450754,
+      "version": "2.1.0",
+      "driver": "CodeQL",
+      "toolVersion": "2.27.4",
+      "results": 0,
+      "invocations": [
+        {
+          "successful": true,
+          "levels": {
+            "none": 5736
+          },
+          "descriptors": {
+            "actions/diagnostics/successfully-extracted-files": 75,
+            "cli/expected-extracted-files/javascript": 2203,
+            "cli/expected-extracted-files/rust": 2573,
+            "cli/expected-extracted-files/typescript": 731,
+            "cli/expected-extracted-files/python": 31,
+            "cli/expected-extracted-files/actions": 75,
+            "cli/expected-extracted-files/html": 40,
+            "cli/expected-extracted-files/java": 1,
+            "cli/expected-extracted-files/ruby": 1,
+            "cli/expected-extracted-files/csharp": 1,
+            "cli/expected-extracted-files/cpp": 1,
+            "cli/expected-extracted-files/go": 1,
+            "cli/expected-extracted-files/kotlin": 1,
+            "cli/expected-extracted-files/swift": 1,
+            "codeql-action/overlay-disabled": 1
+          }
+        }
+      ]
+    },
+    {
+      "file": "producer-14627469842-rust.sarif.gz",
+      "rawSha256": "9fd171649a6b1a481eacab2d8b83529e07222c7bdbb5e4fffcd1fc205e630adb",
+      "bytes": 3768051,
+      "version": "2.1.0",
+      "driver": "CodeQL",
+      "toolVersion": "2.27.4",
+      "results": 0,
+      "invocations": [
+        {
+          "successful": true,
+          "levels": {
+            "note": 66,
+            "none": 8867
+          },
+          "descriptors": {
+            "rust/diagnostics/type-inference-consistency-counts": 5,
+            "rust/diagnostics/successfully-extracted-files": 2573,
+            "rust/diagnostics/cfg-consistency-counts": 14,
+            "rust/diagnostics/unresolved-macro-calls": 631,
+            "rust/diagnostics/data-flow-consistency-counts": 29,
+            "rust/diagnostics/ast-consistency-counts": 9,
+            "rust/diagnostics/ssa-consistency-counts": 10,
+            "cli/expected-extracted-files/javascript": 2203,
+            "cli/expected-extracted-files/rust": 2573,
+            "cli/expected-extracted-files/typescript": 731,
+            "cli/expected-extracted-files/python": 31,
+            "cli/expected-extracted-files/actions": 75,
+            "cli/expected-extracted-files/html": 40,
+            "cli/expected-extracted-files/java": 1,
+            "cli/expected-extracted-files/ruby": 1,
+            "cli/expected-extracted-files/csharp": 1,
+            "cli/expected-extracted-files/cpp": 1,
+            "cli/expected-extracted-files/go": 1,
+            "cli/expected-extracted-files/kotlin": 1,
+            "cli/expected-extracted-files/swift": 1,
+            "codeql-action/overlay-disabled": 1,
+            "rust/extractor/telemetry": 1
+          }
+        }
+      ]
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

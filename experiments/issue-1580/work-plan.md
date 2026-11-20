@@ -1324,3 +1324,20 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [x] Preserve caller Python selection and empty pattern/all-artifact queries; reproduce and repair CI timing classification. Fourteen focused files and all available JavaScript gates pass.
 - [ ] Verify this migration on its published hosted head; the earlier aca32b1a run cannot supply that credit. Historical selected-source renderer execution remains unqualified.
 - [ ] Continue Pages/dependency/source-size warning repairs, full eight-template practice review, all original historical budgets, actual delivery/identity/publication, provenance and whole-PR review. Full issue completion remains false; independent accepted reasoning remains 0/20.
+
+
+## 20 November: artifact-bound Pages protocol draft
+
+- [x] Reproduce the official bundle DEP0040 and the actual JavaScript/Python template adoption bug with finite offline probes; retain complete source identities, failure attempts, negative controls and fresh-source equality checks.
+- [x] Preserve all inherited retry/poll/cancel behavior and pass the exact upload artifact ID through the build/deploy boundary. Whole-workflow comparisons retain existing trust, permissions, concurrency, deadlines and E2E behavior. All twelve focused JavaScript files pass; the fast inventory cap is preserved.
+- [ ] Finish the full local gate inventory, collect every current-head native job and all actionable failures, then publish the complete batch only after the single-push gate. File the two shared-defect reports only after immutable reproductions are published.
+- [ ] Verify actual hosted Pages deployment, strict Node 24 behavior and served identity; retain all broader unfinished criteria. Independent accepted reasoning remains 0/20; full issue completion remains false.
+
+
+## 20 November: combined Pages/dependency batch verification
+
+- [x] Collect all 24 terminal workflows on aca32b1a, verify all 404 streams and review 521 native passes, three real artifact round trips and original Actions/Rust SARIF with no warning/error notifications. Preserve informational analysis limits and the log-download retry.
+- [x] Upgrade the actual published search component to remove fxhash and its exception; preserve strict Chrono proof and the full old audit controls. New regression fails before and all eight groups pass afterward. Admit the existing seven unchanged component tests and their actual fixture closure; 98 build-policy checks pass. Native execution remains pending.
+- [x] Finish all 140 local gates: 87 pass, 53 explicit exclusions, zero failures. Preserve the initial archive-filename failure and rename only evidence paths, without raising a ceiling. Verify original/compressed archive identities.
+- [ ] Review the complete batch, check current main ancestry and absence of running current-head jobs, publish once and collect exact new-head CI. Publish both Pages adoption reports against immutable executable evidence.
+- [ ] Verify actual Pages server acceptance/publication and served identity, strict audit/native dependency behavior, every remaining template comparison and applicable practice, 123 source warnings and historical/original-source/live-provenance criteria. No broad criterion is completed by a scoped success. Full issue completion remains false and independent accepted reasoning remains 0/20.
