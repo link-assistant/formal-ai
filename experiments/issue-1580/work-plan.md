@@ -1074,3 +1074,11 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Verify all 28 final focused controls, all 81 maintained policy controls, ShellCheck, shell parsing, Rust formatting and ten touched JavaScript gates. A real Git sparse-checkout regression fails before retaining the single archived Hive log consumed by the duration writer and passes after; unrelated archives stay excluded. The initial combined foreground command hit the Formal AI shell's intrinsic deadline; its partial gate result gets no aggregate credit, and the complete file-logged background batch passes.
 - [ ] Push only after collecting every latest-head failure and checking that no branch run is queued or active. Verify the repaired HTTP native regression and all 36 Hive cases on the new exact head in hosted CI.
 - [ ] Continue the original strict 53-case acceptance audit, independent reasoning, every template file and all applicable practices. Altered native tests and mock-Cargo controls earn no additional original acceptance credit.
+
+### Rust security and preflight source comparison, 2026-11-20
+
+- [x] Fully read six more pinned helper/test sources (575 literal lines): CodeQL report validation, bounded crates authorization preflight, registry preflight and Cargo manifest warning rejection. Compare actual Formal AI security workflow, credential script and sparse-source control; retain exact pinned source hashes. Rust source review now covers 44/373 files / 5367 literal lines.
+- [ ] Complete the other 329 pinned files and applicable security/preflight/warning behavior. Reading the code does not prove runtime adoption, ownership, cancelled registry sessions or hosted validation.
+
+- [x] Publish the reviewed HTTP/Hive/budget batch at `03ff3a8e8a6999bb436de66dd625b3c637720ba1` after a clean tree, fresh main ancestry and empty active/queued lists. Keep PR #1581 draft while hosted checks and broad acceptance remain pending.
+- [x] Freshly verify the Rust template head/workflow blob and review the paginated issue inventory. Report the checksum defect as https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/251 using immutable executable evidence at `c550990ec6f79948fc5795346d3b2f47313c5c5c`; retain the exact posted body and API receipt. Upstream repair is unverified.

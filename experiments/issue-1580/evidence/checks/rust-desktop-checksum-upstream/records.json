@@ -1,0 +1,60 @@
+{
+  "records": [
+    {
+      "file": "head.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "head.stdout.gz",
+      "rawSha256": "fea7fce634dd586b6fcb50c8f5fd7059f687b5a9f01ad63dbdd9ce3d4496d73f",
+      "archiveSha256": "856fb85ffecd38d95473b65c01417164b917f92d1a64f1b08cd11b628926cea8"
+    },
+    {
+      "file": "issues.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "issues.stdout.gz",
+      "rawSha256": "06166c693004eb97763cece100c851a78140bfc8190ee90c76380d770a211569",
+      "archiveSha256": "eb5e4ac33b20037e62919cb0ffe631788025e780311cc40b7565464e320ad608"
+    },
+    {
+      "file": "latest-workflow.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "latest-workflow.stdout.gz",
+      "rawSha256": "969df4f82647b882cf22bda08b47a1f53ef78178439b3ef95acff13f2f237ecf",
+      "archiveSha256": "54c8df42890355d7c4f795fdbbbbc9729f44476bd43c1bfbdb6576267a68f0bc"
+    },
+    {
+      "file": "recent-pulls.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "recent-pulls.stdout.gz",
+      "rawSha256": "2c50842283c56d12461ca0b3ac60e829df371fd2b2d9bc197d3f75a4e01c4105",
+      "archiveSha256": "56706450a86f6090a64ce50631bf4fe23cf15c5b4f4240dec03fa56b318a5c0d"
+    },
+    {
+      "file": "posted-body.md.gz",
+      "rawSha256": "d24ecf16df70c44c104082be611fdd410ce40b5d2487b0f7bca42eb9854ae02a",
+      "archiveSha256": "89fbe5db9dc94a32783440a9a956234bf8cd9681aad122f90e20ea47dac9ec6a"
+    },
+    {
+      "file": "formal-post.log.gz",
+      "rawSha256": "48eddaab78bf16e3dbc0f2aa398abcda55e521c1f385982d82e22b919fa1e188",
+      "archiveSha256": "e8f29477b0f146865248a4d316d91d7f90a8259a9aad124edfe15223fd88bfd8"
+    },
+    {
+      "file": "posted-issue.json.gz",
+      "rawSha256": "b15cb491acba1dbfb1d0cc0af3790bd1c2a9d442b0b3e756ebf47b8e4811b757",
+      "archiveSha256": "d63df392460b10b157463e0b0e22990973e09e1dd5350dde3d1adf385516cbb9"
+    }
+  ],
+  "fullIssueComplete": false
+}

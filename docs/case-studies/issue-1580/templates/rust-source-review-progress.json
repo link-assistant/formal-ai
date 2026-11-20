@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T02:02:46.012690+00:00",
+  "observedAt": "2026-11-20T02:28:43.426692+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 38,
-  "fullyReadSourceLines": 4792,
+  "fullyReadFiles": 44,
+  "fullyReadSourceLines": 5367,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -318,6 +318,57 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "scripts/check-cargo-warnings.sh",
+      "lines": 11,
+      "sha256": "e4b4de91c593933c5682cddf857e70656c4235b3722ee6be0164f479fd22da6b",
+      "readLogs": [
+        "rust-security-preflight-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "literalReadLines": 11,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/check-codeql-results.mjs",
+      "lines": 113,
+      "sha256": "a81157c87d5cf7fa9e0db8af4bf17cd7ffc0d02c0cdead5240ca3ae1ffc55c6d",
+      "readLogs": [
+        "rust-security-preflight-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          113
+        ]
+      ],
+      "literalReadLines": 113,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/check-codeql-results.test.mjs",
+      "lines": 102,
+      "sha256": "539e43d69a859c52f32372309d9aee40a13ba76a623df1bba69bf405cf0b6160",
+      "readLogs": [
+        "rust-security-preflight-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          102
+        ]
+      ],
+      "literalReadLines": 102,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "scripts/check-dependency-graph.sh",
       "lines": 44,
       "sha256": "8e113bc9ff6905044906d0746f9b6aefd88f467b95cd5093de29ef21db7fdfb2",
@@ -365,6 +416,40 @@
         ]
       ],
       "literalReadLines": 101,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/crates-publish-preflight.mjs",
+      "lines": 52,
+      "sha256": "6d27824c71b5f01aab8290671d1ab8b92c614720201e252be017c01ce4785e13",
+      "readLogs": [
+        "rust-security-preflight-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          52
+        ]
+      ],
+      "literalReadLines": 52,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/crates-publish-preflight.test.mjs",
+      "lines": 51,
+      "sha256": "35931482c525b0c95b5a3d758c20e062176517a4ae0775d0a6a61c4b9a51212c",
+      "readLogs": [
+        "rust-security-preflight-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          51
+        ]
+      ],
+      "literalReadLines": 51,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -518,6 +603,23 @@
         ]
       ],
       "literalReadLines": 22,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/preflight-credentials.sh",
+      "lines": 246,
+      "sha256": "0ee3d11097563ae9d141d41bdbda42d15ffa123948b50608472c5de03e932832",
+      "readLogs": [
+        "rust-security-preflight-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          246
+        ]
+      ],
+      "literalReadLines": 246,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -751,6 +853,25 @@
       ],
       "verification": "experiments/issue-1580/evidence/checks/budget-process-lifetime/validation.json",
       "existingUpstreamReport": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/172"
+    },
+    {
+      "practice": "Complete security findings and release credential preflight evidence",
+      "templateEvidence": [
+        "scripts/check-codeql-results.mjs",
+        "scripts/check-codeql-results.test.mjs",
+        "scripts/crates-publish-preflight.mjs",
+        "scripts/crates-publish-preflight.test.mjs",
+        "scripts/preflight-credentials.sh",
+        "scripts/check-cargo-warnings.sh"
+      ],
+      "assessment": "The six complete pinned helper/test sources are read. The template SARIF helper checks every recursively discovered nonsymlink report, findings and extraction notifications. Formal AI currently invokes CodeQL analysis without this explicit result gate. The template probes crates publish authorization without a tarball while stating that ownership still needs real publication; Formal AI records the token as unknown. Both registry preflights open a session but ignore cancellation failures. Cargo own-manifest warnings need a separate check from rustc deny-warnings. Applicable adoption, runtime regressions and hosted proof remain unfinished.",
+      "status": "source-compared-implementation-unverified",
+      "formalAiPaths": [
+        ".github/workflows/security.yml",
+        "scripts/preflight-credentials.sh",
+        "rust/tests/web/release-preflight-checkout.test.mjs"
+      ],
+      "verification": null
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
@@ -759,5 +880,13 @@
   "rustBuildExecuted": false,
   "hostedPublicationExecuted": false,
   "independentAuthorshipCredit": 0,
-  "fullIssueComplete": false
+  "fullIssueComplete": false,
+  "upstreamReports": [
+    {
+      "scope": "Desktop checksum command includes its own incomplete output and stale fragments",
+      "url": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/251",
+      "evidenceCommit": "c550990ec6f79948fc5795346d3b2f47313c5c5c",
+      "upstreamRepairVerified": false
+    }
+  ]
 }

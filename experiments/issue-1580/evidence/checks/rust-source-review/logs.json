@@ -48,5 +48,10 @@
     "file": "rust-status-retry-helpers-read.log.gz",
     "rawSha256": "ff6089370ad2fc3efb0f0c0a08b150561576cf79f8648c46679db9ee419b126e",
     "archiveSha256": "f4901e2e36b6811f2efb7e05339d35206c2f110ba8bc92acd4210a1f0b80a08d"
+  },
+  {
+    "file": "rust-security-preflight-helpers-read.log.gz",
+    "rawSha256": "ffd40022b9ffe691a9670f0366a244284037b2acb8b7a627f0f0bd6ed5a51594",
+    "archiveSha256": "7c6770a63d53f3cde02b48c00dfc892c3ab5f640c3b6c5d2d8ac85cbbe6f1860"
   }
 ]
