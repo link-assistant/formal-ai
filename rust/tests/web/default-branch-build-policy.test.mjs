@@ -1144,3 +1144,15 @@ test('CodeQL native contracts admit their source and archived fixture changes', 
   assert.match(read('rust/tests/unit/workflow_contracts.rs'),
     /#\[path = "ci-cd\/step_budgets_within_job_clocks\/codeql[.]rs"\]\s+mod codeql;/u);
 });
+
+test('published search component regressions and their runtime fixtures select the focused native lane', () => {
+  const inputs = ["rust/tests/unit/issue_896_component_boundaries.rs", "docs/case-studies/issue-896/self-hosting-authorship/web-component-boundary-invariant.lino", "docs/case-studies/issue-896/self-hosting-authorship/agent-cli.log", "docs/case-studies/issue-896/self-hosting-authorship/formal-ai.log", "docs/case-studies/issue-896/self-hosting-authorship/decomposition.lino", "data/meta/web-component-boundary-invariant.lino"];
+  for (const path of inputs) assert.equal(admission([path])['native-type-check'], true, path);
+  assert.equal(admission(['docs/case-studies/issue-896/unrelated.md'])['native-type-check'], false);
+  assert(read('rust/tests/unit/reasoning_contracts.rs').includes('#[path = "issue_896_component_boundaries.rs"]'));
+  assert(read('rust/tests/unit/reasoning_contracts.rs').includes('mod component_boundaries;'));
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
+    .find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(nativeRegressionSource(step), /--test reasoning_contracts(?:\s|$)/u);
+  for (const fixture of inputs.filter(path => path.startsWith('docs/'))) assert(readFileSync(fixture).length > 0, fixture);
+});

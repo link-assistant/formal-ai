@@ -60,3 +60,6 @@ mod issue_1158_pull_request_steps;
 mod issue_1160_regular_prompt;
 #[path = "../fixtures/hive-mind/offline_delivery.rs"]
 mod offline_delivery;
+
+#[path = "issue_896_component_boundaries.rs"]
+mod component_boundaries;

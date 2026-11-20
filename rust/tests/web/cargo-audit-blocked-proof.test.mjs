@@ -8,6 +8,7 @@ import {spawnSync} from 'node:child_process';
 
 const root=new URL('../../../',import.meta.url);
 const config=readFileSync(new URL('.cargo/audit.toml',root),'utf8');
+const historicalConfig=readFileSync(new URL('experiments/issue-1580/fixtures/audit-before-web-capture-upgrade.toml',root),'utf8');
 
 function withAudit(run){
   const directory=mkdtempSync(join(tmpdir(),'formal-ai-audit-'));
@@ -50,7 +51,7 @@ process.exit(Number(process.env.GIT_INVENTORY_STATUS??0));
 
 test('blocked advisory entries require reachable exact versions and retain the strict audit', {timeout:10000},()=>{
   withAudit(invoke=>{
-    const result=invoke();
+    const result=invoke({text:historicalConfig});
     assert.equal(result.status,0,result.stderr+result.stdout);
     assert.deepEqual(result.calls.filter(args=>args[0]==='tree').map(args=>args.at(-1)),['fxhash@0.2.1','chrono@0.4.45']);
     assert.deepEqual(result.calls.filter(args=>args[0]==='audit'),[['audit','--file','rust/Cargo.lock','--deny','warnings']]);
@@ -107,5 +108,17 @@ test('a committed lock missing from checkout remains a failing audit', {timeout:
     assert.equal(result.status,1,result.stderr+result.stdout);
     assert.match(result.stdout,/missing\/Cargo.lock is committed but not checked out/u);
     assert.equal(result.calls.filter(args=>args[0]==='audit').length,1);
+  });
+});
+
+test('the published web-capture upgrade removes fxhash and its exception while preserving strict Chrono proof', {timeout:10000},()=>{
+  const lock=readFileSync(new URL('rust/Cargo.lock',root),'utf8');
+  assert.equal(/^name = "fxhash"$/mu.test(lock),false,'fxhash must leave the production lockfile');
+  assert.doesNotMatch(config,/RUSTSEC-2025-0057/u);
+  withAudit(invoke=>{
+    const result=invoke();
+    assert.equal(result.status,0,result.stderr+result.stdout);
+    assert.deepEqual(result.calls.filter(args=>args[0]==='tree').map(args=>args.at(-1)),['chrono@0.4.45']);
+    assert.deepEqual(result.calls.filter(args=>args[0]==='audit'),[['audit','--file','rust/Cargo.lock','--deny','warnings']]);
   });
 });

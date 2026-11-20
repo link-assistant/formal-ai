@@ -96,7 +96,7 @@ async-trait = "0.1"
 bytes = "1"
 link-cli = { version = "1.0.0", optional = true }
 tungstenite = "0.30"
-web-capture = { version = "0.3.37", default-features = false, features = ["search"] }
+web-capture = { version = "0.5.3", default-features = false, features = ["search"] }
 web-search = { version = "0.6.0", default-features = false, features = ["merge"] }
 webrtc = "0.21"
 
