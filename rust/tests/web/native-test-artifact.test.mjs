@@ -205,3 +205,10 @@ test('artifact setup preserves the caller Python environment and uses the select
  assert.equal(extract.env.ARTIFACT_PYTHON,'${{ steps.python.outputs.python-path }}');
  assert.match(extract.run,/^"\$ARTIFACT_PYTHON" /u);
 });
+
+test('raw artifact retries recover lookup failures without extracting partial or corrupt archives', {timeout:30000},()=>{
+ const env={...process.env,NODE_OPTIONS:'--max-old-space-size=128'};delete env.NODE_TEST_CONTEXT;
+ const result=spawnSync(process.execPath,['--test','--test-reporter=tap','--test-concurrency=1',fileURLToPath(new URL('../../../experiments/issue-1580/artifact-download-retry.test.mjs',import.meta.url))],{encoding:'utf8',maxBuffer:256*1024,env});
+ assert.equal(result.status,0,result.stdout+result.stderr);
+ assert.match(result.stdout,/(?:tests 11|# tests 11)/u);
+});

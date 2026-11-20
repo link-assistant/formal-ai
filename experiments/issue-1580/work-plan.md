@@ -534,3 +534,11 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [x] Trace the 18m45s Hive-2 job to a previously unmeasured 672.933s case rather than raising its deadline. Draft maximum-observation weights for all 37 actual cases, preserve prior maxima and every exact test once. Retain the failing original-weight control and failed sparse-input check; repair the three exact source acquisition inputs.
 - [ ] Verify the completed focused/local checks, seal this batch, publish through the single push gate and collect exact next-head native and explicit-Java-heap producer results. Actual new partition timing and macro loading-warning elimination remain unverified.
 - [ ] Complete every remaining original, warning, dependency, template, semantic, live delivery/publication and provenance criterion. Strict original source credit stays 31/53 with 22 separate scoped assertion reviews; independent reasoning stays 0/20 and full issue completion is false.
+
+### Immediate artifact lookup and complete checkout expectations
+
+- [x] Publish the prior Hive/explicit-Java-heap batch at 90b51590 after an empty queue and fresh main ancestry. Collect its two observed failures without pushing while native and Security work remains active.
+- [x] Trace Windows upload finalization followed 1.073s later by a matching-name lookup failure; preserve backend-delay uncertainty and distinguish unrelated older upstream reports and their screenshots.
+- [x] Reproduce seven failing bounded controls before the adapter repair. Preserve the final 17 artifact, 18 profile and 50 shard/checkout passing cases, seven touched gates and all initial harness/path failures. Retry actual pinned raw transport at most three times; preserve digest, selector, cancellation, partial-reset and extraction failure boundaries.
+- [ ] Commit the reviewable repair, collect all current producer/native results and all actionable failures, then publish one complete repair batch through the single push gate. Verify actual next-head Windows/Linux/macOS transport and all required checks.
+- [ ] Complete every wider issue criterion; source inventory, passing controls and recovered prerequisites do not establish full issue completion or independent authorship.
