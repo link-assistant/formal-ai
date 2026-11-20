@@ -151,7 +151,7 @@ test('essential PR checkouts reserve their original test clocks and avoid unrela
   assert.equal(version.steps[0].with['sparse-checkout'],
     '/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n');
   assert.equal(javascript.steps[0].with['sparse-checkout'],
-    '/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n!/dev/log/\n/dev/log/issues/702/pulls/818/agent-cli/\n!/docs/case-studies/**/*.gz\n!/docs/case-studies/**/*.log\n!/docs/case-studies/**/*.zip\n!/docs/case-studies/**/*.tgz\n!/docs/case-studies/**/*.diff\n!/experiments/*/evidence/**/*.gz\n!/experiments/*/evidence/**/*.log\n!/experiments/*/evidence/**/*.zip\n!/experiments/*/evidence/**/*.tgz\n!/experiments/*/evidence/**/*.diff\n/docs/case-studies/issue-717/e2e-npm-ci.log\n/docs/case-studies/issue-932/raw-data/verify-*.log\n/docs/case-studies/issue-982/self-hosting/contract/*.gz\n/experiments/issue-1580/evidence/ci/main-826289fc/cli/opencode-interactive-proxy.jsonl.gz\n/experiments/issue-1580/evidence/ci/main-826289fc/cli/qwen-interactive-proxy.jsonl.gz\n');
+    '/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n!/dev/log/\n/dev/log/issues/702/pulls/818/agent-cli/\n!/docs/case-studies/**/*.gz\n!/docs/case-studies/**/*.log\n!/docs/case-studies/**/*.zip\n!/docs/case-studies/**/*.tgz\n!/docs/case-studies/**/*.diff\n!/experiments/*/evidence/**/*.gz\n!/experiments/*/evidence/**/*.log\n!/experiments/*/evidence/**/*.zip\n!/experiments/*/evidence/**/*.tgz\n!/experiments/*/evidence/**/*.diff\n/docs/case-studies/issue-717/e2e-npm-ci.log\n/docs/case-studies/issue-932/raw-data/verify-*.log\n/docs/case-studies/issue-982/self-hosting/contract/*.gz\n/experiments/issue-1580/evidence/ci/main-826289fc/cli/opencode-interactive-proxy.jsonl.gz\n/experiments/issue-1580/evidence/ci/main-826289fc/cli/qwen-interactive-proxy.jsonl.gz\n/experiments/issue-1580/evidence/ci/native-families-7fce5c19/job-136011692528.stdout.gz\n');
   assert.equal(javascript.steps.find(step=>step.name==='Run this shard of the JavaScript suites').env.TEST_BUDGET_SECONDS, 360);
   assert.match(release.jobs['version-check'].steps.at(-1).run, /ci-pull-request-admission[.]mjs version/u);
 });
@@ -236,6 +236,7 @@ test('JavaScript acquisition excludes historical archives and retains consumed r
     'docs/case-studies/issue-932/raw-data/verify-python.log',
     'docs/case-studies/issue-982/self-hosting/contract/actual.log.gz',
     ...['opencode','qwen'].map(client=>`experiments/issue-1580/evidence/ci/main-826289fc/cli/${client}-interactive-proxy.jsonl.gz`),
+    'experiments/issue-1580/evidence/ci/native-families-7fce5c19/job-136011692528.stdout.gz',
     'rust/tests/fixtures/expected.log','experiments/issue-1580/evidence/checks/receipt.json',
     'docs/case-studies/issue-703/comparison/sessions/000-codex.json'];
   const omitted=['gz','log','zip','tgz','diff'].flatMap(extension=>[

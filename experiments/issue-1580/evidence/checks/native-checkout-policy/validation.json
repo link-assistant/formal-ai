@@ -1,0 +1,77 @@
+{
+  "complete": true,
+  "allRequiredChecksPassed": true,
+  "harnessCorrection": "Initial second test invocation used a nonexistent web directory path; the actual maintained experiment is rerun successfully. Both records are retained.",
+  "records": [
+    {
+      "name": "production-profile",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 5.115561038022861,
+      "file": "production-profile.log.gz",
+      "rawSha256": "e98f608dc75c5bbcdabd005c1d3405e5506516300b3e47c36e2059fde9188a5d",
+      "archiveSha256": "7e29e27f5016b3b86cfa0d66b1d400c578fc0d6e721c4ed84a1d884ac6dc0f59"
+    },
+    {
+      "name": "native-regression-groups",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 0.0860771369189024,
+      "file": "native-regression-groups.log.gz",
+      "rawSha256": "06f40c27bc813772a4fce66924cb1d0e2a4de208f228ac1a6ea920be4c2f5581",
+      "archiveSha256": "d152e7bf7e95b2706c8fe8e71a578bde405871614ef11039b5c2ea7af10df3d2"
+    },
+    {
+      "name": "native-regression-groups-corrected",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.161296203033999,
+      "file": "native-regression-groups-corrected.log.gz",
+      "rawSha256": "5f51828c71a6eabbf886e7fb269a50a1db86d25ccd0430599945a43e1ff8fcee",
+      "archiveSha256": "27c6842c298ae81d7513b9ee138e3afbaa9c419b74d784a4e3e7fc9cd835b0fe"
+    }
+  ],
+  "sources": [
+    {
+      "path": "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+      "sha256": "6a24f8a06b5e3b787678399c57f079c9e362141ebb2a604669876d56bcca359f"
+    },
+    {
+      "path": ".github/workflows/layered-ci.yml",
+      "sha256": "0ee7c7f53de3e2a00dc25bb34f74a24826a13ca296bf68cb0ec655926c7a951a"
+    }
+  ],
+  "hostedRun": "https://github.com/link-assistant/formal-ai/actions/runs/44660788781",
+  "hostedLogLines": [
+    4744,
+    4776
+  ],
+  "fullIssueComplete": false
+}
