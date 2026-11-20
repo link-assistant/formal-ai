@@ -27,12 +27,15 @@
 //! regex = "1"
 //! ```
 
+use regex::Regex;
 use std::env;
 use std::fs;
-use std::io::Write;
 use std::path::Path;
 use std::process::exit;
-use regex::Regex;
+
+#[path = "github-output.rs"]
+mod github_output;
+use github_output::set_output;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
@@ -73,15 +76,6 @@ fn get_changelog_dir(rust_root: &str) -> String {
     rust_paths::get_changelog_dir(rust_root)
         .to_string_lossy()
         .to_string()
-}
-
-fn set_output(key: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Ok(mut file) = fs::OpenOptions::new().create(true).append(true).open(&output_file) {
-            let _ = writeln!(file, "{}={}", key, value);
-        }
-    }
-    println!("Output: {}={}", key, value);
 }
 
 fn bump_priority(bump_type: &str) -> u8 {
@@ -151,7 +145,11 @@ fn determine_bump_type(changelog_dir: &str, default_bump: &str) -> (String, usiz
                     highest_priority = priority;
                     highest_bump_type = bump.clone();
                 }
-                println!("Fragment {}: bump={}", file.file_name().unwrap().to_string_lossy(), bump);
+                println!(
+                    "Fragment {}: bump={}",
+                    file.file_name().unwrap().to_string_lossy(),
+                    bump
+                );
             } else {
                 println!(
                     "Fragment {}: no bump specified, using default",
@@ -171,9 +169,15 @@ fn main() {
 
     let (bump_type, fragment_count) = determine_bump_type(&changelog_dir, &default_bump);
 
-    println!("\nDetermined bump type: {} (from {} fragment(s))", bump_type, fragment_count);
+    println!(
+        "\nDetermined bump type: {} (from {} fragment(s))",
+        bump_type, fragment_count
+    );
 
     set_output("bump_type", &bump_type);
     set_output("fragment_count", &fragment_count.to_string());
-    set_output("has_fragments", if fragment_count > 0 { "true" } else { "false" });
+    set_output(
+        "has_fragments",
+        if fragment_count > 0 { "true" } else { "false" },
+    );
 }

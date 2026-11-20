@@ -1,0 +1,21 @@
+{
+  "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+  "commit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+  "path": "scripts/github-output.rs",
+  "sha256": "4583ea61b9d64fb9ea6a96c8a08f071d4d6d1592c4431f225695ef48f16d2079",
+  "license": "Unlicense",
+  "adaptations": [
+    "Shared fatal CLI wrapper retaining successful Output diagnostics",
+    "Subprocess control proving a configured output failure exits without success output"
+  ],
+  "authorshipCredit": 0,
+  "nativeBehaviorExecuted": false,
+  "callers": [
+    "scripts/check-release-needed.rs",
+    "scripts/get-bump-type.rs",
+    "scripts/get-version.rs",
+    "scripts/publish-crate.rs",
+    "scripts/wait-for-crate.rs",
+    "scripts/version-and-commit.rs"
+  ]
+}

@@ -198,3 +198,12 @@ test('the real JavaScript sparse checkout retains only the Hive weight evidence 
     run('python3', ['experiments/issue-1580/derive-native-hive-durations.py', '--check']);
   } finally { rmSync(directory, {recursive: true, force: true}); }
 });
+
+
+test('the native lane admits the shared output writer and every release caller', () => {
+  for (const path of ['scripts/github-output.rs', 'scripts/check-release-needed.rs',
+    'scripts/get-bump-type.rs', 'scripts/get-version.rs', 'scripts/publish-crate.rs',
+    'scripts/wait-for-crate.rs', 'scripts/version-and-commit.rs']) {
+    assert.equal(admission([path])['native-type-check'], true, path);
+  }
+});

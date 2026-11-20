@@ -31,15 +31,18 @@ use regex::Regex;
 use serde::Deserialize;
 use std::env;
 use std::fs;
-use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::{Command, exit};
 
 #[path = "version-specification-witness.rs"]
 mod specification_witness;
 
+#[path = "github-output.rs"]
+mod github_output;
 #[path = "prepared-release.rs"]
 mod prepared_release;
+use github_output::set_output;
+
 #[path = "rust-paths.rs"]
 mod rust_paths;
 #[path = "self-hosting-metric.rs"]
@@ -83,20 +86,6 @@ fn get_changelog_path(rust_root: &str) -> String {
     rust_paths::get_changelog_path(rust_root)
         .to_string_lossy()
         .to_string()
-}
-
-fn set_output(key: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Err(e) = fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(&output_file)
-            .and_then(|mut f| writeln!(f, "{}={}", key, value))
-        {
-            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {}", e);
-        }
-    }
-    println!("Output: {}={}", key, value);
 }
 
 fn exec(command: &str, args: &[&str]) -> Result<String, String> {

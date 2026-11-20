@@ -513,6 +513,25 @@
         ".github/workflows/security.yml"
       ],
       "verification": null
+    },
+    {
+      "practice": "Fallible configured GitHub Actions release outputs",
+      "templateEvidence": [
+        "scripts/github-output.rs"
+      ],
+      "assessment": "The shared template writer returns configured open/write failures. Formal AI now adopts that implementation and a fatal set_output wrapper in six release callers. Seven native cases cover file creation, append preservation, absent/empty/directory paths, post-open write errors and fatal subprocess behavior; admission includes every caller and the helper. Focused JavaScript tests, formatting, applicable gates and deployed release verification pass; hosted native execution remains pending.",
+      "status": "implemented-local-admission-verified-hosted-native-behavior-pending",
+      "formalAiPaths": [
+        "scripts/github-output.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/get-bump-type.rs",
+        "scripts/get-version.rs",
+        "scripts/publish-crate.rs",
+        "scripts/wait-for-crate.rs",
+        "scripts/version-and-commit.rs",
+        "rust/tests/unit/workflow_contracts.rs"
+      ],
+      "verification": "experiments/issue-1580/evidence/checks/fallible-release-output/verification.json"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",

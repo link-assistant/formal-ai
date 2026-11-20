@@ -9,3 +9,6 @@ pub mod workflow_release;
 
 #[path = "../../../scripts/changelog-fragment-file.rs"]
 pub mod changelog_fragment_file;
+
+#[path = "../../../scripts/github-output.rs"]
+pub mod github_output;

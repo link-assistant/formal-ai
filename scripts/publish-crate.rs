@@ -27,9 +27,11 @@
 //! ```
 
 use std::env;
-use std::fs;
-use std::io::Write;
 use std::process::{Command, exit};
+
+#[path = "github-output.rs"]
+mod github_output;
+use github_output::set_output;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
@@ -94,19 +96,6 @@ fn get_arg(name: &str) -> Option<String> {
 
 fn needs_cd(rust_root: &str) -> bool {
     rust_root != "."
-}
-
-fn set_output(key: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Ok(mut file) = fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(&output_file)
-        {
-            let _ = writeln!(file, "{}={}", key, value);
-        }
-    }
-    println!("Output: {}={}", key, value);
 }
 
 fn main() {

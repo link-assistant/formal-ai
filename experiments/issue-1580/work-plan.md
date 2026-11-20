@@ -1127,3 +1127,11 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Add focused native collision, concurrent-writer, missing-parent and symlink controls to the existing hosted workflow-contract target. These native tests remain unexecuted locally, in accordance with the repository build policy.
 - [x] Reproduce the native admission gap before adding both production inputs; run the focused planner/admission suites, Rust formatting and touched JavaScript gates with immutable logs in `evidence/checks/changelog-fragment-preservation/`.
 - [ ] Verify actual native fragment behavior in hosted CI and evaluate/report the shared Rust template defect from executed evidence. Reading source and passing JavaScript admission do not establish native behavior.
+
+### Fallible release output adoption, 2026-11-20
+
+- [x] Compare the pinned Rust template shared Actions writer against all six Formal AI release callers. Configured output open/write failures previously warned or were ignored while the scripts reported success.
+- [x] Adopt the template fallible writer with a fatal CLI wrapper, retaining successful diagnostics and local operation when GITHUB_OUTPUT is absent. Preserve non-UTF-8 configured paths; reject an empty configured path.
+- [x] Add native cases for creation, append preservation, absent/empty/directory paths, post-open write errors and a subprocess that must exit before success output. Add the shared source and all six callers to native admission.
+- [x] Verify the admission regression fails before its closure repair and passes afterward: 30/30 focused planner tests, 88/88 maintained admission tests, rustfmt, six applicable JavaScript gates and deployed release-source verification pass. Exact commands, hashes and compressed logs are retained in evidence/checks/fallible-release-output. Externally supplied drafting receives no independent authorship or reasoning credit.
+- [ ] Execute the new native behavioral regressions on hosted CI; local Rust execution remains prohibited. This practice is implemented but not yet behaviorally verified.
