@@ -21,3 +21,5 @@ Extract unchanged repair-loop notes and text replacement ranges into private mod
 Separate unchanged controlled-language realization helpers from grammar parsing while retaining their existing public paths.
 
 Separate unchanged CLI solver invocation helpers; regenerate literal-owner paths after source moves without adding allowlisted text.
+
+Separate unchanged solver configuration and repository command admission into private modules while preserving their public paths.
