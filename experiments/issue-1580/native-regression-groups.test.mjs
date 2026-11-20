@@ -236,3 +236,13 @@ test('the native workflow target imports the actual changelog package reader', (
   assert.match(readFileSync('rust/tests/unit/workflow_contracts.rs', 'utf8'),
     /#\[path = "\.\.\/\.\.\/\.\.\/scripts\/collect-changelog\.rs"\]\nmod collect_changelog;/u);
 });
+
+
+test('native admission includes fallible changelog inventory and the real collector regression', () => {
+  assert.equal(admission(['scripts/changelog-files.rs'])['native-type-check'], true);
+  const source = readFileSync('scripts/collect-changelog.rs', 'utf8');
+  assert.match(source, /#\[path = "changelog-files\.rs"\]\nmod changelog_files;/u);
+  assert.match(source, /failed_fragment_or_existing_changelog_reads_preserve_every_input/u);
+  assert.doesNotMatch(source, /filter_map\(\|e\| e\.ok\(\)\)|unwrap_or_default\(\)/u);
+  assert.match(source, /changelog_files::remove_fragments\(&files\)\?/u);
+});

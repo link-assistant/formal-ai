@@ -32,6 +32,9 @@ use std::process::exit;
 #[path = "rust-paths.rs"]
 mod rust_paths;
 
+#[path = "changelog-files.rs"]
+mod changelog_files;
+
 const INSERT_MARKER: &str = "<!-- changelog-insert-here -->";
 
 fn get_arg(name: &str) -> Option<String> {
@@ -99,42 +102,25 @@ fn strip_frontmatter(content: &str) -> String {
     }
 }
 
-fn collect_fragments(changelog_dir: &str) -> String {
-    let dir_path = Path::new(changelog_dir);
-    if !dir_path.exists() {
-        return String::new();
-    }
-
-    let mut files: Vec<_> = match fs::read_dir(dir_path) {
-        Ok(entries) => entries
-            .filter_map(|e| e.ok())
-            .map(|e| e.path())
-            .filter(|p| {
-                p.extension().map_or(false, |ext| ext == "md")
-                    && p.file_name().map_or(false, |name| name != "README.md")
-            })
-            .collect(),
-        Err(_) => return String::new(),
-    };
-
-    files.sort();
-
-    let mut fragments = Vec::new();
-    for file in &files {
-        if let Ok(raw_content) = fs::read_to_string(file) {
-            let content = strip_frontmatter(&raw_content);
-            if !content.is_empty() {
-                fragments.push(content);
-            }
-        }
-    }
-
-    fragments.join("\n\n")
+fn collect_fragments(
+    changelog_dir: &str,
+) -> std::io::Result<(String, Vec<changelog_files::Fragment>)> {
+    let files = changelog_files::read_fragments(Path::new(changelog_dir))?;
+    let content = files
+        .iter()
+        .map(|file| strip_frontmatter(&file.content))
+        .filter(|content| !content.is_empty())
+        .collect::<Vec<_>>()
+        .join("\n\n");
+    Ok((content, files))
 }
 
-#[cfg(not(test))]
-fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
-    let date_str = Utc::now().format("%Y-%m-%d").to_string();
+fn update_changelog(
+    changelog_file: &str,
+    version: &str,
+    fragments: &str,
+    date_str: &str,
+) -> std::io::Result<()> {
     // One section, with no surrounding blank lines of its own. Each branch below
     // adds exactly the separators its context needs, so the result matches what
     // `experiments/issue_711_rebuild_changelog.mjs --check` reconstructs: the
@@ -143,9 +129,12 @@ fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
     let section = format!("## [{}] - {}\n\n{}", version, date_str, fragments);
     let new_entry = format!("{}\n", section);
 
-    if Path::new(changelog_file).exists() {
-        let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
-
+    let existing = match changelog_files::read_file(Path::new(changelog_file)) {
+        Ok(content) => Some(content),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => None,
+        Err(error) => return Err(error),
+    };
+    if let Some(mut content) = existing {
         if content.contains(INSERT_MARKER) {
             // The marker is followed by "\n\n## [previous]", so the section
             // carries no trailing newline of its own here.
@@ -176,7 +165,9 @@ fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
             }
         }
 
-        fs::write(changelog_file, content).expect("Failed to write changelog");
+        fs::write(changelog_file, content).map_err(|error| {
+            changelog_files::path_error("write changelog", Path::new(changelog_file), error)
+        })?;
     } else {
         let content = format!(
             "# Changelog\n\n\
@@ -186,30 +177,28 @@ fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
             {}\n\n{}\n",
             INSERT_MARKER, section
         );
-        fs::write(changelog_file, content).expect("Failed to write changelog");
+        fs::write(changelog_file, content).map_err(|error| {
+            changelog_files::path_error("write changelog", Path::new(changelog_file), error)
+        })?;
     }
 
     println!("Updated CHANGELOG.md with version {}", version);
+    Ok(())
 }
 
-fn remove_fragments(changelog_dir: &str) {
-    let dir_path = Path::new(changelog_dir);
-    if !dir_path.exists() {
-        return;
+fn collect_changelog_with_date(
+    changelog_dir: &str,
+    changelog_file: &str,
+    version: &str,
+    date: &str,
+) -> std::io::Result<bool> {
+    let (fragments, files) = collect_fragments(changelog_dir)?;
+    if fragments.is_empty() {
+        return Ok(false);
     }
-
-    if let Ok(entries) = fs::read_dir(dir_path) {
-        for entry in entries.filter_map(|e| e.ok()) {
-            let path = entry.path();
-            if path.extension().map_or(false, |ext| ext == "md")
-                && path.file_name().map_or(false, |name| name != "README.md")
-            {
-                if fs::remove_file(&path).is_ok() {
-                    println!("Removed {}", path.display());
-                }
-            }
-        }
-    }
+    update_changelog(changelog_file, version, &fragments, date)?;
+    changelog_files::remove_fragments(&files)?;
+    Ok(true)
 }
 
 #[cfg(not(test))]
@@ -229,15 +218,18 @@ fn main() {
 
     println!("Collecting changelog fragments for version {}", version);
 
-    let fragments = collect_fragments(&changelog_dir);
-
-    if fragments.is_empty() {
-        println!("No changelog fragments found");
-        exit(0);
+    let date = Utc::now().format("%Y-%m-%d").to_string();
+    match collect_changelog_with_date(&changelog_dir, &changelog_file, &version, &date) {
+        Ok(true) => {}
+        Ok(false) => {
+            println!("No changelog fragments found");
+            return;
+        }
+        Err(error) => {
+            eprintln!("Error: {error}");
+            exit(1);
+        }
     }
-
-    update_changelog(&changelog_file, &version, &fragments);
-    remove_fragments(&changelog_dir);
 
     println!("Changelog collection complete");
 }
@@ -245,6 +237,59 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn failed_fragment_or_existing_changelog_reads_preserve_every_input() {
+        let directory = env::temp_dir().join(format!(
+            "collector-io-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        fs::create_dir(&directory).unwrap();
+        struct Cleanup(std::path::PathBuf);
+        impl Drop for Cleanup {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+        let _cleanup = Cleanup(directory.clone());
+        let fragments = directory.join("changelog.d");
+        fs::create_dir(&fragments).unwrap();
+        let good = fragments.join("a.md");
+        let bad = fragments.join("b.md");
+        let changelog = directory.join("CHANGELOG.md");
+        let original = "# Changelog\n\n<!-- changelog-insert-here -->\n";
+        fs::write(&good, "A release note").unwrap();
+        fs::write(&bad, [0xff]).unwrap();
+        fs::write(&changelog, original).unwrap();
+        let collect = || {
+            collect_changelog_with_date(
+                fragments.to_str().unwrap(),
+                changelog.to_str().unwrap(),
+                "1.2.3",
+                "2026-11-20",
+            )
+        };
+        assert!(collect().unwrap_err().to_string().contains("b.md"));
+        assert_eq!(fs::read_to_string(&changelog).unwrap(), original);
+        assert_eq!(fs::read_to_string(&good).unwrap(), "A release note");
+        assert_eq!(fs::read(&bad).unwrap(), [0xff]);
+        fs::write(&bad, "Second release note").unwrap();
+        fs::write(&changelog, [0xff]).unwrap();
+        assert!(collect().unwrap_err().to_string().contains("CHANGELOG.md"));
+        assert_eq!(fs::read(&changelog).unwrap(), [0xff]);
+        assert!(good.exists() && bad.exists());
+        fs::write(&changelog, original).unwrap();
+        assert!(collect().unwrap());
+        assert!(!good.exists() && !bad.exists());
+        let after = fs::read_to_string(&changelog).unwrap();
+        assert!(after.contains("A release note\n\nSecond release note"));
+        assert!(!collect().unwrap());
+        assert_eq!(fs::read_to_string(&changelog).unwrap(), after);
+    }
 
     #[test]
     fn changelog_version_uses_the_package_and_refuses_inherited_or_missing_versions() {

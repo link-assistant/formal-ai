@@ -41,6 +41,7 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'scripts/version-and-commit.rs',
   'scripts/github-output.rs',
   'scripts/changelog-fragment-file.rs',
+  'scripts/changelog-files.rs',
   'scripts/create-changelog-fragment.rs',
   'scripts/ci-native-hive-durations.lino',
   'scripts/plan-test-shards.mjs',
