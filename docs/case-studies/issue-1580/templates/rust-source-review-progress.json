@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T17:27:15.963225+00:00",
+  "observedAt": "2026-11-20T18:02:03.292363+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 320,
-  "fullyReadSourceLines": 37637,
+  "fullyReadFiles": 324,
+  "fullyReadSourceLines": 37641,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -2488,6 +2488,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "docs/case-studies/issue-38/raw-data/downstream-meta-ontology-pr-4.json",
+      "lines": 1,
+      "sha256": "6af20b23c821b606fc3bdbee63290f8559f4e7a1dd6a716600ef02029835216f",
+      "readLogs": [
+        "publication-preview-history-3.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "docs/case-studies/issue-38/raw-data/issue-38-comments.json",
       "lines": 1,
       "sha256": "8903caba6beddb0ba62ed0fdb4100aacc53161531e319eda867143963791948d",
@@ -2505,11 +2522,45 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "docs/case-studies/issue-38/raw-data/issue-38.json",
+      "lines": 1,
+      "sha256": "d8e768bd690109343d491621736c3698c1dd464fb2d6ca94738ad9343dedef4f",
+      "readLogs": [
+        "publication-preview-history-1.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "docs/case-studies/issue-38/raw-data/js-template-issue-search.json",
       "lines": 1,
       "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
       "readLogs": [
         "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/main-runs.json",
+      "lines": 1,
+      "sha256": "1b750ffb0515cad9b7a315715a1895af3db1ca8836993782b7a58db5d355251a",
+      "readLogs": [
+        "publication-preview-history-2.read.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -2799,6 +2850,23 @@
       "sha256": "07ef0944b19bca7613610ec4f5b8d4777d24785048a194b7108b5431da6638e2",
       "readLogs": [
         "freshness-history-vk-bot-desktop-issue-51.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-52/raw-data/vk-bot-desktop-pr-52.json",
+      "lines": 1,
+      "sha256": "35708adb50c3ff28f4cca0447c8ae5d29b16bd21d86ecc55ce24fb547d3afe34",
+      "readLogs": [
+        "publication-preview-history-4.read.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -6499,6 +6567,24 @@
         "rust/tests/unit/ci-cd/workspace_manifest_resolution.rs"
       ],
       "verification": null
+    },
+    {
+      "practice": "Preserve documentation after publication failure and qualify actual screenshot refresh",
+      "templateEvidence": [
+        "docs/case-studies/issue-38/raw-data/issue-38.json",
+        "docs/case-studies/issue-38/raw-data/main-runs.json",
+        "docs/case-studies/issue-38/raw-data/downstream-meta-ontology-pr-4.json",
+        "docs/case-studies/issue-52/raw-data/vk-bot-desktop-pr-52.json"
+      ],
+      "assessment": "Read the complete original issue, ten dated main runs, downstream documentation PR and all desktop preview PR details/comments. Historical publication failures must not suppress validated documentation. The current counterpart and advancing-main identity defect now have five failing controls before repair and 13 passing focused controls after it, but the retained release dependencies still wait for terminal publishers and actual Pages delivery remains open. The merged preview PR generates English/Russian light/dark screenshots and checks 270 tests; its post-merge main/no-op checklist remains unchecked. Authenticated English/light PNG is format-verified and visually read. The pinned empty-assets desktop screenshot is also format-verified and viewed; neither image proves current Formal AI release or preview publication. Embedded historical issue links are comparison evidence, not required sub-issues of #1580.",
+      "status": "complete-historical-publication-preview-records-read-current-publication-open",
+      "formalAiPaths": [
+        "scripts/generate-staged-release.mjs",
+        ".github/workflows/pages-artifact.yml",
+        "experiments/issue-1580/pages-release-failure.test.mjs",
+        ".github/workflows/desktop-release.yml"
+      ],
+      "verification": "docs/case-studies/issue-1580/pages-release-failure-checkpoint.md"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",

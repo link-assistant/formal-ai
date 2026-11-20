@@ -548,5 +548,25 @@
     "file": "package-root-history-pull-request-details.json.read.txt.gz",
     "rawSha256": "8cc2dd532271135e4a76405df5d9a229fd0414452fc29d748588f2094914e2bf",
     "archiveSha256": "fd1106c40e3e568bd43f71811bcd4637a1e205cfe88b604d1236a121eff4c1af"
+  },
+  {
+    "file": "publication-preview-history-1.read.txt.gz",
+    "rawSha256": "aa56baf4f5bca8e563b78ce633d995b33ba0537aae937902e918cb506153f72a",
+    "archiveSha256": "b78950b81e159d9252c6f7e261355a902f81ae7e6566c1628bb3ab0fd5fc5c3e"
+  },
+  {
+    "file": "publication-preview-history-2.read.txt.gz",
+    "rawSha256": "cf9f08116967cd81e888892eb31946293262e544a62a1f1ac0760bc96e5f4cfc",
+    "archiveSha256": "c2129ad7a2cc8dc25a27bf85f7a3aa67f2bd1521d4746ee5a41995631ded5c8b"
+  },
+  {
+    "file": "publication-preview-history-3.read.txt.gz",
+    "rawSha256": "f9b373745704a989a22d571975390ecda37687530b43e0ce41ad95150abdc635",
+    "archiveSha256": "83c666ac7e3664832027c4758513343848a2f9051cda68c45d0e62a0443b4c29"
+  },
+  {
+    "file": "publication-preview-history-4.read.txt.gz",
+    "rawSha256": "a9192ac3174d9fc5bc66c9589f04a68ef07c4a12770852445956fd5a4f9c4cc6",
+    "archiveSha256": "d4559a071a4cd06e5e6487ba789e7c650e0e728910c4db4cf2b2608d2c018dd1"
   }
 ]
