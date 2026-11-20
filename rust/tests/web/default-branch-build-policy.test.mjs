@@ -1131,3 +1131,15 @@ test('typed composition regressions execute with their complete source closure',
     .find(step => step.name === 'Verify isolated native behavior regressions');
   assert.match(nativeRegressionSource(step), /--test coding_contracts(?:\s|$)/u);
 });
+
+
+test('CodeQL native contracts admit their source and archived fixture changes', () => {
+  for (const path of [
+    'rust/tests/unit/ci-cd/step_budgets_within_job_clocks/codeql.rs',
+    'docs/case-studies/issue-96/raw-data/link-calculator-lib-excerpt.rs',
+    '.github/codeql/codeql-config.yml',
+  ]) assert.equal(admission([path])['native-type-check'], true, path);
+  assert.equal(admission(['docs/unrelated-codeql-note.md'])['native-type-check'], false);
+  assert.match(read('rust/tests/unit/workflow_contracts.rs'),
+    /#\[path = "ci-cd\/step_budgets_within_job_clocks\/codeql[.]rs"\]\s+mod codeql;/u);
+});

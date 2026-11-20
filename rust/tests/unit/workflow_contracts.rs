@@ -7,6 +7,11 @@ pub mod workflow_fixtures;
 #[path = "ci-cd/workflow_release.rs"]
 pub mod workflow_release;
 
+use workflow_fixtures::{job_block, repository_file};
+
+#[path = "ci-cd/step_budgets_within_job_clocks/codeql.rs"]
+mod codeql;
+
 #[path = "../../../scripts/changelog-fragment-file.rs"]
 pub mod changelog_fragment_file;
 

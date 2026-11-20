@@ -85,23 +85,23 @@ jobs:
 
       # Both variables are required: setting only `_SYSROOT_SRC` leaves the
       # extractor on the discovered (ambient) binary sysroot and the macro
-      # failures remain. A missing toolchain warns rather than fails — the
-      # override is a mitigation for an upstream defect, so losing it must not
-      # turn a security scan red while still being impossible to overlook.
+      # failures remain. Both paths must be available before analysis: the
+      # override is required for complete extraction; losing either prerequisite
+      # must fail before a scan can report success with missing coverage.
       - name: Pin the extractor sysroot to a std the CodeQL bundle can parse
         if: matrix.language == 'rust'
         run: |
-          set -uo pipefail
+          set -euo pipefail
           toolchain="$CODEQL_RUST_SYSROOT_TOOLCHAIN"
           if ! rustup toolchain install "$toolchain" --profile minimal --component rust-src; then
-            echo "::warning title=CodeQL sysroot pin unavailable::Could not install Rust ${toolchain}; the Rust extractor will fall back to the ambient toolchain and macro expansion may fail (github/codeql#19982)."
-            exit 0
+            echo "::error title=CodeQL sysroot pin unavailable::Could not install Rust ${toolchain}. Restore the pinned toolchain or select a verified compatible sysroot (github/codeql#19982)." >&2
+            exit 1
           fi
           sysroot="$(rustup run "$toolchain" rustc --print sysroot)"
           src="${sysroot}/lib/rustlib/src/rust/library"
           if [[ ! -d "$src" ]]; then
-            echo "::warning title=CodeQL sysroot pin unavailable::${src} is missing; the Rust extractor will fall back to the ambient toolchain (github/codeql#19982)."
-            exit 0
+            echo "::error title=CodeQL sysroot pin unavailable::${src} is missing. Install rust-src for the pinned toolchain before analysis (github/codeql#19982)." >&2
+            exit 1
           fi
           echo "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT=${sysroot}" >> "$GITHUB_ENV"
           echo "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT_SRC=${src}" >> "$GITHUB_ENV"
@@ -116,7 +116,25 @@ jobs:
 
       - uses: github/codeql-action/autobuild@v4
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
       - uses: github/codeql-action/analyze@v4
+        with:
+          output: ${{ runner.temp }}/codeql-results
+
+      - name: Reject unresolved CodeQL findings
+        if: ${{ !cancelled() }}
+        run: node scripts/check-codeql-results.mjs "${{ runner.temp }}/codeql-results"
+
+      - name: Preserve CodeQL reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-results-${{ matrix.language }}
+          path: ${{ runner.temp }}/codeql-results/
+          if-no-files-found: error
 
   cargo-audit:
     name: Cargo audit

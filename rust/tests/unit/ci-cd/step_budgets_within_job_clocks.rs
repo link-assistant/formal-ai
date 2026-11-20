@@ -26,18 +26,15 @@ pub use super::workflow_fixtures::workflow_files;
 use std::time::Instant;
 
 use super::npm_deprecation_review::{run_classifier, sandbox};
-use super::workflow_fixtures::{job_block, read_only_group, workflow_job_names};
+use super::workflow_fixtures::{job_block, read_only_group, repository_file, workflow_job_names};
+
+#[path = "step_budgets_within_job_clocks/codeql.rs"]
+mod codeql;
 
 /// The share of a job's cap a single step budget may claim. The remainder pays
 /// for checkout, toolchain install, cache restore, artifact transfer and the
 /// wrapper's SIGTERM grace -- 133s of the 600s cap on the slice that failed.
 const MAX_BUDGET_SHARE_PERCENT: u64 = 70;
-
-fn repository_file(path: &str) -> String {
-    fs::read_to_string(format!("{}/../{path}", env!("CARGO_MANIFEST_DIR")))
-        .unwrap_or_else(|error| panic!("failed to read {path}: {error}"))
-        .replace("\r\n", "\n")
-}
 
 pub use super::workflow_fixtures::job_timeout;
 
@@ -437,48 +434,6 @@ fn every_base_branch_merge_uses_one_pinned_commit_per_workflow() {
     );
 }
 
-/// The `CodeQL` run emitted parse diagnostics on every single invocation because
-/// the Rust extractor, in `build-mode: none`, parses every `.rs` file on disk --
-/// including a deliberately truncated documentation excerpt.
-#[test]
-fn codeql_skips_archived_evidence_but_still_analyses_compiled_code() {
-    let security = repository_file(".github/workflows/security.yml");
-    assert!(
-        security.contains("config-file: ./.github/codeql/codeql-config.yml"),
-        "the CodeQL init step must load the shared config"
-    );
-
-    let config = repository_file(".github/codeql/codeql-config.yml");
-    let excluded_paths: Vec<&str> = config
-        .lines()
-        .filter(|line| !line.trim_start().starts_with('#'))
-        .filter_map(|line| line.trim().strip_prefix("- "))
-        .collect();
-
-    for excluded in ["docs/**", "dev/**", "experiments/**"] {
-        assert!(
-            excluded_paths.contains(&excluded),
-            "{excluded} holds archived evidence and scratch reproductions; \
-             parsing it only produces diagnostics (issue #1017)"
-        );
-    }
-    assert!(
-        !excluded_paths
-            .iter()
-            .any(|path| path.starts_with("examples")),
-        "`examples/` are real Cargo targets the workspace compiles, so they \
-         must stay in scope: {excluded_paths:?}"
-    );
-
-    // The file that produced the diagnostics is still archived, so the
-    // exclusion above is load-bearing rather than historical.
-    let excerpt = "docs/case-studies/issue-96/raw-data/link-calculator-lib-excerpt.rs";
-    assert!(
-        fs::metadata(format!("{}/../{excerpt}", env!("CARGO_MANIFEST_DIR"))).is_ok(),
-        "{excerpt} is the truncated excerpt the exclusion exists for"
-    );
-}
-
 /// An audit is only worth having if it cannot be silenced. Every ignored
 /// advisory carries a proof line that `scripts/check-rust-dependencies.sh`
 /// re-derives from the dependency graph on every run.
@@ -571,58 +526,6 @@ mod link_parser;
 fn link_report_parser_is_unit_tested_before_it_is_trusted() {
     link_parser::assert_contract();
 }
-/// A `CodeQL` run that reports success while 1,023 files were "extracted with
-/// errors" is the worst kind of false negative: the dashboard is green because
-/// nothing was analysed. Run 31937348308 emitted 20,725 `macro expansion
-/// failed` diagnostics, every one of them for a macro defined in `std`/`core`
-/// or in a dependency and none defined here, because the extractor had no
-/// sysroot override and the ambient `std` outran the rust-analyzer the `CodeQL`
-/// bundle vendors (github/codeql#19982).
-///
-/// Both variables are load-bearing. Setting only `_SYSROOT_SRC` takes
-/// rust-analyzer's `discover_with_src_override` path, which keeps the
-/// discovered binary sysroot and leaves the failures in place — so a future
-/// edit that drops one of them would silently restore the false negative.
-#[test]
-fn codeql_rust_lane_pins_the_extractor_sysroot() {
-    let security = repository_file(".github/workflows/security.yml");
-    let job = job_block(&security, "codeql");
-
-    for variable in [
-        "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT=",
-        "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT_SRC=",
-    ] {
-        assert!(
-            job.contains(variable),
-            "the CodeQL job must export {variable} into $GITHUB_ENV, or `std` \
-             macros stay unexpanded and their call sites go unanalysed \
-             (issue #1017, github/codeql#19982)"
-        );
-    }
-
-    assert!(
-        job.contains("CODEQL_RUST_SYSROOT_TOOLCHAIN:"),
-        "the pinned toolchain must be declared once, as a named variable, so \
-         raising it as CodeQL vendors a newer rust-analyzer is a one-line edit"
-    );
-    assert!(
-        job.contains("if: matrix.language == 'rust'"),
-        "the sysroot pin costs a toolchain install and only affects the Rust \
-         extractor, so it must not run in the `actions` lane"
-    );
-    assert!(
-        job.contains("--component rust-src"),
-        "`_SYSROOT_SRC` points into `rust-src`; without the component the \
-         directory does not exist and the pin silently does nothing"
-    );
-    assert!(
-        job.contains("::warning title=CodeQL sysroot pin unavailable::"),
-        "losing the pin must be visible: it is a mitigation for an upstream \
-         defect, so it warns instead of failing, and a silent fallback would \
-         let the 20,725 diagnostics return unnoticed"
-    );
-}
-
 /// The same false negative from a third direction. In run 95255998673 the
 /// `macos-x64` leg wrote a complete DMG, ZIP and both blockmaps and then failed,
 /// because electron-builder's download of `dmgbuild-bundle-x86_64-75c8a6c.tar.gz`

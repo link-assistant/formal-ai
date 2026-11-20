@@ -65,6 +65,8 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   "rust/tests/e2e/tests/multilingual-memory-settings.spec.js",
   "rust/tests/e2e/tests/multilingual-wikipedia.spec.js",
   "rust/tests/unit/ci-cd/staged_release_operations.rs",
+  "rust/tests/unit/ci-cd/step_budgets_within_job_clocks/codeql.rs",
+  "docs/case-studies/issue-96/raw-data/link-calculator-lib-excerpt.rs",
   "rust/tests/unit/ci-cd/workflow_fixtures.rs",
   "rust/tests/unit/ci-cd/workflow_release.rs",
   "rust/tests/unit/ci-cd/workflow_release_operations.rs",

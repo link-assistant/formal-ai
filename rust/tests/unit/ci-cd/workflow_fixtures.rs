@@ -7,6 +7,13 @@
 use std::fs;
 use std::path::Path;
 
+/// Read a repository fixture with platform-independent line endings.
+pub fn repository_file(path: &str) -> String {
+    fs::read_to_string(format!("{}/../{path}", env!("CARGO_MANIFEST_DIR")))
+        .unwrap_or_else(|error| panic!("failed to read {path}: {error}"))
+        .replace("\r\n", "\n")
+}
+
 /// The declared job cap, including matrix expressions.
 pub fn job_timeout(job: &str) -> Option<&str> {
     job.lines()

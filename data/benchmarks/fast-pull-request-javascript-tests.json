@@ -40,6 +40,7 @@
     "rust/tests/web/hive-delivery-admission.test.mjs",
     "rust/tests/web/ci-fast-critical-profile.test.mjs",
     "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+    "rust/tests/web/security-codeql-results.test.mjs",
     "rust/tests/web/package-release-publication.test.mjs",
     "rust/tests/web/native-producer-source-pin.test.mjs",
     "rust/tests/web/native-workflow-cache-bindings.test.mjs",
