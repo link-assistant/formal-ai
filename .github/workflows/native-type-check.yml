@@ -45,7 +45,8 @@ jobs:
           sparse-checkout: |
             /*
             !/dev/log/
-            !/experiments/
+            !/experiments/*
+            /experiments/dynamic-meta/
           sparse-checkout-cone-mode: false
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -75,3 +76,13 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+          no-cache: true
+      - name: Replay dynamic meta authorization and receipts through the native gateway
+        env:
+          FORMAL_AI_DYNAMIC_META_NATIVE: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: |
+          bun install --frozen-lockfile --ignore-scripts
+          node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs

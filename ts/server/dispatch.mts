@@ -16,6 +16,7 @@ import { handleResponses } from './responses.mjs';
 import { matchRoute } from './routes.mjs';
 import { emptyResponse, handleBundle, handleHealth, handleHello, handleModels } from './service.mjs';
 import { handleTelegramWebhook } from './telegram.mjs';
+import { META_PATH } from './dynamic-meta/wire.mjs';
 
 /** Route id -> handler `(ctx, request) => ApiHttpResponse | Promise<...>`. */
 export const ROUTE_HANDLERS = Object.freeze({
@@ -101,9 +102,19 @@ export function mcpOriginAllowed(headers) {
  * Answer one request.
  * @param {object} ctx server context (`worker`, `memory`, `agentMode`, `bearerToken`)
  * @param {{method: string, path: string, headers: Array<[string, string]>, body: string}} request
+ * @param {AbortSignal} [signal]
  */
-export async function dispatch(ctx, request) {
+export async function dispatch(ctx, request, signal) {
   const normalized = request.path.split('?')[0];
+  if (normalized === META_PATH && ctx.dynamicMeta) {
+    const credentials = request.headers.filter(([key]) => key.toLowerCase() === 'x-formal-ai-meta-admin');
+    const admin = credentials.length === 1 && ctx.dynamicMeta.isAdmin(credentials[0][1]);
+    if (!admin && (!ctx.bearerToken || !authAllows(ctx.bearerToken, request.headers))) {
+      return messageError(401, 'bearer_token_invalid');
+    }
+    const { handleDynamicMeta } = await import('./dynamic-meta/host.mjs');
+    return handleDynamicMeta(ctx, request, { admin, signal });
+  }
   const authorized = !requiresBearerAuth(request.method, normalized) || authAllows(ctx.bearerToken, request.headers);
   // The planner reads the session id back when it writes a report command
   // (`DialogScope::begin` in `handle_api_request_with_auth`).

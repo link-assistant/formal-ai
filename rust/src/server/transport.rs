@@ -144,7 +144,20 @@ fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<ParsedHttpRequ
     };
 
     let header_text = String::from_utf8_lossy(&request_bytes[..header_end]).to_string();
+    let request_line = header_text.lines().next().unwrap_or_default();
+    let mut request_parts = request_line.split_whitespace();
+    let method = request_parts.next().unwrap_or_default().to_owned();
+    let path = request_parts.next().unwrap_or_default().to_owned();
     let content_length = content_length(&header_text);
+    if path.split('?').next() == Some(super::dynamic_meta::PATH)
+        && content_length > super::dynamic_meta::REQUEST_LIMIT
+    {
+        write_response(
+            stream,
+            &super::error_response(413, "Dynamic meta request is too large"),
+        )?;
+        return Ok(None);
+    }
     let body_start = header_end + 4;
 
     while request_bytes.len() < body_start.saturating_add(content_length) {
@@ -155,10 +168,6 @@ fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<ParsedHttpRequ
         request_bytes.extend_from_slice(&buffer[..bytes_read]);
     }
 
-    let request_line = header_text.lines().next().unwrap_or_default();
-    let mut request_parts = request_line.split_whitespace();
-    let method = request_parts.next().unwrap_or_default().to_owned();
-    let path = request_parts.next().unwrap_or_default().to_owned();
     let headers = request_headers(&header_text);
     let body_end = body_start
         .saturating_add(content_length)
@@ -183,6 +192,8 @@ fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io
         404 => "404 Not Found",
         405 => "405 Method Not Allowed",
         409 => "409 Conflict",
+        413 => "413 Content Too Large",
+        503 => "503 Service Unavailable",
         _ => "500 Internal Server Error",
     };
 

@@ -35,6 +35,7 @@ mod conversation_reports;
 mod debug_session;
 mod debug_stage;
 mod debug_stage_sources;
+mod dynamic_meta;
 mod retention;
 mod shutdown;
 mod transport;
@@ -176,6 +177,9 @@ pub fn handle_api_request_with_auth(
     auth: &ApiAuthConfig,
 ) -> ApiHttpResponse {
     let normalized_path = path.split('?').next().unwrap_or(path);
+    if let Some(response) = dynamic_meta::route(method, normalized_path, headers, body, auth) {
+        return response;
+    }
     let authorized = !requires_bearer_auth(method, normalized_path) || auth.allows(headers);
     // The planner reads this back when it writes a report command, so the
     // exported session is the caller's own session and not a guess (#839).

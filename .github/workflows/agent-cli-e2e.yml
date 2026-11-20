@@ -87,7 +87,7 @@ jobs:
         with:
           check: agent-cli-e2e-full-replay-${{ inputs.full-replay }}-${{ matrix.part }}
           paths: >-
-            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/agent_cli_e2e experiments/issue_921_hive_mind_full_circle scripts rust/tests/e2e .github/workflows/agent-cli-e2e.yml .github/actions
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock js package.json bun.lock experiments/dynamic-meta experiments/agent_cli_e2e experiments/issue_921_hive_mind_full_circle scripts rust/tests/e2e rust/tests/web/support/structured-log-fixture.mjs .github/workflows/agent-cli-e2e.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Setup Rust
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
@@ -133,6 +133,17 @@ jobs:
           bun add -g --ignore-scripts @anthropic-ai/claude-code@2.1.252 @openai/codex@0.147.0 @google/gemini-cli@0.57.0
       - uses: ./.github/actions/download-formal-ai-binary
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+      - uses: actions/setup-node@v7
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
+        with: { node-version: 22 }
+      - name: Replay a compiled dynamic recipe with the Agent CLI
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
+        timeout-minutes: 3
+        env:
+          FORMAL_AI_DYNAMIC_META_NATIVE: rust/target/release/formal-ai
+        run: |
+          bun install --frozen-lockfile --ignore-scripts
+          node --test --test-concurrency=1 experiments/dynamic-meta/agent-cli.test.mjs
       - name: 'Run Agent CLI E2E — held-out algorithm discovery (issue #531)'
         if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5

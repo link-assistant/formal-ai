@@ -492,3 +492,135 @@ server_messages
     text "not provider-issued"
   message tool-arguments-invalid-json
     text "invalid JSON arguments"
+  message status_text_413
+    text "Content Too Large"
+  message dynamic_meta_request_size
+    text "Dynamic meta request is too large"
+  message dynamic_meta_origin_https
+    text "Recipe origins must be HTTPS origins"
+  message dynamic_meta_source_empty
+    text "The source has no body"
+  message dynamic_meta_source_size
+    text "Source size limit exceeded"
+  message dynamic_meta_source_no_recipes
+    text "No supported recipe blocks in source"
+  message dynamic_meta_origin_denied
+    text "Recipe source is outside the server allowlist"
+  message dynamic_meta_source_digest
+    text "Source digest mismatch"
+  message dynamic_meta_source_count
+    text "Supply between one and eight source candidates"
+  message dynamic_meta_source_language
+    text "Unsupported recipe source language"
+  message dynamic_meta_source_status
+    text "Source returned HTTP {status}"
+  message dynamic_meta_unavailable
+    text "Dynamic meta endpoint unavailable"
+  message dynamic_meta_store_error
+    text "Dynamic meta store error"
+  message dynamic_meta_cli_usage
+    text "Usage: FORMAL_AI_DYNAMIC_META_STORE=path node js/server/main.mjs meta < request.json\n"
+  message dynamic_meta_cli_store
+    text "Set FORMAL_AI_DYNAMIC_META_STORE to a store path"
+  message dynamic_meta_cli_stdin
+    text "Supply a dynamic meta request on stdin"
+  message dynamic_meta_invalid_provenance
+    text "Invalid source provenance"
+  message dynamic_meta_manifest_size
+    text "Package manifest exceeds the size limit"
+  message dynamic_meta_invalid_manifest
+    text "Invalid plugin manifest"
+  message dynamic_meta_origin_locator
+    text "Plugin origin requires a locator and pinned revision"
+  message dynamic_meta_origin_revision
+    text "Plugin origin must use a package version or Git commit"
+  message dynamic_meta_unique_export
+    text "Plugin export ids must be unique names"
+  message dynamic_meta_invalid_trigger
+    text "A trigger requires a CRUD event and optional numeric endpoint filters"
+  message dynamic_meta_create_old_endpoints
+    text "A create event has no old endpoints"
+  message dynamic_meta_trigger_action
+    text "A trigger requires a substitution or a rule state change within its package"
+  message dynamic_meta_invalid_adapter
+    text "Invalid host adapter id"
+  message dynamic_meta_missing_rule
+    text "A self-modifying trigger needs an installed target rule in its package"
+  message dynamic_meta_export_reference
+    text "Expected package/export"
+  message dynamic_meta_export_limit
+    text "Too many {collection}"
+  message dynamic_meta_unknown_export
+    text "Unknown {collection} export: {reference}"
+  message dynamic_meta_invalid_rules
+    text "Invalid Markov rule table"
+  message dynamic_meta_recipe_bounds
+    text "Recipe input or step limit is out of bounds"
+  message dynamic_meta_invalid_source
+    text "Invalid recipe source"
+  message dynamic_meta_controlled_instruction
+    text "Expected a controlled instruction such as Replace \"a\" with \"b\" and stop."
+  message dynamic_meta_unsupported_program
+    text "Unsupported recipe language or program"
+  message dynamic_meta_template_mismatch
+    text "Program differs from the portable rewrite template"
+  message dynamic_meta_recipe_language
+    text "Unsupported recipe language"
+  message dynamic_meta_admin_required
+    text "Server administrator permission is required"
+  message dynamic_meta_confirmation_required
+    text "Explicit confirmation is required"
+  message dynamic_meta_regular_store
+    text "The dynamic meta store must be a regular file"
+  message dynamic_meta_invalid_command
+    text "Invalid dynamic meta command"
+  message dynamic_meta_unknown_command
+    text "Unknown dynamic meta command"
+  message dynamic_meta_schema
+    text "Unsupported dynamic meta store schema"
+  message dynamic_meta_revision_changed
+    text "The dynamic meta store revision has changed"
+  message dynamic_meta_state_size
+    text "Dynamic meta store size limit exceeded"
+  message dynamic_meta_action_required
+    text "Expected a dynamic meta action"
+  message dynamic_meta_invalid_receipt
+    text "Invalid receipt revision"
+  message dynamic_meta_receipt_unavailable
+    text "Receipt unavailable"
+  message dynamic_meta_manifest_digest
+    text "Reviewed plugin digest does not match the manifest"
+  message dynamic_meta_package_exists
+    text "A package with this id is already installed"
+  message dynamic_meta_package_limit
+    text "Package limit exceeded"
+  message dynamic_meta_package_unavailable
+    text "Package unavailable"
+  message dynamic_meta_adapter_revision
+    text "External integrations do not support revision conditions"
+  message dynamic_meta_adapter_unavailable
+    text "Host adapter unavailable"
+  message dynamic_meta_unknown_action
+    text "Unknown dynamic meta action"
+  message dynamic_meta_substitution_length
+    text "Invalid link substitution length"
+  message dynamic_meta_substitution_sides
+    text "A substitution requires two groups: (restriction) (substitution)"
+  message dynamic_meta_unknown_event_reference
+    text "Unknown event reference"
+  message dynamic_meta_expected_doublet
+    text "Expected a doublet pattern"
+  message dynamic_meta_pattern_limit
+    text "Too many link patterns"
+  message dynamic_meta_link_limit
+    text "Link limit exceeded"
+  message dynamic_meta_substitution_work
+    text "Link substitution work limit exceeded"
+  message dynamic_meta_event_limit
+    text "Link event limit exceeded"
+  message dynamic_meta_trigger_action_limit
+    text "Trigger action limit exceeded"
+  message dynamic_meta_cycle_limit
+    text "Trigger cycle limit exceeded"
+  message dynamic_meta_event_value_missing
+    text "Event has no value for {reference}"
