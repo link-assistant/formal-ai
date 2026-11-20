@@ -111,7 +111,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
   for (const step of check.steps.filter(step => (step.uses && !['actions/setup-node@v7', 'actions/upload-artifact@v7'].includes(step.uses)) || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
     assert.equal(step.if, step.id === 'native-checkout-retry'
-      ? "${{ !cancelled() && steps.native-checkout.outcome == 'failure' && inputs.compile-inputs-changed }}"
+      ? "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-checkout.outcome == 'failure' }}"
       : '${{ inputs.compile-inputs-changed }}');
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');

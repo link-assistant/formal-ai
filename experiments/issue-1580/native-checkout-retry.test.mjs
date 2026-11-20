@@ -25,7 +25,7 @@ for (const name of ['clippy', 'contract-family']) {
     assert.equal(initial.with['fetch-depth'], 1);
     assert.equal(initial.with['sparse-checkout-cone-mode'], false);
     assert.equal(retry.if, name === 'clippy'
-      ? "${{ !cancelled() && steps.native-checkout.outcome == 'failure' && inputs.compile-inputs-changed }}"
+      ? "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-checkout.outcome == 'failure' }}"
       : "${{ !cancelled() && steps.native-checkout.outcome == 'failure' }}");
     const guard = job.steps.find(step => step.name === 'Require a successful native checkout');
     assert(guard);

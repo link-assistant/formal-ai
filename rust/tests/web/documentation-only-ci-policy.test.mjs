@@ -189,9 +189,12 @@ test('documentation PR context reporting runs no native tool, product build or p
     const changed = structuredClone(release); mutate(changed);
     assert.throws(() => assertDocumentationContextSafety(changed, native));
   }
-  const changed = structuredClone(native);
-  delete changed.jobs.clippy.steps.find(step => step.name === 'Type-check and lint the library and binaries').if;
-  assert.throws(() => assertDocumentationContextSafety(release, changed));
+  for (const name of ['Check out native inputs', 'Retry native input checkout once',
+    'Require a successful native checkout', 'Type-check and lint the library and binaries']) {
+    const changed = structuredClone(native);
+    delete changed.jobs.clippy.steps.find(step => step.name === name).if;
+    assert.throws(() => assertDocumentationContextSafety(release, changed), name);
+  }
 });
 
 test('context reporter exemption preserves push filtering and does not apply to other heavy workflows', () => {

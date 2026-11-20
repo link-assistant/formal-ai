@@ -72,7 +72,7 @@ jobs:
         id: native-checkout-retry
         continue-on-error: true
         uses: actions/checkout@v7
-        if: ${{ !cancelled() && steps.native-checkout.outcome == 'failure' && inputs.compile-inputs-changed }}
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-checkout.outcome == 'failure' }}
         timeout-minutes: 2
         env:
           GIT_HTTP_LOW_SPEED_LIMIT: '1024'
