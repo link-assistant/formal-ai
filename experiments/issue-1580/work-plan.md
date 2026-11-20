@@ -1316,3 +1316,11 @@ Evidence and reproduction: [Rust context checkpoint](../../docs/case-studies/iss
 - [ ] Migrate remaining direct artifact consumers, resolve Pages/source-size/dependency warnings, complete all eight template practice comparisons, all remaining original/budget criteria and broader acceptance. No criterion is completed merely by green CI or a source inventory.
 
 The complete checkpoint and immutable receipts are in docs/case-studies/issue-1580/artifact-extraction-checkpoint.md. Independent accepted reasoning remains 0/20; fullIssueComplete remains false.
+
+## 20 November: complete direct artifact-consumer migration
+
+- [x] Migrate every remaining direct workflow download (97 transfers / 19 workflows); compare complete workflow payloads against aca32b1a and verify all local adapter checkout closures.
+- [x] Regenerate staged release without removing its 52 operations or 104 bindings; preserve and review two retained-job hash changes and public-download byte witness.
+- [x] Preserve caller Python selection and empty pattern/all-artifact queries; reproduce and repair CI timing classification. Fourteen focused files and all available JavaScript gates pass.
+- [ ] Verify this migration on its published hosted head; the earlier aca32b1a run cannot supply that credit. Historical selected-source renderer execution remains unqualified.
+- [ ] Continue Pages/dependency/source-size warning repairs, full eight-template practice review, all original historical budgets, actual delivery/identity/publication, provenance and whole-PR review. Full issue completion remains false; independent accepted reasoning remains 0/20.
