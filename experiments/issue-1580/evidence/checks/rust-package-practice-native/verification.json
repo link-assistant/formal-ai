@@ -1,0 +1,135 @@
+{
+  "head": "e3adc20aa667334467d5fb294286c970466a1644",
+  "nativeTestedRevision": "f8b372ad314c8052a00dbd2a3139dac0f45d0f78",
+  "run": "https://github.com/link-assistant/formal-ai/actions/runs/44821503308",
+  "job": "https://github.com/link-assistant/formal-ai/actions/runs/44821503308/job/136583632518",
+  "originalArchive": "experiments/issue-1580/evidence/ci/native-families-f8b372ad/job-136583632518.stdout.gz",
+  "archiveSha256": "470b7b4bf411aeb6bf297f4bf2201758e2db6ca6a9f2264d0e4ac5a7545b8890",
+  "rawSha256": "473971b46bda7089665ba23fc606e2a806e90c9bcef23ed3be291c827d68b0b4",
+  "nativePassingCases": [
+    {
+      "line": 1900,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5731253Z test cargo_package_identity::a_package_header_inside_a_multiline_string_is_not_a_package ... ok"
+    },
+    {
+      "line": 1901,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5733951Z test cargo_package_identity::a_release_badge_can_read_a_name_without_a_literal_version ... ok"
+    },
+    {
+      "line": 1902,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5734613Z test cargo_package_identity::an_empty_new_version_preserves_the_original_file ... ok"
+    },
+    {
+      "line": 1903,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5738732Z test cargo_package_identity::inherited_or_missing_identity_never_falls_back_to_dependencies ... ok"
+    },
+    {
+      "line": 1904,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5743046Z test cargo_package_identity::literal_package_identity_does_not_follow_dependency_tables ... ok"
+    },
+    {
+      "line": 1905,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5745647Z test cargo_package_identity::missing_or_malformed_package_tables_are_rejected_before_writes ... ok"
+    },
+    {
+      "line": 1906,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5746329Z test cargo_package_identity::unrelated_inheritance_does_not_hide_a_literal_package_version ... ok"
+    },
+    {
+      "line": 1907,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5749037Z test cargo_package_identity::version_write_changes_only_the_parsed_token_in_a_crlf_manifest ... ok"
+    },
+    {
+      "line": 1908,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5751333Z test cargo_package_identity::workspace_selection_uses_actual_members_and_package_publish_configuration ... ok"
+    },
+    {
+      "line": 1948,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:12.5923936Z test collect_changelog::tests::changelog_version_uses_the_package_and_refuses_inherited_or_missing_versions ... ok"
+    },
+    {
+      "line": 2025,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:13.7998767Z test workspace_manifest_resolution::errors_when_workspace_has_no_publishable_members ... ok"
+    },
+    {
+      "line": 2026,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:13.7999370Z test workspace_manifest_resolution::path_helpers_match_repository_layout ... ok"
+    },
+    {
+      "line": 2027,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:13.8001331Z test workspace_manifest_resolution::resolves_first_publishable_workspace_member ... ok"
+    },
+    {
+      "line": 2028,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:13.8002074Z test workspace_manifest_resolution::resolves_root_package_manifest_when_package_exists ... ok"
+    },
+    {
+      "line": 2029,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:13.8002936Z test workspace_manifest_resolution::rust_root_cli_parser_returns_none_without_configuration ... ok"
+    },
+    {
+      "line": 2030,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T21:44:13.8003412Z test workspace_manifest_resolution::rust_root_prefers_explicit_parameter ... ok"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "scripts/cargo-package.rs",
+      "sha256": "91861986e46f22f4bf7cb12918e8b09fc75dbdc231b52b4535170b83f3d0237a",
+      "bytes": 5751,
+      "identicalToNativeTestedRevision": true
+    },
+    {
+      "path": "scripts/rust-paths.rs",
+      "sha256": "ab1251028ffccc40d72850eb38103dd4fdee60019d095531b859489bd5d8f386",
+      "bytes": 6206,
+      "identicalToNativeTestedRevision": true
+    },
+    {
+      "path": "scripts/bump-version.rs",
+      "sha256": "02882c5f5c93863facafe9c1b1e3ccb5292c738c9899861c10c1e9b7a0de9c02",
+      "bytes": 5815,
+      "identicalToNativeTestedRevision": true
+    },
+    {
+      "path": "scripts/version-and-commit.rs",
+      "sha256": "c7228551f8716570260a64fae65f4e58247def47ede0b925708894d0550ff834",
+      "bytes": 28678,
+      "identicalToNativeTestedRevision": true
+    },
+    {
+      "path": "scripts/create-github-release.rs",
+      "sha256": "e7d876e5c8ef5af89889689cb2f00a8156ada3195b12bd47d3cc1a34c097298a",
+      "bytes": 26931,
+      "identicalToNativeTestedRevision": true
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/cargo_package_identity.rs",
+      "sha256": "fb9e436ef462c52fd85f821a18a9c5541f8432a9df5b5dc0a8c697f8cd9fe394",
+      "bytes": 6396,
+      "identicalToNativeTestedRevision": true
+    },
+    {
+      "path": "rust/tests/unit/workflow_contracts.rs",
+      "sha256": "b63eb564a65265945890a168321b7649bd287588439e895c81a161636a72043c",
+      "bytes": 1461,
+      "identicalToNativeTestedRevision": true
+    },
+    {
+      "path": "scripts/collect-changelog.rs",
+      "sha256": "b67e5e9e76588eeb4a07ef35eaebc3255d77b7bb1132d22ba44b0263088bdff6",
+      "bytes": 11948,
+      "identicalToNativeTestedRevision": true
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/workspace_manifest_resolution.rs",
+      "sha256": "1c83d0a93d55bc99b31019847a2fd3df247e74440888aa904dd429aef57fc2fb",
+      "bytes": 5647,
+      "identicalToNativeTestedRevision": true
+    }
+  ],
+  "wholeRustTemplateComparisonComplete": false,
+  "livePublicationVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

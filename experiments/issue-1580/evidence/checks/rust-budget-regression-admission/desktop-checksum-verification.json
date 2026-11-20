@@ -1,0 +1,46 @@
+{
+  "head": "3e7056756ed57e4899780913eae2f0fb07723e5f",
+  "workflowConclusion": "failure",
+  "otherWorkflowFailuresRemainReported": true,
+  "run": "https://github.com/link-assistant/formal-ai/actions/runs/44836234464",
+  "originalArchive": "experiments/issue-1580/evidence/ci/native-families-3e705675/failed-run-44836234464.stdout.gz",
+  "archiveSha256": "97fc6710ed8f491d1d82629d73cc1165d053230354a02061c0afef5224f8de4a",
+  "rawSha256": "3cc8f79b0b93be4debcd7bc90337919dbd97ba9817a467311ffb197a9447d325",
+  "hostedPassingCases": [
+    {
+      "line": 11895,
+      "text": "js tier (node --check over js, suite group 3)\tRun this shard of the JavaScript suites\t2026-11-20T23:24:29.0569118Z \u2714 pinned Rust desktop checksums include reused output on both branches (304.873675ms)"
+    },
+    {
+      "line": 11896,
+      "text": "js tier (node --check over js, suite group 3)\tRun this shard of the JavaScript suites\t2026-11-20T23:24:29.0607168Z \u2714 candidate selection emits only exact produced-asset digests with clean and reused directories (264.071138ms)"
+    },
+    {
+      "line": 11897,
+      "text": "js tier (node --check over js, suite group 3)\tRun this shard of the JavaScript suites\t2026-11-20T23:24:29.0636955Z \u2714 Formal AI desktop checksum step excludes current and previous fragments (109.834307ms)"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": ".github/workflows/desktop-release.yml",
+      "sha256": "4069f57fcf3bd55ea36c8b2b683c574a465a56706199af49c33acf4c656b7f6a",
+      "bytes": 83001,
+      "identicalToHostedRevision": true
+    },
+    {
+      "path": "experiments/issue-1580/template-rust-desktop-checksums.test.mjs",
+      "sha256": "04c494a74ba5e874979d3b60b8ca3a0bb66deab32c38708e047183fb1a9cfdaf",
+      "bytes": 2286,
+      "identicalToHostedRevision": true
+    },
+    {
+      "path": "experiments/issue-1580/probe-rust-desktop-checksums.mjs",
+      "sha256": "e5ab91f53eb74fcad89e844af2f436ece6b87a4b251a197bfbd43d7c9fe741b5",
+      "bytes": 7694,
+      "identicalToHostedRevision": true
+    }
+  ],
+  "actualReleasePublicationVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}
