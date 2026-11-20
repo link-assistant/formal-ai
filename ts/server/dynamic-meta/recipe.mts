@@ -23,7 +23,7 @@ function checkedProgram(program) {
 const javascript = `export function rewrite(input, maxSteps = 256) {
   if (typeof input !== 'string' || !input.isWellFormed() || input.length > ${SOURCE_LENGTH_LIMIT} ||
       !Number.isSafeInteger(maxSteps) || maxSteps < 1 || maxSteps > 1000) {
-    throw new Error(serverMessage('dynamic-meta-recipe-bounds'));
+    throw new Error(${JSON.stringify(serverMessage('dynamic-meta-recipe-bounds'))});
   }
   for (let step = 0; step < maxSteps; step += 1) {
     const rule = rules.find(({pattern}) => input.includes(pattern));
@@ -43,7 +43,7 @@ def rewrite(text, max_steps=256):
         return len(value.encode("utf-16-le")) // 2
     size = length(text)
     if size > ${SOURCE_LENGTH_LIMIT} or type(max_steps) is not int or not 1 <= max_steps <= 1000:
-        raise ValueError("Recipe input or step limit is out of bounds")
+        raise ValueError(${JSON.stringify(serverMessage('dynamic-meta-recipe-bounds'))})
     for _ in range(max_steps):
         for rule in rules:
             offset = text.find(rule["pattern"])

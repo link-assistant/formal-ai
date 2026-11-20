@@ -152,6 +152,10 @@ test('all supported language directions preserve rules, generated programs run, 
     `${renderRecipe('javascript', program)}\nconsole.log(rewrite(${JSON.stringify(input)}))`], { encoding: 'utf8' });
   assert.equal(javascript.status, 0, javascript.stderr);
   assert.equal(javascript.stdout.trimEnd(), interpreted.output);
+  const invalidLimit = spawnSync(process.execPath, ['--input-type=module', '-e',
+    `${renderRecipe('javascript', program)}\nrewrite('sample', 0)`], { encoding: 'utf8' });
+  assert.equal(invalidLimit.status, 1);
+  assert.match(invalidLimit.stderr, /Error: Recipe input or step limit is out of bounds/u);
   assert.throws(() => readRecipe('javascript', `${renderRecipe('javascript', program)}\nthrow new Error('extra code')`), /differs from/u);
 });
 
