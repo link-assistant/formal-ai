@@ -6,6 +6,9 @@ import {join, resolve, dirname} from 'node:path';
 import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
 import YAML from 'yaml';
+import {gunzipSync} from 'node:zlib';
+import {parseTestDurations} from '../../scripts/lib/ci-speed-durations.mjs';
+import {planShards, durationLookup, partitionProblems} from '../../scripts/lib/ci-speed-shards.mjs';
 import {admission} from '../../scripts/ci-pull-request-admission.mjs';
 const groups = {
   core: ['calendar_currency', 'openai_forced_functions', 'meta_executor_parity', 'synthesis_contracts',
@@ -217,6 +220,24 @@ test('native Hive duration weights reproduce completed hosted observations', {ti
   assert.equal(observed.status, 0, observed.stderr);
 });
 
+test('completed Hive timings isolate the eleven-minute workflow case without losing coverage', () => {
+  const weights = parseTestDurations(readFileSync('scripts/ci-native-hive-durations.lino', 'utf8'));
+  const names = [...new Set([1, 2, 3].flatMap(index => {
+    const jobs = [136489959548, 136489959657, 136489959672];
+    const log = gunzipSync(readFileSync('experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-' + jobs[index - 1] + '.stdout.gz')).toString();
+    return [...log.matchAll(/test (issue_1133_hive_mind_three_runs::\S+) \.{3} ok/g)].map(match => match[1]);
+  }))];
+  assert.equal(names.length, 37);
+  const slow = 'issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification';
+  assert(weights.get(slow) > 672, 'the actual long case must not fall back to sixty seconds');
+  assert(weights.get('issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language') >= 160.854,
+    'a faster fresh observation must preserve the earlier measured cost');
+  const {shards, load} = planShards(names, 3, durationLookup(weights, 60));
+  assert.deepEqual(partitionProblems(names, shards), {missing: [], repeated: [], extra: []});
+  assert.deepEqual(shards.find(shard => shard.includes(slow)), [slow]);
+  assert(Math.max(...load) < 700, 'the completed observations fit below twelve test minutes per shard');
+});
+
 test('the native lane admits changes to the complete Hive planner input closure', () => {
   for (const path of ['scripts/ci-native-hive-durations.lino', 'scripts/plan-test-shards.mjs',
     'scripts/lib/ci-speed-durations.mjs', 'scripts/lib/ci-speed-shards.mjs']) {
@@ -238,6 +259,8 @@ test('the real JavaScript sparse checkout retains only the native weight evidenc
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-hive-checkout-'));
   const evidence = 'experiments/issue-1580/evidence/ci/native-families-7fce5c19/job-136011692528.stdout.gz';
   const reasoningEvidence = 'experiments/issue-1580/evidence/checks/native-reasoning-budget/job-136423862321.stdout.gz';
+  const currentHiveEvidence = [136489959548, 136489959657, 136489959672]
+    .map(job => 'experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-' + job + '.stdout.gz');
   const unrelated = 'experiments/issue-1580/evidence/ci/unrelated-historical.log.gz';
   const run = (command, args) => {
     const result = spawnSync(command, args, {cwd: directory, encoding: 'utf8', timeout: 5000,
@@ -247,7 +270,7 @@ test('the real JavaScript sparse checkout retains only the native weight evidenc
   };
   try {
     run('git', ['init', '--quiet']);
-    for (const path of [evidence, reasoningEvidence, 'scripts/ci-native-hive-durations.lino',
+    for (const path of [evidence, ...currentHiveEvidence, reasoningEvidence, 'scripts/ci-native-hive-durations.lino',
       'scripts/ci-native-reasoning-durations.lino', 'experiments/issue-1580/derive-native-reasoning-durations.py',
       'experiments/issue-1580/derive-native-hive-durations.py']) {
       mkdirSync(dirname(join(directory, path)), {recursive: true});
@@ -260,7 +283,9 @@ test('the real JavaScript sparse checkout retains only the native weight evidenc
     run('git', ['config', 'core.sparseCheckout', 'true']);
     writeFileSync(join(directory, '.git/info/sparse-checkout'), checkouts[0].with['sparse-checkout']);
     run('git', ['read-tree', '-mu', 'HEAD']);
-    assert(existsSync(join(directory, evidence)), 'the real weight derivation input must be checked out');
+    for (const path of [evidence, ...currentHiveEvidence]) {
+      assert(existsSync(join(directory, path)), 'each real weight derivation input must be checked out: ' + path);
+    }
     assert(existsSync(join(directory, reasoningEvidence)), 'the reasoning observation must survive the real checkout');
     assert(!existsSync(join(directory, unrelated)), 'historical archives stay excluded');
     run('python3', ['experiments/issue-1580/derive-native-hive-durations.py', '--check']);

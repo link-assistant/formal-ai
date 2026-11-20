@@ -330,6 +330,9 @@ jobs:
             /experiments/issue-1580/evidence/ci/main-826289fc/cli/opencode-interactive-proxy.jsonl.gz
             /experiments/issue-1580/evidence/ci/main-826289fc/cli/qwen-interactive-proxy.jsonl.gz
             /experiments/issue-1580/evidence/ci/native-families-7fce5c19/job-136011692528.stdout.gz
+            /experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959548.stdout.gz
+            /experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959657.stdout.gz
+            /experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959672.stdout.gz
             /experiments/issue-1580/evidence/checks/native-reasoning-budget/job-136423862321.stdout.gz
           sparse-checkout-cone-mode: false
       - name: Report DRY review and language coverage

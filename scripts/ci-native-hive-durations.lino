@@ -1,19 +1,37 @@
 test_durations
   source_run 44652802985
   source_sha 7fce5c19a7297a121d92eb09e7fefa99ca649eaf
+  source_job 136011692528
+  source_run 44794246520
+  source_sha 1d7ba479b92fed6c1d6735b442579af9190a6b28
+  source_job 136489959548
+  source_run 44794246520
+  source_sha 1d7ba479b92fed6c1d6735b442579af9190a6b28
+  source_job 136489959657
+  source_run 44794246520
+  source_sha 1d7ba479b92fed6c1d6735b442579af9190a6b28
+  source_job 136489959672
   recorded 2026-11-20
   unit seconds
   default-seconds 60
-  purpose "Only completed sequential hosted cases are measured; unseen cases weigh 60 seconds."
+  purpose "Maximum completed sequential hosted duration per case; unseen cases weigh 60 seconds."
   regenerate "python3 experiments/issue-1580/derive-native-hive-durations.py --write"
+  test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification"
+    seconds 672.933
   test "issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder"
-    seconds 178.305
+    seconds 183.903
+  test "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin"
+    seconds 182.298
+  test "issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome"
+    seconds 172.606
   test "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language"
     seconds 160.854
   test "issue_1133_hive_mind_three_runs::extended::a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands"
     seconds 95.411
   test "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified"
     seconds 84.885
+  test "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian"
+    seconds 56.676
   test "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language"
     seconds 56.079
   test "issue_1133_hive_mind_three_runs::extended::a_verified_work_item_is_committed_and_pushed_to_the_named_branch"
@@ -22,44 +40,52 @@ test_durations
     seconds 55.678
   test "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_chinese"
     seconds 54.978
-  test "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian"
-    seconds 54.942
   test "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_hindi"
     seconds 54.909
   test "issue_1133_hive_mind_three_runs::extended::fetched_original_task_retains_the_explicit_workflow_path"
     seconds 50.522
+  test "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish"
+    seconds 38.973
   test "issue_1133_hive_mind_three_runs::extended::a_fetch_only_client_progresses_past_the_read_without_refetching"
-    seconds 10.609
+    seconds 11.018
   test "issue_1133_hive_mind_three_runs::extended::a_gh_read_does_not_count_as_literal_file_verification"
-    seconds 8.527
+    seconds 8.929
   test "issue_1133_hive_mind_three_runs::extended::a_failed_or_empty_gh_read_falls_back_to_fetch_once"
-    seconds 5.995
+    seconds 6.247
   test "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content"
-    seconds 4.057
+    seconds 4.684
   test "issue_1133_hive_mind_three_runs::extended::commit_cue_masking::commit_cue_masking_preserves_independent_authoring_and_word_boundaries"
-    seconds 3.925
+    seconds 4.094
   test "issue_1133_hive_mind_three_runs::extended::a_non_shell_run_alias_does_not_displace_the_fetch_tool"
-    seconds 3.031
-  test "issue_1133_hive_mind_three_runs::extended::a_fetch_only_client_gets_an_extraction_prompt_not_the_solve_request"
-    seconds 1.517
-  test "issue_1133_hive_mind_three_runs::extended::codex_reads_the_issue_through_gh_when_the_only_fetch_tool_is_a_remote_connector"
-    seconds 1.512
+    seconds 3.145
   test "issue_1133_hive_mind_three_runs::extended::a_tool_that_failed_twice_with_the_same_report_is_not_called_a_third_time"
-    seconds 1.511
+    seconds 1.674
+  test "issue_1133_hive_mind_three_runs::extended::codex_reads_the_issue_through_gh_when_the_only_fetch_tool_is_a_remote_connector"
+    seconds 1.577
   test "issue_1133_hive_mind_three_runs::extended::a_fetch_the_harness_echoed_without_its_url_is_not_planned_again"
-    seconds 1.508
+    seconds 1.559
+  test "issue_1133_hive_mind_three_runs::extended::a_fetch_only_client_gets_an_extraction_prompt_not_the_solve_request"
+    seconds 1.554
+  test "issue_1133_hive_mind_three_runs::extended::pull_request_fetch_prompts_for_the_description_not_an_issue_body"
+    seconds 1.546
   test "issue_1133_hive_mind_three_runs::extended::the_claude_code_tool_set_reads_the_issue_with_gh_not_a_nested_model"
     seconds 1.499
-  test "issue_1133_hive_mind_three_runs::extended::pull_request_fetch_prompts_for_the_description_not_an_issue_body"
-    seconds 1.478
+  test "issue_1133_hive_mind_three_runs::program_output_constraints_do_not_consume_filenames_or_change_case"
+    seconds 0.992
   test "issue_1133_hive_mind_three_runs::extended::a_commit_request_is_a_git_step_in_every_language"
     seconds 0.635
+  test "issue_1133_hive_mind_three_runs::generated_output_verifier_rejects_wrong_bytes_and_nonzero_processes"
+    seconds 0.221
+  test "issue_1133_hive_mind_three_runs::whole_program_request_cannot_turn_its_source_path_into_a_report_destination"
+    seconds 0.060
   test "issue_1133_hive_mind_three_runs::extended::a_request_to_commit_the_tree_is_a_git_step_not_a_web_search"
     seconds 0.054
   test "issue_1133_hive_mind_three_runs::extended::an_edit_instruction_is_never_routed_to_web_search"
     seconds 0.032
   test "issue_1133_hive_mind_three_runs::extended::positional_inserts_compose_in_every_language"
     seconds 0.002
+  test "issue_1133_hive_mind_three_runs::delivery_title_read_does_not_replace_the_pr_edit_with_a_mocked_page"
+    seconds 0.001
   test "issue_1133_hive_mind_three_runs::extended::a_text_to_summarize_envelope_is_summarized_never_executed"
     seconds 0.001
   test "issue_1133_hive_mind_three_runs::extended::an_additive_edit_composes_to_an_edit_of_its_anchor_line"

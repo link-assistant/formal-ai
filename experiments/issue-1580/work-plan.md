@@ -526,3 +526,11 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - Read all 2,526 decoded lines in four pinned Rust historical validation gzip streams: 343/373 identities and 41,542 literal text lines now reviewed. Passing script tests retain explicit unused-dependency warnings; candidate package upload was a dry run. Preserve this evidence without current runtime/publication or complete-practice credit.
 
 - Fully read the pinned 300-line dependency comparison and 879-line historical release patch: Rust literal review is 345/373 files and 42,721 lines. Retain compatible parent constraints and process-working-directory ownership as scoped findings; historical registry claims and a draft patch prove no present publication or dependency removal. Twenty-eight Rust identities and all incomplete practice/runtime acceptance remain open.
+
+
+### Complete published queue head and rebalance observed Hive costs
+
+- [x] Verify all 27 terminal workflows at 1d7ba479: 26 pass, one skip; all 300 command streams retain verified hashes/bytes/lines. Hosted native tests pass 573 Rust and eight actual CLI cases; hosted queue validation passes 60 workflows, 19 policies and 13 controls. Preserve warning/error slices and unchanged full-issue limits.
+- [x] Trace the 18m45s Hive-2 job to a previously unmeasured 672.933s case rather than raising its deadline. Draft maximum-observation weights for all 37 actual cases, preserve prior maxima and every exact test once. Retain the failing original-weight control and failed sparse-input check; repair the three exact source acquisition inputs.
+- [ ] Verify the completed focused/local checks, seal this batch, publish through the single push gate and collect exact next-head native and explicit-Java-heap producer results. Actual new partition timing and macro loading-warning elimination remain unverified.
+- [ ] Complete every remaining original, warning, dependency, template, semantic, live delivery/publication and provenance criterion. Strict original source credit stays 31/53 with 22 separate scoped assertion reviews; independent reasoning stays 0/20 and full issue completion is false.
