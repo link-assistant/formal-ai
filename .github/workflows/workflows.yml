@@ -22,8 +22,8 @@
 # cannot quietly narrow itself. The `-ignore` flag the step used to carry now
 # lives in `.github/actionlint.yaml`, which the image reads as well.
 #
-# Both jobs are gated on `paths: ['.github/**']`: their findings can only change
-# when the workflows do.
+# Workflow checks are gated on `paths: ['.github/**']`: their findings can only change
+# when workflow sources do; the artifact fixture also selects its extractor.
 
 name: Workflows
 
@@ -46,12 +46,12 @@ on:
         type: string
   push:
     branches: [main]
-    paths: ['.github/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py']
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
-    paths: ['.github/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py']
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
 permissions:
@@ -221,3 +221,49 @@ jobs:
           min-severity: high
           persona: pedantic
           version: 1.29.0
+
+  artifact-roundtrip:
+    name: Artifact transport (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-artifact-${{ matrix.os }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 3
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
+            /experiments/issue-1580/artifact-transport-roundtrip.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Prepare a bounded artifact and cached destination
+        shell: bash
+        env:
+          ROUNDTRIP: ${{ runner.temp }}/artifact-roundtrip
+        run: python experiments/issue-1580/artifact-transport-roundtrip.py prepare "$ROUNDTRIP"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: artifact-roundtrip-${{ matrix.os }}
+          path: ${{ runner.temp }}/artifact-roundtrip/source
+          if-no-files-found: error
+          retention-days: 1
+      - uses: ./.github/actions/download-artifact
+        with:
+          name: artifact-roundtrip-${{ matrix.os }}
+          path: ${{ runner.temp }}/artifact-roundtrip/download
+      - name: Verify actual downloaded bytes and cached replacement
+        shell: bash
+        env:
+          ROUNDTRIP: ${{ runner.temp }}/artifact-roundtrip
+        run: python experiments/issue-1580/artifact-transport-roundtrip.py verify "$ROUNDTRIP"
