@@ -2,8 +2,8 @@ name: Native type and lint check
 
 # Issue #1191: PR #1497 passed every PR check, then main failed with E0308
 # (run 43710854562) and, once that was fixed, with clippy::manual_contains
-# (run 43730270231), since no PR job ran rustc. This is the one focused
-# native check a PR runs: main's clippy profile on the library and binaries,
+# (run 43730270231), since no PR job ran rustc. This focused workflow runs
+# main's clippy profile on the library and binaries,
 # called from release.yml on every PR, compiling when a Rust input changed
 # or the classification is unknown. Only deterministic fixture data is retained;
 # the focused lane publishes no products or semantic authorization.
@@ -93,7 +93,7 @@ jobs:
           # Inherit profile.test: optimized computation with assertions and overflow checks.
           # Routing assertions use committed captures; fixture transports opt in explicitly.
           FORMAL_AI_OFFLINE: '1'
-        run: bash scripts/ci-native-regressions.sh
+        run: bash scripts/ci-native-regressions.sh core
       - name: Verify native unresolved-language source binding
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
@@ -141,3 +141,51 @@ jobs:
           path: ${{ runner.temp }}/google-trends-fixtures
           if-no-files-found: error
           retention-days: 7
+
+  # Run 44648187857 compiled successfully, then spent 637 seconds on coding
+  # alone. Separate families keep coverage within the existing 20-minute clock.
+  contract-family:
+    name: Native contracts (${{ matrix.group }})
+    if: ${{ inputs.compile-inputs-changed }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        group: [coding, reasoning, hive, benchmarks, interfaces]
+    env:
+      CARGO_BUILD_JOBS: '2'
+      FORMAL_AI_OFFLINE: '1'
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 4
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            !/experiments/**
+            /experiments/**/*.sh
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
+          sparse-checkout-cone-mode: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
+      - uses: actions/setup-node@v7
+        with: {node-version: 22}
+      - name: Verify the complete selected contract family
+        run: bash scripts/ci-native-regressions.sh "${{ matrix.group }}"

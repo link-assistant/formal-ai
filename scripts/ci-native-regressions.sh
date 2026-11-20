@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Compile once, then overlap three isolated processes. The benchmark module has
-# its own serialization lock; every process retains one Rust test thread.
+# CI runs expensive families in separate bounded jobs. The default invocation
+# preserves the complete three-process runner, with one Rust test thread each.
 set -euo pipefail
 
 contract_targets=(
@@ -18,6 +18,46 @@ contract_targets=(
   --test reasoning_contracts
   --test workflow_contracts
 )
+# Validate before invoking Cargo so misspelled matrix groups cannot replay all tests.
+group="${1:-all}"
+if [[ "$#" -gt 1 ]]; then
+  echo 'Usage: ci-native-regressions.sh [all|core|coding|reasoning|hive|benchmarks|interfaces]' >&2
+  exit 2
+fi
+case "$group" in
+  all) ;;
+  core)
+    core_targets=()
+    for ((index=0; index<${#contract_targets[@]}; index+=2)); do
+      target="${contract_targets[index+1]}"
+      if [[ "$target" != coding_contracts && "$target" != reasoning_contracts ]]; then
+        core_targets+=(--test "$target")
+      fi
+    done
+    cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast "${core_targets[@]}" -- --test-threads=1 --nocapture
+    exit "$?"
+    ;;
+  coding|reasoning|hive|benchmarks|interfaces)
+    family_arguments=()
+    test_arguments=(--test-threads=1 --nocapture)
+    case "$group" in
+      coding) family_arguments=(--test coding_contracts) ;;
+      reasoning)
+        family_arguments=(--test reasoning_contracts)
+        test_arguments=(--skip benchmarks:: --skip issue_1133_hive_mind_three_runs:: "${test_arguments[@]}")
+        ;;
+      hive) family_arguments=(--test reasoning_contracts issue_1133_hive_mind_three_runs::) ;;
+      benchmarks) family_arguments=(--test reasoning_contracts benchmarks::) ;;
+      interfaces) family_arguments=(--test interface_contracts) ;;
+    esac
+    cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast "${family_arguments[@]}" -- "${test_arguments[@]}"
+    exit "$?"
+    ;;
+  *)
+    echo 'Usage: ci-native-regressions.sh [all|core|coding|reasoning|hive|benchmarks|interfaces]' >&2
+    exit 2
+    ;;
+esac
 native_targets=("${contract_targets[@]}" --test interface_contracts)
 cargo test --manifest-path rust/Cargo.toml --locked --no-run "${native_targets[@]}"
 benchmark_log="$(mktemp "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/formal-ai-native-benchmarks.XXXXXX.log")"

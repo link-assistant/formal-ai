@@ -9,11 +9,12 @@ import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
 import {builtinModules} from 'node:module';
 import YAML from 'yaml';
+import '../../../experiments/issue-1580/native-regression-groups.test.mjs';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
 const workflow = name => YAML.parse(read('.github/workflows/' + name));
 const nativeRegressionSource = step => {
-  assert.equal(step.run, 'bash scripts/ci-native-regressions.sh');
+  assert.equal(step.run, 'bash scripts/ci-native-regressions.sh core');
   return read('scripts/ci-native-regressions.sh');
 };
 function evaluate(expression, event, ref, variables = {}) {
@@ -82,11 +83,12 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const head = read('.github/workflows/native-type-check.yml').split('\njobs:\n')[0];
   assert.match(head, /\nconcurrency:\n  group: \$\{\{ github\.workflow \}\}-\$\{\{ github\.ref \}\}-native-type-check\n  cancel-in-progress: \$\{\{ github\.ref != 'refs\/heads\/main' \}\}\n/u);
   const [check, ...others] = Object.values(called.jobs);
-  assert.equal(others.length, 0);
+  assert.equal(others.length, 1);
+  assert.equal(others[0], called.jobs['contract-family']);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
     'npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies\nmkdir -p node_modules\nln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml\n',
-    'bash scripts/ci-native-regressions.sh',
+    'bash scripts/ci-native-regressions.sh core',
     'regression_status=0\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?\n' +
