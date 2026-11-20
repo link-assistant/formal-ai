@@ -13,3 +13,5 @@ Separate unchanged file-end insertion and compact anchor selection into a privat
 Separate unchanged search follow-up boundaries and affine arithmetic presentation/comparison helpers into private modules to remove both source-size warnings.
 
 Extract unchanged rule-surface matching, unknown-word span readers and HTML text helpers into private modules; retain public concept-lookup paths.
+
+Regenerate native constant witnesses after the lexeme module extraction; preserve every generated program value and algorithm.
