@@ -1,0 +1,1 @@
+Keep the computer-use executor below its source-size warning threshold by moving its unchanged CSV/HTML fixture helpers into a private module. Preserve exact source reconstruction evidence and existing permission, workspace and verification behavior.
