@@ -21,6 +21,7 @@
 //! chrono = "0.4"
 //! ```
 
+#[cfg(not(test))]
 use chrono::Utc;
 use regex::Regex;
 use std::env;
@@ -86,16 +87,7 @@ fn get_changelog_path(rust_root: &str) -> String {
 }
 
 fn get_version_from_cargo(cargo_toml_path: &str) -> Result<String, String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
-
-    let re = Regex::new(r#"(?m)^version\s*=\s*"([^"]+)""#).unwrap();
-
-    if let Some(caps) = re.captures(&content) {
-        Ok(caps.get(1).unwrap().as_str().to_string())
-    } else {
-        Err(format!("Could not find version in {}", cargo_toml_path))
-    }
+    rust_paths::read_package_info(Path::new(cargo_toml_path)).map(|package| package.version)
 }
 
 fn strip_frontmatter(content: &str) -> String {
@@ -140,6 +132,7 @@ fn collect_fragments(changelog_dir: &str) -> String {
     fragments.join("\n\n")
 }
 
+#[cfg(not(test))]
 fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
     let date_str = Utc::now().format("%Y-%m-%d").to_string();
     // One section, with no surrounding blank lines of its own. Each branch below
@@ -219,6 +212,7 @@ fn remove_fragments(changelog_dir: &str) {
     }
 }
 
+#[cfg(not(test))]
 fn main() {
     let rust_root = get_rust_root();
     let cargo_toml = get_cargo_toml_path(&rust_root);
@@ -246,4 +240,54 @@ fn main() {
     remove_fragments(&changelog_dir);
 
     println!("Changelog collection complete");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn changelog_version_uses_the_package_and_refuses_inherited_or_missing_versions() {
+        static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+        let id = NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let directory = env::temp_dir().join(format!(
+            "collect-changelog-package-{}-{}-{id}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        fs::create_dir(&directory).unwrap();
+        struct Cleanup(std::path::PathBuf);
+        impl Drop for Cleanup {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+        let _cleanup = Cleanup(directory.clone());
+        let manifest = directory.join("Cargo.toml");
+        let path = manifest.to_str().unwrap();
+        for (identity, expected) in [
+            ("version = '1.2.3'", Some("1.2.3")),
+            ("version.workspace = true", None),
+            ("version = { workspace = true }", None),
+            ("", None),
+        ] {
+            let content = format!(
+                "[dependencies.decoy]\nversion = \"9.9.9\"\n[package] # actual\nname = 'actual'\n{identity}\n"
+            );
+            // The former global regex always selected this dependency version.
+            let old = Regex::new(r#"(?m)^version\s*=\s*"([^"]+)""#).unwrap();
+            assert_eq!(&old.captures(&content).unwrap()[1], "9.9.9");
+            fs::write(&manifest, &content).unwrap();
+            let actual = get_version_from_cargo(path);
+            if let Some(version) = expected {
+                assert_eq!(actual.unwrap(), version);
+            } else {
+                assert!(actual.unwrap_err().contains("[package].version"));
+            }
+            assert_eq!(fs::read_to_string(&manifest).unwrap(), content);
+        }
+    }
 }

@@ -226,3 +226,13 @@ test('the native lane admits package identity, updates and every parser consumer
     }
   }
 });
+
+
+test('the native workflow target imports the actual changelog package reader', () => {
+  const source = readFileSync('scripts/collect-changelog.rs', 'utf8');
+  const reader = source.slice(source.indexOf('fn get_version_from_cargo('), source.indexOf('fn strip_frontmatter('));
+  assert.match(reader, /rust_paths::read_package_info\(Path::new\(cargo_toml_path\)\)/u);
+  assert.doesNotMatch(reader, /Regex|captures/u);
+  assert.match(readFileSync('rust/tests/unit/workflow_contracts.rs', 'utf8'),
+    /#\[path = "\.\.\/\.\.\/\.\.\/scripts\/collect-changelog\.rs"\]\nmod collect_changelog;/u);
+});

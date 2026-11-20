@@ -75,3 +75,7 @@ mod workflow_release;
 mod workflow_release_desktop;
 mod workflow_task_ladder;
 mod workspace_manifest_resolution;
+
+#[allow(dead_code, clippy::duplicate_mod)]
+#[path = "../../../../scripts/collect-changelog.rs"]
+mod collect_changelog;

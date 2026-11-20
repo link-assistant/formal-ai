@@ -24,3 +24,7 @@ mod workspace_manifest_resolution;
 #[allow(dead_code, clippy::duplicate_mod)]
 #[path = "../../../scripts/bump-version.rs"]
 mod bump_version;
+
+#[allow(dead_code, clippy::duplicate_mod)]
+#[path = "../../../scripts/collect-changelog.rs"]
+mod collect_changelog;
