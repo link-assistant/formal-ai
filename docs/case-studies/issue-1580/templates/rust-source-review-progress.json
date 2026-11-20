@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T19:19:42.696646+00:00",
+  "observedAt": "2026-11-20T20:30:37.215577+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 345,
-  "fullyReadSourceLines": 42721,
+  "fullyReadFiles": 347,
+  "fullyReadSourceLines": 44421,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -1052,6 +1052,25 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/cargo-parent-requirements.json",
+      "lines": 1433,
+      "sha256": "82ff44e4230b3e8d598cb73f66e9d9ca1de6fd4036cb1653e608a1f9835ae3cc",
+      "readLogs": [
+        "rust-cargo-parent-review-first.log.gz",
+        "rust-cargo-parent-review-second.log.gz",
+        "rust-cargo-parent-review-third.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1433
+        ]
+      ],
+      "literalReadLines": 1433,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/codeql-macros-upstream.json",
       "lines": 1,
       "sha256": "c2ae1893a27d4189242ac534b1ad327bdff9955e3cd6f982cde5c1b363c2fe53",
@@ -1101,6 +1120,27 @@
         ]
       ],
       "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/codeql-releases.json",
+      "lines": 267,
+      "sha256": "095f996188323037448228c5c82bd83ccfdd168c3e476086f1eb6a6567ef33b1",
+      "readLogs": [
+        "rust-codeql-release-review-first.log.gz",
+        "rust-codeql-release-review-second.log.gz",
+        "rust-codeql-release-review-third.log.gz",
+        "rust-codeql-release-review-fourth.log.gz",
+        "rust-codeql-release-review-fifth.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          267
+        ]
+      ],
+      "literalReadLines": 267,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -7027,6 +7067,22 @@
       ],
       "assessment": "All 300 dependency-comparison lines and all 879 historical pull-request patch lines were literally read. The dependency table pins its 2026-11-14 observation and distinguishes registry latest from parent-compatible resolutions, including retained Chrono, platform and npm majors; its statements are historical claims, not a fresh registry/audit observation or accepted mandatory-Chrono removal. The patch documents command-stream virtual cd mutating the parent process, explicit root configuration and cwd restoration before retries; its Rust changelog still uses an unscoped version regex. This PR already separately repairs Cargo package/workspace identity with focused actual native CLI controls. The historical patch is not current runtime or publication evidence. Compare process-owned cwd and failure restoration against actual maintained consumers, preserving exact source identity and tests before adopting any helper. All-template practice acceptance and remaining dependency/runtime criteria remain open.",
       "status": "complete-literal-historical-contract-document-review-current-practice-runtime-open"
+    },
+    {
+      "practice": "Resolve current compatible dependency parents and target features before removing older lock entries",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/cargo-parent-requirements.json"
+      ],
+      "assessment": "All 1,433 original lines and the pinned blob digest are verified. The historical registry response distinguishes normal, build and development edges, platform cfg conditions, optional dependencies and default-feature settings. Ring still requires getrandom ^0.2.10; newer getrandom uses different backend/platform and WebAssembly feature constraints. Windows consumers require separate windows-sys ranges, including ^0.52 and ranges admitting 0.61; removing older versions solely because a newer number exists would break valid parent constraints. Proc-macro families constrain syn versions/features separately. Preserve the exact wasm-bindgen shared-version coupling. This historical metadata is not a current registry response, actual consumer execution, dependency removal or complete-practice qualification.",
+      "status": "literal-source-comparison-and-current-consumer-verification-pending"
+    },
+    {
+      "practice": "Qualify release-specific CodeQL compatibility and diagnostics against the actual pinned producer",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/codeql-releases.json"
+      ],
+      "assessment": "All 41,525 original bytes and 267 original lines are literally reviewed through five contiguous escaped-byte ranges with exact reassembly and pinned digest verification. The historical action notes distinguish path normalization, checkout path consistency, unsupported platform and CLI versions, overlay fallback and cache behavior, query-pack and per-language bundle compatibility, diagnostic filename collisions, SARIF polling and database-upload retries, remote configuration precedence and token/registry checks. Preserve those compatibility and transport distinctions. These historical release notes do not prove the current 2.27.5 producer allocation, complete semantic coverage, successful publication or adoption of every practice; use actual pinned runtime observations and focused controls.",
+      "status": "literal-source-comparison-and-current-consumer-verification-pending"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",

@@ -549,3 +549,10 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [x] Trace exact pinned launcher/child sizing and run three 128 MiB configuration-only resolver probes. Reproduce the memory-policy regression before replacing launcher flags with shared total/off-heap policy, actual-dataset preflight and fatal retained runtime diagnostics. Preserve 19 passing security groups, 18 profile groups, seven gates, syntax/whitespace checks and both initial harness errors.
 - [ ] Commit the candidate, collect all active native results and batch every actionable failure before one push. Verify the next head's actual database allocation and warning-free hosted query; adapter fixtures and generic allocation probes earn no hosted or semantic credit.
 - [ ] Finish the complete issue scope, eight templates, original budgets, current publication/live delivery and independent reasoning. Full issue completion remains false; independent reasoning stays 0/20.
+
+### Terminal artifact and child-memory batch
+
+- [x] Collect all 27 published 90b51590 workflows: 24 successes, one skip and both actionable failures. Verify all 312 command streams and 573 Rust plus eight actual CLI cases; all three Hive shards pass without extending their clocks.
+- [x] Commit bounded artifact retries, complete checkout expectations, thirteen physical evidence-name corrections and actual child-memory policy. Preserve failing-before controls and all failed probes. Rust literal review reaches 347/373 identities and 44,421 lines; current published Chrono consumers remain mandatory.
+- [ ] Seal this complete batch after staging exact evidence, refresh main/feedback/empty queues, push only the prepared branch and collect actual next-head three-platform transport and child-memory producer execution.
+- [ ] Complete every original, warning, template/practice, semantic, live delivery/publication, provenance and independent-reasoning criterion. Strict source acceptance remains 31/53 plus 22 separate scoped reviews; independent reasoning remains 0/20 and full issue completion is false.

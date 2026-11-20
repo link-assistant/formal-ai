@@ -673,5 +673,45 @@
     "file": "historical-pull-request-patch.txt.gz",
     "rawSha256": "89a320b894f9e6a1b62f736ade2c5b0f8bab7b11ba102038a8dd9fcfd8da3cc1",
     "archiveSha256": "48d77c7053d325a9fe9e6637bbff4ad5842ecd5f66e732c2b47430870e9ca4d9"
+  },
+  {
+    "file": "rust-cargo-parent-review-first.log.gz",
+    "rawSha256": "031e4cd372d8e9ba086fc30149d623ae92c084260742449b3a7f0350a6a198ad",
+    "archiveSha256": "41ca3de8f1eed840999cbd8f7df18ff095f08d36092a7aa67014b4c3c9abb25b"
+  },
+  {
+    "file": "rust-cargo-parent-review-second.log.gz",
+    "rawSha256": "d6f1937652a36053292f34f8553a2a47d1ac00363c655f2571a3b1bd8d1073bf",
+    "archiveSha256": "e8034fcf297cdaa92602af384818db439f71009c39a05150ad2b6a1e3c5c180a"
+  },
+  {
+    "file": "rust-cargo-parent-review-third.log.gz",
+    "rawSha256": "d965ad1cc3c9dcb6ea7c40a5dc432f78daada014d876ed9e97349604862fc7c8",
+    "archiveSha256": "7e14157d48ef2a2ab14a74f88ea955e3b5fa36c7298c33086c23925d0c08cd29"
+  },
+  {
+    "file": "rust-codeql-release-review-first.log.gz",
+    "rawSha256": "30db43fac39bf4257cfa3a0af55504c901c8d18ba27e40e8f28f7cad61187057",
+    "archiveSha256": "0e21c2319a51195597380a1b78114e77709c2a7a894fbc62f99113ed306ddcf9"
+  },
+  {
+    "file": "rust-codeql-release-review-second.log.gz",
+    "rawSha256": "ea1129e259d136d851e6949d1c6f8ba667290ce9d70172cff0d52e8fb34ac973",
+    "archiveSha256": "2bf506f6eb7530518d1231f58456bd13f593e826cc21eedbbf97243b4c9ea7bc"
+  },
+  {
+    "file": "rust-codeql-release-review-third.log.gz",
+    "rawSha256": "cdb7ead56e57e1ec27d11025d638543d3b2f9bcf66bab07e74c0276b41cc26e2",
+    "archiveSha256": "c1b58ccf21335a13bdd84e8ff03b6bb33157961bb169104ce16cb0078c94b29d"
+  },
+  {
+    "file": "rust-codeql-release-review-fourth.log.gz",
+    "rawSha256": "5c41361e2927c65050eafb9d719cb014c1d13f8463347926133466b95b51baf6",
+    "archiveSha256": "b6cd070865b0799bc21b86403e608ef9c81ff68cee46bba7feadbc4b45f95e57"
+  },
+  {
+    "file": "rust-codeql-release-review-fifth.log.gz",
+    "rawSha256": "8bbb013dd84cf12ba35ddb1e99fb25b2d7b946bef73c68894675ce921712971d",
+    "archiveSha256": "99476ab2c0cea133f9cbfbdbd44b1a0ef06d4846ad5e4ba47734343a7498186c"
   }
 ]
