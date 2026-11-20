@@ -255,3 +255,17 @@ test('the focused workflow target tests actual fallible bump selection', () => {
   assert.match(readFileSync('rust/tests/unit/workflow_contracts.rs', 'utf8'),
     /#\[path = "\.\.\/\.\.\/\.\.\/scripts\/get-bump-type\.rs"\]\nmod get_bump_type;/u);
 });
+
+
+test('the real version release collector is shared with focused native CI', () => {
+  assert.equal(admission(['scripts/version-changelog.rs'])['native-type-check'], true);
+  const source = readFileSync('scripts/version-and-commit.rs', 'utf8');
+  assert.match(source, /use version_changelog::collect_changelog_with_date;/u);
+  assert.match(source, /let collected = match collect_changelog_with_date\(/u);
+  const collector = readFileSync('scripts/version-changelog.rs', 'utf8');
+  assert.match(collector, /changelog_files::read_fragments\(Path::new\(changelog_dir\)\)\?/u);
+  assert.match(collector, /changelog_files::remove_fragments\(&files\)\?/u);
+  assert.doesNotMatch(collector, /filter_map\(|unwrap_or_default\(\)/u);
+  assert.match(readFileSync('rust/tests/unit/workflow_contracts.rs', 'utf8'),
+    /#\[path = "\.\.\/\.\.\/\.\.\/scripts\/version-changelog\.rs"\]\nmod version_changelog;/u);
+});

@@ -46,6 +46,9 @@ use github_output::set_output;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
+#[path = "version-changelog.rs"]
+mod version_changelog;
+use version_changelog::collect_changelog_with_date;
 #[path = "self-hosting-metric.rs"]
 pub mod self_hosting_metric;
 
@@ -408,106 +411,6 @@ fn ensure_version_exceeds_published(
     candidate
 }
 
-fn strip_frontmatter(content: &str) -> String {
-    let re = Regex::new(r"(?s)^---\s*\n.*?\n---\s*\n(.*)$").unwrap();
-    if let Some(caps) = re.captures(content) {
-        caps.get(1).unwrap().as_str().trim().to_string()
-    } else {
-        content.trim().to_string()
-    }
-}
-
-fn remove_changelog_fragments(files: &[PathBuf]) {
-    for file in files {
-        fs::remove_file(file)
-            .unwrap_or_else(|e| panic!("Failed to remove {}: {}", file.display(), e));
-        println!("Removed changelog fragment {}", file.display());
-    }
-}
-
-fn collect_changelog_with_date(
-    changelog_dir: &str,
-    changelog_file: &str,
-    version: &str,
-    date_str: &str,
-) -> bool {
-    let dir_path = Path::new(changelog_dir);
-    if !dir_path.exists() {
-        return false;
-    }
-
-    let mut files: Vec<_> = match fs::read_dir(dir_path) {
-        Ok(entries) => entries
-            .filter_map(|e| e.ok())
-            .map(|e| e.path())
-            .filter(|p| {
-                p.extension().map_or(false, |ext| ext == "md")
-                    && p.file_name().map_or(false, |name| name != "README.md")
-            })
-            .collect(),
-        Err(_) => return false,
-    };
-
-    if files.is_empty() {
-        return false;
-    }
-
-    files.sort();
-
-    let fragments: Vec<String> = files
-        .iter()
-        .filter_map(|f| fs::read_to_string(f).ok())
-        .map(|c| strip_frontmatter(&c))
-        .filter(|c| !c.is_empty())
-        .collect();
-
-    if fragments.is_empty() {
-        return false;
-    }
-
-    // No leading newline: `lines[..idx]` already ends with the blank line that
-    // follows the insert marker, so opening with one produced a second blank
-    // line that `issue_711_rebuild_changelog.mjs --check` rejects.
-    let new_entry = format!(
-        "## [{}] - {}\n\n{}\n",
-        version,
-        date_str,
-        fragments.join("\n\n")
-    );
-
-    if !Path::new(changelog_file).exists() {
-        return false;
-    }
-
-    let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
-    let lines: Vec<&str> = content.lines().collect();
-    let mut insert_index = None;
-
-    for (i, line) in lines.iter().enumerate() {
-        if line.starts_with("## [") {
-            insert_index = Some(i);
-            break;
-        }
-    }
-
-    if let Some(idx) = insert_index {
-        let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
-        new_lines.push(new_entry.clone());
-        new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
-        // `lines()` drops the trailing newline and `join` never restores it, so
-        // every release used to strip the file's final newline.
-        content = format!("{}\n", new_lines.join("\n"));
-    } else {
-        content.push_str(&new_entry);
-    }
-
-    fs::write(changelog_file, content).expect("Failed to write changelog");
-    remove_changelog_fragments(&files);
-
-    println!("Collected {} changelog fragment(s)", files.len());
-    true
-}
-
 fn regenerate_release_artifacts(version: &str, date: &str) -> Result<bool, String> {
     if !Path::new(CHANGELOG_REBUILD_SCRIPT).is_file() {
         return Ok(false);
@@ -788,8 +691,18 @@ fn main() {
     // fragment -> release, so it can be committed atomically with the release
     // instead of depending on that commit's not-yet-existing SHA.
     let release_date = Utc::now().format("%Y-%m-%d").to_string();
-    let collected =
-        collect_changelog_with_date(&changelog_dir, &changelog_file, &new_version, &release_date);
+    let collected = match collect_changelog_with_date(
+        &changelog_dir,
+        &changelog_file,
+        &new_version,
+        &release_date,
+    ) {
+        Ok(collected) => collected,
+        Err(error) => {
+            eprintln!("Error collecting changelog fragments: {error}");
+            exit(1);
+        }
+    };
     let reconstructed = if collected {
         match regenerate_release_artifacts(&new_version, &release_date) {
             Ok(reconstructed) => reconstructed,

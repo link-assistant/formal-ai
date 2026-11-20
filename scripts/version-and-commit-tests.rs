@@ -68,7 +68,8 @@ bump: patch
         changelog.to_str().unwrap(),
         "0.2.0",
         "2026-07-14",
-    );
+    )
+    .unwrap();
 
     let after_first_release = fs::read_to_string(&changelog).unwrap();
     assert!(after_first_release.contains("## [0.2.0] - 2026-07-14"));
@@ -84,7 +85,8 @@ bump: patch
         changelog.to_str().unwrap(),
         "0.3.0",
         "2026-07-15",
-    );
+    )
+    .unwrap();
     assert_eq!(fs::read_to_string(&changelog).unwrap(), after_first_release);
 }
 
@@ -131,7 +133,8 @@ fn release_writes_the_changelog_exactly_as_reconstruction_expects() {
         changelog.to_str().unwrap(),
         "0.2.0",
         "2026-07-16",
-    );
+    )
+    .unwrap();
 
     let expected = "\
 # Changelog
