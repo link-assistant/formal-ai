@@ -1,0 +1,86 @@
+[
+  {
+    "file": "ci-assessment.json.gz",
+    "rawSha256": "5ef890fd4624462805c9d69bd1184a7d60a4dacf14a7ef30df43ed606c5003c0",
+    "archiveSha256": "43740f8604d3c040abd126f8f73c1686e1b382f002b2a656d9439fe7750db0b6",
+    "bytes": 9374,
+    "lines": 244
+  },
+  {
+    "file": "source-size-warnings.json.gz",
+    "rawSha256": "47f40bff3d80141f7054419ca012ccca373684cf02ed7a21e73240f46d245726",
+    "archiveSha256": "bc03e8bf9cc84f78f28636f585384c71ec491a677c92f10d2d24c01add50c285",
+    "bytes": 21941,
+    "lines": 978
+  },
+  {
+    "file": "workflow-annotations.json.gz",
+    "rawSha256": "72e2e07c4c4306e1207c56dc2f92942e6f8fb9541e8761d7e0fe1aae3b53bb9e",
+    "archiveSha256": "4dc1c5bac54871bc212968072c109104d291fdf0973e92e15de6857909757836",
+    "bytes": 36571,
+    "lines": 870
+  },
+  {
+    "file": "helpers/collect-current-repair-new-head-ci.py.gz",
+    "rawSha256": "2cf9b7457447a59521424512dd10823aee00f45d9b550fb65556bb5c8663d0d4",
+    "archiveSha256": "b3f71ef891818db825db302daa936ba986e297bd8ef53996068be90a9861de76",
+    "bytes": 6281,
+    "lines": 85
+  },
+  {
+    "file": "helpers/assess-new-head-ci-and-codeql.py.gz",
+    "rawSha256": "390161671bb4b65c7cbb4138dca51da61614792b0d8fd9e46962bdf14e284716",
+    "archiveSha256": "14dcc08f6554291b4ff74517a26c3c24010e2366c5f541c3e1ea2abf84fe2583",
+    "bytes": 5799,
+    "lines": 59
+  },
+  {
+    "file": "helpers/assess-new-head-ci-and-codeql-initial.py.gz",
+    "rawSha256": "379cb38ba4b096d5fb6406f80bcbf9782067a5113c503262cda3a1bc68f05ef6",
+    "archiveSha256": "64c5f4e832bc30e6f070c8feca82c009ed68f1cefcbe013a11c10b16e8f3d44a",
+    "bytes": 5790,
+    "lines": 59
+  },
+  {
+    "file": "helpers/assess-new-head-ci-and-codeql.log.gz",
+    "rawSha256": "c9ab016148289dcd4303eef94ae40c4d4d9e40c87a3c460bf97af3438499152d",
+    "archiveSha256": "940b75ab944dde6c7c2dda9b179794dd4ac9a653180ea2efda1559b3dbbd2dae",
+    "bytes": 11381,
+    "lines": 275
+  },
+  {
+    "file": "helpers/correct-codeql-warning-assessment.py.gz",
+    "rawSha256": "480fb202617895e3c670fcd5cb8499f8c34cb6ceb28094a55c8950e87c3534d2",
+    "archiveSha256": "72062b6b37519d3f93ba68e7cccb8724b8a1dd7344223d3baab6d1d2cefb77d0",
+    "bytes": 866,
+    "lines": 12
+  },
+  {
+    "file": "helpers/correct-codeql-warning-assessment.log.gz",
+    "rawSha256": "806bf2e1bcdf3ae55435db14685858c2d21a723f548cf36833b718c043a6e4fb",
+    "archiveSha256": "1d2871f08db7bcf6e379a49525734e621252971065e5fe4bba3e163522f084ae",
+    "bytes": 11442,
+    "lines": 277
+  },
+  {
+    "file": "collector/worker.log.gz",
+    "rawSha256": "92bb038ae5b8f9523afec70a01b40dc297057bbabbad6d173077171335ed77e1",
+    "archiveSha256": "7c0478bba960c8725a72bc2f18b70a8aa871a843df8a86ec535d52f00296be79",
+    "bytes": 26025,
+    "lines": 81
+  },
+  {
+    "file": "collector/outcome.json.gz",
+    "rawSha256": "4cc2c7d7f99a935ef2a5b53be8e4e116a29632f6c26e068d8b63f59cbbe9a64d",
+    "archiveSha256": "7d7acc111645bc8245d5b163393386e50f76aa6c192fba078aab47ac900f0561",
+    "bytes": 382,
+    "lines": 16
+  },
+  {
+    "file": "helpers/archive-terminal-new-head-assessment.py.gz",
+    "rawSha256": "c0750bb99b73cbb8091a5fdfefe3042d97815089173692eca7ddc3c66620be78",
+    "archiveSha256": "9e13a9d35e358d8f91cfb6c7baf33d316d57bbe20f9113067fceeb1ff912a71e",
+    "bytes": 7821,
+    "lines": 93
+  }
+]

@@ -468,5 +468,10 @@
     "file": "rust-history-metadata.read.txt.gz",
     "rawSha256": "a1ff73ad760e8b792af6e104440240501e00b09c9e6f3393cffeabb516ffb0a6",
     "archiveSha256": "c5e73606ab1f5aa94eae8eeb8e8b1aec3ec91cf56cf955b1522619793a8b4350"
+  },
+  {
+    "file": "rust-remaining-small-metadata.read.txt.gz",
+    "rawSha256": "5512177d8cb85b87834aea8829fd92eafde9ee944e8924c781cbc8a5293ee9d8",
+    "archiveSha256": "62ad6ca7d4f5564aef65b7da0b2c64ef3d77dea9f0147a84a2313d4b44166f44"
   }
 ]

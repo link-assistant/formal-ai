@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T14:20:24.234322+00:00",
+  "observedAt": "2026-11-20T14:40:52.138619+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 281,
-  "fullyReadSourceLines": 34857,
+  "fullyReadFiles": 289,
+  "fullyReadSourceLines": 34914,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -712,6 +712,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/audit-release.json",
+      "lines": 1,
+      "sha256": "1bc822ba9f9aeb4924f43074da2e07458fe583aa7b01ce80b08145cfe594e383",
+      "readLogs": [
+        "rust-remaining-small-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/audit-upstream-search.json",
       "lines": 1,
       "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
@@ -742,6 +759,23 @@
         ]
       ],
       "literalReadLines": 4,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/batch-1-runs.json",
+      "lines": 50,
+      "sha256": "f3e02f0c5d6219d17cf18baa983d3bfa34b386af1e3b65df21a8bf2e690cd03b",
+      "readLogs": [
+        "rust-remaining-small-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "literalReadLines": 50,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -955,6 +989,23 @@
       "sha256": "af1a0c5a98bd28bcc5f5347e52a90b0b5d7719a8690364be51df2c796b72f56c",
       "readLogs": [
         "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/hooks-release.json",
+      "lines": 1,
+      "sha256": "4be6b8307897497fec1dd12c6ac090cb2445b047de0e976fde9bddff347c69c4",
+      "readLogs": [
+        "rust-remaining-small-metadata.read.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -1188,6 +1239,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/python-audit.json",
+      "lines": 1,
+      "sha256": "8519334f1d667afda40aef9f392dd251baf6d29006191aa97782a9b6e2f56656",
+      "readLogs": [
+        "rust-remaining-small-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/research.md",
       "lines": 161,
       "sha256": "9121a3f904393e2af74a4845632261537c26a955db6d23915a7bfe4948af91d5",
@@ -1218,6 +1286,23 @@
         ]
       ],
       "literalReadLines": 45,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/rust-toolchain-head.json",
+      "lines": 1,
+      "sha256": "a7100aff4d67cddc7300a172fc2127702168af11014377faeca39de72e14cd2f",
+      "readLogs": [
+        "rust-remaining-small-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1868,6 +1953,40 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "docs/case-studies/issue-38/raw-data/downstream-meta-ontology-issue-3.json",
+      "lines": 1,
+      "sha256": "69934739063e17305da47fdf04e254e0f716f834a721bc46184d34998e56e6a1",
+      "readLogs": [
+        "rust-remaining-small-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/issue-38-comments.json",
+      "lines": 1,
+      "sha256": "8903caba6beddb0ba62ed0fdb4100aacc53161531e319eda867143963791948d",
+      "readLogs": [
+        "rust-remaining-small-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "docs/case-studies/issue-38/raw-data/js-template-issue-search.json",
       "lines": 1,
       "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
@@ -2111,6 +2230,23 @@
       "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "readLogs": [
         "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-52/raw-data/issue-52.json",
+      "lines": 1,
+      "sha256": "08d07401e11da71f7c50d1a6b6f4854f2899a70ff3eaf4ac4e4160cfeeda83ca",
+      "readLogs": [
+        "rust-remaining-small-metadata.read.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -5623,6 +5759,27 @@
         ".github/actions/setup-buildx-resilient/action.yml",
         "scripts/check-rust-dependencies.sh",
         ".github/workflows/release.yml"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Historical audit and hook migrations, pinned actions and independent documentation delivery",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/audit-release.json",
+        "dev/log/issues/247/pulls/248/python-audit.json",
+        "dev/log/issues/247/pulls/248/hooks-release.json",
+        "dev/log/issues/247/pulls/248/rust-toolchain-head.json",
+        "dev/log/issues/247/pulls/248/batch-1-runs.json",
+        "docs/case-studies/issue-38/raw-data/downstream-meta-ontology-issue-3.json",
+        "docs/case-studies/issue-38/raw-data/issue-38-comments.json",
+        "docs/case-studies/issue-52/raw-data/issue-52.json"
+      ],
+      "assessment": "All eight complete historical files are read with their pinned identities. cargo-audit 0.23.0 release notes explicitly describe promoting denied warnings in JSON and showing possible warning remedies; current production audit already denies warnings. The archived Python audit lists 42 dependency entries with no findings, which is a historical scoped observation rather than present advisory freshness. pre-commit-hooks 6.0.0 requires Python 3.9 and removes obsolete encoding hooks; current hook applicability must follow the actual configured hooks. A signed rust-toolchain commit and its archived release identify that historical action source, without qualifying every current toolchain consumer. The six-run historical batch includes failed pipeline/link checks, so its four successes cannot establish a wholly passing batch. Documentation deployment is expected to remain independent of package-release success; current Pages server acceptance/publication remains open. Preview regeneration is a tracked upstream pattern rather than evidence of a shipped screenshot producer in the template. No current upstream defect is established by these historical texts.",
+      "status": "literal-history-reviewed-current-runtime-open",
+      "formalAiPaths": [
+        "scripts/check-rust-dependencies.sh",
+        ".pre-commit-config.yaml",
+        ".github/workflows/security.yml"
       ],
       "verification": null
     }
