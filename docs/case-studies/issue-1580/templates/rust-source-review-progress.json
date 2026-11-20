@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T18:02:03.292363+00:00",
+  "observedAt": "2026-11-20T18:13:19.436363+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 324,
-  "fullyReadSourceLines": 37641,
+  "fullyReadFiles": 330,
+  "fullyReadSourceLines": 37647,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -661,6 +661,40 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/actionlint-release.json",
+      "lines": 1,
+      "sha256": "efbb290bb66ea47bcf40441d114fc9fbf39d9ba3670a4da797a4503da36fb78a",
+      "readLogs": [
+        "small-release-history-1.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/actionlint-upstream.json",
+      "lines": 1,
+      "sha256": "6c64a32006c940f680398dc9ac1558374e38834da335ab1ac96a2b84cbe5012d",
+      "readLogs": [
+        "small-release-history-3.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/active-runtime-scan.txt",
       "lines": 6,
       "sha256": "8b29d634e6531fe0f90ef5f47e215be5f1e65e4d5e2be7e3e206569cba7b2fc2",
@@ -831,6 +865,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/branch-desktop-before.json",
+      "lines": 1,
+      "sha256": "17616715c0c6a3597689e37337c8bb9b7a823c2626fa3dcccc81934318487378",
+      "readLogs": [
+        "small-release-history-6.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/branch-failures.txt",
       "lines": 16,
       "sha256": "d8d75f367bb29c504a8622b1e0967e7f10e76fa05b7007cf39c9fe44cac28751",
@@ -853,6 +904,23 @@
       "sha256": "85737506894d8547604cfb35fac208f8b360c7e20b80d5f35a2f214bc967af54",
       "readLogs": [
         "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/branch-security-run-before.json",
+      "lines": 1,
+      "sha256": "875468b5e47736f0fec38fb47dbae5601cf5b7a92da49e1725c19aff319d3a9a",
+      "readLogs": [
+        "small-release-history-5.read.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -895,6 +963,23 @@
         ]
       ],
       "literalReadLines": 70,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/buildkit-release.json",
+      "lines": 1,
+      "sha256": "277a808e5f3a88965c11abac056235caefef7536daddc3a6a72f9e2f3a9aa4d7",
+      "readLogs": [
+        "small-release-history-4.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1462,6 +1547,23 @@
         ]
       ],
       "literalReadLines": 194,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/npm-major-migration.json",
+      "lines": 1,
+      "sha256": "97ececf71c4a411cbe18c41084f9c7d6a269d6d1f57a35db06287ac1c118e31e",
+      "readLogs": [
+        "small-release-history-2.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -6585,6 +6687,27 @@
         ".github/workflows/desktop-release.yml"
       ],
       "verification": "docs/case-studies/issue-1580/pages-release-failure-checkpoint.md"
+    },
+    {
+      "practice": "Qualify tool-release claims and aggregate success against original producer results",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/actionlint-release.json",
+        "dev/log/issues/247/pulls/248/npm-major-migration.json",
+        "dev/log/issues/247/pulls/248/actionlint-upstream.json",
+        "dev/log/issues/247/pulls/248/buildkit-release.json",
+        "dev/log/issues/247/pulls/248/branch-security-run-before.json",
+        "dev/log/issues/247/pulls/248/branch-desktop-before.json"
+      ],
+      "assessment": "Read all six complete pinned JSON records, including all 13 queue-support PR comments and every desktop job. Historical actionlint 1.7.12 lacks queue support; exact unknown-key suppression alone cannot establish valid queue type/value or cancellation combinations. PR #654 remains open in this historical response; current upstream state requires fresh verification. npm 12 changes JSON output, strict flags, supported Node versions and lifecycle defaults. BuildKit 0.35.0 release notes describe retry, cancellation and cache fixes; release notes alone do not prove current image publication. The original security analysis step succeeds while its strict SARIF gate and dependency audit fail. All six historical desktop package jobs fail and all checksums/uploads skip. Job metadata does not establish those failures' causes; original logs must be read separately. One initially truncated desktop metadata display was reread in bounded chunks until complete.",
+      "status": "six-original-release-and-job-records-fully-read-current-adoption-open",
+      "formalAiPaths": [
+        ".github/actionlint.yaml",
+        ".github/workflows/workflows.yml",
+        ".github/workflows/security.yml",
+        ".github/workflows/desktop-release.yml",
+        ".github/workflows/docker-publish.yml"
+      ],
+      "verification": "experiments/issue-1580/evidence/checks/rust-small-release-history/assessment.json"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",

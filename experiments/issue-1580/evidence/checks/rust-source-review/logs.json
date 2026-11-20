@@ -568,5 +568,35 @@
     "file": "publication-preview-history-4.read.txt.gz",
     "rawSha256": "a9192ac3174d9fc5bc66c9589f04a68ef07c4a12770852445956fd5a4f9c4cc6",
     "archiveSha256": "d4559a071a4cd06e5e6487ba789e7c650e0e728910c4db4cf2b2608d2c018dd1"
+  },
+  {
+    "file": "small-release-history-1.read.txt.gz",
+    "rawSha256": "8c4f6a074c742ea1d90e9437473e302d7af28f5b2c8b3937772e8aa5c0559a14",
+    "archiveSha256": "c437bee185690dbeb0192d45944c0caff437102bd28f59a1e1569b77351b5e3a"
+  },
+  {
+    "file": "small-release-history-2.read.txt.gz",
+    "rawSha256": "a0fd6be1849a2cadaf1a72fc7d7a5ae347bb601b7b65c9e514a0331068d54e35",
+    "archiveSha256": "e07cea64c6f68ebe45a7ea4f9f8c1b434a2b86029a87a8d1ed55b9f7513852a1"
+  },
+  {
+    "file": "small-release-history-3.read.txt.gz",
+    "rawSha256": "3facb220f4545213b0465cad4856d629eb09947c6ed690eb22919e30ff4ccfa8",
+    "archiveSha256": "a52a02c2e8ee4253e86404087a36012e6d85224e026782176a592ebba5be98ed"
+  },
+  {
+    "file": "small-release-history-4.read.txt.gz",
+    "rawSha256": "f1ec8b304149df1dc5ac2ae0fee82403c7070937633cfa9e35d42482685aaaeb",
+    "archiveSha256": "0b70d85791da4fb10358d011a5e66ca668af8bcc2bbe1d8d1b5298b9e65beb17"
+  },
+  {
+    "file": "small-release-history-5.read.txt.gz",
+    "rawSha256": "d52b46e49be441ef0aceb6fa77445a5378dc61d82932f2eba1a1b72f70bafcbe",
+    "archiveSha256": "ca465377df80579572179b2d935ce76656beb4583a8f5f8f6d0f5a8e4a2679d1"
+  },
+  {
+    "file": "small-release-history-6.read.txt.gz",
+    "rawSha256": "78591bbeca34f55b9bd82fbb44f725770ec8df9548d7414651a7078337642593",
+    "archiveSha256": "549eda76ce3b64c47149e12aaded70b041d0ac9b0dfb7b4612c82500dc50d235"
   }
 ]
