@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T11:08:35.498381+00:00",
+  "observedAt": "2026-11-20T14:20:24.234322+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 243,
-  "fullyReadSourceLines": 34777,
+  "fullyReadFiles": 281,
+  "fullyReadSourceLines": 34857,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -644,6 +644,57 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/artifact-fix-upstream.json",
+      "lines": 1,
+      "sha256": "8f92878d2f9c710510de00b4d00175fa41f06c9809a4fddd2b0172f206e0e767",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/artifact-upstream-search.json",
+      "lines": 1,
+      "sha256": "adcda6e12a57d4f6fdbe68fc43f4fcb0ffe34b739bcac6f2e4a623b3f8d991ea",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/artifact-upstream.json",
+      "lines": 1,
+      "sha256": "ce48e0b6db129d913ae25bf0035bed902f3126f586a40232e18b6c010f235737",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/artifact-upstream.json.txt",
       "lines": 43,
       "sha256": "3e9e77b2b3600732d02d34f282bf2e704f56bf26876d779e25e912e854b2d973",
@@ -657,6 +708,23 @@
         ]
       ],
       "literalReadLines": 43,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/audit-upstream-search.json",
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -695,6 +763,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/branch-runs-before.json",
+      "lines": 1,
+      "sha256": "85737506894d8547604cfb35fac208f8b360c7e20b80d5f35a2f214bc967af54",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/buildkit-image.txt",
       "lines": 70,
       "sha256": "2191a5fd96088bc5c2566d098790c3d02374aca24eeee4c3ce25d3b96a1b1ecc",
@@ -729,6 +814,176 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/buildx-retry-pr.json",
+      "lines": 1,
+      "sha256": "36936c92142f0266ca34ad3dbcbe8bf4f96909241a24845075ceca05fcbd5b37",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/buildx-retry-search.json",
+      "lines": 1,
+      "sha256": "31d1f4484fe44627642ae0034fe48ebf7c11813006af0c9d8b30696cd7ba7411",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/buildx-upstream-search.json",
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/cargo-audit.json",
+      "lines": 1,
+      "sha256": "58fcbfef5f5d30bcf7c89c466938626be9b7a05ae4e1b2e38874e23037b6c372",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/codeql-upstream-search.json",
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/create-changelog-fragment-audit.json",
+      "lines": 1,
+      "sha256": "1ec84e4a9068c9a57d11053ed3108d04b1eb2208b612fa86f8194077c023d718",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/create-github-release-audit.json",
+      "lines": 1,
+      "sha256": "93b1b19458197d182473696add6763f26daac32ce8c833cb6369a5c64663af7e",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/create-pr-action-ref.json",
+      "lines": 1,
+      "sha256": "dfe3d40191e3fb646b9fac425b2e34596d065ddeb44b6336a70a2cdbfb8ce7ac",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/example-cargo-audit.json",
+      "lines": 1,
+      "sha256": "af1a0c5a98bd28bcc5f5347e52a90b0b5d7719a8690364be51df2c796b72f56c",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/install-action-ref.json",
+      "lines": 1,
+      "sha256": "cfd94c1abeeac46a120df1b290ddb015f9caf9f681e20b4f817b30cb7222b886",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/pages-bundle-evidence.txt",
       "lines": 3,
       "sha256": "48caca43397ba22228ccadad10f9c545059d01ff1e5b591b55e751ec92607612",
@@ -742,6 +997,23 @@
         ]
       ],
       "literalReadLines": 3,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pages-upstream.json",
+      "lines": 1,
+      "sha256": "00c657aa43816c118796f38e0f18dc98a97c19724c0cbffd07adbf429020b530",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -780,6 +1052,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/policy-audit.json",
+      "lines": 22,
+      "sha256": "6d31e957dc14f2847573c528dd4fdfd3b80883e8f4d401404880b25afa9bf1b6",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "literalReadLines": 22,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/pr-body.md",
       "lines": 23,
       "sha256": "d86a6e045df52cf7f11894daf5a82451df2e926391ea0d32369b662eaa34172a",
@@ -793,6 +1082,108 @@
         ]
       ],
       "literalReadLines": 23,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pr-conversation-final.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pr-initial.json",
+      "lines": 1,
+      "sha256": "f1bebf4821ea49081df4da83c41626700a94327426c5aa8bbc9b0227cfa9eea4",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pr-review-comments-final.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pr-review-comments.json",
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pr-reviews-final.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pr-reviews.json",
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -827,6 +1218,40 @@
         ]
       ],
       "literalReadLines": 45,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/secretlint-audit.json",
+      "lines": 22,
+      "sha256": "2b2412065a70d82466c8020b1e90575eb12cc8e2e215a828a076c12250d4ad92",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "literalReadLines": 22,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/sub-issues.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1001,6 +1426,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/ureq-upstream-search.json",
+      "lines": 1,
+      "sha256": "461221b0bfc136cd9f45f50fa91dba0fbf059a6016ac8673f76fe42ef28952a6",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/verification.md",
       "lines": 100,
       "sha256": "efb3edac62eced2bf7f643b8a79dcc470868e0f3ec8993e728e82dcbeeacbf92",
@@ -1014,6 +1456,40 @@
         ]
       ],
       "literalReadLines": 100,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/version-and-commit-audit.json",
+      "lines": 1,
+      "sha256": "fbbc8a282442e41644814129222196912ca5d25bab074a0aad38eeeaf253fcc8",
+      "readLogs": [
+        "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/zizmor.json",
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1150,6 +1626,40 @@
         ]
       ],
       "literalReadLines": 15,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-19/pr-114-data/pr-review-comments.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-19/pr-114-data/pr-reviews.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1358,6 +1868,125 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "docs/case-studies/issue-38/raw-data/js-template-issue-search.json",
+      "lines": 1,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/pr-39-conversation-comments.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/pr-39-review-comments.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/pr-39-reviews.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/pr-39.json",
+      "lines": 1,
+      "sha256": "0934ecea09550600a9a4c534c274f34f12dc166adf48777107cbaa6b2bcab72a",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/pr-branch-runs.json",
+      "lines": 1,
+      "sha256": "3af7c4cf921fecc35bf671a0e84464266e56e4743b5ba4075ba778685c44a354",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/rust-template-issue-search.json",
+      "lines": 1,
+      "sha256": "41fcce6a75eae32827544bdb658cd623ab7a5b7ee93ff87ef6953d41207ba6b9",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "docs/case-studies/issue-38/template-data/js-template-ci-tree.txt",
       "lines": 22,
       "sha256": "8518ec4698afea656155d2c9530deada279fb740404d68fdda9ce257ce6a079d",
@@ -1473,6 +2102,23 @@
         ]
       ],
       "literalReadLines": 80,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-52/raw-data/issue-52-comments.json",
+      "lines": 1,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "readLogs": [
+        "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -4911,6 +5557,72 @@
         ".github/actions/setup-buildx-resilient/action.yml",
         ".github/workflows/release.yml",
         "scripts/generate-staged-release.mjs"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Historical audit scope, security finding provenance and immutable tool references",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/example-cargo-audit.json",
+        "dev/log/issues/247/pulls/248/policy-audit.json",
+        "dev/log/issues/247/pulls/248/secretlint-audit.json",
+        "dev/log/issues/247/pulls/248/version-and-commit-audit.json",
+        "dev/log/issues/247/pulls/248/install-action-ref.json",
+        "dev/log/issues/247/pulls/248/pages-upstream.json",
+        "dev/log/issues/247/pulls/248/ureq-upstream-search.json",
+        "dev/log/issues/247/pulls/248/pr-conversation-final.json",
+        "dev/log/issues/247/pulls/248/pr-review-comments-final.json",
+        "dev/log/issues/247/pulls/248/pr-reviews-final.json"
+      ],
+      "assessment": "Ten complete historical JSON/text records (52 source lines) are literally read and identity-verified. The clean audits describe one, two, 83 and 92 dependency scopes, not current Formal AI security. One archived database omits commit/update identities; it earns no freshness credit. The stored Pages report contains successful-deployment DEP0040 observations and an explicitly uncertain later 404, not evidence that deprecation caused the 404. The actual owned Pages repair, exact-artifact retry tests and pending live-publication criteria remain separate. Empty conversation/inline/review arrays are historical snapshots only. The install-action ref response binds a historical commit; Formal AI security still selects taiki-e/install-action@v2, so current mutable action identity remains an open comparison criterion. No new current template defect is demonstrated by these archives.",
+      "status": "literal-history-reviewed-current-runtime-and-tool-identity-open",
+      "formalAiPaths": [
+        ".github/workflows/security.yml",
+        "scripts/check-rust-dependencies.sh",
+        ".github/actions/deploy-pages/action.yml"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Historical artifact extraction, bounded BuildKit recovery and scoped audit evidence",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/cargo-audit.json",
+        "dev/log/issues/247/pulls/248/create-changelog-fragment-audit.json",
+        "dev/log/issues/247/pulls/248/create-github-release-audit.json",
+        "dev/log/issues/247/pulls/248/create-pr-action-ref.json",
+        "dev/log/issues/247/pulls/248/sub-issues.json",
+        "dev/log/issues/247/pulls/248/zizmor.json",
+        "dev/log/issues/247/pulls/248/pr-review-comments.json",
+        "dev/log/issues/247/pulls/248/pr-reviews.json",
+        "dev/log/issues/247/pulls/248/branch-runs-before.json",
+        "dev/log/issues/247/pulls/248/buildx-retry-pr.json",
+        "dev/log/issues/247/pulls/248/buildx-retry-search.json",
+        "dev/log/issues/247/pulls/248/artifact-fix-upstream.json",
+        "dev/log/issues/247/pulls/248/artifact-upstream-search.json",
+        "dev/log/issues/247/pulls/248/artifact-upstream.json",
+        "dev/log/issues/247/pulls/248/audit-upstream-search.json",
+        "dev/log/issues/247/pulls/248/codeql-upstream-search.json",
+        "dev/log/issues/247/pulls/248/buildx-upstream-search.json",
+        "dev/log/issues/247/pulls/248/pr-initial.json",
+        "docs/case-studies/issue-19/pr-114-data/pr-review-comments.json",
+        "docs/case-studies/issue-19/pr-114-data/pr-reviews.json",
+        "docs/case-studies/issue-38/raw-data/pr-39-conversation-comments.json",
+        "docs/case-studies/issue-38/raw-data/pr-39-review-comments.json",
+        "docs/case-studies/issue-38/raw-data/pr-39-reviews.json",
+        "docs/case-studies/issue-38/raw-data/pr-39.json",
+        "docs/case-studies/issue-38/raw-data/pr-branch-runs.json",
+        "docs/case-studies/issue-38/raw-data/js-template-issue-search.json",
+        "docs/case-studies/issue-38/raw-data/rust-template-issue-search.json",
+        "docs/case-studies/issue-52/raw-data/issue-52-comments.json"
+      ],
+      "assessment": "All 28 complete historical metadata texts are read and identity-verified. The archived upstream artifact report traces DEP0005 to the old extraction chain and requires strict deprecation plus digest-preserving raw transport; Formal AI now has the owned transport and three-OS hosted adapter proof, while all 97 later consumer paths and actual production effects still need their appropriate qualification. The archived Buildx pull retry change and search results establish historical context, not a current immutable BuildKit identity or full recovery proof. Audit scopes are 53, 39 and 16 dependencies; the latter two omit database commit/update identity, so their clean results are not current security/freshness proof. Empty searches, review arrays and a bare clean zizmor array establish no producer coverage. Historical draft metadata and documentation-release separation are not final publication evidence. No new current template defect is inferred from these historical records.",
+      "status": "literal-history-reviewed-broader-runtime-and-identity-open",
+      "formalAiPaths": [
+        ".github/actions/download-artifact/action.yml",
+        "scripts/extract-artifacts.py",
+        ".github/actions/setup-buildx-resilient/action.yml",
+        "scripts/check-rust-dependencies.sh",
+        ".github/workflows/release.yml"
       ],
       "verification": null
     }

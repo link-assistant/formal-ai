@@ -316,3 +316,5 @@ The [artifact consumer checkpoint](artifact-consumer-checkpoint.md) records all 
 
 
 The [artifact-bound Pages checkpoint](pages-deployment-checkpoint.md) records actual pinned-template failure controls, preserved deployment contracts and the final local gates. The [published search dependency checkpoint](published-search-dependency-checkpoint.md) records fxhash removal and unchanged strict audit policy, with native verification pending. The [hosted aca32b1a checkpoint](hosted-aca32b1a-checkpoint.md) records all 24 passing workflows, 521 native passes, three real artifact transports and both successful original CodeQL reports, including their coverage limits. These scoped results leave the wider issue unfinished.
+
+The [current-head CI and compressed evidence checkpoint](current-head-repair-checkpoint.md) preserves the 8c712eb9 failures, minimal repairs, full archive scan and published Pages template reports. Hosted validation of these new drafts and all broader unfinished criteria remain open.

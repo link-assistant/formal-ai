@@ -458,5 +458,15 @@
     "file": "inspect-rust-visual-and-review-manifest-corrected.log.gz",
     "rawSha256": "f08d7eb33fcef1e28919318117981fbca3c4458f8eda086c60b800a4c94844b0",
     "archiveSha256": "12fb35f868d744b125ae2de0bec5fc359fe79aa837a28e216fb558e215e87fb7"
+  },
+  {
+    "file": "rust-history-audits.read.txt.gz",
+    "rawSha256": "d2ef2c39852a72ca03a96298a5d70a1eaad96fb535326f3deb57561a20795bc1",
+    "archiveSha256": "3b34620478d796adbc2d10ae88ae96c17285f6edac724b3393745b699f27d41e"
+  },
+  {
+    "file": "rust-history-metadata.read.txt.gz",
+    "rawSha256": "a1ff73ad760e8b792af6e104440240501e00b09c9e6f3393cffeabb516ffb0a6",
+    "archiveSha256": "c5e73606ab1f5aa94eae8eeb8e8b1aec3ec91cf56cf955b1522619793a8b4350"
   }
 ]
