@@ -13,12 +13,11 @@
 //! - A version that arrived by merging the base branch back in keeps
 //!   both sides equal and passes; a moved manifest no longer reads as
 //!   a version change the way a raw merge-base diff did
-//! - Skips check for automated release branches (changelog-manual-release-*)
+//! - Checks every pull request regardless of its branch name
 //!
 //! Usage: rust-script scripts/check-version-modification.rs
 //!
 //! Environment variables (set by GitHub Actions):
-//!   - GITHUB_HEAD_REF: The head branch name for PRs
 //!   - GITHUB_BASE_REF: The base branch name for PRs
 //!   - GITHUB_EVENT_NAME: Should be 'pull_request'
 //!
@@ -53,27 +52,6 @@ fn exec_ignore_error(command: &str, args: &[&str]) {
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
         .status();
-}
-
-fn should_skip_version_check() -> bool {
-    let head_ref = env::var("GITHUB_HEAD_REF").unwrap_or_default();
-
-    // Skip for automated release PRs
-    let automated_branch_prefixes = [
-        "changelog-manual-release-",
-        "changeset-release/",
-        "release/",
-        "automated-release/",
-    ];
-
-    for prefix in &automated_branch_prefixes {
-        if head_ref.starts_with(prefix) {
-            println!("Skipping version check for automated branch: {}", head_ref);
-            return true;
-        }
-    }
-
-    false
 }
 
 fn get_rust_root() -> String {
@@ -135,11 +113,7 @@ fn main() {
         exit(0);
     }
 
-    // Skip for automated release branches
-    if should_skip_version_check() {
-        exit(0);
-    }
-
+    // A release-like branch name is not authorization to change the version.
     let base_ref = env::var("GITHUB_BASE_REF").unwrap_or_else(|_| "main".to_string());
     exec_ignore_error("git", &["fetch", "origin", &base_ref, "--depth=1"]);
 

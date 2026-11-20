@@ -359,8 +359,7 @@ async function main(mode) {
   } else {
     assert.equal(mode, 'version');
     if (process.env.GITHUB_EVENT_NAME !== 'pull_request') return;
-    if (['changelog-manual-release-', 'changeset-release/', 'release/', 'automated-release/']
-      .some(prefix => process.env.GITHUB_HEAD_REF?.startsWith(prefix))) return;
+    // Branch names are caller-controlled; every pull request needs the version check.
     const base = process.env.GITHUB_BASE_REF || 'main';
     assert(/^[a-zA-Z0-9_./-]+$/u.test(base) && !base.startsWith('-'), 'valid base branch required');
     const manifest = await readBaseManifest({repository:process.env.GITHUB_REPOSITORY,base,

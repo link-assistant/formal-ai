@@ -399,13 +399,28 @@ test('GitHub denials and server failures remain terminal without retries or Git 
     assert.doesNotMatch(result.stdout,/Package version unchanged/u);
   }
 });
-test('invalid base cannot start API reads and non-PR or release bypasses stay unchanged',context=>{
+test('invalid base cannot start API reads and non-PR events stay unchanged',context=>{
   const invalid=versionCli(context,{base:'--foreign'});
   assert.notEqual(invalid.status,0);assert.deepEqual(invalid.calls,[]);
-  for(const options of [{event:'push'},{headRef:'automated-release/1.2.3'}]) {
+  for(const options of [{event:'push'}]) {
     const bypass=versionCli(context,options);
     assert.equal(bypass.status,0,bypass.stderr);assert.deepEqual(bypass.calls,[]);
   }
+});
+for (const prefix of ['changelog-manual-release-', 'changeset-release/', 'release/', 'automated-release/']) {
+  test('release-like branch names cannot authorize manual version changes: '+prefix,context=>{
+    const result=versionCli(context,{headRef:prefix+'1.2.4',headVersion:'1.2.4'});
+    assert.notEqual(result.status,0,'an untrusted branch name cannot authorize a version bump');
+    assert.match(result.stderr,/Use a changelog fragment instead of changing the crate version/u);
+    assert.ok(result.calls.length>0,'the unchanged base-version observation must execute');
+    assert.doesNotMatch(result.stdout,/Package version unchanged/u);
+  });
+}
+test('manual changelog release branches still accept an unchanged package version',context=>{
+  const result=versionCli(context,{headRef:'changelog-manual-release-123'});
+  assert.equal(result.status,0,result.stderr);
+  assert.match(result.stdout,/Package version unchanged[.]/u);
+  assert.ok(result.calls.length>0);
 });
 async function observeSourceFixture(mutate=()=>{},options={}) {
   const fixture=sourceFixture(options);mutate(fixture);
