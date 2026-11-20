@@ -2517,7 +2517,7 @@
       "lines": 879,
       "sha256": "89a320b894f9e6a1b62f736ade2c5b0f8bab7b11ba102038a8dd9fcfd8da3cc1",
       "readLogs": [
-        "historical-pr-patch.txt.gz"
+        "historical-pull-request-patch.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -3010,7 +3010,7 @@
       "lines": 1,
       "sha256": "e8f818329a6b55c5eb4c0d2261d95d47e2b8259f58e307ab387b54fd5c59c3f2",
       "readLogs": [
-        "remaining-run-history-pr-run-25212295127.json.read.txt.gz"
+        "remaining-run-history-pull-request-run-25212295127.json.read.txt.gz"
       ],
       "literalReadRanges": [
         [

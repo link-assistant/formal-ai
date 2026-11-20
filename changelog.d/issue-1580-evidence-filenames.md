@@ -1,0 +1,1 @@
+Spell thirteen newly published evidence archive filenames in full and update their physical manifest references. Preserve original source names, compressed bytes, digests and the existing abbreviation ceiling.

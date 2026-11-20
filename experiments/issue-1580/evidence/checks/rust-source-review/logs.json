@@ -640,7 +640,7 @@
     "archiveSha256": "c84acc0fb1878e36979dd84f2f1dd161f45d62c162261e5117e43e4f9829d13d"
   },
   {
-    "file": "remaining-run-history-pr-run-25212295127.json.read.txt.gz",
+    "file": "remaining-run-history-pull-request-run-25212295127.json.read.txt.gz",
     "rawSha256": "fdb76c0b9b5a4e77a30f18733806611ac00ffb8a95657946e7de2db3d9089977",
     "archiveSha256": "021aa359cf1cc0fd7ccf831e46eb1d90971c335a59cdc8a3dff6ba07bae309b0"
   },
@@ -670,7 +670,7 @@
     "archiveSha256": "a4b7f2e86dad36f4da5f41c72d230af3d9b8cce6f0c9493941414d0d54ee01dc"
   },
   {
-    "file": "historical-pr-patch.txt.gz",
+    "file": "historical-pull-request-patch.txt.gz",
     "rawSha256": "89a320b894f9e6a1b62f736ade2c5b0f8bab7b11ba102038a8dd9fcfd8da3cc1",
     "archiveSha256": "48d77c7053d325a9fe9e6637bbff4ad5842ecd5f66e732c2b47430870e9ca4d9"
   }

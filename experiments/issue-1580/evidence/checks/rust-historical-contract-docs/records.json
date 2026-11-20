@@ -1,6 +1,6 @@
 [
   {
-    "file": "issue-1580-research-record-rust-historical-contract-docs.py.gz",
+    "file": "issue-1580-research-record-rust-historical-contract-documentation.py.gz",
     "rawSha256": "d271063728af129ee2a176cab20bdecbec28c1a8f2430e1213c74c9b7df99430",
     "archiveSha256": "c473a290bfe1469438b28c93678fc88a802f5c486297d3a598034df229ad8c24"
   },
@@ -10,7 +10,7 @@
     "archiveSha256": "d6c205181e04fed980e0d279380689a88c4939c85846adb0be7932e6daa4aa4d"
   },
   {
-    "file": "issue-1580-research-read-rust-historical-pr-patch.py.gz",
+    "file": "issue-1580-research-read-rust-historical-pull-request-patch.py.gz",
     "rawSha256": "adef3129163c789ea1afcbf621520c1fa5753c3e946f6f771c94ddfb68ff7588",
     "archiveSha256": "1bf2a286c539fdd1026485026894857ac96c5346ed71d6fe26151ab250b163da"
   },
@@ -20,7 +20,7 @@
     "archiveSha256": "486a9e4c5ddc860525a95a28e0bf8429e0429af2ba00b1703d86cb2411a2bd48"
   },
   {
-    "file": "rust-historical-pr-patch-identity.json.gz",
+    "file": "rust-historical-pull-request-patch-identity.json.gz",
     "rawSha256": "7f8090f46e93d3f573fd6bd4669b56f25bd94ab808955000a3b21e819217ba35",
     "archiveSha256": "4c45776416543485b988b2dc96d80354c855efb1b04f261566dda539ef39401c"
   }

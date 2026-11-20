@@ -1,0 +1,85 @@
+{
+  "entries": [
+    {
+      "old": "hosted-queue-and-hive-observations/heap-batch-feedback/pr-comments.stderr.gz",
+      "new": "hosted-queue-and-hive-observations/heap-batch-feedback/pull-request-comments.stderr.gz",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "old": "hosted-queue-and-hive-observations/heap-batch-feedback/pr-comments.stdout.gz",
+      "new": "hosted-queue-and-hive-observations/heap-batch-feedback/pull-request-comments.stdout.gz",
+      "archiveSha256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30",
+      "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92"
+    },
+    {
+      "old": "hosted-queue-and-hive-observations/heap-batch-feedback/pr-inline-comments.stderr.gz",
+      "new": "hosted-queue-and-hive-observations/heap-batch-feedback/pull-request-inline-comments.stderr.gz",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "old": "hosted-queue-and-hive-observations/heap-batch-feedback/pr-inline-comments.stdout.gz",
+      "new": "hosted-queue-and-hive-observations/heap-batch-feedback/pull-request-inline-comments.stdout.gz",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "old": "hosted-queue-and-hive-observations/heap-batch-feedback/pr-reviews.stderr.gz",
+      "new": "hosted-queue-and-hive-observations/heap-batch-feedback/pull-request-reviews.stderr.gz",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "old": "hosted-queue-and-hive-observations/heap-batch-feedback/pr-reviews.stdout.gz",
+      "new": "hosted-queue-and-hive-observations/heap-batch-feedback/pull-request-reviews.stdout.gz",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "old": "hosted-queue-and-hive-observations/heap-batch-feedback/pr.stderr.gz",
+      "new": "hosted-queue-and-hive-observations/heap-batch-feedback/pull-request.stderr.gz",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "old": "hosted-queue-and-hive-observations/heap-batch-feedback/pr.stdout.gz",
+      "new": "hosted-queue-and-hive-observations/heap-batch-feedback/pull-request.stdout.gz",
+      "archiveSha256": "5db90d7eec5d43d873e24e6ff24e16e0eab5fee43f7ce23067329ab7d6f1b926",
+      "rawSha256": "fb6337483773eaca41ab052303eab1d46793911ddbacb0acf943be32c88d70e0"
+    },
+    {
+      "old": "rust-historical-contract-docs/issue-1580-research-read-rust-historical-pr-patch.py.gz",
+      "new": "rust-historical-contract-docs/issue-1580-research-read-rust-historical-pull-request-patch.py.gz",
+      "archiveSha256": "1bf2a286c539fdd1026485026894857ac96c5346ed71d6fe26151ab250b163da",
+      "rawSha256": "adef3129163c789ea1afcbf621520c1fa5753c3e946f6f771c94ddfb68ff7588"
+    },
+    {
+      "old": "rust-historical-contract-docs/issue-1580-research-record-rust-historical-contract-docs.py.gz",
+      "new": "rust-historical-contract-docs/issue-1580-research-record-rust-historical-contract-documentation.py.gz",
+      "archiveSha256": "c473a290bfe1469438b28c93678fc88a802f5c486297d3a598034df229ad8c24",
+      "rawSha256": "d271063728af129ee2a176cab20bdecbec28c1a8f2430e1213c74c9b7df99430"
+    },
+    {
+      "old": "rust-historical-contract-docs/rust-historical-pr-patch-identity.json.gz",
+      "new": "rust-historical-contract-docs/rust-historical-pull-request-patch-identity.json.gz",
+      "archiveSha256": "4c45776416543485b988b2dc96d80354c855efb1b04f261566dda539ef39401c",
+      "rawSha256": "7f8090f46e93d3f573fd6bd4669b56f25bd94ab808955000a3b21e819217ba35"
+    },
+    {
+      "old": "rust-source-review/historical-pr-patch.txt.gz",
+      "new": "rust-source-review/historical-pull-request-patch.txt.gz",
+      "archiveSha256": "48d77c7053d325a9fe9e6637bbff4ad5842ecd5f66e732c2b47430870e9ca4d9",
+      "rawSha256": "89a320b894f9e6a1b62f736ade2c5b0f8bab7b11ba102038a8dd9fcfd8da3cc1"
+    },
+    {
+      "old": "rust-source-review/remaining-run-history-pr-run-25212295127.json.read.txt.gz",
+      "new": "rust-source-review/remaining-run-history-pull-request-run-25212295127.json.read.txt.gz",
+      "archiveSha256": "021aa359cf1cc0fd7ccf831e46eb1d90971c335a59cdc8a3dff6ba07bae309b0",
+      "rawSha256": "fdb76c0b9b5a4e77a30f18733806611ac00ffb8a95657946e7de2db3d9089977"
+    }
+  ],
+  "archiveBytesUnchanged": true,
+  "ceilingsChanged": false,
+  "fullIssueComplete": false
+}
