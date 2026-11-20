@@ -53,5 +53,25 @@
     "file": "rust-security-preflight-helpers-read.log.gz",
     "rawSha256": "ffd40022b9ffe691a9670f0366a244284037b2acb8b7a627f0f0bd6ed5a51594",
     "archiveSha256": "7c6770a63d53f3cde02b48c00dfc892c3ab5f640c3b6c5d2d8ac85cbbe6f1860"
+  },
+  {
+    "file": "rust-release-small-helpers-read.log.gz",
+    "rawSha256": "8c59a63ce5aebda709ebb77e30e8ed60b78f46b9ebfcbb52c265c801e878d8f4",
+    "archiveSha256": "23edd64c68aee4d55a409f7849c063427efe1ca5e5f034750e01bff12561920b"
+  },
+  {
+    "file": "rust-base-configs-read.log.gz",
+    "rawSha256": "5d7ad44cb4b677662ede84fed0ec5513dde83a0e7965d71714ef7aa0da7bbcab",
+    "archiveSha256": "963b9acf25d2a007f29c412d985d678c59966c88bf49041d78139787dcee98b2"
+  },
+  {
+    "file": "rust-version-gates-read.log.gz",
+    "rawSha256": "e557cb5a5293b69654198b2e725c701e304c343ff10d28b0099861a222f6941c",
+    "archiveSha256": "2f503e2e850de651f03190ec25f94b324e1b07696847d8fcee6e79bf144ac048"
+  },
+  {
+    "file": "formal-release-gate-counterparts-read.log.gz",
+    "rawSha256": "24533041c0d243deb3340a1bdbcdf2c7979edcbeef87336dbdaf95c363f5848c",
+    "archiveSha256": "d6b3a5c7724b4e3d8f04d00090e671919c14c60d9302ce73a2aeaf25e635f79d"
   }
 ]

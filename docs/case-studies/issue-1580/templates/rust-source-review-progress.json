@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T02:28:43.426692+00:00",
+  "observedAt": "2026-11-20T02:52:02.958636+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 44,
-  "fullyReadSourceLines": 5367,
+  "fullyReadFiles": 78,
+  "fullyReadSourceLines": 7616,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -129,6 +129,40 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": ".github/dependency-policy/package-lock.json",
+      "lines": 47,
+      "sha256": "023327a9eb853c9be8967e1193dfb5be856ce55862618e52b9817c4ecc45b713",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          47
+        ]
+      ],
+      "literalReadLines": 47,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/dependency-policy/package.json",
+      "lines": 15,
+      "sha256": "a8836205f7ec7ce9692a1f3692b86e65b834bfd6c9359a7d699fae00f1233b59",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          15
+        ]
+      ],
+      "literalReadLines": 15,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": ".github/scripts/check-secrets.mjs",
       "lines": 49,
       "sha256": "44f98dfb575530b0bf6aa83354a1b220bf5d79ccd7114e00bc40fb2ed4d061ab",
@@ -159,6 +193,23 @@
         ]
       ],
       "literalReadLines": 75,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".github/secretlint/package.json",
+      "lines": 13,
+      "sha256": "f97e7e4a76b05e633af035c08d37e7733f9ca905b2750ec488c2402860cc8453",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          13
+        ]
+      ],
+      "literalReadLines": 13,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -318,6 +369,261 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": ".gitignore",
+      "lines": 62,
+      "sha256": "2bbe56d36bb1188255d0c7f5133684e7db91964feb4f72b9a1b69f5596330f41",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          62
+        ]
+      ],
+      "literalReadLines": 62,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".lycheeignore",
+      "lines": 12,
+      "sha256": "9e3b5dd3c05718f4d48d2695fe0c0b2a08ff1c5b5d11e3c2b633ff7c4b5a4441",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          12
+        ]
+      ],
+      "literalReadLines": 12,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "lines": 42,
+      "sha256": "614ebf1e962cb46c909293fe4440236bd0a56c7a3e464f6670410d361e5ccc1b",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "literalReadLines": 42,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".python-version",
+      "lines": 1,
+      "sha256": "673e2ba07f95bfcfe0a543258b8e267954e403d1f466481c546f467f86b31d46",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": ".secretlintrc.json",
+      "lines": 7,
+      "sha256": "1c0e86ca72216c22cc77b1c94c27f975b731aa9e104167f5d57a5befa654c10e",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "literalReadLines": 7,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "AGENTS.md",
+      "lines": 19,
+      "sha256": "2df2b66af38b06a9fb2c3c61ee6ff0cdd92f724c3fc3b996d8cbba29543166b5",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          19
+        ]
+      ],
+      "literalReadLines": 19,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "Cargo.toml",
+      "lines": 69,
+      "sha256": "0285c464946ae9918a2a8651b43b048fb8f1a7af08a88c522a642bee62e23ad1",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          69
+        ]
+      ],
+      "literalReadLines": 69,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "LICENSE",
+      "lines": 24,
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          24
+        ]
+      ],
+      "literalReadLines": 24,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "examples/basic_usage.rs",
+      "lines": 7,
+      "sha256": "a37e1bbec3849e07749db32eae7869c3e8fee26d152f3104a5ac89945bebde62",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "literalReadLines": 7,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "lychee.toml",
+      "lines": 5,
+      "sha256": "c9b31a6581d85f4c28353d07cc90309bff98bd46bae11a814746e62945805ccd",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "literalReadLines": 5,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "requirements-dev.in",
+      "lines": 9,
+      "sha256": "cc4603a2f97e5d63f68fbbcef593737d3989d4075687add61f03ef71eac1ed61",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "literalReadLines": 9,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "lines": 4,
+      "sha256": "d4580150cd6aec323fffc3d1b193cbbf262855081a3e1fb330c18b7ba8a98dff",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "literalReadLines": 4,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/bump-version.rs",
+      "lines": 165,
+      "sha256": "6920b150911269183395d607b9171e1b0f3c4617491222aabcfcd1736a61a9b9",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          165
+        ]
+      ],
+      "literalReadLines": 165,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/changelog-files.rs",
+      "lines": 72,
+      "sha256": "591b464db4ebeca4aa10dd42b0783af771de329d8a4f48ad780fd6dee74c1faf",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          72
+        ]
+      ],
+      "literalReadLines": 72,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/check-cargo-lock.rs",
+      "lines": 408,
+      "sha256": "551242e0df58a99011ac5d54c076704a7c96b0232a60f1cd7e5a6dece9191a54",
+      "readLogs": [
+        "rust-version-gates-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          408
+        ]
+      ],
+      "literalReadLines": 408,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "scripts/check-cargo-warnings.sh",
       "lines": 11,
       "sha256": "e4b4de91c593933c5682cddf857e70656c4235b3722ee6be0164f479fd22da6b",
@@ -403,6 +709,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "scripts/check-release-needed.rs",
+      "lines": 275,
+      "sha256": "07ce1e8fc09ad85a287009e049fee53809d56dda775abff6dd78468f425e1b9b",
+      "readLogs": [
+        "rust-version-gates-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          275
+        ]
+      ],
+      "literalReadLines": 275,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "scripts/check-required-docs.sh",
       "lines": 101,
       "sha256": "79228c52e93e753bdf68273e20fc9cbe5530165c1f4f4435b8a69dcaa77a22d4",
@@ -416,6 +739,23 @@
         ]
       ],
       "literalReadLines": 101,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/check-version-modification.rs",
+      "lines": 150,
+      "sha256": "808ea0ebb82065cc0a61d2ecd660c36555af91575c00b003ed3a7897dc791b9e",
+      "readLogs": [
+        "rust-version-gates-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          150
+        ]
+      ],
+      "literalReadLines": 150,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -518,6 +858,91 @@
         ]
       ],
       "literalReadLines": 74,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/fixtures/lychee-report.md",
+      "lines": 35,
+      "sha256": "b8bfe5337f8229c966c37430b50cedf7ace686a8951704d284c9e9238ced0812",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "literalReadLines": 35,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/get-bump-type.rs",
+      "lines": 166,
+      "sha256": "4fc1ed98616917b40c275791bd784e25d7ae3068b89b40341efeb4ea8ce8eca0",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          166
+        ]
+      ],
+      "literalReadLines": 166,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/get-version.rs",
+      "lines": 63,
+      "sha256": "4e85d0da58f1997fe484b989291c51f05a912e4495af2e5f14bf0c3e945de368",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          63
+        ]
+      ],
+      "literalReadLines": 63,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/git-config.rs",
+      "lines": 62,
+      "sha256": "c84a9af50fd383310fbe45527a247275b373ad8d6371dc651890833a5c9fd1f0",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          62
+        ]
+      ],
+      "literalReadLines": 62,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/github-output.rs",
+      "lines": 124,
+      "sha256": "4583ea61b9d64fb9ea6a96c8a08f071d4d6d1592c4431f225695ef48f16d2079",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          124
+        ]
+      ],
+      "literalReadLines": 124,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -641,6 +1066,40 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "scripts/release-content.rs",
+      "lines": 112,
+      "sha256": "3baf09b974fee9bf8e094f4fd2fe92d028bbe5863abfa20204de813cd956ae64",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          112
+        ]
+      ],
+      "literalReadLines": 112,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "scripts/release-naming.rs",
+      "lines": 133,
+      "sha256": "161eab5e8e42b72cd42b8dce2ced0fd781215425084f91030b72f3b743eef9b7",
+      "readLogs": [
+        "rust-release-small-helpers-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          133
+        ]
+      ],
+      "literalReadLines": 133,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "scripts/run-javascript-first-auto.mjs",
       "lines": 40,
       "sha256": "f7d862bdb2729c6a2424b8c2bdfa3d31c1270785c2da57dd69ae442e14036214",
@@ -758,6 +1217,125 @@
       "literalReadLines": 21,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "src/lib.rs",
+      "lines": 3,
+      "sha256": "4558a8587d0c657130b6f993186e60fef5f567a32d684a844b8525db691d7970",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "literalReadLines": 3,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "src/main.rs",
+      "lines": 74,
+      "sha256": "45df092e64b6917ef4b4049333a9979c656e760bd584bc58977bae014315d220",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          74
+        ]
+      ],
+      "literalReadLines": 74,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "src/sum.rs",
+      "lines": 4,
+      "sha256": "7aff3471cf0f9f83cb40faabd49a34fa59e035b15e59fdd3abf00818b8db36ff",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "literalReadLines": 4,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "tests/integration/mod.rs",
+      "lines": 1,
+      "sha256": "f86ac9492b3db4727e7852e8d1704da1fb63004dac02d27f8e69c32ca0132411",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "tests/integration/sum.rs",
+      "lines": 36,
+      "sha256": "ad26eb6f77d5a5a3dec91ff03dc15f549d8a54393f4422037ee22cf71d11fb0e",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          36
+        ]
+      ],
+      "literalReadLines": 36,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "tests/unit/mod.rs",
+      "lines": 4,
+      "sha256": "12d83b8ce19cf1c94bf337fcbbc673f8ae9f97a2fc755732ff61c3ab1f8d5457",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "literalReadLines": 4,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "tests/unit/sum.rs",
+      "lines": 26,
+      "sha256": "b7a34152d2e2bd937ec20787717a605cd342f964cb31570e2ef355764718b837",
+      "readLogs": [
+        "rust-base-configs-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          26
+        ]
+      ],
+      "literalReadLines": 26,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
     }
   ],
   "practiceDecisions": [
@@ -870,6 +1448,168 @@
         ".github/workflows/security.yml",
         "scripts/preflight-credentials.sh",
         "rust/tests/web/release-preflight-checkout.test.mjs"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Release helper I/O, heading boundaries, package identity and pinned tool dependencies",
+      "templateEvidence": [
+        "scripts/get-version.rs",
+        "scripts/get-bump-type.rs",
+        "scripts/git-config.rs",
+        "scripts/github-output.rs",
+        "scripts/release-content.rs",
+        "scripts/release-naming.rs",
+        "scripts/changelog-files.rs",
+        "scripts/bump-version.rs",
+        ".github/dependency-policy/package.json",
+        ".github/dependency-policy/package-lock.json",
+        ".github/secretlint/package.json",
+        "scripts/fixtures/lychee-report.md"
+      ],
+      "assessment": "The twelve complete pinned sources are read. The template propagates output writes and changelog directory/entry/read errors, and skips fenced release headings while preserving body bytes. Formal AI get-version warns and succeeds on output failure; get-bump-type drops directory-entry/read failures and suppresses output failures. Those applicable differences remain to implement and verify. Both version bump helpers still use a whole-manifest version regex; dependency-first manifests are an unexecuted source question. Template parser and scanner manifests use explicit versions plus lockfiles; actual Formal AI equivalents need a full closure decision. Git configuration propagates errors in both repositories.",
+      "status": "source-compared-applicable-repairs-pending",
+      "formalAiPaths": [
+        "scripts/get-version.rs",
+        "scripts/get-bump-type.rs",
+        "scripts/git-config.rs",
+        "scripts/bump-version.rs"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Pinned development inputs, lint configuration and example boundaries",
+      "templateEvidence": [
+        ".gitignore",
+        ".lycheeignore",
+        ".pre-commit-config.yaml",
+        ".python-version",
+        ".secretlintrc.json",
+        "AGENTS.md",
+        "Cargo.toml",
+        "LICENSE",
+        "lychee.toml",
+        "requirements-dev.in",
+        "rust-toolchain.toml",
+        "src/lib.rs",
+        "src/main.rs",
+        "src/sum.rs",
+        "examples/basic_usage.rs",
+        "tests/integration/mod.rs",
+        "tests/integration/sum.rs",
+        "tests/unit/mod.rs",
+        "tests/unit/sum.rs",
+        "scripts/check-version-modification.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/check-cargo-lock.rs"
+      ],
+      "assessment": "Read all base configuration, manifest, license and small example/test sources. Formal AI already separates test targets, forbids unsafe code, applies the same Clippy families and commits the binary lockfile. Its resource-conscious profiles intentionally differ. Template exact tool pins, archive closure, link policy and source/header preservation require remaining workflow and dependency closure verification. Example sum application is domain-specific and is not a replacement for Formal AI behavior.",
+      "status": "source-compared-applicability-and-repairs-pending",
+      "formalAiPaths": [
+        "rust/Cargo.toml",
+        ".pre-commit-config.yaml",
+        ".secretlintrc.json"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Parsed version identity and branch authorization",
+      "templateEvidence": [
+        ".gitignore",
+        ".lycheeignore",
+        ".pre-commit-config.yaml",
+        ".python-version",
+        ".secretlintrc.json",
+        "AGENTS.md",
+        "Cargo.toml",
+        "LICENSE",
+        "lychee.toml",
+        "requirements-dev.in",
+        "rust-toolchain.toml",
+        "src/lib.rs",
+        "src/main.rs",
+        "src/sum.rs",
+        "examples/basic_usage.rs",
+        "tests/integration/mod.rs",
+        "tests/integration/sum.rs",
+        "tests/unit/mod.rs",
+        "tests/unit/sum.rs",
+        "scripts/check-version-modification.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/check-cargo-lock.rs"
+      ],
+      "assessment": "Template check-version-modification parses package/workspace version identity and never grants a release exemption from an untrusted branch name. The fully read Formal AI counterpart still uses a whole-document version regex and grants four release-prefix exemptions. Its head-versus-current-base comparison deliberately handles merged base versions and moved manifests and must be preserved when repairing identity and authorization. Applicable repairs and native behavioral verification remain unfinished.",
+      "status": "source-compared-applicability-and-repairs-pending",
+      "formalAiPaths": [
+        "scripts/check-version-modification.rs",
+        "scripts/ci-pull-request-admission.mjs"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Release registry uncertainty and fallible outputs",
+      "templateEvidence": [
+        ".gitignore",
+        ".lycheeignore",
+        ".pre-commit-config.yaml",
+        ".python-version",
+        ".secretlintrc.json",
+        "AGENTS.md",
+        "Cargo.toml",
+        "LICENSE",
+        "lychee.toml",
+        "requirements-dev.in",
+        "rust-toolchain.toml",
+        "src/lib.rs",
+        "src/main.rs",
+        "src/sum.rs",
+        "examples/basic_usage.rs",
+        "tests/integration/mod.rs",
+        "tests/integration/sum.rs",
+        "tests/unit/mod.rs",
+        "tests/unit/sum.rs",
+        "scripts/check-version-modification.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/check-cargo-lock.rs"
+      ],
+      "assessment": "Template check-release-needed delegates registry operations to a module and propagates errors. The fully read Formal AI counterpart treats transport/status/parse problems as missing artifacts and warns then succeeds on output write failure. Its separate immutable all-target recovery observer refuses unqualified publication and must remain intact. Applicable ordinary-path registry/output repairs are pending; no delivery credit is inferred from source inspection.",
+      "status": "source-compared-applicability-and-repairs-pending",
+      "formalAiPaths": [
+        "scripts/check-release-needed.rs"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Committed binary lockfile enforcement",
+      "templateEvidence": [
+        ".gitignore",
+        ".lycheeignore",
+        ".pre-commit-config.yaml",
+        ".python-version",
+        ".secretlintrc.json",
+        "AGENTS.md",
+        "Cargo.toml",
+        "LICENSE",
+        "lychee.toml",
+        "requirements-dev.in",
+        "rust-toolchain.toml",
+        "src/lib.rs",
+        "src/main.rs",
+        "src/sum.rs",
+        "examples/basic_usage.rs",
+        "tests/integration/mod.rs",
+        "tests/integration/sum.rs",
+        "tests/unit/mod.rs",
+        "tests/unit/sum.rs",
+        "scripts/check-version-modification.rs",
+        "scripts/check-release-needed.rs",
+        "scripts/check-cargo-lock.rs"
+      ],
+      "assessment": "Template check-cargo-lock resolves selected package identity from Cargo metadata and requires a binary lockfile to exist in the HEAD commit. Formal AI has no same-named helper, while its dependency audit enumerates tracked locks and Rust CI uses locked inputs. A full equivalent-behavior decision remains unfinished.",
+      "status": "source-compared-applicability-and-repairs-pending",
+      "formalAiPaths": [
+        "scripts/check-rust-dependencies.sh",
+        "rust/Cargo.lock"
       ],
       "verification": null
     }

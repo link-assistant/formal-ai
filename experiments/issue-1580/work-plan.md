@@ -1082,3 +1082,25 @@ behavior and all wider acceptance criteria remain pending.
 
 - [x] Publish the reviewed HTTP/Hive/budget batch at `03ff3a8e8a6999bb436de66dd625b3c637720ba1` after a clean tree, fresh main ancestry and empty active/queued lists. Keep PR #1581 draft while hosted checks and broad acceptance remain pending.
 - [x] Freshly verify the Rust template head/workflow blob and review the paginated issue inventory. Report the checksum defect as https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/251 using immutable executable evidence at `c550990ec6f79948fc5795346d3b2f47313c5c5c`; retain the exact posted body and API receipt. Upstream repair is unverified.
+
+### Rust release utility source comparison, 2026-11-20
+
+- [x] Fully read twelve more pinned release/scanner manifest/fixture sources (1007 literal lines), including fallible GitHub outputs and changelog discovery, fenced heading boundaries, release naming and version bumping. Compare the actual Formal AI version, bump-type, Git and bump helpers; explicit source differences remain unverified acceptance work. Rust source review now covers 56/373 files / 6374 literal lines.
+- [ ] Complete the other 317 pinned files and implement/verify applicable helper practices. Whole-manifest version selection is an unexecuted question, not an upstream defect report.
+
+### Current-head checkout assertion, 2026-11-20
+
+- [x] Preserve Layered CI run 44660788781 for head 03ff3a8e. Its only failing JavaScript assertion (full log lines 4744–4776; test line 153) expected the sparse checkout without the newly required exact Hive timing log. Retain the narrow production include and update the original exact expectation plus real Git selection operands. All checkout clocks and broad archive exclusions remain asserted.
+- [x] Verify the updated checkout expectation: 17 original production profile tests and 28 native group tests pass with archived source/log identities. Current-head native matrix observation remains unfinished before the next push.
+
+### Budget and deadline lifetime controls, 2026-11-20
+
+- [x] Reproduce both positive-interval whole-second budget errors with finite aligned workloads; commit the strict clock comparisons after 2 clock, 7 lifetime, 59 maintained template, 12 cache, 10 release and 3 registry checks plus 8 touched gates pass. Zero intervals remain immediate. Existing Rust template report #213 already covers the clock defect.
+- [x] Reproduce six parent-exit deadline failures against the unchanged production CLI (0 pass / 6 fail): overlong children escape status, short children outlive the wrapper, and unavailable group inspection is ignored. Reuse the existing bounded 4-second / 192 MiB / 8 MiB stack fixture with Linux child reaping.
+- [x] Verify and commit the deadline process-group repair: six focused regressions, six container retry tests, eleven native artifact tests, 65 maintained template tests, ShellCheck, shell syntax and eight touched gates pass. Retain before/after logs and source identities; the full issue remains incomplete.
+
+### Rust configuration and release-gate review, 2026-11-20
+
+- [x] Read 22 further complete pinned sources and actual Formal AI release counterparts. Rust source review is 78/373 files / 7616 literal lines; the remaining 295 files and applicable practice verification remain open.
+- [x] Preserve the observed harness error from probing absent root Cargo.toml; actual rust/Cargo.toml package/profile/lint metadata was then read successfully.
+- [ ] Repair and verify release-name trust, parsed version identity, fail-closed registry/output handling, and establish equivalent committed binary-lockfile enforcement. Preserve moved-manifest/current-base semantics and source-qualified recovery refusal. No original acceptance or independent authorship credit comes from these supplied review scripts.
