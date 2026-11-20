@@ -57,3 +57,9 @@ parents; being under fixtures does not make a source irrelevant. These primary
 sources, exact pinned parent bytes and the limited crosswalk are retained under
 `../evidence/checks/source-warning-secondary-receipts/`. No additional local QL
 compilation, database extraction or query execution is claimed.
+
+The subsequent published `f8b372ad` observation independently verifies 126
+producer files, 122,542 contexts over 2,221 files, a 2,607 MiB resolved loading
+heap and no query runtime diagnostics. Original SARIF findings and warning/error
+notifications remain zero; the same 631 informational macro positions remain
+unexpanded. See `../evidence/ci/codeql-producer-f8b372ad/`.

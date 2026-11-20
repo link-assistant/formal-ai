@@ -205,3 +205,41 @@ unchanged. All seven affected notation, boundary, debt and status gates pass.
 Every other full-run entry passes or explicitly skips. These combined outcomes
 do not claim a clean full replay after the two-token correction; all failed
 rounds remain retained, and hosted validation is still required.
+
+## Published source-batch result and repair round
+
+Published `f8b372ad314c8052a00dbd2a3139dac0f45d0f78` has 27 terminal
+workflows: 24 success, one skip and two failures. All 338 retained command
+streams pass their original/compressed identity, byte and line-count checks.
+The 573 Rust cases and eight actual registry CLI cases pass, including all three
+Hive shards within unchanged clocks. The pipeline's originating failed job is Fast
+Linux (136583238188), on the moved Telegram literal owners. Layered CI separately
+fails its generated native registry freshness check. Both failures have retained
+failed-before reproductions and local generator repairs; next-head hosted
+verification is pending. The eight source groups in the published commit have
+now passed hosted native checks; eleven further groups remain local.
+
+Manual Security run 44821485480 succeeds. All 126 producer files are verified;
+its actual query returns 122,542 contexts over 2,221 files with a resolved
+2,607 MiB loading heap and no runtime diagnostics. The unchanged original SARIF
+reports have zero findings and warning/error notifications. All 631 original
+informational macro positions still match unexpanded nodes; semantic
+qualification remains open. The first full local JavaScript inventory exposed five stale metadata gates.
+The second exposed three checks of the same handler-debt classification and one
+generated status row. Both failed rounds and the initial failed seal controllers
+remain retained. The two extracted primitives satisfy the documented generic
+boundary criteria after domain marker selection moves to the parent; no debt
+ceiling changes. The third complete 141-entry replay has one notation failure from the two new
+component names. Their two-token hyphenation repair passes all seven affected
+notation, boundary, debt and status checks. Every other full-run entry passes or
+explicitly skips. Combined outcomes have zero remaining failures; no clean full
+replay after the last two-token correction is claimed. Original limits, explicit CI exclusions
+and all outstanding original/template/live acceptance criteria remain in force.
+
+The dependency observation at 2026-11-20T22:49:30Z still finds mandatory Chrono
+in published command-stream 1.13.0 and link-calculator 0.24.0. Closing upstream
+command-stream issue 238 does not demonstrate a published migration. The isolated
+issue-1017 experiment lock retains meta-language 0.58.1 -> lindera 3.0.7 ->
+serde_yaml_ng 0.10.0 -> unsafe-libyaml 0.2.11; the main lock contains no such crate.
+These are source/registry observations, without local Cargo resolution or builds.
+Dependency migration and all wider acceptance criteria remain unfinished.

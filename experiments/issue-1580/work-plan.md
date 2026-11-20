@@ -25,7 +25,21 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-At 22ffaa73d1b2b0dc800ed2f9093059ac80ddef56, local gates: 86 passed, 52 explicit skips, zero failures. Focused JS tests and native source formatting passed. All 3,007 template blobs and 48 workflows are inventoried; semantic CI closure review remains open. See docs/case-studies/issue-1580/README.md for each unresolved criterion. No native execution or final-head hosted CI is claimed.
+Published f8b372ad has 27 terminal workflows: 24 success, one skip and two failures.
+All 573 Rust and eight actual registry CLI cases pass. The two failures are the
+stale generated native registry and moved Telegram literal owners; both have
+local generator repairs. All 338 collected command streams verify by identity.
+The complete 141-entry JavaScript inventories retain rounds with five, four
+and one failures. The last notation failure is repaired by hyphenating two new
+component identifiers; all seven affected gates pass, for zero combined remaining
+failures. No clean full replay after that two-token correction is claimed. Source metadata and generated status are current;
+two generic children satisfy the documented promotion test, with all domain
+selection retained in their parents and the handler debt ceiling unchanged at 47. Nineteen helper groups reduce
+the fresh scanner inventory to 99 source-size warnings with zero violations;
+eleven groups still require next-head hosted native validation. Rust literal
+review is 352/373 identities and 49,166 lines. All wider source/template/practice,
+macro-semantic, current-dependency and live delivery acceptance remains open.
+No local Rust execution or independent authorship credit; PR #1581 stays draft.
 
 Earlier chronology: [preserved work plan entries](work-plan-history-through-native-interface.md).
 
@@ -608,3 +622,5 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
   unqualified. Keep all template/practice, current-dependency, live delivery,
   historical-budget and full-source acceptance requirements open. No independent
   reasoning credit and no full-issue completion claim.
+
+- Collect the entire published f8b372ad round before another push: 27 terminal workflows, 24 successes, one skip and exactly the two locally reproduced generator/owner failures. Verify every retained stream and all 573 native Rust cases plus eight CLI cases. Verify all 126 actual CodeQL producer files, the warning-free resolved child heap and 122,542 contexts; preserve all 631 unresolved semantic qualifications. Complete the third full local JavaScript gate inventory, preserve all three failed rounds and recheck all seven consumers of the final two-token notation repair. Refresh metadata/status and qualify two generic children without changing debt or notation ceilings; report combined outcomes rather than an unexecuted clean full replay. Full issue completion remains false.
