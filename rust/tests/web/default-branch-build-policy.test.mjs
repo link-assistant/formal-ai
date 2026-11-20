@@ -272,13 +272,13 @@ test('recorded Docker cold rebuild is optional and cannot hold the production bu
     assert.match(publish.steps.find(s=>s.name==='Publish to Crates.io').run,/--verified-build true/u);
   }
 });
-// Issue #1569: one PR group outgrew its 360s budget (run 43693412224), so the
-// fast inventory splits over two groups, and the step divides by the same count.
-test('PRs split the fast JS inventory over two groups; full main inventory retains its measured shard plan', () => {
+// Runs 43693412224 and 44679541559 exhausted stale JavaScript shard plans.
+// Four fast PR groups retain the deadline and divide by the same matrix count.
+test('PRs split the fast JS inventory over four groups; full main inventory retains its measured shard plan', () => {
   const job=workflow('layered-ci.yml').jobs.js;
-  assert.deepEqual(Array.from(evaluate(job.strategy.matrix.shard,'pull_request','refs/pull/1500/merge')),[1,2]);
+  assert.deepEqual(Array.from(evaluate(job.strategy.matrix.shard,'pull_request','refs/pull/1500/merge')),[1,2,3,4]);
   const shards=job.steps.find(s=>s.name==='Run this shard of the JavaScript suites').env.SHARDS;
-  assert.equal(evaluate(shards,'pull_request','refs/pull/1500/merge'),2);
+  assert.equal(evaluate(shards,'pull_request','refs/pull/1500/merge'),4);
   assert.equal(evaluate(shards,'push','refs/heads/main'),8);
   assert.equal(evaluate(job.strategy.matrix.shard,'push','refs/heads/main').length,8);
   for (const file of ['release.yml','layered-ci.yml','coverage.yml']) {

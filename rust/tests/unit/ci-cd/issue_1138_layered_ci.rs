@@ -282,12 +282,12 @@ fn the_javascript_suites_run_in_budgeted_shards_that_cover_every_file() {
     let workflow = layered_workflow();
     let js = job_block(&workflow, "js");
     assert!(js.contains("fromJSON("));
-    assert!(js.contains("&& '[1,2]' || '[1,2,3,4,5,6,7,8]'"));
-    assert!(js.contains("&& 2 || 8"));
+    assert!(js.contains("&& '[1,2,3,4]' || '[1,2,3,4,5,6,7,8]'"));
+    assert!(js.contains("&& 4 || 8"));
     // JavaScript evaluates both matrix branches and checks the exact coverage.
     assert!(
         include_str!("../../web/default-branch-build-policy.test.mjs")
-            .contains("PRs split the fast JS inventory over two groups")
+            .contains("PRs split the fast JS inventory over four groups")
     );
     for pin in [
         "SHARD: ${{ matrix.shard }}",
