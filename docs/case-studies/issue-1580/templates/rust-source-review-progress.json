@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T18:24:33.434916+00:00",
+  "observedAt": "2026-11-20T18:43:31.468065+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 332,
-  "fullyReadSourceLines": 39009,
+  "fullyReadFiles": 339,
+  "fullyReadSourceLines": 39016,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -1534,6 +1534,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/issue.json",
+      "lines": 1,
+      "sha256": "bd10797f0ee04725df70506677a8185b29ec6442e03f4c6f5aa2fb539f1e04fa",
+      "readLogs": [
+        "remaining-run-history-issue.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/lychee-upstream.json.txt",
       "lines": 305,
       "sha256": "3029c6af9ca6123e8bb59fe2c4be7269889d134e11ba5ba4bd39c051f1fa27f7",
@@ -1547,6 +1564,40 @@
         ]
       ],
       "literalReadLines": 305,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/main-pipeline.json",
+      "lines": 1,
+      "sha256": "e4cf0e16074ea88d3d900ab3b375664ffb5d6053d8ad2d73398711aff9906c46",
+      "readLogs": [
+        "remaining-run-history-main-pipeline.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/main-security.json",
+      "lines": 1,
+      "sha256": "0f6c1aa865cf008934ad24bd6edcffe9b07f10cf5c22956c751b52560a9ddf60",
+      "readLogs": [
+        "remaining-run-history-main-security.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -2607,6 +2658,40 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "docs/case-studies/issue-38/raw-data/downstream-meta-after-run-24985948212.json",
+      "lines": 1,
+      "sha256": "6b7a2e716081186901f400f5f5773b16eb849a2ed2b07636aae141f7e7acdf55",
+      "readLogs": [
+        "remaining-run-history-downstream-meta-after-run-24985948212.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/downstream-meta-before-run-24983875003.json",
+      "lines": 1,
+      "sha256": "a7dac818450b78ec3a543fa2c1e4cecab0963989fab5be5c30542a0c8e16ef08",
+      "readLogs": [
+        "remaining-run-history-downstream-meta-before-run-24983875003.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "docs/case-studies/issue-38/raw-data/downstream-meta-ontology-issue-3.json",
       "lines": 1,
       "sha256": "69934739063e17305da47fdf04e254e0f716f834a721bc46184d34998e56e6a1",
@@ -2680,6 +2765,23 @@
       "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
       "readLogs": [
         "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/main-run-24465255225.json",
+      "lines": 1,
+      "sha256": "38fbfda3ffce9516ffbc6fdee24c1193dcf579e691e30e9f910e330102c17249",
+      "readLogs": [
+        "remaining-run-history-main-run-24465255225.json.read.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -2782,6 +2884,23 @@
       "sha256": "3af7c4cf921fecc35bf671a0e84464266e56e4743b5ba4075ba778685c44a354",
       "readLogs": [
         "rust-history-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/raw-data/pr-run-25212295127.json",
+      "lines": 1,
+      "sha256": "e8f818329a6b55c5eb4c0d2261d95d47e2b8259f58e307ab387b54fd5c59c3f2",
+      "readLogs": [
+        "remaining-run-history-pr-run-25212295127.json.read.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -6757,6 +6876,27 @@
         "scripts/recheck-links.mjs"
       ],
       "verification": "experiments/issue-1580/evidence/checks/rust-client-entropy-history/assessment.json"
+    },
+    {
+      "practice": "Distinguish green prerequisite metadata from actual publication and documentation outcomes",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/issue.json",
+        "dev/log/issues/247/pulls/248/main-pipeline.json",
+        "dev/log/issues/247/pulls/248/main-security.json",
+        "docs/case-studies/issue-38/raw-data/downstream-meta-after-run-24985948212.json",
+        "docs/case-studies/issue-38/raw-data/downstream-meta-before-run-24983875003.json",
+        "docs/case-studies/issue-38/raw-data/main-run-24465255225.json",
+        "docs/case-studies/issue-38/raw-data/pr-run-25212295127.json"
+      ],
+      "assessment": "Read all seven complete pinned JSON values, including every job and step. Rust issue 247 is historical dependency-update context, not an additional required issue of Formal AI issue 1580. On the same November 14 template head, pipeline metadata records failure in Cargo manifest warnings and three operating-system test jobs; Security records audit and strict Rust SARIF gate failures despite a successful analyzer step. These records do not reveal the original diagnostics. April main run 24465255225 and downstream run 24983875003 fail before release version collection and skip documentation. Downstream run 24985948212 reaches version collection failure after a successful bump while independently building and deploying documentation. May pull-request run 25212295127 succeeds with publication, documentation, lint and coverage skipped; it cannot prove those paths. Current Formal AI preserves strict aggregate and report validation, and has behavioral Pages admission controls for failed/skipped publishers. Actual hosted fallback, served revision identity, publication correctness and original archived failure diagnostics remain open.",
+      "status": "complete-historical-metadata-read-hosted-publication-and-original-diagnostics-open",
+      "formalAiPaths": [
+        ".github/workflows/release.yml",
+        ".github/workflows/pages-artifact.yml",
+        ".github/workflows/security.yml",
+        "experiments/issue-1580/pages-release-failure.test.mjs"
+      ],
+      "verification": "experiments/issue-1580/evidence/checks/rust-remaining-run-history/assessment.json"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
