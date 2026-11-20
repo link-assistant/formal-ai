@@ -74,6 +74,34 @@ test('bounded cascades roll back the initiating mutation and receipts', async (t
   assert.deepEqual(await inspect(runtime), before);
 });
 
+test('trigger queries use the same cycle graph and reject incompatible writes atomically', async (t) => {
+  const runtime = useRuntime(t);
+  await substitute(runtime, '() ((left: 0 0) (right: left 0))');
+  const when = { event: 'create', source: 0, target: 1 };
+  const updateLeft = { id: 'a', when, substitute: '((left: 0 0)) ((left: left left))' };
+  await install(runtime, manifest({ rules: [
+    updateLeft,
+    { id: 'b', when, substitute: '((right: (left: 0 0) 0)) ((right: left right))' },
+    { id: 'c', when, substitute: '() ((one: left left))' },
+    { id: 'd', when, substitute: '() ((two: right right))' },
+  ] }));
+  const result = await substitute(runtime, '() ((trigger: 0 1))');
+  assert.deepEqual(result.trace.slice(1).map(({ cycle, events }) => [cycle, events[0]?.after]), [
+    [1, { id: 1, from_id: 1, to_id: 1 }], [1, { id: 2, from_id: 1, to_id: 2 }],
+    [1, { id: 4, from_id: 1, to_id: 1 }], [1, { id: 5, from_id: 2, to_id: 2 }],
+  ]);
+  assert.deepEqual((await inspect(runtime)).graph.names.slice(-2), [[4, 'one'], [5, 'two']]);
+
+  const conflict = useRuntime(t);
+  await substitute(conflict, '() ((left: 0 0))');
+  await install(conflict, manifest({ rules: [updateLeft,
+    { id: 'b', when, substitute: '((left: 0 0)) ((left: 0 left))' },
+  ] }));
+  const before = await inspect(conflict);
+  await assert.rejects(substitute(conflict, '() ((trigger: 0 1))'), /Conflicting link substitutions in the same cycle/u);
+  assert.deepEqual(await inspect(conflict), before);
+});
+
 test('live rule changes default off and are gated by operator confirmation and authority', async (t) => {
   const runtime = useRuntime(t);
   const payload = manifest({

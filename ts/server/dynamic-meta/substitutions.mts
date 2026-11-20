@@ -1,6 +1,6 @@
 import { serverMessage } from '../messages.mjs';
 import {
-  BREAK, CONTINUE, createMemoryLinks, createNames, decorate, formatLino, group, parseLino, runQuery, sameLink,
+  BREAK, CONTINUE, createMemoryLinks, createNames, decorate, exists, formatLino, getLink, group, parseLino, runQuery, sameLink,
 } from '@link-foundation/ui-links';
 
 export const EVENT_KINDS = ['create', 'update', 'delete'];
@@ -37,9 +37,10 @@ export function parseLinkSubstitution(text, { template = false } = {}) {
 
 export const renderLinkSubstitution = (document) => formatLino([group(document)]);
 
-export function linkContext({ links = [], names = [] } = {}) {
+export function linkContext({ links = [], names = [] } = {}, consume = () => {}) {
   const store = createMemoryLinks();
   for (const { id, from_id, to_id } of links) {
+    consume();
     store.createAt(id);
     store.update(id, from_id, to_id);
   }
@@ -52,7 +53,7 @@ export function snapshot(context) {
   return { links, names: context.names.entries() };
 }
 
-function applyQuery(context, document, consume) {
+function applyQuery(context, document, consume, reserve) {
   // Bound the candidate enumeration inside the upstream join as well as the
   // number of distinct outputs. The caller discards the staged graph on error.
   const base = context.links;
@@ -67,6 +68,11 @@ function applyQuery(context, document, consume) {
     create() {
       consume();
       if (base.count() >= LINK_LIMIT) throw new Error(serverMessage('dynamic-meta-link-limit'));
+      if (reserve) {
+        let id = reserve();
+        while (exists(base, id)) id = reserve();
+        return base.createAt(id);
+      }
       return base.create();
     },
     createAt(id) {
@@ -115,10 +121,80 @@ function matches({ when }, event) {
     (when.target === undefined || when.target === current.to_id);
 }
 
+function editConflict() {
+  return new Error(serverMessage('dynamic-meta-substitution-conflict'));
+}
+
+function applyCycle(context, plan, consume, eventBudget) {
+  const graph = snapshot(context);
+  const occupied = new Set(graph.links.map(({ id }) => id));
+  let next = 1;
+  function reserve() {
+    consume();
+    while (occupied.has(next)) next += 1;
+    return next++;
+  }
+
+  // Plan the queries before exposing any writes from this cycle.
+  const changes = plan.map((entry) => {
+    if (entry.rule.substitution === undefined) return entry;
+    const query = bindTemplate(entry.rule.substitution, entry.event);
+    const staged = linkContext(graph, consume);
+    const allocated = new Set();
+    const events = applyQuery(staged, query, consume, () => {
+      const id = reserve();
+      allocated.add(id);
+      return id;
+    });
+    eventBudget -= events.length;
+    if (eventBudget < 0) throw new Error(serverMessage('dynamic-meta-event-limit'));
+    const created = events.filter(({ before }) => before === null).map(({ after }) => ({
+      id: after.id,
+      name: staged.names.getName(after.id),
+      anonymous: allocated.has(after.id) ? `${after.from_id}:${after.to_id}` : null,
+    }));
+    return { ...entry, query: renderLinkSubstitution(query), events, created };
+  });
+
+  const anonymous = new Set();
+  const events = changes.flatMap((entry) => entry.events ?? []);
+  for (const entry of changes) {
+    if (entry.events === undefined) continue;
+    for (const { id, name, anonymous: pair } of entry.created) {
+      if (name !== null) {
+        if (context.names.getByName(name) !== null) throw editConflict();
+        context.names.setName(id, name);
+      } else if (pair !== null) {
+        if (anonymous.has(pair)) throw editConflict();
+        anonymous.add(pair);
+      }
+    }
+    for (const { before, after } of entry.events) {
+      const { id } = before ?? after;
+      if (!sameLink(getLink(context.links, id), before)) throw editConflict();
+      if (after === null) {
+        context.links.delete(id);
+        context.names.removeName(id);
+      } else {
+        if (before === null) context.links.createAt(id);
+        context.links.update(id, after.from_id, after.to_id);
+      }
+    }
+  }
+  if (context.links.count() > LINK_LIMIT) throw new Error(serverMessage('dynamic-meta-link-limit'));
+  for (const { before, after } of events) {
+    if (after === null) {
+      if (context.links.count({ from_id: before.id }) || context.links.count({ to_id: before.id })) throw editConflict();
+    } else if ([after.from_id, after.to_id].some((part) => part !== 0 && !exists(context.links, part))) {
+      throw editConflict();
+    }
+  }
+  return { changes, events };
+}
+
 /**
- * Each cycle plans against the same committed previous-cycle events and
- * enabled rule set. Pure matching can be split by event. Apply the plan in
- * event and catalog order so overlapping writes have a reproducible outcome.
+ * Each cycle plans against the same previous-cycle graph, events and rules.
+ * Apply edits in event and catalog order and reject conflicting results.
  */
 export function runCascade(context, initial, {
   rules, active, enabled, selfModification, setRule,
@@ -146,15 +222,12 @@ export function runCascade(context, initial, {
     }
     if (!plan.length) break;
     if (cycle > CYCLE_LIMIT) throw new Error(serverMessage('dynamic-meta-cycle-limit'));
-    pending = [];
-    for (const { event, rule } of plan) {
-      if (rule.substitution !== undefined) {
-        const query = bindTemplate(rule.substitution, event);
-        const events = applyQuery(context, query, consume);
-        eventCount += events.length;
-        if (eventCount > EVENT_LIMIT) throw new Error(serverMessage('dynamic-meta-event-limit'));
-        pending.push(...events);
-        trace.push({ cycle, rule: rule.id, event, query: renderLinkSubstitution(query), events });
+    const prepared = applyCycle(context, plan, consume, EVENT_LIMIT - eventCount);
+    pending = prepared.events;
+    eventCount += pending.length;
+    for (const { event, rule, query, events } of prepared.changes) {
+      if (events !== undefined) {
+        trace.push({ cycle, rule: rule.id, event, query, events });
       } else {
         const { target, enabled: value } = rule.setRule;
         if (selfModification) setRule(target, value);

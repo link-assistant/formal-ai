@@ -616,6 +616,8 @@ server_messages
     text "Link limit exceeded"
   message dynamic-meta-substitution-work
     text "Link substitution work limit exceeded"
+  message dynamic-meta-substitution-conflict
+    text "Conflicting link substitutions in the same cycle"
   message dynamic-meta-event-limit
     text "Link event limit exceeded"
   message dynamic-meta-trigger-action-limit
