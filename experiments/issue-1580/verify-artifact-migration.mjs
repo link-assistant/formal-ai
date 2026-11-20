@@ -8,6 +8,10 @@ import {createHash} from 'node:crypto';
 import YAML from 'yaml';
 
 const baseline = 'aca32b1aa27aee55f1d9443f54d6a1c08f77ccb0';
+const args = process.argv.slice(2);
+assert(args.length === 0 || args.length === 2 && args[0] === '--revision' && /^[a-f0-9]{7,40}$/u.test(args[1]), 'usage: verify-artifact-migration.mjs [--revision <commit>]');
+const revision = args.length ? execFileSync('git', ['rev-parse', '--verify', args[1] + '^{commit}'], {encoding:'utf8'}).trim() : null;
+const revised = file => revision ? execFileSync('git', ['show', revision + ':' + file], {encoding:'utf8', maxBuffer:2*1024*1024}) : readFileSync(file, 'utf8');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const original = file => execFileSync('git', ['show', baseline + ':' + file], {encoding:'utf8', maxBuffer:2*1024*1024});
 const files = execFileSync('git', ['ls-tree', '--name-only', baseline, '.github/workflows/'], {encoding:'utf8'}).trim().split('\n');
@@ -16,7 +20,7 @@ let workflows = 0;
 const isDownload = step => step.uses?.startsWith('actions/download-artifact@');
 const addedName = 'Check out workflow-owned artifact extraction';
 for (const file of files.filter(file => /\.ya?ml$/u.test(file))) {
-  const oldBytes = original(file), newBytes = readFileSync(file, 'utf8');
+  const oldBytes = original(file), newBytes = revised(file);
   const old = YAML.parse(oldBytes), current = YAML.parse(newBytes), normalized = structuredClone(current);
   const count = Object.values(old.jobs ?? {}).flatMap(job => job.steps ?? []).filter(isDownload).length;
   if (!count) {assert.deepEqual(current, old, file + ' unrelated workflow changed'); continue;}
@@ -67,7 +71,7 @@ for (const file of files.filter(file => /\.ya?ml$/u.test(file))) {
   sources.push({file,beforeSha256:hash(oldBytes),afterSha256:hash(newBytes)});
 }
 assert.equal(workflows,19);assert.equal(rows.length,97);assert.equal(checkouts.length,10);assert.equal(sparse.length,4);
-console.log(JSON.stringify({schema:'artifact-consumer-migration-review/v1',baseline,workflows,transfers:rows.length,
+console.log(JSON.stringify({schema:'artifact-consumer-migration-review/v1',baseline,revision,workflows,transfers:rows.length,
   addedCheckouts:checkouts.length,expandedSparseCheckouts:sparse.length,sources,rows,checkouts,sparse,
   preserved:'All job and workflow fields, non-adapter steps, artifact selectors and predicates are compared.',
   hostedExecution:false,independentAuthorshipCredit:0},null,2));

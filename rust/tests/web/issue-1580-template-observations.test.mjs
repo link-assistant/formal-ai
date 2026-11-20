@@ -15,3 +15,4 @@ import '../../../experiments/issue-1580/template-php-push-integrity.test.mjs';
 import '../../../experiments/issue-1580/template-rust-desktop-checksums.test.mjs';
 import '../../../experiments/issue-1580/budget-clock-boundary.test.mjs';
 import '../../../experiments/issue-1580/deadline-process-lifetime.test.mjs';
+import '../../../experiments/issue-1580/template-pages-adoption.test.mjs';

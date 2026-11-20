@@ -989,15 +989,21 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout Pages deployment protocol
+        uses: actions/checkout@v7
+        with: {ref: '${{ github.workflow_sha }}', path: .formal-ai-pages-protocol, persist-credentials: false,
+          fetch-depth: 1, filter: 'blob:none', sparse-checkout-cone-mode: false, sparse-checkout: /.github/actions/deploy-pages/}
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
       - name: Deploy Pages artifact
         id: deployment
-        uses: actions/deploy-pages@v5
-        with: {timeout: 600000}
+        uses: ./.formal-ai-pages-protocol/.github/actions/deploy-pages
+        with:
+          artifact_id: ${{ needs.build-pages.outputs.artifact_id }}
+          source_sha: ${{ needs.build-pages.outputs.pages_sha }}
+          timeout: 600000
         env:
-          # deploy-pages upstream issue #434 tracks its core punycode deprecation.
-          NODE_OPTIONS: --disable-warning=DEP0040
+          NODE_OPTIONS: --throw-deprecation
   test-e2e-pages:
     name: E2E Tests (GitHub Pages)
     concurrency:

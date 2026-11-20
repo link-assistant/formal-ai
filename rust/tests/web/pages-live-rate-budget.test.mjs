@@ -1,3 +1,8 @@
+// Keep the complete Pages contract in one existing fast-lane admission.
+import './pages-deployment.test.mjs';
+import './pages-artifact-trust.test.mjs';
+import './staged-pages-projection.test.mjs';
+
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

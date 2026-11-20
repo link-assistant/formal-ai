@@ -1,0 +1,1 @@
+Deploy the exact immutable Pages artifact with bounded REST retries and cancellation, without the deprecated bundled punycode dependency. Bind retry adoption to both artifact and stamped source commit.

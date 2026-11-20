@@ -22,6 +22,9 @@ on:
       pages_sha:
         description: The commit the artifact was built from and stamped with.
         value: ${{ jobs.build.outputs.pages_sha }}
+      artifact_id:
+        description: Immutable ID of the Pages artifact uploaded by this build.
+        value: ${{ jobs.build.outputs.artifact_id }}
 
 permissions:
   contents: read
@@ -34,6 +37,7 @@ jobs:
     timeout-minutes: 30
     outputs:
       pages_sha: ${{ steps.pages_ref.outputs.sha }}
+      artifact_id: ${{ steps.pages_artifact.outputs.artifact_id }}
     steps:
       - name: Select Pages deployment ref
         id: pages_ref
@@ -107,6 +111,7 @@ jobs:
           WASM_RECEIPT_SHA256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
         run: node scripts/build-selected-wasm.mjs verify "$GITHUB_WORKSPACE" js "$WASM_RECEIPT_SHA256"
       - name: Upload GitHub Pages artifact
+        id: pages_artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: js
