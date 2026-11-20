@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T04:00:12.599086+00:00",
+  "observedAt": "2026-11-20T05:04:40.595061+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 108,
-  "fullyReadSourceLines": 19247,
+  "fullyReadFiles": 122,
+  "fullyReadSourceLines": 20175,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -109,7 +109,21 @@
     {"path": "src/sum.rs","lines": 4,"sha256": "7aff3471cf0f9f83cb40faabd49a34fa59e035b15e59fdd3abf00818b8db36ff","readLogs": ["rust-base-configs-read.log.gz"],"literalReadRanges": [[1,4]],"literalReadLines": 4,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
     {"path": "tests/integration/mod.rs","lines": 1,"sha256": "f86ac9492b3db4727e7852e8d1704da1fb63004dac02d27f8e69c32ca0132411","readLogs": ["rust-base-configs-read.log.gz"],"literalReadRanges": [[1,1]],"literalReadLines": 1,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
     {"path": "tests/integration/sum.rs","lines": 36,"sha256": "ad26eb6f77d5a5a3dec91ff03dc15f549d8a54393f4422037ee22cf71d11fb0e","readLogs": ["rust-base-configs-read.log.gz"],"literalReadRanges": [[1,36]],"literalReadLines": 36,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/changelog_parsing.rs","lines": 68,"sha256": "e79d23473fda1fa16f16b313ed01963443a12f1d682d31d5b324b278d52b5421","readLogs": ["rust-contract-release-naming-read.log.gz"],"literalReadRanges": [[1,68]],"literalReadLines": 68,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
     {"path": "tests/unit/ci-cd/desktop_release_resolve.rs","lines": 74,"sha256": "43bc7138e1927324e01809aea3e6645dda65dc9c8a0f0ccbc246777dcb9f84c8","literalReadRanges": [[1,74]],"literalReadLines": 74,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__desktop_release_resolve.rs.1.read.log.gz"]},
+    {"path": "tests/unit/ci-cd/issue_119.rs","lines": 34,"sha256": "5d300540c87051839a7101cef988408c5662696d41c5c433297423e165023498","readLogs": ["rust-contract-registry-shell-read.log.gz"],"literalReadRanges": [[1,34]],"literalReadLines": 34,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/issue_127.rs","lines": 80,"sha256": "42ae97db293e2f300dd527cc3165b5d40e9dc205b3a023193557715084ce1165","readLogs": ["rust-contract-registry-shell-read.log.gz"],"literalReadRanges": [[1,80]],"literalReadLines": 80,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/issue_141.rs","lines": 89,"sha256": "8b1165e103cf60d6d34bb48c2633f6d82c3c671df9d308d076941ccc9bbe0fac","readLogs": ["rust-contract-registry-shell-read.log.gz"],"literalReadRanges": [[1,89]],"literalReadLines": 89,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/issue_143.rs","lines": 84,"sha256": "949e2735cfecb3908143579082e7578e1c3e8a815db255d85f76aec053ee3241","readLogs": ["rust-contract-registry-shell-read.log.gz"],"literalReadRanges": [[1,84]],"literalReadLines": 84,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/issue_160.rs","lines": 88,"sha256": "8d8b50eefac9b099e04d4f344565feb6c8b9f45e06a73b263f0f8002d1e2e48e","readLogs": ["rust-contract-workflow-boundaries-read.log.gz"],"literalReadRanges": [[1,88]],"literalReadLines": 88,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/issue_168.rs","lines": 105,"sha256": "7d0b3596d32bd862de0744c698bee2295d154ab4eb17dd0452514fc93e665fc6","readLogs": ["rust-contract-workflow-boundaries-read.log.gz"],"literalReadRanges": [[1,105]],"literalReadLines": 105,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/issue_171.rs","lines": 105,"sha256": "1894bd607e49e892198c1385e1ab52b90ea939375f469251274d86b38ad4ce9b","readLogs": ["rust-contract-workflow-boundaries-read.log.gz"],"literalReadRanges": [[1,105]],"literalReadLines": 105,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/issue_172.rs","lines": 44,"sha256": "561cd8b97eb602050f93b4a03bcd501248e547d060ba3c6f5197257c750d9e0b","readLogs": ["rust-contract-registry-shell-read.log.gz"],"literalReadRanges": [[1,44]],"literalReadLines": 44,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/issue_193.rs","lines": 18,"sha256": "433bc602e014418bedb95d712ba5447582c56ee24524cb0cc11c8afc83ea6fa5","readLogs": ["rust-contract-release-naming-read.log.gz"],"literalReadRanges": [[1,18]],"literalReadLines": 18,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/mod.rs","lines": 67,"sha256": "d5b0000e3de748fd52cf867daa22e7c7077def141baadcee3f9c2e6d447152e8","readLogs": ["rust-contract-release-naming-read.log.gz"],"literalReadRanges": [[1,67]],"literalReadLines": 67,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/release_naming_tests.rs","lines": 73,"sha256": "26662bdddcfd5c249bc467d44ba42875b86b906ccf572ea150b416d348a0ced1","readLogs": ["rust-contract-release-naming-read.log.gz"],"literalReadRanges": [[1,73]],"literalReadLines": 73,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/version_and_commit_behind_check.rs","lines": 32,"sha256": "f705312235fa29368839f7464e4b645ea927e0298b07c06e067b53a0f29c983c","readLogs": ["rust-contract-release-naming-read.log.gz"],"literalReadRanges": [[1,32]],"literalReadLines": 32,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/version_and_commit_tag_order.rs","lines": 41,"sha256": "88c400fb18f8ca277450f111f53c53d2f2beb1b5b3f1d15af29bd9142cd141c5","readLogs": ["rust-contract-release-naming-read.log.gz"],"literalReadRanges": [[1,41]],"literalReadLines": 41,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
     {"path": "tests/unit/ci-cd/workflow_desktop_release.rs","lines": 89,"sha256": "f6b9d913bd349f1c0d2b4cc92e82bf18a83cf44bf9d3fa24d83f9f2169e1771a","literalReadRanges": [[1,89]],"literalReadLines": 89,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__workflow_desktop_release.rs.1.read.log.gz"]},
     {"path": "tests/unit/ci-cd/workflow_release.rs","lines": 740,"sha256": "2f3269db3435436d4793510773e6f1be61542263cb896ce422dbd16dcc69590c","literalReadRanges": [[1,740]],"literalReadLines": 740,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__workflow_release.rs.1.read.log.gz","contracts-tests__unit__ci-cd__workflow_release.rs.251.read.log.gz","contracts-tests__unit__ci-cd__workflow_release.rs.501.read.log.gz"]},
     {"path": "tests/unit/ci-cd/workflow_release_gates.rs","lines": 344,"sha256": "e95238798469710f9998ae9d08db19dc4f644546dc7efb37e9c4be61224a7002","literalReadRanges": [[1,344]],"literalReadLines": 344,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__workflow_release_gates.rs.1.read.log.gz","contracts-tests__unit__ci-cd__workflow_release_gates.rs.251.read.log.gz"]},
@@ -142,13 +156,13 @@
       "templateEvidence": [
         ".github/workflows/desktop-release.yml"
       ],
-      "assessment": "Both unchanged hash implementations include their own incomplete fragment and old fragments. Four finite cases reproduce the defect; excluding all checksum fragments repairs all four controls. Formal AI already has an explicit artifact selector; its unchanged shell step passes clean/reused-directory controls.",
-      "status": "formal-ai-production-step-verified-template-report-pending",
+      "assessment": "The unchanged hash pipelines race creation of a new output, but always enumerate a pre-existing current fragment and any older fragment. Eight finite cases distinguish both output states, both older-fragment states and both hash implementations. Candidate selection must contain only exact assets in all eight cases. Formal AI already uses an explicit asset selector. Layered run 44673787188 exposed the old negative-control ordering assumption; hosted confirmation of the corrected fixture remains pending.",
+      "status": "formal-ai-production-step-locally-verified-template-reported-fixture-repaired-hosted-pending",
       "formalAiPaths": [
         ".github/workflows/desktop-release.yml",
         "experiments/issue-1580/template-rust-desktop-checksums.test.mjs"
       ],
-      "verification": "experiments/issue-1580/evidence/checks/rust-desktop-checksum-comparison/validation.json"
+      "verification": "experiments/issue-1580/evidence/checks/package-identity-and-checksum-race/verification.json"
     },
     {
       "practice": "Bound retries to positively identified unacquired hosted runners",
@@ -247,7 +261,7 @@
         ".github/secretlint/package.json",
         "scripts/fixtures/lychee-report.md"
       ],
-      "assessment": "The twelve complete pinned sources are read. The template propagates output writes and changelog directory/entry/read errors, and skips fenced release headings while preserving body bytes. Formal AI get-version warns and succeeds on output failure; get-bump-type drops directory-entry/read failures and suppresses output failures. Those applicable differences remain to implement and verify. Both version bump helpers still use a whole-manifest version regex; dependency-first manifests are an unexecuted source question. Template parser and scanner manifests use explicit versions plus lockfiles; actual Formal AI equivalents need a full closure decision. Git configuration propagates errors in both repositories.",
+      "assessment": "The twelve complete pinned sources are read. Formal AI has since adopted the fallible output writer in six callers (284e24430) and now drafts parsed package identity and token-only version writes. Directory-entry/read propagation, fenced release heading boundaries and remaining dependency closure decisions are still unfinished. The original observations remain in the retained read logs; source inspection does not prove native behavior.",
       "status": "source-compared-applicable-repairs-pending",
       "formalAiPaths": [
         "scripts/get-version.rs",
@@ -352,12 +366,12 @@
         "scripts/check-release-needed.rs",
         "scripts/check-cargo-lock.rs"
       ],
-      "assessment": "Template check-release-needed delegates registry operations to a module and propagates errors. The fully read Formal AI counterpart treats transport/status/parse problems as missing artifacts and warns then succeeds on output write failure. Its separate immutable all-target recovery observer refuses unqualified publication and must remain intact. Applicable ordinary-path registry/output repairs are pending; no delivery credit is inferred from source inspection.",
+      "assessment": "Configured output writes in six callers now use the shared fatal writer (284e24430); all seven native output cases pass in exact-head core job 136080808912 at 11c0bd05. The ordinary registry path still conflates some unavailable observations with missing artifacts, and its repair remains unfinished. Preserve immutable all-target recovery checks.",
       "status": "source-compared-applicability-and-repairs-pending",
       "formalAiPaths": [
         "scripts/check-release-needed.rs"
       ],
-      "verification": null
+      "verification": "experiments/issue-1580/evidence/ci/native-families-11c0bd05/early-completed-jobs.json"
     },
     {
       "practice": "Committed binary lockfile enforcement",
@@ -434,14 +448,14 @@
         "scripts/collect-changelog.rs",
         "scripts/create-changelog-fragment.rs"
       ],
-      "assessment": "New-fragment detection uses fetched base history and includes both sides of moves; collection reads every fragment before mutating and keeps literal historical bytes. Fragment creation uses a seconds-only pathname and fs::write, so collision overwrite is a concrete candidate to reproduce in Formal AI before choosing an exclusive-create repair. Native template tests are source-read only, not executed locally.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "The template seconds-only fs::write creator remains an upstream reproduction/report task. Formal AI exclusive creation (fc868688a) is now verified by all four native cases in exact-head core job 136080808912 at 11c0bd05. Template collection and new-fragment policy comparison remain unfinished.",
+      "status": "formal-ai-exclusive-create-hosted-verified-template-comparison-and-report-pending",
       "formalAiPaths": [
         "scripts/check-changelog-fragment.rs",
         "scripts/create-changelog-fragment.rs",
         "scripts/collect-changelog.rs"
       ],
-      "verification": null
+      "verification": "experiments/issue-1580/evidence/ci/native-families-11c0bd05/early-completed-jobs.json"
     },
     {
       "practice": "Crate release identity, package size and downstream smoke tests",
@@ -525,8 +539,8 @@
       "templateEvidence": [
         "scripts/github-output.rs"
       ],
-      "assessment": "The shared template writer returns configured open/write failures. Formal AI now adopts that implementation and a fatal set_output wrapper in six release callers. Seven native cases cover file creation, append preservation, absent/empty/directory paths, post-open write errors and fatal subprocess behavior; admission includes every caller and the helper. Focused JavaScript tests, formatting, applicable gates and deployed release verification pass; hosted native execution remains pending.",
-      "status": "implemented-local-admission-verified-hosted-native-behavior-pending",
+      "assessment": "All seven native output cases pass in exact-head core job 136080808912, including fatal subprocess and post-open writer failures. All six release callers delegate to the shared writer; this establishes this helper behavior, not completion of registry or template adoption.",
+      "status": "implemented-hosted-native-behavior-verified",
       "formalAiPaths": [
         "scripts/github-output.rs",
         "scripts/check-release-needed.rs",
@@ -537,7 +551,7 @@
         "scripts/version-and-commit.rs",
         "rust/tests/unit/workflow_contracts.rs"
       ],
-      "verification": "experiments/issue-1580/evidence/checks/fallible-release-output/verification.json"
+      "verification": "experiments/issue-1580/evidence/ci/native-families-11c0bd05/early-completed-jobs.json"
     },
     {
       "practice": "Release and terminal gate policy contracts",
@@ -573,13 +587,18 @@
       "templateEvidence": [
         "tests/unit/ci-cd/workspace_manifest_resolution.rs"
       ],
-      "assessment": "Behavioral fixtures resolve only the intended package table or explicit root and reject inherited/misplaced/foreign versions. Formal AI release package lookup currently uses whole-file regexes and requires a source-grounded regression before any repair. Template fixture coverage does not establish Formal AI behavior.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "Formal AI uses a parsed Cargo package table, explicit literal identity and source-span version writes. All rust-paths consumers pin the existing TOML parser. The independent collector now delegates to the same reader and has an actual physical-manifest native regression. Local admission, formatting and gates pass; actual native execution is still pending. Separate fragment I/O practices remain unfinished.",
+      "status": "implemented-draft-local-admission-verified-hosted-native-behavior-pending",
       "formalAiPaths": [
+        "scripts/cargo-package.rs",
+        "scripts/rust-paths.rs",
+        "scripts/bump-version.rs",
         "scripts/version-and-commit.rs",
-        "scripts/get-version.rs"
+        "scripts/create-github-release.rs",
+        "rust/tests/unit/ci-cd/cargo_package_identity.rs",
+        "rust/tests/unit/workflow_contracts.rs"
       ],
-      "verification": null
+      "verification": "experiments/issue-1580/evidence/checks/changelog-package-reader/verification.json"
     },
     {
       "practice": "Desktop tag resolution and artifact verification contracts",
@@ -594,6 +613,28 @@
         "scripts/resolve-desktop-release.mjs"
       ],
       "verification": null
+    },
+    {
+      "practice": "Named release identity, remote delivery and cancellation ownership regressions",
+      "templateFiles": [
+        "tests/unit/ci-cd/mod.rs",
+        "tests/unit/ci-cd/release_naming_tests.rs",
+        "tests/unit/ci-cd/version_and_commit_behind_check.rs",
+        "tests/unit/ci-cd/version_and_commit_tag_order.rs",
+        "tests/unit/ci-cd/changelog_parsing.rs",
+        "tests/unit/ci-cd/issue_193.rs",
+        "tests/unit/ci-cd/issue_119.rs",
+        "tests/unit/ci-cd/issue_127.rs",
+        "tests/unit/ci-cd/issue_141.rs",
+        "tests/unit/ci-cd/issue_143.rs",
+        "tests/unit/ci-cd/issue_172.rs",
+        "tests/unit/ci-cd/issue_160.rs",
+        "tests/unit/ci-cd/issue_168.rs",
+        "tests/unit/ci-cd/issue_171.rs"
+      ],
+      "assessment": "Read all 14 pinned test sources (928 lines). The contracts cover actual helper imports, package-name release prefixes, remote behind counts, tagging only after successful push, fenced changelog selection, Docker architecture/digest evidence, shell printf and pinned analyzer tooling, registry unknown versus missing, surviving process descendants, transient link rechecks and cancellation ownership. Source inspection establishes their assertions only; Formal AI counterpart comparisons, negative controls and applicable execution remain unfinished.",
+      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "verification": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",

@@ -1126,7 +1126,8 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Compare the pinned Rust template and Formal AI fragment creators: both derive second-resolution names and write through an existing path. Replace the Formal AI write boundary with exclusive creation and preserve the concrete path in failure diagnostics.
 - [x] Add focused native collision, concurrent-writer, missing-parent and symlink controls to the existing hosted workflow-contract target. These native tests remain unexecuted locally, in accordance with the repository build policy.
 - [x] Reproduce the native admission gap before adding both production inputs; run the focused planner/admission suites, Rust formatting and touched JavaScript gates with immutable logs in `evidence/checks/changelog-fragment-preservation/`.
-- [ ] Verify actual native fragment behavior in hosted CI and evaluate/report the shared Rust template defect from executed evidence. Reading source and passing JavaScript admission do not establish native behavior.
+- [x] Read exact-head hosted core job 136080808912: all four exclusive fragment-creation tests pass, including concurrent writers and Unix symlink preservation.
+- [ ] Evaluate/report the shared Rust template fragment-creation defect with specific source and execution evidence; template repair remains unverified.
 
 ### Fallible release output adoption, 2026-11-20
 
@@ -1134,7 +1135,7 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Adopt the template fallible writer with a fatal CLI wrapper, retaining successful diagnostics and local operation when GITHUB_OUTPUT is absent. Preserve non-UTF-8 configured paths; reject an empty configured path.
 - [x] Add native cases for creation, append preservation, absent/empty/directory paths, post-open write errors and a subprocess that must exit before success output. Add the shared source and all six callers to native admission.
 - [x] Verify the admission regression fails before its closure repair and passes afterward: 30/30 focused planner tests, 88/88 maintained admission tests, rustfmt, six applicable JavaScript gates and deployed release-source verification pass. Exact commands, hashes and compressed logs are retained in evidence/checks/fallible-release-output. Externally supplied drafting receives no independent authorship or reasoning credit.
-- [ ] Execute the new native behavioral regressions on hosted CI; local Rust execution remains prohibited. This practice is implemented but not yet behaviorally verified.
+- [x] Read exact-head hosted core job 136080808912: all seven fallible-output tests pass, including the fatal subprocess and post-open writer failure. The actual workflow-contract target passes 60/60; raw proof is retained in `evidence/ci/native-families-11c0bd05/early-completed-jobs.json`. Local Rust execution remains prohibited.
 
 ### Complete six further Rust template contract reads, 2026-11-20
 
@@ -1147,5 +1148,42 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Collect all 23 terminal workflows for exact head 972f2594: 22 succeed. Preserve full failed Pipeline and selected job logs with verified raw/archive hashes. Two actionable failures are the oversized evidence JSON and the native Codex PR-body assertion; Pipeline status propagates them.
 - [x] Trace the native failure to the offline harness matching `gh issue view` anywhere in tool arguments, swallowing the compound title-and-description edit. Parse the command and classify only the initial issue-read prefix. Preserve the original issue-closing assertion; add a native classifier regression and strengthen real-workspace JavaScript delivery assertions for both Codex and Claude.
 - [x] Verify all 18 maintained consumer checks, the modeled failing before-control, Rust formatting and eight relevant JavaScript gates; verify compressed/raw log hashes and current source identities. Native execution remains hosted-only.
-- [ ] Publish all actionable repairs together after the single-push gate. Native confirmation of the restored Claude contract, new classifier and release helper regressions remains pending.
+- [x] Publish the delivery repairs at `11c0bd05` after the single-push gate. All 37 Hive cases pass across three hosted groups, including the restored full Claude Kotlin delivery case and Codex delivery. Core confirms all four fragment-ownership and seven fallible-output cases. The next package-reader and bounded-checkout changes require their own hosted execution; the original wider acceptance inventory remains open.
 - [ ] Complete all original acceptance criteria, independent reasoning and remaining template/practice comparisons; this CI repair does not complete issue #1580.
+
+
+### Adopt package-aware Rust release identity, 2026-11-20
+
+- [x] Compare the pinned Rust template package-table practice with Formal AI's whole-file name/version regexes. Trace transitive consumers and both release writers; dependency tables could supply the release identity or receive the version edit.
+- [x] Draft a shared parsed Cargo helper with source-span updates, explicit inherited/missing identity errors and package-scoped workspace publishing rules. Retain existing root/changelog detection and declare the parser for every rust-script consumer. Add physical manifest regressions and native admission for the complete new source closure.
+- [x] Verify the admission before-control, 31 focused admission tests, the 91-test maintained hosted entrypoint, Rust formatting, 10 applicable local gates and deployed release-source consistency. Logs, source identities and explicit negative controls are retained in `evidence/checks/package-identity-and-checksum-race/` and `evidence/checks/bounded-native-checkout-retry/`.
+- [ ] Confirm actual parsed package behavior on a hosted runner. The independent changelog collector now delegates to the parsed package reader and has its own physical manifest regression; hosted execution remains unfinished. No local Rust compilation or blanket package-practice completion is claimed.
+- [ ] Complete remaining Rust template dispositions and practices plus every original issue acceptance criterion. This package repair earns no independent Formal AI reasoning or authorship credit.
+
+
+### Repair the desktop checksum probe's scheduling assumption, 2026-11-20
+
+- [x] Inspect the exact-head Layered CI failure: run 44673787188, job 136080748101, raw log lines 5162–5176. The negative-control assertion required a newly created pipeline destination to be visible to `find`; process scheduling does not guarantee that ordering.
+- [x] Retain the exact pinned template command and test both clean destinations and pre-existing current destinations, each with/without an older fragment, on both checksum implementations. Require deterministic self-inclusion only for the pre-existing output; still reject every non-asset digest in the candidate.
+- [x] Run all three focused checksum regressions, the expected failing disable-candidate control and applicable gates; retain both raw and compressed log identities.
+- [ ] Preserve hosted confirmation of the corrected checksum fixture on the next head and clarify the fresh-output race in upstream report #251.
+
+
+### Bound native checkout recovery, 2026-11-20
+
+- [x] Preserve and read all 187 raw coding-job API log lines. The first gh run/job log request is retained as an availability failure while the aggregate run was active; the completed-job REST endpoint succeeds. Lines 140–142 identify a lazy promisor-blob transfer failure before any build/test.
+- [x] Draft one additional official checkout attempt for both native jobs, keeping all sparse/ref/security inputs, the four-minute total checkout allowance and the twenty-minute job clock. A final real shell guard requires an actual success and fails after exhaustion.
+- [x] Run the old-workflow negative control, both real guard tests with six outcome pairs each, the maintained 91-test hosted entrypoint and 10 workflow/local gates. Record the earlier exact-command policy failure and its reproducer explicitly; retain all current archive identities.
+- [x] Collect all terminal current-head results at `11c0bd05`: 21/23 workflows pass; the checksum fixture race and lazy checkout transfer are the only actionable failures. Preserve complete logs, hashes and raw error line numbers in `evidence/ci/native-families-11c0bd05/assessment.json`. All three Hive groups pass, 37 tests in total.
+- [ ] Confirm hosted checkout recovery and all prior native repairs. No local native execution or independent authorship credit is claimed.
+
+### Rust template regression source follow-up (2026-11-20)
+
+- [x] Read 14 additional pinned regression sources in full, verify all numbered lines against their blobs and archive the three complete read logs with hashes. Literal review is now 122/373 files and 20,175 source lines.
+- [ ] Compare the newly read release, registry, shell, analyzer, link-recheck and cancellation contracts with their Formal AI counterparts, implement applicable repairs and execute their acceptance checks. The remaining 251 files and all other unfinished template practices remain open.
+
+### Changelog package-version consumer (2026-11-20)
+
+- [x] Replace the independent collector global version regex with the shared parsed package reader. Add an actual native consumer regression covering dependency-first, literal single-quoted, inherited and missing versions without changing manifest bytes. Admit it through the focused and complete native test modules.
+- [x] Preserve the failing original-reader JavaScript admission control, 32 passing focused admission checks, 92 maintained checks, Rust formatting, 10 gates and deployed release-source verification in `evidence/checks/changelog-package-reader/`.
+- [ ] Execute the actual native package and collector regressions on hosted CI. Fragment collection I/O and registry uncertainty practices remain unfinished.

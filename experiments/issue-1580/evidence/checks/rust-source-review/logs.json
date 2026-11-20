@@ -298,5 +298,20 @@
     "file": "contracts-tests__unit__ci-cd__workflow_desktop_release.rs.1.read.log.gz",
     "rawSha256": "5fdc58d67b2ce0f0ae19a0999ddb56492e5d3832bbb6f85699946c4591fb202e",
     "archiveSha256": "3b896caaf7d0cda6902d39a91c7a7bcca9ba11d627fc2fa517c6141d7bf03581"
+  },
+  {
+    "file": "rust-contract-release-naming-read.log.gz",
+    "rawSha256": "a6fac7a80430490b3ee8e956118f8863557b4e8cf7e501d8c842cb35a59d260a",
+    "archiveSha256": "206f7c9ff8351b1896fa3df68aca49be0c5493a25628ae6ee596bd68191fc0db"
+  },
+  {
+    "file": "rust-contract-registry-shell-read.log.gz",
+    "rawSha256": "45d5ac76e3926536011dfc08cf952e766e09297f2fed594024254606db8f26eb",
+    "archiveSha256": "b8e739e28c6bcf94cda4de1673c8df3c387b90b29e012f1f02a6bb2fe2f8cf39"
+  },
+  {
+    "file": "rust-contract-workflow-boundaries-read.log.gz",
+    "rawSha256": "c318ef43536487f3a638c415248a0d8fce334b6ca9cc7007a0078d9151264812",
+    "archiveSha256": "8ffba6851385bd684e581699ec9b92f3a08200ae59f7923f22238cacd52e88d9"
   }
 ]

@@ -1,0 +1,43 @@
+{
+  "records": [
+    {
+      "name": "documents-whitespace",
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "documents-whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "final-document-gates",
+      "exitCode": 1,
+      "expectedExit": 0,
+      "log": "final-document-gates.log.gz",
+      "rawSha256": "99808be2316c6c78bab6a2cc9f4789d8f894c36c63412bb0f3b1cc76abbf8441",
+      "archiveSha256": "de6160622205da0a56647917d21efa57bacb9822de992fbabd644797e7fddc20",
+      "failure": "Three new archived feedback filenames used pr instead of pull-request; file-name ratchet was 93 against unchanged limit 90. All nine other final gates passed.",
+      "resolvedBy": "final-document-abbreviations-repaired"
+    },
+    {
+      "name": "final-document-abbreviations-repaired",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "final-document-abbreviations-repaired.log.gz",
+      "rawSha256": "5b5df7ab0604527ffe142ebf0a904b41c3a4359934ed7f946fd0bcbc6d2cfd7c",
+      "archiveSha256": "2951aa96e31f714bf2c8fe770e066953f4ca9e89586c9209159cc899378492fb"
+    }
+  ],
+  "sourceIdentitiesReverified": true,
+  "pinnedRustReadFiles": 122,
+  "pinnedRustLiteralLines": 20175,
+  "filenameCorrectionPreservesPayloadBytes": true,
+  "allFinalGatesHavePassingResults": true,
+  "fullIssueComplete": false
+}
