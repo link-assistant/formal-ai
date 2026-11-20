@@ -21,7 +21,7 @@ contract_targets=(
 # Validate before invoking Cargo so misspelled matrix groups cannot replay all tests.
 group="${1:-all}"
 if [[ "$#" -gt 1 ]]; then
-  echo 'Usage: ci-native-regressions.sh [all|core|coding|reasoning|hive|hive-1|hive-2|hive-3|benchmarks|interfaces]' >&2
+  echo 'Usage: ci-native-regressions.sh [all|core|coding|reasoning|reasoning-1|reasoning-2|hive|hive-1|hive-2|hive-3|benchmarks|interfaces]' >&2
   exit 2
 fi
 case "$group" in
@@ -37,35 +37,51 @@ case "$group" in
     cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast "${core_targets[@]}" -- --test-threads=1 --nocapture
     exit "$?"
     ;;
-  hive-1|hive-2|hive-3)
-    # Run 44652802985 completed 30 cases before the whole Hive family hit its
-    # job clock. Plan the actual compiled listing with measured durations;
-    # exact filters preserve each original name and cover every case once.
+  hive-1|hive-2|hive-3|reasoning-1|reasoning-2)
+    # Whole-family clocks expired after successful cases in runs 44652802985
+    # (Hive) and 44775337494 (reasoning). Plan the actual compiled listing
+    # using those sequential observations, keeping every original test once.
     runner_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-    listing="$(cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
-      --test reasoning_contracts issue_1133_hive_mind_three_runs:: -- --list --format terse)"
+    family="${group%-*}"
+    if [[ "$family" == hive ]]; then
+      shard_count=3
+      listing="$(cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
+        --test reasoning_contracts issue_1133_hive_mind_three_runs:: -- --list --format terse)"
+    else
+      shard_count=2
+      listing="$(cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
+        --test reasoning_contracts -- --skip benchmarks:: --skip issue_1133_hive_mind_three_runs:: --list --format terse)"
+    fi
     names="$(printf '%s\n' "$listing" | sed -n 's/: test$//p')"
     all_names=()
     while IFS= read -r name; do
-      case "$name" in
-        issue_1133_hive_mind_three_runs::*) all_names+=("$name") ;;
-        *) echo '::error::The native Hive listing is empty or contains a foreign test.' >&2; exit 1 ;;
-      esac
+      valid=false
+      if [[ "$family" == hive ]]; then
+        [[ "$name" == issue_1133_hive_mind_three_runs::* ]] && valid=true
+      elif [[ "$name" =~ ^([[:alnum:]_]+::)+[[:alnum:]_]+$ &&
+        "$name" != benchmarks::* && "$name" != issue_1133_hive_mind_three_runs::* ]]; then
+        valid=true
+      fi
+      if [[ "$valid" != true ]]; then
+        echo "::error::The native $family listing is empty or contains a foreign test." >&2
+        exit 1
+      fi
+      all_names+=("$name")
     done <<< "$names"
-    if [[ "${#all_names[@]}" -lt 3 ]] ||
+    if [[ "${#all_names[@]}" -lt "$shard_count" ]] ||
       ! printf '%s\n' "${all_names[@]}" | awk 'seen[$0]++ { exit 1 }'; then
-      echo '::error::The native Hive listing must contain at least three distinct tests.' >&2
+      echo "::error::The native $family listing must contain at least $shard_count distinct tests." >&2
       exit 1
     fi
     planner="$runner_root/scripts/plan-test-shards.mjs"
-    weights="$runner_root/scripts/ci-native-hive-durations.lino"
-    printf '%s\n' "$names" | node "$planner" --of 3 --durations "$weights" --check
-    selected="$(printf '%s\n' "$names" | node "$planner" --of 3 --durations "$weights" --shard "${group#hive-}")"
+    weights="$runner_root/scripts/ci-native-$family-durations.lino"
+    printf '%s\n' "$names" | node "$planner" --of "$shard_count" --durations "$weights" --check
+    selected="$(printf '%s\n' "$names" | node "$planner" --of "$shard_count" --durations "$weights" --shard "${group##*-}")"
     selected_names=()
     while IFS= read -r name; do
       [[ -n "$name" ]] && selected_names+=("$name")
     done <<< "$selected"
-    [[ "${#selected_names[@]}" -gt 0 ]] || { echo '::error::The native Hive shard is empty.' >&2; exit 1; }
+    [[ "${#selected_names[@]}" -gt 0 ]] || { echo "::error::The native $family shard is empty." >&2; exit 1; }
     cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test reasoning_contracts \
       -- --exact "${selected_names[@]}" --test-threads=1 --nocapture
     exit "$?"
@@ -87,7 +103,7 @@ case "$group" in
     exit "$?"
     ;;
   *)
-    echo 'Usage: ci-native-regressions.sh [all|core|coding|reasoning|hive|hive-1|hive-2|hive-3|benchmarks|interfaces]' >&2
+    echo 'Usage: ci-native-regressions.sh [all|core|coding|reasoning|reasoning-1|reasoning-2|hive|hive-1|hive-2|hive-3|benchmarks|interfaces]' >&2
     exit 2
     ;;
 esac
