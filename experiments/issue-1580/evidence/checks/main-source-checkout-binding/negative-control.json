@@ -1,0 +1,7 @@
+{
+  "beforeExitCode": 1,
+  "expectedFailure": "select the maintained branch directly before binding its actual commit",
+  "rawSha256": "91ce143155ff01a19da5f98db60930cd0a71ba40d43a2122c6abc908e90e96c7",
+  "sourceChanged": false,
+  "independentAuthorshipCredit": 0
+}

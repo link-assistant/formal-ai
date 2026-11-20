@@ -1,0 +1,102 @@
+{
+  "head": "ad59ff56dafe3377f48ebf7739526d89642198fd",
+  "runId": 44710630318,
+  "reports": [
+    {
+      "file": "producer-14616259795-actions.sarif.gz",
+      "results": 2,
+      "executionSuccessful": [
+        true
+      ],
+      "notificationLevels": {
+        "none": 5732
+      },
+      "warningKinds": {},
+      "examples": {}
+    },
+    {
+      "file": "producer-14617183486-rust.sarif.gz",
+      "results": 0,
+      "executionSuccessful": [
+        true
+      ],
+      "notificationLevels": {
+        "note": 67,
+        "none": 11907,
+        "warning": 511
+      },
+      "warningKinds": {
+        "item expansion failed (macro-error)": 406,
+        "semantic analyzer unavailable (no manifest found)": 105
+      },
+      "examples": {
+        "item expansion failed (macro-error)": {
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "rust/src/source_fetch/cache_budget.rs",
+                  "uriBaseId": "%SRCROOT%",
+                  "index": 1156
+                },
+                "region": {
+                  "startLine": 27,
+                  "endLine": 36,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Extraction warning in /home/runner/work/formal-ai/formal-ai/rust/src/source_fetch/cache_budget.rs with message item expansion failed (macro-error)"
+          },
+          "descriptor": {
+            "id": "rust/diagnostics/extraction-warnings",
+            "index": 4,
+            "toolComponent": {
+              "index": 0
+            }
+          },
+          "properties": {
+            "formattedMessage": {
+              "text": "Extraction warning in /home/runner/work/formal-ai/formal-ai/rust/src/source_fetch/cache_budget.rs with message item expansion failed (macro-error)"
+            }
+          }
+        },
+        "semantic analyzer unavailable (no manifest found)": {
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/audit-seed-metadata.rs",
+                  "uriBaseId": "%SRCROOT%",
+                  "index": 191
+                },
+                "region": {
+                  "startLine": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Extraction warning in /home/runner/work/formal-ai/formal-ai/scripts/audit-seed-metadata.rs with message semantic analyzer unavailable (no manifest found)"
+          },
+          "descriptor": {
+            "id": "rust/diagnostics/extraction-warnings",
+            "index": 4,
+            "toolComponent": {
+              "index": 0
+            }
+          },
+          "properties": {
+            "formattedMessage": {
+              "text": "Extraction warning in /home/runner/work/formal-ai/formal-ai/scripts/audit-seed-metadata.rs with message semantic analyzer unavailable (no manifest found)"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "fullIssueComplete": false
+}

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T09:08:40.747277+00:00",
+  "observedAt": "2026-11-20T09:30:00.833464+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 217,
-  "fullyReadSourceLines": 33860,
+  "fullyReadFiles": 237,
+  "fullyReadSourceLines": 34513,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -589,6 +589,346 @@
         ]
       ],
       "literalReadLines": 135,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/README.md",
+      "lines": 25,
+      "sha256": "8c3ab5cf3374278e1ef39bbec9087f4fd1daed8fef2fef0869d8d145e9bcb4cd",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          25
+        ]
+      ],
+      "literalReadLines": 25,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/active-runtime-scan.txt",
+      "lines": 6,
+      "sha256": "8b29d634e6531fe0f90ef5f47e215be5f1e65e4d5e2be7e3e206569cba7b2fc2",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          6
+        ]
+      ],
+      "literalReadLines": 6,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/baseline-metadata-error.txt",
+      "lines": 4,
+      "sha256": "749436bb7c9b8bde0aecec23280d6f669a2b3138f4b561dbc1a80241ed566e6f",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "literalReadLines": 4,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/branch-failures.txt",
+      "lines": 16,
+      "sha256": "d8d75f367bb29c504a8622b1e0967e7f10e76fa05b7007cf39c9fe44cac28751",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          16
+        ]
+      ],
+      "literalReadLines": 16,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pages-bundle-evidence.txt",
+      "lines": 3,
+      "sha256": "48caca43397ba22228ccadad10f9c545059d01ff1e5b591b55e751ec92607612",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "literalReadLines": 3,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/plan.md",
+      "lines": 50,
+      "sha256": "210854729166b8cf6a3f7a474ea333c5f3a0a176f3deb9f997f38d5492c54702",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "literalReadLines": 50,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/pr-body.md",
+      "lines": 23,
+      "sha256": "d86a6e045df52cf7f11894daf5a82451df2e926391ea0d32369b662eaa34172a",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          23
+        ]
+      ],
+      "literalReadLines": 23,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/research.md",
+      "lines": 161,
+      "sha256": "9121a3f904393e2af74a4845632261537c26a955db6d23915a7bfe4948af91d5",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          161
+        ]
+      ],
+      "literalReadLines": 161,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/runtime-and-images.md",
+      "lines": 45,
+      "sha256": "668887198dbcda15d6255b7d990680e7b99b39fb858d020b8ecb1b7d69dd605e",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          45
+        ]
+      ],
+      "literalReadLines": 45,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/upstream-reports/actionlint.md",
+      "lines": 5,
+      "sha256": "e8ed41d1eeeb8f39c57631aba737583245eccdf18c9711b08532289f3b3bfa62",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "literalReadLines": 5,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/upstream-reports/artifact.md",
+      "lines": 5,
+      "sha256": "9b4bd7793e92c3d1814dfeb640605784e58320ab1f7cfd246549380844d4b6ca",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "literalReadLines": 5,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/upstream-reports/audit.md",
+      "lines": 15,
+      "sha256": "c80f26aef72c2f5cf9b4fd43451adf035ff54d85ed911aeeba7131a154931d48",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          15
+        ]
+      ],
+      "literalReadLines": 15,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/upstream-reports/buildx.md",
+      "lines": 5,
+      "sha256": "0b6adf6d5e68711527c6ce4253ed5f1451fd1be7c35709b5f8125e7b6bc1abc1",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "literalReadLines": 5,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/upstream-reports/codeql.md",
+      "lines": 5,
+      "sha256": "2e33a9fe7a299c80642ee2fe0770ed4f208f4d73de6ae443fca5b5d32a453043",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "literalReadLines": 5,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/upstream-reports/lychee.md",
+      "lines": 5,
+      "sha256": "c1599787bdaa79c7702ed98c16e9888b52d4026bcfabaf257a77a1adf9aabce0",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "literalReadLines": 5,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/upstream-reports/pages.md",
+      "lines": 5,
+      "sha256": "3b3f285058b64c908739596ab2a282f53a944e1811acd14df159bdab90ed605f",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "literalReadLines": 5,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/upstream-reports/posted.json",
+      "lines": 72,
+      "sha256": "77d42abb83cd980a4ac862165547aeaaf917d297a0c42d653779036b30dfe630",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          72
+        ]
+      ],
+      "literalReadLines": 72,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/upstream-reports/reports.json",
+      "lines": 44,
+      "sha256": "3aa07c0d4d5907fda3bd707c06336a75e21abc709dc1883ba0cb0ccdacd810f1",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          44
+        ]
+      ],
+      "literalReadLines": 44,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/ureq-migration.md",
+      "lines": 59,
+      "sha256": "bf28257324bce4a8bf99dbfd7dbd72055d8a84376eb9b5ba35d134713fe80fb0",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          59
+        ]
+      ],
+      "literalReadLines": 59,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/verification.md",
+      "lines": 100,
+      "sha256": "efb3edac62eced2bf7f643b8a79dcc470868e0f3ec8993e728e82dcbeeacbf92",
+      "readLogs": [
+        "rust-historical-maintenance-notes-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          100
+        ]
+      ],
+      "literalReadLines": 100,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -4423,6 +4763,33 @@
         "requirements-dev.txt"
       ],
       "assessment": "All 1,071 numbered lines in the immutable Cargo and Python development locks were read and matched to pinned identities. Preserve Cargo lock format, package identity, exact resolved versions, registry source and checksums; retain uv-generated universal Python dependency pins and hashes, including transitive packages and environment markers. Compare the tools against the workflows that actually install them instead of assuming a lockfile is consumed or safe because it exists. No install, advisory audit, reproducibility run or Formal AI counterpart execution is credited.",
+      "status": "literal-source-comparison-and-counterpart-runtime-pending"
+    },
+    {
+      "practice": "Historical maintenance investigations, strict extraction and dependency migrations",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/README.md",
+        "dev/log/issues/247/pulls/248/plan.md",
+        "dev/log/issues/247/pulls/248/pr-body.md",
+        "dev/log/issues/247/pulls/248/research.md",
+        "dev/log/issues/247/pulls/248/runtime-and-images.md",
+        "dev/log/issues/247/pulls/248/verification.md",
+        "dev/log/issues/247/pulls/248/ureq-migration.md",
+        "dev/log/issues/247/pulls/248/upstream-reports/actionlint.md",
+        "dev/log/issues/247/pulls/248/upstream-reports/artifact.md",
+        "dev/log/issues/247/pulls/248/upstream-reports/audit.md",
+        "dev/log/issues/247/pulls/248/upstream-reports/buildx.md",
+        "dev/log/issues/247/pulls/248/upstream-reports/codeql.md",
+        "dev/log/issues/247/pulls/248/upstream-reports/lychee.md",
+        "dev/log/issues/247/pulls/248/upstream-reports/pages.md",
+        "dev/log/issues/247/pulls/248/upstream-reports/posted.json",
+        "dev/log/issues/247/pulls/248/upstream-reports/reports.json",
+        "dev/log/issues/247/pulls/248/active-runtime-scan.txt",
+        "dev/log/issues/247/pulls/248/baseline-metadata-error.txt",
+        "dev/log/issues/247/pulls/248/branch-failures.txt",
+        "dev/log/issues/247/pulls/248/pages-bundle-evidence.txt"
+      ],
+      "assessment": "Read all 653 numbered lines in twenty pinned historical maintenance notes and report records. Preserve exact revision and run attribution, full failed logs, Cargo graph validation before auditing, extraction warning rejection and production compilation regressions for inline Rust scripts. Reuse upstream-supported HTTP retry/configuration APIs and document transitive constraints; a submitted report does not prove upstream repair. Historical version claims and external authorization rules are evidence about that investigation, not current Formal AI pins or instructions. Counterpart applicability and actual runtime acceptance remain open.",
       "status": "literal-source-comparison-and-counterpart-runtime-pending"
     }
   ],

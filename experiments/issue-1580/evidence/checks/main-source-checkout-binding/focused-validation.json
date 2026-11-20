@@ -1,0 +1,138 @@
+[
+  {
+    "name": "hive-mind-draft-workflow",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/hive-mind-draft-workflow.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.07,
+    "file": "hive-mind-draft-workflow.log.gz",
+    "rawSha256": "5a927defc8a02c4bc05ea6d830360604707c5717a0453deddb5054c9657b91cb",
+    "archiveSha256": "6573bbef9687897e3033472b720a6d5b06f671994efa6ee89bb172b17f5f5110"
+  },
+  {
+    "name": "hive-draft-attempt-identity",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/hive-draft-attempt-identity.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.34,
+    "file": "hive-draft-attempt-identity.log.gz",
+    "rawSha256": "5321f3d2ce40cbf21a9bd8c217fa83b25e9ac083d0f893e47424e57430ad2bc1",
+    "archiveSha256": "d9e5fa8d35588a4aabdda374239b18bfc6e368b994732149400ce9bcd9e5eeeb"
+  },
+  {
+    "name": "formal-ai-shared-build",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/formal-ai-shared-build.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.31,
+    "file": "formal-ai-shared-build.log.gz",
+    "rawSha256": "b59741c1ba65d1d60a4eab38eaadab0e89dd03779cd7f5dd051d675355374b09",
+    "archiveSha256": "9b957dca97f23bd8cfecadfa8efc8e973234af88704ac12ab568386167c7ee7c"
+  },
+  {
+    "name": "ci-phase-timing",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/ci-phase-timing.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.95,
+    "file": "ci-phase-timing.log.gz",
+    "rawSha256": "5af041fa78bf8053bd88f8d3bf82620a578612afc1c8f40829c990ec3bc4dee0",
+    "archiveSha256": "7246d5a72cf71d3d9999c9044c120138752e0b1778fec0b3c97382abd4171223"
+  },
+  {
+    "name": "hive-draft-logs",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/hive-draft-logs.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.98,
+    "file": "hive-draft-logs.log.gz",
+    "rawSha256": "909c1faad68ba1d268c97cbef3d156a8617348a6986405963898a46bd864aa36",
+    "archiveSha256": "87cff5a4b700957ecedc69c1c27e62226e941ee7a65b8c5902ac46d95ba643f6"
+  },
+  {
+    "name": "security-codeql-results",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/security-codeql-results.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 6.36,
+    "file": "security-codeql-results.log.gz",
+    "rawSha256": "a255e586d7a09e53720f13d3c4d40bd1e1bf1c9f31f2ae9aa1f9c0d969940f11",
+    "archiveSha256": "e9922d3c8e2da9aadf198f764f4e005462c7c0002bd1ea8005824b3440655aa3"
+  },
+  {
+    "name": "fast-pull-request-production-profile",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 5.4,
+    "file": "fast-pull-request-production-profile.log.gz",
+    "rawSha256": "acdeff3c6e174ab52938d5bd86d80d816c56b7ad2e3d79f00dc045b07c426e3b",
+    "archiveSha256": "df5e25782d2e8887311831ddd22d19f999ad1c6b52a1fb700f5c42c6aca9487c"
+  },
+  {
+    "name": "default-branch-build-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 13.55,
+    "file": "default-branch-build-policy.log.gz",
+    "rawSha256": "bbccf9e98f0b7c8474a9f1c4568b0d24b44c27e2dc91e0760576b9e0086d1505",
+    "archiveSha256": "65880ec7e8ee23044ddb0637881f1499c07285cbcec89634476392e732e893c1"
+  }
+]

@@ -433,5 +433,10 @@
     "file": "rust-dependency-locks-read.log.gz",
     "rawSha256": "80bb9d06ea1fe2123f669d6e67c12c51efedc6765cbcefa7b1b19375ff002229",
     "archiveSha256": "ca4efea05860242f16155312e43361722c29348a12a62e343f9d5edcaec9b7dc"
+  },
+  {
+    "file": "rust-historical-maintenance-notes-read.log.gz",
+    "rawSha256": "92643b02c95f2e483e8ea1d7c88075b52c611e133e9c071d9a5010587a8c06b4",
+    "archiveSha256": "973ec8ea819a985c762ed6df23fc23d21972d8d77bd9983322a4e0b8308dfb06"
   }
 ]

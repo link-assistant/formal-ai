@@ -1,0 +1,343 @@
+{
+  "conclusion": "failure",
+  "createdAt": "2026-11-20T09:25:43Z",
+  "headSha": "ad59ff56dafe3377f48ebf7739526d89642198fd",
+  "jobs": [
+    {
+      "completedAt": "2026-11-20T09:38:14Z",
+      "conclusion": "failure",
+      "databaseId": 136201098870,
+      "name": "CodeQL producer verification (rust)",
+      "startedAt": "2026-11-20T09:25:46Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-20T09:25:50Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-20T09:25:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:26:24Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-20T09:25:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:26:33Z",
+          "conclusion": "success",
+          "name": "Pin the extractor sysroot to a std the CodeQL bundle can parse",
+          "number": 3,
+          "startedAt": "2026-11-20T09:26:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:27:34Z",
+          "conclusion": "success",
+          "name": "Run github/codeql-action/init@v4",
+          "number": 4,
+          "startedAt": "2026-11-20T09:26:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:28:06Z",
+          "conclusion": "success",
+          "name": "Run github/codeql-action/autobuild@v4",
+          "number": 5,
+          "startedAt": "2026-11-20T09:27:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:28:10Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v6",
+          "number": 6,
+          "startedAt": "2026-11-20T09:28:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:37:56Z",
+          "conclusion": "success",
+          "name": "Run github/codeql-action/analyze@v4",
+          "number": 7,
+          "startedAt": "2026-11-20T09:28:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:37:56Z",
+          "conclusion": "failure",
+          "name": "Reject unresolved CodeQL findings",
+          "number": 8,
+          "startedAt": "2026-11-20T09:37:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:37:57Z",
+          "conclusion": "success",
+          "name": "Preserve CodeQL reports",
+          "number": 9,
+          "startedAt": "2026-11-20T09:37:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:37:58Z",
+          "conclusion": "success",
+          "name": "Post Run github/codeql-action/analyze@v4",
+          "number": 15,
+          "startedAt": "2026-11-20T09:37:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:37:58Z",
+          "conclusion": "skipped",
+          "name": "Post Run actions/setup-node@v6",
+          "number": 16,
+          "startedAt": "2026-11-20T09:37:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:38:13Z",
+          "conclusion": "success",
+          "name": "Post Run github/codeql-action/init@v4",
+          "number": 17,
+          "startedAt": "2026-11-20T09:37:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:38:13Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 18,
+          "startedAt": "2026-11-20T09:38:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:38:13Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 19,
+          "startedAt": "2026-11-20T09:38:13Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44710630318/job/136201098870"
+    },
+    {
+      "completedAt": "2026-11-20T09:29:24Z",
+      "conclusion": "failure",
+      "databaseId": 136201099159,
+      "name": "CodeQL producer verification (actions)",
+      "startedAt": "2026-11-20T09:25:50Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-20T09:25:53Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-20T09:25:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:26:35Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-20T09:25:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:26:35Z",
+          "conclusion": "skipped",
+          "name": "Pin the extractor sysroot to a std the CodeQL bundle can parse",
+          "number": 3,
+          "startedAt": "2026-11-20T09:26:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:27:35Z",
+          "conclusion": "success",
+          "name": "Run github/codeql-action/init@v4",
+          "number": 4,
+          "startedAt": "2026-11-20T09:26:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:28:07Z",
+          "conclusion": "success",
+          "name": "Run github/codeql-action/autobuild@v4",
+          "number": 5,
+          "startedAt": "2026-11-20T09:27:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:28:13Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v6",
+          "number": 6,
+          "startedAt": "2026-11-20T09:28:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:29:03Z",
+          "conclusion": "success",
+          "name": "Run github/codeql-action/analyze@v4",
+          "number": 7,
+          "startedAt": "2026-11-20T09:28:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:29:03Z",
+          "conclusion": "failure",
+          "name": "Reject unresolved CodeQL findings",
+          "number": 8,
+          "startedAt": "2026-11-20T09:29:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:29:05Z",
+          "conclusion": "success",
+          "name": "Preserve CodeQL reports",
+          "number": 9,
+          "startedAt": "2026-11-20T09:29:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:29:05Z",
+          "conclusion": "success",
+          "name": "Post Run github/codeql-action/analyze@v4",
+          "number": 15,
+          "startedAt": "2026-11-20T09:29:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:29:05Z",
+          "conclusion": "skipped",
+          "name": "Post Run actions/setup-node@v6",
+          "number": 16,
+          "startedAt": "2026-11-20T09:29:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:29:21Z",
+          "conclusion": "success",
+          "name": "Post Run github/codeql-action/init@v4",
+          "number": 17,
+          "startedAt": "2026-11-20T09:29:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:29:21Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 18,
+          "startedAt": "2026-11-20T09:29:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:29:21Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 19,
+          "startedAt": "2026-11-20T09:29:21Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44710630318/job/136201099159"
+    },
+    {
+      "completedAt": "2026-11-20T09:26:20Z",
+      "conclusion": "success",
+      "databaseId": 136201099392,
+      "name": "Cargo audit",
+      "startedAt": "2026-11-20T09:25:50Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-20T09:25:52Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-20T09:25:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:25:58Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-20T09:25:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:26:11Z",
+          "conclusion": "success",
+          "name": "Setup Rust",
+          "number": 3,
+          "startedAt": "2026-11-20T09:25:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:26:11Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/install-action@v2",
+          "number": 4,
+          "startedAt": "2026-11-20T09:26:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:26:18Z",
+          "conclusion": "success",
+          "name": "Audit committed Cargo.lock",
+          "number": 5,
+          "startedAt": "2026-11-20T09:26:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:26:18Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 10,
+          "startedAt": "2026-11-20T09:26:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-20T09:26:18Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-11-20T09:26:18Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44710630318/job/136201099392"
+    },
+    {
+      "completedAt": "2026-11-20T09:25:44Z",
+      "conclusion": "skipped",
+      "databaseId": 136201100389,
+      "name": "CodeQL (${{ matrix.language }})",
+      "startedAt": "2026-11-20T09:25:44Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44710630318/job/136201100389"
+    },
+    {
+      "completedAt": "2026-11-20T09:25:44Z",
+      "conclusion": "skipped",
+      "databaseId": 136201100466,
+      "name": "Dependency Review",
+      "startedAt": "2026-11-20T09:25:44Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44710630318/job/136201100466"
+    }
+  ],
+  "status": "completed",
+  "updatedAt": "2026-11-20T09:38:15Z",
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44710630318"
+}

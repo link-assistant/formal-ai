@@ -1,0 +1,16 @@
+{
+  "complete": true,
+  "head": "ad59ff56dafe3377f48ebf7739526d89642198fd",
+  "workflowCount": 24,
+  "success": 23,
+  "failed": [
+    {
+      "id": 44710630318,
+      "name": "Security",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44710630318"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

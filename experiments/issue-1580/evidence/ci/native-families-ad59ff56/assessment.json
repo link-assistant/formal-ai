@@ -1,0 +1,210 @@
+{
+  "head": "ad59ff56dafe3377f48ebf7739526d89642198fd",
+  "observedAt": "2026-11-20T10:21:51.569898+00:00",
+  "allRecordedStreamsVerified": 286,
+  "workflowCount": 24,
+  "automaticWorkflowsSucceeded": 23,
+  "manualProducerFailures": [
+    {
+      "id": 44710630318,
+      "name": "Security",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44710630318"
+    }
+  ],
+  "nativeTestSummaries": [
+    {
+      "job": 136201211171,
+      "line": 758,
+      "passed": 3,
+      "failed": 0,
+      "file": "job-136201211171.stdout.gz",
+      "rawSha256": "2e71a00614fca6743a52ba3d0a7b50ac42aec4ff993e13c1f3992d10748dc9a9"
+    },
+    {
+      "job": 136201211202,
+      "line": 1743,
+      "passed": 1,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 1758,
+      "passed": 9,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 1766,
+      "passed": 2,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 1794,
+      "passed": 22,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 1808,
+      "passed": 8,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 1815,
+      "passed": 1,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 1825,
+      "passed": 4,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 1849,
+      "passed": 18,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 1867,
+      "passed": 12,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 1882,
+      "passed": 9,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 2001,
+      "passed": 104,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 2044,
+      "passed": 13,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211202,
+      "line": 2053,
+      "passed": 1,
+      "failed": 0,
+      "file": "job-136201211202.stdout.gz",
+      "rawSha256": "29051a0b7dae4dad0b9129d1da5ebfcbaf2dba276eb2fa04d474456577880d53"
+    },
+    {
+      "job": 136201211282,
+      "line": 1353,
+      "passed": 32,
+      "failed": 0,
+      "file": "job-136201211282.stdout.gz",
+      "rawSha256": "bacde9b1711c9981a21dd9eedb400031f41ccb9688924d92ee686dd467078e5f"
+    },
+    {
+      "job": 136201211288,
+      "line": 1455,
+      "passed": 141,
+      "failed": 0,
+      "file": "job-136201211288.stdout.gz",
+      "rawSha256": "1e554413831c0c5df4fb9f0a55c9ebddc0d2b8970a0e1d895340e8a010a76d78"
+    },
+    {
+      "job": 136201211312,
+      "line": 1334,
+      "passed": 7,
+      "failed": 0,
+      "file": "job-136201211312.stdout.gz",
+      "rawSha256": "45b7b6494c25d8ba0d8a7602fcc907d5dcdc4cd6729c5193fdb7d2e1383f9635"
+    },
+    {
+      "job": 136201211317,
+      "line": 1328,
+      "passed": 11,
+      "failed": 0,
+      "file": "job-136201211317.stdout.gz",
+      "rawSha256": "553d6b895d36fb77356d4c563766445ca1693174b419ec70eb5b93b3d8a65d15"
+    },
+    {
+      "job": 136201211347,
+      "line": 1395,
+      "passed": 78,
+      "failed": 0,
+      "file": "job-136201211347.stdout.gz",
+      "rawSha256": "250eaac95e86a0256d12eb37e44788583fd42ebf8cae9daeb7a52d4a752ef891"
+    },
+    {
+      "job": 136201211363,
+      "line": 1334,
+      "passed": 10,
+      "failed": 0,
+      "file": "job-136201211363.stdout.gz",
+      "rawSha256": "93af5cd29ab818a244fb6f2a66dcaa8bf641d475619854085c299640e530b508"
+    },
+    {
+      "job": 136201211399,
+      "line": 1339,
+      "passed": 20,
+      "failed": 0,
+      "file": "job-136201211399.stdout.gz",
+      "rawSha256": "03e5129bc5b0ede1fcfdd5f21b0e4a9399541606cb193b992fd91f26281b4192"
+    }
+  ],
+  "warningCandidateCount": 156,
+  "warningCandidates": {
+    "file": "diagnostic-candidates.json.gz",
+    "rawSha256": "50c662272c107b375da6160fa3a5845b08c4f993b5efd9527672f6aa004c3ac1",
+    "archiveSha256": "2c4dcd7cdab3df86faeef3dba668fb5309f04ab6ca7ade5045dcf194d989d03e"
+  },
+  "producerFindingsAssessment": "../codeql-producer-ad59ff56/compact-assessment.json",
+  "actionsSourceRepairHostedVerified": false,
+  "rustContextSourceRepairHostedVerified": false,
+  "strictOriginalSourceReplays": 31,
+  "independentReasoningAccepted": 0,
+  "fullIssueComplete": false,
+  "diagnosticCandidateClassification": {
+    "actualSourceSizeWarnings": 123,
+    "quotedShellSource": 33,
+    "otherEmittedWarnings": 0,
+    "note": "An initial overly broad size-warning filter printed all candidates; the corrected exact emitted-warning pattern classifies 123 actual warnings and 33 quoted shell lines. The initial output is retained."
+  },
+  "registryCliFixture": {
+    "job": 136201211171,
+    "summaryLine": 762,
+    "cases": 8,
+    "passed": true,
+    "successLine": 764
+  }
+}

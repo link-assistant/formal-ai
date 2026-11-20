@@ -296,3 +296,13 @@ passing workflows on 14ef1b5f, actual native family counts, 124 unresolved sourc
 size warnings, the unexecuted local registry repair, its failing-before HTTP
 fixture correction and Rust literal review at 139/373 files. Independent
 reasoning remains 0/20 and strict original-source acceptance remains 31/53.
+
+The [2026-11-20 original CodeQL report and Rust context checkpoint](rust-codeql-context-checkpoint.md)
+records all 23 automatic workflows passing on `ad59ff56`, the separate failing
+producer's two Actions findings and 511 Rust extraction warnings, and source
+repairs whose hosted validation is still pending. It retains all 286 verified
+collector streams, the original SARIF bytes, 15 security regression groups and
+the complete 87-pass/53-excluded local gate inventory. Strict original replay
+acceptance remains 31/53; broader criteria and 0/20 independent reasoning stay
+open. Rust literal review is 237/373 files and 34,513 lines, with 136 files and
+applicable practice/runtime verification unfinished.
