@@ -289,3 +289,10 @@ Published head `5bbbd91e` finished 23 workflows with 21 successes. Its eight exe
 The combined batch guards retry admission, raises stale timing weights from 208 complete file events without lowering conservative history, splits the complete PR inventory into four groups with unchanged clocks, and repairs release fragment I/O propagation and snapshot cleanup in three real consumers. Local final checks pass 35 admission, 95 maintained workflow and 32 documentation cases plus nine touched gates; the measured-timing repair also has a passing complete 139-entry gate inventory with explicit exclusions. Actual new Rust filesystem behavior and repaired hosted shard completion still require CI on the next published head. No local Rust build ran.
 
 Rust template literal review is 132/373 files and 22,468 lines. All remaining 241 files, counterpart/runtime practice comparisons and the other unfinished original acceptance criteria remain open. Strict original acceptance is unchanged at 31/53 and accepted independent Formal AI reasoning at 0/20; this PR remains draft and unmerged.
+
+
+The [registry/release checkpoint](registry-release-checkpoint.md) records all 23
+passing workflows on 14ef1b5f, actual native family counts, 124 unresolved source
+size warnings, the unexecuted local registry repair, its failing-before HTTP
+fixture correction and Rust literal review at 139/373 files. Independent
+reasoning remains 0/20 and strict original-source acceptance remains 31/53.

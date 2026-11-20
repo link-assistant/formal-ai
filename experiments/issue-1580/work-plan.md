@@ -1207,3 +1207,38 @@ behavior and all wider acceptance criteria remain pending.
 - [ ] Publish this combined batch once, collect its exact-head workflows and verify the actual new Rust filesystem cases and measured four-group plan. Keep PR #1581 draft and unmerged until every original acceptance criterion is met.
 
 Evidence: `evidence/ci/native-families-5bbbd91e/assessment.json`, `evidence/checks/measured-javascript-shards/verification.json`, `evidence/checks/changelog-io-guard/verification.json`, `evidence/checks/bump-fragment-io-guard/verification.json`, and `evidence/checks/version-changelog-io-guard/verification.json`. Strict original-source acceptance stays 31/53; independent Formal AI reasoning stays 0/20. Supplied commands, edits and reviews earn no independent authorship credit. Broader template, dependency, budget, identity, original native and complete PR-review requirements remain open.
+
+
+## Registry uncertainty investigation (2026-11-20)
+
+- Root cause: both release CLIs converted failed registry calls or malformed
+  success bodies to false/None, allowing absent-artifact or absent-version decisions.
+- Draft: adapt the fully read pinned Rust shared registry helper, preserve fixed
+  production origins, bound retries and HTTP deadlines, and validate returned identities.
+- Verification: retain a failing historical-source JavaScript control, run the
+  focused admission/workflow policies and affected gates sequentially. A separate
+  ten-minute hosted native job compiles only the actual registry/release scripts
+  and exercises real HTTP and CLI decisions against loopback failure fixtures.
+- Acceptance remains pending hosted execution. No local Rust build or native
+  execution credit, and no autonomous authorship/reasoning credit for supplied adaptations.
+- Current published head 14ef1b5f remains under observation; collect every failure
+  before the next combined push. Full template comparison, strict original replays,
+  independent Formal AI targets and remaining issue requirements are unfinished.
+
+
+### Registry local draft and completed core evidence (2026-11-20)
+
+- [x] Preserve registry uncertainty repair in local commit `899de4d12`; no push during the published-head run. The corrected focused checks pass 36 native-admission, 96 maintained workflow-policy and 32 documentation-policy cases plus nine affected local gates. The initial two-job policy mismatch is retained before correction.
+- [x] Read completed core job 136121028636 for published head `14ef1b5f`: 102 actual workflow-contract tests pass, including the physical collector, bump-selection and version-changelog I/O cases. The aggregate run log remains unavailable through `gh run view`; preserve the failed retrievals and successful direct completed-job REST response. These results do not execute the later registry draft.
+- [x] Read all 474 lines across three additional pinned Rust Git, concurrency and release-race regression scripts. Literal review reaches 137/373 files and 23,345 lines. The remaining 236 files, counterpart comparison and applicable practice acceptance remain unfinished.
+- [x] Inspect all 13 changed original-test file patches. Later network defaults, localized URLs, trace opt-ins, extracted configuration and physical delivery are present; source-name similarity is not equivalence proof. Preserve strict 31/53 until each original contract has its own reasoning and actual evidence.
+- [ ] Finish the published run, collect every actionable failure, then publish the fully validated combined registry/evidence batch once. Run the actual registry/helper and two-CLI loopback regressions in hosted CI. Keep the PR draft and unmerged; all broader requirements and independent targets remain open.
+
+
+### Registry fixture and published-head checkpoint (2026-11-20)
+
+- [x] Preserve fixture correction 00f954c7b with failing-before/passing-after HTTP evidence for two unpublished candidates. Fixture-only execution skips Rust and claims no native CLI behavior. Final 36 admission checks and nine gates pass.
+- [x] Preserve all 23 passing workflows on 14ef1b5f, eight native families and full workflow logs. Inspect all 144 diagnostic candidates: 20 shell source echoes and 124 real source-size warnings. Warnings remain open with unchanged thresholds. Retain the interrupted and resumed collectors.
+- [x] Read both pinned root Rust guides: 139/373 files and 24,142 lines. The remaining 234 files and counterpart verification stay open. Report the source-confirmed shared fragment defect at https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/254; template CLI execution and upstream repair remain unverified.
+- [x] Preserve one independently requested CI freshness reasoning attempt. Formal AI reports an unparseable request; accepted units remain 0/20.
+- [ ] Publish the combined registry/evidence batch once after size checks, current-main/feedback review and empty active/queued lists. Execute actual registry/helper and both release CLIs in hosted CI, collecting and fixing every failure before another push. Keep broader requirements open and PR draft/unmerged.

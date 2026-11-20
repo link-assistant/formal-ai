@@ -1,0 +1,61 @@
+{
+  "records": [
+    {
+      "file": "registry-uncertainty-draft.log.gz",
+      "rawSha256": "d9a1ed3437a07502399dd1f48f6c3ec14d768f6260260f065c1548c53e18d883",
+      "archiveSha256": "d6803b3da72229b9ddf4b9f17ebb95679b7bae15dba3374055c765ebc7315905",
+      "meaning": "Initial draft helper assertion failed; corrected before validation."
+    },
+    {
+      "file": "registry-uncertainty-draft-corrected.log.gz",
+      "rawSha256": "485dd5648db36ec466502d24a15c3ce6e882cac4f66f466e1578d538030191f3",
+      "archiveSha256": "521bfd82c0ce1d03a9af2b746edcfa3e440f3d28587584c85280e2752df78f20",
+      "meaning": "Corrected draft helper; if absent skip without manufacturing evidence."
+    },
+    {
+      "file": "release-io-native-core-review.log.gz",
+      "rawSha256": "dc3bdd11392625200d668adafa6698ff77034d92a3e944a2399f85bd5693aa70",
+      "archiveSha256": "7e64ef19a75249676d2a96162ab8a008e6ac7454cca67cb003b33063cfa151fd",
+      "meaning": "Aggregate run active: completed-job logs unavailable through gh run view."
+    },
+    {
+      "file": "release-io-native-core-review-corrected.log.gz",
+      "rawSha256": "7991e4c9af62035018de1d1faa2a68f6ef48d3579007d1e2ffcfd1e138d00f6c",
+      "archiveSha256": "e6ab5aac4dd71eb6a315ce24487b3b6585d64ccdae9dc367352c26bb3e974e75",
+      "meaning": "REST output initially rejected terminal escapes; corrected with explicit escape handling."
+    },
+    {
+      "file": "release-io-native-core-review-api.log.gz",
+      "rawSha256": "dc575d6fbfba16cec5db27746a89aad365821200fd929231dbd80ee40b112c0b",
+      "archiveSha256": "592150e0d60329f097ec26958d1393808fb80a2fdd4b15d8139487940c7d6e64",
+      "meaning": "Successful completed-job REST retrieval and selected actual new test results; full run still active."
+    },
+    {
+      "file": "original-replay-differences.log.gz",
+      "rawSha256": "05b37f2a62ac8924250d59ec9b879cab048082f88c407987469b9829893bcf2b",
+      "archiveSha256": "5f2e3af926f658e734b745893c471355ed957c70cf989ea7afdaab50cc66825f",
+      "meaning": "Initial reader failed on a null replay entry; corrected without editing source or audit."
+    },
+    {
+      "file": "original-replay-differences-corrected.log.gz",
+      "rawSha256": "e732d9ced3e0e0b342e5a809a8ce44bb19bcbfe5d810305b5585146e863aff7c",
+      "archiveSha256": "604822be49a34bff7e4f678220b714fc9949ef94cf862b4096316cd71526a730",
+      "meaning": "Corrected 13-path diff inventory; only three patch bodies printed in this log."
+    },
+    {
+      "file": "registry-uncertainty-commit.log.gz",
+      "rawSha256": "52ce3557ffce7fe4beca643db498af71f112b8b7887c2bc8dad8abf542731249",
+      "archiveSha256": "60d8e0eb33ac73df0bfdc25e2b3a2efed5a2a619496d0547325301fe1d78cf98",
+      "meaning": "Atomic local code commit 899de4d12; no push or hosted registry execution."
+    },
+    {
+      "file": "registry-precommit-review.log.gz",
+      "rawSha256": "59b00b1ca3d6bbd051ea793e14e1be745508b8b78f201e6b8a8446794466eb30",
+      "archiveSha256": "2b87c17e8484504f85be4b8d54420a2b7cf6b19e8b9de78e15d8db33078f1e7a",
+      "meaning": "Validation/source/archive hashes verified before code commit."
+    }
+  ],
+  "nativeRegistryExecuted": false,
+  "independentAuthorshipCredit": false,
+  "fullIssueComplete": false
+}

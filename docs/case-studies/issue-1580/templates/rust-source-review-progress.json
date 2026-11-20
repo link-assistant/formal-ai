@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T06:06:19.579308+00:00",
+  "observedAt": "2026-11-20T07:02:06.741831+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 132,
-  "fullyReadSourceLines": 22468,
+  "fullyReadFiles": 139,
+  "fullyReadSourceLines": 24142,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -37,10 +37,17 @@
     {"path": ".python-version", "lines": 1, "sha256": "673e2ba07f95bfcfe0a543258b8e267954e403d1f466481c546f467f86b31d46", "readLogs": ["rust-base-configs-read.log.gz"], "literalReadRanges": [[1, 1]], "literalReadLines": 1, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
     {"path": ".secretlintrc.json", "lines": 7, "sha256": "1c0e86ca72216c22cc77b1c94c27f975b731aa9e104167f5d57a5befa654c10e", "readLogs": ["rust-base-configs-read.log.gz"], "literalReadRanges": [[1, 7]], "literalReadLines": 7, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
     {"path": "AGENTS.md", "lines": 19, "sha256": "2df2b66af38b06a9fb2c3c61ee6ff0cdd92f724c3fc3b996d8cbba29543166b5", "readLogs": ["rust-base-configs-read.log.gz"], "literalReadRanges": [[1, 19]], "literalReadLines": 19, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
+    {"path": "CONTRIBUTING.md", "lines": 366, "sha256": "989f1fd6486c1facfb3ff1267bff4af6a44fe964901565bb9f8eb7f10a3bd2ad", "readLogs": ["rust-template-guidance-read.log.gz"], "literalReadRanges": [[1, 366]], "literalReadLines": 366, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
     {"path": "Cargo.toml", "lines": 69, "sha256": "0285c464946ae9918a2a8651b43b048fb8f1a7af08a88c522a642bee62e23ad1", "readLogs": ["rust-base-configs-read.log.gz"], "literalReadRanges": [[1, 69]], "literalReadLines": 69, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
     {"path": "LICENSE", "lines": 24, "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e", "readLogs": ["rust-base-configs-read.log.gz"], "literalReadRanges": [[1, 24]], "literalReadLines": 24, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
+    {"path": "README.md", "lines": 431, "sha256": "ff3883aea6826e111f6b9eed63c2f49b36b7194f2535ba391e4d4a14faaaded9", "readLogs": ["rust-template-guidance-read.log.gz"], "literalReadRanges": [[1, 431]], "literalReadLines": 431, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
     {"path": "examples/basic_usage.rs", "lines": 7, "sha256": "a37e1bbec3849e07749db32eae7869c3e8fee26d152f3104a5ac89945bebde62", "readLogs": ["rust-base-configs-read.log.gz"], "literalReadRanges": [[1, 7]], "literalReadLines": 7, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
     {"path": "experiments/issue-192-release-io-regressions.py", "lines": 145, "sha256": "0b2a9dc2bf5982adc7e725b69bc00886892ecb824f37e727f75933ad46596f1d", "readLogs": ["rust-regression-io-read.log.gz"], "literalReadRanges": [[1, 145]], "literalReadLines": 145, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
+    {"path": "experiments/issue-215-regressions.py", "lines": 221, "sha256": "df81a541eb7bbddc3fc4ef1a30e513dd51b06b9338111cfd6c2d151c99068ea9", "readLogs": ["rust-regression-release-read.log.gz"], "literalReadRanges": [[1, 221]], "literalReadLines": 221, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
+    {"path": "experiments/issue-218-registry-regressions.py", "lines": 182, "sha256": "6e9ad7129ede42e323a6b1d1d61a22d590268c7261e763b6ebaf117872434f9c", "readLogs": ["rust-regression-registry-read.log.gz"], "literalReadRanges": [[1, 182]], "literalReadLines": 182, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
+    {"path": "experiments/issue-228-git-regressions.py", "lines": 121, "sha256": "b4f5c8d57bfb150cf59e7206b4b667b884e176a16ca05f39e8fa6d4d743a1583", "readLogs": ["rust-release-transaction-replays-read.log.gz"], "literalReadRanges": [[1, 121]], "literalReadLines": 121, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
+    {"path": "experiments/issue-230-concurrency.py", "lines": 66, "sha256": "d7b98f4ebccd8514dcda57318424694d32ead4c6b3a72accc41bc023a0ff5f84", "readLogs": ["rust-release-transaction-replays-read.log.gz"], "literalReadRanges": [[1, 66]], "literalReadLines": 66, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
+    {"path": "experiments/issue-231-release-sync.py", "lines": 287, "sha256": "a87f1ebb039510dcce3a4a0d58a7aa0a32f06fca069b2a0c1cf7fc295943bce3", "readLogs": ["rust-release-transaction-replays-read.log.gz"], "literalReadRanges": [[1, 287]], "literalReadLines": 287, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
     {"path": "lychee.toml", "lines": 5, "sha256": "c9b31a6581d85f4c28353d07cc90309bff98bd46bae11a814746e62945805ccd", "readLogs": ["rust-base-configs-read.log.gz"], "literalReadRanges": [[1, 5]], "literalReadLines": 5, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
     {"path": "requirements-dev.in", "lines": 9, "sha256": "cc4603a2f97e5d63f68fbbcef593737d3989d4075687add61f03ef71eac1ed61", "readLogs": ["rust-base-configs-read.log.gz"], "literalReadRanges": [[1, 9]], "literalReadLines": 9, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
     {"path": "rust-toolchain.toml", "lines": 4, "sha256": "d4580150cd6aec323fffc3d1b193cbbf262855081a3e1fb330c18b7ba8a98dff", "readLogs": ["rust-base-configs-read.log.gz"], "literalReadRanges": [[1, 4]], "literalReadLines": 4, "literalSourceFullyRead": true, "formalAiPracticeImplementationVerified": false},
@@ -671,6 +678,37 @@
       "assessment": "Read all 145 lines of the pinned upstream release I/O regression. It compiles and probes seven real release CLIs against invalid Actions output, directory and fragment fixtures. Shared output behavior is covered on the published head; newly drafted collector and bump-selection filesystem replays still require hosted execution. Full CLI equivalence and all applicable practice verification remain pending.",
       "status": "literal-source-read-comparison-and-hosted-verification-pending",
       "verification": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json"
+    },
+    {
+      "practice": "Release registry uncertainty and runtime workflow replay",
+      "templateFiles": [
+        "experiments/issue-218-registry-regressions.py",
+        "experiments/issue-215-regressions.py"
+      ],
+      "assessment": "Read the entire pinned registry and release-regression experiments. The actual two-CLI registry fixture and shared helper are now adapted locally with a locked hosted harness; real HTTP and release execution remain pending CI. The remaining release-workflow and dependency-retry comparisons are unfinished. No full template/practice completion or independent authorship credit.",
+      "status": "literal-source-read-local-registry-draft-hosted-verification-pending",
+      "verification": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json"
+    },
+    {
+      "practice": "Complete Git evidence, cancellation qualification and release-source synchronization",
+      "templateFiles": [
+        "experiments/issue-228-git-regressions.py",
+        "experiments/issue-230-concurrency.py",
+        "experiments/issue-231-release-sync.py"
+      ],
+      "assessment": "Read all 474 pinned regression lines. Compare missing/corrupt Git evidence separately from successful empty changes; cancellation is excused only with supersession evidence and never for writers; release sync preserves the original validated source across initial refresh and repeated push races. Formal AI actual counterparts and physical acceptance remain under investigation. No practice completion or independent credit.",
+      "status": "literal-source-read-counterpart-investigation-pending",
+      "verification": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json"
+    },
+    {
+      "practice": "Developer and adoption documentation: script test closure, whole-checkout release custody, bounded steps, network retry and publishing trust",
+      "templateFiles": [
+        "CONTRIBUTING.md",
+        "README.md"
+      ],
+      "assessment": "All 797 lines read. Explicit script-only test harnesses and dirty-checkout refusal require counterpart verification. Budget wrappers, Cargo network hardening, lock currency and source-qualified registry behavior have existing counterparts; documentation proves no runtime or hosted publication. OIDC fallback, manual release PR identity and Pages configuration remain distinct acceptance questions.",
+      "status": "literal-source-read-counterpart-investigation-pending",
+      "verification": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
@@ -685,6 +723,14 @@
       "scope": "Desktop checksum command includes its own incomplete output and stale fragments",
       "url": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/251",
       "evidenceCommit": "c550990ec6f79948fc5795346d3b2f47313c5c5c",
+      "upstreamRepairVerified": false
+    },
+    {
+      "scope": "Manual fragment creation truncates existing same-second fragments and follows pre-existing symlinks",
+      "url": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/254",
+      "evidenceCommit": "14ef1b5f8dc590733283b0e4cb0cd75e47ba89d2",
+      "templateCliExecuted": false,
+      "formalAiPhysicalRegressionsPassed": true,
       "upstreamRepairVerified": false
     }
   ]

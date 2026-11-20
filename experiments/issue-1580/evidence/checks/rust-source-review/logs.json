@@ -343,5 +343,25 @@
     "file": "rust-regression-io-read.log.gz",
     "rawSha256": "cf8ffdd3523021434fe12507dca58975c1c2e2ad0f77342f540e714e75bba4b6",
     "archiveSha256": "cbd411ead8186ccddaf51494be625f9cc2a7f69dc356bc23a83979b1e9de993b"
+  },
+  {
+    "file": "rust-regression-registry-read.log.gz",
+    "rawSha256": "d260f6ece0930cd77a8b3a332ca51214d9b7cac29080d59c2cb2a8f11c4ca1e5",
+    "archiveSha256": "e9ef1ec95d21ea0b729d34d3372b9ad25dbeab6ba25aa2e10ed44e2a3bd05ded"
+  },
+  {
+    "file": "rust-regression-release-read.log.gz",
+    "rawSha256": "c00a7c7610e7e73237eede5e605e74f5ffb3f0bd344b49f743e755553d251a34",
+    "archiveSha256": "43abeb84c9087dbd576bb0667d7f3127a0836e8bf3cca99db5b7efeba0a677f9"
+  },
+  {
+    "file": "rust-release-transaction-replays-read.log.gz",
+    "rawSha256": "a2cca61691fb0f241a696c372e83eb82ce77976edbe4d2f41304e6ab06b6b5a0",
+    "archiveSha256": "ef664d039bf46839839687843520ec3cf4a8f415092b239e9844f845409df602"
+  },
+  {
+    "file": "rust-template-guidance-read.log.gz",
+    "rawSha256": "659eec107fd651083fdc17d281609a73ef9e0b1738ab886b13526902c973abf4",
+    "archiveSha256": "5ef1a51c86fc85325beb8756492269f1129e7402823f5ce0ac40c7576b00d0c1"
   }
 ]

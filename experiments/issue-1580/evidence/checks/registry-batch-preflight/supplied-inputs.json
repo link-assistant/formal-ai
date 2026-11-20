@@ -1,0 +1,86 @@
+{
+  "files": [
+    {
+      "file": "resume-1580-status.py",
+      "bytes": 767,
+      "sha256": "6914c5935ae7f501498e624fa9e959c48d260b62004f720b59b73a95e87fc485"
+    },
+    {
+      "file": "read-next-review-context.py",
+      "bytes": 1377,
+      "sha256": "dc5afa392d3640e266d89e1f2cde5e3571b4e6f10d348b999e9eaf2c7db3b0f1"
+    },
+    {
+      "file": "attempt-ci-freshness-reasoning.py",
+      "bytes": 2440,
+      "sha256": "8007d44fe7166ef966f2056a8c52e1d1df4243a5e724f5b9593aaf4b47b38c8e"
+    },
+    {
+      "file": "registry-cli-fixture-review.py",
+      "bytes": 454,
+      "sha256": "64009170450dd59438ec2bc47b3d89caa4cab5d6569420fff29b672c51a23e7c"
+    },
+    {
+      "file": "read-independent-ci-freshness-result.py",
+      "bytes": 313,
+      "sha256": "92c255566a39f769c48d06b431bce7e8a01a5e5d8cdce67f00782ee504c746a9"
+    },
+    {
+      "file": "review-green-14ef-ci.py",
+      "bytes": 2409,
+      "sha256": "54a051f35bf35dc8d8131a7c6c145343a763ad601d72494594e1177d56c895b7"
+    },
+    {
+      "file": "collect-full-green-14ef-logs.py",
+      "bytes": 2925,
+      "sha256": "b65de171d7dc5b9e67b0cbdf7aea7234bacdc9f215c18353df78c6e1bc5ef219"
+    },
+    {
+      "file": "read-rust-template-guidance.py",
+      "bytes": 348,
+      "sha256": "5a3803dbe09f37ddbff8ee1534b1a6f4e48fe58e6cb14bb12da72aa5c511090f"
+    },
+    {
+      "file": "summarize-green-diagnostics.py",
+      "bytes": 1884,
+      "sha256": "0bf06d774208d3279d9c2120448e85dd461cedeac8e1b7477ae892972478f9ab"
+    },
+    {
+      "file": "document-registry-round.py",
+      "bytes": 10465,
+      "sha256": "6f3f549a0c22034a5754602d24117bc1ff2aede016f582bacb913c56754f3e04"
+    },
+    {
+      "file": "prepare-registry-publication.py",
+      "bytes": 4895,
+      "sha256": "b530ca24a3e347cb745d7c968c3f1a0d7bc42217681d09ea63ead629c202fbf1"
+    },
+    {
+      "file": "repair-registry-candidate-fixture.py",
+      "bytes": 2617,
+      "sha256": "cb9fe672a3f68d6e11f2e09e2c8a51764334ed61158edda86cf6cc8f12452ddd"
+    },
+    {
+      "file": "verify-registry-candidate-fixture.py",
+      "bytes": 2826,
+      "sha256": "64f739863ff8408d3104e9c6d9091ed88de8fdd04310e22a6951fe6eaf7b365a"
+    },
+    {
+      "file": "check-registry-fixture-final.py",
+      "bytes": 2430,
+      "sha256": "7bfb8b587b4221421a55e14ea290b9dc0d9a2106a5fa895203d370c845cd7faa"
+    },
+    {
+      "file": "report-template-fragment-overwrite.py",
+      "bytes": 4388,
+      "sha256": "0346f2b700213c1f2ea98088d470a60ca0eab878779d45a0175074894d0f771a"
+    },
+    {
+      "file": "registry-batch-pr-body.md",
+      "bytes": 10596,
+      "sha256": "4931a2c14e0864c6a0b9ea9e83026d728ed086622b8ab321c84ed585b6eafa99"
+    }
+  ],
+  "archiveSha256": "bf9b122d30382f69ff05272eb196b7d39a86bfbf4cb7955f6fe0f3d3eb7c9f6a",
+  "autonomousAuthorshipCredit": 0
+}
