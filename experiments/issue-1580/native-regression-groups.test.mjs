@@ -159,6 +159,12 @@ test('the native lane admits changes to the complete Hive planner input closure'
   }
 });
 
+test('the native lane replays exclusive fragment creation when either production input changes', () => {
+  for (const path of ['scripts/changelog-fragment-file.rs', 'scripts/create-changelog-fragment.rs']) {
+    assert.equal(admission([path])['native-type-check'], true, path);
+  }
+});
+
 test('the real JavaScript sparse checkout retains only the Hive weight evidence it consumes', {timeout: 15000}, () => {
   const workflow = YAML.parse(readFileSync('.github/workflows/layered-ci.yml', 'utf8'));
   const checkouts = Object.values(workflow.jobs).flatMap(job => job.steps ?? [])

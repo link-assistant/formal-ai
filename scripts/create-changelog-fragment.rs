@@ -15,11 +15,14 @@
 //! regex = "1"
 //! ```
 
+use chrono::Utc;
 use std::env;
 use std::fs;
 use std::path::Path;
 use std::process::exit;
-use chrono::Utc;
+
+#[path = "changelog-fragment-file.rs"]
+mod changelog_fragment_file;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
@@ -83,7 +86,10 @@ fn main() {
 
     // Validate bump type
     if !["major", "minor", "patch"].contains(&bump_type.as_str()) {
-        eprintln!("Invalid bump type: {}. Must be major, minor, or patch.", bump_type);
+        eprintln!(
+            "Invalid bump type: {}. Must be major, minor, or patch.",
+            bump_type
+        );
         exit(1);
     }
 
@@ -112,8 +118,8 @@ fn main() {
     }
 
     // Write the fragment file
-    if let Err(e) = fs::write(&fragment_file, &fragment_content) {
-        eprintln!("Error writing fragment file: {}", e);
+    if let Err(e) = changelog_fragment_file::create(Path::new(&fragment_file), &fragment_content) {
+        eprintln!("Error creating new fragment {}: {}", fragment_file, e);
         exit(1);
     }
 

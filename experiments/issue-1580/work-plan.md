@@ -1120,3 +1120,10 @@ behavior and all wider acceptance criteria remain pending.
 - [ ] Complete the remaining 271 Rust template file dispositions and all applicable Formal AI counterpart experiments/repairs; a source read does not finish implementation or verification.
 - [ ] Keep original native-contract semantic review separate from the conservative unchanged-file ledger. The removed Claude prepared-PR scope was a real coverage gap and is now restored; other changes require individual reasoning and current hosted evidence.
 - [ ] Complete the three original budget criteria, independent Formal AI reasoning (still 0/20) and all eight template/practice comparisons.
+
+### Exclusive manual fragment creation, 2026-11-20
+
+- [x] Compare the pinned Rust template and Formal AI fragment creators: both derive second-resolution names and write through an existing path. Replace the Formal AI write boundary with exclusive creation and preserve the concrete path in failure diagnostics.
+- [x] Add focused native collision, concurrent-writer, missing-parent and symlink controls to the existing hosted workflow-contract target. These native tests remain unexecuted locally, in accordance with the repository build policy.
+- [x] Reproduce the native admission gap before adding both production inputs; run the focused planner/admission suites, Rust formatting and touched JavaScript gates with immutable logs in `evidence/checks/changelog-fragment-preservation/`.
+- [ ] Verify actual native fragment behavior in hosted CI and evaluate/report the shared Rust template defect from executed evidence. Reading source and passing JavaScript admission do not establish native behavior.

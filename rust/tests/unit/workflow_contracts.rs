@@ -6,3 +6,6 @@ pub mod ci_gates;
 pub mod workflow_fixtures;
 #[path = "ci-cd/workflow_release.rs"]
 pub mod workflow_release;
+
+#[path = "../../../scripts/changelog-fragment-file.rs"]
+pub mod changelog_fragment_file;
