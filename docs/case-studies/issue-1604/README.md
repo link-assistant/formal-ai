@@ -98,7 +98,7 @@ report usage. Timings are local observations for these inputs.
 
 | Requirement | Implementation and check | Current boundary |
 | --- | --- | --- |
-| Discover online instructions and convert them to storable substitutions | The source reader bounds HTTPS retrieval, reports rejected blocks, and carries source digests into reviewed recipe and dataset imports. The live CLI fetched the pinned link-cli README and applied its create example as an installed dataset. Tests cover denied sources, redirects, and digest changes. | Candidate URLs can come from client research or operator selection. Text conversion accepts a controlled English and generated-code fragment. |
+| Discover online instructions and convert them to storable substitutions | The source reader bounds HTTPS retrieval, reports rejected blocks, and carries source digests into reviewed recipe and dataset imports. The live CLI fetched the pinned link-cli README and applied four documented CRUD examples as installed datasets. Tests cover denied sources, redirects, and digest changes. | Candidate URLs can come from client research or operator selection. Text conversion accepts a controlled English and generated-code fragment. |
 | Dynamic and static forms with two-way proposals | The same recipe runs ordered interpretation or a persisted compiled trie. Frequency tests exercise idle review, promotion, persistence across restart, and demotion. | Compilation selects an instance artifact used by the host. Product binary recompilation is outside that path. |
 | Confirmation and server control, including admin text commands | CLI and HTTP accept commands such as `Compile recipe example/normalize` with explicit confirmation. Tests cover anonymous, member, and operator permissions. | One workspace is shared by the configured server credentials. |
 | Use and compare recipes on demand with execution evidence | Chat, structured HTTP, and CLI expose recipe execution. Each run records priority, byte offsets, halt condition, and receipts. Analysis previews priority shadowing and certifies decreasing recipes before installation. Tests compare terminal and nonterminal variants. | Comparison observes the supplied input. General algorithm understanding or equivalence does not follow from a replay. |
@@ -151,11 +151,11 @@ independent CLI query of the SQLite store returned the same result.
 [Chat transcript](raw-data/agent-run-recipe.jsonl) · [Store receipt](raw-data/recipe-receipt.json)
 
 The local dynamic meta CLI fetched the upstream README at a pinned Git commit,
-identified its untagged create query, persisted its provenance with an installed
-dataset, and applied the dataset in a fresh SQLite workspace. The receipt shows
-the resulting self-link `(1: 1 1)`.
-[Discovery candidate](raw-data/link-cli-discovery.json) ·
-[Dataset receipt](raw-data/link-cli-dataset-receipt.json) ·
+identified and installed its four untagged query examples with their provenance,
+and applied them in a fresh SQLite workspace. The stored receipts show the
+create, update, and delete events and the read with an empty event list. Run
+`node experiments/dynamic-meta/link-cli-live.mjs` to replay the experiment.
+[Discovery and dataset receipts](raw-data/link-cli-live-crud.json) ·
 [Upstream README](https://github.com/link-foundation/link-cli/blob/cc6008f06f19cf4aa81823025add2fec7dfe4ba5/README.md#substitution)
 
 For the documentation fact check, the JavaScript planner selected a client
