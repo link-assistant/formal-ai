@@ -243,5 +243,60 @@
     "file": "release-links-scripts__version-and-commit.rs.701.read.log.gz",
     "rawSha256": "922bc2fbadcfee6e434a8b14a621888c94bb131f3bfc5e131bcd686a615aaf36",
     "archiveSha256": "df826b97244ff55a8b16230b112e5805691cad200d3ec3aa1cfa1a4408b119cd"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workflow_release.rs.1.read.log.gz",
+    "rawSha256": "ae77a7f1559abfcea435edfe7bb8f363948511019153aea4703d47f02b3c1d1e",
+    "archiveSha256": "e866da5da18bc0393c9dafd145e80f8c0b1374668d3d806e158963edf7d740ee"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workflow_release.rs.251.read.log.gz",
+    "rawSha256": "1ecfcfeab0511c738252c2f17bd3c6dcbac29cd9004cd1d7f7a4473c9fca68a5",
+    "archiveSha256": "f55574cc7878174e6ca125d3d35d315f5485fce724b57dea5cc48dd5fc1d0c88"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workflow_release.rs.501.read.log.gz",
+    "rawSha256": "d5b45d8c7cfc98a6ea4c936a13835ae5fb0d53a3c1372a660bcd2c98fe1e9b45",
+    "archiveSha256": "21312f81491a5e0796147a14065dac5e2b98c9e5a2418d186100cc5325dee6f8"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workflow_release_gates.rs.1.read.log.gz",
+    "rawSha256": "98175f746c7a462f02c522e962fa797782de74a9945318c241795e0501fa984a",
+    "archiveSha256": "3e091fcec8196f0d7eeb94a30f3f64278074a32cf2fe0eaeb1adf198794ee7b3"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workflow_release_gates.rs.251.read.log.gz",
+    "rawSha256": "d81f98ad8974cf6d158bc827672589ade5a4cd1e9f4d10a7ab966cefcf77eafd",
+    "archiveSha256": "ca2afcf9e6011d11ded32a1c4c07cc157c906b803a846cbf0cf7407251930c48"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workflow_security.rs.1.read.log.gz",
+    "rawSha256": "c9067fe7d871fd7cc2af1f137c5a1159fa6e30e94d5952ba704b249b55cd52c1",
+    "archiveSha256": "8318d1eedb8a8127d9c21e21df2390df528efe3002cb572d0816af1423fb83c2"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workflow_security.rs.251.read.log.gz",
+    "rawSha256": "95034d94eabb8b4753e9f9b90b8afb1c9b99ca852557931adad00a13dd03f1b4",
+    "archiveSha256": "646ee63d0158b39bdf5860bef37d3740d66cd1d2c9e36cc23e96da4c2baf5672"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workspace_manifest_resolution.rs.1.read.log.gz",
+    "rawSha256": "a8faa8d88e1dae48ce3753e87f574a1dc101464866b0ca203815f96ec2dbcba9",
+    "archiveSha256": "b5efa07b0006938d3d3228e00c1df13513f9a690670c533d495eddc79e2328cd"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workspace_manifest_resolution.rs.251.read.log.gz",
+    "rawSha256": "c988d1fb07d87e2268d396c863096286affb4b31b9eb493962d0f9d7fe9adf39",
+    "archiveSha256": "b76170a59ffaa73ade70a072c92e41d525d02dc66565993e6bab8b4046ecf6c8"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__desktop_release_resolve.rs.1.read.log.gz",
+    "rawSha256": "071a1e0864fb3507df4fc1cbadb8922c65ccf7ae2acdd3eca5d85b89f847f1cb",
+    "archiveSha256": "cae70039f463985f85b54fb03eeefc887d3ca898f938117c08eebbde9209205c"
+  },
+  {
+    "file": "contracts-tests__unit__ci-cd__workflow_desktop_release.rs.1.read.log.gz",
+    "rawSha256": "5fdc58d67b2ce0f0ae19a0999ddb56492e5d3832bbb6f85699946c4591fb202e",
+    "archiveSha256": "3b896caaf7d0cda6902d39a91c7a7bcca9ba11d627fc2fa517c6141d7bf03581"
   }
 ]

@@ -1135,3 +1135,9 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Add native cases for creation, append preservation, absent/empty/directory paths, post-open write errors and a subprocess that must exit before success output. Add the shared source and all six callers to native admission.
 - [x] Verify the admission regression fails before its closure repair and passes afterward: 30/30 focused planner tests, 88/88 maintained admission tests, rustfmt, six applicable JavaScript gates and deployed release-source verification pass. Exact commands, hashes and compressed logs are retained in evidence/checks/fallible-release-output. Externally supplied drafting receives no independent authorship or reasoning credit.
 - [ ] Execute the new native behavioral regressions on hosted CI; local Rust execution remains prohibited. This practice is implemented but not yet behaviorally verified.
+
+### Complete six further Rust template contract reads, 2026-11-20
+
+- [x] Read all 1,901 lines across release, release-gate, security, workspace-manifest, desktop-tag and desktop-workflow contract files. Verify exact numbered page contents and source hashes; retain compressed page logs. Literal Rust source coverage is now 108/373 files / 19,247 lines.
+- [ ] Compare applicable counterparts and execute meaningful regressions; source-read test assertions are not evidence that Formal AI behavior passes. Preserve stronger parsed workflow and artifact ownership rules.
+- [ ] Investigate table-aware release package identity before adopting the template resolution practice. Complete the remaining 265 Rust file dispositions and all other template practices.

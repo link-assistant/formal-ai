@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T03:39:39.371822+00:00",
+  "observedAt": "2026-11-20T04:00:12.599086+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 102,
-  "fullyReadSourceLines": 17346,
+  "fullyReadFiles": 108,
+  "fullyReadSourceLines": 19247,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -109,6 +109,12 @@
     {"path": "src/sum.rs","lines": 4,"sha256": "7aff3471cf0f9f83cb40faabd49a34fa59e035b15e59fdd3abf00818b8db36ff","readLogs": ["rust-base-configs-read.log.gz"],"literalReadRanges": [[1,4]],"literalReadLines": 4,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
     {"path": "tests/integration/mod.rs","lines": 1,"sha256": "f86ac9492b3db4727e7852e8d1704da1fb63004dac02d27f8e69c32ca0132411","readLogs": ["rust-base-configs-read.log.gz"],"literalReadRanges": [[1,1]],"literalReadLines": 1,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
     {"path": "tests/integration/sum.rs","lines": 36,"sha256": "ad26eb6f77d5a5a3dec91ff03dc15f549d8a54393f4422037ee22cf71d11fb0e","readLogs": ["rust-base-configs-read.log.gz"],"literalReadRanges": [[1,36]],"literalReadLines": 36,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
+    {"path": "tests/unit/ci-cd/desktop_release_resolve.rs","lines": 74,"sha256": "43bc7138e1927324e01809aea3e6645dda65dc9c8a0f0ccbc246777dcb9f84c8","literalReadRanges": [[1,74]],"literalReadLines": 74,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__desktop_release_resolve.rs.1.read.log.gz"]},
+    {"path": "tests/unit/ci-cd/workflow_desktop_release.rs","lines": 89,"sha256": "f6b9d913bd349f1c0d2b4cc92e82bf18a83cf44bf9d3fa24d83f9f2169e1771a","literalReadRanges": [[1,89]],"literalReadLines": 89,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__workflow_desktop_release.rs.1.read.log.gz"]},
+    {"path": "tests/unit/ci-cd/workflow_release.rs","lines": 740,"sha256": "2f3269db3435436d4793510773e6f1be61542263cb896ce422dbd16dcc69590c","literalReadRanges": [[1,740]],"literalReadLines": 740,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__workflow_release.rs.1.read.log.gz","contracts-tests__unit__ci-cd__workflow_release.rs.251.read.log.gz","contracts-tests__unit__ci-cd__workflow_release.rs.501.read.log.gz"]},
+    {"path": "tests/unit/ci-cd/workflow_release_gates.rs","lines": 344,"sha256": "e95238798469710f9998ae9d08db19dc4f644546dc7efb37e9c4be61224a7002","literalReadRanges": [[1,344]],"literalReadLines": 344,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__workflow_release_gates.rs.1.read.log.gz","contracts-tests__unit__ci-cd__workflow_release_gates.rs.251.read.log.gz"]},
+    {"path": "tests/unit/ci-cd/workflow_security.rs","lines": 349,"sha256": "5617ef3612c3ab52e3eebaf9e6eacf51b98b25ce4e4762ea0b6962103a94d772","literalReadRanges": [[1,349]],"literalReadLines": 349,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__workflow_security.rs.1.read.log.gz","contracts-tests__unit__ci-cd__workflow_security.rs.251.read.log.gz"]},
+    {"path": "tests/unit/ci-cd/workspace_manifest_resolution.rs","lines": 305,"sha256": "d499eeeeb26841d827617b1e1f9cc8340a746f196b48a54cb025c72adf21a456","literalReadRanges": [[1,305]],"literalReadLines": 305,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false,"readLogs": ["contracts-tests__unit__ci-cd__workspace_manifest_resolution.rs.1.read.log.gz","contracts-tests__unit__ci-cd__workspace_manifest_resolution.rs.251.read.log.gz"]},
     {"path": "tests/unit/mod.rs","lines": 4,"sha256": "12d83b8ce19cf1c94bf337fcbbc673f8ae9f97a2fc755732ff61c3ab1f8d5457","readLogs": ["rust-base-configs-read.log.gz"],"literalReadRanges": [[1,4]],"literalReadLines": 4,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false},
     {"path": "tests/unit/sum.rs","lines": 26,"sha256": "b7a34152d2e2bd937ec20787717a605cd342f964cb31570e2ef355764718b837","readLogs": ["rust-base-configs-read.log.gz"],"literalReadRanges": [[1,26]],"literalReadLines": 26,"literalSourceFullyRead": true,"formalAiPracticeImplementationVerified": false}
   ],
@@ -532,6 +538,62 @@
         "rust/tests/unit/workflow_contracts.rs"
       ],
       "verification": "experiments/issue-1580/evidence/checks/fallible-release-output/verification.json"
+    },
+    {
+      "practice": "Release and terminal gate policy contracts",
+      "templateEvidence": [
+        "tests/unit/ci-cd/workflow_release.rs",
+        "tests/unit/ci-cd/workflow_release_gates.rs"
+      ],
+      "assessment": "Contracts cover exact published-version smoke tests, committed lock ownership, per-job cache scope, independent Pages deployment, bounded job clocks, crate size, registry visibility and terminal observation of failed/skipped/cancelled jobs. These tests parse text/indentation and cannot replace Formal AI parsed YAML/source-qualified policy. Docker PR builds are inapplicable under the repository policy. Compare executable expressions directly; do not inherit contradictory comments about cancellation.",
+      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "formalAiPaths": [
+        ".github/workflows/release-staged.yml",
+        "rust/tests/web/default-branch-build-policy.test.mjs",
+        "scripts/ci-pull-request-admission.mjs"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Security and link-recovery workflow contracts",
+      "templateEvidence": [
+        "tests/unit/ci-cd/workflow_security.rs"
+      ],
+      "assessment": "Untrusted event inputs travel through environment variables; writer queue scope, CodeQL modes, dependency review, audit severity, committed locks and fresh diff scans are explicit. Link checks keep runtime/configuration failures distinct from recoverable transport failures, and archive guidance does not certify the live URL. Formal AI equivalents and execution remain to be compared.",
+      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "formalAiPaths": [
+        ".github/workflows/security.yml",
+        ".github/workflows/links.yml",
+        "scripts/recheck-broken-links.mjs"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Cargo package identity and workspace resolution",
+      "templateEvidence": [
+        "tests/unit/ci-cd/workspace_manifest_resolution.rs"
+      ],
+      "assessment": "Behavioral fixtures resolve only the intended package table or explicit root and reject inherited/misplaced/foreign versions. Formal AI release package lookup currently uses whole-file regexes and requires a source-grounded regression before any repair. Template fixture coverage does not establish Formal AI behavior.",
+      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "formalAiPaths": [
+        "scripts/version-and-commit.rs",
+        "scripts/get-version.rs"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Desktop tag resolution and artifact verification contracts",
+      "templateEvidence": [
+        "tests/unit/ci-cd/desktop_release_resolve.rs",
+        "tests/unit/ci-cd/workflow_desktop_release.rs"
+      ],
+      "assessment": "Read tests for mocked release-tag selection, opt-in six-target builds, pinned download adapters, strict deprecation errors, checksums, nonempty artifacts and attestations. Formal AI already has source/artifact-qualified checks; preserve stronger ownership guarantees rather than copying name-only substring guards. Live API and actual artifact execution remain separate evidence.",
+      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "formalAiPaths": [
+        ".github/workflows/desktop-release.yml",
+        "scripts/resolve-desktop-release.mjs"
+      ],
+      "verification": null
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
