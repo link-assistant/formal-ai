@@ -41,3 +41,8 @@ mod get_bump_type;
 #[allow(dead_code, clippy::duplicate_mod)]
 #[path = "../../../scripts/version-changelog.rs"]
 mod version_changelog;
+
+// Exercise the native detector even when PR admission uses its JavaScript twin.
+#[allow(dead_code)]
+#[path = "../../../scripts/detect-code-changes.rs"]
+pub mod detect_code_changes;
