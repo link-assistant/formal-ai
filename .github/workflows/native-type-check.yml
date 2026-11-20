@@ -298,5 +298,5 @@ jobs:
           restore-only: 'true'
       - name: Verify real release registry requests and CLI decisions
         run: |
-          cargo test --manifest-path experiments/issue-1580/release-registry/Cargo.toml --locked --lib -- --test-threads=1 --nocapture
+          cargo test --manifest-path experiments/issue-1580/release-registry/Cargo.toml --locked --lib --test assemble_requirements --test normalize_ordered_lists --test self_hosting_metric -- --test-threads=1 --nocapture
           python3 experiments/issue-1580/release-registry/cli_regressions.py

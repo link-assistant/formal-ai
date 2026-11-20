@@ -92,7 +92,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.deepEqual(registry.permissions, {contents: 'read'});
   assert.equal(registry.outputs, undefined);
   assert.deepEqual(registry.steps.map(step => step.run).filter(Boolean), [
-    'cargo test --manifest-path experiments/issue-1580/release-registry/Cargo.toml --locked --lib -- --test-threads=1 --nocapture\n' +
+    'cargo test --manifest-path experiments/issue-1580/release-registry/Cargo.toml --locked --lib --test assemble_requirements --test normalize_ordered_lists --test self_hosting_metric -- --test-threads=1 --nocapture\n' +
     'python3 experiments/issue-1580/release-registry/cli_regressions.py\n']);
   assert(!registry.steps.some(step => /upload-artifact|cache\/save|attest/u.test(step.uses ?? '')));
   const runs = check.steps.map(step => step.run).filter(Boolean);

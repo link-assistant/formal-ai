@@ -293,3 +293,35 @@ test('registry uncertainty is exercised by real release CLIs in hosted native CI
     assert.doesNotMatch(source, /Err\(_\) => (?:false|None)/u);
   }
 });
+
+
+test('the lightweight script job executes the original split Rust suites and admits their complete source closure', () => {
+  const manifest = readFileSync('experiments/issue-1580/release-registry/Cargo.toml', 'utf8');
+  const targets = [...manifest.matchAll(/^\[\[test\]\]\s*\nname = "([^"]+)"\s*\npath = "([^"]+)"/gmu)]
+    .map(([,name,path]) => ({name,path}));
+  assert.deepEqual(targets, [
+    {name: 'assemble_requirements', path: '../../../scripts/assemble-requirements.rs'},
+    {name: 'normalize_ordered_lists', path: '../../../scripts/normalize-ordered-lists.rs'},
+    {name: 'self_hosting_metric', path: '../../../scripts/self-hosting-metric.rs'},
+  ]);
+  const job = YAML.parse(readFileSync('.github/workflows/native-type-check.yml', 'utf8')).jobs['release-registry'];
+  const commands = job.steps.map(step => step.run ?? '').join('\n');
+  assert.match(commands, /cargo test .* --locked --lib --test assemble_requirements --test normalize_ordered_lists --test self_hosting_metric -- --test-threads=1 --nocapture/u);
+  assert.match(commands, /python3 experiments\/issue-1580\/release-registry\/cli_regressions[.]py/u);
+  const closure = [
+    'scripts/assemble-requirements.rs', 'scripts/assemble-requirements-tests.rs',
+    'scripts/normalize-ordered-lists.rs', 'scripts/normalize-ordered-lists-tests.rs',
+    'scripts/lib/registered-module-paths.rs', 'scripts/self-hosting-metric.rs',
+    'scripts/self-hosting-metric-cli.rs', 'scripts/self-hosting-ledger.rs',
+    'scripts/self-hosting-ledger-rows.rs', 'scripts/self-hosting-retraction.rs',
+    'scripts/self-hosting-attribution.rs', 'scripts/self-hosting-replay.rs',
+    'scripts/self-development-loop.rs',
+  ];
+  for (const file of closure) {
+    assert(existsSync(file), file);
+    assert.equal(admission([file])['native-type-check'], true, file);
+  }
+  for (const [file,count] of [['scripts/assemble-requirements-tests.rs',22], ['scripts/normalize-ordered-lists-tests.rs',17]]) {
+    assert.equal([...readFileSync(file, 'utf8').matchAll(/^#\[test\]/gmu)].length,count,file);
+  }
+});

@@ -23,6 +23,19 @@ const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 't
 // The focused native lane also executes isolated integration targets and an
 // HTTP replay. Changes to their sources or consumed fixtures must run that lane.
 const NATIVE_REGRESSION_INPUTS = new Set([
+  'scripts/assemble-requirements.rs',
+  'scripts/assemble-requirements-tests.rs',
+  'scripts/normalize-ordered-lists.rs',
+  'scripts/normalize-ordered-lists-tests.rs',
+  'scripts/lib/registered-module-paths.rs',
+  'scripts/self-hosting-metric.rs',
+  'scripts/self-hosting-metric-cli.rs',
+  'scripts/self-hosting-ledger.rs',
+  'scripts/self-hosting-ledger-rows.rs',
+  'scripts/self-hosting-retraction.rs',
+  'scripts/self-hosting-attribution.rs',
+  'scripts/self-hosting-replay.rs',
+  'scripts/self-development-loop.rs',
   'scripts/detect-code-changes.rs',
   'scripts/cargo-package.rs',
   'scripts/rust-paths.rs',

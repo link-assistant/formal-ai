@@ -17,6 +17,23 @@ name = "version-and-commit"
 path = "../../../scripts/version-and-commit.rs"
 test = false
 
+# Compile the exact standalone sources and their split test modules. This
+# isolated manifest avoids another build of the application and its grammars.
+[[test]]
+name = "assemble_requirements"
+path = "../../../scripts/assemble-requirements.rs"
+
+[[test]]
+name = "normalize_ordered_lists"
+path = "../../../scripts/normalize-ordered-lists.rs"
+
+[[test]]
+name = "self_hosting_metric"
+path = "../../../scripts/self-hosting-metric.rs"
+
+[dev-dependencies]
+syn = { version = "2", features = ["full"] }
+
 [dependencies]
 chrono = "0.4"
 regex = "1"
