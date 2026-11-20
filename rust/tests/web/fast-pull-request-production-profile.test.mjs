@@ -481,3 +481,40 @@ test('complete Coding Ladder is explicit main-only with mandatory default consis
   assert(read('.github/workflows/release.yml').includes('rust-script scripts/run-ci-gates.rs --stage rust'),'ordinary main lint retains the mandatory consistency gate');
   for(const [file,expected] of Object.entries({"experiments/issue_847_coding_ladder/run_coding_ladder.sh":"64f9fa51b7809b7ce6bde6ecb789e84324a5911fd2cf37130eae276e47feebd4","experiments/issue_847_coding_ladder/prompts.json":"d06dc4bd0d1eb17133f407be92a1b6f0ca2323a91e31047261240c734b2f3f0d","experiments/issue_847_coding_ladder/results.json":"450255f7d1d97083f365d66a92b3d5e9a96a10425de456ea0baf066ee0598230","data/meta/ladder-ratchet.lino":"58bc9c284d95115011c187c2f1bacba316a8fee026b4cfe0ef3f46c5981e6c4d","scripts/check-coding-ladder.rs":"42765a4a1ca3f8c2c69dbca408b4a255670f67f305a7b179009b8e52651f67f6","data/meta/ci-gates/coding-ladder.lino":"e76930c5c87a4ffaa9475118ae089bbae13850310f338af5c18b335a6feaa04d"}))assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),expected,'retained original benchmark/ratchet '+file);
 });
+
+
+test('measured fast JavaScript plans retain every suite within four unchanged execution budgets', async () => {
+  const job = workflow('layered-ci.yml').jobs.js;
+  const plan = job.steps.find(step => step.id === 'javascript-plan');
+  const execute = job.steps.find(step => step.name === 'Run this shard of the JavaScript suites');
+  for (const [event, ref, count] of [
+    ['pull_request', 'refs/pull/1581/merge', 4],
+    ['workflow_dispatch', 'refs/heads/feature', 4],
+    ['push', 'refs/heads/main', 8],
+    ['workflow_dispatch', 'refs/heads/main', 8],
+  ]) {
+    const values = {...context(event, ref), fromJSON: JSON.parse};
+    const shards = Array.from(evaluate(job.strategy.matrix.shard, values));
+    assert.deepEqual(shards, Array.from({length: count}, (_, index) => index + 1));
+    assert.equal(evaluate(plan.env.SHARDS, values), count);
+    assert.equal(evaluate(execute.env.SHARDS, values), count);
+  }
+  assert.equal(job['timeout-minutes'], 12);
+  assert.equal(job.strategy['fail-fast'], false);
+  assert.equal(execute.env.TEST_BUDGET_SECONDS, 360);
+  assert.equal(execute.env.TEST_WARN_RATIO_PERCENT, 75);
+  assert.match(execute.run, /run-ordered-javascript-tests[.]mjs --concurrency "\$\(nproc\)"/u);
+  const {readTestDurations} = await import('../../../scripts/lib/ci-speed-durations.mjs');
+  const {durationLookup, isLongestFirst, partitionProblems, planShards} =
+    await import('../../../scripts/lib/ci-speed-shards.mjs');
+  const path = 'data/meta/javascript-test-durations.lino';
+  const secondsOf = durationLookup(readTestDurations(path), Number(read(path).match(/^  default-seconds (\S+)$/mu)[1]));
+  const selected = selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
+  const {shards} = planShards(selected, 4, secondsOf);
+  assert.deepEqual(partitionProblems(selected, shards), {missing: [], repeated: [], extra: []});
+  assert(isLongestFirst(shards, secondsOf));
+  for (const shard of shards) {
+    const workers = planShards(shard, 4, secondsOf);
+    assert(Math.max(...workers.load) <= 270, 'four-core measured work must fit below the unchanged warning threshold');
+  }
+});

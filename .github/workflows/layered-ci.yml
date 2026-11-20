@@ -283,7 +283,10 @@ jobs:
     # 77s. By run 43693412224 (2026-11-15) it was 1283s of test time on four
     # cores and the single group was terminated at 361s; other PRs that day
     # took 220s and 279s with the 75% budget warning. PRs now split the
-    # selected files over two longest-first groups.
+    # selected files over two longest-first groups. Run 44679541559 exhausted
+    # group 2 with stale weights (13.7s for a measured 189.8s suite). Four
+    # groups retain the complete inventory and the original execution budgets;
+    # regenerated hosted timings keep the longest work first.
     timeout-minutes: 12
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}
@@ -291,7 +294,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: ${{ fromJSON((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && '[1,2]' || '[1,2,3,4,5,6,7,8]') }}
+        shard: ${{ fromJSON((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && '[1,2,3,4]' || '[1,2,3,4,5,6,7,8]') }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 5
@@ -405,7 +408,7 @@ jobs:
         id: javascript-plan
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 2 || 8 }}
+          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 4 || 8 }}
           FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
         run: |
           set -euo pipefail
@@ -457,7 +460,7 @@ jobs:
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 2 || 8 }}
+          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 4 || 8 }}
           FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75
