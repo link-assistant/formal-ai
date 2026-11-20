@@ -4,6 +4,7 @@ import { serverMessage } from '../messages.mjs';
 import { parseSubstitutionQuery, renderSubstitutionQuery } from '../../agentic/crate/links_substitution_query.mjs';
 
 const SOURCE_LENGTH_LIMIT = 64 * 1024;
+const DIRECT_RULE_COUNT = 4;
 const LITERAL = '"(?:[^"\\\\\u0000-\u001f]|\\\\["\\\\/bfnrt]|\\\\u[0-9a-fA-F]{4})*"';
 const SENTENCE = new RegExp(`^Replace (${LITERAL}) with (${LITERAL})( and stop)?\\.$`, 'u');
 
@@ -99,6 +100,11 @@ export function renderRecipe(language, program) {
 // highest-priority rule ending there, including endings along failure links.
 export function compileRecipe({ rules }) {
   const nodes = [{ edges: {}, failure: 0, rule: rules.length }];
+  const remaining = rules.slice(DIRECT_RULE_COUNT);
+  if (remaining.length && remaining.every(({ pattern }) => pattern.length > 0)) {
+    // A native literal search can reject wide misses before walking the trie.
+    nodes[0].prefilter = remaining.map(({ pattern }) => pattern.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')).join('|');
+  }
   for (const [index, { pattern }] of rules.entries()) {
     let at = 0;
     // Use UTF-16 code units, matching JavaScript indexOf and slice.
@@ -131,11 +137,15 @@ function transition(nodes, at, unit) {
   return nodes[at].edges[unit] ?? 0;
 }
 
-function compiledMatch(rules, nodes, input) {
+function compiledMatch(rules, nodes, prefilter, input) {
+  const directCount = Math.min(rules.length, DIRECT_RULE_COUNT);
+  const direct = interpretedMatch(rules, input, directCount);
+  if (direct || directCount === rules.length) return direct;
+  if (prefilter && !prefilter.test(input)) return null;
   let index = nodes[0].rule;
   let offset = index < rules.length ? 0 : -1;
   let at = 0;
-  for (let i = 0; i < input.length && index !== 0; i += 1) {
+  for (let i = 0; i < input.length && index !== directCount; i += 1) {
     at = transition(nodes, at, input[i]);
     const candidate = nodes[at].rule;
     if (candidate < index) {
@@ -146,8 +156,8 @@ function compiledMatch(rules, nodes, input) {
   return offset === -1 ? null : { index, offset };
 }
 
-function interpretedMatch(rules, input) {
-  for (let index = 0; index < rules.length; index += 1) {
+function interpretedMatch(rules, input, limit = rules.length) {
+  for (let index = 0; index < limit; index += 1) {
     const offset = input.indexOf(rules[index].pattern);
     if (offset !== -1) return { index, offset };
   }
@@ -161,8 +171,9 @@ export function runRecipe({ rules }, input, { maxSteps = 256, compiled } = {}) {
   }
   let output = input;
   const trace = [];
+  const prefilter = compiled?.[0].prefilter === undefined ? null : new RegExp(compiled[0].prefilter, 'u');
   for (let step = 0; step < maxSteps; step += 1) {
-    const match = compiled ? compiledMatch(rules, compiled, output) : interpretedMatch(rules, output);
+    const match = compiled ? compiledMatch(rules, compiled, prefilter, output) : interpretedMatch(rules, output);
     if (!match) return { output, trace, halt: { kind: 'no_applicable_rule' } };
     const { index, offset } = match;
     const rule = rules[index];

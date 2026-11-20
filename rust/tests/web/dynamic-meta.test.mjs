@@ -145,6 +145,20 @@ test('all supported language directions preserve rules, generated programs run, 
   for (const sample of ['', 'x', 'xxx', 'aax']) {
     assert.deepEqual(runRecipe(insert, sample, { compiled: compileRecipe(insert) }), runRecipe(insert, sample));
   }
+  const priority = readRecipe('english', [
+    'Replace "first" with "1" and stop.',
+    'Replace "second" with "2" and stop.',
+    'Replace "third" with "3" and stop.',
+    'Replace "fourth" with "4" and stop.',
+    'Replace "x[y]" with "5" and stop.',
+    'Replace "β?" with "6" and stop.',
+  ].join('\n'));
+  for (const candidate of [priority, { rules: [...priority.rules, { pattern: '', replacement: '0', terminal: true }] }]) {
+    const dispatchTable = compileRecipe(candidate);
+    for (const sample of ['x[y] first', 'β? α😀x[y] x[y]', 'x[y] β?', 'xy β', '']) {
+      assert.deepEqual(runRecipe(candidate, sample, { compiled: dispatchTable }), runRecipe(candidate, sample));
+    }
+  }
   const python = spawnSync('python3', ['-c', `${renderRecipe('python', program)}\nprint(rewrite(${JSON.stringify(input)}))`], { encoding: 'utf8' });
   assert.equal(python.status, 0, python.stderr);
   assert.equal(python.stdout.trimEnd(), interpreted.output);
