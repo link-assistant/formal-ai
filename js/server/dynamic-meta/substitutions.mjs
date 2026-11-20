@@ -69,9 +69,9 @@ function applyQuery(context, document, consume, reserve) {
       consume();
       if (base.count() >= LINK_LIMIT) throw new Error(serverMessage('dynamic-meta-link-limit'));
       if (reserve) {
-        let id = reserve();
-        while (exists(base, id)) id = reserve();
-        return base.createAt(id);
+        let address = reserve();
+        while (exists(base, address)) address = reserve();
+        return base.createAt(address);
       }
       return base.create();
     },
@@ -127,7 +127,7 @@ function editConflict() {
 
 function applyCycle(context, plan, consume, eventBudget) {
   const graph = snapshot(context);
-  const occupied = new Set(graph.links.map(({ id }) => id));
+  const occupied = new Set(graph.links.map(({ id: address }) => address));
   let next = 1;
   function reserve() {
     consume();
@@ -142,14 +142,14 @@ function applyCycle(context, plan, consume, eventBudget) {
     const staged = linkContext(graph, consume);
     const allocated = new Set();
     const events = applyQuery(staged, query, consume, () => {
-      const id = reserve();
-      allocated.add(id);
-      return id;
+      const address = reserve();
+      allocated.add(address);
+      return address;
     });
     eventBudget -= events.length;
     if (eventBudget < 0) throw new Error(serverMessage('dynamic-meta-event-limit'));
     const created = events.filter(({ before }) => before === null).map(({ after }) => ({
-      id: after.id,
+      address: after.id,
       name: staged.names.getName(after.id),
       anonymous: allocated.has(after.id) ? `${after.from_id}:${after.to_id}` : null,
     }));
@@ -160,24 +160,24 @@ function applyCycle(context, plan, consume, eventBudget) {
   const events = changes.flatMap((entry) => entry.events ?? []);
   for (const entry of changes) {
     if (entry.events === undefined) continue;
-    for (const { id, name, anonymous: pair } of entry.created) {
+    for (const { address, name, anonymous: pair } of entry.created) {
       if (name !== null) {
         if (context.names.getByName(name) !== null) throw editConflict();
-        context.names.setName(id, name);
+        context.names.setName(address, name);
       } else if (pair !== null) {
         if (anonymous.has(pair)) throw editConflict();
         anonymous.add(pair);
       }
     }
     for (const { before, after } of entry.events) {
-      const { id } = before ?? after;
-      if (!sameLink(getLink(context.links, id), before)) throw editConflict();
+      const address = (before ?? after).id;
+      if (!sameLink(getLink(context.links, address), before)) throw editConflict();
       if (after === null) {
-        context.links.delete(id);
-        context.names.removeName(id);
+        context.links.delete(address);
+        context.names.removeName(address);
       } else {
-        if (before === null) context.links.createAt(id);
-        context.links.update(id, after.from_id, after.to_id);
+        if (before === null) context.links.createAt(address);
+        context.links.update(address, after.from_id, after.to_id);
       }
     }
   }
