@@ -17,3 +17,5 @@ Extract unchanged rule-surface matching, unknown-word span readers and HTML text
 Regenerate native constant witnesses after the lexeme module extraction; preserve every generated program value and algorithm.
 
 Extract unchanged repair-loop notes and text replacement ranges into private modules; preserve existing repair-note public paths.
+
+Separate unchanged controlled-language realization helpers from grammar parsing while retaining their existing public paths.
