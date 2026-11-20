@@ -1,1 +1,5 @@
-Request a bounded 4 GiB evaluator budget for the optional hosted Rust macro observation after actual 2 and 3 GiB runs retain the query-loading cache warning. Preserve its four-minute deadline, two threads, strict compiler warnings and original security report checks; warning removal requires hosted verification.
+Set the default-off hosted macro observer's Java loading heap explicitly,
+separately from its unchanged evaluator RAM budget. Preserve the original
+security suites, strict SARIF gate and bounded disk, thread and step settings.
+The preceding 4 GiB run still warned at a 1,800 MiB loading heap; the new
+allocation and warning outcome require hosted verification.

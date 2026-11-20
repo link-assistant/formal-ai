@@ -506,6 +506,7 @@ if args[0]=='version':
 elif args[:2]==['query','run']:
     assert '--threads=2' in args and '--ram=4096' in args and '--max-disk-cache=512' in args
     assert '--warnings=error' in args
+    assert '-J-Xmx3072m' in args, 'query loading needs an explicit heap inside the total evaluator budget'
     assert pathlib.Path(args[-1]).read_bytes()==(root/'query.ql').read_bytes()
     if mode=='query-failure':
         print('actual fixture query failure',file=sys.stderr)
