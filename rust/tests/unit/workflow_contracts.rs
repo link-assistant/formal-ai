@@ -12,3 +12,15 @@ pub mod changelog_fragment_file;
 
 #[path = "../../../scripts/github-output.rs"]
 pub mod github_output;
+
+#[path = "ci-cd/cargo_package_identity.rs"]
+mod cargo_package_identity;
+#[allow(clippy::duplicate_mod)]
+#[path = "../../../scripts/rust-paths.rs"]
+pub mod rust_paths;
+#[path = "ci-cd/workspace_manifest_resolution.rs"]
+mod workspace_manifest_resolution;
+
+#[allow(dead_code, clippy::duplicate_mod)]
+#[path = "../../../scripts/bump-version.rs"]
+mod bump_version;

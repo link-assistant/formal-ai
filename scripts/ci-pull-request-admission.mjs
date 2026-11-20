@@ -23,6 +23,16 @@ const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 't
 // The focused native lane also executes isolated integration targets and an
 // HTTP replay. Changes to their sources or consumed fixtures must run that lane.
 const NATIVE_REGRESSION_INPUTS = new Set([
+  'scripts/cargo-package.rs',
+  'scripts/rust-paths.rs',
+  'scripts/bump-version.rs',
+  'scripts/check-crate-package-size.rs',
+  'scripts/collect-changelog.rs',
+  'scripts/create-github-release.rs',
+  'scripts/version-and-commit-tests.rs',
+  'rust/tests/unit/ci-cd/cargo_package_identity.rs',
+  'rust/tests/unit/ci-cd/workspace_manifest_resolution.rs',
+
   'scripts/check-release-needed.rs',
   'scripts/get-bump-type.rs',
   'scripts/get-version.rs',

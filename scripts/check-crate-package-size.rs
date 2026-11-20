@@ -8,6 +8,7 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! ```
 

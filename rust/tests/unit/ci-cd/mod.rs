@@ -3,6 +3,7 @@ mod artifact_download_retry;
 mod attestation_and_coverage_audit;
 mod authoring_effects;
 mod box_language_release_legs;
+mod cargo_package_identity;
 mod changelog_parsing;
 #[path = "../../../../scripts/check-associative-terminology.rs"]
 mod check_associative_terminology;

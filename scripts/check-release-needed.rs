@@ -37,6 +37,7 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! ureq = "2"
 //! serde = { version = "1", features = ["derive"] }

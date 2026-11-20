@@ -11,6 +11,7 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! chrono = "0.4"
 //! regex = "1"
 //! ```

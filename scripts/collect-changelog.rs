@@ -16,16 +16,17 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! chrono = "0.4"
 //! ```
 
+use chrono::Utc;
+use regex::Regex;
 use std::env;
 use std::fs;
 use std::path::Path;
 use std::process::exit;
-use chrono::Utc;
-use regex::Regex;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
@@ -169,7 +170,8 @@ fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
             }
 
             if let Some(idx) = insert_index {
-                let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
+                let mut new_lines: Vec<String> =
+                    lines[..idx].iter().map(|s| s.to_string()).collect();
                 new_lines.push(new_entry.clone());
                 new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
                 // `lines()` drops the trailing newline and `join` never

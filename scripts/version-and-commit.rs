@@ -19,6 +19,7 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! chrono = "0.4"
 //! ureq = "2"
@@ -180,8 +181,9 @@ struct Version {
 
 impl Version {
     fn parse(content: &str) -> Option<Version> {
-        let re = Regex::new(r#"(?m)^version\s*=\s*"(\d+)\.(\d+)\.(\d+)(?:-([^"]+))?""#).ok()?;
-        let caps = re.captures(content)?;
+        let info = rust_paths::package_info_from_str(content).ok()?;
+        let re = Regex::new(r"^(\d+)\.(\d+)\.(\d+)(?:-(.+))?$").ok()?;
+        let caps = re.captures(&info.version)?;
         Some(Version {
             major: caps.get(1)?.as_str().parse().ok()?,
             minor: caps.get(2)?.as_str().parse().ok()?,
@@ -204,15 +206,7 @@ impl Version {
 }
 
 fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
-
-    let re = Regex::new(r#"(?m)^(version\s*=\s*")[^"]+(")"#).unwrap();
-    let new_content = re.replace(&content, format!("${{1}}{}${{2}}", new_version).as_str());
-
-    fs::write(cargo_toml_path, new_content.as_ref())
-        .map_err(|e| format!("Failed to write {}: {}", cargo_toml_path, e))?;
-
+    rust_paths::update_package_version(Path::new(cargo_toml_path), new_version)?;
     println!("Updated {} to version {}", cargo_toml_path, new_version);
     Ok(())
 }
@@ -288,16 +282,7 @@ struct CratesIoVersionEntry {
 }
 
 fn get_crate_name(cargo_toml_path: &str) -> Result<String, String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
-
-    let re = Regex::new(r#"(?m)^name\s*=\s*"([^"]+)""#).unwrap();
-
-    if let Some(caps) = re.captures(&content) {
-        Ok(caps.get(1).unwrap().as_str().to_string())
-    } else {
-        Err(format!("Could not find name in {}", cargo_toml_path))
-    }
+    rust_paths::read_package_info(Path::new(cargo_toml_path)).map(|info| info.name)
 }
 
 fn check_tag_exists(tag_prefix: &str, version: &str) -> bool {

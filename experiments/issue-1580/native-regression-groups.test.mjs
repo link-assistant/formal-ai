@@ -1,7 +1,7 @@
 // Exercise the real runner with a finite Cargo stub; no Rust build is performed.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, mkdirSync, existsSync, readFileSync, writeFileSync, rmSync} from 'node:fs';
+import {mkdtempSync, mkdirSync, existsSync, readdirSync, readFileSync, writeFileSync, rmSync} from 'node:fs';
 import {join, resolve, dirname} from 'node:path';
 import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
@@ -205,5 +205,24 @@ test('the native lane admits the shared output writer and every release caller',
     'scripts/get-bump-type.rs', 'scripts/get-version.rs', 'scripts/publish-crate.rs',
     'scripts/wait-for-crate.rs', 'scripts/version-and-commit.rs']) {
     assert.equal(admission([path])['native-type-check'], true, path);
+  }
+});
+
+
+test('the native lane admits package identity, updates and every parser consumer', () => {
+  const inputs = ['scripts/cargo-package.rs', 'scripts/rust-paths.rs',
+    'scripts/version-and-commit-tests.rs', 'scripts/create-github-release.rs',
+    'rust/tests/unit/ci-cd/cargo_package_identity.rs',
+    'rust/tests/unit/ci-cd/workspace_manifest_resolution.rs'];
+  for (const name of readdirSync('scripts').filter(name => name.endsWith('.rs'))) {
+    const path = 'scripts/' + name;
+    if (readFileSync(path, 'utf8').includes('#[path = "rust-paths.rs"]')) inputs.push(path);
+  }
+  for (const path of new Set(inputs)) {
+    assert.equal(admission([path])['native-type-check'], true, path);
+    if (path.startsWith('scripts/') && path !== 'scripts/cargo-package.rs' &&
+        !path.endsWith('-tests.rs')) {
+      assert.match(readFileSync(path, 'utf8'), /\/\/! toml_edit = "0\.25\.15"/, path);
+    }
   }
 });

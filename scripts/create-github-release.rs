@@ -11,6 +11,7 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! serde = { version = "1", features = ["derive"] }
 //! serde_json = "1"
@@ -29,6 +30,10 @@ use std::io::Write;
 use std::path::Path;
 #[cfg(not(test))]
 use std::process::{Command, Stdio, exit};
+
+#[cfg(not(test))]
+#[path = "cargo-package.rs"]
+mod cargo_package;
 
 #[path = "self-hosting-metric.rs"]
 pub mod self_hosting_metric;
@@ -66,10 +71,8 @@ fn get_cargo_toml_path(rust_root: &str) -> String {
 
 #[cfg(not(test))]
 fn get_crate_name_from_toml(cargo_toml_path: &str) -> Option<String> {
-    let content = fs::read_to_string(cargo_toml_path).ok()?;
-    let re = Regex::new(r#"(?m)^name\s*=\s*"([^"]+)""#).ok()?;
-    re.captures(&content)
-        .map(|captures| captures.get(1).unwrap().as_str().to_string())
+    let manifest = cargo_package::get_package_manifest_path(Path::new(cargo_toml_path)).ok()?;
+    cargo_package::read_package_name(&manifest).ok()
 }
 
 #[cfg(not(test))]

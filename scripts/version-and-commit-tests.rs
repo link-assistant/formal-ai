@@ -353,3 +353,23 @@ fn an_ordinary_untagged_commit_is_not_mistaken_for_a_prepared_release() {
         None
     );
 }
+
+#[test]
+fn release_version_and_write_use_the_actual_package_table() {
+    let content = "[dependencies.decoy]\nname = \"decoy\"\nversion = \"9.9.9\"\n\
+                   [package]\nname = \"actual\"\nversion = \"1.2.3-beta\"\n";
+    assert_eq!(super::Version::parse(content).unwrap().render(), "1.2.3");
+    let directory = temp_dir("actual-package");
+    let manifest = directory.join("Cargo.toml");
+    fs::write(&manifest, content).unwrap();
+    assert_eq!(
+        super::get_crate_name(manifest.to_str().unwrap()).unwrap(),
+        "actual"
+    );
+    super::update_cargo_toml(manifest.to_str().unwrap(), "1.2.4").unwrap();
+    assert_eq!(
+        fs::read_to_string(manifest).unwrap(),
+        content.replace("1.2.3-beta", "1.2.4")
+    );
+    fs::remove_dir_all(directory).unwrap();
+}
