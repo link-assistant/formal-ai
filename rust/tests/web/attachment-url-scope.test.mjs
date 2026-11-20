@@ -29,3 +29,15 @@ for(const address of ['999.999.999.999','256.0.0.1','127.0.1','127.00.0.1'])test
  assert.equal(crateHostname(address),false);
  assert.equal(await host.run('looksLikeHostname(__address)',{__address:address}),false);
 });
+
+// Keep the domain-label boundary identical in both maintained JavaScript paths.
+for (const [address, expected] of [
+ ['a.example',true], ['a-b.example',true], ['A1.B2',true], ['1.example',true],
+ ['example',false], ['.example.org',false], ['example.org.',false],
+ ['example..org',false], ['example.c',false], ['-a.example',false],
+ ['a-.example',false], ['a.-example',false], ['a.example-',false],
+ ['a_b.example',false], ['café.example',false], ['',false],
+]) test('domain-label boundary remains equivalent: '+JSON.stringify(address),async()=>{
+ assert.equal(crateHostname(address),expected);
+ assert.equal(await host.run('looksLikeHostname(__address)',{__address:address}),expected);
+});

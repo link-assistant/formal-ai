@@ -85,26 +85,18 @@ pub(super) fn looks_like_hostname(value: &str) -> bool {
     {
         return host.parse::<std::net::Ipv4Addr>().is_ok();
     }
-    if !host.contains('.') || host.starts_with('.') || host.ends_with('.') {
-        return false;
-    }
-    let labels: Vec<&str> = host.split('.').collect();
-    if labels.iter().any(|label| label.is_empty()) {
-        return false;
-    }
-    let Some(tld) = labels.last() else {
+    let Some((_, tld)) = host.rsplit_once('.') else {
         return false;
     };
-    if tld.len() < 2 {
-        return false;
-    }
-    labels.iter().all(|label| {
-        label
-            .chars()
-            .all(|character| character.is_ascii_alphanumeric() || character == '-')
-            && !label.starts_with('-')
-            && !label.ends_with('-')
-    })
+    tld.len() >= 2
+        && host.split('.').all(|label| {
+            !label.is_empty()
+                && label
+                    .chars()
+                    .all(|character| character.is_ascii_alphanumeric() || character == '-')
+                && !label.starts_with('-')
+                && !label.ends_with('-')
+        })
 }
 
 fn role_evidences_web_intent(role: &str, forms: &[&str]) -> bool {
