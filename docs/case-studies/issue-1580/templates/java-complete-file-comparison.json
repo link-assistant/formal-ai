@@ -1,0 +1,87 @@
+{
+  "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+  "pinnedHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "reviewedAt": "2026-11-20",
+  "scope": "Complete per-file source applicability comparison at the pinned Java tree. This records source comparison only; implementation, native behavior, hosted execution and current dependency safety remain separate acceptance criteria.",
+  "activeFilesCompared": 62,
+  "historicalFilesCompared": 145,
+  "completeDisjointPathUnion": 207,
+  "allPinnedBlobIdentitiesReverified": true,
+  "allComparisonPathsExist": true,
+  "allFilesCompared": true,
+  "allApplicablePracticesImplementedAndVerified": false,
+  "currentDependencySafetyVerified": false,
+  "fullUpstreamSuiteExecuted": false,
+  "mavenExecuted": false,
+  "hostedDispatchExecuted": false,
+  "livePublicationExecuted": false,
+  "evidence": [
+    {
+      "path": "java-active-semantic-review.json",
+      "sha256": "e11ce017b4cf632333ed060a256ab764a0aadcead02ac40f4b19f12c8d5dadbf"
+    },
+    {
+      "path": "java-historical-semantic-comparison.json",
+      "sha256": "d45f93a129a5662e0ef51698b90e90d4730633fdc637f55334770b0482117846"
+    },
+    {
+      "path": "java-historical-content-coverage.json",
+      "sha256": "3f600047111dd9647215168d4d8798715ff0c1e2c13d719bccc5bd3e38d3a496"
+    },
+    {
+      "path": "java-historical-comparison-integrity.json",
+      "sha256": "2ed6f3d258481682cb0dd98d0b857004e1fae28f76c5dae541aa5fbdfbb4461f"
+    },
+    {
+      "path": "java-current-upstream-review.md",
+      "sha256": "6cc102f7ccfb172cdc90f14fb25f57daa0f8045bc6f7dbbefdc6c7e0769cbe67"
+    }
+  ],
+  "historicalReviewMethods": {
+    "continuous-literal-source": 137,
+    "verified-empty-git-blob": 2,
+    "complete-json-xml-structure": 2,
+    "complete-literal-short-log": 4
+  },
+  "upstreamReports": [
+    {
+      "issue": 28,
+      "scope": "Windows Maven wrapper line endings"
+    },
+    {
+      "issue": 29,
+      "scope": "aggregate workflow status"
+    },
+    {
+      "issue": 30,
+      "scope": "failed change observation reported as successful negative output"
+    },
+    {
+      "issue": 31,
+      "scope": "release commit failure does not prevent tag publication"
+    }
+  ],
+  "unexecutedSourceQuestions": [
+    "Manual dispatch lint skip/dependency propagation.",
+    "Invalid changelog fragment consumption."
+  ],
+  "remainingLimits": [
+    "The earlier source records retain their original partial-review limits as dated evidence; this record supersedes their file-comparison counts.",
+    "Java/Maven dependency versions and captured historical successes do not establish current runtime compatibility or dependency safety.",
+    "The template release commit failure is reported upstream; reporting does not establish an upstream repair.",
+    "Formal AI size warnings, dependency migrations, original native failures, independent reasoning acceptance and the other template comparisons remain unfinished."
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "reproducedProjectVersionDefect": {
+    "fixtureCommit": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+    "evidence": "experiments/issue-1580/evidence/checks/java-project-version/validation.json",
+    "regression": "experiments/issue-1580/template-java-project-version.test.mjs",
+    "originalCases": 4,
+    "originalIncorrectPublishedPomCases": 3,
+    "candidateCasesPreserveUnrelatedBytes": 4,
+    "upstreamRepairApplied": false,
+    "mavenExecuted": false,
+    "hostedPublicationExecuted": false
+  }
+}
