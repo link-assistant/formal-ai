@@ -212,6 +212,9 @@ get a step-by-step explanation at any depth.
 
 ## 9. Transformation and Substitution Rules
 
+For stored doublet CRUD cascades, online recipe discovery, execution receipts,
+and operator-approved compilation, see [Dynamic Meta Algorithms and Plugins](dynamic-meta.md).
+
 The associative store supports five kinds of rules. They are listed in
 order from "lowest privilege" to "highest privilege":
 

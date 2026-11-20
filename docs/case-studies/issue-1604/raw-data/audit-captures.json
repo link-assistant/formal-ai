@@ -1,0 +1,24 @@
+{
+  "captures": [
+    {
+      "statement": "The default setting enables dynamic self-modification.",
+      "source_label": "Formal AI host reads an explicit true setting",
+      "source_url": "https://github.com/link-assistant/formal-ai/pull/1605",
+      "stance": "contradicts",
+      "tier": "original_first_party",
+      "strength": 1,
+      "captured_at": "2026-11-20T15:50:12.557Z",
+      "sha256": "sha256:ba5dc0cb35bcb99d2fa335e1ebfd28ed95049d17e00cf7a7dd2d854338bf1195"
+    },
+    {
+      "statement": "SQLite permits only one simultaneous write transaction.",
+      "source_label": "SQLite transaction documentation",
+      "source_url": "https://www.sqlite.org/lang_transaction.html",
+      "stance": "supports",
+      "tier": "original_first_party",
+      "strength": 1,
+      "captured_at": "2026-11-20T15:50:12.559Z",
+      "sha256": "sha256:b65dc308fd9e0ce471844c97366a4f5ad3a1f42833a3b19486ad7d6555a8e24e"
+    }
+  ]
+}

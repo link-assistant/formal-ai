@@ -75,6 +75,7 @@ Each topic file keeps the original section numbers, so references such as
     - [7.1 Project lookups and summarization](docs/architecture/problem-solver.md#71-project-lookups-and-summarization)
   - [8. Nested Reasoning Steps](docs/architecture/problem-solver.md#8-nested-reasoning-steps)
   - [9. Transformation and Substitution Rules](docs/architecture/problem-solver.md#9-transformation-and-substitution-rules)
+- [Dynamic Meta Algorithms and Plugins](docs/architecture/dynamic-meta.md)
 - [Translation Between Languages](docs/architecture/translation.md)
   - [10. Translation Between Languages](docs/architecture/translation.md#10-translation-between-languages)
     - [10.1 Formalize → Meaning → Deformalize Pipeline](docs/architecture/translation.md#101-formalize--meaning--deformalize-pipeline)
