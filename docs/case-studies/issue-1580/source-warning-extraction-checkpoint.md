@@ -197,3 +197,11 @@ the existing line-operation and agentic-core JavaScript cases, translation
 currency, formatting and source gates pass. The maintained status renderer
 updates its ledger row to 553 lines. Both failed complete runs and failed-before
 controls remain retained. A third complete replay is required before pushing.
+
+The third complete 141-entry replay has one failure: the notation ratchet counts
+the two new component identifiers with underscores. Change only those identifiers
+to the required full-word hyphenated form; all notation and debt ceilings remain
+unchanged. All seven affected notation, boundary, debt and status gates pass.
+Every other full-run entry passes or explicitly skips. These combined outcomes
+do not claim a clean full replay after the two-token correction; all failed
+rounds remain retained, and hosted validation is still required.

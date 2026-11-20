@@ -542,12 +542,12 @@ core_boundary_ledger
   source rust/src/solver_handlers/text_manipulation/replacement.rs
     disposition promote
     baseline_lines 119
-    core_component word_sequence_substitution_interpreter
+    core_component word-sequence-substitution-interpreter
     reason "Issue #1580 promotion review against docs/design/minimal-core-boundary.md: Generic byte-range and normalized-token substitution over caller operands; no request recognition, vocabulary, response prose or routing rule. The parent retains all operation selection and seed lookup."
   source rust/src/solver_handlers/web_search_intent/followup.rs
     disposition promote
     baseline_lines 115
-    core_component configured_clause_boundary_interpreter
+    core_component configured-clause-boundary-interpreter
     reason "Issue #1580 promotion review against docs/design/minimal-core-boundary.md: Generic token-boundary scanning over caller-supplied verb surfaces, continuation surfaces and punctuation predicate. Seed role selection and web-search routing stay in the parent; this child imports no marker catalogue and owns no domain vocabulary."
   note "Issue #1580 private helper moves preserve all migration debt: text_manipulation.rs 949 to 835 plus replacement.rs 119, web_search_intent.rs 910 to 804 plus followup.rs 107. The recursive census adds two files and six structural module/import/re-export lines; no disposition changes."
   note "Issue #1580 corrects its initial conservative child dispositions after the promotion test: substitution and caller-configured boundary scanning are generic primitives; their parents retain all domain recognition, seed selection and policy. The handler debt ceiling stays 47; no debt-ratchet value changes. Prior classifications and their failed checks remain in history and receipts."
