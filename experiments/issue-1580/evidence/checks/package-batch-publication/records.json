@@ -1,0 +1,271 @@
+[
+  {
+    "name": "branch",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "branch.stdout.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0"
+    },
+    "stderr": {
+      "file": "branch.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "status",
+    "argv": [
+      "git",
+      "status",
+      "--porcelain"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "status.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    "stderr": {
+      "file": "status.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "head.stdout.gz",
+      "rawSha256": "f443cc1dd4927d921a73d74b8dca1f251d81adaeb318245a5e79fb1e2a42c1ac",
+      "archiveSha256": "3c09cad5bc64b2f50bc2bf2613dc85003243c2f573b59d545f71373e16037dc6"
+    },
+    "stderr": {
+      "file": "head.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "pull-request-before",
+    "argv": [
+      "gh",
+      "pr",
+      "view",
+      "1581",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--json",
+      "headRefOid,headRefName,baseRefName,isDraft,url,title"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "pull-request-before.stdout.gz",
+      "rawSha256": "9dc1c6978dcdd1597276dbb214c97adde47db39f36494497f2279b3b2e205aee",
+      "archiveSha256": "1ef247f4dbfe719a17f8be13eec974265220acbdccb0b5777d80feea905a8400"
+    },
+    "stderr": {
+      "file": "pull-request-before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "fetch-main",
+    "argv": [
+      "git",
+      "fetch",
+      "origin",
+      "main"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "fetch-main.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    "stderr": {
+      "file": "fetch-main.stderr.gz",
+      "rawSha256": "f694fbaa5fdcdaea1514acbf57d0fe8b435415ef941c8159035a4a9a57d8aed5",
+      "archiveSha256": "b4665725e37b8fc351f63ee82bef06b90506666038876d7b4e2388b87afe3bb0"
+    }
+  },
+  {
+    "name": "main-ancestor",
+    "argv": [
+      "git",
+      "merge-base",
+      "--is-ancestor",
+      "origin/main",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "main-ancestor.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    "stderr": {
+      "file": "main-ancestor.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "runs-in_progress",
+    "argv": [
+      "gh",
+      "run",
+      "list",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--branch",
+      "issue-1580-8d61a32a61e1",
+      "--status",
+      "in_progress",
+      "--limit",
+      "100",
+      "--json",
+      "databaseId,workflowName,headSha,status"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "runs-in_progress.stdout.gz",
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    "stderr": {
+      "file": "runs-in_progress.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "runs-queued",
+    "argv": [
+      "gh",
+      "run",
+      "list",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--branch",
+      "issue-1580-8d61a32a61e1",
+      "--status",
+      "queued",
+      "--limit",
+      "100",
+      "--json",
+      "databaseId,workflowName,headSha,status"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "runs-queued.stdout.gz",
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    "stderr": {
+      "file": "runs-queued.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "push",
+    "argv": [
+      "git",
+      "push",
+      "origin",
+      "HEAD:issue-1580-8d61a32a61e1"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "push.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    "stderr": {
+      "file": "push.stderr.gz",
+      "rawSha256": "0cbdd8d5742c612e8dce70bf5fe2f4e3876204e40cc5ddd94d23a5c3ccdd2505",
+      "archiveSha256": "3b50cf85c786f948ed5eb401bf8af07f6ff82dd1db24345fc16333915de7c0ff"
+    }
+  },
+  {
+    "name": "edit-pull-request",
+    "argv": [
+      "gh",
+      "pr",
+      "edit",
+      "1581",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--title",
+      "Repair native CI admission and release package handling",
+      "--body-file",
+      "/tmp/issue-1580-research/package-batch-publication/pull-request-body.md"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "edit-pull-request.stdout.gz",
+      "rawSha256": "2a0be70d82ef5db818ead580d29299c06fc9d28a7c85355fbb36648015956b71",
+      "archiveSha256": "f31ada65defe6fa1ca11e5521ba57b5a9dfab58e4bf4d48cfc63e079e0b57b39"
+    },
+    "stderr": {
+      "file": "edit-pull-request.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "pull-request-after",
+    "argv": [
+      "gh",
+      "pr",
+      "view",
+      "1581",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--json",
+      "headRefOid,headRefName,baseRefName,isDraft,url,title,body"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "pull-request-after.stdout.gz",
+      "rawSha256": "76ec5e78ece898d4215aaaeffa267860919ec7d43bfd508d14d19168e4d72728",
+      "archiveSha256": "acf2c229a47fab5102be5392306fc6432e65e57de9219bf4c542710f22823b8f"
+    },
+    "stderr": {
+      "file": "pull-request-after.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "status-after",
+    "argv": [
+      "git",
+      "status",
+      "--porcelain"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "status-after.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    "stderr": {
+      "file": "status-after.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  }
+]

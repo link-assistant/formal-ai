@@ -1,0 +1,162 @@
+{
+  "records": [
+    {
+      "name": "before-admission-control",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=the real version release collector is shared",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "before-admission-control.log.gz",
+      "rawSha256": "32667eefd043ec97e023c64ad45fc9cf337c35520a3812ec4b4d2c19b56c9966",
+      "archiveSha256": "f3dc9592fe927d197c83afc894e7253d1b3d5e4c22596c108ba4be39e7fe0676"
+    },
+    {
+      "name": "format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "scripts/version-changelog.rs",
+        "scripts/version-and-commit.rs",
+        "scripts/version-and-commit-tests.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "rust/tests/unit/ci-cd/mod.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "scripts/version-changelog.rs",
+        "scripts/version-and-commit.rs",
+        "scripts/version-and-commit-tests.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "rust/tests/unit/ci-cd/mod.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "native-groups",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-groups.log.gz",
+      "rawSha256": "cf8aaa749135a2ceb5cad01852e1282354e8ac8e17c7f5220f5155f7d7d30611",
+      "archiveSha256": "4a06762e3d5a4574122c33e9a8d912387e1930abc4696e8dbb3d478118f4ee16"
+    },
+    {
+      "name": "default-build-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "default-build-policy.log.gz",
+      "rawSha256": "9356168359d0aa930f4538fa89ef32b90084e1d8382a44f00c20eb228dc6ac2d",
+      "archiveSha256": "9caaed4e2a41877dd5eb44a2098245959168605720785452d4d0b972c9899135"
+    },
+    {
+      "name": "documentation-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/documentation-only-ci-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "documentation-policy.log.gz",
+      "rawSha256": "562cde916042d77458156fd72dd36465a61b7476497dd1bab4098ba22888d157",
+      "archiveSha256": "028f2af1a49bb1e56ddd7002423a7b4ec40055af365d1bca32f4bf2d03a0b6af"
+    },
+    {
+      "name": "gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-changelog-fragment-js-twin,check-generated-files,check-runner-labels,check_js_rust_translation,layered-ci#1,layered-ci#2,layered-ci#3,layered-ci#4"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "gates.log.gz",
+      "rawSha256": "ddb888559b02e8877547efe8cbf92733381c4be76c7fa3d7c04e622a72aa6075",
+      "archiveSha256": "0dff537cef877998520234ccbc95199b87bf3b747dac3fec8539b0f40717d79d"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "fullIssueComplete": false,
+  "complete": true,
+  "sourceIdentities": [
+    {
+      "path": "scripts/version-changelog.rs",
+      "sha256": "8042829b37c621b287b96460c7971c9dc41eac71f019f217deeda7cc724afed4"
+    },
+    {
+      "path": "scripts/version-and-commit.rs",
+      "sha256": "5cd6e6e3d5db146b2ee98df56e4c61dea411a974a553561e2d19c0d60a125453"
+    },
+    {
+      "path": "scripts/version-and-commit-tests.rs",
+      "sha256": "0bf84ba397eea4ba680514ed5d97b930412bdc10c70670eb81cb3d5084292150"
+    },
+    {
+      "path": "rust/tests/unit/workflow_contracts.rs",
+      "sha256": "2117f93c320aa4901305c083c2d205d362ff7e483bcb1e66bb4dff4ff6cab5fe"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/mod.rs",
+      "sha256": "abc8d5f3d4fbf111ad97b8b8f7044c02b58731362aa61067bfb09f25bc5b3ff4"
+    },
+    {
+      "path": "scripts/ci-pull-request-admission.mjs",
+      "sha256": "d426d7d550c5c644f491f5dc9977be9f4518eecd3ddba5f4ae49d960ee191539"
+    },
+    {
+      "path": "experiments/issue-1580/native-regression-groups.test.mjs",
+      "sha256": "f3bc4c1630a9d19b8a351dc9cc5134bf251e42a70734a3b5c8fbb4a1b5cedec5"
+    }
+  ],
+  "verificationLimits": "The before/after JavaScript consumer control verifies that the actual shared collector source is admitted to the native target. Actual Rust filesystem regressions are retained in the focused hosted target and are not locally executed."
+}

@@ -313,5 +313,35 @@
     "file": "rust-contract-workflow-boundaries-read.log.gz",
     "rawSha256": "c318ef43536487f3a638c415248a0d8fce334b6ca9cc7007a0078d9151264812",
     "archiveSha256": "8ffba6851385bd684e581699ec9b92f3a08200ae59f7923f22238cacd52e88d9"
+  },
+  {
+    "file": "rust-additional-manifest-read.log.gz",
+    "rawSha256": "dcf0e4ab5aefc58c5b7bff5fc49b6519fb3d9c3edb4ca5b148048f03e31b23c6",
+    "archiveSha256": "e17adad50d87b1a1f2a5809632a24bfdc03765dfd8b5e1bdc02a311c2aebc5da"
+  },
+  {
+    "file": "rust-additional-timing-read.log.gz",
+    "rawSha256": "ec02978a916d212830adc523f957148682f5efb15ad51b0695c317c02941996a",
+    "archiveSha256": "3edec8a0a6d3f8ed26862225955c952ac8732b52ffb3e75830b1614991254ecb"
+  },
+  {
+    "file": "rust-additional-release-read.log.gz",
+    "rawSha256": "9f5ef0f59120b985f25b427861a0314145c0186854a7899433497dc764fcb753",
+    "archiveSha256": "949c8897f6ff5855763358ea94b47c16195d3079a6e2b4572e9cf0362032ee0a"
+  },
+  {
+    "file": "rust-additional-workflow-read.log.gz",
+    "rawSha256": "1f6e2c71d872ad0a549197e9ef3559aba4492111009e4622f06ca3071cc1a229",
+    "archiveSha256": "6b30697713b9de78da436a70e80ad1e8941de71e418b58d78ba9896606a9b18f"
+  },
+  {
+    "file": "rust-additional-status-read.log.gz",
+    "rawSha256": "c9bd293962c2487be5c6df3d24079554d53cf9d95841c2127e5449b722c9137a",
+    "archiveSha256": "6666f48794912f90e7a7b33623e77530f07ef0181d162c68a4ac000bec06bfb3"
+  },
+  {
+    "file": "rust-regression-io-read.log.gz",
+    "rawSha256": "cf8ffdd3523021434fe12507dca58975c1c2e2ad0f77342f540e714e75bba4b6",
+    "archiveSha256": "cbd411ead8186ccddaf51494be625f9cc2a7f69dc356bc23a83979b1e9de993b"
   }
 ]

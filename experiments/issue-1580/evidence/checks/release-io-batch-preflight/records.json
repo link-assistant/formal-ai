@@ -1,0 +1,307 @@
+[
+  {
+    "name": "branch",
+    "command": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "branch.stdout.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0"
+    },
+    "stderr": {
+      "file": "branch.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "head",
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "head.stdout.gz",
+      "rawSha256": "f2dc59c825172b0d955314b92b7d65045d443aec02e9c9a37d2a3eea7f6bac9d",
+      "archiveSha256": "fc9c21de13a0119b424e9e96401c69d1778cc39714ef2591d703b36ec0b157a8"
+    },
+    "stderr": {
+      "file": "head.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "issue",
+    "command": [
+      "gh",
+      "issue",
+      "view",
+      "https://github.com/link-assistant/formal-ai/issues/1580",
+      "--json",
+      "number,title,body,state,updatedAt,url"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "issue.stdout.gz",
+      "rawSha256": "ebdc16dc262b2cb1b55b6b5bd7ae978660c1695fbfc2bc84a54d57007fb35d4c",
+      "archiveSha256": "689807040083f71f3075ab78b32705b1df3d84aee561c1667781271e0297cab0"
+    },
+    "stderr": {
+      "file": "issue.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "issue-comments",
+    "command": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/issues/1580/comments",
+      "--paginate"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "issue-comments.stdout.gz",
+      "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "archiveSha256": "d996d3a37147a526df1fca7610ca1d0edf5638875e5648b8a511c0606aab8d25"
+    },
+    "stderr": {
+      "file": "issue-comments.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "pr-comments",
+    "command": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/issues/1581/comments",
+      "--paginate"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "pr-comments.stdout.gz",
+      "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
+      "archiveSha256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30"
+    },
+    "stderr": {
+      "file": "pr-comments.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "pr-review-comments",
+    "command": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/pulls/1581/comments",
+      "--paginate"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "pr-review-comments.stdout.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    "stderr": {
+      "file": "pr-review-comments.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "pr-reviews",
+    "command": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/pulls/1581/reviews",
+      "--paginate"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "pr-reviews.stdout.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    "stderr": {
+      "file": "pr-reviews.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "pr",
+    "command": [
+      "gh",
+      "pr",
+      "view",
+      "1581",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--json",
+      "number,title,body,isDraft,headRefOid,headRefName,baseRefName,mergeStateStatus,url,statusCheckRollup"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "pr.stdout.gz",
+      "rawSha256": "fb4cd489c8d8ad07d7d491705b8ae850c713831a7f94f3cab6ea62f37f376eec",
+      "archiveSha256": "12bbd7912153e337409b5c6011282973e806afe7afdd3384f828387ee4506790"
+    },
+    "stderr": {
+      "file": "pr.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "recent-runs",
+    "command": [
+      "gh",
+      "run",
+      "list",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--branch",
+      "issue-1580-8d61a32a61e1",
+      "--limit",
+      "5",
+      "--json",
+      "databaseId,conclusion,createdAt,headSha,workflowName,status"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "recent-runs.stdout.gz",
+      "rawSha256": "7782b79bcff6b923787b286b8c942459f6603ab749f5d4b82bde07ef8c00ab59",
+      "archiveSha256": "58ff91b566ddc980488a04d17e0730aca70e544cb3c2094a69de4e52197088ad"
+    },
+    "stderr": {
+      "file": "recent-runs.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "in-progress",
+    "command": [
+      "gh",
+      "run",
+      "list",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--branch",
+      "issue-1580-8d61a32a61e1",
+      "--status",
+      "in_progress",
+      "--json",
+      "databaseId,workflowName,headSha"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "in-progress.stdout.gz",
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    "stderr": {
+      "file": "in-progress.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "queued",
+    "command": [
+      "gh",
+      "run",
+      "list",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--branch",
+      "issue-1580-8d61a32a61e1",
+      "--status",
+      "queued",
+      "--json",
+      "databaseId,workflowName,headSha"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "queued.stdout.gz",
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    "stderr": {
+      "file": "queued.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "fetch-main",
+    "command": [
+      "git",
+      "fetch",
+      "origin",
+      "main"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "fetch-main.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    "stderr": {
+      "file": "fetch-main.stderr.gz",
+      "rawSha256": "f694fbaa5fdcdaea1514acbf57d0fe8b435415ef941c8159035a4a9a57d8aed5",
+      "archiveSha256": "b4665725e37b8fc351f63ee82bef06b90506666038876d7b4e2388b87afe3bb0"
+    }
+  },
+  {
+    "name": "main",
+    "command": [
+      "git",
+      "rev-parse",
+      "origin/main"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "main.stdout.gz",
+      "rawSha256": "6f674250dd7a08adf0f561f99ccbe15ca03226028532de1d6d27140c62e41282",
+      "archiveSha256": "00bc666a0f885c9c8a1fe798ed7d681137e5700f76ef157230b98467ea35c5c9"
+    },
+    "stderr": {
+      "file": "main.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  },
+  {
+    "name": "main-ancestor",
+    "command": [
+      "git",
+      "merge-base",
+      "--is-ancestor",
+      "origin/main",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "main-ancestor.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    "stderr": {
+      "file": "main-ancestor.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  }
+]
