@@ -1141,3 +1141,11 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Read all 1,901 lines across release, release-gate, security, workspace-manifest, desktop-tag and desktop-workflow contract files. Verify exact numbered page contents and source hashes; retain compressed page logs. Literal Rust source coverage is now 108/373 files / 19,247 lines.
 - [ ] Compare applicable counterparts and execute meaningful regressions; source-read test assertions are not evidence that Formal AI behavior passes. Preserve stronger parsed workflow and artifact ownership rules.
 - [ ] Investigate table-aware release package identity before adopting the template resolution practice. Complete the remaining 265 Rust file dispositions and all other template practices.
+
+### Complete current-head CI investigation and preserve PR edits, 2026-11-20
+
+- [x] Collect all 23 terminal workflows for exact head 972f2594: 22 succeed. Preserve full failed Pipeline and selected job logs with verified raw/archive hashes. Two actionable failures are the oversized evidence JSON and the native Codex PR-body assertion; Pipeline status propagates them.
+- [x] Trace the native failure to the offline harness matching `gh issue view` anywhere in tool arguments, swallowing the compound title-and-description edit. Parse the command and classify only the initial issue-read prefix. Preserve the original issue-closing assertion; add a native classifier regression and strengthen real-workspace JavaScript delivery assertions for both Codex and Claude.
+- [x] Verify all 18 maintained consumer checks, the modeled failing before-control, Rust formatting and eight relevant JavaScript gates; verify compressed/raw log hashes and current source identities. Native execution remains hosted-only.
+- [ ] Publish all actionable repairs together after the single-push gate. Native confirmation of the restored Claude contract, new classifier and release helper regressions remains pending.
+- [ ] Complete all original acceptance criteria, independent reasoning and remaining template/practice comparisons; this CI repair does not complete issue #1580.

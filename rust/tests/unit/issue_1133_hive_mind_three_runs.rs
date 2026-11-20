@@ -493,7 +493,34 @@ fn path_of(call: &PlannedToolCall) -> String {
 }
 
 fn is_work_item_read(tool: &str, arguments: &str) -> bool {
-    tool == "webfetch" || arguments.contains("gh issue view")
+    // A delivery command also reads the issue title before editing the PR.
+    // Only the initial standalone read belongs to the page-response fixture.
+    tool == "webfetch"
+        || serde_json::from_str::<serde_json::Value>(arguments)
+            .ok()
+            .and_then(|args| args["command"].as_str().map(str::to_owned))
+            .is_some_and(|command| command.starts_with("gh issue view "))
+}
+
+#[test]
+fn delivery_title_read_does_not_replace_the_pr_edit_with_a_mocked_page() {
+    let read = serde_json::json!({
+        "command": format!("gh issue view '{ISSUE}' --json title --jq .title")
+    });
+    assert!(is_work_item_read("shell", &read.to_string()));
+    assert!(is_work_item_read(
+        "webfetch",
+        r#"{"url":"https://example.invalid"}"#
+    ));
+    for command in [
+        format!(
+            "pr_title=$(gh issue view '{ISSUE}' --json title --jq .title) && gh pr edit '{PR}' --body 'Resolves {ISSUE}'"
+        ),
+        "printf '%s' 'gh issue view is documentation'".to_owned(),
+    ] {
+        let args = serde_json::json!({"command": command}).to_string();
+        assert!(!is_work_item_read("shell", &args), "{args}");
+    }
 }
 
 // ---- F1 and the 2026-09-16 Kotlin rerun ----------------------------------

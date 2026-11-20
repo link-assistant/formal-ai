@@ -155,6 +155,8 @@ test('the Codex fixture projects patch calls and observes real Git delivery with
   assert.equal(run.outcome.commits,2);
   assert.deepEqual(run.outcome.pushed,['.github/workflows/main.yml','main.rs','tests/verify-output.sh']);
   assert.equal(run.outcome.state.pr.isDraft,false);
+  assert.equal(run.outcome.state.pr.title,'Implement Hello World in '+run.mode);
+  assert.ok(run.outcome.state.calls.some(args=>args[0]==='pr'&&args[1]==='edit'));
   assert.ok(run.outcome.state.pr.body.endsWith('Resolves '+run.outcome.state.pr.url.replace('/pull/2','/issues/1')));
   assert.equal(run.compilerAndNetworkAreMocks,true);
   assert.equal(run.fullIssueComplete,false);
@@ -206,6 +208,8 @@ test('the original Claude Kotlin request retains prepared PR delivery after real
   assert.equal(run.outcome.status,'');
   assert.deepEqual(run.outcome.pushed,['.github/workflows/Main.yml','Main.kt','tests/verify-output.sh']);
   assert.equal(run.outcome.state.pr.isDraft,false);
+  assert.equal(run.outcome.state.pr.title,'Implement Hello World in '+run.mode);
+  assert.ok(run.outcome.state.calls.some(args=>args[0]==='pr'&&args[1]==='edit'));
   assert.ok(run.outcome.state.pr.body.endsWith('Resolves '+run.outcome.state.pr.url.replace('/pull/2','/issues/1')));
   const final=run.steps.at(-1).plan;
   assert.equal(final.kind,'final');
