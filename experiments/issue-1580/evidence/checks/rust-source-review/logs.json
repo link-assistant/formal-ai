@@ -363,5 +363,20 @@
     "file": "rust-template-guidance-read.log.gz",
     "rawSha256": "659eec107fd651083fdc17d281609a73ef9e0b1738ab886b13526902c973abf4",
     "archiveSha256": "5ef1a51c86fc85325beb8756492269f1129e7402823f5ce0ac40c7576b00d0c1"
+  },
+  {
+    "file": "rust-release-artifact-runner-dependency-regressions-read.log.gz",
+    "rawSha256": "fbd2472a891e1eab1578c3093a861808079bf5a99bf3d7e3e24d93e832fdaa44",
+    "archiveSha256": "f98876ec0a8a83574ac6ccae2d5097647afea8238419b7611b7cd469d3ed1cc6"
+  },
+  {
+    "file": "rust-javascript-example-and-release-probes-read.log.gz",
+    "rawSha256": "f095ce63bc92feaa8fcc5657c656ba624cf6e7bdfc8657aa8fee2c8f2b22f701",
+    "archiveSha256": "ff85988316103c89546584f02622e9e20e223aa4f777529dd818a66e8ff1e77f"
+  },
+  {
+    "file": "rust-release-guards-and-workflow-prerequisites-read.log.gz",
+    "rawSha256": "e7aa18f2980cd20469f8fe1f739d07d8f3214eaa053bd1c60f555fb6aa1c3dcb",
+    "archiveSha256": "902c48ee4413a543217cea49b13fc094eabbb29e8df74ad20b6438da8b4b8950"
   }
 ]

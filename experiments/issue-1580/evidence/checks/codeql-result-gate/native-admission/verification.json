@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=CodeQL native contracts admit",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "beforeExitCode": 1,
+  "afterExitCode": 0,
+  "beforeRawSha256": "1169fdbe53c5e296c9c86ca294a7361ca30a12005ac0736c974add91db957e6e",
+  "afterRawSha256": "0d53cccb333b19309652f2f6a08669e47441390cdcd199a7668dcb0f6e22eddf",
+  "nativeCompilationExecuted": false,
+  "hostedExecutionStillRequired": true,
+  "checkoutChangeRequired": false,
+  "checkoutReason": "Both native checkout attempts retain /* and exclude only dev/log and selected experiments; Rust, .github and this docs fixture are included.",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -1,0 +1,21 @@
+{
+  "observedAt": "2026-11-20T07:42:17.404736+00:00",
+  "argv": [
+    "gh",
+    "api",
+    "repos/link-assistant/formal-ai/code-scanning/analyses?ref=refs%2Fheads%2Fmain&per_page=100",
+    "--paginate",
+    "--slurp"
+  ],
+  "exitCode": 0,
+  "stdout": {
+    "file": "main-codeql-analyses.stdout.gz",
+    "rawSha256": "d5a3a872c97b337e80fbdc8ae7f59081ec6b6db2b5416dd8aa994377e3e959f2",
+    "archiveSha256": "d861bd2e4f35b9e982271118c2ab4bb895de3077af068c89b16fd0c1f4caceee"
+  },
+  "stderr": {
+    "file": "main-codeql-analyses.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+}

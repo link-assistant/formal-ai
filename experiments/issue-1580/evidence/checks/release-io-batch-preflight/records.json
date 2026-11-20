@@ -89,12 +89,12 @@
     ],
     "exitCode": 0,
     "stdout": {
-      "file": "pr-comments.stdout.gz",
+      "file": "pull-request-conversation-comments.stdout.gz",
       "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
       "archiveSha256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30"
     },
     "stderr": {
-      "file": "pr-comments.stderr.gz",
+      "file": "pull-request-conversation-comments.stderr.gz",
       "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
     }
@@ -109,12 +109,12 @@
     ],
     "exitCode": 0,
     "stdout": {
-      "file": "pr-review-comments.stdout.gz",
+      "file": "pull-request-inline-comments.stdout.gz",
       "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
     },
     "stderr": {
-      "file": "pr-review-comments.stderr.gz",
+      "file": "pull-request-inline-comments.stderr.gz",
       "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
     }
@@ -129,12 +129,12 @@
     ],
     "exitCode": 0,
     "stdout": {
-      "file": "pr-reviews.stdout.gz",
+      "file": "pull-request-reviews.stdout.gz",
       "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
     },
     "stderr": {
-      "file": "pr-reviews.stderr.gz",
+      "file": "pull-request-reviews.stderr.gz",
       "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
     }
@@ -153,12 +153,12 @@
     ],
     "exitCode": 0,
     "stdout": {
-      "file": "pr.stdout.gz",
+      "file": "pull-request.stdout.gz",
       "rawSha256": "fb4cd489c8d8ad07d7d491705b8ae850c713831a7f94f3cab6ea62f37f376eec",
       "archiveSha256": "12bbd7912153e337409b5c6011282973e806afe7afdd3384f828387ee4506790"
     },
     "stderr": {
-      "file": "pr.stderr.gz",
+      "file": "pull-request.stderr.gz",
       "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
     }
