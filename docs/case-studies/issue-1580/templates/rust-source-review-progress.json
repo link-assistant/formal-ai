@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T17:13:48.014002+00:00",
+  "observedAt": "2026-11-20T17:27:15.963225+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 317,
-  "fullyReadSourceLines": 37634,
+  "fullyReadFiles": 320,
+  "fullyReadSourceLines": 37637,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -2178,6 +2178,57 @@
         ]
       ],
       "literalReadLines": 15,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-19/pr-114-data/pr-commits.json",
+      "lines": 1,
+      "sha256": "2ecc32d8fcf13f10eef0fe875bded153fb32ae445e3457cc912cf8f44dc95171",
+      "readLogs": [
+        "package-root-history-pull-request-commits.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-19/pr-114-data/pr-conversation-comments.json",
+      "lines": 1,
+      "sha256": "6d7e8b1239ef46dff1e46c6be6ceff514943098a68a6e9ab972337f928b54e66",
+      "readLogs": [
+        "package-root-history-pull-request-conversation-comments.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-19/pr-114-data/pr-details.json",
+      "lines": 1,
+      "sha256": "989c9e33b401427318563a9e603c71a01a5feed73e2c44c6774e4411c36637a8",
+      "readLogs": [
+        "package-root-history-pull-request-details.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -6430,6 +6481,22 @@
         ".github/workflows/ci.yml",
         ".github/workflows/desktop-release.yml",
         "docs/screenshots/issue-1580"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Resolve package roots explicitly and preserve the caller working directory",
+      "templateEvidence": [
+        "docs/case-studies/issue-19/pr-114-data/pr-commits.json",
+        "docs/case-studies/issue-19/pr-114-data/pr-conversation-comments.json",
+        "docs/case-studies/issue-19/pr-114-data/pr-details.json"
+      ],
+      "assessment": "Read all four historical commits, four conversation comments and complete merged PR details. A virtual command-stream cd changed process.cwd permanently, so later js/package.json became js/js/package.json. The first repair restored cwd; later feedback expanded the solution to shared JavaScript/Rust root discovery, root-before-language-subfolder precedence, explicit CLI/environment overrides and six caller migrations. The PR records syntax and language-subfolder checks but leaves CI and single-language manual qualification unchecked. Preserve the distinction between a merged claim and verified root/cwd behavior; the historical snapshot does not prove current Formal AI release publication. Its linked older requests are comparison evidence, not required sub-issues of #1580.",
+      "status": "complete-historical-package-root-records-read-current-runtime-qualification-open",
+      "formalAiPaths": [
+        "scripts/rust-paths.rs",
+        "scripts/cargo-package.rs",
+        "rust/tests/unit/ci-cd/workspace_manifest_resolution.rs"
       ],
       "verification": null
     }

@@ -533,5 +533,20 @@
     "file": "freshness-history-vk-bot-desktop-issue-51.json.read.txt.gz",
     "rawSha256": "14c9d5ebc2d4b9ccc846f57b4007435aad6d449ae1a7b846468c2c29f2bde207",
     "archiveSha256": "e437879c3ce7021ecf5843038add3b60fd9c80e867acae7cb8447733ed024883"
+  },
+  {
+    "file": "package-root-history-pull-request-commits.json.read.txt.gz",
+    "rawSha256": "dd39dae7557736fd03b92bd3b814a71f38c3b010e1b0089a643276d5f4734a14",
+    "archiveSha256": "0ce8e957d9c3f349f13f6a0d5e90f2615b95a98af35ac20c0c50bb377f7acd5b"
+  },
+  {
+    "file": "package-root-history-pull-request-conversation-comments.json.read.txt.gz",
+    "rawSha256": "334d1fb6db987934d5ac154f3a6951a5d161357b23988b816dbd15d3a886805b",
+    "archiveSha256": "ec4022f7c00b5b283263435baaf61a2b8be8297c3ba6222ee5221c5ba2c943f8"
+  },
+  {
+    "file": "package-root-history-pull-request-details.json.read.txt.gz",
+    "rawSha256": "8cc2dd532271135e4a76405df5d9a229fd0414452fc29d748588f2094914e2bf",
+    "archiveSha256": "fd1106c40e3e568bd43f71811bcd4637a1e205cfe88b604d1236a121eff4c1af"
   }
 ]

@@ -490,3 +490,15 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - Preserve all three failed assessment harnesses, the load-related 100 ms profile failure, both archive gate failures and their corrections. Complete local inventory: 87 pass / 53 explicit exclusions / zero failures; four touched gates pass after full-word path and partitioned inventory corrections. All 124 captured producer payloads retain their original hashes. No local native/CodeQL build, limit increase or independent reasoning credit.
 
 - Four more complete pinned Rust historical snapshots are read and identity-verified: 317/373 files, 37,634 literal lines, 56 remaining. Preserve final-versus-running CI distinctions and browser locale/theme/served-preview provenance. Historical closed states and proposals establish no current runtime, publication or independent reasoning credit.
+
+- Complete pinned Rust package-root PR commit, discussion and detail records are read and hash-verified: 320/373 files, 37,637 literal lines, 53 remaining. The original virtual-cd failure and expanded root-discovery feedback are distinct from syntax-only checks and current release qualification; no new runtime or independent reasoning credit.
+
+- Published head `39196d1f` has 27 terminal workflows: 24 successes, one skip,
+  one Layered fingerprint failure and one CI/CD cancellation. All 528 observed
+  native cases pass, but GitHub explicitly reports the reasoning job exceeded
+  20 minutes. Its 148-case execution takes 972.81 seconds after setup/compilation.
+  Draft two measured shards with an unchanged 20-minute timeout and 74/74 cases
+  at about 486 seconds each. The original unsupported-shard negative control
+  fails; 49 runner cases, 111 policy cases and 18 retained-profile cases pass.
+  The real sparse checkout retains only the new consumed evidence operand.
+  Next-head native execution remains pending; overall acceptance remains open.
