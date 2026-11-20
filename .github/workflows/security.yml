@@ -33,6 +33,11 @@ on:
         default: checks
         type: choice
         options: [checks]
+      codeql:
+        description: 'Run read-only CodeQL producer verification on this branch'
+        required: false
+        default: false
+        type: boolean
       pull-request:
         description: 'Pull request the dispatched checks report for'
         required: false
@@ -62,7 +67,7 @@ jobs:
       fail-fast: false
       matrix:
         language: [rust, actions]
-    env:
+    env: &codeql-extractor-environment
       # Issue #1017 / github/codeql#19982. The CodeQL Rust extractor vendors its
       # own rust-analyzer (`ra_ap_* 0.0.301` in measured CLI 2.26.3) and, with
       # no sysroot override, resolves `std` from the runner's ambient toolchain.
@@ -78,7 +83,7 @@ jobs:
       # builds with it) to the newest `std` the bundle can parse restores that
       # coverage. Raise this as CodeQL picks up newer rust-analyzer releases.
       CODEQL_RUST_SYSROOT_TOOLCHAIN: '1.94.0'
-    steps:
+    steps: &codeql-analysis-steps
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
@@ -123,6 +128,7 @@ jobs:
       - uses: github/codeql-action/analyze@v4
         with:
           output: ${{ runner.temp }}/codeql-results
+          upload: ${{ github.job == 'codeql' && 'always' || 'never' }}
 
       - name: Reject unresolved CodeQL findings
         if: ${{ !cancelled() }}
@@ -132,9 +138,29 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
-          name: codeql-results-${{ matrix.language }}
+          name: codeql-results-${{ matrix.language }}-${{ github.job }}
           path: ${{ runner.temp }}/codeql-results/
           if-no-files-found: error
+
+  # Explicit branch verification reuses the exact producer and keeps all tokens read-only.
+  # Default PR/bot dispatches stay light; only the main job uploads code-scanning state.
+  codeql-readonly:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main' && inputs.codeql }}
+    name: CodeQL producer verification (${{ matrix.language }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-readonly-${{ matrix.language }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    permissions:
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [rust, actions]
+    env: *codeql-extractor-environment
+    steps: *codeql-analysis-steps
 
   cargo-audit:
     name: Cargo audit

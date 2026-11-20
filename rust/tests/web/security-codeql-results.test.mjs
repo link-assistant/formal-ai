@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import YAML from 'yaml';
+import { Script } from 'node:vm';
 
 const cli = new URL('../../../scripts/check-codeql-results.mjs', import.meta.url);
 const run = (results = []) => ({ tool: { driver: { name: 'CodeQL' } },
@@ -150,3 +151,40 @@ for (const [label, installStatus, sysrootStatus, sourcePresent, success] of [
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 }
+
+
+test('manual producer verification is explicit, read-only and shares the production analysis', () => {
+  const workflow = YAML.parse(readFileSync('.github/workflows/security.yml', 'utf8'));
+  const production = workflow.jobs.codeql;
+  const verification = workflow.jobs['codeql-readonly'];
+  assert.ok(verification, 'original producer reports need an opt-in branch verification path');
+  assert.deepEqual(workflow.on.workflow_dispatch.inputs.codeql,
+    { description: 'Run read-only CodeQL producer verification on this branch', required: false,
+      default: false, type: 'boolean' });
+  assert.deepEqual(verification.permissions, { actions: 'read', contents: 'read' });
+  assert.deepEqual(verification.strategy, production.strategy);
+  assert.deepEqual(verification.env, production.env);
+  assert.deepEqual(verification.steps, production.steps,
+    'the producer pin, analysis, result gate and report archive must be the same implementation');
+  assert.equal(verification['timeout-minutes'], production['timeout-minutes']);
+  const evaluate = (expression, github, inputs = {}) =>
+    new Script(expression.trim().slice(3, -2)).runInNewContext({github, inputs}, {timeout: 100});
+  for (const [event, ref, optedIn, expected] of [
+    ['pull_request', 'refs/pull/1581/merge', true, false],
+    ['pull_request_target', 'refs/heads/main', true, false],
+    ['push', 'refs/heads/main', true, false],
+    ['workflow_dispatch', 'refs/heads/main', true, false],
+    ['workflow_dispatch', 'refs/heads/fix/example', false, false],
+    ['workflow_dispatch', 'refs/heads/fix/example', true, true],
+  ]) assert.equal(Boolean(evaluate(verification.if, {event_name: event, ref}, {codeql: optedIn})), expected,
+    `${event} ${ref} codeql=${optedIn}`);
+  assert.equal(Boolean(evaluate(verification.if,
+    {event_name: 'workflow_dispatch', ref: 'refs/heads/fix/example'})), false,
+    'existing checks-mode bot dispatch must remain light');
+  const analysis = production.steps.find(step => step.uses?.startsWith('github/codeql-action/analyze@'));
+  assert.equal(evaluate(analysis.with.upload, {job: 'codeql'}), 'always');
+  for (const job of ['codeql-readonly', 'unexpected-job'])
+    assert.equal(evaluate(analysis.with.upload, {job}), 'never', 'read-only analysis must not upload code scanning state');
+  assert.ok(verification.steps.every(step => !/cache(?:@|\/save@)|attest@/u.test(step.uses ?? '')));
+  assert.equal(verification.steps.find(step => step.uses?.startsWith('actions/checkout@')).with['persist-credentials'], false);
+});
