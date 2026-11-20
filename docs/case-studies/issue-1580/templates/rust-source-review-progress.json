@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T16:20:25.202065+00:00",
+  "observedAt": "2026-11-20T17:13:48.014002+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 309,
-  "fullyReadSourceLines": 37626,
+  "fullyReadFiles": 317,
+  "fullyReadSourceLines": 37634,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -644,6 +644,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/actionlint-issue-upstream.json",
+      "lines": 1,
+      "sha256": "d58c6d9d202b094f6e8b87c85f879a9f07e456e49c9aeedc3cf0b46a4bf86f34",
+      "readLogs": [
+        "upstream-controls-actionlint-issue-upstream.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/active-runtime-scan.txt",
       "lines": 6,
       "sha256": "8b29d634e6531fe0f90ef5f47e215be5f1e65e4d5e2be7e3e206569cba7b2fc2",
@@ -725,6 +742,23 @@
         ]
       ],
       "literalReadLines": 43,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/audit-panic-upstream.json",
+      "lines": 1,
+      "sha256": "34f613e9b2392ae2cbee5dcd2d325979d117492c84a5e01b529371ae617a70f8",
+      "readLogs": [
+        "upstream-controls-audit-panic-upstream.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -933,6 +967,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/codeql-macros-upstream.json",
+      "lines": 1,
+      "sha256": "c2ae1893a27d4189242ac534b1ad327bdff9955e3cd6f982cde5c1b363c2fe53",
+      "readLogs": [
+        "macro-upstream-history.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/codeql-macros-upstream.json.txt",
       "lines": 300,
       "sha256": "23fb50a5e83eaf722a55fafbb7dedaf389ac39a62a2df96491486ffb1e075319",
@@ -948,6 +999,23 @@
         ]
       ],
       "literalReadLines": 300,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/codeql-msrv-upstream.json",
+      "lines": 1,
+      "sha256": "1721524874fc639944c66096d32828a7c30448fb59cfc62778d568ed3f2c6181",
+      "readLogs": [
+        "upstream-controls-codeql-msrv-upstream.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1318,6 +1386,40 @@
       "sha256": "cfd94c1abeeac46a120df1b290ddb015f9caf9f681e20b4f817b30cb7222b886",
       "readLogs": [
         "rust-history-audits.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/issue-comments-final.json",
+      "lines": 1,
+      "sha256": "fa72af028786738140448647813e059d39e9eb2167bd2f172d9750cc56e79adc",
+      "readLogs": [
+        "freshness-history-issue-comments-final.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/issue-comments.json",
+      "lines": 1,
+      "sha256": "591c78416ec812c136670bcc82c6d99ddc198de55f042f73e9df219378211b1e",
+      "readLogs": [
+        "freshness-history-issue-comments.json.read.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -2612,6 +2714,40 @@
       "sha256": "08d07401e11da71f7c50d1a6b6f4854f2899a70ff3eaf4ac4e4160cfeeda83ca",
       "readLogs": [
         "rust-remaining-small-metadata.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-52/raw-data/js-issue-62.json",
+      "lines": 1,
+      "sha256": "e2d0afea8e0f301c3def42405a824357903a4c688981c18c25d6bd3a6752658e",
+      "readLogs": [
+        "freshness-history-js-issue-62.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-52/raw-data/vk-bot-desktop-issue-51.json",
+      "lines": 1,
+      "sha256": "07ef0944b19bca7613610ec4f5b8d4777d24785048a194b7108b5431da6638e2",
+      "readLogs": [
+        "freshness-history-vk-bot-desktop-issue-51.json.read.txt.gz"
       ],
       "literalReadRanges": [
         [
@@ -6225,6 +6361,75 @@
         "scripts/bump-version.rs",
         "scripts/rust-paths.rs",
         "scripts/codeql-rust-projects.py"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Test actual macro expansions rather than infer completeness from a successful extractor",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/codeql-msrv-upstream.json"
+      ],
+      "assessment": "The complete historical CodeQL #22793 report and all comments distinguish a hidden Cargo minimum-version refusal from ordinary extraction success. The reporter explicitly limits --ignore-rust-version to the version guard; it cannot supply compiler features a build script actually needs. The snapshot records the issue closed and two upstream fixes, which supplies no present-runtime proof. Formal AI pins the sysroot/compiler ABI and preserves original SARIF plus an explicit default-off database query. Actual hosted query execution and semantic qualification of all informational macro records remain open; do not copy the historical bypass or infer semantic coverage from source-path extraction.",
+      "status": "complete-historical-report-read-current-runtime-qualification-open",
+      "formalAiPaths": [
+        ".github/workflows/security.yml",
+        "experiments/issue-1580/codeql-macro-contexts/observe.py"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Preserve exact audit dependency graphs and distinguish contradictory reproduction claims",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/audit-panic-upstream.json"
+      ],
+      "assessment": "The full historical cargo-audit #1241 discussion begins by attributing a panic to locked installation, then corrects that claim: cargo install --locked works while cargo run and a FreeBSD package fail. Preserve the git branch source and exact locked dependency graph in any reproduction; removing a lock is not a demonstrated repair. Formal AI audits committed lockfiles, rejects incomplete Git inventory and denies warnings. This historical thread does not qualify the current audit tool, every current lock graph or unresolved dependency migrations.",
+      "status": "complete-historical-report-read-current-runtime-qualification-open",
+      "formalAiPaths": [
+        "scripts/check-rust-dependencies.sh"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Keep queue serialization while testing a narrowly scoped schema exception and live shell linting",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/actionlint-issue-upstream.json"
+      ],
+      "assessment": "The full historical Actionlint #657 report and all six comments concern queue syntax missing from 1.7.12, with a later comment separately documenting the ubuntu-26.04 label gap. The authenticated downloaded PNG is verified as PNG and visually read: common-draft-release-upon-push-to-release.yml:60:7 rejects queue: max and names only group/cancel-in-progress. Formal AI retains the exact-message queue exception in .github/actionlint.yaml, pins the actual Actionlint image and has a shell syntax canary in workflows.yml. The image and historical open report provide no proof that an upstream parser fix has shipped or that every warning is resolved.",
+      "status": "complete-historical-report-read-current-runtime-qualification-open",
+      "formalAiPaths": [
+        ".github/actionlint.yaml",
+        ".github/workflows/workflows.yml"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Revalidate compiler ABI and each macro failure class against the exact extractor bundle",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/codeql-macros-upstream.json"
+      ],
+      "assessment": "Read the complete historical CodeQL #19982 report and all twelve comments, including the correction that the first repository-scale workaround was not yet experimentally verified. The subsequent measured run removes 20,725 standard-library expansion failures but reveals 355 procedural-macro and three OUT_DIR failures. An upstream rust-analyzer fix and a later successful consumer do not prove every distinct cause fixed; the snapshot remains open. The authenticated PNG is verified and visually read: rust-analyzer reports expected Expr in the cw_serde ExecuteMsg case. Formal AI already replaces the obsolete 1.94 sysroot with the exact 1.99 ABI for its newer bundle and retains strict original SARIF/context checks. The new explicit hosted macro observation must still be assessed against original locations; a clean SARIF or complete source inventory is not semantic-macro proof.",
+      "status": "complete-historical-report-read-exact-producer-semantic-qualification-open",
+      "formalAiPaths": [
+        ".github/workflows/security.yml",
+        "scripts/codeql-rust-projects.py",
+        "experiments/issue-1580/codeql-macro-contexts/MacroContexts.ql"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Bind CI freshness and preview claims to actual dated observations",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/issue-comments.json",
+        "dev/log/issues/247/pulls/248/issue-comments-final.json",
+        "docs/case-studies/issue-52/raw-data/js-issue-62.json",
+        "docs/case-studies/issue-52/raw-data/vk-bot-desktop-issue-51.json"
+      ],
+      "assessment": "Read both complete historical issue-comment snapshots: the previously in-progress main runs later split into successful desktop/workflow examples and failed Security/CI, so initial status is not final proof. Read the complete historical JavaScript screenshot-hook proposal and original desktop request. Capture locale/theme and served visual identity from a real browser, preserve optional DOM probes, and separate release push-back from PR artifact evidence. The historical downstream closed state and upstream proposal do not prove a current template hook or current Formal AI delivery. These embedded historical issue requests are comparison evidence, not new required sub-issues of #1580. Formal AI already retains bounded browser and visual artifacts, while real release screenshot refresh/publication/served identity remain unverified.",
+      "status": "complete-historical-snapshots-read-current-runtime-qualification-open",
+      "formalAiPaths": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/desktop-release.yml",
+        "docs/screenshots/issue-1580"
       ],
       "verification": null
     }

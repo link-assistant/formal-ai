@@ -493,5 +493,45 @@
     "file": "rust-toml-release-history.read.txt.gz",
     "rawSha256": "1064e18aee5ef2c2b5feb703850c527bf713c9173d3f9e2aec6b734c1163459e",
     "archiveSha256": "212e3055228f245ef16bd4b19f93f9208b7f488fee91575e2842f8df11997ee1"
+  },
+  {
+    "file": "upstream-controls-codeql-msrv-upstream.json.read.txt.gz",
+    "rawSha256": "5682f850e356c1821e55970f5a7e8865c444c6b3e0652200e3492f8cddc9caae",
+    "archiveSha256": "5180bee58297ebcfcc53280bb8daa6109d56b8ed2361c62bec5c22d8a24963d4"
+  },
+  {
+    "file": "upstream-controls-audit-panic-upstream.json.read.txt.gz",
+    "rawSha256": "9ef238b7bb0493136b71101e22a5059fa813942d0efc067f81cebc70074b1bdc",
+    "archiveSha256": "fd9862765c5b344a7a7a48c2cd09cf03f7260cb78bc6fa3d7887a26e1fcc7d87"
+  },
+  {
+    "file": "upstream-controls-actionlint-issue-upstream.json.read.txt.gz",
+    "rawSha256": "612655700ab07f6cee3f3ecc7ff718a6494767386b734f8371eccd1c7bd8ecf7",
+    "archiveSha256": "d01b2d4a2d696e30930c631e9621d38ae389bed32755863d9c615f4ced846575"
+  },
+  {
+    "file": "macro-upstream-history.read.txt.gz",
+    "rawSha256": "83a114b08f5588d5519464433e36b90c683ac328e83101f78924c79fb590320b",
+    "archiveSha256": "6a92dafcee9fd4548407a9a6d4455241a337ef68279f253b5685a0beef3f8004"
+  },
+  {
+    "file": "freshness-history-issue-comments.json.read.txt.gz",
+    "rawSha256": "b57246ec35abbaca740edbe91cfe7712fb76f483e4e4533fbbc95b9babbcf52c",
+    "archiveSha256": "ed85655b314f19cb65541fea56e0bd2cdaea1998590d7c270526b430d4f99ddc"
+  },
+  {
+    "file": "freshness-history-issue-comments-final.json.read.txt.gz",
+    "rawSha256": "63e69de0018daac5db6e55944b2b6a19ca1506b04977aac8ad68a4b00df7e2a2",
+    "archiveSha256": "eb82aa3626c719687aae7888dcfee62b54aa9c98b80b1eaa432633c7ca83c0fb"
+  },
+  {
+    "file": "freshness-history-js-issue-62.json.read.txt.gz",
+    "rawSha256": "894d076c5777f0af09418e9367a3ddcafb925ad5069e229fe376aa71873d3610",
+    "archiveSha256": "bcc23f8227577ef304e4a2ad7108083d86c38835dbfce269d198e3164a5969e9"
+  },
+  {
+    "file": "freshness-history-vk-bot-desktop-issue-51.json.read.txt.gz",
+    "rawSha256": "14c9d5ebc2d4b9ccc846f57b4007435aad6d449ae1a7b846468c2c29f2bde207",
+    "archiveSha256": "e437879c3ce7021ecf5843038add3b60fd9c80e867acae7cb8447733ed024883"
   }
 ]
