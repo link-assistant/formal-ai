@@ -598,5 +598,15 @@
     "file": "small-release-history-6.read.txt.gz",
     "rawSha256": "78591bbeca34f55b9bd82fbb44f725770ec8df9548d7414651a7078337642593",
     "archiveSha256": "549eda76ce3b64c47149e12aaded70b041d0ac9b0dfb7b4612c82500dc50d235"
+  },
+  {
+    "file": "client-entropy-history-getrandom-changelog.txt.read.txt.gz",
+    "rawSha256": "7354602db6536a5dbaa477c0a2499906caecc982975267e3d864b5e6ef6f4e18",
+    "archiveSha256": "d3d2e41e165e0a1898dd2b4c2e8a16b9f2188d0edc97efcc1699eda0fa8ddcbd"
+  },
+  {
+    "file": "client-entropy-history-ureq-changelog.txt.read.txt.gz",
+    "rawSha256": "00328e1dc3af93268fc657c81fbd6239a049982eb4af6747aa2ad81f3aba3697",
+    "archiveSha256": "bfe8e6f15b505260dd7045932acede861159f48c4da001f5333e142e2227f567"
   }
 ]

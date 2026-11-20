@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T18:13:19.436363+00:00",
+  "observedAt": "2026-11-20T18:24:33.434916+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 330,
-  "fullyReadSourceLines": 37647,
+  "fullyReadFiles": 332,
+  "fullyReadSourceLines": 39009,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -1449,6 +1449,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/getrandom-changelog.txt",
+      "lines": 760,
+      "sha256": "91116544a5642d216d0de8051b4b15133037b90eee345207dea53f7398b68b7d",
+      "readLogs": [
+        "client-entropy-history-getrandom-changelog.txt.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          760
+        ]
+      ],
+      "literalReadLines": 760,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/hooks-release.json",
       "lines": 1,
       "sha256": "4be6b8307897497fec1dd12c6ac090cb2445b047de0e976fde9bddff347c69c4",
@@ -2059,6 +2076,23 @@
         ]
       ],
       "literalReadLines": 44,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/ureq-changelog.txt",
+      "lines": 602,
+      "sha256": "a03d0eea8d36ad0f19195cab6203bd201a963df2d370b856c9a10fea65134d39",
+      "readLogs": [
+        "client-entropy-history-ureq-changelog.txt.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          602
+        ]
+      ],
+      "literalReadLines": 602,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -6708,6 +6742,21 @@
         ".github/workflows/docker-publish.yml"
       ],
       "verification": "experiments/issue-1580/evidence/checks/rust-small-release-history/assessment.json"
+    },
+    {
+      "practice": "Check dependency migrations and runtime budgets against actual consumers",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/getrandom-changelog.txt",
+        "dev/log/issues/247/pulls/248/ureq-changelog.txt"
+      ],
+      "assessment": "Read all 760 getrandom and 602 ureq changelog lines. The retained getrandom history distinguishes 0.4.3 release from an unreleased 0.4.4; its 0.3 migration renames fill APIs, changes custom/JavaScript backend selection and raises target requirements. The ureq history changes status/error handling and request/agent APIs across majors, and records fixes for decompression body limits, remaining global/connect/SOCKS/TLS budgets, redirects, pooling, cancellation and credentials. These are historical source claims, not current runtime observations. Current Formal AI does not declare either crate directly; transitive lock entries are recorded separately. Do not add unused template dependencies or infer elapsed-budget/body-limit correctness from a version string. Current runtime counterparts and transitive feature qualification remain open.",
+      "status": "complete-entropy-and-http-client-history-read-runtime-adoption-open",
+      "formalAiPaths": [
+        "rust/Cargo.toml",
+        "rust/Cargo.lock",
+        "scripts/recheck-links.mjs"
+      ],
+      "verification": "experiments/issue-1580/evidence/checks/rust-client-entropy-history/assessment.json"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
