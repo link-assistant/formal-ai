@@ -197,21 +197,21 @@
       "lines": 139
     },
     {
-      "file": "extract-solver-config-and-command-allowlist.py.gz",
+      "file": "extract-solver-configuration-and-command-allowlist.py.gz",
       "rawSha256": "9e78024e3dd8d771c85968bbc4a5e48b0da9fd20343a06bbcd76e2f4e8ce1583",
       "archiveSha256": "5d5486058753023d5503da3e59806e0cd8d81595dc3e062853884051b5feb08d",
       "bytes": 7155,
       "lines": 96
     },
     {
-      "file": "extract-solver-config-and-command-allowlist.log.gz",
+      "file": "extract-solver-configuration-and-command-allowlist.log.gz",
       "rawSha256": "63321ade3b3d65a27011610cfd25310ade89f4948dc5c16673fa93bd71afd94f",
       "archiveSha256": "e431082f4d4af2d04b76836de08add206540e0e0b08526fee9a84e270bac09f6",
       "bytes": 184,
       "lines": 4
     },
     {
-      "file": "commit-solver-config-and-command-allowlist.py.gz",
+      "file": "commit-solver-configuration-and-command-allowlist.py.gz",
       "rawSha256": "4aafe0a52de30be18e939e3ba296d040a3086d2068d15bd73f38c01a7d47c8e0",
       "archiveSha256": "cd409b0b0deeb3e8e2ac6b85e25f0cf1bde8335c5e5d662f6afc0ea704abf548",
       "bytes": 3570,

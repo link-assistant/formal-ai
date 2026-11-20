@@ -23,3 +23,5 @@ Separate unchanged controlled-language realization helpers from grammar parsing 
 Separate unchanged CLI solver invocation helpers; regenerate literal-owner paths after source moves without adding allowlisted text.
 
 Separate unchanged solver configuration and repository command admission into private modules while preserving their public paths.
+
+Move unchanged research adoption and method execution helpers into private modules, preserving approval gates and public paths.
