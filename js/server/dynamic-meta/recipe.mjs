@@ -1,7 +1,7 @@
 import { serverMessage } from '../messages.mjs';
 // A portable, data-only fragment of normal Markov algorithms. Rule order,
 // leftmost matching, and terminal rules have the same meaning in every format.
-import { parseSubstitutionQuery, renderSubstitutionQuery } from '../../agentic/crate/links_substitution_query.mjs';
+import { parseSubstitutionQuery, renderSubstitutionQuery, substitutionEffect } from '../../agentic/crate/links_substitution_query.mjs';
 
 const SOURCE_LENGTH_LIMIT = 64 * 1024;
 const DIRECT_RULE_COUNT = 4;
@@ -94,6 +94,18 @@ export function renderRecipe(language, program) {
     case 'python': return `import json\nrules = json.loads(${JSON.stringify(json)})\n${python}`;
     default: throw new Error(serverMessage('dynamic-meta-recipe-language'));
   }
+}
+
+export function analyzeRecipe({ rules }) {
+  let decreases = true;
+  const analysis = rules.map((rule, index) => {
+    // If an earlier pattern occurs inside this one, it always wins priority.
+    const shadowedBy = rules.findIndex(({ pattern }, earlier) => earlier < index && rule.pattern.includes(pattern));
+    const lengthChange = rule.replacement.length - rule.pattern.length;
+    if (shadowedBy === -1 && !rule.terminal && lengthChange >= 0) decreases = false;
+    return { ...rule, index, effect: substitutionEffect(rule), lengthChange, shadowedBy: shadowedBy === -1 ? null : shadowedBy };
+  });
+  return { rules: analysis, termination: decreases ? 'strictly_decreasing' : 'unproven' };
 }
 
 // Compile ordered patterns to a failure-linked trie. Each node stores the

@@ -46,6 +46,7 @@ that host, which owns the store and its permissions.
 | `receipt` | `revision` | Read one of the latest 64 stored results. |
 | `discover` | `sources`, `confirm` | Fetch and preview up to eight recipes or package manifests. Operator only. |
 | `translate` | `from`, `to`, `source` | Convert a portable recipe between `links`, `english`, `javascript`, and `python`. |
+| `analyze` | `recipe` or `from`, `source` | Inspect priority, shadowed rules, and a sufficient termination condition before installing or applying a recipe. |
 | `run` | `recipe`, `input`, optional `maxSteps` | Run a named recipe and record usage and its step trace. |
 | `compare` | `left`, `right`, `input`, optional `maxSteps` | Compare both executions on the supplied input. The trace records whether both halted normally. |
 | `substitute` | `query`, `confirm` | Apply link-cli replacement syntax and run the resulting cascade. |
@@ -124,6 +125,12 @@ source. The runtime reports byte offsets. To inspect one step, set `maxSteps`
 to `1`. When the halt reason is `step_limit`, pass the result's `output` as the
 next input to advance the same recipe. A comparison reports agreement for
 the supplied input.
+
+An analysis lists rules in priority order with their length changes and the
+first earlier pattern that shadows each rule. If every reachable nonterminal
+rule strictly shortens the text, `strictly_decreasing` certifies termination of
+the substitution sequence. An `unproven` result leaves termination open. Run
+and comparison responses still report any configured execution limit reached.
 
 The dynamic runtime interprets rules. `Compile recipe example/normalize`
 builds and persists a failure-linked trie for static dispatch, and

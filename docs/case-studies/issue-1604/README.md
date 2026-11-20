@@ -36,6 +36,17 @@ approved adapters follow the existing split between data and execution authority
 [Existing text and link query codec](../../../rust/src/links_substitution_query/mod.rs) ·
 [Existing package sharing](../../../rust/src/associative_packages.rs)
 
+Link Foundation's `transformer` applies structural rewrite rules to Links
+Notation terms and demonstrates unary arithmetic and a small Turing machine.
+It offers richer structural matching than literal text recipes. The host uses
+the existing normal Markov codec for reversible text translation and the
+doublet matcher for transactional graph changes. The `analyze` action can
+detect priority shadowing and certify termination for a decreasing text
+recipe before installation. The general termination and equivalence questions
+remain open when these checks do not apply.
+[Structural transformer examples](https://github.com/link-foundation/transformer/blob/main/examples/README.md) ·
+[Recipe analysis](../../architecture/dynamic-meta.md#discovery-translation-and-compilation)
+
 Link CLI describes CRUD as a two-sided substitution, and `ui-links` provides a
 JavaScript matcher, in-memory doublets, names, and type helpers. Two newline-separated
 sides fail upstream when the first contains two named patterns, because upstream
@@ -90,7 +101,7 @@ report usage. Timings are local observations for these inputs.
 | Discover online instructions and convert them to storable substitutions | The source reader bounds HTTPS retrieval, reports rejected blocks, and carries source digests into reviewed recipe and dataset imports. The live CLI fetched the pinned link-cli README and applied its create example as an installed dataset. Tests cover denied sources, redirects, and digest changes. | Candidate URLs can come from client research or operator selection. Text conversion accepts a controlled English and generated-code fragment. |
 | Dynamic and static forms with two-way proposals | The same recipe runs ordered interpretation or a persisted compiled trie. Frequency tests exercise idle review, promotion, persistence across restart, and demotion. | Compilation selects an instance artifact used by the host. Product binary recompilation is outside that path. |
 | Confirmation and server control, including admin text commands | CLI and HTTP accept commands such as `Compile recipe example/normalize` with explicit confirmation. Tests cover anonymous, member, and operator permissions. | One workspace is shared by the configured server credentials. |
-| Use and compare recipes on demand with execution evidence | Chat, structured HTTP, and CLI expose recipe execution. Every successful run records priority, byte offsets, halt condition, and receipts. Tests compare terminal and nonterminal variants. | Comparison observes the supplied input. The authoring loop has no proof of general algorithm understanding or equivalence. |
+| Use and compare recipes on demand with execution evidence | Chat, structured HTTP, and CLI expose recipe execution. Each run records priority, byte offsets, halt condition, and receipts. Analysis previews priority shadowing and certifies decreasing recipes before installation. Tests compare terminal and nonterminal variants. | Comparison observes the supplied input. General algorithm understanding or equivalence does not follow from a replay. |
 | Associative package plugins with data, skills, functions, and integrations | Manifests expose dataset substitutions, CRUD-triggered rules, named recipes, and host adapters. Tests register npm, crate, and GitHub origins and inspect typed links. | Any origin can have a companion manifest. Downloaded package code has no automatic execution route. |
 | Event-driven by default for link CRUD, including cascades | Test sequences create a link, update it, create another link, and schedule a delete reaction. Identical sides produce zero events. A repeating cascade rolls back its initiating write. | The mutable workspace has this CRUD path. Append-only conversation memory and prior read-only network views have separate semantics. |
 | Real-time self-modification off by default with configuration and natural language controls | Runtime configuration and confirmed operator commands enable same-package rule activation. Tests observe the old rule set within one cycle and new selection on subsequent events. | Automatic changes select installed rules. Public calls cannot install arbitrary new rule source. |

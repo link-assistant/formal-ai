@@ -149,6 +149,21 @@ test('packages use typed doublets for npm, crate and GitHub exports, and invoke 
   });
 });
 
+test('analysis previews rule priority and certifies shrinking recipes without applying them', async (t) => {
+  const runtime = useRuntime(t);
+  const source = 'Replace "aa" with "a".\nReplace "baa" with "baaaa".\nReplace "x" with "yx" and stop.';
+  const analysis = await runtime.act({ action: 'analyze', from: 'english', source });
+  assert.equal(analysis.termination, 'strictly_decreasing');
+  assert.deepEqual(analysis.rules.map(({ index, shadowedBy, lengthChange, effect }) => [index, shadowedBy, lengthChange, effect]), [
+    [0, null, -1, 'update'], [1, 0, 2, 'update'], [2, null, 1, 'update'],
+  ]);
+  assert.equal((await runtime.act({ action: 'analyze', from: 'english', source: 'Replace "a" with "aa".' })).termination, 'unproven');
+  assert.equal((await inspect(runtime)).revision, 0);
+  await install(runtime, manifest({ recipes: [{ id: 'shrink', language: 'english', source }] }));
+  assert.deepEqual(await runtime.act({ action: 'analyze', recipe: 'example/shrink' }), analysis);
+  assert.equal((await inspect(runtime)).revision, 1);
+});
+
 test('all supported language directions preserve rules, generated programs run, and compiled execution agrees', () => {
   const instructions = 'Replace "é😀b" with "β".\nReplace "ab" with "X".\nReplace "b" with "Y" and stop.';
   const program = readRecipe('english', instructions);
@@ -342,6 +357,9 @@ test('HTTP credentials and chat route run the installed recipe against the same 
   assert.equal((await post('/v1/dynamic-meta', payload)).status, 401);
   assert.equal((await post('/v1/dynamic-meta', payload, bearer)).status, 403);
   assert.equal((await post('/v1/dynamic-meta', payload, operator)).status, 200);
+  const analysis = await post('/v1/dynamic-meta', { action: 'analyze', recipe: 'example/normalize' }, bearer);
+  assert.equal(analysis.status, 200);
+  assert.equal((await analysis.json()).termination, 'unproven');
   const response = await post('/v1/chat/completions', {
     model: 'formal-ai', messages: [{ role: 'user', content: 'Use recipe example/normalize to rewrite "teh teh".' }],
   }, bearer);

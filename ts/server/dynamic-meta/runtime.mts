@@ -3,7 +3,7 @@ import { closeSync, lstatSync, openSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 
 import { boundedManifest, namedExport, packageLinks } from './packages.mjs';
-import { compileRecipe, readRecipe, renderRecipe, runRecipe } from './recipe.mjs';
+import { analyzeRecipe, compileRecipe, readRecipe, renderRecipe, runRecipe } from './recipe.mjs';
 import { linkContext, parseLinkSubstitution, runCascade, snapshot } from './substitutions.mjs';
 
 const STATE_LIMIT = 4 * 1024 * 1024;
@@ -200,6 +200,11 @@ export function createMetaRuntime({ path = ':memory:', triggers = true, selfModi
       }
       case 'translate':
         return { source: renderRecipe(request.to, readRecipe(request.from, request.source)) };
+      case 'analyze': {
+        const program = request.recipe === undefined ? readRecipe(request.from, request.source) :
+          namedExport(read().packages, 'recipes', request.recipe).program;
+        return analyzeRecipe(program);
+      }
       case 'compare': {
         const state = read();
         const left = run(state, { ...request, recipe: request.left });
