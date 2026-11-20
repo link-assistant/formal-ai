@@ -161,7 +161,7 @@ test('manual producer verification is explicit, read-only and shares the product
   assert.deepEqual(workflow.on.workflow_dispatch.inputs.codeql,
     { description: 'Run read-only CodeQL producer verification on this branch', required: false,
       default: false, type: 'boolean' });
-  assert.deepEqual(verification.permissions, { actions: 'read', contents: 'read' });
+  assert.deepEqual(verification.permissions, { actions: 'read', contents: 'read', 'security-events': 'read' });
   assert.deepEqual(verification.strategy, production.strategy);
   assert.deepEqual(verification.env, production.env);
   assert.deepEqual(verification.steps, production.steps,
@@ -187,4 +187,205 @@ test('manual producer verification is explicit, read-only and shares the product
     assert.equal(evaluate(analysis.with.upload, {job}), 'never', 'read-only analysis must not upload code scanning state');
   assert.ok(verification.steps.every(step => !/cache(?:@|\/save@)|attest@/u.test(step.uses ?? '')));
   assert.equal(verification.steps.find(step => step.uses?.startsWith('actions/checkout@')).with['persist-credentials'], false);
+});
+
+
+test('the extractor sysroot matches the validated CodeQL 2.27.4 proc-macro compiler', () => {
+  assert.equal(security().env.CODEQL_RUST_SYSROOT_TOOLCHAIN, '1.99.0',
+    'the original producer expected Rust 1.99.0 but its proc-macro server came from 1.94.0');
+});
+
+test('the producer provides standalone Rust contexts before discovery and archives their provenance', () => {
+  const job = security();
+  const prepare = job.steps.find(step => step.name === 'Prepare standalone Rust analysis contexts');
+  assert.ok(prepare, 'scripts and the direct-rustc worker need ancestor analysis manifests');
+  assert.equal(prepare.if, "matrix.language == 'rust'");
+  assert.match(prepare.run, /python3 scripts\/codeql-rust-projects\.py --output/);
+  assert.ok(job.steps.indexOf(prepare) < job.steps.findIndex(step => step.uses?.startsWith('github/codeql-action/init@')));
+  const archive = job.steps.find(step => step.name === 'Preserve Rust analysis contexts');
+  assert.equal(archive?.if, "${{ !cancelled() && matrix.language == 'rust' }}");
+  assert.match(archive.with.path, /codeql-rust-contexts\/\*\*\/Cargo\.lock/);
+  assert.doesNotMatch(archive.with.path, /\/target\//, 'compiled dependency caches are not provenance artifacts');
+});
+
+const projectAdapter = new URL('../../../scripts/codeql-rust-projects.py', import.meta.url);
+const checkPython = (body) => {
+  const code = `import importlib.util, json, tempfile, pathlib, os, sys\nsys.dont_write_bytecode = True\nspec = importlib.util.spec_from_file_location('adapter', ${JSON.stringify(projectAdapter.pathname)})\na = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(a)\n` + body;
+  const result = spawnSync('python3', ['-c', code], { encoding: 'utf8', timeout: 10000 });
+  assert.equal(result.signal, null, result.stderr);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+};
+
+test('Rust script contexts retain incompatible exact pins, feature aliases, editions and helper ownership', {timeout: 20000}, () => {
+  checkPython(String.raw`
+with tempfile.TemporaryDirectory(prefix='rust-contexts-') as directory:
+    root = pathlib.Path(directory)
+    scripts = root / 'scripts'
+    scripts.mkdir()
+    def script(name, manifest):
+        path = scripts / name
+        path.write_text('//! ' + '\n//! '.join(['\x60\x60\x60cargo', *manifest.splitlines(), '\x60\x60\x60']) + '\nfn main() {}\n')
+        return path
+    first = script('first.rs', '[package]\nedition="2024"\n[dependencies]\njson={package="serde_json",version="=1.0.151",features=["preserve_order"]}')
+    second = script('second.rs', '[package]\nedition="2024"\n[dependencies]\njson={package="serde_json",version="=1.0.154",features=["preserve_order"]}')
+    (scripts / 'plain.rs').write_text('#!/usr/bin/env rust-script\nfn main() {}\n')
+    (scripts / 'helper.rs').write_text('use super::*;\nfn fixture() { let s = r#"fn main() {}"#; }\n')
+    before = {p: p.read_bytes() for p in scripts.iterdir()}
+    groups, sources = a.contexts(root)
+    assert len(groups) == 3
+    assert len(sources) == 4
+    assert {g['edition'] for g in groups} == {'2021', '2024'}
+    pins = set()
+    for i, group in enumerate(groups):
+        manifest = a.tomllib.loads(a.collector_manifest(group, 'fixture-' + str(i)))
+        assert manifest['dependencies'] == group['dependencies']
+        assert manifest['package']['edition'] == group['edition']
+        assert manifest['workspace'] == {}
+        if group['dependencies']:
+            pins.add(group['dependencies']['json']['version'])
+    assert pins == {'=1.0.151', '=1.0.154'}
+    assert all('helper.rs' not in path for g in groups for path in g['sources'])
+    assert before == {p: p.read_bytes() for p in scripts.iterdir()}
+    first.write_text('//! \x60\x60\x60cargo\n//! [dependencies]\n//! x = {path="../unknown"}\n//! \x60\x60\x60\n')
+    try:
+        a.contexts(root)
+        raise AssertionError('unsupported relative dependency silently lost')
+    except ValueError as e:
+        assert 'explicit context adapter' in str(e)
+`);
+});
+
+test('Cargo graph conversion preserves real aliases, features, build cfgs and compiled proc-macros', {timeout: 20000}, () => {
+  checkPython(String.raw`
+with tempfile.TemporaryDirectory(prefix='rust-graph-') as directory:
+    base = pathlib.Path(directory)
+    macro = base / 'derive.so'
+    macro.write_bytes(b'fixture dylib')
+    def package(pid, kind='lib', build=False):
+        targets = [dict(name=pid,kind=[kind],src_path=str(base/pid/'lib.rs'),edition='2024')]
+        if build:
+            targets.append(dict(name='build',kind=['custom-build']))
+        return dict(id=pid,name=pid,version='1.2.3',manifest_path=str(base/pid/'Cargo.toml'),targets=targets)
+    def dep(pid, name, kind=None):
+        return dict(pkg=pid,name=name,dep_kinds=[dict(kind=kind,target=None)])
+    metadata = dict(packages=[package('root'),package('library',build=True),package('derive','proc-macro'),package('build-only')],
+        resolve=dict(root='root',nodes=[dict(id='root',features=[],deps=[dep('library','renamed-lib')]),
+        dict(id='library',features=['derive'],deps=[dep('derive','derive'),dep('build-only','builder','build')]),
+        dict(id='derive',features=[],deps=[]),dict(id='build-only',features=[],deps=[])]))
+    messages = [dict(reason='build-script-executed',package_id='library',cfgs=['has_generated'],env=[['GENERATED','yes']],out_dir=str(base/'out')),
+        dict(reason='compiler-artifact',package_id='derive',target=dict(kind=['proc-macro']),filenames=[str(macro)])]
+    graph, dependencies = a.dependency_graph(metadata,messages,'x86_64-unknown-linux-gnu')
+    assert len(graph) == 2
+    library = next(c for c in graph if c['display_name'] == 'library')
+    derive = next(c for c in graph if c['display_name'] == 'derive')
+    assert library['cfg'] == ['feature="derive"','has_generated']
+    assert library['env']['GENERATED'] == 'yes'
+    assert library['env']['OUT_DIR'] == str(base/'out')
+    assert library['env']['CARGO_PKG_VERSION'] == '1.2.3'
+    assert derive['is_proc_macro'] and derive['proc_macro_dylib_path'] == str(macro)
+    assert dependencies == [dict(crate=graph.index(library),name='renamed_lib')]
+    combined = [dict(deps=[])]
+    mapped = a.append_graph(graph,dependencies,combined)
+    assert mapped[0]['crate'] == 2
+    assert combined[2]['deps'][0]['crate'] == 1
+    for missing in [messages[:1],messages[1:]]:
+        try:
+            a.dependency_graph(metadata,missing,'host')
+            raise AssertionError('missing macro/build script silently accepted')
+        except ValueError:
+            pass
+    macro.unlink()
+    try:
+        a.dependency_graph(metadata,messages,'host')
+        raise AssertionError('missing macro dylib accepted')
+    except ValueError:
+        pass
+`);
+});
+
+test('direct-rustc worker context uses the real WASM target and source paths', {timeout: 20000}, () => {
+  checkPython(String.raw`
+root = pathlib.Path.cwd()
+project = a.wasm_project(root, '/verified/sysroot', '/verified/rust-src')
+crate = project['crates'][0]
+assert crate['target'] == 'wasm32-unknown-unknown'
+assert crate['edition'] == '2024'
+assert crate['deps'] == []
+assert pathlib.Path(crate['root_module']).is_file()
+assert str(root/'rust/src') in crate['source']['include_dirs']
+assert project['sysroot_src'] == '/verified/rust-src'
+with tempfile.TemporaryDirectory() as directory:
+    fake = pathlib.Path(directory)
+    (fake/'js/wasm-worker').mkdir(parents=True)
+    (fake/'js/wasm-worker/build.sh').write_text('rustc --edition=2024 --target other --crate-type cdylib')
+    try:
+        a.wasm_project(fake,'sysroot','source')
+        raise AssertionError('changed worker target accepted')
+    except ValueError:
+        pass
+`);
+});
+
+
+test('context publication waits for verified dependency builds and preserves original source paths', {timeout: 20000}, () => {
+  checkPython(String.raw`
+with tempfile.TemporaryDirectory(prefix='rust-context-publication-') as directory:
+    base = pathlib.Path(directory)
+    root = base/'checkout'
+    (root/'scripts').mkdir(parents=True)
+    (root/'js/wasm-worker/src').mkdir(parents=True)
+    source = root/'scripts/maintained.rs'
+    source.write_text('//! \x60\x60\x60cargo\n//! [dependencies]\n//! fixture="=1.2.3"\n//! \x60\x60\x60\nfn main() {}\n')
+    (root/'js/wasm-worker/src/lib.rs').write_text('#![no_std]\n')
+    (root/'js/wasm-worker/build.sh').write_text('rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib')
+    original = source.read_bytes()
+    rust_src = base/'rust-src'
+    rust_src.mkdir()
+    os.environ.update(CODEQL_RUST_SYSROOT_TOOLCHAIN='1.99.0',CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT=str(base/'sysroot'),
+        CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT_SRC=str(rust_src))
+    calls = []
+    failing = True
+    def command(argv, output, env):
+        calls.append(argv)
+        assert argv[:3] == ['rustup','run','1.99.0']
+        assert env['CARGO_BUILD_JOBS'] == '1' and env['CARGO_INCREMENTAL'] == '0'
+        if argv[3] == 'rustc':
+            return 'host: x86_64-unknown-linux-gnu\n'
+        if argv[4] == 'metadata':
+            package = dict(id='fixture',name='fixture',version='1.2.3',manifest_path=str(base/'fixture/Cargo.toml'),
+                targets=[dict(name='fixture',kind=['lib'],src_path=str(base/'fixture/lib.rs'),edition='2021')])
+            node = dict(id='fixture',features=[],deps=[])
+            return json.dumps(dict(packages=[package],resolve=dict(root='collector',nodes=[node,dict(id='collector',features=[],
+                deps=[dict(pkg='fixture',name='fixture',dep_kinds=[dict(kind=None,target=None)])])])) )
+        assert argv[4] == 'check' and '--locked' in argv and '--lib' in argv
+        assert argv[argv.index('--target') + 1] == 'x86_64-unknown-linux-gnu'
+        if failing:
+            raise RuntimeError('fixture dependency compilation failed')
+        return ''
+    a.command = command
+    try:
+        a.prepare(root,base/'failed')
+        raise AssertionError('dependency failure reported success')
+    except RuntimeError as e:
+        assert 'dependency compilation failed' in str(e)
+    assert not (root/'scripts/rust-project.json').exists()
+    assert not (root/'js/wasm-worker/rust-project.json').exists()
+    assert source.read_bytes() == original
+    failing = False
+    a.prepare(root,base/'verified')
+    project = json.loads((root/'scripts/rust-project.json').read_text())
+    own = next(c for c in project['crates'] if c['is_workspace_member'])
+    assert own['root_module'] == str(source)
+    assert own['deps'] == [dict(crate=0,name='fixture')]
+    assert own['cfg'] == ['test']
+    assert pathlib.Path(own['env']['CARGO_MANIFEST_DIR']).is_dir()
+    assert source.read_bytes() == original
+    receipt = json.loads((base/'verified/contexts.json').read_text())
+    assert len(receipt['projects']) == 2
+    try:
+        a.prepare(root,base/'overwrite')
+        raise AssertionError('existing manifest overwritten')
+    except ValueError as e:
+        assert 'Refusing to overwrite' in str(e)
+`);
 });
