@@ -378,5 +378,60 @@
     "file": "rust-release-guards-and-workflow-prerequisites-read.log.gz",
     "rawSha256": "e7aa18f2980cd20469f8fe1f739d07d8f3214eaa053bd1c60f555fb6aa1c3dcb",
     "archiveSha256": "902c48ee4413a543217cea49b13fc094eabbb29e8df74ad20b6438da8b4b8950"
+  },
+  {
+    "file": "rust-troubleshooting-1-read.log.gz",
+    "rawSha256": "a27e7e4dd1fdaec638bb091f30ed53ab3a46fd6a34ad3dcfcefb2ec2dfe8f4e7",
+    "archiveSha256": "c82572bbdc264efaa78303d5bf21e7b534c0d12cfc4432649e1f676d42c1a721"
+  },
+  {
+    "file": "rust-troubleshooting-2-read.log.gz",
+    "rawSha256": "dd3352616cd2407508d35388b4516ce0d905ce32346998f824dae19d1213f2c2",
+    "archiveSha256": "bcc7ea7bc7a03e3ffc65b8ea9899223c2afcd6a4b15e27bc9a7889f31235afe1"
+  },
+  {
+    "file": "rust-release-guides-1-read.log.gz",
+    "rawSha256": "973ce0fe1920f9d4d5864c1d638cf56810745c07e85223f042cd14d181cb239f",
+    "archiveSha256": "1bf878a1ff4ac92e2607419100c65fdd6938158214e2ba5c3eac0ea44d1e687e"
+  },
+  {
+    "file": "rust-release-guides-2-read.log.gz",
+    "rawSha256": "97347672579ad615f568e6fe3cc7a3150f0ca1099a54ddbd7a8be902e4e2dfda",
+    "archiveSha256": "8fc0e79817805e9df026cd373def1a1c8fa8623232c7ff934474ebc19835ed86"
+  },
+  {
+    "file": "rust-case-studies-11a-read.log.gz",
+    "rawSha256": "bd94ada35600fcaf2d68fc70cec9d2226ec59102c80062747d0fc7eaca254203",
+    "archiveSha256": "d1d8813ae1400d57192ccb19ad0ef818f7db4d1b75d8e67f0b9134e2d2515945"
+  },
+  {
+    "file": "rust-case-studies-11b-read.log.gz",
+    "rawSha256": "9e0e8717a0adf3ed872c704a95c7c167318cb8935d27a856f18abe7a17527927",
+    "archiveSha256": "ae695c40e9bdfb95765d60a77a8516b327b4e0d56756e0fb482770aa441c7ca5"
+  },
+  {
+    "file": "rust-case-studies-release-histories-read.log.gz",
+    "rawSha256": "5c3b4be1eba622ce3ae880e3726c33819de600e8fd8274c2bf2f40ee882182c2",
+    "archiveSha256": "5e1907c4aa838785f7e1ccaf07d275a2aa4a87d853d80aa0ca508c4ce26f040b"
+  },
+  {
+    "file": "rust-case-studies-delivery-histories-read.log.gz",
+    "rawSha256": "a328a58f6fb66c3b86429a3e324f52703f724fd38e18f20cecf86788abb25980",
+    "archiveSha256": "a77fecdce6c65b9a89c13487e672d5d7edceccec8b065c8121aa4291921ea933"
+  },
+  {
+    "file": "rust-historical-workflow-one-read.log.gz",
+    "rawSha256": "d61c4ed434c631ce3cb0201cc7979998efec35e57b6e03397b51b20fb36e9796",
+    "archiveSha256": "76029631ca8ef3d55b93683b67b58c5ee134ec10cd7c0757ae5ae11559dc35d0"
+  },
+  {
+    "file": "rust-historical-workflow-two-read.log.gz",
+    "rawSha256": "3fa5d3e539e5728bae0877b118fa80c48407a787e7ffc8b3f929bc88742aa528",
+    "archiveSha256": "f2b1e78358b6003a17ad425ff73f399aa3a2fe9e656cdc9f150afe10cc46defe"
+  },
+  {
+    "file": "rust-dependency-locks-read.log.gz",
+    "rawSha256": "80bb9d06ea1fe2123f669d6e67c12c51efedc6765cbcefa7b1b19375ff002229",
+    "archiveSha256": "ca4efea05860242f16155312e43361722c29348a12a62e343f9d5edcaec9b7dc"
   }
 ]

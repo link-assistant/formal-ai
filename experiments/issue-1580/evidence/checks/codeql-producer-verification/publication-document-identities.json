@@ -1,0 +1,14 @@
+[
+  {
+    "path": "docs/case-studies/issue-1580/codeql-result-checkpoint.md",
+    "sha256": "7eb07dc97a6b1ff01d69ec55bd5f007b52f3bcceeff4475f8f57bf5f22d8f0b8"
+  },
+  {
+    "path": "docs/case-studies/issue-1580/templates/rust-source-review-progress.json",
+    "sha256": "f21e6099028fb007d3f15ed3874075fc24950d1a37bc2760d2450f31589de170"
+  },
+  {
+    "path": "experiments/issue-1580/work-plan.md",
+    "sha256": "3f7aeb97c83ba9c9cf58c6170f336b4c201d3141513e0da5fde110ba160eae66"
+  }
+]

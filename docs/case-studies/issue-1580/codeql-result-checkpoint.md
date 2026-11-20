@@ -94,3 +94,35 @@ lines. The 193 unread files and all unverified applicable practices remain open.
 Strict original-source replay coverage stays 31/53; the three historical budget
 criteria, broad template/runtime/delivery requirements and independently accepted
 Formal AI reasoning (0/20) remain unfinished.
+
+
+## Explicit original-producer verification draft
+
+The next draft adds an opt-in `codeql` boolean to manual workflow dispatches.
+Only an opted-in branch dispatch selects `codeql-readonly`; ordinary PR and bot
+checks remain light. The job grants only `actions: read` and `contents: read`.
+It reuses the production environment and complete analysis steps through YAML
+anchors, and its analysis explicitly sets `upload: never`. Only the existing
+main production job can set `upload: always`. Report archives include the job
+identity, so the two consumers cannot collide.
+
+GitHub documents workflow anchors and aliases at
+https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations.
+The actual parsed workflow regression checks the shared steps, permissions,
+all relevant event/ref/input combinations and the upload expression. It fails
+against the workflow before this path exists; all nine CodeQL groups, eighteen
+production-profile cases and 97 workflow-policy cases pass with the draft.
+This is local contract evidence. No original producer has run through this new
+path yet; extraction compatibility and all findings remain unfinished.
+
+The additional eight pinned Rust guides bring literal review to 188/373 files
+and 27,942 lines. Every numbered line and blob identity is verified. The remaining
+185 files and all unverified practice/runtime requirements remain open.
+
+The complete local inventory subsequently finishes with 87 passing gates, 53 explicit CI-only exclusions and no failures (140 entries). Production source hashes are unchanged from those checks. Current published head `3a71f965` also passes the actual native registry helper (3 cases), actual release CLIs (8 cases) and 104 workflow contracts, including both focused CodeQL source assertions. These assertions do not execute the producer. Overall hosted CI and the new manual producer path remain unfinished at this checkpoint.
+
+Further complete, identity-verified guide and historical workflow review brings Rust literal coverage to 215/373 files and 32,789 lines. The 158 remaining files and unverified counterpart practices remain open. The separately viewed download-page PNG shows an empty-assets state; it supplies no artifact availability evidence.
+
+Published predecessor `3a71f965` now finishes all 23 workflows successfully, including workflow 104, coding 32, reasoning 141, interfaces 78, benchmarks 11, Hive 20/10/7 and registry helper/CLI 3/8. All 216 collector streams and 46 streams covering all 23 complete workflow logs have verified raw and archive identities. The 270 diagnostic matches comprise 246 records for 123 actual size warnings, two expected malformed-canary errors, twenty quoted shell source lines and two actual unresolved warnings: experimental `unsafe-libyaml` maintenance (Security lines 542–549) and crates.io credential certainty (pipeline lines 2932–2936). No source-size threshold or dependency exception is relaxed. These green workflows do not run the new local producer path or close the broader acceptance.
+
+Rust dependency-lock review subsequently reaches 217/373 files and 33,860 lines, leaving 156 files and all unverified practice/runtime acceptance open. The CodeQL action source confirms that SARIF upload selection and database upload have separate controls; its database-upload implementation additionally refuses non-default branches. The local branch job retains read-only permissions and explicit SARIF `never` selection. No producer execution or upstream repair is inferred from this source review.

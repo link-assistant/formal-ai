@@ -1,0 +1,18 @@
+{
+  "observedAt": "2026-11-20T09:06:30.731949+00:00",
+  "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+  "run": 44702570685,
+  "job": 136174240580,
+  "rawLogSha256": "60ca88cec600b4d13835eba085b05951b7e2a701b3940b9a684b1dfca39323b9",
+  "rawLogLines": 982,
+  "currentWarnings": 123,
+  "previousWarnings": 124,
+  "removedPaths": [
+    "rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs"
+  ],
+  "addedPaths": [],
+  "warningPolicyChanged": false,
+  "resolution": "One workflow-test extraction removes its former warning. All 123 recorded source-size warnings remain unresolved. The passing size gate does not complete the issue acceptance.",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

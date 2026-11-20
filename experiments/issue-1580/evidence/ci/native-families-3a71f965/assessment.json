@@ -1,0 +1,411 @@
+{
+  "observedAt": "2026-11-20T09:14:48.423182+00:00",
+  "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+  "workflowCount": 23,
+  "success": 23,
+  "failed": [],
+  "verifiedStreams": 216,
+  "nativeJobSummaries": [
+    {
+      "job": 136174466042,
+      "file": "job-136174466042.stdout.gz",
+      "summaries": []
+    },
+    {
+      "job": 136174466100,
+      "file": "job-136174466100.stdout.gz",
+      "summaries": []
+    },
+    {
+      "job": 136174466325,
+      "file": "job-136174466325.stdout.gz",
+      "summaries": []
+    },
+    {
+      "job": 136174466421,
+      "file": "job-136174466421.stdout.gz",
+      "summaries": [
+        {
+          "line": 1213,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:32.1412978Z # pass 6"
+        },
+        {
+          "line": 1214,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:32.1413294Z # fail 0"
+        },
+        {
+          "line": 1302,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:45.8039573Z # pass 13"
+        },
+        {
+          "line": 1303,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:45.8039870Z # fail 0"
+        },
+        {
+          "line": 1385,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:49.8209985Z # pass 12"
+        },
+        {
+          "line": 1386,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:49.8210694Z # fail 0"
+        },
+        {
+          "line": 1414,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:51.7046865Z # pass 3"
+        },
+        {
+          "line": 1415,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:51.7047200Z # fail 0"
+        },
+        {
+          "line": 1438,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:56.9636629Z # pass 2"
+        },
+        {
+          "line": 1439,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:28:56.9636922Z # fail 0"
+        },
+        {
+          "line": 1605,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:29:00.5706262Z # pass 26"
+        },
+        {
+          "line": 1606,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:29:00.5706516Z # fail 0"
+        },
+        {
+          "line": 1722,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:29:31.8569137Z # pass 13"
+        },
+        {
+          "line": 1723,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:29:31.8569431Z # fail 0"
+        },
+        {
+          "line": 1769,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:29:37.4350087Z # pass 6"
+        },
+        {
+          "line": 1770,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:29:37.4350278Z # fail 0"
+        },
+        {
+          "line": 1816,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:03.8699598Z # pass 6"
+        },
+        {
+          "line": 1817,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:03.8699803Z # fail 0"
+        },
+        {
+          "line": 1869,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:06.0417100Z # pass 7"
+        },
+        {
+          "line": 1870,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:06.0417268Z # fail 0"
+        },
+        {
+          "line": 1910,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:12.6596620Z # pass 5"
+        },
+        {
+          "line": 1911,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:12.6596807Z # fail 0"
+        },
+        {
+          "line": 1951,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:23.8532997Z # pass 5"
+        },
+        {
+          "line": 1952,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:23.8533196Z # fail 0"
+        },
+        {
+          "line": 2034,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:23.9355763Z # pass 12"
+        },
+        {
+          "line": 2035,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:23.9355946Z # fail 0"
+        },
+        {
+          "line": 2093,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:24.0197735Z # pass 8"
+        },
+        {
+          "line": 2094,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:24.0197926Z # fail 0"
+        },
+        {
+          "line": 2218,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:24.6826188Z # pass 19"
+        },
+        {
+          "line": 2219,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:24.6826386Z # fail 0"
+        },
+        {
+          "line": 2271,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:24.7643115Z # pass 7"
+        },
+        {
+          "line": 2272,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:24.7643323Z # fail 0"
+        },
+        {
+          "line": 2336,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:24.9648168Z # pass 9"
+        },
+        {
+          "line": 2337,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:24.9648329Z # fail 0"
+        },
+        {
+          "line": 2525,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:25.2188613Z # pass 25"
+        },
+        {
+          "line": 2526,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:25.2188776Z # fail 0"
+        },
+        {
+          "line": 3118,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:28.5234720Z # pass 97"
+        },
+        {
+          "line": 3119,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:28.5234922Z # fail 0"
+        },
+        {
+          "line": 3177,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:28.7681820Z # pass 8"
+        },
+        {
+          "line": 3178,
+          "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-20T08:30:28.7682038Z # fail 0"
+        },
+        {
+          "line": 3204,
+          "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-20T08:30:28.9145433Z Ran 41 tests in 0.035s"
+        }
+      ]
+    },
+    {
+      "job": 136176613138,
+      "file": "job-136176613138.stdout.gz",
+      "summaries": []
+    },
+    {
+      "job": 136174486080,
+      "file": "job-136174486080.stdout.gz",
+      "summaries": [
+        {
+          "line": 1744,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:32:20.1651839Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 14.60s"
+        },
+        {
+          "line": 1758,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:32:21.2380934Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.08s"
+        },
+        {
+          "line": 1766,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:32:30.1262585Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.88s"
+        },
+        {
+          "line": 1794,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:32:31.0984481Z test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.97s"
+        },
+        {
+          "line": 1808,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:32:44.7285392Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.63s"
+        },
+        {
+          "line": 1815,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:32:44.8986776Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s"
+        },
+        {
+          "line": 1825,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:32:45.3009918Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.40s"
+        },
+        {
+          "line": 1849,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:32:52.4911233Z test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.18s"
+        },
+        {
+          "line": 1867,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:33:26.6356941Z test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 34.14s"
+        },
+        {
+          "line": 1882,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:33:32.7583052Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.11s"
+        },
+        {
+          "line": 2001,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:33:33.9452046Z test result: ok. 104 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.18s"
+        },
+        {
+          "line": 2044,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:35:47.8378811Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 149 filtered out; finished in 0.73s"
+        },
+        {
+          "line": 2053,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:35:54.2661802Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 5.41s"
+        },
+        {
+          "line": 2090,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:35:58.0087443Z # pass 2"
+        },
+        {
+          "line": 2091,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:35:58.0088117Z # fail 0"
+        },
+        {
+          "line": 2125,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:36:01.7379413Z # pass 1"
+        },
+        {
+          "line": 2126,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:36:01.7379852Z # fail 0"
+        },
+        {
+          "line": 2160,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:36:04.5548983Z # pass 1"
+        },
+        {
+          "line": 2161,
+          "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:36:04.5549395Z # fail 0"
+        }
+      ]
+    },
+    {
+      "job": 136174486087,
+      "file": "job-136174486087.stdout.gz",
+      "summaries": [
+        {
+          "line": 759,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-20T08:28:11.0167318Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+        },
+        {
+          "line": 763,
+          "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-20T08:28:13.5126518Z Ran 8 tests in 2.419s"
+        }
+      ]
+    },
+    {
+      "job": 136174486186,
+      "file": "job-136174486186.stdout.gz",
+      "summaries": [
+        {
+          "line": 1395,
+          "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-20T08:56:19.8743743Z test result: ok. 78 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 288.38s"
+        }
+      ]
+    },
+    {
+      "job": 136174486204,
+      "file": "job-136174486204.stdout.gz",
+      "summaries": [
+        {
+          "line": 1341,
+          "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-20T09:00:41.9925414Z test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 169 filtered out; finished in 323.11s"
+        }
+      ]
+    },
+    {
+      "job": 136174486253,
+      "file": "job-136174486253.stdout.gz",
+      "summaries": [
+        {
+          "line": 1458,
+          "text": "Native type and lint check / Native contracts (reasoning)\tUNKNOWN STEP\t2026-11-20T08:47:40.9026311Z test result: ok. 141 passed; 0 failed; 0 ignored; 0 measured; 48 filtered out; finished in 1004.20s"
+        }
+      ]
+    },
+    {
+      "job": 136174486280,
+      "file": "job-136174486280.stdout.gz",
+      "summaries": [
+        {
+          "line": 1335,
+          "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-20T08:51:38.9250574Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 178 filtered out; finished in 399.61s"
+        }
+      ]
+    },
+    {
+      "job": 136174486301,
+      "file": "job-136174486301.stdout.gz",
+      "summaries": [
+        {
+          "line": 1332,
+          "text": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-20T09:10:06.0105083Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 182 filtered out; finished in 402.06s"
+        }
+      ]
+    },
+    {
+      "job": 136174486309,
+      "file": "job-136174486309.stdout.gz",
+      "summaries": [
+        {
+          "line": 1355,
+          "text": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-20T08:40:59.9896737Z test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 648.66s"
+        }
+      ]
+    },
+    {
+      "job": 136174486358,
+      "file": "job-136174486358.stdout.gz",
+      "summaries": [
+        {
+          "line": 1338,
+          "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-20T09:11:46.0132652Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 179 filtered out; finished in 703.31s"
+        }
+      ]
+    },
+    {
+      "job": 136174487914,
+      "file": "job-136174487914.stdout.gz",
+      "summaries": []
+    },
+    {
+      "job": 136174488311,
+      "file": "job-136174488311.stdout.gz",
+      "summaries": []
+    },
+    {
+      "job": 136175814274,
+      "file": "job-136175814274.stdout.gz",
+      "summaries": []
+    },
+    {
+      "job": 136194478812,
+      "file": "job-136194478812.stdout.gz",
+      "summaries": []
+    }
+  ],
+  "allWorkflowLogs": 23,
+  "diagnosticRecords": 270,
+  "scope": "All workflows pass on this exact predecessor head. This is not original-source replay or complete issue acceptance. The unexecuted producer path is a later local commit. Source-size and any other diagnostics remain subject to explicit review and repair.",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "verifiedAllWorkflowLogStreams": 46,
+  "pullRequestCheckBuckets": {
+    "pass": 48,
+    "skipping": 77
+  },
+  "diagnosticReview": "all-workflow-logs/diagnostics-review.json",
+  "remainingSourceSizeWarnings": 123,
+  "workflowFamilyPassed": 104,
+  "codingPassed": 32,
+  "reasoningPassed": 141,
+  "interfacesPassed": 78,
+  "benchmarksPassed": 11,
+  "hiveFamilyPassed": [
+    20,
+    10,
+    7
+  ],
+  "registryHelperPassed": 3,
+  "actualRegistryCliPassed": 8,
+  "diagnosticArchiveIndex": "all-workflow-logs/diagnostics-archive.json"
+}

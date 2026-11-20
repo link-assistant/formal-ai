@@ -1,0 +1,18 @@
+{
+  "head": "3a71f965e854893a3cb3c5470434ae9a846a3693",
+  "job": 136174486080,
+  "workflowContractsPassed": 104,
+  "producerExecuted": false,
+  "literalReviewedRanges": [
+    [
+      1870,
+      2058
+    ]
+  ],
+  "sourceAssertionsPassed": [
+    "codeql::codeql_rust_lane_pins_the_extractor_sysroot",
+    "codeql::codeql_skips_archived_evidence_but_still_analyses_compiled_code"
+  ],
+  "scope": "Native execution of workflow source assertions only; not a live CodeQL analysis",
+  "fullIssueComplete": false
+}

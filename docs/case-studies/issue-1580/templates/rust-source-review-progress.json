@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T08:17:23.763711+00:00",
+  "observedAt": "2026-11-20T09:08:40.747277+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 180,
-  "fullyReadSourceLines": 26781,
+  "fullyReadFiles": 217,
+  "fullyReadSourceLines": 33860,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -508,6 +508,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "Cargo.lock",
+      "lines": 462,
+      "sha256": "05824690a6cde6cd7ff2a024534b36c109269219f1ea9503ffa97b68b5804fde",
+      "readLogs": [
+        "rust-dependency-locks-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          462
+        ]
+      ],
+      "literalReadLines": 462,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "Cargo.toml",
       "lines": 69,
       "sha256": "0285c464946ae9918a2a8651b43b048fb8f1a7af08a88c522a642bee62e23ad1",
@@ -576,6 +593,227 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "docs/case-studies/issue-11/README.md",
+      "lines": 151,
+      "sha256": "8ee40d4448c42027ae72d3fe863baa96bcb866a595564155fe49131b2eecb5f2",
+      "readLogs": [
+        "rust-case-studies-11a-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          151
+        ]
+      ],
+      "literalReadLines": 151,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-11/analysis-crates-io.md",
+      "lines": 227,
+      "sha256": "a039d2c60ba5c8bf2345ad27ad01ff67cc29f0324391329336d4c3d0bba1cd72",
+      "readLogs": [
+        "rust-case-studies-11a-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          227
+        ]
+      ],
+      "literalReadLines": 227,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-11/analysis-set-output.md",
+      "lines": 132,
+      "sha256": "ce70ecd61d6e23a93fd939394aae88470db2d0cb1b34beb02b04302cd134ea04",
+      "readLogs": [
+        "rust-case-studies-11b-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          132
+        ]
+      ],
+      "literalReadLines": 132,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-11/analysis-workflow-dispatch.md",
+      "lines": 195,
+      "sha256": "c93eceb2d21beb27a076ea457b7005cec086200dfedcfbfff2892e6ad5502346",
+      "readLogs": [
+        "rust-case-studies-11b-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          195
+        ]
+      ],
+      "literalReadLines": 195,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-11/online-research.md",
+      "lines": 139,
+      "sha256": "0b0750218786be21a104bf31048d58252e0d8cdb49192e554bed55d631819ae7",
+      "readLogs": [
+        "rust-case-studies-11b-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          139
+        ]
+      ],
+      "literalReadLines": 139,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-17/README.md",
+      "lines": 140,
+      "sha256": "84d23d8e21d89e5cd1a344ab37d853f12d3ee3aec085e16c8c886c9811e228f8",
+      "readLogs": [
+        "rust-case-studies-release-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          140
+        ]
+      ],
+      "literalReadLines": 140,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-19/README.md",
+      "lines": 239,
+      "sha256": "71651010f5e3c593196ab162224fd29c01bd06836dff2dbd4e6f705c8633c2b7",
+      "readLogs": [
+        "rust-case-studies-delivery-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          239
+        ]
+      ],
+      "literalReadLines": 239,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-21/README.md",
+      "lines": 240,
+      "sha256": "a968d2c6957caa136304736c1ecc49a308a2c107c14447051a36d76f1d366aa0",
+      "readLogs": [
+        "rust-case-studies-delivery-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          240
+        ]
+      ],
+      "literalReadLines": 240,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-21/browser-commander-issue-27.md",
+      "lines": 116,
+      "sha256": "eb5ef37f561d84c5402c614a713d9212fa41dc75e8efb3a8759d406184a3bc69",
+      "readLogs": [
+        "rust-case-studies-delivery-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          116
+        ]
+      ],
+      "literalReadLines": 116,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-21/browser-commander-issue-29.md",
+      "lines": 136,
+      "sha256": "bb014603061dee2253f2880879798d65950eea22cb297e98a2dd48d130a242fd",
+      "readLogs": [
+        "rust-case-studies-delivery-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          136
+        ]
+      ],
+      "literalReadLines": 136,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-21/browser-commander-issue-31.md",
+      "lines": 129,
+      "sha256": "3c9b3c44f4e1704816358cff86c5d75c9dca04c57335ffdb27563af6af521c4c",
+      "readLogs": [
+        "rust-case-studies-delivery-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          129
+        ]
+      ],
+      "literalReadLines": 129,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-21/browser-commander-issue-33.md",
+      "lines": 156,
+      "sha256": "aed3223674ec1c0e8b3c27ec90054eb543b6073b09ca3c5aac2064e7c9271949",
+      "readLogs": [
+        "rust-case-studies-delivery-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          156
+        ]
+      ],
+      "literalReadLines": 156,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-21/browser-commander-rust.yml",
+      "lines": 416,
+      "sha256": "b40e5fbc32d238342d9bb4ce34d550635a04025648c4ad78a6c4911702551a43",
+      "readLogs": [
+        "rust-historical-workflow-one-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          416
+        ]
+      ],
+      "literalReadLines": 416,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "docs/case-studies/issue-232/analysis.md",
       "lines": 53,
       "sha256": "3ca41b94f15300001bd21e03a122ea6229eba8d4868dc3a3b67e7e5be2adb2ce",
@@ -593,6 +831,347 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "docs/case-studies/issue-25/README.md",
+      "lines": 94,
+      "sha256": "bb57cd234f07426631e6baf39629eba51789e48531a91460c44ad14d48144c72",
+      "readLogs": [
+        "rust-case-studies-release-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          94
+        ]
+      ],
+      "literalReadLines": 94,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-29/README.md",
+      "lines": 126,
+      "sha256": "8b3eb38a20035ec6309810206e2bbf2a87897bda21fe7a37743b1636e403feeb",
+      "readLogs": [
+        "rust-case-studies-release-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          126
+        ]
+      ],
+      "literalReadLines": 126,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-32/README.md",
+      "lines": 97,
+      "sha256": "2e7b10501bd53d0804fe173177df80107ea86e214856d27c73c63e7de428ef0c",
+      "readLogs": [
+        "rust-case-studies-release-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          97
+        ]
+      ],
+      "literalReadLines": 97,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-34/README.md",
+      "lines": 127,
+      "sha256": "30c6dbb94cfbe2d35db07cff2e996838dda757ad31db17321c3a346558fe3d58",
+      "readLogs": [
+        "rust-case-studies-release-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          127
+        ]
+      ],
+      "literalReadLines": 127,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/README.md",
+      "lines": 146,
+      "sha256": "ad849e7bbcc5b15e348fec5a901731667bffa96530d5cc38d5b2398f266307f2",
+      "readLogs": [
+        "rust-case-studies-release-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          146
+        ]
+      ],
+      "literalReadLines": 146,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/template-data/js-template-ci-tree.txt",
+      "lines": 22,
+      "sha256": "8518ec4698afea656155d2c9530deada279fb740404d68fdda9ce257ce6a079d",
+      "readLogs": [
+        "rust-historical-workflow-one-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "literalReadLines": 22,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/template-data/js-template-links.yml",
+      "lines": 81,
+      "sha256": "ffbea7a4f51da8e5b123de24101d645b07c29bccdda8ed7519b35c7d6c8028a4",
+      "readLogs": [
+        "rust-historical-workflow-one-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          81
+        ]
+      ],
+      "literalReadLines": 81,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/template-data/js-template-release.yml",
+      "lines": 537,
+      "sha256": "750798ec2296bf9b673f7ff41ba9105435c3856fc26a45efc02e2ac728c720d4",
+      "readLogs": [
+        "rust-historical-workflow-two-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          537
+        ]
+      ],
+      "literalReadLines": 537,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/template-data/rust-template-ci-tree.txt",
+      "lines": 16,
+      "sha256": "454fe8545b1811d01617ebae1e96b7bcbaa26ef7289f30372cb721ab56d30244",
+      "readLogs": [
+        "rust-historical-workflow-one-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          16
+        ]
+      ],
+      "literalReadLines": 16,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/template-data/rust-template-release-after.yml",
+      "lines": 500,
+      "sha256": "add8fd0546b85899a728c32d8cff5eeaefa98bf3426ca8e86bfd54d6f169904d",
+      "readLogs": [
+        "rust-historical-workflow-two-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          500
+        ]
+      ],
+      "literalReadLines": 500,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-38/template-data/rust-template-release-before.yml",
+      "lines": 488,
+      "sha256": "b26748207be5bef4dd429f19d09b358c35c6666368f3a93986e81c99b5940905",
+      "readLogs": [
+        "rust-historical-workflow-two-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          488
+        ]
+      ],
+      "literalReadLines": 488,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-52/README.md",
+      "lines": 80,
+      "sha256": "84462a3ae97e7b9cc0ed09256f921f852d21fa12545f5d24bd16883989e68928",
+      "readLogs": [
+        "rust-case-studies-release-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          80
+        ]
+      ],
+      "literalReadLines": 80,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-69/README.md",
+      "lines": 101,
+      "sha256": "f163d495eb65376724e2f56a0ec4c2fa5946fca402f3ced17ce881f0bab1b7cc",
+      "readLogs": [
+        "rust-case-studies-release-histories-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          101
+        ]
+      ],
+      "literalReadLines": 101,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/ci-cd/troubleshooting.md",
+      "lines": 465,
+      "sha256": "e09c78d6b68424d44fa335cbdc7e27160f158931ada270c93eb4c25573d316e5",
+      "readLogs": [
+        "rust-troubleshooting-1-read.log.gz",
+        "rust-troubleshooting-2-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          465
+        ]
+      ],
+      "literalReadLines": 465,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/download/index.html",
+      "lines": 16,
+      "sha256": "d9de29116c0b52af91ac468c1ffa96e6c6314ee021c745466fabcae03a56158f",
+      "readLogs": [
+        "rust-historical-workflow-one-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          16
+        ]
+      ],
+      "literalReadLines": 16,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/issue-188-analysis.md",
+      "lines": 200,
+      "sha256": "1139dfa912686c2cb6f092e25167370a7e5ba455c0c0b014f85d608ebe5012c1",
+      "readLogs": [
+        "rust-release-guides-1-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          200
+        ]
+      ],
+      "literalReadLines": 200,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/issue-194-analysis.md",
+      "lines": 85,
+      "sha256": "7099a0a1f8231d5e02d1cc6d3dbfb51e70d1f6e67fcbd78b83bb99b7a21eeb46",
+      "readLogs": [
+        "rust-release-guides-1-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          85
+        ]
+      ],
+      "literalReadLines": 85,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/issue-196-plan.md",
+      "lines": 54,
+      "sha256": "38c483cb633ccc5f4f3781d7c233b8f8abad2a2f23200a13e0aa554ac7110752",
+      "readLogs": [
+        "rust-release-guides-1-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          54
+        ]
+      ],
+      "literalReadLines": 54,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/issue-215-analysis.md",
+      "lines": 77,
+      "sha256": "46891166726c0c10ffc40ba63a20a8d2259fb54c4d0dc5c8cb0d660b8c65e3c1",
+      "readLogs": [
+        "rust-release-guides-2-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          77
+        ]
+      ],
+      "literalReadLines": 77,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/issue-224-plan.md",
+      "lines": 147,
+      "sha256": "606816f44e0bff7b0b4327aff8e070dc4d9f70f5ca413692d111af975d372d07",
+      "readLogs": [
+        "rust-release-guides-2-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          147
+        ]
+      ],
+      "literalReadLines": 147,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "docs/issue-228-analysis.md",
       "lines": 23,
       "sha256": "9a79e2dafe3a70c75c4f563d22debbbaaa5631ab41277a523739d8ef6121ae49",
@@ -606,6 +1185,40 @@
         ]
       ],
       "literalReadLines": 23,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/issue-237.md",
+      "lines": 80,
+      "sha256": "fccda6ab916e0f54b2fa457a8889ea6cad9fafac424fc6a6bb9964503803dcf1",
+      "readLogs": [
+        "rust-release-guides-2-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          80
+        ]
+      ],
+      "literalReadLines": 80,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/issue-239-plan.md",
+      "lines": 53,
+      "sha256": "8389030d4c99fd6069558d1c57f1e9a19003ef689dd4db8e0247e3a826251793",
+      "readLogs": [
+        "rust-release-guides-2-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "literalReadLines": 53,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1405,6 +2018,23 @@
         ]
       ],
       "literalReadLines": 9,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "requirements-dev.txt",
+      "lines": 609,
+      "sha256": "87410506918fb1d3dee9f46e7df8156cc8981f78a6b5e9fba3a11ca9382ca69d",
+      "readLogs": [
+        "rust-dependency-locks-read.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          609
+        ]
+      ],
+      "literalReadLines": 609,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -3722,6 +4352,78 @@
       ],
       "assessment": "All 964 numbered lines in eleven pinned files match their immutable blob identities. Preserve version checks on release-prefixed branches, new collectable fragment identity independent of Git rename heuristics, both endpoints of source moves, author-based bot exemptions, publish credentials in the environment, manifest warning refusal and bounded installer retries. Workflow controls validate exact-revision JavaScript prerequisites before native/container work, generated release candidates and simulated merges, and serialize writers without cancellation. Historical per-commit-only detection is not adopted as a substitute for the complete PR delta. The CodeQL diagnostic precedent agrees with the current local draft. These template experiments were read, not executed; corresponding complete runtime/application acceptance remains unfinished.",
       "status": "literal-source-comparison-and-counterpart-runtime-pending"
+    },
+    {
+      "practice": "Release prerequisite custody, failure classification, CodeQL report completeness and independent package boundaries",
+      "templateEvidence": [
+        "docs/ci-cd/troubleshooting.md",
+        "docs/issue-188-analysis.md",
+        "docs/issue-194-analysis.md",
+        "docs/issue-196-plan.md",
+        "docs/issue-215-analysis.md",
+        "docs/issue-224-plan.md",
+        "docs/issue-237.md",
+        "docs/issue-239-plan.md"
+      ],
+      "assessment": "All 1,161 numbered lines in eight pinned guides match their immutable blob identities. Preserve explicit prerequisite success checks around always/not-cancelled release predicates; distinguish only HTTP 404 registry absence; keep secrets in publishing environments; validate the whole Git index; bound transport and unacquired-runner retries without calling a retry test execution. Preserve OIDC-first token fallback, exact version-and-digest pins, rename-complete PR inventories, genuine package isolation, and errors/timeouts link reports. CodeQL must aggregate every original report/run/diagnostic; normalized API exports do not establish extraction success. A manual read-only producer verification path is drafted separately and has not run. Source review does not establish counterpart runtime behavior, external trust registration or completion of any template practice.",
+      "status": "literal-source-comparison-and-counterpart-runtime-pending"
+    },
+    {
+      "practice": "Historical release source comparison with superseded practices explicitly rejected",
+      "templateEvidence": [
+        "docs/case-studies/issue-11/README.md",
+        "docs/case-studies/issue-11/analysis-crates-io.md",
+        "docs/case-studies/issue-11/analysis-set-output.md",
+        "docs/case-studies/issue-11/analysis-workflow-dispatch.md",
+        "docs/case-studies/issue-11/online-research.md",
+        "docs/case-studies/issue-17/README.md",
+        "docs/case-studies/issue-25/README.md",
+        "docs/case-studies/issue-29/README.md",
+        "docs/case-studies/issue-32/README.md",
+        "docs/case-studies/issue-34/README.md",
+        "docs/case-studies/issue-38/README.md",
+        "docs/case-studies/issue-52/README.md",
+        "docs/case-studies/issue-69/README.md"
+      ],
+      "assessment": "All 1,755 numbered lines in thirteen pinned historical case-study files match their immutable blob identities. Retain environment-file outputs, explicit success/cancellation prerequisites, authoritative registry identity, compatible CLI flags, root/nested package paths and bounded concurrency recovery. Reject the historical assumption that registry failures mean absence, pipeline exit-status masking after tee, credentials in arguments, floating runner/image labels and per-commit-only PR admission; later pinned guidance supersedes these examples. Documentation deployment should depend on a validated build rather than package publication. The screenshot-refresh recipe is a tracking pattern in that template, not an executed implementation; any applicable Formal AI visual surface still needs its own bounded render and provenance evidence. BuildKit fallback needs immutable image identity, finite retries and a real final failure guard. No historical test or downstream release execution is credited to Formal AI and no counterpart practice is marked complete",
+      "status": "literal-source-comparison-and-counterpart-runtime-pending"
+    },
+    {
+      "practice": "Historical directory isolation and release delivery evidence boundaries",
+      "templateEvidence": [
+        "docs/case-studies/issue-19/README.md",
+        "docs/case-studies/issue-21/README.md",
+        "docs/case-studies/issue-21/browser-commander-issue-27.md",
+        "docs/case-studies/issue-21/browser-commander-issue-29.md",
+        "docs/case-studies/issue-21/browser-commander-issue-31.md",
+        "docs/case-studies/issue-21/browser-commander-issue-33.md"
+      ],
+      "assessment": "All 1,016 numbered lines in six pinned historical case-study files match immutable blob identities. Command-stream virtual directory changes need child cwd isolation or guaranteed finally restoration on success and failure; the historical try/catch example is insufficient. Preserve explicit package-root selection, prerequisite-aware skipped-job conditions, child exit-status propagation, actual package publication and authoritative registry response validation. Prefer step-scoped least-privilege publish credentials with documented dual-name fallback where required and OIDC where supported. Reject curl/grep absence inference, globally exposed tokens and treating a successful job or Git tag as proof of artifact availability. These historical reports do not verify current Formal AI end-to-end delivery or independently generated reasoning.",
+      "status": "literal-source-comparison-and-counterpart-runtime-pending"
+    },
+    {
+      "practice": "Historical workflows versus current release and download contracts",
+      "templateEvidence": [
+        "docs/case-studies/issue-21/browser-commander-rust.yml",
+        "docs/case-studies/issue-38/template-data/js-template-ci-tree.txt",
+        "docs/case-studies/issue-38/template-data/js-template-links.yml",
+        "docs/case-studies/issue-38/template-data/rust-template-ci-tree.txt",
+        "docs/download/index.html",
+        "docs/case-studies/issue-38/template-data/js-template-release.yml",
+        "docs/case-studies/issue-38/template-data/rust-template-release-after.yml",
+        "docs/case-studies/issue-38/template-data/rust-template-release-before.yml"
+      ],
+      "assessment": "All 2,076 numbered lines in eight immutable historical workflow, inventory and download-page files were read. Preserve independent fast checks, cancellation propagation, explicit prerequisite outcomes, root/nested lockfile paths, trusted-publisher workflow identity, step-scoped credentials, authoritative registry validation and documentation builds independent of package publishing. Reject historical floating pins, globally exposed publish credentials, unvalidated curl/grep registry inference, interpolated free-text shell input, prefix-only version-check exemptions, ignored formatting failures and documented success without a final failure guard. Historical before/after workflows are superseded references, not runnable current Formal AI verification. The template download page uses DOM textContent, explicit fetch status and a visible empty-assets state; its screenshot shows v0.1.0 with no desktop assets, so it proves no artifact publication or checksum availability. No counterpart runtime or publication is credited.",
+      "status": "literal-source-comparison-and-counterpart-runtime-pending"
+    },
+    {
+      "practice": "Generated dependency locks and development tool identity",
+      "templateEvidence": [
+        "Cargo.lock",
+        "requirements-dev.txt"
+      ],
+      "assessment": "All 1,071 numbered lines in the immutable Cargo and Python development locks were read and matched to pinned identities. Preserve Cargo lock format, package identity, exact resolved versions, registry source and checksums; retain uv-generated universal Python dependency pins and hashes, including transitive packages and environment markers. Compare the tools against the workflows that actually install them instead of assuming a lockfile is consumed or safe because it exists. No install, advisory audit, reproducibility run or Formal AI counterpart execution is credited.",
+      "status": "literal-source-comparison-and-counterpart-runtime-pending"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
@@ -3745,6 +4447,16 @@
       "templateCliExecuted": false,
       "formalAiPhysicalRegressionsPassed": true,
       "upstreamRepairVerified": false
+    }
+  ],
+  "visualSourceReviews": [
+    {
+      "path": "docs/screenshots/desktop-download-page.png",
+      "sha256": "b50c0d46cc12859cc5202d4fbbc9147abbbc7c138285139478e708070af7af35",
+      "verifiedMime": "PNG image data, 1440 x 1000, 8-bit/color RGB, non-interlaced",
+      "viewed": true,
+      "assessment": "Desktop downloads v0.1.0 empty-assets state, with checksum and attestation guidance; no evidence of an available artifact.",
+      "runtimeExecuted": false
     }
   ]
 }

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "documentation-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/documentation-only-ci-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "file": "publication-documentation-policy.log.gz",
+    "rawSha256": "6c6191e24a42dbdbc646293784c9c2b240c79c0847aae942fd18dd99e98714be",
+    "archiveSha256": "14be22fc437892f016e477a16d7123e6d2c7291a882ab448c51e10b8c7770109"
+  },
+  {
+    "name": "check-abbreviations",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 0,
+    "file": "publication-check-abbreviations.log.gz",
+    "rawSha256": "aed213b2d260b2b6334a851bdb5622853fc9dee759862deba5e9eff550de78b8",
+    "archiveSha256": "b2267ca4f635121ab086e101368851015f6cf48233e84eccd04ce1a6fd4d498a"
+  },
+  {
+    "name": "check-file-size",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 1,
+    "file": "publication-check-file-size.log.gz",
+    "rawSha256": "b0bdccfe094ca5e1777d70b0d2272bd7bcc4fda38e785f89206aa83b5113ce30",
+    "archiveSha256": "2d5a16a239ae35602a863cbdf2d12fe403a3909738ca526a01068475b634b031"
+  }
+]
