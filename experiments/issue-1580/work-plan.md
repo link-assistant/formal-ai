@@ -1112,3 +1112,11 @@ behavior and all wider acceptance criteria remain pending.
 - [x] Read four further complete pinned Rust helpers: package paths, registry metadata, publication and visibility polling. Literal source review is 82/373 files / 9150 lines; 291 source files and actual practice implementation/verification remain unfinished.
 - [ ] Complete original-contract review and replay: 31/53 have strict qualifying dated published evidence; matching changed test names do not by themselves establish the remaining original contracts. The three original budget cases remain open.
 - [ ] Independent accepted Formal AI reasoning remains 0/20. Supplied commands, code, tests and review scripts receive no independent credit.
+
+### Restored original delivery contract and continued Rust review, 2026-11-20
+
+- [x] Restore the original full Claude Kotlin native test name and prepared-PR prompt; use physical temporary Git delivery and explicit compiler/network fixtures. The JavaScript consumer passes 18/18 and removing the prepared-PR sentence fails the new regression. Hosted native confirmation remains pending.
+- [x] Read every source line in 20 further pinned Rust template files covering release/index guards, changelog handling, change detection, size/tool checks, link recovery and the isolated secret-scanner lock. Literal read coverage is 102/373 files / 17346 lines.
+- [ ] Complete the remaining 271 Rust template file dispositions and all applicable Formal AI counterpart experiments/repairs; a source read does not finish implementation or verification.
+- [ ] Keep original native-contract semantic review separate from the conservative unchanged-file ledger. The removed Claude prepared-PR scope was a real coverage gap and is now restored; other changes require individual reasoning and current hosted evidence.
+- [ ] Complete the three original budget criteria, independent Formal AI reasoning (still 0/20) and all eight template/practice comparisons.

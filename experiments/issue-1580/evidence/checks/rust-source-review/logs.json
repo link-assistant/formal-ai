@@ -78,5 +78,170 @@
     "file": "rust-path-registry-read.log.gz",
     "rawSha256": "45ea1bcfe7457446fac9e6472a779f3d5aefd9fe05f3bcecb462a8570bc47877",
     "archiveSha256": "18860c757e84cc101613a917b36649c43171070f162c77b81dad77ed9259bba5"
+  },
+  {
+    "file": "release-links-.github__secretlint__package-lock.json.1.read.log.gz",
+    "rawSha256": "0030e8dd84b9a3d64f50e5bd1700a3bb390b897d24842ae26dcd3140641eb24f",
+    "archiveSha256": "fb78ae7842f3dce17c0cc8d647dd156464eb4c8ad4f35e0225e1687017ff1d8e"
+  },
+  {
+    "file": "release-links-.github__secretlint__package-lock.json.351.read.log.gz",
+    "rawSha256": "888f7e1046fc50f2d8eaa6d1f65db9ad76d733b9441fbb43f8a8bdb2aa792386",
+    "archiveSha256": "fe8b7ad5476c0eae1c1d3cd6259fc89144a68da5dc18c5963b14852b5d553845"
+  },
+  {
+    "file": "release-links-.github__secretlint__package-lock.json.701.read.log.gz",
+    "rawSha256": "1623e93fa8c9fb73ff1c9e187731c75425748374dad00eb0f9e193a636d60930",
+    "archiveSha256": "491eb65e447b5d6ab1562a4f6b18d052cd5a6e83e4676e04402cc796b2c585e9"
+  },
+  {
+    "file": "release-links-.github__secretlint__package-lock.json.1051.read.log.gz",
+    "rawSha256": "32cecdbeb935d04aa0bba4a465745ce65979e7bd51c163599151bb480846faed",
+    "archiveSha256": "e51a4a0090a735e12adc2b6a22d52c65812cb5c2105d87ac987ea0540f9ae746"
+  },
+  {
+    "file": "release-links-scripts__check-changelog-fragment.rs.1.read.log.gz",
+    "rawSha256": "26b4cab0b9a2df89be655caa84cb900efb7347d0e23591bdd525bb047ea2c255",
+    "archiveSha256": "d77f4dda27fa631739aeddb99896829811492e8034160219239b27d8b07f2eab"
+  },
+  {
+    "file": "release-links-scripts__check-crate-size.rs.1.read.log.gz",
+    "rawSha256": "1aadcf0af3004ef700c90e2e7faf61daa4b9a8a40cabe119333018f38d19d45a",
+    "archiveSha256": "72a844f7feb33645b87a2eb4f314e7c4b1d38eadb3d0d1a453f9d3ed4de28b4d"
+  },
+  {
+    "file": "release-links-scripts__check-file-size.rs.1.read.log.gz",
+    "rawSha256": "61206c7751a82c00d0070e2d3c8a5fab322369083d05a4197d5458b2418387a1",
+    "archiveSha256": "38584ff09f812d3e608ab50d49f9e7f2f285fe58f689751fabb4231d1421ec67"
+  },
+  {
+    "file": "release-links-scripts__check-file-size.rs.351.read.log.gz",
+    "rawSha256": "717a99ce106943d387b589c444c2ccfde52a593a549240afac8ff977416767e8",
+    "archiveSha256": "c87cf809f761de79911e4f0fecf424451f83e97e742b3024afd86d657d9becd4"
+  },
+  {
+    "file": "release-links-scripts__check-web-archive.mjs.1.read.log.gz",
+    "rawSha256": "9c1ade5738635e746ae14d6b7f2607e548e46f7486bcb43153827cf8ccffbe41",
+    "archiveSha256": "74e6b2c01ce13bd8d736341f89f8f99490b3ca7abbd78f9e5052ba25d0d36cb4"
+  },
+  {
+    "file": "release-links-scripts__check-web-archive.mjs.351.read.log.gz",
+    "rawSha256": "9c7c49c24a2c2aee938485ad0df8af8ba8500f7d130e91304422015c1399ca06",
+    "archiveSha256": "f4d4215f31509955fa47454214fd777789a611b461ba2ced0c8b95bb888829e6"
+  },
+  {
+    "file": "release-links-scripts__check-web-archive.test.mjs.1.read.log.gz",
+    "rawSha256": "fa462aee4cda5589c10b7f58fcf324d82f1ade4b1a181feeb979d5f611ce3f02",
+    "archiveSha256": "7e6c8418633427e9a16b33ad28b53ab2a07c27e7f1bf6ec85f4aecc08b80d0bc"
+  },
+  {
+    "file": "release-links-scripts__check-workflow-tools.rs.1.read.log.gz",
+    "rawSha256": "6534ca82a2bbe08cce2c52a60ba5ff0ecf3f13ce3804dc31f4bedbb80d1dd15a",
+    "archiveSha256": "a9473e91cc276831b5faaa7171ab03aa2a395701011530d54c984cd5328e52bd"
+  },
+  {
+    "file": "release-links-scripts__collect-changelog.rs.1.read.log.gz",
+    "rawSha256": "78b707ae215449adbccfaabb516c24f21e2bf7455e209e71f2c946e19dbc621f",
+    "archiveSha256": "f398d0379a08e1950f4533361d90537a75682ec67592b401f7e04426bca84888"
+  },
+  {
+    "file": "release-links-scripts__create-changelog-fragment.rs.1.read.log.gz",
+    "rawSha256": "b90cec6939b3715b77b0498ce0e39cb7f0a3dda8d4bd779a8ee98089c4b6f90d",
+    "archiveSha256": "7b2c55c33d1e517a70f23e169fa79ff991f5e049a639e708f8dd0215846ca7bb"
+  },
+  {
+    "file": "release-links-scripts__create-github-release.rs.1.read.log.gz",
+    "rawSha256": "23d1a614306614220a9a7560d7fd5055c09c89abcc2058bf3a9900c90601e760",
+    "archiveSha256": "37cd8cde77afc63710315b2fb13a1ed89eefbe5d2068ecfe4bd00f33596b787b"
+  },
+  {
+    "file": "release-links-scripts__create-github-release.rs.351.read.log.gz",
+    "rawSha256": "99c100b20ebdf0aa11c2a122d2aed1d54dcc55bf824fa45f927050f2b7362f18",
+    "archiveSha256": "0867a10b5afb69e30a2191ecbf8eb3cca89fb6bfe15a74db63b146327aa2046e"
+  },
+  {
+    "file": "release-links-scripts__detect-code-changes.rs.1.read.log.gz",
+    "rawSha256": "5a890602b29cc99dbca80eb7fe3565513139fabfd6d000928ca84520095b9db2",
+    "archiveSha256": "2c153002740b448df67476321badc52520a66e3d87027faec0365b4fabb735cb"
+  },
+  {
+    "file": "release-links-scripts__detect-code-changes.rs.351.read.log.gz",
+    "rawSha256": "2bafab2815afd09d26b0ac6dbff959723a1903b5ce0ae9ab039ca8c54a8ac0d4",
+    "archiveSha256": "cdce23f562d75c240ff37ad3662b7740a11202add7e8514571e67779166e0691"
+  },
+  {
+    "file": "release-links-scripts__issue-237.test.mjs.1.read.log.gz",
+    "rawSha256": "10279bd8cbf9d35f9c6739c8f2ad2ae3d3476cc895a935bfd85c2ccf1ba7cad8",
+    "archiveSha256": "dcb6b2af135697f3d610b3d1d0e7d07570334b9e0c8f3e9145bf0f7c470c296e"
+  },
+  {
+    "file": "release-links-scripts__recheck-broken-links.mjs.1.read.log.gz",
+    "rawSha256": "6c7b50f3f594285a1789c3f75e374be7ed820cc6a41847aed252e10aea42e694",
+    "archiveSha256": "7fd1823a10edda0109c824a6e45c56b5ca093c28f2a0467f2f9fca4b142205f6"
+  },
+  {
+    "file": "release-links-scripts__recheck-broken-links.test.mjs.1.read.log.gz",
+    "rawSha256": "2108b74cd4d729c4d407bc782536b7e1a7a781d61df3c842e254c61194feab6a",
+    "archiveSha256": "5e26e0fb5fe7b349896657c2d531d13c9d7fefc6567759c1c0b99f2439a220a8"
+  },
+  {
+    "file": "release-links-scripts__recheck-broken-links.test.mjs.351.read.log.gz",
+    "rawSha256": "d497e1a119e7c6e7b44d98c29d28a8103eda7073f8a1d8e16766d67adb5c6da8",
+    "archiveSha256": "6bf4523b49fb58b97f49c4a308c530a755f77890e5dd02f687f8076136b91f2d"
+  },
+  {
+    "file": "release-links-scripts__release-index.rs.1.read.log.gz",
+    "rawSha256": "108ba604f08b43d9e5d8e6f734324792b4edead873791e5ccd8d21e6dfe3d1a0",
+    "archiveSha256": "8ca8c763bf69c42c3aa5d81fd41c1c08eb1e7335b9f456a7571df65c3f8af2af"
+  },
+  {
+    "file": "release-links-scripts__smoke-test-published-crate.rs.1.read.log.gz",
+    "rawSha256": "42c102e54744f0d404ed8051d7480a691ae95005dd9cffcf6b21cdf8ce4cc048",
+    "archiveSha256": "695fc3f83ef0bb0237901f245f5b2ae84fe78205468a67736ad5c6a689cd16fc"
+  },
+  {
+    "file": "release-links-scripts__smoke-test-published-crate.rs.351.read.log.gz",
+    "rawSha256": "16c6bbdb6508d348fc9de5a718be10a05d1f6b29198ad087f027598ef1b2f2f2",
+    "archiveSha256": "fcb2d7d39d6ea7984192d6ef6366689d94e19554a26969aeaeee80df725d28bb"
+  },
+  {
+    "file": "release-links-scripts__version-and-commit__crates-io.rs.1.read.log.gz",
+    "rawSha256": "31c7ed1511937ab207d7f9a3ccf5dde166ef17dc0fd8a2982aad57f26f23be51",
+    "archiveSha256": "c087f0758f8d384f3b656846335a6e979819c91f7f526cd6a8a1b0ef560ee09f"
+  },
+  {
+    "file": "release-links-scripts__version-and-commit__source-guard.rs.1.read.log.gz",
+    "rawSha256": "c96e0d67afe293dfeb3700e91370dec1500ae99f47fb8651506825988328f058",
+    "archiveSha256": "12a30bc11a46bbc95f6a000015c5b3d822c2a403e4401d42f3f7ab1e0f2f4850"
+  },
+  {
+    "file": "release-links-scripts__version-and-commit__source-guard.rs.351.read.log.gz",
+    "rawSha256": "7b12aeba701fd09b75f31cefcf0a5422848e24dc1dfa194e123b32acff6b4875",
+    "archiveSha256": "e19289234fc49445d85e61e68327dbce91156cf9053c604a6077d9a57fce30eb"
+  },
+  {
+    "file": "release-links-scripts__version-and-commit__tests.rs.1.read.log.gz",
+    "rawSha256": "4ad1aad7b721ec2fa1b8d87e82b335e7c61d5abe3e307c5a03def0757e9f868d",
+    "archiveSha256": "bd9a3c279179248bdca6c1b5264d28fc0b55b7ea3ade81d0bf0a71757fd0e4fa"
+  },
+  {
+    "file": "release-links-scripts__version-and-commit__tests.rs.351.read.log.gz",
+    "rawSha256": "71af1b138a9ece749e2c71891bce17ec16c4bd4149b75d7aed7626e3716f9bcc",
+    "archiveSha256": "bca60fe0abfb47bd24a128c9963ef28dd922638d7ef3c35583abdc46cf303e1b"
+  },
+  {
+    "file": "release-links-scripts__version-and-commit.rs.1.read.log.gz",
+    "rawSha256": "e38a2acc6b88f35ea19df27b6001ebe8082bc2b023c9c617b2616d1a5d221f99",
+    "archiveSha256": "82b61020acf336759da9c02ffd728d3a694bdf4364166893030852a884a3570c"
+  },
+  {
+    "file": "release-links-scripts__version-and-commit.rs.351.read.log.gz",
+    "rawSha256": "84729a6c291b6afc43a227e072edf2417d62d539f5d57374953c775993887abe",
+    "archiveSha256": "4c0684951a865e26f3ca6c9c7617d1ae80dcc2cc3ca881dda537dec2f308b39c"
+  },
+  {
+    "file": "release-links-scripts__version-and-commit.rs.701.read.log.gz",
+    "rawSha256": "922bc2fbadcfee6e434a8b14a621888c94bb131f3bfc5e131bcd686a615aaf36",
+    "archiveSha256": "df826b97244ff55a8b16230b112e5805691cad200d3ec3aa1cfa1a4408b119cd"
   }
 ]
