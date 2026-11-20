@@ -345,7 +345,7 @@ test('HTTP credentials and chat route run the installed recipe against the same 
         FORMAL_AI_DYNAMIC_META_LOOPBACK: new URL(url).host,
       },
     });
-    await native.ready();
+    await native.ready(bearer);
     endpoint = native.url;
   }
   const post = (path, payload, headers) => fetch(endpoint + path, {

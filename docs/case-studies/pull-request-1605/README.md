@@ -37,3 +37,11 @@ dependency. The checkout includes that subtree and the policy test pins the
 checkout, frozen dependencies, replay command, and native binary path.
 [Layered CI job](https://github.com/link-assistant/formal-ai/actions/runs/44774775512/job/136421751274#step:12:2853) ·
 [CI/CD pipeline](https://github.com/link-assistant/formal-ai/actions/runs/44774775673)
+
+On head `54a4ec5481f57635572a9d7a260b9a050aa64fed`, Layered CI passed and the
+native job loaded the JavaScript host. The fixture then timed out while polling
+`/api/hello`. With a configured application token, the native CLI returned 401
+for that probe and 200 when the fixture supplied the bearer. Both native replay
+entry points now use the same bearer for readiness and authenticated requests.
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/44779712097) ·
+[Native job](https://github.com/link-assistant/formal-ai/actions/runs/44779713320/job/136439584943)

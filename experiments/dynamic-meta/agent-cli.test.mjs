@@ -16,6 +16,7 @@ test('the real Agent CLI receives the trace of a compiled plugin recipe', async 
   t.after(() => rm(directory, { recursive: true, force: true }));
   const appToken = 'dynamic-meta-agent-test';
   const adminToken = 'dynamic-meta-operator-test';
+  const bearer = { authorization: `Bearer ${appToken}` };
   const { server, url } = await startServer({
     agentMode: true,
     env: {
@@ -39,7 +40,7 @@ test('the real Agent CLI receives the trace of a compiled plugin recipe', async 
           FORMAL_AI_DYNAMIC_META_LOOPBACK: new URL(url).host,
         },
       });
-      await native.ready();
+      await native.ready(bearer);
       endpoint = native.url;
     }
     const send = async (body, credentials) => {
@@ -53,7 +54,6 @@ test('the real Agent CLI receives the trace of a compiled plugin recipe', async 
       return result;
     };
     const admin = { 'x-formal-ai-meta-admin': adminToken };
-    const bearer = { authorization: `Bearer ${appToken}` };
     const manifest = await readFile(new URL('./package.json', import.meta.url), 'utf8');
     await send({ action: 'install', manifest, confirm: true }, admin);
     const dataset = await send({ action: 'dataset', dataset: 'example/sample', confirm: true }, bearer);
