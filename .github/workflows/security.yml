@@ -38,6 +38,11 @@ on:
         required: false
         default: false
         type: boolean
+      macro-contexts:
+        description: 'Observe Rust macro AST contexts in the read-only CodeQL run'
+        required: false
+        default: false
+        type: boolean
       pull-request:
         description: 'Pull request the dispatched checks report for'
         required: false
@@ -108,6 +113,7 @@ jobs:
         run: python3 scripts/codeql-rust-projects.py --output "${{ runner.temp }}/codeql-rust-contexts"
 
       - uses: github/codeql-action/init@v4
+        id: codeql-init
         with:
           languages: ${{ matrix.language }}
           # Issue #1017: keeps archived evidence trees out of the extractor so a
@@ -121,9 +127,21 @@ jobs:
           node-version: '24'
 
       - uses: github/codeql-action/analyze@v4
+        id: codeql-analyze
         with:
           output: ${{ runner.temp }}/codeql-results
           upload: ${{ github.job == 'codeql' && 'always' || 'never' }}
+
+      - name: Observe Rust macro expansion contexts
+        if: ${{ github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts }}
+        timeout-minutes: 4
+        env:
+          CODEQL_BINARY: ${{ steps.codeql-init.outputs.codeql-path }}
+          CODEQL_DATABASES: ${{ steps.codeql-analyze.outputs.db-locations }}
+        run: >-
+          python3 experiments/issue-1580/codeql-macro-contexts/observe.py
+          --codeql "$CODEQL_BINARY" --databases "$CODEQL_DATABASES"
+          --output "${{ runner.temp }}/codeql-results/macro-contexts"
 
       - name: Reject unresolved CodeQL findings
         if: ${{ !cancelled() }}

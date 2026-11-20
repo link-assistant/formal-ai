@@ -458,3 +458,103 @@ with tempfile.TemporaryDirectory(prefix='rust-context-publication-') as director
         assert 'Refusing to overwrite' in str(e)
 `);
 });
+
+
+test('optional Rust macro observation reuses the read-only producer without replacing security queries', () => {
+  const workflow = YAML.parse(readFileSync('.github/workflows/security.yml', 'utf8'));
+  assert.equal(workflow.on.workflow_dispatch.inputs['macro-contexts'].default, false);
+  const steps = workflow.jobs.codeql.steps;
+  const probe = steps.find(step => step.name === 'Observe Rust macro expansion contexts');
+  assert.equal(probe.if, "${{ github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts }}");
+  assert.equal(probe['timeout-minutes'], 4);
+  assert.equal(probe.env.CODEQL_BINARY, '${{ steps.codeql-init.outputs.codeql-path }}');
+  assert.equal(probe.env.CODEQL_DATABASES, '${{ steps.codeql-analyze.outputs.db-locations }}');
+  const init = steps.find(step => step.id === 'codeql-init');
+  const analysis = steps.find(step => step.id === 'codeql-analyze');
+  assert.ok(init.uses.startsWith('github/codeql-action/init@'));
+  assert.ok(analysis.uses.startsWith('github/codeql-action/analyze@'));
+  assert.equal(init.with.queries, undefined, 'diagnostics must not replace the security suite');
+  assert.ok(steps.indexOf(probe) > steps.indexOf(analysis));
+  const gate = steps.find(step => step.name === 'Reject unresolved CodeQL findings');
+  assert.ok(steps.indexOf(gate) > steps.indexOf(probe));
+  assert.equal(gate.if, '${{ !cancelled() }}', 'failed diagnostics must still check original SARIF');
+  assert.ok(probe.run.includes('codeql-results/macro-contexts'));
+  assert.equal(workflow.jobs['codeql-readonly'].steps, steps);
+});
+
+test('macro observation preserves actual command failures and rejects incomplete tables without local compilation', {timeout: 20000}, () => {
+  const adapter = new URL('../../../experiments/issue-1580/codeql-macro-contexts/observe.py', import.meta.url);
+  const code = String.raw`
+import importlib.util, json, pathlib, sys, tempfile
+sys.dont_write_bytecode = True
+spec = importlib.util.spec_from_file_location('probe', sys.argv[1])
+a = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(a)
+with tempfile.TemporaryDirectory(prefix='macro-probe-') as temporary:
+    root = pathlib.Path(temporary)
+    database = root / 'database with spaces'
+    database.mkdir()
+    (database / 'codeql-database.yml').write_text('primaryLanguage: rust\n')
+    codeql = root / 'codeql'
+    codeql.write_text('''#!/usr/bin/env python3
+import json, pathlib, sys
+root=pathlib.Path(__file__).parent
+mode=(root/'mode').read_text()
+args=sys.argv[1:]
+if args[0]=='version':
+    print(json.dumps({'version':'fixture-only'}))
+elif args[:2]==['query','run']:
+    assert '--threads=2' in args and '--ram=2048' in args and '--max-disk-cache=512' in args
+    assert '--warnings=error' in args
+    assert pathlib.Path(args[-1]).read_bytes()==(root/'query.ql').read_bytes()
+    if mode=='query-failure':
+        print('actual fixture query failure',file=sys.stderr)
+        sys.exit(7)
+    pathlib.Path(next(a.removeprefix('--output=') for a in args if a.startswith('--output='))).write_bytes(b'fixture BQRS')
+elif args[:2]==['bqrs','decode']:
+    assert '--entities=all' in args and '--format=json' in args
+    if mode=='decode-failure':
+        sys.exit(9)
+    row=[{'id':1},'rust/src/included.rs',4,1,4,12,'expanded','inside-expansion']
+    table={'columns':[{}]*8,'tuples':[] if mode=='empty' else [row[:-1] if mode=='malformed' else row]}
+    pathlib.Path(next(a.removeprefix('--output=') for a in args if a.startswith('--output='))).write_text(json.dumps({'#select':table}))
+else:
+    sys.exit(10)
+''')
+    codeql.chmod(0o755)
+    pack = root / 'qlpacks/codeql/rust-queries/0.1.47'
+    pack.mkdir(parents=True)
+    manifest = pack / 'qlpack.yml'
+    manifest.write_text('name: codeql/rust-queries\nversion: 0.1.47\n')
+    (root / 'query.ql').write_bytes(pathlib.Path(sys.argv[1]).with_name('MacroContexts.ql').read_bytes())
+    before = {p.relative_to(pack):p.read_bytes() for p in pack.rglob('*') if p.is_file()}
+    for mode in ['success','query-failure','decode-failure','empty','malformed','missing-database','ambiguous-pack']:
+        (root / 'mode').write_text(mode)
+        output = root / ('output-' + mode)
+        other = root / 'qlpacks/codeql/rust-queries/other'
+        if mode=='ambiguous-pack':
+            other.mkdir()
+            (other / 'qlpack.yml').write_bytes(manifest.read_bytes())
+        try:
+            a.observe(codeql, {'rust':str(root/'absent' if mode=='missing-database' else database)}, output)
+            assert mode=='success', mode
+        except (ValueError, RuntimeError):
+            assert mode!='success', mode
+        result = json.loads((output/'manifest.json').read_text())
+        assert result['complete']==(mode=='success'), mode
+        assert result['semanticCoverageProven'] is False
+        assert result['independentAuthorshipCredit']==0
+        assert before=={p.relative_to(pack):p.read_bytes() for p in pack.rglob('*') if p.is_file()}, mode
+        if mode=='query-failure':
+            assert result['commands'][-1]['exitCode']==7
+            assert (output/'query.stderr').read_text()=='actual fixture query failure\n'
+        if mode=='decode-failure':
+            assert result['commands'][-1]['exitCode']==9
+        if mode=='success':
+            assert result['rows']==1
+            assert (output/'macro-contexts.bqrs').read_bytes()==b'fixture BQRS'
+`;
+  const result = spawnSync('python3', ['-c', code, adapter.pathname], { encoding: 'utf8', timeout: 15000 });
+  assert.equal(result.signal, null, result.stderr);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+});
