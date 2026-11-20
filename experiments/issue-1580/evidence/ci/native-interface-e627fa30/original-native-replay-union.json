@@ -5,7 +5,7 @@
   "publishedPassingReplayUnion": 27,
   "withoutPublishedPassingReplay": 26,
   "originalBudgetFailuresStillOpen": 3,
-  "currentNativeTestsPassed": 181,
+  "currentNativeTestsPassed": 131,
   "currentMatchingOriginalNames": 13,
   "newPassingReplaysWithOriginalBytesPreserved": [],
   "tests": [
@@ -887,5 +887,7 @@
       "path": "rust/tests/unit/specification/debug_session.rs"
     }
   ],
-  "currentNativeJobConclusion": "cancelled"
+  "currentNativeJobConclusion": "cancelled",
+  "namedNativePassesMatched": 131,
+  "currentNativeTestsFailed": 0
 }
