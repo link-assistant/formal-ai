@@ -1018,3 +1018,24 @@ The exact command/log hashes are retained in `evidence/checks/native-ci-repair/`
 the earlier stale source-regex failure is retained separately. No governed
 fixture refresh is needed for this public protocol export. Hosted native
 behavior and all wider acceptance criteria remain pending.
+
+### Language seed and current CI-source diff review, 2026-11-20
+
+- Read all 3,454 diff lines across the English, Spanish, Hindi, Russian and Chinese CNL language seed files. No new defect was established in this format conversion; this is not native language acceptance evidence.
+- Reread the three CI-source diffs whose source or diff identities had changed before refreshing their review records. The selected production diff inventory is now 106/106 at the recorded main base. The complete pull request remains unreviewed.
+- Evidence: `evidence/checks/production-diff-review/language-seed-review-2026-11-20.json`. Original native acceptance remains 27/53, and independently authored acceptance remains 0/20 pending published behavior results.
+
+### Java file applicability map, 2026-11-20
+
+- [x] Complete the pinned 207-file source comparison: 62 active and 145 historical files, with all source identities and comparison references reverified. The final receipt is `docs/case-studies/issue-1580/templates/java-complete-file-comparison.json`.
+- [ ] Verify applicable practice implementation and resolve the recorded runtime, dependency, native and wider acceptance limits. No Maven build, hosted dispatch or live publication is claimed. Earlier partial source records remain dated evidence; this final file-map receipt supersedes their file counts.
+
+### Native execution scheduling and Java project version, 2026-11-20
+
+- [x] Read the exact-head pipeline failure: native job 135996221984 in run 44648187857 finishes compilation at log line 1724 (4m21s), passes all 32 coding cases at line 1809 (637.27s), then is cancelled during reasoning at line 1925. The 22 other exact-head workflows pass. No Rust assertion failure is established by this cancelled run; later skipped steps earn no execution credit.
+- [x] Reproduce runner partition failures with finite mock Cargo commands: 6 pass / 10 fail before the change; 16 pass afterward. The maintained policy entrypoint passes 69 tests. Shell syntax and ShellCheck pass. No local Rust build or execution is performed.
+- [x] Give coding, reasoning, Hive Mind, benchmarks and interfaces independent matrix jobs (two at a time), retaining core contracts and later native transport/language/catalog checks. Preserve every target, reasoning filter coverage, failure propagation and 20-minute job limits.
+- [ ] Verify all partitioned families on the published commit in CI and repair every actual failure.
+- [x] Reproduce Java release project-version corruption with an unchanged pinned CLI and four disposable local Git repositories: plain project passes; different-parent, equal-parent and leading-comment cases report release success while the project POM stays at 1.2.3. The equal-parent case changes its parent version. Independently parse every result with Python XML ElementTree.
+- [x] Verify a disposable candidate updates only the actual project-version bytes in all four cases. Disabling it produces the expected regression failure (1 pass / 1 fail); enabling it passes both focused tests and all 54 maintained template tests. The candidate has not repaired upstream, and Maven and hosted publication remain unexecuted.
+- [ ] Publish immutable evidence, check current upstream source and existing issues, and report the distinct Java project-version defect. Preserve all wider issue acceptance limits and zero independent authorship credit.

@@ -12,11 +12,11 @@
     },
     {
       "path": "scripts/ci-pull-request-admission.mjs",
-      "sourceSha256": "1ca7b6ef650e2096bcc0e5887580e01451fcaf0a57c5b24d96fe87047750d9f9",
-      "diffSha256": "07b0313bfc0f42648366fcabccf4bf67cf521a8e4a0bd0e28c98946491b6647d",
-      "diffLines": 101,
+      "sourceSha256": "f412980f6d521d7789f459d19abb977be265b1c723973705114b40fc878e66b3",
+      "diffSha256": "9634be206d37e6e5eb441da5588bd584fcf6b8fd955f4ab66eb2c9dd0f14fe0f",
+      "diffLines": 158,
       "completeDiffLiterallyRead": true,
-      "completeSourceLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
       "newDefectEstablished": false
     },
     {
@@ -30,11 +30,11 @@
     },
     {
       "path": ".github/workflows/native-type-check.yml",
-      "sourceSha256": "0af06839dda1b638eb4a990d92199981aa518946a0e7dba2dbdb6091362b2270",
-      "diffSha256": "f5ff9f97623d9bee22f0ff938d086c83f57498d7411c7576000986c192bfcdcc",
-      "diffLines": 121,
+      "sourceSha256": "58822ae4b03231dde4a59fe18329a68e76386c612043f9de539fae0f9f5ddf43",
+      "diffSha256": "5859d50f261974a4e176a245bdcc443e6ae3be17841feeda74f859120a29e362",
+      "diffLines": 186,
       "completeDiffLiterallyRead": true,
-      "completeSourceLiterallyRead": false,
+      "completeSourceLiterallyRead": true,
       "newDefectEstablished": false
     },
     {
@@ -156,9 +156,9 @@
     },
     {
       "path": "scripts/ci-native-regressions.sh",
-      "sourceSha256": "4c7aa057fcd935fb8a719093debed8eeea0a148c88c7d916a2733d07ab761a7d",
-      "diffSha256": "bae4b6ea6fbcfeac2780221ff69c6efb64cb855625a1dceef0e2b34a06cde6e8",
-      "diffLines": 33,
+      "sourceSha256": "64b7befd32dc6c9ee336075184cfc180f76c7be91f404a9a126c059133dc1b6c",
+      "diffSha256": "60766b9ba7d6dabb8b3449e0e0dcbbca9fc954cbfb3734fa7be7cf1b75e3f38e",
+      "diffLines": 98,
       "completeDiffLiterallyRead": true,
       "completeSourceLiterallyRead": true,
       "newDefectEstablished": false
@@ -957,6 +957,51 @@
       "sourceSha256": "d7bd7c4fb5f48486be1df0b449e1e686e73dbb9fb26535cd6dd3a560b3a81bcb",
       "diffSha256": "1b5831a61e81abed7a1ce0bfe43918942dccefa83c5d2060139152ba2fd4a81d",
       "diffLines": 260,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/cnl-language-en.lino",
+      "sourceSha256": "55e7621b3cc5768dedaba1011bb98ca67601faacf9ad2b04f457e280bced3ed8",
+      "diffSha256": "77b9bba84c1e8546762fcc2c6435d91f2ec6ab86264d8c6962138539b7848e44",
+      "diffLines": 685,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/cnl-language-es.lino",
+      "sourceSha256": "c0c87ecb5836c0819e98dab6d9069719c219c200877f572d0eade1c3f4d09d86",
+      "diffSha256": "5d25d4d3fb87b218c52bae49329331c23137f766c1b6d7202b7a2f6c9b075c49",
+      "diffLines": 677,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/cnl-language-hi.lino",
+      "sourceSha256": "7fccebecd2139d96b5eaa8a494b821ca1d5632380f1bb186255f0809df3dcdc1",
+      "diffSha256": "08f8e8da0be2209954787b1eee5455724da7a2a5088ad734abdb879e7e1ddb7c",
+      "diffLines": 695,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/cnl-language-ru.lino",
+      "sourceSha256": "7ff24d8603a2a0f245602f3f0b10c40330e72b8d273d4012bfc9431c147541a2",
+      "diffSha256": "7228849203dd55cd63f56002ed0a8e147083ead646669dc54f554ef7112789d5",
+      "diffLines": 690,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "data/seed/cnl-language-zh.lino",
+      "sourceSha256": "105a2b0ea949c20f48004073432061a01e1c3939094a2ccbefa2f629338b71dc",
+      "diffSha256": "71c78108a0069c4253a5b0c570aab31786ba541ab5a4b1dddd626c91d3258926",
+      "diffLines": 707,
       "completeDiffLiterallyRead": true,
       "completeSourceLiterallyRead": false,
       "newDefectEstablished": false

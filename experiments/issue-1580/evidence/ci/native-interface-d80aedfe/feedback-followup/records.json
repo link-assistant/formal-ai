@@ -13,7 +13,8 @@
       ],
       "exitCode": 0,
       "rawSha256": "b7b04b05c215c3aa874cfb40e984bf963c218b98c952c8213cfdc5baa7aeb3d8",
-      "count": 1
+      "count": 1,
+      "file": "issue.json.gz"
     },
     {
       "name": "issue-comments",
@@ -25,7 +26,8 @@
       ],
       "exitCode": 0,
       "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
-      "count": 1
+      "count": 1,
+      "file": "issue-comments.json.gz"
     },
     {
       "name": "pr-comments",
@@ -37,7 +39,8 @@
       ],
       "exitCode": 0,
       "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
-      "count": 11
+      "count": 11,
+      "file": "pull-request-conversation-comments.json.gz"
     },
     {
       "name": "inline-comments",
@@ -49,7 +52,8 @@
       ],
       "exitCode": 0,
       "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-      "count": 0
+      "count": 0,
+      "file": "inline-comments.json.gz"
     },
     {
       "name": "reviews",
@@ -61,7 +65,8 @@
       ],
       "exitCode": 0,
       "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-      "count": 0
+      "count": 0,
+      "file": "reviews.json.gz"
     }
   ]
 }
