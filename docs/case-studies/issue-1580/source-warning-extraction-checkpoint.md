@@ -169,3 +169,31 @@ module/import/re-export lines; no domain debt is hidden or reclassified. All
 five failed gates pass, along with three recursive-handler census cases, eight
 runtime-inventory cases, five event-origin cases, translation currency and the
 four source gates. A complete inventory replay is required before publication.
+
+## Generic primitive qualification after the debt replay
+
+The second complete inventory passes or explicitly skips 137 of 141 entries.
+Three failed entries report the same measured handler debt: 49 against the
+unchanged ceiling of 47. The fourth reports a stale generated status row.
+The initial conservative child classifications above are preserved in history;
+this later review applies the actual minimal-core promotion criteria.
+
+The replacement child is generic byte-range and normalized-token substitution;
+its parent retains request recognition, operation selection and seed lookup.
+The boundary-scanning child now receives verb surfaces, continuation surfaces
+and a punctuation predicate from its parent. It imports no marker catalogue;
+the parent retains all web-search selection and routing. Exact inverse proofs
+restore the original implementation and parent wiring. Existing branches,
+token matching, Unicode handling and comments remain; the punctuation comment
+continues to document its original predicate. Formatting preserves syntax tokens
+and comments. Native compilation and behavior require the next hosted head.
+
+Both children meet the documented generic-interpreter criteria and are promoted
+with named components and explicit reasons. The measured parent/child lengths
+are 812/115; the complete handler census is 92 files and 36,532 lines, with
+50 outside-core files and 18,639 outside-core lines. The debt ledger and every
+debt ceiling remain byte-identical. All six focused boundary/debt/status gates,
+the existing line-operation and agentic-core JavaScript cases, translation
+currency, formatting and source gates pass. The maintained status renderer
+updates its ledger row to 553 lines. Both failed complete runs and failed-before
+controls remain retained. A third complete replay is required before pushing.

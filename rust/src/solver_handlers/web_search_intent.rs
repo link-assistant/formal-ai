@@ -16,8 +16,6 @@
 
 mod followup;
 
-use followup::truncate_search_instruction_tail;
-
 use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::normalize_prompt;
 use crate::seed::{
@@ -237,6 +235,16 @@ const fn is_url_wrapper_punctuation(character: char) -> bool {
 
 const fn is_url_trailing_punctuation(character: char) -> bool {
     matches!(character, '.' | ',' | '!' | '?' | ';' | ':' | '…')
+}
+
+fn truncate_search_instruction_tail(value: &str) -> &str {
+    let configured = markers();
+    followup::truncate_instruction_tail(
+        value,
+        &configured.followup_verbs,
+        &configured.continuation_markers,
+        is_sentence_boundary,
+    )
 }
 
 /// Sentence-ending punctuation that can introduce a follow-up instruction

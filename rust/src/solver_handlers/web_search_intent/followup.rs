@@ -1,6 +1,4 @@
-use super::is_sentence_boundary;
 use crate::coding::contains_cjk;
-use crate::web_search_markers::{WebSearchMarkers, markers};
 
 /// Drop a trailing follow-up instruction clause ("… and summarize who won",
 /// "… . Compare their patents") from a query.
@@ -13,14 +11,18 @@ use crate::web_search_markers::{WebSearchMarkers, markers};
 /// so the compound needs no stored surface). The query is cut at the start of
 /// the earliest such boundary. A bare verb with no boundary before it is part of
 /// the topic and left untouched.
-pub(super) fn truncate_search_instruction_tail(value: &str) -> &str {
-    let markers = markers();
+pub(super) fn truncate_instruction_tail<'a>(
+    value: &'a str,
+    followup_verbs: &[&str],
+    continuation_markers: &[&str],
+    is_sentence_boundary: fn(char) -> bool,
+) -> &'a str {
     // ASCII-lowercase keeps byte offsets identical to `value` (it only folds
     // A–Z), so indices computed here slice `value` safely; the non-ASCII verbs
     // are already lowercase in the lexicon and unaffected by the fold.
     let lower = value.to_ascii_lowercase();
     let mut cut = value.len();
-    for &verb in &markers.followup_verbs {
+    for &verb in followup_verbs {
         let cjk = contains_cjk(verb);
         let mut from = 0;
         while let Some(relative) = lower[from..].find(verb) {
@@ -32,7 +34,9 @@ pub(super) fn truncate_search_instruction_tail(value: &str) -> &str {
             if !cjk && (!is_token_start(&lower, start) || !is_token_end(&lower, end)) {
                 continue;
             }
-            if let Some(boundary) = boundary_before(&lower, start, markers) {
+            if let Some(boundary) =
+                boundary_before(&lower, start, continuation_markers, is_sentence_boundary)
+            {
                 cut = cut.min(boundary);
             }
         }
@@ -61,7 +65,12 @@ fn is_token_end(text: &str, index: usize) -> bool {
 /// If the text immediately before `verb_start` is a follow-up boundary, return
 /// the byte offset at which to cut (the start of the boundary run); otherwise
 /// `None`.
-fn boundary_before(text: &str, verb_start: usize, markers: &WebSearchMarkers) -> Option<usize> {
+fn boundary_before(
+    text: &str,
+    verb_start: usize,
+    continuation_markers: &[&str],
+    is_sentence_boundary: fn(char) -> bool,
+) -> Option<usize> {
     let head = text[..verb_start].trim_end();
     if head.is_empty() {
         // The verb opens the value — there is no preceding clause to split off.
@@ -76,8 +85,7 @@ fn boundary_before(text: &str, verb_start: usize, markers: &WebSearchMarkers) ->
     let mut matched = false;
     loop {
         let trimmed = cursor.trim_end();
-        let shortened = markers
-            .continuation_markers
+        let shortened = continuation_markers
             .iter()
             .find(|&&marker| ends_with_token(trimmed, marker))
             .map(|&marker| &trimmed[..trimmed.len() - marker.len()]);

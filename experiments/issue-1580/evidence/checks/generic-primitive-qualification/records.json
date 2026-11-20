@@ -1,0 +1,12 @@
+{
+  "parts": [
+    {
+      "file": "records-part-1.json",
+      "sha256": "fa040d4f6bca1b3781035af7f5f4b94c6215b6a9f40b38708a973ff8378b035a",
+      "entries": 65
+    }
+  ],
+  "entries": 65,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}
