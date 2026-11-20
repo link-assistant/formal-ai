@@ -190,3 +190,26 @@ test('real Git observations cannot authorize delivery after verifier failure',{t
   assert.ok(!run.steps.some(step=>step.call&&JSON.parse(step.call.arguments).command?.includes('git commit')));
   assert.match(run.steps.at(-1).plan.answer,/command failed: wrong output/u);
 });
+
+
+test('the original Claude Kotlin request retains prepared PR delivery after real Git verification',{timeout:65000},()=>{
+  const run=nativeFixtureProbe('Kotlin',[
+    '--claude-tools','--steps=24','--physical-delivery','--agent-cli-receipts','--verifier-result=success',
+  ]);
+  assert.equal(run.claudeTools,true);
+  const calls=run.steps.filter(step=>step.call).map(step=>({...step.call,args:JSON.parse(step.call.arguments)}));
+  assert.equal(calls.filter(call=>call.args.command?.startsWith('gh issue view ')).length,1);
+  assert.ok(calls.some(call=>call.tool==='Write'&&call.args.path==='Main.kt'));
+  assert.ok(calls.some(call=>call.tool==='Bash'&&call.args.command?.includes('git push')));
+  assert.equal(run.outcome.commits,2);
+  assert.equal(run.outcome.head,run.outcome.pushedHead);
+  assert.equal(run.outcome.status,'');
+  assert.deepEqual(run.outcome.pushed,['.github/workflows/Main.yml','Main.kt','tests/verify-output.sh']);
+  assert.equal(run.outcome.state.pr.isDraft,false);
+  assert.ok(run.outcome.state.pr.body.endsWith('Resolves '+run.outcome.state.pr.url.replace('/pull/2','/issues/1')));
+  const final=run.steps.at(-1).plan;
+  assert.equal(final.kind,'final');
+  assert.equal(final.result.disposition,'finding');
+  assert.ok(final.answer.includes(run.outcome.head));
+  assert.equal(run.compilerAndNetworkAreMocks,true);
+});

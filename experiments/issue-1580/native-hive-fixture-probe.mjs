@@ -19,6 +19,8 @@ for(const name of ['ISSUE','PR','BRANCH'])prompt=prompt.replaceAll('{'+name+'}',
 const pageLiteral=rustString(native.match(/fn page\(language: &str\) -> String \{[\s\S]*?format!\(\s*("(?:\\.|[^"\\])*")/u)[1]);
 const mode=process.argv[2]||'Scala';
 const agentTools=process.argv.includes('--agent-tools');
+const claudeTools=process.argv.includes('--claude-tools');
+if(agentTools&&claudeTools)throw Error('choose one client tool set');
 const verifierResult=process.argv.find(arg=>arg.startsWith('--verifier-result='))?.slice('--verifier-result='.length);
 if(verifierResult!==undefined&&!['empty','success','failure'].includes(verifierResult))throw Error('invalid verifier result');
 const physicalEdits=process.argv.includes('--physical-edits');
@@ -29,7 +31,9 @@ const requestedSteps=process.argv.find(arg=>arg.startsWith('--steps='))?.slice('
 const ceiling=requestedSteps===undefined
   ?(process.argv.includes('--expanded-steps')?32:(mode==='Scala'?8:10)):Number(requestedSteps);
 if(!Number.isInteger(ceiling)||ceiling<1||ceiling>32)throw Error('fixture steps must be between 1 and 32');
-const tools=agentTools||mode==='Scala'
+const claudeToolNames=native.match(/const CLAUDE_TOOLS: \[&str; 20\] = \[([\s\S]*?)\];/u)?.[1].match(/"[^"]+"/gu).map(value=>JSON.parse(value));
+if(!claudeToolNames||claudeToolNames.length!==20)throw Error('original Claude tools required');
+const tools=claudeTools?claudeToolNames:agentTools||mode==='Scala'
   ?['bash','batch','codesearch','edit','glob','grep','list','read','task','todoread','todowrite','webfetch','websearch','write']
   :['shell','apply_patch','update_plan','mcp__codex_apps__github_fetch','mcp__codex_apps__github_search'];
 await installNodeHost(new WorkerHost());
@@ -103,7 +107,7 @@ try {
         ?'Output: Hello, World!\n\nExit Code: 0':'Output: wrong output\nExit Code: 1';
     } else if(mode==='Scala'&&call.tool==='bash'&&!(physicalDelivery&&agentTools)){
       content='/bin/sh: 1: scalac: not found\n';
-    } else if(physicalDelivery&&['bash','shell'].includes(call.tool)&&args.command!=='sh tests/verify-output.sh'){
+    } else if(physicalDelivery&&['bash','shell','Bash'].includes(call.tool)&&args.command!=='sh tests/verify-output.sh'){
       observed=execute(args.command);content=receipt(observed);
     } else if(mode!=='Scala'&&call.tool==='shell'){
       content=args.command?.includes('git push')?'0123abcd\n':'Hello, World!\n';
@@ -120,6 +124,6 @@ try {
     commits:Number(git('rev-list','--count','HEAD')),
     state:JSON.parse(fs.readFileSync(toolEnv.FAKE_GH_STATE,'utf8')),
   }:null;
-  console.log(JSON.stringify({mode,agentTools,verifierResult,physicalEdits,projectEdits,physicalDelivery,agentCliReceipts,ceiling,
+  console.log(JSON.stringify({mode,agentTools,claudeTools,verifierResult,physicalEdits,projectEdits,physicalDelivery,agentCliReceipts,ceiling,
     steps,messages,outcome,compilerAndNetworkAreMocks:true,fullIssueComplete:false},null,2));
 }finally{fs.rmSync(root,{recursive:true,force:true});}

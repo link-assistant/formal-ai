@@ -8,7 +8,7 @@ const BODY_PLACEHOLDER: &str = "{body}";
 // Reuse the production reader and canonical templates without exporting a planner helper.
 use crate::canonical_work_item_steps;
 
-// These two fixtures stop at the named-branch commit phase. Prepared-PR delivery,
+// This fixture stops at the named-branch commit phase. Prepared-PR delivery,
 // feedback and readiness are exercised with real Git in issue_1158/1160/1162.
 fn commit_phase_prompt() -> String {
     prompt().replace(&format!("Update the pull request at {PR}.\n"), "")
@@ -196,24 +196,33 @@ fn a_fetch_only_client_progresses_past_the_read_without_refetching() {
 }
 
 #[test]
-fn the_claude_code_commit_phase_reads_builds_verifies_and_pushes_kotlin() {
-    let mut messages = vec![ChatMessage::user(commit_phase_prompt())];
+fn the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin() {
+    let delivery = crate::offline_delivery::Workspace::for_work_item(
+        "Kotlin",
+        "issue-1133-full-claude",
+        BRANCH,
+        PR,
+    );
+    let mut messages = vec![ChatMessage::user(prompt())];
     let kotlin = page("Kotlin");
-    let (planned, answer) = drive(
+    let (planned, answer) = drive_with_delivery_workspace(
         CLAUDE_TOOLS.as_slice(),
         &mut messages,
         |tool, arguments| {
             if is_work_item_read(tool, arguments) {
                 kotlin.clone()
-            } else if tool == "Bash" && arguments.contains("git push") {
-                "feed1234\n".to_owned()
-            } else if tool == "Bash" {
-                "Hello, World!\n".to_owned()
+            } else if tool == "Bash"
+                && serde_json::from_str::<serde_json::Value>(arguments).unwrap()["command"]
+                    == "sh tests/verify-output.sh"
+            {
+                // Compiler results are mocked; Git delivery is observed in this workspace.
+                "Output: Hello, World!\n\nExit Code: 0".to_owned()
             } else {
                 String::new()
             }
         },
         24,
+        Some(&delivery),
     );
     assert_eq!(
         planned
@@ -241,7 +250,24 @@ fn the_claude_code_commit_phase_reads_builds_verifies_and_pushes_kotlin() {
         "{planned:?}"
     );
     let answer = answer.expect("full Claude drive terminates");
-    assert!(answer.contains("Committed and pushed"), "{answer}");
+    let outcome = delivery.outcome();
+    assert_eq!(outcome.commits, 2, "one work-item commit is created");
+    assert_eq!(outcome.head, outcome.pushed_head);
+    assert_eq!(outcome.status, "", "delivery leaves a clean workspace");
+    for path in [
+        "Main.kt",
+        "tests/verify-output.sh",
+        ".github/workflows/Main.yml",
+    ] {
+        assert!(outcome.pushed.iter().any(|file| file == path), "{path}");
+    }
+    assert_eq!(outcome.pr["isDraft"], false);
+    assert!(outcome.pr["body"].as_str().unwrap().contains(ISSUE));
+    assert!(answer.contains(&outcome.head), "{answer}");
+    assert!(
+        answer.contains("Owned source, local execution, and the requested workflow were verified"),
+        "{answer}"
+    );
 }
 
 #[test]
