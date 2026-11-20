@@ -436,8 +436,9 @@ test('secrets scanning retains full history and every current file within separa
   assert.equal(Boolean(evaluate(job.if,{...context('pull_request'),cancelled:()=>true})),false);
   const scanner=read('scripts/check-secrets.sh');
   for(const marker of ['git merge-base "$base" HEAD',
-    'git diff --name-only --diff-filter=ACMRT -z "$merge_base" HEAD',
-    'git ls-files -z | exclude','SECRETLINT_VERSION:-13.0.5',
+    'read_inventory git diff --name-only --diff-filter=ACMRT -z "$merge_base" HEAD',
+    'read_inventory git ls-files -z','if ! wait "$producer"; then',
+    'SECRETLINT_VERSION:-13.0.5',
     '-p "secretlint@${SECRETLINT_VERSION}"','-p "@secretlint/secretlint-rule-preset-recommend@${SECRETLINT_VERSION}"'])
     assert.ok(scanner.includes(marker),'full reviewed secret selection/guard lost: '+marker);
   for(const mutate of [

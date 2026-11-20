@@ -1,0 +1,1 @@
+Split three CI Rust scripts below the existing source-size warning threshold while preserving all tests and behavior; update the secret-scan production contract to require complete, error-checked file inventories.
