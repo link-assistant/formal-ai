@@ -1,7 +1,7 @@
 // Verified native artifacts reject incompatible inputs before running the original testcase.
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,existsSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,existsSync,rmSync,readdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
@@ -125,7 +125,7 @@ test('primary server parity keeps its full source and every case within separate
 test('artifact adapter streams real archives and refuses unsafe or corrupt members', {timeout:30000},()=>{
  const result=spawnSync('python3',[fileURLToPath(new URL('../../../experiments/issue-1580/artifact-extraction-fixtures.py',import.meta.url))],{encoding:'utf8',maxBuffer:256*1024});
  assert.equal(result.status,0,result.stdout+result.stderr);
- assert.match(result.stderr,/Ran 7 tests/u);
+ assert.match(result.stderr,/Ran 8 tests/u);
  assert.match(result.stderr,/\nOK\n/u);
 });
 test('shared native and renderer downloads replace the deprecated extractor without suppressing warnings',()=>{
@@ -146,6 +146,8 @@ test('shared native and renderer downloads replace the deprecated extractor with
  assert.equal(transport.env.NODE_OPTIONS,'--throw-deprecation');
  const extraction=adapter.runs.steps.find(step=>step.id==='extract');
  assert.equal(extraction['working-directory'],'${{ github.workspace }}');
+ assert.equal(extraction.env.ALLOW_EMPTY_SELECTION,"${{ inputs.name == '' && inputs.artifact-ids == '' }}");
+ assert.ok(extraction.run.includes('--allow-empty-selection "$ALLOW_EMPTY_SELECTION"'));
  assert.match(extraction.run,/extract-artifacts[.]py/u);
  for(const input of ['name','artifact-ids','pattern','github-token','repository','run-id'])assert.equal(transport.with[input],'${{ inputs.'+input+' }}');
  assert.equal(adapter.outputs['download-path'].value,'${{ steps.extract.outputs.download-path }}');
@@ -167,4 +169,39 @@ test('hosted artifact round trip uses the real raw adapter on all supported desk
  assert.equal(steps[download].with.path,'${{ runner.temp }}/artifact-roundtrip/download');
  assert.equal(steps[0].with['persist-credentials'],false);
  for(const path of ['/.github/actions/download-artifact/','/scripts/extract-artifacts.py','/experiments/issue-1580/artifact-transport-roundtrip.py'])assert(steps[0].with['sparse-checkout'].includes(path));
+});
+
+// Every direct workflow consumer must bring its adapter from an available checkout.
+test('all workflow artifact consumers use the raw adapter with its complete local source',()=>{
+ const root=new URL('../../../',import.meta.url),directory=new URL('.github/workflows/',root);
+ let consumers=0;
+ for(const file of readdirSync(directory).filter(name=>/\.ya?ml$/u.test(name))){
+  const workflow=YAML.parse(readFileSync(new URL(file,directory),'utf8'));
+  for(const [id,job] of Object.entries(workflow.jobs??{}))for(const [index,step] of (job.steps??[]).entries()){
+   assert(!step.uses?.startsWith('actions/download-artifact@'),file+' '+id+' still uses the deprecated extractor');
+   if(!step.uses?.endsWith('/.github/actions/download-artifact') && step.uses!=='./.github/actions/download-artifact')continue;
+   consumers+=1;
+   assert.equal(step.env?.NODE_OPTIONS,undefined,file+' '+id+' must not suppress diagnostics');
+   assert.equal(step.with?.['digest-mismatch'],undefined,'strict digests are enforced by the shared adapter');
+   const prefix=step.uses.slice(2,-'.github/actions/download-artifact'.length).replace(/\/$/u,'');
+   const checkout=job.steps.slice(0,index).findLast(value=>value.uses?.startsWith('actions/checkout@')&&(value.with?.path??'')===prefix&&!value.with?.repository);
+   assert(checkout,file+' '+id+' adapter checkout must precede consumption');
+   assert.equal(checkout.with?.['persist-credentials'],false);
+   const sparse=checkout.with?.['sparse-checkout'];
+   if(sparse){
+    const paths=sparse.split('\n').map(value=>value.replace(/^\//u,'').replace(/\/$/u,''));
+    assert(paths.includes('.github/actions/download-artifact'),file+' '+id+' sparse adapter missing');
+    assert(paths.includes('scripts')||paths.includes('scripts/extract-artifacts.py'),file+' '+id+' sparse extractor missing');
+   }
+  }
+ }
+ assert.equal(consumers,98,'retain all 97 production transfers plus hosted qualification');
+});
+test('artifact setup preserves the caller Python environment and uses the selected interpreter explicitly',()=>{
+ const adapter=YAML.parse(readFileSync(new URL('../../../.github/actions/download-artifact/action.yml',import.meta.url),'utf8'));
+ const setup=adapter.runs.steps.find(step=>step.uses?.startsWith('actions/setup-python@'));
+ assert.equal(setup.id,'python');assert.equal(setup.with['update-environment'],false);
+ const extract=adapter.runs.steps.find(step=>step.id==='extract');
+ assert.equal(extract.env.ARTIFACT_PYTHON,'${{ steps.python.outputs.python-path }}');
+ assert.match(extract.run,/^"\$ARTIFACT_PYTHON" /u);
 });

@@ -332,10 +332,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -457,10 +466,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -632,10 +650,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -668,10 +695,7 @@ jobs:
     - name: Reclaim disk before native image construction
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: ${{ format('container-native-{0}', matrix.arch) }}
         path: native-bin
@@ -780,10 +804,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -816,10 +849,7 @@ jobs:
     - name: Reclaim disk before native image construction
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: ${{ format('container-native-{0}', matrix.arch) }}
         path: native-bin
@@ -917,10 +947,19 @@ jobs:
         ref: ${{ github.sha }}
         persist-credentials: false
         fetch-depth: 0
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - name: Check out workflow-owned artifact extraction
+      uses: actions/checkout@v7
+      with:
+        ref: ${{ github.workflow_sha }}
+        path: .formal-ai-artifact-protocol
+        persist-credentials: false
+        fetch-depth: 1
+        filter: blob:none
+        sparse-checkout: |
+          /.github/actions/download-artifact/
+          /scripts/extract-artifacts.py
+        sparse-checkout-cone-mode: false
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-selected-source
         path: container-source
@@ -950,24 +989,15 @@ jobs:
         NODE
       env:
         GH_TOKEN: ${{ github.token }}
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-native-amd64
         path: native/amd64
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         name: container-native-arm64
         path: native/arm64
-    - uses: actions/download-artifact@v8
-      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
+    - uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
       with:
         pattern: container-image-published-*
         merge-multiple: true

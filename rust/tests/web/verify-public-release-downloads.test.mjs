@@ -306,7 +306,7 @@ function assertReadOnlyCompletionBoundary(text) {
         assert.equal(step.with.ref, expected, 'no triggering branch or head checkout');
         assert.equal(step.with.repository, undefined);
       }
-      if (step.uses?.startsWith('actions/download-artifact@')) {
+      if (step.uses?.endsWith('/.github/actions/download-artifact')) {
         assert.equal(step.with.name, 'public-release-selection');
         assert.equal(step.with['run-id'], undefined, 'only this run supplies selection data');
         assert.equal(step.with['github-token'], undefined);
@@ -410,7 +410,8 @@ test('download resolution hydrates only its reviewed controller inputs while pub
   // Reviewed main101992d baseline: acquisition changes cannot alter actual downstream verification.
   const downstream = source.slice(source.indexOf('\n  all-public-bytes:\n'));
   assert.notEqual(source.indexOf('\n  all-public-bytes:\n'), -1);
-  // Issue #1571 pinned the runner image; that is the only change since the baseline.
+  // Issue #1571 pinned the runner image. Issue #1580 replaces only the two artifact adapters
+  // and their suppression; the complete workflow comparison is retained by verify-artifact-migration.mjs.
   assert.doesNotMatch(downstream, /runs-on: ubuntu-latest/u);
-  assert.equal(createHash('sha256').update(downstream.replaceAll('runs-on: ubuntu-24.04', 'runs-on: ubuntu-latest')).digest('hex'), '11977c67b61a050577b42afa0ea0f0f37bc321e03601bd66e1b5e03d3b8f4018');
+  assert.equal(createHash('sha256').update(downstream.replaceAll('runs-on: ubuntu-24.04', 'runs-on: ubuntu-latest')).digest('hex'), '23c51407ffac430eff187421381d1a1c6a2c44c789a43360c44bef8ffdb68f30');
 });

@@ -83,9 +83,9 @@ test('both actual GHCR workflow settings preserve the original cache contract',(
  assert.ok(observation.includes('group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations'));
  assert.ok(observation.includes("cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}"));
  const workflow=readFileSync(new URL('../../../.github/workflows/native-response-observations.yml',import.meta.url),'utf8');
- const downloads=[...workflow.matchAll(/      - uses: actions\/download-artifact@v8\n([\s\S]*?)(?=      - |$)/gu)];assert.equal(downloads.length,2);
- for(const step of downloads)assert.ok(step[1].includes('        env:\n          NODE_OPTIONS: --disable-warning=DEP0005\n'));
- assert.equal(workflow.match(/NODE_OPTIONS:/gu).length,2);assert.ok(workflow.includes('    timeout-minutes: 30\n'));
+ const downloads=[...workflow.matchAll(/      - uses: \.\/\.github\/actions\/download-artifact\n([\s\S]*?)(?=      - |$)/gu)];assert.equal(downloads.length,2);
+ for(const step of downloads)assert.ok(!step[1].includes('NODE_OPTIONS'));
+ assert.doesNotMatch(workflow,/NODE_OPTIONS:/gu);assert.ok(workflow.includes('    timeout-minutes: 30\n'));
 });
 for(const[index,text]of settings.entries())test('actual Node cacheenv '+index+' retains every full-image Docker CLI operand',async()=>{
  const f=fixture();try{const options=declaredGnuFactory(f);options.environment.BUILD_CACHE_SETTINGS=text;await publishPreparedFullImage(options);

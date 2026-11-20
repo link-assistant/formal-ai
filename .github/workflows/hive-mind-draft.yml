@@ -157,9 +157,7 @@ jobs:
         if: steps.shared-build.outputs.mode == 'reuse'
         # A missing or broken artifact falls back to this draft's own build.
         continue-on-error: true
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           artifact-ids: ${{ steps.shared-build.outputs.artifact_id }}
           run-id: ${{ steps.shared-build.outputs.producer_run_id }}
@@ -282,9 +280,7 @@ jobs:
           node-version: 24.x
       - name: Restore source and build evidence
         if: ${{ needs.build.outputs.evidence_url != '' }}
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           artifact-ids: ${{ needs.build.outputs.evidence_artifact_id }}
           merge-multiple: true
@@ -293,9 +289,7 @@ jobs:
         if: needs.build.result == 'success'
         # A missing artifact must reach the custody check as a typed deferred outcome.
         continue-on-error: true
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           artifact-ids: ${{ needs.build.outputs.binary_artifact_id }}
           merge-multiple: true

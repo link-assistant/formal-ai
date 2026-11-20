@@ -158,13 +158,11 @@ jobs:
         with:
           node-version: "22"
       - name: Download source-bound receipts
-        uses: actions/download-artifact@v8
+        uses: ./.github/actions/download-artifact
         with:
           pattern: source-content-part-*
           path: ${{ runner.temp }}/source-content-parts
           merge-multiple: false
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
       - name: Verify exact source ownership and complete shard coverage
         run: node scripts/aggregate-source-content.mjs
           "$RUNNER_TEMP/source-content-parts"

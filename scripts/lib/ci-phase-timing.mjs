@@ -14,6 +14,7 @@ export const PHASES = ['queue', 'runner', 'checkout', 'install', 'compile', 'ima
 
 // Ordered: the first matching rule names the phase. Unnamed `uses:` steps
 // appear in the API as `Run <action>@<ref>`.
+const DOWNLOAD_ACTION = /^Run (?:actions\/download-artifact@\S+|\.(?:\/[.\w-]+)*\/\.github\/actions\/download-artifact)$/u;
 const RULES = [
   ['runner', /^(Set up job|Complete job|Post )/u],
   ['image-transfer', /same-run task image delta|^Pull the Hive Mind image/u],
@@ -25,7 +26,8 @@ const RULES = [
   ['compile', /^(Build current main binary|Extract exact shipped binary|Compute the effective Formal AI build identity|Claim the build identity|Reuse or await the single producer|Download the authenticated shared build|Verify the shared build|Run \.\/\.github\/actions\/formal-ai-binary)/u],
   ['verification', /^(Verify |Independently |Authenticate |Read-only |Measure released|Admit one attempt|Decide before building|Claim one bounded client effect)/u],
   ['publication', /^(Publish |Upload |Persist |Stage |Retain |Dispatch |Link |Record |Seal |Describe |Transfer only|Run actions\/upload-artifact@)/u],
-  ['transfer', /^(Run actions\/download-artifact@|Download |Restore source)/u],
+  ['transfer', DOWNLOAD_ACTION],
+  ['transfer', /^(Download |Restore source)/u],
 ];
 
 const IMAGE_ARTIFACT = 'hive-same-source-task-image';
@@ -60,7 +62,7 @@ export function measureRun({ run, jobs, artifacts = [] }) {
     const steps = [...(job.steps ?? [])].sort((left, right) => left.number - right.number);
     steps.forEach((step, index) => {
       let phase = classifyStep(step.name);
-      if (phase === 'transfer' && /^Run actions\/download-artifact@/u.test(step.name) && classifyStep(steps[index + 1]?.name) === 'image-load'
+      if (phase === 'transfer' && DOWNLOAD_ACTION.test(step.name) && classifyStep(steps[index + 1]?.name) === 'image-load'
         && /^Load and reverify/u.test(steps[index + 1].name)) phase = 'image-transfer';
       if (phase === 'solver') {
         if (executed(step)) {

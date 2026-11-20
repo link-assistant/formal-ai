@@ -29,7 +29,9 @@ runs:
   using: composite
   steps:
     - uses: actions/setup-python@v6
+      id: python
       with:
+        update-environment: false
         python-version: '3.14'
     - name: Allocate raw archive directory
       id: temporary
@@ -54,11 +56,14 @@ runs:
       shell: bash
       working-directory: ${{ github.workspace }}
       env:
+        ARTIFACT_PYTHON: ${{ steps.python.outputs.python-path }}
         ACTION_DIRECTORY: ${{ github.action_path }}
         RAW_DIRECTORY: ${{ steps.temporary.outputs.path }}
         DESTINATION: ${{ inputs.path }}
         MERGE_MULTIPLE: ${{ inputs.merge-multiple }}
-      run: python "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE"
+        ALLOW_EMPTY_SELECTION: ${{ inputs.name == '' && inputs.artifact-ids == '' }}
+      run: |
+        "$ARTIFACT_PYTHON" "$ACTION_DIRECTORY/../../../scripts/extract-artifacts.py" "$RAW_DIRECTORY" "$DESTINATION" --merge-multiple "$MERGE_MULTIPLE" --allow-empty-selection "$ALLOW_EMPTY_SELECTION"
     - name: Remove temporary raw archives
       if: always() && steps.temporary.outcome == 'success'
       shell: bash

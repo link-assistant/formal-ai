@@ -21,7 +21,7 @@ function cap(job){const declared=job['timeout-minutes'];if(typeof declared==='nu
 }}
 function upload(job,name){const matches=job.steps.filter(value=>String(value.uses).startsWith('actions/upload-artifact@')&&value.with?.name===name);
  assert.equal(matches.length,1,'unique artifact upload '+name);assert.equal(matches[0].with['if-no-files-found'],'error');return matches[0];}
-function download(job,name){const matches=job.steps.filter(value=>String(value.uses).startsWith('actions/download-artifact@')&&value.with?.name===name);
+function download(job,name){const matches=job.steps.filter(value=>String(value.uses).endsWith('/.github/actions/download-artifact')&&value.with?.name===name);
  assert.equal(matches.length,1,'unique artifact download '+name);return matches[0];}
 function checkDesktop(workflow){
  const {native,build,cli}=workflow.jobs;for(const job of [build,cli])cap(job);
@@ -88,7 +88,7 @@ function checkBrowserCoverage(workflow) {
  order(producer,['Install actual locked UI test dependencies','Measure the complete assigned browser test inventory','Retain exact browser coverage and completion receipts']);
  const complete=step(collector,'Every browser shard measured its complete test slice');
  assert.equal(complete.run,'bash scripts/check-shard-results.sh');assert.equal(complete.env.JOBS,'browser-coverage-shard');assert.equal(complete.env.NEEDS_JSON,'${{ toJSON(needs) }}');
- const download=step(collector,'Download every browser coverage shard');assert.ok(String(download.uses).startsWith('actions/download-artifact@'));
+ const download=step(collector,'Download every browser coverage shard');assert.ok(String(download.uses).endsWith('/.github/actions/download-artifact'));
  assert.equal(download.with.pattern,'browser-coverage-shard-*');assert.equal(download.with['merge-multiple'],false);assert.equal(download.with.path,'coverage/browser-shards');
  assert.equal(step(collector,'Collect the complete source-bound browser coverage').run,'npm run coverage:web -- collect coverage/browser-shards');
  assert.equal(step(collector,'Check browser coverage ratchet').run,'rust-script scripts/check-coverage-ratchet.rs --only browser');

@@ -361,12 +361,18 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/download-artifact@v8
-        env:
-          # v8's bundled unzip dependency still calls Buffer(); suppress only
-          # that reviewed upstream diagnostic, never all Node warnings:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - name: Check out workflow-owned artifact extraction
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
+          sparse-checkout-cone-mode: false
+      - uses: ./.github/actions/download-artifact
         with:
           pattern: external-benchmarks-shard-*
           merge-multiple: true

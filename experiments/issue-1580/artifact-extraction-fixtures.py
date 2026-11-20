@@ -33,6 +33,22 @@ class Extraction(unittest.TestCase):
                 archive.writestr(member, data)
         return path
 
+    def test_empty_pattern_selection_preserves_no_artifact_behavior(self):
+        result = self.module.extract_artifacts(self.raw, self.destination, allow_empty_selection=True)
+        self.assertEqual(result, self.destination.resolve())
+        self.assertFalse(self.destination.exists(), "an empty selection creates no files")
+        with self.assertRaises(ValueError):
+            self.module.extract_artifacts(self.raw / "missing", self.destination, allow_empty_selection=True)
+        path = self.raw / "artifact"
+        path.write_bytes(b"not an archive")
+        with self.assertRaises(zipfile.BadZipFile):
+            self.module.extract_artifacts(self.raw, self.destination, allow_empty_selection=True)
+        with zipfile.ZipFile(path, "w"):
+            pass
+        with self.assertRaises(ValueError):
+            self.module.extract_artifacts(self.raw, self.destination, allow_empty_selection=True)
+        self.assertFalse(self.destination.exists())
+
     def test_single_archive_bytes_and_existing_regular_overwrite(self):
         self.archive()
         self.destination.mkdir()

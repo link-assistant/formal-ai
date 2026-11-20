@@ -196,12 +196,7 @@ jobs:
         run: bash scripts/check-shard-results.sh
 
       - name: Download the shard results
-        uses: actions/download-artifact@v8
-        env:
-          # v8's bundled unzip dependency still calls Buffer(); suppress only
-          # that reviewed upstream diagnostic, never all Node warnings:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           pattern: coding-ladder-shard-*
           path: ${{ runner.temp }}/coding-ladder-shards

@@ -40,7 +40,7 @@ def validate_destination(root, relative, directory):
     return root.joinpath(*parts)
 
 
-def raw_archives(raw):
+def raw_archives(raw, allow_empty=False):
     """SDK raw mode writes one ZIP per download, flat for a single artifact."""
     if not raw.is_dir() or raw.is_symlink():
         raise ValueError("Raw artifact directory is absent or is a symlink")
@@ -57,19 +57,22 @@ def raw_archives(raw):
             sources.append((member_path(entry.name), files[0]))
         else:
             raise ValueError("Raw artifact path is not a regular file or directory")
-    if not sources or (len(sources) > 1 and any(not prefix.parts for prefix, _ in sources)):
+    if (not sources and not allow_empty) or (len(sources) > 1 and any(not prefix.parts for prefix, _ in sources)):
         raise ValueError("Raw artifact layout is empty or ambiguous")
     return sources
 
 
-def extract_artifacts(raw, destination, merge_multiple=False):
+def extract_artifacts(raw, destination, merge_multiple=False, allow_empty_selection=False):
     root = Path(destination).expanduser().absolute()
     if root.is_symlink() or (root.exists() and not root.is_dir()):
         raise ValueError("Artifact destination is not a real directory")
     root = root.resolve()
+    sources = raw_archives(Path(raw), allow_empty_selection)
+    if not sources:
+        return root  # The upstream pattern/all-artifact query matched nothing.
     planned, files, directories = [], set(), set()
     with ExitStack() as stack:
-        for prefix, source in raw_archives(Path(raw)):
+        for prefix, source in sources:
             archive = stack.enter_context(zipfile.ZipFile(source))
             for member in archive.infolist():
                 member_path(member.orig_filename)
@@ -119,13 +122,15 @@ def main():
     parser.add_argument("raw", type=Path)
     parser.add_argument("destination", type=Path)
     parser.add_argument("--merge-multiple", choices=("true", "false"), default="false")
+    parser.add_argument("--allow-empty-selection", choices=("true", "false"), default="false")
     options = parser.parse_args()
-    destination = extract_artifacts(options.raw, options.destination, options.merge_multiple == "true")
+    destination = extract_artifacts(options.raw, options.destination, options.merge_multiple == "true",
+                                    options.allow_empty_selection == "true")
     if os.environ.get("GITHUB_OUTPUT"):
         delimiter = "artifact_path_" + uuid.uuid4().hex
         with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
             output.write(f"download-path<<{delimiter}\n{destination}\n{delimiter}\n")
-    print(f"Extracted verified artifact archives to {destination}")
+    print(f"Artifact extraction destination: {destination}")
 
 
 if __name__ == "__main__":

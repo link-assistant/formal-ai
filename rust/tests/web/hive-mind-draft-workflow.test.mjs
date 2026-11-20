@@ -79,16 +79,15 @@ test('deadline invocations remain portable with exact setup and kill-grace budge
  assert.match(workflow,/bash "\$GITHUB_WORKSPACE\/scripts\/run-with-session-evidence\.sh" 1200 attempt node/);
 });
 
-test('download warning suppression is narrow and concurrency distinguishes build from issue writer',()=>{
+test('downloads use the raw adapter and concurrency distinguishes build from issue writer',()=>{
  const header=workflow.slice(0,workflow.indexOf('\njobs:\n'));
  assert.match(header,/\nconcurrency:\n/);
  assert.match(header,/cancel-in-progress: false/);
  const jobs=workflowJobs(workflow);
  assert.match(jobs.find(job=>job.id==='build').body,/hive-mind-draft-build-.*github.ref/);
  assert.match(jobs.find(job=>job.id==='build').body,/cancel-in-progress: true/);
- // One narrow suppression per artifact download (issue #1486 added the shared build download).
- assert.equal((workflow.match(/NODE_OPTIONS: --disable-warning=DEP0005/g)||[]).length,(workflow.match(/uses: actions\/download-artifact@/g)||[]).length);
- assert.equal((workflow.match(/uses: actions\/download-artifact@/g)||[]).length,3);
+ assert.doesNotMatch(workflow,/DEP0005|actions\/download-artifact@/);
+ assert.equal((workflow.match(/uses: \.\/\.github\/actions\/download-artifact/g)||[]).length,3);
  assert.doesNotMatch(workflow,/--no-deprecation|--no-warnings|NODE_NO_WARNINGS/);
 });
 
