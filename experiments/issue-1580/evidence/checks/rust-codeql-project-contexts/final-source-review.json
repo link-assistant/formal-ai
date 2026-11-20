@@ -22,12 +22,15 @@
       "sha256": "54a083a2acd497f9da38f5a7c6f1402a427f845cd91c565a09e8fa483bc56068"
     }
   ],
-  "completeCurrentSourceAndDiffRead": true,
+  "completeCurrentSourceAndDiffRead": false,
   "workflowAndTestDiffRead": true,
   "originalProducerFailureReproducesProblem": true,
   "localRustExecution": false,
   "hostedRepairVerified": false,
   "wholePrReviewComplete": false,
   "fullIssueComplete": false,
-  "independentAuthorshipCredit": 0
+  "independentAuthorshipCredit": 0,
+  "completeCurrentImplementationSourceAndChangedDiffRead": true,
+  "nonExecutableBaselineReview": "The complete one-field retained-job payload diff was read; the entire unchanged baseline document was not reread in this batch.",
+  "correction": "The first combined source-and-diff flag was overbroad for the non-executable baseline document. This forward correction preserves the original commit."
 }
