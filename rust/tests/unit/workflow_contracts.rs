@@ -28,3 +28,7 @@ mod bump_version;
 #[allow(dead_code, clippy::duplicate_mod)]
 #[path = "../../../scripts/collect-changelog.rs"]
 mod collect_changelog;
+
+#[allow(dead_code, clippy::duplicate_mod)]
+#[path = "../../../scripts/get-bump-type.rs"]
+mod get_bump_type;

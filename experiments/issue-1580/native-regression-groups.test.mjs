@@ -246,3 +246,12 @@ test('native admission includes fallible changelog inventory and the real collec
   assert.doesNotMatch(source, /filter_map\(\|e\| e\.ok\(\)\)|unwrap_or_default\(\)/u);
   assert.match(source, /changelog_files::remove_fragments\(&files\)\?/u);
 });
+
+
+test('the focused workflow target tests actual fallible bump selection', () => {
+  const source = readFileSync('scripts/get-bump-type.rs', 'utf8');
+  assert.match(source, /changelog_files::read_fragments\(Path::new\(changelog_dir\)\)\?/u);
+  assert.doesNotMatch(source, /filter_map\(\|e\| e\.ok\(\)\)|if let Ok\(content\)/u);
+  assert.match(readFileSync('rust/tests/unit/workflow_contracts.rs', 'utf8'),
+    /#\[path = "\.\.\/\.\.\/\.\.\/scripts\/get-bump-type\.rs"\]\nmod get_bump_type;/u);
+});
