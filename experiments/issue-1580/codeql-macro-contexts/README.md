@@ -17,11 +17,12 @@ The temporary query directory is removed even when compilation fails. Retained
 artifacts include the query, database metadata, pack metadata and lockfiles when
 present, CLI version, command arguments, original streams/statuses, BQRS, decoded
 eight-column table and hashes. The hosted step has a four-minute deadline;
-query execution requests two threads, 3 GiB RAM and a 512 MiB disk cache.
-The first hosted run on `39196d1f` compiled and executed this query, retaining
-122,534 rows. Its earlier 2 GiB setting left a 914 MiB Java heap and emitted a
-stage-cache warning. The bounded 3 GiB adjustment needs its own hosted
-verification; local adapter controls cannot prove the actual heap allocation.
+query execution requests two threads, 4 GiB RAM and a 512 MiB disk cache.
+The hosted runs on `39196d1f` and `f4588ce4` each retain 122,534 rows. Their
+2 and 3 GiB requests leave 914 and 1698 MiB Java heaps respectively; both emit
+the query-loading stage-cache warning. The next bounded 4 GiB request is based
+on that measured allocation, not a claim of warning removal. Actual next-head
+execution must qualify it; local adapter controls cannot prove heap allocation.
 
 Columns are the macro entity, relative source path, start/end line and column,
 whether the call has an expansion, and whether it is inside another expansion.
