@@ -22,14 +22,13 @@
 //! toml_edit = "0.25.15"
 //! regex = "1"
 //! chrono = "0.4"
-//! ureq = "2"
+//! ureq = "3.5.2"
 //! serde = { version = "1", features = ["derive"] }
 //! serde_json = "1"
 //! ```
 
 use chrono::Utc;
 use regex::Regex;
-use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -44,6 +43,8 @@ mod github_output;
 mod prepared_release;
 use github_output::set_output;
 
+#[path = "registry.rs"]
+mod registry;
 #[path = "rust-paths.rs"]
 mod rust_paths;
 #[path = "version-changelog.rs"]
@@ -273,17 +274,6 @@ fn update_cargo_lock(
     Ok(true)
 }
 
-#[derive(Deserialize)]
-struct CratesIoCrate {
-    versions: Option<Vec<CratesIoVersionEntry>>,
-}
-
-#[derive(Deserialize)]
-struct CratesIoVersionEntry {
-    num: String,
-    yanked: bool,
-}
-
 fn get_crate_name(cargo_toml_path: &str) -> Result<String, String> {
     rust_paths::read_package_info(Path::new(cargo_toml_path)).map(|info| info.name)
 }
@@ -293,59 +283,17 @@ fn check_tag_exists(tag_prefix: &str, version: &str) -> bool {
 }
 
 fn check_version_on_crates_io(crate_name: &str, version: &str) -> bool {
-    let url = format!("https://crates.io/api/v1/crates/{}/{}", crate_name, version);
-    match ureq::get(&url)
-        .set("User-Agent", "rust-script-version-and-commit")
-        .call()
-    {
-        Ok(response) => response.status() == 200,
-        Err(_) => false,
-    }
+    registry::or_exit(
+        "crates.io candidate version",
+        registry::version_exists(crate_name, version),
+    )
 }
 
 fn get_max_published_version(crate_name: &str) -> Option<(u32, u32, u32)> {
-    let url = format!("https://crates.io/api/v1/crates/{}", crate_name);
-    match ureq::get(&url)
-        .set("User-Agent", "rust-script-version-and-commit")
-        .call()
-    {
-        Ok(response) => {
-            if response.status() == 200 {
-                if let Ok(body) = response.into_string() {
-                    if let Ok(data) = serde_json::from_str::<CratesIoCrate>(&body) {
-                        if let Some(versions) = data.versions {
-                            let mut max: Option<(u32, u32, u32)> = None;
-                            for v in &versions {
-                                if v.yanked {
-                                    continue;
-                                }
-                                let base = match v.num.split('-').next() {
-                                    Some(b) => b,
-                                    None => continue,
-                                };
-                                let parts: Vec<&str> = base.split('.').collect();
-                                if parts.len() == 3 {
-                                    if let (Ok(a), Ok(b), Ok(c)) = (
-                                        parts[0].parse::<u32>(),
-                                        parts[1].parse::<u32>(),
-                                        parts[2].parse::<u32>(),
-                                    ) {
-                                        let tuple = (a, b, c);
-                                        if max.map_or(true, |m| tuple > m) {
-                                            max = Some(tuple);
-                                        }
-                                    }
-                                }
-                            }
-                            return max;
-                        }
-                    }
-                }
-            }
-            None
-        }
-        Err(_) => None,
-    }
+    registry::or_exit(
+        "crates.io published versions",
+        registry::max_published(crate_name),
+    )
 }
 
 fn ensure_version_exceeds_published(

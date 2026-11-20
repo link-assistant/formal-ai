@@ -269,3 +269,27 @@ test('the real version release collector is shared with focused native CI', () =
   assert.match(readFileSync('rust/tests/unit/workflow_contracts.rs', 'utf8'),
     /#\[path = "\.\.\/\.\.\/\.\.\/scripts\/version-changelog\.rs"\]\nmod version_changelog;/u);
 });
+
+
+test('registry uncertainty is exercised by real release CLIs in hosted native CI', () => {
+  const files = ['scripts/registry.rs', ...['Cargo.toml', 'Cargo.lock', 'cli_regressions.py']
+    .map(name => 'experiments/issue-1580/release-registry/' + name)];
+  for (const path of files) assert.equal(admission([path])['native-type-check'], true, path);
+  const workflow = YAML.parse(readFileSync('.github/workflows/native-type-check.yml', 'utf8'));
+  const job = workflow.jobs['release-registry'];
+  const replay = job.steps.find(step => step.name === 'Verify real release registry requests and CLI decisions');
+  assert(replay);
+  assert.match(replay.run, /cargo test .*release-registry\/Cargo.toml --locked --lib/u);
+  assert.match(replay.run, /python3 .*release-registry\/cli_regressions.py/u);
+  assert.equal(job.if, '${{ inputs.compile-inputs-changed }}');
+  assert.equal(job['timeout-minutes'], 10);
+  for (const checkout of job.steps.filter(step => step.uses === 'actions/checkout@v7')) {
+    assert(checkout.with['sparse-checkout'].includes('/experiments/issue-1580/release-registry/'));
+  }
+  for (const path of ['scripts/check-release-needed.rs', 'scripts/version-and-commit.rs']) {
+    const source = readFileSync(path, 'utf8');
+    assert.match(source, /registry::or_exit\(\s*"crates.io published versions",\s*registry::max_published/u);
+    assert.match(source, /registry::version_exists\(crate_name, version\)/u);
+    assert.doesNotMatch(source, /Err\(_\) => (?:false|None)/u);
+  }
+});

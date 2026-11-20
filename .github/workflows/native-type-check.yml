@@ -62,6 +62,7 @@ jobs:
             !/dev/log/
             !/experiments/**
             /experiments/**/*.sh
+            /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
@@ -86,6 +87,7 @@ jobs:
             !/dev/log/
             !/experiments/**
             /experiments/**/*.sh
+            /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
@@ -218,6 +220,7 @@ jobs:
             !/dev/log/
             !/experiments/**
             /experiments/**/*.sh
+            /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
@@ -242,6 +245,7 @@ jobs:
             !/dev/log/
             !/experiments/**
             /experiments/**/*.sh
+            /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
@@ -266,3 +270,33 @@ jobs:
         with: {node-version: 22}
       - name: Verify the complete selected contract family
         run: bash scripts/ci-native-regressions.sh "${{ matrix.group }}"
+
+  release-registry:
+    name: Release registry scripts
+    if: ${{ inputs.compile-inputs-changed }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      CARGO_BUILD_JOBS: '2'
+      CARGO_TARGET_DIR: ${{ github.workspace }}/rust/target/release-registry
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /scripts/
+            /.github/actions/cache-cargo-registry/
+            /experiments/issue-1580/release-registry/
+          sparse-checkout-cone-mode: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
+      - name: Verify real release registry requests and CLI decisions
+        run: |
+          cargo test --manifest-path experiments/issue-1580/release-registry/Cargo.toml --locked --lib -- --test-threads=1 --nocapture
+          python3 experiments/issue-1580/release-registry/cli_regressions.py
