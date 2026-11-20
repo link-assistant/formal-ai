@@ -23,5 +23,6 @@ paths:
   .github/workflows/**/*.{yml,yaml}:
     ignore:
       # GitHub supports `concurrency.queue`; actionlint's embedded schema lags.
+      # scripts/check-workflow-concurrency.mjs validates the suppressed values.
       # https://github.com/rhysd/actionlint/issues/657
       - 'unexpected key "queue" for "concurrency" section'

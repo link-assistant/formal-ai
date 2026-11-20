@@ -1,0 +1,343 @@
+{
+  "files": [
+    {
+      "file": "actionlint-queue-negative-control/fixture/.github/actionlint.yaml",
+      "bytes": 1305,
+      "sha256": "bbc1baf164efb5b3be8bb8f6c72745acc237dc32d30d9ae51bbf5c730531c9f8"
+    },
+    {
+      "file": "actionlint-queue-negative-control/fixture/.github/workflows/control.yml",
+      "bytes": 195,
+      "sha256": "5054916bafaf5ca8128ec9c35d0e131a3c7bfae93ada1e65d3fbf5b37575eea7"
+    },
+    {
+      "file": "actionlint-queue-negative-control/identity.json",
+      "bytes": 562,
+      "sha256": "0d6747279db64222af0cf95067d697e6da79f9225c248c50f221f71067109da5"
+    },
+    {
+      "file": "actionlint-queue-negative-control/invalid-combination.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "actionlint-queue-negative-control/invalid-combination.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "actionlint-queue-negative-control/invalid-combination.yml",
+      "bytes": 184,
+      "sha256": "b60a3cf01f730c240e5a9dfd9576948ab10e3621f825f5459dceecacd0231ae8"
+    },
+    {
+      "file": "actionlint-queue-negative-control/invalid-type.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "actionlint-queue-negative-control/invalid-type.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "actionlint-queue-negative-control/invalid-type.yml",
+      "bytes": 195,
+      "sha256": "5054916bafaf5ca8128ec9c35d0e131a3c7bfae93ada1e65d3fbf5b37575eea7"
+    },
+    {
+      "file": "actionlint-queue-negative-control/invalid-value.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "actionlint-queue-negative-control/invalid-value.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "actionlint-queue-negative-control/invalid-value.yml",
+      "bytes": 191,
+      "sha256": "52f9d61e1ac2d5b27ccc5a20b96b7005d453c9f700b8ab88334cbf8571d345bb"
+    },
+    {
+      "file": "actionlint-queue-negative-control/records.json",
+      "bytes": 1399,
+      "sha256": "215179c95315f896af0509a30e9b11f4c44993b6935137b997cdea7da0f6268e"
+    },
+    {
+      "file": "actionlint-queue-negative-control/valid-max.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "actionlint-queue-negative-control/valid-max.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "actionlint-queue-negative-control/valid-max.yml",
+      "bytes": 185,
+      "sha256": "d1d20f5891c9f45c6afedc95d1e78d2ed21d066df2f52bed4299be0f9fb9c030"
+    },
+    {
+      "file": "current-queue-validation/latest-release.read.json",
+      "bytes": 1787,
+      "sha256": "c790345183ae538a06d4134a2e4b18cfd3661b5cc009ed2f37dcc9ed6497c79a"
+    },
+    {
+      "file": "current-queue-validation/latest-release.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "current-queue-validation/latest-release.stdout",
+      "bytes": 23691,
+      "sha256": "279bd7c8a5713cc15fe0543337c8983d62c479ded48dc95ade2df91ae83f241d"
+    },
+    {
+      "file": "current-queue-validation/local-references.txt",
+      "bytes": 37600,
+      "sha256": "9e1623dc3ba960e05f2da261078bfcdcde1e9fdddc1533b947adf3166e6e3d65"
+    },
+    {
+      "file": "current-queue-validation/queue-comments.read.json",
+      "bytes": 9863,
+      "sha256": "7106ce58873b2a383115ed54a6af1999dc9699d12ad459371085b0fb9d260225"
+    },
+    {
+      "file": "current-queue-validation/queue-comments.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "current-queue-validation/queue-comments.stdout",
+      "bytes": 29249,
+      "sha256": "b5fdae644ba981aa31499f21f5861772f9de96598ac5856f77fd6776cf046e39"
+    },
+    {
+      "file": "current-queue-validation/queue-pull.read.json",
+      "bytes": 724,
+      "sha256": "254f2073fe11d660438346201f29f7d7c563fdebf66dd5bccf203d48463e3f26"
+    },
+    {
+      "file": "current-queue-validation/queue-pull.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "current-queue-validation/queue-pull.stdout",
+      "bytes": 15988,
+      "sha256": "06824c6ba87590005e45e3e666b7622cf5077162fc67143fead571d41e08cb04"
+    },
+    {
+      "file": "current-queue-validation/queue-review-comments.read.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "file": "current-queue-validation/queue-review-comments.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "current-queue-validation/queue-review-comments.stdout",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "file": "current-queue-validation/queue-reviews.read.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "file": "current-queue-validation/queue-reviews.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "current-queue-validation/queue-reviews.stdout",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "file": "current-queue-validation/records.json",
+      "bytes": 818,
+      "sha256": "a498f0165388069611e4b1d94b2bba9b2a387ae315ec04dde9c2a92a096e9ce3"
+    },
+    {
+      "file": "draft-workflow-queue-controls.log",
+      "bytes": 227,
+      "sha256": "003caa7511457177f9b86ce5ded8d83726476e56f777889df68a4ebcdf965fc9"
+    },
+    {
+      "file": "draft-workflow-queue-controls.py",
+      "bytes": 12545,
+      "sha256": "c990468921706c2b83d6c0015644a1a08e63bdc12aad513d7d24952823113815"
+    },
+    {
+      "file": "find-concurrency-admission.log",
+      "bytes": 1024,
+      "sha256": "8853c28c5a5e787229dc4fe875862b80cc1f9faffa792c4117f6f9570661fc2e"
+    },
+    {
+      "file": "probe-current-actionlint-queue.log",
+      "bytes": 1702,
+      "sha256": "8ab1736ba3b82671566b1d21be7bd48c6ec5e3f39909a0a0644a30e263071eb8"
+    },
+    {
+      "file": "probe-current-actionlint-queue.py",
+      "bytes": 3092,
+      "sha256": "2c93941f73ff76ada67ce1bd2111b38a4653589c580c014cce08e602674f4d2b"
+    },
+    {
+      "file": "record-workflow-queue-controls.py",
+      "bytes": 6438,
+      "sha256": "8646cafc56d8423240dcff2d9e4b0a6bb332b95dbae71cd8210d50f09f9666fc"
+    },
+    {
+      "file": "research-current-queue-validation.log",
+      "bytes": 197,
+      "sha256": "f62465fe5634585548ad42d15c4e194d39e60ec49186294423b4e7ce882c15f6"
+    },
+    {
+      "file": "research-current-queue-validation.py",
+      "bytes": 2313,
+      "sha256": "ff79e10a4241a63f5969ce82eabdc60cc19873239318694c5fafd84610c2e502"
+    },
+    {
+      "file": "verify-workflow-queue-controls.log",
+      "bytes": 212,
+      "sha256": "ce9313e46dc4929e9e9682c32916364eb7a130cd0fd6c02b8897ca6c88b70e16"
+    },
+    {
+      "file": "verify-workflow-queue-controls.py",
+      "bytes": 2921,
+      "sha256": "335d8728cb066fc65cc03be40c38e72e83f7a6cab8e13f15d1957478e2e31970"
+    },
+    {
+      "file": "workflow-concurrency-admission-search.log",
+      "bytes": 6539,
+      "sha256": "f548b5566269f7dfb6b988dca78069b97cbfbca229dae22c802c91e1d1de8058"
+    },
+    {
+      "file": "workflow-queue-controls/companion-invalid-combination.stderr",
+      "bytes": 111,
+      "sha256": "a9aa76ff2c569a61653b6150989b9ff61760b9b81723189ee61dd18fd4df0d7a"
+    },
+    {
+      "file": "workflow-queue-controls/companion-invalid-combination.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/companion-invalid-type.stderr",
+      "bytes": 97,
+      "sha256": "e85c92a600d30322492d8b95bba08a3e3b0d12bd5c8c6bfa0a846fcbc049be5b"
+    },
+    {
+      "file": "workflow-queue-controls/companion-invalid-type.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/companion-invalid-value.stderr",
+      "bytes": 97,
+      "sha256": "e85c92a600d30322492d8b95bba08a3e3b0d12bd5c8c6bfa0a846fcbc049be5b"
+    },
+    {
+      "file": "workflow-queue-controls/companion-invalid-value.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/companion-valid-max.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/companion-valid-max.stdout",
+      "bytes": 79,
+      "sha256": "cc20e18cc1ca9f5e75380065b3f293a29a53c6c11f63e057faf5b71d41e24611"
+    },
+    {
+      "file": "workflow-queue-controls/default-branch-policy.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/default-branch-policy.stdout",
+      "bytes": 26580,
+      "sha256": "40dde24253b7647a2ce2c4b9f15e6e3a8ce48c44b6c15a9d07fdbeafee3aad0d"
+    },
+    {
+      "file": "workflow-queue-controls/documentation-policy.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/documentation-policy.stdout",
+      "bytes": 8119,
+      "sha256": "7449adf4b1a5d7c880928b86ce16f69eb184da8e8fcfef34080d6da7d6ba94f4"
+    },
+    {
+      "file": "workflow-queue-controls/focused.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/focused.stdout",
+      "bytes": 2939,
+      "sha256": "21093e99c0cc68204f57facdc62a9e24075ffb29c2d5157b56b3731fe5acf52f"
+    },
+    {
+      "file": "workflow-queue-controls/original-actionlint-schema.stderr",
+      "bytes": 27834,
+      "sha256": "3af8b1fbffd2878de249fd1d6bcaea8cd49d85d6fbd9e18d944f418eb15b86e5"
+    },
+    {
+      "file": "workflow-queue-controls/original-actionlint-schema.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/outcome.json",
+      "bytes": 211,
+      "sha256": "85cebb90b885bfa1d4f21dd0f02704e216c31f007009bef4816ecd8332b8ccb0"
+    },
+    {
+      "file": "workflow-queue-controls/records.json",
+      "bytes": 2448,
+      "sha256": "165a12b11a2cb6222b913338eaf3228e0eb6051377c7e7ecbfd8cdd60b4a8181"
+    },
+    {
+      "file": "workflow-queue-controls/repository.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/repository.stdout",
+      "bytes": 81,
+      "sha256": "7755231c78e7741cd600054a51c179651dfcd355ef8b2ed86ac907ca6835849f"
+    },
+    {
+      "file": "workflow-queue-controls/whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-queue-controls/worker.log",
+      "bytes": 307,
+      "sha256": "b657658fc007aa7d4fed964415db23039369ab50e03d3fb04a7a6d39fbdc4eed"
+    }
+  ],
+  "rawSha256": "9909f21d29c31903a246733210f26ae1e13279d4b8ca1d8740f23cd5047d7c01",
+  "archiveSha256": "86f7543be1b7cdd553cee8d60327c5f83b4aa7b66c202cfd4b126e93a11c9789",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

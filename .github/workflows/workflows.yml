@@ -46,12 +46,12 @@ on:
         type: string
   push:
     branches: [main]
-    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
-    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
 permissions:
@@ -74,7 +74,23 @@ jobs:
           sparse-checkout: |
             /.github/
             /rust/tests/fixtures/actionlint/
+            /scripts/check-workflow-concurrency.mjs
+            /experiments/issue-1580/workflow-concurrency.test.mjs
+            /scripts/documentation-policy-dependencies/
+            /package.json
           sparse-checkout-cone-mode: false
+
+      # The upstream schema still rejects queue. Qualify its values and the
+      # forbidden cancellation combination separately, using only the locked parser.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies
+      - run: |
+          mkdir -p node_modules
+          ln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml
+      - run: node scripts/check-workflow-concurrency.mjs
+      - run: node --test --test-concurrency=1 experiments/issue-1580/workflow-concurrency.test.mjs
 
       # The image bundles ShellCheck and pyflakes, so this lints every `run:`
       # block as well as the workflow schema. Reproduce locally with:
