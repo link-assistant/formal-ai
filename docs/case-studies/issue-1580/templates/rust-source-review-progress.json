@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T18:43:31.468065+00:00",
+  "observedAt": "2026-11-20T19:11:23.517492+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 339,
-  "fullyReadSourceLines": 39016,
+  "fullyReadFiles": 343,
+  "fullyReadSourceLines": 41542,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -1266,6 +1266,25 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/evidence/batch-2-script-validation.log.gz",
+      "lines": 714,
+      "sha256": "5b9e018cedd69cbd90b0a2b5de8103c9e68df691d15ebbdc5810c6d210ac2187",
+      "sourceEncoding": "gzip",
+      "decodedSha256": "f1d5e757b31769b0e0753f4a26bed113ecd658b62a9254b7a38523e0f8d88b74",
+      "readLogs": [
+        "small-validation-batch-2-script-validation.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          714
+        ]
+      ],
+      "literalReadLines": 714,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/evidence/candidate-lints-audits.log.gz",
       "lines": 17,
       "sha256": "dd9aaea4363f3b030e894beaba640e69dd738e8e6bfed3552aef81283c8d8a45",
@@ -1281,6 +1300,25 @@
         ]
       ],
       "literalReadLines": 17,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/candidate-validation.log.gz",
+      "lines": 763,
+      "sha256": "cc8c300300dac9f3377df0de3303fbe2b058cae1183fc38c2f9ff58adba1a818",
+      "sourceEncoding": "gzip",
+      "decodedSha256": "0f71acfe05d3866f3331030d64a582669d862bff4500ea649333cd95a7120d2c",
+      "readLogs": [
+        "small-validation-candidate-validation.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          763
+        ]
+      ],
+      "literalReadLines": 763,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1376,6 +1414,44 @@
         ]
       ],
       "literalReadLines": 5,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/rust-full-validation.log.gz",
+      "lines": 364,
+      "sha256": "d5eba151020be5e3756248e7ed47a8ef088fbf64c209c45a9799bc009a573de0",
+      "sourceEncoding": "gzip",
+      "decodedSha256": "84341aebb0e48305ac9e586a3daf9203a314fdcaf02dad328b413a01fd1f5216",
+      "readLogs": [
+        "small-validation-rust-full-validation.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          364
+        ]
+      ],
+      "literalReadLines": 364,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/script-tests.log.gz",
+      "lines": 685,
+      "sha256": "3dbc0e2d3d0276b0e8fa4bbb7c46a88a368b74f0c836eea238ea84941ff1c270",
+      "sourceEncoding": "gzip",
+      "decodedSha256": "664c3472b25e632caf773d8ae0ea9ffbfda028f07e868c7b2e882b3510c0d764",
+      "readLogs": [
+        "small-validation-script-tests.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          685
+        ]
+      ],
+      "literalReadLines": 685,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -6897,6 +6973,17 @@
         "experiments/issue-1580/pages-release-failure.test.mjs"
       ],
       "verification": "experiments/issue-1580/evidence/checks/rust-remaining-run-history/assessment.json"
+    },
+    {
+      "practice": "Read complete archived validation streams and preserve warnings after successful tests",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/evidence/batch-2-script-validation.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/candidate-validation.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/rust-full-validation.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/script-tests.log.gz"
+      ],
+      "assessment": "All 2,526 decoded lines from four immutable gzip streams were literally read. The full validation stream passes two CLI tests, three integration tests and 296 unit tests; it also records checks, documentation and zero-case targets. The three script streams pass their listed standalone Rust, Python and JavaScript suites while still emitting unused serde, chrono and ureq dependency warnings; batch two additionally warns on regex in two scripts. Candidate validation passes 124 JavaScript controls and eight JavaScript-first Rust/doc cases, but its final package upload explicitly aborts due to dry run. These are historical fixtures, not present Formal AI execution or published package proof. Preserve strict warning gates, exact selected revision and prerequisite evidence; current adoption, external publication, all warnings and the remaining template comparison stay open.",
+      "status": "complete-literal-decoded-log-review-current-practice-runtime-open"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",

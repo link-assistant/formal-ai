@@ -643,5 +643,25 @@
     "file": "remaining-run-history-pr-run-25212295127.json.read.txt.gz",
     "rawSha256": "fdb76c0b9b5a4e77a30f18733806611ac00ffb8a95657946e7de2db3d9089977",
     "archiveSha256": "021aa359cf1cc0fd7ccf831e46eb1d90971c335a59cdc8a3dff6ba07bae309b0"
+  },
+  {
+    "file": "small-validation-batch-2-script-validation.log.gz",
+    "rawSha256": "f1d5e757b31769b0e0753f4a26bed113ecd658b62a9254b7a38523e0f8d88b74",
+    "archiveSha256": "807a37a84ccfe0bc1257cee16b5adf015a50d412f0d077367611a550311dcf14"
+  },
+  {
+    "file": "small-validation-candidate-validation.log.gz",
+    "rawSha256": "0f71acfe05d3866f3331030d64a582669d862bff4500ea649333cd95a7120d2c",
+    "archiveSha256": "028a6ef8ecd7d1874b56313b423cb06b4eafef10aaf774dd394913a7481ebfbe"
+  },
+  {
+    "file": "small-validation-rust-full-validation.log.gz",
+    "rawSha256": "84341aebb0e48305ac9e586a3daf9203a314fdcaf02dad328b413a01fd1f5216",
+    "archiveSha256": "b804da595e656a7731ac88a4216c230bb7f6faec373a69aa6a62ede7c0cc6cca"
+  },
+  {
+    "file": "small-validation-script-tests.log.gz",
+    "rawSha256": "664c3472b25e632caf773d8ae0ea9ffbfda028f07e868c7b2e882b3510c0d764",
+    "archiveSha256": "a339743ddbfc9464e3646dc9b8c0e749cf4ae1e048d824259e3098255b16da65"
   }
 ]

@@ -1,0 +1,17 @@
+[
+  {
+    "file": "record-rust-small-validation-logs.py.gz",
+    "rawSha256": "065138640e7726cf9ce01d980c40080a83f9d066b66911d3bcbc54f7ea2a3a29",
+    "archiveSha256": "44b676c573dd6eddf87becda82d6e749c4a7e09e208e38839250ba01cfcf165e"
+  },
+  {
+    "file": "read-rust-small-validation-logs.py.gz",
+    "rawSha256": "0473684d5fd4967883856c388211a5172c9e89594a5130a6d1cbf49fdc3e7621",
+    "archiveSha256": "14ee56c06305f57c9e7ba0b3028e760a7c0b3e2d9a1171a0cb69d62baf49c002"
+  },
+  {
+    "file": "identities.json.gz",
+    "rawSha256": "e9e7bad0bc08bee673ce46a36bca569997c6d192a85d97014e2157b14a576dd9",
+    "archiveSha256": "12e362fb5dde8e8c1f62edf0d51e119877e593ec457c1a78b5e1d4cb1c91b169"
+  }
+]

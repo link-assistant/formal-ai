@@ -1,0 +1,74 @@
+{
+  "literalPinnedFilesRead": 343,
+  "literalDecodedLinesRead": 41542,
+  "newHistoricalLogLines": 2526,
+  "newSourceRecords": [
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/batch-2-script-validation.log.gz",
+      "sha256": "5b9e018cedd69cbd90b0a2b5de8103c9e68df691d15ebbdc5810c6d210ac2187",
+      "rawSha256": "f1d5e757b31769b0e0753f4a26bed113ecd658b62a9254b7a38523e0f8d88b74",
+      "decodedLines": 714,
+      "decodedBytes": 48607,
+      "chunks": [
+        "batch-2-script-validation.log.gz.00001.txt",
+        "batch-2-script-validation.log.gz.00101.txt",
+        "batch-2-script-validation.log.gz.00201.txt",
+        "batch-2-script-validation.log.gz.00301.txt",
+        "batch-2-script-validation.log.gz.00401.txt",
+        "batch-2-script-validation.log.gz.00501.txt",
+        "batch-2-script-validation.log.gz.00601.txt",
+        "batch-2-script-validation.log.gz.00701.txt"
+      ]
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/candidate-validation.log.gz",
+      "sha256": "cc8c300300dac9f3377df0de3303fbe2b058cae1183fc38c2f9ff58adba1a818",
+      "rawSha256": "0f71acfe05d3866f3331030d64a582669d862bff4500ea649333cd95a7120d2c",
+      "decodedLines": 763,
+      "decodedBytes": 51013,
+      "chunks": [
+        "candidate-validation.log.gz.00001.txt",
+        "candidate-validation.log.gz.00101.txt",
+        "candidate-validation.log.gz.00201.txt",
+        "candidate-validation.log.gz.00301.txt",
+        "candidate-validation.log.gz.00401.txt",
+        "candidate-validation.log.gz.00501.txt",
+        "candidate-validation.log.gz.00601.txt",
+        "candidate-validation.log.gz.00701.txt"
+      ]
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/rust-full-validation.log.gz",
+      "sha256": "d5eba151020be5e3756248e7ed47a8ef088fbf64c209c45a9799bc009a573de0",
+      "rawSha256": "84341aebb0e48305ac9e586a3daf9203a314fdcaf02dad328b413a01fd1f5216",
+      "decodedLines": 364,
+      "decodedBytes": 29904,
+      "chunks": [
+        "rust-full-validation.log.gz.00001.txt",
+        "rust-full-validation.log.gz.00101.txt",
+        "rust-full-validation.log.gz.00201.txt",
+        "rust-full-validation.log.gz.00301.txt"
+      ]
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/script-tests.log.gz",
+      "sha256": "3dbc0e2d3d0276b0e8fa4bbb7c46a88a368b74f0c836eea238ea84941ff1c270",
+      "rawSha256": "664c3472b25e632caf773d8ae0ea9ffbfda028f07e868c7b2e882b3510c0d764",
+      "decodedLines": 685,
+      "decodedBytes": 47710,
+      "chunks": [
+        "script-tests.log.gz.00001.txt",
+        "script-tests.log.gz.00101.txt",
+        "script-tests.log.gz.00201.txt",
+        "script-tests.log.gz.00301.txt",
+        "script-tests.log.gz.00401.txt",
+        "script-tests.log.gz.00501.txt",
+        "script-tests.log.gz.00601.txt"
+      ]
+    }
+  ],
+  "historicalTestsEstablishCurrentRuntime": false,
+  "allTemplatePracticesAdopted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}
