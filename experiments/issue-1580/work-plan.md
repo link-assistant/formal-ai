@@ -624,3 +624,16 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
   reasoning credit and no full-issue completion claim.
 
 - Collect the entire published f8b372ad round before another push: 27 terminal workflows, 24 successes, one skip and exactly the two locally reproduced generator/owner failures. Verify every retained stream and all 573 native Rust cases plus eight CLI cases. Verify all 126 actual CodeQL producer files, the warning-free resolved child heap and 122,542 contexts; preserve all 631 unresolved semantic qualifications. Complete the third full local JavaScript gate inventory, preserve all three failed rounds and recheck all seven consumers of the final two-token notation repair. Refresh metadata/status and qualify two generic children without changing debt or notation ceilings; report combined outcomes rather than an unexecuted clean full replay. Full issue completion remains false.
+
+## Published extraction batch: governed fixture repair
+
+- [x] Publish the complete nineteen-group batch at `3e705675` after current
+  main ancestry, clean-tree and empty-queue checks.
+- [x] Preserve Layered CI run 44836234464 and reproduce both source-binding
+  failures without changing either assertion.
+- [x] Review the complete governed inventory, refresh exactly nineteen solver
+  fixture hashes with the maintained writer, and pass all 36 focused controls.
+  Keep 1,189 total / 221 supported / 968 unsupported and the reader unchanged.
+- [ ] Collect all remaining current-head workflow and producer reports, fix
+  every actionable origin, run the complete local inventory and pass the
+  single push gate. Full issue acceptance remains unfinished; PR stays draft.

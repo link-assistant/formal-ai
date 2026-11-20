@@ -243,3 +243,25 @@ issue-1017 experiment lock retains meta-language 0.58.1 -> lindera 3.0.7 ->
 serde_yaml_ng 0.10.0 -> unsafe-libyaml 0.2.11; the main lock contains no such crate.
 These are source/registry observations, without local Cargo resolution or builds.
 Dependency migration and all wider acceptance criteria remain unfinished.
+
+## Governed fixture identity after solver extraction
+
+Published `3e705675` exposes two failures in Layered CI run
+[44836234464](https://github.com/link-assistant/formal-ai/actions/runs/44836234464).
+The complete-object control reports a stale fixture at line 3860; the cheap
+source binding reports the same stale `rust/src/solver.rs` identity at line
+12907. Both unchanged JavaScript files fail locally before the correction.
+
+The maintained governed-witness writer refreshes exactly nineteen fixture
+hashes from the published pre-extraction solver to its extracted parent.
+An independent complete-object comparison permits only those exact changes;
+all native source records, all 221 supported case objects apart from the
+reviewed fingerprints, and all 968 unsupported objects remain unchanged.
+The denominator remains 1,189. The reader itself is byte-identical.
+Both existing files then pass: 34 identifier/inventory controls and two
+fixture-integrity controls. This is source binding, not native execution.
+The reproducible reviewer and complete before/after receipts are retained in
+`experiments/issue-1580/evidence/checks/extracted-solver-governed-witness/`.
+Remaining workflows and the complete local gate inventory still require
+collection before another push. No wider acceptance or independent authorship
+credit is claimed.
