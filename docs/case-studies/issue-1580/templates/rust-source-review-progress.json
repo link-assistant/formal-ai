@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T14:40:52.138619+00:00",
+  "observedAt": "2026-11-20T16:20:25.202065+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 289,
-  "fullyReadSourceLines": 34914,
+  "fullyReadFiles": 309,
+  "fullyReadSourceLines": 37626,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -593,6 +593,23 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/Cargo.lock.before.txt",
+      "lines": 473,
+      "sha256": "5e2cd91e13528b4b1c2554ad6c0d6aa230a593c9bee1e9811893b5924bc9775c",
+      "readLogs": [
+        "rust-lock-and-tool-notes.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          473
+        ]
+      ],
+      "literalReadLines": 473,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/README.md",
       "lines": 25,
       "sha256": "8c3ab5cf3374278e1ef39bbec9087f4fd1daed8fef2fef0869d8d145e9bcb4cd",
@@ -916,6 +933,25 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/codeql-macros-upstream.json.txt",
+      "lines": 300,
+      "sha256": "23fb50a5e83eaf722a55fafbb7dedaf389ac39a62a2df96491486ffb1e075319",
+      "decodedSha256": "23fb50a5e83eaf722a55fafbb7dedaf389ac39a62a2df96491486ffb1e075319",
+      "sourceEncoding": "utf-8",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          300
+        ]
+      ],
+      "literalReadLines": 300,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/codeql-upstream-search.json",
       "lines": 1,
       "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
@@ -984,6 +1020,265 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/dependency-update-best-practices.txt",
+      "lines": 260,
+      "sha256": "aab60a752cf480ae498a51b9a97689a58b7c5a2681e9b91a7e554cf5c8140254",
+      "readLogs": [
+        "rust-dependency-guide.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          260
+        ]
+      ],
+      "literalReadLines": 260,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/actionlint-queue-before.log.gz",
+      "lines": 28,
+      "sha256": "2630c24b62b68c6e3c409b6f574dfbea6dbc3154f6d92cbdb066152b3e6e5ecc",
+      "decodedSha256": "d49c7ad36ac338cc5660734fa405a2d593a46ba6a6ada5a01b751a0c50af8b9e",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          28
+        ]
+      ],
+      "literalReadLines": 28,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/audit-minimal-repro.log.gz",
+      "lines": 8,
+      "sha256": "b9ba0e3b6dca8e43f4febfe1c2faa6445c94f87e98470d30e7b989e2c8e3d9b4",
+      "decodedSha256": "ed3e986375344785cf95d63b0717502f5e111f37decf78a2817ea06fdfa5c83e",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "literalReadLines": 8,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/baseline-action-test.log.gz",
+      "lines": 14,
+      "sha256": "975fc72061ca8d45c79cff4359b0be96aa225ea6ef4a1b4590ba2ec2ddd6c654",
+      "decodedSha256": "3c5100a04645d8f8fc3f777607506fcad59cfb5d5d9552f190a2cafbd6c4f448",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "literalReadLines": 14,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/batch-2-report-links.log.gz",
+      "lines": 83,
+      "sha256": "21fb6b293d94dc622006e1ae5267ccb30c20237eb471b9316c35ab279e9366fa",
+      "decodedSha256": "2f63d1c3e0ea8c216a04deedccf9709538ffe15a90d1ecc0cc77368cd2f43e30",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          83
+        ]
+      ],
+      "literalReadLines": 83,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/candidate-lints-audits.log.gz",
+      "lines": 17,
+      "sha256": "dd9aaea4363f3b030e894beaba640e69dd738e8e6bfed3552aef81283c8d8a45",
+      "decodedSha256": "660754747884d94ad3e0723ace02e3a99ec94392a14be5935865fda3c00cd1a1",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          17
+        ]
+      ],
+      "literalReadLines": 17,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/cargo-audit-before.log.gz",
+      "lines": 8,
+      "sha256": "6885afce89e17f311debbee475a65bc62f46d7e68db145d482856c8e52b0864b",
+      "decodedSha256": "96db7da0cc706bd05cce356448f84a79a6894c60244357466e26ce60f2dc8c2a",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "literalReadLines": 8,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/npm-full-validation.log.gz",
+      "lines": 29,
+      "sha256": "f6c84c28f179c3d072e198177741ec4d2373ed14b2a471c3e9389d97ebd23366",
+      "decodedSha256": "dcb5849c5d68ae147e5d963a24c912fe80c7f740cfdba2d04516d916fc078d99",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "literalReadLines": 29,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/policy-regression-before.log.gz",
+      "lines": 49,
+      "sha256": "81b0b92fe78b8d87d8615e727c1cb813724a8bbe59885eef4540de2c1dbe8edb",
+      "decodedSha256": "ea13632bbca744bde173ff9d869f059585680d3fcfac0562f2c1d494edc446b2",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          49
+        ]
+      ],
+      "literalReadLines": 49,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/python-full-validation.log.gz",
+      "lines": 92,
+      "sha256": "1ad9126f8f9cb0de0829f60c14c059b65cd7b21a2c021698693e5283f154aa9d",
+      "decodedSha256": "c89c54109bc8f27db6d9816e1aa120552f098703dc767e5aae5e2aacdd6d466c",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          92
+        ]
+      ],
+      "literalReadLines": 92,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/release-sync-tests.log.gz",
+      "lines": 5,
+      "sha256": "6c57ecdebcfdfcc9402299b822aca499213e88344b8d9abc0bc37532775d0322",
+      "decodedSha256": "469500d7cfa671fa69b73f41649d1400cf7567740a0e18f4b400d62082d2c016",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "literalReadLines": 5,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/standalone-after.log.gz",
+      "lines": 9,
+      "sha256": "b94759cecf8020bd69a36ab886139d48cf8265fe1f6ed089d868cbc2530556d4",
+      "decodedSha256": "52eeec13b31c464f95c6331d17218a55796b8b418caa8b10a4fe11e6240021f6",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "literalReadLines": 9,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/standalone-before.log.gz",
+      "lines": 64,
+      "sha256": "03f57a7511cde5dd79aabe10ecdebc8729e0b27ed43c6665ee4d3d9366e44242",
+      "decodedSha256": "b4b99bc7c372fbbf21796610699a925f078d13ebca8fcd7e4931d6f2d193c5c5",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          64
+        ]
+      ],
+      "literalReadLines": 64,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/evidence/workflow-lints.log.gz",
+      "lines": 0,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "decodedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceEncoding": "gzip",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [],
+      "literalReadLines": 0,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/example-cargo-audit.json",
       "lines": 1,
       "sha256": "af1a0c5a98bd28bcc5f5347e52a90b0b5d7719a8690364be51df2c796b72f56c",
@@ -1031,6 +1326,40 @@
         ]
       ],
       "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/lychee-upstream.json.txt",
+      "lines": 305,
+      "sha256": "3029c6af9ca6123e8bb59fe2c4be7269889d134e11ba5ba4bd39c051f1fa27f7",
+      "readLogs": [
+        "rust-lock-and-tool-notes.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          305
+        ]
+      ],
+      "literalReadLines": 305,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/npm-check-updates-release.json",
+      "lines": 194,
+      "sha256": "2e1c6614de4060087ce1f1d2ad2ce6c5af082d93493dc75bce4273311bd01622",
+      "readLogs": [
+        "rust-lock-and-tool-notes.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          194
+        ]
+      ],
+      "literalReadLines": 194,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1290,6 +1619,25 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/rust-image.txt",
+      "lines": 130,
+      "sha256": "d7a7c0b33363d5bac7d7c18107501d24dc9a9f3326e4f5d89139045a1acfdfff",
+      "decodedSha256": "d7a7c0b33363d5bac7d7c18107501d24dc9a9f3326e4f5d89139045a1acfdfff",
+      "sourceEncoding": "utf-8",
+      "readLogs": [
+        "rust-macro-and-small-logs.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          130
+        ]
+      ],
+      "literalReadLines": 130,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/rust-toolchain-head.json",
       "lines": 1,
       "sha256": "a7100aff4d67cddc7300a172fc2127702168af11014377faeca39de72e14cd2f",
@@ -1337,6 +1685,23 @@
         ]
       ],
       "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/toml-changelog.txt",
+      "lines": 644,
+      "sha256": "72ba18c977da2c1942dbbc7371d469b2475476b3dc0e19804b6e1298ece49d53",
+      "readLogs": [
+        "rust-toml-release-history.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          644
+        ]
+      ],
+      "literalReadLines": 644,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -5780,6 +6145,86 @@
         "scripts/check-rust-dependencies.sh",
         ".pre-commit-config.yaml",
         ".github/workflows/security.yml"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Historical extraction ABI, immutable image indexes, complete dependency inventories and literal regression evidence",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/codeql-macros-upstream.json.txt",
+        "dev/log/issues/247/pulls/248/rust-image.txt",
+        "dev/log/issues/247/pulls/248/evidence/actionlint-queue-before.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/audit-minimal-repro.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/baseline-action-test.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/batch-2-report-links.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/candidate-lints-audits.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/cargo-audit-before.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/npm-full-validation.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/policy-regression-before.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/python-full-validation.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/release-sync-tests.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/standalone-after.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/standalone-before.log.gz",
+        "dev/log/issues/247/pulls/248/evidence/workflow-lints.log.gz"
+      ],
+      "assessment": "Read all 15 complete pinned files, including decoded content of 13 gzip logs; verify compressed and decoded source identities separately. Historical CodeQL reports distinguish missing sysroot, macro ABI and unbuilt proc-macro coverage failures, supporting current matched-sysroot/context work without proving the current 631 informational macro expansions. The Rust image index distinguishes six executable Linux architectures from attestation manifests; this historical tag/index does not establish current registry contents. Retain the stale trusted-publishing assertion failure, missing standalone regex dependencies, malformed-lock cargo-audit panic, dependency-policy before/after failures, scoped clean audit output and successful 16-case release-sync run as historical observations. The Python audit contains repeated cache deserialization warnings despite no known vulnerabilities; the empty workflow-lints log alone proves neither execution nor success. Current policy/format/action compatibility and full lock/CI/deployment behavior need their own current evidence; no current shared defect is established by these historical outputs.",
+      "status": "literal-history-reviewed-current-runtime-open",
+      "formalAiPaths": [
+        ".github/workflows/security.yml",
+        "scripts/codeql-rust-projects.py",
+        ".github/actions/setup-buildx-resilient/action.yml",
+        "scripts/check-rust-dependencies.sh"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Malformed-lock identity, connect-phase retry classification and updater runtime requirements",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/Cargo.lock.before.txt",
+        "dev/log/issues/247/pulls/248/lychee-upstream.json.txt",
+        "dev/log/issues/247/pulls/248/npm-check-updates-release.json"
+      ],
+      "assessment": "Read the complete historical 473-line Cargo lock, including duplicate syn 3.0.10 entries and missing syn 2.0.111 references; this is invalid historical input, not a package graph to adopt. Strict actual lock validation and propagation of audit failures remain required. The complete lychee report and maintainer response distinguish an early TLS reset from a post-request reset: retries require the underlying I/O kind and the nested io::Error wrapper, while permanent HTTP errors remain failures. Formal AI already carries the targeted recheck helper; current source and runtime equivalence still need verification. npm-check-updates 23.1.1 historical metadata declares Node ^22.22.2 or ^24.15.0 or >=26.0.0 and npm >=10; a matching historical major alone does not prove actual updater compatibility. Preserve historical engine/package identities without calling these latest releases or current runtime evidence.",
+      "status": "literal-history-reviewed-current-counterparts-open",
+      "formalAiPaths": [
+        "scripts/check-rust-dependencies.sh",
+        "scripts/recheck-broken-links.mjs",
+        ".github/workflows/dependencies.yml"
+      ],
+      "verification": null
+    },
+    {
+      "practice": "Audit and refresh every actual committed dependency inventory without losing producer status",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/dependency-update-best-practices.txt"
+      ],
+      "assessment": "The full historical guide covers actual registry versions, lock regeneration, honest constraints and exception reports, migration changes, scheduled actual-lock audits, and one updater. Formal AI uses its native dependencies-latest workflow rather than npm-check-updates, so that updater package engine is not an installed-tool claim. Its Rust audit already rejects failed or partial lock enumeration. The JavaScript maintenance resolver still used process substitution, losing failed Git status; draft complete enumeration before any resolver and regression with output-then-failure. Do not adopt the guide automation that merges unchecked Dependabot pull requests: this session requires the protected issue branch and verified pull request. Current dependency advisories, unmaintained Chrono migration, runtime update/release proof, and other language inventories remain open.",
+      "status": "guide-reviewed-maintenance-inventory-local-regression-verified-other-runtime-criteria-open",
+      "formalAiPaths": [
+        "scripts/check-rust-dependencies.sh",
+        ".github/workflows/dependencies-latest.yml",
+        "rust/tests/web/dependencies-maintenance-workflow.test.mjs"
+      ],
+      "verification": {
+        "path": "experiments/issue-1580/evidence/checks/template-runtime-and-macro-observation-verified/records.json",
+        "originalInventoryRegressionFailures": 1,
+        "currentMaintenanceCasesPassed": 4,
+        "nativeCompilation": false,
+        "independentAuthorshipCredit": 0
+      }
+    },
+    {
+      "practice": "Preserve TOML source editing and validate semantic API changes when updating parser dependencies",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/toml-changelog.txt"
+      ],
+      "assessment": "The complete historical release log distinguishes document versus value parsing/serialization, TOML 1.1 syntax, ordering features, borrowed deserialization, serializer buffer changes, duplicate-key rejection, recursion limits and parser stack/infinite-loop fixes. Formal AI scripts use toml_edit for comment-preserving version edits; do not replace that source editor with a value serializer or apply toml crate APIs to toml_edit. This pinned historical log is not a current release lookup or a successful update/runtime test. Existing native registry/version-edit tests and actual context parsing need their own hosted evidence; parser implementation/runtime equivalence remains open.",
+      "status": "historical-api-migration-review-counterpart-runtime-open",
+      "formalAiPaths": [
+        "scripts/cargo-package.rs",
+        "scripts/bump-version.rs",
+        "scripts/rust-paths.rs",
+        "scripts/codeql-rust-projects.py"
       ],
       "verification": null
     }

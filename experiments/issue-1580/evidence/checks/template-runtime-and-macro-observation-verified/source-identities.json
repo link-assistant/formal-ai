@@ -1,0 +1,34 @@
+[
+  {
+    "path": ".github/workflows/security.yml",
+    "sha256": "53d4082e663881a899edef623f28b7215e2a7110a4f91639a51e94d5f0b8f118"
+  },
+  {
+    "path": ".github/workflows/dependencies-latest.yml",
+    "sha256": "2fdf5c814d83624e3f242557578eb1697824088791b7705cb7e292d365266340"
+  },
+  {
+    "path": "scripts/recheck-broken-links.mjs",
+    "sha256": "4c18546b2563d2ebd182cbb636e6d46daae3d4029966988c6e83295ea857f53b"
+  },
+  {
+    "path": "rust/tests/web/dependencies-maintenance-workflow.test.mjs",
+    "sha256": "95c9370205fb94e5c22334bda1c0aeea03b4c536c8658efded8f66ebd40b945b"
+  },
+  {
+    "path": "scripts/recheck-broken-links.test.mjs",
+    "sha256": "55bca7baa08319a75d7142f49d9ae1813da330d19bf825433fbc4a38d4abfb7f"
+  },
+  {
+    "path": "rust/tests/web/security-codeql-results.test.mjs",
+    "sha256": "fa2202348cc2de0ce88a78e52cd0f20219a2d379813b8630b2e8d63e46b4d354"
+  },
+  {
+    "path": "experiments/issue-1580/codeql-macro-contexts/observe.py",
+    "sha256": "a46244cf7b9ee4e8163018ccde2bc9a5273f2e2bfc0c6ffdde559c60f73ebcd4"
+  },
+  {
+    "path": "experiments/issue-1580/codeql-macro-contexts/MacroContexts.ql",
+    "sha256": "762d3bd84356e257aa0828d95baf9aa34db594f59f7a8cc6537857210e47f1b5"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "before": "codeql-probe-interfaces/init-action.decoded.gz",
+    "after": "codeql-probe-interfaces/initialize-action.decoded.gz",
+    "originalBytesUnchanged": true
+  },
+  {
+    "before": "codeql-probe-interfaces/init-action.stderr.gz",
+    "after": "codeql-probe-interfaces/initialize-action.stderr.gz",
+    "originalBytesUnchanged": true
+  },
+  {
+    "before": "codeql-probe-interfaces/init-action.stdout.gz",
+    "after": "codeql-probe-interfaces/initialize-action.stdout.gz",
+    "originalBytesUnchanged": true
+  },
+  {
+    "before": "codeql-macro-location-interfaces/element-impl.decoded.gz",
+    "after": "codeql-macro-location-interfaces/element-implementation.decoded.gz",
+    "originalBytesUnchanged": true
+  },
+  {
+    "before": "codeql-macro-location-interfaces/element-impl.stderr.gz",
+    "after": "codeql-macro-location-interfaces/element-implementation.stderr.gz",
+    "originalBytesUnchanged": true
+  },
+  {
+    "before": "codeql-macro-location-interfaces/element-impl.stdout.gz",
+    "after": "codeql-macro-location-interfaces/element-implementation.stdout.gz",
+    "originalBytesUnchanged": true
+  }
+]

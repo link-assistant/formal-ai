@@ -473,5 +473,25 @@
     "file": "rust-remaining-small-metadata.read.txt.gz",
     "rawSha256": "5512177d8cb85b87834aea8829fd92eafde9ee944e8924c781cbc8a5293ee9d8",
     "archiveSha256": "62ad6ca7d4f5564aef65b7da0b2c64ef3d77dea9f0147a84a2313d4b44166f44"
+  },
+  {
+    "file": "rust-macro-and-small-logs.read.txt.gz",
+    "rawSha256": "5c26e2b0f134601293087999c53abd2bdffe8c1d4e7da3f65f5c35b43bf04c7c",
+    "archiveSha256": "d490786483ef10f1f0da2fc4251b51d7cece11962cf8322f20ba3c91531c2c64"
+  },
+  {
+    "file": "rust-lock-and-tool-notes.read.txt.gz",
+    "rawSha256": "93f02d9c737340336a013b6c5a01ef650f44d5d9a85952672a1703022fc02855",
+    "archiveSha256": "b2037f0939e133c4330e6d1a769c38f6a38dc1487826a6f68c4a310d6b224351"
+  },
+  {
+    "file": "rust-dependency-guide.read.txt.gz",
+    "rawSha256": "1fa04422f24d06bcf9fbf2ce768b6e0f70cf597c94ba963bae6ce678f8c88d36",
+    "archiveSha256": "687697042a332025ef448487c8ed1642ffbe25d7d84208912291453f22ed7ec1"
+  },
+  {
+    "file": "rust-toml-release-history.read.txt.gz",
+    "rawSha256": "1064e18aee5ef2c2b5feb703850c527bf713c9173d3f9e2aec6b734c1163459e",
+    "archiveSha256": "212e3055228f245ef16bd4b19f93f9208b7f488fee91575e2842f8df11997ee1"
   }
 ]

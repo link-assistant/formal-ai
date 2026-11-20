@@ -1,0 +1,962 @@
+[
+  {
+    "file": "codeql-macro-targets/expansion-comments.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/expansion-comments.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-targets/expansion-comments.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/expansion-comments.stdout",
+    "rawSha256": "1e7a18a3cebd7c3f74a81392ebaae7ef4f14271706b831da921e450ea6caa501",
+    "archiveSha256": "7302e7eedf4b80d242548ab3a80951ee9c0d1984ac5509b44f68ef4930ebc90e",
+    "bytes": 6890,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-targets/expansion-issue.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/expansion-issue.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-targets/expansion-issue.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/expansion-issue.stdout",
+    "rawSha256": "b4de9f779aa29f269ad6332baa714008673af1705107fa8e4a62bb03bfc9222f",
+    "archiveSha256": "728a4a3ea66534e3ccf9426c682216088bfcc350262e691d9ec2214d218a6c2d",
+    "bytes": 3250,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-targets/repository-root.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/repository-root.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-targets/repository-root.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/repository-root.stdout",
+    "rawSha256": "32a6c61c3b651e3d0cc4a08434480f01a2e19edfea1d4ebdd68f28151432144e",
+    "archiveSha256": "5b5872f38019adda4b81f22658ea2c2f836ef5e9d304fd0b6932596b66e3b932",
+    "bytes": 31270,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-targets/rust-root.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/rust-root.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-targets/rust-root.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/rust-root.stdout",
+    "rawSha256": "85f21adf3c7a2a8770ce7e9772e386d861f206da063c8643e0ae52e0a43107d7",
+    "archiveSha256": "71b915acac41c35701594350a561b56a6b1fcabd6d41780efbe59896003800b4",
+    "bytes": 12910,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-targets/target-comments.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/target-comments.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-targets/target-comments.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/target-comments.stdout",
+    "rawSha256": "b86c2df32532ce93aa35355c40caa8351cda3dbf365c1aacbe505cc5bea61346",
+    "archiveSha256": "e00e2c7bde806a58402516135c72a917111003b4c617a232f265424c4b8050e9",
+    "bytes": 9166,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-targets/target-issue.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/target-issue.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-targets/target-issue.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-targets/target-issue.stdout",
+    "rawSha256": "df67702ccc434aa906c35fb7035690c024872954576d50d6d8fdef3c241cde84",
+    "archiveSha256": "63a207f368a440e81a747509ba1677bd1024a9dc9204a9cf4cfc6adef8f6ea60",
+    "bytes": 4773,
+    "lines": 1
+  },
+  {
+    "file": "codeql-diagnostic-sources/latest-source-layout.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/latest-source-layout.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-diagnostic-sources/latest-source-layout.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/latest-source-layout.stdout",
+    "rawSha256": "a31a2788d6b1871f98eb2d843e10b36aad4c6c07d43c386327a680cb79b15602",
+    "archiveSha256": "d25ec5dba0b999b6d04fdd5a20f7e7180c02b619489f5bfc72b73c4d8987d4eb",
+    "bytes": 6518,
+    "lines": 1
+  },
+  {
+    "file": "codeql-diagnostic-sources/macro-expansion-download.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/macro-expansion-download.stderr",
+    "rawSha256": "c865f0cbaf840b73f453051d15dc85a5d7f7f9922d8798e43a169f5407b0de8f",
+    "archiveSha256": "c7d4af818bffb1c805bcab9e23acc5110b874b97a23951d041f53298d7d6e226",
+    "bytes": 704,
+    "lines": 11
+  },
+  {
+    "file": "codeql-diagnostic-sources/macro-expansion.png.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/macro-expansion.png",
+    "rawSha256": "cb1108d6c62069b5bc6a2dbc76847ad97ca6a63bab53bfe0f6b03c5c10c3abfd",
+    "archiveSha256": "ddbae2991057f16986a6b16a700382a2348cf0e1b7bcdbfb5c30de6439fe81ea",
+    "bytes": 123605,
+    "lines": 877
+  },
+  {
+    "file": "codeql-diagnostic-sources/macro-implementation.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/macro-implementation.decoded",
+    "rawSha256": "d9b7a9d95bb857ee497ded55cd601f275ff2f134288e2ddefb013138082eadff",
+    "archiveSha256": "08704e0c9b4e15e9e0fd8f5770ebc24622b6ca952e866622191b8664e6fc6d37",
+    "bytes": 995,
+    "lines": 38
+  },
+  {
+    "file": "codeql-diagnostic-sources/macro-implementation.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/macro-implementation.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-diagnostic-sources/macro-implementation.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/macro-implementation.stdout",
+    "rawSha256": "074f9d259fe477385a09427c621a598777c78148fb10b7155bf453b82c896d41",
+    "archiveSha256": "331642b3ec708c59a11eb9cdb1ca37c26bafc4efd2dc3e26a88114d043feda67",
+    "bytes": 2484,
+    "lines": 1
+  },
+  {
+    "file": "codeql-diagnostic-sources/macro-quality-download.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/macro-quality-download.stderr",
+    "rawSha256": "d42d21f426b563dc26a7026ca15560c85bf6b1948c44fc9491617a46c04da200",
+    "archiveSha256": "a96e95d8ed39471c0b50d5035100f20391b579f4425c05f592659c85c1209993",
+    "bytes": 704,
+    "lines": 11
+  },
+  {
+    "file": "codeql-diagnostic-sources/macro-quality.png.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/macro-quality.png",
+    "rawSha256": "3e8a782ca3e61cf0c4f3a61ca0da6eb5fc4591cb65e1a8d7ab493b88788f7f1c",
+    "archiveSha256": "b195c784c149389b07851c43698c9059077e1c898fb699380c58c19d2f445452",
+    "bytes": 88669,
+    "lines": 590
+  },
+  {
+    "file": "codeql-diagnostic-sources/macro-query-search.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/macro-query-search.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-diagnostic-sources/macro-query-search.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/macro-query-search.stdout",
+    "rawSha256": "cddaaf6b9a910927348ed7ea7f0f1c143e6619e6bc73e7a3344222c9c5679cc1",
+    "archiveSha256": "6b6ddc6833ab3f48a2ff55cf714d1c22e497a725fb76e1f05d7fc787afdc9367",
+    "bytes": 373,
+    "lines": 1
+  },
+  {
+    "file": "codeql-diagnostic-sources/source-layout.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/source-layout.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-diagnostic-sources/source-layout.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-diagnostic-sources/source-layout.stdout",
+    "rawSha256": "2578bfb45c57ad34e87e4f5f060ef5e5ba8fa3a5b8751380863b6dcc10de0927",
+    "archiveSha256": "77328637852777ce5cf78916984f29fee2d3dd46a907bebfa3fc900eef24271b",
+    "bytes": 6554,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-query/diagnostic-layout.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/diagnostic-layout.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-query/diagnostic-layout.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/diagnostic-layout.stdout",
+    "rawSha256": "75f18573d1058b555c94ecd1cd8c51ef7fb12c0adb9f11a99b697e490692c014",
+    "archiveSha256": "f26ed6a2411bc1ab5a4d43afb543ad9207bf7acfcf2745199986c65c6f14a984",
+    "bytes": 10615,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-query/macro-schema.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/macro-schema.decoded",
+    "rawSha256": "292a5add471407e33d2a449f7b52b92db09a7148596437dc1d152deccd41095f",
+    "archiveSha256": "b9e05f5bb32fd6b05ce15c4a4213a6ec921a4d7e325d715dfdaf1b5cb9f98993",
+    "bytes": 2855,
+    "lines": 97
+  },
+  {
+    "file": "codeql-macro-query/macro-schema.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/macro-schema.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-query/macro-schema.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/macro-schema.stdout",
+    "rawSha256": "6fd83ba4cd1cd146eb235a4f1fc15304d6ee3a1a3587229d50efb9fd64f08851",
+    "archiveSha256": "1573928e949b518620489f6ec5ad176d5ddb5a77a09f93b3a56651ef30755383",
+    "bytes": 5079,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-query/quality-query.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/quality-query.stderr",
+    "rawSha256": "d2c8985c89b29a842ac4946d13bdbc297709f44f20bb968faf9682664b211db6",
+    "archiveSha256": "18b3850be3c936476d677e0ecef6924a4511017f03f4aa21f854b5c1075595ac",
+    "bytes": 25,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-query/quality-query.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/quality-query.stdout",
+    "rawSha256": "e45906ce02e79f16fb87a838d86bb4e497e37a9591f97608fa013bbcd8b9cbc2",
+    "archiveSha256": "00c65a0532d4180c5e7db8b2dfbe4f47e7ed84dde7c00a6cafdcc2d869919fd2",
+    "bytes": 127,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-query/unresolved-query.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/unresolved-query.decoded",
+    "rawSha256": "77697771fda0ab90748895bef80a5fcec21c3ad22f45381139dffaf68a4b8fcd",
+    "archiveSha256": "882d8685d74074b22eff3cb6f44920d94665d66968c4be6e609e66764aa5084c",
+    "bytes": 323,
+    "lines": 12
+  },
+  {
+    "file": "codeql-macro-query/unresolved-query.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/unresolved-query.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-query/unresolved-query.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-query/unresolved-query.stdout",
+    "rawSha256": "7f5c5b91969aca08ef27f9188a42451ef8a0b0cae1edbf627a4dffb88d4543aa",
+    "archiveSha256": "708d8ca1ea8deb0351eb7cf640715fe5dc69c1911f35791da6a220e24c0c64fc",
+    "bytes": 1540,
+    "lines": 1
+  },
+  {
+    "file": "codeql-probe-interfaces/analyze-action.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/analyze-action.decoded",
+    "rawSha256": "46967f21b52b5f78ba49192d432bca6c6b8a1027b3d2eb8b29d33c3f3012ec78",
+    "archiveSha256": "6700cbb36d00ea679bb65992c83b2047b063a2824843a1e1121407e3eeb7448e",
+    "bytes": 5295,
+    "lines": 99
+  },
+  {
+    "file": "codeql-probe-interfaces/analyze-action.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/analyze-action.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-probe-interfaces/analyze-action.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/analyze-action.stdout",
+    "rawSha256": "85cb4e6d7cdd9830c03df1449a82ac21ecdd63e4cc1265369a73209390a78834",
+    "archiveSha256": "54b55e3218784345e506fdcac36c674e648710c98fa672328c2b683125236aec",
+    "bytes": 8123,
+    "lines": 1
+  },
+  {
+    "file": "codeql-probe-interfaces/ast-node-implementation.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/ast-node-implementation.decoded",
+    "rawSha256": "c8b2ed3a66d90ecbc685375af311e63352079b76a361120eef6ef7bfdcd634cb",
+    "archiveSha256": "0301073fac64441e8c430163525b52dfb9300295460a20b4d62eae261928093d",
+    "bytes": 3898,
+    "lines": 133
+  },
+  {
+    "file": "codeql-probe-interfaces/ast-node-implementation.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/ast-node-implementation.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-probe-interfaces/ast-node-implementation.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/ast-node-implementation.stdout",
+    "rawSha256": "83ac81956f0404089a7e6ce9a16114c8523acd32de34803641ccdf6e3721c527",
+    "archiveSha256": "dacbf02e13a6c5fcb349aedcfe471d829f67051e083194a2bcbca8aeabc28919",
+    "bytes": 6471,
+    "lines": 1
+  },
+  {
+    "file": "codeql-probe-interfaces/ast-node.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/ast-node.decoded",
+    "rawSha256": "dee708f19c1b333cbd9609819db3dfdb48a0c90d26266c380f31357b1e2d6141",
+    "archiveSha256": "4a7a4ac5d46c02591ee9606257010df512cddbc9a4d5ef658a76b0fcd8a61ffe",
+    "bytes": 210,
+    "lines": 9
+  },
+  {
+    "file": "codeql-probe-interfaces/ast-node.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/ast-node.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-probe-interfaces/ast-node.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/ast-node.stdout",
+    "rawSha256": "490700f54f8bb4e1e65240b17bad94f6387e49bd65f7a40bc3b0ed6ebff8c173",
+    "archiveSha256": "cac668b73b8e4345b2b154bba3b60f8c4e544e6f2d260e72a3a09f24d877c2c5",
+    "bytes": 1304,
+    "lines": 1
+  },
+  {
+    "file": "codeql-probe-interfaces/initialize-action.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/init-action.decoded",
+    "rawSha256": "0ffb439ce1dba456138e13870b70087e5f5a9cd7ce3470cfccc6fad8bc2acb76",
+    "archiveSha256": "afc92ca528b71059b4476d6aef74841e70894e2a30966915e9076a4026541543",
+    "bytes": 8937,
+    "lines": 185
+  },
+  {
+    "file": "codeql-probe-interfaces/initialize-action.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/init-action.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-probe-interfaces/initialize-action.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/init-action.stdout",
+    "rawSha256": "7566a0e442057438b713ef585c7c4edf3312604e045af6f8e39a4dbdd3c59b33",
+    "archiveSha256": "f2453c6c6418a3dc1a741b45424ef9b29f897c0a7026b20e22bf8a4b6b6162ac",
+    "bytes": 13123,
+    "lines": 1
+  },
+  {
+    "file": "codeql-probe-interfaces/macro-tests.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/macro-tests.stderr",
+    "rawSha256": "d2c8985c89b29a842ac4946d13bdbc297709f44f20bb968faf9682664b211db6",
+    "archiveSha256": "18b3850be3c936476d677e0ecef6924a4511017f03f4aa21f854b5c1075595ac",
+    "bytes": 25,
+    "lines": 1
+  },
+  {
+    "file": "codeql-probe-interfaces/macro-tests.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/macro-tests.stdout",
+    "rawSha256": "e45906ce02e79f16fb87a838d86bb4e497e37a9591f97608fa013bbcd8b9cbc2",
+    "archiveSha256": "00c65a0532d4180c5e7db8b2dfbe4f47e7ed84dde7c00a6cafdcc2d869919fd2",
+    "bytes": 127,
+    "lines": 1
+  },
+  {
+    "file": "codeql-probe-interfaces/query-pack.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/query-pack.decoded",
+    "rawSha256": "4c0d6c050cc1f097f11d5732c48597a64f4892701c815610d3c34fbb8ab8054f",
+    "archiveSha256": "e55221435794ee02b3ed23361b3db8117cdfb23d21e41f921c4cdca10e3fec9a",
+    "bytes": 300,
+    "lines": 13
+  },
+  {
+    "file": "codeql-probe-interfaces/query-pack.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/query-pack.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-probe-interfaces/query-pack.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-probe-interfaces/query-pack.stdout",
+    "rawSha256": "4876af8a5cb7fed132bba60002ba519cbbb09ffcb82f1eeac0f895e4feb8a303",
+    "archiveSha256": "a1cd2f9e9ffa763247fcc481e8ed4e72f37368ad6a16f0aac2de0c9492778cb2",
+    "bytes": 1295,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-location-interfaces/classification.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/classification.stdout",
+    "rawSha256": "2e4cba4c7c3342fdc655c693800819c4a0f8e905171a1455c589b5193c668391",
+    "archiveSha256": "050f3600be442f84233cb4faffc99bc4fbc41c38ff511f119852f6b85d102c3f",
+    "bytes": 41802,
+    "lines": 103
+  },
+  {
+    "file": "codeql-macro-location-interfaces/codeql-run-queries.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/codeql-run-queries.stderr",
+    "rawSha256": "d2c8985c89b29a842ac4946d13bdbc297709f44f20bb968faf9682664b211db6",
+    "archiveSha256": "18b3850be3c936476d677e0ecef6924a4511017f03f4aa21f854b5c1075595ac",
+    "bytes": 25,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-location-interfaces/codeql-run-queries.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/codeql-run-queries.stdout",
+    "rawSha256": "e45906ce02e79f16fb87a838d86bb4e497e37a9591f97608fa013bbcd8b9cbc2",
+    "archiveSha256": "00c65a0532d4180c5e7db8b2dfbe4f47e7ed84dde7c00a6cafdcc2d869919fd2",
+    "bytes": 127,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-location-interfaces/element-implementation.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/element-impl.decoded",
+    "rawSha256": "b5648da97c3efedd78184d032086603e54f8173f5e85147f37660fb18ad2a8fb",
+    "archiveSha256": "19cd683bafab8423501e1c6fdaa48c483ddbaa70d6df372e337651610e43f125",
+    "bytes": 4976,
+    "lines": 140
+  },
+  {
+    "file": "codeql-macro-location-interfaces/element-implementation.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/element-impl.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-location-interfaces/element-implementation.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/element-impl.stdout",
+    "rawSha256": "4cc073794d779e4170cf50a1c2e4f797707f3aba1653e84770cea0e7718154d1",
+    "archiveSha256": "606ac9b6c583645d4be1a214bdfe57d94422f8084390043862230d1186356ae7",
+    "bytes": 7955,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-location-interfaces/locatable.decoded.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/locatable.decoded",
+    "rawSha256": "b32d242f8c9480dc9b53c1e13a5cb8dcfce575b0373991c082c1db460a3e37b8",
+    "archiveSha256": "619339ac56f44626dc6d6e29e3c14d1ab9fea663b4662eb8260b82693d7e9c76",
+    "bytes": 728,
+    "lines": 21
+  },
+  {
+    "file": "codeql-macro-location-interfaces/locatable.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/locatable.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "codeql-macro-location-interfaces/locatable.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/locatable.stdout",
+    "rawSha256": "37bca99f3876ec9cadc2af72f88f225c26348c35eddd18da287c1bfb5725b709",
+    "archiveSha256": "9b4605d7c494910b0bc12781c5b0a4beacb7e4a9753282aade22290f3bb66f8b",
+    "bytes": 2148,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-location-interfaces/location.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/location.stderr",
+    "rawSha256": "d2c8985c89b29a842ac4946d13bdbc297709f44f20bb968faf9682664b211db6",
+    "archiveSha256": "18b3850be3c936476d677e0ecef6924a4511017f03f4aa21f854b5c1075595ac",
+    "bytes": 25,
+    "lines": 1
+  },
+  {
+    "file": "codeql-macro-location-interfaces/location.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-location-interfaces/location.stdout",
+    "rawSha256": "e45906ce02e79f16fb87a838d86bb4e497e37a9591f97608fa013bbcd8b9cbc2",
+    "archiveSha256": "00c65a0532d4180c5e7db8b2dfbe4f47e7ed84dde7c00a6cafdcc2d869919fd2",
+    "bytes": 127,
+    "lines": 1
+  },
+  {
+    "file": "macro-context-classification/classification.json.gz",
+    "originalPath": "/tmp/issue-1580-research/macro-context-classification/classification.json",
+    "rawSha256": "6870232e2943daa384f2b861f2ad47aa0e76ba85eabd7f6296f099adebbe6689",
+    "archiveSha256": "c824188eb52df3775d66140453d2aba11d1e0584c3b343b0387d79dc03bb4b01",
+    "bytes": 137063,
+    "lines": 5505
+  },
+  {
+    "file": "macro-context-classification/include-search.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/macro-context-classification/include-search.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "macro-context-classification/include-search.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/macro-context-classification/include-search.stdout",
+    "rawSha256": "55f5bafc565163447a8622c9039c950461704e2a6cbfc8b98f479045d5851023",
+    "archiveSha256": "d4d2c82f300e75131d2fdc7dff72fd7a4a3d2592d26324cde3c2a309a819053c",
+    "bytes": 15181,
+    "lines": 71
+  },
+  {
+    "file": "macro-context-classification/notifications.json.gz",
+    "originalPath": "/tmp/issue-1580-research/macro-context-classification/notifications.json",
+    "rawSha256": "c84e64b8262ae9fe2e3b77f8bc117ca8f95ceafb7582ecd6df1883cf38cfddb5",
+    "archiveSha256": "c9b97897c8787af95a6a299704ab602d0cbe09ddf2c890c2451a5158bdbdd6c6",
+    "bytes": 489326,
+    "lines": 21584
+  },
+  {
+    "file": "macro-context-classification-normalized/classification.json.gz",
+    "originalPath": "/tmp/issue-1580-research/macro-context-classification-normalized/classification.json",
+    "rawSha256": "ab87f7b6379f7a24c0e83e6462aa26d4e356a9fd9e7039876ced06172a4330f5",
+    "archiveSha256": "46b6a00e9cde35deb7a31a8622526a35fe226261ec8c5909e9870df6cececcfe",
+    "bytes": 138864,
+    "lines": 5550
+  },
+  {
+    "file": "macro-context-classification-normalized/include-search.stderr.gz",
+    "originalPath": "/tmp/issue-1580-research/macro-context-classification-normalized/include-search.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "macro-context-classification-normalized/include-search.stdout.gz",
+    "originalPath": "/tmp/issue-1580-research/macro-context-classification-normalized/include-search.stdout",
+    "rawSha256": "5dca02d4118c831b0647a84786890fdf8be9b7c10cd8f46f1b69dbd244007083",
+    "archiveSha256": "b9c3da6db67b2510826f166664bfabc3a6df3a34ca41951ea227c23a21a84d2a",
+    "bytes": 15179,
+    "lines": 71
+  },
+  {
+    "file": "macro-context-classification-normalized/notifications.json.gz",
+    "originalPath": "/tmp/issue-1580-research/macro-context-classification-normalized/notifications.json",
+    "rawSha256": "c84e64b8262ae9fe2e3b77f8bc117ca8f95ceafb7582ecd6df1883cf38cfddb5",
+    "archiveSha256": "c9b97897c8787af95a6a299704ab602d0cbe09ddf2c890c2451a5158bdbdd6c6",
+    "bytes": 489326,
+    "lines": 21584
+  },
+  {
+    "file": "helpers/research-codeql-macro-targets.py.gz",
+    "originalPath": "/tmp/issue-1580-research/research-codeql-macro-targets.py",
+    "rawSha256": "cc0c77902b535c8875593c3c199bc87699189171b68e1c8a04d244448fa87776",
+    "archiveSha256": "a7caa997212e602104582d68a0a8a6cc86b16d0307b96bc13060509fb6ed04b1",
+    "bytes": 1133,
+    "lines": 18
+  },
+  {
+    "file": "helpers/research-codeql-macro-targets.log.gz",
+    "originalPath": "/tmp/issue-1580-research/research-codeql-macro-targets.log",
+    "rawSha256": "8f602152cd904795fb5fd29b52558efccd0b39c9e2542ee427529eeb9498191e",
+    "archiveSha256": "0d4fc70c55c90f5a178b4c79b9270b633da77c60d87225e464a72ecb25b8044a",
+    "bytes": 7043,
+    "lines": 22
+  },
+  {
+    "file": "helpers/read-codeql-diagnostic-sources.py.gz",
+    "originalPath": "/tmp/issue-1580-research/read-codeql-diagnostic-sources.py",
+    "rawSha256": "c9f33aa47765df3e4ad50e95c0d6faa7ba3cf56e263d07f81d9d6d3854182a86",
+    "archiveSha256": "1cce67e9dab9ce50130cf55ce458af4c5ce0e4f8d8d07fd429e75ecd1df0f93b",
+    "bytes": 1806,
+    "lines": 27
+  },
+  {
+    "file": "helpers/read-codeql-diagnostic-sources.log.gz",
+    "originalPath": "/tmp/issue-1580-research/read-codeql-diagnostic-sources.log",
+    "rawSha256": "e9070fffc6a11d43f638d4a362ad0a869e01eb3659e1537e624867dd32bd765c",
+    "archiveSha256": "b5b8ef94b17647a648ae05e001e4678d7b1e005068036d94b9719f3601daa288",
+    "bytes": 2472,
+    "lines": 53
+  },
+  {
+    "file": "helpers/read-codeql-macro-query.py.gz",
+    "originalPath": "/tmp/issue-1580-research/read-codeql-macro-query.py",
+    "rawSha256": "6fcee21277e31cbad7aa658a440921e23e2f28c1754011d9f63aeda95813796c",
+    "archiveSha256": "de27d9ca963496e9e5745e9dce45958ca1cc67a4b6cedf28c4731861f809a1e5",
+    "bytes": 977,
+    "lines": 15
+  },
+  {
+    "file": "helpers/read-codeql-macro-query.log.gz",
+    "originalPath": "/tmp/issue-1580-research/read-codeql-macro-query.log",
+    "rawSha256": "2a2974a49e61fdc0e1d9d9b45315209633047eea98f6d6698e393cbf7d7c629e",
+    "archiveSha256": "ecf3741f1285536713a88c1bc373e571f1ab54471b379c592773f2e8e393f618",
+    "bytes": 4093,
+    "lines": 119
+  },
+  {
+    "file": "helpers/research-codeql-probe-interfaces.py.gz",
+    "originalPath": "/tmp/issue-1580-research/research-codeql-probe-interfaces.py",
+    "rawSha256": "63bfe53e7c8d8b2fbca16caf86d5acb253b9d1526c31fa7fb6163a3beae60a2b",
+    "archiveSha256": "a7ff0c840636fafb2356acf6d3ed711e208ffbc8468c78f1d566255cee04fc61",
+    "bytes": 1247,
+    "lines": 19
+  },
+  {
+    "file": "helpers/research-codeql-probe-interfaces.log.gz",
+    "originalPath": "/tmp/issue-1580-research/research-codeql-probe-interfaces.log",
+    "rawSha256": "1b7386a70ee19050cb9f01d4f383a017f102609505bd4e7b516713893da11d63",
+    "archiveSha256": "c42ac176f3e5598676a600163272efa6b0203037efd79d56c3a1d7c65b65620e",
+    "bytes": 20221,
+    "lines": 453
+  },
+  {
+    "file": "helpers/inspect-codeql-macro-contexts.py.gz",
+    "originalPath": "/tmp/issue-1580-research/inspect-codeql-macro-contexts.py",
+    "rawSha256": "b94cc5bf573ccc0182b4332828a30c64ad4457a47578e388779080b162e6f128",
+    "archiveSha256": "3f33fa1fcc8fa764b63ab2547e969a2c7bed486ccba7b7bad65ed0ff17fbc219",
+    "bytes": 3525,
+    "lines": 58
+  },
+  {
+    "file": "helpers/inspect-codeql-macro-contexts.log.gz",
+    "originalPath": "/tmp/issue-1580-research/inspect-codeql-macro-contexts.log",
+    "rawSha256": "f1979db0ee100f4ce0428b8c8e95090fe0cd6f743e82f1add9b8ebef57f2a1b0",
+    "archiveSha256": "95b11b8575461b796b4044a63e269d0d7990fd013feaca0e1e140f1b5d20d636",
+    "bytes": 40724,
+    "lines": 106
+  },
+  {
+    "file": "helpers/continue-codeql-macro-investigation.py.gz",
+    "originalPath": "/tmp/issue-1580-research/continue-codeql-macro-investigation.py",
+    "rawSha256": "dad49373fc33b00c8cb1df7614597ea09f1a55d513729d4c5179df81ca971890",
+    "archiveSha256": "8f437ad9554c4575ab672331ff510b1e56ff21bbefb54141936cb51785f3de26",
+    "bytes": 2224,
+    "lines": 28
+  },
+  {
+    "file": "helpers/continue-codeql-macro-investigation.log.gz",
+    "originalPath": "/tmp/issue-1580-research/continue-codeql-macro-investigation.log",
+    "rawSha256": "ab499aaa6c3aa88a82ae341dac6e84c1479c7059ac3de97fe641c9b9a3e33a97",
+    "archiveSha256": "8a245401824eea744db452d14de154dc7a8d9262f3bad2b08f3c6fd677f3c506",
+    "bytes": 3946,
+    "lines": 21
+  },
+  {
+    "file": "helpers/inspect-codeql-macro-contexts-normalized.py.gz",
+    "originalPath": "/tmp/issue-1580-research/inspect-codeql-macro-contexts-normalized.py",
+    "rawSha256": "394415c56d434670c0dd8611f66cffd6f4feed78fa8d14ba274cd5f0869d2b89",
+    "archiveSha256": "ec0a668c25d5b5836a112313d57a4924a169474d1d92260711259463a892d9b5",
+    "bytes": 3567,
+    "lines": 58
+  },
+  {
+    "file": "helpers/draft-codeql-macro-observation.py.gz",
+    "originalPath": "/tmp/issue-1580-research/draft-codeql-macro-observation.py",
+    "rawSha256": "5c59116348a0ef43a481b4e51f79875f61c0721f2bc64125a55d638327c3fe28",
+    "archiveSha256": "c7408a3b973c7761082c473aeba7a6261155b92aafe9e63ae3a8a5c58524a7ac",
+    "bytes": 7625,
+    "lines": 128
+  },
+  {
+    "file": "helpers/draft-codeql-macro-observation.log.gz",
+    "originalPath": "/tmp/issue-1580-research/draft-codeql-macro-observation.log",
+    "rawSha256": "86b39e24add264200c92228a064df2c7a7628418d022ca10b5755281adeb69e2",
+    "archiveSha256": "ae21fbeeaffc8726dd9947547fe2cdb9a3831e17954cc7c2543e1f3d9c8cf8a7",
+    "bytes": 210,
+    "lines": 4
+  },
+  {
+    "file": "helpers/test-codeql-macro-observation.py.gz",
+    "originalPath": "/tmp/issue-1580-research/test-codeql-macro-observation.py",
+    "rawSha256": "3329a971f3b034c49f131494dceec25dafde7b1c14259cb34968596511ec4a34",
+    "archiveSha256": "8b958802125186a5b693e176ab8bdd9aac430a0d4659c32cfd38418e1aca29dc",
+    "bytes": 5995,
+    "lines": 107
+  },
+  {
+    "file": "helpers/test-codeql-macro-observation.log.gz",
+    "originalPath": "/tmp/issue-1580-research/test-codeql-macro-observation.log",
+    "rawSha256": "eadf47e9afa601f470be92f7e1d76331f02972830e6eb7804d21ea6634c63d4e",
+    "archiveSha256": "8cceeae712531b29f8eaa7230558fa17be6dbe23e6980c81214ef3d46727a19a",
+    "bytes": 917,
+    "lines": 14
+  },
+  {
+    "file": "helpers/correct-macro-test-draft-delimiters.py.gz",
+    "originalPath": "/tmp/issue-1580-research/correct-macro-test-draft-delimiters.py",
+    "rawSha256": "7651467b6a78c300a206b82e3f380af1e096f39f6182b4894035dbf0e189724d",
+    "archiveSha256": "eb860a1b307676245224eab982a60138be96455cb6e1ceab9927e42cc935fbad",
+    "bytes": 505,
+    "lines": 10
+  },
+  {
+    "file": "helpers/correct-macro-test-draft-delimiters.log.gz",
+    "originalPath": "/tmp/issue-1580-research/correct-macro-test-draft-delimiters.log",
+    "rawSha256": "61199cd117addec96c7866ddc1fc81f664c9cb80605bd0f24ba4f72ba3d73b8e",
+    "archiveSha256": "303587ccf8fd9cd2dba517702a2c543ac129f5f9b4bc01a6c12e0b5b10174330",
+    "bytes": 242,
+    "lines": 4
+  },
+  {
+    "file": "helpers/test-codeql-macro-observation-corrected.py.gz",
+    "originalPath": "/tmp/issue-1580-research/test-codeql-macro-observation-corrected.py",
+    "rawSha256": "b70dcd0f54270acb566f72bf10099fbdc79d9a832939b1e5687617bebc1ca92a",
+    "archiveSha256": "b2e9c536ff4f0c1e656f24b5730a30efe569a9f89c0f936994d864444aed879a",
+    "bytes": 5995,
+    "lines": 107
+  },
+  {
+    "file": "helpers/run-macro-focused-validation.py.gz",
+    "originalPath": "/tmp/issue-1580-research/run-macro-focused-validation.py",
+    "rawSha256": "997c2d301afa241f1ce5fe7c95bdab36a615fb7f28888b161f620abd85372e27",
+    "archiveSha256": "8f53892229dbdcd3bd98f63e2f94ea5f1754312d7c490e72b3a15dff522bc56d",
+    "bytes": 670,
+    "lines": 11
+  },
+  {
+    "file": "helpers/run-macro-focused-validation.log.gz",
+    "originalPath": "/tmp/issue-1580-research/run-macro-focused-validation.log",
+    "rawSha256": "e0da574527a75c384718451c8d1c67f867d7c401a8441feeafb2e26faeda3394",
+    "archiveSha256": "a1a8c9d97d1e766de6c98b06e3c8ebed4a76dff60fa56e2a22470d8f9d1ad556",
+    "bytes": 1943,
+    "lines": 26
+  },
+  {
+    "file": "helpers/refresh-head-and-macro-gates.py.gz",
+    "originalPath": "/tmp/issue-1580-research/refresh-head-and-macro-gates.py",
+    "rawSha256": "743982fb61bdb5dad259de069b13e4dba12a2be8a0bd9bd52f57cc5d265d10bf",
+    "archiveSha256": "c6f3ecad2a5b5ded21b32832fc89656377cc71ec03713e4d7277dc5555e417e9",
+    "bytes": 1100,
+    "lines": 15
+  },
+  {
+    "file": "helpers/refresh-head-and-macro-gates.log.gz",
+    "originalPath": "/tmp/issue-1580-research/refresh-head-and-macro-gates.log",
+    "rawSha256": "20f20b103169a70981d2e4cf9393195219e001a0e2a386523d8575cf0cd364ad",
+    "archiveSha256": "cdeef24ba5d7c244d432e659a0f323d8386d875fae3ce7f47f14eb3d9b19dc94",
+    "bytes": 20634,
+    "lines": 145
+  },
+  {
+    "file": "helpers/draft-template-runtime-counterparts.py.gz",
+    "originalPath": "/tmp/issue-1580-research/draft-template-runtime-counterparts.py",
+    "rawSha256": "5464b56244fdef1f6e2c6d681c1bc377f82b63b19384bc68fead0a15677569d0",
+    "archiveSha256": "29238f8234adb6ff036c0fcb19603f451559a92d314b043e3c10b990f643582a",
+    "bytes": 5747,
+    "lines": 105
+  },
+  {
+    "file": "helpers/draft-template-runtime-counterparts.log.gz",
+    "originalPath": "/tmp/issue-1580-research/draft-template-runtime-counterparts.log",
+    "rawSha256": "596b443c95fc128fb0fe929d4429586b4de9721d23ac8cd8b89c23f7ff7306eb",
+    "archiveSha256": "1575c5dc2f1a383c5b1b61a2a2e8bd4884ae80d578f56578ffcd794102cd27ef",
+    "bytes": 323,
+    "lines": 4
+  },
+  {
+    "file": "helpers/refine-template-and-macro-draft.py.gz",
+    "originalPath": "/tmp/issue-1580-research/refine-template-and-macro-draft.py",
+    "rawSha256": "7a2772c0590fe88c9bb060fd08281dc0857542749f32e05cb133d5943b3f1a51",
+    "archiveSha256": "c693e417779494fc8e59fe3efadea6bc7a6f28603d916915052a1c3928ef55b2",
+    "bytes": 3329,
+    "lines": 58
+  },
+  {
+    "file": "helpers/refine-template-and-macro-draft.log.gz",
+    "originalPath": "/tmp/issue-1580-research/refine-template-and-macro-draft.log",
+    "rawSha256": "eaac351cda4031a6730cb5780ad44c5c57e5c31e6a4d26bb184632bf77ba14dc",
+    "archiveSha256": "ca229ed1049a82519c8eac79dd1a2494931c962e842721e9034d6726e5a82864",
+    "bytes": 234,
+    "lines": 4
+  },
+  {
+    "file": "helpers/validate-template-runtime-and-macro-draft.py.gz",
+    "originalPath": "/tmp/issue-1580-research/validate-template-runtime-and-macro-draft.py",
+    "rawSha256": "5bab9bf8295dc88c22c1ac7c1748394261aa098d2dbcb94086a4f97feeefbeed",
+    "archiveSha256": "44450fc5646f0efe32dd526531adc39b8d4c0753bfdf9c58b3beff544fa2e192",
+    "bytes": 4101,
+    "lines": 44
+  },
+  {
+    "file": "helpers/validate-template-runtime-and-macro-draft.log.gz",
+    "originalPath": "/tmp/issue-1580-research/validate-template-runtime-and-macro-draft.log",
+    "rawSha256": "0bdbd335597e2132e87fc68ffa78bb19339a554041acad322caa269a6bab50b1",
+    "archiveSha256": "117b7a7695fa40b1915e6c1f14c4afb9ab6c544604634aeb267e4b22666d81dc",
+    "bytes": 2058,
+    "lines": 10
+  },
+  {
+    "file": "helpers/correct-runtime-validation-reporting.py.gz",
+    "originalPath": "/tmp/issue-1580-research/correct-runtime-validation-reporting.py",
+    "rawSha256": "b44e0b43346b1467a25b48b67ecdfa03144d11bf6242b201c2943f473399644f",
+    "archiveSha256": "c495989d63c63988696d484c3cf6beccd0bfd489285470373a70ae60c3adf654",
+    "bytes": 730,
+    "lines": 6
+  },
+  {
+    "file": "helpers/correct-runtime-validation-reporting.log.gz",
+    "originalPath": "/tmp/issue-1580-research/correct-runtime-validation-reporting.log",
+    "rawSha256": "c8e15675b35404786376d813608c79caf87a13b9405fac9a4385ace2749914e0",
+    "archiveSha256": "a3ee89424c511e07f2eb86efa766535e6e8c939be5b07242ef2cdf8fc36b1ec9",
+    "bytes": 343,
+    "lines": 4
+  },
+  {
+    "file": "helpers/validate-template-runtime-and-macro-draft-reported.py.gz",
+    "originalPath": "/tmp/issue-1580-research/validate-template-runtime-and-macro-draft-reported.py",
+    "rawSha256": "088e4ae27820db1cb699a8b21fd2d20bda568898829c21e3fcd9fd71a7f02f1c",
+    "archiveSha256": "b428e7791a33b17ad7a5c51e774e958aa4f1b2efb87bf24faa8acf6e207438a6",
+    "bytes": 4176,
+    "lines": 44
+  },
+  {
+    "file": "helpers/validate-template-runtime-and-macro-draft-reported.log.gz",
+    "originalPath": "/tmp/issue-1580-research/validate-template-runtime-and-macro-draft-reported.log",
+    "rawSha256": "b94ad389d1587015b29e477b7f4de56b1c45082b25486342befa855f18e3fe22",
+    "archiveSha256": "7fb11a33e6115bb1c1a419ec874ccf12e1f21575fbbef3cb301c5a8b537bc0c7",
+    "bytes": 984,
+    "lines": 48
+  },
+  {
+    "file": "helpers/record-rust-dependency-guide.py.gz",
+    "originalPath": "/tmp/issue-1580-research/record-rust-dependency-guide.py",
+    "rawSha256": "d4832b224e03960c7ffbfe42e2959c163198650665a921f1a17d1b373a91e26f",
+    "archiveSha256": "0247e136185def0b0f6f63c39912722dcb892ec4ca70e82ebb46ac2f6714db30",
+    "bytes": 3708,
+    "lines": 17
+  },
+  {
+    "file": "helpers/record-rust-dependency-guide.log.gz",
+    "originalPath": "/tmp/issue-1580-research/record-rust-dependency-guide.log",
+    "rawSha256": "79908e761c4d0a816e726c7122aa429c62220749a416c64e2a08f13054419f61",
+    "archiveSha256": "4e3607d039d95f3e6be5f4107c4a341995b35bc89612ad5bea2c6dcb88ec3f1e",
+    "bytes": 178,
+    "lines": 4
+  },
+  {
+    "file": "helpers/read-rust-macro-and-small-logs.py.gz",
+    "originalPath": "/tmp/issue-1580-research/read-rust-macro-and-small-logs.py",
+    "rawSha256": "a231a3eb6aa3ce94066f86ab97f401ae80ce23bcd3f9490c029c406df931515a",
+    "archiveSha256": "297500aee65a21ea6b6ab479bbeaefd1d4a35b8c330c000f054f254406dee816",
+    "bytes": 1861,
+    "lines": 22
+  },
+  {
+    "file": "helpers/read-rust-macro-and-small-logs.log.gz",
+    "originalPath": "/tmp/issue-1580-research/read-rust-macro-and-small-logs.log",
+    "rawSha256": "b0a5fd739072e0cf258b692ccc82181f3503dff58dbebfa6c236e10388e1af21",
+    "archiveSha256": "2391587e1a71fe1c3027d2c346131298d422c1b7fa9cc9e4effe8e2954528cb4",
+    "bytes": 204,
+    "lines": 4
+  },
+  {
+    "file": "helpers/record-rust-macro-and-small-logs.py.gz",
+    "originalPath": "/tmp/issue-1580-research/record-rust-macro-and-small-logs.py",
+    "rawSha256": "4bef28dc6cdd740c539c750237ea38259c2d5629d464c12e6a1a52c71160c077",
+    "archiveSha256": "368be19f40d56ff0838e36ff02599b6a2e4e23c9c91e8c3f576278acaa7cf09f",
+    "bytes": 4993,
+    "lines": 43
+  },
+  {
+    "file": "helpers/record-rust-macro-and-small-logs.log.gz",
+    "originalPath": "/tmp/issue-1580-research/record-rust-macro-and-small-logs.log",
+    "rawSha256": "4c52fe101cb9010514b84cee4007452c463db811b85df0c2cece6096c93ca6dd",
+    "archiveSha256": "2adc3edb41f8b69b15f9325559a882ce030676e4e88569cf8cbde6b41165682b",
+    "bytes": 206,
+    "lines": 4
+  },
+  {
+    "file": "helpers/read-rust-lock-and-tool-notes.py.gz",
+    "originalPath": "/tmp/issue-1580-research/read-rust-lock-and-tool-notes.py",
+    "rawSha256": "4ab7018a68c523ca4f4d0ea813883819831f0a7d1575a43322bd29efee96210d",
+    "archiveSha256": "db9665b009e92d1c3b1412a8ec2067a3d1995101296c607aec9abc8a1080a514",
+    "bytes": 1410,
+    "lines": 17
+  },
+  {
+    "file": "helpers/read-rust-lock-and-tool-notes.log.gz",
+    "originalPath": "/tmp/issue-1580-research/read-rust-lock-and-tool-notes.log",
+    "rawSha256": "d233a3fe707439121385a4c5e0fac9854b7d3e185a1523fb52cd831e1263c502",
+    "archiveSha256": "e13123efa5c83324e0ff0a8fa1e2bf182cf81a9178883dc9e85a30090e07c04c",
+    "bytes": 195,
+    "lines": 4
+  },
+  {
+    "file": "helpers/record-rust-lock-and-tool-notes.py.gz",
+    "originalPath": "/tmp/issue-1580-research/record-rust-lock-and-tool-notes.py",
+    "rawSha256": "2e7549e09970eeef1549e5d3bbde866492afe703690ab5c626eb52f5954724b4",
+    "archiveSha256": "f196498d1dd64410f506df86f5f201a99ddc9df19e0e932aee2926b181c0bb96",
+    "bytes": 4232,
+    "lines": 33
+  },
+  {
+    "file": "helpers/record-rust-lock-and-tool-notes.log.gz",
+    "originalPath": "/tmp/issue-1580-research/record-rust-lock-and-tool-notes.log",
+    "rawSha256": "3fc14511c7e34ce3b8c53edfd4e3feb2182798c57865fd4e80bcada1a207e22d",
+    "archiveSha256": "03928a1e7352c270ba6344ce1fe69ec2a5b4c668e3abaca28432b709f89e31a9",
+    "bytes": 181,
+    "lines": 4
+  },
+  {
+    "file": "helpers/run-codeql-macro-observation-tests.log.gz",
+    "originalPath": "/tmp/issue-1580-research/run-codeql-macro-observation-tests.log",
+    "rawSha256": "38ae34cbd513c104b415fcdeec0ff12859126c4451035db84ccc55137e1ec835",
+    "archiveSha256": "b7746ab4798bbbcc68d3c0d3974bbf2de286366c217130bf15028d40ec958f94",
+    "bytes": 69,
+    "lines": 1
+  },
+  {
+    "file": "helpers/codeql-macro-observation-tests.log.gz",
+    "originalPath": "/tmp/issue-1580-research/codeql-macro-observation-tests.log",
+    "rawSha256": "3b7493e640bfc5eb081b66cd42693b3ef08f6d26e7f3969b88637d270f44d477",
+    "archiveSha256": "251f7c62ca55e2e3595c9b9ddc79c4dc8694aee8617a71a9583f17c18993cb95",
+    "bytes": 2121,
+    "lines": 27
+  },
+  {
+    "file": "helpers/document-macro-and-runtime-repairs.py.gz",
+    "originalPath": "/tmp/issue-1580-research/document-macro-and-runtime-repairs.py",
+    "rawSha256": "6533ee9749926e9a1a0b11003345efe61cf62661a07960ae97211bdc0af1a6c7",
+    "archiveSha256": "6aad627174aebbb10b3759c509708355cc806dd66c2e1cfe551ec9a9b2407e5e",
+    "bytes": 10110,
+    "lines": 119
+  },
+  {
+    "file": "original-runtime-sources/dependencies-latest.before.yml.gz",
+    "originalPath": "/tmp/issue-1580-research/template-runtime-counterparts/dependencies-latest.before.yml",
+    "rawSha256": "77178f6dd3689d20902c135cb3438e12648f2a35e75c595c7baf3913495461a1",
+    "archiveSha256": "176fa72fbfd845635591bec427e1943d603d5334fa00cc8477325bfb95a3c9c2",
+    "bytes": 8670,
+    "lines": 198
+  },
+  {
+    "file": "original-runtime-sources/recheck-broken-links.before.mjs.gz",
+    "originalPath": "/tmp/issue-1580-research/template-runtime-counterparts/recheck-broken-links.before.mjs",
+    "rawSha256": "bafa9cef4fddba47451b7aa382c3c2f1954e5e4ee8324d41540917979053a548",
+    "archiveSha256": "e5aa865bd9a1efef8d1206cd179173c221ccec812c4ccd582943c0c85ac68bd5",
+    "bytes": 15342,
+    "lines": 438
+  }
+]
