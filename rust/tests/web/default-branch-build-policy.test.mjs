@@ -1081,3 +1081,20 @@ test('complete native release and Pages contracts admit their actual source and 
   assert(steps.indexOf(parser) < steps.indexOf(execute));
   assert.equal(execute.env.FORMAL_AI_OFFLINE, '1');
 });
+
+test('typed composition regressions execute with their complete source closure', {timeout:15000}, () => {
+  const paths = ['rust/tests/unit/coding_contracts.rs',
+    'rust/tests/unit/coding_discovery/composition.rs',
+    'rust/tests/unit/coding_discovery/composition_search.rs',
+    'rust/tests/unit/coding_discovery/composition/rejected_ir.rs'];
+  for (const path of [...paths, 'rust/tests/integration/with_formal_ai/verbosity.rs'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  assert.equal(admission(['rust/tests/unit/coding_discovery/unrelated.rs'])['native-type-check'], false);
+  assert.match(read('rust/Cargo.toml'), /name = "coding_contracts"\npath = "tests\/unit\/coding_contracts[.]rs"/u);
+  const source = read(paths[0]);
+  assert.match(source, /mod coding_discovery \{\s+mod composition;\s+mod composition_search;\s+\}/u);
+  assert(read(paths[1]).includes('mod rejected_ir;'));
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
+    .find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(nativeRegressionSource(step), /--test coding_contracts(?:\s|$)/u);
+});

@@ -148,6 +148,11 @@ path = "tests/unit/meta_executor_parity.rs"
 name = "synthesis_contracts"
 path = "tests/unit/specification/synthesis.rs"
 
+# Replay typed synthesis search and failed-attempt contracts without the unit monolith.
+[[test]]
+name = "coding_contracts"
+path = "tests/unit/coding_contracts.rs"
+
 # Execute the unchanged unsupported-language sibling contract in the focused PR lane.
 [[test]]
 name = "any_language"

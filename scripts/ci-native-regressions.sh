@@ -8,6 +8,7 @@ contract_targets=(
   --test openai_forced_functions
   --test meta_executor_parity
   --test synthesis_contracts
+  --test coding_contracts
   --test cnl_output
   --test cnl_parity
   --test unknown_reasoning

@@ -84,6 +84,17 @@ pub(super) fn atom_expressions(
     {
         atoms.push(literal(&text, IrType::Text));
     }
+    // Closed programs have no parameter atoms. Alongside the small numeric
+    // constants, admit the empty sequence for sequence slots in the ranked
+    // neighborhood. It is a typed search base case, never evidence that the
+    // request is solved: lowering and the independent oracle still have to pass.
+    if spec.artifact_shape == ArtifactShape::Program {
+        for ty in fragments.iter().flat_map(|fragment| &fragment.signature) {
+            if matches!(ty, IrType::Sequence(_) | IrType::OrderedSequence(_)) {
+                atoms.push(literal(super::lowering::neutral_literal(ty), ty.clone()));
+            }
+        }
+    }
     atoms.extend(discovered_literals(spec));
     normalize_pool(&mut atoms, 0, 512);
     atoms
