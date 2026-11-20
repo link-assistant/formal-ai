@@ -1,3 +1,4 @@
+import '../../../experiments/issue-1580/buildkit-image-identity.test.mjs';
 import '../../../experiments/issue-1580/compressed-secrets.test.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

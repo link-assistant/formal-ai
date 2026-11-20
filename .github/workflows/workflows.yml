@@ -46,12 +46,12 @@ on:
         type: string
   push:
     branches: [main]
-    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py']
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
-    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py']
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
 permissions:
@@ -267,3 +267,64 @@ jobs:
         env:
           ROUNDTRIP: ${{ runner.temp }}/artifact-roundtrip
         run: python experiments/issue-1580/artifact-transport-roundtrip.py verify "$ROUNDTRIP"
+
+  buildkit-bootstrap:
+    name: Immutable BuildKit bootstrap and registry fallback
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-buildkit-bootstrap
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 3
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/setup-buildx-resilient/
+            /experiments/issue-1580/buildkit-bootstrap-probe.py
+          sparse-checkout-cone-mode: false
+      - name: Prepare bootstrap identity evidence
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py prepare "$PROBE_DIRECTORY"
+      - name: Initialize an actual BuildKit daemon
+        id: initial
+        timeout-minutes: 4
+        uses: ./.github/actions/setup-buildx-resilient
+        with:
+          cleanup: 'false'
+      - name: Verify the running daemon and actual image identity
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+          IMAGE: ${{ steps.initial.outputs.image }}
+          BUILDER: ${{ steps.initial.outputs.name }}
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify "$PROBE_DIRECTORY" initial "$IMAGE" "$BUILDER"
+      - name: Inject only a canonical image-pull outage
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py install-fault "$PROBE_DIRECTORY"
+      - name: Initialize an actual daemon through the mirror fallback
+        id: fallback
+        timeout-minutes: 4
+        uses: ./.github/actions/setup-buildx-resilient
+        with:
+          cleanup: 'false'
+      - name: Verify actual mirror recovery and the unchanged image digest
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+          IMAGE: ${{ steps.fallback.outputs.image }}
+          BUILDER: ${{ steps.fallback.outputs.name }}
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify "$PROBE_DIRECTORY" mirror "$IMAGE" "$BUILDER"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: buildkit-bootstrap-identity
+          path: ${{ runner.temp }}/buildkit-bootstrap/
+          if-no-files-found: error
+          retention-days: 7
