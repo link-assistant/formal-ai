@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {execFileSync, spawnSync} from 'node:child_process';
+import YAML from 'yaml';
 import {selectAttemptPullRequest, failureComment, usefulDraftChanges, inspectAttemptDraft, occupyingPullRequests} from '../../../scripts/hive-mind-draft-result.mjs';
 import {shortOfRoom, main as freeDiskIfShort} from '../../../scripts/free-disk-if-short.mjs';
 const workflow=readFileSync(new URL('../../../.github/workflows/hive-mind-draft.yml',import.meta.url),'utf8');
@@ -20,13 +24,15 @@ test('workflow contracts retain source identity, shared policy, evidence and def
  assert.match(workflow,/types:\s*(?:\[opened\]|- opened)/); assert.match(workflow,/issue_number:/);
  assert.match(workflow,/cancel-in-progress: false/); assert.match(workflow,/group: hive-mind-draft-/);
  assert.doesNotMatch(workflow,/2083d6fd86ba0a7ee54e36110c8aebcfb5f2774d/);
- assert.match(workflow,/repos\/link-assistant\/hive-mind\/commits\/main/);
- assert.match(workflow,/ref: \$\{\{ steps.hive-source.outputs.sha/);
+ const mainCheckouts=YAML.parse(workflow).jobs.build.steps.filter(step=>step.uses?.startsWith('actions/checkout@')&&step.with?.path);
+ assert.deepEqual(mainCheckouts.map(step=>[step.with.repository,step.with.ref]),
+  [['link-assistant/hive-mind','refs/heads/main'],[undefined,'refs/heads/main']]);
  assert.match(workflow,/ref: \$\{\{ needs.build.outputs.hive_source_sha/);
  assert.match(workflow,/FORMAL_AI_DRAFT_IMAGE: \$\{\{ needs.build.outputs.hive_image/);
  assert.match(workflow,/HIVE_MIND_SOURCE_SHA: \$\{\{ needs.build.outputs.hive_source_sha/);
  assert.ok(workflow.indexOf('--decide') < workflow.indexOf('cargo build'));
- assert.match(workflow,/commits\/main/); assert.match(workflow,/ref: \$\{\{ steps.source.outputs.sha/);
+ assert.match(workflow,/EXPECTED_SOURCE_SHA: \$\{\{ steps.source.outputs.sha/);
+ assert.match(workflow,/test \"\$actual_sha\" = \"\$EXPECTED_SOURCE_SHA\"/);
  assert.match(workflow,/--version/); assert.match(workflow,/sha256sum/);
  assert.match(workflow,/FORMAL_AI_DRAFT_BINARY:.*formal-ai/);
  assert.match(workflow,/GH_TOKEN: \$\{\{ github.token \}\}/); assert.match(workflow,/actions\/dispatch-checks/);
@@ -177,4 +183,56 @@ test('the image is pulled before the attempt deadline and the disk cleanup runs 
  assert.match(step,/if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''/);
  assert.match(step,/continue-on-error: true/);
  assert.match(step,/run-with-deadline\.sh" 360 docker pull --quiet "\$FORMAL_AI_DRAFT_IMAGE"/);
+});
+
+
+for (const [id, checkoutPath, repository] of [
+ ['hive-source', '.hive-mind', 'link-assistant/hive-mind'],
+ ['source', '.formal-ai-source', undefined],
+]) test(`literal main checkout seals ${id} before maintained code runs`, {timeout: 20000}, () => {
+ const definition=YAML.parse(workflow), steps=definition.jobs.build.steps;
+ const selected=steps.find(step=>step.uses?.startsWith('actions/checkout@')&&step.with?.path===checkoutPath);
+ assert.equal(selected?.with.ref,'refs/heads/main','select the maintained branch directly before binding its actual commit');
+ assert.equal(selected.with.repository,repository);
+ assert.equal(selected.with['persist-credentials'],false);
+ const binding=steps.find(step=>step.id===id);
+ assert(steps.indexOf(selected)<steps.indexOf(binding));
+ assert(steps.indexOf(binding)<steps.findIndex(step=>id==='hive-source'?
+  step.name==='Install shared automation dependencies':step.id==='build-identity'));
+ assert.doesNotMatch(binding.run,/gh api|github\.event|inputs\./u);
+ assert.doesNotMatch(JSON.stringify(selected.with),/outputs\.|github\.event|inputs\./u);
+ // Delivery still checks out the admitted Hive commit, never a later branch tip.
+ assert.equal(definition.jobs.draft.steps.find(step=>step.with?.path==='.hive-mind').with.ref,
+  '${{ needs.build.outputs.hive_source_sha }}');
+ const directory=mkdtempSync(join(tmpdir(),'maintained-main-'));
+ try {
+  const source=join(directory,checkoutPath), output=join(directory,'output'), logs=join(directory,'logs');
+  mkdirSync(source);mkdirSync(logs);
+  const env={...process.env,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_DEFAULT_HASH:'sha1',
+   GITHUB_WORKSPACE:directory,RUNNER_TEMP:directory,GITHUB_OUTPUT:output,FORMAL_AI_DRAFT_LOG_DIR:logs};
+  const git=(...args)=>execFileSync('git',['-C',source,...args],{encoding:'utf8',env,timeout:5000}).trim();
+  git('init','--quiet','--initial-branch=main');
+  const commit=message=>git('-c','user.name=fixture','-c','user.email=fixture@example.invalid',
+   '-c','core.hooksPath=/dev/null','commit','--quiet','--allow-empty','-m',message);
+  commit('maintained main');
+  const admitted=git('rev-parse','HEAD');git('update-ref','refs/remotes/origin/main',admitted);
+  const run=()=>{
+   writeFileSync(output,'');
+   return spawnSync('bash',['-e','-o','pipefail','-c',binding.run],
+    {cwd:directory,env,encoding:'utf8',timeout:5000});
+  };
+  const accepted=run();assert.equal(accepted.status,0,accepted.stdout+accepted.stderr);
+  assert.equal(readFileSync(output,'utf8'),`sha=${admitted}\n`);
+  const identity=readFileSync(join(logs,'source-identity.txt'),'utf8');assert(identity.includes(admitted));
+  // A subsequent mutable ref/HEAD change cannot silently replace the admitted identity.
+  commit('different main');assert.notEqual(git('rev-parse','HEAD'),admitted);
+  assert.equal(readFileSync(output,'utf8'),`sha=${admitted}\n`);
+  const changed=run();assert.notEqual(changed.status,0);
+  assert.equal(readFileSync(output,'utf8'),'');
+  assert.equal(readFileSync(join(logs,'source-identity.txt'),'utf8'),identity);
+  git('reset','--quiet','--hard',admitted);git('update-ref','-d','refs/remotes/origin/main');
+  const missing=run();assert.notEqual(missing.status,0);
+  assert.equal(readFileSync(output,'utf8'),'');
+  assert.equal(readFileSync(join(logs,'source-identity.txt'),'utf8'),identity);
+ } finally {rmSync(directory,{recursive:true,force:true});}
 });

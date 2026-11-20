@@ -59,22 +59,23 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24.x
-      - id: hive-source
-        name: Resolve current Hive Mind main once for this attempt
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          sha="$(bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 60 gh api repos/link-assistant/hive-mind/commits/main --jq .sha)"
-          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "hive_mind_main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
+      # Select maintained main during checkout, then seal its actual commit once.
+      # Later jobs consume that identity; they never re-resolve a moving branch.
       - name: Checkout shared maintained Hive Mind decision and attempt
         uses: actions/checkout@v7
         with:
           repository: link-assistant/hive-mind
-          ref: ${{ steps.hive-source.outputs.sha }}
+          ref: refs/heads/main
           path: .hive-mind
           persist-credentials: false
+      - id: hive-source
+        name: Bind the checked-out Hive Mind main commit
+        run: |
+          sha="$(git -C .hive-mind rev-parse --verify 'HEAD^{commit}')"
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
+          test "$sha" = "$(git -C .hive-mind rev-parse --verify 'refs/remotes/origin/main^{commit}')"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "hive_mind_main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
       - name: Install shared automation dependencies
         working-directory: .hive-mind
         run: FORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 180 npm ci --omit=dev --ignore-scripts
@@ -105,25 +106,27 @@ jobs:
           fs.appendFileSync(process.env.GITHUB_OUTPUT,'image='+image+'\nversion='+version+'\n');
           fs.appendFileSync(process.env.FORMAL_AI_DRAFT_LOG_DIR+'/source-identity.txt',JSON.stringify({hiveCommit:sha,hiveVersion:version,hiveImage:image,selection:'latest-main-resolved-once'})+'\n');
           JS
-      - id: source
-        name: Resolve current main commit
+      - name: Start main source selection evidence
         if: steps.decide.outputs.should_run == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p "$FORMAL_AI_DRAFT_LOG_DIR"
           date -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/draft-started-at"
-          sha="$(bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 60 gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
-          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
-      - name: Checkout exact main source
+      - name: Checkout maintained Formal AI main once
         if: steps.decide.outputs.should_run == 'true'
         uses: actions/checkout@v7
         with:
-          ref: ${{ steps.source.outputs.sha }}
+          ref: refs/heads/main
           path: .formal-ai-source
           persist-credentials: false
+      - id: source
+        name: Bind the checked-out Formal AI main commit
+        if: steps.decide.outputs.should_run == 'true'
+        run: |
+          sha="$(git -C .formal-ai-source rev-parse --verify 'HEAD^{commit}')"
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
+          test "$sha" = "$(git -C .formal-ai-source rev-parse --verify 'refs/remotes/origin/main^{commit}')"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
       # Issue #1486: build once per source/toolchain/target/features/lockfile identity.
       # The earliest live claim produces; other drafts reuse its authenticated
       # artifact, and a failed, stale, poisoned or incomplete one is never reused.
