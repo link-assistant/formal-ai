@@ -14,3 +14,10 @@ retries and a higher published version floor remain covered.
 
 No local Rust compilation is needed. CI uses the committed Cargo.lock and reuses
 one target directory for the unit tests and the copied CLI fixture.
+
+The local command `python3 experiments/issue-1580/release-registry/check_fixture.py`
+checks the real loopback server's absent versus wrong-identity responses for
+unpublished candidates. It replaces only the setup compilation call and does
+not build or run release binaries. The same HTTP fixture regression runs in the
+full hosted CLI suite. Its preserved before-control fails with HTTP 404 instead
+of the intended mismatched HTTP 200 response.

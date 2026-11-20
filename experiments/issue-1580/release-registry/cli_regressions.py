@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Exercise both release CLIs against a local registry; origins are local only."""
+import http.client
 import http.server
 import json
 import os
@@ -46,7 +47,8 @@ class RegistryRegressions(unittest.TestCase):
                         data = {'tag_name': self.path.rsplit('/', 1)[1]}
                     elif '/tags/' in self.path:
                         data = {'name': self.path.rsplit('/', 1)[1]}
-                    elif self.path.endswith('/1.2.3'):
+                    elif self.path.endswith('/1.2.3') or (affected and cls.mode == 'wrong-identity'
+                                                                  and '/crates/fixture/' in self.path):
                         data = {'version': {'num': '1.2.3'}}
                     else:
                         status, data = 404, {}
@@ -135,6 +137,24 @@ class RegistryRegressions(unittest.TestCase):
         args = ['--bump-type', 'patch', '--branch', 'main'] if name == 'version-and-commit.rs' else []
         return subprocess.run([str(self.target / 'debug' / name.removesuffix('.rs')), *args], cwd=self.work,
                               env=self.env, capture_output=True, text=True, timeout=40)
+
+    def test_fixture_can_return_wrong_identity_for_an_unpublished_candidate(self):
+        self.__class__.scope = '/crates/fixture/'
+        for version in ['1.2.4', '2.4.10']:
+            self.__class__.mode = 'success'
+            connection = http.client.HTTPConnection('127.0.0.1', self.server.server_port, timeout=5)
+            try:
+                connection.request('GET', f'/api/v1/crates/fixture/{version}')
+                response = connection.getresponse()
+                self.assertEqual(response.status, 404)
+                response.read()
+                self.__class__.mode = 'wrong-identity'
+                connection.request('GET', f'/api/v1/crates/fixture/{version}')
+                response = connection.getresponse()
+                self.assertEqual(response.status, 200)
+                self.assertEqual(json.loads(response.read()), {'version': {'num': '0.0.0'}})
+            finally:
+                connection.close()
 
     def test_failed_lookup_never_decides_release_or_mutates_version(self):
         for mode in ['503', '429', '403', 'malformed', 'drop']:
