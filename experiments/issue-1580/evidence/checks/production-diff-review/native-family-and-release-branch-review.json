@@ -1,0 +1,16 @@
+{
+  "completeSelectedDiffsRead": true,
+  "paths": [
+    "scripts/ci-pull-request-admission.mjs",
+    ".github/workflows/native-type-check.yml",
+    ".github/workflows/layered-ci.yml",
+    "scripts/ci-native-regressions.sh"
+  ],
+  "file": "native-family-and-release-branch-diffs.log.gz",
+  "rawSha256": "433c42625becbdcfcc912b4c4c1568fa85efee688a9bcc930c48a2455ba55fce",
+  "archiveSha256": "8c77e828960ee37fe41f74445f1dd6e3c4c6e86fe18c6efe23b49f8d324b5acd",
+  "selectedPaths": 106,
+  "wholePullRequestReviewed": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}
