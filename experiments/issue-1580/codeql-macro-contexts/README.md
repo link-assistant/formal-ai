@@ -21,12 +21,16 @@ query execution requests two threads, 4 GiB RAM and a 512 MiB disk cache.
 The hosted runs on `39196d1f`, `f4588ce4` and `1d7ba479` each retain 122,534
 rows. Their 2, 3 and 4 GiB evaluator requests leave 914, 1698 and 1800 MiB
 loading heaps respectively; all emit the query-loading stage-cache warning.
-The [CLI reference](https://docs.github.com/en/code-security/reference/code-scanning/codeql/codeql-cli-manual/query-run)
-defines `--ram` for the evaluator and `-J` for the JVM. Request a separate
-3 GiB Java heap with `-J-Xmx3072m` while retaining the 4 GiB evaluator budget.
-This addresses the observed loading cap without another evaluator increase.
-Actual next-head execution must establish the allocated heap and warning
-outcome; local adapter controls only prove argument transport and failures.
+A later hosted probe established that the launcher JVM's `-J-Xmx3072m`
+does not set the query child's loading heap. The observer now supplies the shared
+`--ram=4096 --off-heap-ram=0` policy to both the completed-database resolver and
+the actual query. On published `9fd9360d`, the resolver selected 2,607 MiB;
+compilation and evaluation finished in 20.3 and 53.5 seconds without runtime
+diagnostics. All 126 retained original producer payloads match their recorded
+identities. The actual results are retained in
+`../evidence/ci/codeql-producer-9fd9360d/`. This establishes the observed memory
+and warning outcome, while per-child macro semantic qualification remains open.
+Local adapter controls alone establish neither allocation nor coverage.
 
 Columns are the macro entity, relative source path, start/end line and column,
 whether the call has an expansion, and whether it is inside another expansion.
@@ -38,3 +42,18 @@ Local adapter controls use a fake CLI to exercise transport and failure
 handling. They do not compile QL or establish Rust extraction coverage. Actual
 hosted compilation and execution remain required. All supplied query, script
 and conclusions receive zero independent Formal AI authorship credit.
+
+
+Pinned primary-library inspection at CodeQL CLI tag `codeql-cli/v2.27.5`
+establishes an ownership limitation: `LocatableImpl.getLocationDefault` uses the
+enclosing macro invocation's location when an expanded node has no own database
+location. Nested generated macros can therefore all name their parent include
+site. The 631 unexpanded outside-expansion calls belong to 68 files. Eight
+production files account for 282 of those calls and have literal include parents;
+their macro-label counts have expanded counterparts at those parent locations.
+This count/location correspondence establishes neither per-child identity nor
+security/dataflow semantics. Test fragments can also have compiled include
+parents; being under fixtures does not make a source irrelevant. These primary
+sources, exact pinned parent bytes and the limited crosswalk are retained under
+`../evidence/checks/source-warning-secondary-receipts/`. No additional local QL
+compilation, database extraction or query execution is claimed.

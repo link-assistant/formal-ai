@@ -598,3 +598,13 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - Separate unchanged solver configuration (950 to 810 parent lines, 144 child lines) and repository command allowlist matching (968 to 836 parent lines, 139 child lines). Exact inverse reconstruction restores both originals, and Rust formatting preserves every syntax/comment token. All nine existing JavaScript repository-runner cases pass; the maintained source projection, generated registry, literal ownership and four source gates remain current without regeneration. Public APIs, default values, default-deny matching and deadline selection are preserved. No local Rust execution or independent authorship credit; hosted native and broader issue acceptance remain open.
 
 - Separate research adoption (941 to 855 parent lines, 95 child lines) and method execution (998 to 806 parent lines, 204 child lines). Exact inverses restore the original bytes. Formatting only reorders two newly added reexports; all other syntax/comment tokens are identical. Preserve the initial inverse failure, failed retry launch and strict formatting comparison. All six existing coding-research acceptance and five solver-event provenance JavaScript cases pass, as do formatting, projection currency, unchanged generated registry, literal ownership and four source gates. Public paths, execution evidence refusals, approval/license checks and dispatch behavior remain unchanged. No local Rust execution or independent authorship credit; hosted native validation remains pending.
+
+- Seal the reviewed Rust-template historical release chunks, the 352/373 literal
+  identity checkpoint and the exact scanner inventories: 101 warnings after
+  seventeen helper groups, then 99 after nineteen; zero ordinary/embedded-data
+  violations. Preserve CodeQL's pinned primary-library ownership limitation and
+  the eight-file/282-call include crosswalk. Parent location and macro-label
+  counts do not establish per-child semantic coverage; all 631 contexts remain
+  unqualified. Keep all template/practice, current-dependency, live delivery,
+  historical-budget and full-source acceptance requirements open. No independent
+  reasoning credit and no full-issue completion claim.

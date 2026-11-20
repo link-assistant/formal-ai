@@ -72,3 +72,83 @@ unfinished. The other template/practice and original/live acceptance criteria
 remain open. Strict dated original source acceptance stays 31/53 plus 22 separate
 scoped assertion reviews; supplied work earns zero independent reasoning credit.
 Full issue completion remains false and PR #1581 stays draft and unmerged.
+
+## Subsequent local warning and freshness repairs
+
+Seven more unchanged helper groups now have private source owners:
+
+| Existing module | Before | Parent after | Private child |
+| --- | ---: | ---: | ---: |
+| Rule interpreter | 973 | 863 | 114 |
+| Concept lookup | 961 | 816 | 152 |
+| Web page formalization | 936 | 823 | 116 |
+| Repair loop | 921 | 853 | 76 |
+| Text manipulation | 949 | 835 | 119 |
+| Controlled-language grammar | 966 | 840 | 132 |
+| CLI entry point | 992 | 886 | 111 |
+
+Each extraction retains exact inverse reconstruction and a syntax/comment-token
+comparison after formatting. The existing JavaScript checks pass: five handler,
+five concept-lookup, nine page-formalization, two stop-note, 62 text-edit, eight
+grammar-matrix and five debt cases. The grammar matrix exercises all five
+languages. No local Rust compilation or actual CLI execution occurs. Projection
+currency, generated registry freshness, formatting and the touched source gates
+pass. A rejected task-acceptance draft is retained separately; its parent was
+restored byte for byte and no such extraction is part of this batch.
+
+The published `f8b372ad` Layered CI run 44821502922 exposed stale generated
+lexeme constant source witnesses at original log lines 9711 and 10758–10787.
+The unchanged maintained generator reproduces the failure. Regeneration changes
+only three constant owner hashes/offsets among 158 programs; declaration bytes,
+values and algorithms are identical. The existing generated-program regression
+passes. Fast Linux job 136583238188 separately reports two moved Telegram HTML
+literals at original lines 692–709. The maintained allowlist generator relocates
+exactly those two owners and one later CLI owner, preserving every literal and
+the total row count. Both repairs remain subject to next-head hosted validation.
+
+A fresh scanner over all tracked files reports 103 warnings and zero ordinary
+or embedded-data violations. The original limits are unchanged; 103 warnings
+remain unfinished. The published head's remaining native jobs are still active
+at this checkpoint. The source extraction proofs and failed-before controls are
+retained under the individual `evidence/checks/` directories.
+
+Rust template literal review is now 352/373 pinned identities and 49,166 lines.
+The historical lychee release payload is reconstructed from six contiguous
+reviewed byte chunks. It explicitly records `immutable=false`; its exact asset
+identities and digests are historical evidence. Twenty-one literal identities
+and applicable-practice/current-runtime acceptance remain open. All original,
+template, dependency, macro-semantic, live publication/delivery and provenance
+requirements retain their separate acceptance boundaries. Independent reasoning
+stays 0/20; full issue completion remains false and the PR stays draft/unmerged.
+
+## Configuration, command admission and execution boundaries
+
+Four further unchanged helper groups have private source owners:
+
+| Existing module | Before | Parent after | Private child |
+| --- | ---: | ---: | ---: |
+| Solver configuration | 950 | 810 | 144 |
+| Repository command allowlist | 968 | 836 | 139 |
+| Coding research adoption | 941 | 855 | 95 |
+| Method dispatch execution | 998 | 806 | 204 |
+
+The configuration/admission move passes all nine existing repository-runner
+JavaScript cases. The adoption/execution move passes six coding-research
+acceptance and five solver-event provenance cases. Exact inverse reconstruction
+restores all four originals. Formatting preserves syntax/comments, apart from
+the explicitly retained order of two newly inserted adoption reexports. The
+initial extra-newline inverse failure, failed worker launch and strict formatting
+comparison remain retained. No local Rust compilation or execution occurs.
+
+The first subsequent source gate caught three abbreviated archival helper names
+created after the earlier check. Those owners now spell configuration in full;
+their original/compressed payload hashes and the ratchet ceilings are unchanged.
+All four source gates pass after the correction. Generated registry, literal
+ownership, source projections and formatting remain current without additional
+regeneration. Hosted native verification of these local commits is pending.
+
+Fresh tracked-source inventories report 101 warnings after seventeen helper
+groups and 99 after nineteen, with zero ordinary/embedded-data violations.
+The unchanged limits still expose every remaining warning. The current published
+head remains `f8b372ad`; these local figures do not describe a completed hosted
+run. Full issue completion remains false.

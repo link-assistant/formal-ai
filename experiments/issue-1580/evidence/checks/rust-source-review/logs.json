@@ -803,5 +803,35 @@
     "file": "rust-dependencies-after-review-ninth.log.gz",
     "rawSha256": "9d779dd234ec5438ffd250e3134e2274ce5d95397796c4c648dc9d87a84a0cfd",
     "archiveSha256": "67396d13ce442c277bce11898985f6c8ff71fac211510965c39ff4e771371123"
+  },
+  {
+    "file": "rust-lychee-release-review-first.log.gz",
+    "rawSha256": "c6afa80fc7ae2b23761cea76cce78d4d390dce9442cb7839dbede47f107d54b2",
+    "archiveSha256": "59e6104bc64a7c996df636cafd4f46515b7a8902be5216113bca6f1edf098261"
+  },
+  {
+    "file": "rust-lychee-release-review-second.log.gz",
+    "rawSha256": "955286738feca966b9386caee878a60b9b37c0b0103bde852668c69ab56f4a17",
+    "archiveSha256": "6c586ebf38d58ec1b8d388ca0a22e781e7a569aed6915c16a5eafa5a76753d02"
+  },
+  {
+    "file": "rust-lychee-release-review-third.log.gz",
+    "rawSha256": "fe8b6b958d5c4babcec595789eec19eadc3b24af268f9d202343469bd08989e1",
+    "archiveSha256": "53510ab1245a139a94ae29f44bcc4b1d53aa1c98f68836589d9c5c51f79501df"
+  },
+  {
+    "file": "rust-lychee-release-review-fourth.log.gz",
+    "rawSha256": "266dae993565e116f812a4170c9d66e16262fd184110f050a50b9e9e8888b8d7",
+    "archiveSha256": "1dc21f3bf19c2c0aa4ca4d2ae3efcbd8c9bf2b698b0fd694035a712f983cb472"
+  },
+  {
+    "file": "rust-lychee-release-review-fifth.log.gz",
+    "rawSha256": "f8e2f8ab941270621d7d8b3d056af3be709aa3a8e3f405c70ed73bf9cb5908fd",
+    "archiveSha256": "674f38e21fffd622827c50267aa1fabb402afc4d7ca90b2b2d31d0b933861678"
+  },
+  {
+    "file": "rust-lychee-release-review-sixth.log.gz",
+    "rawSha256": "44560212692e49b50f9e7a5111bdf50f356b1b7b10096a8ee09ebb1a1f7ef9bd",
+    "archiveSha256": "e0445ef30f038da028a13bf141ea98a77122102b7d1d8ce39c422ba1552c0501"
   }
 ]
