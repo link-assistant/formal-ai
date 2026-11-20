@@ -1011,7 +1011,7 @@ selected job streams are retained under `evidence/ci/native-interface-d80aedfe/`
 No local Rust build or native execution occurs. The strict original replay union
 remains 27/53 and independently accepted Formal AI reasoning remains 0/20.
 
-Final follow-up checks pass: 53 native admission/policy, 11 append-contract,
+Final follow-up checks pass: 53 native admission/policy, 12 append-contract,
 eight selection, 34 identifier/witness and two fixture-integrity cases, with
 seven source/publication gates, Rust 2024 formatting and whitespace checks.
 The exact command/log hashes are retained in `evidence/checks/native-ci-repair/`;
