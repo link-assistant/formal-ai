@@ -20,8 +20,8 @@ export class MetaRequestError extends Error {
 }
 
 export function requireApproval(request, actor, { admin = false } = {}) {
-  if (admin && actor.admin !== true) throw new MetaRequestError(403, serverMessage('dynamic_meta_admin_required'));
-  if (request.confirm !== true) throw new MetaRequestError(409, serverMessage('dynamic_meta_confirmation_required'));
+  if (admin && actor.admin !== true) throw new MetaRequestError(403, serverMessage('dynamic-meta-admin-required'));
+  if (request.confirm !== true) throw new MetaRequestError(409, serverMessage('dynamic-meta-confirmation-required'));
 }
 
 function openDatabase(path) {
@@ -31,10 +31,10 @@ function openDatabase(path) {
     } catch (error) {
       if (error.code !== 'EEXIST') throw error;
     }
-    if (!lstatSync(path).isFile()) throw new Error(serverMessage('dynamic_meta_regular_store'));
+    if (!lstatSync(path).isFile()) throw new Error(serverMessage('dynamic-meta-regular-store'));
   }
-  const db = new DatabaseSync(path);
-  db.exec(`
+  const database = new DatabaseSync(path);
+  database.exec(`
     PRAGMA busy_timeout = 1000;
     CREATE TABLE IF NOT EXISTS meta_state (
       id INTEGER PRIMARY KEY CHECK (id = 1),
@@ -45,7 +45,7 @@ function openDatabase(path) {
       receipt TEXT NOT NULL
     );
   `);
-  return db;
+  return database;
 }
 
 function emptyState() {
@@ -83,7 +83,7 @@ function equilibrium(state) {
 }
 
 function command(state, input) {
-  if (typeof input !== 'string' || input.length > 180) throw new Error(serverMessage('dynamic_meta_invalid_command'));
+  if (typeof input !== 'string' || input.length > 180) throw new Error(serverMessage('dynamic-meta-invalid-command'));
   const text = input.trim();
   const selfModification = /^(enable|disable) (?:dynamic )?self-modification\.?$/iu.exec(text);
   if (selfModification) {
@@ -100,7 +100,7 @@ function command(state, input) {
     return { rule, enabled };
   }
   const compilation = /^(compile|interpret) recipe (\S+)$/iu.exec(text);
-  if (!compilation) throw new Error(serverMessage('dynamic_meta_unknown_command'));
+  if (!compilation) throw new Error(serverMessage('dynamic-meta-unknown-command'));
   const name = compilation[2];
   const { program } = namedExport(state.packages, 'recipes', name);
   const compiled = compilation[1].toLowerCase() === 'compile';
@@ -119,42 +119,42 @@ function run(state, request) {
 }
 
 export function createMetaRuntime({ path = ':memory:', triggers = true, selfModification = false, adapters = new Map() } = {}) {
-  const db = openDatabase(path);
-  const load = db.prepare('SELECT document FROM meta_state WHERE id = 1');
-  const save = db.prepare('INSERT OR REPLACE INTO meta_state (id, document) VALUES (1, ?)');
-  const saveReceipt = db.prepare('INSERT INTO meta_receipts VALUES (?, ?)');
-  const receipt = db.prepare('SELECT receipt FROM meta_receipts WHERE revision = ?');
-  const prune = db.prepare('DELETE FROM meta_receipts WHERE revision <= ?');
+  const database = openDatabase(path);
+  const load = database.prepare('SELECT document FROM meta_state WHERE id = 1');
+  const save = database.prepare('INSERT OR REPLACE INTO meta_state (id, document) VALUES (1, ?)');
+  const saveReceipt = database.prepare('INSERT INTO meta_receipts VALUES (?, ?)');
+  const receipt = database.prepare('SELECT receipt FROM meta_receipts WHERE revision = ?');
+  const prune = database.prepare('DELETE FROM meta_receipts WHERE revision <= ?');
   const read = () => {
     const record = load.get();
     const state = record ? JSON.parse(record.document) : emptyState();
-    if (state.schema !== 1) throw new Error(serverMessage('dynamic_meta_schema'));
+    if (state.schema !== 1) throw new Error(serverMessage('dynamic-meta-schema'));
     return state;
   };
 
   function transaction(action, operation, expectedRevision) {
-    db.exec('BEGIN IMMEDIATE');
+    database.exec('BEGIN IMMEDIATE');
     try {
       const state = read();
       if (expectedRevision !== undefined && expectedRevision !== state.revision) {
-        throw new MetaRequestError(409, serverMessage('dynamic_meta_revision_changed'));
+        throw new MetaRequestError(409, serverMessage('dynamic-meta-revision-changed'));
       }
       const result = operation(state);
       if (result === null) {
-        db.exec('COMMIT');
+        database.exec('COMMIT');
         return { revision: state.revision };
       }
       state.revision += 1;
       const document = JSON.stringify(state);
-      if (Buffer.byteLength(document) > STATE_LIMIT) throw new Error(serverMessage('dynamic_meta_state_size'));
+      if (Buffer.byteLength(document) > STATE_LIMIT) throw new Error(serverMessage('dynamic-meta-state-size'));
       const response = { revision: state.revision, ...result };
       save.run(document);
       saveReceipt.run(state.revision, JSON.stringify({ action, ...response }));
       prune.run(state.revision - 64);
-      db.exec('COMMIT');
+      database.exec('COMMIT');
       return response;
     } catch (error) {
-      db.exec('ROLLBACK');
+      database.exec('ROLLBACK');
       throw error;
     }
   }
@@ -176,7 +176,7 @@ export function createMetaRuntime({ path = ':memory:', triggers = true, selfModi
   }
 
   async function act(request, actor = {}) {
-    if (!request || typeof request.action !== 'string') throw new Error(serverMessage('dynamic_meta_action_required'));
+    if (!request || typeof request.action !== 'string') throw new Error(serverMessage('dynamic-meta-action-required'));
     const { action, expectedRevision } = request;
     switch (action) {
       case 'inspect': {
@@ -193,9 +193,9 @@ export function createMetaRuntime({ path = ':memory:', triggers = true, selfModi
         };
       }
       case 'receipt': {
-        if (!Number.isSafeInteger(request.revision) || request.revision < 1) throw new Error(serverMessage('dynamic_meta_invalid_receipt'));
+        if (!Number.isSafeInteger(request.revision) || request.revision < 1) throw new Error(serverMessage('dynamic-meta-invalid-receipt'));
         const row = receipt.get(request.revision);
-        if (!row) throw new MetaRequestError(404, serverMessage('dynamic_meta_receipt_unavailable'));
+        if (!row) throw new MetaRequestError(404, serverMessage('dynamic-meta-receipt-unavailable'));
         return JSON.parse(row.receipt);
       }
       case 'translate':
@@ -226,13 +226,13 @@ export function createMetaRuntime({ path = ':memory:', triggers = true, selfModi
         requireApproval(request, actor, { admin: true });
         const pkg = boundedManifest(request.manifest);
         if (request.sha256 !== undefined && request.sha256 !== pkg.origin.digest) {
-          throw new MetaRequestError(409, serverMessage('dynamic_meta_manifest_digest'));
+          throw new MetaRequestError(409, serverMessage('dynamic-meta-manifest-digest'));
         }
         return transaction(action, (state) => {
           if (state.packages.some(({ id }) => id === pkg.id)) {
-            throw new MetaRequestError(409, serverMessage('dynamic_meta_package_exists'));
+            throw new MetaRequestError(409, serverMessage('dynamic-meta-package-exists'));
           }
-          if (state.packages.length >= 32) throw new Error(serverMessage('dynamic_meta_package_limit'));
+          if (state.packages.length >= 32) throw new Error(serverMessage('dynamic-meta-package-limit'));
           state.packages.push(pkg);
           return { package: pkg.id, origin: pkg.origin };
         }, expectedRevision);
@@ -240,7 +240,7 @@ export function createMetaRuntime({ path = ':memory:', triggers = true, selfModi
       case 'uninstall':
         requireApproval(request, actor, { admin: true });
         return transaction(action, (state) => {
-          if (!state.packages.some(({ id }) => id === request.package)) throw new MetaRequestError(404, serverMessage('dynamic_meta_package_unavailable'));
+          if (!state.packages.some(({ id }) => id === request.package)) throw new MetaRequestError(404, serverMessage('dynamic-meta-package-unavailable'));
           const prefix = `${request.package}/`;
           state.packages = state.packages.filter(({ id }) => id !== request.package);
           state.usage = state.usage.filter((name) => !name.startsWith(prefix));
@@ -254,13 +254,13 @@ export function createMetaRuntime({ path = ':memory:', triggers = true, selfModi
         return transaction(action, (state) => command(state, request.command), expectedRevision);
       case 'integration': {
         requireApproval(request, actor, { admin: true });
-        if (expectedRevision !== undefined) throw new Error(serverMessage('dynamic_meta_adapter_revision'));
+        if (expectedRevision !== undefined) throw new Error(serverMessage('dynamic-meta-adapter-revision'));
         const { adapter } = namedExport(read().packages, 'integrations', request.integration);
         const invoke = adapters.get(adapter);
-        if (!invoke) throw new MetaRequestError(404, serverMessage('dynamic_meta_adapter_unavailable'));
+        if (!invoke) throw new MetaRequestError(404, serverMessage('dynamic-meta-adapter-unavailable'));
         return { result: await invoke(request.input, { signal: actor.signal }) };
       }
-      default: throw new Error(serverMessage('dynamic_meta_unknown_action'));
+      default: throw new Error(serverMessage('dynamic-meta-unknown-action'));
     }
   }
 
@@ -272,5 +272,5 @@ export function createMetaRuntime({ path = ':memory:', triggers = true, selfModi
       return { proposals };
     });
   }
-  return { act, review, close: () => db.close() };
+  return { act, review, close: () => database.close() };
 }

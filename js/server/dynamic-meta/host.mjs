@@ -41,15 +41,15 @@ export function configuredMetaHost(env, { adapters, fetchImpl } = {}) {
 }
 
 export async function handleDynamicMeta(ctx, request, { admin, signal } = {}) {
-  if (!ctx.dynamicMeta || request.method !== 'POST') return errorResponse(404, serverMessage('dynamic_meta_unavailable'));
+  if (!ctx.dynamicMeta || request.method !== 'POST') return errorResponse(404, serverMessage('dynamic-meta-unavailable'));
   try {
-    if (Buffer.byteLength(request.body) > META_REQUEST_LIMIT) throw new MetaRequestError(413, serverMessage('dynamic_meta_request_size'));
+    if (Buffer.byteLength(request.body) > META_REQUEST_LIMIT) throw new MetaRequestError(413, serverMessage('dynamic-meta-request-size'));
     const action = JSON.parse(request.body);
     return jsonResponse(200, await ctx.dynamicMeta.act(action, { admin, signal }));
   } catch (error) {
     if (error.code?.startsWith('ERR_SQLITE')) {
       ctx.logger?.log('error', 'dynamic_meta.store_error', { error });
-      return errorResponse(500, serverMessage('dynamic_meta_store_error'));
+      return errorResponse(500, serverMessage('dynamic-meta-store-error'));
     }
     return errorResponse(error.status ?? 400, error.message);
   }
@@ -57,14 +57,14 @@ export async function handleDynamicMeta(ctx, request, { admin, signal } = {}) {
 
 export async function runMetaCli(argv, env = process.env) {
   if (argv.length !== 0) {
-    process.stderr.write(serverMessage('dynamic_meta_cli_usage'));
+    process.stderr.write(serverMessage('dynamic-meta-cli-usage'));
     return 2;
   }
   let host;
   try {
     host = configuredMetaHost(env);
-    if (!host) throw new Error(serverMessage('dynamic_meta_cli_store'));
-    if (process.stdin.isTTY) throw new Error(serverMessage('dynamic_meta_cli_stdin'));
+    if (!host) throw new Error(serverMessage('dynamic-meta-cli-store'));
+    if (process.stdin.isTTY) throw new Error(serverMessage('dynamic-meta-cli-stdin'));
     const buffer = Buffer.alloc(META_REQUEST_LIMIT + 1);
     let length = 0;
     while (length < buffer.length) {
@@ -72,7 +72,7 @@ export async function runMetaCli(argv, env = process.env) {
       if (count === 0) break;
       length += count;
     }
-    if (length > META_REQUEST_LIMIT) throw new Error(serverMessage('dynamic_meta_request_size'));
+    if (length > META_REQUEST_LIMIT) throw new Error(serverMessage('dynamic-meta-request-size'));
     const request = JSON.parse(buffer.subarray(0, length).toString('utf8'));
     const result = await host.act(request, { admin: true });
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);

@@ -21,7 +21,7 @@ const STATUS_TEXT = new Map([
   [404, 'Not Found'],
   [405, serverMessage('status_text_405')],
   [409, 'Conflict'],
-  [413, serverMessage('status_text_413')],
+  [413, serverMessage('status-text-413')],
 ]);
 
 const ALLOW_HEADERS = 'content-type,authorization,x-api-key,x-goog-api-key,anthropic-api-key';
@@ -102,7 +102,7 @@ export function createServer(ctx) {
       const headers = requestHeaders(request);
       const raw = await readBody(request, path === META_PATH ? META_REQUEST_LIMIT : undefined);
       if (raw === null) {
-        writeResponse(socketResponse, errorResponse(413, serverMessage('dynamic_meta_request_size')));
+        writeResponse(socketResponse, errorResponse(413, serverMessage('dynamic-meta-request-size')));
         return;
       }
       // Like the Rust reader, only a declared content-length carries a body.

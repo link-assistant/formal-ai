@@ -4,19 +4,19 @@ import { boundedManifest, sha256 } from './packages.mjs';
 import { readRecipe, renderRecipe } from './recipe.mjs';
 import { parseLinkSubstitution, renderLinkSubstitution } from './substitutions.mjs';
 
-const MAX_DOWNLOAD = 128 * 1024;
+const SOURCE_BYTE_LIMIT = 128 * 1024;
 
 function originOf(value) {
   const url = new URL(value);
   if (url.protocol !== 'https:' || url.username || url.password || url.pathname !== '/' || url.search || url.hash) {
-    throw new Error(serverMessage('dynamic_meta_origin_https'));
+    throw new Error(serverMessage('dynamic-meta-origin-https'));
   }
   return url.origin;
 }
 
 async function boundedBody(response) {
   const reader = response.body?.getReader();
-  if (!reader) throw new Error(serverMessage('dynamic_meta_source_empty'));
+  if (!reader) throw new Error(serverMessage('dynamic-meta-source-empty'));
   const parts = [];
   let length = 0;
   try {
@@ -24,7 +24,7 @@ async function boundedBody(response) {
       const part = await reader.read();
       if (part.done) break;
       length += part.value.byteLength;
-      if (length > MAX_DOWNLOAD) throw new Error(serverMessage('dynamic_meta_source_size'));
+      if (length > SOURCE_BYTE_LIMIT) throw new Error(serverMessage('dynamic-meta-source-size'));
       parts.push(part.value);
     }
   } finally {
@@ -86,7 +86,7 @@ function programs(text, language) {
       }
     }
   }
-  if (!candidates.length && !rejected.length) throw new Error(serverMessage('dynamic_meta_source_no_recipes'));
+  if (!candidates.length && !rejected.length) throw new Error(serverMessage('dynamic-meta-source-no-recipes'));
   return { candidates, rejected };
 }
 
@@ -96,22 +96,22 @@ export function createRecipeDiscovery({ origins = [], env = process.env, fetchIm
   async function sourceText(source, signal) {
     const url = new URL(source.url);
     if (url.href.length > 2048 || url.username || url.password || url.hash || !allowed.has(url.origin)) {
-      throw new Error(serverMessage('dynamic_meta_origin_denied'));
+      throw new Error(serverMessage('dynamic-meta-origin-denied'));
     }
     const response = await fetchSource(url.href, { redirect: 'manual', signal, credentials: 'omit' });
     if (!response.ok) {
       await response.body?.cancel().catch(() => {});
-      throw new Error(serverMessage('dynamic_meta_source_status', { status: response.status }));
+      throw new Error(serverMessage('dynamic-meta-source-status', { status: response.status }));
     }
     const bytes = await boundedBody(response);
     const digest = sha256(bytes);
-    if (source.sha256 !== undefined && source.sha256 !== digest) throw new Error(serverMessage('dynamic_meta_source_digest'));
+    if (source.sha256 !== undefined && source.sha256 !== digest) throw new Error(serverMessage('dynamic-meta-source-digest'));
     return { url: url.href, digest, text: new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes) };
   }
 
   return async function discover(sources, signal) {
     if (!Array.isArray(sources) || sources.length < 1 || sources.length > 8) {
-      throw new Error(serverMessage('dynamic_meta_source_count'));
+      throw new Error(serverMessage('dynamic-meta-source-count'));
     }
     const deadline = AbortSignal.timeout(30_000);
     const requestSignal = signal ? AbortSignal.any([signal, deadline]) : deadline;
@@ -120,7 +120,7 @@ export function createRecipeDiscovery({ origins = [], env = process.env, fetchIm
       signal?.throwIfAborted();
       try {
         if (!['markdown', 'english', 'links', 'javascript', 'python', 'link-substitution', 'plugin'].includes(source.language)) {
-          throw new Error(serverMessage('dynamic_meta_source_language'));
+          throw new Error(serverMessage('dynamic-meta-source-language'));
         }
         const { url, digest, text } = await sourceText(source, requestSignal);
         if (source.language === 'plugin') {

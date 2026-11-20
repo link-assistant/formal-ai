@@ -5,8 +5,8 @@ import { linksToLino, typeMarkers, typeSystem } from '@link-foundation/ui-links'
 import { readRecipe } from './recipe.mjs';
 import { EVENT_KINDS, linkContext, parseLinkSubstitution } from './substitutions.mjs';
 
-const ID = /^[a-z][a-z0-9_-]{0,63}$/u;
-const QUALIFIED_ID = /^[a-z][a-z0-9_-]{0,63}\/[a-z][a-z0-9_-]{0,63}$/u;
+const IDENTIFIER_PATTERN = /^[a-z][a-z0-9_-]{0,63}$/u;
+const QUALIFIED_IDENTIFIER_PATTERN = /^[a-z][a-z0-9_-]{0,63}\/[a-z][a-z0-9_-]{0,63}$/u;
 const PACKAGE_KINDS = ['npm', 'crate', 'github', 'local'];
 const MANIFEST_LIMIT = 128 * 1024;
 const PACKAGE_VERSION = /^\d+\.\d+\.\d+(?:-[0-9a-z.-]+)?(?:\+[0-9a-z.-]+)?$/iu;
@@ -22,37 +22,37 @@ function sourceProvenance(provenance) {
   if (!parsed || parsed.protocol !== 'https:' || parsed.username || parsed.password || parsed.hash ||
       typeof digest !== 'string' || !SHA256.test(digest) ||
       (line !== undefined && (!Number.isSafeInteger(line) || line < 1))) {
-    throw new Error(serverMessage('dynamic_meta_invalid_provenance'));
+    throw new Error(serverMessage('dynamic-meta-invalid-provenance'));
   }
   return { provenance: { url: parsed.href, sha256: digest, ...(line === undefined ? {} : { line }) } };
 }
 
 export function boundedManifest(source) {
   if (typeof source !== 'string' || Buffer.byteLength(source) > MANIFEST_LIMIT) {
-    throw new Error(serverMessage('dynamic_meta_manifest_size'));
+    throw new Error(serverMessage('dynamic-meta-manifest-size'));
   }
   const data = JSON.parse(source);
-  if (data?.schema !== 'formal-ai-plugin/v1' || typeof data.id !== 'string' || !ID.test(data.id) ||
+  if (data?.schema !== 'formal-ai-plugin/v1' || typeof data.id !== 'string' || !IDENTIFIER_PATTERN.test(data.id) ||
       !PACKAGE_KINDS.includes(data.origin?.kind)) {
-    throw new Error(serverMessage('dynamic_meta_invalid_manifest'));
+    throw new Error(serverMessage('dynamic-meta-invalid-manifest'));
   }
   const { kind, locator, revision } = data.origin;
   if (typeof locator !== 'string' || !locator.trim() || locator.length > 256 ||
       typeof revision !== 'string' || !revision.trim() || revision.length > 128) {
-    throw new Error(serverMessage('dynamic_meta_origin_locator'));
+    throw new Error(serverMessage('dynamic-meta-origin-locator'));
   }
   if ((kind === 'github' && !GIT_REVISION.test(revision)) ||
       ((kind === 'npm' || kind === 'crate') && !PACKAGE_VERSION.test(revision))) {
-    throw new Error(serverMessage('dynamic_meta_origin_revision'));
+    throw new Error(serverMessage('dynamic-meta-origin-revision'));
   }
 
   const seen = new Set();
   const exportsOf = (key, parse) => {
     const entries = data[key] ?? [];
-    if (!Array.isArray(entries) || entries.length > 64) throw new Error(serverMessage('dynamic_meta_export_limit', { collection: key }));
+    if (!Array.isArray(entries) || entries.length > 64) throw new Error(serverMessage('dynamic-meta-export-limit', { collection: key }));
     return entries.map((entry) => {
-      if (typeof entry?.id !== 'string' || !ID.test(entry.id) || seen.has(entry.id)) {
-        throw new Error(serverMessage('dynamic_meta_unique_export'));
+      if (typeof entry?.id !== 'string' || !IDENTIFIER_PATTERN.test(entry.id) || seen.has(entry.id)) {
+        throw new Error(serverMessage('dynamic-meta-unique-export'));
       }
       seen.add(entry.id);
       return { id: entry.id, ...parse(entry) };
@@ -63,20 +63,20 @@ export function boundedManifest(source) {
     const { event, source, target } = entry.when ?? {};
     if (!EVENT_KINDS.includes(event) ||
         [source, target].some((value) => value !== undefined && (!Number.isSafeInteger(value) || value < 0))) {
-      throw new Error(serverMessage('dynamic_meta_invalid_trigger'));
+      throw new Error(serverMessage('dynamic-meta-invalid-trigger'));
     }
     const when = { event, source, target };
     if (entry.substitute !== undefined && entry.setRule === undefined) {
       const substitution = parseLinkSubstitution(entry.substitute, { template: true });
       if (event === 'create' && /"@old-(?:source|target)"/u.test(JSON.stringify(substitution))) {
-        throw new Error(serverMessage('dynamic_meta_create_old_endpoints'));
+        throw new Error(serverMessage('dynamic-meta-create-old-endpoints'));
       }
       return { when, substitution };
     }
     const change = entry.setRule;
     if (entry.substitute !== undefined || typeof change?.target !== 'string' ||
-        !ID.test(change.target) || typeof change.enabled !== 'boolean') {
-      throw new Error(serverMessage('dynamic_meta_trigger_action'));
+        !IDENTIFIER_PATTERN.test(change.target) || typeof change.enabled !== 'boolean') {
+      throw new Error(serverMessage('dynamic-meta-trigger-action'));
     }
     return { when, setRule: { target: `${data.id}/${change.target}`, enabled: change.enabled } };
   });
@@ -87,13 +87,13 @@ export function boundedManifest(source) {
     substitution: parseLinkSubstitution(substitute), ...sourceProvenance(provenance),
   }));
   const integrations = exportsOf('integrations', ({ adapter }) => {
-    if (typeof adapter !== 'string' || !ID.test(adapter)) throw new Error(serverMessage('dynamic_meta_invalid_adapter'));
+    if (typeof adapter !== 'string' || !IDENTIFIER_PATTERN.test(adapter)) throw new Error(serverMessage('dynamic-meta-invalid-adapter'));
     return { adapter };
   });
 
   for (const rule of rules) {
     if (rule.setRule && !rules.some(({ id }) => `${data.id}/${id}` === rule.setRule.target)) {
-      throw new Error(serverMessage('dynamic_meta_missing_rule'));
+      throw new Error(serverMessage('dynamic-meta-missing-rule'));
     }
   }
   return {
@@ -107,10 +107,10 @@ export function boundedManifest(source) {
 }
 
 export function namedExport(packages, collection, reference) {
-  if (typeof reference !== 'string' || !QUALIFIED_ID.test(reference)) throw new Error(serverMessage('dynamic_meta_export_reference'));
+  if (typeof reference !== 'string' || !QUALIFIED_IDENTIFIER_PATTERN.test(reference)) throw new Error(serverMessage('dynamic-meta-export-reference'));
   const [packageId, exportId] = reference.split('/');
   const entry = packages.find(({ id }) => id === packageId)?.[collection].find(({ id }) => id === exportId);
-  if (!entry) throw new Error(serverMessage('dynamic_meta_unknown_export', { collection, reference }));
+  if (!entry) throw new Error(serverMessage('dynamic-meta-unknown-export', { collection, reference }));
   return entry;
 }
 

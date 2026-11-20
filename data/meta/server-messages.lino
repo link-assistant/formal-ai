@@ -492,135 +492,135 @@ server_messages
     text "not provider-issued"
   message tool-arguments-invalid-json
     text "invalid JSON arguments"
-  message status_text_413
+  message status-text-413
     text "Content Too Large"
-  message dynamic_meta_request_size
+  message dynamic-meta-request-size
     text "Dynamic meta request is too large"
-  message dynamic_meta_origin_https
+  message dynamic-meta-origin-https
     text "Recipe origins must be HTTPS origins"
-  message dynamic_meta_source_empty
+  message dynamic-meta-source-empty
     text "The source has no body"
-  message dynamic_meta_source_size
+  message dynamic-meta-source-size
     text "Source size limit exceeded"
-  message dynamic_meta_source_no_recipes
+  message dynamic-meta-source-no-recipes
     text "No supported recipe blocks in source"
-  message dynamic_meta_origin_denied
+  message dynamic-meta-origin-denied
     text "Recipe source is outside the server allowlist"
-  message dynamic_meta_source_digest
+  message dynamic-meta-source-digest
     text "Source digest mismatch"
-  message dynamic_meta_source_count
+  message dynamic-meta-source-count
     text "Supply between one and eight source candidates"
-  message dynamic_meta_source_language
+  message dynamic-meta-source-language
     text "Unsupported recipe source language"
-  message dynamic_meta_source_status
+  message dynamic-meta-source-status
     text "Source returned HTTP {status}"
-  message dynamic_meta_unavailable
+  message dynamic-meta-unavailable
     text "Dynamic meta endpoint unavailable"
-  message dynamic_meta_store_error
+  message dynamic-meta-store-error
     text "Dynamic meta store error"
-  message dynamic_meta_cli_usage
+  message dynamic-meta-cli-usage
     text "Usage: FORMAL_AI_DYNAMIC_META_STORE=path node js/server/main.mjs meta < request.json\n"
-  message dynamic_meta_cli_store
+  message dynamic-meta-cli-store
     text "Set FORMAL_AI_DYNAMIC_META_STORE to a store path"
-  message dynamic_meta_cli_stdin
+  message dynamic-meta-cli-stdin
     text "Supply a dynamic meta request on stdin"
-  message dynamic_meta_invalid_provenance
+  message dynamic-meta-invalid-provenance
     text "Invalid source provenance"
-  message dynamic_meta_manifest_size
+  message dynamic-meta-manifest-size
     text "Package manifest exceeds the size limit"
-  message dynamic_meta_invalid_manifest
+  message dynamic-meta-invalid-manifest
     text "Invalid plugin manifest"
-  message dynamic_meta_origin_locator
+  message dynamic-meta-origin-locator
     text "Plugin origin requires a locator and pinned revision"
-  message dynamic_meta_origin_revision
+  message dynamic-meta-origin-revision
     text "Plugin origin must use a package version or Git commit"
-  message dynamic_meta_unique_export
+  message dynamic-meta-unique-export
     text "Plugin export ids must be unique names"
-  message dynamic_meta_invalid_trigger
+  message dynamic-meta-invalid-trigger
     text "A trigger requires a CRUD event and optional numeric endpoint filters"
-  message dynamic_meta_create_old_endpoints
+  message dynamic-meta-create-old-endpoints
     text "A create event has no old endpoints"
-  message dynamic_meta_trigger_action
+  message dynamic-meta-trigger-action
     text "A trigger requires a substitution or a rule state change within its package"
-  message dynamic_meta_invalid_adapter
+  message dynamic-meta-invalid-adapter
     text "Invalid host adapter id"
-  message dynamic_meta_missing_rule
+  message dynamic-meta-missing-rule
     text "A self-modifying trigger needs an installed target rule in its package"
-  message dynamic_meta_export_reference
+  message dynamic-meta-export-reference
     text "Expected package/export"
-  message dynamic_meta_export_limit
+  message dynamic-meta-export-limit
     text "Too many {collection}"
-  message dynamic_meta_unknown_export
+  message dynamic-meta-unknown-export
     text "Unknown {collection} export: {reference}"
-  message dynamic_meta_invalid_rules
+  message dynamic-meta-invalid-rules
     text "Invalid Markov rule table"
-  message dynamic_meta_recipe_bounds
+  message dynamic-meta-recipe-bounds
     text "Recipe input or step limit is out of bounds"
-  message dynamic_meta_invalid_source
+  message dynamic-meta-invalid-source
     text "Invalid recipe source"
-  message dynamic_meta_controlled_instruction
+  message dynamic-meta-controlled-instruction
     text "Expected a controlled instruction such as Replace \"a\" with \"b\" and stop."
-  message dynamic_meta_unsupported_program
+  message dynamic-meta-unsupported-program
     text "Unsupported recipe language or program"
-  message dynamic_meta_template_mismatch
+  message dynamic-meta-template-mismatch
     text "Program differs from the portable rewrite template"
-  message dynamic_meta_recipe_language
+  message dynamic-meta-recipe-language
     text "Unsupported recipe language"
-  message dynamic_meta_admin_required
+  message dynamic-meta-admin-required
     text "Server administrator permission is required"
-  message dynamic_meta_confirmation_required
+  message dynamic-meta-confirmation-required
     text "Explicit confirmation is required"
-  message dynamic_meta_regular_store
+  message dynamic-meta-regular-store
     text "The dynamic meta store must be a regular file"
-  message dynamic_meta_invalid_command
+  message dynamic-meta-invalid-command
     text "Invalid dynamic meta command"
-  message dynamic_meta_unknown_command
+  message dynamic-meta-unknown-command
     text "Unknown dynamic meta command"
-  message dynamic_meta_schema
+  message dynamic-meta-schema
     text "Unsupported dynamic meta store schema"
-  message dynamic_meta_revision_changed
+  message dynamic-meta-revision-changed
     text "The dynamic meta store revision has changed"
-  message dynamic_meta_state_size
+  message dynamic-meta-state-size
     text "Dynamic meta store size limit exceeded"
-  message dynamic_meta_action_required
+  message dynamic-meta-action-required
     text "Expected a dynamic meta action"
-  message dynamic_meta_invalid_receipt
+  message dynamic-meta-invalid-receipt
     text "Invalid receipt revision"
-  message dynamic_meta_receipt_unavailable
+  message dynamic-meta-receipt-unavailable
     text "Receipt unavailable"
-  message dynamic_meta_manifest_digest
+  message dynamic-meta-manifest-digest
     text "Reviewed plugin digest does not match the manifest"
-  message dynamic_meta_package_exists
+  message dynamic-meta-package-exists
     text "A package with this id is already installed"
-  message dynamic_meta_package_limit
+  message dynamic-meta-package-limit
     text "Package limit exceeded"
-  message dynamic_meta_package_unavailable
+  message dynamic-meta-package-unavailable
     text "Package unavailable"
-  message dynamic_meta_adapter_revision
+  message dynamic-meta-adapter-revision
     text "External integrations do not support revision conditions"
-  message dynamic_meta_adapter_unavailable
+  message dynamic-meta-adapter-unavailable
     text "Host adapter unavailable"
-  message dynamic_meta_unknown_action
+  message dynamic-meta-unknown-action
     text "Unknown dynamic meta action"
-  message dynamic_meta_substitution_length
+  message dynamic-meta-substitution-length
     text "Invalid link substitution length"
-  message dynamic_meta_substitution_sides
+  message dynamic-meta-substitution-sides
     text "A substitution requires two groups: (restriction) (substitution)"
-  message dynamic_meta_unknown_event_reference
+  message dynamic-meta-unknown-event-reference
     text "Unknown event reference"
-  message dynamic_meta_expected_doublet
+  message dynamic-meta-expected-doublet
     text "Expected a doublet pattern"
-  message dynamic_meta_pattern_limit
+  message dynamic-meta-pattern-limit
     text "Too many link patterns"
-  message dynamic_meta_link_limit
+  message dynamic-meta-link-limit
     text "Link limit exceeded"
-  message dynamic_meta_substitution_work
+  message dynamic-meta-substitution-work
     text "Link substitution work limit exceeded"
-  message dynamic_meta_event_limit
+  message dynamic-meta-event-limit
     text "Link event limit exceeded"
-  message dynamic_meta_trigger_action_limit
+  message dynamic-meta-trigger-action-limit
     text "Trigger action limit exceeded"
-  message dynamic_meta_cycle_limit
+  message dynamic-meta-cycle-limit
     text "Trigger cycle limit exceeded"
-  message dynamic_meta_event_value_missing
+  message dynamic-meta-event-value-missing
     text "Event has no value for {reference}"

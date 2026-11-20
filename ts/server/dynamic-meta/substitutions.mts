@@ -12,24 +12,24 @@ const ACTION_LIMIT = 512;
 const CYCLE_LIMIT = 24;
 
 export function parseLinkSubstitution(text, { template = false } = {}) {
-  if (typeof text !== 'string' || text.length > 4096) throw new Error(serverMessage('dynamic_meta_substitution_length'));
+  if (typeof text !== 'string' || text.length > 4096) throw new Error(serverMessage('dynamic-meta-substitution-length'));
   const parsed = parseLino(text);
   const document = parsed.length === 1 && typeof parsed[0] !== 'string' && parsed[0].id === null
     ? parsed[0].values : parsed;
   if (document.length !== 2 || document.some((side) => typeof side === 'string' || side.id !== null)) {
-    throw new Error(serverMessage('dynamic_meta_substitution_sides'));
+    throw new Error(serverMessage('dynamic-meta-substitution-sides'));
   }
   function visit(part, depth) {
     if (typeof part === 'string') {
-      if (part.startsWith('@') && (!template || !VARIABLES.has(part))) throw new Error(serverMessage('dynamic_meta_unknown_event_reference'));
+      if (part.startsWith('@') && (!template || !VARIABLES.has(part))) throw new Error(serverMessage('dynamic-meta-unknown-event-reference'));
       return;
     }
-    if (depth > 12 || part.values.length !== 2) throw new Error(serverMessage('dynamic_meta_expected_doublet'));
+    if (depth > 12 || part.values.length !== 2) throw new Error(serverMessage('dynamic-meta-expected-doublet'));
     if (part.id !== null) visit(part.id, depth + 1);
     for (const item of part.values) visit(item, depth + 1);
   }
   for (const side of document) {
-    if (side.values.length > 16) throw new Error(serverMessage('dynamic_meta_pattern_limit'));
+    if (side.values.length > 16) throw new Error(serverMessage('dynamic-meta-pattern-limit'));
     for (const item of side.values) visit(item, 1);
   }
   return document;
@@ -66,12 +66,12 @@ function applyQuery(context, document, consume) {
     },
     create() {
       consume();
-      if (base.count() >= LINK_LIMIT) throw new Error(serverMessage('dynamic_meta_link_limit'));
+      if (base.count() >= LINK_LIMIT) throw new Error(serverMessage('dynamic-meta-link-limit'));
       return base.create();
     },
     createAt(id) {
       consume();
-      if (base.count() >= LINK_LIMIT) throw new Error(serverMessage('dynamic_meta_link_limit'));
+      if (base.count() >= LINK_LIMIT) throw new Error(serverMessage('dynamic-meta-link-limit'));
       return base.createAt(id);
     },
   });
@@ -98,7 +98,7 @@ function bindTemplate(document, event) {
   const bindings = eventBindings(event);
   const reference = (part) => {
     if (!part.startsWith('@')) return part;
-    if (!bindings.has(part)) throw new Error(serverMessage('dynamic_meta_event_value_missing', { reference: part }));
+    if (!bindings.has(part)) throw new Error(serverMessage('dynamic-meta-event-value-missing', { reference: part }));
     return String(bindings.get(part));
   };
   function bind(part) {
@@ -125,13 +125,13 @@ export function runCascade(context, initial, {
 }) {
   let work = QUERY_WORK_LIMIT;
   const consume = () => {
-    if (--work < 0) throw new Error(serverMessage('dynamic_meta_substitution_work'));
+    if (--work < 0) throw new Error(serverMessage('dynamic-meta-substitution-work'));
   };
   const trace = [];
   let pending = applyQuery(context, initial, consume);
   let eventCount = pending.length;
   let actionCount = 0;
-  if (eventCount > EVENT_LIMIT) throw new Error(serverMessage('dynamic_meta_event_limit'));
+  if (eventCount > EVENT_LIMIT) throw new Error(serverMessage('dynamic-meta-event-limit'));
   trace.push({ cycle: 0, query: renderLinkSubstitution(initial), events: pending });
   for (let cycle = 1; pending.length && enabled; cycle += 1) {
     const eligible = rules.filter((rule) => active(rule.id));
@@ -140,19 +140,19 @@ export function runCascade(context, initial, {
       for (const rule of eligible) {
         consume();
         if (!matches(rule, event)) continue;
-        if (++actionCount > ACTION_LIMIT) throw new Error(serverMessage('dynamic_meta_trigger_action_limit'));
+        if (++actionCount > ACTION_LIMIT) throw new Error(serverMessage('dynamic-meta-trigger-action-limit'));
         plan.push({ event, rule });
       }
     }
     if (!plan.length) break;
-    if (cycle > CYCLE_LIMIT) throw new Error(serverMessage('dynamic_meta_cycle_limit'));
+    if (cycle > CYCLE_LIMIT) throw new Error(serverMessage('dynamic-meta-cycle-limit'));
     pending = [];
     for (const { event, rule } of plan) {
       if (rule.substitution !== undefined) {
         const query = bindTemplate(rule.substitution, event);
         const events = applyQuery(context, query, consume);
         eventCount += events.length;
-        if (eventCount > EVENT_LIMIT) throw new Error(serverMessage('dynamic_meta_event_limit'));
+        if (eventCount > EVENT_LIMIT) throw new Error(serverMessage('dynamic-meta-event-limit'));
         pending.push(...events);
         trace.push({ cycle, rule: rule.id, event, query: renderLinkSubstitution(query), events });
       } else {

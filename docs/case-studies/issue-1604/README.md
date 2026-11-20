@@ -89,7 +89,7 @@ would be separate evidence.
 | Independent transaction cycles and an upstream workaround when needed | Read-only match planning precedes sequential application. Regression test covers two updates from the same initiating query shape. | Matching can be partitioned. The current bounded scheduler executes locally in deterministic order. [Upstream report](https://github.com/link-foundation/ui/issues/270) |
 | Basic translations across meta, programming, and natural languages | Tests round-trip the four formats in all directions and actually execute JavaScript and Python exports. | The portable fragment is reversible. General source-language imports are outside the fragment. |
 | Overall architecture, vision, and dreaming equilibrium | Architecture guide describes data, authority, wire use, and shutdown. Vision names the usage-to-review loop. Idle review emits proposals. Related issue and PR received comments. | Comments are conditional on this PR landing. [Dreaming issue](https://github.com/link-assistant/formal-ai/issues/1446#issuecomment-7043871386) · [Dreaming PR](https://github.com/link-assistant/formal-ai/pull/1448#issuecomment-7043871367) |
-| Use JavaScript Formal AI for implementation support and fact checks | A real Agent CLI invoked a branch recipe and a documentation audit. An exact-source request wrote executable JavaScript, independently tested. | Open-ended authoring returned `MissingContract`. The exact-source write also exposed a false-negative terminal verdict. Evidence below. |
+| Use JavaScript Formal AI for implementation support and fact checks | A real Agent CLI invoked a branch recipe and a documentation audit. An exact-source request wrote executable JavaScript. The branch CLI generated the reviewed source rewrite that renamed a production binding. | Open-ended authoring returned `MissingContract`. The exact-source write also exposed a false-negative terminal verdict. Evidence below. |
 | Collect evidence, inventory requirements, and evaluate existing libraries | This study links the authentic issue/PR material, screenshot, primary references, tests, and tool output. | No required sub-issues were present in the GitHub sub-issue response. |
 
 ## Formal AI exercises
@@ -109,6 +109,12 @@ The observed mechanical edits carry zero autonomous-authorship credit.
 [Written source](raw-data/agent-written-frequency.mjs) ·
 [Edit transcript](raw-data/agent-edit-function.jsonl) ·
 [Edited source](raw-data/agent-edited-frequency.mjs)
+
+The JavaScript branch CLI applied a reviewed replacement recipe to the complete
+`discovery.mjs` source and produced both edits required by the abbreviation gate.
+An independent byte comparison checked the output before it was written to the
+working tree. The receipt records both offsets and the input and output hashes.
+[Production source rewrite receipt](raw-data/source-dogfood.json)
 
 The Agent CLI also asked the JavaScript server to run `example/normalize` on
 `teh teh`. It returned `the the`, byte offsets 0 and 4, and receipt 2. An

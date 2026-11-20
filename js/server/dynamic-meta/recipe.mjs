@@ -3,7 +3,7 @@ import { serverMessage } from '../messages.mjs';
 // leftmost matching, and terminal rules have the same meaning in every format.
 import { parseSubstitutionQuery, renderSubstitutionQuery } from '../../agentic/crate/links_substitution_query.mjs';
 
-const MAX_SOURCE = 64 * 1024;
+const SOURCE_LENGTH_LIMIT = 64 * 1024;
 const LITERAL = '"(?:[^"\\\\\u0000-\u001f]|\\\\["\\\\/bfnrt]|\\\\u[0-9a-fA-F]{4})*"';
 const SENTENCE = new RegExp(`^Replace (${LITERAL}) with (${LITERAL})( and stop)?\\.$`, 'u');
 
@@ -15,21 +15,21 @@ function checkedProgram(program) {
         pattern.length > 1024 || replacement.length > 1024 ||
         !pattern.isWellFormed() || !replacement.isWellFormed() || typeof terminal !== 'boolean') ||
       JSON.stringify(rules).length > 12 * 1024) {
-    throw new Error(serverMessage('dynamic_meta_invalid_rules'));
+    throw new Error(serverMessage('dynamic-meta-invalid-rules'));
   }
   return { rules: rules.map(({ pattern, replacement, terminal }) => ({ pattern, replacement, terminal })) };
 }
 
 const javascript = `export function rewrite(input, maxSteps = 256) {
-  if (typeof input !== 'string' || !input.isWellFormed() || input.length > ${MAX_SOURCE} ||
+  if (typeof input !== 'string' || !input.isWellFormed() || input.length > ${SOURCE_LENGTH_LIMIT} ||
       !Number.isSafeInteger(maxSteps) || maxSteps < 1 || maxSteps > 1000) {
-    throw new Error(serverMessage('dynamic_meta_recipe_bounds'));
+    throw new Error(serverMessage('dynamic-meta-recipe-bounds'));
   }
   for (let step = 0; step < maxSteps; step += 1) {
     const rule = rules.find(({pattern}) => input.includes(pattern));
     if (!rule) break;
     const offset = input.indexOf(rule.pattern);
-    if (input.length - rule.pattern.length + rule.replacement.length > ${MAX_SOURCE}) break;
+    if (input.length - rule.pattern.length + rule.replacement.length > ${SOURCE_LENGTH_LIMIT}) break;
     input = input.slice(0, offset) + rule.replacement + input.slice(offset + rule.pattern.length);
     if (rule.terminal) break;
   }
@@ -42,7 +42,7 @@ def rewrite(text, max_steps=256):
     def length(value):
         return len(value.encode("utf-16-le")) // 2
     size = length(text)
-    if size > ${MAX_SOURCE} or type(max_steps) is not int or not 1 <= max_steps <= 1000:
+    if size > ${SOURCE_LENGTH_LIMIT} or type(max_steps) is not int or not 1 <= max_steps <= 1000:
         raise ValueError("Recipe input or step limit is out of bounds")
     for _ in range(max_steps):
         for rule in rules:
@@ -50,7 +50,7 @@ def rewrite(text, max_steps=256):
             if offset == -1:
                 continue
             size += length(rule["replacement"]) - length(rule["pattern"])
-            if size > ${MAX_SOURCE}:
+            if size > ${SOURCE_LENGTH_LIMIT}:
                 return text
             text = text[:offset] + rule["replacement"] + text[offset + len(rule["pattern"]):]
             if rule["terminal"]:
@@ -62,13 +62,13 @@ def rewrite(text, max_steps=256):
 `;
 
 export function readRecipe(language, source) {
-  if (typeof source !== 'string' || source.length > MAX_SOURCE) throw new Error(serverMessage('dynamic_meta_invalid_source'));
+  if (typeof source !== 'string' || source.length > SOURCE_LENGTH_LIMIT) throw new Error(serverMessage('dynamic-meta-invalid-source'));
   const text = source.trim();
   if (language === 'links') return checkedProgram(parseSubstitutionQuery(text, 0));
   if (language === 'english') {
     const rules = text.split(/\r?\n/u).map((line) => {
       const match = SENTENCE.exec(line.trim());
-      if (!match) throw new Error(serverMessage('dynamic_meta_controlled_instruction'));
+      if (!match) throw new Error(serverMessage('dynamic-meta-controlled-instruction'));
       return { pattern: JSON.parse(match[1]), replacement: JSON.parse(match[2]), terminal: Boolean(match[3]) };
     });
     return checkedProgram({ rules });
@@ -76,9 +76,9 @@ export function readRecipe(language, source) {
   const header = language === 'javascript' ? /^const rules = ([^\n]+);\n/u :
     language === 'python' ? /^import json\nrules = json\.loads\(([^\n]+)\)\n/u : null;
   const match = header?.exec(text);
-  if (!match) throw new Error(serverMessage('dynamic_meta_unsupported_program'));
+  if (!match) throw new Error(serverMessage('dynamic-meta-unsupported-program'));
   const program = checkedProgram({ rules: JSON.parse(language === 'python' ? JSON.parse(match[1]) : match[1]) });
-  if (text !== renderRecipe(language, program).trim()) throw new Error(serverMessage('dynamic_meta_template_mismatch'));
+  if (text !== renderRecipe(language, program).trim()) throw new Error(serverMessage('dynamic-meta-template-mismatch'));
   return program;
 }
 
@@ -91,7 +91,7 @@ export function renderRecipe(language, program) {
       `Replace ${JSON.stringify(pattern)} with ${JSON.stringify(replacement)}${terminal ? ' and stop' : ''}.`).join('\n');
     case 'javascript': return `const rules = ${json};\n${javascript}`;
     case 'python': return `import json\nrules = json.loads(${JSON.stringify(json)})\n${python}`;
-    default: throw new Error(serverMessage('dynamic_meta_recipe_language'));
+    default: throw new Error(serverMessage('dynamic-meta-recipe-language'));
   }
 }
 
@@ -155,9 +155,9 @@ function interpretedMatch(rules, input) {
 }
 
 export function runRecipe({ rules }, input, { maxSteps = 256, compiled } = {}) {
-  if (typeof input !== 'string' || input.length > MAX_SOURCE || !input.isWellFormed() ||
+  if (typeof input !== 'string' || input.length > SOURCE_LENGTH_LIMIT || !input.isWellFormed() ||
       !Number.isSafeInteger(maxSteps) || maxSteps < 1 || maxSteps > 1000) {
-    throw new Error(serverMessage('dynamic_meta_recipe_bounds'));
+    throw new Error(serverMessage('dynamic-meta-recipe-bounds'));
   }
   let output = input;
   const trace = [];
@@ -168,7 +168,7 @@ export function runRecipe({ rules }, input, { maxSteps = 256, compiled } = {}) {
     const rule = rules[index];
     const before = output.slice(0, offset);
     const after = output.slice(offset + rule.pattern.length);
-    if (before.length + rule.replacement.length + after.length > MAX_SOURCE) {
+    if (before.length + rule.replacement.length + after.length > SOURCE_LENGTH_LIMIT) {
       return { output, trace, halt: { kind: 'output_limit' } };
     }
     output = before + rule.replacement + after;
