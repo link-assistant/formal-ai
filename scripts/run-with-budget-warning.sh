@@ -107,6 +107,23 @@ signal_command_tree() {
     true
 }
 
+# The root may finish while a child still owns the output pipe or does work.
+# Keep the deadline until every live process in its group has finished. Zombies
+# have already exited and cannot hold a pipe open; do not wait for their reaper.
+command_is_running() {
+  kill -0 "$command_pid" 2> /dev/null && return 0
+  local processes
+  if ! processes="$(ps -eo pgid=,stat=)"; then
+    echo "::error title=Execution budget monitoring failed::Cannot inspect the process group for ${label}." >&2
+    signal_command_tree KILL
+    exit 125
+  fi
+  awk -v group="$command_pid" '
+    $1 == group && $2 !~ /^[ZX]/ { alive = 1 }
+    END { exit !alive }
+  ' <<< "$processes"
+}
+
 # shellcheck disable=SC2329  # invoked indirectly by the trap below
 forward_cancellation() {
   signal_command_tree TERM
@@ -117,7 +134,7 @@ warned=false
 terminated=false
 last_heartbeat=0
 
-while kill -0 "$command_pid" 2> /dev/null; do
+while command_is_running; do
   elapsed=$((SECONDS - started))
 
   if [ "$warned" = false ] && [ "$elapsed" -ge "$threshold" ]; then
@@ -138,7 +155,7 @@ while kill -0 "$command_pid" 2> /dev/null; do
     report_compiler_cache
     signal_command_tree TERM
     grace_deadline=$((SECONDS + grace_seconds))
-    while kill -0 "$command_pid" 2> /dev/null && [ "$SECONDS" -lt "$grace_deadline" ]; do
+    while command_is_running && [ "$SECONDS" -lt "$grace_deadline" ]; do
       sleep "$poll_seconds"
     done
     signal_command_tree KILL

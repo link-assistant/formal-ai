@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "experiments/issue-1580/budget-process-lifetime.test.mjs"
+  ],
+  "exitCode": 1,
+  "file": "before-regression.log.gz",
+  "rawSha256": "c19a83a0f8ade3bf11a2f05062da38d11cd55ef7fcd421466d8ada575d95f324",
+  "archiveSha256": "4eacc102153f6f52e7af04b74800e72adaeef7e3ab7ee4218b3bce49e0767707",
+  "productionSha256": "504d04c32679555e6e7c47d5aa5f7525b3c0d85860e4207f6df641789d49755c",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -1,3 +1,4 @@
+import '../../../experiments/issue-1580/budget-process-lifetime.test.mjs';
 import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import {runStagedReleaseGenerator} from '../../../scripts/generate-staged-release.mjs';
 import assert from 'node:assert/strict';

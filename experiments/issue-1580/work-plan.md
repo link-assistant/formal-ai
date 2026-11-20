@@ -1051,3 +1051,10 @@ behavior and all wider acceptance criteria remain pending.
 - [ ] Publish immutable checksum evidence and report the distinct upstream defect after checking fresh source, issues and recent related PRs.
 - [ ] Collect every current-head CI result before the next push; core, coding and reasoning families currently pass, while Hive/benchmarks/interfaces remain pending. Keep native original acceptance at 27/53 and independent accepted reasoning at 0/20 until separately qualified.
 - [ ] Complete all remaining template files/practices, original workflow and wider acceptance criteria in this PR; no overall completion is claimed.
+
+### Execution budget follows live children, 2026-11-20
+
+- [x] Reproduce the actual production wrapper returning 0 in 0.07s while its child holds stdout open for four seconds under a one-second budget. All six initial regression controls fail before the repair.
+- [x] Keep process-group liveness checks after the root exits, excluding zombies. Apply the same check during TERM grace and fail explicitly if process inspection fails. Preserve stdout, stderr, compiler-cache reporting, warning-only behavior and the root exit status for completed groups.
+- [x] Verify seven focused controls, ten maintained release controls, twelve cache controls and three budget/registry controls with no skips, plus ShellCheck and shell parsing. The bounded Python fixture acts as a child subreaper and reaps every descendant. Retain the initial NODE_OPTIONS refusal and corrected CLI memory-cap invocation.
+- [ ] Verify the production fix on the next exact-head hosted run. This fixes only one budget criterion; broader acceptance and template comparison remain unfinished.
