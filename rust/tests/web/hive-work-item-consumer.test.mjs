@@ -159,3 +159,34 @@ test('the Codex fixture projects patch calls and observes real Git delivery with
   assert.equal(run.compilerAndNetworkAreMocks,true);
   assert.equal(run.fullIssueComplete,false);
 });
+
+for(const language of ['Kotlin','Scala','Rust','Python']){
+  test('the Agent CLI workflow replay observes Git delivery for '+language,{timeout:65000},()=>{
+    const run=nativeFixtureProbe(language,[
+      '--agent-tools','--steps=24','--physical-delivery','--agent-cli-receipts','--verifier-result=success',
+    ]);
+    const commands=run.steps.flatMap(step=>step.call?[JSON.parse(step.call.arguments).command??'']:[]);
+    assert.ok(commands.some(command=>command.includes('git commit')));
+    assert.equal(run.outcome.commits,2);
+    assert.equal(run.outcome.head,run.outcome.pushedHead);
+    assert.equal(run.outcome.status,'');
+    assert.ok(run.outcome.pushed.includes('tests/verify-output.sh'));
+    const verification=run.steps.find(step=>step.call&&JSON.parse(step.call.arguments).command==='sh tests/verify-output.sh');
+    assert.equal(verification.content,'Output: Hello, World!\n\nExit Code: 0');
+    assert.equal(run.compilerAndNetworkAreMocks,true);
+  });
+}
+
+test('a successful compiler fixture cannot replace missing Git observations',{timeout:65000},()=>{
+  const run=nativeFixtureProbe('Kotlin',['--agent-tools','--steps=24','--verifier-result=success']);
+  assert.ok(!run.steps.some(step=>step.call&&JSON.parse(step.call.arguments).command?.includes('git commit')));
+  assert.match(run.steps.at(-1).plan.answer,/fresh status or source ownership is incomplete/u);
+});
+test('real Git observations cannot authorize delivery after verifier failure',{timeout:65000},()=>{
+  const run=nativeFixtureProbe('Python',[
+    '--agent-tools','--steps=24','--physical-delivery','--agent-cli-receipts','--verifier-result=failure',
+  ]);
+  assert.equal(run.outcome.commits,1);
+  assert.ok(!run.steps.some(step=>step.call&&JSON.parse(step.call.arguments).command?.includes('git commit')));
+  assert.match(run.steps.at(-1).plan.answer,/command failed: wrong output/u);
+});

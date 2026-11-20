@@ -138,19 +138,37 @@ fn repository_workflows_include_runtime_setup_and_output_verification() {
         ("Rust", "rustup"),
         ("Python", "setup-python"),
     ] {
+        // Delivery checks consume real status, tracked paths and source bytes.
+        // A blank compiler fixture cannot stand in for those Git observations.
+        let delivery = crate::offline_delivery::Workspace::for_work_item(
+            language,
+            &format!("workflow-replay-{language}"),
+            BRANCH,
+            PR,
+        );
         let mut messages = vec![ChatMessage::user(prompt())];
         let objective = page(language);
-        let (planned, _) = drive(
+        let (planned, _) = drive_with_delivery_workspace(
             &AGENT_TOOLS,
             &mut messages,
             |tool, arguments| {
                 if is_work_item_read(tool, arguments) {
                     objective.clone()
+                } else if serde_json::from_str::<serde_json::Value>(arguments)
+                    .ok()
+                    .and_then(|value| value["command"].as_str().map(str::to_owned))
+                    .as_deref()
+                    == Some("sh tests/verify-output.sh")
+                {
+                    // This unit covers workflow composition; compiler execution
+                    // is an explicit fixture, separate from observed Git delivery.
+                    "Output: Hello, World!\n\nExit Code: 0".to_owned()
                 } else {
                     String::new()
                 }
             },
             24,
+            Some(&delivery),
         );
         let workflow = planned
             .iter()
@@ -183,7 +201,7 @@ fn repository_workflows_include_runtime_setup_and_output_verification() {
             .iter()
             .map(command_of)
             .find(|command| command.contains("git commit"))
-            .expect("commit after verification");
+            .unwrap_or_else(|| panic!("commit after verification for {language}: {planned:?}"));
         assert!(
             !commit.contains("git add -A"),
             "compiler outputs and unrelated files must not be staged: {commit}"
@@ -397,12 +415,18 @@ fn drive_with_delivery_workspace(
                 let command = command_of(&call);
                 let actual_delivery = delivery.filter(|_| {
                     patch.is_some()
-                        || (call.tool == "shell"
-                            && !command.starts_with("gh issue view ")
+                        || matches!(call.tool.as_str(), "Write" | "write")
+                        || (matches!(call.tool.as_str(), "shell" | "bash" | "Bash")
+                            && !is_work_item_read(&call.tool, &call.arguments)
                             && command != "sh tests/verify-output.sh")
                 });
                 let observed = if let Some(delivery) = actual_delivery {
-                    let tool = if patch.is_some() { "write" } else { "bash" };
+                    let tool = if patch.is_some() || matches!(call.tool.as_str(), "Write" | "write")
+                    {
+                        "write"
+                    } else {
+                        "bash"
+                    };
                     Some(ChatMessage::tool_result(
                         format!("c{step}"),
                         &call.tool,
