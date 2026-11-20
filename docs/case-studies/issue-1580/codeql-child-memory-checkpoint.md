@@ -65,9 +65,29 @@ validation and whitespace pass. Preserve the initial command-transport failure
 and the mistaken TAP-summary expectation separately from the actual failing
 control and corrected passing run.
 
-Actual new-head resolution, successful hosted query execution without runtime
-diagnostics and every original semantic requirement remain unverified until a
-new producer runs. Current native jobs are still being collected; the next push
-must wait for their complete failures. Strict original source identity remains
-31/53 with 22 separate scoped assertion reviews. Full issue completion is false;
+## Published producer verification
+
+The next exact-head read-only producer at
+`9fd9360d88d084aeee109ebf8375cde3cd816ff1` succeeds in
+[run 44813086995](https://github.com/link-assistant/formal-ai/actions/runs/44813086995).
+All 126 original payloads pass compressed/raw SHA-256, byte and line checks.
+The original database resolver returns `-J-Xmx2607M` at `memory.stdout` line 2;
+its stderr is empty. Manifest lines 24–44 record successful resolution against
+the completed `db-rust` dataset with `--ram=4096 --off-heap-ram=0`.
+The query receives the same policy at manifest lines 47–70 and exits zero.
+Its original nine-line stderr records compilation in 20.3 seconds at line 6
+and evaluation in 53.5 seconds at line 8, with no runtime warning/error line.
+No local native build or query execution is used for this verification.
+
+Both original SARIF reports have zero findings and zero warning/error
+notifications. The decoded query still has 122,534 rows from 2,216 files, with
+the same 631 unexpanded contexts at all 631 original notification positions.
+The warning-free evaluator verifies this memory repair; the positional
+crosswalk still does not qualify generated-child security/dataflow semantics.
+Original payloads and the machine assessment are retained in
+[`codeql-producer-9fd9360d`](../../../experiments/issue-1580/evidence/ci/codeql-producer-9fd9360d/).
+
+Current native jobs are still being collected; the next push must wait for all
+actionable failures. Strict original source identity remains 31/53 with 22
+separate scoped assertion reviews. Full issue completion is false;
 independently accepted reasoning remains 0/20 and supplied scripts earn zero.

@@ -1,0 +1,28 @@
+{
+  "observedAt": "2026-11-20T21:03:08.018614+00:00",
+  "records": 125,
+  "parts": [
+    {
+      "file": "records-part-1.json",
+      "records": 40,
+      "sha256": "99652534f4c2d5058189fb43f5bed88ab5be4e14471310c67afc0b739b7a4563"
+    },
+    {
+      "file": "records-part-2.json",
+      "records": 40,
+      "sha256": "9b7967531258b22b0988ced4463719f5d6e54bbde97d406ce0aa1698e5221e76"
+    },
+    {
+      "file": "records-part-3.json",
+      "records": 40,
+      "sha256": "224a89db642a456776de3b2503e503127f9f17dd8c788bdf1a99c64ebee782b3"
+    },
+    {
+      "file": "records-part-4.json",
+      "records": 5,
+      "sha256": "5c09b57a0f935bb4ae232e80f790bf97c24afe20b1104f8a651ba2c4dc67999c"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

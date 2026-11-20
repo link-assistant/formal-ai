@@ -1,0 +1,322 @@
+[
+  {
+    "file": "computer-use-content-extraction-seal--secrets.stdout.gz",
+    "capturedPath": "computer-use-content-extraction-seal/secrets.stdout",
+    "rawSha256": "a4f399972d226941849778a284621ab180502abea6495dde31112ae314e2eb1a",
+    "archiveSha256": "cbe988273804c1b3f3aa167e40a78f581eb14b03c69dda08e053748368d08a2e",
+    "bytes": 232,
+    "lines": 5
+  },
+  {
+    "file": "computer-use-content-extraction-seal--stage-source-evidence.stderr.gz",
+    "capturedPath": "computer-use-content-extraction-seal/stage-source-evidence.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "computer-use-content-extraction-seal--stage-source-evidence.stdout.gz",
+    "capturedPath": "computer-use-content-extraction-seal/stage-source-evidence.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "computer-use-content-extraction-seal--whitespace.stderr.gz",
+    "capturedPath": "computer-use-content-extraction-seal/whitespace.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "computer-use-content-extraction-seal--whitespace.stdout.gz",
+    "capturedPath": "computer-use-content-extraction-seal/whitespace.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "computer-use-content-extraction-seal--worker.log.gz",
+    "capturedPath": "computer-use-content-extraction-seal/worker.log",
+    "rawSha256": "f1f3ef1b76a9933cf6c3a3214c17c5ce156877508f18a5f316c1377b82447fc8",
+    "archiveSha256": "715ff776f65a8c41e6f523e8978c62e83f9c250a062a630129ab4741b3a4eb22",
+    "bytes": 88,
+    "lines": 7
+  },
+  {
+    "file": "current-size-warning-inventory--stderr.log.gz",
+    "capturedPath": "current-size-warning-inventory/stderr.log",
+    "rawSha256": "4e088593f6ce7ccbcb421343482161ff000a18709314cf43428308d3d1e1145e",
+    "archiveSha256": "41be79fc62ee10d44756e5f861d5893d30165722cb2420ebc34fb1862f6132fe",
+    "bytes": 22361,
+    "lines": 32
+  },
+  {
+    "file": "current-size-warning-inventory--stdout.json.gz",
+    "capturedPath": "current-size-warning-inventory/stdout.json",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "current-size-warning-inventory-second--stderr.log.gz",
+    "capturedPath": "current-size-warning-inventory-second/stderr.log",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "current-size-warning-inventory-second--stdout.json.gz",
+    "capturedPath": "current-size-warning-inventory-second/stdout.json",
+    "rawSha256": "625a5b706543188cf3c7340b85e61edd6ea4a7d47753610d6e4951304f4c7198",
+    "archiveSha256": "9bd843db2a5a18b1d2c828c854a1e871a17fea8474a65ffd0ac5fb6bed72ba88",
+    "bytes": 14215,
+    "lines": 1
+  },
+  {
+    "file": "current-size-warning-inventory-second--tracked-files.bin.gz",
+    "capturedPath": "current-size-warning-inventory-second/tracked-files.bin",
+    "rawSha256": "52a9176c9d26ec81308b512d2258aa9e3a964f809f8bf27e6aa8e8e8a172bfbf",
+    "archiveSha256": "a6d4057fca6661c54346f879cd3fabc57fb04288721969c451a1d9a5725929c6",
+    "bytes": 12334387,
+    "lines": 1
+  },
+  {
+    "file": "inspect-child-memory-active-jobs.log.gz",
+    "capturedPath": "inspect-child-memory-active-jobs.log",
+    "rawSha256": "0faae90b97a08b94f7710f3f7f0aee1a2eb97a3118d6dde15deef84657666c2c",
+    "archiveSha256": "650091569cdd6498b9bb9319b7b22762c672c252e21f5b6c9b1b1e5e2c94e359",
+    "bytes": 9893,
+    "lines": 5
+  },
+  {
+    "file": "inspect-child-memory-active-jobs.py.gz",
+    "capturedPath": "inspect-child-memory-active-jobs.py",
+    "rawSha256": "c60e0e24f4e70c16310a1314708f09b299a251675a800c07a829e7c38c8ebeab",
+    "archiveSha256": "14b8edc79fda9a4ff168bbdbb9dae420f8e1497c933e31ff6dc2501fbadf4d03",
+    "bytes": 1287,
+    "lines": 15
+  },
+  {
+    "file": "inventory-current-size-warnings-second.log.gz",
+    "capturedPath": "inventory-current-size-warnings-second.log",
+    "rawSha256": "4039e6a6e665d60f8f6f5ed42855358a65d3b7d7de7b36235dac339b80bd4687",
+    "archiveSha256": "5d11dca1a2345793e3fdf65b8d61f6a5dde8329e9cf380d2c80efca48b041eb6",
+    "bytes": 9121,
+    "lines": 122
+  },
+  {
+    "file": "inventory-current-size-warnings.log.gz",
+    "capturedPath": "inventory-current-size-warnings.log",
+    "rawSha256": "52cabb3f48be2b183a19b5a3b3f5c24d934eff983d9b1e0e03139a05610bd086",
+    "archiveSha256": "481c5459e160677ddea206c9e892ea6709372fd149d6276b60bfef09aedbf597",
+    "bytes": 23226,
+    "lines": 9
+  },
+  {
+    "file": "inventory-current-size-warnings.py.gz",
+    "capturedPath": "inventory-current-size-warnings.py",
+    "rawSha256": "105162c32319db66c06c6d6e78ea8d525ccba3c6055971be90c5ac972ceed652",
+    "archiveSha256": "b0108ae88fb13a3dc73ce01b69ba1d3ac9f2101d8eba9e65fbc4f3fd572e1ea3",
+    "bytes": 1461,
+    "lines": 21
+  },
+  {
+    "file": "record-hosted-child-memory-result.log.gz",
+    "capturedPath": "record-hosted-child-memory-result.log",
+    "rawSha256": "2c16c1967c4d9040419d7adf4efe27bb1365514ff237824d6334be7bea1287d8",
+    "archiveSha256": "ca3a1d2701d059e707222d85712f856623d7bb1b8b73857df17ae769b1446720",
+    "bytes": 365,
+    "lines": 4
+  },
+  {
+    "file": "record-hosted-child-memory-result.py.gz",
+    "capturedPath": "record-hosted-child-memory-result.py",
+    "rawSha256": "98a58089095d45192a317aea1483fd9571a6379886d1db49b47339339f430d1e",
+    "archiveSha256": "d1466a28f16b8a294f178cf20b972a223eec14ad6cd97c4675297c42f0b75e04",
+    "bytes": 4617,
+    "lines": 65
+  },
+  {
+    "file": "record-rust-dependency-before-review.log.gz",
+    "capturedPath": "record-rust-dependency-before-review.log",
+    "rawSha256": "5277b9e0a20570dc0f31095a7f5e295aeeb5373920fe01f5cf6be7f406d5d4f0",
+    "archiveSha256": "f59253b209ec0e6be3e8d8f29a78418bb8f28d3adb19e060f44a0d4566438ffd",
+    "bytes": 282,
+    "lines": 4
+  },
+  {
+    "file": "record-rust-dependency-before-review.py.gz",
+    "capturedPath": "record-rust-dependency-before-review.py",
+    "rawSha256": "b6316a98d4ed4cf1f7332c033be920683d2f20020f297e24dbcd394ad3c552c0",
+    "archiveSha256": "6291f58983afb5273c5006622852f053dd7c2b9b9e34723045e9e38e5e88e0a9",
+    "bytes": 3644,
+    "lines": 40
+  },
+  {
+    "file": "record-rust-retry-upstream-review.log.gz",
+    "capturedPath": "record-rust-retry-upstream-review.log",
+    "rawSha256": "433021faedfccc229920823fd312e32558c095b9859d145b8da9d38e5a6d5bf6",
+    "archiveSha256": "dc38ded03cba9b3bb9d2859af89be5efe81c9a5954984a13bbb9c5c01b2fd0ec",
+    "bytes": 279,
+    "lines": 4
+  },
+  {
+    "file": "record-rust-retry-upstream-review.py.gz",
+    "capturedPath": "record-rust-retry-upstream-review.py",
+    "rawSha256": "d8fd22fab00bcefec399d16866a6343c24a63cb73d6f62cc6559cc27cbdd8702",
+    "archiveSha256": "0ec3d5c6cd442c4ed028bc0426e72d29baaf4511ac8f3f855358470c0adc269a",
+    "bytes": 4109,
+    "lines": 43
+  },
+  {
+    "file": "retained-gate-summary-partition--branch.stderr.gz",
+    "capturedPath": "retained-gate-summary-partition/branch.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--branch.stdout.gz",
+    "capturedPath": "retained-gate-summary-partition/branch.stdout",
+    "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+    "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0",
+    "bytes": 24,
+    "lines": 1
+  },
+  {
+    "file": "retained-gate-summary-partition--commands.json.gz",
+    "capturedPath": "retained-gate-summary-partition/commands.json",
+    "rawSha256": "98366c4284df5038ec01a0a5ad3e1f5d11284ed3ece83f6ad067f40b6b7d3924",
+    "archiveSha256": "33a9b63447d2c3edd7bad31018a2c2a85442f8aeae6d91c881b8c4570746959b",
+    "bytes": 3415,
+    "lines": 102
+  },
+  {
+    "file": "retained-gate-summary-partition--commit.stderr.gz",
+    "capturedPath": "retained-gate-summary-partition/commit.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--commit.stdout.gz",
+    "capturedPath": "retained-gate-summary-partition/commit.stdout",
+    "rawSha256": "fa94cff7c97a67f180df70c14daccb808b736856e10bcacfaba91dce5ba8e6c5",
+    "archiveSha256": "18b9b652f9e79aeb038697b499875b1630686b018875f4e29a6b2d3dbe57009e",
+    "bytes": 1868,
+    "lines": 17
+  },
+  {
+    "file": "retained-gate-summary-partition--gates.stderr.gz",
+    "capturedPath": "retained-gate-summary-partition/gates.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--gates.stdout.gz",
+    "capturedPath": "retained-gate-summary-partition/gates.stdout",
+    "rawSha256": "91e2182d282ffce7e2ca42f309fdb4a9a5eb61f578a626cf5d15f5d365d760e0",
+    "archiveSha256": "3c0356a840948764f1b9c0f68130df56c5ae3c962f3a0f65955749b293dd68b1",
+    "bytes": 158,
+    "lines": 6
+  },
+  {
+    "file": "retained-gate-summary-partition--head.stderr.gz",
+    "capturedPath": "retained-gate-summary-partition/head.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--head.stdout.gz",
+    "capturedPath": "retained-gate-summary-partition/head.stdout",
+    "rawSha256": "49b30f8e99e7b1d6a2d01650f24bd1ce4ea796f802f0d1749f2b360c1535c394",
+    "archiveSha256": "0d854e00eb7778e8a4cacad42a2ca5e5e3042d2550a6decc8cf051dc7af293f8",
+    "bytes": 41,
+    "lines": 1
+  },
+  {
+    "file": "retained-gate-summary-partition--inverse-proof.json.gz",
+    "capturedPath": "retained-gate-summary-partition/inverse-proof.json",
+    "rawSha256": "af2a17963e497ce982b82cd56f0ef72b8d2698e4e6c7c04f57134d18c8d4553e",
+    "archiveSha256": "3a0adfdd2147215c3fb02c29c4a0669666e7545043ae5d66076d79327d552107",
+    "bytes": 534,
+    "lines": 22
+  },
+  {
+    "file": "retained-gate-summary-partition--outcome.json.gz",
+    "capturedPath": "retained-gate-summary-partition/outcome.json",
+    "rawSha256": "db11e91054973f8ff82f6cb7d189a760f83f363e3833a10f7a80cb00eb7d9b4f",
+    "archiveSha256": "f14298b664cca4745c537f9e20fe9420105a856f249eee03adaebe5814f53e5a",
+    "bytes": 219,
+    "lines": 8
+  },
+  {
+    "file": "retained-gate-summary-partition--secrets.stderr.gz",
+    "capturedPath": "retained-gate-summary-partition/secrets.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--secrets.stdout.gz",
+    "capturedPath": "retained-gate-summary-partition/secrets.stdout",
+    "rawSha256": "8fcd674b98badc6f4b114f1fb50bdf2377f82dee636969bf91d9b3a55a9c300a",
+    "archiveSha256": "27dbbf30a6088f03255c5ec05c97df0e2980ef059bf146b44de8dfe884e41400",
+    "bytes": 232,
+    "lines": 5
+  },
+  {
+    "file": "retained-gate-summary-partition--stage-evidence.stderr.gz",
+    "capturedPath": "retained-gate-summary-partition/stage-evidence.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--stage-evidence.stdout.gz",
+    "capturedPath": "retained-gate-summary-partition/stage-evidence.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--stage-partition.stderr.gz",
+    "capturedPath": "retained-gate-summary-partition/stage-partition.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--stage-partition.stdout.gz",
+    "capturedPath": "retained-gate-summary-partition/stage-partition.stdout",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "retained-gate-summary-partition--whitespace.stderr.gz",
+    "capturedPath": "retained-gate-summary-partition/whitespace.stderr",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  }
+]

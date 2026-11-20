@@ -713,5 +713,50 @@
     "file": "rust-codeql-release-review-fifth.log.gz",
     "rawSha256": "8bbb013dd84cf12ba35ddb1e99fb25b2d7b946bef73c68894675ce921712971d",
     "archiveSha256": "99476ab2c0cea133f9cbfbdbd44b1a0ef06d4846ad5e4ba47734343a7498186c"
+  },
+  {
+    "file": "rust-lychee-upstream-review-first.log.gz",
+    "rawSha256": "879241cacdcef322afedd3b9dcf7eef5a4cffdd04d61ff5a595666a4023667bb",
+    "archiveSha256": "a9c0427698f068f1069a89dac37a9be6ca4a52d05ba67373956cf69b72fc4597"
+  },
+  {
+    "file": "rust-lychee-upstream-review-second.log.gz",
+    "rawSha256": "09c8170a462b976cdd9374e2787d4a049f2a47937f1bf64e4d2b372ed554a429",
+    "archiveSha256": "64f833c5b56a50c155fbd9fa6ed76706c182285be477d256ee3e31d8910eb6aa"
+  },
+  {
+    "file": "rust-buildx-upstream-review-first.log.gz",
+    "rawSha256": "c06779b73e359215efed4eb423358c0b0ab82e6a0779998f4f7c2911a85d2c21",
+    "archiveSha256": "e692709e2f4ee7214b743706f6f11ad8f3c828ad7dfba7c6b93c431da0955659"
+  },
+  {
+    "file": "rust-buildx-upstream-review-second.log.gz",
+    "rawSha256": "5f371ecf51ad226ba4bb67f5d18b1d67886b2803db28d73aa05d753082f9490e",
+    "archiveSha256": "79881785ca3565c3920ea2fe9a12aa2ae561bec68c8c755037bbffaf11fb9b36"
+  },
+  {
+    "file": "rust-buildx-upstream-review-third.log.gz",
+    "rawSha256": "207ef509bd9e5e3e083f66304f0fb729e6f3c7599988488d5a5eba8e6d9d19aa",
+    "archiveSha256": "afa9af6eaab357a5aa6742dffc39e0e118ec71b5debf4b5201dec4235e83819d"
+  },
+  {
+    "file": "rust-dependencies-before-review-first.log.gz",
+    "rawSha256": "b3be80290f566c5bed900088c59027b684ebb85c437a0045c450852ceaf73eb5",
+    "archiveSha256": "35a5d4685f68de2dde0133a8c9d6b368077f3935ddf114cdcbc3a2e93540c249"
+  },
+  {
+    "file": "rust-dependencies-before-review-second.log.gz",
+    "rawSha256": "1bc1e4a5832bbc657d724b6833bddfd36ab3fa6162fd836fd89f80e823ed5cd9",
+    "archiveSha256": "54940f9d52538fde83eba9d4a9b78f421b02a91b6b3507fc62fa0d865d302cfc"
+  },
+  {
+    "file": "rust-dependencies-before-review-third.log.gz",
+    "rawSha256": "1c7bb94177d950ab5a7f66d80351f491723175c1fc1da7223bef8d1d82aa3bd7",
+    "archiveSha256": "4489e2ae39ce229cc6c25bd13cff9ec20869180a6963616554c52fddae1cbcf9"
+  },
+  {
+    "file": "rust-dependencies-before-review-fourth.log.gz",
+    "rawSha256": "1ec18cfe0d798c27f40e028472dcd99155bc1fa26b5454687784995f26e36f42",
+    "archiveSha256": "b75a470ce7d0e743530fc96f0353bfdaf67368bdb027d7f10dc7cd7539a860cf"
   }
 ]

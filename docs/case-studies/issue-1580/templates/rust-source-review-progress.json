@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T20:30:37.215577+00:00",
+  "observedAt": "2026-11-20T20:48:42.278017+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 347,
-  "fullyReadSourceLines": 44421,
+  "fullyReadFiles": 350,
+  "fullyReadSourceLines": 45933,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -1035,6 +1035,25 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/buildx-upstream.json",
+      "lines": 1,
+      "sha256": "3a7b0322d9b681732fc66974c4440045f5b3d7a011a2d8b7a38e8ebf60a3e6bc",
+      "readLogs": [
+        "rust-buildx-upstream-review-first.log.gz",
+        "rust-buildx-upstream-review-second.log.gz",
+        "rust-buildx-upstream-review-third.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/cargo-audit.json",
       "lines": 1,
       "sha256": "58fcbfef5f5d30bcf7c89c466938626be9b7a05ae4e1b2e38874e23037b6c372",
@@ -1209,6 +1228,26 @@
         ]
       ],
       "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/dependencies-before.json",
+      "lines": 1510,
+      "sha256": "0152fd17355a0765332ef6df1ee8834ba2c37222dc148bf5b9f60a24860edf49",
+      "readLogs": [
+        "rust-dependencies-before-review-first.log.gz",
+        "rust-dependencies-before-review-second.log.gz",
+        "rust-dependencies-before-review-third.log.gz",
+        "rust-dependencies-before-review-fourth.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1510
+        ]
+      ],
+      "literalReadLines": 1510,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
     },
@@ -1672,6 +1711,24 @@
       "sha256": "bd10797f0ee04725df70506677a8185b29ec6442e03f4c6f5aa2fb539f1e04fa",
       "readLogs": [
         "remaining-run-history-issue.json.read.txt.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/lychee-upstream.json",
+      "lines": 1,
+      "sha256": "42ecd7ece2d5010920a8898e31adc8f22be9305b42fdb011ac637ceaba4ff3ad",
+      "readLogs": [
+        "rust-lychee-upstream-review-first.log.gz",
+        "rust-lychee-upstream-review-second.log.gz"
       ],
       "literalReadRanges": [
         [
@@ -7082,6 +7139,23 @@
         "dev/log/issues/247/pulls/248/codeql-releases.json"
       ],
       "assessment": "All 41,525 original bytes and 267 original lines are literally reviewed through five contiguous escaped-byte ranges with exact reassembly and pinned digest verification. The historical action notes distinguish path normalization, checkout path consistency, unsupported platform and CLI versions, overlay fallback and cache behavior, query-pack and per-language bundle compatibility, diagnostic filename collisions, SARIF polling and database-upload retries, remote configuration precedence and token/registry checks. Preserve those compatibility and transport distinctions. These historical release notes do not prove the current 2.27.5 producer allocation, complete semantic coverage, successful publication or adoption of every practice; use actual pinned runtime observations and focused controls.",
+      "status": "literal-source-comparison-and-current-consumer-verification-pending"
+    },
+    {
+      "practice": "Distinguish transient connection phases and registry bootstrap boundaries before adding bounded workflow retries",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/lychee-upstream.json",
+        "dev/log/issues/247/pulls/248/buildx-upstream.json"
+      ],
+      "assessment": "Both complete historical upstream issue bodies and every captured comment are literally reviewed through contiguous exact byte ranges; each original one-line JSON blob is reassembled and identity-verified. Lychee 2297 distinguishes connect/TLS resets, established requests and wrapped io::Error kinds; the captured maintainer independently reproduces the HTTPS reset but reports different HTTP behavior. Raising a retry count does not repair a classifier that never enters retries. The complete Docker setup-buildx 510 workflow and daemon log locate failure at the action bootstrap pull; maintainer feedback warns that action-local backoff can worsen registry throttling and later points to PR 609. Formal AI retains a bounded actual-setup mirror recovery with pinned image identity rather than assuming a pre-pull bypasses bootstrap. Existing finite shared-budget link rechecks preserve permanent-status failures. These historical issue states and claims do not establish current upstream publication, all present runtime cases, successful application image delivery or complete-practice qualification.",
+      "status": "literal-source-comparison-and-current-consumer-verification-pending"
+    },
+    {
+      "practice": "Keep manifest ranges, resolved locks, standalone script dependencies and historical dependency snapshots distinct",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/dependencies-before.json"
+      ],
+      "assessment": "The complete 1,510-line historical before-update inventory is literally reviewed through four contiguous byte slices and reassembled to its pinned original identity. Cargo application and standalone script versions differ, and the historical syn duplicate and TOML API generations cannot be treated as one current application dependency graph. npm policy and secretlint lock transitives are separate from root manifest declarations; action tags, immutable commit references and empty detected-tool arrays carry different evidence. Preserve complete inventory collection and exact current lock/manifest checks rather than using this historical snapshot as current package, security or tool availability proof. Current published transitive consumers and release execution remain unverified by this source review.",
       "status": "literal-source-comparison-and-current-consumer-verification-pending"
     }
   ],
