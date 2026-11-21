@@ -49,6 +49,8 @@ One row per class of task people bring to LLMs, with what current LLMs do well, 
 
 On 2026-11-21, the published Linux x86-64 musl binary for [v0.356.0](https://github.com/link-assistant/formal-ai/releases/tag/v0.356.0) answered 78 probes across 37 classes. The run produced 10 useful answers, 3 partial answers and 65 misses. Each case uses one English and one Russian prompt.
 
+The archive `formal-ai-cli-x86_64-unknown-linux-musl.tar.gz` matched the published SHA-256 digest `05305d18986ad303e78357e973d058a56b196a1422ea6ec5a0924e1876b0a5fb`.
+
 The published CLI served `/v1/chat/completions` in its default mode with a fresh home, no prior conversation beyond the fixture, and normal provider access. The agentic coding probe records the default tool policy. Benchmarks in the table above describe related public tasks. This run uses only the synthetic fixtures below.
 
 A useful response answers the request correctly and meets its material constraints. A partial response contains usable evidence or an incomplete artifact. Refusals, misroutes, incorrect answers and empty results count as misses. The per-case notes are manually reviewed.

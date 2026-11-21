@@ -259,6 +259,7 @@ fn render_measurement(
     output.push_str(&format!(
         "\n## Release measurement\n\n\
          On 2026-11-21, the published Linux x86-64 musl binary for [{RELEASE}](https://github.com/link-assistant/formal-ai/releases/tag/{RELEASE}) answered {count} probes across {} classes. The run produced {useful} useful answers, {partial} partial answers and {} misses. Each case uses one English and one Russian prompt.\n\n\
+         The archive `formal-ai-cli-x86_64-unknown-linux-musl.tar.gz` matched the published SHA-256 digest `05305d18986ad303e78357e973d058a56b196a1422ea6ec5a0924e1876b0a5fb`.\n\n\
          The published CLI served `/v1/chat/completions` in its default mode with a fresh home, no prior conversation beyond the fixture, and normal provider access. The agentic coding probe records the default tool policy. Benchmarks in the table above describe related public tasks. This run uses only the synthetic fixtures below.\n\n\
          A useful response answers the request correctly and meets its material constraints. A partial response contains usable evidence or an incomplete artifact. Refusals, misroutes, incorrect answers and empty results count as misses. The per-case notes are manually reviewed.\n\n\
          [Prompt fixtures](../data/benchmarks/llm-task-parity/prompts.jsonl) · [Captured responses](../data/benchmarks/llm-task-parity/{RELEASE}.jsonl) · [Verdicts](../{MEASUREMENT}) · [Capture script](../experiments/llm-task-parity/capture.mjs)\n\n\
