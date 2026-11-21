@@ -132,7 +132,7 @@ jobs:
         run: bash scripts/ci-clippy-profile.sh --library-and-binaries
       - uses: actions/setup-node@v7
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
-        with: {node-version: 22}
+        with: {node-version: '24.22.3'}
       - name: Install the pinned workflow parser
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         run: |

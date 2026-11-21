@@ -341,7 +341,15 @@ test('retry waits stop when no request would fit in the remaining budget', {time
 });
 
 test('a request uses only the remaining shared budget', {timeout: 1000}, async t => {
-  t.mock.timers.enable({apis: ['setTimeout']});
+  let fireTimeout;
+  const timer = Symbol('request deadline');
+  const cleared = [];
+  t.mock.method(globalThis, 'setTimeout', (callback, milliseconds) => {
+    assert.equal(milliseconds, 15, 'request timeout must use the remaining shared budget');
+    fireTimeout = callback;
+    return timer;
+  });
+  t.mock.method(globalThis, 'clearTimeout', handle => cleared.push(handle));
   let requestSignal;
   const pending = recheckAll(['https://silent.example/'], {
     budgetMs: 15,
@@ -353,8 +361,10 @@ test('a request uses only the remaining shared budget', {timeout: 1000}, async t
       signal.addEventListener('abort', () => reject(new Error('deadline')));
     }),
   });
-  t.mock.timers.tick(15);
+  assert.equal(requestSignal.aborted, false);
+  fireTimeout();
   assert.equal(requestSignal.aborted, true, 'per-request timeout exceeded the shared budget');
   const result = await pending;
   assert.equal(result.get('https://silent.example/').outcome, 'unreachable');
+  assert.deepEqual(cleared, [timer], 'the completed request releases its timer');
 });
