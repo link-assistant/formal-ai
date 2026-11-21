@@ -69,3 +69,26 @@ test('the standalone data-files Cargo target resolves its extracted helper', () 
   const child = resolve(dirname(crateFile), declaration[1] ?? 'text_rows.rs');
   assert(existsSync(child), 'the crate-root module declaration resolves to a missing file: ' + child);
 });
+
+for (const [owner, child, names] of [
+  ['rust/tests/unit/specification/reasoning_paths_procedures', 'elaboration', [
+    'procedural_elaboration_followup_rebinds_to_prior_how_to',
+    'procedural_elaboration_requires_a_prior_how_to',
+    'procedural_elaboration_followup_covers_supported_languages',
+    'procedural_elaboration_followup_covers_many_topics',
+  ]],
+  ['rust/tests/integration/with_formal_ai', 'global_configuration', [
+    'with_formal_ai_global_configures_idempotently_and_undo_restores_backups',
+  ]],
+]) {
+  test(owner + ' retains headroom and original native test names', () => {
+    assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/' + child + '.rs'])),
+      {warnings: [], violations: [], embeddedDataViolations: []});
+    const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
+    const extracted = readFileSync(root + '/' + owner + '/' + child + '.rs', 'utf8');
+    for (const name of names) {
+      assert(source.includes('#[test]\nfn ' + name + '() {\n    ' + child + '::' + name + '();\n}'));
+      assert(extracted.includes('pub(super) fn ' + name + '() {'));
+    }
+  });
+}

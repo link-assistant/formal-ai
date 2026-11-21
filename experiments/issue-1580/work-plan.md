@@ -31,12 +31,12 @@ workflows and one skip, including all eight native families and registry checks.
 The merged source passed all 88 executed local gates (53 explicit skips),
 TypeScript generation/runtime, gateway/server checks and 133 maintained cases.
 
-Local commits extract six Rust test/helper groups without changing their
-bodies or scanner limits: 81 warnings remain. Coverage connects the original
+Local commits extract eight Rust test/helper groups without changing their
+bodies or scanner limits: 79 warnings remain. Coverage connects the original
 planner, budget and image owners to the existing core/coding targets. Actual
 Git sparse rules select their nine real fixtures in both core checkout attempts.
-Nine focused headroom/path cases and 50 native-runner cases pass. The preceding
-maintained entry passed 141 cases before the final path regression was added;
+Eleven focused headroom/path cases, 50 native-runner cases and 144 maintained
+observation cases pass;
 hosted native compilation/execution of these local edits remains pending.
 See the [native policy checkpoint](../../docs/case-studies/issue-1580/native-policy-headroom-checkpoint.md).
 
@@ -876,3 +876,5 @@ The unchanged file-size gate reports 1460 lines in each meaning-lexicon twin. A 
 The unchanged size gate also warns on both 1417-line code-task twins. The new focused test reproduces that warning while the original success/rejection/refusal behavior passes. Extract the complete existing refactoring section unchanged, regenerate the canonical module inventory and TypeScript twins, partition the existing ceiling without growth, admit the regression through the maintained CI entry, and refresh the generated status inventory. Recheck all affected tests and the complete JavaScript gates before publication. Supplied edits and commands retain zero independent-authorship credit. Full issue acceptance remains unfinished.
 
 - Native test module extraction removes three more warnings under unchanged limits: 84 remain. Before-fix scanner cases fail 3/3, then pass; 136 maintained, 23 write-planner, three planner-twin and 15 release-operation cases pass. Exact inverse and unchanged bodies are retained. Native execution, full template/practice review and complete issue acceptance remain open. See [native headroom checkpoint](../../docs/case-studies/issue-1580/native-test-headroom-checkpoint.md).
+
+- Follow-up/global-configuration extraction preserves five original native test names and existing reasoning timing records. Exact bodies and before-fix scanner failures are retained; 79 warnings remain. See [follow-up headroom](../../docs/case-studies/issue-1580/native-follow-up-headroom-checkpoint.md).
