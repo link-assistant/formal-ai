@@ -7,7 +7,7 @@ import YAML from 'yaml';
 import {admission} from '../../scripts/ci-pull-request-admission.mjs';
 
 const workflow = YAML.parse(readFileSync('.github/workflows/native-type-check.yml', 'utf8'));
-for (const name of ['clippy', 'contract-family']) {
+for (const name of ['clippy', 'contract-build', 'contract-family']) {
   test(`native ${name} retries checkout once within its original allowance`, () => {
     const job = workflow.jobs[name];
     const attempts = job.steps.filter(step => step.uses === 'actions/checkout@v7');

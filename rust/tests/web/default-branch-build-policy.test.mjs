@@ -109,7 +109,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   // called file's own top-level concurrency, before `jobs:`, not a job-level block.
   const head = read('.github/workflows/native-type-check.yml').split('\njobs:\n')[0];
   assert.deepEqual(YAML.parse(head).concurrency,{group:"${{ github.workflow }}-${{ github.ref }}-native-type-check${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}",'cancel-in-progress':"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"});
-  assert.deepEqual(Object.keys(called.jobs), ['clippy', 'contract-family', 'release-registry']);
+  assert.deepEqual(Object.keys(called.jobs), ['clippy', 'contract-build', 'contract-family', 'release-registry']);
   const check = called.jobs.clippy;
   const registry = called.jobs['release-registry'];
   assert.equal(registry.if, '${{ inputs.compile-inputs-changed }}');

@@ -33,6 +33,11 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   suites and product builds remain on main. The job retains deterministic Google
   Trends fixture projections for replay, with their generation identity. It grants
   no release authorization, saves no cache and publishes no workflow outputs.
+  The three expensive contract targets are compiled once by `contract-build` and
+  transported only within the same workflow run to the existing nine family jobs.
+  Their consumers verify source, compiler, profile, sparse materialized inputs and
+  executable bytes before using the unchanged listing and case-selection runner.
+  This focused test artifact has one-day retention and grants no release authority.
   Every PR reports the required job context. Changes to isolated native test
   sources, embedded fixtures, HTTP replay inputs or the admission policy select
   native execution. Documentation and unrelated JavaScript, test or script changes

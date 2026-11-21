@@ -89,7 +89,7 @@ test('native workflow gives every expensive family its own bounded independent j
   assert.deepEqual(matrix.strategy.matrix.group, Object.keys(groups).filter(group => !['core', 'hive', 'reasoning', 'coding'].includes(group)));
   assert.equal(matrix.strategy['fail-fast'], false);
   assert.equal(matrix.strategy['max-parallel'], 2);
-  assert.equal(matrix.needs, undefined, 'a failed core job must not suppress independent families');
+  assert.equal(matrix.needs, 'contract-build', 'only failure to compile the actual shared targets suppresses consumers');
   assert.equal(matrix.if, '${{ inputs.compile-inputs-changed }}');
   assert.equal(matrix['runs-on'], 'ubuntu-24.04');
   assert.equal(matrix['timeout-minutes'], 20);
@@ -98,11 +98,31 @@ test('native workflow gives every expensive family its own bounded independent j
   assert.equal(matrix['continue-on-error'], undefined);
   const execute = matrix.steps.at(-1);
   assert.equal(execute.run, 'bash scripts/run-with-budget-warning.sh 900 "Native contracts ${{ matrix.group }}" bash scripts/ci-native-regressions.sh "${{ matrix.group }}"');
-  assert.deepEqual(execute.env, {TEST_WARN_RATIO_PERCENT: '75'});
+  assert.deepEqual(execute.env, {TEST_WARN_RATIO_PERCENT: '75', FORMAL_AI_NATIVE_CONTRACT_ARTIFACT: '${{ runner.temp }}/native-contracts'});
   assert(900 + 2 * 120 < matrix['timeout-minutes'] * 60,
     'execution and both bounded checkout attempts must expire before the job clock');
   assert(matrix.steps.some(step => step.uses === 'actions/setup-node@v7' && step.with['node-version'] === 22));
-  assert.deepEqual(matrix.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
+  const producer = workflow.jobs['contract-build'];
+  assert.equal(producer.if, matrix.if);
+  assert.equal(producer.needs, undefined, 'core behavior failures do not suppress independent contract families');
+  assert.equal(producer['timeout-minutes'], 20);
+  assert.deepEqual(producer.permissions, {contents: 'read'});
+  assert.deepEqual(producer.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
+  assert(!matrix.steps.some(step => /sccache|cache-cargo-registry/u.test(step.uses ?? '')), 'consumer jobs never compile');
+  const upload = producer.steps.find(step => step.uses === 'actions/upload-artifact@v7');
+  const download = matrix.steps.find(step => step.uses === 'actions/download-artifact@v8');
+  assert(upload && download);
+  assert.equal(upload.with.name, 'native-contracts-${{ github.sha }}');
+  assert.equal(download.with.name, upload.with.name);
+  assert.equal(download.with.path, upload.with.path);
+  assert.equal(download.with['run-id'], undefined, 'download is restricted to this workflow run');
+  assert.equal(upload.with['if-no-files-found'], 'error');
+  assert.equal(upload.with['retention-days'], 1);
+  assert.equal(producer.outputs, undefined, 'transport grants no release or semantic authority');
+  assert.equal(producer.steps.find(step => step.name === 'Compile and bind the three focused test targets').run,
+    'bash scripts/run-with-budget-warning.sh 900 "Compile native contracts" node scripts/native-contract-artifact.mjs build "${{ runner.temp }}/native-contracts"');
+  for (const path of ['scripts/native-contract-artifact.mjs', 'scripts/native-release-source.mjs', 'scripts/native-release-trust.mjs'])
+    assert.equal(admission([path])['native-type-check'], true, path);
   const core = workflow.jobs.clippy;
   assert.equal(core.name, 'Rust compile inputs changed');
   assert.equal(core['timeout-minutes'], 20);

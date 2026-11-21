@@ -3,6 +3,16 @@
 # preserves the complete three-process runner, with one Rust test thread each.
 set -euo pipefail
 
+runner_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+# The hosted artifact adapter verifies source and executable bytes before every invocation.
+native_cargo() {
+  if [[ -n "${FORMAL_AI_NATIVE_CONTRACT_ARTIFACT:-}" ]]; then
+    node "$runner_root/scripts/native-contract-artifact.mjs" cargo "$FORMAL_AI_NATIVE_CONTRACT_ARTIFACT" "$@"
+  else
+    cargo "$@"
+  fi
+}
+
 contract_targets=(
   --test calendar_currency
   --test openai_forced_functions
@@ -41,21 +51,20 @@ case "$group" in
     # Whole-family clocks expired after successful cases in runs 44652802985
     # (Hive) and 44775337494 (reasoning). Plan the actual compiled listing
     # using those sequential observations, keeping every original test once.
-    runner_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
     family="${group%-*}"
     target=reasoning_contracts
     if [[ "$family" == coding ]]; then
       target=coding_contracts
       shard_count=2
-      listing="$(cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
+      listing="$(native_cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
         --test "$target" -- --list --format terse)"
     elif [[ "$family" == hive ]]; then
       shard_count=3
-      listing="$(cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
+      listing="$(native_cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
         --test reasoning_contracts issue_1133_hive_mind_three_runs:: -- --list --format terse)"
     else
       shard_count=2
-      listing="$(cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
+      listing="$(native_cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
         --test reasoning_contracts -- --skip benchmarks:: --skip issue_1133_hive_mind_three_runs:: --list --format terse)"
     fi
     names="$(printf '%s\n' "$listing" | sed -n 's/: test$//p')"
@@ -90,7 +99,7 @@ case "$group" in
       [[ -n "$name" ]] && selected_names+=("$name")
     done <<< "$selected"
     [[ "${#selected_names[@]}" -gt 0 ]] || { echo "::error::The native $family shard is empty." >&2; exit 1; }
-    cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test "$target" \
+    native_cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test "$target" \
       -- --exact "${selected_names[@]}" --test-threads=1 --nocapture
     exit "$?"
     ;;
@@ -107,7 +116,7 @@ case "$group" in
       benchmarks) family_arguments=(--test reasoning_contracts benchmarks::) ;;
       interfaces) family_arguments=(--test interface_contracts) ;;
     esac
-    cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast "${family_arguments[@]}" -- "${test_arguments[@]}"
+    native_cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast "${family_arguments[@]}" -- "${test_arguments[@]}"
     exit "$?"
     ;;
   *)

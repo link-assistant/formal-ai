@@ -68,3 +68,4 @@ import '../../../experiments/issue-1580/ci-source-transport.test.mjs';
 
 import '../../../experiments/issue-1580/traceability-partition.test.mjs';
 import '../../../experiments/issue-1580/immutable-source-captures.test.mjs';
+import '../../../experiments/issue-1580/native-contract-artifact.test.mjs';

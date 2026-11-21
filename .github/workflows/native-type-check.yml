@@ -5,7 +5,7 @@ name: Native type and lint check
 # (run 43730270231), since no PR job ran rustc. This focused workflow runs
 # main's clippy profile on the library and binaries,
 # called from release.yml on every PR, compiling when a Rust input changed
-# or the classification is unknown. Only deterministic fixture data is retained;
+# or the classification is unknown. Same-run contract executables and deterministic fixtures are retained;
 # the focused lane publishes no products or semantic authorization.
 # The isolated regressions verify native calendar, currency, OpenAI, executor and localized procedure behavior.
 # Main still runs full lint, tests and every build.
@@ -215,9 +215,100 @@ jobs:
 
   # Run 44918895118 exhausted the coding clock after 58/62 passing tests.
   # Partition the live listing while preserving the existing 20-minute clock.
+  contract-build:
+    name: Compile focused native contracts once
+    if: ${{ inputs.compile-inputs-changed }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      CARGO_BUILD_JOBS: '2'
+      FORMAL_AI_OFFLINE: '1'
+    steps:
+      # A promisor-blob transfer can fail after the initial fetch succeeds.
+      # Keep the original four-minute checkout allowance across both attempts.
+      - name: Check out native inputs
+        id: native-checkout
+        continue-on-error: true
+        uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            !/experiments/**
+            /experiments/**/*.sh
+            /experiments/issue-1580/release-registry/
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
+          sparse-checkout-cone-mode: false
+      - name: Retry native input checkout once
+        id: native-checkout-retry
+        continue-on-error: true
+        uses: actions/checkout@v7
+        if: ${{ !cancelled() && steps.native-checkout.outcome == 'failure' }}
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            !/experiments/**
+            /experiments/**/*.sh
+            /experiments/issue-1580/release-registry/
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
+          sparse-checkout-cone-mode: false
+      - name: Require a successful native checkout
+        env:
+          INITIAL_OUTCOME: ${{ steps.native-checkout.outcome }}
+          RETRY_OUTCOME: ${{ steps.native-checkout-retry.outcome }}
+        run: |
+          if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then
+            echo '::error::Native input checkout failed after two bounded attempts.' >&2
+            exit 1
+          fi
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
+      - uses: actions/setup-node@v7
+        with: {node-version: 22}
+      - name: Compile and bind the three focused test targets
+        env:
+          TEST_WARN_RATIO_PERCENT: '75'
+        run: bash scripts/run-with-budget-warning.sh 900 "Compile native contracts" node scripts/native-contract-artifact.mjs build "${{ runner.temp }}/native-contracts"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-contracts-${{ github.sha }}
+          path: ${{ runner.temp }}/native-contracts
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+
   contract-family:
     name: Native contracts (${{ matrix.group }})
     if: ${{ inputs.compile-inputs-changed }}
+    needs: contract-build
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -292,15 +383,16 @@ jobs:
             exit 1
           fi
       - uses: dtolnay/rust-toolchain@stable
-      - uses: ./.github/actions/setup-sccache
-      - uses: ./.github/actions/cache-cargo-registry
-        with:
-          restore-only: 'true'
       - uses: actions/setup-node@v7
         with: {node-version: 22}
+      - uses: actions/download-artifact@v8
+        with:
+          name: native-contracts-${{ github.sha }}
+          path: ${{ runner.temp }}/native-contracts
       - name: Verify the complete selected contract family
         env:
           TEST_WARN_RATIO_PERCENT: '75'
+          FORMAL_AI_NATIVE_CONTRACT_ARTIFACT: ${{ runner.temp }}/native-contracts
         run: bash scripts/run-with-budget-warning.sh 900 "Native contracts ${{ matrix.group }}" bash scripts/ci-native-regressions.sh "${{ matrix.group }}"
 
   release-registry:

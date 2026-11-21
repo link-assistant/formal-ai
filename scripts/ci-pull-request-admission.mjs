@@ -26,6 +26,9 @@ const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 't
 // The focused native lane also executes isolated integration targets and an
 // HTTP replay. Changes to their sources or consumed fixtures must run that lane.
 const NATIVE_REGRESSION_INPUTS = new Set([
+  'scripts/native-contract-artifact.mjs',
+  'scripts/native-release-source.mjs',
+  'scripts/native-release-trust.mjs',
   'scripts/assemble-requirements.rs',
   'scripts/assemble-requirements-tests.rs',
   'scripts/normalize-ordered-lists.rs',
