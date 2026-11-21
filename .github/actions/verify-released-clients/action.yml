@@ -6,32 +6,36 @@ inputs:
     required: true
   artifact:
     description: Artifact name for the verification logs
-    required: true
+    required: false
 runs:
   using: composite
   steps:
     - uses: actions/setup-node@v7
       with: {node-version: 22}
     - uses: oven-sh/setup-bun@v2
-      with: {bun-version-file: _protocol/.bun-version}
+      with:
+        bun-version-file: ${{ github.action_path }}/../../../.bun-version
+        no-cache: true
     - name: Install the pinned clients and test dependencies
       shell: bash
       run: |
         cd "$GITHUB_ACTION_PATH/../../.."
-        npm install --prefix "$RUNNER_TEMP/report-clients" --no-audit --no-fund @anthropic-ai/claude-code@2.1.325 @google/gemini-cli@0.66.0 @openai/codex@0.171.0 opencode-ai@1.19.5
-        bun scripts/install-client-registry-recovery.mjs bun add -g --ignore-scripts @link-assistant/agent@0.27.0
+        bun install --cwd experiments/issue_1609_client_reports --frozen-lockfile
         bun install --frozen-lockfile --ignore-scripts
         bun install --cwd experiments/agent_cli_e2e/issue_819_tui --frozen-lockfile
-        echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
-        echo "$RUNNER_TEMP/report-clients/node_modules/.bin" >> "$GITHUB_PATH"
+        echo "$PWD/experiments/issue_1609_client_reports/node_modules/.bin" >> "$GITHUB_PATH"
     - name: Verify greetings and report receipts
       shell: bash
       env:
         ARTIFACT_DIR: ${{ runner.temp }}/release-client-reports
         RELEASE_BINARY: ${{ inputs.binary }}
-      run: bash "$GITHUB_ACTION_PATH/../../../experiments/issue_1609_client_reports/verify-release.sh" "$GITHUB_WORKSPACE/$RELEASE_BINARY"
+      run: |
+        if ! bash "$GITHUB_ACTION_PATH/../../../experiments/issue_1609_client_reports/verify-release.sh" "$GITHUB_WORKSPACE/$RELEASE_BINARY"; then
+          find "$ARTIFACT_DIR" -maxdepth 2 -name '*.log' -type f -exec tail -n 12 -- {} +
+          exit 1
+        fi
     - name: Retain released-client verification logs
-      if: ${{ always() }}
+      if: ${{ always() && inputs.artifact != '' }}
       uses: actions/upload-artifact@v7
       with:
         name: ${{ inputs.artifact }}

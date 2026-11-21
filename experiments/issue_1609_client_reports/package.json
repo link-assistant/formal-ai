@@ -1,0 +1,12 @@
+{
+  "name": "formal-ai-release-client-reports",
+  "private": true,
+  "dependencies": {
+    "@anthropic-ai/claude-code": "2.1.325",
+    "@google/gemini-cli": "0.66.0",
+    "@link-assistant/agent": "0.27.0",
+    "@openai/codex": "0.171.0",
+    "opencode-ai": "1.19.5"
+  },
+  "trustedDependencies": ["@anthropic-ai/claude-code", "opencode-ai"]
+}

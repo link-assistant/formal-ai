@@ -6,7 +6,8 @@ name: Native type and lint check
 # native check a PR runs: main's clippy profile on the library and binaries,
 # called from release.yml when a Rust compile input changed or the
 # classification is unknown. It uploads nothing and records no receipt.
-# The isolated regressions verify native calendar, currency, OpenAI and localized procedure behavior.
+# The isolated regressions verify native calendar, currency, OpenAI, localized
+# procedures, and reports from wrapped clients.
 # Main still runs full lint, tests and every build.
 on:
   workflow_call:
@@ -46,7 +47,10 @@ jobs:
             /*
             !/dev/log/
             !/experiments/*
+            /experiments/agent_cli_e2e/issue_819_tui/
+            /experiments/agent_cli_e2e/run_issue_819_report_tui.sh
             /experiments/dynamic-meta/
+            /experiments/issue_1609_client_reports/
             /experiments/issue_859_codex_e2e/
             /experiments/js_dogfood/
           sparse-checkout-cone-mode: false
@@ -101,6 +105,6 @@ jobs:
           bun install --frozen-lockfile --ignore-scripts
           node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs
       - name: Verify matched client transcripts and issue receipts against the native CLI
-        env:
-          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
-        run: node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs
+        uses: ./.github/actions/verify-released-clients
+        with:
+          binary: rust/target/debug/formal-ai
