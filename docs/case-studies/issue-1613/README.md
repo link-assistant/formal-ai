@@ -151,6 +151,33 @@ actual message and still requires the supplied issue body on the next call.
 [Native CI run](https://github.com/link-assistant/formal-ai/actions/runs/44943550052) ·
 [Full workflow log](evidence/workflows/pipeline-44943550052.log.gz)
 
+The second native run passed the localized procedure and Agent CLI replays,
+including the empty-cache and supplied-capture checks. The two Layered CI
+shards found stale governed source hashes after the translation documentation
+and source-cache test changed. Regenerating the witness changed ten digest
+fields. The inventory still contains 1,185 cases, including the same 221
+supported cases and 964 recorded unsupported cases. Security passed on retry
+after a RustSec download failure on the first attempt.
+[Native CI](https://github.com/link-assistant/formal-ai/actions/runs/44946231524) ·
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/44946231224) ·
+[Security](https://github.com/link-assistant/formal-ai/actions/runs/44946231401) ·
+[Witness comparison](evidence/verification/governed-baseline-round3-delta.log)
+
+The practical-help route contained a second form of the same defect. Its
+expected NHS quote also served as its own evidence. The before-fix replay
+failed because the solver returned an answer while the controlled transport
+recorded zero requests. The new replay changes the page body twice and checks
+that each answer quotes the passage observed on that run. The production
+policy declares the NHS page, section, and matching cue. The source client's
+verified cache can supply a previously retrieved capture. With no matching
+capture, the solver asks a localized clarifying question. A browser request
+sent with an `Origin` header received HTTP 200 without an `Access-Control-Allow-Origin`
+header, so a browser with a capture component can try that transport as well.
+[Baseline failure](evidence/verification/baseline-practical-help-current-page.log) ·
+[NHS source](https://www.nhs.uk/conditions/constipation/) ·
+[Practical-help replays](evidence/verification/practical-help-round3-final.log) ·
+[Local gate results](evidence/verification/all-gates-round3-final.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,

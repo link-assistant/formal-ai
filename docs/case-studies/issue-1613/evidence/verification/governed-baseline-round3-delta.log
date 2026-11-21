@@ -1,0 +1,60 @@
+inventory [ [ 1185, 221, 964 ], [ 1185, 221, 964 ] ]
+{
+  "scope": "complete paired physical object graph; bounded small-value details",
+  "differences": 10,
+  "visitedPairs": 7017,
+  "allDifferencesSha256": "71ebf64302795be2eae5260f85a762f5674de7e64050319cf3a149e7ccd9b83b",
+  "detailsTruncated": false,
+  "details": [
+    {
+      "path": "inventory/cases/188/program/fixtures/4/sha256",
+      "before": "ffa820806d8c80907a8496d7c23411f57ad04006c4cf105019ea43ac308e0875",
+      "after": "951284861b84958395006100c36e84decc9622e94fce875492a25614f621f9ee"
+    },
+    {
+      "path": "inventory/cases/189/program/fixtures/4/sha256",
+      "before": "ffa820806d8c80907a8496d7c23411f57ad04006c4cf105019ea43ac308e0875",
+      "after": "951284861b84958395006100c36e84decc9622e94fce875492a25614f621f9ee"
+    },
+    {
+      "path": "inventory/cases/190/program/fixtures/4/sha256",
+      "before": "ffa820806d8c80907a8496d7c23411f57ad04006c4cf105019ea43ac308e0875",
+      "after": "951284861b84958395006100c36e84decc9622e94fce875492a25614f621f9ee"
+    },
+    {
+      "path": "inventory/cases/192/program/fixtures/5/sha256",
+      "before": "ffa820806d8c80907a8496d7c23411f57ad04006c4cf105019ea43ac308e0875",
+      "after": "951284861b84958395006100c36e84decc9622e94fce875492a25614f621f9ee"
+    },
+    {
+      "path": "inventory/cases/193/program/fixtures/5/sha256",
+      "before": "ffa820806d8c80907a8496d7c23411f57ad04006c4cf105019ea43ac308e0875",
+      "after": "951284861b84958395006100c36e84decc9622e94fce875492a25614f621f9ee"
+    },
+    {
+      "path": "inventory/cases/194/program/fixtures/6/sha256",
+      "before": "ffa820806d8c80907a8496d7c23411f57ad04006c4cf105019ea43ac308e0875",
+      "after": "951284861b84958395006100c36e84decc9622e94fce875492a25614f621f9ee"
+    },
+    {
+      "path": "inventory/cases/77/program/fixtures/4/sha256",
+      "before": "ffa820806d8c80907a8496d7c23411f57ad04006c4cf105019ea43ac308e0875",
+      "after": "951284861b84958395006100c36e84decc9622e94fce875492a25614f621f9ee"
+    },
+    {
+      "path": "inventory/cases/78/program/fixtures/4/sha256",
+      "before": "ffa820806d8c80907a8496d7c23411f57ad04006c4cf105019ea43ac308e0875",
+      "after": "951284861b84958395006100c36e84decc9622e94fce875492a25614f621f9ee"
+    },
+    {
+      "path": "inventory/cases/79/program/fixtures/4/sha256",
+      "before": "ffa820806d8c80907a8496d7c23411f57ad04006c4cf105019ea43ac308e0875",
+      "after": "951284861b84958395006100c36e84decc9622e94fce875492a25614f621f9ee"
+    },
+    {
+      "path": "sourceManifest/111/sha256",
+      "before": "9b095ea9ea863609d923f89de380c282faa23aad275220f6151a2fcf3fa5c770",
+      "after": "3463dafb4d826aa88e33fce4ef6361fe51155433e318d814e8c063ff518f3c65"
+    }
+  ]
+}
