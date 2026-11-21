@@ -15,6 +15,14 @@ Observed: 1. Оба журнала — Включить журналы аген�
 Proxy verifier: Both localized menus and context selection were displayed without requesting a tool.
 The same assertions passed with the CI-pinned Codex CLI 0.147.0.
 
+Agent CLI 0.27.0 using Chat Completions against the source JavaScript server
+Prompt: report
+Observed: What would you like to report? Select one or more.
+Prompt: зарепорти баг
+Observed: Что вы хотите отправить? Выберите один или несколько вариантов.
+Resumed the Russian session with prompt: 3
+Observed: Какой контекст включить в задачу GitHub?
+
 Baseline source JavaScript server, hosted web search advertised
 Prompt: Как какать?
 Observed output item types: message, web_search_call
@@ -33,3 +41,9 @@ Failed-job log line 8322: 6 content divergence(s) above the ceiling 0
 Failed-job log line 15529: The command was terminated after 1080s, its full 1080s execution budget
 Failed-job log lines 48919 and 54810: Process completed with exit code 1
 Jobs API: Release Preflight success, Secrets Scan success, Build Package skipped, Auto Release skipped, Pipeline Status failure
+
+The initial cargo package --locked --no-verify produced a crate with stale handler rules.
+The mirror checker identified rust/embedded/data/seed/handler-rules.lino.
+Formal AI executed: node scripts/mirror-package-data.mjs --write
+Observed: package-data mirror: 488 files demanded, 1 refreshed (43888 bytes), all byte-equal
+The follow-up mirror check found all 488 inputs byte-equal.
