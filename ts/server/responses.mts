@@ -17,6 +17,7 @@ import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRe
 import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
 import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
+import { ensureNodeHost } from './node-host-install.mjs';
 import { outputObligation, projectStructuredOutput, structuredAnswerFromSource, structuredOutputRequested, structuredThinkingStep } from './structured-output.mjs';
 import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
 
@@ -128,6 +129,7 @@ async function createUnstructuredResponse(ctx, request) {
   const outcome = await agenticOutcome(ctx, chatRequest, toolCallRefusalAnswer);
   if (outcome.kind === 'refused') return responseFromSymbolic(request, chatRequest, prompt, outcome.answer);
   if (outcome.kind === 'planned') return responseFromPlan(ctx, request, chatRequest, prompt, outcome.plan, responseTimestamp());
+  if (context.titleTask) await ensureNodeHost(ctx);
   const contextual = contextualAnswer(context);
   if (contextual) return responseFromSymbolic(request, chatRequest, prompt, contextual);
   const symbolic = await structuredAnswerFromSource(ctx, request.text?.format, false, memoryPrompt)

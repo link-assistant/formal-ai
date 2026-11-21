@@ -141,6 +141,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs',
     codexReplay,
     gatewayReplay,
+    'node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs',
     'cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog\n' +
     'rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"\n' +
     '{\n' +

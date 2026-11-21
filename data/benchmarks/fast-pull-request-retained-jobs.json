@@ -126,7 +126,7 @@
     {
       "file": "desktop-release.yml",
       "id": "native-source",
-      "payloadSha256": "c6ee076010a919f3f391d85a6dc893ac286f4c53c4897bc6e12f32d8a9ede080"
+      "payloadSha256": "c079bec02f21990a17c1996b9f6d8920ffbac38aac6e3dd08044924ff1af75b0"
     },
     {
       "file": "question-necessity-ratchet.yml",
@@ -166,7 +166,7 @@
     {
       "file": "publish-engine.yml",
       "id": "package",
-      "payloadSha256": "7ac8c1f712abf6fbcde588bdd89b5942e6d2ba2709b5743b9016bd62dbc01200"
+      "payloadSha256": "429e4fac3e8374c385b1ad4a95f12b80599ad757c72ce604534dfca842570ea2"
     },
     {
       "file": "publish-source-networks.yml",
@@ -206,7 +206,7 @@
     {
       "file": "publish-vscode.yml",
       "id": "publish",
-      "payloadSha256": "701756c41e51b9b4eb94bbb4d0ca49438537262608dd3dd3c18b00ecf3a164c4"
+      "payloadSha256": "aae3ca0e0e6376ea1843274e5a6cdd3082ca00da23f0ea59281271c2521153ad"
     },
     {
       "file": "regenerate-self-ast-census.yml",

@@ -11,7 +11,7 @@
 //! user/assistant/tool turns instead of transport frames.
 
 use std::collections::BTreeMap;
-use std::fs::{self, OpenOptions};
+use std::fs;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
@@ -67,7 +67,7 @@ pub fn write_conversation_record(
         .get_or_init(|| Mutex::new(()))
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
-    let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
+    let mut file = crate::dialog_log::open_private_log(&path)?;
     let safe = crate::dialog_log::structured_log::redact(
         &serde_json::to_value(record).map_err(io::Error::other)?,
     );

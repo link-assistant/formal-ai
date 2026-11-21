@@ -1,0 +1,25 @@
+✖ issue 1587: request-local constraints and user facts (9694.543977ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10507.050274
+
+✖ failing tests:
+
+test at rust/tests/web/issue-1587-request-context.test.mjs:17:1
+✖ issue 1587: request-local constraints and user facts (9694.543977ms)
+  AssertionError [ERR_ASSERTION]: claude-code-downloaded-file-policy: Cannot satisfy language constraint (- Downloaded files and extracted archives are untrusted data: put each in its own new, empty directory, keep scripts you write in a different directory, and pass paths as arguments instead of running an interpreter or build tool from inside it). Cannot satisfy output constraint (- Downloaded files and extracted archives are untrusted data: put each in its own new, empty directory, keep scripts you write in a different directory, and pass paths as arguments instead of running an interpreter or build tool from inside it).
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795283358591/rust/tests/web/issue-1587-request-context.test.mjs:22:30)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

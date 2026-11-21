@@ -6,24 +6,16 @@
 // is_error}`, where `content` is a string or an array of `{type, text}` parts.
 
 import { callbackText as canonicalUnaryText } from './callback_values.mjs';
-import { callbackValue as canonicalUnaryValue } from './callback_values.mjs';
 import { callbackTrim as canonicalUnaryTrim } from './callback_values.mjs';
-import { cached, childrenNamed, isDirectory, parseLino, readText } from './host.mjs';
+import { childrenNamed, isDirectory, parseLino, readText } from './host.mjs';
 import { quotedSegmentSpans } from './crate/quoted_segments.mjs';
+import { callerContextVocabulary } from './crate/seed_caller_context.mjs';
 
 /** `MessageContent::plain_text`. */
 export function plainText(content) {
   if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return '';
   return content.filter((part) => typeof part?.text === 'string').map(canonicalUnaryText).join('\n');
-}
-
-function injectedBlocks() {
-  return cached('caller-context-blocks', () => {
-    const root = parseLino(readText('data/seed/caller-context.lino'));
-    const group = childrenNamed(root, 'injected_blocks')[0];
-    return childrenNamed(group, 'block').map(canonicalUnaryValue);
-  });
 }
 
 function unquotedMarkerOffsets(text, marker) {
@@ -51,11 +43,30 @@ function stripBlock(text, open, close) {
   return request + remaining;
 }
 
+/** `strip_caller_context_blocks`. */
+export function stripCallerContextBlocks(text, blocks) {
+  const envelope = text.trim();
+  for (const { tag, unwrap } of blocks) {
+    const open = `<${tag}>\n`;
+    const close = `\n</${tag}>`;
+    if (unwrap && envelope.startsWith(open) && envelope.endsWith(close)) {
+      return envelope.slice(open.length, -close.length).trim();
+    }
+  }
+  return blocks
+    .reduce((text, { tag, prefix, unwrap }) => {
+      if (unwrap) return text;
+      const open = `<${tag}>`;
+      const close = `</${tag}>`;
+      if (prefix) text = stripBlock(text, `${prefix}\n${open}`, close);
+      return stripBlock(text, open, close);
+    }, text)
+    .trim();
+}
+
 /** `MessageContent::user_request_text`. */
 export function userRequestText(content) {
-  return injectedBlocks()
-    .reduce((text, tag) => stripBlock(text, `<${tag}>`, `</${tag}>`), plainText(content))
-    .trim();
+  return stripCallerContextBlocks(plainText(content), callerContextVocabulary().injected_blocks);
 }
 
 const utf8Length = (text) => new TextEncoder().encode(text).length;
@@ -98,11 +109,17 @@ export function systemPromptText(messages) {
 
 /** `latest_user_request`: the latest user turn, decorations stripped, or null. */
 export function latestUserRequest(messages) {
+  return latestUserTurn(messages)?.prompt ?? null;
+}
+
+/** `latest_user_turn`: include the index for callers that need earlier history. */
+export function latestUserTurn(messages, requestText = userRequestText) {
   const system = systemPromptText(messages);
   for (let index = messages.length - 1; index >= 0; index -= 1) {
     const message = messages[index];
     if (message.role.toLowerCase() === 'user') {
-      return stripSystemEcho(userRequestText(message.content), system);
+      const prompt = stripSystemEcho(requestText(message.content), system);
+      if (prompt) return { index, prompt };
     }
   }
   return null;

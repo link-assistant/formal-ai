@@ -7,7 +7,7 @@ name: Native type and lint check
 # called from release.yml on every PR, compiling when a Rust input changed
 # or the classification is unknown. Same-run contract executables and deterministic fixtures are retained;
 # the focused lane publishes no products or semantic authorization.
-# The isolated regressions verify native calendar, currency, OpenAI, executor and localized procedure behavior.
+# The isolated regressions verify native calendar, currency, OpenAI, executor, localized procedures and wrapped-client reports.
 # Main still runs full lint, tests and every build.
 on:
   workflow_call:
@@ -193,6 +193,11 @@ jobs:
         run: |
           bun install --frozen-lockfile --ignore-scripts
           node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs
+      - name: Verify matched client transcripts and issue receipts against the native CLI
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' && steps.bun.outcome == 'success' }}
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs
       - name: Stage deterministic Google Trends fixtures from the native driver
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:

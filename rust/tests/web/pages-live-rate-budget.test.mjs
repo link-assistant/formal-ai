@@ -57,10 +57,14 @@ async function exercise(change = {}) {
   let body;
   const scenario = {
     status: 200, mounted: true, mode: 'wasm worker', override: null,
+    hello: 'Hi, how may I help you?', helloRussian: 'Здравствуйте! Чем могу помочь?',
+    report: 'Hello\nПривет',
     answer: '2 + 2 = 4', docs: true, readyAfterMs: 7000, ...change,
   };
   const navigations = [];
-  let count = 0;
+  const prompts = ['Hello', 'Привет', 'Can you calculate 2 + 2?'];
+  const replies = [scenario.hello, scenario.helloRussian, scenario.answer];
+  let turns = 0;
   const page = Object.assign(new EventEmitter(), {
     addInitScript: async () => {},
     goto: async target => {
@@ -70,16 +74,22 @@ async function exercise(change = {}) {
     evaluate: async () => scenario.override,
     locator: selector => ({
       selector,
-      count: async () => count,
+      count: async () => turns * 2,
       last: () => ({ selector: 'answer' }),
-      fill: async value => assert.equal(value, 'Can you calculate 2 + 2?'),
-      click: async () => { count += 2; },
+      fill: async value => assert.equal(value, prompts[turns]),
+      click: async () => { turns += 1; },
+      getAttribute: async name => {
+        assert.equal(name, 'href');
+        const issue = new URL('https://github.com/link-assistant/formal-ai/issues/new');
+        issue.searchParams.set('body', scenario.report);
+        return issue.href;
+      },
     }),
   });
   function expected(actual, inverse = false) {
     const check = condition => assert.equal(Boolean(condition), !inverse);
     const text = () => actual.selector === '.status' ? scenario.mode
-      : actual.selector === 'answer' ? scenario.answer
+      : actual.selector === 'answer' ? replies[turns - 1]
       : actual.selector === '.hero h1' ? 'Documentation' : 'Manual mode';
     return {
       get not() { return expected(actual, !inverse); },
@@ -88,12 +98,14 @@ async function exercise(change = {}) {
         : actual.selector.includes('docs-app-summary') ? scenario.docs : true),
       toHaveText: value => check(text() === value),
       toBeEnabled: options => check(options.timeout >= scenario.readyAfterMs),
+      toContain: value => check(actual.includes(value)),
       toContainText: value => check(text().includes(value)),
-      toHaveCount: value => check(count === value),
+      toHaveCount: value => check(turns * 2 === value),
       toHaveClass: value => check(value.test('message assistant')),
     };
   }
   vm.runInNewContext(smoke, {
+    URL,
     require: name => {
       if (name === '@playwright/test') return { test: (_name, callback) => { assert.equal(body, undefined); body = callback; }, expect: expected };
       if (name === './support/worker-ready') return readinessBudget;
@@ -114,6 +126,9 @@ for (const [name, failure] of [
   ['unavailable engine', { mode: 'engine unavailable' }],
   ['JavaScript engine fallback', { mode: 'js fallback (diagnostic override)' }],
   ['enabled diagnostic override', { override: '1' }],
+  ['incorrect greeting', { hello: 'Cannot satisfy output constraint' }],
+  ['incorrect localized greeting', { helloRussian: 'Hello' }],
+  ['incomplete report', { report: 'Hello' }],
   ['incorrect real answer', { answer: '2 + 2 = 5' }],
   ['missing documentation', { docs: false }],
 ]) {

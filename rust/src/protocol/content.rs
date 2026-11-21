@@ -10,15 +10,21 @@ use super::{ChatMessage, MessageContent};
 /// and missed in another.
 #[must_use]
 pub fn latest_user_request(messages: &[ChatMessage]) -> Option<String> {
+    latest_user_turn(messages).map(|(_, request)| request)
+}
+
+pub(super) fn latest_user_turn(messages: &[ChatMessage]) -> Option<(usize, String)> {
     let system = system_prompt_text(messages);
     messages
         .iter()
+        .enumerate()
         .rev()
-        .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| {
-            message
+        .filter(|(_, message)| message.role.eq_ignore_ascii_case("user"))
+        .find_map(|(index, message)| {
+            let request = message
                 .content
-                .user_request_text_without_system_echo(&system)
+                .user_request_text_without_system_echo(&system);
+            (!request.is_empty()).then_some((index, request))
         })
 }
 
@@ -251,14 +257,41 @@ fn strip_system_echo(request: &str, system: &str) -> String {
 /// the user. An unterminated block swallows the rest of the turn, because a
 /// client that opened a context block and never closed it is still talking.
 fn strip_caller_context_blocks(text: &str) -> String {
-    crate::seed::caller_context_vocabulary()
+    let vocabulary = crate::seed::caller_context_vocabulary();
+    unwrap_caller_request(text, &vocabulary).unwrap_or_else(|| {
+        vocabulary
+            .injected_blocks
+            .iter()
+            .filter(|block| !block.unwrap)
+            .fold(text.to_owned(), |text, block| {
+                let open = block.open();
+                let close = block.close();
+                let text = if let Some(prefix) = &block.prefix {
+                    strip_block(&text, &format!("{prefix}\n{open}"), &close)
+                } else {
+                    text
+                };
+                strip_block(&text, &open, &close)
+            })
+            .trim()
+            .to_owned()
+    })
+}
+
+fn unwrap_caller_request(
+    text: &str,
+    vocabulary: &crate::seed::CallerContextVocabulary,
+) -> Option<String> {
+    vocabulary
         .injected_blocks
         .iter()
-        .fold(text.to_owned(), |text, block| {
-            strip_block(&text, &block.open(), &block.close())
+        .filter(|block| block.unwrap)
+        .find_map(|block| {
+            text.trim()
+                .strip_prefix(&format!("{}\n", block.open()))?
+                .strip_suffix(&format!("\n{}", block.close()))
+                .map(|request| request.trim().to_owned())
         })
-        .trim()
-        .to_owned()
 }
 
 fn unquoted_marker_offsets(text: &str, marker: &str) -> Vec<usize> {

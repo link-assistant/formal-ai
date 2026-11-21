@@ -180,15 +180,18 @@ pub fn handle_api_request_with_auth(
     if let Some(response) = dynamic_meta::route(method, normalized_path, headers, body, auth) {
         return response;
     }
-    let authorized = !requires_bearer_auth(method, normalized_path) || auth.allows(headers);
+    let route_path = crate::dialog_log::scoped_openai_path(normalized_path)
+        .map_or(path, |(_, endpoint)| endpoint);
+    let authorization_path = route_path.split('?').next().unwrap_or(route_path);
+    let authorized = !requires_bearer_auth(method, authorization_path) || auth.allows(headers);
     // The planner reads this back when it writes a report command, so the
     // exported session is the caller's own session and not a guess (#839).
-    let _dialog = crate::dialog_log::DialogScope::begin(headers);
+    let _dialog = crate::dialog_log::DialogScope::for_request(headers, normalized_path, body);
     let phase = crate::dialog_log::structured_log::request_phases(
         crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS"),
     );
     let started = retention::request_start();
-    let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
+    let response = dispatch_api_request_with_auth(method, route_path, headers, body, auth);
     phase("api_dispatch_finished");
     crate::dialog_log::record_api_exchange_if_enabled(
         method, path, headers, body, &response, authorized,

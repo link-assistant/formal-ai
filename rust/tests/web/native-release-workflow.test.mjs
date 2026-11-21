@@ -93,7 +93,8 @@ test('protocol capture is isolated from full source and survives unavailable pro
   const protocol=steps[index],source=steps.slice(index+1).find(step=>step.uses?.startsWith('actions/checkout@'));
   assert.equal(protocol.with.filter,'blob:none',name);
   assert.equal(protocol.with.path,'.formal-ai-protocol-source',name);
-  assert.deepEqual(protocol.with['sparse-checkout'].split('\n'),folders,name);
+  const captureFolders = name === 'vscode' ? [...folders, 'rust/tests/e2e', 'packages/minimatch-compat'] : folders;
+  assert.deepEqual(protocol.with['sparse-checkout'].split('\n'),captureFolders,name);
   assert.notEqual(protocol.with['sparse-checkout-cone-mode'],false,name);
   assert.equal(source,undefined,name+' source restoration uses the complete same-run bundle');
   const restored=steps.find(step=>step.run?.includes('native-release-source.mjs" import-offline'));

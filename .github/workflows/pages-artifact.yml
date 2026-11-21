@@ -119,6 +119,9 @@ jobs:
         env:
           WASM_RECEIPT_SHA256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
         run: node scripts/build-selected-wasm.mjs verify "$GITHUB_WORKSPACE" js "$WASM_RECEIPT_SHA256"
+      - name: Verify browser greetings and issue reporting on the Pages artifact
+        timeout-minutes: 5
+        run: bash scripts/verify-browser-artifact.sh js
       - name: Upload GitHub Pages artifact
         id: pages_artifact
         uses: actions/upload-pages-artifact@v5

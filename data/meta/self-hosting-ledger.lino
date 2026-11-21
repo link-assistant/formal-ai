@@ -216,3 +216,9 @@ self_hosting_ledger
     until "665795fec29076837d1459410dda11fe3297417b"
     changed_lines "131429"
     commits "454"
+  release
+    tag "v0.356.1"
+    since "v0.356.0"
+    until "f91432cce3e0227dda292786a0f521d0acd02893"
+    changed_lines "4471"
+    commits "33"

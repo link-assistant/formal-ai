@@ -984,3 +984,14 @@ Pull request: https://github.com/link-assistant/formal-ai/pull/1581.
 
 Current evidence: [terminal warning repairs](../../docs/case-studies/issue-1580/terminal-warning-repairs.md).
 Earlier checkpoints retain their original pins and outcomes.
+
+### Main 97fe40bc integration, 2026-11-21
+
+- [x] Resolve every merge conflict and preserve main's client, report, release-smoke and diagnostic features.
+- [x] Reproduce and repair the concise-report/language interactions; retain 13 passing JavaScript replay checks and explicit native hosted coverage.
+- [x] Reproduce the actual VSIX sparse capture failure, restore both smoke directories, and pass all five artifact layout checks with omission controls.
+- [x] Reconcile official generated ledgers/status and compare the regenerated governed baseline with zero structural changes; retain the bounded translator OOM honestly.
+- [x] Complete every local gate entry and Rust formatting check. The worker currency failure remains unfinished pending actual hosted compilation.
+- [ ] Qualify the exact next pushed source and compiled-worker receipt; finish all applicable template practice acceptance, aggregate review and genuine authorship requirements.
+
+Details and exact captured results: `docs/case-studies/issue-1580/main-warning-merge.md`.

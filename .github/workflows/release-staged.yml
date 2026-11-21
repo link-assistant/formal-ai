@@ -262,6 +262,12 @@ jobs:
           EXPECT_DESCRIPTOR: ${{ needs.auto_compile-release.outputs.descriptor_sha }}
           EXPECT_PRODUCER: auto_compile-release
         run: node _protocol/scripts/release-stage-transfer.mjs import binary
+      - name: Verify greetings and issue reporting on the selected binary
+        timeout-minutes: 12
+        uses: ./_protocol/.github/actions/verify-released-clients
+        with:
+          binary: prepared-release/binary/formal-ai
+          artifact: release-client-reports-auto-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Verify packaged crate archive
         if: needs.auto_prepare-source.outputs.check__should_release == 'true'
         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify
@@ -931,6 +937,12 @@ jobs:
           EXPECT_DESCRIPTOR: ${{ needs.manual_compile-release.outputs.descriptor_sha }}
           EXPECT_PRODUCER: manual_compile-release
         run: node _protocol/scripts/release-stage-transfer.mjs import binary
+      - name: Verify greetings and issue reporting on the selected binary
+        timeout-minutes: 12
+        uses: ./_protocol/.github/actions/verify-released-clients
+        with:
+          binary: prepared-release/binary/formal-ai
+          artifact: release-client-reports-manual-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Verify packaged crate archive
         if: needs.manual_prepare-source.outputs.version__version_committed == 'true' || needs.manual_prepare-source.outputs.version__already_released == 'true'
         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify

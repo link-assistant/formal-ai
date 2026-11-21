@@ -98,7 +98,7 @@ jobs:
     needs: [resolve, base]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     outputs:
       commit: ${{ steps.seal.outputs.commit }}
       tree: ${{ steps.seal.outputs.tree }}
@@ -128,6 +128,7 @@ jobs:
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
+          bash scripts/verify-browser-artifact.sh --capture "$protocol_dir/browser-verification"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -234,6 +235,7 @@ jobs:
         timeout-minutes: 5
       - uses: ./.github/actions/release-web
         with: {mode: build}
+      - {name: Verify greetings and issue reporting before desktop packaging, timeout-minutes: 5, run: 'bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/browser-verification/scripts/verify-browser-artifact.sh" js'}
       - uses: actions/upload-artifact@v7
         with:
           name: native-release-wasm
@@ -1059,7 +1061,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts\n.github/actions/download-artifact"}
+        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts\nrust/tests/e2e\npackages/minimatch-compat\n.github/actions/download-artifact"}
       - name: Capture release protocol before selecting binary source
         working-directory: .formal-ai-protocol-source
         env:
@@ -1071,6 +1073,7 @@ jobs:
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
+          bash scripts/verify-browser-artifact.sh --capture "$protocol_dir/browser-verification"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -1130,11 +1133,7 @@ jobs:
         working-directory: vscode
         run: |
           set -euo pipefail
-          # `vscode:prepublish` (prepare-resources.mjs) syncs the extension
-          # version from Cargo.toml and copies js + data/seed + desktop/lib
-          # into the package, so the .vsix is fully self-contained and its
-          # filename (formal-ai-vscode-<version>.vsix) matches the release
-          # version the /download and /vscode pages resolve.
+          # Prepublish bundles the resources and names the VSIX with the Cargo version.
           npm run package
           # A glob, not `ls | head`: `ls` output is not safe to parse and its
           # exit status is swallowed here (shellcheck SC2012).
@@ -1146,8 +1145,9 @@ jobs:
           echo "Packaged: $vsix"
       - name: Verify worker resources before extension attestation
         env:
+          VSIX: ${{ steps.package.outputs.vsix }}
           WASM_RECEIPT_SHA256: ${{ needs.native-source.outputs.wasm-receipt-sha256 }}
-        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" vscode/dist-web "$WASM_RECEIPT_SHA256"
+        run: bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/browser-verification/scripts/verify-browser-artifact.sh" --vsix "vscode/$VSIX" "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" "$WASM_RECEIPT_SHA256"
       - name: Collect .vsix checksum fragment
         working-directory: vscode
         run: |

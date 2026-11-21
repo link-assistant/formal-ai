@@ -118,3 +118,38 @@ test('default hidden exclusion reproduces lost advertisement; configured upload 
   fs.appendFileSync(path.join(configured, definition), ' ');
   assert.throws(() => verifyReleaseProtocol(repository, configured, revision, snapshot.sha256), /differs from workflow source/u);
 });
+
+test('the workflow-owned VSIX smoke closure survives its actual sparse checkout', { timeout: 20_000 }, t => {
+  const directory = scratch(t), repository = path.join(directory, 'repository');
+  fs.mkdirSync(repository);
+  const capture = 'scripts/verify-browser-artifact.sh';
+  const resources = [
+    '.npmrc', 'package.json', 'package-lock.json', 'playwright.pages.config.js',
+    'playwright.pages.smoke.config.js', 'tests/pages-live-smoke.spec.js',
+    ...['ready', 'readiness-budget', 'diagnostics'].map(name => `tests/support/worker-${name}.js`),
+  ].map(file => 'rust/tests/e2e/' + file);
+  resources.push(...['package.json', 'index.cjs', 'index.mjs'].map(file => 'packages/minimatch-compat/' + file));
+  for (const file of [capture, ...resources]) write(path.join(repository, file), fs.readFileSync(path.join(root, file)));
+  const git = (...args) => execFileSync('git', args, { cwd: repository, encoding: 'utf8', stdio: 'pipe', timeout: 5_000,
+    env: { ...process.env, GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null' } });
+  git('init', '--initial-branch=main');git('config', 'user.name', 'Fixture');git('config', 'user.email', 'fixture@example.invalid');
+  git('add', '.');git('commit', '-qm', 'Browser verification closure');
+  const checkout = workflow.jobs.vscode.steps.find(step => step.with?.path === '.formal-ai-protocol-source');
+  assert.ok(checkout);
+  const sparse = checkout.with['sparse-checkout'].split('\n');
+  function exercise(patterns, name) {
+    git('sparse-checkout', 'set', ...patterns);
+    const target = path.join(directory, name);
+    return { target, result: spawnSync('bash', [path.join(repository, capture), '--capture', target], {
+      cwd: repository, encoding: 'utf8', timeout: 5_000,
+    }) };
+  }
+  const actual = exercise(sparse, 'actual');
+  assert.equal(actual.result.status, 0, actual.result.stderr);
+  for (const file of [capture, ...resources]) assert.deepEqual(fs.readFileSync(path.join(actual.target, file)), fs.readFileSync(path.join(root, file)), file);
+  for (const omitted of ['rust/tests/e2e', 'packages/minimatch-compat']) {
+    const negative = exercise(sparse.filter(value => value !== omitted), omitted.replaceAll('/', '-'));
+    assert.notEqual(negative.result.status, 0, omitted + ' must fail the real capture');
+    assert.match(negative.result.stderr, /cannot stat/u);
+  }
+});

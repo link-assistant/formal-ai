@@ -645,8 +645,8 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::dialog_conversation::CONVERSATION_LOG_SUFFIX","canonicalPath":
 "formal_ai::dialog_conversation::CONVERSATION_LOG_SUFFIX","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":".conversation.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
-"start":1079,"end":1142},"sourceWitnesses":[{"path":"rust/src/dialog_conversation.rs","sha256":
-"30b09a12cb21b8da4f9b4c70e9c7e2181f1c26281388416ce62db856b6f23aee"},{"path":"rust/src/lib.rs","sha256":
+"start":1058,"end":1121},"sourceWitnesses":[{"path":"rust/src/dialog_conversation.rs","sha256":
+"9f79db1066832481dad224b5b7c0434a5ec372c19138d1c94d3bf9a9626ae7e9"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant CONVERSATION-LOG-SUFFIX (exported) (type string) (value (string .conversation.lino)))","maintainedJavaScript"
 :"export const CONVERSATION_LOG_SUFFIX = '.conversation.lino';","maintainedTranslationSha256":
@@ -679,24 +679,24 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "maintainedTranslationSha256":"ae279e637c82f5402fe4e320fbe139657fb00cd4a92bf537583688bfda01121e"},{"path":
 "formal_ai::engine::DEFAULT_MODEL","canonicalPath":"formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant",
 "nativeType":"&str","returnType":"string","value":"formal-ai","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1910,"end":1954},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"0fab82cbcb88f7d4d08029f110d28bf9b209e3ac6ebef68510741dc6b111417d"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1833,"end":1877},"sourceWitnesses":[{"path":
+"rust/src/engine.rs","sha256":"aba1e930ecbb6208cc74480508cddabd502f7668d06ebcb8a9c5fc4815b86bae"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
 "ae51fd1ade1b46003293eb348681e0a20e349a9afc0507e08151337e73e0a818"},{"path":"formal_ai::DEFAULT_MODEL","canonicalPath":
 "formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"formal-ai"
-,"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1910,"end":1954},
+,"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1833,"end":1877},
 "sourceWitnesses":[{"path":"rust/src/engine.rs","sha256":
-"0fab82cbcb88f7d4d08029f110d28bf9b209e3ac6ebef68510741dc6b111417d"},{"path":"rust/src/lib.rs","sha256":
+"aba1e930ecbb6208cc74480508cddabd502f7668d06ebcb8a9c5fc4815b86bae"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
 "ae51fd1ade1b46003293eb348681e0a20e349a9afc0507e08151337e73e0a818"},{"path":
 "formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","canonicalPath":"formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"0.2.0","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4085,"end":4136},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"0fab82cbcb88f7d4d08029f110d28bf9b209e3ac6ebef68510741dc6b111417d"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4008,"end":4059},"sourceWitnesses":[{"path":
+"rust/src/engine.rs","sha256":"aba1e930ecbb6208cc74480508cddabd502f7668d06ebcb8a9c5fc4815b86bae"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant KNOWLEDGE-SCHEMA-VERSION (exported) (type string) (value (string 0.2.0)))","maintainedJavaScript":
 "export const KNOWLEDGE_SCHEMA_VERSION = '0.2.0';","maintainedTranslationSha256":

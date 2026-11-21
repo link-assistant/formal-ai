@@ -8,7 +8,7 @@ use super::planner::{AgenticPlan, Capability, Progress, plan_one, tool_for};
 use super::report_script::{ReportScript, shell_quote};
 use crate::engine::normalize_prompt;
 use crate::issue_report::{ReportTurn, TitleSettings, issue_title};
-use crate::protocol::ChatMessage;
+use crate::protocol::{ChatMessage, MessageContent, system_prompt_text};
 use crate::{language, seed};
 
 const REPORT_SUBMIT_COMMAND: &str = "formal-ai report create-issue";
@@ -49,6 +49,42 @@ enum ReportContents {
     Server,
 }
 
+/// Continue the report flow for clients that send no callable tools.
+pub(crate) fn plan_text_report_flow(messages: &[ChatMessage]) -> Option<AgenticPlan> {
+    let system = system_prompt_text(messages);
+    let marker = config("aider-whole-file-format");
+    if marker.is_empty() || !system.contains(&marker) {
+        return plan_report_flow(messages, &[]);
+    }
+    let notices = config("aider-report-injected-file-notices");
+    let acknowledgment = config("aider-injected-acknowledgment");
+    let mut conversation = Vec::with_capacity(messages.len());
+    let mut messages = messages.iter().peekable();
+    while let Some(message) = messages.next() {
+        if !message.role.eq_ignore_ascii_case("user") {
+            conversation.push(message.clone());
+            continue;
+        }
+        let text = message
+            .content
+            .user_request_text_without_system_echo(&system);
+        if notices.lines().any(|prefix| text.starts_with(prefix))
+            && !acknowledgment.is_empty()
+            && messages.peek().is_some_and(|next| {
+                next.role.eq_ignore_ascii_case("assistant")
+                    && next.content.plain_text().starts_with(&acknowledgment)
+            })
+        {
+            messages.next();
+        } else {
+            let mut message = message.clone();
+            message.content = MessageContent::Text(text);
+            conversation.push(message);
+        }
+    }
+    plan_report_flow(&conversation, &[])
+}
+
 /// Continue a report confirmation/execution flow, or return `None` when the
 /// conversation has no active report request.
 pub(super) fn plan_report_flow(
@@ -61,12 +97,21 @@ pub(super) fn plan_report_flow(
     })?;
     // A completed report remains in long-running agentic histories. Do not let
     // it hijack later unrelated requests after the assistant acknowledged it.
-    if messages[report_index + 1..].iter().any(|message| {
-        message.role.eq_ignore_ascii_case("assistant")
-            && message.tool_calls.is_empty()
-            && !message.content.plain_text().trim().is_empty()
-            && !is_report_question(&message.content.plain_text())
-    }) {
+    // Responses and Gemini can put narration and its call in separate messages.
+    if messages
+        .iter()
+        .enumerate()
+        .skip(report_index + 1)
+        .any(|(index, message)| {
+            message.role.eq_ignore_ascii_case("assistant")
+                && message.tool_calls.is_empty()
+                && messages
+                    .get(index + 1)
+                    .is_none_or(|next| next.tool_calls.is_empty())
+                && !message.content.plain_text().trim().is_empty()
+                && !is_report_question(&message.content.plain_text())
+        })
+    {
         return None;
     }
     let report_prompt = messages[report_index].content.user_request_text();
@@ -118,8 +163,17 @@ pub(super) fn plan_report_flow(
     }
 
     // Earlier harness commands are part of the context being reported, not the
-    // execution of this confirmation flow. Only inspect turns after "Report".
-    let progress = Progress::scan(&messages[report_index + 1..]);
+    // execution of this confirmation flow. Injected reminders after the
+    // receipt also do not start a new turn.
+    let report_turns: Vec<_> = messages[report_index + 1..]
+        .iter()
+        .filter(|message| {
+            !message.role.eq_ignore_ascii_case("user")
+                || !message.content.user_request_text().is_empty()
+        })
+        .cloned()
+        .collect();
+    let progress = Progress::scan(&report_turns);
     let dialog_id = dialog_id();
     let commands = commands_for_targets(
         &targets,
@@ -140,9 +194,20 @@ pub(super) fn plan_report_flow(
     if let Some(tool) = tool_for(tool_names, Capability::Run) {
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     }
+    if dialog_id == LATEST_SESSION {
+        return Some(AgenticPlan::Final(render(
+            "issue-report-session-missing",
+            &[],
+        )));
+    }
+    let actions = commands[progress.run_outputs.len()..]
+        .iter()
+        .map(|command| command.replace('\n', "; "))
+        .collect::<Vec<_>>()
+        .join("\n\n");
     Some(AgenticPlan::Final(render(
-        "issue_report_tool_missing",
-        &[("repository", &formal_ai_repo())],
+        "issue-report-manual",
+        &[("commands", &actions)],
     )))
 }
 
@@ -182,8 +247,13 @@ fn ask_or_render(
     }
 
     let mut text = question;
+    // Preserve every choice and description within clients' concise output limits.
+    text.push('\n');
     for (index, (label, description)) in options.iter().enumerate() {
-        let _ = write!(text, "\n{}. {label} — {description}", index + 1);
+        if index > 0 {
+            text.push_str("  ");
+        }
+        let _ = write!(text, "{}. {label} — {description}", index + 1);
     }
     AgenticPlan::Final(text)
 }
@@ -264,8 +334,12 @@ fn option_matcher(
     intent: &'static str,
     multiple: bool,
 ) -> impl Fn(usize, &str) -> bool + use<> {
-    let text = message.content.plain_text();
     let user = message.role.eq_ignore_ascii_case("user");
+    let text = if user {
+        message.content.user_request_text()
+    } else {
+        message.content.plain_text()
+    };
     let answers = if user && multiple {
         text.split(',').map(normalize_prompt).collect::<Vec<_>>()
     } else {
@@ -276,6 +350,7 @@ fn option_matcher(
         && previous
             .content
             .plain_text()
+            .trim_start()
             .starts_with(&format!("{question}\n1. "));
     move |index, value| {
         let matches = |option: &str| {
@@ -311,6 +386,18 @@ pub(super) fn is_report_intent(task: &str) -> bool {
         || (action
             && lexicon.mentions_role(seed::ROLE_AGENT_ACTION_REPORT_SUBJECT, &normalized)
             && report_action_governs_subject(lexicon, &normalized))
+}
+
+/// Give chat surfaces without exportable sessions the Formal AI issue form.
+pub(crate) fn issue_form_for_prompt(prompt: &str) -> Option<String> {
+    is_report_intent(prompt).then(|| {
+        let instruction = localized(
+            "agentic-report-open-issue-form",
+            language::detect(prompt).slug(),
+        );
+        let url = format!("https://github.com/{}/issues/new", formal_ai_repo());
+        format!("{instruction}\n{url}")
+    })
 }
 
 fn report_action_governs_subject(lexicon: &seed::Lexicon, normalized: &str) -> bool {
@@ -446,6 +533,36 @@ fn learning_command(dialog_id: &str) -> String {
     script.render()
 }
 
+pub(super) fn report_command_intent(command: &str) -> Option<&'static str> {
+    for line in command.lines() {
+        if line
+            .strip_prefix(REPORT_SUBMIT_COMMAND)
+            .is_some_and(|arguments| arguments.starts_with(CONTEXT_SESSION_FLAG))
+        {
+            return Some("agentic-action-report-github");
+        }
+        if line
+            .strip_prefix(CONTEXT_LEARN_COMMAND)
+            .is_some_and(|arguments| arguments.starts_with(CONTEXT_SESSION_FLAG))
+        {
+            return Some("agentic-action-report-learn");
+        }
+        if let Some((source, _)) = line
+            .strip_prefix(CONTEXT_EXPORT_COMMAND)
+            .and_then(|arguments| arguments.strip_prefix(CONTEXT_SESSION_FLAG))
+            .and_then(|arguments| arguments.split_once(SOURCE_FLAG))
+            .and_then(|(_, source)| source.split_once(OUTPUT_FLAG))
+        {
+            match source {
+                "harness" => return Some("agentic-action-report-harness"),
+                "server" => return Some("agentic-action-report-server"),
+                _ => {}
+            }
+        }
+    }
+    None
+}
+
 /// A named local CLI action owns preparation and one bounded GitHub mutation.
 /// Its explicit create-issue name remains visible to the host approval layer.
 fn github_command(
@@ -530,33 +647,56 @@ fn title_turns(messages: &[ChatMessage], report_index: usize) -> Vec<ReportTurn>
 
 /// Narrate what the destinations reported, over every command that ran.
 fn report_finished(targets: &[ReportTarget], run_outputs: &[String], language: &str) -> String {
-    // Issue #1105 (RC7): the reported session answered "Reported to GitHub" with
-    // the server export having failed, because the only evidence this function
-    // read was the issue URL. Every target ran its own command and every one of
-    // those outputs is here, so a failure in any of them is checkable -- and a
-    // report that names one destination while another silently failed is the
-    // false success the issue was filed for.
-    //
-    // `step_outcome` is the same classifier the verification path already uses,
-    // so "failed" means here what it means everywhere else: a non-zero status,
-    // an explicit error field, or output that reads as one.
-    let ordered = execution_order(targets);
-    let failures = ordered
-        .iter()
-        .zip(run_outputs)
-        .filter(|(_, output)| {
-            super::tool_result::step_outcome(output) == super::tool_result::StepOutcome::Failed
-        })
-        .map(|(target, output)| (*target, output.trim()))
-        .collect::<Vec<_>>();
+    let mut failures = Vec::new();
+    let mut created = None;
+    let mut github_failed = false;
+    let prefix = format!("https://github.com/{}/issues/", formal_ai_repo());
+    for (target, raw) in execution_order(targets).into_iter().zip(run_outputs) {
+        let payload = super::tool_result::observed_payload(raw).unwrap_or_default();
+        let failed = payload.trim().is_empty()
+            || super::tool_result::step_outcome(raw) == super::tool_result::StepOutcome::Failed
+            || super::tool_result::step_outcome(&payload)
+                == super::tool_result::StepOutcome::Failed;
+        if target == ReportTarget::GithubIssue {
+            let issue_link = (!failed)
+                .then(|| {
+                    payload.split_whitespace().find(|token| {
+                        token.strip_prefix(&prefix).is_some_and(|number| {
+                            !number.is_empty()
+                                && !number.starts_with('0')
+                                && number.bytes().all(|byte| byte.is_ascii_digit())
+                        })
+                    })
+                })
+                .flatten();
+            created =
+                issue_link.map(|url| render("issue_report_created_with_url", &[("url", url)]));
+            github_failed = created.is_none();
+        }
+        if failed || (target == ReportTarget::GithubIssue && github_failed) {
+            let detail = if raw.trim().is_empty() {
+                config("issue-report-no-receipt")
+            } else {
+                raw.trim().to_owned()
+            };
+            failures.push(format!("{}: {detail}", target_label(target)));
+        }
+    }
     if !failures.is_empty() {
-        let detail = failures
-            .iter()
-            .map(|(target, output)| format!("{}: {output}", target_label(*target)))
-            .collect::<Vec<_>>()
-            .join("\n");
-        let failed = config("issue_report_failed");
-        return format!("{failed}\n\n```text\n{detail}\n```");
+        let heading = config(if github_failed {
+            "issue_report_failed"
+        } else {
+            "issue-report-destinations-failed"
+        });
+        let detail = failures.join("\n");
+        let failure = format!("{heading}\n\n```text\n{detail}\n```");
+        return created.map_or_else(
+            || failure.clone(),
+            |created| format!("{created}\n\n{failure}"),
+        );
+    }
+    if let Some(created) = created {
+        return created;
     }
     let trimmed = run_outputs
         .iter()
@@ -564,32 +704,6 @@ fn report_finished(targets: &[ReportTarget], run_outputs: &[String], language: &
         .filter(|output| !output.is_empty())
         .collect::<Vec<_>>()
         .join("\n");
-    if targets.contains(&ReportTarget::GithubIssue) {
-        // Honesty rule (#839, §5): the URL GitHub printed is the only evidence
-        // that an issue exists. Without it the report failed, whatever else the
-        // exports may have printed.
-        let submission = ordered
-            .iter()
-            .position(|target| *target == ReportTarget::GithubIssue)
-            .and_then(|index| run_outputs.get(index))
-            .map_or("", String::as_str);
-        let prefix = format!("https://github.com/{}/issues/", formal_ai_repo());
-        if let Some(url) = submission.split_whitespace().find(|token| {
-            token.strip_prefix(&prefix).is_some_and(|number| {
-                !number.is_empty()
-                    && !number.starts_with('0')
-                    && number.bytes().all(|byte| byte.is_ascii_digit())
-            })
-        }) {
-            return render("issue_report_created_with_url", &[("url", url)]);
-        }
-        let failed = config("issue_report_failed");
-        return if trimmed.is_empty() {
-            failed
-        } else {
-            format!("{failed}\n\n```text\n{trimmed}\n```")
-        };
-    }
     let exported = localized("agentic_report_exported", language);
     if trimmed.is_empty() {
         exported

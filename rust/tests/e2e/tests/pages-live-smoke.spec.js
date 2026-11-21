@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 const { PUBLIC_WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 const { withWorkerDiagnostics } = require('./support/worker-diagnostics');
 
-test('live Pages serves landing, native-engine chat, and documentation', async ({ page }, testInfo) => withWorkerDiagnostics(page, testInfo, async () => {
+test('Pages serves native-engine greetings and a report for the conversation', async ({ page }, testInfo) => withWorkerDiagnostics(page, testInfo, async () => {
   await page.addInitScript(() => {
     window.localStorage.setItem(
       'formal-ai.preferences.v1',
@@ -28,6 +28,19 @@ test('live Pages serves landing, native-engine chat, and documentation', async (
   console.log('LivePagesWorkerReady ' + JSON.stringify({ startupElapsedMs: Date.now() - startupStarted }));
 
   const messages = page.locator('[data-testid="chat-message"]');
+  for (const [greeting, reply] of [['Hello', 'Hi, how may I help you?'], ['Привет', 'Здравствуйте! Чем могу помочь?']]) {
+    const previous = await messages.count();
+    await input.fill(greeting);
+    await page.locator('[data-testid="chat-composer-submit"]').click();
+    await expect(messages).toHaveCount(previous + 2, { timeout: 20_000 });
+    await expect(messages.last()).toContainText(reply);
+  }
+  const report = await page.locator('[data-testid="report-issue"]').getAttribute('href');
+  const issue = new URL(report || '');
+  expect(issue.origin + issue.pathname).toBe('https://github.com/link-assistant/formal-ai/issues/new');
+  expect(issue.searchParams.get('body')).toContain('Hello');
+  expect(issue.searchParams.get('body')).toContain('Привет');
+
   const before = await messages.count();
   await input.fill('Can you calculate 2 + 2?');
   await page.locator('[data-testid="chat-composer-submit"]').click();

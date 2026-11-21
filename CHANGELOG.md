@@ -20,6 +20,14 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.1] - 2026-11-21
+
+### Fixed
+
+- Restore greetings, conversation titles, and GitHub report confirmations in external CLI clients.
+- Retain wrapper diagnostics in the background and associate report exports with the active client session.
+- Require greeting and report smoke tests against the selected binary before an automatic or manual release.
+
 ## [0.356.0] - 2026-11-21
 
 Record what blocks the vision (issue #1548): keep the issue verbatim as an architect note, correct the status sentences of README, ROADMAP, GOALS, VISION and the meta-algorithm page to what was measured, document the solver switches and the issue planning guideline, add the case study with both inventories of failed attempts on real issues, and add requirements R1548-1 to R1548-19 with the test that pins the published issue graph. No source file of Formal AI changes; the 12 capability rows stay Partial and are owned by the parent issue #1561.
