@@ -153,7 +153,7 @@ pub fn try_how_to_procedure_with_offline(
     )
     .with_online(!offline);
     let preferences = service_preferences_from_env(log);
-    let mut availability = ServiceAccessibilityCache::load(&cache_dir);
+    let mut availability = ServiceAccessibilityCache::load(&directory);
     try_how_to_procedure_with_clients(
         prompt,
         normalized,
