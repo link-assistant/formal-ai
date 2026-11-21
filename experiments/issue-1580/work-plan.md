@@ -766,3 +766,18 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [ ] Verify this atomic source change in hosted CI after the current run ends.
 - [ ] Complete all broader original issue criteria. No independent authorship
   credit is assigned to externally supplied scripts or reasoning.
+
+
+## JavaScript current-template delta at 8e72538d
+
+- [x] Read all 30 current changed files (pages 66–109, including the complete
+  artifact lock), both removed paths and all three comment types for five recent
+  merged PRs. The exact current tree has 566 blobs; older 561-file counts are not
+  the current inventory.
+- [x] Execute 107 focused assertions across ten files under Node, using verified
+  source, YAML 2.9.1, test-anywhere 0.8.48 and actual ESLint 10.13.0. Preserve
+  initial missing-fixture failures and corrected final logs.
+- [x] Adopt Secretlint 14 and reproduce the partial-output budget annotation bug.
+- [ ] Complete every unchanged/historical file and applicable practice comparison;
+  verify live Pages, actual hosted artifact transport and remaining registry/lint
+  policy acceptance. Mocked API and source checks do not satisfy these criteria.

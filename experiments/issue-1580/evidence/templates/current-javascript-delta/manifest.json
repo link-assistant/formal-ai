@@ -1,0 +1,427 @@
+{
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/.changeset/pages-artifact-retry.md",
+      "archiveMember": "sources/.changeset/pages-artifact-retry.md",
+      "bytes": 227,
+      "sha256": "55a9cd4dcbfc149be53590acfb10a9d1de48bb1e79a9277e74babb4c399d6170"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/.changeset/whole-file-ci-budgets.md",
+      "archiveMember": "sources/.changeset/whole-file-ci-budgets.md",
+      "bytes": 294,
+      "sha256": "c7e5707b62b035aad8599727b49f5e766a98ac1dcd08fcf23efe46e1f6616e13"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/.github/actions/artifact-transport/action.yml",
+      "archiveMember": "sources/.github/actions/artifact-transport/action.yml",
+      "bytes": 1822,
+      "sha256": "19662b690d8139f2a6e8332151b969d057320092c9ed79ae1a9ad2c03f6d3826"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/.github/actions/artifact-transport/package-lock.json",
+      "archiveMember": "sources/.github/actions/artifact-transport/package-lock.json",
+      "bytes": 111091,
+      "sha256": "ecb4210e3d21952861b2c86834abd3659082efbf955ca357629031c464650ce7"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/.github/workflows/example-app.yml",
+      "archiveMember": "sources/.github/workflows/example-app.yml",
+      "bytes": 20800,
+      "sha256": "7ea60704e49d30e3c8e06e49b3b732e5876b68fbf7d502c8385ead289a0b7317"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/.github/workflows/links.yml",
+      "archiveMember": "sources/.github/workflows/links.yml",
+      "bytes": 9649,
+      "sha256": "a42b51dad6a787a847812ffde70b7617a4a0e32fcca440bede93117cdd206a6d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/.github/workflows/release.yml",
+      "archiveMember": "sources/.github/workflows/release.yml",
+      "bytes": 43994,
+      "sha256": "c9a873b5616f68b73058af34d8b7b56bfa0e8a00eced01dafea322310cce6322"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/.github/workflows/security.yml",
+      "archiveMember": "sources/.github/workflows/security.yml",
+      "bytes": 7088,
+      "sha256": "03510e8ca9662bb03554775600564427dda7e279c94bc74736671115527b5612"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/.github/workflows/workflows.yml",
+      "archiveMember": "sources/.github/workflows/workflows.yml",
+      "bytes": 11373,
+      "sha256": "6945bbfa5a05c990ed14c796c49a053366b916f093587ab9d9e5f7fbdd16eb99"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/docs/CI-TIMEOUT-BUDGETS.md",
+      "archiveMember": "sources/docs/CI-TIMEOUT-BUDGETS.md",
+      "bytes": 7000,
+      "sha256": "00db769870fecdca50b23ffaa28d1dfa0653eade766a3025273f2c8f27da6d8b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/docs/CONTRIBUTING.md",
+      "archiveMember": "sources/docs/CONTRIBUTING.md",
+      "bytes": 14842,
+      "sha256": "4c303c0ca32b53f63f60f0c2b68904a7de82a0856c3e146dba2da5121a1a69e4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/docs/issue-308-analysis.md",
+      "archiveMember": "sources/docs/issue-308-analysis.md",
+      "bytes": 8289,
+      "sha256": "e35f6dc268390cbc02093f3fe42685bd83d323e3e115252b367ff774a638d291"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/experiments/issue-212-secretlint.mjs",
+      "archiveMember": "sources/experiments/issue-212-secretlint.mjs",
+      "bytes": 2009,
+      "sha256": "6602c1d0bee609530671dd18ac8c60242b63ba2829cebe7789d02ade84df81b8"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/scripts/check-deprecated-packages.mjs",
+      "archiveMember": "sources/scripts/check-deprecated-packages.mjs",
+      "bytes": 3758,
+      "sha256": "b8b24825bdd85401691c4fb7a9fe8b96e39146a89625a322fb7992f111752d69"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/scripts/check-secrets.mjs",
+      "archiveMember": "sources/scripts/check-secrets.mjs",
+      "bytes": 6883,
+      "sha256": "52c43958669a5e90347cb55d0f2621a856a3d84f0f5246bbda5ca489d6034f99"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/scripts/deploy-pages.mjs",
+      "archiveMember": "sources/scripts/deploy-pages.mjs",
+      "bytes": 9921,
+      "sha256": "0341c29bb6702e108f108a4d41df509008474b922d78e1fe122aea37d8bc80ed"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/scripts/lint-changed-files.mjs",
+      "archiveMember": "sources/scripts/lint-changed-files.mjs",
+      "bytes": 1154,
+      "sha256": "9adb55120eed1b63a8bb878d11b355a23c9a98f3fbd5e048b2008af97e411232"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/scripts/lint.mjs",
+      "archiveMember": "sources/scripts/lint.mjs",
+      "bytes": 3327,
+      "sha256": "274a1b10fd618515d7d44511889b7bb34406b9bdbfe808260348945adcb2e6a5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/scripts/run-with-budget-warning.sh",
+      "archiveMember": "sources/scripts/run-with-budget-warning.sh",
+      "bytes": 10409,
+      "sha256": "ae1f124f7d71f1fb6122ffcff7488ad33a35bc8005e97d4150e95730b903d6d5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/ci-issue-299.test.js",
+      "archiveMember": "sources/tests/ci-issue-299.test.js",
+      "bytes": 5892,
+      "sha256": "751cf88d56ba7ad31268f979bbf1a1eac4db05ad8d003817ed5853b31c947eaf"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/ci-timeouts.test.js",
+      "archiveMember": "sources/tests/ci-timeouts.test.js",
+      "bytes": 14832,
+      "sha256": "228868d33965fdbf579c02330729e875c21bdbf34253a50d60e64647db2943dc"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/deploy-pages.test.js",
+      "archiveMember": "sources/tests/deploy-pages.test.js",
+      "bytes": 12664,
+      "sha256": "c2bba0a6d339a7b56e755b002a717dc6cee6375cf13c05b843078c1fbb5c8577"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/deprecated-packages.test.js",
+      "archiveMember": "sources/tests/deprecated-packages.test.js",
+      "bytes": 5720,
+      "sha256": "81b06844e9823e30a75c9398aaa0e71ac1ae17f3073f0d4f712d006673ee5bca"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/helpers/ci-workflow-budgets.js",
+      "archiveMember": "sources/tests/helpers/ci-workflow-budgets.js",
+      "bytes": 6621,
+      "sha256": "89f4718959a8fc5c74b093113f5aedb4294846fec58e8ccdf8b7539445804f11"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/links-workflow.test.js",
+      "archiveMember": "sources/tests/links-workflow.test.js",
+      "bytes": 5690,
+      "sha256": "6dac859548915038694f9e0fe5b0ac8cf2d5f0f4723a3a4cf98c9c41cb9c6c33"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/lint-changed-files.test.js",
+      "archiveMember": "sources/tests/lint-changed-files.test.js",
+      "bytes": 5703,
+      "sha256": "73fd0a76e221eb15c80f7497cd4db0f668d9d94dfd7849898346d8b3c7741ee0"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/preview-tools.test.js",
+      "archiveMember": "sources/tests/preview-tools.test.js",
+      "bytes": 4814,
+      "sha256": "eb030202d0508577f9ad661c5ee508c828efa416ca9582ade5cc4092a3d12151"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/run-with-budget-warning.test.js",
+      "archiveMember": "sources/tests/run-with-budget-warning.test.js",
+      "bytes": 11501,
+      "sha256": "35da77fe47f1affb47f4e7fd98b6f91f0636bbab5679a896f27f63cde2bce6b5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/security-workflow.test.js",
+      "archiveMember": "sources/tests/security-workflow.test.js",
+      "bytes": 6514,
+      "sha256": "f5e8ed04ca6f9a1ecf2f890e56d59c1f463137babd27657183c8fab4a220d6d7"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/js/tests/workflows-lint.test.js",
+      "archiveMember": "sources/tests/workflows-lint.test.js",
+      "bytes": 8965,
+      "sha256": "f93ffdd9bfa2c35b9e1bb90c831e4bc1b7befccdf5497580846d67d3ea3fc9be"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-03.log",
+      "archiveMember": "checks/check-03.log",
+      "bytes": 1699,
+      "sha256": "58ae1b0926e29364344a9e89b0457b93f7a1c410c9381c40e949951822abef5c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-288-conversation.json",
+      "archiveMember": "checks/pr-288-conversation.json",
+      "bytes": 7297,
+      "sha256": "916cda868829688cd1a9621d4db358340f73a25b16e8907734fe6f45240682bf"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/retry-outcome.json",
+      "archiveMember": "checks/retry-outcome.json",
+      "bytes": 1304,
+      "sha256": "9990a781f10589be691d6bd3d8aa6f0a9c42a6da02480673b56580b9cc9d2f8d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-293-inline.json",
+      "archiveMember": "checks/pr-293-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-309-inline.json",
+      "archiveMember": "checks/pr-309-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/retry-02.log",
+      "archiveMember": "checks/retry-02.log",
+      "bytes": 842,
+      "sha256": "a2a5b42b50517f3d7daa7e3d6e27ec1453d4dc884f7a61cc1fcb1fa9084af422"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-293-conversation.json",
+      "archiveMember": "checks/pr-293-conversation.json",
+      "bytes": 7292,
+      "sha256": "eee511ee1f496896d15a78078ae98123817945ee9df329b803ba80232e68bb43"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/retry-03.log",
+      "archiveMember": "checks/retry-03.log",
+      "bytes": 2573,
+      "sha256": "28021c447ecb22923357ba55e9b3f809454fab024a3354e437c2ce80f9d8ef54"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/retry-01.log",
+      "archiveMember": "checks/retry-01.log",
+      "bytes": 842,
+      "sha256": "60c6af807ff056ebb9ba12be57caffd96f12240900d2d2c362275f5308b4a92e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-309-reviews.json",
+      "archiveMember": "checks/pr-309-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-08.log",
+      "archiveMember": "checks/check-08.log",
+      "bytes": 1828,
+      "sha256": "b61016695f31fe2f2bf5f4ed8b5569a8a01f3427682a9cf8d583ff0e79b6424f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-311-reviews.json",
+      "archiveMember": "checks/pr-311-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/related-merged-prs.json",
+      "archiveMember": "checks/related-merged-prs.json",
+      "bytes": 22607,
+      "sha256": "075f0830f9edf48a1c6f9f93c735e389695c9d8349e6724a1a49dcf0f96f1d5d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-288-reviews.json",
+      "archiveMember": "checks/pr-288-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-300-reviews.json",
+      "archiveMember": "checks/pr-300-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-300-inline.json",
+      "archiveMember": "checks/pr-300-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/retry-final-workflow.log",
+      "archiveMember": "checks/retry-final-workflow.log",
+      "bytes": 1586,
+      "sha256": "870a35340816f3993fece3d11334378abe775d0a3473d855d483a0c7e62ab421"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/retry-04.log",
+      "archiveMember": "checks/retry-04.log",
+      "bytes": 989,
+      "sha256": "85b666a59c1845118d2ce8bf131fb6900d4110e2767b1320dfa9b8ae11a25f7b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/outcome.json",
+      "archiveMember": "checks/outcome.json",
+      "bytes": 3136,
+      "sha256": "b202f417146c7e3710ce90a1ccbe9cf441964925e2bcef85db65a00f4c9c3763"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-07.log",
+      "archiveMember": "checks/check-07.log",
+      "bytes": 752,
+      "sha256": "d10a274dda89f1209bf1de3ad4b0cbaee25a8bccd59f3a15458b407ffcfac2d2"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-293-reviews.json",
+      "archiveMember": "checks/pr-293-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/retry-final-workflow.json",
+      "archiveMember": "checks/retry-final-workflow.json",
+      "bytes": 282,
+      "sha256": "6059eb46379c4367f7b4fd0571b33e0208fbbdf2d51710af9bb3582f7969046c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-09.log",
+      "archiveMember": "checks/check-09.log",
+      "bytes": 1865,
+      "sha256": "335c0d7685b86f413e67cecd6d1c075c76acb60ecc148f1e02504d9040373a36"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-01.log",
+      "archiveMember": "checks/check-01.log",
+      "bytes": 1809,
+      "sha256": "e627fb2df4269dac7b2917c7d55c246efc59cab182a5f65aa8790e8dfbdf1b90"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-10.log",
+      "archiveMember": "checks/check-10.log",
+      "bytes": 504,
+      "sha256": "bee73cb66131d1d8c50affe1d7c5b9d4c8afc218300c4c9157d3979cee300f20"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-05.log",
+      "archiveMember": "checks/check-05.log",
+      "bytes": 2777,
+      "sha256": "60b962bef434f7c1ae2189569e29b2a5d97a0d74bde96df5c580cd1ada5e1c0d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/preparation.json",
+      "archiveMember": "checks/preparation.json",
+      "bytes": 26496,
+      "sha256": "d1851b9f6633869715041a40137a0ee01bb529549314a641aab328465e5b76f5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-06.log",
+      "archiveMember": "checks/check-06.log",
+      "bytes": 695,
+      "sha256": "9d4e898a7217289d369334650b8ba1a2c8a7cf7f69bbf165f4807e7a9740e1c6"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-300-conversation.json",
+      "archiveMember": "checks/pr-300-conversation.json",
+      "bytes": 7255,
+      "sha256": "74c3479a3895c5aa907796f525bb2fe10a99220f1193e6f2088969bc8584bcd0"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-311-inline.json",
+      "archiveMember": "checks/pr-311-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-309-conversation.json",
+      "archiveMember": "checks/pr-309-conversation.json",
+      "bytes": 8144,
+      "sha256": "20d450638ffe7730380b5a3b3ddc6ab7ce03fe67de751feeffac018f5b4f859d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-311-conversation.json",
+      "archiveMember": "checks/pr-311-conversation.json",
+      "bytes": 7258,
+      "sha256": "6644bcdd4732987fac8f8cf8a3f00875d53df564d1b7727476551655d73b1134"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-04.log",
+      "archiveMember": "checks/check-04.log",
+      "bytes": 790,
+      "sha256": "46fe5a6db51f21dcd894534e9f4ebf26b6fae9ecbc6eb2d021d3125364892669"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/package-lock.json",
+      "archiveMember": "checks/package-lock.json",
+      "bytes": 101654,
+      "sha256": "feff42383a56257ec1660b43674a8a9315c961bb6261774f6adf2a240cc85f14"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/related-work-review.txt",
+      "archiveMember": "checks/related-work-review.txt",
+      "bytes": 37317,
+      "sha256": "6feccf1fb36a2474922a7b316a4251648c1a701c33f69b22cbfa315cec30d044"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/pr-288-inline.json",
+      "archiveMember": "checks/pr-288-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/.secretlintrc.json",
+      "archiveMember": "checks/.secretlintrc.json",
+      "bytes": 92,
+      "sha256": "1c0e86ca72216c22cc77b1c94c27f975b731aa9e104167f5d57a5befa654c10e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/check-02.log",
+      "archiveMember": "checks/check-02.log",
+      "bytes": 3141,
+      "sha256": "233c07560823e53b346fc8ac990a58291870510c87ac272326745b73129f81b9"
+    },
+    {
+      "source": "/tmp/issue-1580-research/current-js-focused-checks/package.json",
+      "archiveMember": "checks/package.json",
+      "bytes": 3122,
+      "sha256": "f07e6cde61b580501b93d212a10530e3464404205bcbcfc1d05f202771e54bd6"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fetch-current-js-pr-reviews.py",
+      "archiveMember": "helpers/fetch-current-js-pr-reviews.py",
+      "bytes": 1646,
+      "sha256": "4e9dbd48a918e0575ca2cbf67b0f5756577cd3f1f604f68d58a1bd0ae6636812"
+    }
+  ],
+  "literalCurrentChangedFilesRead": 30,
+  "fullCurrentTemplateRead": false,
+  "independentAuthorshipCredit": 0
+}
