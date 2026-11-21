@@ -563,6 +563,7 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         crate::agentic_coding::append_contract::project_append_contracts(&messages, &request.tools);
     phase("contract_projection");
     let outcome = plan_chat_step(&messages, &tool_names)
+        .filter(|plan| !crate::protocol_policy::defers_procedural_search(plan, &request.messages))
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
     phase("planning");
     if trace {
@@ -593,7 +594,10 @@ fn groundable_tool_names(request: &ChatCompletionRequest, names: &[String]) -> V
         .filter(|name| {
             crate::protocol_policy::find_tool_definition(&request.tools, name).is_none_or(
                 |definition| {
-                    crate::tool_scope::ungrounded_identity_arguments(definition, &empty, &context)
+                    crate::protocol_policy::available_client_tool(name, definition)
+                        && crate::tool_scope::ungrounded_identity_arguments(
+                            definition, &empty, &context,
+                        )
                         .is_empty()
                 },
             )

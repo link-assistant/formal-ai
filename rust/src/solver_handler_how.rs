@@ -70,9 +70,10 @@ pub fn try_how_to_procedure(
         .as_ref()
         .filter(|wiki| wiki.serves_language(language))
         .map_or("en", |_| language);
-    let wikihow_candidate = crate::source_walk::wiki_how_title(&task.task, source_language);
+    let source_task = procedural_source_task(&task.task);
+    let wikihow_candidate = crate::source_walk::wiki_how_title(source_task, source_language);
     let wikihow_api_url = wiki
-        .and_then(|wiki| crate::source_walk::entry_url_in(&wiki, &task.task, source_language))
+        .and_then(|wiki| crate::source_walk::entry_url_in(&wiki, source_task, source_language))
         .map_or_else(String::new, |url| {
             url.replacen(
                 &format!("page={}", seed::percent_encode(&wikihow_candidate)),
@@ -167,6 +168,41 @@ pub fn try_how_to_procedure(
 #[must_use]
 pub fn procedural_how_to_task(normalized: &str) -> Option<String> {
     extract_procedural_how_to_task(normalized).map(|task| task.task)
+}
+
+pub(crate) fn procedural_source_task(task: &str) -> &str {
+    crate::rule_interpreter::handler_table_value("procedural-source-task-aliases", task)
+        .unwrap_or(task)
+}
+
+/// Let the procedural solver handle questions that only implicitly ask a client to search.
+pub(crate) fn claims_procedural_request(
+    prompt: &str,
+    history: &[crate::solver::ConversationTurn],
+) -> bool {
+    use crate::solver::ConversationRole;
+    let normalized = normalize_prompt(prompt);
+    if crate::solver_handlers::explicit_web_search_requested(prompt, &normalized) {
+        return false;
+    }
+    if practical_help::goal(prompt, &normalized).is_some()
+        || procedural_how_to_task(&normalized).is_some()
+    {
+        return true;
+    }
+    let Some(prior) = history
+        .iter()
+        .rev()
+        .find(|turn| turn.role == ConversationRole::User)
+    else {
+        return false;
+    };
+    practical_help::followup_goal(&normalized, &prior.content).is_some()
+        || (is_procedural_elaboration_request(&normalized)
+            && history
+                .iter()
+                .any(|turn| turn.role == ConversationRole::Assistant)
+            && procedural_how_to_task(&normalize_prompt(&prior.content)).is_some())
 }
 
 /// Handles follow-up requests for the concrete steps of an active procedure —

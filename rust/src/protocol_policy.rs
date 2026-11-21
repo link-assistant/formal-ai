@@ -3,6 +3,42 @@ use serde_json::Value;
 use crate::associative_package::{PackagePermissionDecision, default_package_store};
 use crate::engine::{SymbolicAnswer, ThinkingStep};
 
+/// Codex advertises the Plan-only prompt tool without exposing the effective mode.
+pub(crate) fn available_client_tool(name: &str, definition: &Value) -> bool {
+    let holder = definition.get("function").unwrap_or(definition);
+    let restriction =
+        crate::rule_interpreter::handler_table_value("client-tool-unavailable-descriptions", name);
+    !restriction.is_some_and(|suffix| {
+        holder
+            .get("description")
+            .and_then(Value::as_str)
+            .is_some_and(|text| text.trim_end().ends_with(suffix))
+    })
+}
+
+pub(crate) fn defers_procedural_search(
+    plan: &crate::agentic_coding::planner::AgenticPlan,
+    messages: &[crate::protocol::ChatMessage],
+) -> bool {
+    use crate::agentic_coding::planner::{AgenticPlan, Capability, tool_capability};
+    let AgenticPlan::ToolCalls(calls) = plan else {
+        return false;
+    };
+    if calls.is_empty()
+        || !calls
+            .iter()
+            .all(|call| tool_capability(&call.tool) == Some(Capability::Search))
+    {
+        return false;
+    }
+    let (prompt, history) = crate::protocol::chat_prompt_and_history(messages);
+    let deferred = crate::solver_handler_how::claims_procedural_request(&prompt, &history);
+    if deferred && crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
+        crate::diagnostic!("debug"; "[trace] agentic_outcome: procedure owned by symbolic solver");
+    }
+    deferred
+}
+
 pub fn tool_call_refusal_answer() -> SymbolicAnswer {
     SymbolicAnswer {
         intent: String::from("tool_call_refused"),

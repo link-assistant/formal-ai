@@ -159,8 +159,8 @@ function archiveIndex(article) {
   } } });
 }
 
-function answerRussian(context, preferences = {}) {
-  return evaluate(context, `tryProceduralHowTo(${JSON.stringify(RUSSIAN_REQUEST)}, "ru", ${JSON.stringify(preferences)})`);
+function answerRussian(context, preferences = {}, prompt = RUSSIAN_REQUEST) {
+  return evaluate(context, `tryProceduralHowTo(${JSON.stringify(prompt)}, "ru", ${JSON.stringify(preferences)})`);
 }
 
 test("an unregistered Russian how-to uses the localized CORS API and quotes its ordered steps", async () => {
@@ -175,14 +175,14 @@ test("an unregistered Russian how-to uses the localized CORS API and quotes its 
   assert.ok(!requested.includes(WAYBACK_INDEX));
 });
 
-test("the browser uses a matching archival capture after a live request fails", async () => {
+test("the browser uses a matching archival capture for the short Russian question after a live request fails", async () => {
   const requested = [];
   const body = `<link rel="canonical" href="${RUSSIAN_ARTICLE}"><ul><li>This unrelated navigation entry is long enough to look like a step.</li></ul>${WIKIHOW_STEPS}`;
   const captures = new Map([
     [WAYBACK_INDEX, { body: archiveIndex(RUSSIAN_ARTICLE) }],
     [WAYBACK_REPLAY, { body }],
   ]);
-  const answer = await answerRussian(await bootWorker(captures, requested));
+  const answer = await answerRussian(await bootWorker(captures, requested), {}, "Как какать?");
   assert.deepEqual(requested.filter((url) => [RUSSIAN_API, WAYBACK_INDEX, WAYBACK_REPLAY].includes(url)),
     [RUSSIAN_API, WAYBACK_INDEX, WAYBACK_REPLAY]);
   assert.match(answer.content, /1\. Не откладывайте/u);

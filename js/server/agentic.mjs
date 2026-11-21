@@ -13,7 +13,8 @@ import { repeatedActionStop } from '../agentic/repetition_guard.mjs';
 import { observedPlanTerminal } from '../logging/terminal-events.mjs';
 import { workItemRecordOf } from '../agentic/work_item_report.mjs';
 import { currentDialogId } from './dialog-log.mjs';
-import { plainText, requestsToolExecution } from './chat-request.mjs';
+import { chatPromptAndHistory, plainText, requestsToolExecution } from './chat-request.mjs';
+import { Capability } from '../agentic/capability.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
 import { resolveModelId } from './seed.mjs';
 import { appliedAmendmentSteps } from './standing-requirements.mjs';
@@ -71,10 +72,14 @@ export function toolPermissionRefusalAnswer(denial) {
 }
 
 /** `groundable_tool_names`: the advertised tools this request can address. */
-function groundableToolNames(request, names) {
+function groundableToolNames(request, names, unavailableDescription) {
   const context = request.messages.map(message => plainText(message.content)).join('\n');
   return names.filter(name => {
     const definition = findToolDefinition(request.tools, name);
+    const description = (definition?.function ?? definition)?.description;
+    // Codex advertises this tool in Default mode without sending the effective mode.
+    const restriction = unavailableDescription(name);
+    if (restriction && typeof description === 'string' && description.trimEnd().endsWith(restriction)) return false;
     return !definition || ungroundedIdentityArguments(definition, {}, context).length === 0;
   });
 }
@@ -135,7 +140,20 @@ export async function agenticOutcome(ctx, request, refusal) {
   // else than `command`/`cmd`/`script` is read through that declared key.
   const messages = projectDeclaredCommandKeys(request.messages, request.tools);
   const scoped = projectAppendContracts(messages, request.tools);
-  const plan = await planChatStepResolved(scoped, groundableToolNames(request, owned));
+  const { claimsProceduralRequest, clientToolUnavailableDescription } = await ctx.worker.seedReaders();
+  const grounded = groundableToolNames(request, owned, clientToolUnavailableDescription);
+  const plan = await planChatStepResolved(scoped, grounded);
+  if (plan?.kind === 'tool_calls' && plan.calls.length > 0
+      && plan.calls.every(call => toolCapability(call.tool) === Capability.Search)) {
+    const { prompt, history } = chatPromptAndHistory(request.messages);
+    if (claimsProceduralRequest(prompt, history)) {
+      ctx.logger?.log('debug', 'agent.plan', {
+        component: 'agent', dialog_id: currentDialogId(),
+        reason: 'procedural_solver', plan_kind: 'none'
+      });
+      return { kind: 'fallthrough' };
+    }
+  }
   const terminal = observedPlanTerminal(plan);
   ctx.logger?.log('debug', 'agent.plan', {
     component: 'agent',

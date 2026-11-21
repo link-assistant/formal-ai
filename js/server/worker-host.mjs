@@ -530,6 +530,8 @@ export class WorkerHost {
         detectLanguage,
         lexiconMentionsRole,
         roleWordForms,
+        claimsProceduralRequest,
+        clientToolUnavailableDescription: name => handlerRulesTableValue("client-tool-unavailable-descriptions", name),
         responseFor(intent, language) {
           const table = MULTILINGUAL_ANSWERS[intent];
           const raw = table && Object.prototype.hasOwnProperty.call(table, language) ? table[language] : null;

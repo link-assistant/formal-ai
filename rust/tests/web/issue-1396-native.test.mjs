@@ -4,8 +4,11 @@ import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { startCli, temporaryHome } from "./support/structured-log-fixture.mjs";
+import { startServer } from "../../../js/server/main.mjs";
+import { WorkerHost } from "../../../js/server/worker-host.mjs";
 
 const RUSSIAN_REQUEST = "Как хорошо покакать?";
+const CODEX_REQUEST = "Как какать?";
 const RUSSIAN_SLUG = encodeURIComponent("хорошо-покакать");
 const WIKIHOW_API = "https://ru.wikihow.com/api.php";
 const parseUrl = (title) => `${WIKIHOW_API}?action=parse&page=${title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
@@ -33,6 +36,7 @@ test("native localized procedure and follow-up use matching captures over HTTP",
   storeCapture(cache, RUSSIAN_API, RUSSIAN_CAPTURE);
   const run = await startCli(t, {
     binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    args: ["--agent-mode"],
     env: { FORMAL_AI_SOURCE_CACHE_DIR: cache },
     lifetime: 25_000,
   });
@@ -41,7 +45,9 @@ test("native localized procedure and follow-up use matching captures over HTTP",
     const response = await fetch(`${run.url}/v1/chat/completions`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ model: "formal-ai", stream: false, messages }),
+      body: JSON.stringify({
+        model: "formal-ai", stream: false, messages, tools: [{ type: "web_search" }],
+      }),
     });
     assert.ok(response.ok, await response.clone().text());
     const content = (await response.json()).choices[0].message.content;
@@ -53,6 +59,8 @@ test("native localized procedure and follow-up use matching captures over HTTP",
   const first = await ask([request]);
   assert.match(first, /## Как хорошо покакать/u);
   await ask([request, { role: "assistant", content: first }, { role: "user", content: "Дай точные шаги" }]);
+  await ask([{ role: "user", content: CODEX_REQUEST }]);
+  await assertProceduralAgentRouting(run.url);
 
   const unrelated = JSON.parse(RUSSIAN_CAPTURE);
   unrelated.parse.title = "Домашние растения";
@@ -65,3 +73,108 @@ test("native localized procedure and follow-up use matching captures over HTTP",
   const recovered = await ask([request], matching);
   assert.ok(!recovered.includes(RUSSIAN_API), recovered);
 });
+
+async function assertProceduralAgentRouting(url) {
+  async function ask(input) {
+    const response = await fetch(`${url}/v1/responses`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ model: "formal-ai", input, stream: false, tools: [{ type: "web_search" }] }),
+    });
+    assert.ok(response.ok, await response.clone().text());
+    return (await response.json()).output;
+  }
+  const exact = await ask(CODEX_REQUEST);
+  assert.ok(exact.some(item => item.content?.some(part => /Не откладывайте/u.test(part.text))), JSON.stringify(exact));
+  assert.ok(!exact.some(item => item.type === "web_search_call"), JSON.stringify(exact));
+  const general = await ask("How to make pancakes?");
+  assert.ok(general.some(item => item.content?.some(part => /make pancakes/iu.test(part.text))), JSON.stringify(general));
+  assert.ok(!general.some(item => item.type === "web_search_call"), JSON.stringify(general));
+  const help = await ask("Хочу какать, что делать?");
+  assert.ok(help.some(item => item.content?.some(part => /nhs\.uk/u.test(part.text))), JSON.stringify(help));
+  assert.ok(!help.some(item => item.type === "web_search_call"), JSON.stringify(help));
+  const search = await ask("Search the web for pancakes");
+  assert.ok(search.some(item => item.type === "web_search_call"), JSON.stringify(search));
+}
+
+test("JavaScript Responses uses procedural sources with the client web search tool available", {
+  timeout: 30_000,
+}, async (t) => {
+  const dir = temporaryHome(t);
+  const networkFetch = async (url) => {
+    const request = new URL(url);
+    if (request.hostname === "ru.wikihow.com" && request.searchParams.get("page") === "хорошо-покакать") {
+      return Response.json(JSON.parse(RUSSIAN_CAPTURE));
+    }
+    return new Response(null, { status: 404 });
+  };
+  const { server, url } = await startServer({
+    agentMode: true,
+    env: {
+      FORMAL_AI_CACHE_DIR: dir, FORMAL_AI_MEMORY_PATH: path.join(dir, "memory.lino"),
+      FORMAL_AI_DREAMING: "false", FORMAL_AI_RECORD_CHAT: "0",
+      FORMAL_AI_ALLOW_NETWORK: "true", FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: "false",
+    },
+    worker: new WorkerHost({ navigator: { onLine: true } }, { networkFetch }),
+  });
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  await assertProceduralAgentRouting(url);
+});
+
+for (const [server, binary] of [["JavaScript", undefined], ["native", process.env.FORMAL_AI_TEST_NATIVE_CLI]]) {
+  test(`${server} Codex report confirms destination and context without a Plan-only tool`, {
+    skip: server === "native" && !binary,
+    timeout: 30_000,
+  }, async (t) => {
+    const run = await startCli(t, { binary, args: ["--agent-mode"], lifetime: 25_000 });
+    await run.ready();
+    const tools = [
+      {
+        type: "function", name: "request_user_input",
+        description: "Request user input for one to three short questions and wait for the response. This tool is only available in Plan mode.",
+        parameters: { type: "object" },
+      },
+      {
+        type: "function", name: "exec_command",
+        parameters: { type: "object", properties: { cmd: { type: "string" } }, required: ["cmd"] },
+      },
+    ];
+    async function ask(input, advertised = tools) {
+      const response = await fetch(`${run.url}/v1/responses`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ model: "formal-ai", stream: false, input, tools: advertised }),
+      });
+      assert.ok(response.ok, await response.clone().text());
+      return (await response.json()).output;
+    }
+    async function question(input, expected) {
+      const output = await ask(input);
+      assert.ok(!output.some(item => item.type === "function_call"), JSON.stringify(output));
+      const content = output.find(item => item.type === "message")?.content
+        .filter(item => item.type === "output_text").map(item => item.text).join("\n");
+      assert.match(content, expected);
+      return { role: "assistant", content };
+    }
+    const user = content => ({ role: "user", content });
+    const report = user("зарепорти баг");
+    const destination = await question([report], /3\. Задача GitHub/u);
+    await question([report, destination, user("Не создавай задачу GitHub")], /3\. Задача GitHub/u);
+    const targetHistory = [report, destination, user("3")];
+    const context = await question(targetHistory, /1\. Оба журнала/u);
+    await question([...targetHistory, context, user("1, 2")], /1\. Оба журнала/u);
+    const output = await ask([...targetHistory, context, user("1")]);
+    const call = output.find(item => item.type === "function_call");
+    assert.equal(call?.name, "exec_command", JSON.stringify(output));
+    assert.match(JSON.parse(call.arguments).cmd, /^formal-ai report create-issue .* --source both /u);
+    const result = await ask([...targetHistory, context, user("1"), call, {
+      type: "function_call_output", call_id: call.call_id,
+      output: "https://github.com/link-assistant/formal-ai/issues/42",
+    }]);
+    assert.ok(result.some(item => item.content?.some(part => part.text?.includes("/issues/42"))), JSON.stringify(result));
+    await question([user("report")], /3\. GitHub issue/u);
+    const compatibleTools = [{ ...tools[0], description: "Ask the user to choose options." }, tools[1]];
+    const structured = await ask([user("report")], compatibleTools);
+    assert.ok(structured.some(item => item.name === "request_user_input"), JSON.stringify(structured));
+  });
+}
