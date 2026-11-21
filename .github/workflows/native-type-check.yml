@@ -60,6 +60,7 @@ jobs:
           sparse-checkout: |
             /*
             !/dev/log/
+            /dev/log/issues/1079/pulls/1080/upstream-reports/
             !/experiments/**
             /experiments/**/*.sh
             /experiments/dynamic-meta/**
@@ -87,6 +88,7 @@ jobs:
           sparse-checkout: |
             /*
             !/dev/log/
+            /dev/log/issues/1079/pulls/1080/upstream-reports/
             !/experiments/**
             /experiments/**/*.sh
             /experiments/dynamic-meta/**

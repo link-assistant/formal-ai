@@ -25,21 +25,22 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `84e1ad85` has all 26 normal workflows terminal: 25 success,
-one skip and no failures. All eight native families and registry checks pass.
-The merged local source passes 88 local gates with 53 explicit skips,
-133 maintained observation cases, TypeScript generation/runtime and focused
-gateway/server checks. New before-fix regressions cover omitted dynamic meta
-native inputs and rejection of the inventory's valid 257th suite. Both fixes
-retain existing execution deadlines and source validation. Hosted qualification
-of the merged source remains pending. See the
-[dynamic meta merge checkpoint](../../docs/case-studies/issue-1580/dynamic-meta-merge-checkpoint.md).
+Published `6672bfc9` merges current main `873f1c33`; its 26 normal workflows
+are still being collected. The preceding published `84e1ad85` has 25 successful
+workflows and one skip, including all eight native families and registry checks.
+The merged source passes all 88 executed local gates (53 explicit skips),
+TypeScript generation/runtime, gateway/server checks and 133 maintained cases.
 
-Four worker source-size warnings were repaired; 87 remain under unchanged
-limits. The [Rust timeout and source identity checkpoint](../../docs/case-studies/issue-1580/rust-timeout-and-source-identity-checkpoint.md)
-records the invalid source pin correction and upstream documentation report.
-Full template/practice, original budget/live, complete PR review and complete
-issue acceptance remain open. Earlier entries below retain their dated scope.
+Local commit `018d71a4` removes three more Rust test size warnings through
+ordinary child modules, preserving every original body: 84 warnings remain
+under unchanged limits. Follow-up coverage repairs connect all three owners
+to the existing hosted core/coding targets and retain their original fixtures.
+Five coverage cases, 50 native-runner cases and 138 maintained observation
+cases pass locally; hosted native compilation/execution is still pending.
+See the [native coverage checkpoint](../../docs/case-studies/issue-1580/native-headroom-coverage-checkpoint.md).
+
+Full template/practice, original budget/live, complete PR review, independent
+authorship/reasoning and complete issue acceptance remain unfinished.
 
 
 Latest checkpoint: [current native failures and gate inputs](../../docs/case-studies/issue-1580/current-native-failure-checkpoint.md). Published `8b0d6f59` has 24 successful workflows, one skip and two failures. All eight native contract families and registry-script checks pass. Process termination and pipeline schema regressions pass locally; the CodeQL thread candidate and failed-fetch native guard still need hosted qualification. Fresh observations identify changed heads in seven templates; earlier comparisons retain their original pins. Full issue acceptance remains unfinished.

@@ -46,3 +46,9 @@ mod version_changelog;
 #[allow(dead_code)]
 #[path = "../../../scripts/detect-code-changes.rs"]
 pub mod detect_code_changes;
+
+// Share the complete budget and pinned-image regressions with PR qualification.
+#[path = "ci-cd/job_budget_fit.rs"]
+mod job_budget_fit;
+#[path = "ci-cd/pinned_tool_images.rs"]
+mod pinned_tool_images;

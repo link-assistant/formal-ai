@@ -25,9 +25,9 @@ mod standalone_suites;
 use std::collections::BTreeMap;
 use std::fs;
 
-use super::step_budgets_within_job_clocks::{job_timeout, workflow_files};
 use super::workflow_fixtures::ci_shell_files;
 use super::workflow_fixtures::workflow_job_names;
+use super::workflow_fixtures::{job_timeout, workflow_files};
 
 /// The share of a job's cap that *everything budgeted inside it* may claim
 /// together. Same figure as `step_budgets_within_job_clocks::MAX_BUDGET_SHARE_PERCENT`, applied to
