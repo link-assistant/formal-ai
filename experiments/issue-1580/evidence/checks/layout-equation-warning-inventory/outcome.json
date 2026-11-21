@@ -1,0 +1,14 @@
+{
+  "observedAt": "2026-11-21T01:36:42.819813+00:00",
+  "head": "c447f813b4de5464d6df08158bfb17d0e39cc51c",
+  "warningCount": 94,
+  "violations": 0,
+  "embeddedDataViolations": 0,
+  "linkStoreWarningResolved": true,
+  "sourceLayoutWarningResolved": true,
+  "linearEquationWarningResolved": true,
+  "limitsChanged": false,
+  "sourceInventorySha256": "6525d9cc7fea743c9a5ae7310218a9422eb1f8dcf5023d2956054b6d2691aaaa",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

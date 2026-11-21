@@ -1,0 +1,32 @@
+[
+  {
+    "gate": "check-abbreviations",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 0
+  },
+  {
+    "gate": "check-file-size",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 0
+  },
+  {
+    "gate": "check-readable-code",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-readable-code"
+    ],
+    "exitCode": 0
+  }
+]

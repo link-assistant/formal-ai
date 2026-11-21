@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-11-21T02:13:31.663734+00:00",
+  "sourceCount": 41,
+  "originalProducerPayloadsVerified": 137,
+  "originalTraceArchive": "../../ci/codeql-producer-bbda05c0/",
+  "cacheEvictionCauseProven": false,
+  "actualRepairExecutionPending": true,
+  "allAggregateLinesLiterallyRead": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}
