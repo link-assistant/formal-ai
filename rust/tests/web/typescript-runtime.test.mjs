@@ -9,5 +9,5 @@ test('actual TS-source worker and planner match JS, with no owned-JS fallback', 
   assert.equal(result.originalJavaScriptFallback, false);
   assert.equal(result.nativeExecution, false);
   assert.equal(result.productWasmExecution, false);
-  assert.equal(result.cases.length, 4);
+  assert.equal(result.cases.length, 5);
 });

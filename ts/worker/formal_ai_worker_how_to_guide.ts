@@ -642,7 +642,7 @@ function howToGuideMarkdown(guide, language) {
 
 /** Prepare guide evidence even when the caller needs to render a discovery plan. */
 async function researchProceduralHowTo(task, preferences, sourceLanguage, responseLanguage) {
-  const guide = await synthesizeHowToGuide(task.task, preferences, undefined, undefined, sourceLanguage);
+  const guide = await synthesizeHowToGuide(proceduralSourceTask(task.task), preferences, undefined, undefined, sourceLanguage);
   const evidence = ["procedural_how_to:stage:multi_source_synthesis", ...howToGuideEvidence(guide)];
   if (!howToGuideIsSufficient(guide)) return { evidence, answer: null, guide };
   for (const step of guide.steps) {

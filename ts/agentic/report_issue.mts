@@ -34,7 +34,9 @@ const PRINTF_PROGRAM = 'printf';
 const PRINTF_LINE_FORMAT = " '%s\\n' ";
 const AGENTIC_SURFACE = 'agentic-cli';
 const LATEST_SESSION = 'latest';
-const LANGUAGES = ['en', 'ru', 'hi', 'zh'];
+const LANGUAGES = ['en', 'ru', 'hi', 'zh', 'es'];
+const TARGET_QUESTION = 'agentic_report_target_question';
+const CONTENTS_QUESTION = 'agentic_report_contents_question';
 
 const ROLE_AGENT_ACTION_REPORT_VERB = 'agent_action_report_verb';
 const ROLE_AGENT_ACTION_REPORT_SUBJECT = 'agent_action_report_subject';
@@ -65,25 +67,30 @@ export function planReportFlow(messages, toolNames) {
     && !isReportQuestion(plainText(message.content)));
   if (acknowledged) return null;
   const language = detect(userRequestText(messages[reportIndex].content));
-  const choices = answerTexts(messages, reportIndex + 1);
+  const choices = messages.slice(reportIndex + 1).map((message, offset) => {
+    const index = reportIndex + 1 + offset;
+    const previous = messages[index - 1];
+    const question = previous.role.toLowerCase() === 'assistant' ? plainText(previous.content) : '';
+    return { index, message, question };
+  }).filter(({ message }) => isUser(message) || message.role.toLowerCase() === 'tool');
   let targets = null;
   let targetIndex = -1;
-  for (const [index, text] of choices) {
-    const parsed = parseTargets(text);
+  for (const choice of choices) {
+    const parsed = parseTargets(choice, language);
     if (parsed.length) {
       targets = parsed;
-      targetIndex = index;
+      targetIndex = choice.index;
       break;
     }
   }
   if (targets === null) {
-    return askOrRender(toolNames, language, 'report_target', 'agentic_report_target_question',
+    return askOrRender(toolNames, language, 'report_target', TARGET_QUESTION,
       'agentic_report_target_options', true);
   }
   let explicitContents = null;
-  for (const [index, text] of choices) {
-    if (index <= targetIndex) continue;
-    explicitContents = parseContents(text);
+  for (const choice of choices) {
+    if (choice.index <= targetIndex) continue;
+    explicitContents = parseContents(choice, language);
     if (explicitContents !== null) break;
   }
   const selectedHarness = targets.includes('harness_log');
@@ -94,7 +101,7 @@ export function planReportFlow(messages, toolNames) {
   else if (selectedServer) inferred = 'server';
   const contents = explicitContents ?? inferred;
   if (targets.includes('github_issue') && contents === null) {
-    return askOrRender(toolNames, language, 'report_contents', 'agentic_report_contents_question',
+    return askOrRender(toolNames, language, 'report_contents', CONTENTS_QUESTION,
       'agentic_report_contents_options', false);
   }
   const progress = Progress.scan(messages.slice(reportIndex + 1));
@@ -146,47 +153,47 @@ function localizedOptions(intent, language) {
 /** Mirrors `fn is_report_question`. */
 function isReportQuestion(text) {
   return LANGUAGES.some((language) =>
-    ['agentic_report_target_question', 'agentic_report_contents_question']
+    [TARGET_QUESTION, CONTENTS_QUESTION]
       .some((intent) => text.includes(localized(intent, language))));
 }
 
-/** Mirrors `fn answer_texts`: `[index, text]` of each later user/tool message. */
-function answerTexts(messages, start) {
-  const out = [];
-  for (let index = start; index < messages.length; index += 1) {
-    const role = messages[index].role.toLowerCase();
-    if (role === 'user' || role === 'tool') out.push([index, plainText(messages[index].content)]);
-  }
-  return out;
-}
-
 /** Mirrors `fn parse_targets`. */
-function parseTargets(text) {
+function parseTargets(choice, language) {
+  const matches = optionMatcher(choice, language, TARGET_QUESTION, 'agentic_report_target_options', true);
   return [
     ['harness_log', 0, 'harness_log'],
     ['server_log', 1, 'server_log'],
     ['github_issue', 2, 'github_issue'],
     ['formal_ai', 3, 'formal_ai'],
-  ].filter(([, optionIndex, machineValue]) =>
-    matchesOption(text, 'agentic_report_target_options', optionIndex, machineValue))
+  ].filter(([, optionIndex, machineValue]) => matches(optionIndex, machineValue))
     .map(([target]) => target);
 }
 
 /** Mirrors `fn parse_contents`. */
-function parseContents(text) {
-  if (matchesOption(text, 'agentic_report_contents_options', 0, 'both_logs')) return 'both';
-  if (matchesOption(text, 'agentic_report_contents_options', 1, 'harness_log')) return 'harness';
-  return matchesOption(text, 'agentic_report_contents_options', 2, 'server_log') ? 'server' : null;
+function parseContents(choice, language) {
+  const matches = optionMatcher(choice, language, CONTENTS_QUESTION, 'agentic_report_contents_options', false);
+  if (matches(0, 'both_logs')) return 'both';
+  if (matches(1, 'harness_log')) return 'harness';
+  return matches(2, 'server_log') ? 'server' : null;
 }
 
-/** Mirrors `fn matches_option`. */
-function matchesOption(text, intent, optionIndex, machineValue) {
-  const normalized = normalizePrompt(text);
-  return normalized.includes(normalizePrompt(machineValue))
-    || LANGUAGES.some((language) => {
-      const option = localizedOptions(intent, language)[optionIndex];
-      return option !== undefined && normalized.includes(normalizePrompt(option[0]));
-    });
+/** Mirrors `fn option_matcher`. */
+function optionMatcher({ message, question }, language, questionIntent, optionsIntent, multiple) {
+  const text = plainText(message.content);
+  const user = isUser(message);
+  const answers = (user && multiple ? text.split(',') : [text]).map(normalizePrompt);
+  const numbered = user && question.startsWith(localized(questionIntent, language) + '\n1. ');
+  return (index, value) => {
+    const matches = value => {
+      const option = normalizePrompt(value);
+      return answers.some(answer => user ? answer === option : answer.includes(option));
+    };
+    return matches(value) || (numbered && matches(String(index + 1)))
+      || LANGUAGES.some(lang => {
+        const option = localizedOptions(optionsIntent, lang)[index];
+        return option !== undefined && matches(option[0]);
+      });
+  };
 }
 
 /**
