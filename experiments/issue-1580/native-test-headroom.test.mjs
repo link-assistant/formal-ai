@@ -1,3 +1,4 @@
+import {citations,resolvableSegments,resolves} from '../../scripts/check-twin-citations.mjs';
 // Run the maintained scanner against the native regression module owners.
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
@@ -178,6 +179,12 @@ test('capability routing retains file-size headroom with all public tool entry p
   for (const name of ['tool_for', 'shell_command_tool', 'classify_tool', 'workspace_creation_tool', 'is_workspace_creation_tool']) {
     assert(source.includes(name), 'the original parent must expose ' + name);
     assert(classification.includes('pub(in crate::agentic_coding) fn ' + name));
+    const citation=citations(readFileSync(root+'/js/agentic/capability_router.mjs','utf8'))
+      .find(item=>item.symbol==='fn '+name);
+    assert(citation,'the JavaScript twin must cite '+name);
+    assert.equal(citation.path,owner+'/tool_classification.rs');
+    assert(resolves(classification,resolvableSegments(citation.symbol)));
+
   }
   assert(source.includes('pub(super) fn is_hosted_research_tool('));
 });

@@ -25,26 +25,27 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `6672bfc9` merges current main `873f1c33`; its 26 normal workflows
-are still being collected. The preceding published `84e1ad85` has 25 successful
-workflows and one skip, including all eight native families and registry checks.
-The merged source passed all 88 executed local gates (53 explicit skips),
-TypeScript generation/runtime, gateway/server checks and 133 maintained cases.
+Published `fbac28e5` includes main `f574289f`; 25 of its 26 workflows are
+terminal (22 success, one skip, two failures), and Pipeline is still active.
+Do not push until that run finishes and all actionable failures are collected.
+Unpublished commits through `1fb210cd` repair complete NUL-delimited Git change
+admission and native script-helper accounting, preserve independently requested
+workflow runs, add conservative runner-acquisition recovery, and extract
+capability classification with unchanged runtime behavior.
 
-Local commits extract ten Rust test/helper groups without changing their
-bodies or scanner limits: 76 warnings remain after contributor-guide and release-artifact extraction. Coverage connects the original
-planner, budget and image owners to the existing core/coding targets. Actual
-Git sparse rules select their nine real fixtures in both core checkout attempts.
-Thirteen focused headroom/path cases pass. The preceding batch passed 50
-native-runner cases and 144 maintained observation cases;
-All 151 maintained cases pass after adding the six-case upstream annotation
-pagination replay; its tested candidate is reported in Rust template issue #257.
-Hosted native compilation/execution of these local edits remains pending.
-See the [native policy checkpoint](../../docs/case-studies/issue-1580/native-policy-headroom-checkpoint.md).
+The complete 141-entry local gate attempt has 87 passes, 53 explicit skips and
+one stale-citation failure. Its five citation corrections have a failing-before,
+passing-after regression; the focused gate resolves all 1,318 citations. All
+186 maintained observations and official TypeScript currency checks pass. No
+local Rust compilation is claimed. The unchanged-limit source scan retains
+63 warnings. See the [citation and gate checkpoint](../../docs/case-studies/issue-1580/citation-and-gate-validation-checkpoint.md).
 
-Full template/practice, original budget/live, complete PR review, independent
-authorship/reasoning and complete issue acceptance remain unfinished.
+All eight complete template/practice reviews, remaining source warnings,
+original budget/live criteria, CodeQL per-child semantic qualification, complete
+PR review and the independent Formal AI reasoning floor remain unfinished.
+Independent reasoning remains 0/20. The PR remains draft and unmerged.
 
+The entries below are retained historical observations, not current-head claims.
 
 Latest checkpoint: [current native failures and gate inputs](../../docs/case-studies/issue-1580/current-native-failure-checkpoint.md). Published `8b0d6f59` has 24 successful workflows, one skip and two failures. All eight native contract families and registry-script checks pass. Process termination and pipeline schema regressions pass locally; the CodeQL thread candidate and failed-fetch native guard still need hosted qualification. Fresh observations identify changed heads in seven templates; earlier comparisons retain their original pins. Full issue acceptance remains unfinished.
 
