@@ -75,12 +75,6 @@ for (const [owner, child, names] of [
     'desktop_linux_artifact_names_are_normalized_for_download_contract',
     'release_scripts_check_configured_release_artifacts',
   ]],
-  ['rust/tests/unit/specification/reasoning_paths_procedures', 'elaboration', [
-    'procedural_elaboration_followup_rebinds_to_prior_how_to',
-    'procedural_elaboration_requires_a_prior_how_to',
-    'procedural_elaboration_followup_covers_supported_languages',
-    'procedural_elaboration_followup_covers_many_topics',
-  ]],
   ['rust/tests/integration/with_formal_ai', 'global_configuration', [
     'with_formal_ai_global_configures_idempotently_and_undo_restores_backups',
   ]],
@@ -109,4 +103,14 @@ test('Hive commit expectations retain headroom without moving native test names'
     assert(source.includes(name));
   }
   assert(!helpers.includes('#[test]'), 'only fixture helpers move out of the original test module');
+});
+
+
+test('procedure fixtures retain headroom while assertion bodies remain extractable', () => {
+  const owner = 'rust/tests/unit/specification/reasoning_paths_procedures';
+  assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/fixtures.rs'])),
+    {warnings: [], violations: [], embeddedDataViolations: []});
+  const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
+  assert.match(source, /^mod fixtures;$/mu);
+  for (const name of ['INSTALL_CASES', 'SURFACE_CASES', 'TYPO_CASES']) assert(source.includes('fixtures::' + name));
 });
