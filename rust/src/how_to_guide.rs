@@ -320,7 +320,7 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
     now: u64,
 ) -> HowToGuide {
     let mut guide = HowToGuide {
-        task: crate::source_walk::procedural_source_task(task.trim()).to_owned(),
+        task: task.trim().to_owned(),
         steps: Vec::new(),
         outcomes: Vec::new(),
         conflicts: Vec::new(),
@@ -334,6 +334,7 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
     let extractor = StepExtractor {
         task: &guide.task,
         language,
+        can_search: bounds.max_depth > 0,
     };
     for record in select_sources(&guide.task, preferences, bounds) {
         let Some(url) = extractor.entry_url(&record, &guide.task) else {
@@ -457,6 +458,34 @@ fn matches_task(task: &str, candidate: &str) -> bool {
     wanted.iter().all(|word| offered.contains(word))
 }
 
+/// Publisher titles may use a different aspect of the same infinitive. Apply
+/// language policy to whole words and keep every requested topic and polarity.
+fn matches_wiki_title(task: &str, candidate: &str, language: &str) -> bool {
+    let policy = |key: &str| crate::rule_interpreter::handler_policy("procedural_how_to", key);
+    let wanted = topic_words(task);
+    let offered = topic_words(candidate);
+    if let Some(negation) = policy(&format!("negation-{language}"))
+        && wanted.contains(&negation) != offered.contains(&negation)
+    {
+        return false;
+    }
+    let prefix = policy(&format!("aspect-prefix-{language}"));
+    let endings = policy(&format!("infinitive-endings-{language}")).unwrap_or_default();
+    !wanted.is_empty()
+        && wanted.iter().all(|word| {
+            offered.contains(word)
+                || prefix.as_ref().is_some_and(|prefix| {
+                    endings.split_whitespace().any(|ending| {
+                        word.strip_suffix(ending)
+                            .is_some_and(|stem| stem.chars().count() >= 3)
+                    }) && offered.iter().any(|other| {
+                        other.strip_prefix(prefix.as_str()) == Some(word.as_str())
+                            || word.strip_prefix(prefix.as_str()) == Some(other.as_str())
+                    })
+                })
+        })
+}
+
 /// The topic words of a phrase: lowercased, de-punctuated, de-pluralised, with
 /// stopwords and one/two-letter fragments dropped.
 fn topic_words(value: &str) -> Vec<String> {
@@ -488,6 +517,7 @@ fn singular(word: &str) -> String {
 struct StepExtractor<'a> {
     task: &'a str,
     language: &'a str,
+    can_search: bool,
 }
 
 impl CaptureExtractor for StepExtractor<'_> {
@@ -495,6 +525,14 @@ impl CaptureExtractor for StepExtractor<'_> {
 
     fn entry_url(&self, record: &SourceRecord, subject: &str) -> Option<String> {
         crate::source_walk::entry_url_in(record, subject, self.language)
+    }
+
+    fn fallback_entry_url(&self, record: &SourceRecord) -> Option<String> {
+        if !self.can_search || record.id != "wikihow" {
+            return None;
+        }
+        let endpoint = self.entry_url(record, self.task)?;
+        Some(search_url(&endpoint, self.task))
     }
 
     fn read(
@@ -509,12 +547,20 @@ impl CaptureExtractor for StepExtractor<'_> {
         let endpoint = capture.source_url();
         let url = endpoint.to_owned();
         let is_wiki = record.api.contains("api.php");
+        let is_wikihow = record.id == "wikihow";
+        let title_matches = |title: &str| {
+            if is_wikihow {
+                matches_wiki_title(task, title, self.language)
+            } else {
+                matches_task(task, title)
+            }
+        };
         let mut read = Extracted::default();
         match classify(capture.bytes()) {
             Payload::Parse { title, html } => {
-                let relevant = record.id != "wikihow" || matches_task(task, &title);
-                let localized = record.id == "wikihow"
-                    && endpoint.split('?').next() != record.api.split('?').next();
+                let relevant = !is_wikihow || title_matches(&title);
+                let localized =
+                    is_wikihow && endpoint.split('?').next() != record.api.split('?').next();
                 let found = if !relevant {
                     read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
                     Vec::new()
@@ -525,11 +571,11 @@ impl CaptureExtractor for StepExtractor<'_> {
                 };
                 if found.is_empty() && depth < bounds.max_depth {
                     for title in wiki_link_titles(&html, bounds.max_pages_per_service) {
-                        if matches_task(task, &title) {
+                        if title_matches(&title) {
                             read.follow.push(parse_url(endpoint, &title));
                         }
                     }
-                    if !relevant && read.follow.is_empty() {
+                    if read.follow.is_empty() && (!relevant || is_wikihow) {
                         read.follow.push(search_url(endpoint, task));
                     }
                 }
@@ -570,7 +616,7 @@ impl CaptureExtractor for StepExtractor<'_> {
             Payload::OpenSearch { titles, .. } | Payload::Search { titles } => {
                 let relevant: Vec<&String> = titles
                     .iter()
-                    .filter(|title| matches_task(task, title))
+                    .filter(|title| title_matches(title))
                     .take(bounds.max_pages_per_service)
                     .collect();
                 if relevant.is_empty() {

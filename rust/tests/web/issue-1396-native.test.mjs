@@ -13,6 +13,10 @@ const RUSSIAN_SLUG = encodeURIComponent("хорошо-покакать");
 const WIKIHOW_API = "https://ru.wikihow.com/api.php";
 const parseUrl = (title) => `${WIKIHOW_API}?action=parse&page=${title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
 const RUSSIAN_API = parseUrl(RUSSIAN_SLUG);
+const searchUrl = task => `${WIKIHOW_API}?action=query&list=search&srsearch=${encodeURIComponent(task)}&srlimit=5&format=json&origin=*`;
+const sourceResults = (...titles) => JSON.stringify({ query: { search: titles.map(title => ({ title })) } });
+const SHORT_SEARCH = searchUrl("какать");
+const DISCOVERED_API = parseUrl(encodeURIComponent("хорошо покакать"));
 const RUSSIAN_CAPTURE = readFileSync(new URL("../fixtures/issue-1396/wiki-how-ru.json", import.meta.url), "utf8");
 const NATIVE_CLI = process.env.FORMAL_AI_TEST_NATIVE_CLI;
 const NATIVE_CASE = { skip: !NATIVE_CLI, timeout: 30_000 };
@@ -34,6 +38,8 @@ async function startNativeProcedureReplay(t, { agentMode = false } = {}) {
   const cache = temporaryHome(t);
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   storeCapture(cache, RUSSIAN_API, RUSSIAN_CAPTURE);
+  storeCapture(cache, SHORT_SEARCH, sourceResults("Домашние растения", "хорошо покакать"));
+  storeCapture(cache, DISCOVERED_API, RUSSIAN_CAPTURE);
   const run = await startCli(t, {
     binary: NATIVE_CLI,
     args: agentMode ? ["--agent-mode"] : [],
@@ -69,7 +75,10 @@ test("native localized procedure and follow-up use matching captures over HTTP",
 
 test("native chat uses the localized source for the short Russian prompt", NATIVE_CASE, async (t) => {
   const { url } = await startNativeProcedureReplay(t, { agentMode: true });
-  await askChatProcedure(url, [{ role: "user", content: CODEX_REQUEST }], { tools: WEB_SEARCH_TOOLS });
+  const content = await askChatProcedure(url, [{ role: "user", content: CODEX_REQUEST }], {
+    source: DISCOVERED_API, tools: WEB_SEARCH_TOOLS,
+  });
+  assert.match(content, /## Как какать/u);
 });
 
 test("native chat recovers a matching article after discarding an unrelated one", NATIVE_CASE, async (t) => {
@@ -77,10 +86,10 @@ test("native chat recovers a matching article after discarding an unrelated one"
   const unrelated = JSON.parse(RUSSIAN_CAPTURE);
   unrelated.parse.title = "Домашние растения";
   const title = "хорошо покакать";
-  const search = `${WIKIHOW_API}?action=query&list=search&srsearch=${encodeURIComponent(title)}&srlimit=5&format=json&origin=*`;
+  const search = searchUrl(title);
   const matching = parseUrl(encodeURIComponent(title));
   storeCapture(cache, RUSSIAN_API, JSON.stringify(unrelated));
-  storeCapture(cache, search, JSON.stringify({ query: { search: [{ title }] } }));
+  storeCapture(cache, search, sourceResults(title));
   storeCapture(cache, matching, RUSSIAN_CAPTURE);
   const recovered = await askChatProcedure(url, [{ role: "user", content: RUSSIAN_REQUEST }], { source: matching });
   assert.ok(!recovered.includes(RUSSIAN_API), recovered);
@@ -102,7 +111,10 @@ async function assertProceduralAgentRouting(url) {
     return (await response.json()).output;
   }
   const exact = await ask(CODEX_REQUEST);
-  assert.ok(exact.some(item => item.content?.some(part => /Не откладывайте/u.test(part.text))), JSON.stringify(exact));
+  const guide = exact.flatMap(item => item.content || []).map(part => part.text || "").join("\n");
+  assert.match(guide, /## Как какать/u);
+  assert.match(guide, /1\. Не откладывайте/u);
+  assert.ok(guide.includes(DISCOVERED_API), guide);
   assert.ok(!exact.some(item => item.type === "web_search_call"), JSON.stringify(exact));
   const general = await ask("How to make pancakes?");
   assert.ok(general.some(item => item.content?.some(part => /make pancakes/iu.test(part.text))), JSON.stringify(general));
@@ -119,8 +131,10 @@ test("JavaScript Responses uses procedural sources with the client web search to
 }, async (t) => {
   const dir = temporaryHome(t);
   const networkFetch = async (url) => {
-    const request = new URL(url);
-    if (request.hostname === "ru.wikihow.com" && request.searchParams.get("page") === "хорошо-покакать") {
+    if (String(url) === SHORT_SEARCH) {
+      return Response.json(JSON.parse(sourceResults("Домашние растения", "хорошо покакать")));
+    }
+    if (String(url) === DISCOVERED_API) {
       return Response.json(JSON.parse(RUSSIAN_CAPTURE));
     }
     return new Response(null, { status: 404 });

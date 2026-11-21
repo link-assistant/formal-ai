@@ -146,6 +146,11 @@ const RUSSIAN_REQUEST = "Как хорошо покакать?";
 const RUSSIAN_SLUG = encodeURIComponent("хорошо-покакать");
 const RUSSIAN_ARTICLE = `https://ru.wikihow.com/${RUSSIAN_SLUG}`;
 const RUSSIAN_API = `https://ru.wikihow.com/api.php?action=parse&page=${RUSSIAN_SLUG}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
+const wikiSearch = (task) => `https://ru.wikihow.com/api.php?action=query&list=search&srsearch=${encodeURIComponent(task)}&srlimit=5&format=json&origin=*`;
+const wikiParse = (title) => RUSSIAN_API.replace(RUSSIAN_SLUG, encodeURIComponent(title));
+const searchCapture = (...titles) => ({ body: JSON.stringify({ query: { search: titles.map(title => ({ title })) } }) });
+const RUSSIAN_SHORT_TASK = "какать";
+const RUSSIAN_DISCOVERED_TITLE = "хорошо покакать";
 const WAYBACK_INDEX = `https://archive.org/wayback/available?url=${encodeURIComponent(RUSSIAN_ARTICLE)}`;
 const SNAPSHOT = "20241222160007";
 const WAYBACK_REPLAY = `https://web.archive.org/web/${SNAPSHOT}id_/${RUSSIAN_ARTICLE}`;
@@ -179,18 +184,40 @@ test("the browser uses a matching archival capture for the short Russian questio
   const requested = [];
   const body = `<link rel="canonical" href="${RUSSIAN_ARTICLE}"><ul><li>This unrelated navigation entry is long enough to look like a step.</li></ul>${WIKIHOW_STEPS}`;
   const captures = new Map([
+    [wikiSearch(RUSSIAN_SHORT_TASK), searchCapture("Домашние растения", RUSSIAN_DISCOVERED_TITLE)],
     [WAYBACK_INDEX, { body: archiveIndex(RUSSIAN_ARTICLE) }],
     [WAYBACK_REPLAY, { body }],
   ]);
   const answer = await answerRussian(await bootWorker(captures, requested), {}, "Как какать?");
-  assert.deepEqual(requested.filter((url) => [RUSSIAN_API, WAYBACK_INDEX, WAYBACK_REPLAY].includes(url)),
-    [RUSSIAN_API, WAYBACK_INDEX, WAYBACK_REPLAY]);
+  assert.deepEqual(requested.filter((url) => [wikiParse(RUSSIAN_SHORT_TASK), wikiSearch(RUSSIAN_SHORT_TASK),
+    wikiParse(RUSSIAN_DISCOVERED_TITLE), WAYBACK_INDEX, WAYBACK_REPLAY].includes(url)),
+    [wikiParse(RUSSIAN_SHORT_TASK), wikiSearch(RUSSIAN_SHORT_TASK),
+      wikiParse(RUSSIAN_DISCOVERED_TITLE), WAYBACK_INDEX, WAYBACK_REPLAY]);
+  assert.equal(answer.guide.task, RUSSIAN_SHORT_TASK);
   assert.match(answer.content, /1\. Не откладывайте/u);
   assert.doesNotMatch(answer.content, /unrelated navigation entry/u);
   for (const step of answer.guide.steps) {
     assert.equal(step.sourceUrl, WAYBACK_REPLAY);
     assert.equal(step.sha256, createHash("sha256").update(body).digest("hex"));
   }
+});
+
+test("publisher search discovers a held-out Russian title while preserving the requested topic", async () => {
+  const task = "читать вслух";
+  const title = "Как почитать вслух с друзьями";
+  const irrelevant = "Как читать по диагонали";
+  const negated = "Как не читать вслух";
+  const requested = [];
+  const steps = "<ol class=\"steps_list_2\"><li>Выберите короткий текст и сначала прочтите его про себя.</li><li>Теперь прочтите текст группе, делая паузы между предложениями.</li></ol>";
+  const captures = new Map([
+    [wikiSearch(task), searchCapture(irrelevant, negated, title)],
+    [wikiParse(title), { body: JSON.stringify({ parse: { title, text: { "*": steps } } }) }],
+  ]);
+  const answer = await answerRussian(await bootWorker(captures, requested), {}, "Как читать вслух?");
+  assert.equal(answer.guide.task, task);
+  assert.match(answer.content, /1\. Выберите короткий текст/u);
+  assert.ok(answer.guide.steps.every(step => step.sourceUrl === wikiParse(title)));
+  for (const value of [irrelevant, negated]) assert.ok(!requested.includes(wikiParse(value)));
 });
 
 test("a mismatched parse or archive cannot become numbered instructions", async () => {

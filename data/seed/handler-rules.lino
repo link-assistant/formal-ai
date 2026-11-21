@@ -454,11 +454,10 @@ handler-rules
     docs_url "https://playwright.dev/docs/writing-tests"
   policy procedural_how_to
     infinitive-endings-ru "ть ться тись ти чь чься"
+    aspect-prefix-ru "по"
+    negation-ru "не"
     fallback-query "how to {task}"
     install-query "{target} install official documentation"
-  table "procedural-source-task-aliases"
-    row "какать" "хорошо покакать"
-    row "покакать" "хорошо покакать"
   table "client-tool-unavailable-descriptions"
     row "request_user_input" "This tool is only available in Plan mode."
   table "client-tool-availability-context"

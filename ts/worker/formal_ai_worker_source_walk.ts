@@ -237,13 +237,16 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
         if (url === firstUrl && !missing && !offline) {
           sourceWalkObserveService(accessibilityKey, "unreachable", capture.error, now);
         }
-        const fallback = missing && url === firstUrl
-          ? sourceWalkFallbackEntryUrl(record, subject, language) : null;
+        const fallback = url === firstUrl && (missing || offline)
+          ? extractor.fallbackEntryUrl?.(record, firstUrl)
+            || (missing ? sourceWalkFallbackEntryUrl(record, subject, language) : null)
+          : null;
         if (fallback && !visited.includes(fallback)) {
           failedAttempts.push(outcome.detail);
           queue.unshift({ url: fallback, depth });
           continue;
         }
+        if (url !== firstUrl && (missing || offline)) continue;
         break;
       }
       outcome.pages += 1;

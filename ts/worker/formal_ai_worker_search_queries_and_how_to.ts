@@ -647,10 +647,6 @@ function proceduralFallbackQuery(task) {
   return howPolicy("procedural_how_to", "fallback-query", { task });
 }
 
-function proceduralSourceTask(task) {
-  return handlerRulesTableValue("procedural-source-task-aliases", task) || task;
-}
-
 function proceduralSearchQuery(task) {
   const fallbackQuery = proceduralFallbackQuery(task.task);
   if (!task || task.action !== "install") return fallbackQuery;
@@ -799,14 +795,23 @@ async function howToCaptureThroughComponent(url, notes) {
   }
 }
 
-async function howToRecoverWikiHow(walked, task, language, preferences) {
+async function howToRecoverWikiHow(walked, task, language, preferences, discovered) {
   const outcome = walked.outcomes.find((item) => item.sourceId === "wikihow");
   if (!outcome || ["disabled", "unbound_template"].includes(outcome.status)
       || outcome.items >= HOW_TO_MIN_ACCEPTED_STEPS || preferences?.offline === true
       || outcome.pages >= walked.bounds.maxPagesPerService) return;
 
   const record = howToSourceRegistry().find((item) => item.id === "wikihow");
-  const article = howToWikiHowArticle(sourceWalkEntryUrl(record, task, language));
+  const exact = sourceWalkEntryUrl(record, task, language);
+  discovered.add(exact);
+  for (const candidate of discovered) {
+    if (!candidate) continue;
+    if (outcome.pages >= walked.bounds.maxPagesPerService || outcome.items >= HOW_TO_MIN_ACCEPTED_STEPS) break;
+    await howToRecoverWikiHowArticle(walked, record, outcome, howToWikiHowArticle(candidate));
+  }
+}
+
+async function howToRecoverWikiHowArticle(walked, record, outcome, article) {
   const notes = [];
   const index = await sourceWalkFetchCapture(
     `https://archive.org/wayback/available?url=${sourceWalkPercentEncode(article.href)}`, { bounded: true });
@@ -867,8 +872,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const query = proceduralFallbackQuery(task.task);
   const searchQuery = proceduralSearchQuery(task);
   const wiki = howToSourceRegistry().find((record) => record.id === "wikihow");
-  const sourceTask = proceduralSourceTask(task.task);
-  const apiUrl = wiki ? (sourceWalkEntryUrl(wiki, sourceTask, sourceLanguage) || sourceWalkEntryUrl(wiki, sourceTask)) : "";
+  const apiUrl = wiki ? (sourceWalkEntryUrl(wiki, task.task, sourceLanguage) || sourceWalkEntryUrl(wiki, task.task)) : "";
   const pageTitle = apiUrl ? new URL(apiUrl).searchParams.get("page") : "";
   const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
   const isInstall = task.action === "install";
