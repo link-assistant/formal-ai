@@ -6,6 +6,7 @@ import { handleAnthropicMessages } from './anthropic.mjs';
 import { handleChatCompletions } from './openai.mjs';
 import { handleConversationContext, handleConversationLearn } from './conversations.mjs';
 import { handleDebug } from './debug-session.mjs';
+import { handleEmbeddings } from './embeddings.mjs';
 import { recordApiExchangeIfEnabled, scopedOpenaiPath, withDialogScope } from './dialog-log.mjs';
 import { handleGeminiGenerateContent, handleGeminiModel, handleGeminiModels, handleVertexModels } from './gemini.mjs';
 import { handleMcp } from './mcp.mjs';
@@ -26,6 +27,7 @@ export const ROUTE_HANDLERS = Object.freeze({
   api_hello: handleHello,
   health: handleHealth,
   models: handleModels,
+  embeddings: handleEmbeddings,
   network: handleNetwork,
   network_graph_alias: async (ctx, request) => deprecatedAlias(await handleNetwork(ctx, request)),
   bundle: handleBundle,

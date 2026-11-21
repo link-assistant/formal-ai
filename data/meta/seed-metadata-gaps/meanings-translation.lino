@@ -25,6 +25,9 @@ seed-metadata-gaps
     record "example"
   gap seed-metadata-gap-3baee8ee0b03904e
     record "find"
+  gap seed-metadata-gap-a61ee3c09a7b795b
+    record "forklift-operator"
+    missing "role,precondition,effect,unit,example"
   gap seed-metadata-gap-d97a5549aa92b8b9
     record "formal_system_incomplete_or_inconsistent"
   gap seed-metadata-gap-68b1b2e353a672f4
@@ -63,6 +66,9 @@ seed-metadata-gaps
     record "response_language_russian"
   gap seed-metadata-gap-ff182bb253eef552
     record "response_language_spanish"
+  gap seed-metadata-gap-2d69ca374fcd51d4
+    record "storekeeper"
+    missing "role,precondition,effect,unit,example"
   gap seed-metadata-gap-e7db7b9517ac4fce
     record "synonym"
   gap seed-metadata-gap-b6f4adc867062337
@@ -99,6 +105,9 @@ seed-metadata-gaps
     record "translation_object_marker"
   gap seed-metadata-gap-e0508c7b747a3cf8
     record "translation_unquoted_frame"
+  gap seed-metadata-gap-c8f9a458a5fb49c1
+    record "warehouse-supervisor"
+    missing "role,precondition,effect,unit,example"
   gap seed-metadata-gap-a42523c675ae38cc
     record "water"
   gap seed-metadata-gap-932d755c4da465d5

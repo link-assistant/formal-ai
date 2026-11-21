@@ -3,6 +3,7 @@
 // (rust/src/server.rs `dispatch_api_request_with_auth`).
 
 import { f64, sortedKeys } from './json.mjs';
+import { EMBEDDING_DIMENSIONS, EMBEDDING_MODEL } from './embeddings.mjs';
 import { contextCapacity, memoryHealthStatus } from './memory.mjs';
 import { serverMessage } from './messages.mjs';
 import { errorResponse, jsonResponse, linksNotationResponse, rawResponse, JSON_TYPE } from './response.mjs';
@@ -58,6 +59,12 @@ export function handleModels() {
   }
   const id = canonicalModelId();
   const context = capacityJson(capacity);
+  const embedding = {
+    id: EMBEDDING_MODEL,
+    slug: EMBEDDING_MODEL,
+    capabilities: ['embeddings'],
+    dimensions: EMBEDDING_DIMENSIONS,
+  };
   const shared = {
     avg_utf8_bytes_per_char: capacity.avg_utf8_bytes_per_char,
     capabilities: ['json_schema'],
@@ -76,7 +83,7 @@ export function handleModels() {
       object: 'model',
       owned_by: 'link-assistant',
       slug: id,
-    }],
+    }, { ...embedding, object: 'model', owned_by: 'link-assistant' }],
     models: [{
       ...shared,
       id,
@@ -84,7 +91,7 @@ export function handleModels() {
       memory_used_bytes: capacity.memory_used_bytes,
       name: id,
       slug: id,
-    }],
+    }, { ...embedding, name: EMBEDDING_MODEL }],
     object: 'list',
     rate_limit: { requests_per_minute: 60, tokens_per_minute: 60000 },
   }));
