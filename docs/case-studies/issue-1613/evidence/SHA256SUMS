@@ -40,6 +40,7 @@ f08cfc2deb02d946ceee9c9cf7b6b8eaa9d41c3418d8b44f1854563f5d3ea731  ./verification
 d10bddbe46b78e1358d2dea08355c391f80fe679fc85f1485b15bfb1102894e0  ./verification/all-gates-round3-final.log
 8de6ad38d890c2f16c1affa235417605200ac16746992c4bd1aa6bbdd8df6670  ./verification/all-gates-round3.log
 f24844ce11b431dee2ce403ebcb6a139c438c0924376ca89ece17dd7893b5bd2  ./verification/all-gates-round4-final.log
+c196bcbef3856bf1d14a60ee916c8d9ab82cad8651caec967f2a2fe4960265c5  ./verification/all-gates-round5-merged.log
 e7bbcfa439fed372d90fa5bddf862b755d43ecda61afd55f676a04c7c7c5a040  ./verification/all-gates-round5.log
 ffd743e964b5e633952a383ab238234673a432e4037b5822e944f298019801e7  ./verification/baseline-docs-method.log
 2f8936d85f55cd64e747c1bbb16b800e33cdbce13b27af0cffaed2ce76da6b28  ./verification/baseline-encyclopedia-precache.log
@@ -74,6 +75,11 @@ dcbb64f011746e1da822304ead5cf6c3838b2d45f5f72b2a7a917f9be5faa448  ./verification
 cfcc1e5653b226d4d9b0089fc4b8b2126d63ee34fcd1a76f33af0b22b921605c  ./verification/round4-readable-code-recheck.log
 1ff9459fdbc5d00b03a178f148b87240ea45140fb9b7c425a17f71db0d56c550  ./verification/round5-issue-1396-native-final.log
 55b137a9cc3e2d7c83b88761e0103901e47028046baf729cefce126ad1142883  ./verification/round5-issue-991-how-to-synthesis-final.log
+2db3e948902992c6ac081a096b63438745c7ade3874c02bc2f924d452b8b9e0a  ./verification/round5-merged-abbreviation.log
+72bfc20bb5cb7dd25b2d7d02e466a573852798c3f70a052bfa189b1b60abcc33  ./verification/round5-merged-issue-1396-native.log
+455b9f60ed61fd9a2ee1161a03254eb2205efb1998963035b9c0602273e67d67  ./verification/round5-merged-issue-1609-client-reports.log
+52170bc1c8b06a1222043c1526fd962f1e3d36966f90a6c7e61915f6568f7c4e  ./verification/round5-merged-native-spec-delta.json
+7ed8b1b7a5e2d9f9adadb4fea50aef05ce5e3be14e0a0fc409e4a016a5a0750b  ./verification/round5-merged-procedural-runtime-parity.log
 cad9a701549f5f72cb6e096acc236cd7ca34b8f45eadb17bda35bd3ebe16750c  ./verification/round5-pinned-source-model.log
 952bcf89dc5375e38ca2aacf040f3362bf980232129deec4d79e7f5b0dd3c09b  ./verification/round5-procedural-runtime-parity-final.log
 413af79375646debae746de81a4c882ffdc7a06fd6c32d7dfa80ad9a9007656a  ./verification/round5-readable-code.log

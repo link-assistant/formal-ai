@@ -1,0 +1,4 @@
+file-names  abbreviated-file-names 90
+bindings js  abbreviated-bindings 718
+bindings rust/src  abbreviated-bindings 909
+wrote data/meta/abbreviation-ratchet.lino
