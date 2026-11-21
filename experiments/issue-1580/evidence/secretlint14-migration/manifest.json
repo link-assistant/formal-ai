@@ -110,7 +110,7 @@
     },
     {
       "source": "/tmp/issue-1580-research/secretlint-built-in-migration/secretlint-config-loader-14.0.0.json",
-      "stored": "secretlint-config-loader-14.0.0.json.gz",
+      "stored": "secretlint-configuration-loader-14.0.0.json.gz",
       "bytes": 3083,
       "sha256": "8397b1767a61708d13574028b2316808f13f97b464dbb34dd2e854ae89da2808"
     },
