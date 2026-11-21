@@ -301,6 +301,7 @@ for (const [server, binary] of [['JavaScript', undefined], ['native', NATIVE]]) 
         ['Hello', /Hi[!,]/u],
         ['Привет', /Здравствуйте/u],
         ['Report issue', /https:\/\/github\.com\/link-assistant\/formal-ai\/issues\/new$/u],
+        ['Reportar una incidencia', /Abre el formulario.*\nhttps:\/\/github\.com\/link-assistant\/formal-ai\/issues\/new$/u],
       ]) {
         const mcp = await request('/mcp', {
           jsonrpc: '2.0', method: 'tools/call', id: 1,

@@ -390,10 +390,8 @@ pub(crate) fn issue_form_for_prompt(prompt: &str) -> Option<String> {
             "agentic-report-open-issue-form",
             language::detect(prompt).slug(),
         );
-        format!(
-            "{instruction}\nhttps://github.com/{}/issues/new",
-            formal_ai_repo()
-        )
+        let url = format!("https://github.com/{}/issues/new", formal_ai_repo());
+        format!("{instruction}\n{url}")
     })
 }
 
