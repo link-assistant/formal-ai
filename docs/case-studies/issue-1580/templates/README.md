@@ -169,3 +169,7 @@ The earlier eighteen actual upstream Bun tests remain narrowly attributed.
 Applicable practice implementation, current hosted CI and wider issue acceptance
 remain unfinished. Supplied procedures and conclusions earn zero independent
 authorship credit.
+
+## Python complete source applicability map
+
+[`python-complete-file-comparison.json`](python-complete-file-comparison.json) binds all 338 pinned blobs. The per-file receipt distinguishes unchanged reviewed source, current deltas, complete structured historical records, the universal Python lock, and actual hosted generated-byte comparison. The historical catalogs preserve parent constraints, runner ABI selection, bounded retries, strict warning checks and external publisher observations; those are compared with actual Formal AI counterparts. This completes the file map, while final-source CI and the broader implementation acceptance remain open.

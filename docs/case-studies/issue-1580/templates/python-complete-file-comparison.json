@@ -1,0 +1,25 @@
+{
+  "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+  "pinnedHead": "62cc393707ddfe7ceeddbc580d43cc35334636f1",
+  "files": 338,
+  "historicalFiles": 126,
+  "methods": {
+    "unchanged-fully-reviewed-source-carry": 175,
+    "exact-generated-bytes-hosted-rebuild-comparison": 1,
+    "current-delta-with-exact-hosted-generated-rebuild": 2,
+    "current-delta-source-comparison": 33,
+    "complete-json-leaf-and-terminal-state-traversal": 70,
+    "complete-log-diagnostic-traversal": 26,
+    "complete-structured-historical-practice-comparison": 30,
+    "complete-lock-schema-and-package-constraint-comparison": 1
+  },
+  "allFilesHaveApplicabilityComparison": true,
+  "allGitBlobsVerified": true,
+  "allComparisonPathsExist": true,
+  "literalAndStructuredMethodsDistinct": true,
+  "allApplicablePracticesImplementedAndVerified": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "scope": "Pinned complete source applicability map. Structured historical catalogs/JSON/logs and exact generated-byte rebuilds are explicit methods, not claims of literal reading or new runtime execution. Python-specific package publication and unrelated dependency upgrades are not Formal AI acceptance criteria.",
+  "evidence": "experiments/issue-1580/evidence/checks/python-complete-file-comparison"
+}
