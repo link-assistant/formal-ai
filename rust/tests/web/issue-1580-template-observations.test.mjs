@@ -25,3 +25,5 @@ import '../../../experiments/issue-1580/template-python-scriv-integrity.test.mjs
 import '../../../experiments/issue-1580/template-python-javascript-detection.test.mjs';
 import '../../../experiments/issue-1580/worker-notation.test.mjs';
 import '../../../experiments/issue-1580/worker-code-tasks.test.mjs';
+import '../../../experiments/issue-1580/template-rust-timeout-documentation.test.mjs';
+import '../../../experiments/issue-1580/template-source-identities.test.mjs';

@@ -1,0 +1,27 @@
+{
+  "reviewedCommit": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f",
+  "previousRecordedIdentifier": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f3",
+  "verifiedGitTree": "5ed11f833f07796d26379c4f9165d8c03fbe735c",
+  "recordedCurrentFilesVerified": 12,
+  "beforeSourceIdentityRegression": "fails on the original 41-character identifier",
+  "sourceIdentityRegressionPassed": 1,
+  "timeoutDocumentationObservationsPassed": 2,
+  "maintainedTestsPassed": 133,
+  "maintainedTestsSkipped": 0,
+  "upstreamReport": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/256",
+  "upstreamRepairVerified": false,
+  "retainedRecords": 202,
+  "allArchiveHashesVerified": true,
+  "localRustBuildPerformed": false,
+  "completeCurrentSourceComparison": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "postArchivePreflight": {
+    "allPassed": true,
+    "commands": 7,
+    "stagedFiles": 1487,
+    "archivesVerified": 178,
+    "fullIssueComplete": false,
+    "independentAuthorshipCredit": 0
+  }
+}

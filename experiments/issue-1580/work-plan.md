@@ -28,12 +28,17 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 Latest published head `84e1ad85` has 25 of 26 normal workflows terminal:
 24 success, one skip and no failures observed; Pipeline remains active in the
 current capture. No push is permitted until current-head workflows finish.
-The local worker extraction passes 45 focused tests, 130 maintained cases,
+The local worker extraction passes 45 focused tests, 133 maintained cases,
 TypeScript generation/runtime checks and all 141 local gate entries (88 pass,
 53 explicit skips). Four source-size warnings are repaired; 87 remain under
 unchanged limits. Full template/practice, original budget/live and complete
 issue acceptance remain open. See the
 [worker extraction checkpoint](../../docs/case-studies/issue-1580/worker-warning-extraction-checkpoint.md).
+The [Rust timeout and source identity checkpoint](../../docs/case-studies/issue-1580/rust-timeout-and-source-identity-checkpoint.md)
+adds an upstream documentation-drift report and repairs the invalid source pin
+after checking all twelve changed-file Git blobs. Its before-fix regression
+fails on the original identifier. No upstream repair or full-template acceptance
+is inferred from the report.
 Earlier checkpoint entries below retain their dated heads and scope.
 
 

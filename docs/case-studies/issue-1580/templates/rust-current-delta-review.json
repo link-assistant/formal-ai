@@ -1,6 +1,6 @@
 {
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
-  "commit": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f3",
+  "commit": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f",
   "scope": "The twelve current changed files only. Literal review and consecutive byte-identity history comparison are distinguished. Other current and historical files retain their earlier incomplete ledgers.",
   "completeChangedFileComparison": true,
   "completeCurrentSourceComparison": false,
@@ -403,7 +403,9 @@
     "verifiedGitSourceFiles": 4,
     "nativeBuildExecuted": false,
     "fullScriptRunnerExecuted": false,
-    "hostedPublicationVerified": false
+    "hostedPublicationVerified": false,
+    "timeoutDocumentationObservationTestsPassed": 2,
+    "maintainedTemplateObservationTestsPassed": 133
   },
   "relatedWork": {
     "pullRequests": [
@@ -412,7 +414,16 @@
       248
     ],
     "allConversationInlineAndReviewCommentsRead": true,
-    "timeoutIssue": 41
+    "timeoutIssue": 41,
+    "timeoutDocumentationDriftReport": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/256"
   },
-  "independentAuthorshipCredit": 0
+  "independentAuthorshipCredit": 0,
+  "identityCorrection": {
+    "previousRecordedIdentifier": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f3",
+    "verifiedCommit": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f",
+    "gitTree": "5ed11f833f07796d26379c4f9165d8c03fbe735c",
+    "allTwelveCurrentBlobIdentitiesMatch": true,
+    "fullTemplateComparisonComplete": false,
+    "evidence": "experiments/issue-1580/evidence/checks/rust-timeout-and-source-identities/"
+  }
 }
