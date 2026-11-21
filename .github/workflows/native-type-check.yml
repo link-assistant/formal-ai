@@ -62,6 +62,8 @@ jobs:
             !/dev/log/
             !/experiments/**
             /experiments/**/*.sh
+            /experiments/dynamic-meta/**
+            /experiments/js_dogfood/**
             /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
@@ -87,6 +89,8 @@ jobs:
             !/dev/log/
             !/experiments/**
             /experiments/**/*.sh
+            /experiments/dynamic-meta/**
+            /experiments/js_dogfood/**
             /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
@@ -159,6 +163,18 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs
+      - uses: oven-sh/setup-bun@v2
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        with:
+          bun-version-file: .bun-version
+          no-cache: true
+      - name: Replay dynamic meta authorization and receipts through the native gateway
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        env:
+          FORMAL_AI_DYNAMIC_META_NATIVE: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: |
+          bun install --frozen-lockfile --ignore-scripts
+          node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs
       - name: Stage deterministic Google Trends fixtures from the native driver
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:

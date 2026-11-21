@@ -9,6 +9,8 @@ import { dispatch } from './dispatch.mjs';
 import { runInRequestScope } from './debug-session.mjs';
 import { beginForegroundActivity } from './dreaming-runtime.mjs';
 import { serverMessage } from './messages.mjs';
+import { errorResponse } from './response.mjs';
+import { META_PATH, META_REQUEST_LIMIT } from './dynamic-meta/wire.mjs';
 
 const STATUS_TEXT = new Map([
   [200, 'OK'],
@@ -19,6 +21,7 @@ const STATUS_TEXT = new Map([
   [404, 'Not Found'],
   [405, serverMessage('status_text_405')],
   [409, 'Conflict'],
+  [413, serverMessage('status-text-413')],
 ]);
 
 const ALLOW_HEADERS = 'content-type,authorization,x-api-key,x-goog-api-key,anthropic-api-key';
@@ -32,10 +35,15 @@ function requestHeaders(request) {
   return pairs;
 }
 
-function readBody(request) {
+function readBody(request, limit = Infinity) {
   return new Promise((resolve, reject) => {
     const chunks = [];
-    request.on('data', (chunk) => chunks.push(chunk));
+    let length = 0;
+    request.on('data', (chunk) => {
+      length += chunk.length;
+      if (length <= limit) chunks.push(chunk);
+      else resolve(null);
+    });
     request.on('end', () => resolve(Buffer.concat(chunks)));
     request.on('error', reject);
   });
@@ -92,14 +100,20 @@ export function createServer(ctx) {
     socketResponse.on('close', () => { if (!socketResponse.writableEnded) disconnected.abort(); });
     try {
       const headers = requestHeaders(request);
-      const raw = await readBody(request);
+      const raw = await readBody(request, path === META_PATH ? META_REQUEST_LIMIT : undefined);
+      if (raw === null) {
+        writeResponse(socketResponse, errorResponse(413, serverMessage('dynamic-meta-request-size')));
+        return;
+      }
       // Like the Rust reader, only a declared content-length carries a body.
       const declared = Number.parseInt(request.headers['content-length'] || '0', 10) || 0;
       const body = raw.subarray(0, Math.min(declared, raw.length)).toString('utf8');
       ctx.logger?.log('debug','request.received',{
         component:'server',request_id:requestIdentifier,method:request.method,path,request_bytes:Buffer.byteLength(body),
-      },()=>diagnosticBody(body));
-      const response = await runInRequestScope(disconnected.signal, () => dispatch(ctx, { method: request.method, path: request.url, headers, body }));
+      }, path === META_PATH ? undefined : () => diagnosticBody(body));
+      const response = await runInRequestScope(disconnected.signal, () => dispatch(ctx, {
+        method: request.method, path: request.url, headers, body,
+      }, disconnected.signal));
       responseBytes = Buffer.byteLength(response.body);
       writeResponse(socketResponse, response);
     } catch (error) {

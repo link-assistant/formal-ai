@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import test from 'node:test';
 import YAML from 'yaml';
+import {admission} from '../../scripts/ci-pull-request-admission.mjs';
 
 const workflow = YAML.parse(readFileSync('.github/workflows/native-type-check.yml', 'utf8'));
 for (const name of ['clippy', 'contract-family']) {
@@ -53,3 +54,19 @@ for (const name of ['clippy', 'contract-family']) {
     }
   });
 }
+
+test('the native dynamic meta replay admits its host, package and loader inputs', () => {
+  for (const path of [
+    'rust/tests/web/dynamic-meta.test.mjs', 'rust/tests/web/support/structured-log-fixture.mjs',
+    'js/server/dynamic-meta/host.mjs', 'js/server/dynamic-meta/runtime.mjs',
+    'js/server/main.mjs', 'js/server/worker-host.mjs', 'js/server/response.mjs',
+    'js/agentic/crate/links_substitution_query.mjs', 'js/worker/formal_ai_worker.js',
+    'js/seed/parser.js', 'js/parser-cache-primordials.js', 'js/seed_loader.js',
+    'js/worker-bootstrap-responses.js', 'js/worker-modules.js',
+    'experiments/dynamic-meta/package.json', 'experiments/dynamic-meta/instructions.md',
+    'experiments/js_dogfood/drive.mjs', 'package.json', 'bun.lock', '.bun-version',
+  ]) assert.equal(admission([path])['native-type-check'], true, path);
+  for (const path of ['js/app.js', 'ts/server/main.mts', 'experiments/unrelated.mjs',
+    'docs/unrelated.md', 'rust/tests/web/unrelated.test.mjs'])
+    assert.equal(admission([path])['native-type-check'], false, path);
+});

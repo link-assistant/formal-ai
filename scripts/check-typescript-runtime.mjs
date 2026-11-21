@@ -61,12 +61,14 @@ export async function checkTypeScriptRuntime({root = REPOSITORY, translator} = {
       for (const answer of results[mode].answers) assert.match(answer.content, /= 47$/u);
       assert.equal(results[mode].code, 'export const isolated = 61;');
       assert.equal(results[mode].stop, 'final');
+      assert.equal(results[mode].dynamicMeta.output, 'the the');
+      assert.equal(results[mode].dynamicMeta.implementation, 'compiled');
     }
     assert.deepEqual(results.typescript, results.javascript);
     const rows = fs.readdirSync(directory).filter(file => /^input-.*\.jsonl$/u.test(file))
       .flatMap(file => fs.readFileSync(path.join(directory, file), 'utf8').trimEnd().split('\n')
         .filter(Boolean).map(line => JSON.parse(line)));
-    for (const file of ['ts/server/worker-host.mts', 'ts/worker/formal_ai_worker.ts', 'ts/agentic/planner.mts']) {
+    for (const file of ['ts/server/worker-host.mts', 'ts/worker/formal_ai_worker.ts', 'ts/agentic/planner.mts', 'ts/server/dynamic-meta/runtime.mts']) {
       assert(rows.some(row => row.typescript === file), 'actual TypeScript input: ' + file);
     }
     const target = path.join(root, 'js/server/worker-host.mjs');
@@ -89,7 +91,7 @@ export async function checkTypeScriptRuntime({root = REPOSITORY, translator} = {
       typeScriptInputOperations: rows.filter(row => row.typescript).length,
       uniqueTypeScriptInputs: new Set(rows.filter(row => row.typescript).map(row => row.typescript)).size,
       sharedDependencies: Object.keys(sharedDependencies).map(file => path.relative(root, file)),
-      cases: ['three multilingual calculations with independent numeric oracle', 'real filesystem source write',
+      cases: ['three multilingual calculations with independent numeric oracle', 'real filesystem source write', 'compiled dynamic meta recipe',
         'missing owned projection refuses despite existing JS source', 'altered TS identity refuses'],
       originalJavaScriptFallback: false, nativeExecution: false, productWasmExecution: false,
       authorshipCredit: 0, fullRuntimeFeatureParity: false};
@@ -107,13 +109,19 @@ function runtimeFixture(root) {
     "const {installNodeHost}=await load('js/agentic/node-host.mjs');",
     "const {planChatStep}=await load('js/agentic/planner.mjs');",
     "const {drive}=await load('experiments/js_dogfood/drive.mjs');",
+    "const {createMetaRuntime}=await load('js/server/dynamic-meta/runtime.mjs');",
     "const worker=new WorkerHost({WebAssembly:{compile(){throw Error('ProductWasmDisabled');},",
     "instantiate(){throw Error('ProductWasmDisabled');},instantiateStreaming(){throw Error('ProductWasmDisabled');}}});",
     'await installNodeHost(worker);const answers=[];',
     "for(const prompt of ['What is 18 plus 29?','¿Cuánto es 18 más 29?','Сколько будет 18 плюс 29?'])",
     'answers.push(await worker.solve(prompt));',
     "const result=await drive(planChatStep,workspace,'Create file isolated.mjs containing export const isolated = 61;',{steps:12});",
-    "console.log(JSON.stringify({answers,stop:result.stop,code:fs.readFileSync(workspace+'/isolated.mjs','utf8')}));",
+    "const meta=createMetaRuntime();const operator={admin:true};",
+    "const manifest=fs.readFileSync(root+'/experiments/dynamic-meta/package.json','utf8');",
+    "await meta.act({action:'install',manifest,confirm:true},operator);",
+    "await meta.act({action:'command',command:'Compile recipe example/normalize',confirm:true},operator);",
+    "const dynamicMeta=await meta.act({action:'run',recipe:'example/normalize',input:'teh teh'});meta.close();",
+    "console.log(JSON.stringify({answers,stop:result.stop,code:fs.readFileSync(workspace+'/isolated.mjs','utf8'),dynamicMeta}));",
   ].join('\n') + '\n';
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

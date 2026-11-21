@@ -23,11 +23,15 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   existing specification tests directly from their maintained source file. The
   same job also runs four captured-source language tests and the unchanged
   unsupported-language sibling contract (#1580). The forced-function HTTP suite also replays
-  against the native CLI. All compile-dependent steps retain the same input
-  condition, with two compiler jobs and test optimization disabled. Successful
+  against the native CLI. Issue #1604 also reuses that binary to verify dynamic
+  meta authorization and transaction receipts through the native gateway. Its
+  JavaScript host installs the frozen Bun lockfile with lifecycle scripts disabled.
+  All compile-dependent steps retain the same input
+  condition, with two compiler jobs and the maintained optimized test profile. Successful
   execution verifies these regressions; it does not produce release evidence. Full
-  suites and product builds remain on main. The job uploads and attests nothing,
-  saves no cache and publishes no outputs.
+  suites and product builds remain on main. The job retains deterministic Google
+  Trends fixture projections for replay, with their generation identity. It grants
+  no release authorization, saves no cache and publishes no workflow outputs.
   Every PR reports the required job context. Changes to isolated native test
   sources, embedded fixtures, HTTP replay inputs or the admission policy select
   native execution. Documentation and unrelated JavaScript, test or script changes

@@ -119,6 +119,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'cargo test --manifest-path experiments/issue-1580/release-registry/Cargo.toml --locked --lib --test assemble_requirements --test normalize_ordered_lists --test self_hosting_metric -- --test-threads=1 --nocapture\n' +
     'python3 experiments/issue-1580/release-registry/cli_regressions.py\n']);
   assert(!registry.steps.some(step => /upload-artifact|cache\/save|attest/u.test(step.uses ?? '')));
+  const gatewayReplay = 'bun install --frozen-lockfile --ignore-scripts\n' +
+    "node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs\n";
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), [
     'if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then\n' +
@@ -134,6 +136,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs',
+    gatewayReplay,
     'cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog\n' +
     'rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"\n' +
     '{\n' +
@@ -142,7 +145,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     '  sha256sum rust/target/debug/examples/dump_google_trends_catalog rust/examples/dump_google_trends_catalog.rs rust/src/google_trends_catalog.rs data/seed/google-trends-prompts.lino\n' +
     '} > "$CATALOG_OUTPUT/generation-identity.txt"\n']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
-  for (const step of check.steps.filter(step => (step.uses && !['actions/setup-node@v7', 'actions/upload-artifact@v7'].includes(step.uses)) || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
+  for (const step of check.steps.filter(step => (step.uses && !['actions/setup-node@v7', 'actions/upload-artifact@v7', 'oven-sh/setup-bun@v2'].includes(step.uses)) || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
     assert.equal(step.if, step.id === 'native-checkout-retry'
       ? "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-checkout.outcome == 'failure' }}"
       : '${{ inputs.compile-inputs-changed }}');
@@ -156,6 +159,20 @@ test('the focused PR native check limits execution to lint and isolated regressi
     assert.deepEqual(check.steps.find(step => step.run === command).env,
       {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   }
+  assert.deepEqual(check.steps.find(step => step.run === gatewayReplay).env,
+    {FORMAL_AI_DYNAMIC_META_NATIVE: '${{ github.workspace }}/rust/target/debug/formal-ai'});
+  const checkout = check.steps.find(step => step.uses === 'actions/checkout@v7').with;
+  assert.deepEqual(checkout['sparse-checkout'].trim().split('\n'),
+    ['/*', '!/dev/log/', '!/experiments/**', '/experiments/**/*.sh',
+      '/experiments/dynamic-meta/**', '/experiments/js_dogfood/**',
+      '/experiments/issue-1580/release-registry/', '/experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
+      ...['candidate-output-bindings.json', 'candidate-release-caller.yml', 'original-release-workflow.yml',
+        'stage-source-coverage.json'].map(file =>
+        '/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/' + file)]);
+  for (const step of check.steps.filter(step => step.uses === 'oven-sh/setup-bun@v2' || step.run === gatewayReplay))
+    assert.equal(step.if, "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
+  assert.deepEqual(check.steps.find(step => step.uses === 'oven-sh/setup-bun@v2').with,
+    {'bun-version-file': '.bun-version', 'no-cache': true});
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
   assert(!check.steps.some(step => /attest|cache@|cache\/save/u.test(step.uses ?? '')));
   const uploads = check.steps.filter(step => /upload-artifact/u.test(step.uses ?? ''));
@@ -190,11 +207,11 @@ test('the focused PR native check limits execution to lint and isolated regressi
     '.github/actions/setup-sccache/action.yml', 'scripts/ci-clippy-profile.sh', 'scripts/ci-pull-request-admission.mjs',
     'scripts/lib/documentation-paths.mjs', 'rust/tests/web/issue-1590-forced-functions.test.mjs',
     'rust/tests/web/issue-1586-structured-output.test.mjs',
-    'rust/tests/web/support/structured-log-fixture.mjs', 'js/server/structured-log.mjs', '.github/workflows/links.yml', 'clippy.toml', 'new-top-level/unknown.txt'])
+    'rust/tests/web/support/structured-log-fixture.mjs', 'js/server/structured-log.mjs',
+    'package.json', 'bun.lock', '.bun-version', '.github/workflows/links.yml', 'clippy.toml', 'new-top-level/unknown.txt'])
     assert.equal(native([path]), true, path);
   for (const path of ['docs/a.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
-    'rust/tests/unit/proof_request.rs', 'rust/tests/fixtures/unrelated.json', 'data/parity/unrelated.json', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.txt',
-    'package.json', 'bun.lock'])
+    'rust/tests/unit/proof_request.rs', 'rust/tests/fixtures/unrelated.json', 'data/parity/unrelated.json', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.txt'])
     assert.equal(native([path]), false, path);
   assert.equal(native([]), true, 'an empty observation is unknown, so the check runs');
 });
@@ -659,8 +676,8 @@ test('localized native replay selects both its test source and consumed fixture'
 test('independent native replays continue after a regression fails and preserve failure status', () => {
   const job = workflow('native-type-check.yml').jobs.clippy;
   const later = job.steps.filter(step => step.name === 'Verify native unresolved-language source binding'
-    || step.uses === 'actions/setup-node@v7' || step.name?.startsWith('Replay '));
-  assert.equal(later.length, 5);
+    || ['actions/setup-node@v7', 'oven-sh/setup-bun@v2'].includes(step.uses) || step.name?.startsWith('Replay '));
+  assert.equal(later.length, 7);
   const selected = (step, {earlierFailure = true, compile = true, lint = 'success', cancelled = false} = {}) => {
     const expression = step.if.slice(3, -2).trim()
       .replaceAll('inputs.compile-inputs-changed', "inputs['compile-inputs-changed']")
@@ -727,6 +744,7 @@ test('native sparse checkout retains nested shell inputs without experiment payl
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-native-shell-inputs-'));
   const paths = ['README.md', 'scripts/install.sh', 'experiments/agentic_cli_matrix/install_client.sh',
     'experiments/issue-1571/osv-cargo-lock.sh', 'experiments/new/nested/download.sh', 'experiments/direct.sh',
+    'experiments/dynamic-meta/package.json', 'experiments/js_dogfood/drive.mjs',
     'experiments/new/nested/payload.json', 'experiments/unrelated.mjs', 'dev/log/payload.json'];
   const git = (args, input) => {
     const result = spawnSync('git', args, {cwd:directory, input, encoding:'utf8', timeout:5000, maxBuffer:65536});
@@ -743,8 +761,8 @@ test('native sparse checkout retains nested shell inputs without experiment payl
       'commit', '-qm', 'Finite source inputs']);
     assert.equal(checkout.with['sparse-checkout-cone-mode'], false);
     git(['sparse-checkout', 'set', '--no-cone', '--stdin'], checkout.with['sparse-checkout']);
-    for (const path of paths.slice(0, 6)) assert(existsSync(join(directory, path)), path);
-    for (const path of paths.slice(6)) assert(!existsSync(join(directory, path)), path);
+    for (const path of paths.slice(0, 8)) assert(existsSync(join(directory, path)), path);
+    for (const path of paths.slice(8)) assert(!existsSync(join(directory, path)), path);
   } finally { rmSync(directory, {recursive:true, force:true}); }
 });
 

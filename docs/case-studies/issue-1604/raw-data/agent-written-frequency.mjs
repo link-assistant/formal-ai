@@ -1,0 +1,5 @@
+export function frequency(items) {
+  const counts = new Map();
+  for (const value of items) counts.set(value, (counts.get(value) ?? 0) + 1);
+  return counts;
+}

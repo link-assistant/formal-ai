@@ -1,0 +1,49 @@
+{
+  "authored": false,
+  "candidates": [
+    {
+      "authority": "lexical-candidate-only",
+      "span": [
+        12,
+        22
+      ],
+      "text": "JavaScript"
+    }
+  ],
+  "clauses": [
+    {
+      "span": [
+        0,
+        212
+      ],
+      "status": "unbound",
+      "text": "Implement a JavaScript module at artifacts/frequency.mjs. Export a function frequency that accepts an array of strings and returns a Map from each distinct string to its count. Create the module in the workspace."
+    }
+  ],
+  "coverage": "bounded-candidates-and-paths-not-exhaustive",
+  "implementation": "Unknown",
+  "inferredWork": "mechanical-source-discovery",
+  "observations": [
+    {
+      "arguments": {
+        "path": ".",
+        "pattern": "\\bJavaScript\\b"
+      },
+      "candidate": {
+        "authority": "lexical-candidate-only",
+        "span": [
+          12,
+          22
+        ],
+        "text": "JavaScript"
+      },
+      "complete": true,
+      "detail": "No files found",
+      "providerSucceeded": true
+    }
+  ],
+  "reason": "SourceBoundImplementationAndIndependentValidationMissing",
+  "taskIdentity": "7c7553fb0d7f73bdfd9152bce9d2579597388d94cd62f72bc5e6adbcc6b1f74c",
+  "validation": "Unknown",
+  "verified": false
+}

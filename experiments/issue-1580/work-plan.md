@@ -25,21 +25,21 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Latest published head `84e1ad85` has 25 of 26 normal workflows terminal:
-24 success, one skip and no failures observed; Pipeline remains active in the
-current capture. No push is permitted until current-head workflows finish.
-The local worker extraction passes 45 focused tests, 133 maintained cases,
-TypeScript generation/runtime checks and all 141 local gate entries (88 pass,
-53 explicit skips). Four source-size warnings are repaired; 87 remain under
-unchanged limits. Full template/practice, original budget/live and complete
-issue acceptance remain open. See the
-[worker extraction checkpoint](../../docs/case-studies/issue-1580/worker-warning-extraction-checkpoint.md).
-The [Rust timeout and source identity checkpoint](../../docs/case-studies/issue-1580/rust-timeout-and-source-identity-checkpoint.md)
-adds an upstream documentation-drift report and repairs the invalid source pin
-after checking all twelve changed-file Git blobs. Its before-fix regression
-fails on the original identifier. No upstream repair or full-template acceptance
-is inferred from the report.
-Earlier checkpoint entries below retain their dated heads and scope.
+Published `84e1ad85` has all 26 normal workflows terminal: 25 success,
+one skip and no failures. All eight native families and registry checks pass.
+The merged local source passes 88 local gates with 53 explicit skips,
+133 maintained observation cases, TypeScript generation/runtime and focused
+gateway/server checks. New before-fix regressions cover omitted dynamic meta
+native inputs and rejection of the inventory's valid 257th suite. Both fixes
+retain existing execution deadlines and source validation. Hosted qualification
+of the merged source remains pending. See the
+[dynamic meta merge checkpoint](../../docs/case-studies/issue-1580/dynamic-meta-merge-checkpoint.md).
+
+Four worker source-size warnings were repaired; 87 remain under unchanged
+limits. The [Rust timeout and source identity checkpoint](../../docs/case-studies/issue-1580/rust-timeout-and-source-identity-checkpoint.md)
+records the invalid source pin correction and upstream documentation report.
+Full template/practice, original budget/live, complete PR review and complete
+issue acceptance remain open. Earlier entries below retain their dated scope.
 
 
 Latest checkpoint: [current native failures and gate inputs](../../docs/case-studies/issue-1580/current-native-failure-checkpoint.md). Published `8b0d6f59` has 24 successful workflows, one skip and two failures. All eight native contract families and registry-script checks pass. Process termination and pipeline schema regressions pass locally; the CodeQL thread candidate and failed-fetch native guard still need hosted qualification. Fresh observations identify changed heads in seven templates; earlier comparisons retain their original pins. Full issue acceptance remains unfinished.

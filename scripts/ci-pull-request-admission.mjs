@@ -204,6 +204,14 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'js/server/structured-log.mjs',
 ]);
 export function nativeCompileInput(path) {
+  // The native dynamic-meta replay starts the JavaScript HTTP host and its
+  // worker. Retain these discovered module trees and frozen package inputs;
+  // a changed host must not silently bypass its native gateway qualification.
+  if (['js/server/', 'js/agentic/', 'js/worker/', 'js/seed/',
+    'experiments/dynamic-meta/', 'experiments/js_dogfood/'].some(prefix => path.startsWith(prefix))
+    || ['rust/tests/web/dynamic-meta.test.mjs', 'package.json', 'bun.lock', '.bun-version',
+      'js/parser-cache-primordials.js', 'js/seed_loader.js', 'js/worker-bootstrap-responses.js',
+      'js/worker-modules.js'].includes(path)) return true;
   // The download contract discovers every shell script, including new paths.
   if (path.endsWith('.sh')) return true;
   if (path.startsWith('data/parity/issue-1584-cnl/') || NATIVE_REGRESSION_INPUTS.has(path) || ['scripts/ci-clippy-profile.sh',

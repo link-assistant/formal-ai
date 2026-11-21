@@ -1,3 +1,4 @@
+import '../../../experiments/issue-1580/fast-inventory-boundary.test.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
