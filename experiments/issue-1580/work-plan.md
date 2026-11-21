@@ -25,46 +25,71 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `3e7056756ed57e4899780913eae2f0fb07723e5f` has 27 terminal workflows:
-25 success, one skip and one Layered CI failure. CI/CD Pipeline 44836234471
-passes all 573 Rust cases plus eight actual registry CLI cases. All ten native
-jobs, including three Hive shards, finish within unchanged clocks; 304 retained
-command streams verify by hash, byte and line count. Layered CI 44836234464
-fails two assertions of the same stale solver fixture binding (full log lines
-3860 and 12907). The exact 19-field governed refresh retains failed-before and
-passing-after cases, with every other fixture object unchanged. Next-head hosted
-verification is pending.
+Latest fully collected published head `d48b09883ac91cd1d2319bea2afbaf0df2df8f86`
+has 27 terminal workflows: 23 success, one skip and three failures. All 200
+retained command streams verify by original/compressed hash, bytes and lines.
+CI/CD Pipeline 44843761970 has nine compile-blocked native jobs: seven remaining
+seed parent call sites lack split_pipe_list (first full-log error line 42913),
+and the protocol parent retains unused ThinkingStep (line 42990). Commit
+db4f64b41 restores/removes those private imports. Exact moved-text inverses did
+not prove remaining parent name bindings; new hosted compilation is pending.
+The separate registry helper job passes 48 Rust and eight actual CLI cases.
 
-Manual Security 44836216888 succeeds with 126 verified original payloads,
-122,553 macro contexts over 2,228 files, a 2,607 MiB resolved heap and no query
-runtime diagnostics. Original SARIF has zero findings and warning/error
-notifications. The 631 unexpanded original positions still lack per-child
-security/dataflow qualification. A new default-off included-string observation
-retains full literal payloads and unavailable expansions; 21 maintained security
-cases pass, but actual hosted query compilation/execution remains pending.
+Layered CI 44843761720 fails the retained producer fingerprint at full-log line
+8379. Commit 5792163c5 updates only the new included-string observer fingerprint
+after verifying an exact inverse to the original producer. The maintained case
+fails before and passes after repair. Its production admission is unchanged.
 
-The complete 141-entry local inventory passes 88 gates with 53 explicit
-native/context exclusions and zero failures. All 88 compressed gate streams
-verify by hash, bytes and line count. The subsequent seed-response extraction
-passes its three focused test files, eight source/currency gates, translation
-currency and Rust formatting. Its initial strict token proof failed when
-rustfmt removed one optional import comma; that failure is retained and the
-single declared change is verified. No full replay after that Rust-only leaf is
-claimed. Twenty-one extraction groups now leave 97 source-size warnings and no
-ordinary or embedded-data violations. Original limits remain unchanged. The
-protocol-message and seed-response groups, new lifetime-test admission and new
-query profile require hosted checks after publication.
+Security 44843748460 fails the additional included-string observation at full-log
+line 4819: compilation takes 25.1 seconds, evaluation exceeds the unchanged
+four-minute deadline, and no result or final manifest is produced. The local
+query change narrows helper domains and enables opt-in evaluator tracing. Its
+performance hypothesis and result equivalence still need hosted verification;
+the exact expensive relation has not yet been established. No timeout increase
+or weakening of the standard security gates is made.
 
-Published logs retain 99 source-size annotations and token-scope uncertainty;
-the allowed experimental unsafe-libyaml maintenance warning is separate. The
-Workflows error at line 660 is the deliberate canonical-outage control followed
-by verified mirror recovery. Whole aggregate literal review, all-warning
-resolution, dependency migration, complete PR review, all eight full template
-comparisons/practices and original/live acceptance remain unfinished. Rust
-literal review remains 352/373 identities and 49,166 lines. Strict dated original
-acceptance remains 31/53 plus 22 separate scoped assertion reviews. Independent
-Formal AI reasoning remains 0/20; supplied work receives zero credit. PR #1581
-stays draft and unmerged. Full issue completion remains false.
+Both original standard SARIF reports have zero findings and warning/error
+notifications. The separate completed macro profile has 122,555 contexts across
+2,229 files, a 2,607 MiB resolved heap and no runtime diagnostics; all 136
+original producer payloads verify. The 631 unexpanded original positions still
+lack per-child security/dataflow qualification. Clean standard reports do not
+prove the failed new observation, or unresolved macro semantics.
+
+The complete maintained template adapter passes all 93 cases, including 15 new
+PHP original/candidate input-integrity cases and the seven admitted process
+lifetime cases. Nine selected version/base-admission cases pass. Rust formatting,
+projection currency, the query adapter, retained producer and strict security
+tests pass locally. No local Rust compilation or execution occurs. The full
+141-entry gate replay initially catches new receipt filename abbreviations;
+payload-preserving names are repaired without changing the ratchet. The full replay finishes 140/141 passed or skipped; its only
+failure is
+check-abbreviations at 93 versus the unchanged ceiling of 90. Renaming three
+source archive receipts preserves every payload and the focused check passes
+at 90 filenames, 718 JavaScript bindings and 908 Rust bindings. The failed full
+replay and passing focused repair remain separate evidence in the batch seal.
+
+Pinned PHP review now adds 98 fully read source files and partial composer.lock
+ranges to the prior 17. Twenty-two exact bounded pages are retained. Seven
+bounded original PHP ownership cases leave a live worker at wrapper exit;
+all seven current Formal AI counterpart controls pass. PHP version observation
+accepts missing/invalid evidence; release-note truncation produces invalid
+UTF-8 even at its default 120000-byte cap. Fifteen maintained tests retain
+original failures, disposable candidates and positive controls. Fresh upstream
+b61e334703d93a15e08bf1a278e0df0a9d6e98a8 has identical relevant source blobs.
+No upstream repair or full template/runtime acceptance is claimed.
+
+Twenty-one extraction groups leave 97 source-size warnings and zero ordinary
+or embedded-data violations under the original limits. Published annotations
+include those 97 warnings and token-scope uncertainty; experimental unsafe-libyaml
+maintenance remains open. One Workflows error is the deliberate canonical
+registry outage control followed by actual mirror recovery. Whole aggregate
+literal review, all-warning resolution, dependency migration, complete PR review,
+all eight full template comparisons/practices and original/live acceptance remain
+unfinished. Rust literal review remains 352/373 identities and 49,166 lines.
+Strict dated whole-file original acceptance remains 31/53 plus 22 separate scoped
+assertion reviews; original budgets and live criteria remain open. Independent
+Formal AI reasoning remains 0/20. Supplied work receives zero independent credit.
+PR #1581 remains draft and unmerged; full issue completion remains false.
 
 Earlier chronology: [preserved work plan entries](work-plan-history-through-native-interface.md).
 

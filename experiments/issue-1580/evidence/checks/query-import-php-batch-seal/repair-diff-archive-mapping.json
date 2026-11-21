@@ -1,0 +1,32 @@
+[
+  {
+    "originalFile": "repair-review-part-1.diff",
+    "file": "repair-review-part-1.diff.gz",
+    "rawSha256": "d9935bf317a6ca0cc78845f78c574e4632ad0de143b9e4fe22b8a1da3cbc4c82",
+    "archiveSha256": "133b655934c5480b705f96194b85fe7f22412086bc2b8484ccb241fffda1c964"
+  },
+  {
+    "originalFile": "repair-review-part-2.diff",
+    "file": "repair-review-part-2.diff.gz",
+    "rawSha256": "8096008fa586a8a8e418f9ccb6a1d1705ea58c09e9f06b47f2ee0728ace80611",
+    "archiveSha256": "548c43a49740ea487a1064b449b7aa6e295f02a1b5feb7429844f8eaac3f0257"
+  },
+  {
+    "originalFile": "repair-review-part-3.diff",
+    "file": "repair-review-part-3.diff.gz",
+    "rawSha256": "b1a48f0c89fabc7497fc58a009d7ded29ec4a4cc3e534a0fb5208e6da1cb5cd6",
+    "archiveSha256": "8d120279b64c34a49d0f5df84e6041a4e488e13a2777c7d9de49f77892584a9c"
+  },
+  {
+    "originalFile": "repair-review-part-4.diff",
+    "file": "repair-review-part-4.diff.gz",
+    "rawSha256": "29e54d123303a6908c285e3b4bd1a942b91abf236fad90e1555156e12c183438",
+    "archiveSha256": "3f9638a6f62ed45003cc58da4937e8a05bd66991d3a1e51e047678b498ef63c2"
+  },
+  {
+    "originalFile": "repair-review-repair.diff",
+    "file": "repair-review-repair.diff.gz",
+    "rawSha256": "8e3b8782f335c40de39605fd7e6892c9a54b1c82414afbb3c770d0f24c8c82c3",
+    "archiveSha256": "89e460497f4c313377960b486fa4e65b6e01a4fa50db3d89e5736d5fde2ff7e6"
+  }
+]
