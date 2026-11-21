@@ -425,21 +425,14 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
         tokens.iter().any(|token| is_url(token)),
         &mut found,
     );
-    note(
-        ObjectType::Path,
-        tokens.iter().any(|token| is_path(token, &normalized)),
-        &mut found,
-    );
+    let path_count = path_token_count(prompt, &normalized);
+    note(ObjectType::Path, path_count > 0, &mut found);
     note(
         ObjectType::Pattern,
         tokens.iter().any(|token| is_pattern_token(token)),
         &mut found,
     );
-    note(
-        ObjectType::PathSet,
-        path_token_count(prompt, &normalized) > 1,
-        &mut found,
-    );
+    note(ObjectType::PathSet, path_count > 1, &mut found);
     note(
         ObjectType::SelfSurface,
         is_self_surface(&normalized),

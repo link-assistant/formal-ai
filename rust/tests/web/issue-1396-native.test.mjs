@@ -142,8 +142,7 @@ test("native Responses uses procedural sources with the client web search tool a
 test("native HTTP documentation answers require a matching publisher capture", NATIVE_CASE, async (t) => {
   const { cache, url } = await startNativeProcedureReplay(t);
   const source = "https://pandas.pydata.org/docs/reference/api/pandas.Series.diff.html";
-  const prompt = "How does pandas Series.diff work?";
-  async function ask() {
+  async function ask(prompt) {
     const response = await fetch(`${url}/v1/chat/completions`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -154,13 +153,19 @@ test("native HTTP documentation answers require a matching publisher capture", N
     assert.ok(response.ok, await response.clone().text());
     return (await response.json()).choices[0].message.content;
   }
-  const missing = await ask();
+  const prompt = "How does pandas Series.diff work?";
+  const missing = await ask(prompt);
   assert.doesNotMatch(missing, /First discrete difference/u);
+  assert.doesNotMatch(missing, /`read_file` capability/u);
   assert.ok(!missing.includes(source), missing);
   storeCapture(cache, source, readFileSync(new URL("../fixtures/documentation-method/diff.html", import.meta.url), "utf8"));
-  const retrieved = await ask();
-  assert.match(retrieved, /First discrete difference of Series elements/u);
-  assert.ok(retrieved.includes(source), retrieved);
+  for (const question of [prompt, "How does pandas.Series.diff work?"]) {
+    const retrieved = await ask(question);
+    assert.match(retrieved, /First discrete difference of Series elements/u);
+    assert.ok(retrieved.includes(source), retrieved);
+  }
+  const file = await ask("Explain the file Series.diff in this workspace.");
+  assert.match(file, /`read_file` capability/u);
 });
 
 test("native Agent CLI requires a retrieved capture for a known benchmark issue", NATIVE_CASE, async (t) => {
