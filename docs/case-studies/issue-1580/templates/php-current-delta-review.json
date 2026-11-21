@@ -1,0 +1,386 @@
+{
+  "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+  "commit": "b61e334703d93a15e08bf1a278e0df0a9d6e98a8",
+  "currentBlobCount": 608,
+  "scope": "Nineteen changed current files only. Unchanged and historical full-template comparison remains open.",
+  "completeChangedFileComparison": true,
+  "completeCurrentSourceComparison": false,
+  "completeTemplateAcceptance": false,
+  "files": [
+    {
+      "path": ".github/workflows/docs.yml",
+      "gitBlob": "697e36eac8db956640c278a54e20ef8673cf52fd",
+      "sha256": "7c40327fca36ae407565bb3e4e9fccd600bf418d2405c7f3d46015e0a7bb368d",
+      "bytes": 3566,
+      "lines": 117,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        110
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml"
+      ],
+      "decision": "Artifact generation is independent of Pages activation; main emits a notice when deployment is not opted in. Formal AI retains strict served-content verification as a separate open acceptance criterion."
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "f61b5337635cf745d44fefbf0b2845bea69ab1d3",
+      "sha256": "1aecacfb8da4a1e7ded16bc8806f551be08dd5eb336fdae2687f2c31f9ddac4d",
+      "bytes": 18908,
+      "lines": 514,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        111,
+        112
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml"
+      ],
+      "decision": "Every automatic release prerequisite is explicitly successful before publication. This applies the previously reported guard repair; all read-only checkout steps disable persistent credentials and writer checkouts retain their narrow role."
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "gitBlob": "ef33500d0d5da66612e3a8bc20124cb90ca38977",
+      "sha256": "adfac917b8dc0b20a7e236d284432570df4ac654deee0f957982937b06869b00",
+      "bytes": 3865,
+      "lines": 124,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        113
+      ],
+      "formalAiComparison": [
+        ".github/workflows/security.yml"
+      ],
+      "decision": "Current security tooling pins and read-only checkout handling are reviewed. No upstream CodeQL execution or live registry audit is inferred from this file."
+    },
+    {
+      "path": ".github/workflows/templates.yml",
+      "gitBlob": "5ae601c8b288e604d0899fa46937d57a6456cbd7",
+      "sha256": "76b72738d9163ef4940a161f81bc8a67afa3d75d184ccf28499f9263d851c014",
+      "bytes": 5655,
+      "lines": 159,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        114
+      ],
+      "formalAiComparison": [
+        "AGENTS.md"
+      ],
+      "decision": "All four captured source subtrees remain active upstream CI inputs. Their native builds are not copied into the local JavaScript PR lane, which forbids full local Rust builds."
+    },
+    {
+      "path": "CHANGELOG.md",
+      "gitBlob": "3b740f4d24d6dddd25737b1b2e5097d5348faa0f",
+      "sha256": "0917cb27224a51b17531b1cb7fa9e80d3f0ced88e3888b3bc1217239b7e2a564",
+      "bytes": 5385,
+      "lines": 100,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        115
+      ],
+      "formalAiComparison": [
+        "changelog.d/20261121_072500_scanner_budget_annotations.md"
+      ],
+      "decision": "The release history identifies accepted Pages, change-detection, automatic release and publication repairs. Formal AI retains its own fragment-driven release trigger."
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "gitBlob": "c81bfa737833e76cfe55dc90ad121ec30902694c",
+      "sha256": "8e2daf21e87cbf6e10d2de9abd59ab877391ca255b28285085b952a588c69586",
+      "bytes": 4611,
+      "lines": 122,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        116
+      ],
+      "formalAiComparison": [
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Use explicit failure propagation, disposable release fixtures and prerequisite status checks. Template statements about an entirely PHP pipeline do not erase the Bash and JavaScript wrappers actually present."
+    },
+    {
+      "path": "README.md",
+      "gitBlob": "a36ace82ed365d555ce98617ba9eb64ec09ce614",
+      "sha256": "8d740ec945b2df33fa03e50dfd6d93f6847b9beaaf7948ab4ae48281793a159e",
+      "bytes": 8792,
+      "lines": 187,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        117
+      ],
+      "formalAiComparison": [
+        "README.md"
+      ],
+      "decision": "The current template uses PHP 8.5 and PHPUnit 13; old PHP/PHPStan descriptions are not authority for current tool support. The linked application image was downloaded, verified as PNG and viewed."
+    },
+    {
+      "path": "composer.json",
+      "gitBlob": "0d4f472ef293f5f6016ffa6a9b775cb3b0b7b848",
+      "sha256": "198b19ff26ba0ff48e8ca950fb152756aaf090f03720a3a2b4541fdbcaee62b4",
+      "bytes": 1697,
+      "lines": 61,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        118
+      ],
+      "formalAiComparison": [
+        "bun.lock"
+      ],
+      "decision": "The PHP-specific dependency manifest and test commands are reviewed for the focused upstream checks. No PHP dependencies are added to Formal AI."
+    },
+    {
+      "path": "composer.lock",
+      "gitBlob": "601d6e52e1bcc1085724714c9894df375e3ae47f",
+      "sha256": "dc105d2038ed2dac27f327e4c890263e61a217db120189cde8720416a3ddfa5e",
+      "bytes": 174606,
+      "lines": 4774,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132
+      ],
+      "formalAiComparison": [
+        "bun.lock"
+      ],
+      "decision": "All 4774 lines were read, including exact package references, PHP >=8.5 platform and Composer 2.11 plugin API. A separate scratch lock pins the 26 packages needed only for PHPUnit; the full template dependency suite was not installed."
+    },
+    {
+      "path": "docs/BEST-PRACTICES.md",
+      "gitBlob": "660a1464bfa9bf7167edafa74af04af43f6db13c",
+      "sha256": "9d5bfe1a9aa1c3ae411b931d512d9091f9beee5f240c1906d83e12848626f320",
+      "bytes": 6792,
+      "lines": 144,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        133
+      ],
+      "formalAiComparison": [
+        "AGENTS.md",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Strict link failures, bounded retries and reusable checks are applicable. Archive suggestions do not satisfy unresolved live links; broad native rebuilds conflict with the local single-push and fast-check rules."
+    },
+    {
+      "path": "docs/index.md",
+      "gitBlob": "4e737619e2993f459cd9c75b84ccfc0bc5c2d14e",
+      "sha256": "2f4a8a1f35f589fde26380a827b73eac4311b23e33ed3dc01fba7c404996a30a",
+      "bytes": 2302,
+      "lines": 49,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        134
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml"
+      ],
+      "decision": "Documentation distinguishes artifact availability from explicit Pages activation. Actual served identity and the fallback publication path remain open locally."
+    },
+    {
+      "path": "scripts/detect-code-changes.php",
+      "gitBlob": "c38b58298ef428a408113ad8cc3776297f44fbac",
+      "sha256": "71696c12cf430d97f15ed1bf78eb1323073f408c403877d7fe68e3070e287568",
+      "bytes": 868,
+      "lines": 33,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        135
+      ],
+      "formalAiComparison": [
+        "scripts/detect-code-changes.rs"
+      ],
+      "decision": "The CLI catches runtime failures and exits nonzero without successful change outputs. Current malformed-ref and missing-history cases pass with the actual PHP implementation."
+    },
+    {
+      "path": "scripts/src/ChangeDetector.php",
+      "gitBlob": "b0b498508d6e0d59423f49e1897667ff6b9ed333",
+      "sha256": "c77a2ed8e12fb22c35d92cf693fcb55757467a39396ca30f2efa8b2803b2abe2",
+      "bytes": 5017,
+      "lines": 158,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        136
+      ],
+      "formalAiComparison": [
+        "scripts/detect-code-changes.rs"
+      ],
+      "decision": "40/64-hex refs and checked Git commands distinguish PR triple-dot, push before/after and zero-ref initial trees. Missing shallow ancestry fails; NUL path parsing retains control-character filenames."
+    },
+    {
+      "path": "scripts/src/Git.php",
+      "gitBlob": "af6efda89bde0dd82c11e9b08b7477703d6d54b2",
+      "sha256": "c84d5fb225a25796351806546e575c7c79deda114763b0b09bc153be2655ea1b",
+      "bytes": 1751,
+      "lines": 61,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        137
+      ],
+      "formalAiComparison": [
+        "scripts/version-and-commit.rs"
+      ],
+      "decision": "Both branch and tag publication now use mustRun, resolving the earlier unchecked Process::run finding at this pin. Real disposable repositories test rejection propagation."
+    },
+    {
+      "path": "scripts/src/VersionReleaser.php",
+      "gitBlob": "3d702c98a4924efd7dee001e7fd04143902109cb",
+      "sha256": "e7464203a74edb0a38c556807908ebfce1c355bdd9961aebf5b5f73458c5e776",
+      "bytes": 3621,
+      "lines": 113,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        138
+      ],
+      "formalAiComparison": [
+        "scripts/version-and-commit.rs"
+      ],
+      "decision": "Manifest changes refresh an existing Composer lock before staging both files. Both publication modes fail rejected branch/tag pushes. The focused tests use disposable local remotes and do not publish externally."
+    },
+    {
+      "path": "scripts/version-and-commit.php",
+      "gitBlob": "69758732730ad96d64957ee50d4e489b09209939",
+      "sha256": "06a76db74f8e2a1fb7fb33acf056ef277e207e19f78d121fd8b31199d69a261c",
+      "bytes": 2533,
+      "lines": 68,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        139
+      ],
+      "formalAiComparison": [
+        "scripts/version-and-commit.rs"
+      ],
+      "decision": "Runtime failures become a nonzero CLI result before version_committed=true. The maintained upstream tests execute the actual entry point in isolated copies."
+    },
+    {
+      "path": "tests/Pipeline/ChangeDetectorTest.php",
+      "gitBlob": "c39f590bfacd807b4cc132954d4ab43817129f0c",
+      "sha256": "7eace8ba3ccfb10f609ae19b3326fbbe189a1849f6d7c1e70a5dfea8d81c1abb",
+      "bytes": 5765,
+      "lines": 161,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        140
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "decision": "Actual current PHP execution passes 8 tests and 45 assertions for ref validation, missing history, initial trees and escaped filenames."
+    },
+    {
+      "path": "tests/Pipeline/VersionReleaserTest.php",
+      "gitBlob": "fc328334d54bd0db68aa2f88ceba1154578b4f10",
+      "sha256": "4f6bc4f5085b5f3619026473f6f029a7f15a5cefa00c5bc60645a882d76aabf5",
+      "bytes": 8632,
+      "lines": 201,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        141
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "decision": "Actual current PHP execution passes 9 tests and 228 assertions, retaining successful releases while rejecting branch and tag pushes and refreshing a lock."
+    },
+    {
+      "path": "tests/Pipeline/WorkflowPolicyTest.php",
+      "gitBlob": "15c5afdeba96cc727918e431aef08e70507bf8f7",
+      "sha256": "b05ee02a1ed13141df83dea268c8c8a80f7e0ab37277440c918f123679392d62",
+      "bytes": 26428,
+      "lines": 606,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        142,
+        143
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "decision": "Actual current PHP execution passes 26 tests and 378 assertions for automatic prerequisite guards, read-only credentials and independent docs artifacts. These source-policy checks do not prove a live hosted publication."
+    }
+  ],
+  "removedPaths": [],
+  "verification": {
+    "focusedTestsPassed": 43,
+    "focusedAssertionsPassed": 651,
+    "testFiles": 3,
+    "runtime": "PHP 8.5.11",
+    "phpunit": "13.4.7",
+    "composer": "2.11.2",
+    "phpMemoryLimitMiB": 128,
+    "verifiedFixtureFiles": 57,
+    "currentManifestValidationExitCode": 1,
+    "fullTemplateDependencySuiteInstalled": false,
+    "fullTemplateSuiteExecuted": false,
+    "livePublicationVerified": false,
+    "logs": [
+      {
+        "file": "ChangeDetectorTest.php.log",
+        "tests": 8,
+        "assertions": 45
+      },
+      {
+        "file": "VersionReleaserTest.php.log",
+        "tests": 9,
+        "assertions": 228
+      },
+      {
+        "file": "WorkflowPolicyTest.php.log",
+        "tests": 26,
+        "assertions": 378
+      }
+    ]
+  },
+  "relatedWork": {
+    "pullRequests": [
+      30,
+      24,
+      22,
+      21,
+      19
+    ],
+    "allConversationInlineAndReviewCommentsRead": true,
+    "upstreamHostedSuccessStatementsAreAttributed": true,
+    "earlierFindingsResolvedAtCurrentPin": [
+      25,
+      26,
+      27,
+      28
+    ],
+    "imageViewed": "https://github.com/link-foundation/php-ai-driven-development-pipeline-template/blob/b61e334703d93a15e08bf1a278e0df0a9d6e98a8/docs/screenshots/example-app.png"
+  },
+  "openObservations": [
+    "Process drains stdout before stderr; a bounded concurrent-pipe reproduction is still needed before treating this as a confirmed defect.",
+    "Complete 608-file practice adoption and historical coverage remain incomplete."
+  ],
+  "independentAuthorshipCredit": 0
+}

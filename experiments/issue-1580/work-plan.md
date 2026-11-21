@@ -794,3 +794,17 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
   abbreviation gate, preserving bytes, provenance and the original failure.
 - [ ] Verify the new repair in hosted CI after every active old-head run ends.
 - [ ] Finish all remaining original issue criteria; this is a local bug repair.
+
+
+## PHP current-template delta at b61e3347
+
+- [x] Read all 19 changed files in pages 110–143, including all 4774 lock lines,
+  and all comment types for five recent merged PRs. Current inventory: 608 blobs.
+- [x] Verify current Git blob identities for 57 focused fixture files; execute
+  actual PHP 8.5.11/PHPUnit 13.4.7 checks: 43 tests, 651 assertions, sequentially
+  with a 128 MiB PHP limit. Retain the initial missing Composer and checksum
+  transport failures separately. No remote release or full native build occurs.
+- [x] Reconcile the earlier Pages, change-detection, prerequisite and unchecked
+  push findings with their applied upstream repairs at the current pin.
+- [ ] Complete unchanged/historical files and all applicable practice acceptance;
+  investigate the sequential Process pipe reads with a bounded control.
