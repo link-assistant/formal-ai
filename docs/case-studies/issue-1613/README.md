@@ -207,6 +207,32 @@ method. The source text retains its publisher language.
 [NumPy reference](https://numpy.org/doc/stable/reference/generated/numpy.ndarray.reshape.html) ·
 [Sphinx documentation](https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html)
 
+The fourth native HTTP run exposed an earlier routing conflict. Its
+`pandas Series.diff` replay entered the workspace route because the path
+reader treats dotted tokens as possible filenames. The dispatcher now
+excludes the selector from path evidence when a registered documentation
+publisher binds it. The replay checks both dotted spellings before and after
+attaching the publisher capture. A request that explicitly asks to read the
+file `Series.diff` in the workspace still produces a file action.
+[Native CI](https://github.com/link-assistant/formal-ai/actions/runs/44952598777/job/136993775725) ·
+[Fourth pipeline log](evidence/workflows/pipeline-44952598777.log.gz) ·
+[Fourth Layered CI log](evidence/workflows/layered-44952598227.log.gz)
+
+The initial generalized repair still limited title discovery to wikiHow.
+The held-out Wikibooks replay supplied a broader result page that ranked a
+bread-making book ahead of the requested recipe. The worker made no scoped
+Cookbook search and produced no instructions. Both runtimes now use each
+MediaWiki publisher's declared search scope, check the ordered subject and
+qualifiers, and extract one ordered procedure from the verified article. The
+same path retrieves bread and pancakes independently. The replay also asks
+for milk-free pancakes and rejects the recipe with milk. The publisher
+responses are explicit test inputs with recorded URLs and digests.
+[Baseline replay](evidence/verification/baseline-mediawiki-procedures.log) ·
+[Browser replay](evidence/verification/round5-procedural-runtime-parity-final.log) ·
+[MediaWiki search API](https://www.mediawiki.org/wiki/API:Search) ·
+[Bread recipe](https://en.wikibooks.org/wiki/Cookbook:Basic_Bread_Dough) ·
+[Pancake recipe](https://en.wikibooks.org/wiki/Cookbook:Pancakes_(North_American))
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,

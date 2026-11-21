@@ -40,9 +40,11 @@ f08cfc2deb02d946ceee9c9cf7b6b8eaa9d41c3418d8b44f1854563f5d3ea731  ./verification
 d10bddbe46b78e1358d2dea08355c391f80fe679fc85f1485b15bfb1102894e0  ./verification/all-gates-round3-final.log
 8de6ad38d890c2f16c1affa235417605200ac16746992c4bd1aa6bbdd8df6670  ./verification/all-gates-round3.log
 f24844ce11b431dee2ce403ebcb6a139c438c0924376ca89ece17dd7893b5bd2  ./verification/all-gates-round4-final.log
+e7bbcfa439fed372d90fa5bddf862b755d43ecda61afd55f676a04c7c7c5a040  ./verification/all-gates-round5.log
 ffd743e964b5e633952a383ab238234673a432e4037b5822e944f298019801e7  ./verification/baseline-docs-method.log
 2f8936d85f55cd64e747c1bbb16b800e33cdbce13b27af0cffaed2ce76da6b28  ./verification/baseline-encyclopedia-precache.log
 abbcf099e8d9dd00863a12412bd68caeb452937fc8f80cd8d24aa320f0d1fccd  ./verification/baseline-meaning-detail.log
+1db0d821f1512a73cbb47c9a3c11824446be80673573c25296b5b0198f30d24c  ./verification/baseline-mediawiki-procedures.log
 17b33a6e59d8036695dc9240e9cb545e0f990f02cb51e6b146b25783337ed33b  ./verification/baseline-native-issue-corpus.log
 f2fe289a6a05564e3cef01ecb5baf3f5698245da3a90b3de5acf72125084b127  ./verification/baseline-practical-help-current-page.log
 10eec983a56134ee9d3eebb1ef1cf078903960134c1904ea4fd8929b078ff2ca  ./verification/baseline-procedural.log
@@ -70,6 +72,11 @@ dcbb64f011746e1da822304ead5cf6c3838b2d45f5f72b2a7a917f9be5faa448  ./verification
 540c15e55372b6541b95062d91e1d1583240b9a3352c56f6e2c28ec0a76b6b83  ./verification/round4-documentation-method-post-format.log
 4d6ddfc0e83618b9deaeb0e779e2e927f3b0ee45c61495296bac99078738f13b  ./verification/round4-fast-governance.log
 cfcc1e5653b226d4d9b0089fc4b8b2126d63ee34fcd1a76f33af0b22b921605c  ./verification/round4-readable-code-recheck.log
+1ff9459fdbc5d00b03a178f148b87240ea45140fb9b7c425a17f71db0d56c550  ./verification/round5-issue-1396-native-final.log
+55b137a9cc3e2d7c83b88761e0103901e47028046baf729cefce126ad1142883  ./verification/round5-issue-991-how-to-synthesis-final.log
+cad9a701549f5f72cb6e096acc236cd7ca34b8f45eadb17bda35bd3ebe16750c  ./verification/round5-pinned-source-model.log
+952bcf89dc5375e38ca2aacf040f3362bf980232129deec4d79e7f5b0dd3c09b  ./verification/round5-procedural-runtime-parity-final.log
+413af79375646debae746de81a4c882ffdc7a06fd6c32d7dfa80ad9a9007656a  ./verification/round5-readable-code.log
 432f6792ff29b2dfdf8760e9bdebde0208b5bcbbc1b0b5ed83b9ebb2848e776b  ./verification/runtime-feature-inventory-round2.log
 ba4ac755fbbfc14ee4bb9cb711d71a2dc0d90dae5967d28af22ef18ef78a7275  ./verification/rust-specification-fixture-integrity-round3.log
 581a0dd09faa10075a965062009d0ce472326d894273a046322ccda7ddaa5d24  ./verification/rust-specification-unicode-identifiers-round3.log
@@ -85,8 +92,10 @@ d589386532e8cd04351a0ac4cddd59ebe00d77e303f915e4c86afdbe2876da6c  ./workflows/hi
 c4c7479f1a31feb6a1242fcdec5ffdf7f1b55863ffc8bc570d1dd11e21ee0a20  ./workflows/layered-44943549869.log.gz
 ad72b0ab1ae2be88cf9cb5766c00ec4d70042f581470ca8d3ffd8960b4fa70fc  ./workflows/layered-44946231224.log.gz
 2c98b1afd6c15cc353d4852c98d79cfa3568668c370c8cf22f9b8441352f5099  ./workflows/layered-44949387617.log.gz
+478323ce555c77c26d69e8565f34f2775f110ca4ed423784eaaa7c0e4eea19ac  ./workflows/layered-44952598227.log.gz
 7ee8f966e7c6976b8f3763d7559ba80bae02f0a784a5c49efdd455e24609b55c  ./workflows/pipeline-44943550052.log.gz
 7808c89015c91945d4639ebada8c89417088458bd75130e50809209113b34f63  ./workflows/pipeline-44946231524.log.gz
 3354897f68c810dd6d6cdf0dcedfe316f4155841a4a66b2f6ff4a6a4918531e0  ./workflows/pipeline-44949387904.log.gz
+10e480f95f8cc29e076a70dadd4493ffc7ad9c238bdaa6919f213aa675008be6  ./workflows/pipeline-44952598777.log.gz
 dccdebd36b2507d96faa5864671c605654addc906c0e08e4e11198af4cb0effd  ./workflows/security-44946231401-attempt2.log.gz
 ee2f11738248d29e3766a5c380ecf2e4afa288a455f89d8fb052a3c8da232560  ./workflows/security-44946231401.log.gz
