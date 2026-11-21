@@ -29,7 +29,7 @@ test('automatic and manual releases require the client regression gate on their 
 
 test('browser greeting and report smoke tests gate Pages artifact upload', () => {
   const { steps } = read('.github/workflows/pages-artifact.yml').jobs.build;
-  const verify = steps.findIndex(step => step.run?.includes('playwright.pages.smoke.config.js'));
+  const verify = steps.findIndex(step => step.run?.includes('verify-browser-artifact.sh js'));
   const stamp = steps.findIndex(step => step.run?.includes('stamp-pages-artifact.sh'));
   const upload = steps.findIndex(step => step.uses?.startsWith('actions/upload-pages-artifact@'));
   assert.ok(stamp >= 0 && stamp < verify && verify < upload);

@@ -3,15 +3,21 @@ set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
 e2e="$root/rust/tests/e2e"
-if [[ "${1:-}" == --vsix ]]; then
-  archive="${2:?Pass the packaged extension}"
+if [[ "${1:-}" == --vsix || "${1:-}" == --npm ]]; then
+  archive="${2:?Pass the built package}"
   verifier="${3:?Pass the workflow-owned worker verifier}"
   receipt="${4:?Pass the expected worker receipt digest}"
   extracted="$(mktemp -d)"
   trap 'rm -rf -- "$extracted"' EXIT
-  unzip -q "$archive" 'extension/dist-web/*' -d "$extracted"
-  web="$extracted/extension/dist-web"
-  node "$verifier" verify "$PWD" "$web" "$receipt"
+  if [[ "$1" == --vsix ]]; then
+    unzip -q "$archive" 'extension/dist-web/*' -d "$extracted"
+    web="$extracted/extension/dist-web"
+    node "$verifier" verify "$PWD" "$web" "$receipt"
+  else
+    tar -xzf "$archive" -C "$extracted" package/assets
+    web="$extracted/package/assets"
+    node "$verifier" verify "$PWD" "$web" "$receipt" "$PWD/js/formal_ai_worker.receipt.json"
+  fi
   bash "$0" "$web"
   exit 0
 fi

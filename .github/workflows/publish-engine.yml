@@ -142,9 +142,10 @@ jobs:
         id: protocol
         env:
           RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
-        run: >-
-          node scripts/release-protocol.mjs capture "$GITHUB_WORKSPACE"
-          "$RUNNER_TEMP/browser-engine-protocol" "$RELEASE_PROTOCOL_COMMIT" engine
+        run: |
+          node scripts/release-protocol.mjs capture "$GITHUB_WORKSPACE" \
+            "$RUNNER_TEMP/browser-engine-protocol" "$RELEASE_PROTOCOL_COMMIT" engine
+          bash scripts/verify-browser-artifact.sh --capture "$RUNNER_TEMP/formal-ai-browser-verification"
       - name: Restore the triggering source before optional release-tag selection
         uses: actions/checkout@v7
         with:
@@ -223,6 +224,18 @@ jobs:
         env:
           ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
         run: node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" pack npm pack --ignore-scripts
+      - name: Verify greetings and issue reporting in the packed engine
+        timeout-minutes: 5
+        env:
+          ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
+          WASM_RECEIPT_SHA256: ${{ steps.wasm.outputs.receipt-sha256 }}
+        run: |
+          shopt -s nullglob
+          packages=(packages/formal-ai-engine/*.tgz)
+          test "${#packages[@]}" -eq 1
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" cold \
+            bash "$RUNNER_TEMP/formal-ai-browser-verification/scripts/verify-browser-artifact.sh" \
+            --npm "${packages[0]}" "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/build-selected-wasm.mjs" "$WASM_RECEIPT_SHA256"
       - uses: actions/upload-artifact@v7
         with:
           name: formal-ai-engine
