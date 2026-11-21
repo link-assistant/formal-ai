@@ -37,7 +37,9 @@ planner, budget and image owners to the existing core/coding targets. Actual
 Git sparse rules select their nine real fixtures in both core checkout attempts.
 Twelve focused headroom/path cases pass. The preceding batch passed 50
 native-runner cases and 144 maintained observation cases;
-hosted native compilation/execution of these local edits remains pending.
+All 151 maintained cases pass after adding the six-case upstream annotation
+pagination replay; its tested candidate is reported in Rust template issue #257.
+Hosted native compilation/execution of these local edits remains pending.
 See the [native policy checkpoint](../../docs/case-studies/issue-1580/native-policy-headroom-checkpoint.md).
 
 Full template/practice, original budget/live, complete PR review, independent
@@ -880,3 +882,5 @@ The unchanged size gate also warns on both 1417-line code-task twins. The new fo
 - Follow-up/global-configuration extraction preserves five original native test names and existing reasoning timing records. Exact bodies and before-fix scanner failures are retained; 79 warnings remain. See [follow-up headroom](../../docs/case-studies/issue-1580/native-follow-up-headroom-checkpoint.md).
 
 - Hive expectation helpers remove another warning with all 30 original native test names unchanged: 78 warnings remain. Twelve focused cases pass; hosted native execution is still pending. See [Hive expectation headroom](../../docs/case-studies/issue-1580/hive-expectation-headroom-checkpoint.md).
+
+- Confirmed and reported Rust runner annotation pagination false negatives at positions 30 and 100: upstream issue #257. Six candidate cases, 151 maintained cases and three touched gates pass. Upstream production adoption remains unfinished. See [runner annotation checkpoint](../../docs/case-studies/issue-1580/rust-runner-annotation-pages-checkpoint.md).
