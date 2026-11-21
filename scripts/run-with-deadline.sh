@@ -152,6 +152,19 @@ while command_is_running; do
       measure_elapsed "$grace_started" "$counted_tenths"
     done
     signal_command_tree KILL
+    # SIGKILL delivery is asynchronous. An exited root cannot reap its live
+    # descendants; acknowledge group termination before reporting the deadline.
+    # Bound both observations and wall time if a process cannot leave the kernel.
+    kill_started=$SECONDS
+    for ((kill_check = 0; kill_check < 100; kill_check++)); do
+      command_is_running || break
+      [ $((SECONDS - kill_started)) -lt 10 ] || break
+      sleep 0.1 2> /dev/null || sleep 1
+    done
+    if command_is_running; then
+      echo "Cannot confirm process-group termination after SIGKILL." >&2
+      exit 125
+    fi
     break
   fi
   sleep "$poll_seconds"

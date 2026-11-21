@@ -29,6 +29,7 @@ def observe(wrapper, case="expired-parent-success"):
             'expired-parent-success': ('sleep 4', 0),
             'expired-parent-failure': ('sleep 4', 7),
             'term-resistant': ("bash -c 'trap \"\" TERM; exec sleep 4'", 0),
+            'delayed-kill': ("bash -c 'trap \"\" TERM; exec sleep 4'", 0),
             'short-success': ('sleep 0.2', 0),
             'short-failure': ('sleep 0.2', 7),
             'warning-only': ('sleep 4', 0),
@@ -41,6 +42,18 @@ def observe(wrapper, case="expired-parent-success"):
             unavailable.write_text('#!/bin/sh\nexit 9\n')
             unavailable.chmod(0o700)
             environment['PATH'] = str(bin_directory) + os.pathsep + environment['PATH']
+        if case == 'delayed-kill':
+            # Model delayed kernel delivery without CPU pressure or unbounded workers.
+            # The signaler and worker both have finite lifetimes and are reaped below.
+            delayed_kill = Path(temporary) / 'delayed-kill.bash'
+            delayed_kill.write_text('kill() {\n'
+                                    '  if [ "$1" = "-KILL" ]; then\n'
+                                    '    (sleep 0.3; builtin kill "$@" 2>/dev/null) &\n'
+                                    '    return 0\n'
+                                    '  fi\n'
+                                    '  builtin kill "$@"\n'
+                                    '}\n')
+            environment['BASH_ENV'] = str(delayed_kill)
         child, status = cases[case]
         environment['TEST_BUDGET_ENFORCE'] = 'false' if case == 'warning-only' else 'true'
         command = ['bash', str(Path(wrapper).resolve()), '1', 'finite child fixture',
