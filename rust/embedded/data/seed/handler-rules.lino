@@ -1086,10 +1086,8 @@ handler-rules
     goals toilet
     trusted-hosts "www.nhs.uk"
     toilet-source "https://www.nhs.uk/conditions/constipation/"
-    toilet-proof "Do not delay if you feel the urge to poo."
-    toilet-cached-proof "Do not delay if you feel the urge to poo."
-    toilet-cache-date "2026-10-26"
-    toilet-response practical-help-toilet
+    toilet-heading "Improve your toilet routine"
+    toilet-excerpt-terms urge
     toilet-unavailable practical-help-toilet-unavailable
   table practical-help
     row "leads" "i need to"

@@ -529,7 +529,7 @@ core_boundary_ledger
   component practical-goal-guidance
     file rust/src/solver_handler_how/practical_help.rs
     kind "Generic interpreter"
-    reason "Matches registered first-person goals and binds localized guidance to trusted-source evidence; goal forms, sources, wording and cached knowledge are shared seed data, with no exact-prompt branch."
+    reason "Matches registered first-person goals and quotes the relevant section of a trusted captured page. Seed data defines goal forms, source selectors and localized attribution."
 
   note "Issue #1589, reviewed 2026-11-17: the existing calendar interpreter now composes bound month/year quantities and completed calendar anniversaries; the calculator performs checked exact-rational conversion over a dated official seed snapshot. Recognition vocabulary, quote provenance and five-language response prose remain seed data. Four existing files are remeasured with no new handler source; dispositions remain unchanged. The isolated calendar_currency CI target exercises native execution."
   note "Issue #1589 CI review: duration response language is bound to the matching seeded request prefix, preserving Spanish without changing compiled worker language inputs. The calendar interpreter grows by 9 measured lines; its promoted disposition and outside-core ceiling remain unchanged."

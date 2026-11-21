@@ -308,26 +308,26 @@ multilingual_responses
     language es
     text "La búsqueda web alternativa de `{query}` debe usar {providers} y reciprocal rank fusion (k = {k})."
 
-  response response-practical-help-toilet-en
-    intent practical-help-toilet
+  response response-practical-help-source-guidance-en
+    intent practical-help-source-guidance
     language en
-    text "Use a toilet as soon as you can rather than holding it. If you cannot go or have pain, tell me what is happening. [NHS guidance]({source})"
-  response response-practical-help-toilet-ru
-    intent practical-help-toilet
+    text "[Source guidance]({source}) in the original language. “{excerpt}”"
+  response response-practical-help-source-guidance-ru
+    intent practical-help-source-guidance
     language ru
-    text "Идите в туалет при первой возможности, не терпите. Если не получается сходить или есть боль, уточните, что происходит. [Рекомендации NHS]({source})"
-  response response-practical-help-toilet-hi
-    intent practical-help-toilet
+    text "[Рекомендации источника]({source}) на языке оригинала. «{excerpt}»"
+  response response-practical-help-source-guidance-hi
+    intent practical-help-source-guidance
     language hi
-    text "जितनी जल्दी हो सके शौचालय जाएँ, रोककर न रखें। यदि शौच नहीं हो रहा है या दर्द है, तो बताएँ कि क्या हो रहा है। [NHS की सलाह]({source})"
-  response response-practical-help-toilet-zh
-    intent practical-help-toilet
+    text "मूल भाषा में [स्रोत के निर्देश]({source})। “{excerpt}”"
+  response response-practical-help-source-guidance-zh
+    intent practical-help-source-guidance
     language zh
-    text "尽快去厕所，不要憋着。如果排不出来或疼痛，请说明具体情况。[NHS 指引]({source})"
-  response response-practical-help-toilet-es
-    intent practical-help-toilet
+    text "[来源指引]({source})（原文）。“{excerpt}”"
+  response response-practical-help-source-guidance-es
+    intent practical-help-source-guidance
     language es
-    text "Ve al baño en cuanto puedas y no te aguantes. Si no puedes evacuar o tienes dolor, explica qué ocurre. [Consejos del NHS]({source})"
+    text "[Consejos de la fuente]({source}) en el idioma original. «{excerpt}»"
   response response-practical-help-toilet-unavailable-en
     intent practical-help-toilet-unavailable
     language en

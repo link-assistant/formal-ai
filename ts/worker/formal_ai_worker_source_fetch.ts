@@ -9,12 +9,12 @@ async function sourceWalkFetchCapture(url, { online = true, bounded = false } = 
   if (!online) return { ok: false, url, failureKind: "offline_cache_miss", error: answerFor("source-capture-offline-cache-miss", "en").replace("{url}", () => String(url)) };
   if (typeof fetch !== "function") return { ok: false, url, error: "fetch_unavailable" };
   try {
-    const options = bounded ? howToCaptureFetchOptions() : { method: "GET", mode: "cors" };
-    const response = await fetch(url, options);
-    if (!response || !response.ok) {
-      return { ok: false, url, error: `http_${response ? response.status : 0}` };
-    }
-    const text = bounded ? await howToReadBoundedResponse(response, options.signal) : await response.text();
+    const read = async (signal) => {
+      const response = await fetch(url, { method: "GET", mode: "cors", signal });
+      if (!response?.ok) throw new Error(`http_${response?.status || 0}`);
+      return bounded ? howToReadBoundedResponse(response, signal) : response.text();
+    };
+    const text = bounded ? await howToWithinCaptureDeadline(read) : await read();
     const capture = {
       ok: true, url, text, sha256: await sourceWalkSha256Hex(text),
       fetchedAt: String(sourceWalkNowSeconds()), cached: false,

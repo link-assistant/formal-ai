@@ -1,58 +1,6 @@
 // Web-search query extraction, procedural how-to answers from wikiHow and the
 // frame-policy checks.
 // Loaded by ../formal_ai_worker.js.
-// Generic first-person need -> registered goal -> source-backed practical guidance.
-function practicalHelpPolicy(key){return howPolicy('practical-help',key,{});}
-function practicalHelpValues(key){const scalar=practicalHelpPolicy(key);return scalar?[scalar]:(handlerRulesTables()['practical-help']||{rows:[]}).rows.filter(([name])=>name===key).map(([,value])=>value);}
-function practicalHelpForms(key){return practicalHelpValues(key).map(normalizePrompt).filter(Boolean);}
-function practicalHelpContains(text,word){
- if(!word)return false;
- let from=0;for(;;){const at=text.indexOf(word,from);if(at<0)return false;from=at+word.length;
-  if(/[\u3400-\u9fff]/u.test(word)||(!/[\p{L}\p{N}_]/u.test(text[at-1]||'')&&!/[\p{L}\p{N}_]/u.test(text[from]||'')))return true;}
-}
-function practicalHelpGoal(prompt){
- if(/^[\s]*["'\x60\u00ab\u201c]/u.test(prompt))return null;
- const text=normalizePrompt(prompt);const lead=practicalHelpForms('leads').sort((a,b)=>b.length-a.length).find(word=>text.startsWith(word)
-  &&(/[\u3400-\u9fff]/u.test(word)||!/[\p{L}\p{N}_]/u.test(text[word.length]||'')));
- if(!lead)return null;const rest=text.slice(lead.length).trim();
- if(practicalHelpForms('negations').some(word=>practicalHelpContains(rest,word)))return null;
- return practicalHelpValues('goals').find(goal=>practicalHelpForms(goal+'-forms').some(word=>rest.startsWith(word)&&practicalHelpContains(rest,word)))||null;
-}
-async function practicalHelpAnswer(goal,language,preferences={}){
- const source=practicalHelpPolicy(goal+'-source'),proof=practicalHelpPolicy(goal+'-proof');let trusted=false;
- try{const url=new URL(source);trusted=url.protocol==='https:'&&practicalHelpValues('trusted-hosts').map(value=>value.trim().toLowerCase()).includes(url.hostname);}catch{}
- let evidence=preferences.practicalHelpCache===false?'':practicalHelpPolicy(goal+'-cached-proof');let mode='curated-excerpt';
- if(trusted&&proof&&!evidence&&preferences.offline!==true&&typeof fetch==='function'){
-  const controller=new AbortController();let timer,reader;
-  try{evidence=await Promise.race([
-   (async()=>{const response=await fetch(source,{signal:controller.signal});if(controller.signal.aborted||!response.ok)throw Error('PracticalSourceHttp');
-    if(response.body?.getReader){reader=response.body.getReader();const parts=[];let size=0;
-     for(let reads=0;;reads++){if(reads>=1024||controller.signal.aborted)throw Error('PracticalSourceReadBound');const row=await reader.read();if(row.done)break;size+=row.value.byteLength;if(size>2097152)throw Error('PracticalSourceByteBound');parts.push(row.value);}
-     const bytes=new Uint8Array(size);let at=0;for(const part of parts){bytes.set(part,at);at+=part.byteLength;}return new TextDecoder('utf-8',{fatal:true}).decode(bytes);}
-    const text=await response.text();if(new TextEncoder().encode(text).byteLength>2097152)throw Error('PracticalSourceByteBound');return text;
-   })(),
-   new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(Error('PracticalSourceDeadline'));},3000);})
-  ]);mode='fetched-source';
-  }catch{evidence='';}
-  finally{clearTimeout(timer);controller.abort();if(reader)Promise.resolve(reader.cancel()).catch(()=>{});}
- }
- const supported=trusted&&proof&&normalizePrompt(howToStripHtml(evidence)).includes(normalizePrompt(proof));
- return{intent:'procedural_how_to',content:howResponse(practicalHelpPolicy(goal+(supported?'-response':'-unavailable')),language,{source}),confidence:supported?0.8:0,
-  evidence:['meaning:practical_need','practical_help:goal:'+goal,'practical_help:source_mode:'+(supported?mode:'unavailable'),...(supported?['source:'+source]:[])],
-  solverEvents:[{kind:'practical_help:goal',payload:goal},{kind:'practical_help:source_mode',payload:supported?mode:'unavailable'}]};
-}
-async function tryPracticalHelp(prompt,language,preferences={}){const goal=practicalHelpGoal(prompt);return goal?practicalHelpAnswer(goal,language,preferences):null;}
-async function tryPracticalHelpFollowup(prompt,language,history,preferences={}){
- const goal=practicalHelpFollowupGoal(normalizePrompt(prompt),lastHistoryTurn(history,'user'));
- return goal?practicalHelpAnswer(goal,language,preferences):null;
-}
-
-function practicalHelpFollowupGoal(normalized, prior) {
-  if (!prior || (!practicalHelpForms("followups").includes(normalized)
-    && !isProceduralElaborationRequest(normalized))) return null;
-  return practicalHelpGoal(prior);
-}
-
 // Keep implicit client research from replacing the solver's procedure and sources.
 function claimsProceduralRequest(prompt, history) {
   const normalized = normalizePrompt(prompt);
@@ -692,42 +640,57 @@ function howToWikiHowSlug(task) {
   return String(task || "").toLowerCase().split(/[^\p{L}\p{N}\p{M}]+/u).filter(Boolean).join("-");
 }
 
-function howToCaptureFetchOptions() {
-  return { method: "GET", mode: "cors", signal: AbortSignal.timeout(HOW_TO_CAPTURE_TIMEOUT_MS) };
+async function howToWithinCaptureDeadline(read) {
+  const controller = new AbortController();
+  let timer;
+  try {
+    const deadline = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        reject(new Error("capture_deadline"));
+        controller.abort();
+      }, HOW_TO_CAPTURE_TIMEOUT_MS);
+    });
+    return await Promise.race([read(controller.signal), deadline]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function howToReadBoundedResponse(response, signal) {
   signal?.throwIfAborted();
   if (!response.body?.getReader) {
     const text = await response.text();
+    signal?.throwIfAborted();
     if (new TextEncoder().encode(text).length > HOW_TO_CAPTURE_MAXIMUM_BYTES) {
       throw new Error("capture_too_large");
     }
     return text;
   }
   const reader = response.body.getReader();
-  const cancel = () => { reader.cancel(signal.reason).catch(() => {}); };
+  const cancel = () => { Promise.resolve(reader.cancel(signal?.reason)).catch(() => {}); };
   signal?.addEventListener("abort", cancel, { once: true });
-  const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
+  const decoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
   let bytes = 0;
   let emptyChunks = 0;
   let text = "";
   try {
-    while (true) {
+    for (let reads = 0; reads < 8192; reads++) {
       const { done, value } = await reader.read();
       signal?.throwIfAborted();
       if (done) return text + decoder.decode();
       emptyChunks = value.byteLength === 0 ? emptyChunks + 1 : 0;
       bytes += value.byteLength;
       if (bytes > HOW_TO_CAPTURE_MAXIMUM_BYTES || emptyChunks > 16) {
-        reader.cancel().catch(() => {});
+        cancel();
         throw new Error(emptyChunks > 16 ? "capture_stalled" : "capture_too_large");
       }
       text += decoder.decode(value, { stream: true });
     }
+    cancel();
+    throw new Error("capture_chunk_limit");
   } finally {
     signal?.removeEventListener("abort", cancel);
-    reader.releaseLock();
+    reader.releaseLock?.();
   }
 }
 
@@ -779,15 +742,13 @@ function howToWikiHowStepLists(html, limit, allowLegacy = false) {
 
 async function howToCaptureThroughComponent(url, notes) {
   const component = self.FormalAIWebSearchComponent;
-  if (!component?.fetchUrl) return null;
+  if (!component?.fetchUrl || component.package === "unavailable") return null;
   try {
-    const response = await component.fetchUrl(url, notes, HOW_TO_CAPTURE_TIMEOUT_MS);
-    if (!response?.ok) {
-      notes.push(`http_${response?.status || 0} url=${url}`);
-      return null;
-    }
-    // The component adapter's deadline ends at the headers.
-    const text = await howToReadBoundedResponse(response, AbortSignal.timeout(HOW_TO_CAPTURE_TIMEOUT_MS));
+    const text = await howToWithinCaptureDeadline(async (signal) => {
+      const response = await component.fetchUrl(url, notes, HOW_TO_CAPTURE_TIMEOUT_MS);
+      if (!response?.ok) throw new Error(`http_${response?.status || 0}`);
+      return howToReadBoundedResponse(response, signal);
+    });
     return { url, text, sha256: await sourceWalkSha256Hex(text), fetchedAt: String(sourceWalkNowSeconds()), cached: false };
   } catch (error) {
     notes.push(`capture_failed url=${url} reason=${error.message}`);

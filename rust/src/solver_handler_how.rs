@@ -193,9 +193,6 @@ pub(crate) fn try_procedural_how_to_followup_with(
     log: &mut EventLog,
     solve: impl FnOnce(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>,
 ) -> Option<SymbolicAnswer> {
-    if let Some(answer) = practical_help::followup(prompt, normalized, log) {
-        return Some(answer);
-    }
     // The dispatch loop passes a lightly-cleaned `prompt.to_lowercase()` whose
     // punctuation survives, so "Can you give me specific instructions?" keeps its
     // trailing "?" and a phrase surface would miss. Canonicalise first, exactly
@@ -206,14 +203,17 @@ pub(crate) fn try_procedural_how_to_followup_with(
     } else {
         canonical.as_str()
     };
+    let prior_user = last_user_turn(log)?.to_owned();
+    let prior_normalized = normalize_prompt(&prior_user);
+    if practical_help::followup_goal(canonical, &prior_user).is_some() {
+        return solve(&prior_user, &prior_normalized, log);
+    }
     if !is_procedural_elaboration_request(canonical) {
         return None;
     }
     // The prior exchange must have been a how-to procedure: the previous user
     // turn re-parses as a procedural request and the assistant answered it.
     last_assistant_turn(log)?;
-    let prior_user = last_user_turn(log)?.to_owned();
-    let prior_normalized = normalize_prompt(&prior_user);
     let task = extract_procedural_how_to_task(&prior_normalized)?;
     log.append("procedural_how_to:followup", canonical.to_owned());
     log.append("procedural_how_to:followup_task", task.task);

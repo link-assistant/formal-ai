@@ -20,6 +20,8 @@ const sourceResults = (...titles) => JSON.stringify({ query: { search: titles.ma
 const SHORT_SEARCH = searchUrl("какать");
 const DISCOVERED_API = parseUrl(encodeURIComponent("хорошо покакать"));
 const RUSSIAN_CAPTURE = readFileSync(new URL("../fixtures/issue-1396/wiki-how-ru.json", import.meta.url), "utf8");
+const NHS_SOURCE = "https://www.nhs.uk/conditions/constipation/";
+const NHS_CAPTURE = readFileSync(new URL("../fixtures/practical-help/toilet.html", import.meta.url), "utf8");
 const NATIVE_CLI = process.env.FORMAL_AI_TEST_NATIVE_CLI;
 const NATIVE_CASE = { skip: !NATIVE_CLI, timeout: 30_000 };
 const WEB_SEARCH_TOOLS = [{ type: "web_search" }];
@@ -40,6 +42,7 @@ async function startNativeProcedureReplay(t, { agentMode = false } = {}) {
   const cache = temporaryHome(t);
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   storeCapture(cache, RUSSIAN_API, RUSSIAN_CAPTURE);
+  storeCapture(cache, NHS_SOURCE, NHS_CAPTURE);
   storeCapture(cache, SHORT_SEARCH, sourceResults("Домашние растения", "хорошо покакать"));
   storeCapture(cache, DISCOVERED_API, RUSSIAN_CAPTURE);
   const run = await startCli(t, {
@@ -148,7 +151,8 @@ async function assertProceduralAgentRouting(url) {
   assert.ok(general.some(item => item.content?.some(part => /make pancakes/iu.test(part.text))), JSON.stringify(general));
   assert.ok(!general.some(item => item.type === "web_search_call"), JSON.stringify(general));
   const help = await ask("Хочу какать, что делать?");
-  assert.ok(help.some(item => item.content?.some(part => /nhs\.uk/u.test(part.text))), JSON.stringify(help));
+  assert.ok(help.some(item => item.content?.some(part => part.text.includes(NHS_SOURCE)
+    && part.text.includes("Do not delay if you feel the urge"))), JSON.stringify(help));
   assert.ok(!help.some(item => item.type === "web_search_call"), JSON.stringify(help));
   const search = await ask("Search the web for pancakes");
   assert.ok(search.some(item => item.type === "web_search_call"), JSON.stringify(search));
@@ -159,6 +163,7 @@ test("JavaScript Responses uses procedural sources with the client web search to
 }, async (t) => {
   const dir = temporaryHome(t);
   const networkFetch = async (url) => {
+    if (String(url) === NHS_SOURCE) return new Response(NHS_CAPTURE);
     if (String(url) === SHORT_SEARCH) {
       return Response.json(JSON.parse(sourceResults("Домашние растения", "хорошо покакать")));
     }

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_practical_help.js"
+  ceiling 121
+  rationale "Extracts first-person goal matching and capture-backed guidance from the how-to worker. The source section and excerpt are interpreted by the same page formalizer as other source routes."

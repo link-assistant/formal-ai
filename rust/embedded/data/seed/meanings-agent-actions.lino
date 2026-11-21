@@ -13,15 +13,28 @@ meanings
     precondition "a practical request asks to use a toilet or describes an urgent bowel need"
     effect "names the goal whose guidance is grounded in the declared NHS source"
     unit "not applicable"
-    example "the toilet goal binds its source and response identifiers"
+    example "the toilet goal specifies which section and terms identify relevant guidance"
     grounding "https://www.nhs.uk/conditions/constipation/"
-  practical-help-toilet
+  urge
+    defined-by need
+    role noun
+    precondition "a person experiences a bodily need"
+    effect "expresses the impulse to act on the need"
+    unit "not applicable"
+    example "an urge can occur before a person acts"
+    lexeme en urge
+    lexeme ru позыв
+    lexeme hi हाजत
+    lexeme zh 便意
+    lexeme es "ganas de ir al baño"
+    grounding "https://en.wiktionary.org/wiki/urge#Noun"
+  practical-help-source-guidance
     defined-by answer
     role localized_response_template
-    precondition "the selected toilet goal has supporting trusted-source evidence"
-    effect "renders actionable guidance in the user's language with its source link"
+    precondition "a captured trusted source contains an excerpt relevant to the registered goal"
+    effect "renders a source attribution in the user's language with the observed excerpt"
     unit "not applicable"
-    example "the response recommends using a toilet and asks for the remaining difficulty"
+    example "a quote from the matched section follows its source link"
     grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   practical-help-toilet-unavailable
     defined-by answer
