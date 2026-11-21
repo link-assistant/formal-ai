@@ -52,3 +52,7 @@ pub mod detect_code_changes;
 mod job_budget_fit;
 #[path = "ci-cd/pinned_tool_images.rs"]
 mod pinned_tool_images;
+
+// Qualify complete artifact, Pages and release policy assertions on pull requests.
+#[path = "ci-cd/release_publishing.rs"]
+mod release_publishing;

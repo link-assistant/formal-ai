@@ -31,11 +31,11 @@ workflows and one skip, including all eight native families and registry checks.
 The merged source passed all 88 executed local gates (53 explicit skips),
 TypeScript generation/runtime, gateway/server checks and 133 maintained cases.
 
-Local commits extract nine Rust test/helper groups without changing their
-bodies or scanner limits: 77 warnings remain after contributor-guide extraction. Coverage connects the original
+Local commits extract ten Rust test/helper groups without changing their
+bodies or scanner limits: 76 warnings remain after contributor-guide and release-artifact extraction. Coverage connects the original
 planner, budget and image owners to the existing core/coding targets. Actual
 Git sparse rules select their nine real fixtures in both core checkout attempts.
-Twelve focused headroom/path cases pass. The preceding batch passed 50
+Thirteen focused headroom/path cases pass. The preceding batch passed 50
 native-runner cases and 144 maintained observation cases;
 All 151 maintained cases pass after adding the six-case upstream annotation
 pagination replay; its tested candidate is reported in Rust template issue #257.
@@ -886,3 +886,5 @@ The unchanged size gate also warns on both 1417-line code-task twins. The new fo
 - Confirmed and reported Rust runner annotation pagination false negatives at positions 30 and 100: upstream issue #257. Six candidate cases, 151 maintained cases and three touched gates pass. Upstream production adoption remains unfinished. See [runner annotation checkpoint](../../docs/case-studies/issue-1580/rust-runner-annotation-pages-checkpoint.md).
 
 - Contributor guide extraction conserves all moved instructions and legacy anchors, removing its warning: 77 remain under unchanged limits. The focused before/after regression, existing push-gate cases and three affected gates pass. See [contributor guide checkpoint](../../docs/case-studies/issue-1580/contributing-headroom-checkpoint.md).
+
+- Release artifact extraction preserves all fourteen original native test names and complete assertion bodies, while the full owner joins the hosted workflow target. All 13 headroom controls, 50 native-runner controls, 18 selected-WASM JavaScript cases and 153 maintained issue cases pass; 76 warnings remain. Hosted native compilation/execution remains unfinished. See [release artifact checkpoint](../../docs/case-studies/issue-1580/release-artifact-headroom-checkpoint.md).

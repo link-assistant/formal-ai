@@ -25,7 +25,7 @@ for (const [owner, child] of [
 test('the hosted native targets execute every extracted regression owner', () => {
   for (const [target, owners] of [
     ['coding_contracts', ['agentic-coding/agentic_general_planner']],
-    ['workflow_contracts', ['ci-cd/job_budget_fit', 'ci-cd/pinned_tool_images']],
+    ['workflow_contracts', ['ci-cd/job_budget_fit', 'ci-cd/pinned_tool_images', 'ci-cd/release_publishing']],
   ]) {
     const source = readFileSync(root + '/rust/tests/unit/' + target + '.rs', 'utf8');
     for (const owner of owners) {
@@ -71,6 +71,10 @@ test('the standalone data-files Cargo target resolves its extracted helper', () 
 });
 
 for (const [owner, child, names] of [
+  ['rust/tests/unit/ci-cd/release_publishing', 'artifact_contracts', [
+    'desktop_linux_artifact_names_are_normalized_for_download_contract',
+    'release_scripts_check_configured_release_artifacts',
+  ]],
   ['rust/tests/unit/specification/reasoning_paths_procedures', 'elaboration', [
     'procedural_elaboration_followup_rebinds_to_prior_how_to',
     'procedural_elaboration_requires_a_prior_how_to',
