@@ -115,7 +115,6 @@ pub use web_requests::{
     try_url_navigate, try_web_search, try_web_search_with_client, try_web_search_with_offline,
     url_navigation_claims,
 };
-pub(crate) use web_search_intent::explicit_web_search_requested;
 pub use word_definition::{
     definition_term, try_word_definition_with_client, try_word_definition_with_offline,
 };

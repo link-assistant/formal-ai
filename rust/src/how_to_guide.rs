@@ -320,7 +320,7 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
     now: u64,
 ) -> HowToGuide {
     let mut guide = HowToGuide {
-        task: task.trim().to_owned(),
+        task: crate::source_walk::procedural_source_task(task.trim()).to_owned(),
         steps: Vec::new(),
         outcomes: Vec::new(),
         conflicts: Vec::new(),

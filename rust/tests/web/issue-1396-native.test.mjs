@@ -172,7 +172,19 @@ for (const [server, binary] of [["JavaScript", undefined], ["native", process.en
       output: "https://github.com/link-assistant/formal-ai/issues/42",
     }]);
     assert.ok(result.some(item => item.content?.some(part => part.text?.includes("/issues/42"))), JSON.stringify(result));
-    await question([user("report")], /3\. GitHub issue/u);
+    const reportLocales = [
+      { language: "en", prompt: "report", destination: /3\. GitHub issue/u, scope: /1\. Both logs/u },
+      { language: "hi", prompt: "रिपोर्ट", destination: /3\. GitHub समस्या/u, scope: /1\. दोनों लॉग/u },
+      { language: "zh", prompt: "报告问题", destination: /3\. GitHub 问题/u, scope: /1\. 两个日志/u },
+      { language: "es", prompt: "reporta un fallo, por favor", destination: /3\. Incidencia de GitHub/u, scope: /1\. Ambos registros/u },
+    ];
+    for (const { language, prompt, destination, scope } of reportLocales) {
+      await t.test(`shows both report menus in ${language}`, async () => {
+        const request = user(prompt);
+        const menu = await question([request], destination);
+        await question([request, menu, user("3")], scope);
+      });
+    }
     const plan = {
       role: "developer",
       content: "<collaboration_mode># Plan Mode (Conversational)\n\nPlan the work.</collaboration_mode>",

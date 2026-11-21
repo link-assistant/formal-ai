@@ -78,10 +78,7 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     let task = procedural_how_to_task(normalized)?;
     let language = detect(prompt).slug();
     let guide = synthesize_how_to_guide_in(
-        (
-            crate::solver_handler_how::procedural_source_task(&task),
-            language,
-        ),
+        (&task, language),
         client,
         preferences,
         &GuideBounds::default(),

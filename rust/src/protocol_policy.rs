@@ -57,7 +57,39 @@ pub(crate) fn defers_procedural_search(
         return false;
     }
     let (prompt, history) = crate::protocol::chat_prompt_and_history(messages);
-    crate::solver_handler_how::claims_procedural_request(&prompt, &history)
+    claims_procedural_request(&prompt, &history)
+}
+
+fn claims_procedural_request(prompt: &str, history: &[crate::solver::ConversationTurn]) -> bool {
+    use crate::engine::normalize_prompt;
+    use crate::solver::ConversationRole;
+    use crate::solver_handler_how::{
+        is_procedural_elaboration_request, practical_help, procedural_how_to_task,
+    };
+    use crate::solver_handlers::web_search_intent::explicit_web_search_requested;
+
+    let normalized = normalize_prompt(prompt);
+    if explicit_web_search_requested(prompt, &normalized) {
+        return false;
+    }
+    if practical_help::goal(prompt, &normalized).is_some()
+        || procedural_how_to_task(&normalized).is_some()
+    {
+        return true;
+    }
+    let Some(prior) = history
+        .iter()
+        .rev()
+        .find(|turn| turn.role == ConversationRole::User)
+    else {
+        return false;
+    };
+    practical_help::followup_goal(&normalized, &prior.content).is_some()
+        || (is_procedural_elaboration_request(&normalized)
+            && history
+                .iter()
+                .any(|turn| turn.role == ConversationRole::Assistant)
+            && procedural_how_to_task(&normalize_prompt(&prior.content)).is_some())
 }
 
 pub fn tool_call_refusal_answer() -> SymbolicAnswer {

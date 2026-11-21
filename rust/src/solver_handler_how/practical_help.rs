@@ -191,7 +191,7 @@ pub(super) fn followup(
     ))
 }
 
-pub(super) fn followup_goal(normalized: &str, prior: &str) -> Option<String> {
+pub(crate) fn followup_goal(normalized: &str, prior: &str) -> Option<String> {
     if !forms("followups").iter().any(|form| form == normalized)
         && !super::is_procedural_elaboration_request(normalized)
     {
