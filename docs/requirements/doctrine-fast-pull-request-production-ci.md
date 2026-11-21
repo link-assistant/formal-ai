@@ -23,10 +23,14 @@ existing verification obligations.
   builds. Existing narrower platform/coverage opt-ins apply only on main.
 - **CI-FAST-3:** Main retains native tests, integrations, final production builds,
   signed/self-signed package verification where advertised, Docker publication and
-  public-download verification. A green PR proves the selected fast profile only;
-  delivery is complete only after the resulting main CI and configured release
-  producers/consumers are green. Diagnose main failures and fix them promptly in
-  a follow-up PR. Never label skipped suites as executed, passing or equivalent.
+  public-download verification. Locked crate packaging, secret scanning and
+  credential preflight admit staged publication. The publisher still requires
+  its authorized source, compiled artifact, smoke tests and publication receipts.
+  Independent diagnostics report their own outcomes. A green PR proves the
+  selected fast profile only. Complete delivery also requires green main CI and
+  configured release producers and consumers. Diagnose main failures and fix them
+  promptly in a follow-up PR. Never label skipped suites as executed, passing or
+  equivalent.
 - **CI-FAST-4:** Real GitHub E2E effects are disabled by default. Enable a deliberate
   run with FORMAL_AI_REAL_GITHUB_E2E=true or the real-github-e2e dispatch input.
   Preserve immutable per-PR/per-release ownership, attempt bounds, first/repeat

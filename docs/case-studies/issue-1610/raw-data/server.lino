@@ -1,0 +1,4 @@
+context_export_failure
+  session ses_e013e4ac4ffeZ5CsfCO3RVX0Yi
+  source server
+  error "dialog log contains no exchanges"

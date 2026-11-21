@@ -1442,3 +1442,57 @@ meanings
     unit "not applicable"
     example "I could not fetch `https://example.org` to formalize it: network error."
     grounding "data/seed/multilingual-responses-web.lino"
+
+  calendar-duration-sum
+    defined-by answer
+    role localized-response-template
+    precondition "an explicit sum of adjacent calendar quantities is requested in months or years"
+    effect "state the exact total and its conversion using twelve calendar months per year"
+    unit "not applicable"
+    example "14 months + 2 years + 7 months = 45 months"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
+
+  calendar-full-periods
+    defined-by answer
+    role localized-response-template
+    precondition "two valid dates with equal precision bound a request for complete months or years"
+    effect "compare calendar anniversaries and expose the number of completed periods"
+    unit "not applicable"
+    example "March 2021 to June 2024 = 39 months = 3 full years"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
+
+  currency-conversion-captured
+    defined-by answer
+    role localized-response-template
+    precondition "an explicit conversion has supported source and target currencies and a captured quote"
+    effect "show the cent-rounded amount with the actual rate source and snapshot date"
+    unit "not applicable"
+    example "1000 RUB / 82.5143 RUB per USD = 12.12 USD"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
+
+  currency-reference-quote
+    defined-by answer
+    role handler-table
+    precondition "a currency code has a captured official quote denominated in Russian rubles"
+    effect "return the exact decimal amount of rubles per one unit of that currency"
+    unit "not applicable"
+    example "USD = 82.5143 RUB on 2026-11-17"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
+
+  currency-reference-provenance
+    defined-by answer
+    role handler-table
+    precondition "a captured currency quote is used for an offline conversion"
+    effect "return the official source URL and dated snapshot used in the arithmetic"
+    unit "not applicable"
+    example "Central Bank of Russia XML daily rates dated 2026-11-17"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
+
+  calendar-duration-label
+    defined-by answer
+    role handler-table
+    precondition "a duration result has a unit, output language and grammatical number class"
+    effect "choose the localized month or year label for that result"
+    unit "not applicable"
+    example "45 месяцев; 3 года; 1 month"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"

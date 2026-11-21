@@ -1,0 +1,15 @@
+{"type":"init","timestamp":"2026-11-21T19:01:18.544Z","session_id":"79dd7290-ac1c-4c3f-a490-cd47e612eb82","model":"formal-ai"}
+{"type":"message","timestamp":"2026-11-21T19:01:18.551Z","role":"user","content":"Hello"}
+{"type":"message","timestamp":"2026-11-21T19:01:23.097Z","role":"assistant","content":"Hi, how may I help you?","delta":true}
+{"type":"init","timestamp":"2026-11-21T19:01:27.021Z","session_id":"79dd7290-ac1c-4c3f-a490-cd47e612eb82","model":"formal-ai"}
+{"type":"message","timestamp":"2026-11-21T19:01:27.024Z","role":"user","content":"Report issue"}
+{"type":"message","timestamp":"2026-11-21T19:01:27.701Z","role":"assistant","content":"What would you like to report? Select one or more.\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.","delta":true}
+{"type":"init","timestamp":"2026-11-21T19:04:14.128Z","session_id":"79dd7290-ac1c-4c3f-a490-cd47e612eb82","model":"formal-ai"}
+{"type":"message","timestamp":"2026-11-21T19:04:14.131Z","role":"user","content":"GitHub issue"}
+{"type":"message","timestamp":"2026-11-21T19:04:16.716Z","role":"assistant","content":"Which context should the GitHub issue include?\n1. Both logs — Include harness and server logs; attach a trimmed preview and link the full context if too large.\n2. Harness log — Include the complete harness conversation only.\n3. Server log — Include the complete matching server log only.","delta":true}
+{"type":"init","timestamp":"2026-11-21T19:04:20.515Z","session_id":"79dd7290-ac1c-4c3f-a490-cd47e612eb82","model":"formal-ai"}
+{"type":"message","timestamp":"2026-11-21T19:04:20.519Z","role":"user","content":"Both logs"}
+{"type":"message","timestamp":"2026-11-21T19:04:20.866Z","role":"assistant","content":"I’ll file the report in the Formal AI GitHub repository.","delta":true}
+{"type":"tool_use","timestamp":"2026-11-21T19:04:20.916Z","tool_name":"run_shell_command","tool_id":"run_shell_command__call_0a5016fa72c85283","parameters":{"command":"formal-ai report create-issue --session 'gemini_local_1609' --source both --surface agentic-cli --repo 'link-assistant/formal-ai' --title 'Formal AI: `Hello`' --separate-context-links"}}
+{"type":"tool_result","timestamp":"2026-11-21T19:04:21.923Z","tool_id":"run_shell_command__call_0a5016fa72c85283","status":"success","output":"https://github.com/link-assistant/formal-ai/issues/9999"}
+{"type":"message","timestamp":"2026-11-21T19:04:22.133Z","role":"assistant","content":"Filed the issue on GitHub: https://github.com/link-assistant/formal-ai/issues/9999","delta":true}

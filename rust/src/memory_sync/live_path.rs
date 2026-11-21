@@ -94,7 +94,7 @@ fn create_private(path: &Path) -> io::Result<bool> {
     Ok(true)
 }
 /// Only supported schemas migrate; unknown documents remain byte-identical beside a new private log.
-pub(super) fn resolve(path: &Path) -> io::Result<PathBuf> {
+pub(super) fn resolve(path: &Path, read_only: bool) -> io::Result<PathBuf> {
     let bytes = match observed(path) {
         Ok(bytes) => bytes,
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(path.to_path_buf()),
@@ -105,7 +105,7 @@ pub(super) fn resolve(path: &Path) -> io::Result<PathBuf> {
         .ok()
         .map(|text| crate::memory::upgrade::inspect_memory_text(text, true));
     if let Some(status) = status.as_ref().filter(|status| status.compatible) {
-        if status.migration_required {
+        if status.migration_required && !read_only {
             let receipt = crate::memory::migrate_memory_with_pre_commit(path, None, None, |_| {
                 if crate::source_fetch::sha256_hex(&observed(path)?) != source_sha256 {
                     return Err(io::Error::other("memory_live_preimage_changed"));
@@ -130,8 +130,17 @@ pub(super) fn resolve(path: &Path) -> io::Result<PathBuf> {
         ".schema-{TARGET_MEMORY_SCHEMA_VERSION}.{source_sha256}.lino"
     ));
     let selected = path.with_file_name(name);
-    let created = create_private(&selected)?;
-    current_private(&selected)?;
+    let created = if read_only {
+        false
+    } else {
+        create_private(&selected)?
+    };
+    match current_private(&selected) {
+        Err(error) if read_only && error.kind() == io::ErrorKind::NotFound => {
+            return Ok(path.to_path_buf());
+        }
+        result => result?,
+    }
     if crate::source_fetch::sha256_hex(&observed(path)?) != source_sha256 {
         return Err(io::Error::other("memory_live_preimage_changed"));
     }

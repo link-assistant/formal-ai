@@ -1212,3 +1212,58 @@ function parseLinearExpression(input) {
   if (state.position !== input.length) throw new Error("expression could not be parsed");
   return { value, variables };
 }
+
+// Captured currency quotes, twin of calculator_rate::conversion.
+// Integer ratios round half away from zero directly to cents, once.
+function currencyQuoteDecimal(text) {
+  const match = /^([+-]?)([0-9]{1,12})(?:[.,]([0-9]{1,6}))?$/u.exec(text);
+  if (!match) return null;
+  const fraction = match[3] || "";
+  return {mantissa:BigInt((match[1] === "-" ? "-" : "") + match[2] + fraction),
+    divisor:10n ** BigInt(fraction.length)};
+}
+function currencyQuoteRequest(expression) {
+  expression = expression.trim();
+  const cue = wordsForRole("quantity_conversion_cue").find((word) => calendarOffsetStartsWithTerm(expression.toLowerCase(), word));
+  if (cue) expression = expression.slice(cue.length).trimStart();
+  const match = /^([+-]?[0-9]{1,12}(?:[.,][0-9]{1,6})?)\s+(\S+)\s+(.+?)\s+(\S+)$/u.exec(expression.trim());
+  if (!match || !calendarDurationWords("currency-conversion-connector").includes(match[3].toLowerCase())) return null;
+  const from = currencyCodeFromWord(match[2]);
+  const to = currencyCodeFromWord(match[4]);
+  if (!from || !to) return null;
+  const fromRate = handlerRulesTableValue("currency-reference-quote", from);
+  const toRate = handlerRulesTableValue("currency-reference-quote", to);
+  const amount = currencyQuoteDecimal(match[1]);
+  const source = currencyQuoteDecimal(fromRate || "");
+  const target = currencyQuoteDecimal(toRate || "");
+  if (!amount || !source || !target || source.mantissa <= 0n || target.mantissa <= 0n) return null;
+  const numerator = amount.mantissa * source.mantissa * target.divisor * 100n;
+  const denominator = amount.divisor * source.divisor * target.mantissa;
+  const absolute = numerator < 0n ? -numerator : numerator;
+  const cents = absolute / denominator + (absolute % denominator >= (denominator + 1n) / 2n ? 1n : 0n);
+  const digits = cents.toString().padStart(3, "0");
+  const result = (numerator < 0n && cents !== 0n ? "-" : "") + digits.slice(0, -2) + "." + digits.slice(-2);
+  return {amount:match[1].replace(",", "."), from, to, fromRate, toRate, result};
+}
+function tryCapturedCurrencyConversion(prompt, expression) {
+  const request = currencyQuoteRequest(expression);
+  if (!request) return null;
+  const date = handlerRulesTableValue("currency-reference-provenance", "date");
+  const source = handlerRulesTableValue("currency-reference-provenance", "source");
+  const derivation = request.amount + " × " + request.fromRate + " / " + request.toRate + " ≈ " + request.result + " " + request.to;
+  const template = calendarOffsetLocalizedResponse("currency-conversion-captured", detectLanguage(prompt));
+  if (!template || !date || !source) return null;
+  const values = {...request, date, source, derivation};
+  let content = template;
+  for (const [key, value] of Object.entries(values)) content = content.replaceAll("{" + key + "}", value);
+  return {intent:"calculation", content, confidence:1, evidence:[
+    "currency:rate_basis:" + request.from + ":" + request.fromRate + "RUB;" + request.to + ":" + request.toRate + "RUB",
+    "currency:source:" + source, "currency:date:" + date,
+    "currency:derivation:" + derivation, "currency:result:" + request.result + " " + request.to,
+    "calculation:" + content, "calculation_backend:captured-currency"],
+    solverEvents:[{kind:"currency:rate_basis", payload:request.from + ":" + request.fromRate + "RUB;" + request.to + ":" + request.toRate + "RUB"},
+      {kind:"currency:source", payload:source}, {kind:"currency:date", payload:date},
+      {kind:"currency:derivation", payload:derivation},
+      {kind:"currency:result", payload:request.result + " " + request.to},
+      {kind:"calculation:engine", payload:"captured-currency"}, {kind:"calculation", payload:content}]};
+}

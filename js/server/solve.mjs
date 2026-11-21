@@ -4,6 +4,7 @@
 // `estimate_tokens`) and the tool-policy refusals of
 // rust/src/protocol_policy.rs.
 
+import { issueFormForPrompt } from '../agentic/report_issue.mjs';
 import { finalizeServerAnswer } from './derivation-store.mjs';
 import { beginTurn, endTurn, gateTurn } from './debug-session.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
@@ -22,6 +23,11 @@ import { thinkingStep, thinkingStepsFromWorker } from './thinking.mjs';
 import { currentRequestScope, eventsInScope } from './standing-scope.mjs';
 
 export { estimateTokens, stableId };
+
+export async function statelessIssueForm(ctx, prompt) {
+  await ensureNodeHost(ctx);
+  return issueFormForPrompt(prompt);
+}
 
 /**
  * @typedef {{
@@ -81,11 +87,12 @@ export function solverEvidenceLinks(result, history = []) {
  * @param {(intent: string) => string|null} [seedReport] the seed's English report text
  * @returns {SymbolicAnswer}
  */
-export function symbolicFromWorker(result, history = [], seedReport = undefined) {
+export function symbolicFromWorker(result, history = [], seedReport = undefined, { readOnly = false } = {}) {
   const answer = nativeProgramAnswer(String(result?.content ?? ''), result?.programExecution, seedReport);
-  noteLearned(result?.memoryOperation);
+  if (!readOnly) noteLearned(result?.memoryOperation);
   const log = solverLogFromWorker(result, history);
   return {
+    ...(result?.outputProjection ? {output_projection:result.outputProjection} : {}),
     intent: String(result?.intent ?? 'unknown'),
     answer,
     confidence: Number(result?.confidence ?? 0),
@@ -120,19 +127,21 @@ async function seedReportReader(ctx) {
  * @param {Array<{role: string, content: string}>} history
  * @returns {Promise<SymbolicAnswer>}
  */
-export async function solveSymbolic(ctx, prompt, history) {
+export async function solveSymbolic(ctx, prompt, history, options = {}) {
   // Issue #667 (R383): under a debug session the solve waits at its first
   // stage (`impulse`) before the worker runs; `gateTurn` continues the turn.
   await beginTurn(ctx, prompt);
   try {
-    return await solveBegun(ctx, prompt, history);
+    return await solveBegun(ctx, prompt, history, options);
   } finally {
     endTurn(ctx);
   }
 }
 
-async function solveBegun(ctx, prompt, history) {
-  const result = await ctx.worker.solve(prompt, history);
+async function solveBegun(ctx, prompt, history, options) {
+  const result = await ctx.worker.solve(prompt, history, {
+    ...ctx.outputConfiguration, ...options, readOnly: ctx.ephemeral === true,
+  });
   // R1013: the formalization, intent-formalization and meta-core records the
   // native solver logs between the worker's prelude and its handler events.
   if (Array.isArray(result?.solverEvents)) {
@@ -152,7 +161,7 @@ async function solveBegun(ctx, prompt, history) {
   }
   // Issue #1184 R1184-9: every native solve ends in `finalize_answer`, which
   // links, appends and persists the answer's derivation record.
-  const symbolic = symbolicFromWorker(result, history, await seedReportReader(ctx));
+  const symbolic = symbolicFromWorker(result, history, await seedReportReader(ctx), { readOnly: ctx.ephemeral });
   // Issue #667 (R383): a held turn is neither persisted nor answered until it is released.
   if (ctx.debugSession) await ensureNodeHost(ctx);
   await gateTurn(ctx, symbolic.thinking_steps);
@@ -193,11 +202,11 @@ export async function answerFromMemory(ctx, memoryPrompt, history, amendPrompt =
  * @param {Array<{role: string, content: string}>} history
  * @returns {Promise<SymbolicAnswer>}
  */
-export async function solveWithMemory(ctx, prompt, history) {
+export async function solveWithMemory(ctx, prompt, history, options = {}) {
   const events = memoryEvents(ctx);
   const seed = await ctx.worker.seedReaders();
   return solveWithStandingRequirements(
-    (text, turns) => solveSymbolic(ctx, text, turns),
+    (text, turns) => solveSymbolic(ctx, text, turns, options),
     seed.normalizePrompt,
     prompt,
     history,

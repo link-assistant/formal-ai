@@ -21,6 +21,7 @@ new module fails CI until this map documents it.
 | `bounded_retry` | Shared finite ceiling for consecutive failed attempts at an external action. | §2 |
 | `callback_values` | Typed receiver adapters for ECMAScript callback operations. | §2 |
 | `cloud_sync` | Opt-in, vendor-neutral append-only memory synchronization (issue #669). | §2 |
+| `cnl_output` | Output-only constraints. Accepting text never depends on its grammar. | §2 |
 | `code_example_knowledge` | Code examples as formal knowledge (issue #1164, E129). | §2 |
 | `derivation` | White-box derivation record for every answer (issue #1184, E148). | §2 |
 | `discovery_production` | Discovery on the production path: a rediscoverable coding-procedure cache. | §2 |

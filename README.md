@@ -431,13 +431,21 @@ artifacts written inside an isolated temporary client home are preserved so the
 reported path remains available for debugging. If `FORMAL_AI_PROXY_LOG` names an
 existing proxy log, that path is included in the same final block.
 
-Set `FORMAL_AI_DIALOG_LOG_DIR` on the server to write full request/response
-JSONL records into one file per dialog. This recorder is off by default because
-the bodies can contain private prompts and tool output. Send
-`X-Formal-AI-Dialog-ID` for exact grouping, or let the server derive the group
-from the first user prompt. See
+By default, server diagnostics record request IDs, routes, byte counts, timing,
+and status. Full dialog capture is off. Set `FORMAL_AI_DIALOG_LOG_DIR` to opt in
+to recording complete exchanges and conversation turns in Links Notation
+(`.lino`), grouped by `X-Formal-AI-Dialog-ID` or the first user prompt. Use
+`--silent` to disable server diagnostics and dialog capture. In ordinary mode,
+memory and derivation recording follow their own settings.
+
+Run `formal-ai serve --ephemeral` or set `FORMAL_AI_EPHEMERAL=1` to answer using
+existing memory read-only. This mode disables chat recording, background memory
+updates, server diagnostics, dialog capture, and derivation persistence, even
+when capture or trace options are set. Server-side agent execution and the
+stepping debugger require ordinary mode. `GET /health` reports `memory.mode`,
+`logs.status`, `logs.dialog_capture`, and `logs.derivation_capture`. See
 [`docs/configuration/output-sessions.md`](docs/configuration/output-sessions.md)
-for capture and optional `gh-upload-log` upload instructions.
+for capture, export, and provenance details.
 
 ```text
 formal-ai: session files for debugging:
@@ -1247,5 +1255,5 @@ rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-as
 See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
 
 <!-- status:begin self-hosting -->
-Latest ledger row: `v0.355.34`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.
+Latest ledger row: `v0.356.1`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.
 <!-- status:end self-hosting -->

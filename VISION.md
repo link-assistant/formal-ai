@@ -437,6 +437,8 @@ Formal AI should use trigger-style computation over links. A trigger can react t
 
 Deep.Foundation is a useful reference for associative packages, handlers, permissions, and code stored inside associative memory. This project adapts those ideas to local Rust, browser, and CLI modes using Link Foundation doublets instead of triplet links. `ARCHITECTURE.md` documents the data shape of each rule kind and how the trigger loop dispatches across them.
 
+Dynamic and compiled rules form an instance-specific equilibrium. Discovered recipes begin as inspectable substitutions with source evidence. Repeated execution supplies observations that idle dreaming can use to propose compilation or interpretation. An operator reviews each change, and the same recipe remains available for inspection and step-by-step comparison in either form. Link changes schedule independent trigger matches at the next cycle. An operator can explicitly enable installed rules to change the active rule set while those cycles run. [Dynamic meta architecture](docs/architecture/dynamic-meta.md)
+
 ## Product Shape
 
 The same symbolic core should be available through:

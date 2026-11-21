@@ -8,7 +8,7 @@ use crate::anthropic::{
     create_anthropic_message_with_solver_and_memory,
 };
 use crate::context_capacity::ContextCapacity;
-use crate::engine::{knowledge_graph, render_thinking_steps};
+use crate::engine::knowledge_graph;
 use crate::gemini::{
     GeminiGenerateContentRequest, create_gemini_generate_content_response_with_solver_and_memory,
     gemini_model_list, gemini_model_metadata, gemini_response_sse, vertex_model_list,
@@ -17,7 +17,7 @@ use crate::mcp::handle_mcp_request;
 use crate::memory_sync::SyncStore;
 use crate::network_endpoint::{handle_links_query_request, handle_network_request};
 use crate::protocol::{
-    ChatCompletion, ChatCompletionRequest, ChatMessage, ResponsesRequest, chat_exchange_to_record,
+    ChatCompletionRequest, ChatMessage, ResponsesRequest, chat_exchange_to_record,
     chat_tool_executions, create_chat_completion_with_solver_and_memory,
     create_response_with_solver_and_memory, messages_exchange_to_record,
     responses_exchange_to_record,
@@ -30,13 +30,19 @@ use crate::standing_scope::{
 };
 use crate::telegram::handle_telegram_webhook;
 
+mod chat_stream;
 mod conversation_reports;
 mod debug_session;
 mod debug_stage;
 mod debug_stage_sources;
+mod dynamic_meta;
+mod retention;
 mod shutdown;
 mod transport;
 
+pub use crate::solver_config::enable_ephemeral_for_current_process;
+use crate::solver_config::ephemeral_enabled;
+use chat_stream::chat_completion_sse_response;
 pub use debug_session::{
     DEBUG_TOKEN_ENV, DebugSession, DebugToken, active_debug_session, debug_session_banner,
     debug_token_from_env, enable_debug_session, generate_debug_token, handle_debug_request,
@@ -47,10 +53,10 @@ pub use debug_stage::{
     EXCERPT_LINES, SourceLocation, StageView, TurnView, describe_turn, js_location, rust_location,
     stage_diagram, turn_method,
 };
+use retention::{log_health_status, memory_health_status};
 pub use transport::serve;
 
 static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
-
 pub const ADVERTISED_MAX_OUTPUT_TOKENS: i64 = 8_192;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -141,6 +147,9 @@ fn record_exchange_best_effort(
     messages: &[ChatMessage],
     scope: &RequestScope,
 ) {
+    if !crate::memory_sync::chat_recording_enabled() {
+        return;
+    }
     let Some((prompt, answer)) = exchange else {
         return;
     };
@@ -168,19 +177,27 @@ pub fn handle_api_request_with_auth(
     auth: &ApiAuthConfig,
 ) -> ApiHttpResponse {
     let normalized_path = path.split('?').next().unwrap_or(path);
-    let authorized = !requires_bearer_auth(method, normalized_path) || auth.allows(headers);
+    if let Some(response) = dynamic_meta::route(method, normalized_path, headers, body, auth) {
+        return response;
+    }
+    let route_path = crate::dialog_log::scoped_openai_path(normalized_path)
+        .map_or(path, |(_, endpoint)| endpoint);
+    let authorization_path = route_path.split('?').next().unwrap_or(route_path);
+    let authorized = !requires_bearer_auth(method, authorization_path) || auth.allows(headers);
     // The planner reads this back when it writes a report command, so the
     // exported session is the caller's own session and not a guess (#839).
-    let _dialog = crate::dialog_log::DialogScope::begin(headers);
+    let _dialog = crate::dialog_log::DialogScope::for_request(headers, normalized_path, body);
     let phase = crate::dialog_log::structured_log::request_phases(
         crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS"),
     );
-    let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
+    let started = retention::request_start();
+    let response = dispatch_api_request_with_auth(method, route_path, headers, body, auth);
     phase("api_dispatch_finished");
     crate::dialog_log::record_api_exchange_if_enabled(
         method, path, headers, body, &response, authorized,
     );
     phase("dialog_logging_finished");
+    retention::log_request(method, normalized_path, body.len(), &response, started);
     response
 }
 
@@ -264,7 +281,7 @@ fn dispatch_api_request_with_auth(
                 "model": canonical_model_id(),
                 "version": env!("CARGO_PKG_VERSION"),
                 "memory": memory_health_status(),
-                "logs": crate::dialog_log::structured_log::health_status(),
+                "logs": log_health_status(),
             }),
         ),
         ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),
@@ -362,6 +379,9 @@ fn dispatch_api_request_with_auth(
         }
         ("POST", "/mcp") => handle_mcp_request(body, &http_solver()),
         ("GET", "/mcp") => error_response(405, "MCP SSE streams are not supported"),
+        ("POST", "/telegram/webhook") if ephemeral_enabled() => {
+            error_response(409, "this operation requires persistent mode")
+        }
         ("POST", "/telegram/webhook") => match handle_telegram_webhook(body) {
             Ok(Some(reply)) => json_response(200, &reply),
             Ok(None) => ApiHttpResponse {
@@ -374,33 +394,6 @@ fn dispatch_api_request_with_auth(
         },
         _ => error_response(404, "route not found"),
     }
-}
-
-fn memory_health_status() -> Value {
-    let Some(path) = crate::memory_sync::configured_memory_path() else {
-        return json!({
-            "schema_version": Value::Null,
-            "minimum_readable_schema_version": crate::memory::MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
-            "maximum_readable_schema_version": crate::memory::MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION,
-            "target_schema_version": crate::memory::TARGET_MEMORY_SCHEMA_VERSION,
-            "compatible": true,
-            "migration_required": false,
-            "migration_state": "missing",
-        });
-    };
-    let original_path = path;
-    let path = crate::memory_sync::active_memory_path(&original_path);
-    let status = crate::memory::preflight_memory_upgrade(&path);
-    json!({
-        "active_path":path,"configured_path":original_path,
-        "schema_version": status.detected_schema_version,
-        "minimum_readable_schema_version": status.minimum_readable_schema_version,
-        "maximum_readable_schema_version": status.maximum_readable_schema_version,
-        "target_schema_version": status.target_schema_version,
-        "compatible": status.compatible,
-        "migration_required": status.migration_required,
-        "migration_state": status.migration_state,
-    })
 }
 
 fn requires_bearer_auth(method: &str, normalized_path: &str) -> bool {
@@ -452,6 +445,12 @@ fn handle_dynamic_protocol_route(
             .or_else(|| normalized_path.strip_prefix("/v1/conversations/"))
             .and_then(|suffix| suffix.strip_suffix("/learn"));
         if let Some(dialog_id) = dialog_id.filter(|id| !id.is_empty()) {
+            if ephemeral_enabled() {
+                return Some(error_response(
+                    409,
+                    "this operation requires persistent mode",
+                ));
+            }
             return Some(conversation_reports::handle_learning_request(dialog_id));
         }
     }
@@ -508,6 +507,7 @@ fn handle_openai_models_request() -> ApiHttpResponse {
             "data": [{
                 "id": model_id,
                 "slug": model_id,
+                "capabilities": ["json_schema"],
                 "object": "model",
                 "owned_by": "link-assistant",
                 "context_window": context.context_window_tokens,
@@ -523,6 +523,7 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "id": model_id,
                 "slug": model_id,
                 "name": model_id,
+                "capabilities": ["json_schema"],
                 "context_window": context.context_window_tokens,
                 "max_output_tokens": ADVERTISED_MAX_OUTPUT_TOKENS,
                 "context_window_tokens": context.context_window_tokens,
@@ -729,144 +730,12 @@ fn http_solver() -> UniversalSolver {
     if HTTP_AGENT_MODE_FORCED.load(Ordering::Relaxed) {
         config.agent_mode = true;
     }
+    if ephemeral_enabled() {
+        config.agent_mode = false;
+        config.offline = true;
+    }
     config.execution_surface = ExecutionSurface::HttpServer;
     UniversalSolver::new(config)
-}
-
-/// Serialise a completed [`ChatCompletion`] as an OpenAI-compatible
-/// `chat.completion.chunk` SSE stream.
-///
-/// The Vercel AI SDK's `@ai-sdk/openai-compatible` provider (and every other
-/// OpenAI-compatible streaming parser) expects incremental `chat.completion.chunk`
-/// events carrying `choices[].delta` — not a single `chat.completion` payload.
-/// Shipping the non-streaming shape "worked" for text (the SDK falls back to
-/// scraping content out of the raw SSE stream, which is where the CLI's
-/// *"AI SDK dropped token data"* warning comes from) but silently dropped
-/// `tool_calls`, so the agent CLI never actually invoked the tool the planner
-/// requested. Emit chunks: an initial `role` delta, one delta per tool call
-/// (with full `function.arguments` in a single frame — the SDK stitches them
-/// back together), a final `finish_reason` chunk, an optional usage chunk when
-/// the client asks for it via `stream_options.include_usage`, and the closing
-/// `[DONE]` sentinel.
-fn chat_completion_sse_response(
-    completion: &ChatCompletion,
-    include_usage: bool,
-) -> ApiHttpResponse {
-    let mut body = String::new();
-    let base = json!({
-        "id": completion.id,
-        "object": "chat.completion.chunk",
-        "created": completion.created,
-        "model": completion.model,
-    });
-
-    let choice = completion.choices.first();
-
-    // Chunk 1: role delta.
-    let role_delta = json!({
-        "index": 0,
-        "delta": { "role": "assistant" },
-        "finish_reason": null,
-    });
-    body.push_str(&sse_chunk(&base, &role_delta));
-
-    // Chunk 2..N: reasoning, content, or tool_call deltas.
-    if let Some(choice) = choice {
-        let reasoning = if choice.message.reasoning_content.is_empty() {
-            render_thinking_steps(&choice.message.thinking_steps)
-        } else {
-            choice.message.reasoning_content.clone()
-        };
-        if !reasoning.is_empty() {
-            let delta = json!({
-                "index": 0,
-                "delta": {
-                    "reasoning_content": reasoning,
-                    "reasoning": reasoning,
-                },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-        let text = choice.message.content.plain_text();
-        if !text.is_empty() {
-            let delta = json!({
-                "index": 0,
-                "delta": { "content": text },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-        for (index, call) in choice.message.tool_calls.iter().enumerate() {
-            let delta = json!({
-                "index": 0,
-                "delta": {
-                    "tool_calls": [{
-                        "index": index,
-                        "id": call.id,
-                        "type": call.kind,
-                        "function": {
-                            "name": call.function.name,
-                            "arguments": call.function.arguments,
-                        }
-                    }]
-                },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-    }
-
-    // Final chunk: finish_reason.
-    let finish_reason = choice.map_or_else(
-        || String::from("stop"),
-        |choice| choice.finish_reason.clone(),
-    );
-    let final_chunk = json!({
-        "index": 0,
-        "delta": {},
-        "finish_reason": finish_reason,
-    });
-    body.push_str(&sse_chunk(&base, &final_chunk));
-
-    // Optional usage chunk — the AI SDK reads token counts from here when
-    // `stream_options.include_usage` is set (per OpenAI's spec).
-    if include_usage {
-        let usage_payload = json!({
-            "id": completion.id,
-            "object": "chat.completion.chunk",
-            "created": completion.created,
-            "model": completion.model,
-            "choices": [],
-            "usage": {
-                "prompt_tokens": completion.usage.prompt_tokens,
-                "completion_tokens": completion.usage.completion_tokens,
-                "total_tokens": completion.usage.total_tokens,
-            }
-        });
-        body.push_str("data: ");
-        body.push_str(&usage_payload.to_string());
-        body.push_str("\n\n");
-    }
-
-    body.push_str("data: [DONE]\n\n");
-
-    ApiHttpResponse {
-        status_code: 200,
-        content_type: "text/event-stream",
-        body,
-        deprecated: false,
-    }
-}
-
-/// Serialise a single OpenAI streaming chunk: merge `base` (id/object/created/model)
-/// with a `choices` entry and emit it as an SSE `data:` frame.
-fn sse_chunk(base: &Value, choice: &Value) -> String {
-    let mut merged = base.clone();
-    if let Value::Object(map) = &mut merged {
-        map.insert(String::from("choices"), Value::Array(vec![choice.clone()]));
-    }
-    format!("data: {merged}\n\n")
 }
 
 /// Translate an Anthropic Messages request (`POST /v1/messages`) so the `claude`
@@ -933,6 +802,9 @@ fn handle_memory_since_request(query: &str) -> ApiHttpResponse {
 /// Merge an inbound `demo_memory` document into the shared store
 /// (`POST /v1/memory/import`, ROADMAP D1 / R5c).
 fn handle_memory_import_request(body: &str) -> ApiHttpResponse {
+    if ephemeral_enabled() {
+        return error_response(409, "memory is read-only in ephemeral mode");
+    }
     let mut store = SyncStore::open();
     match store.import_links_notation(body) {
         Ok(added) => json_response(

@@ -1,0 +1,116 @@
+[use-m] acquired install lock for 'command-stream-v-latest' at /tmp/hive-mind-use-m-locks/command-stream-v-latest.lock
+[use-m] use('command-stream') loading (alias command-stream-v-latest)
+[use-m] use('command-stream') pinned to 'command-stream@2.6.0'
+[use-m] use('command-stream') loaded in 4399ms
+[use-m] use('links-notation') pinned to 'links-notation@0.31.6'
+[use-m] acquired install lock for 'links-notation-v-0.31.6' at /tmp/hive-mind-use-m-locks/links-notation-v-0.31.6.lock
+[use-m] use('links-notation@0.31.6') loading (alias links-notation-v-0.31.6)
+[use-m] use('links-notation@0.31.6') loaded in 73ms
+[use-m] use('getenv') pinned to 'getenv@2.0.0'
+[use-m] acquired install lock for 'getenv-v-2.0.0' at /tmp/hive-mind-use-m-locks/getenv-v-2.0.0.lock
+[use-m] use('getenv@2.0.0') loading (alias getenv-v-2.0.0)
+[use-m] use('getenv@2.0.0') loaded in 69ms
+[use-m] use('fs') loading (alias fs-v-latest)
+[use-m] use('fs') loaded in 0ms
+[use-m] use('path') loading (alias path-v-latest)
+[use-m] use('path') loaded in 0ms
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('crypto') loading (alias crypto-v-latest)
+[use-m] use('crypto') loaded in 0ms
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('os') loading (alias os-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('os') joined an in-flight load (alias os-v-latest)
+[use-m] use('os') loaded in 1ms
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('os') joined an in-flight load (alias os-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] acquired install lock for 'zx-v-latest' at /tmp/hive-mind-use-m-locks/zx-v-latest.lock
+[use-m] use('zx') loading (alias zx-v-latest)
+[use-m] use('zx') pinned to 'zx@8.8.5'
+[use-m] use('zx@8.8.5') normalized Node's CommonJS namespace marker
+[use-m] use('zx') loaded in 500ms
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+[use-m] use('os') joined an in-flight load (alias os-v-latest)
+⚠️  SECURITY WARNING: --attach-logs is ENABLED
+[use-m] use('command-stream') joined an in-flight load (alias command-stream-v-latest)
+⚠️  Warning: Could not determine token scopes from auth status
+Switched to a new branch 'issue-1582-79aa864de807'
+⚠️  Commit b052ff2e would fail formal-ai's metric: records only one of Formal-AI-Session/Formal-AI-Evidence
+⚠️  Commit bd511432 would fail formal-ai's metric: records only one of Formal-AI-Session/Formal-AI-Evidence
+⚠️  Commit 4c33a943 would fail formal-ai's metric: evidence docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit does not record session ses_ffb20640bffeX0VahcuKR9bfXj, ses_ffb1ee9b4ffedIt26xRyh8FEDy
+⚠️  Commit 963c269f would fail formal-ai's metric: evidence docs/case-studies/issue-933/self-hosting-authorship/sessions/002-agent.json does not record session ses_ffe53a982ffehanSN8bUFg1rnx, ses_ffe539d4bffepYxizWW1CZtk8H
+⚠️  Commit 2c176182 would fail formal-ai's metric: evidence docs/case-studies/issue-961/self-hosting-authorship/changelog-session does not record session ses_014a75079ffewrf0nGhHCIG06f, ses_014a725dbffeJQOYwc4T0yJjFT
+⚠️  Commit ee50f81e would fail formal-ai's metric: evidence docs/case-studies/issue-982/self-hosting/contract does not record session ses_01b6d03deffePqZ8rVcHzlop7p, ses_01b6cb1e4ffew2XslZgBkNR7EB
+⚠️  Commit 42497d33 would fail formal-ai's metric: evidence path must be a normal path: docs/case-studies/issue-864/agent-cli-evidence/
+⚠️  Commit 0b2fa7bd would fail formal-ai's metric: evidence docs/case-studies/issue-848/self-hosting-workspace-learning/learning-contract does not record session ses_03d2e0597ffeAUZhq3qAtj2I4U, ses_03d2df24effeijLfzPXiUeV4pG, ses_03d2ddb1cffeQkS5gxWjpMojc6
+⚠️  Commit d46b6337 would fail formal-ai's metric: evidence docs/case-studies/issue-709/agent-cli-evidence/learning-contract does not record session ses_03f0edb46ffesIq1tz5G0zcTuV, ses_03f0ec980ffeTwKWTHsJV8L3tk, ses_03f0eb7f9ffes4J25WB6ozqWjQ, ses_03f015388ffej7CYn8EdCRJjRm, ses_03efa9270ffeDsKblsJY05z2bo, ses_03eff26d2ffeDtvQk3uW203zgj
+⚠️  Commit 4a0b04cf would fail formal-ai's metric: evidence docs/case-studies/issue-708/self-hosting-seed/agent-cli.log does not record session ses_0434f23f9ffeYTsz2Hr7nKduHX, ses_0434ed22bffekjueq9I2XscceW
+⚠️  Commit a5e41eb4 would fail formal-ai's metric: evidence docs/case-studies/issue-708/self-hosting-seed/agent-cli.log does not record session ses_04392a77dffetIQy2YCIbZ3XXf, ses_043825d8effei1XSgD3l0ddOLk
+⚠️  Commit 15de6f27 would fail formal-ai's metric: evidence docs/case-studies/issue-879/formal-ai-authorship-requirements-session.json does not record session ses_04b6ac0c7ffeWr2CRJCMTiPqz0, ses_04b64048cffeToyNFkGfSItJoz
+⚠️  Commit 58891ec7 would fail formal-ai's metric: evidence docs/case-studies/issue-842/self-hosting-census-refresh/agent-stream-self-ast.jsonl does not record session ses_052984123ffenzPVkmsVADtAHL, ses_0528b8463ffeTZ6UPSJy5tLHmI
+⚠️  Commit b91a8044 would fail formal-ai's metric: evidence docs/case-studies/issue-839/self-hosting-evidence/agent-stream.jsonl does not record session ses_06915f6c6ffeDwj8guXeV65sui, ses_069155ee9ffehjIXQT8FFPE8Zr
+⚠️  Commit 69ef0f26 would fail formal-ai's metric: evidence docs/case-studies/issue-822/ratchet-self-coding/source-links.jsonl does not record session ses_075535349ffej164b2Ge1rqfrk, ses_0755343abffe3lV76mgZhDqlbn, ses_07553377dffevhWu0pVHW1vkE5, ses_075532916ffeJ9VWsKoX1j4Quf
+⚠️  Commit 7ef5a368 would fail formal-ai's metric: evidence docs/case-studies/issue-819/raw-data/self-authoring/benchmark-main-agent-stream.log does not record session ses_077804616ffeYCUlInWd4I6RU4, ses_0777fd171ffevxlFxkgamiFjz5, ses_0777fba3affec9J34aRoUg9mFE, ses_0777fa326ffegwJUm7fH2DtkRx, ses_0777f8d83ffeatyTj6Ki4cSXIq
+⚠️  Commit 10e65ae2 would fail formal-ai's metric: evidence dev/log/issues/804/pulls/805/analysis.md does not record session issue-804-claude-20260720
+⚠️  Commit f312212a would fail formal-ai's metric: evidence docs/case-studies/issue-752/red-test-agent-run/agent-write-stream.jsonl does not record session ses_08967bcddffe2WNnREXaXntGtj, ses_0895f89f0ffelPR14u5IaAfgAb
+⚠️  Commit ee4aad5f would fail formal-ai's metric: evidence docs/case-studies/issue-751/implementation-agent-run/agent-cli.log does not record session ses_089bcdfe3ffeqa17KOaG76i7YR, ses_089ba577dffe5UFKWbRK5Qv5pc
+To https://github.com/link-assistant/formal-ai.git
+   0b4a9dd67..6f6a6045b  issue-1582-79aa864de807 -> issue-1582-79aa864de807
+  ⚠️  PR #1583 has an empty diff - the description will say so instead of claiming changes
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+
+⚠️  Finished without changes: the session produced no change: no new commit, no file change and no comment
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('https') loading (alias https-v-latest)
+[use-m] use('https') loaded in 1ms
+[use-m] use('child_process') loading (alias child_process-v-latest)
+[use-m] use('child_process') loaded in 1ms
+To https://github.com/link-assistant/formal-ai.git
+   6f6a6045b..9ed26cde1  issue-1582-79aa864de807 -> issue-1582-79aa864de807
+[use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[use-m] use('path') joined an in-flight load (alias path-v-latest)
+⚠️  Finished without changes
+To https://github.com/link-assistant/formal-ai.git
+   9ed26cde1..b39664624  issue-1582-79aa864de807 -> issue-1582-79aa864de807

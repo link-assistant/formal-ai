@@ -169,8 +169,9 @@ test('startCoreDreaming waits for idleness, runs once, and is off on an explicit
 test('serve starts the dreaming worker and every request guards the idle clock', () => {
   const main = fs.readFileSync(path.join(REPO, 'js/server/main.mjs'), 'utf8');
   const http = fs.readFileSync(path.join(REPO, 'js/server/http.mjs'), 'utf8');
-  const started = main.indexOf('startCoreDreaming({ env: process.env, memoryPath: memoryPath(process.env) });');
+  const started = main.indexOf('options.ephemeral ? null : startCoreDreaming({');
   assert.ok(started > 0 && started < main.indexOf('await startServer(options)'));
+  assert.match(main.slice(started), /afterRun: \(\) => running\?\.ctx\.dynamicMeta\?\.review\(\)/u);
   assert.ok(http.includes('const foreground = beginForegroundActivity();'));
   assert.ok(http.includes('foreground.end();'));
 });

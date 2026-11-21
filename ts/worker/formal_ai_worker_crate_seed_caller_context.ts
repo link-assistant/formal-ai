@@ -27,6 +27,8 @@ function callerContextVocabulary() {
       if (group.name === 'injected_blocks') {
         vocab.injected_blocks = (group.children || []).filter((child) => child.name === 'block').map((block) => ({
           tag: block.value,
+          prefix: (block.children || []).find((child) => child.name === 'prefix')?.value ?? null,
+          unwrap: (block.children || []).some((child) => child.name === 'unwrap'),
           clients: (block.children || []).filter((child) => child.name === 'client').map(canonicalUnaryValue),
         }));
       } else if (group.name === 'fact_statement_copulas') {

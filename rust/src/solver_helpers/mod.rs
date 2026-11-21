@@ -141,6 +141,12 @@ pub fn record_decomposition(
         return Vec::new();
     }
 
+    // A bound calendar interval is one operation. Its endpoint connector
+    // joins operands, not independently actionable requests (issue #1589).
+    if crate::solver_handlers::calendar::month::duration::request(prompt).is_some() {
+        return Vec::new();
+    }
+
     // Multiple explicit questions are independently actionable even when the
     // whole prompt happens to match the first one. Previously that whole-prompt
     // match (for example, `capabilities`) suppressed decomposition and silently

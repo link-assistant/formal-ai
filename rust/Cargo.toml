@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.355.34"
+version = "0.356.1"
 edition = "2024"
 description = "Don't know everything, know just enough to get to know anything"
 readme = "../README.md"
@@ -130,6 +130,22 @@ missing_panics_doc = "allow"
 [[test]]
 name = "unit"
 path = "tests/unit/mod.rs"
+
+[[test]]
+name = "calendar_currency"
+path = "tests/unit/calendar-currency.rs"
+
+[[test]]
+name = "openai_forced_functions"
+path = "tests/unit/openai_forced_functions.rs"
+
+[[test]]
+name = "cnl_output"
+path = "tests/unit/cnl_output.rs"
+
+[[test]]
+name = "cnl_parity"
+path = "tests/unit/cnl_parity.rs"
 
 [[test]]
 name = "integration"

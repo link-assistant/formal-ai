@@ -68,46 +68,9 @@ function howToPercentEncode(value) {
   return sourceWalkPercentEncode(value);
 }
 
-/** Host of a service endpoint, used to tell wikiHow's hyphenated titles apart. */
-function howToSourceHost(record) {
-  const match = String(record.api || "").split("://")[1];
-  return match ? match.split("/")[0] : String(record.api || "");
-}
-
 /** The tier weight of a source, defaulting to independent corroboration. */
 function howToTierWeight(tier) {
   return sourceWalkTierWeight(tier);
-}
-
-/**
- * The task as a wiki page title: `install docker` becomes `Install-Docker` for
- * wikiHow's hyphenated titles and `Install Docker` elsewhere.
- */
-function howToPageTitle(task, hyphenated) {
-  return String(task || "")
-    .split(/[^0-9A-Za-z]+/u)
-    .filter((word) => word.length > 0)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(hyphenated ? "-" : " ");
-}
-
-/**
- * Bind the registry's API template for this task, or `null` when a required
- * placeholder cannot be filled from the task alone (GitHub needs an owner and
- * a repository, for instance).
- */
-function howToEntryUrl(record, task) {
-  const hyphenated = howToSourceHost(record).includes("wikihow");
-  let url = String(record.api || "");
-  const parameters = [
-    ["title", howToPageTitle(task, hyphenated)],
-    ["query", task],
-    ["lemma", task],
-  ];
-  for (const [name, value] of parameters) {
-    url = url.split(`{${name}}`).join(howToPercentEncode(value));
-  }
-  return url.includes("{") ? null : url;
 }
 
 /** A MediaWiki full-text search URL on the same wiki as the entry endpoint. */
@@ -149,7 +112,7 @@ function howToSelectSources(task, preferences, bounds) {
     "",
     preferences,
     limits,
-    (record, subject) => howToEntryUrl(record, subject),
+    sourceWalkEntryUrl,
   ).selected.map(({ record }) => record);
 }
 
@@ -165,7 +128,7 @@ function howToSkippedSources(task, preferences) {
     "",
     preferences,
     HOW_TO_GUIDE_BOUNDS,
-    (record, subject) => howToEntryUrl(record, subject),
+    sourceWalkEntryUrl,
   ).skipped.map((outcome) => ({ ...outcome, steps: outcome.items }));
 }
 
@@ -253,9 +216,9 @@ function howToDecodeEntities(value) {
   return String(value == null ? "" : value).replace(/&(#?[0-9A-Za-z]{1,9});/gu, (whole, entity) => {
     const named = { nbsp: " ", "#160": " ", amp: "&", quot: '"', apos: "'", "#039": "'", lt: "<", gt: ">" };
     if (entity in named) return named[entity];
-    if (entity.startsWith("#")) {
-      const code = Number.parseInt(entity.slice(1), 10);
-      if (Number.isFinite(code)) return String.fromCodePoint(code);
+    if (/^#\d+$/u.test(entity)) {
+      const code = Number(entity.slice(1));
+      if (code <= 0x10ffff && (code < 0xd800 || code > 0xdfff)) return String.fromCodePoint(code);
     }
     return whole;
   });
@@ -380,9 +343,9 @@ function howToSingular(word) {
 
 function howToTopicWords(value) {
   return String(value == null ? "" : value)
-    .split(/[^0-9A-Za-z]+/u)
+    .split(/[^\p{L}\p{N}\p{M}]+/u)
     .map((word) => word.toLowerCase())
-    .filter((word) => word.length > 2 && !HOW_TO_TOPIC_STOPWORDS.includes(word))
+    .filter((word) => (word.length > 2 || /[^\x00-\x7f]/u.test(word)) && !HOW_TO_TOPIC_STOPWORDS.includes(word))
     .map(howToSingular);
 }
 
@@ -393,7 +356,7 @@ function howToTopicWords(value) {
  */
 function howToMatchesTask(task, candidate) {
   const wanted = howToTopicWords(task);
-  if (wanted.length === 0) return true;
+  if (wanted.length === 0) return false;
   const offered = howToTopicWords(candidate);
   return wanted.every((word) => offered.includes(word));
 }
@@ -446,7 +409,7 @@ function howToApplyCopiedSourcePolicy(steps, guide) {
 function howToActionKey(text) {
   return String(text || "")
     .split(/\s+/u)
-    .map((word) => word.replace(/[^0-9A-Za-z]/gu, "").toLowerCase())
+    .map((word) => word.replace(/[^\p{L}\p{N}\p{M}]/gu, "").toLowerCase())
     .filter((word) => word.length > 0)
     .slice(0, 3)
     .join(" ");
@@ -516,11 +479,17 @@ function howToReadCapture(record, task, capture, depth, produced, bounds) {
   const follow = [];
   let detail = "";
   if (payload.kind === "parse") {
-    const found = howToExtractSteps(payload.html, bounds.maxItems);
+    const relevant = record.id !== "wikihow" || howToMatchesTask(task, payload.title);
+    const localized = record.id === "wikihow" && new URL(capture.url).hostname !== "www.wikihow.com";
+    const found = !relevant ? [] : localized
+      ? howToWikiHowStepLists(payload.html, bounds.maxItems, true)
+      : howToExtractSteps(payload.html, bounds.maxItems);
+    if (!relevant) detail = `no_relevant_result url=${capture.url}`;
     if (found.length === 0 && depth < bounds.maxDepth) {
       for (const title of howToWikiLinkTitles(payload.html, bounds.maxPagesPerService)) {
         if (howToMatchesTask(task, title)) follow.push(howToParseUrl(record, title));
       }
+      if (!relevant && follow.length === 0) follow.push(howToSearchUrl(record, task));
     }
     howToPushSteps(record, capture, depth, found, items);
   } else if (payload.kind === "items") {
@@ -564,17 +533,21 @@ function howToReadCapture(record, task, capture, depth, produced, bounds) {
 }
 
 /** Synthesise a guide for `task` from the enabled registry services. */
-async function synthesizeHowToGuide(task, preferences, bounds, now) {
+async function synthesizeHowToGuide(task, preferences, bounds, now, language = "") {
   const limits = bounds || HOW_TO_GUIDE_BOUNDS;
   const at = typeof now === "number" ? now : howToNowSeconds();
   const subject = String(task || "").trim();
-  const walked = await sourceWalkSources("procedure", subject, "", preferences, limits, {
+  const walked = await sourceWalkSources("procedure", subject, language, preferences, limits, {
     now: at,
-    entryUrl: (record, value) => howToEntryUrl(record, value),
+    online: preferences?.offline !== true,
+    bounded: true,
+    accessibilityKey: (record, url) => record.id === "wikihow" && new URL(url).hostname !== "www.wikihow.com"
+      ? `${record.id}@${new URL(url).hostname}` : record.id,
     emptyStatus: "no_steps",
     read: (record, capture, depth, produced, declared) =>
-      howToReadCapture(record, subject, capture, depth, produced, declared),
+      howToReadCapture({ ...record, api: capture.url }, subject, capture, depth, produced, declared),
   });
+  await howToRecoverWikiHow(walked, subject, language, preferences);
   const guide = {
     task: subject,
     steps: [],
@@ -667,38 +640,18 @@ function howToGuideMarkdown(guide, language) {
   return sections.join("\n\n");
 }
 
-/**
- * The `procedural_how_to` answer envelope, or `null` when the run did not find
- * enough evidence to assert a procedure.
- *
- * `tryProceduralHowTo` in worker module 17 calls this first and falls through to
- * its existing discovery plan on `null`, which is the same relationship
- * `try_how_to_procedure` has with the pre-existing Rust handler: the synthesis
- * answers when it can, and never removes an answer that used to be produced.
- */
-async function trySynthesizedHowToGuide(task, preferences) {
-  const subject = String((task && task.task) || "").trim();
-  if (!subject) return null;
-  let guide = null;
-  try {
-    guide = await synthesizeHowToGuide(subject, preferences);
-  } catch {
-    return null;
-  }
-  if (!howToGuideIsSufficient(guide)) return null;
-  const evidence = [`procedural_how_to:stage:multi_source_synthesis`].concat(howToGuideEvidence(guide));
+/** Prepare guide evidence even when the caller needs to render a discovery plan. */
+async function researchProceduralHowTo(task, preferences, sourceLanguage, responseLanguage) {
+  const guide = await synthesizeHowToGuide(proceduralSourceTask(task.task), preferences, undefined, undefined, sourceLanguage);
+  const evidence = ["procedural_how_to:stage:multi_source_synthesis", ...howToGuideEvidence(guide)];
+  if (!howToGuideIsSufficient(guide)) return { evidence, answer: null, guide };
   for (const step of guide.steps) {
     const source = `source:${step.sourceUrl}`;
     if (!evidence.includes(source)) evidence.push(source);
   }
-  return {
-    intent: "procedural_how_to",
-    content: howToGuideMarkdown(guide),
-    confidence: 0.9,
-    evidence,
-    diagnostics: "",
-    query: proceduralFallbackQuery(subject),
-    guide,
-    formalizedObject: `HOWTO:${subject}`,
-  };
+  return { evidence, answer: {
+    intent: "procedural_how_to", content: howToGuideMarkdown(guide, responseLanguage),
+    confidence: 0.9, evidence, diagnostics: "",
+    query: proceduralFallbackQuery(task.task), guide, formalizedObject: `HOWTO:${task.task}`,
+  }, guide };
 }

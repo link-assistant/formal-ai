@@ -332,6 +332,11 @@ fn compose_telegram_reply(message: &TelegramMessage) -> TelegramReplyBundle {
                 if is_version_command(trimmed) {
                     return (version_reply_text(), None, None, Vec::new());
                 }
+                if let Some(report) =
+                    raw_text.and_then(crate::agentic_coding::issue_form_for_prompt)
+                {
+                    return (report, None, None, Vec::new());
+                }
                 if let Some(answer) =
                     crate::telegram_runtime::execute_telegram_code_request_from_environment(trimmed)
                         .answer()

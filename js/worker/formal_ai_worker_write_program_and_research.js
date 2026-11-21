@@ -1266,6 +1266,10 @@ const NUMERIC_CLAIM_EVIDENCE = Object.freeze({
   investment_terms: (prompt, normalized) => parseCompoundInterestRequest(prompt, normalized) !== null,
   conversion_target_currency: (prompt, normalized) => Boolean(targetCurrencyFromText(normalized)),
   interval_bounds: (prompt, normalized) => numberConstraintIntervalBounds(normalizePrompt(normalized), String(prompt).toLowerCase()) !== null,
-  measured_quantity: (prompt) => quantityConstraintFor(prompt) === null && parseNumericListNumbers(String(prompt).toLowerCase()).length > 0 && unitMentions(String(prompt).toLowerCase()).length === 2,
-  calendar_anchor: (prompt, normalized) => Boolean(detectWeekday(normalized) || detectCalendarMonth(normalized) || calendarStatedDate(prompt, normalized) || mentionsCurrentDayQuestion(normalized)),
+  measured_quantity: (prompt) => {
+    const span = unitConversionSpan(String(prompt).toLowerCase());
+    return span !== null && quantityConstraintFor(span) === null &&
+      parseNumericListNumbers(span).length === 1 && unitMentions(span).length === 2;
+  },
+  calendar_anchor: (prompt, normalized) => Boolean(calendarDurationRequest(prompt) || detectWeekday(normalized) || detectCalendarMonth(normalized) || calendarStatedDate(prompt, normalized) || tryCalendarDateOffset(prompt, normalized) || mentionsCurrentDayQuestion(normalized)),
 });

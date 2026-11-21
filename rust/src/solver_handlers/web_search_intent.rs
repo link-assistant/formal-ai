@@ -261,14 +261,11 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     // request: Hindi writes `pandas DataFrame.join खोजो`, the command last,
     // and the strength of a command cannot depend on word order (issue
     // #1101's table asks for one behaviour across the four languages).
-    let has_strong_action = imperative_lead_candidate(
-        normalized,
-        &markers.strong_imperative_lead_markers,
-        markers,
-    )
-    .is_some()
-        || imperative_tail_candidate(normalized, &markers.imperative_tail_markers).is_some()
-        || contains_any_search_marker(normalized, &markers.strong_action_markers);
+    let has_strong_action =
+        imperative_lead_candidate(normalized, &markers.strong_imperative_lead_markers, markers)
+            .is_some()
+            || imperative_tail_candidate(normalized, &markers.imperative_tail_markers).is_some()
+            || contains_any_search_marker(normalized, &markers.strong_action_markers);
     if !has_strong_action && !contains_any_search_marker(normalized, &markers.signal_markers) {
         return None;
     }
@@ -308,9 +305,7 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
 /// surface. Mirrors [`imperative_lead_candidate`] in the other direction
 /// (issue #1101: the imperative's strength cannot depend on word order).
 fn imperative_tail_candidate<'a>(normalized: &'a str, tails: &[&str]) -> Option<&'a str> {
-    tails
-        .iter()
-        .find_map(|&tail| normalized.strip_suffix(tail))
+    tails.iter().find_map(|&tail| normalized.strip_suffix(tail))
 }
 
 /// Return the typed argument of an imperative search lead.
@@ -388,6 +383,11 @@ fn extract_topic_subject(normalized: &str) -> Option<String> {
         }
     }
     None
+}
+
+pub(crate) fn explicit_web_search_requested(prompt: &str, normalized: &str) -> bool {
+    extract_explicit_web_search_query(&prompt.to_lowercase()).is_some()
+        || extract_explicit_web_search_query(normalized).is_some()
 }
 
 fn extract_explicit_web_search_query(normalized: &str) -> Option<String> {

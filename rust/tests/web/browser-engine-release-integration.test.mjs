@@ -42,7 +42,6 @@ function checkStructure(value) {
   assert.deepEqual(originalPermissions, original.packagePermissions);
   const boundedResolve = structuredClone(original.resolve);
   // Issue #1571 pins the runner image instead of the floating ubuntu-latest label.
-  assert.equal(boundedResolve['runs-on'], 'ubuntu-latest');
   boundedResolve['runs-on'] = 'ubuntu-24.04';
   boundedResolve.env = {
     GIT_HTTP_LOW_SPEED_LIMIT: '1024',

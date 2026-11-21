@@ -30,6 +30,25 @@ fn convert(input: &str, from: InputFormat, to: LogFormat) -> io::Result<String> 
     if input.len() as u64 > MAXIMUM_INPUT || !input.is_empty() && !input.ends_with('\n') {
         return Err(io::Error::other("unterminated_or_oversized_log"));
     }
+    // Fold the whitespace-only nested presentation before canonical decoding.
+    let mut flattened = String::new();
+    if from == InputFormat::Lino {
+        for line in input.split_inclusive('\n') {
+            let trimmed = line.trim_start_matches(' ');
+            if line.starts_with(' ') && trimmed.starts_with('(') && flattened.ends_with('\n') {
+                flattened.pop();
+                flattened.push(' ');
+                flattened.push_str(trimmed);
+            } else {
+                flattened.push_str(line);
+            }
+        }
+    }
+    let input = if from == InputFormat::Lino {
+        &flattened
+    } else {
+        input
+    };
     let mut records = Vec::<Value>::new();
     if !input.is_empty() {
         for line in input

@@ -416,7 +416,7 @@ pub fn apply_prim(
 }
 
 fn rewrite(catalog: &Catalog, prim: &Prim, input: &Value, runtime: Runtime) -> Option<Value> {
-    if runtime != Runtime::Node {
+    if runtime != Runtime::Node || crate::solver_config::ephemeral_enabled() {
         return None;
     }
     let path = input.as_str()?;

@@ -28,6 +28,13 @@ pub fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String 
     // ("Let me look on your Desktop for …") built from the same extraction the
     // `find` command builder uses, so narration and action always agree.
     if capability == Some(Capability::Run) {
+        let command = super::tool_result::command_argument(&first.arguments);
+        if let Some(intent) = command
+            .as_deref()
+            .and_then(super::report_issue::report_command_intent)
+        {
+            return localized(intent, language).unwrap_or_default();
+        }
         if let Some(found) = super::local_search::narration_for(prompt)
             && let Some(template) = localized(&found.intent, language)
         {
@@ -36,12 +43,43 @@ pub fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String 
         if let Some(intent) = program_command_intent(prompt, &first.arguments) {
             return localized(intent, language).unwrap_or_default();
         }
+        if let Some(action) = command.as_deref().and_then(shell_action_name) {
+            return localized("agentic-action-run-program-name", language)
+                .unwrap_or_default()
+                .replace(TARGET_SLOT, &action);
+        }
     }
 
     let intent = capability.map_or("agentic_action_generic", capability_intent);
     let template = localized(intent, language).unwrap_or_default();
     let target = tool_action_target(&first.arguments);
     template.replace(TARGET_SLOT, &target)
+}
+
+/// Show a known subcommand when available and keep operands out of narration.
+fn shell_action_name(command: &str) -> Option<String> {
+    let mut words = command.split_whitespace();
+    let program = words.next()?.rsplit('/').next()?;
+    let valid = program.len() <= 48
+        && program
+            .as_bytes()
+            .first()
+            .is_some_and(u8::is_ascii_alphanumeric)
+        && program
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.'));
+    if !valid {
+        return None;
+    }
+    let words: Vec<_> = std::iter::once(program).chain(words.take(2)).collect();
+    let known = crate::seed::shell_intent_vocabulary();
+    for count in (2..=words.len()).rev() {
+        let action = words[..count].join(" ");
+        if known.intents.iter().any(|intent| intent.command == action) {
+            return Some(action);
+        }
+    }
+    Some(program.to_owned())
 }
 
 /// The seed intent that carries the natural sentence for a capability.

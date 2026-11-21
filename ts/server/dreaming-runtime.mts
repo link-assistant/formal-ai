@@ -164,7 +164,7 @@ export function runOnDreamingThread(memoryPath, env = process.env) {
  */
 export function startCoreDreaming({
   env = process.env, memoryPath, idleSeconds = DEFAULT_IDLE_SECONDS, intervalSeconds = DEFAULT_INTERVAL_SECONDS,
-  run = runOnDreamingThread,
+  run = runOnDreamingThread, afterRun,
 } = {}) {
   if (dreamingDisabled(env)) return null;
   lastForegroundMs = Date.now();
@@ -182,6 +182,7 @@ export function startCoreDreaming({
     }
     try {
       await run(memoryPath, env);
+      if (!stopped && coreIsIdle(idleSeconds)) await afterRun?.();
     } catch (error) {
       if (parseBoolEnv(env.FORMAL_AI_DREAMING_DEBUG) === true) {
         process.stderr.write(`${serverMessage('dreaming_background_failed', { error: error?.message || error })}\n`);

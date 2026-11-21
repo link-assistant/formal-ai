@@ -120,12 +120,12 @@ export function renderStageSources() {
   for (const runtime of RUNTIMES) {
     out.push(`  runtime ${runtime.name}`, `    keyword ${runtime.keyword}`);
     for (const tree of runtime.trees) out.push(`    tree "${tree.path}" "${tree.extension}"`);
-    for (const entry of runtime.entries) out.push(`    entry "${entry.path}" ${entry.symbol}`);
+    for (const entry of runtime.entries) out.push(`    entry "${entry.path}" "${entry.symbol}"`);
     for (const site of appendSites(runtime)) {
       if (!events.has(site.kind)) events.set(site.kind, new Map());
       const rows = events.get(site.kind);
       if (!rows.has(runtime.name)) rows.set(runtime.name, new Set());
-      rows.get(runtime.name).add(`"${site.path}" ${site.symbol}`);
+      rows.get(runtime.name).add(`"${site.path}" "${site.symbol}"`);
     }
   }
   for (const kind of [...events.keys()].sort()) {

@@ -1,0 +1,647 @@
+conversation ses_e013e4ac4ffeZ5CsfCO3RVX0Yi
+  message_count 10
+  messages
+    message
+      data
+        agent build
+        model
+          modelID formal-ai
+          providerID formalai
+        role user
+        summary
+          diffs ()
+        time
+          created 1795275470162
+      id msg_1fec1b552001GEfZkpLUalYvjR
+      part_count 1
+      parts
+        part
+          data
+            text "Привет"
+            type text
+          id prt_1fec1b553001KgDQ1pSXsPokHg
+          time_created 1795275470165
+      role user
+      time_created 1795275470162
+      time_updated 1795275477829
+    message
+      data
+        agent build
+        cost 0
+        finish stop
+        mode build
+        modelID formal-ai
+        parentID msg_1fec1b552001GEfZkpLUalYvjR
+        path
+          cwd /Users/konard/Code/Archive/link-assistant/formal-ai
+          root /Users/konard/Code/Archive/link-assistant/formal-ai
+        providerID formalai
+        role assistant
+        time
+          completed 1795275477804
+          created 1795275470170
+        tokens
+          cache
+            read 0
+            write 0
+          input 21755
+          output 62
+          reasoning 0
+          total 21817
+      id msg_1fec1b55a00164mwm4IASBP3KG
+      part_count 4
+      parts
+        part
+          data
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            type step-start
+          id prt_1fec1d216001B8M4Z0d3jy5pCQ
+          time_created 1795275477526
+        part
+          data
+            text "Вы поздоровались — и я поздоровался в ответ.\nПрочитать запрос: «Привет».\nОпределить язык запроса: русский.\nФормализовать запрос как задачу «greeting».\nНаправить к обработчику «greeting».\nПроверить результат по правилам.\nСоставить ответ: «Здравствуйте! Чем могу помочь?».\nrequest constraint: system[0]:output:superseded:Output text to communicate with the user.\nrequest constraint: system[0]:output:superseded:You MUST answer concisely with fewer than 4 lines (not including tool use or code generation), unless user asks for detail.\nrequest constraint: system[0]:output:superseded:Answer the user's question directly, without elaboration, explanation, or details.\nrequest constraint: system[0]:output:superseded:You MUST answer concisely with fewer than 4 lines of text (not including tool use or code generation), unless user asks for detail.\nrequest constraint: system[0]:output:unmet:answer it directly instead."
+            time
+              end 1795275477531
+              start 1795275477529
+            type reasoning
+          id prt_1fec1d219001rJ3F38BVKlqIh7
+          time_created 1795275477529
+        part
+          data
+            text "Cannot satisfy output constraint (answer it directly instead)."
+            time
+              end 1795275477533
+              start 1795275477531
+            type text
+          id prt_1fec1d21b0013bvyxfsziu5pRr
+          time_created 1795275477531
+        part
+          data
+            cost 0
+            reason stop
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            tokens
+              cache
+                read 0
+                write 0
+              input 21755
+              output 62
+              reasoning 0
+              total 21817
+            type step-finish
+          id prt_1fec1d2bb001FzEK4EY7RemOuC
+          time_created 1795275477691
+      role assistant
+      time_created 1795275470170
+      time_updated 1795275477805
+    message
+      data
+        agent build
+        model
+          modelID formal-ai
+          providerID formalai
+        role user
+        summary
+          diffs ()
+        time
+          created 1795275484482
+      id msg_1fec1ed420013tt50jzW2cLuZk
+      part_count 1
+      parts
+        part
+          data
+            text Hello
+            type text
+          id prt_1fec1ed43001zpVSkQXEhg2ri0
+          time_created 1795275484485
+      role user
+      time_created 1795275484482
+      time_updated 1795275489228
+    message
+      data
+        agent build
+        cost 0
+        finish stop
+        mode build
+        modelID formal-ai
+        parentID msg_1fec1ed420013tt50jzW2cLuZk
+        path
+          cwd /Users/konard/Code/Archive/link-assistant/formal-ai
+          root /Users/konard/Code/Archive/link-assistant/formal-ai
+        providerID formalai
+        role assistant
+        time
+          completed 1795275489203
+          created 1795275484489
+        tokens
+          cache
+            read 0
+            write 0
+          input 21822
+          output 62
+          reasoning 0
+          total 21884
+      id msg_1fec1ed48001rymreF2vK0bwNi
+      part_count 4
+      parts
+        part
+          data
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            type step-start
+          id prt_1fec1fe900014YfRiqewglUR4v
+          time_created 1795275488912
+        part
+          data
+            text "b64:WW91IHNhaWQgaGVsbG8sIHNvIEkgZ3JlZXRlZCB5b3UgYmFjay4KUmVhZCB0aGUgcmVxdWVzdDogIkhlbGxvIi4KRGV0ZWN0IHRoZSByZXF1ZXN0IGxhbmd1YWdlOiBFbmdsaXNoLgpGb3JtYWxpemUgdGhlIHJlcXVlc3QgYXMgYSBncmVldGluZyB0YXNrLgpSb3V0ZSB0byB0aGUgZ3JlZXRpbmcgaGFuZGxlci4KVmVyaWZ5IHRoZSByZXN1bHQgYWdhaW5zdCB0aGUgcnVsZXMuCkNvbXBvc2UgdGhlIGFuc3dlcjogIkhpLCBob3cgbWF5IEkgaGVscCB5b3U/Ii4KcmVxdWVzdCBjb25zdHJhaW50OiBzeXN0ZW1bMF06b3V0cHV0OnN1cGVyc2VkZWQ6T3V0cHV0IHRleHQgdG8gY29tbXVuaWNhdGUgd2l0aCB0aGUgdXNlci4KcmVxdWVzdCBjb25zdHJhaW50OiBzeXN0ZW1bMF06b3V0cHV0OnN1cGVyc2VkZWQ6WW91IE1VU1QgYW5zd2VyIGNvbmNpc2VseSB3aXRoIGZld2VyIHRoYW4gNCBsaW5lcyAobm90IGluY2x1ZGluZyB0b29sIHVzZSBvciBjb2RlIGdlbmVyYXRpb24pLCB1bmxlc3MgdXNlciBhc2tzIGZvciBkZXRhaWwuCnJlcXVlc3QgY29uc3RyYWludDogc3lzdGVtWzBdOm91dHB1dDpzdXBlcnNlZGVkOkFuc3dlciB0aGUgdXNlcidzIHF1ZXN0aW9uIGRpcmVjdGx5LCB3aXRob3V0IGVsYWJvcmF0aW9uLCBleHBsYW5hdGlvbiwgb3IgZGV0YWlscy4KcmVxdWVzdCBjb25zdHJhaW50OiBzeXN0ZW1bMF06b3V0cHV0OnN1cGVyc2VkZWQ6WW91IE1VU1QgYW5zd2VyIGNvbmNpc2VseSB3aXRoIGZld2VyIHRoYW4gNCBsaW5lcyBvZiB0ZXh0IChub3QgaW5jbHVkaW5nIHRvb2wgdXNlIG9yIGNvZGUgZ2VuZXJhdGlvbiksIHVubGVzcyB1c2VyIGFza3MgZm9yIGRldGFpbC4KcmVxdWVzdCBjb25zdHJhaW50OiBzeXN0ZW1bMF06b3V0cHV0OnVubWV0OmFuc3dlciBpdCBkaXJlY3RseSBpbnN0ZWFkLg=="
+            time
+              end 1795275488914
+              start 1795275488913
+            type reasoning
+          id prt_1fec1fe910018Hs3REzZxRh8wY
+          time_created 1795275488913
+        part
+          data
+            text "Cannot satisfy output constraint (answer it directly instead)."
+            time
+              end 1795275488915
+              start 1795275488914
+            type text
+          id prt_1fec1fe92001aghlEn9qWoWYAF
+          time_created 1795275488914
+        part
+          data
+            cost 0
+            reason stop
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            tokens
+              cache
+                read 0
+                write 0
+              input 21822
+              output 62
+              reasoning 0
+              total 21884
+            type step-finish
+          id prt_1fec1ff3f001vyPrlMCDhMsD0M
+          time_created 1795275489087
+      role assistant
+      time_created 1795275484489
+      time_updated 1795275489203
+    message
+      data
+        agent build
+        model
+          modelID formal-ai
+          providerID formalai
+        role user
+        summary
+          diffs ()
+        time
+          created 1795275494134
+      id msg_1fec212f6001yM33h8P5ZWtpbF
+      part_count 1
+      parts
+        part
+          data
+            text Report
+            type text
+          id prt_1fec212f6002f3S7mxvx3aivM6
+          time_created 1795275494135
+      role user
+      time_created 1795275494134
+      time_updated 1795275525019
+    message
+      data
+        agent build
+        cost 0
+        finish tool-calls
+        mode build
+        modelID formal-ai
+        parentID msg_1fec212f6001yM33h8P5ZWtpbF
+        path
+          cwd /Users/konard/Code/Archive/link-assistant/formal-ai
+          root /Users/konard/Code/Archive/link-assistant/formal-ai
+        providerID formalai
+        role assistant
+        time
+          completed 1795275510852
+          created 1795275494137
+        tokens
+          cache
+            read 0
+            write 0
+          input 21890
+          output 519
+          reasoning 0
+          total 22409
+      id msg_1fec212f9001Lk7DAmeDmt5cir
+      part_count 4
+      parts
+        part
+          data
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            type step-start
+          id prt_1fec22056001YR4sWOPgADetx5
+          time_created 1795275497558
+        part
+          data
+            text "Let me ask you a few questions so I get this right."
+            time
+              end 1795275497565
+              start 1795275497559
+            type text
+          id prt_1fec22057001OGvvlSoAOYk1gO
+          time_created 1795275497559
+        part
+          data
+            callID call_0480a37c27955fcd
+            state
+              input
+                questions
+                  question
+                    header Report
+                    multiple true
+                    options
+                      option
+                        description "Export the complete agentic harness log."
+                        label "Harness log"
+                      option
+                        description "Export the matching Formal AI server log."
+                        label "Server log"
+                      option
+                        description "File an issue with complete context."
+                        label "GitHub issue"
+                      option
+                        description "Store the report so this instance can learn."
+                        label "Report to Formal AI"
+                    question "What would you like to report? Select one or more."
+              metadata
+                answers
+                  answer ("Harness log" "Server log" "GitHub issue" "Report to Formal AI")
+                truncated false
+              output "b64:VXNlciBoYXMgYW5zd2VyZWQgeW91ciBxdWVzdGlvbnM6ICJXaGF0IHdvdWxkIHlvdSBsaWtlIHRvIHJlcG9ydD8gU2VsZWN0IG9uZSBvciBtb3JlLiI9Ikhhcm5lc3MgbG9nLCBTZXJ2ZXIgbG9nLCBHaXRIdWIgaXNzdWUsIFJlcG9ydCB0byBGb3JtYWwgQUkiLiBZb3UgY2FuIG5vdyBjb250aW51ZSB3aXRoIHRoZSB1c2VyJ3MgYW5zd2VycyBpbiBtaW5kLg=="
+              status completed
+              time
+                end 1795275510580
+                start 1795275497564
+              title "Asked 1 question"
+            tool question
+            type tool
+          id prt_1fec22058001WUjnzKa4OLyWCQ
+          time_created 1795275497560
+        part
+          data
+            cost 0
+            reason tool-calls
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            tokens
+              cache
+                read 0
+                write 0
+              input 21890
+              output 519
+              reasoning 0
+              total 22409
+            type step-finish
+          id prt_1fec253d6001YyQBDZbjSTQtL4
+          time_created 1795275510742
+      role assistant
+      time_created 1795275494137
+      time_updated 1795275510853
+    message
+      data
+        agent build
+        cost 0
+        finish tool-calls
+        mode build
+        modelID formal-ai
+        parentID msg_1fec212f6001yM33h8P5ZWtpbF
+        path
+          cwd /Users/konard/Code/Archive/link-assistant/formal-ai
+          root /Users/konard/Code/Archive/link-assistant/formal-ai
+        providerID formalai
+        role assistant
+        time
+          completed 1795275515003
+          created 1795275510854
+        tokens
+          cache
+            read 0
+            write 0
+          input 22143
+          output 610
+          reasoning 0
+          total 22753
+      id msg_1fec25446001RRvO9CkrY4Wn76
+      part_count 4
+      parts
+        part
+          data
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            type step-start
+          id prt_1fec261f8001scAO3Z4nQdZsFe
+          time_created 1795275514360
+        part
+          data
+            text "Let me run the requested command to get that for you."
+            time
+              end 1795275514367
+              start 1795275514361
+            type text
+          id prt_1fec261f9001CPRsU4Xb5c2e6J
+          time_created 1795275514361
+        part
+          data
+            callID call_d14ee6762b9b2ea6
+            state
+              input
+                command "b64:c2V0IC1ldQpjb21tYW5kIC12IGZvcm1hbC1haSA+L2Rldi9udWxsIDI+JjEgfHwgeyBwcmludGYgJyVzXG4nICdUaGUgY29tbWFuZCBmb3JtYWwtYWkgaXMgbm90IGluc3RhbGxlZCwgc28gdGhpcyByZXBvcnQgY291bGQgbm90IHJ1bi4nID4mMjsgZXhpdCAxOyB9CmNvbW1hbmQgLXYgcHJpbnRmID4vZGV2L251bGwgMj4mMSB8fCB7IHByaW50ZiAnJXNcbicgJ1RoZSBjb21tYW5kIHByaW50ZiBpcyBub3QgaW5zdGFsbGVkLCBzbyB0aGlzIHJlcG9ydCBjb3VsZCBub3QgcnVuLicgPiYyOyBleGl0IDE7IH0KZXhwb3J0X2Rpcj0kKG1rdGVtcCAtZCAiJHtUTVBESVI6LS90bXB9L2Zvcm1hbC1haS1leHBvcnQuWFhYWFhYIikKZm9ybWFsLWFpIGNvbnRleHQgZXhwb3J0IC0tc2Vzc2lvbiAnbGF0ZXN0JyAtLXNvdXJjZSBoYXJuZXNzIC0tb3V0cHV0ICIkZXhwb3J0X2Rpci9mb3JtYWwtYWktaGFybmVzcy1sYXRlc3QubGlubyIKcHJpbnRmICclc1xuJyAiJGV4cG9ydF9kaXIvZm9ybWFsLWFpLWhhcm5lc3MtbGF0ZXN0Lmxpbm8i"
+              metadata
+                exit 0
+                output "/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T//formal-ai-export.aVrTT6/formal-ai-harness-latest.lino\n"
+                truncated false
+              output "/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T//formal-ai-export.aVrTT6/formal-ai-harness-latest.lino\n"
+              status completed
+              time
+                end 1795275514777
+                start 1795275514364
+              title "b64:c2V0IC1ldQpjb21tYW5kIC12IGZvcm1hbC1haSA+L2Rldi9udWxsIDI+JjEgfHwgeyBwcmludGYgJyVzXG4nICdUaGUgY29tbWFuZCBmb3JtYWwtYWkgaXMgbm90IGluc3RhbGxlZCwgc28gdGhpcyByZXBvcnQgY291bGQgbm90IHJ1bi4nID4mMjsgZXhpdCAxOyB9CmNvbW1hbmQgLXYgcHJpbnRmID4vZGV2L251bGwgMj4mMSB8fCB7IHByaW50ZiAnJXNcbicgJ1RoZSBjb21tYW5kIHByaW50ZiBpcyBub3QgaW5zdGFsbGVkLCBzbyB0aGlzIHJlcG9ydCBjb3VsZCBub3QgcnVuLicgPiYyOyBleGl0IDE7IH0KZXhwb3J0X2Rpcj0kKG1rdGVtcCAtZCAiJHtUTVBESVI6LS90bXB9L2Zvcm1hbC1haS1leHBvcnQuWFhYWFhYIikKZm9ybWFsLWFpIGNvbnRleHQgZXhwb3J0IC0tc2Vzc2lvbiAnbGF0ZXN0JyAtLXNvdXJjZSBoYXJuZXNzIC0tb3V0cHV0ICIkZXhwb3J0X2Rpci9mb3JtYWwtYWktaGFybmVzcy1sYXRlc3QubGlubyIKcHJpbnRmICclc1xuJyAiJGV4cG9ydF9kaXIvZm9ybWFsLWFpLWhhcm5lc3MtbGF0ZXN0Lmxpbm8i"
+            tool bash
+            type tool
+          id prt_1fec261fa001TJPa6NQ0mOwHuL
+          time_created 1795275514362
+        part
+          data
+            cost 0
+            reason tool-calls
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            tokens
+              cache
+                read 0
+                write 0
+              input 22143
+              output 610
+              reasoning 0
+              total 22753
+            type step-finish
+          id prt_1fec2640f001rRBTEgO5pcf91n
+          time_created 1795275514895
+      role assistant
+      time_created 1795275510854
+      time_updated 1795275515003
+    message
+      data
+        agent build
+        cost 0
+        finish tool-calls
+        mode build
+        modelID formal-ai
+        parentID msg_1fec212f6001yM33h8P5ZWtpbF
+        path
+          cwd /Users/konard/Code/Archive/link-assistant/formal-ai
+          root /Users/konard/Code/Archive/link-assistant/formal-ai
+        providerID formalai
+        role assistant
+        time
+          completed 1795275519787
+          created 1795275515004
+        tokens
+          cache
+            read 0
+            write 0
+          input 22300
+          output 607
+          reasoning 0
+          total 22907
+      id msg_1fec2647c001yO3VlAaW05Vmby
+      part_count 4
+      parts
+        part
+          data
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            type step-start
+          id prt_1fec27588001McIr2SONVHbS12
+          time_created 1795275519368
+        part
+          data
+            text "Let me run the requested command to get that for you."
+            time
+              end 1795275519372
+              start 1795275519369
+            type text
+          id prt_1fec27589001w0EW2Jisooj699
+          time_created 1795275519369
+        part
+          data
+            callID call_fc0a9c8385770d4e
+            state
+              input
+                command "b64:c2V0IC1ldQpjb21tYW5kIC12IGZvcm1hbC1haSA+L2Rldi9udWxsIDI+JjEgfHwgeyBwcmludGYgJyVzXG4nICdUaGUgY29tbWFuZCBmb3JtYWwtYWkgaXMgbm90IGluc3RhbGxlZCwgc28gdGhpcyByZXBvcnQgY291bGQgbm90IHJ1bi4nID4mMjsgZXhpdCAxOyB9CmNvbW1hbmQgLXYgcHJpbnRmID4vZGV2L251bGwgMj4mMSB8fCB7IHByaW50ZiAnJXNcbicgJ1RoZSBjb21tYW5kIHByaW50ZiBpcyBub3QgaW5zdGFsbGVkLCBzbyB0aGlzIHJlcG9ydCBjb3VsZCBub3QgcnVuLicgPiYyOyBleGl0IDE7IH0KZXhwb3J0X2Rpcj0kKG1rdGVtcCAtZCAiJHtUTVBESVI6LS90bXB9L2Zvcm1hbC1haS1leHBvcnQuWFhYWFhYIikKZm9ybWFsLWFpIGNvbnRleHQgZXhwb3J0IC0tc2Vzc2lvbiAnbGF0ZXN0JyAtLXNvdXJjZSBzZXJ2ZXIgLS1vdXRwdXQgIiRleHBvcnRfZGlyL2Zvcm1hbC1haS1zZXJ2ZXItbGF0ZXN0Lmxpbm8iCnByaW50ZiAnJXNcbicgIiRleHBvcnRfZGlyL2Zvcm1hbC1haS1zZXJ2ZXItbGF0ZXN0Lmxpbm8i"
+              metadata
+                exit 0
+                output "/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T//formal-ai-export.q847us/formal-ai-server-latest.lino\n"
+                truncated false
+              output "/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T//formal-ai-export.q847us/formal-ai-server-latest.lino\n"
+              status completed
+              time
+                end 1795275519555
+                start 1795275519371
+              title "b64:c2V0IC1ldQpjb21tYW5kIC12IGZvcm1hbC1haSA+L2Rldi9udWxsIDI+JjEgfHwgeyBwcmludGYgJyVzXG4nICdUaGUgY29tbWFuZCBmb3JtYWwtYWkgaXMgbm90IGluc3RhbGxlZCwgc28gdGhpcyByZXBvcnQgY291bGQgbm90IHJ1bi4nID4mMjsgZXhpdCAxOyB9CmNvbW1hbmQgLXYgcHJpbnRmID4vZGV2L251bGwgMj4mMSB8fCB7IHByaW50ZiAnJXNcbicgJ1RoZSBjb21tYW5kIHByaW50ZiBpcyBub3QgaW5zdGFsbGVkLCBzbyB0aGlzIHJlcG9ydCBjb3VsZCBub3QgcnVuLicgPiYyOyBleGl0IDE7IH0KZXhwb3J0X2Rpcj0kKG1rdGVtcCAtZCAiJHtUTVBESVI6LS90bXB9L2Zvcm1hbC1haS1leHBvcnQuWFhYWFhYIikKZm9ybWFsLWFpIGNvbnRleHQgZXhwb3J0IC0tc2Vzc2lvbiAnbGF0ZXN0JyAtLXNvdXJjZSBzZXJ2ZXIgLS1vdXRwdXQgIiRleHBvcnRfZGlyL2Zvcm1hbC1haS1zZXJ2ZXItbGF0ZXN0Lmxpbm8iCnByaW50ZiAnJXNcbicgIiRleHBvcnRfZGlyL2Zvcm1hbC1haS1zZXJ2ZXItbGF0ZXN0Lmxpbm8i"
+            tool bash
+            type tool
+          id prt_1fec27589002zzMXO7IzQvWuna
+          time_created 1795275519369
+        part
+          data
+            cost 0
+            reason tool-calls
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            tokens
+              cache
+                read 0
+                write 0
+              input 22300
+              output 607
+              reasoning 0
+              total 22907
+            type step-finish
+          id prt_1fec276c2001t9D8TaKlc91H4Q
+          time_created 1795275519682
+      role assistant
+      time_created 1795275515004
+      time_updated 1795275519788
+    message
+      data
+        agent build
+        cost 0
+        finish tool-calls
+        mode build
+        modelID formal-ai
+        parentID msg_1fec212f6001yM33h8P5ZWtpbF
+        path
+          cwd /Users/konard/Code/Archive/link-assistant/formal-ai
+          root /Users/konard/Code/Archive/link-assistant/formal-ai
+        providerID formalai
+        role assistant
+        time
+          completed 1795275524857
+          created 1795275519789
+        tokens
+          cache
+            read 0
+            write 0
+          input 22456
+          output 267
+          reasoning 0
+          total 22723
+      id msg_1fec2772d001yiggtHa348lekx
+      part_count 4
+      parts
+        part
+          data
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            type step-start
+          id prt_1fec289c1001n01GCb4VPMdH2P
+          time_created 1795275524545
+        part
+          data
+            text "Let me run the requested command to get that for you."
+            time
+              end 1795275524550
+              start 1795275524546
+            type text
+          id prt_1fec289c2001LQMYtLyij6IOY6
+          time_created 1795275524546
+        part
+          data
+            callID call_e88644a029d12e0d
+            state
+              input
+                command "set -eu\ncommand -v formal-ai >/dev/null 2>&1 || { printf '%s\n' 'The command formal-ai is not installed, so this report could not run.' >&2; exit 1; }\nformal-ai context learn --session 'latest'"
+              metadata
+                exit 1
+                output 'Error: Custom { kind: NotFound, error: "dialog log contains no exchanges" }\n'
+                truncated false
+              output 'Error: Custom { kind: NotFound, error: "dialog log contains no exchanges" }\n'
+              status completed
+              time
+                end 1795275524614
+                start 1795275524548
+              title "set -eu\ncommand -v formal-ai >/dev/null 2>&1 || { printf '%s\n' 'The command formal-ai is not installed, so this report could not run.' >&2; exit 1; }\nformal-ai context learn --session 'latest'"
+            tool bash
+            type tool
+          id prt_1fec289c3001wuEXWjlv3jJUJp
+          time_created 1795275524547
+        part
+          data
+            cost 0
+            reason tool-calls
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            tokens
+              cache
+                read 0
+                write 0
+              input 22456
+              output 267
+              reasoning 0
+              total 22723
+            type step-finish
+          id prt_1fec28a84001sVLCHIE1tTAoz7
+          time_created 1795275524740
+      role assistant
+      time_created 1795275519789
+      time_updated 1795275524858
+    message
+      data
+        agent build
+        cost 0
+        mode build
+        modelID formal-ai
+        parentID msg_1fec212f6001yM33h8P5ZWtpbF
+        path
+          cwd /Users/konard/Code/Archive/link-assistant/formal-ai
+          root /Users/konard/Code/Archive/link-assistant/formal-ai
+        providerID formalai
+        role assistant
+        time
+          created 1795275524858
+        tokens
+          cache
+            read 0
+            write 0
+          input 0
+          output 0
+          reasoning 0
+      id msg_1fec28afa00121XFUePWVbEcRF
+      part_count 3
+      parts
+        part
+          data
+            snapshot ced49899a4d7aa3e8aee9a8bce30b711d9da780e
+            type step-start
+          id prt_1fec29ede0017vbdflioMPwIbo
+          time_created 1795275529950
+        part
+          data
+            text "Let me run the requested command to get that for you."
+            time
+              end 1795275529955
+              start 1795275529951
+            type text
+          id prt_1fec29edf001iBOB5ipm2vsqmN
+          time_created 1795275529951
+        part
+          data
+            callID call_956f358142f60ff2
+            state
+              input
+                command "formal-ai report create-issue --session 'latest' --source both --surface agentic-cli --repo 'link-assistant/formal-ai' --title 'Formal AI: `Привет` + `Hello`' --separate-context-links"
+              metadata
+                output ""
+              status running
+              time
+                start 1795275529953
+            tool bash
+            type tool
+          id prt_1fec29ee0001tL95g18MtYgNiZ
+          time_created 1795275529952
+      role assistant
+      time_created 1795275524858
+      time_updated 1795275524858
+  session
+    agent build
+    cost 0.0
+    directory /Users/konard/Code/Archive/link-assistant/formal-ai
+    id ses_e013e4ac4ffeZ5CsfCO3RVX0Yi
+    metadata null
+    model
+      id formal-ai
+      providerID formalai
+    parent_id null
+    path ""
+    permission null
+    project_id ac1b8f06b367ae6062361c4e95f17b0b434dfdb8
+    revert null
+    share_url null
+    slug witty-falcon
+    summary_additions 0
+    summary_deletions 0
+    summary_diffs null
+    summary_files 0
+    time_archived null
+    time_compacting null
+    time_created 1795275470140
+    time_updated 1795275524859
+    title "Cannot satisfy output constraint (Your output must be:)."
+    tokens_cache_read 0
+    tokens_cache_write 0
+    tokens_input 132366
+    tokens_output 2127
+    tokens_reasoning 0
+    version 1.19.5
+    workspace_id null
+  source
+    extractor opencode-conversation-to-lino.py
+    notation json
+    storage sqlite
+    tool opencode

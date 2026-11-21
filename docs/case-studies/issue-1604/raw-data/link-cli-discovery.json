@@ -1,0 +1,9 @@
+{
+  "language": "link-substitution",
+  "substitute": "() ((1 1))",
+  "provenance": {
+    "url": "https://raw.githubusercontent.com/link-foundation/link-cli/cc6008f06f19cf4aa81823025add2fec7dfe4ba5/README.md",
+    "sha256": "da1fd7b688fa1450601a96ea59c6c1197e75d09dded8a9036572baf63e726755",
+    "line": 128
+  }
+}

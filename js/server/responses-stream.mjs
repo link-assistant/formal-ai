@@ -33,9 +33,15 @@ function frame(state, kind, fields) {
 function messageEvents(state, outputIndex, message) {
   message.content.forEach((content, contentIndex) => {
     const at = { item_id: message.id, output_index: outputIndex, content_index: contentIndex };
-    frame(state, 'response.content_part.added', { ...at, part: { type: content.type, text: '' } });
-    frame(state, 'response.output_text.delta', { ...at, delta: content.text });
-    frame(state, 'response.output_text.done', { ...at, text: content.text });
+    if (content.type === 'refusal') {
+      frame(state, 'response.content_part.added', { ...at, part: { type: content.type, refusal: '' } });
+      frame(state, 'response.refusal.delta', { ...at, delta: content.refusal });
+      frame(state, 'response.refusal.done', { ...at, refusal: content.refusal });
+    } else {
+      frame(state, 'response.content_part.added', { ...at, part: { type: content.type, text: '' } });
+      frame(state, 'response.output_text.delta', { ...at, delta: content.text });
+      frame(state, 'response.output_text.done', { ...at, text: content.text });
+    }
     frame(state, 'response.content_part.done', { ...at, part: content });
   });
 }

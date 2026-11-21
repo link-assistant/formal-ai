@@ -1,0 +1,1 @@
+{"type":"message","timestamp":"2026-11-20T15:48:12.114Z","session_id":"ses_e065b2d49ffewrfY5L7c7G6e30","role":"assistant","content":[{"type":"text","text":"{\"revision\":2,\"implementation\":\"dynamic\",\"output\":\"the the\",\"trace\":[{\"rule_index\":0,\"byte_offset\":0},{\"rule_index\":0,\"byte_offset\":4}],\"halt\":{\"kind\":\"no_applicable_rule\"}}"}]}

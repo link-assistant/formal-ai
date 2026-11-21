@@ -481,12 +481,18 @@ export function statementClauses(sentence) {
  * @param {string} language
  */
 export function formalizeSentences(text, language) {
+  return formalizeSentenceSegments(sentences(text), language, false);
+}
+
+/** Formalize preselected sentence segments, optionally keeping each as one statement. */
+export function formalizeSentenceSegments(segments, language, wholeSentences) {
   const out = [];
   let previousSubject = null;
-  for (const sentence of sentences(text)) {
+  for (const sentence of segments) {
     const sentenceDialogue = formalizeDialogue(sentence.text, language);
     const statements = [];
-    statementClauses(sentence).forEach((clause, index) => {
+    const parts = wholeSentences ? [sentence] : statementClauses(sentence);
+    parts.forEach((clause, index) => {
       const statement = clauseStatement(clause.text, language, previousSubject, index === 0);
       if (index === 0 && sentenceDialogue.question) statement.dialogue.question = sentenceDialogue.question;
       if (statement.subject === null && statement.terms.length === 0 && !statement.dialogue.answer && !statement.dialogue.question) return;

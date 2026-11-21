@@ -1,0 +1,34 @@
+<!doctype html><meta charset="utf-8"><title>Issue 1582 measured regression replay</title><style>body{max-width:1050px;margin:40px auto;background:#10141c;color:#e5ebf5;font:18px/1.55 system-ui;padding:0 28px}h1{font-size:29px}h2{font-size:21px;color:#a8d5ff}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#1b2433;padding:22px;border-radius:10px;font:16px/1.5 monospace}.note{color:#bac6d8}.pass{color:#80e4af}</style><h1>Issue #1582 · measured Node regression replay</h1><p class="note">Actual worker response and diagnostic-sink probes. This is not an installed Claude TUI or a native-wrapper end-to-end capture.</p><h2>Harness permission question</h2><pre>Как включить доступ к интернету?
+
+Чтение интернет-источников включено по умолчанию. Если клиент блокирует инструмент, подтвердите запрос разрешения; в Claude Code откройте `/permissions` и разрешите Read, Glob, Grep, WebFetch и WebSearch. Существующие правила ask/deny сохраняются. Если сервер Formal AI явно переведён в автономный режим, уберите FORMAL_AI_OFFLINE и FORMAL_AI_NETWORK=denied и перезапустите: `FORMAL_AI_LIVE_FETCH=1 formal-ai with claude`. Сообщение в чате не отменяет ограничения оператора. Запись и выполнение команд управляются разрешениями клиента. Если запросы не проходят, проверьте соединение, прокси и доступность источников; изучите файл журнала или включите FORMAL_AI_LOG_STDERR=1 для диагностики.</pre><h2>Default diagnostic sink</h2><pre class="pass">child exit: 0
+stdout: ""
+stderr: ""
+Routine records persisted in the private PID log.</pre><h2>Explicit nested file format</h2><pre>(formal-ai-log-v1
+  (object
+    (field component
+      (string client_integrations))
+    (field dialog_id
+      (null))
+    (field kind
+      (string wrapper.session))
+    (field level
+      (string debug))
+    (field message
+      (string wrapper.session))
+    (field metadata
+      (object
+        (field component
+          (string client_integrations))
+        (field session_file
+          (string example/session.jsonl))))
+    (field pid
+      (number 7399))
+    (field schema
+      (string formal-ai-diagnostic-v1))
+    (field sequence
+      (number 1))
+    (field timestamp
+      (string 2026-11-17T12%3A12%3A28.677000000Z))
+    (field timestamp_precision
+      (string milliseconds))))
+</pre>

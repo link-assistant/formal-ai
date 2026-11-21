@@ -19,6 +19,7 @@ mod completion;
 mod completion_learning;
 mod global_config;
 mod global_verify;
+mod report_context;
 mod server;
 mod session_files;
 mod tool_args;
@@ -29,7 +30,7 @@ use completion::{AuthoringRun, CompletionInvocation, require_completed, run_to_c
 use global_config::{
     render_json_settings, render_toml_settings, undo_global_config, write_global_config,
 };
-use server::maybe_start_server;
+use server::{ServerGuard, maybe_start_server};
 use session_files::{
     TempConfigDir, newest_changed_session_file, print_session_files, session_file_snapshot,
     user_home_dir,
@@ -167,6 +168,7 @@ struct RenderContext {
     google_auth_type: String,
     model_catalog_path: String,
     working_directory: String,
+    report_dialog_id: String,
     /// The context window and output cap the server serves on `/v1/models`,
     /// for clients whose config states a model's limits. Probed on the first
     /// template that names them, never earlier: a client that states no
@@ -266,7 +268,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
             orchestration: args.orchestration,
             stdin_is_terminal,
         },
-        server.as_ref().map(|server| server.output_log.as_path()),
+        server.as_ref(),
         args.orchestration_home.as_deref(),
         args.orchestration_resume.as_deref(),
     )
@@ -378,6 +380,7 @@ fn render_context(
         model_selector: String::new(),
         api_key_env: integration.api_key_env.clone(),
         api_key,
+        report_dialog_id: String::new(),
         protocol_base_env,
         google_auth_type,
         model_catalog_path: String::new(),
@@ -400,7 +403,7 @@ fn run_ephemeral(
     caller: &CallerArgs,
     context: &RenderContext,
     mut options: InvocationOptions,
-    temporary_server_log: Option<&Path>,
+    server: Option<&ServerGuard>,
     orchestration_home: Option<&Path>,
     orchestration_resume: Option<&str>,
 ) -> Result<(), Box<dyn Error>> {
@@ -411,6 +414,44 @@ fn run_ephemeral(
     let mut session_home = None;
     let resolved_command = resolve_integration_command(integration);
     let mut command = Command::new(&resolved_command);
+    let report_client = match (integration.id.as_str(), context.protocol.as_str()) {
+        ("t3code", "anthropic") => "claude",
+        ("t3code", _) => "codex",
+        (client, _) => client,
+    };
+    command.env("FORMAL_AI_REPORT_CLIENT", report_client);
+    if matches!(
+        integration.id.as_str(),
+        "agent" | "gemini" | "aider" | "grok"
+    ) {
+        // Some custom providers omit the native session ID. Give each
+        // wrapper invocation an explicit, private report scope.
+        context.report_dialog_id = crate::engine::stable_id(
+            &integration.id,
+            &format!("{}:{:?}", std::process::id(), std::time::SystemTime::now()),
+        );
+        command.env("FORMAL_AI_REPORT_DIALOG_ID", &context.report_dialog_id);
+        if integration.id == "gemini" {
+            let inherited = std::env::var("GEMINI_CLI_CUSTOM_HEADERS").unwrap_or_default();
+            let dialog_header = crate::dialog_log::DIALOG_ID_HEADER;
+            let declaration = format!("{dialog_header}:{}", context.report_dialog_id);
+            let headers = inherited
+                .split(',')
+                .filter(|entry| {
+                    !entry.trim().is_empty()
+                        && !entry
+                            .split_once(':')
+                            .is_some_and(|(key, _)| key.trim().eq_ignore_ascii_case(dialog_header))
+                })
+                .chain(std::iter::once(declaration.as_str()))
+                .collect::<Vec<_>>()
+                .join(",");
+            command.env("GEMINI_CLI_CUSTOM_HEADERS", headers);
+        }
+    }
+    if let Some(directory) = server.and_then(|server| server.dialog_directory.as_ref()) {
+        command.env("FORMAL_AI_DIALOG_LOG_DIR", directory);
+    }
     for env in &invocation.env {
         command.env(
             render_template(&env.key, &context),
@@ -446,18 +487,18 @@ fn run_ephemeral(
     let scoped_home = orchestration_home
         .map(Path::to_path_buf)
         .or_else(|| temporary_home.as_ref().map(|temp| temp.path.clone()));
-    if let Some(home) = scoped_home {
-        fs::create_dir_all(&home)?;
+    if let Some(home) = scoped_home.as_ref() {
+        fs::create_dir_all(home)?;
         session_home = Some(home.clone());
         if !invocation.model_catalog_path.is_empty() {
             let relative_catalog_path = render_template(&invocation.model_catalog_path, &context);
-            let catalog_path = temp_scoped_path(&home, &relative_catalog_path)?;
+            let catalog_path = temp_scoped_path(home, &relative_catalog_path)?;
             context.model_catalog_path = catalog_path.display().to_string();
-            write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
+            write_file(&catalog_path, &codex_model_catalog(&context)?)?;
         }
         if !invocation.temp_home_config_path.is_empty() {
             let relative_config_path = render_template(&invocation.temp_home_config_path, &context);
-            let config_path = temp_scoped_path(&home, &relative_config_path)?;
+            let config_path = temp_scoped_path(home, &relative_config_path)?;
             if let Some(parent) = config_path.parent() {
                 fs::create_dir_all(parent)?;
             }
@@ -473,11 +514,24 @@ fn run_ephemeral(
         } else {
             render_template(&invocation.temp_home_env, &context)
         };
-        command.env(home_env, &home);
+        command.env(home_env, home);
+        if integration.id == "codex" {
+            command.env("CODEX_HOME", home.join(".codex"));
+        }
+        if integration.id == "grok" {
+            command.env("GROK_HOME", home.join(".grok"));
+        }
     }
     if let Some(temp) = temporary_home {
         temp_dirs.push(temp);
     }
+    let aider_history = report_context::configure(
+        &mut command,
+        &integration.id,
+        caller,
+        &context,
+        scoped_home.as_deref(),
+    )?;
 
     let session_root = if invocation.session_root.is_empty() {
         None
@@ -533,6 +587,11 @@ fn run_ephemeral(
             None,
         )
     };
+    if let Some(history) = aider_history
+        && let Err(error) = history.preserve()
+    {
+        crate::diagnostic!("warn"; "Could not append the Aider transcript to its default history: {error}");
+    }
     let session_file = session_root.as_deref().and_then(|root| {
         newest_changed_session_file(root, &invocation.session_file_suffix, &session_before)
     });
@@ -540,7 +599,7 @@ fn run_ephemeral(
         .map(PathBuf::from)
         .filter(|path| path.exists())
         .map(|path| fs::canonicalize(&path).unwrap_or(path))
-        .or_else(|| temporary_server_log.map(Path::to_path_buf));
+        .or_else(|| server.map(|server| server.output_log.clone()));
     print_session_files(
         integration,
         session_file.as_deref(),
@@ -638,14 +697,12 @@ fn build_invocation_args(
         );
     }
     let caller_options = caller.options();
-    let mut effective_user_args = Vec::new();
-    if options.orchestration {
-        effective_user_args.extend(overlay_args(
-            &invocation.orchestration_args,
-            caller,
-            context,
-        ));
-    }
+    let defaults = if options.orchestration {
+        &invocation.orchestration_args
+    } else {
+        &invocation.default_arguments
+    };
+    let mut effective_user_args = overlay_args(defaults, caller, context);
     if let Some(session_id) = orchestration_resume {
         effective_user_args.extend(
             invocation
@@ -738,6 +795,7 @@ fn render_template(template: &str, context: &RenderContext) -> String {
         .replace("{protocol_base_env}", &context.protocol_base_env)
         .replace("{google_auth_type}", &context.google_auth_type)
         .replace("{model_catalog_path}", &context.model_catalog_path)
+        .replace("{report_dialog_id}", &context.report_dialog_id)
         .replace("{working_directory}", &context.working_directory);
     if ![CONTEXT_WINDOW_SLOT, MAX_OUTPUT_SLOT]
         .iter()
@@ -756,8 +814,11 @@ fn render_template(template: &str, context: &RenderContext) -> String {
 const CONTEXT_WINDOW_SLOT: &str = concat!("{", "context_window_tokens", "}");
 const MAX_OUTPUT_SLOT: &str = concat!("{", "max_output_tokens", "}");
 
-fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {
+fn codex_model_catalog(render: &RenderContext) -> Result<String, Box<dyn Error>> {
     let context = ContextCapacity::current()?;
+    let (window, _) = render.model_limits();
+    let window: u64 = window.parse()?;
+    let model = &render.model;
     let catalog = serde_json::json!({
         "models": [{
             "slug": model,
@@ -781,8 +842,8 @@ fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {
             "web_search_tool_type": "text",
             "truncation_policy": {"mode": "tokens", "limit": 8192},
             "supports_parallel_tool_calls": true,
-            "context_window": context.context_window_tokens,
-            "max_context_window": context.context_window_tokens,
+            "context_window": window,
+            "max_context_window": window,
             "context": context,
             "effective_context_window_percent": 100,
             "experimental_supported_tools": [],

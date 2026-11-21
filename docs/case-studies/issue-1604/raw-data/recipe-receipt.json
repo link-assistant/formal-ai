@@ -1,0 +1,19 @@
+{
+  "action": "run",
+  "revision": 2,
+  "implementation": "dynamic",
+  "output": "the the",
+  "trace": [
+    {
+      "rule_index": 0,
+      "byte_offset": 0
+    },
+    {
+      "rule_index": 0,
+      "byte_offset": 4
+    }
+  ],
+  "halt": {
+    "kind": "no_applicable_rule"
+  }
+}

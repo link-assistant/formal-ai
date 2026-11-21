@@ -18,6 +18,16 @@ server_messages
     text "MCP origin is not allowed"
   message mcp_sse_unsupported
     text "MCP SSE streams are not supported"
+  message operation-requires-persistent-mode
+    text "this operation requires persistent mode"
+  message memory-read-only-ephemeral
+    text "memory is read-only in ephemeral mode"
+  message computer-tools-require-persistent-mode
+    text "computer-use tools require persistent mode"
+  message serve-debug-session-requires-persistence
+    text "Step-through debugging requires persistent mode."
+  message serve-help
+    text "Usage: node js/server/main.mjs [serve] [options]\n  --host HOST / --port PORT    Listen address (default 127.0.0.1:8080)\n  --ephemeral                 Read memory without retaining requests (FORMAL_AI_EPHEMERAL=1)\n  --silent                    Disable diagnostics and dialog capture\n  --agent-mode                Enable client tool planning in persistent mode\n  --debug-session             Enable loopback step-through debugging in persistent mode\n  --log-level LEVEL           Diagnostic level (default debug, request metadata only)\n  --log-dir DIR                Structured logs (default ~/.formal-ai/logs)\n  --trace                      Include diagnostic payloads\n  --prerequisite-grant JSON    Workspace prerequisite grant\n  FORMAL_AI_DIALOG_LOG_DIR     Opt in to full dialog capture (off by default)"
   message hello
     text "hello"
   message invalid_chat_request
@@ -482,3 +492,137 @@ server_messages
     text "not provider-issued"
   message tool-arguments-invalid-json
     text "invalid JSON arguments"
+  message status-text-413
+    text "Content Too Large"
+  message dynamic-meta-request-size
+    text "Dynamic meta request is too large"
+  message dynamic-meta-origin-https
+    text "Recipe origins must be HTTPS origins"
+  message dynamic-meta-source-empty
+    text "The source has no body"
+  message dynamic-meta-source-size
+    text "Source size limit exceeded"
+  message dynamic-meta-source-no-recipes
+    text "No supported recipe blocks in source"
+  message dynamic-meta-origin-denied
+    text "Recipe source is outside the server allowlist"
+  message dynamic-meta-source-digest
+    text "Source digest mismatch"
+  message dynamic-meta-source-count
+    text "Supply between one and eight source candidates"
+  message dynamic-meta-source-language
+    text "Unsupported recipe source language"
+  message dynamic-meta-source-status
+    text "Source returned HTTP {status}"
+  message dynamic-meta-unavailable
+    text "Dynamic meta endpoint unavailable"
+  message dynamic-meta-store-error
+    text "Dynamic meta store error"
+  message dynamic-meta-cli-usage
+    text "Usage: FORMAL_AI_DYNAMIC_META_STORE=path node js/server/main.mjs meta < request.json\n"
+  message dynamic-meta-cli-store
+    text "Set FORMAL_AI_DYNAMIC_META_STORE to a store path"
+  message dynamic-meta-cli-stdin
+    text "Supply a dynamic meta request on stdin"
+  message dynamic-meta-invalid-provenance
+    text "Invalid source provenance"
+  message dynamic-meta-manifest-size
+    text "Package manifest exceeds the size limit"
+  message dynamic-meta-invalid-manifest
+    text "Invalid plugin manifest"
+  message dynamic-meta-origin-locator
+    text "Plugin origin requires a locator and pinned revision"
+  message dynamic-meta-origin-revision
+    text "Plugin origin must use a package version or Git commit"
+  message dynamic-meta-unique-export
+    text "Plugin export ids must be unique names"
+  message dynamic-meta-invalid-trigger
+    text "A trigger requires a CRUD event and optional numeric endpoint filters"
+  message dynamic-meta-create-old-endpoints
+    text "A create event has no old endpoints"
+  message dynamic-meta-trigger-action
+    text "A trigger requires a substitution or a rule state change within its package"
+  message dynamic-meta-invalid-adapter
+    text "Invalid host adapter id"
+  message dynamic-meta-missing-rule
+    text "A self-modifying trigger needs an installed target rule in its package"
+  message dynamic-meta-export-reference
+    text "Expected package/export"
+  message dynamic-meta-export-limit
+    text "Too many {collection}"
+  message dynamic-meta-unknown-export
+    text "Unknown {collection} export: {reference}"
+  message dynamic-meta-invalid-rules
+    text "Invalid Markov rule table"
+  message dynamic-meta-recipe-bounds
+    text "Recipe input or step limit is out of bounds"
+  message dynamic-meta-invalid-source
+    text "Invalid recipe source"
+  message dynamic-meta-controlled-instruction
+    text "Expected a controlled instruction such as Replace \"a\" with \"b\" and stop."
+  message dynamic-meta-unsupported-program
+    text "Unsupported recipe language or program"
+  message dynamic-meta-template-mismatch
+    text "Program differs from the portable rewrite template"
+  message dynamic-meta-recipe-language
+    text "Unsupported recipe language"
+  message dynamic-meta-admin-required
+    text "Server administrator permission is required"
+  message dynamic-meta-confirmation-required
+    text "Explicit confirmation is required"
+  message dynamic-meta-regular-store
+    text "The dynamic meta store must be a regular file"
+  message dynamic-meta-invalid-command
+    text "Invalid dynamic meta command"
+  message dynamic-meta-unknown-command
+    text "Unknown dynamic meta command"
+  message dynamic-meta-schema
+    text "Unsupported dynamic meta store schema"
+  message dynamic-meta-revision-changed
+    text "The dynamic meta store revision has changed"
+  message dynamic-meta-state-size
+    text "Dynamic meta store size limit exceeded"
+  message dynamic-meta-action-required
+    text "Expected a dynamic meta action"
+  message dynamic-meta-invalid-receipt
+    text "Invalid receipt revision"
+  message dynamic-meta-receipt-unavailable
+    text "Receipt unavailable"
+  message dynamic-meta-manifest-digest
+    text "Reviewed plugin digest does not match the manifest"
+  message dynamic-meta-package-exists
+    text "A package with this id is already installed"
+  message dynamic-meta-package-limit
+    text "Package limit exceeded"
+  message dynamic-meta-package-unavailable
+    text "Package unavailable"
+  message dynamic-meta-adapter-revision
+    text "External integrations do not support revision conditions"
+  message dynamic-meta-adapter-unavailable
+    text "Host adapter unavailable"
+  message dynamic-meta-unknown-action
+    text "Unknown dynamic meta action"
+  message dynamic-meta-substitution-length
+    text "Invalid link substitution length"
+  message dynamic-meta-substitution-sides
+    text "A substitution requires two groups: (restriction) (substitution)"
+  message dynamic-meta-unknown-event-reference
+    text "Unknown event reference"
+  message dynamic-meta-expected-doublet
+    text "Expected a doublet pattern"
+  message dynamic-meta-pattern-limit
+    text "Too many link patterns"
+  message dynamic-meta-link-limit
+    text "Link limit exceeded"
+  message dynamic-meta-substitution-work
+    text "Link substitution work limit exceeded"
+  message dynamic-meta-substitution-conflict
+    text "Conflicting link substitutions in the same cycle"
+  message dynamic-meta-event-limit
+    text "Link event limit exceeded"
+  message dynamic-meta-trigger-action-limit
+    text "Trigger action limit exceeded"
+  message dynamic-meta-cycle-limit
+    text "Trigger cycle limit exceeded"
+  message dynamic-meta-event-value-missing
+    text "Event has no value for {reference}"

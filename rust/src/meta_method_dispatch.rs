@@ -562,7 +562,7 @@ fn try_capability_route(
         );
     }
 
-    let live_fetch = crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH");
+    let live_fetch = crate::solver_config::read_network_allowed();
     match capability {
         "web_fetch" => {
             try_routed_http_fetch_with_offline(prompt, log, solver.config.offline || !live_fetch)
@@ -613,17 +613,15 @@ fn try_capability_route(
             Some(explain_previous_turn(prompt, log))
         }
         "compose_from_sources" | "concept_measurement_lookup" => {
-            // A quantity arithmetic computes — a duration between two clock
-            // times, a same-dimension unit conversion — is the calculator's
-            // turn, not a measured property a source can look up. The
-            // quantity rows read the same interrogative words ("how long",
-            // "是多少"), and executing a source capability for them reports a
-            // measurement miss where the calculator answers, so the table
-            // declines before either arm runs (issue #1138 specification:
-            // the calculator-delegation family). A statistic of a stated list
-            // is likewise computed (issue #1175 p273).
+            // Complete calendar periods, durations between clock times and unit
+            // conversions are computed quantities, not source properties. These
+            // rows share interrogatives ("how long", "是多少"), so they must
+            // decline before source execution (issue #1138 calculator delegation;
+            // issue #1589 calendar periods). Statistics likewise compute from the
+            // stated list (issue #1175 p273).
             let statistic = handle_statistics(prompt, &normal, &mut EventLog::default());
             if crate::solver_handler_units::names_arithmetic_quantity(&normalized)
+                || crate::solver_handlers::calendar::month::duration::request(prompt).is_some()
                 || statistic.is_some()
             {
                 return None;
@@ -656,13 +654,15 @@ fn try_capability_route(
             // An elaboration of a procedure this conversation already answered
             // ("give me the exact steps") is that procedure's continuation
             // (issue #444). The rebind is recovered from the prior turns, not
-            // from this prompt's own words, so neither a promoted method nor a
-            // cue-matched family can claim the turn before the table routes
-            // the bare words to a fresh compose — the same blind spot the
-            // fetch arms solve for the response-language retarget below. Offer
-            // the follow-up its turn before composing from scratch.
+            // from this prompt's own words. Offer the follow-up its turn
+            // before composing from scratch.
             if let Some(answer) =
-                crate::solver_handler_how::try_procedural_how_to_followup(prompt, &normalized, log)
+                crate::solver_handler_how_synthesis::try_procedural_followup_with_offline(
+                    prompt,
+                    &normalized,
+                    log,
+                    solver.config.offline || !crate::solver_config::read_network_allowed(),
+                )
             {
                 return Some(record_contextual_method_answer(
                     prompt,

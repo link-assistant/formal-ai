@@ -1,0 +1,43 @@
+✔ real solver gives source-backed practical guidance in en (5913.544577ms)
+✔ real solver gives source-backed practical guidance in ru (3951.460804ms)
+✔ real solver gives source-backed practical guidance in hi (3652.643607ms)
+✔ real solver gives source-backed practical guidance in zh (3401.843487ms)
+✔ real solver gives source-backed practical guidance in es (3122.339325ms)
+✔ Spanish detection, follow-up and unavailable guidance use the same strategy (3719.871534ms)
+✔ unavailable guidance asks for the user choice in en (4439.955045ms)
+✔ unavailable guidance asks for the user choice in ru (3339.92094ms)
+✔ unavailable guidance asks for the user choice in hi (3053.482401ms)
+✔ unavailable guidance asks for the user choice in zh (3143.458093ms)
+✔ unavailable guidance asks for the user choice in es (3208.785986ms)
+✔ the urgent report and a short follow-up preserve the actual goal (3784.484167ms)
+✔ negations, quotations and unrelated requests do not become personal needs (2017.384132ms)
+✔ an empty cache discovers the registered source and labels fetched evidence honestly (2153.643317ms)
+✔ failed, irrelevant and oversized sources produce a useful question rather than unsupported advice (10358.562938ms)
+✔ both fetch and body-read stalls have a deadline even when transport ignores abort (4127.19112ms)
+✔ zero-byte stream chunks have a finite read budget and are cancelled (2012.306406ms)
+✔ the same strategy handles a new data-defined goal without a prompt-specific code branch (1971.016542ms)
+✔ an empty matcher operand terminates within the same finite contract as Rust (1966.06534ms)
+✔ the browser worker reads the how-to services out of the seed registry (2824.156012ms)
+✔ settings opt-outs stay authoritative in the browser (2073.733529ms)
+✔ the committed captures synthesise a provenance-carrying guide (2235.992443ms)
+✔ insufficient evidence is reported instead of invented (2566.336705ms)
+✔ per-service accessibility is remembered for at least seven days (2497.48628ms)
+✔ copies and contradictions follow the issue #709 source-tier policy (2639.214925ms)
+✔ the browser worker and the Rust solver synthesise the same guide (2815.446107ms)
+✔ the procedural how-to answer is the synthesised guide when it is sufficient (2628.242379ms)
+✔ unchanged native procedural assertions: greeting_prefixed_russian_connect_how_to_composes_procedure (13330.835987ms)
+✔ unchanged native procedural assertions: procedural_elaboration_followup_rebinds_to_prior_how_to (11687.87109ms)
+✔ unchanged native procedural assertions: procedural_elaboration_followup_covers_supported_languages (12781.627746ms)
+✔ no-source plans retain transport encoding and producer-owned typed stages (2378.855482ms)
+✔ disabled source services keep their actual outcome and skip wikiHow requests (2158.697421ms)
+✔ a procedural followup requires an actual prior procedural dialogue (2383.258681ms)
+✔ genuine captured source steps survive discovery-plan rendering (2286.384032ms)
+✔ typed discovery stages distinguish skipped, attempted and disabled wikiHow (1922.897255ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 140784.716648

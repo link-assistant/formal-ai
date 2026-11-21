@@ -1,0 +1,47 @@
+{
+  "run": 44102311718,
+  "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+  "artifact": {
+    "id": 14337195971,
+    "node_id": "MDg6QXJ0aWZhY3QxNDMzNzE5NTk3MQ==",
+    "name": "source-scanner-js-ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "size_in_bytes": 3959936,
+    "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14337195971",
+    "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14337195971/zip",
+    "expired": false,
+    "digest": "sha256:cffca1c95a6bd83300a851793de8f402fb980a905c91b9510d33e27811c8438c",
+    "created_at": "2026-11-17T14:22:55Z",
+    "updated_at": "2026-11-17T14:22:55Z",
+    "expires_at": "2026-11-24T14:22:54Z",
+    "workflow_run": {
+      "id": 44102311718,
+      "repository_id": 1236510803,
+      "head_repository_id": 1236510803,
+      "head_branch": "issue-1582-79aa864de807",
+      "head_sha": "ca57748ca7daf0882618977e23382a13e07b4d0d"
+    }
+  },
+  "sha256": "cffca1c95a6bd83300a851793de8f402fb980a905c91b9510d33e27811c8438c",
+  "members": [
+    {
+      "path": "javascript-controls.stderr.gz",
+      "bytes": 20
+    },
+    {
+      "path": "javascript-controls.stdout.gz",
+      "bytes": 1097
+    },
+    {
+      "path": "javascript-inventory.stderr.gz",
+      "bytes": 20
+    },
+    {
+      "path": "javascript-inventory.stdout.gz",
+      "bytes": 3851027
+    },
+    {
+      "path": "qualification.json",
+      "bytes": 373331
+    }
+  ]
+}

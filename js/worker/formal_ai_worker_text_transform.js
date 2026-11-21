@@ -690,10 +690,9 @@ const DEPENDENCY_SUMMARIZATION_MODULE = "crate/dependency_summarization.mjs";
 
 /**
  * Free-text summarization (`handle_summarization_request`): a request that
- * carries its own text is answered with its dependency summary, the
- * statements the others depend on, up to one in three, in the text's own
- * words (`summarizeByDependency`, the JavaScript root's own module). The
- * trace names every statement kept or dropped and every duplicate removed.
+ * carries its own text is answered by selecting complete substantive
+ * sentences (`summarizeFreeText`). The trace names the candidates kept or
+ * dropped and the duplicates removed.
  * @param {string} prompt
  * @param {string} normalized
  * @returns {object|null}
@@ -703,10 +702,9 @@ function trySummarizationText(prompt, normalized) {
   if (!lexiconMentionsRole(ROLE_TEXT_SUMMARIZATION_ACTION, String(normalized || ""))) return null;
   const payload = textTransformFreeTextPayload(text);
   if (payload === null) return null;
-  const { summarizeByDependency } = crateModule(DEPENDENCY_SUMMARIZATION_MODULE);
-  const summary = summarizeByDependency(payload, detectLanguage(payload));
-  // A single statement cannot be shortened without echoing it back.
-  if (summary.statements.length + summary.removed.length < 2 || summary.kept.length === 0) return null;
+  const { summarizeFreeText } = crateModule(DEPENDENCY_SUMMARIZATION_MODULE);
+  const summary = summarizeFreeText(payload, detectLanguage(payload));
+  if (summary === null) return null;
   const trace = summary.statements.map((node, index) => {
     const verdict = summary.kept.includes(index) ? "kept" : "dropped";
     return `summarization_statement:${verdict} ${node.statement.text}`;

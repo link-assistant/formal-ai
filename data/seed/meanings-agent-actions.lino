@@ -1,4 +1,52 @@
 meanings
+  agentic-action-run-program-name
+    defined-by answer
+    role localized_response_template
+    precondition "a shell tool is about to run a program with a displayable name"
+    effect "names the program in the user's language without repeating its arguments"
+    unit "not applicable"
+    example "I’ll run `printf`."
+    grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-action-report-harness
+    defined-by answer
+    role localized_response_template
+    precondition "the selected report action exports the client conversation"
+    effect "describes the client log export before it executes"
+    unit "not applicable"
+    example "I’ll export this client’s conversation log."
+    grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-action-report-server
+    defined-by answer
+    role localized_response_template
+    precondition "the selected report action exports the server conversation"
+    effect "describes the server log export before it executes"
+    unit "not applicable"
+    example "I’ll export Formal AI’s server log for this conversation."
+    grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-action-report-learn
+    defined-by answer
+    role localized_response_template
+    precondition "the report selection asks Formal AI to learn from this conversation"
+    effect "describes the learning action before it executes"
+    unit "not applicable"
+    example "I’ll have Formal AI learn from this conversation."
+    grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-action-report-github
+    defined-by answer
+    role localized_response_template
+    precondition "the report selection authorizes creating an issue in the configured repository"
+    effect "describes the destination before filing the issue"
+    unit "not applicable"
+    example "I’ll file the report in the Formal AI GitHub repository."
+    grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-report-open-issue-form
+    defined-by answer
+    role localized_response_template
+    precondition "a chat surface without an exportable session receives a request to report an issue"
+    effect "directs the user to review and submit a report in the Formal AI GitHub repository"
+    unit "not applicable"
+    example "Open the Formal AI issue form to review and submit your report on GitHub."
+    grounding "data/seed/multilingual-responses-agentic.lino"
   practical-help
     defined-by concept
     role procedure
@@ -642,6 +690,14 @@ meanings
     unit "not applicable"
     example "html for HTML"
     grounding "data/seed/handler-rules.lino"
+  calendar-date-month-label
+    defined-by method
+    role action
+    precondition "a computed date prints the month in the grammatical case of its language"
+    effect "reads the month label keyed by month slug and language"
+    unit "not applicable"
+    example "january.ru for января"
+    grounding "data/seed/handler-rules.lino"
   calendar_weekday_label
     defined-by method
     role action
@@ -665,6 +721,14 @@ meanings
     effect "reads the surfaces that ask for scheduling"
     unit "not applicable"
     example "schedule"
+    grounding "data/seed/handler-rules.lino"
+  calendar-request-cue
+    defined-by method
+    role action
+    precondition "a sentence asks to schedule an anchored event rather than reporting a document fact"
+    effect "reads request cues with start, date-led, imperative-end and courtesy-prefix positions"
+    unit "not applicable"
+    example "Please create an event tomorrow"
     grounding "data/seed/handler-rules.lino"
   calendar_day_number_marker
     defined-by method

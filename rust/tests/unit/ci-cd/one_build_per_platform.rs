@@ -228,7 +228,12 @@ fn the_test_lane_downloads_the_binary_its_executables_expect() {
 fn every_consumer_waits_for_the_build() {
     let workflow = release_workflow();
 
-    for job in ["test", "docker-build", "test-agent-cli-e2e", "build"] {
+    for job in [
+        "test",
+        "docker-build",
+        "test-agent-cli-e2e",
+        "server-parity",
+    ] {
         let needs = job_needs(&workflow, job);
         assert!(
             needs.contains("build-artifacts"),
@@ -243,7 +248,7 @@ fn every_consumer_waits_for_the_build() {
 fn independent_checks_do_not_wait_for_the_build() {
     let workflow = release_workflow();
 
-    for job in ["lint", "secrets-scan"] {
+    for job in ["lint", "secrets-scan", "build"] {
         let needs = job_needs(&workflow, job);
         assert!(
             !needs.contains("build-artifacts"),
@@ -253,23 +258,23 @@ fn independent_checks_do_not_wait_for_the_build() {
     }
 }
 
-/// Packaging and release come last, after every check.
+/// Packaging and publication use the independent source and credential checks.
 #[test]
-fn packaging_runs_after_the_checks_it_gates_on() {
+fn releases_wait_for_packaging_and_admission() {
     let workflow = release_workflow();
 
     let packaging = job_needs(&workflow, "build");
-    for gate in ["lint", "test", "macos-core-tests"] {
-        assert!(
-            packaging.contains(gate),
-            "packaging must not run before `{gate}`; a crate that fails its \
-             tests should never be packaged. needs:{packaging}"
-        );
+    assert_eq!(packaging.trim(), "[detect-changes]");
+    for job in ["auto-release", "manual-release"] {
+        let release = job_needs(&workflow, job);
+        for gate in ["build", "secrets-scan", "release-preflight"] {
+            assert!(release.contains(gate), "{job} must wait for {gate}");
+        }
+        for diagnostic in ["lint", "test", "server-parity"] {
+            assert!(
+                !release.contains(diagnostic),
+                "{job} waits for {diagnostic}"
+            );
+        }
     }
-
-    let release = job_needs(&workflow, "auto-release");
-    assert!(
-        release.contains("build"),
-        "release must follow packaging. needs:{release}"
-    );
 }

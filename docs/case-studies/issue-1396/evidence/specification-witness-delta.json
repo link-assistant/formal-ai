@@ -1,0 +1,42 @@
+{
+  "scope": "complete paired physical object graph; bounded small-value details",
+  "differences": 5,
+  "visitedPairs": 7017,
+  "allDifferencesSha256": "97a693ea0c5147d09856243ac747cbaf197190b68e5f07ec81c6f80072fab440",
+  "detailsTruncated": false,
+  "details": [
+    {
+      "path": "inventory/cases/182/program/fixtures/0/sha256",
+      "before": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e",
+      "after": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6"
+    },
+    {
+      "path": "inventory/cases/182/program/steps/1/right/value",
+      "before": {
+        "type": "string",
+        "bytes": 1343,
+        "sha256": "407257503006ff9ca7ace0843733d453b30fbdec2377b12d40851d1dbbb93fbe"
+      },
+      "after": {
+        "type": "string",
+        "bytes": 1342,
+        "sha256": "0adbd6663f0764ec1101da66bc9644f7de583ab2c828119a62ab1860673b7a14"
+      }
+    },
+    {
+      "path": "inventory/cases/183/program/fixtures/0/sha256",
+      "before": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e",
+      "after": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6"
+    },
+    {
+      "path": "inventory/cases/185/program/fixtures/0/sha256",
+      "before": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e",
+      "after": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6"
+    },
+    {
+      "path": "sourceManifest/85/sha256",
+      "before": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e",
+      "after": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6"
+    }
+  ]
+}

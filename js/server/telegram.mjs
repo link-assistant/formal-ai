@@ -9,7 +9,7 @@ import {rustLines} from '../logging/text-lines.mjs';
 import { serverMessage } from './messages.mjs';
 import { JSON_TYPE, errorResponse, jsonResponse, rawResponse } from './response.mjs';
 import { packageVersion } from './seed.mjs';
-import { solveSymbolic } from './solve.mjs';
+import { solveSymbolic, statelessIssueForm } from './solve.mjs';
 import { executeTelegramCodeRequestFromEnvironment } from './telegram-execution.mjs';
 import { naturalizeThinkingStep, thinkingAnswerLanguage } from './thinking.mjs';
 
@@ -318,15 +318,20 @@ function isVersionCommand(text) {
 
 /** `compose_telegram_reply(...).reply`. */
 async function composeTelegramReply(ctx, message) {
-  const prompt = composePromptWithAttachments(message.text ?? message.caption, messageAttachments(message));
+  const rawText = message.text ?? message.caption;
+  const prompt = composePromptWithAttachments(rawText, messageAttachments(message));
   let replyText = serverMessage('telegram_text_only');
   let traceId = null;
   let thinking = null;
   if (prompt !== null && prompt.trim()) {
     const trimmed = prompt.trim();
-    const execution = isVersionCommand(trimmed) ? null : await codeExecutionAnswer(ctx, trimmed);
-    if (isVersionCommand(trimmed)) {
+    const version = isVersionCommand(trimmed);
+    const report = !version && rawText ? await statelessIssueForm(ctx, rawText) : null;
+    const execution = report !== null || version ? null : await codeExecutionAnswer(ctx, trimmed);
+    if (version) {
       replyText = `formal-ai ${packageVersion()}`;
+    } else if (report !== null) {
+      replyText = report;
     } else if (execution !== null) {
       replyText = execution;
     } else {

@@ -14,7 +14,7 @@ use crate::context_capacity::{ContextCapacity, avg_utf8_bytes_per_char};
 use crate::memory::MemoryEvent;
 use crate::protocol::{
     ChatCompletion, ChatCompletionRequest, ChatMessage, MessageContent, ToolCall,
-    create_chat_completion_with_solver_and_memory,
+    create_adapted_chat_completion,
 };
 use crate::seed::{canonical_model_id, resolve_model_id};
 use crate::solver::UniversalSolver;
@@ -143,6 +143,9 @@ impl GeminiGenerateContentRequest {
             tool_choice: None,
             functions: Vec::new(),
             function_call: None,
+            output_standard: None,
+            lexical_density: None,
+            response_format: None,
             stream_options: None,
         }
     }
@@ -216,8 +219,7 @@ pub fn create_gemini_generate_content_response_with_solver_and_memory(
     memory_events: &[MemoryEvent],
 ) -> Value {
     let chat_request = request.to_chat_completion_request(model);
-    let completion =
-        create_chat_completion_with_solver_and_memory(&chat_request, solver, memory_events);
+    let completion = create_adapted_chat_completion(&chat_request, solver, memory_events);
     gemini_response_from_chat_completion(&completion)
 }
 

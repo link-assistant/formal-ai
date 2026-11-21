@@ -13,7 +13,8 @@ import { repeatedActionStop } from '../agentic/repetition_guard.mjs';
 import { observedPlanTerminal } from '../logging/terminal-events.mjs';
 import { workItemRecordOf } from '../agentic/work_item_report.mjs';
 import { currentDialogId } from './dialog-log.mjs';
-import { plainText, requestsToolExecution } from './chat-request.mjs';
+import { chatPromptAndHistory, plainText, requestsToolExecution } from './chat-request.mjs';
+import { Capability } from '../agentic/capability.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
 import { resolveModelId } from './seed.mjs';
 import { appliedAmendmentSteps } from './standing-requirements.mjs';
@@ -23,6 +24,7 @@ import { toolActionNarration } from '../agentic/narration.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
 import { agenticMessage } from '../agentic/messages.mjs';
 import { planSymbolicCommandReroute } from '../agentic/command_reroute.mjs';
+import { planTextReportFlow } from '../agentic/report_issue.mjs';
 import { suppliedFileAnswer } from '../agentic/file_read/supplied.mjs';
 import { planChatStepResolved, toolCapability } from '../agentic/planner.mjs';
 import { projectDeclaredCommandKeys } from '../agentic/tool_result.mjs';
@@ -31,6 +33,7 @@ import { customResponseToolInput, isCustomResponseTool, responseArgumentsForTool
 import { projectAppendContracts } from '../agentic/append_contract.mjs';
 import { ungroundedIdentityArguments } from '../agentic/crate/tool_scope.mjs';
 import { currentRequestScope, eventsInScope } from './standing-scope.mjs';
+import { composeFinalAnswer } from './request-context.mjs';
 
 /** Install the planner host over `ctx.worker` once (shared with js/server/solve.mjs). */
 async function ensureHost(ctx) {
@@ -69,12 +72,33 @@ export function toolPermissionRefusalAnswer(denial) {
   };
 }
 
+/** `available_client_tool`: a restricted schema needs affirmative client context. */
+function availableClientTool(name, definition, messages, tableValue) {
+  const suffix = tableValue('client-tool-unavailable-descriptions', name);
+  const description = (definition?.function ?? definition)?.description;
+  if (!suffix || typeof description !== 'string' || !description.trimEnd().endsWith(suffix)) return true;
+  const expected = tableValue('client-tool-availability-context', name);
+  const open = tableValue('client-tool-availability-context', 'open-tag');
+  const close = tableValue('client-tool-availability-context', 'close-tag');
+  if (!expected || !open || !close) return false;
+  for (const message of messages.toReversed()) {
+    if (message.role.toLowerCase() !== 'developer') continue;
+    const text = plainText(message.content);
+    const start = text.lastIndexOf(open);
+    if (start === -1) continue;
+    const end = text.indexOf(close, start + open.length);
+    return end !== -1 && text.slice(start + open.length, end).trim().split('\n', 1)[0].trimEnd() === expected;
+  }
+  return false;
+}
+
 /** `groundable_tool_names`: the advertised tools this request can address. */
-function groundableToolNames(request, names) {
+function groundableToolNames(request, names, tableValue) {
   const context = request.messages.map(message => plainText(message.content)).join('\n');
   return names.filter(name => {
     const definition = findToolDefinition(request.tools, name);
-    return !definition || ungroundedIdentityArguments(definition, {}, context).length === 0;
+    return !definition || (availableClientTool(name, definition, request.messages, tableValue)
+      && ungroundedIdentityArguments(definition, {}, context).length === 0);
   });
 }
 
@@ -90,6 +114,8 @@ export async function agenticOutcome(ctx, request, refusal) {
   if (!requestsToolExecution(request)) {
     if (ctx.agentMode) {
       await ensureHost(ctx);
+      const report = planTextReportFlow(request.messages);
+      if (report !== null) return { kind: 'planned', plan: report };
       const answer = suppliedFileAnswer(request.messages);
       if (answer !== null) return {
         kind: 'planned',
@@ -134,7 +160,20 @@ export async function agenticOutcome(ctx, request, refusal) {
   // else than `command`/`cmd`/`script` is read through that declared key.
   const messages = projectDeclaredCommandKeys(request.messages, request.tools);
   const scoped = projectAppendContracts(messages, request.tools);
-  const plan = await planChatStepResolved(scoped, groundableToolNames(request, owned));
+  const { claimsProceduralRequest, handlerRulesTableValue } = await ctx.worker.seedReaders();
+  const grounded = groundableToolNames(request, owned, handlerRulesTableValue);
+  const plan = await planChatStepResolved(scoped, grounded);
+  if (plan?.kind === 'tool_calls' && plan.calls.length > 0
+      && plan.calls.every(call => toolCapability(call.tool) === Capability.Search)) {
+    const { prompt, history } = chatPromptAndHistory(request.messages);
+    if (claimsProceduralRequest(prompt, history)) {
+      ctx.logger?.log('debug', 'agent.plan', {
+        component: 'agent', dialog_id: currentDialogId(),
+        reason: 'procedural_solver', plan_kind: 'none'
+      });
+      return { kind: 'fallthrough' };
+    }
+  }
   const terminal = observedPlanTerminal(plan);
   ctx.logger?.log('debug', 'agent.plan', {
     component: 'agent',
@@ -169,10 +208,9 @@ function logPlanTerminal(ctx, plan) {
     component: 'agent',
     dialog_id: currentDialogId(),
     ...terminal,
-    ...(workItemRecord === null ? {} : { work_item_record: workItemRecord }),
     scope: 'server_response',
     task_delivery: 'Unknown'
-  });
+  }, workItemRecord === null ? undefined : { work_item_record: workItemRecord });
 }
 export function logUnclassifiedTerminal(ctx, origin) {
   ctx.logger?.log('debug', 'agent.terminal', {
@@ -188,10 +226,9 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
   if (plan.kind !== 'tool_calls') {
     ctx.logger?.log('debug', 'planning_terminal', {
       component: 'planner',
-      answer: String(plan.answer ?? '').slice(0, 4096),
       state: 'terminal',
       repeat_limit: 3
-    });
+    }, () => ({answer: String(plan.answer ?? '').slice(0, 4096)}));
     return plan;
   }
   const calls = [];
@@ -212,10 +249,8 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
       ctx.logger?.log('error', 'tool_argument_binding_failed', {
         component: 'planner',
         tool: call.tool,
-        arguments: args,
-        schema,
-        reason
-      });
+        reason: 'argument_validation_failed'
+      }, () => ({arguments: args, schema, reason}));
       return {
         kind: 'final',
         answer: agenticMessage('tool-argument-binding-incomplete', {
@@ -226,10 +261,9 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
     ctx.logger?.log('debug', 'tool_call_bound', {
       component: 'planner',
       tool: call.tool,
-      arguments: args,
       repeat_limit: 3,
       state: 'awaiting_client_receipt'
-    });
+    }, () => ({arguments: args}));
     calls.push({
       ...call,
       arguments: args
@@ -287,14 +321,15 @@ export function chatCompletionFromPlan(ctx, request, prompt, plan, created) {
     };
     finishReason = 'tool_calls';
   } else {
-    const answer = plan.answer;
+    const composed = composeFinalAnswer(request.messages, plan.answer, amendmentSteps(ctx, prompt));
+    const answer = composed.answer;
     completionTokens = estimateTokens(answer);
     message = {
       role: 'assistant',
       content: answer,
       tool_calls: []
     };
-    const steps = amendmentSteps(ctx, prompt);
+    const steps = composed.thinking_steps;
     if (steps.length) {
       const reasoning = renderThinkingSteps(steps);
       Object.assign(message, { thinking_steps: steps, reasoning_content: reasoning, reasoning });
@@ -408,8 +443,9 @@ export function responseFromPlan(ctx, request, chatRequest, prompt, plan, create
       outputTokens += tokens;
     });
   } else {
-    const answer = plan.answer;
-    const steps = amendmentSteps(ctx, prompt);
+    const composed = composeFinalAnswer(chatRequest.messages, plan.answer, amendmentSteps(ctx, prompt));
+    const answer = composed.answer;
+    const steps = composed.thinking_steps;
     const message = outputMessage(answer);
     if (steps.length) message.thinking_steps = steps;
     output = [message];

@@ -14,6 +14,8 @@ javascript-test-durations
     seconds 264.7
   test "rust/tests/web/meta-reasoner.test.mjs"
     seconds 213.8
+  test "rust/tests/web/cnl-solver-dialogue.test.mjs"
+    seconds 203.0
   test "rust/tests/web/issue-1165-production-research.test.mjs"
     seconds 171.1
   test "rust/tests/web/fresh-planner-recomputation.test.mjs"
@@ -35,6 +37,8 @@ javascript-test-durations
     seconds 141.6
   test "rust/tests/web/recipe-resume-protocols.test.mjs"
     seconds 118.7
+  test "rust/tests/web/cnl-grammar-matrix.test.mjs"
+    seconds 93.0
   test "rust/tests/web/pull-request-1188-dogfood.test.mjs"
     seconds 86.8
   test "rust/tests/web/issue-1395-practical-help.test.mjs"

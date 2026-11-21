@@ -198,7 +198,7 @@ export function forGeneration(fetch = hostSourceFetch()) {
 /**
  * The installed host's source fetch (`host().sourceFetch()`), the twin of
  * the `CachedSourceClient` `for_generation` builds: `FORMAL_AI_SOURCE_CACHE_DIR`
- * (default `data`), online only under `FORMAL_AI_LIVE_FETCH`. A host without
+ * (default `data`), online under the shared default-on read policy. A host without
  * one (the browser) answers from the shipped baseline.
  */
 function hostSourceFetch() {

@@ -1,0 +1,63 @@
+{
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "previousWitnessSha256": "5a6cefd53d65d4fd1d8e03e64c2fe4e691bc88e922af835accdecccb1bae410f",
+  "refreshedWitnessSha256": "a977bd46ac08047e25f166efb9b3ff5bbc4c3ff4e51102405b46e963ac36c8f0",
+  "completeObjectsCompared": true,
+  "cases": 221,
+  "governedInventoryTotal": 1185,
+  "reviewedChange": "Add mod issue_1582_permissions; only four existing programs observing the ancestor unit/mod.rs source change their provenance hash. All case identities, assertions, initial values and unsupported records are compared unchanged.",
+  "provenanceChanges": [
+    {
+      "location": [
+        "cases",
+        "79",
+        "program",
+        "fixtures",
+        "8",
+        "sha256"
+      ],
+      "file": "rust/tests/unit/mod.rs",
+      "previousSha256": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183",
+      "sha256": "010246547aa7eafb25a6ddf0d5491575c3b1fbb1120c18888ab3aefd051fc51b"
+    },
+    {
+      "location": [
+        "cases",
+        "81",
+        "program",
+        "fixtures",
+        "4",
+        "sha256"
+      ],
+      "file": "rust/tests/unit/mod.rs",
+      "previousSha256": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183",
+      "sha256": "010246547aa7eafb25a6ddf0d5491575c3b1fbb1120c18888ab3aefd051fc51b"
+    },
+    {
+      "location": [
+        "cases",
+        "190",
+        "program",
+        "fixtures",
+        "8",
+        "sha256"
+      ],
+      "file": "rust/tests/unit/mod.rs",
+      "previousSha256": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183",
+      "sha256": "010246547aa7eafb25a6ddf0d5491575c3b1fbb1120c18888ab3aefd051fc51b"
+    },
+    {
+      "location": [
+        "cases",
+        "193",
+        "program",
+        "fixtures",
+        "9",
+        "sha256"
+      ],
+      "file": "rust/tests/unit/mod.rs",
+      "previousSha256": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183",
+      "sha256": "010246547aa7eafb25a6ddf0d5491575c3b1fbb1120c18888ab3aefd051fc51b"
+    }
+  ]
+}
