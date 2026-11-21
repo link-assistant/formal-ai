@@ -131,9 +131,10 @@ test("R1181-3: finalize consolidates the CLI fragments and reports missing legs 
   const finalize = job("finalize");
   assert.match(finalize, /needs: \[[^\]]*\bcli\b[^\]]*\]/);
   const script = stepScript(finalize, "Build consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt");
+  const implementation = read("scripts/desktop-release-manifest.sh");
   for (const leg of cliLegs()) {
-    assert.match(script, new RegExp(`\\[${leg.label}\\]="${leg.os}"`), `builder_of maps ${leg.label}`);
-    assert.match(script, new RegExp(`for label in [^;]*\\b${leg.label}\\b`), `the label loop covers ${leg.label}`);
+    assert.match(implementation, new RegExp(`\\[${leg.label}\\]="${leg.os}"`), `builder_of maps ${leg.label}`);
+    assert.match(implementation, new RegExp(`for label in [^;]*\\b${leg.label}\\b`), `the label loop covers ${leg.label}`);
   }
   const dir = scratch();
   try {
@@ -152,7 +153,7 @@ test("R1181-3: finalize consolidates the CLI fragments and reports missing legs 
     // These source/run values are fixture data, not publication authentication.
     const protocol = path.join(realpathSync(dir), "protocol");
     mkdirSync(protocol);
-    for (const name of ["release-producer-output-receipt.mjs", "release-checksums.mjs"]) {
+    for (const name of ["release-producer-output-receipt.mjs", "release-checksums.mjs", "desktop-release-manifest.sh"]) {
       copyFileSync(path.join(REPO_ROOT, "scripts", name), path.join(protocol, name));
     }
     // Explicit fixture boundary: no network, publication, WASM or native credit.

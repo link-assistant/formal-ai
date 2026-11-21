@@ -14,7 +14,9 @@ archives. Read bounds, canonical names, symlink rejection and exclusive writes
 remain enforced. New boundary regressions fail before and pass after repair;
 the existing storage suite and complete maintained issue suite pass.
 
-The full 141-entry gate replay found a stale generated status line census.
+The full 141-entry gate replay found a stale generated status line census
+and a new majority field in the small tail shard. Balancing complete records
+retained the original archive bytes without increasing notation ceilings.
 The maintained status generator updated just the root-ledger line count; the
 failed replay and successful focused replay are both retained. Source scanning
 reports 44 warnings, zero violations, with unchanged thresholds. Native Rust
