@@ -252,3 +252,95 @@ for (const [owner, child, names] of [
     }
   });
 }
+
+for (const [owner, child, names] of [
+  [
+    "rust/tests/integration/issue_703_orchestration",
+    "client_contracts",
+    [
+      "external_agent_fixture_process",
+      "seed_registry_pins_each_clients_exact_native_resume_contract"
+    ]
+  ],
+  [
+    "rust/tests/integration/issue_703_orchestration_followup",
+    "council_corrections",
+    [
+      "council_results_are_formalized_summarized_and_cross_checked",
+      "a_proven_false_claim_resumes_the_same_native_session_with_parent_evidence"
+    ]
+  ],
+  [
+    "rust/tests/unit/semantic_intent_routing",
+    "directory_prompts",
+    [
+      "directory_listing_routes_shell_variations_in_every_supported_language"
+    ]
+  ],
+  [
+    "rust/tests/unit/memory_maintenance",
+    "storage_access",
+    [
+      "auto_free_space_for_write_stops_at_target_with_nonzero_incoming_bytes",
+      "recall_counts_access_and_dreaming_treats_read_data_as_used"
+    ]
+  ],
+  [
+    "rust/tests/unit/issue_1066_ladder_capability",
+    "textual_requests",
+    [
+      "textual_rendering_language_is_not_a_gui_capability_request",
+      "a_file_the_request_asks_for_is_never_opened_for_reading"
+    ]
+  ],
+  [
+    "rust/tests/unit/issue_918_handler_rules_batch",
+    "algorithm_answers",
+    [
+      "the_algorithm_rule_set_answers_unchanged_in_every_prompt_language"
+    ]
+  ],
+  [
+    "rust/tests/unit/coding_discovery/no_memorization",
+    "relation_schema",
+    [
+      "the_relation_seed_declares_how_a_gloss_is_read_and_never_what_a_word_means"
+    ]
+  ],
+  [
+    "rust/tests/unit/capability-routing/issue_1175_claim_routing",
+    "claim_table",
+    [
+      "the_claim_rows_are_read_from_the_capability_table"
+    ]
+  ],
+  [
+    "rust/tests/unit/pull_request_1188_teach_f",
+    "edit_contracts",
+    [
+      "g69_an_addition_that_quotes_no_text_earns_a_question",
+      "g70_no_seed_surface_holds_a_seeded_contraction_written_apart",
+      "g70_a_provider_denial_written_with_a_contraction_is_a_failure",
+      "g78_a_replace_whose_new_text_holds_the_old_is_a_verified_edit"
+    ]
+  ]
+]) {
+  test(owner + ' retains its native test inventory below the size warning', () => {
+    assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/' + child + '.rs'])),
+      {warnings: [], violations: [], embeddedDataViolations: []});
+    const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
+    const file = explicitHelperPath(owner, child, source);
+    const helper = readFileSync(file, 'utf8');
+    assert(!helper.includes('#[test]'), 'native test identities must remain in the original module');
+    for (const name of names) {
+      const wrappers = [...source.matchAll(new RegExp('^#\\[test\\]\\nfn ' + name + '\\(\\) \\{\\n([\\s\\S]*?)^\\}', 'gmu'))];
+      assert.equal(wrappers.length, 1, 'the test must have one original owner');
+      assert.equal(wrappers[0][1].replace(/\s/gu, ''), child + '::' + name + '();',
+        'the original named test must execute exactly its assertion body');
+      assert(helper.includes('pub(super) fn ' + name + '() {'));
+    }
+    const declaration = '#[path = "' + owner.split('/').at(-1) + '/' + child + '.rs"]\n';
+    assert.throws(() => explicitHelperPath(owner, child, source.replace(declaration, '')),
+      /must explicitly locate/u, 'losing the real child resolution must be detected');
+  });
+}

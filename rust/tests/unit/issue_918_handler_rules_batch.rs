@@ -516,73 +516,7 @@ const SORT_PYTHON: &str = "Here is a reviewable sorting algorithm in python:\n\n
 
 #[test]
 fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
-    let english = FormalAiEngine.answer("Write me a sorting algorithm in Rust");
-    assert_eq!(english.intent, "algorithm_sort_rust");
-    assert_eq!(english.answer, SORT_RUST);
-    for (prompt, intent, expected) in [
-        (
-            "write a sorting algorithm in python with tests",
-            "algorithm_sort_python",
-            SORT_PYTHON_TESTS,
-        ),
-        (
-            "Напиши сортировку списка на go с тестом",
-            "algorithm_sort_go",
-            SORT_GO,
-        ),
-        (
-            "Rust में सॉर्टिंग एल्गोरिदम लिखो",
-            "algorithm_sort_rust",
-            SORT_RUST_HI,
-        ),
-        (
-            "写一个 typescript 排序 algorithm 带 test",
-            "algorithm_sort_typescript",
-            SORT_TYPESCRIPT_TESTS,
-        ),
-    ] {
-        let mut log = EventLog::default();
-        let answer = run_handler("algorithm", prompt, &prompt.to_lowercase(), &mut log)
-            .unwrap_or_else(|| panic!("{prompt} is answered by the algorithm rules"));
-        assert_eq!(answer.intent, intent, "{prompt}");
-        assert_eq!(answer.answer, expected, "{prompt}");
-        assert!(
-            log.events()
-                .iter()
-                .any(|event| event.kind == "execution_status" && event.payload == "unavailable"),
-            "{prompt} records the execution status"
-        );
-        assert!(
-            !log.events()
-                .iter()
-                .any(|event| event.kind == "algorithm:refusal"),
-            "{prompt} names the sort operation"
-        );
-    }
-    let mut log = EventLog::default();
-    let unnamed = run_handler(
-        "algorithm",
-        "explain the algorithm",
-        "explain the algorithm",
-        &mut log,
-    )
-    .expect("an algorithm request without an operation is still answered");
-    assert_eq!(unnamed.answer, SORT_PYTHON);
-    assert!(
-        log.events()
-            .iter()
-            .any(|event| event.kind == "algorithm:refusal" && event.payload == "no operation named")
-    );
-    let mut log = EventLog::default();
-    assert!(
-        run_handler(
-            "algorithm",
-            "What is the capital of France?",
-            "what is the capital of france?",
-            &mut log
-        )
-        .is_none()
-    );
+    algorithm_answers::the_algorithm_rule_set_answers_unchanged_in_every_prompt_language();
 }
 
 const PLAN_EN_PDF: &str = "This is a document-generation request in PDF format. I am a deterministic symbolic solver: I cannot research arbitrary live data on the web and I do not render binary files directly, so I decompose the task into the formal plan the universal algorithm produces (decompose → tests → drafts → composition). The document workflow uses link-foundation/meta-language for txt, Markdown, HTML, PDF, and DOCX representation/conversion, with concept profiles for headings, paragraphs, lists, strong/bold text, emphasis, and hyperlinks:\n\n1. Scope the document and its criteria: which items to include and which attributes distinguish them.\n2. Collect the list of items from verifiable sources and record links to those sources.\n3. Classify each item against the stated criteria.\n4. Assemble the document structure: title, sections, and a table or list.\n5. Export the finished structure to the requested format.\n\nConfirm the plan or refine the criteria and sources and I will continue with concrete steps. If you need facts that are not in the local Links Notation memory, name a source and I will add it as a links rule.";
@@ -951,3 +885,6 @@ fn a_software_project_follow_up_renders_the_seeded_sentences() {
         "\nReasoning steps:\n1. Recognize \"test\" as a verification request that exercises the scraper from the active plan, not a fact lookup.\n2. Drive the artifact through a deterministic fixture before any host API or network call.\n3. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured the requested target fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Run the python test command once the generated_code gate is approved.\n4. Promote the run to live the requested target only after the test_execution and network_access gates pass.\n\nThe plan is approved, so the generated starter already includes this test harness. Running it live needs the test_execution and network_access gates."
     );
 }
+
+#[path = "issue_918_handler_rules_batch/algorithm_answers.rs"]
+mod algorithm_answers;
