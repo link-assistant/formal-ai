@@ -27,6 +27,9 @@ test('the complete conversation-list bodies and comments remain unchanged', () =
     assert.ok(!read(app).includes(body), start);
   }
   assert.match(read(app), /} = useConversationList\(\{/);
+  const inventory = JSON.parse(read(new URL('../../docs/case-studies/issue-951/function-inventory.json', import.meta.url)));
+  assert.equal(inventory.ui_jsx_character_ceiling, 306259);
+  assert.deepEqual(inventory.legacy_functions['js/app/application-conversation-hooks.jsx'], ['useConversationList', 'useConversationMessages', 'useInterfaceCommands']);
 });
 
 function mount({ events = [], unavailable = false, error = null } = {}) {

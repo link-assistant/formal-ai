@@ -65,3 +65,5 @@ import '../../../experiments/issue-1580/seed-record-readers.test.mjs';
 import '../../../experiments/issue-1580/application-conversation-list.test.mjs';
 
 import '../../../experiments/issue-1580/ci-source-transport.test.mjs';
+
+import '../../../experiments/issue-1580/traceability-partition.test.mjs';

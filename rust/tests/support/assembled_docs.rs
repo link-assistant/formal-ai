@@ -18,6 +18,15 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
+#[path = "../../../scripts/lib/requirements-traceability.rs"]
+mod requirements_traceability;
+
+/// Every indexed traceability row, preserving legacy single-file fixtures.
+pub fn traceability_at<P: AsRef<Path> + ?Sized>(root: &P) -> String {
+    requirements_traceability::read_traceability(root.as_ref())
+        .unwrap_or_else(|error| panic!("traceability should be readable: {error}"))
+}
+
 /// Where the assembled requirement register's parts live.
 pub const REQUIREMENT_PARTS: &str = "docs/requirements/assembled";
 /// Where releases rolled out of `CHANGELOG.md` live.

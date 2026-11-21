@@ -25,18 +25,25 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `9e945eae` includes main `f574289f`. Layered CI records seven
-failures; six source/transport checks are repaired locally with regression
-coverage. All 309 maintained issue cases and five affected JavaScript gates
-pass. The stale WASM worker input receipt still requires actual hosted
-regeneration; an inactive, admission-tested proposal awaits the explicit build
-policy exception. The published Pipeline run is still being collected.
+Published `9e945eae` includes main `f574289f`. All 32 workflows are terminal:
+29 pass, one skips, Layered CI and Pipeline fail. Six source/transport checks
+are repaired locally; Pipeline reports the same missing seed-reader prerequisite
+in native HTTP replay. The actual cycle-rejection panic is an expected passing
+negative control. All nine native contract groups and release registry scripts
+pass on the published source; later local Rust changes still require hosted CI.
 
-Complete function, implementation, shell and metadata extractions reduce source
-warnings to 10 under unchanged limits. No native compilation or execution of
-these later local changes is claimed. Complete template/practice comparison,
-remaining warnings, wider verification and final current-head CI remain open.
-Independent reasoning remains 0/20. PR #1581 remains draft and unmerged.
+All 313 maintained issue cases pass. The complete JavaScript gate run has 87
+passes, 53 hosted-only skips and one UI inventory failure, corrected afterward
+with a failing-before registration regression and passing unchanged boundary gate.
+All 1,429 traceability rows survive the indexed partition with unchanged status
+fields and explicit evidence bindings. Nine retained source-capture size warnings
+remain under unchanged limits. Complete pinned C# and Rust per-file comparisons
+are recorded; applicable practices and other template comparisons remain open.
+
+The stale WASM worker input receipt still requires actual hosted regeneration;
+the inactive, admission-tested proposal awaits the explicit build-policy exception.
+No local native compilation or execution is claimed. Independent reasoning remains
+0/20. PR #1581 remains draft and unmerged; wider acceptance is unfinished.
 
 The entries below are retained historical observations, not current-head claims.
 

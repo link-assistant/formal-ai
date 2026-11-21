@@ -15,6 +15,7 @@
       "withAssetVersion"
     ],
     "js/app/application-conversation-hooks.jsx": [
+      "useConversationList",
       "useConversationMessages",
       "useInterfaceCommands"
     ],

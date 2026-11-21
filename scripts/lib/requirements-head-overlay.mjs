@@ -20,6 +20,7 @@ export const PIPELINE_COMMITTED = [
   'README.md',
   'docs/requirements',
   'docs/requirements-traceability.md',
+  'docs/requirements-traceability-continuation.md',
   'docs/status.md',
   'docs/benchmarks.md',
   'data/meta/requirement-status-ledger.lino',

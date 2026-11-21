@@ -19,9 +19,9 @@ import {
   sortedStrings, stripRoot, trim, trimMatches, trimStart,
 } from './lib/requirements-rust-compat.mjs';
 import { readRegister, requirementIds } from './lib/requirements-register.mjs';
+import {readTraceability} from './lib/requirements-traceability.mjs';
 
 const REQUIREMENT_SHARDS = 'docs/requirements';
-const TRACEABILITY = 'docs/requirements-traceability.md';
 const MANIFEST = 'data/meta/requirement-status-ledger.lino';
 const LEDGER_DIRECTORY = 'data/meta/requirement-status-ledger';
 
@@ -142,7 +142,7 @@ export function verdict(line, automatedTest) {
 export function requirementRows(root) {
   const expected = definedRequirementIds(readRegister(root));
   const expectedSet = new Set(expected);
-  const trace = traceRows(readOrEmpty(joinPath(root, TRACEABILITY)), root);
+  const trace = traceRows(readTraceability(root), root);
   const ownership = new Map();
   let paths;
   try {

@@ -121,7 +121,7 @@ fn issue_909_headless_global_configuration_is_traceable() {
         ],
     );
 
-    let traceability = read(root.join("docs/requirements-traceability.md"));
+    let traceability = crate::assembled_docs::traceability_at(&root);
     for id in [
         "R909-1", "R909-2", "R909-3", "R909-4", "R909-5", "R909-6", "R909-7",
     ] {
