@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "historyRetained": true,
+  "actualReleaseReconstruction": true,
+  "unrelatedSourceAndEvidenceAbsent": true,
+  "exitCode": 0,
+  "largestReapedChildMaxRssKiB": 105172,
+  "remainingMemory": 2846613504,
+  "testPath": "experiments/issue_738_fragment_release_map.test.mjs",
+  "testSha256": "7ffc41538e31de26c7e23769e33177248e9c36a1b662d024c9ab4860b19d5a07",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}
