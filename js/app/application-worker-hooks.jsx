@@ -27,7 +27,7 @@ export function browserRuntimeStatusKey(state) {
 export function useFormalAiWorker({
   workerRef, pendingResponses, setWorkerState, setWorkerReady, setEngineUnavailable, setSeed,
   diagnosticJsFallback, browserRuntimeState, setBrowserRuntimeState, uiLanguagePreference,
-  responseLanguage, preferredLanguage, demoMode, diagnosticsMode, thinkingDetailLevel,
+  responseLanguage, preferredLanguage, outputStandard, lexicalDensity, demoMode, diagnosticsMode, thinkingDetailLevel,
   minMessageAnimationMs, contextPanelWidth, sidebarMenuCollapsed, sidebarDesktopCollapsed,
   sidebarPromptsCollapsed, sidebarToolsCollapsed, sidebarTraceCollapsed,
   sidebarConversationsCollapsed, sidebarSettingsCollapsed, sidebarCollapsed,
@@ -81,6 +81,8 @@ export function useFormalAiWorker({
       uiLanguage: uiLanguagePreference,
       responseLanguage,
       preferredLanguage,
+      outputStandard,
+      lexicalDensity,
     });
   }, [
     demoMode,
@@ -124,6 +126,8 @@ export function useFormalAiWorker({
     uiLanguagePreference,
     responseLanguage,
     preferredLanguage,
+    outputStandard,
+    lexicalDensity,
   ]);
 
   useEffect(() => {
@@ -207,7 +211,7 @@ export function useFormalAiWorker({
 // Mirrors live preference state into refs so async callbacks (worker
 // requests, desktop calls) always read the current values.
 export function useLatestValueRefs({
-  uiLanguagePreference, responseLanguage, preferredLanguage, demoMode, diagnosticsMode,
+  uiLanguagePreference, responseLanguage, preferredLanguage, outputStandard, lexicalDensity, demoMode, diagnosticsMode,
   greetingVariations, guessProbability, temperature, followUpProbability, definitionFusion,
   blueprintComposition, experimentalOcr, externalServices, associativeProjectPromotion,
   themePreference, uiSkin, chatStyle, composerStyle, composerAction, locationPreference,
@@ -321,6 +325,10 @@ export function useLatestValueRefs({
     responseLanguageRef.current = responseLanguage;
   }, [responseLanguage]);
 
+  const outputStandardReference = useRef(outputStandard);
+  React.useEffect(() => { outputStandardReference.current = outputStandard; }, [outputStandard]);
+  const lexicalDensityReference = useRef(lexicalDensity);
+  React.useEffect(() => { lexicalDensityReference.current = lexicalDensity; }, [lexicalDensity]);
   const preferredLanguageRef = useRef(preferredLanguage);
   useEffect(() => {
     preferredLanguageRef.current = preferredLanguage;
@@ -367,7 +375,7 @@ export function useLatestValueRefs({
     externalServicesRef, associativeProjectPromotionRef, agentModeRef, modeRef,
     agentOnboardingSeenRef, desktopToolGrantsRef, commandApprovalsRef, pendingAgentTaskRef,
     hasPendingAgentTask, setHasPendingAgentTask, themePreferenceRef, uiLanguagePreferenceRef,
-    responseLanguageRef, preferredLanguageRef, uiSkinRef, chatStyleRef, composerStyleRef,
+    responseLanguageRef, preferredLanguageRef, outputStandardReference, lexicalDensityReference, uiSkinRef, chatStyleRef, composerStyleRef,
     composerActionRef, locationPreferenceRef, assistantNameRef, desktopStatusRef,
   };
 }
@@ -379,7 +387,7 @@ export function useAnswerRequest({
   followUpProbabilityRef, definitionFusionRef, blueprintCompositionRef, experimentalOcrRef,
   externalServicesRef, associativeProjectPromotionRef, agentModeRef, modeRef,
   desktopToolGrantsRef, themePreferenceRef, uiLanguagePreferenceRef, responseLanguageRef,
-  preferredLanguageRef, uiSkinRef, chatStyleRef, composerStyleRef, composerActionRef,
+  preferredLanguageRef, outputStandardReference, lexicalDensityReference, uiSkinRef, chatStyleRef, composerStyleRef, composerActionRef,
   locationPreferenceRef, assistantNameRef, desktopStatusRef,
 }) {
   const requestAnswer = useCallback(async (text, history = []) => {
@@ -424,6 +432,8 @@ export function useAnswerRequest({
       uiLanguage: uiLanguagePreferenceRef.current,
       responseLanguage: responseLanguageRef.current,
       preferredLanguage: preferredLanguageRef.current,
+      outputStandard: outputStandardReference.current,
+      lexicalDensity: lexicalDensityReference.current,
       uiSkin: uiSkinRef.current,
       chatStyle: chatStyleRef.current,
       composerStyle: composerStyleRef.current,

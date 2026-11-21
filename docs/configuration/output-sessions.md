@@ -50,26 +50,47 @@ existing logging-proxy file to include it in the same report.
 | Cursor | no registry-declared session artifact | Cursor history UI |
 
 The displayed path is authoritative for an isolated one-shot run; do not copy a
-hardcoded home from this table. For server-side debugging enable
-`FORMAL_AI_TRACE_REQUESTS=1`, redirect server stderr/stdout to a log, and match
-its request timeline to the client transcript or `FORMAL_AI_PROXY_LOG`.
+hardcoded home from this table. At the default server log level, request IDs,
+routes, byte counts, timing, and status help match the server's timeline to the
+client transcript or `FORMAL_AI_PROXY_LOG`. For native request-body tracing,
+set both `FORMAL_AI_TRACE_REQUESTS=1` and `FORMAL_AI_LOG_LEVEL=trace`. For the
+JavaScript server, pass `--trace`.
 
 For a complete request/response record grouped by dialog, set
 `FORMAL_AI_DIALOG_LOG_DIR` to a directory before starting the server. This is
 off by default because it records full prompt, source, tool-result, and response
-bodies. Each dialog is appended to its own JSONL file. Clients may send
+bodies. Each dialog has its own `.lino` exchange log and, when it carries
+conversation turns, a `.conversation.lino` record. Clients may send
 `X-Formal-AI-Dialog-ID` to select an exact grouping key; without it, the server
 derives a stable key from the first user prompt in the conversation.
 
 ```bash
 FORMAL_AI_DIALOG_LOG_DIR=./dialog-logs formal-ai serve
-gh-upload-log ./dialog-logs/dialog_*.jsonl --private \
+gh-upload-log ./dialog-logs/*.lino --private \
   --description "Formal AI dialog reproduction"
 ```
 
 Review and redact sensitive values before uploading. `gh-upload-log` is an
 optional external uploader; recording never installs it or sends logs off the
 machine automatically.
+
+## Serve with read-only memory
+
+`formal-ai serve --ephemeral` (or `FORMAL_AI_EPHEMERAL=1`) reads existing memory
+without creating or upgrading its files. It can reuse the validated private
+replacement from an earlier server run. It disables chat memory writes,
+background dreaming, memory imports, server diagnostics, dialog capture, and
+derivation storage. Capture and trace options cannot override this mode.
+The server uses local sources in ephemeral mode and skips live source retrieval.
+`--silent` only disables diagnostics and dialog capture. Check `GET /health`
+for `memory.mode` (`read_only` or `read_write`), the structured log sink's
+`logs.status`, and the two capture flags.
+
+An ephemeral response can still include in-response evidence. Because the
+server retains no new conversation or derivation, later clients cannot export
+those turns, replay the answer with `formal-ai explain`, or inspect a durable
+per-message memory-state delta. An ephemeral answer has no stored derivation
+locator. Capture and retention outside the server follow the client's settings.
 
 ## Export a complete agentic conversation
 

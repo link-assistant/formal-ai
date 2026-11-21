@@ -14,7 +14,7 @@ A high-level view of where a request enters Formal AI and which layers it crosse
 flowchart LR
     subgraph entries["Entry points"]
         cli["formal-ai CLI<br/>33 subcommands"]
-        http["HTTP server, JavaScript and Rust<br/>30 routes"]
+        http["HTTP server, JavaScript and Rust<br/>32 routes"]
         browser["browser worker<br/>10 browser-only handlers"]
     end
     subgraph layers["Layers"]

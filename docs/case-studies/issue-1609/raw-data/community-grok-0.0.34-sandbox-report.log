@@ -1,0 +1,15 @@
+> Hello
+Hi, how may I help you?
+> Report
+What would you like to report? Select one or more.
+1. Harness log — Export the complete agentic harness log.
+2. Server log — Export the matching Formal AI server log.
+3. GitHub issue — File an issue with complete context.
+4. Report to Formal AI — Store the report so this instance can learn.
+> GitHub issue
+Which context should the GitHub issue include?
+1. Both logs — Include harness and server logs; attach a trimmed preview and link the full context if too large.
+2. Harness log — Include the complete harness conversation only.
+3. Server log — Include the complete matching server log only.
+> Server log
+I’ll file the report in the Formal AI GitHub repository.Filed the issue on GitHub: https://github.com/link-assistant/formal-ai/issues/9999

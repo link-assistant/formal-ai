@@ -22,5 +22,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         std::env::args_os().collect(),
         &Args::command(),
     ));
+    formal_ai::dialog_log::structured_log::configure(
+        formal_ai::cli_env::flag_enabled("FORMAL_AI_SILENT"),
+        false,
+    );
     run_with_formal_ai(&args.with)
 }

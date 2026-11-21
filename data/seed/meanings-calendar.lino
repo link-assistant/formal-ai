@@ -104,7 +104,7 @@ meanings
     defined-by calendar_day
     role calendar_month_reference
     lexeme en month months
-    lexeme ru месяц месяца месяцев месяцы месяцу
+    lexeme ru месяц месяца месяцев месяцы месяцу месяцах
     lexeme hi महीने महीना महीनों माह
     lexeme zh 个月 個月
     lexeme es mes meses
@@ -311,3 +311,97 @@ meanings
     lexeme hi घंटे घंटा घंटों
     lexeme zh 小时
     lexeme es hora horas
+
+  calendar-date-offset
+    defined-by calendar_day
+    role calendar-date-offset
+    precondition "An explicit date question binds one day offset and a valid stated date."
+    effect "Add the signed day offset to the stated Gregorian date."
+    unit day
+    example "What date is 10 days after December 25, 2026?"
+    lexeme en "what date" "which date"
+    lexeme ru "какая дата"
+    lexeme hi "कौन सी तारीख"
+    lexeme zh "什么日期" "几月几日"
+    lexeme es "qué fecha"
+
+  calendar-duration-year
+    defined-by time
+    role handler-table
+    precondition "a quantity is immediately followed by a year surface"
+    effect "bind the quantity to twelve calendar months per year"
+    unit "calendar year"
+    example "2 years = 24 months"
+    grounding "data/seed/handler-rules.lino"
+  calendar-duration-sum
+    defined-by time
+    role handler-table
+    precondition "a request starts with a seeded addition verb"
+    effect "admit an explicit sum with adjacent quantities and a requested calendar output unit"
+    unit "request prefix"
+    example "Add 14 months and 2 years. Answer in months."
+    grounding "data/seed/handler-rules.lino"
+  calendar-duration-output
+    defined-by time
+    role handler-table
+    precondition "a calendar sum contains a seeded output marker followed by exactly one unit"
+    effect "select months or years as the output dimension"
+    unit "output-unit marker"
+    example "Answer in months."
+    grounding "data/seed/handler-rules.lino"
+  calendar-duration-join
+    defined-by time
+    role handler-table
+    precondition "two adjacent calendar quantities are separated by a comma or a seeded conjunction"
+    effect "join the quantities without admitting unrelated intervening prose"
+    unit "quantity separator"
+    example "14 months and 2 years"
+    grounding "data/seed/handler-rules.lino"
+  calendar-full-query
+    defined-by time
+    role handler-table
+    precondition "a question starts with a seeded counting phrase"
+    effect "admit a query for completed calendar periods between two dates"
+    unit "question prefix"
+    example "How many full months are between March 2021 and June 2024?"
+    grounding "data/seed/handler-rules.lino"
+  calendar-full-years
+    defined-by time
+    role handler-table
+    precondition "a counting question requests complete calendar years"
+    effect "divide completed calendar months by twelve and keep the integer quotient"
+    unit "calendar year"
+    example "39 months contain 3 full years"
+    grounding "data/seed/handler-rules.lino"
+  calendar-full-months
+    defined-by time
+    role handler-table
+    precondition "a counting question requests complete calendar months"
+    effect "compare day-of-month anniversaries instead of an average day length"
+    unit "calendar month"
+    example "2024-01-31 to 2024-02-29 contains 0 full months"
+    grounding "data/seed/handler-rules.lino"
+  calendar-interval-start
+    defined-by time
+    role handler-table
+    precondition "a completed-period query contains a seeded interval-start marker"
+    effect "locate the first explicit date bound"
+    unit "interval boundary"
+    example "between March 2021"
+    grounding "data/seed/handler-rules.lino"
+  calendar-interval-end
+    defined-by time
+    role handler-table
+    precondition "a date bound is followed by a seeded interval-end marker"
+    effect "locate the second explicit date bound and require matching precision"
+    unit "interval boundary"
+    example "and June 2024"
+    grounding "data/seed/handler-rules.lino"
+  currency-conversion-connector
+    defined-by answer
+    role handler-table
+    precondition "an explicit amount and source currency precede a seeded connector"
+    effect "bind the following supported currency as the conversion target"
+    unit "conversion connector"
+    example "1000 RUB to USD"
+    grounding "data/seed/handler-rules.lino"

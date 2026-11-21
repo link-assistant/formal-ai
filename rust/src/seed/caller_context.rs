@@ -43,6 +43,10 @@ use super::parser::{LinoNode, parse_lino};
 pub struct InjectedBlock {
     /// Marker tag name, e.g. `session_context`.
     pub tag: String,
+    /// When present immediately before the opening tag, include this heading.
+    pub prefix: Option<String>,
+    /// The complete block encloses the user's own request.
+    pub unwrap: bool,
     /// Clients observed sending this block, for documentation and tests.
     pub clients: Vec<String>,
 }
@@ -211,6 +215,12 @@ pub fn caller_context_vocabulary() -> CallerContextVocabulary {
                     .filter(|child| child.name == "block")
                     .map(|block| InjectedBlock {
                         tag: block.id.clone(),
+                        prefix: block
+                            .children
+                            .iter()
+                            .find(|child| child.name == "prefix")
+                            .map(|child| child.id.clone()),
+                        unwrap: block.children.iter().any(|child| child.name == "unwrap"),
                         clients: block
                             .children
                             .iter()

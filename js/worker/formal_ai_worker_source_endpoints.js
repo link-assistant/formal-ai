@@ -17,7 +17,8 @@ function sourceWalkEntryUrl(record, subject, language = "") {
     : record.api;
   const host = String(template || "").split("://")[1]?.split("/")[0] || "";
   const bindings = {
-    title: sourceWalkPageTitle(subject, host.includes("wikihow")),
+    title: record.id === "wikihow" && language && language !== primary
+      ? howToWikiHowSlug(subject) : sourceWalkPageTitle(subject, host.includes("wikihow")),
     query: subject,
     lemma: subject,
     language: language || primary,
@@ -28,7 +29,6 @@ function sourceWalkEntryUrl(record, subject, language = "") {
   }
   return url && !url.includes("{") ? url : null;
 }
-
 
 function sourceWalkFallbackEntryUrl(record, subject, language = "") {
   if (!record.apiFallback) return null;

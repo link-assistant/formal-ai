@@ -503,7 +503,7 @@ fn report_turn(message: &Value) -> Option<ReportTurn> {
 /// The server records OpenAI/Responses/Gemini envelopes; the harness records
 /// `parts` rows whose payload sits under `data`. Both reach this function, so
 /// neither surface silently loses its turns.
-fn message_text(message: &Value) -> String {
+pub(crate) fn message_text(message: &Value) -> String {
     let mut pieces: Vec<String> = Vec::new();
     for key in ["content", "parts"] {
         if let Some(value) = message.get(key) {

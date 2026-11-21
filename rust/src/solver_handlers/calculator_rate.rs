@@ -122,3 +122,146 @@ pub fn asks_for_usd_rate_basis(normalized: &str) -> bool {
         && lexicon.mentions_role_raw(seed::ROLE_CURRENCY_USD_REFERENCE, normalized)
         && lexicon.mentions_role_raw(seed::ROLE_CALCULATION_BASIS_REFERENCE, normalized)
 }
+
+// Captured quote conversion, mirrored by the JavaScript currency quote reader.
+// The source table supplies RUB per currency; exact integer ratios round once
+// to cents, half away from zero. No binary floating point or network dependency.
+fn quote_decimal(text: &str) -> Option<(i128, i128)> {
+    let text = text.replace(',', ".");
+    let negative = text.starts_with('-');
+    let unsigned = text
+        .strip_prefix('+')
+        .or_else(|| text.strip_prefix('-'))
+        .unwrap_or(&text);
+    let (whole, fraction) = unsigned.split_once('.').unwrap_or((unsigned, ""));
+    if whole.is_empty()
+        || whole.len() > 12
+        || fraction.len() > 6
+        || !whole.bytes().all(|c| c.is_ascii_digit())
+        || !fraction.bytes().all(|c| c.is_ascii_digit())
+    {
+        return None;
+    }
+    let mantissa = format!("{whole}{fraction}").parse::<i128>().ok()?;
+    Some((
+        if negative { -mantissa } else { mantissa },
+        10_i128.checked_pow(fraction.len().try_into().ok()?)?,
+    ))
+}
+
+fn quote_currency(word: &str) -> Option<&'static str> {
+    let word = word.to_lowercase();
+    for (role, code) in [
+        (seed::ROLE_CURRENCY_USD_REFERENCE, "USD"),
+        (seed::ROLE_CURRENCY_EUR_REFERENCE, "EUR"),
+        (seed::ROLE_CURRENCY_RUB_REFERENCE, "RUB"),
+    ] {
+        if seed::lexicon().words_for_role(role).iter().any(|surface| {
+            let cyrillic = surface
+                .chars()
+                .next()
+                .is_some_and(|c| ('\u{0400}'..='\u{04ff}').contains(&c));
+            if cyrillic {
+                word.starts_with(surface.as_str())
+            } else {
+                word == *surface
+            }
+        }) {
+            return Some(code);
+        }
+    }
+    None
+}
+
+pub(super) fn conversion(
+    prompt: &str,
+    expression: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    use crate::rule_interpreter::handler_table_value;
+    let mut expression = expression.trim();
+    let lowered = expression.to_lowercase();
+    for cue in seed::lexicon().words_for_role("quantity_conversion_cue") {
+        if lowered
+            .strip_prefix(cue.as_str())
+            .is_some_and(|tail| tail.starts_with(char::is_whitespace))
+        {
+            expression = expression[cue.len()..].trim_start();
+            break;
+        }
+    }
+    let tokens: Vec<&str> = expression.split_whitespace().collect();
+    if tokens.len() < 4 {
+        return None;
+    }
+    let connector = tokens[2..tokens.len() - 1].join(" ").to_lowercase();
+    if !crate::rule_interpreter::handler_table_rows("currency-conversion-connector")
+        .iter()
+        .any(|(_, words)| words.split('|').any(|word| word == connector))
+    {
+        return None;
+    }
+    let from = quote_currency(tokens[1])?;
+    let to = quote_currency(tokens[tokens.len() - 1])?;
+    let from_rate = handler_table_value("currency-reference-quote", from)?;
+    let to_rate = handler_table_value("currency-reference-quote", to)?;
+    let (amount, amount_divisor) = quote_decimal(tokens[0])?;
+    let (source_rate, source_divisor) = quote_decimal(from_rate)?;
+    let (target_rate, target_divisor) = quote_decimal(to_rate)?;
+    if source_rate <= 0 || target_rate <= 0 {
+        return None;
+    }
+    let numerator = amount
+        .checked_mul(source_rate)?
+        .checked_mul(target_divisor)?
+        .checked_mul(100)?;
+    let denominator = amount_divisor
+        .checked_mul(source_divisor)?
+        .checked_mul(target_rate)?;
+    let absolute = numerator.checked_abs()?;
+    let cents =
+        absolute / denominator + i128::from(absolute % denominator >= (denominator + 1) / 2);
+    let result = format!(
+        "{}{}.{:02}",
+        if numerator < 0 && cents != 0 { "-" } else { "" },
+        cents / 100,
+        cents % 100
+    );
+    let amount_text = tokens[0].replace(',', ".");
+    let date = handler_table_value("currency-reference-provenance", "date")?;
+    let source = handler_table_value("currency-reference-provenance", "source")?;
+    let derivation = format!("{amount_text} × {from_rate} / {to_rate} ≈ {result} {to}");
+    let language = detect_language(prompt).slug();
+    let mut body = seed::localized_response("currency-conversion-captured", language)?.to_owned();
+    for (key, value) in [
+        ("amount", amount_text.as_str()),
+        ("from", from),
+        ("to", to),
+        ("fromRate", from_rate),
+        ("toRate", to_rate),
+        ("result", result.as_str()),
+        ("date", date),
+        ("source", source),
+        ("derivation", derivation.as_str()),
+    ] {
+        body = body.replace(&format!("{{{key}}}"), value);
+    }
+    log.append(
+        "currency:rate_basis",
+        format!("{from}:{from_rate}RUB;{to}:{to_rate}RUB"),
+    );
+    log.append("currency:source", source);
+    log.append("currency:date", date);
+    log.append("currency:derivation", derivation);
+    log.append("currency:result", format!("{result} {to}"));
+    log.append("calculation:engine", "captured-currency");
+    log.append("calculation", body.clone());
+    Some(finalize_simple(
+        prompt,
+        log,
+        "calculation",
+        "response:calculation",
+        &body,
+        1.0,
+    ))
+}

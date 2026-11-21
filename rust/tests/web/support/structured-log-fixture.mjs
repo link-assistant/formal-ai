@@ -47,7 +47,7 @@ export async function waitFor(read,{timeout=2000}={}){
   throw Error('fixture_observation_timeout');
 }
 
-export async function startCli(t,{args=[],env={}}={}){
+export async function startCli(t,{args=[],env={},binary,lifetime=15_000,silent=true}={}){
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-structured-cli-'));
   const home=path.join(directory,'home');
   const privateEnv={PATH:'',HOME:home,FORMAL_AI_DREAMING:'false',FORMAL_AI_RECORD_CHAT:'0'};
@@ -64,7 +64,8 @@ export async function startCli(t,{args=[],env={}}={}){
   const port=await availablePort();
   const entry=fileURLToPath(new URL('../../../../js/server/main.mjs',import.meta.url));
   const extra=typeof args==='function'?args(directory):args;
-  const child=spawn(process.execPath,[...importFlags(),entry,'--port',String(port),...extra],{
+  const commandArgs=binary?['serve',...(silent?['--silent']:[]),'--host','127.0.0.1']:[...importFlags(),entry];
+  const child=spawn(binary??process.execPath,[...commandArgs,'--port',String(port),...extra],{
     cwd:home,env:privateEnv,stdio:['ignore','pipe','pipe'],
   });
   let stdout='',stderr='',closed=false,code=null,signal=null,spawnError=null;
@@ -78,7 +79,7 @@ export async function startCli(t,{args=[],env={}}={}){
   const done=new Promise(resolve=>child.once('close',(status,why)=>{
     code=status;signal=why;closed=true;resolve();
   }));
-  const deadline=setTimeout(()=>child.kill('SIGKILL'),15_000);
+  const deadline=setTimeout(()=>child.kill('SIGKILL'),lifetime);
   deadline.unref();
   async function stop(){
     if(!closed)child.kill('SIGTERM');
@@ -96,7 +97,11 @@ export async function startCli(t,{args=[],env={}}={}){
     get stdout(){return stdout;},get stderr(){return stderr;},
     get code(){return code;},get signal(){return signal;},get closed(){return closed;},
     records(){
-      return stderr.split('\n').slice(0,-1).filter(Boolean).map(decodeTyped);
+      const explicit=extra.indexOf('--log-dir');
+      const logDirectory=explicit<0?path.join(home,'.formal-ai/logs'):extra[explicit+1];
+      const file=path.join(logDirectory,'serve-'+child.pid+'.lino');
+      const text=fs.existsSync(file)?fs.readFileSync(file,'utf8'):stderr;
+      return text.split('\n').slice(0,-1).filter(Boolean).map(decodeTyped);
     },
     legacy(){
       const directory=path.join(home,'dialog-logs');
@@ -104,12 +109,12 @@ export async function startCli(t,{args=[],env={}}={}){
         .filter(file=>file.endsWith('.jsonl')||file.endsWith('.lino'))
         .map(file=>fs.readFileSync(path.join(directory,file),'utf8')).join(''):'';
     },
-    async ready(){
+    async ready(headers){
       const until=Date.now()+8000;
       while(Date.now()<until){
         if(closed||spawnError)throw Error('fixture_cli_early_exit');
         try{
-          const response=await fetch(run.url+'/api/hello',{signal:AbortSignal.timeout(300)});
+          const response=await fetch(run.url+'/api/hello',{headers,signal:AbortSignal.timeout(300)});
           if(response.status===200){
             assert.equal(response.headers.get('content-type'),'application/json');
             assert.equal(await response.text(),'{\n  "message": "hello"\n}');

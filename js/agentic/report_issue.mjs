@@ -7,7 +7,7 @@
 import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
-import { plainText, userRequestText } from './content.mjs';
+import { plainText, stripSystemEcho, systemPromptText, userRequestText } from './content.mjs';
 import { currentDialogId } from './crate/dialog_log.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { issueTitle, reportTurn, titleSettingsFromSeed } from './crate/issue_report_title.mjs';
@@ -20,7 +20,7 @@ import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, planOne } from './plan.mjs';
 import { Progress } from './progress.mjs';
 import { ReportScript, shellQuote } from './report_script.mjs';
-import { StepOutcome, stepOutcome } from './tool_result.mjs';
+import { observedPayload, StepOutcome, stepOutcome } from './tool_result.mjs';
 
 const CONTEXT_SESSION_FLAG = ' --session ';
 const SOURCE_FLAG = ' --source ';
@@ -34,12 +34,41 @@ const PRINTF_PROGRAM = 'printf';
 const PRINTF_LINE_FORMAT = " '%s\\n' ";
 const AGENTIC_SURFACE = 'agentic-cli';
 const LATEST_SESSION = 'latest';
-const LANGUAGES = ['en', 'ru', 'hi', 'zh'];
+const LANGUAGES = ['en', 'ru', 'hi', 'zh', 'es'];
+const TARGET_QUESTION = 'agentic_report_target_question';
+const CONTENTS_QUESTION = 'agentic_report_contents_question';
 
 const ROLE_AGENT_ACTION_REPORT_VERB = 'agent_action_report_verb';
 const ROLE_AGENT_ACTION_REPORT_SUBJECT = 'agent_action_report_subject';
 const ROLE_FILE_WRITE_ACTION_CUE = 'file_write_action_cue';
 const ROLE_FILE_WRITE_TARGET_CUE = 'file_write_target_cue';
+
+/** Mirrors `fn plan_text_report_flow`. */
+export function planTextReportFlow(messages) {
+  const system = systemPromptText(messages);
+  const marker = agentInfoValue('aider-whole-file-format');
+  if (!marker || !system.includes(marker)) return planReportFlow(messages, []);
+  const notices = (agentInfoValue('aider-report-injected-file-notices') ?? '').split('\n').filter(Boolean);
+  const acknowledgment = agentInfoValue('aider-injected-acknowledgment');
+  const conversation = [];
+  for (let index = 0; index < messages.length; index += 1) {
+    const message = messages[index];
+    if (!isUser(message)) {
+      conversation.push(message);
+      continue;
+    }
+    const text = stripSystemEcho(userRequestText(message.content), system);
+    const next = messages[index + 1];
+    if (notices.some(prefix => text.startsWith(prefix))
+      && acknowledgment && next?.role.toLowerCase() === 'assistant'
+      && plainText(next.content).startsWith(acknowledgment)) {
+      index += 1;
+    } else {
+      conversation.push({ ...message, content: text });
+    }
+  }
+  return planReportFlow(conversation, []);
+}
 
 const isUser = (message) => message.role.toLowerCase() === 'user';
 
@@ -58,32 +87,40 @@ export function planReportFlow(messages, toolNames) {
     }
   }
   if (reportIndex < 0) return null;
-  const acknowledged = messages.slice(reportIndex + 1).some((message) =>
+  // Responses and Gemini can deliver narration and the associated call as
+  // consecutive assistant messages in the same turn.
+  const acknowledged = messages.slice(reportIndex + 1).some((message, offset) =>
     message.role.toLowerCase() === 'assistant'
     && !(message.tool_calls || []).length
+    && !(messages[reportIndex + offset + 2]?.tool_calls || []).length
     && trim(plainText(message.content)) !== ''
     && !isReportQuestion(plainText(message.content)));
   if (acknowledged) return null;
   const language = detect(userRequestText(messages[reportIndex].content));
-  const choices = answerTexts(messages, reportIndex + 1);
+  const choices = messages.slice(reportIndex + 1).map((message, offset) => {
+    const index = reportIndex + 1 + offset;
+    const previous = messages[index - 1];
+    const question = previous.role.toLowerCase() === 'assistant' ? plainText(previous.content) : '';
+    return { index, message, question };
+  }).filter(({ message }) => isUser(message) || message.role.toLowerCase() === 'tool');
   let targets = null;
   let targetIndex = -1;
-  for (const [index, text] of choices) {
-    const parsed = parseTargets(text);
+  for (const choice of choices) {
+    const parsed = parseTargets(choice, language);
     if (parsed.length) {
       targets = parsed;
-      targetIndex = index;
+      targetIndex = choice.index;
       break;
     }
   }
   if (targets === null) {
-    return askOrRender(toolNames, language, 'report_target', 'agentic_report_target_question',
+    return askOrRender(toolNames, language, 'report_target', TARGET_QUESTION,
       'agentic_report_target_options', true);
   }
   let explicitContents = null;
-  for (const [index, text] of choices) {
-    if (index <= targetIndex) continue;
-    explicitContents = parseContents(text);
+  for (const choice of choices) {
+    if (choice.index <= targetIndex) continue;
+    explicitContents = parseContents(choice, language);
     if (explicitContents !== null) break;
   }
   const selectedHarness = targets.includes('harness_log');
@@ -94,17 +131,21 @@ export function planReportFlow(messages, toolNames) {
   else if (selectedServer) inferred = 'server';
   const contents = explicitContents ?? inferred;
   if (targets.includes('github_issue') && contents === null) {
-    return askOrRender(toolNames, language, 'report_contents', 'agentic_report_contents_question',
+    return askOrRender(toolNames, language, 'report_contents', CONTENTS_QUESTION,
       'agentic_report_contents_options', false);
   }
-  const progress = Progress.scan(messages.slice(reportIndex + 1));
+  // Injected reminders after the receipt do not start a new user turn.
+  const progress = Progress.scan(messages.slice(reportIndex + 1).filter(message =>
+    !isUser(message) || userRequestText(message.content)));
   const dialog = dialogId();
   const commands = commandsForTargets(targets, contents ?? 'both', messages, reportIndex, dialog);
   const command = commands[progress.run_outputs.length];
   if (command === undefined) return finalAnswer(reportFinished(targets, progress.run_outputs, language));
   const tool = toolFor(toolNames, Capability.Run) ?? null;
   if (tool !== null) return planOne(tool, jsonText({ command }));
-  return finalAnswer(renderConfig('issue_report_tool_missing', [['repository', formalAiRepo()]]));
+  if (dialog === LATEST_SESSION) return finalAnswer(renderConfig('issue-report-session-missing', []));
+  const actions = commands.slice(progress.run_outputs.length).map(command => command.replaceAll('\n', '; ')).join('\n\n');
+  return finalAnswer(renderConfig('issue-report-manual', [['commands', actions]]));
 }
 
 /** Mirrors `fn ask_or_render`. */
@@ -146,47 +187,47 @@ function localizedOptions(intent, language) {
 /** Mirrors `fn is_report_question`. */
 function isReportQuestion(text) {
   return LANGUAGES.some((language) =>
-    ['agentic_report_target_question', 'agentic_report_contents_question']
+    [TARGET_QUESTION, CONTENTS_QUESTION]
       .some((intent) => text.includes(localized(intent, language))));
 }
 
-/** Mirrors `fn answer_texts`: `[index, text]` of each later user/tool message. */
-function answerTexts(messages, start) {
-  const out = [];
-  for (let index = start; index < messages.length; index += 1) {
-    const role = messages[index].role.toLowerCase();
-    if (role === 'user' || role === 'tool') out.push([index, plainText(messages[index].content)]);
-  }
-  return out;
-}
-
 /** Mirrors `fn parse_targets`. */
-function parseTargets(text) {
+function parseTargets(choice, language) {
+  const matches = optionMatcher(choice, language, TARGET_QUESTION, 'agentic_report_target_options', true);
   return [
     ['harness_log', 0, 'harness_log'],
     ['server_log', 1, 'server_log'],
     ['github_issue', 2, 'github_issue'],
     ['formal_ai', 3, 'formal_ai'],
-  ].filter(([, optionIndex, machineValue]) =>
-    matchesOption(text, 'agentic_report_target_options', optionIndex, machineValue))
+  ].filter(([, optionIndex, machineValue]) => matches(optionIndex, machineValue))
     .map(([target]) => target);
 }
 
 /** Mirrors `fn parse_contents`. */
-function parseContents(text) {
-  if (matchesOption(text, 'agentic_report_contents_options', 0, 'both_logs')) return 'both';
-  if (matchesOption(text, 'agentic_report_contents_options', 1, 'harness_log')) return 'harness';
-  return matchesOption(text, 'agentic_report_contents_options', 2, 'server_log') ? 'server' : null;
+function parseContents(choice, language) {
+  const matches = optionMatcher(choice, language, CONTENTS_QUESTION, 'agentic_report_contents_options', false);
+  if (matches(0, 'both_logs')) return 'both';
+  if (matches(1, 'harness_log')) return 'harness';
+  return matches(2, 'server_log') ? 'server' : null;
 }
 
-/** Mirrors `fn matches_option`. */
-function matchesOption(text, intent, optionIndex, machineValue) {
-  const normalized = normalizePrompt(text);
-  return normalized.includes(normalizePrompt(machineValue))
-    || LANGUAGES.some((language) => {
-      const option = localizedOptions(intent, language)[optionIndex];
-      return option !== undefined && normalized.includes(normalizePrompt(option[0]));
-    });
+/** Mirrors `fn option_matcher`. */
+function optionMatcher({ message, question }, language, questionIntent, optionsIntent, multiple) {
+  const user = isUser(message);
+  const text = user ? userRequestText(message.content) : plainText(message.content);
+  const answers = (user && multiple ? text.split(',') : [text]).map(normalizePrompt);
+  const numbered = user && question.trimStart().startsWith(localized(questionIntent, language) + '\n1. ');
+  return (index, value) => {
+    const matches = value => {
+      const option = normalizePrompt(value);
+      return answers.some(answer => user ? answer === option : answer.includes(option));
+    };
+    return matches(value) || (numbered && matches(String(index + 1)))
+      || LANGUAGES.some(lang => {
+        const option = localizedOptions(optionsIntent, lang)[index];
+        return option !== undefined && matches(option[0]);
+      });
+  };
 }
 
 /**
@@ -199,6 +240,13 @@ export function isReportIntent(task) {
   const bareAction = wordsForRole(ROLE_AGENT_ACTION_REPORT_VERB).some((word) => normalizePrompt(word) === normalized);
   return bareAction || (action && mentionsRole(ROLE_AGENT_ACTION_REPORT_SUBJECT, normalized)
     && reportActionGovernsSubject(normalized));
+}
+
+/** An issue form for chat surfaces that do not have an exportable session. */
+export function issueFormForPrompt(prompt) {
+  if (!isReportIntent(prompt)) return null;
+  const instruction = localized('agentic-report-open-issue-form', detect(prompt));
+  return `${instruction}\nhttps://github.com/${formalAiRepo()}/issues/new`;
 }
 
 /** Mirrors `fn report_action_governs_subject` (distances in UTF-8 bytes). */
@@ -256,6 +304,21 @@ function commandFor(target, contents, messages, reportIndex, dialog) {
     default:
       return learningCommand(dialog);
   }
+}
+
+export function reportCommandIntent(command) {
+  const submit = agenticMessage('report-issue-submit-command') + CONTEXT_SESSION_FLAG;
+  const learn = agenticMessage('report_issue_context_learn_command') + CONTEXT_SESSION_FLAG;
+  const exportContext = agenticMessage('report_issue_context_export_command') + CONTEXT_SESSION_FLAG;
+  for (const line of command.split('\n')) {
+    if (line.startsWith(submit)) return 'agentic-action-report-github';
+    if (line.startsWith(learn)) return 'agentic-action-report-learn';
+    if (line.startsWith(exportContext)) {
+      if (line.includes(SOURCE_FLAG + 'harness' + OUTPUT_FLAG)) return 'agentic-action-report-harness';
+      if (line.includes(SOURCE_FLAG + 'server' + OUTPUT_FLAG)) return 'agentic-action-report-server';
+    }
+  }
+  return null;
 }
 
 /** Mirrors `fn export_command`. */
@@ -322,23 +385,31 @@ function titleTurns(messages, reportIndex) {
 function reportFinished(targets, runOutputs, language) {
   const ordered = executionOrder(targets);
   const failures = [];
+  let issueLink;
+  let githubFailed = false;
+  const prefix = 'https://github.com/' + formalAiRepo() + '/issues/';
   ordered.forEach((target, index) => {
     if (index >= runOutputs.length) return;
-    if (stepOutcome(runOutputs[index]) === StepOutcome.Failed) failures.push([target, trim(runOutputs[index])]);
+    const raw = runOutputs[index];
+    const payload = observedPayload(raw);
+    const failed = !trim(payload ?? '') || stepOutcome(raw) === StepOutcome.Failed
+      || stepOutcome(payload) === StepOutcome.Failed;
+    if (target === 'github_issue') {
+      if (!failed) issueLink = splitWhitespace(payload).find(token => token.startsWith(prefix) && /^[1-9][0-9]*$/u.test(token.slice(prefix.length)));
+      githubFailed = issueLink === undefined;
+    }
+    if (failed || (target === 'github_issue' && githubFailed)) {
+      failures.push([target, trim(raw) || config('issue-report-no-receipt')]);
+    }
   });
+  const created = issueLink === undefined ? undefined : renderConfig('issue_report_created_with_url', [['url', issueLink]]);
   if (failures.length) {
     const detail = failures.map(([target, output]) => `${targetLabel(target)}: ${output}`).join('\n');
-    return `${config('issue_report_failed')}\n\n\`\`\`text\n${detail}\n\`\`\``;
+    const heading = config(githubFailed ? 'issue_report_failed' : 'issue-report-destinations-failed');
+    return [created, `${heading}\n\n\`\`\`text\n${detail}\n\`\`\``].filter(Boolean).join('\n\n');
   }
+  if (created !== undefined) return created;
   const trimmed = runOutputs.map(trim).filter(canonicalUnaryNonempty).join('\n');
-  if (targets.includes('github_issue')) {
-    const submission = runOutputs[ordered.indexOf('github_issue')] ?? '';
-    const prefix = 'https://github.com/' + formalAiRepo() + '/issues/';
-    const url = splitWhitespace(submission).find(token => token.startsWith(prefix) && /^[1-9][0-9]*$/u.test(token.slice(prefix.length)));
-    if (url !== undefined) return renderConfig('issue_report_created_with_url', [['url', url]]);
-    const failed = config('issue_report_failed');
-    return trimmed === '' ? failed : `${failed}\n\n\`\`\`text\n${trimmed}\n\`\`\``;
-  }
   const exported = localized('agentic_report_exported', language);
   return trimmed === '' ? exported : `${exported}\n\n\`\`\`text\n${trimmed}\n\`\`\``;
 }

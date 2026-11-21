@@ -1,0 +1,2 @@
+a2f2c0ad29b0e49b5b7186d1391923e2b7e93ecea0972f8b5128a40f01fe045d  /tmp/issue-1582-review/meta-language.tar.gz
+8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198  /tmp/issue-1582-review/shellcheck.tar.xz

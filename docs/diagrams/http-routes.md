@@ -33,8 +33,10 @@ flowchart LR
         r_vertex_models["vertex_models<br/>/api/vertex/v1/projects/{project}/locations/{location}/publishers/google/models"]
     end
     subgraph m_POST["POST"]
+        r_embeddings["embeddings<br/>/v1/embeddings<br/>/api/openai/v1/embeddings"]
         r_links_query["links_query<br/>/v1/links/query<br/>/api/formal-ai/v1/links/query"]
         r_memory_import["memory_import<br/>/v1/memory/import<br/>/api/formal-ai/v1/memory/import"]
+        r_dynamic-meta["dynamic-meta<br/>/v1/dynamic-meta"]
         r_anthropic_messages["anthropic_messages<br/>/v1/messages<br/>/api/anthropic/v1/messages"]
         r_chat_completions["chat_completions<br/>/v1/chat/completions<br/>/api/openai/v1/chat/completions"]
         r_responses["responses<br/>/v1/responses<br/>/api/openai/v1/responses"]
@@ -53,6 +55,7 @@ flowchart LR
     server -->|"bearer"| r_api_hello
     server -.->|"none"| r_health
     server -->|"bearer"| r_models
+    server -->|"bearer"| r_embeddings
     server -->|"bearer"| r_network
     server -->|"bearer"| r_network_graph_alias
     server -->|"bearer"| r_bundle
@@ -61,6 +64,7 @@ flowchart LR
     server -->|"bearer"| r_memory
     server -->|"bearer"| r_memory_since
     server -->|"bearer"| r_memory_import
+    server -->|"bearer"| r_dynamic-meta
     server -->|"bearer"| r_anthropic_messages
     server -->|"bearer"| r_chat_completions
     server -->|"bearer"| r_responses
@@ -87,6 +91,7 @@ flowchart LR
 | `api_hello` | GET | `/api/hello`, `/api/anthropic/api/hello` | bearer |
 | `health` | GET | `/health` | none |
 | `models` | GET | `/v1/models`, `/api/openai/v1/models` | bearer |
+| `embeddings` | POST | `/v1/embeddings`, `/api/openai/v1/embeddings` | bearer |
 | `network` | GET | `/v1/network`, `/api/formal-ai/v1/network` | bearer |
 | `network_graph_alias` | GET | `/v1/graph`, `/api/formal-ai/v1/graph` | bearer |
 | `bundle` | GET | `/v1/bundle`, `/api/formal-ai/v1/bundle` | bearer |
@@ -95,6 +100,7 @@ flowchart LR
 | `memory` | GET | `/v1/memory`, `/api/formal-ai/v1/memory` | bearer |
 | `memory_since` | GET | `/v1/memory/since`, `/api/formal-ai/v1/memory/since` | bearer |
 | `memory_import` | POST | `/v1/memory/import`, `/api/formal-ai/v1/memory/import` | bearer |
+| `dynamic-meta` | POST | `/v1/dynamic-meta` | bearer |
 | `anthropic_messages` | POST | `/v1/messages`, `/api/anthropic/v1/messages` | bearer |
 | `chat_completions` | POST | `/v1/chat/completions`, `/api/openai/v1/chat/completions` | bearer |
 | `responses` | POST | `/v1/responses`, `/api/openai/v1/responses` | bearer |

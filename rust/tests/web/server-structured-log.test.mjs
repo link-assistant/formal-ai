@@ -5,7 +5,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {test} from 'node:test';
 import {
-  encodeTyped,decodeTyped,createLogger,makeRedactor,convertLog,
+  encodeTyped,decodeTyped,createLogger,makeRedactor,convertLog,formatLogRecord,
 } from '../../../js/server/structured-log.mjs';
 import {parseLinks} from '../../../js/logging/lino-codec.mjs';
 import {temporaryHome} from './support/structured-log-fixture.mjs';
@@ -150,4 +150,14 @@ test('oversized trace content is explicit while digest/size remain post-redactio
   assert.equal(diagnostic.metadata.payload.bytes,Buffer.byteLength(payload));
   assert.equal(diagnostic.metadata.payload.sha256,digest(payload));
   assert.equal(diagnostic.metadata.payload.preview_truncated,true);
+});
+
+test('nested diagnostic streams convert losslessly and still reject partial records',()=>{
+  const records=[{message:'first',metadata:{value:[1,'two']}},{message:'last'}];
+  const canonical=records.map(value=>encodeTyped(value)+'\n').join('');
+  const nested=records.map(value=>formatLogRecord(encodeTyped(value),'nested')+'\n').join('');
+  assert.equal(convertLog(nested,{env:{}}),canonical);
+  assert.deepEqual(JSON.parse(convertLog(nested,{to:'pretty',env:{}})),records);
+  assert.throws(()=>convertLog(nested.slice(0,-2)));
+  assert.throws(()=>convertLog(nested.replace('two','%GG')));
 });

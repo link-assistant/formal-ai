@@ -16,8 +16,8 @@ agentic_tool_capabilities
   capability "read_many"
     aliases "read_many_files"
   capability "shell"
-    aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "Bash" "computer_use" "code_interpreter")
-    command_aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "Bash")
+    aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "run_terminal_command" "Bash" "computer_use" "code_interpreter")
+    command_aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "run_terminal_command" "Bash")
   capability "grep"
     aliases ("grep" "grep_search" "search" "codesearch" "Grep" "file_search")
     cues

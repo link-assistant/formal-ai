@@ -29,6 +29,7 @@ mod unix {
   printf "ANTHROPIC_AUTH_TOKEN=%s\n" "${ANTHROPIC_AUTH_TOKEN-}"
   printf "ANTHROPIC_API_KEY=%s\n" "${ANTHROPIC_API_KEY-}"
   printf "ANTHROPIC_BASE_URL=%s\n" "${ANTHROPIC_BASE_URL-}"
+  printf "FORMAL_AI_REPORT_CLIENT=%s\n" "${FORMAL_AI_REPORT_CLIENT-}"
   printf "CODEX_HOME=%s\n" "${CODEX_HOME-}"
   if [ -n "${CODEX_HOME-}" ] && [ -f "$CODEX_HOME/config.toml" ]; then
     printf "%s\n" "---CODEX_CONFIG---"
@@ -96,6 +97,10 @@ mod unix {
                 "{captured}"
             );
             assert!(captured.contains("CODEX_HOME="), "{captured}");
+            assert!(
+                captured.contains("FORMAL_AI_REPORT_CLIENT=codex"),
+                "{captured}"
+            );
             assert!(captured.contains("---CODEX_CONFIG---"), "{captured}");
             assert!(
                 captured.contains("model_provider = \"formalai\""),
@@ -147,6 +152,10 @@ mod unix {
             "{captured}"
         );
         assert!(captured.contains("ANTHROPIC_API_KEY="), "{captured}");
+        assert!(
+            captured.contains("FORMAL_AI_REPORT_CLIENT=claude"),
+            "{captured}"
+        );
         assert!(
             captured.contains("ANTHROPIC_BASE_URL=http://127.0.0.1:8080/api/anthropic"),
             "{captured}"

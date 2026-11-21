@@ -9,9 +9,9 @@
 // not part of the parity contract.
 
 import { childrenNamed, parseLino, readRepoFile } from './lino.mjs';
+import { latestUserTurn, stripCallerContextBlocks } from '../agentic/content.mjs';
 import { serverMessage } from './messages.mjs';
-
-const byteLength = (text) => Buffer.byteLength(text, 'utf8');
+import {parseOutputOptions} from './cnl-output.mjs';
 
 /** A request rejected by validation. */
 export class RequestShapeError extends Error {}
@@ -129,7 +129,12 @@ export function parseChatRequest(body) {
     if (typeof streamOptions !== 'object' || Array.isArray(streamOptions)) fail('stream_options', 'struct StreamOptions', streamOptions);
     includeUsage = defaultBool(streamOptions, 'include_usage');
   }
+  let output;
+  try { output = parseOutputOptions(object, optionalString); }
+  catch (error) { throw new RequestShapeError(error.message); }
   return {
+    ...output,
+    response_format: object.response_format ?? null,
     model: optionalString(object, 'model'),
     messages: defaultArray(object, 'messages').map(parseChatMessage),
     temperature: optionalNumber(object, 'temperature'),
@@ -154,53 +159,18 @@ function callerContextBlocks() {
   if (!injectedBlocks) {
     const root = parseLino(readRepoFile('data/seed/caller-context.lino'));
     const group = childrenNamed(root, 'injected_blocks')[0];
-    injectedBlocks = childrenNamed(group, 'block').map((block) => block.value);
+    injectedBlocks = childrenNamed(group, 'block').map(block => ({
+      tag: block.value,
+      prefix: childrenNamed(block, 'prefix')[0]?.value,
+      unwrap: childrenNamed(block, 'unwrap').length > 0,
+    }));
   }
   return injectedBlocks;
 }
 
-function stripBlock(text, open, close) {
-  let remaining = text;
-  let request = '';
-  for (let start = remaining.indexOf(open); start >= 0; start = remaining.indexOf(open)) {
-    request += remaining.slice(0, start);
-    const afterOpen = remaining.slice(start + open.length);
-    const end = afterOpen.indexOf(close);
-    if (end < 0) {
-      remaining = '';
-      break;
-    }
-    remaining = afterOpen.slice(end + close.length);
-  }
-  return request + remaining;
-}
-
 /** `MessageContent::user_request_text`. */
 export function userRequestText(content) {
-  return callerContextBlocks()
-    .reduce((text, tag) => stripBlock(text, `<${tag}>`, `</${tag}>`), plainText(content))
-    .trim();
-}
-
-function stripSystemEcho(request, system) {
-  const MIN_ECHO = 40;
-  if (!system.trim()) return request;
-  const lines = request.split(/\r?\n/);
-  for (let start = 1; start < lines.length; start += 1) {
-    const tail = lines.slice(start).join('\n').trim();
-    if (byteLength(tail) < MIN_ECHO || !system.includes(tail)) continue;
-    const head = lines.slice(0, start).join('\n').trim();
-    if (head) return head;
-  }
-  return request;
-}
-
-/** `system_prompt_text`. */
-export function systemPromptText(messages) {
-  return messages
-    .filter((message) => message.role.toLowerCase() === 'system')
-    .map((message) => plainText(message.content))
-    .join('\n');
+  return stripCallerContextBlocks(plainText(content), callerContextBlocks());
 }
 
 /** `chat_message_to_turn`. */
@@ -214,13 +184,10 @@ export function chatMessageToTurn(message) {
 
 /** `chat_prompt_and_history`: the latest user request and the turns before it. */
 export function chatPromptAndHistory(messages) {
-  let latest = -1;
-  messages.forEach((message, index) => {
-    if (message.role.toLowerCase() === 'user') latest = index;
-  });
-  if (latest < 0) return { prompt: '', history: [] };
-  const prompt = stripSystemEcho(userRequestText(messages[latest].content), systemPromptText(messages));
-  const history = messages.slice(0, latest).map(chatMessageToTurn).filter(Boolean);
+  const latest = latestUserTurn(messages, userRequestText);
+  if (!latest) return { prompt: '', history: [] };
+  const { index, prompt } = latest;
+  const history = messages.slice(0, index).map(chatMessageToTurn).filter(Boolean);
   return { prompt, history };
 }
 
@@ -272,6 +239,7 @@ export function chatToolExecutions(messages) {
 /** Serialize a `ChatMessage` in struct field order, skipping empty fields. */
 export function chatMessageJson(message) {
   const out = { role: message.role, content: message.content };
+  if (message.refusal) out.refusal = message.refusal;
   if (message.tool_calls?.length) out.tool_calls = message.tool_calls;
   if (message.tool_call_id) out.tool_call_id = message.tool_call_id;
   if (message.name) out.name = message.name;

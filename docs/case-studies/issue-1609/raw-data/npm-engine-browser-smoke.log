@@ -1,0 +1,12 @@
+
+added 138 packages in 4s
+curl: (7) Failed to connect to 127.0.0.1:19414 after 0 ms: Could not connect to server
+
+Running 1 test using 1 worker
+
+(node:85059) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+LivePagesWorkerReady {"startupElapsedMs":7867}
+  ✓  1 [chromium] › tests/pages-live-smoke.spec.js:7:1 › Pages serves native-engine greetings and a report for the conversation (11.9s)
+
+  1 passed (14.6s)

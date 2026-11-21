@@ -1,0 +1,25 @@
+{
+  "schema": "formal-ai-plugin/v1",
+  "id": "example",
+  "origin": { "kind": "local", "locator": "experiments/dynamic-meta", "revision": "1" },
+  "datasets": [{ "id": "sample", "substitute": "() ((input: 0 0))" }],
+  "rules": [
+    {
+      "id": "type-input",
+      "when": { "event": "create", "source": 0, "target": 0 },
+      "substitute": "((@id: 0 0)) ((@id: @id @id))"
+    }
+  ],
+  "recipes": [
+    {
+      "id": "normalize",
+      "language": "english",
+      "source": "Replace \"teh\" with \"the\"."
+    },
+    {
+      "id": "normalize-once",
+      "language": "english",
+      "source": "Replace \"teh\" with \"the\" and stop."
+    }
+  ]
+}

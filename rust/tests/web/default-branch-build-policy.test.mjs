@@ -12,14 +12,14 @@ import YAML from 'yaml';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
 const workflow = name => YAML.parse(read('.github/workflows/' + name));
-function evaluate(expression, event, ref, variables = {}) {
+function evaluate(expression, event, ref, variables = {}, {results = {}, outputs: changed = {}, releaseMode = 'checks', isCancelled = false} = {}) {
   const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
-  const outputs = new Proxy({}, {get: () => 'true'});
-  const needs = new Proxy({}, {get: () => ({result:'success', outputs})});
-  return new Script(source).runInNewContext({github:{event_name:event,ref,event:{inputs:{release_mode:"checks"},workflow_run:{head_branch:'main'}}},
+  const outputs = new Proxy(changed, {get: (target, key) => target[key] ?? 'true'});
+  const needs = new Proxy(results, {get: (target, key) => ({result:target[key] ?? 'success', outputs})});
+  return new Script(source).runInNewContext({github:{event_name:event,ref,event:{inputs:{release_mode:releaseMode},workflow_run:{head_branch:'main'}}},
     vars:{FORMAL_AI_FULL_PR_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',...variables}, needs,
-    inputs:{},cancelled:()=>false,always:()=>true,fromJSON:JSON.parse}, {timeout:100});
+    inputs:{},cancelled:()=>isCancelled,always:()=>true,fromJSON:JSON.parse}, {timeout:100});
 }
 test('all former heavy PR overrides remain closed, including bot branch dispatch', () => {
   const manifest = JSON.parse(read('data/benchmarks/fast-pull-request-retained-jobs.json'));
@@ -49,9 +49,9 @@ test('actual compiler, image, application and deployment entries refuse PR execu
   }
 });
 // Issue #1191: the only PR job that runs the Rust compiler is main's clippy
-// profile on the library and binaries. It must stay a check (no build, test or
-// upload), selected by compile inputs.
-test('the focused PR native check stays a lint-only check selected by compile inputs', () => {
+// profile on the library and binaries, plus the isolated regression targets.
+// Full suites, product builds and uploads remain main-only.
+test('the focused PR native check limits execution to lint and isolated regressions', () => {
   const job = workflow('release.yml').jobs['native-type-check'];
   assert.equal(job.uses, './.github/workflows/native-type-check.yml');
   assert.deepEqual(job.permissions, {contents: 'read'});
@@ -64,8 +64,39 @@ test('the focused PR native check stays a lint-only check selected by compile in
   assert.match(head, /\nconcurrency:\n  group: \$\{\{ github\.workflow \}\}-\$\{\{ github\.ref \}\}-native-type-check\n  cancel-in-progress: \$\{\{ github\.ref != 'refs\/heads\/main' \}\}\n/u);
   const [check, ...others] = Object.values(called.jobs);
   assert.equal(others.length, 0);
+  const nativeReplays = [
+    'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1591-embeddings.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs'];
+  const clientReportReplay = 'node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs';
+  const codexReplay = 'bash experiments/issue_859_codex_e2e/run.sh';
+  const gatewayReplay = 'bun install --frozen-lockfile --ignore-scripts\n' +
+    "node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs\n";
   const runs = check.steps.map(step => step.run).filter(Boolean);
-  assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries']);
+  assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity --test t3code_launch -- --test-threads=1',
+    ...nativeReplays, codexReplay, gatewayReplay, clientReportReplay]);
+  assert.deepEqual(check.steps.find(step => step.name === 'Verify calendar, currency, forced OpenAI function, CNL and T3 Code behavior').env,
+    {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
+  for (const command of [...nativeReplays, clientReportReplay]) {
+    assert.deepEqual(check.steps.find(step => step.run === command).env,
+      {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
+  }
+  const codex = check.steps.find(step => step.run === codexReplay);
+  assert.deepEqual(codex.env, {
+    BIN: '${{ github.workspace }}/rust/target/debug/formal-ai',
+    CODEX_VERSION: '0.147.0', SCENARIO: 'report',
+  });
+  assert.equal(codex['timeout-minutes'], 2);
+  assert.deepEqual(check.steps.find(step => step.run === gatewayReplay).env,
+    {FORMAL_AI_DYNAMIC_META_NATIVE: '${{ github.workspace }}/rust/target/debug/formal-ai'});
+  const checkout = check.steps.find(step => step.uses === 'actions/checkout@v7').with;
+  assert.deepEqual(checkout['sparse-checkout'].trim().split('\n'),
+    ['/*', '!/dev/log/', '!/experiments/*', '/experiments/dynamic-meta/',
+      '/experiments/issue_859_codex_e2e/', '/experiments/js_dogfood/']);
+  assert.deepEqual(check.steps.find(step => step.uses === 'oven-sh/setup-bun@v2').with,
+    {'bun-version-file': '.bun-version', 'no-cache': true});
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
   assert(!check.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
   assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
@@ -151,6 +182,32 @@ test('recorded Docker cold rebuild is optional and cannot hold the production bu
     assert(publish.needs.includes(mode+'_compile-release'));
     assert.match(publish.steps.find(s=>s.name==='Publish to Crates.io').run,/--verified-build true/u);
   }
+});
+test('main release depends on package and admission checks while broad failures reach pipeline status', () => {
+  const jobs = workflow('release.yml').jobs;
+  const main = 'refs/heads/main';
+  const diagnostics = ['lint', 'test', 'macos-core-tests', 'build-artifacts',
+    'server-parity', 'test-e2e-local', 'test-agent-cli-e2e', 'native-response-observations'];
+  const failed = Object.fromEntries(diagnostics.map(id => [id, 'failure']));
+  assert.deepEqual(jobs.build.needs, ['detect-changes']);
+  assert(!jobs.build.steps.some(step => step.uses?.includes('download-formal-ai-binary')));
+  assert.equal(evaluate(jobs.build.if, 'push', main, {}, {results: failed}), true);
+  assert.equal(Boolean(evaluate(jobs.build.if, 'push', main, {}, {outputs: {'any-code-changed': 'false'}})), false);
+  assert.equal(Boolean(evaluate(jobs.build.if, 'push', main, {}, {results: {'detect-changes': 'failure'}})), false);
+  assert.equal(evaluate(jobs.build.if, 'workflow_dispatch', main, {}, {results: {'detect-changes': 'skipped'}}), true);
+  for (const id of diagnostics) assert(jobs['pipeline-status'].needs.includes(id), id);
+  for (const [id, event] of [['auto-release', 'push'], ['manual-release', 'workflow_dispatch']]) {
+    const job = jobs[id];
+    assert.deepEqual(job.needs, ['build', 'secrets-scan', 'release-preflight']);
+    const admitted = (options, ref = main) => evaluate(job.if, event, ref, {}, {releaseMode: 'instant', ...options});
+    assert.equal(admitted({results: failed}), true, id);
+    assert.equal(admitted({isCancelled: true}), false, id);
+    assert.equal(admitted({}, 'refs/heads/topic'), false, id);
+    for (const gate of job.needs) {
+      for (const status of ['failure', 'skipped']) assert.equal(admitted({results: {[gate]: status}}), false, gate);
+    }
+  }
+  assert.equal(evaluate(jobs['manual-release'].if, 'workflow_dispatch', main), false);
 });
 // Issue #1569: one PR group outgrew its 360s budget (run 43693412224), so the
 // fast inventory splits over two groups, and the step divides by the same count.

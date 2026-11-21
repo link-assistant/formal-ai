@@ -1,0 +1,12 @@
+>> bash {"command":"node scripts/generate-staged-release.mjs --check-deployed"}
+   Output: {"operations":52,"bindings":104,"outputs":5,"write":false,"callerLeasePreserved":true,"coldProof":false}
+   STAGED_RELEASE_GENERATOR_PASS
+
+   Exit Code: 0
+== answer ==
+The `node scripts/generate-staged-release.mjs --check-deployed` command completed. Output:
+
+```text
+{"operations":52,"bindings":104,"outputs":5,"write":false,"callerLeasePreserved":true,"coldProof":false}
+STAGED_RELEASE_GENERATOR_PASS
+```

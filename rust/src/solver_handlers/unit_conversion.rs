@@ -14,11 +14,8 @@
 //! parses them at run time and computes exactly, so adding a unit is a data
 //! edit and never a code change. Unknown units (furlongs) are declined.
 //!
-//! The gate is a conjunction: conversion question vocabulary ("how many",
-//! "convert", "in", "to", …), at least one number, exactly two distinct known
-//! units, and a conversion between them. Single common words like "in" or
-//! "a" appear in the question vocabulary, so no conjunct alone can claim a
-//! prompt.
+//! Conversion intent and its adjacent quantity are bound inside one sentence.
+//! Bare connector words elsewhere in a document cannot open the handler.
 
 use super::calendar::{contains_term, term_position};
 use super::numeric_list::parse_numbers;
@@ -32,8 +29,10 @@ use crate::seed::{
 use crate::solver_handlers::finalize_simple;
 use std::sync::OnceLock;
 
+pub(crate) mod request;
+
 /// Semantic role of the question vocabulary that opens a conversion
-/// ("how many", "convert", "in", "to", and translations), stated in
+/// ("how many", "convert", and translations), stated in
 /// `data/seed/meanings-units.lino`.
 const ROLE_UNIT_CONVERSION_QUESTION: &str = "unit_conversion_question";
 
@@ -245,7 +244,7 @@ fn wikidata_factor(numerator: &str, denominator: &str) -> Option<WikidataFactor>
 pub struct UnitMention {
     slug: String,
     surface: String,
-    position: usize,
+    pub(crate) position: usize,
 }
 
 /// Every measurement unit the lowercased prompt names, at its earliest
@@ -369,35 +368,45 @@ pub fn handle_unit_conversion(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    // Question vocabulary gate — a conjunct, never sufficient alone.
-    let asks_conversion = lexicon()
-        .words_for_role(ROLE_UNIT_CONVERSION_QUESTION)
-        .iter()
-        .any(|word| contains_term(normalized, word));
     let lowered = prompt.to_lowercase();
-    if !asks_conversion && !lowered.contains(['?', '？']) {
+    let span = request::conversion_span(&lowered)?;
+    let items = parse_numbers(span);
+    if items.len() != 1 {
         return None;
     }
-    let items = parse_numbers(&lowered);
-    if items.is_empty() {
-        return None;
-    }
-    let mentions = unit_mentions(&lowered);
+    let mentions = unit_mentions(span);
     if mentions.len() != 2 {
-        // Fewer than two known units is not a conversion; more is ambiguous
-        // ("5 feet 9 inches in cm") and is declined rather than guessed.
         return None;
     }
     let value = Decimal::parse(&items[0].text)?;
-    // The source unit is the one stated next to the number; the target is
-    // the other one.
-    let number_position = lowered.find(&items[0].text)?;
-    let source = mentions
-        .iter()
-        .min_by_key(|mention| mention.position.abs_diff(number_position))?;
+    let number_position = span.find(&items[0].text)?;
+    let number_end = number_position + items[0].text.len();
+    let source = mentions.iter().find(|mention| {
+        mention.position >= number_end && span[number_end..mention.position].trim().is_empty()
+    })?;
     let target = mentions
         .iter()
         .find(|mention| mention.slug != source.slug)?;
+    if !request::explicit_conversion(span) {
+        let end = source.position + source.surface.len();
+        if number_position != 0
+            || target.position < end
+            || !span[target.position + target.surface.len()..]
+                .trim()
+                .is_empty()
+            || !request::surfaces("connector")
+                .iter()
+                .any(|word| word == span[end..target.position].trim())
+        {
+            return None;
+        }
+    }
+    let language = detect_language(prompt).slug();
+    log.append("unit_conversion:intent_span", span);
+    log.append(
+        "unit_conversion:quantity_span",
+        format!("{} {}", items[0].text, source.surface),
+    );
     let direction = find_conversion(&source.slug, &target.slug);
 
     if direction.is_none() {
@@ -422,14 +431,18 @@ pub fn handle_unit_conversion(
                     "unit_conversion:si_path",
                     format!("{} -> {}", source.slug, target.slug),
                 );
-                format!(
-                    "{} {} = {}/{} {}",
-                    value.render(),
-                    source.surface,
-                    value_num,
-                    value_den,
-                    target.surface
-                )
+                let body = format!(
+                    "{} {} = {} {}",
+                    request::local_number(&value.render(), language),
+                    request::numeral_label(source, numerator, denominator, language),
+                    request::local_number(
+                        &request::rational_text(*value_num, *value_den),
+                        language
+                    ),
+                    request::numeral_label(target, *value_num, *value_den, language),
+                );
+                log.append("unit_conversion:derivation", body.clone());
+                body
             }
             crate::si_units::SiConversion::UnknownUnit(unit) => {
                 crate::si_units::note_unknown_unit(log, unit);
@@ -448,7 +461,6 @@ pub fn handle_unit_conversion(
     }
     let direction = direction?;
 
-    let language = detect_language(prompt).slug();
     log.append("unit_conversion:source_unit", source.slug.clone());
     log.append("unit_conversion:target_unit", target.slug.clone());
     log.append("unit_conversion:value", value.render());

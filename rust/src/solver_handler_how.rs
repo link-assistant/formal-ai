@@ -46,6 +46,10 @@ pub fn try_how_to_procedure(
     if let Some(answer) = practical_help::cached(prompt, normalized, log) {
         return Some(answer);
     }
+    // Permission controls belong to capability guidance, before general how-to.
+    if internet_access_help_requested(prompt, normalized) {
+        return None;
+    }
     let task = extract_procedural_how_to_task(normalized)?;
     for correction in &task.corrections {
         log.append(
@@ -60,11 +64,22 @@ pub fn try_how_to_procedure(
         &[("task", &task.task)],
     );
     let search_query = procedural_search_query(&task);
-    let wikihow_candidate = wikihow_page_title(&task.task);
-    let wikihow_api_url = format!(
-        "https://www.wikihow.com/api.php?action=parse&page={wikihow_candidate}\
-         &prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
-    );
+    let language = detect_language(prompt).slug();
+    let wiki = seed::source_record("wikihow");
+    let source_language = wiki
+        .as_ref()
+        .filter(|wiki| wiki.serves_language(language))
+        .map_or("en", |_| language);
+    let wikihow_candidate = crate::source_walk::wiki_how_title(&task.task, source_language);
+    let wikihow_api_url = wiki
+        .and_then(|wiki| crate::source_walk::entry_url_in(&wiki, &task.task, source_language))
+        .map_or_else(String::new, |url| {
+            url.replacen(
+                &format!("page={}", seed::percent_encode(&wikihow_candidate)),
+                &format!("page={wikihow_candidate}"),
+                1,
+            )
+        });
 
     // The request evidence records what was asked for. A specific verb names
     // the operation and stays in the request ("calibrate a torque wrench");
@@ -129,7 +144,7 @@ pub fn try_how_to_procedure(
         &search_query,
         &fallback_query,
         &provider_summary,
-        detect_language(prompt).slug(),
+        language,
     );
 
     Some(finalize_simple(
@@ -163,16 +178,20 @@ pub fn procedural_how_to_task(normalized: &str) -> Option<String> {
 ///
 /// The handler fires only when (a) the current prompt evidences the
 /// `procedural_elaboration` meaning and (b) the prior user turn was itself a
-/// procedural "how to X" request that the assistant answered. It then re-runs
-/// the original discovery in the original language via [`try_how_to_procedure`],
-/// so the elaboration rebinds to the recovered task instead of dead-ending. The
-/// deeper "construct a full guide from collected sources" work tracked by the
-/// issue is the browser worker's live-fetch path; this keeps the offline engine
-/// and the worker in parity on the coreference fix.
+/// procedural "how to X" request that the assistant answered.
 pub fn try_procedural_how_to_followup(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    try_procedural_how_to_followup_with(prompt, normalized, log, try_how_to_procedure)
+}
+
+pub(crate) fn try_procedural_how_to_followup_with(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    solve: impl FnOnce(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>,
 ) -> Option<SymbolicAnswer> {
     if let Some(answer) = practical_help::followup(prompt, normalized, log) {
         return Some(answer);
@@ -200,7 +219,7 @@ pub fn try_procedural_how_to_followup(
     log.append("procedural_how_to:followup_task", task.task);
     // Re-run the original discovery in the original language so the recovered
     // plan matches what the prior turn produced, now bound to the elaboration.
-    try_how_to_procedure(&prior_user, &prior_normalized, log)
+    solve(&prior_user, &prior_normalized, log)
 }
 
 /// Recognise a request for the concrete steps of an active procedure by
@@ -210,7 +229,7 @@ pub fn try_procedural_how_to_followup(
 /// whole-token/phrase for Latin scripts and substring for CJK, exactly as every
 /// other lexicon recogniser, so "specific instructions" matches but "specifics"
 /// does not.
-fn is_procedural_elaboration_request(normalized: &str) -> bool {
+pub(crate) fn is_procedural_elaboration_request(normalized: &str) -> bool {
     seed::lexicon()
         .meanings_with_role(seed::ROLE_PROCEDURAL_ELABORATION)
         .any(|meaning| meaning.evidenced_in(normalized))
@@ -567,12 +586,35 @@ fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<Procedura
             continue;
         }
         let (task, corrections) = correct_common_procedural_typos(&task);
-        let Some((action, object)) = split_known_procedural_action_object(&task) else {
+        let known =
+            split_known_procedural_action_object(&task).filter(|(_, object)| !object.is_empty());
+        let Some((action, object)) = known.or_else(|| {
+            let language = detect_language(clean_prompt).slug();
+            let endings = how_policy(
+                "procedural_how_to",
+                &format!("infinitive-endings-{language}"),
+                &[],
+            );
+            let words: Vec<_> = task
+                .split(|character| !crate::source_walk::is_topic_character(character))
+                .filter(|word| !word.is_empty())
+                .collect();
+            let verb = words.iter().copied().find(|word| {
+                endings.split_whitespace().any(|ending| {
+                    word.strip_suffix(ending)
+                        .is_some_and(|stem| stem.chars().count() > 1)
+                })
+            })?;
+            let object = words
+                .iter()
+                .copied()
+                .filter(|word| *word != verb)
+                .collect::<Vec<_>>()
+                .join(" ");
+            Some((verb.to_owned(), object))
+        }) else {
             continue;
         };
-        if object.is_empty() {
-            continue;
-        }
         return Some(ProceduralHowToTask {
             task,
             action,
@@ -714,36 +756,6 @@ fn correct_common_procedural_typos(task: &str) -> (String, Vec<SpellingCorrectio
     (corrected, corrections)
 }
 
-fn wikihow_page_title(task: &str) -> String {
-    task.split(|character: char| !is_word_character(character))
-        .filter(|word| !word.is_empty())
-        .map(capitalize_word)
-        .collect::<Vec<_>>()
-        .join("-")
-}
-
-/// Whether `character` may stand inside a word for the wikiHow candidate
-/// slug.
-///
-/// `char::is_alphanumeric` is not enough for abugida scripts: Devanagari
-/// writes conjuncts with combining marks ("कनेक्ट" is letters joined by the
-/// virama ्, a vowel sign sits on the letter before it), and a mark carries no
-/// standalone sound, so splitting on it tears every conjunct apart
-/// ("कनेक्ट" became "कनेक-ट", a word that does not exist). Marks therefore
-/// join the word around them; only characters outside the letters and the
-/// marks — spaces, punctuation, digits' neighbours in other scripts' ties —
-/// bound a word.
-fn is_word_character(character: char) -> bool {
-    use unicode_general_category::GeneralCategory;
-    character.is_alphanumeric()
-        || matches!(
-            unicode_general_category::get_general_category(character),
-            GeneralCategory::NonspacingMark
-                | GeneralCategory::SpacingMark
-                | GeneralCategory::EnclosingMark
-        )
-}
-
 fn render_procedural_how_to_body(
     task: &ProceduralHowToTask,
     wikihow_candidate: &str,
@@ -799,14 +811,6 @@ fn how_policy(handler: &str, key: &str, values: &[(&str, &str)]) -> String {
     )
 }
 
-fn capitalize_word(word: &str) -> String {
-    let mut chars = word.chars();
-    let Some(first) = chars.next() else {
-        return String::new();
-    };
-    format!("{}{rest}", first.to_uppercase(), rest = chars.as_str())
-}
-
 /// Extract the first meaningful topic word/phrase from a prior assistant reply.
 /// Looks for "Term (category):" patterns first, then the first capitalised token.
 fn extract_topic_from_prior_reply(reply: &str) -> Option<String> {
@@ -835,4 +839,27 @@ fn extract_topic_from_prior_reply(reply: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// A permission phrase embedded in a translation or code task is not a grant.
+pub(crate) fn internet_access_help_requested(prompt: &str, normalized: &str) -> bool {
+    if prompt.trim_start().chars().next().is_some_and(|character| {
+        matches!(character, '"' | '\'' | '«' | '“' | '‘') || character == '\u{0060}'
+    }) {
+        return false;
+    }
+    seed::lexicon()
+        .words_for_role("internet-access-help")
+        .iter()
+        .any(|surface| {
+            let surface = normalize_prompt(surface);
+            !surface.is_empty()
+                && normalized
+                    .strip_prefix(surface.as_str())
+                    .is_some_and(|tail| {
+                        tail.is_empty()
+                            || tail.starts_with(' ')
+                            || crate::coding::contains_cjk(&surface)
+                    })
+        })
 }

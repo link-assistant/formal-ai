@@ -16,6 +16,7 @@
 // (js/server/debug-session.mjs, docs/vscode/debugger.md).
 
 import { pathToFileURL } from 'node:url';
+import {serverOutputConfiguration} from './cnl-output.mjs';
 import { createServeLogger } from './structured-log.mjs';
 import { createGeneratedDebugHandoff } from './debug-session-handoff.mjs';
 
@@ -30,6 +31,7 @@ import { serverMessage } from './messages.mjs';
 import { setLearnedImporter } from './meta-learned.mjs';
 import { createProverHost } from './prover-host.mjs';
 import { WorkerHost } from './worker-host.mjs';
+import {createReadOnlyFetch,readNetworkAllowed} from './read-access.mjs';
 import {configurePrerequisiteGrant, resolvePrerequisiteGrantText} from './prerequisite-grant.mjs';
 
 const TOKEN_ENV = ['FORMAL_AI_API_BEARER_TOKEN', 'FORMAL_AI_HTTP_BEARER_TOKEN', 'FORMAL_AI_API_TOKEN'];
@@ -54,25 +56,33 @@ export function parseArgs(argv, env = process.env) {
     port: Number.parseInt(env.FORMAL_AI_PORT || '8080', 10),
     agentMode: flagEnabled(env.FORMAL_AI_AGENT_MODE),
     debugSession: false,
+    ephemeral: flagEnabled(env.FORMAL_AI_EPHEMERAL),
     logLevel: env.FORMAL_AI_LOG_LEVEL || 'debug',
     silent: flagEnabled(env.FORMAL_AI_SILENT),
     logDirectory: env.FORMAL_AI_LOG_DIR || null,
     trace: false,
     prerequisiteGrantJson: env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null,
     unsupported: null,
+    ...(env.FORMAL_AI_OUTPUT_STANDARD ? {outputStandard:env.FORMAL_AI_OUTPUT_STANDARD} : {}),
+    ...(env.FORMAL_AI_LEXICAL_DENSITY ? {lexicalDensity:env.FORMAL_AI_LEXICAL_DENSITY} : {}),
   };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     const [name, inline] = arg.includes('=') ? arg.split(/=(.*)/s, 2) : [arg, null];
     const value = () => (inline !== null ? inline : argv[++index]);
-    if (name === '--host') options.host = value();
+    if (name === '--output-standard') {options.outputStandard=value();if(!options.outputStandard)options.unsupported=arg;}
+    else if (name === '--lexical-density') {options.lexicalDensity=value();if(!options.lexicalDensity)options.unsupported=arg;}
+    else if (name === '--host') options.host = value();
     else if (name === '--port') options.port = Number.parseInt(value(), 10);
     else if (name === '--agent-mode') options.agentMode = true;
     else if (name === '--prerequisite-grant') options.prerequisiteGrantJson = value();
     else if (name === '--debug-session') options.debugSession = true;
+    else if (name === '--ephemeral') options.ephemeral = true;
     else if (name === '--silent') options.silent = true;
     else if (name === '--trace') options.trace = true;
-    else if (name === '--debug' || name === '--verbose') options.logLevel = 'debug';
+    else if (name === '--debug' || name === '--verbose') { options.logLevel = 'debug'; options.terminal = true; }
+    else if (name === '--log-stderr') options.terminal = true;
+    else if (name === '--log-format') { options.logFormat = value(); if (!options.logFormat) options.unsupported = arg; }
     else if (name === '--log-level') { options.logLevel = value(); if (!options.logLevel) options.unsupported = arg; }
     else if (name === '--log-dir') { options.logDirectory = value(); if (!options.logDirectory) options.unsupported = arg; }
     else if (name === 'serve' && index === 0) continue;
@@ -86,32 +96,54 @@ export function parseArgs(argv, env = process.env) {
  * Start a server; resolves once it listens.
  * @returns {Promise<{server: import('node:http').Server, ctx: object, url: string}>}
  */
-export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, debugSession = false, env = process.env, worker, logger, prerequisiteGrantJson = env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null } = {}) {
+export async function startServer({
+  host = '127.0.0.1', port = 0, agentMode = false, debugSession = false,
+  env = process.env, ephemeral = flagEnabled(env.FORMAL_AI_EPHEMERAL), worker, logger, metaAdapters,
+  outputStandard = env.FORMAL_AI_OUTPUT_STANDARD,
+  lexicalDensity = env.FORMAL_AI_LEXICAL_DENSITY,
+  prerequisiteGrantJson = env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null,
+} = {}) {
+  ephemeral ||= flagEnabled(env.FORMAL_AI_EPHEMERAL);
   if (debugSession && !isLoopbackHost(host)) throw new Error(`debug_session_requires_loopback:${host}`);
-  const diagnostics = logger ?? createServeLogger({env});
+  if (ephemeral && debugSession) throw new Error('debug_session_requires_retention');
+  const diagnostics = ephemeral ? createServeLogger({env, ephemeral}) : logger ?? createServeLogger({env});
   diagnostics.log('debug', 'server.start', {component:'server',host,port,agent_mode:agentMode,debug_session:debugSession});
+  let dynamicMeta = null;
   try {
-    const liveMemory=await resolveLiveMemory(env,diagnostics);
+    const liveMemory=await resolveLiveMemory(env,diagnostics,{readOnly:ephemeral});
     env={...env,FORMAL_AI_MEMORY_PATH:liveMemory.path};
     const session=debugSession ? new DebugSession(debugTokenFrom(env)) : null;
     if(session){
       diagnostics.addSecret?.(session.token);
       env={...env,FORMAL_AI_DEBUG_SESSION_TOKEN:session.token};
     }
-    const prerequisiteGrant = configurePrerequisiteGrant(resolvePrerequisiteGrantText(prerequisiteGrantJson, env.FORMAL_AI_INSTALL_GRANT));
+    const prerequisiteGrant = ephemeral ? null : configurePrerequisiteGrant(resolvePrerequisiteGrantText(prerequisiteGrantJson, env.FORMAL_AI_INSTALL_GRANT));
     if (prerequisiteGrant !== null && (prerequisiteGrant.schema !== "formal-ai-workspace-prerequisites-v1" || prerequisiteGrant.scope !== "workspace" || !Array.isArray(prerequisiteGrant.programs))) throw new Error("invalid_prerequisite_grant");
     const ctx = {
       prerequisiteGrant,
+      outputConfiguration: serverOutputConfiguration({output_standard:outputStandard,lexical_density:lexicalDensity}),
       liveMemory,
-      worker: worker || new WorkerHost({ formalAiProverHost: createProverHost({ path: env.PATH }) }),
-      memory: createMemory(env), agentMode, bearerToken: bearerTokenFromEnv(env),
+      ephemeral,
+      worker: worker || new WorkerHost({
+        ...(!ephemeral && { formalAiProverHost: createProverHost({ path: env.PATH }) }),
+        navigator:{onLine:!ephemeral && readNetworkAllowed(env)},
+      }, {networkFetch:ephemeral ? null : createReadOnlyFetch({env})}),
+      memory: createMemory(env, {readOnly:ephemeral}), agentMode:agentMode && !ephemeral, bearerToken: bearerTokenFromEnv(env),
       debugSession: session,
       env, logger:diagnostics, requestSequence:0,
     };
     await ctx.worker.boot();
+    if (!ephemeral && env.FORMAL_AI_DYNAMIC_META_STORE?.trim()) {
+      const { configuredMetaHost } = await import('./dynamic-meta/host.mjs');
+      const adminToken = env.FORMAL_AI_DYNAMIC_META_ADMIN_TOKEN?.trim();
+      if (adminToken) diagnostics.addSecret?.(adminToken);
+      dynamicMeta = configuredMetaHost(env, { adapters: metaAdapters });
+      ctx.dynamicMeta = dynamicMeta;
+    }
     setLearnedImporter((statements) => ctx.worker.run('metaImportLearned(__learned)', { __learned: statements }));
     const server = createServer(ctx);
     server.once('close', () => {
+      dynamicMeta?.close();
       const cleanup=ctx.debugCredentialHandoff?.cleanup();
       if(cleanup && !cleanup.cleaned)diagnostics.log('warn','server.debug_credential_cleanup',{component:'server',reason:cleanup.reason,credential_file:ctx.debugCredentialHandoff.file});
       diagnostics.log('info','server.terminal',{component:'server',reason:ctx.shutdownReason??'server_closed',signal:ctx.shutdownSignal??null});
@@ -121,6 +153,7 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
     const address = server.address();
     return { server, ctx, url: 'http://'+host+':'+address.port };
   } catch(error) {
+    dynamicMeta?.close();
     diagnostics.log('error','server.terminal',{component:'server',reason:'startup_failed',error});
     diagnostics.close();
     throw error;
@@ -128,6 +161,14 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
 }
 
 async function main(argv) {
+  if (argv[0] === 'meta') {
+    const { runMetaCli } = await import('./dynamic-meta/host.mjs');
+    return runMetaCli(argv.slice(1));
+  }
+  if (argv.join(' ') === '--help' || argv.join(' ') === 'serve --help') {
+    process.stdout.write(`${serverMessage('serve-help')}\n`);
+    return 0;
+  }
   // `formal-ai explain <answer-id> [--format text|links]` (rust/src/cli_explain.rs).
   if (argv[0] === 'logs') {
     const {runLogsCli}=await import('./logs-cli.mjs');
@@ -151,20 +192,33 @@ async function main(argv) {
   let logger;
   try { logger=createServeLogger({...options,env:process.env}); }
   catch {
-    logger=createServeLogger({logLevel:'error',env:{...process.env,FORMAL_AI_LOG_LEVEL:'error'}});
+    logger=createServeLogger({logLevel:'error',terminal:true,env:{...process.env,FORMAL_AI_LOG_LEVEL:'error'}});
     logger.log('error','server.terminal',{component:'server',reason:'invalid_log_configuration'});
     logger.close(); return 2;
+  }
+  if (options.ephemeral && options.debugSession) {
+    process.stderr.write(`${serverMessage('serve-debug-session-requires-persistence')}\n`);
+    return 2;
   }
   if(options.unsupported || (options.debugSession && !isLoopbackHost(options.host))){
     logger.log('error','server.terminal',{component:'server',reason:options.unsupported?'unsupported_argument':'debug_session_requires_loopback',argument:options.unsupported});
     logger.close();return 2;
   }
   logger.log('debug','server.memory',{component:'memory',path:memoryPath(process.env)});
-  startCoreDreaming({ env: process.env, memoryPath: memoryPath(process.env) });
   let running;
+  const dreaming = options.ephemeral ? null : startCoreDreaming({
+    env: process.env, memoryPath: memoryPath(process.env),
+    afterRun: () => running?.ctx.dynamicMeta?.review(),
+  });
   options.logger=logger;
-  try { running=await startServer(options); }catch{return 1;}
+  try {
+    running = await startServer(options);
+  } catch {
+    dreaming?.stop();
+    return 1;
+  }
   const {url,ctx,server}=running;
+  server.once('close', () => dreaming?.stop());
   if(ctx.debugSession){
     if(ctx.debugSession.generated){
       try{ctx.debugCredentialHandoff=createGeneratedDebugHandoff(ctx.debugSession,{env:ctx.env,url});}

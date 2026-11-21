@@ -368,6 +368,7 @@ fn the_derivation_id_is_the_same_constant_in_every_root() {
 #[test]
 fn the_responses_api_carries_the_derivation_id_beside_evidence_links() {
     let request = formal_ai::ResponsesRequest {
+        text: None,
         input: serde_json::Value::String(String::from("1 + 1")),
         ..formal_ai::ResponsesRequest::default()
     };

@@ -284,6 +284,6 @@ test("the procedural how-to answer is the synthesised guide when it is sufficien
     ),
   );
   assert.equal(fallback.intent, "procedural_how_to");
-  assert.ok(!fallback.evidence.includes("procedural_how_to:stage:multi_source_synthesis"));
+  assert.ok(fallback.evidence.some((line) => line.startsWith("how_to:insufficient_evidence")));
   assert.ok(fallback.evidence.includes("procedural_how_to:stage:recursive_fetch_check"));
 });

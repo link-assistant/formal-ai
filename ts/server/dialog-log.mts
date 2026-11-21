@@ -38,11 +38,39 @@ const epochs = new Map();
 
 /** `explicit_dialog_id`: the caller's session id, when it is a safe path component. */
 export function explicitDialogId(headers) {
+  return sessionHeader(headers, DIALOG_ID_HEADER);
+}
+
+function sessionHeader(headers, expected) {
+  const value = headerValue(headers, expected);
+  return /^[A-Za-z0-9_-]{1,128}$/u.test(value ?? '') ? value : null;
+}
+
+function headerValue(headers, expected) {
   const found = (headers || []).find(([name, value]) =>
-    name.toLowerCase() === DIALOG_ID_HEADER && String(value).trim().length > 0);
-  if (!found) return null;
-  const value = String(found[1]).trim();
-  return /^[A-Za-z0-9_-]+$/.test(value) ? value : null;
+    name.toLowerCase() === expected && String(value).trim().length > 0);
+  return found ? String(found[1]).trim() : null;
+}
+
+export function scopedOpenaiPath(requestPath) {
+  const match = /^\/api\/openai\/v1\/dialog\/([A-Za-z0-9_-]{1,128})\/(chat\/completions|models)$/u.exec(requestPath?.split('?')[0]);
+  return match ? { identifier: match[1], endpoint: `/api/openai/v1/${match[2]}` } : null;
+}
+
+function requestSessionIdentifier(headers, requestPath, requestBody) {
+  const identifier = explicitDialogId(headers) ?? sessionHeader(headers, 'x-opencode-session-id')
+    ?? sessionHeader(headers, 'x-opencode-session') ?? sessionHeader(headers, 'x-grok-session-id')
+    ?? scopedOpenaiPath(requestPath)?.identifier ?? null;
+  if (identifier !== null) return identifier;
+  const endpoint = requestPath?.split('?')[0];
+  let session = null;
+  if (['/v1/messages', '/api/anthropic/v1/messages'].includes(endpoint)) {
+    try { session = JSON.parse(JSON.parse(requestBody).metadata?.user_id)?.session_id; } catch {}
+  } else if (['/v1/responses', '/api/openai/v1/responses'].includes(endpoint)) {
+    try { session = JSON.parse(headerValue(headers, 'x-codex-turn-metadata'))?.thread_id; } catch {}
+    session ??= sessionHeader(headers, 'session_id');
+  }
+  return typeof session === 'string' && /^[A-Za-z0-9_-]{36}$/u.test(session) ? session : null;
 }
 
 const dialogScope = new AsyncLocalStorage();
@@ -54,10 +82,11 @@ const dialogScope = new AsyncLocalStorage();
  * @template T
  * @param {Array<[string, string]>} headers
  * @param {() => T} body
+ * @param {{path: string, body: string}} [request]
  * @returns {T}
  */
-export function withDialogScope(headers, body) {
-  return dialogScope.run({ dialogId: explicitDialogId(headers) }, body);
+export function withDialogScope(headers, body, request) {
+  return dialogScope.run({ dialogId: requestSessionIdentifier(headers, request?.path, request?.body) }, body);
 }
 
 /**
@@ -128,8 +157,8 @@ function conversationEpoch(scope) {
 }
 
 /** `dialog_id`. */
-function dialogId(directory, headers, requestBody, requestPath) {
-  const declared = explicitDialogId(headers);
+function dialogId(directory, headers, requestBody, requestPath, requestIdentifier) {
+  const declared = requestIdentifier ?? requestSessionIdentifier(headers, requestPath, requestBody);
   if (declared !== null) return declared;
   const basis = firstUserPrompt(requestBody) ?? requestPath;
   const scope = `${directory}${UNIT_SEPARATOR}${basis}`;
@@ -141,7 +170,7 @@ function writeConversationRecord(directory, record) {
   if (record.messages.length === 0) return null;
   fs.mkdirSync(directory, { recursive: true });
   const file = path.join(directory, `${record.dialog_id}${CONVERSATION_LOG_SUFFIX}`);
-  fs.appendFileSync(file, `${encodeDialogRecord(makeRedactor(process.env,{preserveJsonNumbers:true})(record))}\n`);
+  fs.appendFileSync(file, `${encodeDialogRecord(makeRedactor(process.env,{preserveJsonNumbers:true})(record))}\n`, { mode: 0o600 });
   return file;
 }
 
@@ -149,9 +178,9 @@ function writeConversationRecord(directory, record) {
  * `write_dialog_exchange`: append one exchange; returns the trace path.
  * @returns {string}
  */
-export function writeDialogExchange(directory, method, requestPath, headers, requestBody, status, contentType, responseBody) {
+export function writeDialogExchange(directory, method, requestPath, headers, requestBody, status, contentType, responseBody, requestIdentifier) {
   const timestamp = Date.now();
-  const id = dialogId(directory, headers, requestBody, requestPath);
+  const id = dialogId(directory, headers, requestBody, requestPath, requestIdentifier);
   const sequence = requestSequence;
   requestSequence += 1n;
   const requestId = stableId('request', `${timestamp}|${sequence}|${id}|${requestPath}`);
@@ -174,7 +203,7 @@ export function writeDialogExchange(directory, method, requestPath, headers, req
   };
   fs.mkdirSync(directory, { recursive: true });
   const file = path.join(directory, `${id}.lino`);
-  fs.appendFileSync(file, `${encodeDialogRecord(makeRedactor(process.env,{preserveJsonNumbers:true})(record))}\n`);
+  fs.appendFileSync(file, `${encodeDialogRecord(makeRedactor(process.env,{preserveJsonNumbers:true})(record))}\n`, { mode: 0o600 });
   return file;
 }
 
@@ -188,25 +217,27 @@ export function writeDialogExchange(directory, method, requestPath, headers, req
 export function recordApiExchangeIfEnabled(request, response, authorized, env = process.env, logger = null) {
   try {
     if (!authorized || logger?.level === 'silent') return;
+    const directory = configuredDialogLogDirectory(env);
+    if (!directory || String(request.path).split('?')[0].includes('/conversations/')) return;
+    let requestIdentifier = requestSessionIdentifier(request.headers, request.path, request.body);
     {
       const redact=makeRedactor(env,{preserveJsonNumbers:true});
+      // Scrubbing credentials can change a header name such as the dialog ID header.
+      if (redact(requestIdentifier) !== requestIdentifier) requestIdentifier = null;
       const safe=redact({...request,headers:Object.fromEntries(request.headers??[]),body:redactedBody(String(request.body??''),env)});
       request={...safe,headers:Object.entries(safe.headers)};
       response=redact({...response,body:redactedBody(String(response.body??''),env)});
     }
-    const requestPath = String(request.path);
-    if (requestPath.split('?')[0].includes('/conversations/')) return;
-    const directory = configuredDialogLogDirectory(env);
-    if (!directory) return;
     const file = writeDialogExchange(
       directory,
       request.method,
-      requestPath,
+      String(request.path),
       request.headers,
       String(request.body ?? ''),
       response.statusCode,
       response.contentType,
       String(response.body ?? ''),
+      requestIdentifier,
     );
     if(logger)logger.log('debug','dialog.appended',{component:'server',path:file});
     else process.stderr.write(`${serverMessage('dialog_log_appended', { path: file })}\n`);

@@ -32,6 +32,12 @@ const PROBES = {
   api_hello: { status: 200, type: "application/json", json: (body) => assert.equal(body.message, "hello") },
   health: { status: 200, type: "application/json", json: (body) => assert.equal(body.status, "ok") },
   models: { status: 200, type: "application/json", json: (body) => assert.equal(body.object, "list") },
+  embeddings: {
+    status: 200,
+    type: "application/json",
+    body: JSON.stringify({ model: "formal-ai", input: "tomato" }),
+    json: (body) => assert.equal(body.data[0].embedding.length, 4096),
+  },
   network: { status: 200, type: "application/json", json: (body) => assert.ok(Array.isArray(body.nodes)) },
   network_graph_alias: { status: 200, type: "application/json", json: (body) => assert.ok(Array.isArray(body.nodes)) },
   bundle: { status: 200, type: "text/plain", text: (body) => assert.ok(body.startsWith("formal_ai_seed_bundle\n")) },
@@ -45,6 +51,7 @@ const PROBES = {
     body: 'demo_memory\n  event "server_test_event"\n    role "user"\n    content "Server test"\n',
     json: (body) => assert.equal(body.object, "memory.import"),
   },
+  "dynamic-meta": { status: 404, type: "application/json", error: "dynamic-meta-unavailable" },
   anthropic_messages: {
     status: 200,
     type: "application/json",
@@ -102,6 +109,7 @@ before(async () => {
     HOME: home,
     FORMAL_AI_API_BEARER_TOKEN: TOKEN,
     FORMAL_AI_MEMORY_PATH: path.join(home, "memory.lino"),
+    FORMAL_AI_DYNAMIC_META_STORE: "",
     FORMAL_AI_DIALOG_LOG_DIR: path.join(home, "dialogs"),
     FORMAL_AI_RECORD_CHAT: "0",
   };

@@ -519,6 +519,8 @@ export async function requestDesktopAnswer(text, history, desktopStatus, prefere
     body: JSON.stringify({
       model: "formal-ai",
       messages: desktopMessages(history, text),
+      output_standard: preferences.outputStandard,
+      lexical_density: preferences.lexicalDensity,
       temperature: normalizeSliderPreference(preferences.temperature, 0),
       stream: false,
     }),

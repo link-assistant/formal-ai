@@ -17,7 +17,9 @@ use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handler_how::{
     try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
 };
-use crate::solver_handler_how_synthesis::try_how_to_procedure_with_offline;
+use crate::solver_handler_how_synthesis::{
+    try_how_to_procedure_with_offline, try_procedural_followup_with_offline,
+};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::page_query_text::handle_page_query_text;
 use crate::solver_handlers::{
@@ -231,6 +233,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     // the same `procedural_how_to` name the regular table registers, so the
     // discovery-plan handler remains the fallback when the evidence is thin.
     "procedural_how_to",
+    "procedural_how_to_followup",
     // Issue #1172 R3/R8: a fact question no seeded record answers is asked
     // of Wikidata, and an explanation is composed from retrieved pages, both
     // through the capture client, which needs the runtime's offline flag. The
@@ -265,13 +268,13 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         "web_search" => try_web_search_with_offline(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         "proof_request" => {
             try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
@@ -313,7 +316,13 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+        ),
+        "procedural_how_to_followup" => try_procedural_followup_with_offline(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         // Issue #1172 R1172-5: a definition request the seeded concepts do
         // not cover is answered from the registry's dictionary sources. A
@@ -325,8 +334,8 @@ pub fn try_contextual_override(
             if seeded {
                 return ContextualOutcome::NotHandled;
             }
-            let offline = runtime.solver_config.offline
-                || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH");
+            let offline =
+                runtime.solver_config.offline || !crate::solver_config::read_network_allowed();
             let Some(answer) =
                 crate::solver_handlers::try_word_definition_with_offline(prompt, log, offline)
             else {
@@ -338,7 +347,7 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         _ => return ContextualOutcome::NotHandled,
     };

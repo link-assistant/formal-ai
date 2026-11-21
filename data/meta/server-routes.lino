@@ -6,6 +6,7 @@
 # `auth bearer` means the route answers 401 without the configured bearer
 # token (FORMAL_AI_API_BEARER_TOKEN and its aliases) while `auth none` never
 # asks for one, and `example` is a concrete path for a patterned route.
+# Dynamic meta also accepts its dedicated admin credential when enabled.
 #
 # The JavaScript server (js/server/routes.mjs) routes from this file. The Rust
 # server keeps its own match in rust/src/server.rs, and
@@ -48,6 +49,11 @@ server_routes
     path "/v1/models"
     path "/api/openai/v1/models"
     auth bearer
+  route embeddings
+    method POST
+    path "/v1/embeddings"
+    path "/api/openai/v1/embeddings"
+    auth bearer
   route network
     method GET
     path "/v1/network"
@@ -88,6 +94,10 @@ server_routes
     method POST
     path "/v1/memory/import"
     path "/api/formal-ai/v1/memory/import"
+    auth bearer
+  route dynamic-meta
+    method POST
+    path "/v1/dynamic-meta"
     auth bearer
   route anthropic_messages
     method POST

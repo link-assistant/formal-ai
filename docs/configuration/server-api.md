@@ -22,6 +22,73 @@ Primary protocol namespaces are OpenAI `/api/openai/v1`, Anthropic
 `/api/anthropic/v1`, Gemini `/api/gemini/v1beta`, and Vertex `/api/vertex/v1`.
 Legacy `/v1` aliases remain available.
 
+## OpenAI structured output
+
+`GET /v1/models` advertises the `json_schema` capability. To request a
+validated JSON object, send `response_format` on Chat Completions or
+`text.format` on Responses. The response echoes the selected format,
+including the `strict` value when supplied.
+
+| Endpoint | JSON schema | JSON object mode |
+| --- | --- | --- |
+| `POST /v1/chat/completions` | `response_format: {type: "json_schema", json_schema: {name, strict, schema}}` | `response_format: {type: "json_object"}` |
+| `POST /v1/responses` | `text.format: {type: "json_schema", name, strict, schema}` | `text.format: {type: "json_object"}` |
+
+The supported schema constraints include JSON types, required keys,
+`additionalProperties`, `enum`, `const`, arrays, local references, schema
+combinations, length and numeric bounds, and simple ASCII patterns.
+Formal AI validates both strict and non-strict requests. It can return a
+schema-allowed `null` or `"unknown"` for a missing required value.
+If the schema uses unsupported constraints or the result cannot be
+derived, Chat Completions returns `message.refusal` and Responses returns
+a `refusal` content item. Streaming clients receive the corresponding
+refusal delta or events.
+
+The `structured_output` thinking step contains the format and the validated
+value or refusal. When derivation capture is enabled, pass the locator from
+the `derivation_record:` evidence link to `formal-ai explain` to read the
+same data from the stored derivation.
+
+## OpenAI concept-link embeddings
+
+`POST /v1/embeddings` and `POST /api/openai/v1/embeddings` embed a string or a
+batch of strings. Both model listings advertise `formal-ai-embeddings` with
+`dimensions: 4096`. The endpoint also accepts the `formal-ai` model ID and
+its configured aliases.
+
+```bash
+curl -s http://127.0.0.1:8080/v1/embeddings \
+  -H 'content-type: application/json' \
+  -d '{"model":"formal-ai","input":["warehouse supervisor","forklift operator"]}' \
+  | jq '{model, usage, dimensions: [.data[].embedding | length]}'
+```
+
+The response is an OpenAI-style list with an `embedding` and zero-based
+`index` for each input in request order. Each vector has 4096 coordinates.
+The default `encoding_format` is `float`, which returns a JSON array of
+numbers. Use `base64` for the same values encoded as little-endian float32.
+Omit `dimensions` or send `4096`. Each batch accepts up to 128 nonblank text
+inputs with up to 8192 Unicode characters each. Usage reports the sum of
+input characters as both `prompt_tokens` and `total_tokens`.
+
+Coordinates come from the seeded multilingual meaning lexicon. A Wikidata
+identifier, when present, or the lexicon meaning ID identifies a concept.
+The server sorts those identifiers in UTF-8 byte order and assigns a
+coordinate to each, with unused coordinates padded with zeros. It lowercases
+and Unicode-normalizes text, then matches the longest seeded word or phrase
+at each position. A coordinate is 1 when a matching surface links to that
+concept and 0 otherwise. A surface with several meanings activates all of
+its linked concepts. Repeating a match leaves its weight at 1.
+
+Cosine similarity measures exact concept overlap. For example, `storekeeper`
+and `кладовщик` activate the same coordinate. Neural embeddings can
+generalize to paraphrases, while this model's matches are limited to the
+links in the lexicon. Text without a match yields a zero vector, for which
+cosine similarity is undefined. Identical text gives identical coordinates
+across restarts with the same seed. Conversation memory has no effect.
+Re-embed stored documents when the seeded vocabulary changes so indexed
+vectors and queries use the same coordinates.
+
 ## UTF-8 usage
 
 Usage counts Unicode characters consistently across protocol adapters. It does

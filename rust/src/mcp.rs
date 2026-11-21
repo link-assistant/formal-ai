@@ -61,6 +61,9 @@ fn call_tool(request: &Value, id: &Value, solver: &UniversalSolver) -> ApiHttpRe
     let Some(primitive) = ComputerUsePrimitive::from_tool_name(name) else {
         return json_rpc_error(id, -32601, "Tool not found");
     };
+    if crate::solver_config::ephemeral_enabled() {
+        return json_rpc_error(id, -32000, "computer-use tools require persistent mode");
+    }
     call_computer_primitive(request, id, solver, primitive)
 }
 
@@ -71,11 +74,12 @@ fn call_chat(request: &Value, id: &Value, solver: &UniversalSolver) -> ApiHttpRe
     else {
         return json_rpc_error(id, -32602, "prompt must be a string");
     };
-    let answer = solver.solve(prompt);
+    let answer = crate::agentic_coding::issue_form_for_prompt(prompt)
+        .unwrap_or_else(|| solver.solve(prompt).answer);
     json_rpc_result(
         id,
         &json!({
-            "content": [{ "type": "text", "text": answer.answer }],
+            "content": [{ "type": "text", "text": answer }],
             "isError": false
         }),
     )
@@ -173,7 +177,9 @@ fn listed_tools() -> Vec<Value> {
             "additionalProperties": false
         }
     })];
-    tools.extend(mcp_tool_definitions());
+    if !crate::solver_config::ephemeral_enabled() {
+        tools.extend(mcp_tool_definitions());
+    }
     tools
 }
 

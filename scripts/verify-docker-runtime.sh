@@ -54,3 +54,4 @@ if ! docker info >/tmp/formal-ai-docker-info.txt 2>&1; then
 fi
 
 "$" --isolated docker --auto-remove-docker-container -- echo formal-ai-dind-ok
+verify-formal-ai-slim

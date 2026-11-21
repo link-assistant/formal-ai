@@ -175,6 +175,29 @@ impl CallerArgs {
             .collect()
     }
 
+    pub(super) fn option_value(&self, flag: &str) -> Option<&str> {
+        self.options
+            .iter()
+            .enumerate()
+            .rev()
+            .find_map(|(index, option)| {
+                if option.value == flag {
+                    return self
+                        .options
+                        .get(index + 1)
+                        .map(|value| value.value.as_str());
+                }
+                let (key, value) = option.value.split_once('=')?;
+                (key == flag).then_some(value)
+            })
+    }
+
+    pub(super) fn has_option(&self, flag: &str) -> bool {
+        self.options
+            .iter()
+            .any(|option| !option.text && option.value == flag)
+    }
+
     pub(super) fn prompt(&self) -> Option<&str> {
         self.prompt.as_deref()
     }
@@ -245,7 +268,9 @@ fn prompt_flag_vocabulary(integrations: &[ClientIntegration]) -> BTreeSet<&str> 
 /// Flags declared by some client as taking a value, recognised so the value is
 /// forwarded with its flag instead of being mistaken for prompt text.
 fn value_flag_vocabulary(integrations: &[ClientIntegration]) -> BTreeSet<&str> {
-    let mut flags = BTreeSet::new();
+    // The wrapper reads Aider's caller-supplied history path without emitting
+    // the flag by default.
+    let mut flags = BTreeSet::from(["--chat-history-file"]);
     for integration in integrations {
         let invocation = &integration.invocation;
         for list in [
