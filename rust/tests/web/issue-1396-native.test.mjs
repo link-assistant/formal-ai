@@ -14,6 +14,7 @@ const WIKIHOW_API = "https://ru.wikihow.com/api.php";
 const parseUrl = (title) => `${WIKIHOW_API}?action=parse&page=${title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
 const RUSSIAN_API = parseUrl(RUSSIAN_SLUG);
 const RUSSIAN_CAPTURE = readFileSync(new URL("../fixtures/issue-1396/wiki-how-ru.json", import.meta.url), "utf8");
+const NATIVE_CLI = process.env.FORMAL_AI_TEST_NATIVE_CLI;
 
 function storeCapture(cache, source, content) {
   const digest = createHash("sha256").update(content).digest("hex");
@@ -27,22 +28,27 @@ function storeCapture(cache, source, content) {
     `source-capture-v2\nurl=${source}\nfetched_at=${Math.floor(Date.now() / 1000)}\nsha256=${digest}\n`);
 }
 
-test("native localized procedure and follow-up use matching captures over HTTP", {
-  skip: !process.env.FORMAL_AI_TEST_NATIVE_CLI,
-  timeout: 30_000,
-}, async (t) => {
+async function startNativeProcedureReplay(t) {
   const cache = temporaryHome(t);
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   storeCapture(cache, RUSSIAN_API, RUSSIAN_CAPTURE);
   const run = await startCli(t, {
-    binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    binary: NATIVE_CLI,
     args: ["--agent-mode"],
-    env: { FORMAL_AI_SOURCE_CACHE_DIR: cache },
+    env: { FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_LIVE_FETCH: "0" },
     lifetime: 25_000,
   });
   await run.ready();
+  return { cache, url: run.url };
+}
+
+test("native localized procedure and follow-up use matching captures over HTTP", {
+  skip: !NATIVE_CLI,
+  timeout: 30_000,
+}, async (t) => {
+  const { cache, url } = await startNativeProcedureReplay(t);
   async function ask(messages, source = RUSSIAN_API) {
-    const response = await fetch(`${run.url}/v1/chat/completions`, {
+    const response = await fetch(`${url}/v1/chat/completions`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -60,7 +66,6 @@ test("native localized procedure and follow-up use matching captures over HTTP",
   assert.match(first, /## Как хорошо покакать/u);
   await ask([request, { role: "assistant", content: first }, { role: "user", content: "Дай точные шаги" }]);
   await ask([{ role: "user", content: CODEX_REQUEST }]);
-  await assertProceduralAgentRouting(run.url);
 
   const unrelated = JSON.parse(RUSSIAN_CAPTURE);
   unrelated.parse.title = "Домашние растения";
@@ -72,6 +77,14 @@ test("native localized procedure and follow-up use matching captures over HTTP",
   storeCapture(cache, matching, RUSSIAN_CAPTURE);
   const recovered = await ask([request], matching);
   assert.ok(!recovered.includes(RUSSIAN_API), recovered);
+});
+
+test("native Responses uses procedural sources with the client web search tool available", {
+  skip: !NATIVE_CLI,
+  timeout: 30_000,
+}, async (t) => {
+  const { url } = await startNativeProcedureReplay(t);
+  await assertProceduralAgentRouting(url);
 });
 
 async function assertProceduralAgentRouting(url) {
@@ -121,42 +134,47 @@ test("JavaScript Responses uses procedural sources with the client web search to
   await assertProceduralAgentRouting(url);
 });
 
-for (const [server, binary] of [["JavaScript", undefined], ["native", process.env.FORMAL_AI_TEST_NATIVE_CLI]]) {
-  test(`${server} Codex report confirms destination and context without a Plan-only tool`, {
-    skip: server === "native" && !binary,
-    timeout: 30_000,
-  }, async (t) => {
-    const run = await startCli(t, { binary, args: ["--agent-mode"], lifetime: 25_000 });
-    await run.ready();
-    const tools = [
-      {
-        type: "function", name: "request_user_input",
-        description: "Request user input for one to three short questions and wait for the response. This tool is only available in Plan mode.",
-        parameters: { type: "object" },
-      },
-      {
-        type: "function", name: "exec_command",
-        parameters: { type: "object", properties: { cmd: { type: "string" } }, required: ["cmd"] },
-      },
-    ];
-    async function ask(input, advertised = tools) {
-      const response = await fetch(`${run.url}/v1/responses`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ model: "formal-ai", stream: false, input, tools: advertised }),
-      });
-      assert.ok(response.ok, await response.clone().text());
-      return (await response.json()).output;
-    }
-    async function question(input, expected) {
-      const output = await ask(input);
-      assert.ok(!output.some(item => item.type === "function_call"), JSON.stringify(output));
-      const content = output.find(item => item.type === "message")?.content
-        .filter(item => item.type === "output_text").map(item => item.text).join("\n");
-      assert.match(content, expected);
-      return { role: "assistant", content };
-    }
-    const user = content => ({ role: "user", content });
+const REPORT_TOOLS = [
+  {
+    type: "function", name: "request_user_input",
+    description: "Request user input for one to three short questions and wait for the response. This tool is only available in Plan mode.",
+    parameters: { type: "object" },
+  },
+  {
+    type: "function", name: "exec_command",
+    parameters: { type: "object", properties: { cmd: { type: "string" } }, required: ["cmd"] },
+  },
+];
+
+async function startReportSession(t, binary) {
+  const run = await startCli(t, { binary, args: ["--agent-mode"], lifetime: 25_000 });
+  await run.ready();
+  async function ask(input, advertised = REPORT_TOOLS) {
+    const response = await fetch(`${run.url}/v1/responses`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ model: "formal-ai", stream: false, input, tools: advertised }),
+    });
+    assert.ok(response.ok, await response.clone().text());
+    return (await response.json()).output;
+  }
+  async function question(input, expected) {
+    const output = await ask(input);
+    assert.ok(!output.some(item => item.type === "function_call"), JSON.stringify(output));
+    const content = output.find(item => item.type === "message")?.content
+      .filter(item => item.type === "output_text").map(item => item.text).join("\n");
+    assert.match(content, expected);
+    return { role: "assistant", content };
+  }
+  return { ask, question };
+}
+
+const user = content => ({ role: "user", content });
+
+for (const [server, binary] of [["JavaScript", undefined], ["native", NATIVE_CLI]]) {
+  const options = { skip: server === "native" && !binary, timeout: 30_000 };
+  test(`${server} Codex report confirms destination and context without a Plan-only tool`, options, async (t) => {
+    const { ask, question } = await startReportSession(t, binary);
     const report = user("зарепорти баг");
     const destination = await question([report], /3\. Задача GitHub/u);
     await question([report, destination, user("Не создавай задачу GitHub")], /3\. Задача GitHub/u);
@@ -172,6 +190,10 @@ for (const [server, binary] of [["JavaScript", undefined], ["native", process.en
       output: "https://github.com/link-assistant/formal-ai/issues/42",
     }]);
     assert.ok(result.some(item => item.content?.some(part => part.text?.includes("/issues/42"))), JSON.stringify(result));
+  });
+
+  test(`${server} report shows localized destination and context menus`, options, async (t) => {
+    const { question } = await startReportSession(t, binary);
     const reportLocales = [
       { language: "en", prompt: "report", destination: /3\. GitHub issue/u, scope: /1\. Both logs/u },
       { language: "hi", prompt: "रिपोर्ट", destination: /3\. GitHub समस्या/u, scope: /1\. दोनों लॉग/u },
@@ -185,6 +207,10 @@ for (const [server, binary] of [["JavaScript", undefined], ["native", process.en
         await question([request, menu, user("3")], scope);
       });
     }
+  });
+
+  test(`${server} report honors Plan mode and compatible prompt tools`, options, async (t) => {
+    const { ask, question } = await startReportSession(t, binary);
     const plan = {
       role: "developer",
       content: "<collaboration_mode># Plan Mode (Conversational)\n\nPlan the work.</collaboration_mode>",
@@ -194,7 +220,7 @@ for (const [server, binary] of [["JavaScript", undefined], ["native", process.en
     const defaultMode = { role: "developer", content: "<collaboration_mode></collaboration_mode>" };
     await question([plan, defaultMode, user("report")], /3\. GitHub issue/u);
     await question([user(plan.content), user("report")], /3\. GitHub issue/u);
-    const compatibleTools = [{ ...tools[0], description: "Ask the user to choose options." }, tools[1]];
+    const compatibleTools = [{ ...REPORT_TOOLS[0], description: "Ask the user to choose options." }, REPORT_TOOLS[1]];
     const structured = await ask([user("report")], compatibleTools);
     assert.ok(structured.some(item => item.name === "request_user_input"), JSON.stringify(structured));
   });
