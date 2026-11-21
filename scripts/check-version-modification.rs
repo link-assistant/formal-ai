@@ -42,17 +42,20 @@ use std::process::{Command, exit};
 
 fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
-        Ok(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
-        Err(_) => String::new(),
+        Ok(output) if output.status.success() => {
+            String::from_utf8_lossy(&output.stdout).trim().to_string()
+        }
+        _ => String::new(),
     }
 }
 
-fn exec_ignore_error(command: &str, args: &[&str]) {
-    let _ = Command::new(command)
+fn exec_quiet(command: &str, args: &[&str]) -> bool {
+    Command::new(command)
         .args(args)
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
-        .status();
+        .status()
+        .is_ok_and(|status| status.success())
 }
 
 fn get_rust_root() -> String {
@@ -119,7 +122,11 @@ fn main() {
 
     // A release-like branch name is not authorization to change the version.
     let base_ref = env::var("GITHUB_BASE_REF").unwrap_or_else(|_| "main".to_string());
-    exec_ignore_error("git", &["fetch", "origin", &base_ref, "--depth=1"]);
+    if !exec_quiet("git", &["fetch", "origin", &base_ref, "--depth=1"]) {
+        eprintln!("Error: Could not fetch the current base branch {base_ref}.");
+        eprintln!("Refusing to compare against a possibly stale cached base version.");
+        exit(1);
+    }
 
     let Some(head) = head_version() else {
         eprintln!("Error: Could not read a crate version from the checked-out tree.");

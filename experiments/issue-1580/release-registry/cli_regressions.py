@@ -181,6 +181,17 @@ class RegistryRegressions(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn('Version check passed', result.stdout)
 
+    def test_version_check_refuses_cached_base_after_failed_fetch(self):
+        self.version_base("[package]\nname = 'fixture'\nversion = '1.2.3'\n")
+        cached = self.git('show', 'origin/main:Cargo.toml')
+        self.assertIn("version = '1.2.3'", cached)
+        self.git('remote', 'set-url', 'origin', str(self.work / 'unavailable-origin.git'))
+        result = self.script('check-version-modification.rs')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Could not fetch the current base branch', result.stderr)
+        self.assertNotIn('Version check passed', result.stdout)
+        self.assertEqual(self.git('show', 'origin/main:Cargo.toml'), cached)
+
     def test_version_check_refuses_missing_inherited_and_malformed_versions(self):
         self.version_base("[package]\nname = 'fixture'\nversion = '1.2.3'\n")
         for version in ['', 'version.workspace = true\n', 'version = { workspace = true }\n',
