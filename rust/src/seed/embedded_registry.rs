@@ -308,6 +308,8 @@ pub const METHOD_EXECUTION_LINO: &str =
 pub const MODEL_ALIASES_LINO: &str = include_str!("../../embedded/data/seed/model-aliases.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_ADMINISTRATION_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-administration.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-agentic.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_CONTINUATION_LINO: &str =
@@ -486,6 +488,7 @@ include!("embedded_files.rs");
 /// them, so an intent may live in whichever file keeps the sizes balanced.
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_ADMINISTRATION_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_CONTINUATION_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO,

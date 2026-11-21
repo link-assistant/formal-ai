@@ -4,6 +4,7 @@
 //! test keeps the suite deterministic and runnable while reporting the pass
 //! and fail counts for reviewers and future synthesis work.
 
+#[path = "benchmarks/evaluation.rs"]
 mod evaluation;
 
 use evaluation::{

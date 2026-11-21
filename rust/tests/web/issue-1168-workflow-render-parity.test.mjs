@@ -6,6 +6,7 @@
 
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
+import {offlineSourceCache} from '../../../experiments/issue-1162/offline-source-cache.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { readText } from '../../../js/agentic/host.mjs';
@@ -13,15 +14,12 @@ import { programContractAnswer } from '../../../js/agentic/crate/coding_program_
 import { baselineVersionSet, forGeneration } from '../../../js/agentic/crate/version_resolution.mjs';
 import { render, renderWith } from '../../../js/agentic/ci_workflow.mjs';
 
-const previousOffline = process.env.FORMAL_AI_OFFLINE;
+let restoreSourceCache;
 before(async () => {
-  process.env.FORMAL_AI_OFFLINE = '1';
+  restoreSourceCache = offlineSourceCache();
   await installNodeHost(new WorkerHost());
 });
-after(() => {
-  if (previousOffline === undefined) delete process.env.FORMAL_AI_OFFLINE;
-  else process.env.FORMAL_AI_OFFLINE = previousOffline;
-});
+after(() => restoreSourceCache?.());
 
 function fixture() {
   return JSON.parse(readText('rust/tests/fixtures/issue-1168/workflow-render-parity.json'));

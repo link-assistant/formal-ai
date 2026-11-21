@@ -35,8 +35,10 @@
 //! `dev/log/issues/1079/pulls/1080/upstream-reports/README.md`. The full
 //! reconstruction is in `dev/log/issues/1079/pulls/1080/README.md`.
 
+#[path = "pinned_tool_images/image_policy.rs"]
 mod image_policy;
 
+#[path = "pinned_tool_images/agent_cli.rs"]
 mod agent_cli;
 
 use std::fs;

@@ -8,8 +8,9 @@
 // transport that records each capture, and an offline replay of those
 // captures marked `cached`, as `CachedSourceClient` replays them.
 
-import { before, test } from 'node:test';
+import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
+import {offlineSourceCache} from '../../../experiments/issue-1162/offline-source-cache.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { sha256Hex } from '../../../js/agentic/crate/source_fetch.mjs';
@@ -22,9 +23,12 @@ import {
   resolveVersionSet,
 } from '../../../js/agentic/crate/version_resolution.mjs';
 
+let restoreSourceCache;
 before(async () => {
+  restoreSourceCache = offlineSourceCache();
   await installNodeHost(new WorkerHost());
 });
+after(() => restoreSourceCache?.());
 
 /** Mirrors `MockTransport::seeded`: one fixture body per publisher URL. */
 const FIXTURES = new Map([

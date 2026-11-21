@@ -1,3 +1,4 @@
+#[path = "docs_requirements/text_haystack.rs"]
 mod text_haystack;
 
 use text_haystack::{

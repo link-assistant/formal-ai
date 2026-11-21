@@ -200,6 +200,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/method-execution.lino", METHOD_EXECUTION_LINO),
         ("data/seed/model-aliases.lino", MODEL_ALIASES_LINO),
         ("data/seed/multilingual-responses.lino", MULTILINGUAL_RESPONSES_LINO),
+        (
+            "data/seed/multilingual-responses-administration.lino",
+            MULTILINGUAL_RESPONSES_ADMINISTRATION_LINO,
+        ),
         ("data/seed/multilingual-responses-agentic.lino", MULTILINGUAL_RESPONSES_AGENTIC_LINO),
         (
             "data/seed/multilingual-responses-agentic-continuation.lino",

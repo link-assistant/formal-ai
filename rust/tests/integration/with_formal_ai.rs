@@ -10,6 +10,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 mod fixture_env;
+#[path = "with_formal_ai/global_configuration.rs"]
 mod global_configuration;
 mod issue_1582;
 mod model_metadata;

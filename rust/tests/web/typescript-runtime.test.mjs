@@ -9,5 +9,11 @@ test('actual TS-source worker and planner match JS, with no owned-JS fallback', 
   assert.equal(result.originalJavaScriptFallback, false);
   assert.equal(result.nativeExecution, false);
   assert.equal(result.productWasmExecution, false);
-  assert.equal(result.cases.length, 4);
+  assert.deepEqual(result.cases, [
+    'three multilingual calculations with independent numeric oracle',
+    'real filesystem source write',
+    'compiled dynamic meta recipe',
+    'missing owned projection refuses despite existing JS source',
+    'altered TS identity refuses',
+  ]);
 });

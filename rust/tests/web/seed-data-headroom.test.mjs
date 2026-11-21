@@ -7,6 +7,7 @@ import {parseRegistry} from '../../../scripts/generate-seed-registry.mjs';
 
 const root=fileURLToPath(new URL('../../../',import.meta.url)).replace(/\/$/u,'');
 const pairs=[
+  ['multilingual-responses','multilingual-responses-administration','response'],
   ['meanings-response-intents','meanings-response-intents-additional','meaning'],
   ['meanings-response-intents-handlers','meanings-response-intents-handlers-additional','meaning'],
   ['meanings-routing-vocabulary','meanings-routing-vocabulary-additional','meaning'],

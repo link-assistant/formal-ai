@@ -578,6 +578,10 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-administration
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-agentic
     bundle true
     lexicon response

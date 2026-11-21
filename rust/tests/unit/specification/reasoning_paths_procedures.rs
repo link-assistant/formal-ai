@@ -6,6 +6,7 @@
 //! docs-method-explanation handler (issue #223) and the source-backed how-to
 //! procedure handler.
 
+#[path = "reasoning_paths_procedures/fixtures.rs"]
 mod fixtures;
 
 use fixtures::{documented_connect_procedure, documented_english_procedure};

@@ -1,6 +1,7 @@
 //! Release structure and issue #479 Pages/landing assertions; desktop gating
 //! lives in `workflow_release_desktop` (1000-line split), shared helpers in `workflow_fixtures`.
 
+#[path = "workflow_release/workflow_policy.rs"]
 mod workflow_policy;
 
 use std::fs;

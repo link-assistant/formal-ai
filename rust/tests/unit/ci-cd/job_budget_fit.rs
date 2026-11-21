@@ -20,6 +20,7 @@
 //!
 //! The reconstruction is in `dev/log/issues/1081/pulls/1082/README.md`.
 
+#[path = "job_budget_fit/standalone_suites.rs"]
 mod standalone_suites;
 
 use std::collections::BTreeMap;
@@ -36,7 +37,9 @@ use super::workflow_fixtures::{job_timeout, workflow_files};
 /// are paid once per job, not once per budgeted step.
 const MAX_BUDGET_SHARE_PERCENT: u64 = 70;
 
+#[path = "job_budget_fit/link_recheck.rs"]
 mod link_recheck;
+#[path = "job_budget_fit/release_preflight.rs"]
 mod release_preflight;
 
 fn repository_file(path: &str) -> String {

@@ -127,3 +127,43 @@ test('documentation requirement helpers retain headroom and the original asserti
   assert(helper.includes('.args(["ls-files", "-z"])'));
   assert(!helper.includes('#[test]'), 'all original documentation assertions remain in the native owner');
 });
+
+
+// A #[path]-loaded owner resolves an unqualified child beside its source file,
+// rather than in the ordinary stem directory. Extracted helpers need an
+// explicit relative path so the focused and original native targets agree.
+function explicitHelperPath(owner, child, source) {
+  const declaration = new RegExp('(?:^#\\[path = "([^"]+)"\\]\\n)?^mod ' + child + ';$', 'mu').exec(source);
+  assert(declaration?.[1], owner + ' must explicitly locate ' + child);
+  const stem = owner.slice(owner.lastIndexOf('/') + 1);
+  assert.equal(declaration[1], stem + '/' + child + '.rs');
+  const file = resolve(root, dirname(owner), declaration[1]);
+  assert(existsSync(file), 'missing extracted native module: ' + file);
+  return file;
+}
+
+test('path-loaded native owners explicitly resolve every extracted helper', () => {
+  const pairs = [
+    ["rust/tests/unit/agentic-coding/agentic_general_planner", "command_capture"],
+    ["rust/tests/unit/ci-cd/job_budget_fit", "standalone_suites"],
+    ["rust/tests/unit/ci-cd/job_budget_fit", "link_recheck"],
+    ["rust/tests/unit/ci-cd/job_budget_fit", "release_preflight"],
+    ["rust/tests/unit/ci-cd/pinned_tool_images", "image_policy"],
+    ["rust/tests/unit/ci-cd/pinned_tool_images", "agent_cli"],
+    ["rust/tests/unit/ci-cd/release_publishing", "artifact_contracts"],
+    ["rust/tests/unit/ci-cd/workflow_release", "workflow_policy"],
+    ["rust/tests/unit/specification/benchmarks", "evaluation"],
+    ["rust/tests/unit/specification/reasoning_paths_procedures", "fixtures"],
+    ["rust/tests/unit/docs_requirements", "text_haystack"],
+    ["rust/tests/integration/with_formal_ai", "global_configuration"],
+  ];
+  for (const [owner, child] of pairs) {
+    const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
+    explicitHelperPath(owner, child, source);
+    const attribute = '#[path = "' + owner.slice(owner.lastIndexOf('/') + 1) + '/' + child + '.rs"]\n';
+    assert.throws(() => explicitHelperPath(owner, child, source.replace(attribute, '')),
+      /must explicitly locate/u, 'removing the path must reproduce the compile admission failure');
+    assert.throws(() => explicitHelperPath(owner, child, source.replace(attribute, '#[path = "missing.rs"]\n')),
+      /AssertionError/u, 'a wrong explicit path must also be rejected');
+  }
+});

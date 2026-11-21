@@ -14,6 +14,7 @@ mod release_recovery;
 #[path = "selected_wasm_build_contract.rs"]
 mod selected_wasm_build_contract;
 
+#[path = "release_publishing/artifact_contracts.rs"]
 mod artifact_contracts;
 
 fn read_worker_source(manifest_dir: &str) -> String {

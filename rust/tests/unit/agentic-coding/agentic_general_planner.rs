@@ -5,6 +5,7 @@ use formal_ai::agentic_coding::work_item_report::{
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
+#[path = "agentic_general_planner/command_capture.rs"]
 mod command_capture;
 
 use crate::observed_plan_tools;

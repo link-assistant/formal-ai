@@ -18,7 +18,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { renderBootstrap, SOURCE as RESPONSE_SEED } from './generate-worker-bootstrap.mjs';
+import { renderBootstrap, readBootstrapSeeds } from './generate-worker-bootstrap.mjs';
 
 const RATCHET = 'data/meta/prompt-specialization-ratchet.lino';
 const TEST_ROOTS = ['rust/tests/web', 'rust/tests/unit'];
@@ -117,7 +117,7 @@ function main(argv) {
       const source = read(path);
       return { path, source, code: codeLines(source) };
     });
-  const seedData = renderBootstrap(read('js/seed_loader.js'), read(RESPONSE_SEED));
+  const seedData = renderBootstrap(read('js/seed_loader.js'), readBootstrapSeeds(root));
   const found = specializations(prompts, sources, [seedData]);
   const ceiling = ceilingOf(read(RATCHET));
   console.log(`test prompts held verbatim in code: ${found.length} (ceiling ${ceiling})`);
