@@ -461,6 +461,10 @@ handler-rules
     row "покакать" "хорошо покакать"
   table client-tool-unavailable-descriptions
     row request_user_input "This tool is only available in Plan mode."
+  table client-tool-availability-context
+    row open-tag "<collaboration_mode>"
+    row close-tag "</collaboration_mode>"
+    row request_user_input "# Plan Mode (Conversational)"
   policy how_it_works
     concept-query "what is {term}"
     mechanism_query "how {subject} works"

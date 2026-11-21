@@ -594,11 +594,14 @@ fn groundable_tool_names(request: &ChatCompletionRequest, names: &[String]) -> V
         .filter(|name| {
             crate::protocol_policy::find_tool_definition(&request.tools, name).is_none_or(
                 |definition| {
-                    crate::protocol_policy::available_client_tool(name, definition)
-                        && crate::tool_scope::ungrounded_identity_arguments(
-                            definition, &empty, &context,
-                        )
-                        .is_empty()
+                    crate::protocol_policy::available_client_tool(
+                        name,
+                        definition,
+                        &request.messages,
+                    ) && crate::tool_scope::ungrounded_identity_arguments(
+                        definition, &empty, &context,
+                    )
+                    .is_empty()
                 },
             )
         })

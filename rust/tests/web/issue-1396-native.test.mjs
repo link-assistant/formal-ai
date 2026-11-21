@@ -173,6 +173,15 @@ for (const [server, binary] of [["JavaScript", undefined], ["native", process.en
     }]);
     assert.ok(result.some(item => item.content?.some(part => part.text?.includes("/issues/42"))), JSON.stringify(result));
     await question([user("report")], /3\. GitHub issue/u);
+    const plan = {
+      role: "developer",
+      content: "<collaboration_mode># Plan Mode (Conversational)\n\nPlan the work.</collaboration_mode>",
+    };
+    const planOutput = await ask([plan, user("report")]);
+    assert.ok(planOutput.some(item => item.name === "request_user_input"), JSON.stringify(planOutput));
+    const defaultMode = { role: "developer", content: "<collaboration_mode></collaboration_mode>" };
+    await question([plan, defaultMode, user("report")], /3\. GitHub issue/u);
+    await question([user(plan.content), user("report")], /3\. GitHub issue/u);
     const compatibleTools = [{ ...tools[0], description: "Ask the user to choose options." }, tools[1]];
     const structured = await ask([user("report")], compatibleTools);
     assert.ok(structured.some(item => item.name === "request_user_input"), JSON.stringify(structured));

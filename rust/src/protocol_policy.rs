@@ -3,17 +3,42 @@ use serde_json::Value;
 use crate::associative_package::{PackagePermissionDecision, default_package_store};
 use crate::engine::{SymbolicAnswer, ThinkingStep};
 
-/// Codex advertises the Plan-only prompt tool without exposing the effective mode.
-pub(crate) fn available_client_tool(name: &str, definition: &Value) -> bool {
+/// A restricted schema needs affirmative client context. Codex omits it in Default mode.
+pub(crate) fn available_client_tool(
+    name: &str,
+    definition: &Value,
+    messages: &[crate::protocol::ChatMessage],
+) -> bool {
+    use crate::rule_interpreter::handler_table_value;
     let holder = definition.get("function").unwrap_or(definition);
-    let restriction =
-        crate::rule_interpreter::handler_table_value("client-tool-unavailable-descriptions", name);
-    !restriction.is_some_and(|suffix| {
+    let restriction = handler_table_value("client-tool-unavailable-descriptions", name);
+    let restricted = restriction.is_some_and(|suffix| {
         holder
             .get("description")
             .and_then(Value::as_str)
             .is_some_and(|text| text.trim_end().ends_with(suffix))
-    })
+    });
+    if !restricted {
+        return true;
+    }
+    let context = |key| handler_table_value("client-tool-availability-context", key);
+    let (Some(expected), Some(open), Some(close)) =
+        (context(name), context("open-tag"), context("close-tag"))
+    else {
+        return false;
+    };
+    for message in messages.iter().rev() {
+        if !message.role.eq_ignore_ascii_case("developer") {
+            continue;
+        }
+        let text = message.content.plain_text();
+        if let Some((_, suffix)) = text.rsplit_once(open) {
+            return suffix.split_once(close).is_some_and(|(body, _)| {
+                body.trim().lines().next().map(str::trim_end) == Some(expected)
+            });
+        }
+    }
+    false
 }
 
 pub(crate) fn defers_procedural_search(

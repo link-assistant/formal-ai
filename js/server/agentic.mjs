@@ -71,16 +71,33 @@ export function toolPermissionRefusalAnswer(denial) {
   };
 }
 
+/** `available_client_tool`: a restricted schema needs affirmative client context. */
+function availableClientTool(name, definition, messages, tableValue) {
+  const suffix = tableValue('client-tool-unavailable-descriptions', name);
+  const description = (definition?.function ?? definition)?.description;
+  if (!suffix || typeof description !== 'string' || !description.trimEnd().endsWith(suffix)) return true;
+  const expected = tableValue('client-tool-availability-context', name);
+  const open = tableValue('client-tool-availability-context', 'open-tag');
+  const close = tableValue('client-tool-availability-context', 'close-tag');
+  if (!expected || !open || !close) return false;
+  for (const message of messages.toReversed()) {
+    if (message.role.toLowerCase() !== 'developer') continue;
+    const text = plainText(message.content);
+    const start = text.lastIndexOf(open);
+    if (start === -1) continue;
+    const end = text.indexOf(close, start + open.length);
+    return end !== -1 && text.slice(start + open.length, end).trim().split('\n', 1)[0].trimEnd() === expected;
+  }
+  return false;
+}
+
 /** `groundable_tool_names`: the advertised tools this request can address. */
-function groundableToolNames(request, names, unavailableDescription) {
+function groundableToolNames(request, names, tableValue) {
   const context = request.messages.map(message => plainText(message.content)).join('\n');
   return names.filter(name => {
     const definition = findToolDefinition(request.tools, name);
-    const description = (definition?.function ?? definition)?.description;
-    // Codex advertises this tool in Default mode without sending the effective mode.
-    const restriction = unavailableDescription(name);
-    if (restriction && typeof description === 'string' && description.trimEnd().endsWith(restriction)) return false;
-    return !definition || ungroundedIdentityArguments(definition, {}, context).length === 0;
+    return !definition || (availableClientTool(name, definition, request.messages, tableValue)
+      && ungroundedIdentityArguments(definition, {}, context).length === 0);
   });
 }
 
@@ -140,8 +157,8 @@ export async function agenticOutcome(ctx, request, refusal) {
   // else than `command`/`cmd`/`script` is read through that declared key.
   const messages = projectDeclaredCommandKeys(request.messages, request.tools);
   const scoped = projectAppendContracts(messages, request.tools);
-  const { claimsProceduralRequest, clientToolUnavailableDescription } = await ctx.worker.seedReaders();
-  const grounded = groundableToolNames(request, owned, clientToolUnavailableDescription);
+  const { claimsProceduralRequest, handlerRulesTableValue } = await ctx.worker.seedReaders();
+  const grounded = groundableToolNames(request, owned, handlerRulesTableValue);
   const plan = await planChatStepResolved(scoped, grounded);
   if (plan?.kind === 'tool_calls' && plan.calls.length > 0
       && plan.calls.every(call => toolCapability(call.tool) === Capability.Search)) {

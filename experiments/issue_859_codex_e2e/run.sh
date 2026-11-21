@@ -55,6 +55,8 @@ SERVER_PID=$!
 PROXY_PID=$!
 
 cleanup() {
+  kill "$PROXY_PID" "$SERVER_PID" 2>/dev/null || true
+  wait "$PROXY_PID" "$SERVER_PID" 2>/dev/null || true
   if [ -n "$ARTIFACT_DIR" ]; then
     mkdir -p "$ARTIFACT_DIR"
     for artifact in formal-ai.log proxy-stderr.log proxy.jsonl codex.log report-issue.log report-issue-ru.log report-issue-scope.log; do
@@ -65,10 +67,8 @@ cleanup() {
     if [ -f "$WORKSPACE/main.rs" ]; then
       cp "$WORKSPACE/main.rs" "$ARTIFACT_DIR/main.rs"
     fi
-    codex_cli --version > "$ARTIFACT_DIR/codex-version.txt"
+    codex_cli --version > "$ARTIFACT_DIR/codex-version.txt" || true
   fi
-  kill "$PROXY_PID" "$SERVER_PID" 2>/dev/null || true
-  wait "$PROXY_PID" "$SERVER_PID" 2>/dev/null || true
   rm -rf "$RUN_DIR"
 }
 trap cleanup EXIT
@@ -86,7 +86,7 @@ run_codex() {
   if [ -n "$CODEX_EXTRA_ARGS" ]; then
     read -r -a extra_args <<< "$CODEX_EXTRA_ARGS"
   fi
-  CODEX_HOME="$RUN_DIR/codex" FORMAL_AI_API_KEY="sk-local-demo" codex_cli exec \
+  if ! CODEX_HOME="$RUN_DIR/codex" FORMAL_AI_API_KEY="sk-local-demo" codex_cli exec \
     --ignore-user-config "${persistence[@]}" --color never \
     -c 'model_providers.formalai.name="formal-ai local server"' \
     -c "model_providers.formalai.base_url=\"http://127.0.0.1:$PROXY_PORT/api/openai/v1\"" \
@@ -97,7 +97,19 @@ run_codex() {
     -c "model_catalog_json=\"$MODEL_CATALOG\"" \
     --skip-git-repo-check --sandbox "$CODEX_SANDBOX" --cd "$WORKSPACE" \
     "${extra_args[@]}" "${resume[@]}" \
-    "$prompt" >"$output" 2>&1 < /dev/null
+    "$prompt" >"$output" 2>&1 < /dev/null; then
+    tail -n 40 "$output" >&2
+    return 1
+  fi
+}
+
+verify_report_turn() {
+  local prompt="$1" output="$2" expected="$3"
+  node "$ROOT/experiments/issue_859_codex_e2e/verify-proxy.mjs" report "$PROXY_LOG" "$prompt"
+  if ! grep -Fq "$expected" "$output"; then
+    tail -n 40 "$output" >&2
+    return 1
+  fi
 }
 
 if [ "$SCENARIO" = all ] || [ "$SCENARIO" = code ]; then
@@ -113,14 +125,11 @@ fi
 
 if [ "$SCENARIO" = all ] || [ "$SCENARIO" = report ]; then
   run_codex "Report issue" "$REPORT_LOG"
-  node "$ROOT/experiments/issue_859_codex_e2e/verify-proxy.mjs" report "$PROXY_LOG" "Report issue"
-  grep -Fq '3. GitHub issue' "$REPORT_LOG"
+  verify_report_turn "Report issue" "$REPORT_LOG" '3. GitHub issue'
 
   run_codex "зарепорти баг" "$REPORT_RU_LOG" record
-  node "$ROOT/experiments/issue_859_codex_e2e/verify-proxy.mjs" report "$PROXY_LOG" "зарепорти баг"
-  grep -Fq '3. Задача GitHub' "$REPORT_RU_LOG"
+  verify_report_turn "зарепорти баг" "$REPORT_RU_LOG" '3. Задача GitHub'
   run_codex "3" "$REPORT_SCOPE_LOG" resume
-  node "$ROOT/experiments/issue_859_codex_e2e/verify-proxy.mjs" report "$PROXY_LOG" "3"
-  grep -Fq '1. Оба журнала' "$REPORT_SCOPE_LOG"
+  verify_report_turn "3" "$REPORT_SCOPE_LOG" '1. Оба журнала'
   echo "Codex displayed both localized reporting menus and continued to context selection."
 fi
