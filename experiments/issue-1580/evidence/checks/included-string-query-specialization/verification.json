@@ -1,0 +1,17 @@
+{
+  "complete": true,
+  "failingRun": 44843748460,
+  "errorLogLine": 4819,
+  "observation": "Query compiled in 25.1 seconds; evaluation remained unfinished until the unchanged four-minute hosted step deadline. No evaluator trace was enabled in that run.",
+  "change": "Specialize all helper argument domains to source include_str calls; enable opt-in hosted evaluator tracing.",
+  "rootCauseProven": false,
+  "hostedPerformanceVerified": false,
+  "resultEquivalenceVerified": false,
+  "standardSecurityAnalysisPreserved": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "documentation": [
+    "https://docs.github.com/en/code-security/reference/code-scanning/codeql/codeql-cli-manual/query-run",
+    "https://codeql.github.com/docs/writing-codeql-queries/troubleshooting-query-performance/"
+  ]
+}

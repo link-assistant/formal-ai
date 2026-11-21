@@ -161,7 +161,7 @@
     {
       "file": "security.yml",
       "id": "codeql",
-      "payloadSha256": "94097d5d94c714f23a1dfd79f69fc9cf66e45939a730016302a6e632346c11c1"
+      "payloadSha256": "715fe89d53ca969cd8e496946768ca85772fce177f3d6380192d5acd4f925b9e"
     },
     {
       "file": "publish-engine.yml",

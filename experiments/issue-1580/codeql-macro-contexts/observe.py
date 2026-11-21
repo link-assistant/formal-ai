@@ -18,7 +18,7 @@ PROFILES = {"macro-contexts": ("MacroContexts.ql", 8),
             "included-string-payloads": ("IncludedStringPayloads.ql", 9)}
 
 
-def observe(codeql, databases, output, profile="macro-contexts"):
+def observe(codeql, databases, output, profile="macro-contexts", trace_evaluation=False):
     output.mkdir(parents=True, exist_ok=False)
     manifest = {"complete": False, "commands": [], "semanticCoverageProven": False,
                 "independentAuthorshipCredit": 0}
@@ -82,10 +82,13 @@ def observe(codeql, databases, output, profile="macro-contexts"):
         with tempfile.TemporaryDirectory(prefix="formal-ai-macro-contexts-", dir=pack) as temporary:
             installed = Path(temporary) / query.name
             installed.write_bytes(query.read_bytes())
+            # Opt in only for an investigation; normal observations retain quiet logs.
+            trace_options = ["--evaluator-log=" + str(output / "evaluation.jsonl")] if trace_evaluation else []
+            manifest["traceEvaluation"] = trace_evaluation
             run("query", ["query", "run", "--database=" + str(database),
                           "--output=" + str(output / (profile + ".bqrs")),
                           "--threads=2", *memory_options, "--max-disk-cache=512",
-                          "--warnings=error", str(installed)])
+                          "--warnings=error", *trace_options, str(installed)])
         diagnostics = [line for line in (output / "query.stderr").read_text().splitlines()
                        if re.match(r"^(?:WARNING|WARN|ERROR):", line)]
         manifest["queryRuntimeDiagnostics"] = diagnostics
@@ -111,5 +114,6 @@ if __name__ == "__main__":
     parser.add_argument("--databases", type=json.loads, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--profile", choices=PROFILES, default="macro-contexts")
+    parser.add_argument("--trace-evaluation", action="store_true", help="Retain structured evaluator diagnostics for investigation")
     args = parser.parse_args()
-    print(json.dumps(observe(args.codeql, args.databases, args.output.resolve(), args.profile)))
+    print(json.dumps(observe(args.codeql, args.databases, args.output.resolve(), args.profile, args.trace_evaluation)))

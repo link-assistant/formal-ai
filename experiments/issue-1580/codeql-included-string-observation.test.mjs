@@ -12,7 +12,7 @@ test('included string observation retains unavailable expansions and leaves secu
   assert.equal(probe['timeout-minutes'], 4);
   assert.equal(probe.env.CODEQL_BINARY, '${{ steps.codeql-init.outputs.codeql-path }}');
   assert.equal(probe.env.CODEQL_DATABASES, '${{ steps.codeql-analyze.outputs.db-locations }}');
-  assert.match(probe.run, /--profile included-string-payloads/);
+  assert.match(probe.run, /--profile included-string-payloads --trace-evaluation/);
   assert.match(probe.run, /codeql-results\/included-string-payloads/);
   assert.ok(steps.indexOf(probe) > steps.findIndex(step => step.id === 'codeql-analyze'));
   const gate = steps.find(step => step.name === 'Reject unresolved CodeQL findings');
@@ -56,6 +56,10 @@ elif args[:2]==['resolve','ram']:
     print('["-J-Xmx2400M"]')
 elif args[:2]==['query','run']:
     assert '--warnings=error' in args
+    trace=[value for value in args if value.startswith('--evaluator-log=')]
+    assert bool(trace)==(mode=='traced-success')
+    if trace:
+        pathlib.Path(trace[0].split('=',1)[1]).write_text('fixture structured evaluator log\\n')
     assert pathlib.Path(args[-1]).read_bytes()==(root/'query.ql').read_bytes()
     assert pathlib.Path(args[-1]).name=='IncludedStringPayloads.ql'
     if mode=='query-failure':
@@ -85,22 +89,25 @@ else:
 ''')
     executable.chmod(0o755)
     before={p.relative_to(pack):p.read_bytes() for p in pack.rglob('*') if p.is_file()}
-    for mode in ['success','empty','wrong-columns','short-row','query-failure','query-warning','unknown-profile']:
+    for mode in ['success','traced-success','empty','wrong-columns','short-row','query-failure','query-warning','unknown-profile']:
         (root/'mode').write_text(mode)
         (root/'calls.jsonl').write_text('')
         output=root/('output-'+mode)
         try:
             a.observe(executable,{'rust':str(database)},output,
-                      'unknown' if mode=='unknown-profile' else 'included-string-payloads')
-            assert mode=='success',mode
+                      'unknown' if mode=='unknown-profile' else 'included-string-payloads',
+                      trace_evaluation=mode=='traced-success')
+            assert mode in ['success','traced-success'],mode
         except (ValueError,RuntimeError):
-            assert mode!='success',mode
+            assert mode not in ['success','traced-success'],mode
         manifest=json.loads((output/'manifest.json').read_text())
-        assert manifest['complete']==(mode=='success'),mode
+        assert manifest['complete']==(mode in ['success','traced-success']),mode
         assert manifest['semanticCoverageProven'] is False
         assert manifest['independentAuthorshipCredit']==0
         assert before=={p.relative_to(pack):p.read_bytes() for p in pack.rglob('*') if p.is_file()},mode
-        if mode=='success':
+        if mode in ['success','traced-success']:
+            assert manifest['traceEvaluation']==(mode=='traced-success')
+            assert (output/'evaluation.jsonl').exists()==(mode=='traced-success')
             assert manifest['profile']=='included-string-payloads'
             assert manifest['rows']==2
             rows=json.loads((output/'included-string-payloads.json').read_text())['#select']['tuples']

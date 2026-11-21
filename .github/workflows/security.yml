@@ -152,7 +152,7 @@ jobs:
         run: >-
           python3 experiments/issue-1580/codeql-macro-contexts/observe.py
           --codeql "$CODEQL_BINARY" --databases "$CODEQL_DATABASES"
-          --profile included-string-payloads
+          --profile included-string-payloads --trace-evaluation
           --output "${{ runner.temp }}/codeql-results/included-string-payloads"
 
       - name: Reject unresolved CodeQL findings
