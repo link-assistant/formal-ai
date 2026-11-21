@@ -1,0 +1,130 @@
+[
+  {
+    "name": "before",
+    "argv": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "--test-name-pattern=heavy original job bodies",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "stdout": {
+      "file": "before.stdout.gz",
+      "sha256": "8914e62335e17ccca57b6d91edaed8cf4a09eb8477ebbe95f6df1c5eff5b4753",
+      "archiveSha256": "165d613cbba1b6b78fff781692c4e3e9d1cdcd6df6eb4c66cc309e8a273d5708",
+      "bytes": 1366,
+      "lines": 36
+    },
+    "stderr": {
+      "file": "before.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "review-and-refresh",
+    "argv": [
+      "node",
+      "--input-type=module",
+      "-e",
+      "import fs from 'node:fs';import assert from 'node:assert/strict';import YAML from 'yaml';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';\nconst file='data/benchmarks/fast-pull-request-retained-jobs.json';\nconst old=YAML.parse(execFileSync('git',['show','5e6037196159d1a83f3bbe23f2c404dbdae1105e^:.github/workflows/security.yml'],{encoding:'utf8'})).jobs.codeql;\nconst current=YAML.parse(fs.readFileSync('.github/workflows/security.yml','utf8')).jobs.codeql;\nconst payload=job=>({steps:job.steps,uses:job.uses,with:job.with,strategy:job.strategy});\nconst normalized=structuredClone(current), observer=normalized.steps.filter(step=>step.name==='Observe included Rust string payloads');\nassert.equal(observer.length,1);\nassert.equal(observer[0].if,\"${{ github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts }}\");\nassert.equal(observer[0]['timeout-minutes'],4);\nassert.match(observer[0].run,/--profile included-string-payloads/u);\nnormalized.steps=normalized.steps.filter(step=>step!==observer[0]);\nassert.deepEqual(payload(normalized),payload(old),'all previously reviewed producer payload must survive unchanged');\nassert.equal(current.if,old.if,'the production admission predicate is unchanged');\nconst manifest=JSON.parse(fs.readFileSync(file,'utf8')), before=structuredClone(manifest);\nconst rows=manifest.jobs.filter(row=>row.file==='security.yml'&&row.id==='codeql');assert.equal(rows.length,1);\nconst hash=job=>createHash('sha256').update(JSON.stringify(payload(job))).digest('hex');\nassert.equal(rows[0].payloadSha256,hash(old));\nconst previous=rows[0].payloadSha256; rows[0].payloadSha256=hash(current);\nconst reverted=structuredClone(manifest);reverted.jobs.find(row=>row.file==='security.yml'&&row.id==='codeql').payloadSha256=previous;\nassert.deepEqual(reverted,before,'only the single reviewed fingerprint may change');\nfs.writeFileSync(file,JSON.stringify(manifest,null,2)+'\\n');\nconsole.log(JSON.stringify({previous,current:rows[0].payloadSha256,onlyIncludedStringObserverAdded:true,originalProducerPayloadPreserved:true,productionAdmissionUnchanged:true,observerDisabledInProduction:true}));"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "review-and-refresh.stdout.gz",
+      "sha256": "aa3cd706d21c0b3878bc43f2827cb025e91410d5a8947579097c9c0af471ac01",
+      "archiveSha256": "d6514c5d5c01add5a8dc6deac6997869a1c439075e5913b8bea05e81f3a63b55",
+      "bytes": 308,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "review-and-refresh.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "production-profile",
+    "argv": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "production-profile.stdout.gz",
+      "sha256": "556c7e6c54f22bce5a96c6c93ee051190b7c124bc1266f893121f12712a7a027",
+      "archiveSha256": "abc959287df56779a5c636f49591e4586e993c963251e6f45f2712cadfb5b35e",
+      "bytes": 4613,
+      "lines": 118
+    },
+    "stderr": {
+      "file": "production-profile.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "security",
+    "argv": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/security-codeql-results.test.mjs"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "security.stdout.gz",
+      "sha256": "2babd6215ebf81aec6ac6e231a63b8e12e1bc8663f3293bcbdfd37dbf29afc84",
+      "archiveSha256": "8abb0f76b0e7a76bc42b129d5d75e7e9fa743f7d205597277cacfeba5530630b",
+      "bytes": 5307,
+      "lines": 136
+    },
+    "stderr": {
+      "file": "security.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "expectedExitCode": 0,
+    "stdout": {
+      "file": "whitespace.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "whitespace.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]
