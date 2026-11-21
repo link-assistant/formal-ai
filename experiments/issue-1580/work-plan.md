@@ -935,3 +935,52 @@ The unchanged size gate also warns on both 1417-line code-task twins. The new fo
   current hosted verification and independent-authorship floor remain unfinished.
 
 Pull request: https://github.com/link-assistant/formal-ai/pull/1581.
+
+
+### 2026-11-21: complete bootstrap failure batch
+
+- Repair the worker's actual unused-import compiler error without changing its
+  serializer or caller. Hosted recompilation and receipt acceptance stay open.
+- Reproduce and repair first-wave scheduling, strict native artifact transport,
+  and the eight missing consumed sparse-checkout captures. Preserve all prior
+  partition, inventory, digest and unrelated-history exclusion assertions.
+- The corrected local worker gate now exposes stale inputs: 87 local passes,
+  53 hosted-only exclusions, one genuine stale-worker failure. The finite fixture
+  fails before repair and passes for clean/changed-source/changed-binary cases.
+- Before the later companion repair, all 332 maintained observations pass. The
+  current file-size gates report zero warnings with unchanged limits; earlier
+  warning counts are historical. No source-warning exemption was introduced.
+- The real hosted interface group passes 77 and fails one missing standalone
+  companion. Transport and restore both actual compiler-selected binaries with
+  complete receipt binding; keep the original integration assertion intact.
+- Retain the failed autonomous request and supplied repair separately, with zero
+  authorship/reasoning credit. The independent-authorship floor and wider original
+  issue acceptance remain unfinished. See the bootstrap CI repair case study.
+
+Pull request: https://github.com/link-assistant/formal-ai/pull/1581.
+
+
+### 2026-11-21: terminal bootstrap round and complete warning batch
+
+- [x] Collect all 34 complete workflow logs for published `d1d11e603`, compare
+  source/timestamps, and preserve all 31 annotations from 173 checks. Three
+  genuine failing workflows and the additional warnings are now classified.
+- [x] Split the original four complete Hive sessions into independent tests;
+  preserve the whole assertion body and all deadlines. Four shards retain the
+  complete listing. Explicit estimates await new hosted measurements.
+- [x] Contain only the deliberate BuildKit negative-control annotations;
+  unexpected setup outcomes remain fatal after annotation handling resumes.
+- [x] Provision Node 24.22.3 for the actual SQLite consumers, retain an active
+  warning-channel sentinel, and replace the experimental link timer mock.
+- [x] Final local maintained entry: 335 passes. Native runner controls: 62;
+  BuildKit controls: 11; finite artifact controls: 9; link parser: 16;
+  production checkout: 21. Touched JavaScript gates, formatting and whitespace
+  pass. No local Rust compilation or execution took place.
+- [ ] Publish the complete batch after a fresh default-branch/queue preflight;
+  qualify actual hosted worker regeneration and all final-head CI paths.
+- [ ] Complete the original template/practice mapping, aggregate PR review and
+  genuine independent-authorship floor. Expected crates.io token uncertainty
+  is retained; supplied scripts and patches earn zero autonomous credit.
+
+Current evidence: [terminal warning repairs](../../docs/case-studies/issue-1580/terminal-warning-repairs.md).
+Earlier checkpoints retain their original pins and outcomes.
