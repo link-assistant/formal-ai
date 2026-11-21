@@ -1,0 +1,26 @@
+﹣ native localized procedure and follow-up use matching captures over HTTP (4.942035ms) # SKIP
+﹣ native chat uses the localized source for the short Russian prompt (0.43939ms) # SKIP
+﹣ native chat recovers a matching article after discarding an unrelated one (0.265917ms) # SKIP
+﹣ native Responses uses procedural sources with the client web search tool available (0.150671ms) # SKIP
+﹣ native HTTP documentation answers require a matching publisher capture (0.251249ms) # SKIP
+﹣ native Agent CLI requires a retrieved capture for a known benchmark issue (0.164768ms) # SKIP
+✔ JavaScript Responses uses procedural sources with the client web search tool available (14991.84722ms)
+✔ JavaScript Codex report confirms destination and context without a Plan-only tool (7757.185407ms)
+▶ JavaScript report shows localized destination and context menus
+  ✔ shows both report menus in en (3690.377125ms)
+  ✔ shows both report menus in hi (646.775318ms)
+  ✔ shows both report menus in zh (380.098882ms)
+  ✔ shows both report menus in es (533.412812ms)
+✔ JavaScript report shows localized destination and context menus (12977.118149ms)
+✔ JavaScript report honors Plan mode and compatible prompt tools (8693.718538ms)
+﹣ native Codex report confirms destination and context without a Plan-only tool (0.329034ms) # SKIP
+﹣ native report shows localized destination and context menus (0.073287ms) # SKIP
+﹣ native report honors Plan mode and compatible prompt tools (0.073658ms) # SKIP
+ℹ tests 17
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 9
+ℹ todo 0
+ℹ duration_ms 46509.276258

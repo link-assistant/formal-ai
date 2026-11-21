@@ -163,6 +163,17 @@ after a RustSec download failure on the first attempt.
 [Security](https://github.com/link-assistant/formal-ai/actions/runs/44946231401) ·
 [Witness comparison](evidence/verification/governed-baseline-round3-delta.log)
 
+The third Layered CI run passed on `2b5ae6485`. The Fast Linux check in
+the CI/CD pipeline found that the generated role registry omitted `noun`,
+which the source policy used to qualify a practical-help goal. The pipeline
+log records the difference at lines 753–754. The native type, lint, and HTTP
+checks passed. Regenerating the role registry added that entry, and the same
+seven source governance checks then passed locally.
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/44949387617) ·
+[CI/CD pipeline](https://github.com/link-assistant/formal-ai/actions/runs/44949387904) ·
+[Pipeline log](evidence/workflows/pipeline-44949387904.log.gz) ·
+[Local source checks](evidence/verification/round4-fast-governance.log)
+
 The practical-help route contained a second form of the same defect. Its
 expected NHS quote also served as its own evidence. The before-fix replay
 failed because the solver returned an answer while the controlled transport
@@ -177,6 +188,24 @@ header, so a browser with a capture component can try that transport as well.
 [NHS source](https://www.nhs.uk/conditions/constipation/) ·
 [Practical-help replays](evidence/verification/practical-help-round3-final.log) ·
 [Local gate results](evidence/verification/all-gates-round3-final.log)
+
+The documentation rule used the same answer for every accepted phrasing
+because its operand reader recognized only one pandas method. A previously
+uncovered request about `pandas.Series.diff` produced no result and made
+no publisher requests in baseline replay. The live pandas index lists three
+different methods ending in `join`. The replacement checks a qualified
+name against the published reference page, consults the publisher's index
+to resolve other spellings, and asks the user to select a method when the
+publisher lists several candidates. Its response gives a bounded excerpt
+and a provenance link from the capture. The replay supplies controlled
+pages for methods from two publishers and rejects a page about a different
+method. The source text retains its publisher language.
+[Baseline replay](evidence/verification/baseline-docs-method.log) ·
+[Pandas reference](https://pandas.pydata.org/docs/reference/api/pandas.Series.diff.html) ·
+[pandas index](https://pandas.pydata.org/docs/searchindex.js) ·
+[Captured index entries and digests](evidence/verification/pandas-publisher-index.log) ·
+[NumPy reference](https://numpy.org/doc/stable/reference/generated/numpy.ndarray.reshape.html) ·
+[Sphinx documentation](https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html)
 
 ## Evidence archive
 
