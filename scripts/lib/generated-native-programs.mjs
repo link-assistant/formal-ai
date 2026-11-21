@@ -704,7 +704,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "canonicalPath":"formal_ai::execution_box::BACKEND_ENV","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"FORMAL_AI_EXECUTION_BACKEND","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":1561,"end":1621},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
-"f8f043216ed49d05f7ebb9f77559b66576acd089c082e9658a19f8725f2b4001"},{"path":"rust/src/lib.rs","sha256":
+"551fd634820c43cb662c921d2e691a2d4f086ba0a47b379682fd8ca4089412b1"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant BACKEND-ENV (exported) (type string) (value (string FORMAL_AI_EXECUTION_BACKEND)))","maintainedJavaScript":
 "export const BACKEND_ENV = 'FORMAL_AI_EXECUTION_BACKEND';","maintainedTranslationSha256":
@@ -712,7 +712,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::execution_box::START_ISOLATION_ENV","canonicalPath":"formal_ai::execution_box::START_ISOLATION_ENV","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"FORMAL_AI_START_ISOLATION","nativeSourceQualified":
 true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1692,"end":1758},"sourceWitnesses":[{"path":
-"rust/src/execution_box/mod.rs","sha256":"f8f043216ed49d05f7ebb9f77559b66576acd089c082e9658a19f8725f2b4001"},{"path":
+"rust/src/execution_box/mod.rs","sha256":"551fd634820c43cb662c921d2e691a2d4f086ba0a47b379682fd8ca4089412b1"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant START-ISOLATION-ENV (exported) (type string) (value (string FORMAL_AI_START_ISOLATION)))",
 "maintainedJavaScript":"export const START_ISOLATION_ENV = 'FORMAL_AI_START_ISOLATION';","maintainedTranslationSha256":
@@ -720,7 +720,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1692,"end":175
 ,"canonicalPath":"formal_ai::execution_box::START_RUNNER_ENV","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"FORMAL_AI_START_RUNNER","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":1819,"end":1879},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
-"f8f043216ed49d05f7ebb9f77559b66576acd089c082e9658a19f8725f2b4001"},{"path":"rust/src/lib.rs","sha256":
+"551fd634820c43cb662c921d2e691a2d4f086ba0a47b379682fd8ca4089412b1"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant START-RUNNER-ENV (exported) (type string) (value (string FORMAL_AI_START_RUNNER)))","maintainedJavaScript":
 "export const START_RUNNER_ENV = 'FORMAL_AI_START_RUNNER';","maintainedTranslationSha256":
@@ -728,7 +728,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1692,"end":175
 "canonicalPath":"formal_ai::execution_box::COMMAND_LOG","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"__formal_ai_commands.log","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":2656,"end":2713},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
-"f8f043216ed49d05f7ebb9f77559b66576acd089c082e9658a19f8725f2b4001"},{"path":"rust/src/lib.rs","sha256":
+"551fd634820c43cb662c921d2e691a2d4f086ba0a47b379682fd8ca4089412b1"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant COMMAND-LOG (exported) (type string) (value (string __formal_ai_commands.log)))","maintainedJavaScript":
 "export const COMMAND_LOG = '__formal_ai_commands.log';","maintainedTranslationSha256":
