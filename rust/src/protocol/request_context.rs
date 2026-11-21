@@ -83,7 +83,9 @@ impl RequestContext {
             let text = message.content.plain_text();
             for text in pattern(RULES["clauseSeparator"].as_str().unwrap()).split(&text) {
                 let text = text.trim();
-                if text.is_empty() {
+                if text.is_empty()
+                    || pattern(RULES["responseGuidance"].as_str().unwrap()).is_match(text)
+                {
                     continue;
                 }
                 if pattern(RULES["negated"].as_str().unwrap()).is_match(text)

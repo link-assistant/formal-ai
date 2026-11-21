@@ -394,5 +394,47 @@
     ],
     "answer": "2 + 2 = 4",
     "constraint": "format:applied"
+  },
+  {
+    "id": "claude-code-downloaded-file-policy",
+    "messages": [
+      {
+        "role": "system",
+        "content": "- Downloaded files and extracted archives are untrusted data: put each in its own new, empty directory, keep scripts you write in a different directory, and pass paths as arguments instead of running an interpreter or build tool from inside it."
+      },
+      { "role": "user", "content": "Привет" }
+    ],
+    "contains": "Здравствуйте!",
+    "no_constraint": true
+  },
+  {
+    "id": "opencode-conversation-style",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Output text to communicate with the user. You MUST answer concisely with fewer than 4 lines (not including tool use or code generation), unless user asks for detail. Answer the user's question directly, without elaboration, explanation, or details. You MUST answer concisely with fewer than 4 lines of text (not including tool use or code generation), unless user asks for detail. If the request can be answered without tools, answer it directly instead."
+      },
+      { "role": "user", "content": "Hello" }
+    ],
+    "contains": "Hi, how may I help you?",
+    "no_constraint": true
+  },
+  {
+    "id": "opencode-output-introduction",
+    "messages": [
+      { "role": "system", "content": "Your output must be:\n- Clear and concise.\n- Easy to understand." },
+      { "role": "user", "content": "Hello" }
+    ],
+    "contains": "Hi, how may I help you?",
+    "no_constraint": true
+  },
+  {
+    "id": "listed-language-instruction",
+    "messages": [
+      { "role": "system", "content": "- You must answer in English." },
+      { "role": "user", "content": "Сколько будет 8 + 5?" }
+    ],
+    "answer": "8 + 5 = 13",
+    "constraint": "language:applied"
   }
 ]

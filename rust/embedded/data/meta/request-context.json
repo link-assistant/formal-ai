@@ -1,9 +1,10 @@
 {
-  "language": ["(?:^|\\b)(?:always\\s+)?(?:answer|respond|reply|write)\\s+(?:only\\s+)?in\\s+([\\p{L}-]+)", "(?:отвечай|отвечайте|ответь)\\s+(?:только\\s+)?(?:на\\s+|по-)?([\\p{L}-]+)"],
+  "language": ["^(?:[-*]\\s+)?(?:(?:(?:you\\s+)?(?:must\\s+)?(?:always\\s+)?)|(?:do\\s+not\\s+|never\\s+|don't\\s+))(?:answer|respond|reply|write)\\s+(?:only\\s+)?in\\s+([\\p{L}-]+)", "^(?:[-*]\\s+)?(?:не\\s+)?(?:отвечай|отвечайте|ответь)\\s+(?:только\\s+)?(?:на\\s+|по-)?([\\p{L}-]+)"],
   "format": ["(?:answer|respond|reply|output|return)\\s+(?:only\\s+)?(?:in|as)\\s+(json|xml|csv|markdown)(?:\\s|$)", "(?:output|response|answer)\\s+format\\s*:?\\s*(json|xml|csv|markdown)", "(?:use|return)\\s+(json|xml|csv|markdown)", "^(?:output|return)(?:\\s+all)?\\s+(?:communication|output)\\s+(?:directly\\s+)?in\\s+(?:your\\s+|the\\s+)?response\\s+(text)(?:\\s+instead)?$"],
   "labels": ["(?:one word\\s*:|only with|only one of|one of\\s*:)\\s*([\\p{L}-]+)\\s+(?:or|/)\\s+([\\p{L}-]+)"],
   "length": ["(exactly|at most|no more than)\\s+(one|[0-9]+)\\s+words?"],
   "outputCue": "^(?:you\\s+)?(?:must\\s+)?(?:always\\s+)?(?:answer|respond|reply|output|return|be brief|отвечай|ответь)(?:\\s|$)|^(?:your|the)\\s+(?:answer|response|output)\\s+(?:must|should)|^(?:use\\s+(?:json|xml|csv|markdown|yaml|plain text)|(?:keep|limit)\\s+(?:your\\s+|the\\s+)?(?:answer|response|output))(?:\\s|$)",
+  "responseGuidance": "^(?:[-*]\\s+)?(?:output text to communicate with the user|(?:(?:you\\s+)?must\\s+)?answer concisely with fewer than [0-9]+ lines(?: of text)? \\(not including tool use or code generation\\), unless (?:the )?user asks for detail|answer (?:it|the user's question) directly(?: instead|, without elaboration, explanation, or details)?|(?:your|the) (?:answer|response|output) (?:must|should) be\\s*:)$",
   "ignorableResidue": "^(?:(?:you|must|always|answer|respond|reply|output|return|with|exactly|only|and|one|word|words|in|as|the|response|format)|[\\s,:-])*$",
   "negated": "(?:^|\\s)(?:never|not|don't|не)(?:\\s|$)",
   "languages": {"en":["english","английски","английском"],"ru":["russian","русски","русском"]},

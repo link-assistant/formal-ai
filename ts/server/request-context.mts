@@ -16,6 +16,8 @@ export function formalizeRequest(messages) {
     const role = message.role.toLowerCase();
     if (!['system', 'developer'].includes(role)) return;
     for (const text of plainText(message.content).split(re(rules.clauseSeparator)).map(text => text.trim()).filter(Boolean)) {
+      // Style guidance and section introductions do not specify a response schema.
+      if (re(rules.responseGuidance).test(text)) continue;
       const add = (kind, value) => constraints.push({ role, index, text, kind, value, status: 'pending' });
       if (re(rules.negated).test(text) && (re(rules.outputCue).test(text) || ['language', 'format', 'labels', 'length'].some(kind => captures(kind, text)))) {
         add('output', text);
