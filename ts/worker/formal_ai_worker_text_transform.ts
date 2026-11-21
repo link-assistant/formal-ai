@@ -450,7 +450,14 @@ function textTransformGrammarCorrection(prompt) {
     return textTransformAnswer(TEXT_TRANSFORM_INTENT_GRAMMAR, note, 0.8, "text_rewrite", []);
   }
   const trace = corrections.map((item) => `grammar_correction:${item[0]} -> ${item[1]} (${item[2]})`);
-  const corrected = tokens.join(" ");
+  let corrected = tokens.join(" ");
+  // A corrected question is caller text. Quote it as a Markdown span so
+  // finalization preserves it without treating it as a solver follow-up.
+  if (/[?？]/u.test(corrected)) {
+    const longest = (corrected.match(/`+/gu) || []).reduce((length, run) => Math.max(length, run.length), 0);
+    const delimiter = "`".repeat(longest + 1);
+    corrected = `${delimiter} ${corrected} ${delimiter}`;
+  }
   const lines = corrections
     .map((item) =>
       textTransformRenderLine("text_transform_grammar_line", language, [

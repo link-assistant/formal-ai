@@ -580,7 +580,18 @@ pub fn handle_grammar_correction(
     for (wrong, right, rule) in &corrections {
         log.append("grammar_correction", format!("{wrong} -> {right} ({rule})"));
     }
-    let corrected = tokens.join(" ");
+    let mut corrected = tokens.join(" ");
+    // A corrected question is caller text. Quote it as a Markdown span so
+    // finalization preserves it without treating it as a solver follow-up.
+    if corrected.contains(['?', '？']) {
+        let longest = corrected
+            .split(|character| character != '`')
+            .map(str::len)
+            .max()
+            .unwrap_or(0);
+        let delimiter = "`".repeat(longest + 1);
+        corrected = format!("{delimiter} {corrected} {delimiter}");
+    }
     let lines: String = corrections
         .iter()
         .map(|(wrong, right, rule)| {
