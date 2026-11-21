@@ -51,3 +51,9 @@ binds the initial failures, final checks and actual sparse-checkout regression.
 These are local results, with zero independent authorship credit. Final-source
 hosted behavior, remaining template practice mapping and the contribution
 authorship floor remain open.
+
+## Later main integration
+
+Main advanced to `9669945ad320dc8a96ebb5a88cfe05dbafb2f030` before the push gate. Its embeddings API, seed translations, release version and native replay are retained. The independent-replay regression initially failed (`9 !== 8`); the expected inventory now includes the new replay, and its admission condition allows it to run after sibling failures while still requiring successful native lint and a noncancelled run. The exact before/after logs are retained.
+
+The focused policy, embeddings and server JavaScript checks pass, touched native files pass rustfmt, and the complete gate run records 87 passes, 53 hosted exclusions and the single stale-worker failure. Complete structural review of the governed baseline finds only four Cargo fixture hash changes, matching the retained release version change from 0.356.1 to 0.356.2; all other leaves are equal. Source whitespace checks preserve exact, byte-identical historical session logs. Hosted compilation is still required for the new source.

@@ -32,6 +32,12 @@ const PROBES = {
   api_hello: { status: 200, type: "application/json", json: (body) => assert.equal(body.message, "hello") },
   health: { status: 200, type: "application/json", json: (body) => assert.equal(body.status, "ok") },
   models: { status: 200, type: "application/json", json: (body) => assert.equal(body.object, "list") },
+  embeddings: {
+    status: 200,
+    type: "application/json",
+    body: JSON.stringify({ model: "formal-ai", input: "tomato" }),
+    json: (body) => assert.equal(body.data[0].embedding.length, 4096),
+  },
   network: { status: 200, type: "application/json", json: (body) => assert.ok(Array.isArray(body.nodes)) },
   network_graph_alias: { status: 200, type: "application/json", json: (body) => assert.ok(Array.isArray(body.nodes)) },
   bundle: { status: 200, type: "text/plain", text: (body) => assert.ok(body.startsWith("formal_ai_seed_bundle\n")) },

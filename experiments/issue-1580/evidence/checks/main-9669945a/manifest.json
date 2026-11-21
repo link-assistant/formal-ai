@@ -1,0 +1,282 @@
+{
+  "main": "9669945ad320dc8a96ebb5a88cfe05dbafb2f030",
+  "localResults": {
+    "complete": true,
+    "checks": [
+      {
+        "name": "runtime-writer",
+        "command": [
+          "node",
+          "scripts/generate-runtime-feature-inventory.mjs",
+          "--write"
+        ],
+        "exit": 0,
+        "seconds": 0.989
+      },
+      {
+        "name": "baseline-writer",
+        "command": [
+          "node",
+          "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+          "--refresh-reviewed-baseline",
+          "--reviewed-reader-sha=861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+          "--previous-baseline-sha=a4addc06f84960012d90fdb5938d75d4840c01fd589d8ddb6e69172e2afd6cec"
+        ],
+        "exit": 0,
+        "seconds": 9.613
+      },
+      {
+        "name": "status-writer",
+        "command": [
+          "node",
+          "scripts/render-status.mjs",
+          "--write"
+        ],
+        "exit": 0,
+        "seconds": 1.185
+      },
+      {
+        "name": "stage",
+        "command": [
+          "git",
+          "add",
+          "-u"
+        ],
+        "exit": 0,
+        "seconds": 0.761
+      },
+      {
+        "name": "default-branch-build-policy",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/default-branch-build-policy.test.mjs"
+        ],
+        "exit": 0,
+        "seconds": 38.096
+      },
+      {
+        "name": "issue-1591-embeddings",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/issue-1591-embeddings.test.mjs"
+        ],
+        "exit": 0,
+        "seconds": 20.346
+      },
+      {
+        "name": "server",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/server.test.mjs"
+        ],
+        "exit": 0,
+        "seconds": 20.396
+      },
+      {
+        "name": "baseline-check",
+        "command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+        ],
+        "exit": 0,
+        "seconds": 11.457
+      },
+      {
+        "name": "rustfmt",
+        "command": [
+          "rustfmt",
+          "--check",
+          "--edition",
+          "2024",
+          "--config",
+          "skip_children=true",
+          "rust/src/server.rs",
+          "rust/src/server/embeddings.rs"
+        ],
+        "exit": 0,
+        "seconds": 0.137
+      },
+      {
+        "name": "all-local-gates",
+        "command": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs"
+        ],
+        "exit": 1,
+        "seconds": 571.696
+      }
+    ]
+  },
+  "gateCounts": {
+    "PASS": 87,
+    "SKIP": 53,
+    "FAIL": 1
+  },
+  "files": [
+    {
+      "path": "all-local-gates.log.gz",
+      "bytes": 7004,
+      "sha256": "f46e253b423e1441a62a9a285c00075876e9ea35a06a3241eeed45ac078abc3e"
+    },
+    {
+      "path": "baseline-check.log.gz",
+      "bytes": 2952,
+      "sha256": "f5b5466c6235ae6ee261eee2ce31985a1b6f57e80c24763bff2210aaa3e0b15e"
+    },
+    {
+      "path": "baseline-identity.json.gz",
+      "bytes": 200,
+      "sha256": "43905863e1a34454e4725c6ad311d503d63df0e1211e162730159a5c193b432b"
+    },
+    {
+      "path": "baseline-structural-review-first.log.gz",
+      "bytes": 143464,
+      "sha256": "d7bfb38959863c00fd6071a4162173ad11d9b7b692b7190593bf125216332fa6"
+    },
+    {
+      "path": "baseline-structural-review.json.gz",
+      "bytes": 1493,
+      "sha256": "e5c8dfd91bb08435d8fd61200afb5845c99fe1388ff7a7abcc35b8c661a4e4d0"
+    },
+    {
+      "path": "baseline-structural-review.log.gz",
+      "bytes": 1049,
+      "sha256": "9b5ce548490ec8a6ac85763f518f673e022e58880a84f7f2ec2d7f7911ad78c2"
+    },
+    {
+      "path": "baseline-writer.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "default-branch-build-policy.log.gz",
+      "bytes": 15813,
+      "sha256": "19b25bb2906576d13e8f362a86d1dc287b12487e824128b4a3bf0cd4d77dde6f"
+    },
+    {
+      "path": "first-attempt_baseline-identity.json.gz",
+      "bytes": 201,
+      "sha256": "abbad2da8a78845a86986e326adaab81056a6792d5ffa30500bbda21e430b3e0"
+    },
+    {
+      "path": "first-attempt_baseline-writer.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "first-attempt_default-branch-build-policy.log.gz",
+      "bytes": 16766,
+      "sha256": "6b8b1280a19de31887990356b636a9d52bf739f74bfc2a8a11c3beb3edf403ce"
+    },
+    {
+      "path": "first-attempt_outcome.json.gz",
+      "bytes": 1270,
+      "sha256": "ae80293d2e03a7c77cb0e320a739cd3b9f7c05fc842ff959723b9daf97d24667"
+    },
+    {
+      "path": "first-attempt_runtime-writer.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "first-attempt_stage.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "first-attempt_status-writer.log.gz",
+      "bytes": 27,
+      "sha256": "9dc74f2c8bd924631a3dae9e191b3abb41137e06868cd6c8438f5a872d1d4436"
+    },
+    {
+      "path": "issue-1591-embeddings.log.gz",
+      "bytes": 415,
+      "sha256": "fd8105be71757beb41b32bfdf09f1f537fe8dcba071f187fa8fbf369c424707c"
+    },
+    {
+      "path": "outcome.json.gz",
+      "bytes": 2470,
+      "sha256": "3550dca8b01f118c5dcf8d783da608923af9397a6841fc532489586db10976ea"
+    },
+    {
+      "path": "runtime-writer.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rustfmt.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "server.log.gz",
+      "bytes": 726,
+      "sha256": "c0c5a0dfee63bd1c364451c7b36545b3e2ddd264b3e5c5a0286d9d3e069246d9"
+    },
+    {
+      "path": "source-whitespace-proof.json.gz",
+      "bytes": 302,
+      "sha256": "c3b80a5428a1f04643fa676a1921e2ee0ab8b37984f2b4f8705a9e072f41e60b"
+    },
+    {
+      "path": "source-whitespace.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stage.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "status-writer.log.gz",
+      "bytes": 27,
+      "sha256": "9dc74f2c8bd924631a3dae9e191b3abb41137e06868cd6c8438f5a872d1d4436"
+    },
+    {
+      "path": "whitespace-unfiltered.log.gz",
+      "bytes": 25322,
+      "sha256": "657823ed714beb44ac0e4fb880c109933e083cf53c6e81c79c9ff10b4e68edc1"
+    },
+    {
+      "path": "final-check-file-size-js-twin.log.gz",
+      "bytes": 71,
+      "sha256": "7a0f04f016f910b705db1425d93cca8ac4034ee6f3c58af9e2912de8087e5051"
+    },
+    {
+      "path": "final-check-file-size.log.gz",
+      "bytes": 63,
+      "sha256": "ce58f0fd385467373faad3b477fcb2f9a678bb56f9f6cbeec9755e5848c533cb"
+    },
+    {
+      "path": "final-check-readable-code.log.gz",
+      "bytes": 68,
+      "sha256": "3cac932381fd09fd29f04a43c4570a752443d933ef97662e6784d08c9d32ecb9"
+    },
+    {
+      "path": "final-check-abbreviations.log.gz",
+      "bytes": 67,
+      "sha256": "7199d9894d2a1608797bf640a7e7b34ff850d0186443cf7e2b1341d1bdb5e109"
+    },
+    {
+      "path": "final-check-ci-speed.log.gz",
+      "bytes": 62,
+      "sha256": "cba0a1228ced1c5dd5a7b9b444d1c25b7946725dd41d1cbe2f120fb89549bdde"
+    },
+    {
+      "path": "final-workflows.log.gz",
+      "bytes": 57,
+      "sha256": "baedfb5f868ee8a8cbc62632c2435689a47cba976f0788c084a213e63be82066"
+    }
+  ],
+  "compiledWorkerVerified": false,
+  "authorshipCredit": 0
+}

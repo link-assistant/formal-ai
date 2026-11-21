@@ -138,6 +138,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'exit "$regression_status"\n',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1591-embeddings.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs',
     codexReplay,
     gatewayReplay,
@@ -715,7 +716,7 @@ test('independent native replays continue after a regression fails and preserve 
   const job = workflow('native-type-check.yml').jobs.clippy;
   const later = job.steps.filter(step => step.name === 'Verify native unresolved-language source binding'
     || ['actions/setup-node@v7', 'oven-sh/setup-bun@v2'].includes(step.uses) || step.name?.startsWith('Replay '));
-  assert.equal(later.length, 8);
+  assert.equal(later.length, 9);
   const selected = (step, {earlierFailure = true, compile = true, lint = 'success', bun = 'success', cancelled = false} = {}) => {
     const expression = step.if.slice(3, -2).trim()
       .replaceAll('inputs.compile-inputs-changed', "inputs['compile-inputs-changed']")

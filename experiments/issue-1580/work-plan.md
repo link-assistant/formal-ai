@@ -995,3 +995,5 @@ Earlier checkpoints retain their original pins and outcomes.
 - [ ] Qualify the exact next pushed source and compiled-worker receipt; finish all applicable template practice acceptance, aggregate review and genuine authorship requirements.
 
 Details and exact captured results: `docs/case-studies/issue-1580/main-warning-merge.md`.
+
+- [x] Integrate main `9669945ad320dc8a96ebb5a88cfe05dbafb2f030`, preserve embeddings behavior and test independent native replay admission; retain full local checks and unresolved hosted worker currency.
