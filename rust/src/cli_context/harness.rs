@@ -49,7 +49,7 @@ pub(super) fn current() -> Option<Harness> {
 }
 
 impl Harness {
-    pub(super) fn latest(&self) -> Result<String, Box<dyn Error>> {
+    pub(super) fn latest(&self) -> io::Result<String> {
         if matches!(self, Self::Agent(_) | Self::Gemini(_))
             && let Ok(identifier) = std::env::var("FORMAL_AI_REPORT_DIALOG_ID")
             && valid_identifier(&identifier)
@@ -59,7 +59,7 @@ impl Harness {
         self.latest_native()
     }
 
-    fn latest_native(&self) -> Result<String, Box<dyn Error>> {
+    fn latest_native(&self) -> io::Result<String> {
         let (root, extension) = match self {
             Self::Claude(root) => (root.clone(), "jsonl"),
             Self::Agent(root) => (root.join("session"), "json"),
@@ -71,9 +71,8 @@ impl Harness {
             Self::Gemini(root) => {
                 return gemini_sessions(root)
                     .max_by_key(|path| modified(path).ok())
-                    .ok_or(io::ErrorKind::NotFound)
-                    .and_then(|path| gemini_messages(&path).map(|(id, _)| id))
-                    .map_err(Into::into);
+                    .ok_or_else(|| io::Error::from(io::ErrorKind::NotFound))
+                    .and_then(|path| gemini_messages(&path).map(|(identifier, _)| identifier));
             }
         };
         let identifier = find_session(&root, extension, None)?
@@ -91,7 +90,7 @@ impl Harness {
         log_directory: Option<&Path>,
     ) -> Result<Value, Box<dyn Error>> {
         if !valid_identifier(identifier) {
-            return Err(io::ErrorKind::InvalidInput.into());
+            return Err(io::Error::from(io::ErrorKind::InvalidInput).into());
         }
         let (tool, messages) = match self {
             Self::Claude(root) => {
@@ -116,8 +115,8 @@ impl Harness {
                 }
                 let (_, messages) = gemini_sessions(root)
                     .filter_map(|path| gemini_messages(&path).ok())
-                    .find(|(id, _)| id == identifier)
-                    .ok_or(io::ErrorKind::NotFound)?;
+                    .find(|(candidate, _)| candidate == identifier)
+                    .ok_or_else(|| io::Error::from(io::ErrorKind::NotFound))?;
                 ("gemini", messages)
             }
         };
@@ -131,7 +130,7 @@ fn rollout_identifier(path: &Path) -> Option<&str> {
     (name.starts_with(CODEX_ROLLOUT_PREFIX) && valid_identifier(identifier)).then_some(identifier)
 }
 
-fn entries(root: &Path) -> impl Iterator<Item = fs::DirEntry> {
+fn entries(root: &Path) -> impl Iterator<Item = fs::DirEntry> + use<> {
     fs::read_dir(root)
         .into_iter()
         .flatten()
@@ -182,13 +181,13 @@ fn matching_agent_context(root: &Path, server: &Value) -> Result<Value, Box<dyn 
     let candidates = subdirectories(&directories)
         .filter(|path| modified(path).is_ok_and(|time| time >= earliest))
         .filter_map(|path| {
-            let id = path.file_name()?.to_str()?.to_owned();
-            valid_identifier(&id).then_some(id)
+            let identifier = path.file_name()?.to_str()?.to_owned();
+            valid_identifier(&identifier).then_some(identifier)
         })
-        .filter_map(|id| {
-            agent_messages(root, &id)
+        .filter_map(|identifier| {
+            agent_messages(root, &identifier)
                 .ok()
-                .map(|messages| (id, messages))
+                .map(|messages| (identifier, messages))
         });
     matching_context("Agent", "agent", server, candidates)
 }
@@ -209,7 +208,7 @@ fn matching_context(
 ) -> Result<Value, Box<dyn Error>> {
     let turns = user_turns(server["messages"].as_array().map_or(&[], Vec::as_slice));
     if turns.is_empty() {
-        return Err(io::ErrorKind::NotFound.into());
+        return Err(io::Error::from(io::ErrorKind::NotFound).into());
     }
     let mut matching = None;
     for (identifier, messages) in candidates {
@@ -220,19 +219,20 @@ fn matching_context(
             continue;
         }
         if matching.is_some() {
-            return Err(io::Error::other(format!(
-                "multiple {client} transcripts match this conversation"
-            ))
-            .into());
+            return Err(
+                transcript_match_error("context_transcript_multiple_matches", client).into(),
+            );
         }
         matching = Some(document(tool, &identifier, messages));
     }
-    matching.ok_or_else(|| {
-        io::Error::other(format!("no {client} transcript matches this conversation")).into()
-    })
+    matching.ok_or_else(|| transcript_match_error("context_transcript_no_match", client).into())
 }
 
-fn subdirectories(root: &Path) -> impl Iterator<Item = PathBuf> {
+fn transcript_match_error(key: &str, client: &str) -> io::Error {
+    io::Error::other(super::config(key).replace("{client}", client))
+}
+
+fn subdirectories(root: &Path) -> impl Iterator<Item = PathBuf> + use<> {
     entries(root)
         .filter(|entry| entry.file_type().is_ok_and(|kind| kind.is_dir()))
         .map(|entry| entry.path())

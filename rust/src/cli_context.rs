@@ -430,7 +430,7 @@ fn harness_session(db: Option<&Path>) -> Result<String, Box<dyn Error>> {
     if db.is_none()
         && let Some(harness) = harness::current()
     {
-        return harness.latest();
+        return Ok(harness.latest()?);
     }
     opencode_session(db)
 }
