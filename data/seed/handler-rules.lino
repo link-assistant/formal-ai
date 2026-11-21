@@ -399,32 +399,12 @@ handler-rules
       intent "algorithm_sort_{language}"
       link "response:algorithm"
       confidence 1.0
-    rule algorithm-unnamed-with-tests
-      when
-        substring algorithm
-        substring test
-      value language table algorithm_language of normalized
-      value snippet table algorithm_snippet key language
-      value code response "algorithm_sort_code_{snippet}"
-      value tests response "algorithm_sort_tests_{snippet}"
-      log "algorithm:refusal" "no operation named"
-      log "execution_status" "unavailable"
-      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
-      respond algorithm_sort_with_tests
-      intent "algorithm_sort_{language}"
-      link "response:algorithm"
-      confidence 1.0
     rule algorithm-unnamed
       when
         substring algorithm
-      value language table algorithm_language of normalized
-      value snippet table algorithm_snippet key language
-      value code response "algorithm_sort_code_{snippet}"
       log "algorithm:refusal" "no operation named"
-      log "execution_status" "unavailable"
-      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
-      respond algorithm_sort
-      intent "algorithm_sort_{language}"
+      respond algorithm_operation_required
+      intent algorithm_operation_required
       link "response:algorithm"
       confidence 1.0
   policy response_language_followup

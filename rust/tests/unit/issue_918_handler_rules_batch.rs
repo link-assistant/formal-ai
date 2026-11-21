@@ -512,7 +512,6 @@ const SORT_GO: &str = "Вот проверяемый алгоритм сорти
 const SORT_RUST_HI: &str = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
 const SORT_TYPESCRIPT_TESTS: &str = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
 const SORT_PYTHON_TESTS: &str = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nTests:\n```python\ndef test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_PYTHON: &str = "Here is a reviewable sorting algorithm in python:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
 
 #[test]
 fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
@@ -559,20 +558,19 @@ fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
             "{prompt} names the sort operation"
         );
     }
-    let mut log = EventLog::default();
-    let unnamed = run_handler(
-        "algorithm",
-        "explain the algorithm",
-        "explain the algorithm",
-        &mut log,
-    )
-    .expect("an algorithm request without an operation is still answered");
-    assert_eq!(unnamed.answer, SORT_PYTHON);
-    assert!(
-        log.events()
-            .iter()
-            .any(|event| event.kind == "algorithm:refusal" && event.payload == "no operation named")
-    );
+    for prompt in ["explain the algorithm", "write an algorithm with tests"] {
+        let mut log = EventLog::default();
+        let unnamed = run_handler("algorithm", prompt, prompt, &mut log)
+            .expect("an algorithm request without an operation asks for the operation");
+        assert_eq!(unnamed.intent, "algorithm_operation_required");
+        assert_eq!(
+            unnamed.answer,
+            "What should the algorithm do? Include its expected inputs and outputs."
+        );
+        assert!(log.events().iter().any(|event| {
+            event.kind == "algorithm:refusal" && event.payload == "no operation named"
+        }));
+    }
     let mut log = EventLog::default();
     assert!(
         run_handler(

@@ -1206,6 +1206,26 @@ multilingual_responses
     intent code_refactoring_execution_skipped
     language es
     text "Se omitió la comprobación por ejecución en el worker del navegador ({detail}); solo se aplica la comprobación estructural anterior."
+  response response_algorithm_operation_required_en
+    intent algorithm_operation_required
+    language en
+    text "What should the algorithm do? Include its expected inputs and outputs."
+  response response_algorithm_operation_required_ru
+    intent algorithm_operation_required
+    language ru
+    text "Что должен делать алгоритм? Укажите входные данные и ожидаемый результат."
+  response response_algorithm_operation_required_hi
+    intent algorithm_operation_required
+    language hi
+    text "एल्गोरिदम को क्या करना चाहिए? अपेक्षित इनपुट और आउटपुट बताएं।"
+  response response_algorithm_operation_required_zh
+    intent algorithm_operation_required
+    language zh
+    text "算法应该完成什么任务？请说明预期的输入和输出。"
+  response response_algorithm_operation_required_es
+    intent algorithm_operation_required
+    language es
+    text "¿Qué debe hacer el algoritmo? Indica las entradas y salidas esperadas."
   response response_algorithm_sort_en
     intent algorithm_sort
     language en

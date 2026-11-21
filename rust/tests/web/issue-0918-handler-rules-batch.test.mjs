@@ -318,7 +318,6 @@ const SORT_GO = "Вот проверяемый алгоритм сортиров
 const SORT_RUST_HI = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
 const SORT_TYPESCRIPT_TESTS = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
 const SORT_PYTHON_TESTS = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nTests:\n```python\ndef test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_PYTHON = "Here is a reviewable sorting algorithm in python:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
 
 // The algorithm rule set (issue #918): the sort operation or the word
 // "algorithm", the language table and the seeded snippets answer exactly as
@@ -339,9 +338,12 @@ test("the algorithm rule set answers unchanged in english, russian, hindi and ch
     assert.equal(response.content, expected, prompt);
     assert.ok(!response.evidence.some((link) => link.startsWith("algorithm:refusal")), prompt);
   }
-  const unnamed = await rule("algorithm", "explain the algorithm");
-  assert.equal(unnamed.content, SORT_PYTHON);
-  assert.ok(unnamed.evidence.includes("algorithm:refusal:no operation named"));
+  for (const prompt of ["explain the algorithm", "write an algorithm with tests"]) {
+    const unnamed = await rule("algorithm", prompt);
+    assert.equal(unnamed.intent, "algorithm_operation_required");
+    assert.equal(unnamed.content, "What should the algorithm do? Include its expected inputs and outputs.");
+    assert.ok(unnamed.evidence.includes("algorithm:refusal:no operation named"));
+  }
   assert.equal(await rule("algorithm", "What is the capital of France?"), null);
 });
 

@@ -96,7 +96,7 @@ meanings
   algorithm_sort
     defined-by answer
     role localized_response_template
-    precondition "a request asks for a sorting algorithm or names an algorithm without a test"
+    precondition "a request asks for a sorting algorithm without a test"
     effect "the answer lays out the seeded snippet of the found language with its execution status"
     unit "not applicable"
     example "Here is a reviewable sorting algorithm in rust:"
@@ -108,6 +108,14 @@ meanings
     effect "the answer lays out the seeded snippet and its test with the execution status"
     unit "not applicable"
     example "Here is a reviewable sorting algorithm in python with a test:"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_operation_required
+    defined-by answer
+    role localized_response_template
+    precondition "an algorithm request leaves the operation unspecified"
+    effect "asks for the operation and, if known, the input and expected output"
+    unit "not applicable"
+    example "What should the algorithm do?"
     grounding "data/seed/multilingual-responses-code-tasks.lino"
   algorithm_sort_code_python
     defined-by answer
