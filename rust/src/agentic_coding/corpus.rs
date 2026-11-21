@@ -16,8 +16,6 @@ use super::formalize::CANONICAL_FISHERMAN_SYNOPSIS;
 use super::meaning_detail::{self, CONCEPTS};
 use super::planner::CANONICAL_SOURCE_URL;
 
-mod cached_issues;
-
 /// One page in the offline corpus. Fields are owned so pages can be built from the
 /// [`CONCEPTS`] registry at call time (one Wikidata-lexeme page per concept).
 struct CorpusPage {
@@ -51,14 +49,6 @@ fn pages() -> Vec<CorpusPage> {
         .collect(),
         body: CANONICAL_FISHERMAN_SYNOPSIS.to_owned(),
     }];
-    for &(url, body) in cached_issues::PAGES {
-        pages.push(CorpusPage {
-            url: url.to_owned(),
-            title: url.to_owned(),
-            keywords: vec![url.to_owned()],
-            body: body.to_owned(),
-        });
-    }
     for concept in CONCEPTS {
         // The concept's own routing keywords plus the shared lexeme vocabulary, so
         // both a concept-specific query and a generic "wikidata lexeme …" query hit.
@@ -136,4 +126,47 @@ pub fn web_fetch_result(url: &str) -> Result<String, String> {
         || Err(format!("web_fetch error: 404 not found for {url}")),
         |page| Ok(page.body.clone()),
     )
+}
+
+/// Read a source for the CLI, including public work items outside the corpus.
+///
+/// # Errors
+/// Reports denied or missing captures, retrieval failures, and invalid bodies.
+pub fn fetch_cli_source(url: &str) -> Result<String, String> {
+    web_fetch_result(url).or_else(|missing| {
+        let Some(path) = url.strip_prefix("https://github.com/") else {
+            return Err(missing);
+        };
+        let fields: Vec<_> = path.split('/').collect();
+        let [owner, repo, "issues" | "pull", number] = fields.as_slice() else {
+            return Err(missing);
+        };
+        if [owner, repo].iter().any(|name| {
+            matches!(**name, "" | "." | "..")
+                || !name
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || b"-._".contains(&byte))
+        }) || number.parse::<u64>().ok().is_none_or(|number| number == 0)
+        {
+            return Err(missing);
+        }
+
+        use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
+        let client = CachedSourceClient::new(
+            crate::coding::synthesis_runtime::source_cache_root(),
+            CurlSourceTransport,
+        )
+        .with_online(crate::solver_config::read_network_allowed());
+        let capture = client
+            .fetch(&format!(
+                "https://api.github.com/repos/{owner}/{repo}/issues/{number}"
+            ))
+            .map_err(|error| error.to_string())?;
+        let item: serde_json::Value =
+            serde_json::from_slice(capture.bytes()).map_err(|error| error.to_string())?;
+        item.get("body")
+            .and_then(serde_json::Value::as_str)
+            .map(str::to_owned)
+            .ok_or(missing)
+    })
 }

@@ -1,8 +1,10 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { execFile } from "node:child_process";
 import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
+import { promisify } from "node:util";
 import { startCli, temporaryHome } from "./support/structured-log-fixture.mjs";
 import { startServer } from "../../../js/server/main.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
@@ -98,6 +100,32 @@ test("native chat recovers a matching article after discarding an unrelated one"
 test("native Responses uses procedural sources with the client web search tool available", NATIVE_CASE, async (t) => {
   const { url } = await startNativeProcedureReplay(t, { agentMode: true });
   await assertProceduralAgentRouting(url);
+});
+
+test("native Agent CLI requires a retrieved capture for a known benchmark issue", NATIVE_CASE, async (t) => {
+  const cache = temporaryHome(t);
+  const session = path.join(cache, "session.json");
+  const issue = "https://github.com/link-assistant/formal-ai/issues/698";
+  const endpoint = "https://api.github.com/repos/link-assistant/formal-ai/issues/698";
+  const body = "A test capture for the external benchmark harness.";
+  const task = [
+    "You are an AI issue solver using OpenAI Codex.",
+    `Issue to solve: ${issue}`,
+    "Continue pull request https://github.com/link-assistant/formal-ai/pull/816.",
+    "Read the issue requirements, reproduce them with tests, and verify the change.",
+  ].join("\n");
+  const env = { ...process.env, HOME: cache, FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_OFFLINE: "1" };
+  const args = ["agent", "--task", task, "--session-json", session];
+  async function fetchIssue() {
+    await promisify(execFile)(NATIVE_CLI, args, { env, signal: t.signal });
+    const step = JSON.parse(readFileSync(session, "utf8")).steps.find(step => step.tool === "web_fetch");
+    assert.equal(step?.arguments.url, issue);
+    return step.result;
+  }
+  assert.match(await fetchIssue(), /offline/u);
+  mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
+  storeCapture(cache, endpoint, JSON.stringify({ body }));
+  assert.equal(await fetchIssue(), body);
 });
 
 async function assertProceduralAgentRouting(url) {

@@ -153,7 +153,31 @@ pub fn run_agentic_task_with_tools(
     task: &str,
     tool_names: &[&str],
 ) -> Result<DriverOutcome, AgentError> {
-    run_agentic_task_in_with_tools(task, &AgentWorkspaceConfig::default(), tool_names)
+    run_agentic_task_in_with_tools(
+        task,
+        &AgentWorkspaceConfig::default(),
+        tool_names,
+        &corpus::web_fetch_result,
+    )
+}
+
+/// Drive the loop with a caller-supplied source transport for `web_fetch`.
+///
+/// Benchmark callers use this seam to supply their recorded inputs without
+/// adding those inputs to the executable.
+///
+/// # Errors
+/// Returns an error if the workspace or agent protocol cannot start or continue.
+pub fn run_agentic_task_with_source_fetch(
+    task: &str,
+    fetch_source: impl Fn(&str) -> Result<String, String>,
+) -> Result<DriverOutcome, AgentError> {
+    run_agentic_task_in_with_tools(
+        task,
+        &AgentWorkspaceConfig::default(),
+        &DRIVER_TOOLS,
+        &fetch_source,
+    )
 }
 
 /// Drive the agentic loop for `task` using the given workspace `config`.
@@ -165,13 +189,14 @@ pub fn run_agentic_task_in(
     task: &str,
     config: &AgentWorkspaceConfig,
 ) -> Result<DriverOutcome, AgentError> {
-    run_agentic_task_in_with_tools(task, config, &DRIVER_TOOLS)
+    run_agentic_task_in_with_tools(task, config, &DRIVER_TOOLS, &corpus::web_fetch_result)
 }
 
 fn run_agentic_task_in_with_tools(
     task: &str,
     config: &AgentWorkspaceConfig,
     tool_names: &[&str],
+    fetch_source: &dyn Fn(&str) -> Result<String, String>,
 ) -> Result<DriverOutcome, AgentError> {
     if tool_names
         .iter()
@@ -258,7 +283,8 @@ fn run_agentic_task_in_with_tools(
             if !tool_names.contains(&call.function.name.as_str()) {
                 return Err(std::io::Error::from(std::io::ErrorKind::InvalidInput).into());
             }
-            let (result, failed, source_read) = execute_tool_call(call, &mut workspace);
+            let (result, failed, source_read) =
+                execute_tool_call(call, &mut workspace, fetch_source);
             steps.push(DriverToolStep {
                 tool: call.function.name.clone(),
                 arguments: call.function.arguments.clone(),
@@ -284,6 +310,7 @@ fn run_agentic_task_in_with_tools(
 fn execute_tool_call(
     call: &ToolCall,
     workspace: &mut AgentWorkspace,
+    fetch_source: &dyn Fn(&str) -> Result<String, String>,
 ) -> (String, bool, Option<Value>) {
     let mut source_read = None;
     let (content, failed) = (|| {
@@ -291,7 +318,7 @@ fn execute_tool_call(
             serde_json::from_str(&call.function.arguments).unwrap_or(Value::Null);
         match call.function.name.as_str() {
             "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
-            "web_fetch" => match corpus::web_fetch_result(arg_str(&arguments, "url")) {
+            "web_fetch" => match fetch_source(arg_str(&arguments, "url")) {
                 Ok(body) => (body, false),
                 Err(detail) => (detail, true),
             },

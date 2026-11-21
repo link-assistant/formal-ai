@@ -60,7 +60,7 @@ use cli_statement_audit::{StatementAuditArgs, run_statement_audit};
 use cli_summarization::{SummarizationAction, run_summarization};
 use cli_telegram::run_telegram;
 use cli_translate::run_translate;
-use formal_ai::agentic_coding::run_agentic_task;
+use formal_ai::agentic_coding::{corpus::fetch_cli_source, run_agentic_task_with_source_fetch};
 use formal_ai::{
     ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, ProxyConfig,
     ResponsesRequest, SolverConfig, UniversalSolver, WithFormalAiArgs,
@@ -864,7 +864,7 @@ fn run_agent(
     transcript: bool,
     session_json: Option<&std::path::Path>,
 ) -> Result<(), Box<dyn Error>> {
-    let outcome = run_agentic_task(task)?;
+    let outcome = run_agentic_task_with_source_fetch(task, fetch_cli_source)?;
     if transcript {
         print!("{}", outcome.transcript());
         println!();

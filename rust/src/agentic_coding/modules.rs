@@ -165,7 +165,7 @@ pub use diagram::{DIAGRAM_PATH, DIAGRAM_TASK, is_diagram_task};
 pub use dreaming_audit::{DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK, is_dreaming_audit_task};
 pub use driver::{
     CORE_RECIPE_TOOLS, DRIVER_TOOLS, DriverOutcome, DriverToolStep, run_agentic_task,
-    run_agentic_task_in, run_agentic_task_with_tools,
+    run_agentic_task_in, run_agentic_task_with_source_fetch, run_agentic_task_with_tools,
 };
 pub use execution_learning::{
     EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK, is_execution_learning_task,
