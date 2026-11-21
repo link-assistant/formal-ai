@@ -1,0 +1,20 @@
+{
+  "revision": 2,
+  "trace": [
+    {
+      "cycle": 0,
+      "query": "() ((1 1))",
+      "events": [
+        {
+          "kind": "create",
+          "before": null,
+          "after": {
+            "id": 1,
+            "from_id": 1,
+            "to_id": 1
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -98,7 +98,7 @@ export function parseArgs(argv, env = process.env) {
  */
 export async function startServer({
   host = '127.0.0.1', port = 0, agentMode = false, debugSession = false,
-  env = process.env, ephemeral = flagEnabled(env.FORMAL_AI_EPHEMERAL), worker, logger,
+  env = process.env, ephemeral = flagEnabled(env.FORMAL_AI_EPHEMERAL), worker, logger, metaAdapters,
   outputStandard = env.FORMAL_AI_OUTPUT_STANDARD,
   lexicalDensity = env.FORMAL_AI_LEXICAL_DENSITY,
   prerequisiteGrantJson = env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null,
@@ -108,6 +108,7 @@ export async function startServer({
   if (ephemeral && debugSession) throw new Error('debug_session_requires_retention');
   const diagnostics = ephemeral ? createServeLogger({env, ephemeral}) : logger ?? createServeLogger({env});
   diagnostics.log('debug', 'server.start', {component:'server',host,port,agent_mode:agentMode,debug_session:debugSession});
+  let dynamicMeta = null;
   try {
     const liveMemory=await resolveLiveMemory(env,diagnostics,{readOnly:ephemeral});
     env={...env,FORMAL_AI_MEMORY_PATH:liveMemory.path};
@@ -132,9 +133,17 @@ export async function startServer({
       env, logger:diagnostics, requestSequence:0,
     };
     await ctx.worker.boot();
+    if (!ephemeral && env.FORMAL_AI_DYNAMIC_META_STORE?.trim()) {
+      const { configuredMetaHost } = await import('./dynamic-meta/host.mjs');
+      const adminToken = env.FORMAL_AI_DYNAMIC_META_ADMIN_TOKEN?.trim();
+      if (adminToken) diagnostics.addSecret?.(adminToken);
+      dynamicMeta = configuredMetaHost(env, { adapters: metaAdapters });
+      ctx.dynamicMeta = dynamicMeta;
+    }
     setLearnedImporter((statements) => ctx.worker.run('metaImportLearned(__learned)', { __learned: statements }));
     const server = createServer(ctx);
     server.once('close', () => {
+      dynamicMeta?.close();
       const cleanup=ctx.debugCredentialHandoff?.cleanup();
       if(cleanup && !cleanup.cleaned)diagnostics.log('warn','server.debug_credential_cleanup',{component:'server',reason:cleanup.reason,credential_file:ctx.debugCredentialHandoff.file});
       diagnostics.log('info','server.terminal',{component:'server',reason:ctx.shutdownReason??'server_closed',signal:ctx.shutdownSignal??null});
@@ -144,6 +153,7 @@ export async function startServer({
     const address = server.address();
     return { server, ctx, url: 'http://'+host+':'+address.port };
   } catch(error) {
+    dynamicMeta?.close();
     diagnostics.log('error','server.terminal',{component:'server',reason:'startup_failed',error});
     diagnostics.close();
     throw error;
@@ -151,6 +161,10 @@ export async function startServer({
 }
 
 async function main(argv) {
+  if (argv[0] === 'meta') {
+    const { runMetaCli } = await import('./dynamic-meta/host.mjs');
+    return runMetaCli(argv.slice(1));
+  }
   if (argv.join(' ') === '--help' || argv.join(' ') === 'serve --help') {
     process.stdout.write(`${serverMessage('serve-help')}\n`);
     return 0;
@@ -191,11 +205,20 @@ async function main(argv) {
     logger.close();return 2;
   }
   logger.log('debug','server.memory',{component:'memory',path:memoryPath(process.env)});
-  if (!options.ephemeral) startCoreDreaming({ env: process.env, memoryPath: memoryPath(process.env) });
   let running;
+  const dreaming = options.ephemeral ? null : startCoreDreaming({
+    env: process.env, memoryPath: memoryPath(process.env),
+    afterRun: () => running?.ctx.dynamicMeta?.review(),
+  });
   options.logger=logger;
-  try { running=await startServer(options); }catch{return 1;}
+  try {
+    running = await startServer(options);
+  } catch {
+    dreaming?.stop();
+    return 1;
+  }
   const {url,ctx,server}=running;
+  server.once('close', () => dreaming?.stop());
   if(ctx.debugSession){
     if(ctx.debugSession.generated){
       try{ctx.debugCredentialHandoff=createGeneratedDebugHandoff(ctx.debugSession,{env:ctx.env,url});}

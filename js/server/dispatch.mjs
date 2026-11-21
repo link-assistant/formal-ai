@@ -16,8 +16,9 @@ import { handleResponses } from './responses.mjs';
 import { matchRoute } from './routes.mjs';
 import { emptyResponse, handleBundle, handleHealth, handleHello, handleModels } from './service.mjs';
 import { handleTelegramWebhook } from './telegram.mjs';
+import { META_PATH } from './dynamic-meta/wire.mjs';
 
-/** Route id -> handler `(ctx, request) => ApiHttpResponse | Promise<...>`. */
+/** Route id -> handler `(ctx, request, signal) => ApiHttpResponse | Promise<...>`. */
 export const ROUTE_HANDLERS = Object.freeze({
   options_preflight: () => emptyResponse(204),
   head_probe: () => emptyResponse(200),
@@ -33,6 +34,7 @@ export const ROUTE_HANDLERS = Object.freeze({
   memory: handleMemory,
   memory_since: handleMemorySince,
   memory_import: handleMemoryImport,
+  'dynamic-meta': dispatchDynamicMeta,
   anthropic_messages: handleAnthropicMessages,
   chat_completions: handleChatCompletions,
   responses: handleResponses,
@@ -101,9 +103,13 @@ export function mcpOriginAllowed(headers) {
  * Answer one request.
  * @param {object} ctx server context (`worker`, `memory`, `agentMode`, `bearerToken`)
  * @param {{method: string, path: string, headers: Array<[string, string]>, body: string}} request
+ * @param {AbortSignal} [signal]
  */
-export async function dispatch(ctx, request) {
+export async function dispatch(ctx, request, signal) {
   const normalized = request.path.split('?')[0];
+  if (request.method === 'POST' && normalized === META_PATH) {
+    return dispatchRoute(ctx, request, signal);
+  }
   const authorized = !requiresBearerAuth(request.method, normalized) || authAllows(ctx.bearerToken, request.headers);
   // The planner reads the session id back when it writes a report command
   // (`DialogScope::begin` in `handle_api_request_with_auth`).
@@ -114,8 +120,20 @@ export async function dispatch(ctx, request) {
   });
 }
 
+async function dispatchDynamicMeta(ctx, request, signal) {
+  const allowed = authAllows(ctx.bearerToken, request.headers);
+  if (!ctx.dynamicMeta) {
+    return allowed ? messageError(404, 'dynamic-meta-unavailable') : messageError(401, 'bearer_token_invalid');
+  }
+  const credentials = request.headers.filter(([key]) => key.toLowerCase() === 'x-formal-ai-meta-admin');
+  const admin = credentials.length === 1 && ctx.dynamicMeta.isAdmin(credentials[0][1]);
+  if (!admin && (!ctx.bearerToken || !allowed)) return messageError(401, 'bearer_token_invalid');
+  const { handleDynamicMeta } = await import('./dynamic-meta/host.mjs');
+  return handleDynamicMeta(ctx, request, { admin, signal });
+}
+
 /** `dispatch_api_request_with_auth`. */
-async function dispatchRoute(ctx, request) {
+async function dispatchRoute(ctx, request, signal) {
   const { method, path, headers, body } = request;
   const queryAt = path.indexOf('?');
   const normalizedPath = queryAt >= 0 ? path.slice(0, queryAt) : path;
@@ -123,17 +141,17 @@ async function dispatchRoute(ctx, request) {
   if (normalizedPath === '/mcp' && !mcpOriginAllowed(headers)) {
     return messageError(403, 'mcp_origin_not_allowed');
   }
-  if (requiresBearerAuth(method, normalizedPath) && !authAllows(ctx.bearerToken, headers)) {
+  const matched = matchRoute(method, normalizedPath);
+  if (matched?.route.id !== 'dynamic-meta' && requiresBearerAuth(method, normalizedPath) && !authAllows(ctx.bearerToken, headers)) {
     return messageError(401, 'bearer_token_invalid');
   }
-  const matched = matchRoute(method, normalizedPath);
   if (!matched) return messageError(404, 'route_not_found');
   if (ctx.ephemeral && ['conversation_learn', 'telegram_webhook'].includes(matched.route.id)) {
     return messageError(409, 'operation-requires-persistent-mode');
   }
   const handler = ROUTE_HANDLERS[matched.route.id];
   try {
-    return await handler(ctx, { method, path, normalizedPath, query, headers, body, params: matched.params });
+    return await handler(ctx, { method, path, normalizedPath, query, headers, body, params: matched.params }, signal);
   } catch (error) {
     return errorResponse(500, String(error?.message || error));
   }

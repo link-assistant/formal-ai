@@ -1,0 +1,20 @@
+{
+  "path": "js/server/dynamic-meta/discovery.mjs",
+  "beforeSha256": "0e33a75371c3395df4456b53f9d932e5ee034f4a488cc380e4ac8acc7ce6017a",
+  "afterSha256": "fd3b9bf9df98f54904ae4bbcd7296f484b8cb3e42d2dfe62a8319680b19cd535",
+  "revision": 2,
+  "implementation": "dynamic",
+  "trace": [
+    {
+      "rule_index": 0,
+      "byte_offset": 314
+    },
+    {
+      "rule_index": 0,
+      "byte_offset": 961
+    }
+  ],
+  "halt": {
+    "kind": "no_applicable_rule"
+  }
+}

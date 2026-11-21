@@ -21,6 +21,7 @@ import { projectServerAnswer, requestOutputTurn } from './cnl-output.mjs';
 import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
 import { outputObligation, projectStructuredOutput, structuredAnswerFromSource, structuredOutputRequested, structuredThinkingStep } from './structured-output.mjs';
 import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
+import { recipePrompt } from './dynamic-meta/wire.mjs';
 
 /** Seconds since the epoch, never 0 (`response_timestamp`). */
 export function responseTimestamp() {
@@ -167,6 +168,22 @@ async function createUnprojectedChatCompletion(ctx, request, { forcedClientFunct
       choices: [{ index: 0, message, finish_reason: callId ? 'tool_calls' : 'stop' }],
       usage: { prompt_tokens: promptTokens, completion_tokens: outputTokens, total_tokens: promptTokens + outputTokens },
     };
+  }
+  const recipe = ctx.dynamicMeta && ctx.bearerToken && recipePrompt(prompt);
+  if (recipe) {
+    let answer;
+    let evidence = [];
+    try {
+      const result = await ctx.dynamicMeta.act(recipe);
+      answer = JSON.stringify(result);
+      evidence = [`dynamic-meta:receipt:${result.revision}`];
+    } catch (error) {
+      if (error.code?.startsWith('ERR_SQLITE')) throw error;
+      answer = error.message;
+    }
+    return chatCompletionFromSymbolic(request, prompt, {
+      intent: 'dynamic_recipe', answer, evidence_links: evidence, thinking_steps: [], links_notation: '',
+    });
   }
   const context = formalizeRequest(request.messages);
   const remembered = await answerFromMemory(ctx, prompt, history);

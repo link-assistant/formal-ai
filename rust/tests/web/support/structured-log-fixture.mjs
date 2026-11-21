@@ -109,12 +109,12 @@ export async function startCli(t,{args=[],env={},binary,lifetime=15_000}={}){
         .filter(file=>file.endsWith('.jsonl')||file.endsWith('.lino'))
         .map(file=>fs.readFileSync(path.join(directory,file),'utf8')).join(''):'';
     },
-    async ready(){
+    async ready(headers){
       const until=Date.now()+8000;
       while(Date.now()<until){
         if(closed||spawnError)throw Error('fixture_cli_early_exit');
         try{
-          const response=await fetch(run.url+'/api/hello',{signal:AbortSignal.timeout(300)});
+          const response=await fetch(run.url+'/api/hello',{headers,signal:AbortSignal.timeout(300)});
           if(response.status===200){
             assert.equal(response.headers.get('content-type'),'application/json');
             assert.equal(await response.text(),'{\n  "message": "hello"\n}');

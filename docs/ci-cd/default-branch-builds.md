@@ -18,7 +18,10 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   existing job, with two compiler jobs and test optimization disabled. Issue
   #1584 adds the isolated cnl_output and cnl_parity targets to the same step, so
   the native controlled-language engine runs against the JavaScript parity
-  fixtures before merge. These
+  fixtures before merge. Issue #1604 reuses the native binary from that step to
+  verify dynamic meta authorization and transaction receipts through the native
+  gateway. Its JavaScript host uses the frozen Bun lockfile with lifecycle
+  scripts disabled. These
   regressions prove native behavior; they do not produce release evidence. Full
   suites and product builds remain on main. The job uploads and attests nothing,
   saves no cache and publishes no outputs.

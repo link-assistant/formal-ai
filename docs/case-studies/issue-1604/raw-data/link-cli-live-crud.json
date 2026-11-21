@@ -1,0 +1,149 @@
+{
+  "source": {
+    "url": "https://raw.githubusercontent.com/link-foundation/link-cli/cc6008f06f19cf4aa81823025add2fec7dfe4ba5/README.md",
+    "language": "markdown",
+    "sha256": "da1fd7b688fa1450601a96ea59c6c1197e75d09dded8a9036572baf63e726755"
+  },
+  "datasets": [
+    {
+      "id": "read",
+      "substitute": "((1: 1 1)) ((1: 1 1))",
+      "provenance": {
+        "url": "https://raw.githubusercontent.com/link-foundation/link-cli/cc6008f06f19cf4aa81823025add2fec7dfe4ba5/README.md",
+        "sha256": "da1fd7b688fa1450601a96ea59c6c1197e75d09dded8a9036572baf63e726755",
+        "line": 114
+      }
+    },
+    {
+      "id": "create",
+      "substitute": "() ((1 1))",
+      "provenance": {
+        "url": "https://raw.githubusercontent.com/link-foundation/link-cli/cc6008f06f19cf4aa81823025add2fec7dfe4ba5/README.md",
+        "sha256": "da1fd7b688fa1450601a96ea59c6c1197e75d09dded8a9036572baf63e726755",
+        "line": 128
+      }
+    },
+    {
+      "id": "delete",
+      "substitute": "((1 1)) ()",
+      "provenance": {
+        "url": "https://raw.githubusercontent.com/link-foundation/link-cli/cc6008f06f19cf4aa81823025add2fec7dfe4ba5/README.md",
+        "sha256": "da1fd7b688fa1450601a96ea59c6c1197e75d09dded8a9036572baf63e726755",
+        "line": 136
+      }
+    },
+    {
+      "id": "update",
+      "substitute": "((1: 1 1)) ((1: 1 2))",
+      "provenance": {
+        "url": "https://raw.githubusercontent.com/link-foundation/link-cli/cc6008f06f19cf4aa81823025add2fec7dfe4ba5/README.md",
+        "sha256": "da1fd7b688fa1450601a96ea59c6c1197e75d09dded8a9036572baf63e726755",
+        "line": 144
+      }
+    }
+  ],
+  "install": {
+    "revision": 1,
+    "package": "link-cli-guide",
+    "origin": {
+      "kind": "github",
+      "locator": "link-foundation/link-cli",
+      "revision": "cc6008f06f19cf4aa81823025add2fec7dfe4ba5",
+      "digest": "fae94bd23eaca63eee091f7b6c967a4051a2e075e49ebb7e2161449fe90916a9"
+    }
+  },
+  "setupReceipts": [
+    4,
+    6
+  ],
+  "datasetReceipts": [
+    {
+      "action": "dataset",
+      "revision": 2,
+      "trace": [
+        {
+          "cycle": 0,
+          "query": "() ((1 1))",
+          "events": [
+            {
+              "kind": "create",
+              "before": null,
+              "after": {
+                "id": 1,
+                "from_id": 1,
+                "to_id": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "dataset",
+      "revision": 3,
+      "trace": [
+        {
+          "cycle": 0,
+          "query": "((1: 1 1)) ((1: 1 1))",
+          "events": []
+        }
+      ]
+    },
+    {
+      "action": "dataset",
+      "revision": 5,
+      "trace": [
+        {
+          "cycle": 0,
+          "query": "((1: 1 1)) ((1: 1 2))",
+          "events": [
+            {
+              "kind": "update",
+              "before": {
+                "id": 1,
+                "from_id": 1,
+                "to_id": 1
+              },
+              "after": {
+                "id": 1,
+                "from_id": 1,
+                "to_id": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "dataset",
+      "revision": 7,
+      "trace": [
+        {
+          "cycle": 0,
+          "query": "((1 1)) ()",
+          "events": [
+            {
+              "kind": "delete",
+              "before": {
+                "id": 1,
+                "from_id": 1,
+                "to_id": 1
+              },
+              "after": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finalGraph": {
+    "links": [
+      {
+        "id": 2,
+        "from_id": 2,
+        "to_id": 2
+      }
+    ],
+    "names": []
+  }
+}

@@ -1,0 +1,497 @@
+repository_statement_audit
+  summary
+    statement_count "18"
+    contradiction_count "6"
+    finding_count "7"
+    skipped_path_count "0"
+  statements
+    audited_statement_43fca4c32faf2e0c
+      type "audited_statement"
+      text "The default setting enables dynamic self-modification."
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "CLAIMS.md"
+        line "1"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_c54518faebfe8019
+          source_label "Formal AI host reads an explicit true setting"
+          source_url "https://github.com/link-assistant/formal-ai/pull/1605"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "2026-11-20T15:50:12.557Z"
+          sha256 "sha256:ba5dc0cb35bcb99d2fa335e1ebfd28ed95049d17e00cf7a7dd2d854338bf1195"
+    audited_statement_91efdaed7e3b94c8
+      type "audited_statement"
+      text "SQLite permits only one simultaneous write transaction."
+      posterior "1"
+      relative_weight "1"
+      source_location
+        path "CLAIMS.md"
+        line "3"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "2"
+      evidence
+        evidence_provenance_5666c763f4982a06
+          source_label "SQLite transaction documentation"
+          source_url "https://www.sqlite.org/lang_transaction.html"
+          source_tier "original_first_party"
+          stance "supports"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "2026-11-20T15:50:12.559Z"
+          sha256 "sha256:b65dc308fd9e0ce471844c97366a4f5ad3a1f42833a3b19486ad7d6555a8e24e"
+    audited_statement_168ff550c052f881
+      type "audited_statement"
+      text '"statement": "The default setting enables dynamic self-modification."'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "4"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "statement"
+        value "The default setting enables dynamic self-modification"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_550c5aba43b7668a
+      type "audited_statement"
+      text '"source_label": "Formal AI host reads an explicit true setting"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "5"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "source_label"
+        value "Formal AI host reads an explicit true setting"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_d5a4c706b5611464
+      type "audited_statement"
+      text '"source_url": "https://github.com/link-assistant/formal-ai/pull/1605"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "6"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "source_url"
+        value "https://github.com/link-assistant/formal-ai/pull/1605"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_ed5a2b31304faf85
+      type "audited_statement"
+      text '"stance": "contradicts"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "7"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "stance"
+        value "contradicts"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_3895404ed3e53059
+      type "audited_statement"
+      text '"tier": "original_first_party"'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "8"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "tier"
+        value "original_first_party"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_d5f516146aac17c7
+      type "audited_statement"
+      text '"strength": 1'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "9"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "strength"
+        value "1"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_1635bed7aa9f384c
+      type "audited_statement"
+      text '"captured_at": "2026-11-20T15:50:12.557Z"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "10"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "captured_at"
+        value "2026-11-20T15:50:12.557Z"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_92c3facbdd32b928
+      type "audited_statement"
+      text '"sha256": "sha256:ba5dc0cb35bcb99d2fa335e1ebfd28ed95049d17e00cf7a7dd2d854338bf1195"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "11"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "sha256"
+        value "sha256:ba5dc0cb35bcb99d2fa335e1ebfd28ed95049d17e00cf7a7dd2d854338bf1195"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_30dd9683a5644cd6
+      type "audited_statement"
+      text '"statement": "SQLite permits only one simultaneous write transaction."'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "14"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "statement"
+        value "SQLite permits only one simultaneous write transaction"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_514d749ad117ff3e
+      type "audited_statement"
+      text '"source_label": "SQLite transaction documentation"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "15"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "source_label"
+        value "SQLite transaction documentation"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_0a3f3603f251ee4d
+      type "audited_statement"
+      text '"source_url": "https://www.sqlite.org/lang_transaction.html"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "16"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "source_url"
+        value "https://www.sqlite.org/lang_transaction.html"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_984e2998097e103e
+      type "audited_statement"
+      text '"stance": "supports"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "17"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "stance"
+        value "supports"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_3443f3e738e872de
+      type "audited_statement"
+      text '"tier": "original_first_party"'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "18"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "tier"
+        value "original_first_party"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_17320c8eb68cdf46
+      type "audited_statement"
+      text '"strength": 1'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "evidence.json"
+        line "19"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "strength"
+        value "1"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_2a4af739d468da29
+      type "audited_statement"
+      text '"captured_at": "2026-11-20T15:50:12.559Z"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "20"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "captured_at"
+        value "2026-11-20T15:50:12.559Z"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_fa64dca3683e4de2
+      type "audited_statement"
+      text '"sha256": "sha256:b65dc308fd9e0ce471844c97366a4f5ad3a1f42833a3b19486ad7d6555a8e24e"'
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "evidence.json"
+        line "21"
+        kind "structured"
+      claim
+        subject "evidence.json"
+        predicate "sha256"
+        value "sha256:b65dc308fd9e0ce471844c97366a4f5ad3a1f42833a3b19486ad7d6555a8e24e"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+  contradictions
+    requirement_contradiction_0e6948839bd1a47b
+      type "requirement_contradiction"
+      subject "evidence.json"
+      predicate "captured_at"
+      statement_ids "audited_statement_1635bed7aa9f384c audited_statement_2a4af739d468da29"
+      proposed_resolution "retract the lower-weight statement and append its replacement"
+    requirement_contradiction_70028e0c5238fa35
+      type "requirement_contradiction"
+      subject "evidence.json"
+      predicate "sha256"
+      statement_ids "audited_statement_92c3facbdd32b928 audited_statement_fa64dca3683e4de2"
+      proposed_resolution "retract the lower-weight statement and append its replacement"
+    requirement_contradiction_cfcc7063220164c7
+      type "requirement_contradiction"
+      subject "evidence.json"
+      predicate "source_label"
+      statement_ids "audited_statement_550c5aba43b7668a audited_statement_514d749ad117ff3e"
+      proposed_resolution "retract the lower-weight statement and append its replacement"
+    requirement_contradiction_221fe0f305f58326
+      type "requirement_contradiction"
+      subject "evidence.json"
+      predicate "source_url"
+      statement_ids "audited_statement_d5a4c706b5611464 audited_statement_0a3f3603f251ee4d"
+      proposed_resolution "retract the lower-weight statement and append its replacement"
+    requirement_contradiction_92585255c827fcde
+      type "requirement_contradiction"
+      subject "evidence.json"
+      predicate "stance"
+      statement_ids "audited_statement_ed5a2b31304faf85 audited_statement_984e2998097e103e"
+      proposed_resolution "retract the lower-weight statement and append its replacement"
+    requirement_contradiction_1f219cf76f8700c7
+      type "requirement_contradiction"
+      subject "evidence.json"
+      predicate "statement"
+      statement_ids "audited_statement_168ff550c052f881 audited_statement_30dd9683a5644cd6"
+      proposed_resolution "retract the lower-weight statement and append its replacement"
+  findings
+    audit_finding_99d46276944e88dd
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_43fca4c32faf2e0c"
+    audit_finding_33655c7444803309
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "requirement_contradiction"
+      statement_ids "audited_statement_1635bed7aa9f384c audited_statement_2a4af739d468da29"
+    audit_finding_7249e44e11d0a434
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "requirement_contradiction"
+      statement_ids "audited_statement_92c3facbdd32b928 audited_statement_fa64dca3683e4de2"
+    audit_finding_6e80480db0994db6
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "requirement_contradiction"
+      statement_ids "audited_statement_550c5aba43b7668a audited_statement_514d749ad117ff3e"
+    audit_finding_211fc17b4aefc010
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "requirement_contradiction"
+      statement_ids "audited_statement_d5a4c706b5611464 audited_statement_0a3f3603f251ee4d"
+    audit_finding_4919600bc8c235a1
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "requirement_contradiction"
+      statement_ids "audited_statement_ed5a2b31304faf85 audited_statement_984e2998097e103e"
+    audit_finding_1a39ea2bf2767ed8
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "requirement_contradiction"
+      statement_ids "audited_statement_168ff550c052f881 audited_statement_30dd9683a5644cd6"
+  associations
+    audit_association_eab9cbea597ac169
+      from "audit_finding_1a39ea2bf2767ed8"
+      to "audited_statement_168ff550c052f881"
+    audit_association_672105f7ca9e2a1b
+      from "audit_finding_1a39ea2bf2767ed8"
+      to "audited_statement_30dd9683a5644cd6"
+    audit_association_3c843fd540e2ff63
+      from "audit_finding_211fc17b4aefc010"
+      to "audited_statement_0a3f3603f251ee4d"
+    audit_association_9fea7a51c0ca7d88
+      from "audit_finding_211fc17b4aefc010"
+      to "audited_statement_d5a4c706b5611464"
+    audit_association_2ae5d88996e3f355
+      from "audit_finding_33655c7444803309"
+      to "audited_statement_1635bed7aa9f384c"
+    audit_association_ec75257c33571484
+      from "audit_finding_33655c7444803309"
+      to "audited_statement_2a4af739d468da29"
+    audit_association_1613f5767bab0a05
+      from "audit_finding_4919600bc8c235a1"
+      to "audited_statement_984e2998097e103e"
+    audit_association_37082179fcb3676f
+      from "audit_finding_4919600bc8c235a1"
+      to "audited_statement_ed5a2b31304faf85"
+    audit_association_787847aa68767471
+      from "audit_finding_6e80480db0994db6"
+      to "audited_statement_514d749ad117ff3e"
+    audit_association_06cb987840fc66cc
+      from "audit_finding_6e80480db0994db6"
+      to "audited_statement_550c5aba43b7668a"
+    audit_association_66ee06fd6db30b29
+      from "audit_finding_7249e44e11d0a434"
+      to "audited_statement_92c3facbdd32b928"
+    audit_association_13a1fb5247781109
+      from "audit_finding_7249e44e11d0a434"
+      to "audited_statement_fa64dca3683e4de2"
+    audit_association_e0e799c62844c7b3
+      from "audit_finding_99d46276944e88dd"
+      to "audited_statement_43fca4c32faf2e0c"
+    audit_association_2c387ae42e53fb69
+      from "audited_statement_43fca4c32faf2e0c"
+      to "evidence_provenance_c54518faebfe8019"
+    audit_association_c494fd7f352d584a
+      from "audited_statement_91efdaed7e3b94c8"
+      to "evidence_provenance_5666c763f4982a06"
+    audit_association_3df2874d45c690cb
+      from "requirement_contradiction_0e6948839bd1a47b"
+      to "audited_statement_1635bed7aa9f384c"
+    audit_association_698832aa1891558e
+      from "requirement_contradiction_0e6948839bd1a47b"
+      to "audited_statement_2a4af739d468da29"
+    audit_association_5a5f0d8f829b8350
+      from "requirement_contradiction_1f219cf76f8700c7"
+      to "audited_statement_168ff550c052f881"
+    audit_association_b6f04c681c7db872
+      from "requirement_contradiction_1f219cf76f8700c7"
+      to "audited_statement_30dd9683a5644cd6"
+    audit_association_c213b449ecbd080e
+      from "requirement_contradiction_221fe0f305f58326"
+      to "audited_statement_0a3f3603f251ee4d"
+    audit_association_4e0b9c73e01f902d
+      from "requirement_contradiction_221fe0f305f58326"
+      to "audited_statement_d5a4c706b5611464"
+    audit_association_7b5c3243ba1ec8bf
+      from "requirement_contradiction_70028e0c5238fa35"
+      to "audited_statement_92c3facbdd32b928"
+    audit_association_726adf4b481d9e3b
+      from "requirement_contradiction_70028e0c5238fa35"
+      to "audited_statement_fa64dca3683e4de2"
+    audit_association_1049809b57d50503
+      from "requirement_contradiction_92585255c827fcde"
+      to "audited_statement_984e2998097e103e"
+    audit_association_e3c65fe9e7516e51
+      from "requirement_contradiction_92585255c827fcde"
+      to "audited_statement_ed5a2b31304faf85"
+    audit_association_669948222f2bee6e
+      from "requirement_contradiction_cfcc7063220164c7"
+      to "audited_statement_514d749ad117ff3e"
+    audit_association_23fa2dd8aef0421b
+      from "requirement_contradiction_cfcc7063220164c7"
+      to "audited_statement_550c5aba43b7668a"
+  skipped_paths
