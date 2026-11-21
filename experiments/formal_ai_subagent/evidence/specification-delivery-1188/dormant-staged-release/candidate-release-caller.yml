@@ -247,7 +247,7 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - {uses: actions/checkout@v7, timeout-minutes: 2, env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
-         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n", sparse-checkout-cone-mode: false}}
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/scripts/ci-pull-request-admission.mjs\n/scripts/lib/cargo-package-version.py\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n", sparse-checkout-cone-mode: false}}
       - name: Setup Rust
         if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         uses: dtolnay/rust-toolchain@stable

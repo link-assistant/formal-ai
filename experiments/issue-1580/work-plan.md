@@ -25,6 +25,8 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
+Latest checkpoint: [terminal native round and version parser](../../docs/case-studies/issue-1580/native-round-and-version-parser-checkpoint.md). Published `27e895c1` has 25 successful workflows, one skip and the locally repaired source-witness failure. All eight native contract families pass for that published source. New parser regressions pass locally; their hosted qualification remains pending. Receipt extraction reduces the unchanged-limit source warning count to 91. Earlier checkpoints below retain their original scope and timestamps.
+
 Latest local validation: [88 executed gates pass](../../docs/case-studies/issue-1580/source-witness-validation-checkpoint.md), with 53 explicit skips and no local Rust build. Rust literal review is 356/373 files and 57,336 lines. Fresh registry observations retain both Chrono consumers; migration remains unresolved.
 
 Successful current-head security observers: [hosted assessment](../../docs/case-studies/issue-1580/successful-security-observers-checkpoint.md). Both original SARIF reports and both opt-in profiles complete; 631 unexpanded positions and per-child semantics remain explicit. The maintained scanner retains 92 warnings and zero violations.
