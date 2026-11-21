@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "head": "fbac28e56a61dc763f264de3f4d74cbc8d4f6cce",
+  "startedAt": "2026-11-21T14:22:11.737351+00:00",
+  "workflowCount": 26,
+  "success": 22,
+  "failed": [
+    {
+      "id": 44913466413,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44913466413"
+    },
+    {
+      "id": 44913466270,
+      "name": "Coverage",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44913466270"
+    },
+    {
+      "id": 44913466632,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44913466632"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

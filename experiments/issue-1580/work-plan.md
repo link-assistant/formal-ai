@@ -25,20 +25,19 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `fbac28e5` includes main `f574289f`; 25 of its 26 workflows are
-terminal (22 success, one skip, two failures), and Pipeline is still active.
-Do not push until that run finishes and all actionable failures are collected.
-Unpublished commits through `1fb210cd` repair complete NUL-delimited Git change
-admission and native script-helper accounting, preserve independently requested
-workflow runs, add conservative runner-acquisition recovery, and extract
-capability classification with unchanged runtime behavior.
+Published `fbac28e5` includes main `f574289f` and has 26 terminal workflows:
+22 success, one skip and three failures. All eight native contract families and
+the registry checks pass. The three failures have two actionable causes:
+bounded Git stdout truncates complete change inventories, and a native coverage
+observer omits a helper already compiled into two test owners. Both causes have
+local repairs with regression evidence; next-head hosted validation is pending.
 
-The complete 141-entry local gate attempt has 87 passes, 53 explicit skips and
-one stale-citation failure. Its five citation corrections have a failing-before,
-passing-after regression; the focused gate resolves all 1,318 citations. All
-186 maintained observations and official TypeScript currency checks pass. No
-local Rust compilation is claimed. The unchanged-limit source scan retains
-63 warnings. See the [citation and gate checkpoint](../../docs/case-studies/issue-1580/citation-and-gate-validation-checkpoint.md).
+The complete 141-entry JavaScript gate replay passes 88 checks with 53 explicit
+skips and zero failures. All 191 maintained issue observations pass. Readable
+JSON leaf formatting preserves exact non-whitespace tokens and parsed values,
+adds reproducible producer formatting, and removes three size warnings. The
+unchanged-limit source scan retains 60 warnings. No native compilation or new
+native execution is claimed. See the [readable JSON checkpoint](../../docs/case-studies/issue-1580/readable-json-headroom-checkpoint.md).
 
 All eight complete template/practice reviews, remaining source warnings,
 original budget/live criteria, CodeQL per-child semantic qualification, complete
