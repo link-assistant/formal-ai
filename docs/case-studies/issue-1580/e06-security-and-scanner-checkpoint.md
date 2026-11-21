@@ -44,3 +44,10 @@ PR review remain unfinished. No full local native build or local CodeQL
 evaluation was performed. Supplied commands and code earn zero independent
 authorship credit. [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581)
 remains draft and unmerged.
+
+Final local publication checks initially rejected 113 abbreviated archive names
+and a 4146-line producer manifest. Expanded names and a 150-line lossless
+manifest pass both unchanged gates; all 148 payload hashes still verify. The
+other five touched gates pass. Actual Secretlint 14 scans 568 changed files,
+including 542 compressed archives, with empty stderr. Failed and passing
+observations are retained separately. These are local checks, pending new-head CI.
