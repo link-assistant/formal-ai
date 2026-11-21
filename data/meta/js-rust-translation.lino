@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 342
   workaround_items 38
   inferred_signatures 3
-  carried_items 2658
+  carried_items 2659
   translated_modules 114
   fully_translated_modules 1
   refused_modules 50
@@ -70,7 +70,7 @@ module js/agentic/crate/formalization_structures.mjs translated 0 workaround 0 i
 module js/agentic/crate/history_context.mjs translated 5 workaround 0 inferred 0 carried 18
 module js/agentic/crate/history_github.mjs translated 1 workaround 0 inferred 0 carried 17
 module js/agentic/crate/history_lineage.mjs translated 3 workaround 0 inferred 0 carried 8
-module js/agentic/crate/history_repository_qa.mjs translated 1 workaround 0 inferred 0 carried 16
+module js/agentic/crate/history_repository_qa.mjs translated 1 workaround 0 inferred 0 carried 17
 module js/agentic/crate/history_store.mjs translated 3 workaround 0 inferred 0 carried 30
 module js/agentic/crate/implementation_language.mjs translated 1 workaround 0 inferred 0 carried 22
 module js/agentic/crate/intent_formalization.mjs translated 5 workaround 0 inferred 0 carried 24
@@ -219,8 +219,8 @@ refusal "method call .every()" 19
 refusal "try statement" 19
 refusal "case test" 18
 refusal "undefined" 18
+refusal "method call .flatMap()" 16
 refusal "syntax: @param needs a type and a name" 16
-refusal "method call .flatMap()" 15
 refusal "typeof operator" 15
 refusal "method call .join()" 13
 refusal "for with const" 12

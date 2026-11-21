@@ -11,7 +11,7 @@
 # `unlock` rows are the greedy order: lifting the constructs down to a row
 # together leaves `cumulative` items with nothing refused by this scan.
 translation_blockers
-  carried_items 2658
+  carried_items 2659
   scanned_clear 15
   blockers_per_item 0 15
   blockers_per_item 1 834
@@ -19,7 +19,7 @@ translation_blockers
   blockers_per_item 3 308
   blockers_per_item 4 225
   blockers_per_item 5 218
-  blockers_per_item 6 154
+  blockers_per_item 6 155
   blockers_per_item 7 120
   blockers_per_item 8 90
   blockers_per_item 9 97
@@ -48,18 +48,18 @@ translation_blockers
   blockers_per_item 35 1
   blockers_per_item 41 1
   blockers_per_item 43 1
+construct "field access" items 992 only 26
 construct "call of a sibling function" items 991 only 38
-construct "field access" items 991 only 26
 construct "call of an imported function" items 720 only 20
 construct "null" items 630 only 5
-construct "object without a $ tag" items 594 only 26
+construct "object without a $ tag" items 595 only 26
 construct "arrow function" items 396 only 2
 construct "import of names its module carries" items 362 only 362
-construct "method call .map()" items 320 only 0
+construct "method call .map()" items 321 only 0
 construct "method call .push()" items 314 only 4
 construct "method call .slice()" items 299 only 7
 construct "method call .filter()" items 283 only 0
-construct "arrow callback of .map()" items 274 only 0
+construct "arrow callback of .map()" items 275 only 0
 construct "JSDoc type {…}" items 263 only 5
 construct "regular expression" items 258 only 38
 construct "nullish coalescing" items 237 only 0
@@ -92,10 +92,10 @@ construct "typeof operator" items 73 only 2
 construct "new Map" items 71 only 5
 construct "arrow callback of .every()" items 69 only 0
 construct "method call .set()" items 67 only 0
-construct "method call .flatMap()" items 63 only 0
+construct "method call .flatMap()" items 64 only 0
 construct "try statement" items 62 only 0
 construct "object spread" items 58 only 0
-construct "arrow callback of .flatMap()" items 52 only 0
+construct "arrow callback of .flatMap()" items 53 only 0
 construct "global value Boolean" items 47 only 0
 construct "Object.freeze" items 41 only 0
 construct "arrow callback of .reduce()" items 39 only 0

@@ -63,3 +63,7 @@ mod offline_delivery;
 
 #[path = "issue_896_component_boundaries.rs"]
 mod component_boundaries;
+
+// Repository definition answers must follow current source after helper extractions.
+#[path = "issue_1180_repository_qa.rs"]
+mod issue_1180_repository_qa;

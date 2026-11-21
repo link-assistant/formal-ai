@@ -614,7 +614,7 @@ pub use lineage::{
 };
 pub use query::query_repository_history;
 pub use repository_qa::{
-    CensusSymbol, census_symbols, definition_answer, definition_subjects, status_answer,
-    status_subject, symbol_doc,
+    CensusSymbol, census_document_symbols, census_symbols, definition_answer, definition_subjects,
+    status_answer, status_subject, symbol_doc,
 };
 pub use statements::{requirement_statements, state_transitions};

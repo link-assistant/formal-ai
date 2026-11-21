@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bffa47e9bd24c046a966ae8a4fadee6fed98c4fde2e50cf131b5fe0f43576a22 bytes=7405
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=2d84bc7929a3393c8135560754ccf3668fcd5a36f72860c3d9be90e55caf8714 bytes=7925
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
@@ -37,6 +37,10 @@ pub const NUMBER_PLACEHOLDER: &str = "%number%";
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: malformed number
 // formal-ai:blockers call of a sibling function | field access | global call String() | method call .push() | method call .split() | null | regular expression
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal method call .flatMap()
+// formal-ai:blockers arrow callback of .flatMap() | arrow callback of .map() | field access | method call .flatMap() | method call .map() | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .split()
