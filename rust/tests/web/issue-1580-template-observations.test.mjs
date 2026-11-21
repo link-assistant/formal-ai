@@ -61,3 +61,5 @@ import '../../../experiments/issue-1580/runtime-module-headroom.test.mjs';
 import '../../../experiments/issue-1580/final-native-headroom.test.mjs';
 
 import '../../../experiments/issue-1580/seed-record-readers.test.mjs';
+
+import '../../../experiments/issue-1580/application-conversation-list.test.mjs';

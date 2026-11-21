@@ -29,9 +29,9 @@ Published `ba01ef99` includes main `f574289f`; all 32 workflows are terminal:
 30 succeeded, one skipped and Layered CI rejected stale governed source hashes.
 All nine native pipeline families passed for that published source. The witness
 failure is repaired locally; all 1,189 identities and 221 carried programs remain.
-The latest local replay passes 301 tests, registry/projection currency, formatting
+The latest local replay passes 307 tests, registry/projection currency, formatting
 and affected JavaScript gates. Complete function, implementation, shell and
-metadata extractions reduce source warnings to 11 under unchanged limits.
+metadata extractions reduce source warnings to 10 under unchanged limits.
 No native compilation or execution of these later local changes is claimed.
 
 The complete template/practice comparison, remaining warnings, wider verification
