@@ -344,3 +344,14 @@ for (const [owner, child, names] of [
       /must explicitly locate/u, 'losing the real child resolution must be detected');
   });
 }
+
+test('whole-line operation application retains source-size headroom', () => {
+  const owner = 'rust/src/agentic_coding/workspace_line_operation';
+  assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/applied_changes.rs'])),
+    {warnings: [], violations: [], embeddedDataViolations: []});
+  const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
+  const helper = readFileSync(root + '/' + owner + '/applied_changes.rs', 'utf8');
+  assert(source.includes('mod applied_changes;'));
+  for (const name of ['compute', 'bounded', 'reported', 'reported_values'])
+    assert(helper.includes('fn ' + name + '('), 'every original operation method remains');
+});
