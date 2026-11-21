@@ -810,3 +810,16 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
   push findings with their applied upstream repairs at the current pin.
 - [ ] Complete unchanged/historical files and all applicable practice acceptance;
   investigate the sequential Process pipe reads with a bounded control.
+
+
+## Current PHP process defects and annotation fixture control
+
+- [x] Confirm current PHP Process pipe deadlock and literal-zero loss with the
+  actual pinned helper, a disposable repair and three bounded maintained tests.
+- [x] Preserve the initial 118/119 fixture-order failure; synchronize partial
+  stderr readiness without changing production budgets or test timeouts.
+- [x] Demonstrate expected failure against the old wrapper and 119/119 success
+  against the current source, with every retained evidence hash verified.
+- [ ] Publish the evidence and report the PHP Process defects upstream.
+- [ ] Finish all full-template/practice, original workflow and live acceptance
+  requirements. No complete acceptance is inferred from these focused probes.

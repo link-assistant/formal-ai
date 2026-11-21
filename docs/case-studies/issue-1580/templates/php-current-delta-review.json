@@ -379,8 +379,21 @@
     "imageViewed": "https://github.com/link-foundation/php-ai-driven-development-pipeline-template/blob/b61e334703d93a15e08bf1a278e0df0a9d6e98a8/docs/screenshots/example-app.png"
   },
   "openObservations": [
-    "Process drains stdout before stderr; a bounded concurrent-pipe reproduction is still needed before treating this as a confirmed defect.",
+    "Confirmed at current b61e3347: Process::run blocks on finite stderr-first output because stdout is drained first; it also drops literal zero strings through PHP truthiness. Three maintained tests exercise the original source, a disposable concurrent-reader candidate and positive controls. Upstream report remains pending.",
     "Complete 608-file practice adoption and historical coverage remain incomplete."
   ],
-  "independentAuthorshipCredit": 0
+  "independentAuthorshipCredit": 0,
+  "processPipeObservations": {
+    "testFile": "experiments/issue-1580/template-php-pipe-integrity.test.mjs",
+    "testsPassed": 3,
+    "actualPhp": true,
+    "perProcessMemoryLimitMiB": 32,
+    "outerProcessGroupDeadlineSeconds": 2,
+    "bytesPerStream": 131072,
+    "currentSourceSha256": "97a1b126035a71434739ecc962d73c74b44ea8ea802263b74031e04332b43bbf",
+    "originalCurrentBytesIdentical": true,
+    "upstreamRepairApplied": false,
+    "upstreamReport": null,
+    "evidence": "experiments/issue-1580/evidence/checks/php-pipe-and-annotation-readiness"
+  }
 }
