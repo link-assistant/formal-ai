@@ -56,3 +56,8 @@ mod pinned_tool_images;
 // Qualify complete artifact, Pages and release policy assertions on pull requests.
 #[path = "ci-cd/release_publishing.rs"]
 mod release_publishing;
+
+// Compile the canonical generator and its bundle/include contracts before merge.
+#[allow(dead_code)]
+#[path = "../../../scripts/generate-seed-registry.rs"]
+mod generate_seed_registry;
