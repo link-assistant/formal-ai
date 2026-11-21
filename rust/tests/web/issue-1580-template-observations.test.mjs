@@ -1,4 +1,4 @@
-// Keep the content-addressed template reproductions in the maintained JS CI suite.
+// Keep content-addressed reproductions and CI warning regressions in the maintained JS CI suite.
 import '../../../experiments/issue-1580/template-go-result-integrity.test.mjs';
 import '../../../experiments/issue-1580/template-go-current-pipeline.test.mjs';
 import '../../../experiments/issue-1580/template-inventory-integrity.test.mjs';
@@ -23,3 +23,5 @@ import '../../../experiments/issue-1580/budget-annotation-boundaries.test.mjs';
 import '../../../experiments/issue-1580/template-php-pipe-integrity.test.mjs';
 import '../../../experiments/issue-1580/template-python-scriv-integrity.test.mjs';
 import '../../../experiments/issue-1580/template-python-javascript-detection.test.mjs';
+import '../../../experiments/issue-1580/worker-notation.test.mjs';
+import '../../../experiments/issue-1580/worker-code-tasks.test.mjs';

@@ -25,17 +25,16 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Latest published head `adeb4ff4` has all 26 normal workflows terminal:
-25 success, one skip and no failed workflow. All eight native families and
-release-registry checks pass. Three retained failure annotations, 91 source
-warnings and publish-token uncertainty remain explicit investigation items.
-The current local maintained entry passes all 126 cases with zero skips;
-five affected gates and the direct documentation checker also pass.
-See [terminal hosted and local evidence](../../docs/case-studies/issue-1580/terminal-template-observation-checkpoint.md).
-The earlier `e06d1f18` has a successful separately dispatched actual CodeQL
-producer. Full template/practice, original source/budget/live and complete PR
-acceptance remain open. Earlier checkpoint entries below retain their dated
-heads and do not describe the latest run.
+Latest published head `84e1ad85` has 25 of 26 normal workflows terminal:
+24 success, one skip and no failures observed; Pipeline remains active in the
+current capture. No push is permitted until current-head workflows finish.
+The local worker extraction passes 45 focused tests, 130 maintained cases,
+TypeScript generation/runtime checks and all 141 local gate entries (88 pass,
+53 explicit skips). Four source-size warnings are repaired; 87 remain under
+unchanged limits. Full template/practice, original budget/live and complete
+issue acceptance remain open. See the
+[worker extraction checkpoint](../../docs/case-studies/issue-1580/worker-warning-extraction-checkpoint.md).
+Earlier checkpoint entries below retain their dated heads and scope.
 
 
 Latest checkpoint: [current native failures and gate inputs](../../docs/case-studies/issue-1580/current-native-failure-checkpoint.md). Published `8b0d6f59` has 24 successful workflows, one skip and two failures. All eight native contract families and registry-script checks pass. Process termination and pipeline schema regressions pass locally; the CodeQL thread candidate and failed-fetch native guard still need hosted qualification. Fresh observations identify changed heads in seven templates; earlier comparisons retain their original pins. Full issue acceptance remains unfinished.
@@ -860,3 +859,11 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
   trips and dependency audit observations; review all 247 package identity rows.
 - [ ] Complete literal bundle/lock and every dependency-edge semantic review,
   full current/historical template scope and original issue acceptance.
+
+### Worker notation file-size warning repair, 2026-11-21
+
+The unchanged file-size gate reports 1460 lines in each meaning-lexicon twin. A focused regression reproduces that warning before extraction while notation and binding behavior pass. Extract the existing notation/parser/substitution section byte-for-byte into its own named worker module, regenerate the worker inventory and TypeScript twins, and partition the existing worker ceiling without increasing the combined allowance. Verify the regression, both worker loading orders, canonical generation, and the complete JavaScript gate set before the next push. Supplied implementation and commands receive zero independent-authorship credit. This repairs two warnings only; the remaining issue acceptance criteria stay open.
+
+### Code-task file-size warning repair, 2026-11-21
+
+The unchanged size gate also warns on both 1417-line code-task twins. The new focused test reproduces that warning while the original success/rejection/refusal behavior passes. Extract the complete existing refactoring section unchanged, regenerate the canonical module inventory and TypeScript twins, partition the existing ceiling without growth, admit the regression through the maintained CI entry, and refresh the generated status inventory. Recheck all affected tests and the complete JavaScript gates before publication. Supplied edits and commands retain zero independent-authorship credit. Full issue acceptance remains unfinished.
