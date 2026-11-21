@@ -63,8 +63,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-actionlint
-      cancel-in-progress: true
+      group: check-${{ github.workflow }}-${{ github.ref }}-actionlint${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 3
@@ -150,8 +150,8 @@ jobs:
     permissions:
       contents: read
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-zizmor
-      cancel-in-progress: true
+      group: check-${{ github.workflow }}-${{ github.ref }}-zizmor${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 3
@@ -247,8 +247,8 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-2025]
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-artifact-${{ matrix.os }}
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-artifact-${{ matrix.os }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 3
@@ -289,8 +289,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-buildkit-bootstrap
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-buildkit-bootstrap${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 3

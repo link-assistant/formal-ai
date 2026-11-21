@@ -1,0 +1,1 @@
+Cancel only synchronized pull-request checks and give independently requested CI observations distinct run groups, with enforcement and actual event-matrix controls while preserving shared writer queues and all 52 release operations.

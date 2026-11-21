@@ -353,25 +353,27 @@ pub fn read_only_group(job: &str, job_name: &str, workflows: &[(String, String)]
         .lines()
         .take_while(|line| line.starts_with("  "))
         .collect();
-    let expected_group =
-        format!("  group: ${{{{ github.workflow }}}}-${{{{ github.ref }}}}-{job_name}");
+    let expected_group = format!(
+        "  group: ${{{{ github.workflow }}}}-${{{{ github.ref }}}}-{job_name}"
+    ) + "${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}";
     fields.contains(&expected_group.as_str())
-        && fields.contains(&"  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}")
+        && fields.contains(&"  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}")
 }
 
 #[test]
 fn delegated_read_only_group_requires_real_callee_and_protected_main_policy() {
     let job = "  evidence:\n    uses: ./.github/workflows/evidence.yml\n";
-    let source = "name: Evidence\non:\n  workflow_call:\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}-evidence\n  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n";
+    let source = "name: Evidence\non:\n  workflow_call:\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}-evidence${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}\n  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n";
     let catalog = |text: &str| vec![("evidence.yml".to_owned(), text.to_owned())];
     assert!(read_only_group(job, "evidence", &catalog(source)));
     assert!(!read_only_group(job, "evidence", &[]));
     for changed in [
         source.replace("concurrency:", "unowned:"),
+        source.replace("${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}", ""),
         source.replace("workflow_call:", "push:"),
         source.replace("-evidence", "-parent"),
-        source.replace("${{ github.ref != 'refs/heads/main' }}", "true"),
-        source.replace("${{ github.ref != 'refs/heads/main' }}", "false"),
+        source.replace("${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}", "true"),
+        source.replace("${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}", "false"),
     ] {
         assert!(!read_only_group(job, "evidence", &catalog(&changed)));
     }

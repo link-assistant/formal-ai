@@ -44,6 +44,26 @@ export function checkSource(file, source) {
   return {observations, problems};
 }
 
+
+// Only repeated synchronize checks may supersede one another. Keep manual,
+// ready-for-review and push observations independent even for the same SHA.
+export const SYNCHRONIZE_CANCELLATION = "${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}";
+export const INDEPENDENT_RUN_SUFFIX = "${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}";
+export function checkEventCancellation(file, workflow) {
+  const problems=[],scopes=[['workflow',workflow.concurrency]];
+  for(const [name,job]of Object.entries(mapping(workflow.jobs)?workflow.jobs:{}))
+    scopes.push(['job '+name,job?.concurrency]);
+  for(const [scope,policy]of scopes) {
+    if(!mapping(policy)||policy['cancel-in-progress']===undefined||policy['cancel-in-progress']===false)continue;
+    const problem=message=>problems.push({file,scope,message});
+    if(policy['cancel-in-progress']!==SYNCHRONIZE_CANCELLATION)
+      problem('check cancellation must be restricted to pull_request synchronize');
+    if(typeof policy.group!=='string'||!policy.group.endsWith(INDEPENDENT_RUN_SUFFIX))
+      problem('independent event runs must have a run-specific concurrency group');
+  }
+  return problems;
+}
+
 export function checkRepository(root = ROOT) {
   const directory = join(root, '.github/workflows');
   const files = readdirSync(directory, {withFileTypes: true})
@@ -54,6 +74,11 @@ export function checkRepository(root = ROOT) {
     const result = checkSource(file, readFileSync(join(root, file), 'utf8'));
     observations.push(...result.observations);
     problems.push(...result.problems);
+    const document=YAML.parseDocument(readFileSync(join(root,file),'utf8'));
+    if(!document.errors.length) {
+      const workflow=document.toJS({maxAliasCount:100});
+      if(mapping(workflow))problems.push(...checkEventCancellation(file,workflow));
+    }
   }
   if (!files.length) problems.push({file: directory, scope: 'repository', message: 'no workflow sources checked'});
   return {files, observations, problems};

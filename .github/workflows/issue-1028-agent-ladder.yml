@@ -81,8 +81,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: issue-1028-agent-cli-binary-tree-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: issue-1028-agent-cli-binary-tree-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
 
 jobs:
   plan:

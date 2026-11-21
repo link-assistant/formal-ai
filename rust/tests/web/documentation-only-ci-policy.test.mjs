@@ -47,10 +47,13 @@ test('automatic bot checks require complete file observations and both sides of 
 test('lightweight read-only checks cancel superseded PRs and protect main', () => {
   const {concurrency} = workflows.find(workflow => workflow.path.endsWith('/documentation-policy.yml')).document;
   const expression = concurrency['cancel-in-progress'].replace(/^\$\{\{\s*|\s*\}\}$/gu,'');
-  const evaluate = ref => new Script(expression).runInNewContext({github:{ref}}, {timeout:100});
-  assert.equal(evaluate('refs/pull/1/merge'),true);
-  assert.equal(evaluate('refs/heads/fix/example'),true);
-  assert.equal(evaluate('refs/heads/main'),false);
+  const evaluate = (event,action,ref='refs/heads/main') => new Script(expression)
+    .runInNewContext({github:{event_name:event,event:{action},ref}}, {timeout:100});
+  assert.equal(evaluate('pull_request','synchronize','refs/pull/1/merge'),true);
+  for(const action of ['opened','reopened','ready_for_review'])
+    assert.equal(evaluate('pull_request',action,'refs/pull/1/merge'),false);
+  for(const event of ['workflow_dispatch','push'])
+    for(const ref of ['refs/heads/main','refs/heads/fix/example'])assert.equal(evaluate(event,undefined,ref),false);
   assert.ok(concurrency.group.includes('github.workflow') && concurrency.group.includes('github.ref'));
 });
 test('native admission unit tests run in CI before their outputs select the tiers', () => {

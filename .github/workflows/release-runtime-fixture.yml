@@ -55,9 +55,8 @@ jobs:
           if-no-files-found: error
           retention-days: 3
     concurrency:
-      group: formal-ai-release-fixture-check-auto_compile-release-${{ github.workflow
-        }}-${{ github.ref }}
-      cancel-in-progress: true
+      group: formal-ai-release-fixture-check-auto_compile-release-${{ github.workflow }}-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
   active-fixture:
     name: Active reusable fixture
     needs: auto_compile-release
@@ -119,9 +118,8 @@ jobs:
           if-no-files-found: error
           retention-days: 3
     concurrency:
-      group: formal-ai-release-fixture-check-observer-${{ github.workflow }}-${{
-        github.ref }}
-      cancel-in-progress: true
+      group: formal-ai-release-fixture-check-observer-${{ github.workflow }}-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
   fixture-contender:
     name: Fixture private queued contender
     needs:
@@ -182,6 +180,5 @@ jobs:
           if-no-files-found: error
           retention-days: 3
     concurrency:
-      group: formal-ai-release-fixture-check-collect-${{ github.workflow }}-${{
-        github.ref }}
-      cancel-in-progress: true
+      group: formal-ai-release-fixture-check-collect-${{ github.workflow }}-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}

@@ -897,8 +897,8 @@ test('source-event relocation preserves exact readonly producer semantics withou
   assert.deepEqual(Object.keys(reusable.on), ['workflow_call']);
   assert.deepEqual(reusable.permissions, {contents:'read'});
   assert.deepEqual(reusable.concurrency, {
-    group:'${{ github.workflow }}-${{ github.ref }}-hive-source-provenance',
-    'cancel-in-progress':"${{ github.ref != 'refs/heads/main' }}"
+    group:"${{ github.workflow }}-${{ github.ref }}-hive-source-provenance${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}",
+    'cancel-in-progress':"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"
   });
   assert.deepEqual(Object.keys(reusable.jobs), ['hive-source-provenance']);
   const expectedJob = {

@@ -81,7 +81,7 @@ test('both actual GHCR workflow settings preserve the original cache contract',(
  assert.equal(settings.length,2);for(const text of settings)assert.deepEqual(releaseImageCacheSettings({BUILD_CACHE_SETTINGS:text}),{'cache-from':'type=gha,scope=docker-image','cache-to':'type=gha,mode=max,scope=docker-image'});
  const observation=release.slice(release.indexOf('  native-response-observations:\n'),release.indexOf('  box-language-projects:\n'));
  assert.ok(observation.includes('group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations'));
- assert.ok(observation.includes("cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}"));
+ assert.ok(observation.includes("cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"));
  const workflow=readFileSync(new URL('../../../.github/workflows/native-response-observations.yml',import.meta.url),'utf8');
  const downloads=[...workflow.matchAll(/      - uses: \.\/\.github\/actions\/download-artifact\n([\s\S]*?)(?=      - |$)/gu)];assert.equal(downloads.length,2);
  for(const step of downloads)assert.ok(!step[1].includes('NODE_OPTIONS'));
