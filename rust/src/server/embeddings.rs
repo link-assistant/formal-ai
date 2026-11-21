@@ -14,8 +14,8 @@ use crate::seed::{lexicon, parser::parse_lino, try_resolve_model_id};
 
 pub(super) const MODEL: &str = "formal-ai-embeddings";
 pub(super) const DIMENSIONS: u16 = 4096;
-const MAX_INPUTS: usize = 128;
-const MAX_INPUT_TOKENS: u32 = 8192;
+const MAXIMUM_INPUTS: usize = 128;
+const MAXIMUM_INPUT_TOKENS: u32 = 8192;
 
 static WORD_PATTERN: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"[\p{L}\p{M}\p{N}]+").expect("valid embedding token pattern"));
@@ -30,14 +30,14 @@ fn words(text: &str) -> impl Iterator<Item = &str> {
 
 struct ConceptIndex {
     surfaces: BTreeMap<String, Vec<usize>>,
-    max_words: usize,
+    maximum_words: usize,
 }
 
 impl ConceptIndex {
     fn build() -> Option<Self> {
         let mut surfaces = BTreeMap::<_, BTreeSet<_>>::new();
         let mut concepts = BTreeSet::new();
-        let mut max_words = 0;
+        let mut maximum_words = 0;
         for meaning in &lexicon().meanings {
             let grounded = meaning
                 .wikidata
@@ -61,7 +61,7 @@ impl ConceptIndex {
                     .or_default()
                     .insert(concept.clone());
                 concepts.insert(concept.clone());
-                max_words = max_words.max(tokens.len());
+                maximum_words = maximum_words.max(tokens.len());
             }
         }
         if concepts.len() > usize::from(DIMENSIONS) {
@@ -82,7 +82,7 @@ impl ConceptIndex {
             .collect();
         Some(Self {
             surfaces,
-            max_words,
+            maximum_words,
         })
     }
 
@@ -95,7 +95,12 @@ impl ConceptIndex {
             let mut surface = String::new();
             let mut matched = None;
             let mut next = start + 1;
-            for (end, word) in tokens.iter().enumerate().skip(start).take(self.max_words) {
+            for (end, word) in tokens
+                .iter()
+                .enumerate()
+                .skip(start)
+                .take(self.maximum_words)
+            {
                 if end > start {
                     surface.push(' ');
                 }
@@ -137,7 +142,7 @@ fn message(key: &str) -> &str {
 fn invalid(field: &str) -> ApiHttpResponse {
     error_response(
         400,
-        &message("invalid_embeddings_request").replace("{field}", field),
+        &message("invalid-embeddings-request").replace("{field}", field),
     )
 }
 
@@ -151,7 +156,7 @@ fn encode_base64(vector: Vec<u8>) -> String {
 
 pub(super) fn handle(body: &str) -> ApiHttpResponse {
     let Ok(Value::Object(request)) = serde_json::from_str(body) else {
-        return error_response(400, message("invalid_embeddings_json"));
+        return error_response(400, message("invalid-embeddings-json"));
     };
     let Some(model) = request
         .get("model")
@@ -162,7 +167,7 @@ pub(super) fn handle(body: &str) -> ApiHttpResponse {
         return invalid("model");
     };
     if !model.eq_ignore_ascii_case(MODEL) && try_resolve_model_id(Some(model)).is_none() {
-        let error = message("unsupported_embeddings_model")
+        let error = message("unsupported-embeddings-model")
             .replace("{canonical}", MODEL)
             .replace("{model}", model);
         return error_response(400, &error);
@@ -183,7 +188,7 @@ pub(super) fn handle(body: &str) -> ApiHttpResponse {
     };
     let inputs = match request.get("input") {
         Some(Value::String(text)) => vec![text.as_str()],
-        Some(Value::Array(items)) if (1..=MAX_INPUTS).contains(&items.len()) => {
+        Some(Value::Array(items)) if (1..=MAXIMUM_INPUTS).contains(&items.len()) => {
             let Some(texts) = items.iter().map(Value::as_str).collect::<Option<Vec<_>>>() else {
                 return invalid("input");
             };
@@ -195,13 +200,13 @@ pub(super) fn handle(body: &str) -> ApiHttpResponse {
     let mut usage = 0;
     for text in &inputs {
         let tokens = estimate_tokens(text);
-        if text.trim().is_empty() || tokens > MAX_INPUT_TOKENS {
+        if text.trim().is_empty() || tokens > MAXIMUM_INPUT_TOKENS {
             return invalid("input");
         }
         usage += tokens;
     }
     let Some(catalog) = CONCEPT_INDEX.get_or_init(ConceptIndex::build) else {
-        return error_response(500, message("embeddings_catalog_capacity"));
+        return error_response(500, message("embeddings-catalog-capacity"));
     };
     let data: Vec<_> = inputs
         .iter()

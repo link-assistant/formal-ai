@@ -74,14 +74,17 @@ test('English synonyms and Russian translations share concept coordinates', { ti
   await run.ready(headers);
   const request = {
     model,
-    input: ['storekeeper', 'stockroom attendant', 'КЛАДОВЩИК', 'forklift operator',
+    input: ['storekeeper', 'stockroom attendant', 'КЛАДОВЩИК', 'भंडारपाल', '仓库保管员', 'almacenero', 'forklift operator',
       'tomato', 'томат', 'помидор', 'картофель', 'foldqlxvunknown'],
   };
   const result = await embed(run, request);
-  const [storekeeper, synonym, russian, forklift, tomato, tomat, pomidor, potato, unknown] =
+  const [storekeeper, synonym, russian, hindi, chinese, spanish, forklift, tomato, tomat, pomidor, potato, unknown] =
     result.data.map(({ embedding }) => embedding);
   assert.equal(cosine(storekeeper, synonym), 1);
   assert.equal(cosine(storekeeper, russian), 1);
+  for (const translation of [hindi, chinese, spanish]) {
+    assert.deepEqual(translation, storekeeper);
+  }
   assert.ok(cosine(storekeeper, russian) > cosine(storekeeper, forklift));
   assert.equal(cosine(tomat, pomidor), 1);
   assert.equal(cosine(tomato, pomidor), 1);

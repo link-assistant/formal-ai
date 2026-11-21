@@ -34,13 +34,13 @@ server_messages
     text "invalid chat request: {error}"
   message invalid_responses_request
     text "invalid responses request: {error}"
-  message invalid_embeddings_request
+  message invalid-embeddings-request
     text "invalid embeddings request: {field}"
-  message invalid_embeddings_json
+  message invalid-embeddings-json
     text "invalid embeddings request: expected a JSON object"
-  message unsupported_embeddings_model
+  message unsupported-embeddings-model
     text "unsupported model `{model}`; use `{canonical}` or a configured alias"
-  message embeddings_catalog_capacity
+  message embeddings-catalog-capacity
     text "the concept vocabulary exceeds the embedding model dimensions"
   message invalid_messages_request
     text "invalid messages request: {error}"
