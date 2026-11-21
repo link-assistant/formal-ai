@@ -220,13 +220,15 @@ function checkNativeExport(run, client, logs, command) {
     });
   } else if (client.name === 'Aider') {
     tool = 'aider';
+    const chatHistory = path.join(config, '.aider.chat.history.md');
     const old = '# aider chat started at 2026-11-20 10:00:00\n\n#### A different conversation\n\n';
     const current = '# aider chat started at 2026-11-21 10:00:00\n\n'
       + history.map(text => `#### ${text}  \n\n> Tokens: 2 sent, 1 received.  \n\n`).join('');
     env.FORMAL_AI_REPORT_DIALOG_ID = session;
-    env.FORMAL_AI_REPORT_AIDER_HISTORY = config;
+    env.FORMAL_AI_REPORT_AIDER_HISTORY = chatHistory;
     env.FORMAL_AI_REPORT_AIDER_HISTORY_START = String(Buffer.byteLength(old));
-    writeFileSync(config, old + current);
+    mkdirSync(config, { recursive: true });
+    writeFileSync(chatHistory, old + current);
   } else if (client.name === 'Gemini' || client.name === 'Vertex') {
     tool = 'gemini';
     nativeId = '79dd7290-ac1c-4c3f-a490-cd47e612eb82';
