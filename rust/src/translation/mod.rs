@@ -5,8 +5,8 @@
 //! `source → formalize → semantic meta language → deformalize → target`
 //! flow on top of Wikipedia, Wikidata and Wiktionary. There is no
 //! pre-extracted translation table built into the binary: every answer is
-//! the result of an actual API round-trip (live or replayed from the
-//! seeded raw-response cache).
+//! derived from the source response, retrieved on demand or read from a
+//! locally populated cache.
 //!
 //! 1. **Formalize** — fetch the source-edition Wiktionary page and the
 //!    Wikidata Lexeme / Q-item that backs the surface so the surface
@@ -22,18 +22,14 @@
 //! [`cache::DEFAULT_CACHE_DIR`] keyed by **semantic identity** of the
 //! resource (Wikidata Q-id, Wiktionary `(lang, page)`, SPARQL query hash,
 //! …) so a single fetch can feed translation, fact lookup, attribute
-//! formalization or any other formalization path. Older raw response seed
-//! bundles under [`cache::SEED_CACHE_DIR`] are still replayable when present,
-//! but issue #398 moved reviewed source-id snapshots to lossless `.lino` JSON
-//! files under `data/cache/wikidata/`. Live fetches are gated on
+//! formalization or any other formalization path. Live fetches are gated on
 //! `FORMAL_AI_LIVE_API=1`.
 //!
 //! ## Module layout
 //!
 //! - [`http`] — `curl`-backed HTTP client; mirrors [`crate::telegram_runtime`]
 //!   so we don't pull a TLS crate into the core.
-//! - [`cache`] — semantic-identity file cache for raw API responses, with
-//!   support for replaying responses from a committed `.lino` seed bundle.
+//! - [`cache`] — semantic-identity file cache for raw API responses.
 //! - [`meaning`] — `MeaningId`, the semantic meta-language identity.
 //! - [`wiktionary`] — Wiktionary client + wikitext parser.
 //! - [`wikidata`] — Wikidata SPARQL + Lexeme / entity / property client.
@@ -42,8 +38,8 @@
 //!
 //! ## Default wiring
 //!
-//! Most callers want a process-wide translator that consults the seeded
-//! raw-response cache first and falls through to live HTTP only when
+//! Most callers want a process-wide translator that reads the local
+//! response cache first and falls through to live HTTP only when
 //! `FORMAL_AI_LIVE_API=1`. Use [`translate_via_default_pipeline`] for that.
 
 use std::sync::OnceLock;
@@ -91,8 +87,7 @@ pub use selection::{
 
 /// Process-wide cached HTTP client used by the default pipeline.
 ///
-/// The client reads from the committed seed cache and the gitignored
-/// local accelerator under `data/` first and falls through to the live
+/// The client reads the local cache under `data/` and falls through to the live
 /// network only when `FORMAL_AI_LIVE_API=1` is set. This keeps unit
 /// tests offline by default; integration runs that refresh the cache
 /// opt in explicitly.

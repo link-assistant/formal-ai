@@ -114,11 +114,11 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert(workflow('release.yml').jobs['pipeline-status'].needs.includes('native-type-check'));
   const native = paths => admission(paths)['native-type-check'];
   for (const path of ['rust/src/proof_engine/types.rs', 'rust/build.rs', 'rust/Cargo.lock', 'rust/embedded/data/seed/a.lino',
-    'data/seed/api-cache/x.lino', '.cargo/config.toml', 'rust-toolchain.toml', '.github/workflows/release.yml', '.github/workflows/native-type-check.yml',
+    '.cargo/config.toml', 'rust-toolchain.toml', '.github/workflows/release.yml', '.github/workflows/native-type-check.yml',
     '.github/actions/setup-sccache/action.yml', 'scripts/ci-clippy-profile.sh', 'clippy.toml', 'new-top-level/unknown.txt'])
     assert.equal(native([path]), true, path);
   for (const path of ['docs/a.md', 'README.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
-    'rust/tests/unit/proof_request.rs', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.lino', 'experiments/a/b.sh',
+    'rust/tests/unit/proof_request.rs', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.lino', 'data/seed/api-cache/x.lino', 'experiments/a/b.sh',
     '.github/workflows/links.yml', 'package.json', 'bun.lock'])
     assert.equal(native([path]), false, path);
   assert.equal(native([]), true, 'an empty observation is unknown, so the check runs');

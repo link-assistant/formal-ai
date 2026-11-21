@@ -28,9 +28,8 @@ RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-
 # 419s and 355s, and it gates the pipeline's finish on its own.
 #
 # The stand-in sources exist because `cargo build` needs the targets its
-# manifest declares. `build.rs` is copied for real -- it reads
-# `data/seed/api-cache/` and emits an empty registry when absent, which is the
-# case in this build, so it does not pull the data tree into this layer.
+# manifest declares. The same `build.rs` generates the owned-source manifest
+# for these stand-ins and for the real source tree in the next layer.
 # Plan 16 L1 moved the crate to `rust/`, so the manifests and the stand-in
 # sources are staged under /app/rust and cargo runs against that manifest.
 COPY rust/Cargo.toml rust/Cargo.lock rust/build.rs rust/
