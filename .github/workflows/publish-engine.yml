@@ -142,10 +142,11 @@ jobs:
         id: protocol
         env:
           RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
-        run: |
-          node scripts/release-protocol.mjs capture "$GITHUB_WORKSPACE" \
-            "$RUNNER_TEMP/browser-engine-protocol" "$RELEASE_PROTOCOL_COMMIT" engine
-          bash scripts/verify-browser-artifact.sh --capture "$RUNNER_TEMP/formal-ai-browser-verification"
+        run: >-
+          node scripts/release-protocol.mjs capture "$GITHUB_WORKSPACE"
+          "$RUNNER_TEMP/browser-engine-protocol" "$RELEASE_PROTOCOL_COMMIT" engine
+      - name: Capture the workflow-owned browser smoke test
+        run: bash scripts/verify-browser-artifact.sh --capture "$RUNNER_TEMP/formal-ai-browser-verification"
       - name: Restore the triggering source before optional release-tag selection
         uses: actions/checkout@v7
         with:
