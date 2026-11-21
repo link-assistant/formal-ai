@@ -8,6 +8,7 @@ import { promisify } from "node:util";
 import { startCli, temporaryHome } from "./support/structured-log-fixture.mjs";
 import { startServer } from "../../../js/server/main.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
+import { procedureBooks, procedureBookCaptures } from "./support/procedure-publisher-captures.mjs";
 
 const RUSSIAN_REQUEST = "Как хорошо покакать?";
 const CODEX_REQUEST = "Как какать?";
@@ -37,6 +38,39 @@ function storeCapture(cache, source, content) {
   writeFileSync(path.join(cache, "source-cache", `${key.toString(16).padStart(16, "0")}.meta`),
     `source-capture-v2\nurl=${source}\nfetched_at=${Math.floor(Date.now() / 1000)}\nsha256=${digest}\n`);
 }
+
+test("native offline chat discovers procedures from verified Wikibooks captures", NATIVE_CASE, async (t) => {
+  const cache = temporaryHome(t);
+  mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
+  for (const [index, book] of procedureBooks.entries()) {
+    for (const [url, body] of procedureBookCaptures(book, index === 0)) storeCapture(cache, url, body);
+  }
+  const run = await startCli(t, {
+    binary: NATIVE_CLI,
+    env: {
+      FORMAL_AI_SOURCE_CACHE_DIR: cache,
+      FORMAL_AI_OFFLINE: "1",
+      FORMAL_AI_DISABLED_SERVICES: "externalServiceWikihow",
+    },
+    lifetime: 25_000,
+  });
+  await run.ready();
+  for (const book of procedureBooks) {
+    const response = await fetch(`${run.url}/v1/chat/completions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        model: "formal-ai", stream: false, messages: [{ role: "user", content: "How to " + book.task + "?" }],
+      }),
+    });
+    assert.ok(response.ok, await response.clone().text());
+    const content = (await response.json()).choices[0].message.content;
+    const firstStep = content.match(/^1\. (.+)$/mu)?.[1];
+    assert.match(firstStep ?? "", book.firstStep);
+    assert.ok(content.includes(book.page), content);
+    assert.doesNotMatch(content, /unrelated instruction/u);
+  }
+});
 
 async function startNativeProcedureReplay(t, { agentMode = false } = {}) {
   const cache = temporaryHome(t);

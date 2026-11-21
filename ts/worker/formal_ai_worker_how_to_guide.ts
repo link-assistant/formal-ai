@@ -85,6 +85,18 @@ function howToParseUrl(record, title) {
   return `${base}?action=parse&page=${howToPercentEncode(title)}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
 }
 
+function howToMediaWikiApi(endpoint) {
+  return String(endpoint || "").split("?")[0].endsWith("/api.php");
+}
+
+function howToNominalSearch(record, task, language) {
+  const [action, ...words] = task.split(" ");
+  const actions = String(handlerRulesPolicy("procedural_how_to", `nominal-title-actions-${language}`) || "").split(/\s+/u);
+  if (!words.length || !actions.includes(action)) return null;
+  const [namespace, prefix] = String(handlerRulesTableValue("procedure-nominal-title-namespaces", record.id) || "").split("|");
+  return /^\d+$/u.test(namespace) && prefix ? { namespace, prefix: prefix + ":", subject: words.join(" ") } : null;
+}
+
 /** The Stack Exchange answers of one question, best-voted first. */
 function howToAnswersUrl(record, questionId) {
   const api = String(record.api || "");
@@ -315,6 +327,23 @@ function howToExtractSteps(html, limit) {
   return steps;
 }
 
+function howToOrderedProcedureSteps(html, labels, requireSection, limit) {
+  const headings = [...html.matchAll(/<h([1-6])(?:\s[^>]*)?>(.*?)<\/h[1-6]>/gisu)];
+  const wanted = headings.findIndex(heading => labels.includes(howToCompactStepText(heading[2]).toLowerCase()));
+  if (wanted === -1 && requireSection) return [];
+  let section = html;
+  if (wanted !== -1) {
+    const heading = headings[wanted];
+    const end = headings.slice(wanted + 1).find(next => next[1] <= heading[1])?.index;
+    section = html.slice(heading.index + heading[0].length, end);
+  }
+  for (const list of section.matchAll(/<ol(?:\s[^>]*)?>(.*?)<\/ol>/gisu)) {
+    const steps = howToExtractSteps(list[1], limit);
+    if (steps.length >= HOW_TO_MIN_ACCEPTED_STEPS) return steps;
+  }
+  return [];
+}
+
 /** Same-wiki article titles linked from rendered HTML, deduplicated. */
 function howToWikiLinkTitles(html, limit) {
   const titles = [];
@@ -349,6 +378,13 @@ function howToTopicWords(value) {
     .map(howToSingular);
 }
 
+function howToNominalWords(text) {
+  return text.toLowerCase()
+    .split(/[^\p{L}\p{N}\p{M}]+/u)
+    .filter(word => word && !["a", "an", "the"].includes(word))
+    .map(howToSingular);
+}
+
 /**
  * Whether `candidate` is about `task`. A search endpoint answers with its
  * *best* matches, not with matching pages, so a candidate contributes only when
@@ -360,7 +396,12 @@ function howToMatchesTask(task, candidate, language = "") {
   if (wanted.length === 0) return false;
   const offered = howToTopicWords(candidate);
   const negation = handlerRulesPolicy("procedural_how_to", `negation-${language}`);
-  if (negation && wanted.includes(negation) !== offered.includes(negation)) return false;
+  if (negation) {
+    const allWords = value => value.toLowerCase().split(/[^\p{L}\p{N}\p{M}]+/u);
+    const taskWords = allWords(task);
+    const titleWords = allWords(candidate);
+    if (negation.split(/\s+/u).some(word => taskWords.includes(word) !== titleWords.includes(word))) return false;
+  }
   const prefix = handlerRulesPolicy("procedural_how_to", `aspect-prefix-${language}`);
   const endings = String(handlerRulesPolicy("procedural_how_to", `infinitive-endings-${language}`) || "")
     .split(/\s+/u).filter(Boolean);
@@ -486,21 +527,34 @@ function howToReadCapture(record, task, capture, depth, produced, bounds, langua
   const items = [];
   const follow = [];
   let detail = "";
-  const titleMatches = (title) => howToMatchesTask(task, title, record.id === "wikihow" ? language : "");
+  const isWiki = howToMediaWikiApi(record.api);
+  const isWikiHow = record.id === "wikihow";
+  const nominal = howToNominalSearch(record, task, language);
+  const nominalMatch = title => {
+    if (!nominal || !title.startsWith(nominal.prefix)) return false;
+    const subjectWords = howToNominalWords(nominal.subject);
+    const candidateWords = howToNominalWords(title.slice(nominal.prefix.length));
+    return subjectWords.length > 0 && subjectWords.join(" ") === candidateWords.join(" ");
+  };
+  const titleMatches = title => howToMatchesTask(task, title, language) || nominalMatch(title);
+  const fullSearch = howToSearchUrl(record, task);
+  const nominalUrl = nominal ? howToSearchUrl(record, nominal.subject) + `&srnamespace=${nominal.namespace}` : "";
+  const search = () => follow.push(...(nominalUrl ? [fullSearch, nominalUrl] : [fullSearch]));
   if (payload.kind === "parse") {
-    const relevant = record.id !== "wikihow" || titleMatches(payload.title);
-    const localized = record.id === "wikihow" && new URL(capture.url).hostname !== "www.wikihow.com";
+    if (produced > 0) return { items, follow, detail };
+    const relevant = isWiki && titleMatches(payload.title);
+    const localized = isWikiHow && new URL(capture.url).hostname !== "www.wikihow.com";
+    const labels = String(handlerRulesPolicy("procedural_how_to", "ordered-section-labels") || "").split("|");
     const found = !relevant ? [] : localized
       ? howToWikiHowStepLists(payload.html, bounds.maxItems, true)
-      : howToExtractSteps(payload.html, bounds.maxItems);
+      : isWikiHow ? howToExtractSteps(payload.html, bounds.maxItems)
+        : howToOrderedProcedureSteps(payload.html, labels, nominalMatch(payload.title), bounds.maxItems);
     if (!relevant) detail = `no_relevant_result url=${capture.url}`;
     if (found.length === 0 && depth < bounds.maxDepth) {
       for (const title of howToWikiLinkTitles(payload.html, bounds.maxPagesPerService)) {
         if (titleMatches(title)) follow.push(howToParseUrl(record, title));
       }
-      if (follow.length === 0 && (!relevant || record.id === "wikihow")) {
-        follow.push(howToSearchUrl(record, task));
-      }
+      if (follow.length === 0 && isWiki) search();
     }
     howToPushSteps(record, capture, depth, found, items);
   } else if (payload.kind === "items") {
@@ -524,19 +578,21 @@ function howToReadCapture(record, task, capture, depth, produced, bounds, langua
         if (entry.questionId) follow.push(howToAnswersUrl(record, entry.questionId));
       }
     }
-  } else if (payload.kind === "opensearch" || payload.kind === "search") {
+  } else if (isWiki && (payload.kind === "opensearch" || payload.kind === "search")) {
     const relevant = payload.titles
       .filter(titleMatches)
       .slice(0, bounds.maxPagesPerService);
-    if (relevant.length === 0) detail = `no_relevant_result url=${capture.url}`;
+    if (relevant.length === 0) {
+      detail = `no_relevant_result url=${capture.url}`;
+      if (nominalUrl && capture.url === fullSearch) follow.push(nominalUrl);
+    }
     if (depth < bounds.maxDepth) {
       for (const title of relevant) follow.push(howToParseUrl(record, title));
     }
   } else {
     detail = `unreadable_payload reason=${payload.reason} url=${capture.url}`;
-    const isWiki = String(record.api || "").includes("api.php");
     if (isWiki && String(payload.reason).startsWith("api_error") && depth < bounds.maxDepth) {
-      follow.push(howToSearchUrl(record, task));
+      search();
     }
   }
   items.forEach((item, index) => { item.position = produced + index + 1; });
@@ -556,7 +612,7 @@ async function synthesizeHowToGuide(task, preferences, bounds, now, language = "
     accessibilityKey: (record, url) => record.id === "wikihow" && new URL(url).hostname !== "www.wikihow.com"
       ? `${record.id}@${new URL(url).hostname}` : record.id,
     emptyStatus: "no_steps",
-    fallbackEntryUrl: (record, url) => record.id === "wikihow" && limits.maxDepth > 0
+    fallbackEntryUrl: (record, url) => howToMediaWikiApi(record.api) && limits.maxDepth > 0
       ? howToSearchUrl({ api: url }, subject) : null,
     read(record, capture, depth, produced, declared) {
       const read = howToReadCapture({ ...record, api: capture.url }, subject, capture, depth, produced, declared, language);

@@ -319,6 +319,43 @@ pub(super) fn wiki_how_steps(html: &str, limit: usize) -> Vec<String> {
     }
 }
 
+/// Select one ordered procedure. Nominal catalogue entries must explicitly
+/// label the section that supplies the steps.
+pub(super) fn ordered_procedure_steps(
+    html: &str,
+    labels: &str,
+    require_section: bool,
+    limit: usize,
+) -> Vec<String> {
+    use std::sync::LazyLock;
+    static HEADINGS: LazyLock<regex::Regex> =
+        LazyLock::new(|| regex::Regex::new(r"(?is)<h([1-6])(?:\s[^>]*)?>(.*?)</h[1-6]>").unwrap());
+    static LISTS: LazyLock<regex::Regex> =
+        LazyLock::new(|| regex::Regex::new(r"(?is)<ol(?:\s[^>]*)?>(.*?)</ol>").unwrap());
+    let headings: Vec<_> = HEADINGS.captures_iter(html).collect();
+    let named_section = headings.iter().enumerate().find_map(|(index, heading)| {
+        let label = compact_step_text(&heading[2]).to_lowercase();
+        if !labels.split('|').any(|name| name == label) {
+            return None;
+        }
+        let start = heading.get(0)?.end();
+        let end = headings[index + 1..]
+            .iter()
+            .find(|next| next[1] <= heading[1])
+            .and_then(|next| next.get(0))
+            .map_or(html.len(), |next| next.start());
+        Some(&html[start..end])
+    });
+    if require_section && named_section.is_none() {
+        return Vec::new();
+    }
+    LISTS
+        .captures_iter(named_section.unwrap_or(html))
+        .map(|list| extract_steps(&list[1], limit))
+        .find(|steps| steps.len() >= super::MIN_ACCEPTED_STEPS)
+        .unwrap_or_default()
+}
+
 /// Ordered steps found in rendered HTML.
 ///
 /// List items are the only step carrier: prose paragraphs describe, lists

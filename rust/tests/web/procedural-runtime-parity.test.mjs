@@ -7,9 +7,51 @@ import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.
 import { specificationCases } from "../../../scripts/lib/rust-specification-cases.mjs";
 import { executeTypedProgram } from "../../../scripts/lib/rust-specification-programs.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
+import { bookPage, bookSearch, procedureBooks, procedureBookCaptures } from "./support/procedure-publisher-captures.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const CACHE_DIR = path.join(REPO_ROOT, "rust/tests/fixtures/issue-991/source-cache");
+
+test("ranked Wikibooks procedures verify the page title, required words, and procedure section", async () => {
+  const requested = [];
+  const captures = new Map();
+  for (const [index, book] of procedureBooks.entries()) {
+    for (const [url, body] of procedureBookCaptures(book, index === 0)) captures.set(url, { body });
+  }
+  const pancakes = procedureBooks[1];
+  const qualified = "prepare pancakes north american without milk";
+  captures.set(bookPage("Prepare Pancakes North American Without Milk"), captures.get(pancakes.page));
+  captures.set(bookSearch(qualified), captures.get(pancakes.search));
+  captures.set(bookSearch("pancakes north american without milk", "&srnamespace=102"), captures.get(pancakes.scoped));
+  const context = await bootWorker(captures, requested);
+  const run = async (task, extra = {}) => {
+    context.__bookPrompt = "How to " + task + "?";
+    context.__bookPreferences = { externalServiceWikihow: false, ...extra };
+    return plain(await evaluate(context, 'tryProceduralHowTo(__bookPrompt, "en", __bookPreferences)'));
+  };
+  for (const book of procedureBooks) {
+    const start = requested.length;
+    const result = await run(book.task);
+    assert.ok(result.guide?.steps.length >= 2, result.content);
+    assert.match(result.guide.steps[0].text, book.firstStep);
+    assert.deepEqual(result.guide.steps.map(step => step.sourceUrl), result.guide.steps.map(() => book.page));
+    assert.ok(result.guide.steps.every(step =>
+      step.sha256 === createHash("sha256").update(captures.get(book.page).body).digest("hex")));
+    assert.deepEqual(requested.slice(start).filter(url => new URL(url).hostname === "en.wikibooks.org"),
+      [book.direct, book.search, book.scoped, book.page]);
+    assert.doesNotMatch(result.content, /unrelated instruction/u);
+  }
+  const rejected = await run(qualified);
+  assert.equal(rejected.guide, undefined, rejected.content);
+  assert.ok(!rejected.evidence.includes("source:" + pancakes.page));
+  const count = requested.length;
+  const offline = await run(procedureBooks[0].task, { offline: true });
+  assert.equal(offline.guide.steps[0].sourceUrl, procedureBooks[0].page);
+  assert.equal(requested.length, count);
+  const disabled = await run(procedureBooks[0].task, { offline: true, externalServiceMediawikiFamily: false });
+  assert.equal(disabled.guide, undefined);
+  assert.ok(!disabled.evidence.some(line => line === "source:" + procedureBooks[0].page));
+});
 const originals = [
   ["greeting_prefixed_russian_connect_how_to_composes_procedure", 7, 11],
   ["procedural_elaboration_followup_rebinds_to_prior_how_to", 4, 6],
