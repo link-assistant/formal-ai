@@ -172,7 +172,7 @@ impl Harness {
             }
             Self::Aider(history) => {
                 if std::env::var("FORMAL_AI_REPORT_DIALOG_ID").as_deref() != Ok(identifier) {
-                    return Err(io::ErrorKind::NotFound.into());
+                    return Err(io::Error::from(io::ErrorKind::NotFound).into());
                 }
                 ("aider", terminal::aider_messages(history)?)
             }

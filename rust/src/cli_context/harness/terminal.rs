@@ -4,10 +4,10 @@ use std::fs::File;
 use std::io::{self, BufRead, BufReader, Seek, SeekFrom};
 use std::path::{Path, PathBuf};
 
+use formal_ai::protocol::MessageContent;
 use serde_json::{Value, json};
 
 use super::{modified, subdirectories, valid_identifier};
-use crate::protocol::MessageContent;
 
 pub(super) fn grok_session(root: &Path, wanted: Option<&str>) -> io::Result<(String, PathBuf)> {
     subdirectories(root)
