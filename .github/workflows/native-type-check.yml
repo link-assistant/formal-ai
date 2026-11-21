@@ -325,7 +325,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        group: [coding-1, coding-2, reasoning-1, reasoning-2, benchmarks, interfaces, hive-1, hive-2, hive-3]
+        group: [coding-1, coding-2, reasoning-1, reasoning-2, benchmarks, interfaces, hive-1, hive-2, hive-3, hive-4]
     env:
       CARGO_BUILD_JOBS: '2'
       FORMAL_AI_OFFLINE: '1'

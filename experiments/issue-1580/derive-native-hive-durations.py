@@ -3,6 +3,7 @@
 import argparse
 from datetime import datetime
 import gzip
+import math
 from pathlib import Path
 import re
 
@@ -55,10 +56,19 @@ def measured_text():
     rows.extend([
             '  recorded 2026-11-20', '  unit seconds',
             '  default-seconds 60',
-            '  purpose "Maximum completed sequential hosted duration per case; unseen cases weigh 60 seconds."',
+            '  purpose "Maximum completed hosted duration per case, plus explicitly estimated language partitions; unseen cases weigh 60 seconds."',
             '  regenerate "python3 experiments/issue-1580/derive-native-hive-durations.py --write"'])
     for name, seconds in sorted(durations.items(), key=lambda row: (-row[1], row[0])):
         rows.extend([f'  test "{name}"', f'    seconds {seconds:.3f}'])
+    # These four new tests execute the old case's same four complete sessions.
+    # Until hosted per-language measurements exist, retain its whole measured
+    # cost as rounded-up equal scheduling estimates. They are not observations.
+    aggregate = 'issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification'
+    estimate = math.ceil(durations[aggregate] / 4)
+    for language in ['kotlin', 'scala', 'rust', 'python']:
+        rows.extend([f'  test "{aggregate}_{language}"', f'    seconds {estimate:.3f}',
+            '    duration-kind estimate', f'    aggregate-test "{aggregate}"',
+            '    partition-count 4'])
     return '\n'.join(rows) + '\n'
 
 

@@ -31,7 +31,7 @@ contract_targets=(
 # Validate before invoking Cargo so misspelled matrix groups cannot replay all tests.
 group="${1:-all}"
 if [[ "$#" -gt 1 ]]; then
-  echo 'Usage: ci-native-regressions.sh [all|core|coding|coding-1|coding-2|reasoning|reasoning-1|reasoning-2|hive|hive-1|hive-2|hive-3|benchmarks|interfaces]' >&2
+  echo 'Usage: ci-native-regressions.sh [all|core|coding|coding-1|coding-2|reasoning|reasoning-1|reasoning-2|hive|hive-1|hive-2|hive-3|hive-4|benchmarks|interfaces]' >&2
   exit 2
 fi
 case "$group" in
@@ -47,7 +47,7 @@ case "$group" in
     cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast "${core_targets[@]}" -- --test-threads=1 --nocapture
     exit "$?"
     ;;
-  hive-1|hive-2|hive-3|reasoning-1|reasoning-2|coding-1|coding-2)
+  hive-1|hive-2|hive-3|hive-4|reasoning-1|reasoning-2|coding-1|coding-2)
     # Whole-family clocks expired after successful cases in runs 44652802985
     # (Hive) and 44775337494 (reasoning). Plan the actual compiled listing
     # using those sequential observations, keeping every original test once.
@@ -59,7 +59,7 @@ case "$group" in
       listing="$(native_cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
         --test "$target" -- --list --format terse)"
     elif [[ "$family" == hive ]]; then
-      shard_count=3
+      shard_count=4
       listing="$(native_cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
         --test reasoning_contracts issue_1133_hive_mind_three_runs:: -- --list --format terse)"
     else
@@ -120,7 +120,7 @@ case "$group" in
     exit "$?"
     ;;
   *)
-    echo 'Usage: ci-native-regressions.sh [all|core|coding|coding-1|coding-2|reasoning|reasoning-1|reasoning-2|hive|hive-1|hive-2|hive-3|benchmarks|interfaces]' >&2
+    echo 'Usage: ci-native-regressions.sh [all|core|coding|coding-1|coding-2|reasoning|reasoning-1|reasoning-2|hive|hive-1|hive-2|hive-3|hive-4|benchmarks|interfaces]' >&2
     exit 2
     ;;
 esac

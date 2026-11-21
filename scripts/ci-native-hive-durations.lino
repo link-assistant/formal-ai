@@ -14,7 +14,7 @@ test_durations
   recorded 2026-11-20
   unit seconds
   default-seconds 60
-  purpose "Maximum completed sequential hosted duration per case; unseen cases weigh 60 seconds."
+  purpose "Maximum completed hosted duration per case, plus explicitly estimated language partitions; unseen cases weigh 60 seconds."
   regenerate "python3 experiments/issue-1580/derive-native-hive-durations.py --write"
   test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification"
     seconds 672.933
@@ -92,3 +92,23 @@ test_durations
     seconds 0.001
   test "issue_1133_hive_mind_three_runs::extended::an_escaped_newline_in_edit_prose_is_a_newline"
     seconds 0.001
+  test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_kotlin"
+    seconds 169.000
+    duration-kind estimate
+    aggregate-test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification"
+    partition-count 4
+  test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_scala"
+    seconds 169.000
+    duration-kind estimate
+    aggregate-test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification"
+    partition-count 4
+  test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_rust"
+    seconds 169.000
+    duration-kind estimate
+    aggregate-test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification"
+    partition-count 4
+  test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification_python"
+    seconds 169.000
+    duration-kind estimate
+    aggregate-test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification"
+    partition-count 4

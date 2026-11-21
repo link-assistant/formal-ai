@@ -18,7 +18,7 @@ const groups = {
   'coding-1': ['coding_contracts'], 'coding-2': ['coding_contracts'],
   'reasoning-1': ['reasoning_contracts'], 'reasoning-2': ['reasoning_contracts'],
   benchmarks: ['reasoning_contracts'], interfaces: ['interface_contracts'],
-  'hive-1': ['reasoning_contracts'], 'hive-2': ['reasoning_contracts'], 'hive-3': ['reasoning_contracts'],
+  'hive-1': ['reasoning_contracts'], 'hive-2': ['reasoning_contracts'], 'hive-3': ['reasoning_contracts'], 'hive-4': ['reasoning_contracts'],
 };
 const hiveNames = [
   'extended::a_workflow_requirement_adds_the_workflow_in_every_language',
@@ -110,7 +110,7 @@ test('native workflow gives every expensive family its own bounded independent j
   assert.deepEqual(producer.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
   assert(!matrix.steps.some(step => /sccache|cache-cargo-registry/u.test(step.uses ?? '')), 'consumer jobs never compile');
   const upload = producer.steps.find(step => step.uses === 'actions/upload-artifact@v7');
-  const download = matrix.steps.find(step => step.uses === 'actions/download-artifact@v8');
+  const download = matrix.steps.find(step => step.uses === './.github/actions/download-artifact');
   assert(upload && download);
   assert.equal(upload.with.name, 'native-contracts-${{ github.sha }}');
   assert.equal(download.with.name, upload.with.name);
@@ -150,18 +150,18 @@ function executedShard(observed, family = 'hive') {
   assert(names.length > 0, 'an empty shard must never run the entire target');
   return names;
 }
-test('the three native Hive shards cover the live listing exactly once without renaming cases', {timeout: 15000}, () => {
-  const actual = [1, 2, 3].flatMap(index => executedShard(observe(['hive-' + index])));
+test('the four native Hive shards cover the live listing exactly once without renaming cases', {timeout: 15000}, () => {
+  const actual = [1, 2, 3, 4].flatMap(index => executedShard(observe(['hive-' + index])));
   assert.deepEqual(actual.toSorted(), hiveNames.toSorted());
   assert.equal(new Set(actual).size, actual.length);
 });
 test('Hive shard selection is deterministic under a reordered native listing', {timeout: 15000}, () => {
-  for (const index of [1, 2, 3]) {
+  for (const index of [1, 2, 3, 4]) {
     assert.deepEqual(executedShard(observe(['hive-' + index])),
       executedShard(observe(['hive-' + index], 0, {names: [...hiveNames].reverse()})));
   }
 });
-for (const index of [1, 2, 3]) {
+for (const index of [1, 2, 3, 4]) {
   test(`Hive shard ${index} preserves listing and execution failures`, {timeout: 15000}, () => {
     const listing = observe(['hive-' + index], 0, {listStatus: 19});
     assert.equal(listing.result.status, 19, listing.result.stderr);
@@ -498,4 +498,24 @@ test('coding weights reproduce complete observations while retaining unfinished-
     {encoding: 'utf8', timeout: 10000, maxBuffer: 65536});
   assert.equal(result.status, 0, result.stderr);
   assert.equal(admission(['scripts/ci-native-coding-durations.lino'])['native-type-check'], true);
+});
+
+test('each workflow language is independently schedulable below the unchanged warning boundary', () => {
+  const source = readFileSync('rust/tests/unit/issue_1133_hive_mind_three_runs.rs', 'utf8');
+  const languages = ['kotlin', 'scala', 'rust', 'python'];
+  const prefix = 'issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification';
+  const cases = languages.map(language => prefix + '_' + language);
+  const functions = [...source.matchAll(/#\[test\]\s+fn (repository_workflows_include_runtime_setup_and_output_verification\w*)\(\)/gu)].map(match => 'issue_1133_hive_mind_three_runs::' + match[1]);
+  assert.deepEqual(functions.toSorted(), cases.toSorted(), 'four complete sessions must be four real tests');
+  const weights = parseTestDurations(readFileSync('scripts/ci-native-hive-durations.lino', 'utf8'));
+  const names = [...weights.keys()].filter(name => name !== prefix);
+  for (const name of cases) {
+    assert(weights.get(name) >= weights.get(prefix) / 4, 'derived estimates retain the full aggregate work');
+  }
+  const {shards, load} = planShards(names, 4, durationLookup(weights, 60));
+  assert.deepEqual(partitionProblems(names, shards), {missing: [], repeated: [], extra: []});
+  assert(new Set(cases.map(name => shards.findIndex(shard => shard.includes(name)))).size >= 3);
+  assert(Math.max(...load) < 675, 'all language assertions fit below the existing 75% boundary');
+  const actual = [1, 2, 3, 4].flatMap(index => executedShard(observe(['hive-' + index], 0, {names})));
+  assert.deepEqual(actual.toSorted(), names.toSorted());
 });

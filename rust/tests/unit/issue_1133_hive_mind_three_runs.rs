@@ -130,83 +130,95 @@ fn generated_output_verifier_rejects_wrong_bytes_and_nonzero_processes() {
     fs::remove_dir_all(root).unwrap();
 }
 
-#[test]
-fn repository_workflows_include_runtime_setup_and_output_verification() {
-    for (language, setup) in [
-        ("Kotlin", "kotlin"),
-        ("Scala", "coursier"),
-        ("Rust", "rustup"),
-        ("Python", "setup-python"),
-    ] {
-        // Delivery checks consume real status, tracked paths and source bytes.
-        // A blank compiler fixture cannot stand in for those Git observations.
-        let delivery = crate::offline_delivery::Workspace::for_work_item(
-            language,
-            &format!("workflow-replay-{language}"),
-            BRANCH,
-            PR,
-        );
-        let mut messages = vec![ChatMessage::user(prompt())];
-        let objective = page(language);
-        let (planned, _) = drive_with_delivery_workspace(
-            &AGENT_TOOLS,
-            &mut messages,
-            |tool, arguments| {
-                if is_work_item_read(tool, arguments) {
-                    objective.clone()
-                } else if serde_json::from_str::<serde_json::Value>(arguments)
-                    .ok()
-                    .and_then(|value| value["command"].as_str().map(str::to_owned))
-                    .as_deref()
-                    == Some("sh tests/verify-output.sh")
-                {
-                    // This unit covers workflow composition; compiler execution
-                    // is an explicit fixture, separate from observed Git delivery.
-                    "Output: Hello, World!\n\nExit Code: 0".to_owned()
-                } else {
-                    String::new()
-                }
-            },
-            24,
-            Some(&delivery),
-        );
-        let workflow = planned
-            .iter()
-            .find(|call| path_of(call).starts_with(".github/workflows/"))
-            .unwrap_or_else(|| panic!("missing workflow for {language}"));
+fn verify_repository_workflow(language: &str, setup: &str) {
+    // Delivery checks consume real status, tracked paths and source bytes.
+    // A blank compiler fixture cannot stand in for those Git observations.
+    let delivery = crate::offline_delivery::Workspace::for_work_item(
+        language,
+        &format!("workflow-replay-{language}"),
+        BRANCH,
+        PR,
+    );
+    let mut messages = vec![ChatMessage::user(prompt())];
+    let objective = page(language);
+    let (planned, _) = drive_with_delivery_workspace(
+        &AGENT_TOOLS,
+        &mut messages,
+        |tool, arguments| {
+            if is_work_item_read(tool, arguments) {
+                objective.clone()
+            } else if serde_json::from_str::<serde_json::Value>(arguments)
+                .ok()
+                .and_then(|value| value["command"].as_str().map(str::to_owned))
+                .as_deref()
+                == Some("sh tests/verify-output.sh")
+            {
+                // This unit covers workflow composition; compiler execution
+                // is an explicit fixture, separate from observed Git delivery.
+                "Output: Hello, World!\n\nExit Code: 0".to_owned()
+            } else {
+                String::new()
+            }
+        },
+        24,
+        Some(&delivery),
+    );
+    let workflow = planned
+        .iter()
+        .find(|call| path_of(call).starts_with(".github/workflows/"))
+        .unwrap_or_else(|| panic!("missing workflow for {language}"));
+    assert!(
+        workflow.arguments.to_lowercase().contains(setup),
+        "{language}: {workflow:?}"
+    );
+    // Every step opens its own line: the rendered fragments are line
+    // blocks, never glued onto the previous step's last line.
+    let written: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
+    for line in written["content"].as_str().unwrap_or_default().lines() {
+        let markers = line.matches("- uses:").count() + line.matches("- run:").count();
         assert!(
-            workflow.arguments.to_lowercase().contains(setup),
-            "{language}: {workflow:?}"
-        );
-        // Every step opens its own line: the rendered fragments are line
-        // blocks, never glued onto the previous step's last line.
-        let written: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
-        for line in written["content"].as_str().unwrap_or_default().lines() {
-            let markers = line.matches("- uses:").count() + line.matches("- run:").count();
-            assert!(
-                markers == 0 || (markers == 1 && line.trim_start().starts_with('-')),
-                "{language}: glued step line `{line}`"
-            );
-        }
-        let verifier = planned
-            .iter()
-            .find(|call| path_of(call) == "tests/verify-output.sh")
-            .unwrap_or_else(|| panic!("missing output assertion for {language}"));
-        assert!(verifier.arguments.contains("Hello, World!"), "{verifier:?}");
-        assert!(
-            workflow.arguments.contains("tests/verify-output.sh"),
-            "{workflow:?}"
-        );
-        let commit = planned
-            .iter()
-            .map(command_of)
-            .find(|command| command.contains("git commit"))
-            .unwrap_or_else(|| panic!("commit after verification for {language}: {planned:?}"));
-        assert!(
-            !commit.contains("git add -A"),
-            "compiler outputs and unrelated files must not be staged: {commit}"
+            markers == 0 || (markers == 1 && line.trim_start().starts_with('-')),
+            "{language}: glued step line `{line}`"
         );
     }
+    let verifier = planned
+        .iter()
+        .find(|call| path_of(call) == "tests/verify-output.sh")
+        .unwrap_or_else(|| panic!("missing output assertion for {language}"));
+    assert!(verifier.arguments.contains("Hello, World!"), "{verifier:?}");
+    assert!(
+        workflow.arguments.contains("tests/verify-output.sh"),
+        "{workflow:?}"
+    );
+    let commit = planned
+        .iter()
+        .map(command_of)
+        .find(|command| command.contains("git commit"))
+        .unwrap_or_else(|| panic!("commit after verification for {language}: {planned:?}"));
+    assert!(
+        !commit.contains("git add -A"),
+        "compiler outputs and unrelated files must not be staged: {commit}"
+    );
+}
+
+#[test]
+fn repository_workflows_include_runtime_setup_and_output_verification_kotlin() {
+    verify_repository_workflow("Kotlin", "kotlin");
+}
+
+#[test]
+fn repository_workflows_include_runtime_setup_and_output_verification_scala() {
+    verify_repository_workflow("Scala", "coursier");
+}
+
+#[test]
+fn repository_workflows_include_runtime_setup_and_output_verification_rust() {
+    verify_repository_workflow("Rust", "rustup");
+}
+
+#[test]
+fn repository_workflows_include_runtime_setup_and_output_verification_python() {
+    verify_repository_workflow("Python", "setup-python");
 }
 
 #[test]

@@ -76,7 +76,7 @@ test('verified finite executable failures propagate and the bound companion is r
   assert.equal(status,17);assert.deepEqual(readFileSync(join(root,'rust/target/debug/formal-ai')),readFileSync(join(directory,'formal-ai')));
 });
 
-test('all nine real runner groups reuse bound finite executables and invoke no Cargo', {timeout:30000}, t=>{
+test('all ten real runner groups reuse bound finite executables and invoke no Cargo', {timeout:30000}, t=>{
   const {root,git}=workspace(t),directory=join(root,'transport'),sources=join(root,'compiled'),bin=join(root,'bin');mkdirSync(sources);mkdirSync(bin);
   const cases={coding_contracts:['coding::one','coding::two','coding::three','coding::four'],reasoning_contracts:[
     'reasoning::one','reasoning::two','reasoning::three','reasoning::four','benchmarks::one','benchmarks::two',
@@ -105,7 +105,7 @@ if(args.includes('--list')){
   const before=join(root,'original-runner.sh');writeFileSync(before,gunzipSync(readFileSync(new URL('./fixtures/native-contract-artifact/original-runner.sh.gz',import.meta.url))));
   const baseline=spawnSync('bash',[before,'coding-1'],{cwd:root,env:environment,encoding:'utf8',timeout:5000});
   assert.equal(baseline.status,99,baseline.stderr);assert.match(baseline.stderr,/Cargo must not run/u);
-  for(const group of ['coding-1','coding-2','reasoning-1','reasoning-2','benchmarks','interfaces','hive-1','hive-2','hive-3']){
+  for(const group of ['coding-1','coding-2','reasoning-1','reasoning-2','benchmarks','interfaces','hive-1','hive-2','hive-3','hive-4']){
     const result=spawnSync('bash',[runner,group],{cwd:root,env:environment,encoding:'utf8',timeout:5000,maxBuffer:65536});
     assert.equal(result.status,0,group+': '+result.stdout+result.stderr);
   }
