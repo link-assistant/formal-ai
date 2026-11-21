@@ -55,6 +55,7 @@ f24844ce11b431dee2ce403ebcb6a139c438c0924376ca89ece17dd7893b5bd2  ./verification
 c196bcbef3856bf1d14a60ee916c8d9ab82cad8651caec967f2a2fe4960265c5  ./verification/all-gates-round5-merged.log
 e7bbcfa439fed372d90fa5bddf862b755d43ecda61afd55f676a04c7c7c5a040  ./verification/all-gates-round5.log
 b2faa3ed73cc7ea30ad2fdc1ce8aa1462c78c1f77e65fe7a72c4a9e4a98095b8  ./verification/all-gates-round6-merged.log
+4681044713b920a906ca779f731218ee7bf9a222d9f324729775144235c6b527  ./verification/all-gates-round7-final.log
 ffd743e964b5e633952a383ab238234673a432e4037b5822e944f298019801e7  ./verification/baseline-docs-method.log
 2f8936d85f55cd64e747c1bbb16b800e33cdbce13b27af0cffaed2ce76da6b28  ./verification/baseline-encyclopedia-precache.log
 abbcf099e8d9dd00863a12412bd68caeb452937fc8f80cd8d24aa320f0d1fccd  ./verification/baseline-meaning-detail.log
@@ -66,6 +67,7 @@ f2fe289a6a05564e3cef01ecb5baf3f5698245da3a90b3de5acf72125084b127  ./verification
 d95b8d8aa2c1c995dd4ebc35dc0736c61722cc4f78ac40322f8be033c50697b1  ./verification/baseline-unnamed-algorithm.log
 9c577446396bba500bc48f4deb62922d3a31dd6c2ababd0816f437a28c3812fa  ./verification/build-script-optional-inputs-round2.log
 9f6bf911e296504dc829f30382b9f66c23e0ac82705d120c23fc8e10a0be4e8f  ./verification/currency-compound-browser.log
+e3c39c324b12371ae227eb43bbdc1a887fddf464a65b667b510183c015dfe43e  ./verification/currency-conversion-browser-final.log
 6868d34e19c342e52dfb670cd1d72cf2de7c3e544765e366fed4d12f3ed2ad60  ./verification/currency-conversion-browser.log
 fc5967ddfe69862574597ac6d465a60ea05416b910d4e864f356992ae205449e  ./verification/documentation-method-sources-round4.log
 21064d1e6faaab0e239bdac2d3e47d037fcef02cefd1783f3524e99053e3dbb2  ./verification/documentation-specification-coverage-round4.log
@@ -109,6 +111,7 @@ e8ce7827286cef36e62f1f99e51acd3b435b78f93ed83754c5fd543a3d003893  ./verification
 b8742961fb9b414c742298d3e02e291b61aef115098db49de4aa5b85df054f09  ./verification/round6-worker-boot-crate-seed-prefetch.log
 ed8222ffdd467c6d5ce0e5d0ee89969fc929e9a9f887933682c5be5fc8bd2336  ./verification/round6-worker-mirror.log
 1293d7a0c53405912275605b4cad6c005a77d890728caee6eb44530178b44446  ./verification/round6-worker-seed-transport.log
+3eb827e107cc058cac7f0da8864ebe88847956760812c99282eba8a2689c1e31  ./verification/round7-issue-1396-local.log
 432f6792ff29b2dfdf8760e9bdebde0208b5bcbbc1b0b5ed83b9ebb2848e776b  ./verification/runtime-feature-inventory-round2.log
 ba4ac755fbbfc14ee4bb9cb711d71a2dc0d90dae5967d28af22ef18ef78a7275  ./verification/rust-specification-fixture-integrity-round3.log
 581a0dd09faa10075a965062009d0ce472326d894273a046322ccda7ddaa5d24  ./verification/rust-specification-unicode-identifiers-round3.log

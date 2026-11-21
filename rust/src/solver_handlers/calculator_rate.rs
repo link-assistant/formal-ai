@@ -238,25 +238,24 @@ fn answer_quote(
         ));
     };
     let derivation = format!("{amount} × {} ≈ {result} {to}", quote.rate);
-    let intent = if from == to {
-        "currency-quote-identity"
+    let body = if from == to {
+        derivation.clone()
     } else {
-        "currency-conversion-publisher"
+        seed::render_response(
+            "currency-conversion-publisher",
+            language,
+            &[
+                ("amount", amount),
+                ("from", from),
+                ("to", to),
+                ("rate", &quote.rate),
+                ("result", &result),
+                ("date", &quote.date),
+                ("source", &quote.source),
+                ("derivation", &derivation),
+            ],
+        )?
     };
-    let body = seed::render_response(
-        intent,
-        language,
-        &[
-            ("amount", amount),
-            ("from", from),
-            ("to", to),
-            ("rate", &quote.rate),
-            ("result", &result),
-            ("date", &quote.date),
-            ("source", &quote.source),
-            ("derivation", &derivation),
-        ],
-    )?;
     log.append("currency:rate_basis", format!("{from}:{}{to}", quote.rate));
     log.append("currency:derivation", derivation);
     log.append("currency:result", format!("{result} {to}"));

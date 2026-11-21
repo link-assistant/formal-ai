@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_currency_quotes.js"
+  ceiling 135
+  rationale "Issue #1613 replaces the fixed currency rates with dated publisher capture verification and shared decimal conversion."

@@ -98,8 +98,9 @@ async function answerCurrencyQuote(request, language, preferences) {
     evidence: [`currency:source_error:${from}/${to}`],
   };
   const derivation = `${amount} × ${quote.rate} ≈ ${result} ${to}`;
-  const template = from === to ? "currency-quote-identity" : "currency-conversion-publisher";
-  const content = currencyQuoteResponse(template, language, { amount, from, to, ...quote, result, derivation });
+  const content = from === to ? derivation : currencyQuoteResponse(
+    "currency-conversion-publisher", language, { amount, from, to, ...quote, result, derivation },
+  );
   const solverEvents = [
     ...currencyQuoteEvidence(quote),
     { kind: "currency:rate_basis", payload: `${from}:${quote.rate}${to}` },

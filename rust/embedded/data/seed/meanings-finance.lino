@@ -138,12 +138,3 @@ meanings
     unit "not applicable"
     example "a fresh offline cache has no matching publisher quote"
     grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
-
-  currency-quote-identity
-    defined-by answer
-    role localized-response-template
-    precondition "the source and target currency codes match"
-    effect "return the rounded amount in the same currency"
-    unit "not applicable"
-    example "multiply the amount by one to preserve its value"
-    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"

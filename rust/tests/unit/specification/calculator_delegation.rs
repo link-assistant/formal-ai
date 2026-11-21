@@ -114,7 +114,10 @@ fn calculator_currency_conversion_is_exempt_from_prose_rejection() {
     });
     let conversion = solver.solve("$100 to euros on 1900-01-01");
     assert_eq!(conversion.intent, "calculation_error");
-    assert!(conversion.answer.contains("USD/EUR"));
+    assert_eq!(
+        conversion.answer,
+        "A verified USD/EUR exchange rate is unavailable for the requested date."
+    );
 
     // With no conversion cue the same currency-plus-letters prompt is prose, so
     // the guard rejects it and it is not delegated to the calculator.

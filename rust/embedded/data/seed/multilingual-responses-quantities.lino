@@ -764,8 +764,3 @@ multilingual_responses_quantities
     intent currency-quote-unavailable
     language es
     text "No hay un tipo de cambio {from}/{to} verificado para la fecha solicitada."
-
-  response response-currency-quote-identity-en
-    intent currency-quote-identity
-    language en
-    text "{derivation}"
