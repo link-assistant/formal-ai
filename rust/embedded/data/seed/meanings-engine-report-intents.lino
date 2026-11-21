@@ -586,3 +586,19 @@ meanings
     unit "not applicable"
     example "All requirements were verified (2)."
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  documentation-method-source-guidance
+    defined-by answer
+    role localized_response_template
+    precondition "a publisher capture confirms the requested symbol and supplies its signature and description"
+    effect "presents the signature and a short excerpt alongside the source link"
+    unit "one documented symbol"
+    example "The publisher documents the method with this signature."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  documentation-method-ambiguous
+    defined-by answer
+    role localized_response_template
+    precondition "multiple documented symbols match the method name in the publisher index"
+    effect "asks the user to select among the symbols the index returned"
+    unit "one method clarification"
+    example "Which documented method did you mean?"
+    grounding "data/seed/multilingual-responses-policy.lino"

@@ -551,6 +551,23 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     steps.push({ step: "dispatch_handler", detail: "tryCoreferenceFactLookup" });
     return finalize(events, steps, toolCalls, coreferenceFact, formalizationContext);
   }
+  steps.push({ step: "invoke_tool", detail: "docs_method_explanation" });
+  const documentationMethod = await claimRouteRun("tryDocumentationMethodExplanation", prompt, normalized, history,
+    () => tryDocumentationMethodExplanation(prompt, language, preferences));
+  if (documentationMethod) {
+    events.push(`handler:${documentationMethod.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryDocumentationMethodExplanation" });
+    toolCalls.push({
+      tool: "docs_method_explanation",
+      inputs: { prompt, language, method: documentationMethod.formalizedObject },
+      outputs: {
+        intent: documentationMethod.intent,
+        confidence: documentationMethod.confidence,
+        formalizedObject: documentationMethod.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, documentationMethod, formalizationContext);
+  }
   // Real-time fact reasoning: parse structured (relation, subject) queries, hit
   // the 1-week TTL cache, fall back to Wikidata/Wikipedia for any country or
   // entity. Cache warmed from `data/seed/facts.lino` so the test matrix and
@@ -612,22 +629,6 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       outputs: { intent: navigated.intent, confidence: navigated.confidence, iframeUrl: navigated.iframeUrl || null },
     });
     return finalize(events, steps, toolCalls, navigated, formalizationContext);
-  }
-  steps.push({ step: "invoke_tool", detail: "docs_method_explanation" });
-  const docsMethod = claimRouteRun("tryDocsMethodExplanation", prompt, normalized, history, () => tryDocsMethodExplanation(prompt));
-  if (docsMethod) {
-    events.push(`handler:${docsMethod.intent}`);
-    steps.push({ step: "dispatch_handler", detail: "tryDocsMethodExplanation" });
-    toolCalls.push({
-      tool: "docs_method_explanation",
-      inputs: { prompt, language, method: docsMethod.formalizedObject },
-      outputs: {
-        intent: docsMethod.intent,
-        confidence: docsMethod.confidence,
-        formalizedObject: docsMethod.formalizedObject || "",
-      },
-    });
-    return finalize(events, steps, toolCalls, docsMethod, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "procedural_how_to" });
   const procedure = await claimRouteRun("tryProceduralHowTo", prompt, normalized, history, () => tryProceduralHowTo(prompt, language, preferences));
@@ -948,7 +949,7 @@ function workerHandlerRegistryDefinition() {
     learn_from_source: "tryLearnFromSource",
     research_comparison_table: "tryResearchComparisonTable",
     research_result_followup: "tryResearchResultFollowup",
-    docs_method_explanation: "tryDocsMethodExplanation",
+    docs_method_explanation: null, // phase async: verified publisher capture
     procedural_how_to: null, // phase async: the how-to guide fetches its source registry
     procedural_how_to_followup: null, // phase async
     conversation_memory: workerHandlerAliases.conversation_memory,

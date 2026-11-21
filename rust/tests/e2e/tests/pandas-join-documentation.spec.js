@@ -1,5 +1,6 @@
 // @ts-check
 // Issue #223: A pandas join-method prompt returns an answer from the official documentation.
+const path = require('node:path');
 const { test, expect } = require('@playwright/test');
 const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
@@ -43,6 +44,11 @@ async function sendPrompt(page, text) {
 test.describe('Issue #223 - pandas join method docs summary', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
+    await page.route(PANDAS_JOIN_DOCS_URL, route => route.fulfill({
+      path: path.join(__dirname, '../../fixtures/documentation-method/join.html'),
+      contentType: 'text/html',
+      headers: { 'access-control-allow-origin': '*' },
+    }));
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
@@ -51,7 +57,7 @@ test.describe('Issue #223 - pandas join method docs summary', () => {
   test('pandas join-method prompt returns an official-docs answer', async ({ page }) => {
     await page.locator('.diagnostics-toggle').click();
 
-    const last = await sendPrompt(page, 'how the join method works in pandas');
+    const last = await sendPrompt(page, 'how does pandas DataFrame.join work?');
 
     await expect(last).toContainText('DataFrame.join');
     await expect(last).toContainText('index');

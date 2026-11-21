@@ -26,6 +26,7 @@ mod creative_writing;
 mod curated_project_fetch;
 mod document_originality;
 mod document_request;
+pub mod documentation_method;
 mod fact_checking;
 mod fact_live_answer;
 mod factual_qa;

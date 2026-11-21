@@ -505,6 +505,7 @@ pub use solver_handler_how_synthesis::{
     DISABLED_SERVICES_ENV, service_preferences_from_env, try_how_to_procedure_with_client,
     try_how_to_procedure_with_offline,
 };
+pub use solver_handlers::documentation_method::try_with_client as try_documentation_method_with_client;
 pub use solver_handlers::{
     AnswerAgreement, MemoryQueryExecution, VerifiedAnswer, answer_memory_recall,
     classify_agreement, execute_memory_query, execute_memory_query_with_options,

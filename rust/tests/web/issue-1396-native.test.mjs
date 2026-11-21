@@ -105,6 +105,30 @@ test("native Responses uses procedural sources with the client web search tool a
   await assertProceduralAgentRouting(url);
 });
 
+test("native HTTP documentation answers require a matching publisher capture", NATIVE_CASE, async (t) => {
+  const { cache, url } = await startNativeProcedureReplay(t);
+  const source = "https://pandas.pydata.org/docs/reference/api/pandas.Series.diff.html";
+  const prompt = "How does pandas Series.diff work?";
+  async function ask() {
+    const response = await fetch(`${url}/v1/chat/completions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        model: "formal-ai", stream: false, messages: [{ role: "user", content: prompt }],
+      }),
+    });
+    assert.ok(response.ok, await response.clone().text());
+    return (await response.json()).choices[0].message.content;
+  }
+  const missing = await ask();
+  assert.doesNotMatch(missing, /First discrete difference/u);
+  assert.ok(!missing.includes(source), missing);
+  storeCapture(cache, source, readFileSync(new URL("../fixtures/documentation-method/diff.html", import.meta.url), "utf8"));
+  const retrieved = await ask();
+  assert.match(retrieved, /First discrete difference of Series elements/u);
+  assert.ok(retrieved.includes(source), retrieved);
+});
+
 test("native Agent CLI requires a retrieved capture for a known benchmark issue", NATIVE_CASE, async (t) => {
   const cache = temporaryHome(t);
   const session = path.join(cache, "session.json");

@@ -110,6 +110,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_creative_writing.js",
   "worker/formal_ai_worker_derivation.js",
   "worker/formal_ai_worker_dispatch.js",
+  "worker/formal_ai_worker_documentation_method.js",
   "worker/formal_ai_worker_documented_commands.js",
   "worker/formal_ai_worker_equations_and_word_problems.js",
   "worker/formal_ai_worker_fact_derivation.js",

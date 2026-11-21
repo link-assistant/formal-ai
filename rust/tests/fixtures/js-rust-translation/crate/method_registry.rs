@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0ac23d2d7309a6e34f1e39d006dcbb3b3f09434a533e89491f4e452e959eef85 bytes=12739
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=ff1ee695641274b7543d3a84f3d4fece64bd5175bdf5e5fd64c5795cbc7b7f5c bytes=12768
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
@@ -38,14 +38,15 @@ pub static PRELUDE_METHOD_NAMES: std::sync::LazyLock<Vec<String>> = std::sync::L
     String::from("feature_capability"),
     String::from("playwright_script")]);
 
-// meta-language:translated JavaScript export_statement items=1 sha256=b630b6627ef9625c1562cfc3df9f73795f7e45fd27146fe92b4c7991b9eee570
+// meta-language:translated JavaScript export_statement items=1 sha256=989127900313be006afb2719e80a9644509f7a125bab3e4df21a67a39e9333a7
 // | /** Mirrors `CONTEXTUAL_HANDLER_NAMES` in rust/src/solver_dispatch.rs. */
 // | export const CONTEXTUAL_HANDLER_NAMES = Object.freeze([
 // |   'http_fetch', 'proof_request', 'meta_explanation', 'numeric_list', 'program_synthesis',
 // |   'shell_command_transform', 'text_manipulation', 'task_decomposition', 'response_language_followup',
-// |   'fact_checking', 'world_state', 'web_search', 'procedural_how_to', 'fact_lookup',
+// |   'fact_checking', 'world_state', 'web_search', 'docs_method_explanation',
+// |   'procedural_how_to', 'fact_lookup',
 // | ]);
-// formal-ai:presentation:v1 rawSHA256=b630b6627ef9625c1562cfc3df9f73795f7e45fd27146fe92b4c7991b9eee570 rawBytes=572 renderedSHA256=74ef49f6c8bd047ec89c8cdb0e8fb479f2851bc9410920236db764b9352ff37d
+// formal-ai:presentation:v1 rawSHA256=989127900313be006afb2719e80a9644509f7a125bab3e4df21a67a39e9333a7 rawBytes=613 renderedSHA256=4952381b17f6f8093c699c8e906b2f356e25e4eb61b827f26acbad0c52daff43
 // formal-ai:presentation-raw cHViIHN0YXRpYyBDT05URVhUVUFMX0hBTkRMRVJfTkFNRVM6IHN0ZDo6c3luYzo6TGF6eUxvY2s8VmVjPFN0cmluZz4+ID0g
 // formal-ai:presentation-raw c3RkOjpzeW5jOjpMYXp5TG9jazo6bmV3KHx8IHZlYyFbU3RyaW5nOjpmcm9tKCJodHRwX2ZldGNoIiksIFN0cmluZzo6ZnJv
 // formal-ai:presentation-raw bSgicHJvb2ZfcmVxdWVzdCIpLCBTdHJpbmc6OmZyb20oIm1ldGFfZXhwbGFuYXRpb24iKSwgU3RyaW5nOjpmcm9tKCJudW1l
@@ -53,7 +54,8 @@ pub static PRELUDE_METHOD_NAMES: std::sync::LazyLock<Vec<String>> = std::sync::L
 // formal-ai:presentation-raw bmRfdHJhbnNmb3JtIiksIFN0cmluZzo6ZnJvbSgidGV4dF9tYW5pcHVsYXRpb24iKSwgU3RyaW5nOjpmcm9tKCJ0YXNrX2Rl
 // formal-ai:presentation-raw Y29tcG9zaXRpb24iKSwgU3RyaW5nOjpmcm9tKCJyZXNwb25zZV9sYW5ndWFnZV9mb2xsb3d1cCIpLCBTdHJpbmc6OmZyb20o
 // formal-ai:presentation-raw ImZhY3RfY2hlY2tpbmciKSwgU3RyaW5nOjpmcm9tKCJ3b3JsZF9zdGF0ZSIpLCBTdHJpbmc6OmZyb20oIndlYl9zZWFyY2gi
-// formal-ai:presentation-raw KSwgU3RyaW5nOjpmcm9tKCJwcm9jZWR1cmFsX2hvd190byIpLCBTdHJpbmc6OmZyb20oImZhY3RfbG9va3VwIildKTs=
+// formal-ai:presentation-raw KSwgU3RyaW5nOjpmcm9tKCJkb2NzX21ldGhvZF9leHBsYW5hdGlvbiIpLCBTdHJpbmc6OmZyb20oInByb2NlZHVyYWxfaG93
+// formal-ai:presentation-raw X3RvIiksIFN0cmluZzo6ZnJvbSgiZmFjdF9sb29rdXAiKV0pOw==
 // formal-ai:presentation-raw end
 pub static CONTEXTUAL_HANDLER_NAMES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
     vec![String::from("http_fetch"),
@@ -68,6 +70,7 @@ pub static CONTEXTUAL_HANDLER_NAMES: std::sync::LazyLock<Vec<String>> = std::syn
     String::from("fact_checking"),
     String::from("world_state"),
     String::from("web_search"),
+    String::from("docs_method_explanation"),
     String::from("procedural_how_to"),
     String::from("fact_lookup")]);
 

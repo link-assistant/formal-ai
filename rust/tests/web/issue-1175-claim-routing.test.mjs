@@ -108,7 +108,7 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "network_query", browserHandler: "tryNetworkSnapshot", admitsOn: ["assistant_subject"], refusalEvents: [] },
     { handler: "exact_memory_query", browserHandler: "tryExactMemoryQuery", admitsOn: ["memory_query_statement"], refusalEvents: [] },
     { handler: "fact_lookup", browserHandler: "", admitsOn: ["fact_subject"], refusalEvents: [] },
-    { handler: "docs_method_explanation", browserHandler: "tryDocsMethodExplanation", admitsOn: ["documented_method"], refusalEvents: [] },
+    { handler: "docs_method_explanation", browserHandler: "tryDocumentationMethodExplanation", admitsOn: ["documented_method"], refusalEvents: [] },
     { handler: "kupi_slona", browserHandler: "tryKupiSlona", admitsOn: ["idiom_utterance"], refusalEvents: [] },
     { handler: "source_conflict", browserHandler: "trySourceConflict", admitsOn: ["attributed_alternatives"], refusalEvents: ["source_conflict:refusal"] },
     { handler: "github_repository_traffic", browserHandler: "tryGithubRepositoryTraffic", admitsOn: ["named_repository"], refusalEvents: ["github_repository_traffic:refusal"] },
@@ -402,11 +402,11 @@ test("R1175-3 last five rows: the documented method is read from the prompt", as
   for (const prompt of ["how does pandas DataFrame.join work?", "как работает pandas DataFrame.join?",
     "pandas DataFrame.join कैसे काम करता है?", "pandas DataFrame.join 如何工作？"]) {
     assert.equal((await operands("documented_method", prompt))[0], "pandas.DataFrame.join", prompt);
-    assert.equal(await admission("tryDocsMethodExplanation", prompt), "full", prompt);
+    assert.equal(await admission("tryDocumentationMethodExplanation", prompt), "full", prompt);
   }
-  for (const prompt of ["Explain pandas DataFrame.merge", "объясни pandas DataFrame.merge",
-    "pandas DataFrame.merge कैसे काम करता है?", "pandas DataFrame.merge 如何工作？"]) {
-    assert.equal(await admission("tryDocsMethodExplanation", prompt), "denied", prompt);
+  for (const prompt of ["Explain unknown DataFrame.merge", "объясни pandas DataFrame",
+    "DataFrame.merge कैसे काम करता है?", "pandas DataFrame 如何工作？"]) {
+    assert.equal(await admission("tryDocumentationMethodExplanation", prompt), "denied", prompt);
   }
 });
 

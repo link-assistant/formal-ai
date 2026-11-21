@@ -227,6 +227,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     "fact_checking",
     "world_state",
     "web_search",
+    "docs_method_explanation",
     // Issue #991: the procedural handler must execute the bounded multi-source
     // synthesis, which needs the runtime's offline flag to decide whether the
     // capture client may go to the network. It stays a *contextual* override of
@@ -276,6 +277,13 @@ pub fn try_contextual_override(
             log,
             runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
+        "docs_method_explanation" => {
+            crate::solver_handlers::documentation_method::try_with_offline(
+                prompt,
+                log,
+                runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+            )
+        }
         "proof_request" => {
             try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
         }

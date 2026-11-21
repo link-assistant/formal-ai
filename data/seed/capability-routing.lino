@@ -856,9 +856,9 @@ capability_routing
   claim_note "Issue 1175 R3 last five rows: each handler that read nothing but its cue now reads the operand its answer is about, through a reader the rule interpreter also captures the operand with (value <name> operand <kind>), so the row and the answer read the same thing."
   claim
     handler docs_method_explanation
-    browser_handler tryDocsMethodExplanation
+    browser_handler tryDocumentationMethodExplanation
     admits_on documented_method
-    because "issue 1175 R3: a documentation explanation claims only when the prompt names the project and the method of a seeded documentation page, never on an explanation lead alone"
+    because "issue 1175 R3: a documentation explanation claims only when the prompt names a registered publisher and a method selector, never on an explanation lead alone"
   claim
     handler kupi_slona
     browser_handler tryKupiSlona

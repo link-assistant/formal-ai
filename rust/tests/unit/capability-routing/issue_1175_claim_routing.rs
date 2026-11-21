@@ -380,7 +380,7 @@ fn the_claim_rows_are_read_from_the_capability_table() {
             ("fact_lookup", "", vec!["fact_subject"]),
             (
                 "docs_method_explanation",
-                "tryDocsMethodExplanation",
+                "tryDocumentationMethodExplanation",
                 vec!["documented_method"]
             ),
             ("kupi_slona", "tryKupiSlona", vec!["idiom_utterance"]),

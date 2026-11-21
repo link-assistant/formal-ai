@@ -52,9 +52,9 @@ This document is a deterministic projection of committed ledgers.
 | `data/benchmarks/external-results.lino` | 969 |
 | `data/meta/self-hosting-ledger.lino` | 217 |
 | `data/meta/debt-ratchet.lino` | 64 |
-| `data/meta/core-boundary-ledger.lino` | 539 |
+| `data/meta/core-boundary-ledger.lino` | 545 |
 | `data/meta/handler-migration-ledger.lino` | 502 |
 | `data/meta/ladder-ratchet.lino` | 21 |
 | `data/meta/requirement-status-ledger.lino` | 175 |
 | `data/seed/languages.lino` | 113 |
-| `data/meta/worker-line-budget/*.lino` | 177 files |
+| `data/meta/worker-line-budget/*.lino` | 178 files |

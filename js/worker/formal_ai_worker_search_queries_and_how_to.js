@@ -380,6 +380,7 @@ function extractWebSearchRequest(prompt, normalized) {
   if (semanticQuery) {
     return { query: semanticQuery, kind: "semantic_action" };
   }
+  if (handlerRuleSetClaims("docs_method_explanation", prompt, normalized)) return "";
   const sourceQuestion = extractSourceGroundedQuestion(prompt, normalized);
   if (sourceQuestion) {
     return { query: sourceQuestion, kind: "implicit_research_question" };
@@ -562,14 +563,6 @@ function extractProceduralHowToTask(normalized) {
     };
   }
   return extractElidedProceduralHowToTask(clean);
-}
-
-// The docs_method_explanation rule of data/seed/handler-rules.lino: its claim
-function tryDocsMethodExplanation(prompt) {
-  const hit = runHandlerRuleSet("docs_method_explanation", prompt, String(prompt || "").toLowerCase(), []);
-  if (!hit) return null;
-  const method = claimOperandDocumentedMethod(prompt)[0] || "";
-  return { ...hit, formalizedObject: method };
 }
 
 // Issue #444: external *trusted* services are opt-out. A preference value of
