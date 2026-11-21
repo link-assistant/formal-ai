@@ -36,8 +36,9 @@ All 313 maintained issue cases pass. The complete JavaScript gate run has 87
 passes, 53 hosted-only skips and one UI inventory failure, corrected afterward
 with a failing-before registration regression and passing unchanged boundary gate.
 All 1,429 traceability rows survive the indexed partition with unchanged status
-fields and explicit evidence bindings. Nine retained source-capture size warnings
-remain under unchanged limits. Complete pinned C# and Rust per-file comparisons
+fields and explicit evidence bindings. Eight immutable source captures are losslessly archived with a consumed complete-byte
+conservation regression; one live canonical workflow size warning remains under
+unchanged limits. Complete pinned C# and Rust per-file comparisons
 are recorded; applicable practices and other template comparisons remain open.
 
 The stale WASM worker input receipt still requires actual hosted regeneration;
