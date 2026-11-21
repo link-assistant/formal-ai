@@ -8,5 +8,8 @@
       "sha256": "636eb4ffe7c301210f6217dafb88b85365fc0f33dc6e62d132ea2acf259d66ce"
     }
   ],
-  "upstreamRepairApplied": false
+  "upstreamRepairApplied": false,
+  "latestVerifiedCommit": "45c42aff119b366ba103a9342ec3c33731bb7e2e",
+  "latestVerifiedSourceUnchanged": true,
+  "latestVerificationEvidence": "experiments/issue-1580/evidence/checks/current-native-failure-repairs/index.json"
 }

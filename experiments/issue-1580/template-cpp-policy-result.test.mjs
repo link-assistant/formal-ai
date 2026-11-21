@@ -26,10 +26,18 @@ const checkedReader = String.raw`    if policy_rows="$(
       done <<< "$policy_rows"
     fi`;
 assert.equal(source.split(oldReader).length, 2, 'exact pinned reader boundary required');
+const uncheckedNeeds = 'needs = json.loads(os.environ["NEEDS_JSON"])';
+const checkedNeeds = uncheckedNeeds + `
+if not isinstance(needs, dict) or not needs:
+    raise ValueError("Expected a nonempty workflow needs object")
+if any(not isinstance(record, dict) or record.get("result") not in
+       {"success", "skipped", "cancelled", "failure"} for record in needs.values()):
+    raise ValueError("Expected a completed result for every required job")`;
+assert.equal(source.split(uncheckedNeeds).length, 2);
 const candidate = process.env.ISSUE_1580_DISABLE_PIPELINE_POLICY_REPAIR === '1'
-  ? source : source.replace(oldReader, () => checkedReader);
+  ? source : source.replace(oldReader, () => checkedReader).replace(uncheckedNeeds, () => checkedNeeds);
 
-function replay(script, {output = 'build\ttrue\n', code = 0, superseded = true, result = 'cancelled'} = {}) {
+function replay(script, {output = 'build\ttrue\n', code = 0, superseded = true, result = 'cancelled', needs} = {}) {
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-policy-status-'));
   try {
     writeFileSync(join(directory, 'check-pipeline-status.sh'), script);
@@ -39,7 +47,7 @@ function replay(script, {output = 'build\ttrue\n', code = 0, superseded = true, 
     writeFileSync(workflow, 'jobs:\n  build:\n    concurrency:\n      cancel-in-progress: true\n');
     const observed = spawnSync('bash', ['check-pipeline-status.sh'], {
       cwd: directory, encoding: 'utf8', timeout: 3000,
-      env: {...process.env, NEEDS_JSON: JSON.stringify({build: {result}}),
+      env: {...process.env, NEEDS_JSON: needs === undefined ? JSON.stringify({build: {result}}) : needs,
         WORKFLOW_FILE: workflow, RUN_SHA: 'a'.repeat(40),
         BRANCH_HEAD_SHA: (superseded ? 'b' : 'a').repeat(40), BRANCH_NAME: 'fixture',
         GH_TOKEN: '', GITHUB_RUN_ID: ''},
@@ -65,6 +73,31 @@ for (const [label, options, expected] of [
 ]) {
   test('the policy-reader candidate preserves ' + label, {timeout: 5000}, () => {
     const observed = replay(candidate, options);
+    assert.equal(observed.status, expected, observed.stdout + observed.stderr);
+    if (expected) assert.doesNotMatch(observed.stdout, /Pipeline passed[.]/u);
+  });
+}
+
+test('the pinned C++ gate exposes false success for an empty needs object', {timeout: 5000}, () => {
+  const observed = replay(source, {needs: '{}'});
+  assert.equal(observed.status, 0, observed.stdout + observed.stderr);
+  assert.match(observed.stdout, /Pipeline passed[.]/u);
+});
+
+for (const [label, needs, expected] of [
+  ['empty needs', '{}', 1],
+  ['null needs', 'null', 1],
+  ['array needs', '[]', 1],
+  ['missing result', '{"build":{}}', 1],
+  ['unknown result', '{"build":{"result":"waiting"}}', 1],
+  ['null result', '{"build":{"result":null}}', 1],
+  ['malformed JSON', '{', 1],
+  ['multiple JSON documents', '{} {}', 1],
+  ['successful job', '{"build":{"result":"success"}}', 0],
+  ['skipped job', '{"build":{"result":"skipped"}}', 0],
+]) {
+  test('the policy-reader candidate handles ' + label, {timeout: 5000}, () => {
+    const observed = replay(candidate, {needs});
     assert.equal(observed.status, expected, observed.stdout + observed.stderr);
     if (expected) assert.doesNotMatch(observed.stdout, /Pipeline passed[.]/u);
   });
