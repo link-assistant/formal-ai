@@ -75,14 +75,18 @@ jobs:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs
       - name: Replay localized procedures and issue reporting against the native CLI
+        id: report-http
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs
       - uses: oven-sh/setup-bun@v2
+        id: bun
+        if: ${{ !cancelled() && (success() || steps.report-http.outcome == 'failure') }}
         with:
           bun-version-file: .bun-version
           no-cache: true
       - name: Replay Codex Default mode reporting against the native CLI
+        if: ${{ !cancelled() && steps.bun.outcome == 'success' }}
         timeout-minutes: 2
         env:
           BIN: ${{ github.workspace }}/rust/target/debug/formal-ai
@@ -90,6 +94,7 @@ jobs:
           SCENARIO: report
         run: bash experiments/issue_859_codex_e2e/run.sh
       - name: Replay dynamic meta authorization and receipts through the native gateway
+        if: ${{ !cancelled() && steps.bun.outcome == 'success' }}
         env:
           FORMAL_AI_DYNAMIC_META_NATIVE: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: |

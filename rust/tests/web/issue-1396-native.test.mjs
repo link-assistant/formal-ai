@@ -15,6 +15,8 @@ const parseUrl = (title) => `${WIKIHOW_API}?action=parse&page=${title}&prop=text
 const RUSSIAN_API = parseUrl(RUSSIAN_SLUG);
 const RUSSIAN_CAPTURE = readFileSync(new URL("../fixtures/issue-1396/wiki-how-ru.json", import.meta.url), "utf8");
 const NATIVE_CLI = process.env.FORMAL_AI_TEST_NATIVE_CLI;
+const NATIVE_CASE = { skip: !NATIVE_CLI, timeout: 30_000 };
+const WEB_SEARCH_TOOLS = [{ type: "web_search" }];
 
 function storeCapture(cache, source, content) {
   const digest = createHash("sha256").update(content).digest("hex");
@@ -28,13 +30,13 @@ function storeCapture(cache, source, content) {
     `source-capture-v2\nurl=${source}\nfetched_at=${Math.floor(Date.now() / 1000)}\nsha256=${digest}\n`);
 }
 
-async function startNativeProcedureReplay(t) {
+async function startNativeProcedureReplay(t, { agentMode = false } = {}) {
   const cache = temporaryHome(t);
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   storeCapture(cache, RUSSIAN_API, RUSSIAN_CAPTURE);
   const run = await startCli(t, {
     binary: NATIVE_CLI,
-    args: ["--agent-mode"],
+    args: agentMode ? ["--agent-mode"] : [],
     env: { FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_LIVE_FETCH: "0" },
     lifetime: 25_000,
   });
@@ -42,31 +44,36 @@ async function startNativeProcedureReplay(t) {
   return { cache, url: run.url };
 }
 
-test("native localized procedure and follow-up use matching captures over HTTP", {
-  skip: !NATIVE_CLI,
-  timeout: 30_000,
-}, async (t) => {
-  const { cache, url } = await startNativeProcedureReplay(t);
-  async function ask(messages, source = RUSSIAN_API) {
-    const response = await fetch(`${url}/v1/chat/completions`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        model: "formal-ai", stream: false, messages, tools: [{ type: "web_search" }],
-      }),
-    });
-    assert.ok(response.ok, await response.clone().text());
-    const content = (await response.json()).choices[0].message.content;
-    assert.match(content, /1\. Не откладывайте/u);
-    assert.ok(content.includes(source), content);
-    return content;
-  }
-  const request = { role: "user", content: RUSSIAN_REQUEST };
-  const first = await ask([request]);
-  assert.match(first, /## Как хорошо покакать/u);
-  await ask([request, { role: "assistant", content: first }, { role: "user", content: "Дай точные шаги" }]);
-  await ask([{ role: "user", content: CODEX_REQUEST }]);
+async function askChatProcedure(url, messages, { source = RUSSIAN_API, tools } = {}) {
+  const response = await fetch(`${url}/v1/chat/completions`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      model: "formal-ai", stream: false, messages, tools,
+    }),
+  });
+  assert.ok(response.ok, await response.clone().text());
+  const content = (await response.json()).choices[0].message.content;
+  assert.match(content, /1\. Не откладывайте/u);
+  assert.ok(content.includes(source), content);
+  return content;
+}
 
+test("native localized procedure and follow-up use matching captures over HTTP", NATIVE_CASE, async (t) => {
+  const { url } = await startNativeProcedureReplay(t);
+  const request = { role: "user", content: RUSSIAN_REQUEST };
+  const first = await askChatProcedure(url, [request]);
+  assert.match(first, /## Как хорошо покакать/u);
+  await askChatProcedure(url, [request, { role: "assistant", content: first }, { role: "user", content: "Дай точные шаги" }]);
+});
+
+test("native chat uses the localized source for the short Russian prompt", NATIVE_CASE, async (t) => {
+  const { url } = await startNativeProcedureReplay(t, { agentMode: true });
+  await askChatProcedure(url, [{ role: "user", content: CODEX_REQUEST }], { tools: WEB_SEARCH_TOOLS });
+});
+
+test("native chat recovers a matching article after discarding an unrelated one", NATIVE_CASE, async (t) => {
+  const { cache, url } = await startNativeProcedureReplay(t);
   const unrelated = JSON.parse(RUSSIAN_CAPTURE);
   unrelated.parse.title = "Домашние растения";
   const title = "хорошо покакать";
@@ -75,15 +82,12 @@ test("native localized procedure and follow-up use matching captures over HTTP",
   storeCapture(cache, RUSSIAN_API, JSON.stringify(unrelated));
   storeCapture(cache, search, JSON.stringify({ query: { search: [{ title }] } }));
   storeCapture(cache, matching, RUSSIAN_CAPTURE);
-  const recovered = await ask([request], matching);
+  const recovered = await askChatProcedure(url, [{ role: "user", content: RUSSIAN_REQUEST }], { source: matching });
   assert.ok(!recovered.includes(RUSSIAN_API), recovered);
 });
 
-test("native Responses uses procedural sources with the client web search tool available", {
-  skip: !NATIVE_CLI,
-  timeout: 30_000,
-}, async (t) => {
-  const { url } = await startNativeProcedureReplay(t);
+test("native Responses uses procedural sources with the client web search tool available", NATIVE_CASE, async (t) => {
+  const { url } = await startNativeProcedureReplay(t, { agentMode: true });
   await assertProceduralAgentRouting(url);
 });
 
@@ -92,7 +96,7 @@ async function assertProceduralAgentRouting(url) {
     const response = await fetch(`${url}/v1/responses`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ model: "formal-ai", input, stream: false, tools: [{ type: "web_search" }] }),
+      body: JSON.stringify({ model: "formal-ai", input, stream: false, tools: WEB_SEARCH_TOOLS }),
     });
     assert.ok(response.ok, await response.clone().text());
     return (await response.json()).output;
