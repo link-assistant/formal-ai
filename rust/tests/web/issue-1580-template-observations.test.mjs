@@ -17,3 +17,4 @@ import '../../../experiments/issue-1580/budget-clock-boundary.test.mjs';
 import '../../../experiments/issue-1580/budget-process-lifetime.test.mjs';
 import '../../../experiments/issue-1580/deadline-process-lifetime.test.mjs';
 import '../../../experiments/issue-1580/template-pages-adoption.test.mjs';
+import '../../../experiments/issue-1580/template-php-input-integrity.test.mjs';

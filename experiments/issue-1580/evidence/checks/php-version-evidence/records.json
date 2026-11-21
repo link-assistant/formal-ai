@@ -1,0 +1,849 @@
+[
+  {
+    "name": "php-identity",
+    "argv": [
+      "/home/linuxbrew/.linuxbrew/bin/php",
+      "--version"
+    ],
+    "cwd": "/tmp/gh-issue-solver-1794900398048",
+    "exitCode": 0,
+    "stdout": {
+      "file": "php-identity.stdout.gz",
+      "sha256": "b49f239ec90fb0c4a834df9afc432b6ef8f49b52bf9b0f82d350b16d49eaf3d4",
+      "archiveSha256": "c1667abb351f6aa0a486007b5d6274b82597a0a84075360a25c55034db2d472d",
+      "bytes": 219,
+      "lines": 5
+    },
+    "stderr": {
+      "file": "php-identity.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "budget-existing",
+    "argv": [
+      "gh",
+      "issue",
+      "list",
+      "--repo",
+      "link-foundation/php-ai-driven-development-pipeline-template",
+      "--state",
+      "all",
+      "--search",
+      "budget OR timeout OR child",
+      "--limit",
+      "100",
+      "--json",
+      "number,title,url,state,body"
+    ],
+    "cwd": "/tmp/gh-issue-solver-1794900398048",
+    "exitCode": 0,
+    "stdout": {
+      "file": "budget-existing.stdout.gz",
+      "sha256": "d4957bce002479f93ce0113cca70ae7c40e338b39435f6ef2b8f5d57592d62b8",
+      "archiveSha256": "cc101a1aefecdffefdfb561f880bf2d0da1a79c74c322178bc96ef7574aa2041",
+      "bytes": 81207,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "budget-existing.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "version-existing",
+    "argv": [
+      "gh",
+      "issue",
+      "list",
+      "--repo",
+      "link-foundation/php-ai-driven-development-pipeline-template",
+      "--state",
+      "all",
+      "--search",
+      "version OR fetch OR composer",
+      "--limit",
+      "100",
+      "--json",
+      "number,title,url,state,body"
+    ],
+    "cwd": "/tmp/gh-issue-solver-1794900398048",
+    "exitCode": 0,
+    "stdout": {
+      "file": "version-existing.stdout.gz",
+      "sha256": "83c62e901138bf6470a274803287ccdc9b8f28398d27eae23bf9a90bc2a8fcfc",
+      "archiveSha256": "dabdd56bd27dfd86e8009375db2112c7c1ae118c97b14610e5ad27726b8e8c1c",
+      "bytes": 85027,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "version-existing.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unchanged-init",
+    "argv": [
+      "git",
+      "init",
+      "--initial-branch=main",
+      "--quiet"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-z9z_yhe4",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unchanged-initialize.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "unchanged-initialize.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unchanged-add",
+    "argv": [
+      "git",
+      "add",
+      "."
+    ],
+    "cwd": "/tmp/issue-1580-php-version-z9z_yhe4",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unchanged-add.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "unchanged-add.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unchanged-commit",
+    "argv": [
+      "git",
+      "commit",
+      "--quiet",
+      "-m",
+      "Finite local version fixture"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-z9z_yhe4",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unchanged-commit.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "unchanged-commit.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unchanged-origin",
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "/tmp/issue-1580-php-version-z9z_yhe4"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-z9z_yhe4",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unchanged-origin.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "unchanged-origin.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unchanged-guard",
+    "argv": [
+      "/home/linuxbrew/.linuxbrew/bin/php",
+      "-d",
+      "memory_limit=64M",
+      "scripts/check-version-modification.php"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-z9z_yhe4",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unchanged-guard.stdout.gz",
+      "sha256": "699b684c290c638b0bc9eeb46b1407016b7d13396395393bdbc2f2ea96cbda44",
+      "archiveSha256": "5b1b9d12d6e411dd42eee75ded67556893e689a1289cf3633bcaa20f95181d74",
+      "bytes": 53,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "unchanged-guard.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "changed-init",
+    "argv": [
+      "git",
+      "init",
+      "--initial-branch=main",
+      "--quiet"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-d8dv9kca",
+    "exitCode": 0,
+    "stdout": {
+      "file": "changed-initialize.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "changed-initialize.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "changed-add",
+    "argv": [
+      "git",
+      "add",
+      "."
+    ],
+    "cwd": "/tmp/issue-1580-php-version-d8dv9kca",
+    "exitCode": 0,
+    "stdout": {
+      "file": "changed-add.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "changed-add.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "changed-commit",
+    "argv": [
+      "git",
+      "commit",
+      "--quiet",
+      "-m",
+      "Finite local version fixture"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-d8dv9kca",
+    "exitCode": 0,
+    "stdout": {
+      "file": "changed-commit.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "changed-commit.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "changed-origin",
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "/tmp/issue-1580-php-version-d8dv9kca"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-d8dv9kca",
+    "exitCode": 0,
+    "stdout": {
+      "file": "changed-origin.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "changed-origin.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "changed-guard",
+    "argv": [
+      "/home/linuxbrew/.linuxbrew/bin/php",
+      "-d",
+      "memory_limit=64M",
+      "scripts/check-version-modification.php"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-d8dv9kca",
+    "exitCode": 1,
+    "stdout": {
+      "file": "changed-guard.stdout.gz",
+      "sha256": "d12c84e3a3e9fb6acc2fb4627f5068ff1619192ba4d035b400b17949d9b9c13f",
+      "archiveSha256": "433453c9034c383a8a7a410820b152621a0257ef1201daee8e74a9bad10e3887",
+      "bytes": 252,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "changed-guard.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "removed-init",
+    "argv": [
+      "git",
+      "init",
+      "--initial-branch=main",
+      "--quiet"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-yzy53hwj",
+    "exitCode": 0,
+    "stdout": {
+      "file": "removed-initialize.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "removed-initialize.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "removed-add",
+    "argv": [
+      "git",
+      "add",
+      "."
+    ],
+    "cwd": "/tmp/issue-1580-php-version-yzy53hwj",
+    "exitCode": 0,
+    "stdout": {
+      "file": "removed-add.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "removed-add.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "removed-commit",
+    "argv": [
+      "git",
+      "commit",
+      "--quiet",
+      "-m",
+      "Finite local version fixture"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-yzy53hwj",
+    "exitCode": 0,
+    "stdout": {
+      "file": "removed-commit.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "removed-commit.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "removed-origin",
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "/tmp/issue-1580-php-version-yzy53hwj"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-yzy53hwj",
+    "exitCode": 0,
+    "stdout": {
+      "file": "removed-origin.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "removed-origin.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "removed-guard",
+    "argv": [
+      "/home/linuxbrew/.linuxbrew/bin/php",
+      "-d",
+      "memory_limit=64M",
+      "scripts/check-version-modification.php"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-yzy53hwj",
+    "exitCode": 0,
+    "stdout": {
+      "file": "removed-guard.stdout.gz",
+      "sha256": "699b684c290c638b0bc9eeb46b1407016b7d13396395393bdbc2f2ea96cbda44",
+      "archiveSha256": "5b1b9d12d6e411dd42eee75ded67556893e689a1289cf3633bcaa20f95181d74",
+      "bytes": 53,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "removed-guard.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "invalid-init",
+    "argv": [
+      "git",
+      "init",
+      "--initial-branch=main",
+      "--quiet"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-q9mxlkld",
+    "exitCode": 0,
+    "stdout": {
+      "file": "invalid-initialize.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "invalid-initialize.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "invalid-add",
+    "argv": [
+      "git",
+      "add",
+      "."
+    ],
+    "cwd": "/tmp/issue-1580-php-version-q9mxlkld",
+    "exitCode": 0,
+    "stdout": {
+      "file": "invalid-add.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "invalid-add.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "invalid-commit",
+    "argv": [
+      "git",
+      "commit",
+      "--quiet",
+      "-m",
+      "Finite local version fixture"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-q9mxlkld",
+    "exitCode": 0,
+    "stdout": {
+      "file": "invalid-commit.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "invalid-commit.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "invalid-origin",
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "/tmp/issue-1580-php-version-q9mxlkld"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-q9mxlkld",
+    "exitCode": 0,
+    "stdout": {
+      "file": "invalid-origin.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "invalid-origin.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "invalid-guard",
+    "argv": [
+      "/home/linuxbrew/.linuxbrew/bin/php",
+      "-d",
+      "memory_limit=64M",
+      "scripts/check-version-modification.php"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-q9mxlkld",
+    "exitCode": 0,
+    "stdout": {
+      "file": "invalid-guard.stdout.gz",
+      "sha256": "699b684c290c638b0bc9eeb46b1407016b7d13396395393bdbc2f2ea96cbda44",
+      "archiveSha256": "5b1b9d12d6e411dd42eee75ded67556893e689a1289cf3633bcaa20f95181d74",
+      "bytes": 53,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "invalid-guard.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "new-file-init",
+    "argv": [
+      "git",
+      "init",
+      "--initial-branch=main",
+      "--quiet"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-s9a3nb34",
+    "exitCode": 0,
+    "stdout": {
+      "file": "new-file-initialize.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "new-file-initialize.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "new-file-add",
+    "argv": [
+      "git",
+      "add",
+      "."
+    ],
+    "cwd": "/tmp/issue-1580-php-version-s9a3nb34",
+    "exitCode": 0,
+    "stdout": {
+      "file": "new-file-add.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "new-file-add.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "new-file-commit",
+    "argv": [
+      "git",
+      "commit",
+      "--quiet",
+      "-m",
+      "Finite local version fixture"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-s9a3nb34",
+    "exitCode": 0,
+    "stdout": {
+      "file": "new-file-commit.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "new-file-commit.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "new-file-origin",
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "/tmp/issue-1580-php-version-s9a3nb34"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-s9a3nb34",
+    "exitCode": 0,
+    "stdout": {
+      "file": "new-file-origin.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "new-file-origin.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "new-file-guard",
+    "argv": [
+      "/home/linuxbrew/.linuxbrew/bin/php",
+      "-d",
+      "memory_limit=64M",
+      "scripts/check-version-modification.php"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-s9a3nb34",
+    "exitCode": 0,
+    "stdout": {
+      "file": "new-file-guard.stdout.gz",
+      "sha256": "09b81a2a4e084ad66a8047b96f3b299445f4ac2d4333e03b107149408a5d40e8",
+      "archiveSha256": "01db5dd06410878361cb8f0227091bdaeb74b683ecce157132d482cbea5629ea",
+      "bytes": 97,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "new-file-guard.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unavailable-base-init",
+    "argv": [
+      "git",
+      "init",
+      "--initial-branch=main",
+      "--quiet"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-xj88xi02",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unavailable-base-initialize.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "unavailable-base-initialize.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unavailable-base-add",
+    "argv": [
+      "git",
+      "add",
+      "."
+    ],
+    "cwd": "/tmp/issue-1580-php-version-xj88xi02",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unavailable-base-add.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "unavailable-base-add.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unavailable-base-commit",
+    "argv": [
+      "git",
+      "commit",
+      "--quiet",
+      "-m",
+      "Finite local version fixture"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-xj88xi02",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unavailable-base-commit.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "unavailable-base-commit.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unavailable-base-origin",
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "/tmp/issue-1580-php-version-xj88xi02/missing-local-remote"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-xj88xi02",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unavailable-base-origin.stdout.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "unavailable-base-origin.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "unavailable-base-guard",
+    "argv": [
+      "/home/linuxbrew/.linuxbrew/bin/php",
+      "-d",
+      "memory_limit=64M",
+      "scripts/check-version-modification.php"
+    ],
+    "cwd": "/tmp/issue-1580-php-version-xj88xi02",
+    "exitCode": 0,
+    "stdout": {
+      "file": "unavailable-base-guard.stdout.gz",
+      "sha256": "09b81a2a4e084ad66a8047b96f3b299445f4ac2d4333e03b107149408a5d40e8",
+      "archiveSha256": "01db5dd06410878361cb8f0227091bdaeb74b683ecce157132d482cbea5629ea",
+      "bytes": 97,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "unavailable-base-guard.stderr.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

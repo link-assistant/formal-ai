@@ -81,6 +81,16 @@
       "path": "scripts/src/Cli.php",
       "gitBlob": "4eb25923e67273d4f5f8abeff298a26f9c345310",
       "sha256": "54aeb58748c06c88d2b829f5719783f578d36aceca698ae15989e728350076e9"
+    },
+    {
+      "path": "scripts/check-version-modification.php",
+      "gitBlob": "a017a0e8d57bfa11b1b05131eb33b473ce2f9f93",
+      "sha256": "21a2f84d4058cea06d3644fa5840b30a885957000458d85e9d26bfa056cbdabb"
+    },
+    {
+      "path": "scripts/src/ReleaseNotes.php",
+      "gitBlob": "708a574def9b2ab6f36c9bf81177f4c6b7ce3eec",
+      "sha256": "176181c4ebec0068128d476141e88bedb70429362c23e13beaeed1e4a5df2ec8"
     }
   ]
 }
