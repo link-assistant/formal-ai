@@ -721,6 +721,8 @@ roles
     kind meaning
   nondeterministic_marker
     kind predicate
+  noun
+    kind meaning
   null
     kind meaning
   number_constraint_entity
