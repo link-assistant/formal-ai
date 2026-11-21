@@ -22,3 +22,12 @@ test('script selection keeps standalone tests and excludes helpers compiled by e
   assert.equal(result.error,undefined);assert.equal(result.status,0,result.stderr);
   assert.deepEqual(result.stdout.trim().split('\n'),['scripts/standalone.rs']);
 });
+
+test('real release helper is covered by native changelog owners rather than run as a standalone program',()=>{
+  const result=spawnSync('bash',['scripts/test-scripts.sh','--list'],
+    {encoding:'utf8',timeout:10000,maxBuffer:1048576});
+  assert.equal(result.error,undefined);assert.equal(result.status,0,result.stderr);
+  const selected=result.stdout.trim().split('\n');
+  assert(!selected.includes('scripts/changelog-files.rs'));
+  assert(selected.includes('scripts/publish-crate.rs'),'standalone suites remain selected');
+});

@@ -81,12 +81,16 @@ fn every_standalone_script_test_suite_is_run_by_something() {
         found
     };
 
-    // A registered --test owner also runs the inline tests of its #[path]
-    // modules. Derive those included suites just as the standalone runner does,
-    // so a library is not mistaken for an uncovered standalone program.
+    // Both a registered --test owner and a native test-crate owner run the
+    // inline tests of their #[path] modules. Match the standalone runner's two
+    // consumer inventories so a native helper is not mistaken for an uncovered
+    // standalone program (the changelog-files.rs regression).
     let included_by_a_gate: Vec<String> = {
         let mut found = Vec::new();
-        for consumer in &run_by_a_gate {
+        for consumer in run_by_a_gate
+            .iter()
+            .chain(compiled_into_the_test_crate.iter())
+        {
             let source = fs::read_to_string(root.join("scripts").join(consumer))
                 .expect("a gate's test owner should be readable");
             for line in source.lines() {
