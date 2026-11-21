@@ -1,0 +1,62 @@
+{
+  "head": "27e895c1103926b4f73862c0eb15fa77fb505089",
+  "runId": 44860038851,
+  "verifiedOriginalPayloads": 142,
+  "verifiedCommandStreams": 22,
+  "reports": [
+    {
+      "path": "rust.sarif",
+      "sha256": "959250c21896c1cd6fb2f672ee8456295af30e0aed46d88d4a8f8bebf37f9543",
+      "version": "2.1.0",
+      "runs": [
+        {
+          "results": 0,
+          "tool": "CodeQL",
+          "invocations": [
+            {
+              "executionSuccessful": true,
+              "notifications": 8990
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "actions.sarif",
+      "sha256": "df4ec29822415df4c9f33fc2569770f3332672e897dded024bdacf10a50cae08",
+      "version": "2.1.0",
+      "runs": [
+        {
+          "results": 0,
+          "tool": "CodeQL",
+          "invocations": [
+            {
+              "executionSuccessful": true,
+              "notifications": 5774
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "path": "included-string-payloads/included-string-payloads.json",
+      "sha256": "1317d7c5c1a8ccbb6eeef73c74ab941a2fd46dcf902d63ff1e52e3c0fb6291d6",
+      "topLevelKeys": [
+        "#select"
+      ]
+    },
+    {
+      "path": "macro-contexts/macro-contexts.json",
+      "sha256": "492f4de92206da3a3edd364e3ad724a54f23302eb9fdc3080cf10c2b4b006ef1",
+      "topLevelKeys": [
+        "#select"
+      ]
+    }
+  ],
+  "wholeAggregateLogLiterallyReviewed": false,
+  "macroChildSemanticSecurityQualified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -92,3 +92,18 @@ macro semantics.
 Cache option contracts: [query run](https://docs.github.com/en/code-security/reference/code-scanning/codeql/codeql-cli-manual/query-run),
 [producer action](https://github.com/github/codeql-action/blob/1bd86f2fdb4b86187fa4059f16f31a3202acc9ea/src/analyze.ts#L461),
 [action argument order](https://github.com/github/codeql-action/blob/1bd86f2fdb4b86187fa4059f16f31a3202acc9ea/src/codeql.ts#L774).
+
+
+Hosted qualification on `27e895c1` now succeeds in [Security run
+44860038851](https://github.com/link-assistant/formal-ai/actions/runs/44860038851).
+All 142 producer payloads match the downloaded originals. Both original SARIF
+reports have zero findings and zero warning/error notifications. Both observers
+complete without runtime diagnostics, with the resolved 2,607 MiB loading heap.
+The macro table contains 122,574 rows; all 631 original positions remain
+unexpanded. The included-string table contains 2,179 rows: 1,930 literal
+expansions (266 with CFG nodes), 248 unexpanded calls and one other expansion
+with a CFG node. The complete literal payload table and partitioned position
+hashes remain under `../evidence/ci/codeql-producer-27e895c1/`. These observations
+qualify the actual option repair and profile execution; per-child semantic
+qualification remains open. The earlier cache-eviction explanation is still an
+inference. See the [dated assessment](../../../docs/case-studies/issue-1580/successful-security-observers-checkpoint.md).

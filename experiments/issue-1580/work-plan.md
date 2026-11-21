@@ -25,7 +25,9 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-New local repair: [generated source witness checkpoint](../../docs/case-studies/issue-1580/generated-native-registry-repair-checkpoint.md). The current published head is `27e895c1`; its final Pipeline and Security results are still being collected before the next push. The fully collected prior-head account follows.
+Successful current-head security observers: [hosted assessment](../../docs/case-studies/issue-1580/successful-security-observers-checkpoint.md). Both original SARIF reports and both opt-in profiles complete; 631 unexpanded positions and per-child semantics remain explicit. The maintained scanner retains 92 warnings and zero violations.
+
+New local repair: [generated source witness checkpoint](../../docs/case-studies/issue-1580/generated-native-registry-repair-checkpoint.md). The current published head is `27e895c1`; its final Pipeline results are still being collected before the next push. The fully collected prior-head account follows.
 
 Latest fully collected published head `bd6fe77b98aa1cb89c53bfc0667107f6afb13122`
 has 27 terminal workflows: 23 success, one skip and three failures. All 178
