@@ -143,7 +143,7 @@ impl Harness {
                         path.file_stem().and_then(|name| name.to_str()) == Some(identifier)
                     })
                     .max_by_key(|path| modified(path).ok())
-                    .ok_or(io::ErrorKind::NotFound)?;
+                    .ok_or_else(|| io::Error::from(io::ErrorKind::NotFound))?;
                 ("qwen", qwen_messages(&path, identifier)?)
             }
         };
