@@ -47,7 +47,7 @@ for (const [label, needs, expectedStatus] of [
       const result = spawnSync('bash', ['scripts/check-pipeline-status.sh'], {encoding: 'utf8', timeout: 5000,
         env: {...process.env, NEEDS_JSON: JSON.stringify(needs), IS_MAIN: isMain}});
       assert.equal(result.signal, null, result.stderr);
-      assert.equal(result.status === 0, expectedStatus === 0, `IS_MAIN=${isMain}: ${result.stdout}${result.stderr}`);
+      assert.equal(result.status, expectedStatus, `IS_MAIN=${isMain}: ${result.stdout}${result.stderr}`);
       if (expectedStatus) assert.doesNotMatch(result.stdout, /All required jobs succeeded/u);
     }
   });
