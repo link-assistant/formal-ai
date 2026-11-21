@@ -25,21 +25,46 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published f8b372ad has 27 terminal workflows: 24 success, one skip and two failures.
-All 573 Rust and eight actual registry CLI cases pass. The two failures are the
-stale generated native registry and moved Telegram literal owners; both have
-local generator repairs. All 338 collected command streams verify by identity.
-The complete 141-entry JavaScript inventories retain rounds with five, four
-and one failures. The last notation failure is repaired by hyphenating two new
-component identifiers; all seven affected gates pass, for zero combined remaining
-failures. No clean full replay after that two-token correction is claimed. Source metadata and generated status are current;
-two generic children satisfy the documented promotion test, with all domain
-selection retained in their parents and the handler debt ceiling unchanged at 47. Nineteen helper groups reduce
-the fresh scanner inventory to 99 source-size warnings with zero violations;
-eleven groups still require next-head hosted native validation. Rust literal
-review is 352/373 identities and 49,166 lines. All wider source/template/practice,
-macro-semantic, current-dependency and live delivery acceptance remains open.
-No local Rust execution or independent authorship credit; PR #1581 stays draft.
+Published `3e7056756ed57e4899780913eae2f0fb07723e5f` has 27 terminal workflows:
+25 success, one skip and one Layered CI failure. CI/CD Pipeline 44836234471
+passes all 573 Rust cases plus eight actual registry CLI cases. All ten native
+jobs, including three Hive shards, finish within unchanged clocks; 304 retained
+command streams verify by hash, byte and line count. Layered CI 44836234464
+fails two assertions of the same stale solver fixture binding (full log lines
+3860 and 12907). The exact 19-field governed refresh retains failed-before and
+passing-after cases, with every other fixture object unchanged. Next-head hosted
+verification is pending.
+
+Manual Security 44836216888 succeeds with 126 verified original payloads,
+122,553 macro contexts over 2,228 files, a 2,607 MiB resolved heap and no query
+runtime diagnostics. Original SARIF has zero findings and warning/error
+notifications. The 631 unexpanded original positions still lack per-child
+security/dataflow qualification. A new default-off included-string observation
+retains full literal payloads and unavailable expansions; 21 maintained security
+cases pass, but actual hosted query compilation/execution remains pending.
+
+The complete 141-entry local inventory passes 88 gates with 53 explicit
+native/context exclusions and zero failures. All 88 compressed gate streams
+verify by hash, bytes and line count. The subsequent seed-response extraction
+passes its three focused test files, eight source/currency gates, translation
+currency and Rust formatting. Its initial strict token proof failed when
+rustfmt removed one optional import comma; that failure is retained and the
+single declared change is verified. No full replay after that Rust-only leaf is
+claimed. Twenty-one extraction groups now leave 97 source-size warnings and no
+ordinary or embedded-data violations. Original limits remain unchanged. The
+protocol-message and seed-response groups, new lifetime-test admission and new
+query profile require hosted checks after publication.
+
+Published logs retain 99 source-size annotations and token-scope uncertainty;
+the allowed experimental unsafe-libyaml maintenance warning is separate. The
+Workflows error at line 660 is the deliberate canonical-outage control followed
+by verified mirror recovery. Whole aggregate literal review, all-warning
+resolution, dependency migration, complete PR review, all eight full template
+comparisons/practices and original/live acceptance remain unfinished. Rust
+literal review remains 352/373 identities and 49,166 lines. Strict dated original
+acceptance remains 31/53 plus 22 separate scoped assertion reviews. Independent
+Formal AI reasoning remains 0/20; supplied work receives zero credit. PR #1581
+stays draft and unmerged. Full issue completion remains false.
 
 Earlier chronology: [preserved work plan entries](work-plan-history-through-native-interface.md).
 
@@ -671,3 +696,9 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [ ] Compile and execute the new query in the next read-only hosted producer.
   Fixtures provide no local query semantics; all macro semantics, credentials,
   complete template/practice comparison and broader acceptance remain open.
+
+- [x] Collect every current-head terminal run and preserve 304 verified command streams and 126 original CodeQL payloads. Reproduce and repair both stale governed fixture assertions without changing acceptance cases.
+- [x] Finish one clean 141-entry JavaScript replay (88 pass, 53 explicit exclusions), admit all seven existing child-process lifetime cases to the maintained CI suite and preserve the new query adapter controls.
+- [x] Preserve protocol and seed public paths with exact inverse extraction proofs; 21 extraction groups leave 97 warnings and zero violations. The final Rust-only seed leaf receives focused verification after the complete replay.
+- [ ] Publish the complete batch once current-head runs are terminal; verify the new query using the actual read-only hosted producer and all new Rust boundaries using focused native CI.
+- [ ] Complete all outstanding original, template/practice, dependency, warning, semantic coverage, live delivery and whole-PR review criteria. Passing local or hosted gates alone does not complete these requirements.

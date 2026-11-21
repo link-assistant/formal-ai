@@ -1,5 +1,50 @@
 # Source warning extraction checkpoint
 
+## Current repair checkpoint
+
+Published `3e7056756ed57e4899780913eae2f0fb07723e5f` has 27 terminal workflows:
+25 success, one skip and one Layered CI failure. CI/CD Pipeline 44836234471
+passes all 573 Rust cases plus eight actual registry CLI cases. All ten native
+jobs, including three Hive shards, finish within unchanged clocks; 304 retained
+command streams verify by hash, byte and line count. Layered CI 44836234464
+fails two assertions of the same stale solver fixture binding (full log lines
+3860 and 12907). The exact 19-field governed refresh retains failed-before and
+passing-after cases, with every other fixture object unchanged. Next-head hosted
+verification is pending.
+
+Manual Security 44836216888 succeeds with 126 verified original payloads,
+122,553 macro contexts over 2,228 files, a 2,607 MiB resolved heap and no query
+runtime diagnostics. Original SARIF has zero findings and warning/error
+notifications. The 631 unexpanded original positions still lack per-child
+security/dataflow qualification. A new default-off included-string observation
+retains full literal payloads and unavailable expansions; 21 maintained security
+cases pass, but actual hosted query compilation/execution remains pending.
+
+The complete 141-entry local inventory passes 88 gates with 53 explicit
+native/context exclusions and zero failures. All 88 compressed gate streams
+verify by hash, bytes and line count. The subsequent seed-response extraction
+passes its three focused test files, eight source/currency gates, translation
+currency and Rust formatting. Its initial strict token proof failed when
+rustfmt removed one optional import comma; that failure is retained and the
+single declared change is verified. No full replay after that Rust-only leaf is
+claimed. Twenty-one extraction groups now leave 97 source-size warnings and no
+ordinary or embedded-data violations. Original limits remain unchanged. The
+protocol-message and seed-response groups, new lifetime-test admission and new
+query profile require hosted checks after publication.
+
+Published logs retain 99 source-size annotations and token-scope uncertainty;
+the allowed experimental unsafe-libyaml maintenance warning is separate. The
+Workflows error at line 660 is the deliberate canonical-outage control followed
+by verified mirror recovery. Whole aggregate literal review, all-warning
+resolution, dependency migration, complete PR review, all eight full template
+comparisons/practices and original/live acceptance remain unfinished. Rust
+literal review remains 352/373 identities and 49,166 lines. Strict dated original
+acceptance remains 31/53 plus 22 separate scoped assertion reviews. Independent
+Formal AI reasoning remains 0/20; supplied work receives zero credit. PR #1581
+stays draft and unmerged. Full issue completion remains false.
+
+## Earlier dated observations
+
 Published commit `9fd9360d88d084aeee109ebf8375cde3cd816ff1` has 27 terminal
 workflows: 26 success and one explicit skip. All 298 captured command streams
 retain verified original/compressed hashes, bytes and line counts. Its 573 Rust

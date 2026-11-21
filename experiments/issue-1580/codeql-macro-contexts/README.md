@@ -63,3 +63,11 @@ producer files, 122,542 contexts over 2,221 files, a 2,607 MiB resolved loading
 heap and no query runtime diagnostics. Original SARIF findings and warning/error
 notifications remain zero; the same 631 informational macro positions remain
 unexpanded. See `../evidence/ci/codeql-producer-f8b372ad/`.
+
+The subsequent published `3e705675` observation verifies 126 producer files,
+122,553 contexts over 2,228 files, the resolved 2,607 MiB heap and no runtime
+diagnostics. All 631 original informational positions still match unexpanded
+nodes; this establishes no semantic coverage. The additional default-off
+`included-string-payloads` profile retains complete literal text and explicit
+missing-expansion/CFG state. Its local adapter controls pass; actual hosted
+query compilation/evaluation and semantic qualification remain pending.
