@@ -28,6 +28,7 @@ import { observedComparisonBoundaryOperation } from '../server/source-boundary-o
 import { validateRepairProgram } from '../server/repair-program-syntax.mjs';
 import { createNodeSourceSessionHost } from '../server/node-source-session-host.mjs';
 import { sourceQualifiedSeedOwners } from '../../scripts/generate-seed-registry.mjs';
+import { currentDialogId } from '../server/dialog-log.mjs';
 function stat(path) {
   try {
     return statSync(path);
@@ -270,6 +271,7 @@ export async function installNodeHost(worker, options = {}) {
     prerequisiteGrant: () => prerequisiteGrant,
     parseLino,
     realm: context,
+    currentDialogId,
     planningObserver: () => {
       const capture = activeDriveCapture();
       if (capture && 'engineGenesis' in capture && typeof capture.engineGenesis === 'function') {

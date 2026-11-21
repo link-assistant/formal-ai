@@ -223,6 +223,7 @@ pub use question_catalog::{
 };
 pub use rebuild_plan::{REBUILD_PATH, REBUILD_TASK, is_rebuild_task};
 pub use repair_strategy::{REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK, is_repair_strategy_task};
+pub(crate) use report_issue::{issue_form_for_prompt, plan_text_report_flow};
 pub use requirement_resolution::{RequirementTarget, resolve_in, resolve_requirement_target};
 pub use routing_learning::{
     ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK, is_routing_learning_task,

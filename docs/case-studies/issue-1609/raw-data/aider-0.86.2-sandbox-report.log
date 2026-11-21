@@ -1,0 +1,51 @@
+Detected dumb terminal, disabling fancy input and pretty output.
+
+Aider v0.86.2
+Model: openai/formal-ai with whole edit format
+Git repo: none
+Repo-map: disabled
+
+>
+
+--------------
+► **THINKING**
+
+You said hello, so I greeted you back.
+Read the request: "Hello".
+Detect the request language: English.
+Formalize the request as a greeting task.
+Route to the greeting handler.
+Verify the result against the rules.
+Compose the answer: "Hi, how may I help you?".
+
+------------
+► **ANSWER**
+
+Hi, how may I help you?
+Tokens: 580 sent, 119 received.
+
+>
+What would you like to report? Select one or more.
+1. Harness log — Export the complete agentic harness log.
+2. Server log — Export the matching Formal AI server log.
+3. GitHub issue — File an issue with complete context.
+4. Report to Formal AI — Store the report so this instance can learn.
+Tokens: 598 sent, 66 received.
+
+>
+Which context should the GitHub issue include?
+1. Both logs — Include harness and server logs; attach a trimmed preview and link the full context if too large.
+2. Harness log — Include the complete harness conversation only.
+3. Server log — Include the complete matching server log only.
+Tokens: 673 sent, 57 received.
+
+>
+Run these commands in this session’s terminal. In Aider, paste each command after `/run`.
+
+formal-ai report create-issue --session 'aider-stock-replay' --source both --surface agentic-cli --repo 'link-assistant/formal-ai' --title 'Formal AI: `Hello`' --separate-context-links
+Tokens: 739 sent, 71 received.
+
+>
+https://github.com/link-assistant/formal-ai/issues/9999
+Add 0.0k tokens of command output to the chat? (Y)es/(N)o [Yes]:
+>

@@ -135,21 +135,6 @@ pub fn chinese_wellbeing_answer() -> &'static str {
     cached_response(&CELL, "wellbeing", "zh")
 }
 
-pub fn russian_greeting_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "greeting", "ru")
-}
-
-pub fn hindi_greeting_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "greeting", "hi")
-}
-
-pub fn chinese_greeting_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "greeting", "zh")
-}
-
 pub fn russian_identity_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "identity", "ru")

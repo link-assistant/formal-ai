@@ -9,8 +9,8 @@
 # failure with unchanged inputs names the toolchain that moved.
 wasm-worker-inputs
   worker js/formal_ai_worker.wasm
-  bytes 311725
-  sha256 856629870a9ce099af5a803f850085e5b12590aa4a83c51306589ed31892374b
+  bytes 311773
+  sha256 ff9363091b22a40329d8fd65e210901536d873b607c0caa3a2920febed27743d
   compiler "rustc 1.100.0 (0ef1bc386 2026-11-09)"
   compiler-commit 0ef1bc386059596dada8fb65b50425aab2ea637a
 input js/wasm-worker/src/formal_statement_worker.rs
@@ -22,7 +22,7 @@ input js/wasm-worker/src/memory_query_worker.rs
 input js/wasm-worker/src/proof_translation_worker.rs
   sha256 2f0ae4833c006a324303a8db421744b6e1c32e2cedc03e624707280617bec832
 input rust/embedded/data/seed/language-detection.lino
-  sha256 b8725b913005e534e2b6b4964579b68d8b15275b663b1e9834cb9cf244e1f01f
+  sha256 e42032c5222221cbf426cf74b4374662a37288a13b6d872e3d039f6e4141f454
 input rust/embedded/data/seed/languages.lino
   sha256 8192a5af2a48fc1908656bb205d54e225b0782d261ab9afedd46e1cea9fc2f78
 input rust/embedded/data/seed/meanings-statement-merge.lino

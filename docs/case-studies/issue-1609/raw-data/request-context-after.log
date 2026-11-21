@@ -1,0 +1,12 @@
+✔ issue 1587: request-local constraints and user facts (9657.041421ms)
+✔ issue 1587: published agentic answers honor constraints (3.795608ms)
+✔ issue 1587: memory recording does not make constraints or facts cross requests (424.41698ms)
+✔ issue 1587: Responses instructions and concurrent requests remain scoped (631.318418ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11538.703609

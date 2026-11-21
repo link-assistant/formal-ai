@@ -4,7 +4,8 @@
 //! explain whether an empty CLI turn originated in the planner, a protocol
 //! adapter, or the client. This module records the complete authenticated
 //! request and response together as Links Notation when
-//! `FORMAL_AI_DIALOG_LOG_DIR` is set. Silent and ephemeral servers skip capture.
+//! `FORMAL_AI_DIALOG_LOG_DIR` is set. The wrapper supplies this directory for
+//! its temporary server. Silent and ephemeral servers skip capture.
 
 #[path = "structured_log.rs"]
 pub mod structured_log;
@@ -27,6 +28,17 @@ use crate::dialog_conversation::{
 use crate::engine::stable_id;
 use crate::proxy::{ProxyExchangeLog, summarize_proxy_exchange};
 use crate::server::ApiHttpResponse;
+
+pub(crate) fn open_private_log(path: &Path) -> io::Result<fs::File> {
+    let mut options = OpenOptions::new();
+    options.create(true).append(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    options.open(path)
+}
 
 /// Header carrying the caller's own session identifier (#839).
 ///
@@ -100,8 +112,16 @@ impl DialogScope {
     /// Enter a request scope, adopting the header's session id when present.
     #[must_use]
     pub fn begin(headers: &[(&str, &str)]) -> Self {
+        Self::with_identifier(explicit_dialog_id(headers))
+    }
+
+    pub(crate) fn for_request(headers: &[(&str, &str)], path: &str, body: &str) -> Self {
+        Self::with_identifier(request_session_identifier(headers, path, body))
+    }
+
+    fn with_identifier(identifier: Option<String>) -> Self {
         Self {
-            previous: CURRENT_DIALOG_ID.with(|slot| slot.replace(explicit_dialog_id(headers))),
+            previous: CURRENT_DIALOG_ID.with(|slot| slot.replace(identifier)),
         }
     }
 }
@@ -172,7 +192,7 @@ pub(crate) fn record_native_response_if_enabled(
             .get_or_init(|| Mutex::new(()))
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
+        let mut file = open_private_log(&path)?;
         serde_json::to_writer(
             &mut file,
             &crate::dialog_log::structured_log::redact(
@@ -299,7 +319,7 @@ pub fn write_dialog_exchange(
         .get_or_init(|| Mutex::new(()))
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
-    let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
+    let mut file = open_private_log(&path)?;
     let safe = crate::dialog_log::structured_log::redact(
         &serde_json::to_value(&record).map_err(io::Error::other)?,
     );
@@ -310,11 +330,11 @@ pub fn write_dialog_exchange(
 }
 
 fn dialog_id(directory: &Path, headers: &[(&str, &str)], request_body: &str, path: &str) -> String {
-    if let Some(declared) = explicit_dialog_id(headers) {
+    if let Some(declared) = request_session_identifier(headers, path, request_body) {
         return declared;
     }
-    // Issue #1105 (RC5): with no `x-formal-ai-dialog-id` -- which is every
-    // opencode session -- the id used to be `stable_id("dialog", first user
+    // Issue #1105 (RC5): with no caller session identifier, the id used to
+    // be `stable_id("dialog", first user
     // message)` and nothing else. Two conversations that open with "Hi" are
     // then the same conversation: in the reported store one collided dialog had
     // absorbed 52 % of every exchange, and exporting it returned somebody
@@ -376,19 +396,76 @@ fn conversation_epoch(scope: &str) -> u128 {
 
 /// The caller-declared session id, validated as a safe path component.
 fn explicit_dialog_id(headers: &[(&str, &str)]) -> Option<String> {
-    headers
-        .iter()
-        .find_map(|(name, value)| {
-            name.eq_ignore_ascii_case(DIALOG_ID_HEADER)
-                .then(|| value.trim())
-                .filter(|value| !value.is_empty())
-        })
-        .filter(|value| {
-            value.chars().all(|character| {
-                character.is_ascii_alphanumeric() || matches!(character, '_' | '-')
-            })
-        })
+    session_header(headers, DIALOG_ID_HEADER)
+}
+
+fn session_header(headers: &[(&str, &str)], expected: &str) -> Option<String> {
+    header_value(headers, expected)
+        .filter(|value| valid_session_identifier(value))
         .map(str::to_owned)
+}
+
+fn header_value<'a>(headers: &[(&str, &'a str)], expected: &str) -> Option<&'a str> {
+    headers.iter().find_map(|(name, value)| {
+        name.eq_ignore_ascii_case(expected)
+            .then(|| value.trim())
+            .filter(|value| !value.is_empty())
+    })
+}
+
+fn valid_session_identifier(value: &str) -> bool {
+    !value.is_empty()
+        && value.len() <= 128
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-'))
+}
+
+pub(crate) fn scoped_openai_path(path: &str) -> Option<(&str, &str)> {
+    let (identifier, operation) = path
+        .split('?')
+        .next()?
+        .strip_prefix("/api/openai/v1/dialog/")?
+        .split_once('/')?;
+    if !valid_session_identifier(identifier) {
+        return None;
+    }
+    let endpoint = match operation {
+        "chat/completions" => "/api/openai/v1/chat/completions",
+        "models" => "/api/openai/v1/models",
+        _ => return None,
+    };
+    Some((identifier, endpoint))
+}
+
+fn request_session_identifier(headers: &[(&str, &str)], path: &str, body: &str) -> Option<String> {
+    explicit_dialog_id(headers)
+        .or_else(|| session_header(headers, "x-opencode-session-id"))
+        .or_else(|| session_header(headers, "x-opencode-session"))
+        .or_else(|| session_header(headers, "x-grok-session-id"))
+        .or_else(|| scoped_openai_path(path).map(|(identifier, _)| identifier.to_owned()))
+        .or_else(|| {
+            let identifier = match path.split('?').next()? {
+                "/v1/messages" | "/api/anthropic/v1/messages" => {
+                    // Claude Code puts the transcript UUID inside a JSON string.
+                    let request: Value = serde_json::from_str(body).ok()?;
+                    let metadata: Value =
+                        serde_json::from_str(request.pointer("/metadata/user_id")?.as_str()?)
+                            .ok()?;
+                    metadata.get("session_id")?.as_str()?.to_owned()
+                }
+                "/v1/responses" | "/api/openai/v1/responses" => {
+                    // Codex sends the thread (including distinct subagents).
+                    let value = header_value(headers, "x-codex-turn-metadata");
+                    let thread_identifier = value
+                        .and_then(|text| serde_json::from_str::<Value>(text).ok())
+                        .and_then(|data| data.get("thread_id")?.as_str().map(str::to_owned));
+                    thread_identifier.or_else(|| session_header(headers, "session_id"))?
+                }
+                _ => return None,
+            };
+            (identifier.len() == 36 && valid_session_identifier(&identifier)).then_some(identifier)
+        })
 }
 
 fn first_user_prompt(body: &str) -> Option<String> {

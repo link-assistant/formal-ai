@@ -6,7 +6,8 @@ name: Native type and lint check
 # native check a PR runs: main's clippy profile on the library and binaries,
 # called from release.yml when a Rust compile input changed or the
 # classification is unknown. It uploads nothing and records no receipt.
-# The isolated regressions verify native calendar, currency, OpenAI and localized procedure behavior.
+# The isolated regressions verify native calendar, currency, OpenAI, localized
+# procedures, and reports from wrapped clients.
 # Main still runs full lint, tests and every build.
 on:
   workflow_call:
@@ -59,11 +60,11 @@ jobs:
           restore-only: 'true'
       - name: Type-check and lint the library and binaries
         run: bash scripts/ci-clippy-profile.sh --library-and-binaries
-      - name: Verify calendar, currency, forced OpenAI function and CNL behavior
+      - name: Verify calendar, currency, forced OpenAI function, CNL and T3 Code behavior
         env:
           CARGO_BUILD_JOBS: '2'
           CARGO_PROFILE_TEST_OPT_LEVEL: '0'
-        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity -- --test-threads=1
+        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity --test t3code_launch -- --test-threads=1
       - uses: actions/setup-node@v7
         with: {node-version: 22}
       - name: Replay the forced function requests against the native CLI
@@ -100,3 +101,8 @@ jobs:
         run: |
           bun install --frozen-lockfile --ignore-scripts
           node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs
+      - name: Verify matched client transcripts and issue receipts against the native CLI
+        if: ${{ !cancelled() && steps.bun.outcome == 'success' }}
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs

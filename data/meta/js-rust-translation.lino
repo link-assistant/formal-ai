@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 342
   workaround_items 38
   inferred_signatures 3
-  carried_items 2652
+  carried_items 2655
   translated_modules 114
   fully_translated_modules 1
   refused_modules 49
@@ -112,7 +112,7 @@ module js/agentic/crate/page_formalization.mjs translated 1 workaround 0 inferre
 module js/agentic/crate/probability.mjs translated 0 workaround 0 inferred 0 carried 7
 module js/agentic/crate/proposition_structure.mjs translated 8 workaround 0 inferred 1 carried 28
 module js/agentic/crate/protocol_recording.mjs translated 0 workaround 0 inferred 0 carried 2
-module js/agentic/crate/protocol_responses.mjs translated 5 workaround 0 inferred 0 carried 21
+module js/agentic/crate/protocol_responses.mjs translated 5 workaround 0 inferred 0 carried 24
 module js/agentic/crate/protocol_responses_apply_patch.mjs translated 3 workaround 0 inferred 0 carried 3
 module js/agentic/crate/quoted_segments.mjs translated 1 workaround 0 inferred 0 carried 9
 module js/agentic/crate/rebuild_plan.mjs translated 0 workaround 0 inferred 0 carried 12
@@ -191,7 +191,7 @@ module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inf
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
 refusal "import of names its module does not translate" 358
 refusal "JSDoc type {…}" 220
-refusal "import from '…'" 214
+refusal "import from '…'" 217
 refusal "null" 194
 refusal "arrow function" 144
 refusal "type: unknown name (a sibling item or an import)" 125

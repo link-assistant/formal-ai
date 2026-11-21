@@ -143,6 +143,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$WASM_PROTOCOL_COMMIT"
           protocol_path="$RUNNER_TEMP/formal-ai-extension-wasm.mjs"
           cp scripts/build-selected-wasm.mjs "$protocol_path"
+          bash scripts/verify-browser-artifact.sh --capture "$RUNNER_TEMP/formal-ai-browser-verification"
           echo "FORMAL_AI_WASM_PROTOCOL=$protocol_path" >> "$GITHUB_ENV"
       - name: Select the resolved release tag
         if: needs.resolve.outputs.tag != ''
@@ -179,10 +180,15 @@ jobs:
           npm ci --prefix vscode --no-audit --no-fund
           npm --prefix vscode run package
       - name: Verify the worker copied into extension resources
+        timeout-minutes: 5
         env:
           WASM_RECEIPT_SHA256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
-        run: node "$FORMAL_AI_WASM_PROTOCOL" verify "$GITHUB_WORKSPACE" vscode/dist-web
-          "$WASM_RECEIPT_SHA256"
+        run: |
+          shopt -s nullglob
+          packages=(vscode/*.vsix)
+          test "${#packages[@]}" -eq 1
+          bash "$RUNNER_TEMP/formal-ai-browser-verification/scripts/verify-browser-artifact.sh" \
+            --vsix "${packages[0]}" "$FORMAL_AI_WASM_PROTOCOL" "$WASM_RECEIPT_SHA256"
       - name: Compare the packaged extension version with the preceding release
         id: version
         run: >

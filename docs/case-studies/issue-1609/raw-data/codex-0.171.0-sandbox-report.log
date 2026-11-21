@@ -1,0 +1,27 @@
+WARNING: proceeding, even though we could not create PATH aliases: Refusing to create helper binaries under temporary dir "/tmp" (codex_home: AbsolutePathBuf("/tmp/formal-ai-codex-fixture/codex"))
+2026-11-21T18:54:58.684391Z  WARN codex_models_manager::model_info: Unknown model gpt-5.6-luna is used. This will use fallback model metadata.
+OpenAI Codex v0.171.0
+--------
+workdir: /tmp/formal-ai-codex-fixture/workspace
+model: formal-ai
+provider: formalai
+approval: never
+sandbox: danger-full-access
+reasoning effort: none
+reasoning summaries: none
+session id: 01a1ff76-21a7-7611-89a4-03588e11d0eb
+--------
+user
+1
+codex
+I’ll file the report in the Formal AI GitHub repository.
+exec
+/bin/bash -lc "formal-ai report create-issue --session '01a1ff76-21a7-7611-89a4-03588e11d0eb' --source both --surface agentic-cli --repo 'link-assistant/formal-ai' --title 'Formal AI: "'`Report issue`'"' --separate-context-links" in /tmp/formal-ai-codex-fixture/workspace
+ succeeded in 2134ms:
+https://github.com/link-assistant/formal-ai/issues/9999
+
+codex
+Filed the issue on GitHub: https://github.com/link-assistant/formal-ai/issues/9999
+tokens used
+14,142
+Filed the issue on GitHub: https://github.com/link-assistant/formal-ai/issues/9999
