@@ -823,3 +823,21 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [ ] Publish the evidence and report the PHP Process defects upstream.
 - [ ] Finish all full-template/practice, original workflow and live acceptance
   requirements. No complete acceptance is inferred from these focused probes.
+
+- [x] Report both confirmed PHP Process output defects upstream: https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/33 .
+- [ ] Add the permanent regression source link after publication; upstream repair remains open.
+
+
+## Current Python Scriv selection and external report checkpoint
+
+- [x] Read 33 of 35 current changed Python files completely; retain all 35
+  source identities and keep generated bundle and lock comparison open.
+- [x] Reproduce Scriv selection data loss with four bounded actual-Python
+  tests and a mocked external producer; report it at https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/165 .
+- [x] Report confirmed PHP Process defects at https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/33 .
+- [x] Preserve the invalid gate-name attempt and the successful underlying
+  documentation checker separately; preserve the old-parser false positive
+  and official primary-source syntax evidence.
+- [ ] Publish permanent regression links after preceding head becomes terminal.
+- [ ] Finish all 338 Python files, every other full template/practice check
+  and all remaining original issue criteria. No complete acceptance claimed.

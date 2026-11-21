@@ -21,3 +21,4 @@ import '../../../experiments/issue-1580/template-pages-adoption.test.mjs';
 import '../../../experiments/issue-1580/template-php-input-integrity.test.mjs';
 import '../../../experiments/issue-1580/budget-annotation-boundaries.test.mjs';
 import '../../../experiments/issue-1580/template-php-pipe-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-python-scriv-integrity.test.mjs';

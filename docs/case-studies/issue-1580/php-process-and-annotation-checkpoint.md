@@ -15,7 +15,8 @@ the candidate preserves all 262144 bytes. Literal zero, small outputs and exit
 codes 0 and 7 have explicit controls. Each PHP process has a 32 MiB limit and
 captured output has a 524288-byte bound. This candidate has not been applied to
 the upstream repository. Its existing issues were checked for pipe/deadlock
-duplicates; the upstream report is pending publication of this evidence.
+duplicates. The confirmed defects were reported at https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/33 .
+A permanent regression source link will follow publication of this local commit.
 
 The first 119-case maintained run passed 118 cases and exposed a race in the
 annotation warning fixture. A whole-second warning threshold could be reached
