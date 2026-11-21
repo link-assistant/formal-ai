@@ -1,0 +1,40 @@
+class	case	en	ru	observations
+factual_qa	capital	useful	miss	English gives Canberra with a source. Russian gives an unknown-answer message.
+explanation	rainbow	miss	miss	English defines “plain”. Russian returns fragments without explaining the mechanism.
+definition	ephemeral	useful	useful	Both give the requested dictionary definition.
+comparison	programming	miss	miss	Neither compares trade-offs for the two web-server options.
+document_qa	records	miss	miss	Both look up Anna instead of reading the supplied licence values.
+summarization	decision	useful	useful	Both retain the decision and its two reasons.
+translation	sales	miss	miss	English leaves the content words untranslated. Russian reports a translation gap.
+rewriting	redaction	miss	miss	English takes a code-refactoring route. Russian looks up a place name.
+grammar_correction	agreement	miss	miss	Neither corrects the supplied sentence.
+text_writing	email	miss	miss	Both return unrelated definitions instead of a letter.
+classification	labels	miss	miss	Neither selects a caller label.
+classification	sentiment	miss	miss	Both give dictionary information instead of selecting neutral.
+extraction	job	miss	miss	Neither extracts the fields from the pasted vacancy.
+math_word	boxes	miss	miss	Neither calculates the 23 remaining pens.
+data_analysis	average	miss	miss	Neither returns the mean and median.
+units_and_dates	distance	useful	miss	English gives 42.1648128 km and the factor. Russian attempts translation.
+units_and_dates	currency	partial	useful	English embeds a matching amount in mixed search snippets. Russian gives an amount, dated rate and calculation.
+code_generation	second	miss	miss	Both report a synthesis gap.
+code_explanation	loop	miss	miss	English defines console. Russian mistakes the array literal for indexing and misses the loop.
+debugging	name	miss	miss	Neither identifies the mismatched variable name.
+code_review	review	miss	miss	Neither identifies that the index selects the second element.
+refactoring	promises	miss	miss	English generates invalid JavaScript. Russian asks for an unrelated file tool.
+test_generation	tests	miss	partial	Russian returns pytest cases, but pre-normalizing masks defects in case handling, and one test also assumes space handling.
+regex	mobile	miss	miss	Both ask for more explicit constraints and supply no pattern.
+sql	select	miss	miss	English emits the wrong table and no filters. Russian requests a table already given.
+shell_command	list	miss	miss	Neither returns a command for a long-format listing.
+format_conversion	yaml	useful	useful	Both produce the requested values in YAML and report a round-trip check.
+creative_writing	poem	miss	miss	Both emit four lines on the wrong topic.
+brainstorming	names	useful	miss	English gives five candidate names. Russian returns a definition.
+planning	move	miss	miss	Both misroute the office move toward a destination itinerary.
+advice	storage	miss	miss	Both report a gap without giving storage advice.
+fact_checking	venus	miss	partial	Russian quotes evidence that Venus is second but gives no verdict or correction naming Mercury.
+formalization	logic	miss	miss	Neither parses the supplied universal quantifier.
+repository_qa	function	miss	miss	Neither answers what the named function does.
+multi_turn_conversation	name	miss	miss	Neither recovers the name from the provided history.
+agentic_coding	workspace	miss	miss	The server's default mode declines tool execution.
+ocr_image_description	image	miss	miss	Neither identifies the red square.
+long_document_qa	archive	miss	miss	Neither finds Wednesday in the supplied archive.
+language_identification	language	miss	miss	Neither identifies the supplied text's language.
