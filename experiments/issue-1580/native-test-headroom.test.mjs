@@ -167,3 +167,17 @@ test('path-loaded native owners explicitly resolve every extracted helper', () =
       /AssertionError/u, 'a wrong explicit path must also be rejected');
   }
 });
+
+
+test('capability routing retains file-size headroom with all public tool entry points', () => {
+  const owner = 'rust/src/agentic_coding/capability_router';
+  assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/tool_classification.rs'])),
+    {warnings: [], violations: [], embeddedDataViolations: []});
+  const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
+  const classification = readFileSync(root + '/' + owner + '/tool_classification.rs', 'utf8');
+  for (const name of ['tool_for', 'shell_command_tool', 'classify_tool', 'workspace_creation_tool', 'is_workspace_creation_tool']) {
+    assert(source.includes(name), 'the original parent must expose ' + name);
+    assert(classification.includes('pub(in crate::agentic_coding) fn ' + name));
+  }
+  assert(source.includes('pub(super) fn is_hosted_research_tool('));
+});
