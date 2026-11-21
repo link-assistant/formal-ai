@@ -20,6 +20,7 @@ const nativeRegressionSource = step => {
   return read('scripts/ci-native-regressions.sh');
 };
 function evaluate(expression, event, ref, variables = {}) {
+  if(typeof expression!=='string')return expression;
   const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
   const outputs = new Proxy({}, {get: () => 'true'});
@@ -163,7 +164,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     {FORMAL_AI_DYNAMIC_META_NATIVE: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   const checkout = check.steps.find(step => step.uses === 'actions/checkout@v7').with;
   assert.deepEqual(checkout['sparse-checkout'].trim().split('\n'),
-    ['/*', '!/dev/log/', '!/experiments/**', '/experiments/**/*.sh',
+    ['/*', '!/dev/log/','/dev/log/issues/1079/pulls/1080/upstream-reports/', '!/experiments/**', '/experiments/**/*.sh',
       '/experiments/dynamic-meta/**', '/experiments/js_dogfood/**',
       '/experiments/issue-1580/release-registry/', '/experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
       ...['candidate-output-bindings.json', 'candidate-release-caller.yml', 'original-release-workflow.yml',
@@ -323,12 +324,12 @@ test('recorded Docker cold rebuild is optional and cannot hold the production bu
   }
 });
 // Runs 43693412224 and 44679541559 exhausted stale JavaScript shard plans.
-// Four fast PR groups retain the deadline and divide by the same matrix count.
-test('PRs split the fast JS inventory over four groups; full main inventory retains its measured shard plan', () => {
+// The same eight full-suite groups retain the deadline on every hosted profile.
+test('PR and main use the same complete JavaScript inventory and measured shard plan', () => {
   const job=workflow('layered-ci.yml').jobs.js;
-  assert.deepEqual(Array.from(evaluate(job.strategy.matrix.shard,'pull_request','refs/pull/1500/merge')),[1,2,3,4]);
+  assert.deepEqual(Array.from(evaluate(job.strategy.matrix.shard,'pull_request','refs/pull/1500/merge')),[1,2,3,4,5,6,7,8]);
   const shards=job.steps.find(s=>s.name==='Run this shard of the JavaScript suites').env.SHARDS;
-  assert.equal(evaluate(shards,'pull_request','refs/pull/1500/merge'),4);
+  assert.equal(evaluate(shards,'pull_request','refs/pull/1500/merge'),8);
   assert.equal(evaluate(shards,'push','refs/heads/main'),8);
   assert.equal(evaluate(job.strategy.matrix.shard,'push','refs/heads/main').length,8);
   for (const file of ['release.yml','layered-ci.yml','coverage.yml']) {

@@ -1,7 +1,7 @@
 import '../../../experiments/issue-1580/fast-inventory-boundary.test.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,existsSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
+import {readFileSync,readdirSync,existsSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {execFileSync} from 'node:child_process';
@@ -14,7 +14,7 @@ import {ROOTS,familyOf} from '../../../scripts/check-readable-code.mjs';
 const read = file => readFileSync(file, 'utf8');
 const manifest = JSON.parse(read('data/benchmarks/fast-pull-request-retained-jobs.json'));
 const workflow = file => YAML.parse(read('.github/workflows/' + file));
-const evaluate = (expression, context) => new Script(expression.trim()
+const evaluate = (expression, context) => typeof expression!=='string' ? expression : new Script(expression.trim()
   .replace(/^\$\{\{\s*/u, '').replace(/\s*\}\}$/u, '')
   .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']'))
   .runInNewContext({cancelled: () => false, always: () => true, ...context}, {timeout: 100});
@@ -64,8 +64,8 @@ test('fast inventory retains coding, questions, reports and captured CI failure 
   const layer=workflow('layered-ci.yml').jobs.js;
   assert(evaluate(layer.if,context('pull_request')));
   const step=layer.steps.find(s=>s.name==='Run this shard of the JavaScript suites');
-  assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('pull_request')),true);
-  assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('push','refs/heads/main')),false);
+  assert.equal(evaluate(step.env.PULL_REQUEST_CHECKS,context('pull_request')),true);
+  assert.equal(evaluate(step.env.PULL_REQUEST_CHECKS,context('push','refs/heads/main')),false);
   assert.match(workflow('layered-ci.yml').jobs.js.steps.find(s=>s.id==='javascript-plan').run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
   assert.match(read('.github/workflows/pull-request-check-profile.yml'),/no execution or acceptance credit/u);
 });
@@ -108,14 +108,14 @@ test('explicit translation regeneration selects only the source emitter on every
     assert.equal(Boolean(evaluate(regeneration.if, context(event, 'refs/heads/main'))), false, event);
 });
 
-test('measured TeachF integration stays on main while fast coding and QA controls remain selected', () => {
+test('the local fast inventory stays small while hosted profiles include TeachF', () => {
   const selected=selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
   const teach='rust/tests/web/pull-request-1188-teach-f.test.mjs';
   assert.equal(selected.includes(teach),false);
   assert.equal(existsSync(teach),true);
   const step=workflow('layered-ci.yml').jobs.js.steps
     .find(item=>item.name==='Run this shard of the JavaScript suites');
-  assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('push','refs/heads/main')),false);
+  assert.equal(evaluate(step.env.PULL_REQUEST_CHECKS,context('push','refs/heads/main')),false);
   assert.match(workflow('layered-ci.yml').jobs.js.steps.find(s=>s.id==='javascript-plan').run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
   for(const name of ['ordinary-literal-addition','issue-1180-repository-qa',
     'issue-1438-report-and-edit','file-command-contract','literal-create-shell-readback',
@@ -486,13 +486,13 @@ test('complete Coding Ladder is explicit main-only with mandatory default consis
 });
 
 
-test('measured fast JavaScript plans retain every suite within four unchanged execution budgets', async () => {
+test('measured full JavaScript plans retain every suite within eight unchanged execution budgets', async () => {
   const job = workflow('layered-ci.yml').jobs.js;
   const plan = job.steps.find(step => step.id === 'javascript-plan');
   const execute = job.steps.find(step => step.name === 'Run this shard of the JavaScript suites');
   for (const [event, ref, count] of [
-    ['pull_request', 'refs/pull/1581/merge', 4],
-    ['workflow_dispatch', 'refs/heads/feature', 4],
+    ['pull_request', 'refs/pull/1581/merge', 8],
+    ['workflow_dispatch', 'refs/heads/feature', 8],
     ['push', 'refs/heads/main', 8],
     ['workflow_dispatch', 'refs/heads/main', 8],
   ]) {
@@ -512,8 +512,8 @@ test('measured fast JavaScript plans retain every suite within four unchanged ex
     await import('../../../scripts/lib/ci-speed-shards.mjs');
   const path = 'data/meta/javascript-test-durations.lino';
   const secondsOf = durationLookup(readTestDurations(path), Number(read(path).match(/^  default-seconds (\S+)$/mu)[1]));
-  const selected = selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
-  const {shards} = planShards(selected, 4, secondsOf);
+  const selected = readdirSync('rust/tests/web').filter(name=>name.endsWith('.test.mjs')).map(name=>'rust/tests/web/'+name);
+  const {shards} = planShards(selected, 8, secondsOf);
   assert.deepEqual(partitionProblems(selected, shards), {missing: [], repeated: [], extra: []});
   assert(isLongestFirst(shards, secondsOf));
   for (const shard of shards) {

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Explicit offline PR inventory; the full suite stays selected on main.
+// Optional local feedback inventory; hosted PRs and main run the full default suite.
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 export function selectFastTests(manifest, available = existsSync) {

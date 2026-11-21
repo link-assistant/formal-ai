@@ -7,7 +7,6 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import YAML from 'yaml';
-import {selectFastTests} from '../../scripts/list-fast-pull-request-tests.mjs';
 import {readTestDurations} from '../../scripts/lib/ci-speed-durations.mjs';
 import {durationLookup, planShards} from '../../scripts/lib/ci-speed-shards.mjs';
 
@@ -52,9 +51,7 @@ test('the selected JavaScript shard provisions Python before executing the pinne
   const durations=join(root,'data/meta/javascript-test-durations.lino');
   const fallback=Number(readFileSync(durations,'utf8').match(/default-seconds ([0-9.]+)/u)[1]);
   for(const shards of [2,8]){
-    const files=shards===2
-      ? selectFastTests(JSON.parse(readFileSync(join(root,'data/benchmarks/fast-pull-request-javascript-tests.json'),'utf8')))
-      : readdirSync(join(root,'rust/tests/web')).filter(name=>name.endsWith('.test.mjs')).map(name=>'rust/tests/web/'+name);
+    const files=readdirSync(join(root,'rust/tests/web')).filter(name=>name.endsWith('.test.mjs')).map(name=>'rust/tests/web/'+name);
     const selected=planShards(files,shards,durationLookup(readTestDurations(durations),fallback)).shards;
     const owners=selected.flatMap((files,index)=>files.includes(observed)?[index+1]:[]);
     assert.equal(owners.length,1,`${shards} shards execute the Python observations exactly once`);
@@ -63,7 +60,7 @@ test('the selected JavaScript shard provisions Python before executing the pinne
     for(const shard of [owners[0],other]){
       const output=join(directory,'output');writeFileSync(output,'');
       const result=spawnSync('bash',['-c',plan.run],{cwd:root,encoding:'utf8',timeout:10000,maxBuffer:65536,
-        env:{...process.env,RUNNER_TEMP:directory,GITHUB_OUTPUT:output,SHARD:String(shard),SHARDS:String(shards),FAST_PR_PROFILE:String(shards===2)}});
+        env:{...process.env,RUNNER_TEMP:directory,GITHUB_OUTPUT:output,SHARD:String(shard),SHARDS:String(shards)}});
       assert.equal(result.error,undefined,String(result.error));
       assert.equal(result.status,0,result.stdout+result.stderr);
       const selected=readFileSync(join(directory,'javascript-shard.txt'),'utf8').trim().split('\n');

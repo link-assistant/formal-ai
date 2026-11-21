@@ -2,8 +2,9 @@
 
 Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
 
-- PRs and checks dispatched on feature branches run essential Linux JavaScript
-  unit, coding, question-answering, reporting, policy and security checks. They
+- PRs and checks dispatched on feature branches run the complete default Linux
+  JavaScript unit suite, including coding, question-answering, reporting, policy
+  and security checks. They
   never compile Cargo packages, Docker images, WASM or applications, and never
   deploy Pages. The old FORMAL_AI_FULL_PR_CI variable cannot override this rule.
 - One focused exception (#1191): `native-type-check` in release.yml calls
@@ -63,8 +64,12 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   release response loss, job-observer errors, package boundaries and test-issue
   cleanup. Retain the corresponding real suites for explicit qualification;
   fixtures do not prove real transport or deployment success.
-- Small PR unit suites share one JavaScript runner. The broad main inventory
-  retains its measured eight-shard plan. Do not shard merely to add runners.
+- PRs, feature-branch check dispatches and main select the same complete default
+  JavaScript inventory through the same ordered runner. All use eight measured
+  longest-first shards, the unchanged 360-second execution budget and the 75%
+  warning threshold. A failed file does not hide later failures or passing files.
+  The explicit fast inventory remains an optional local feedback loop only;
+  hosted checks do not set FAST_PR_PROFILE, which skips individual test cases.
   Native test optimization remains on main: prior measurements found expensive
   tests slower without optimization. No Rust compilation or tests run locally.
 - Full live-link crawling is retained as a main-only opt-in through

@@ -285,8 +285,10 @@ jobs:
     # took 220s and 279s with the 75% budget warning. PRs now split the
     # selected files over two longest-first groups. Run 44679541559 exhausted
     # group 2 with stale weights (13.7s for a measured 189.8s suite). Four
-    # groups retain the complete inventory and the original execution budgets;
-    # regenerated hosted timings keep the longest work first.
+    # groups retained that fast inventory. Issue #1580 removes the hosted
+    # subset: PRs, feature dispatches and main use the same full default suite,
+    # eight longest-first groups and unchanged execution budgets. The explicit
+    # fast inventory remains available for local development only.
     timeout-minutes: 12
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}
@@ -294,7 +296,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: ${{ fromJSON((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && '[1,2,3,4]' || '[1,2,3,4,5,6,7,8]') }}
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 5
@@ -414,16 +416,11 @@ jobs:
         id: javascript-plan
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 4 || 8 }}
-          FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
+          SHARDS: 8
         run: |
           set -euo pipefail
           suites="$RUNNER_TEMP/javascript-suites.txt"
-          if [[ "$FAST_PR_PROFILE" == 'true' ]]; then
-            node scripts/list-fast-pull-request-tests.mjs > "$suites"
-          else
-            printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
-          fi
+          printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
           node scripts/plan-test-shards.mjs --of "$SHARDS" --durations data/meta/javascript-test-durations.lino --check < "$suites"
           node scripts/plan-test-shards.mjs --shard "$SHARD" --of "$SHARDS" --durations data/meta/javascript-test-durations.lino < "$suites" > "$RUNNER_TEMP/javascript-shard.txt"
           if grep -Fxq 'rust/tests/web/issue-1580-template-observations.test.mjs' "$RUNNER_TEMP/javascript-shard.txt"; then
@@ -466,8 +463,8 @@ jobs:
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 4 || 8 }}
-          FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
+          SHARDS: 8
+          PULL_REQUEST_CHECKS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75
         # PR #1188: the suite files are planned longest-first from
@@ -477,7 +474,7 @@ jobs:
         # exactly one shard, and a shard's files run on every core, longest first.
         run: |
           set -euo pipefail
-          if [[ "$FAST_PR_PROFILE" == 'true' && "$SHARD" == '1' ]]; then
+          if [[ "$PULL_REQUEST_CHECKS" == 'true' && "$SHARD" == '1' ]]; then
             python3 -m unittest discover -s experiments/issue_916_write_effect_ladder -p test_ladder.py
           fi
           mapfile -t files < "$RUNNER_TEMP/javascript-shard.txt"
