@@ -1,0 +1,14 @@
+{
+  "complete": true,
+  "warnings": 44,
+  "fullGateEntries": 141,
+  "initialGateFailures": [
+    "check-notation",
+    "check-status-render"
+  ],
+  "failedGatesRepairedAndReplayed": true,
+  "maintainedIssueTestsPassed": 264,
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

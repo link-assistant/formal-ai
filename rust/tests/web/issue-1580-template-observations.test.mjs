@@ -49,3 +49,7 @@ import '../../../experiments/issue-1580/native-capability-trace.test.mjs';
 import './rust-specification-fixture-integrity.test.mjs';
 
 import './rust-specification-unicode-identifiers.test.mjs';
+
+import '../../../experiments/issue-1580/metadata-storage-headroom.test.mjs';
+
+import './self-hosting-ledger-storage.test.mjs';
