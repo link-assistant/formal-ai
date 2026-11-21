@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "exactFinalInverse": true,
+  "publicPathsPreserved": true,
+  "arithmeticAndLayoutBodiesUnchanged": true,
+  "modulePaths": [
+    {
+      "parent": "rust/src/es_meta.rs",
+      "parentLines": 848,
+      "child": "rust/src/es_meta/source_layout.rs",
+      "childLines": 143,
+      "originalLines": 984,
+      "parentSha256": "6b4585010e17970b7979dec09ae375dcf6be5d2b77bea9e50b06b75363f98745",
+      "childSha256": "c3de0e416648e30be9c60c85f8bab16c3a8a6d2c44d70d53e642c430c18ae10a"
+    },
+    {
+      "parent": "rust/src/calculation.rs",
+      "parentLines": 693,
+      "child": "rust/src/calculation/linear_equation.rs",
+      "childLines": 302,
+      "originalLines": 988,
+      "parentSha256": "0952e0648c32309dec5b5ca082abd399fecc725a1281fba1133f01286e5b91fd",
+      "childSha256": "b6c4b1b1e49bb407697b75e68809665b8f2bee6b15d80eb42c57668e197e6597"
+    }
+  ],
+  "localRustExecution": false,
+  "hostedNativeQualificationPending": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}
