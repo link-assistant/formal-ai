@@ -541,7 +541,7 @@ function pageStripTags(fragment) {
  * line keeps its indentation and inner spacing, only trailing whitespace
  * goes, and the blank lines around the block and the indentation every line
  * shares (the page's markup, not the program) are removed. Mirrors
- * `strip_tags_keep_lines` in rust/src/web_formalize.rs.
+ * `strip_tags_keep_lines` in rust/src/web_formalize/html_text.rs.
  * @param {string} fragment
  * @returns {string}
  */
