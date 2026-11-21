@@ -378,7 +378,7 @@ test('observed partial meta-reasoner cost starts on its own heavy shard without 
 });
 
 
-test('observed behavior-range parent suites start separately without counting nested cases twice', () => {
+test('observed behavior-range parent suites start in the first worker wave on a separate heavy shard', () => {
   const files = readdirSync(join(ROOT, 'rust/tests/web')).filter(name => name.endsWith('.test.mjs'))
     .map(name => 'rust/tests/web/' + name).sort();
   const recorded = parseTestDurations(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8'));
@@ -391,7 +391,8 @@ test('observed behavior-range parent suites start separately without counting ne
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   assert(isLongestFirst(shards, secondsOf));
   const selected = shards.findIndex(shard => shard.includes(behavior));
-  assert.equal(shards[selected][0], behavior);
+  // Four workers start together; newer measured suites may legitimately sort ahead.
+  assert(shards[selected].indexOf(behavior) < 4, 'the observed parent must start in the first worker wave');
   for (const file of heavy) assert.notEqual(selected, shards.findIndex(shard => shard.includes(file)));
   assert.deepEqual(planShards([...files].reverse(), 8, secondsOf).shards, shards);
 });

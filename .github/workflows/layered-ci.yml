@@ -375,6 +375,14 @@ jobs:
             /experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959672.stdout.gz
             /experiments/issue-1580/evidence/checks/native-reasoning-budget/job-136423862321.stdout.gz
             /experiments/issue-1580/evidence/checks/native-coding-budget/*.stdout.gz
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/release-staged.yml.txt.gz
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-projection-refresh/original/original-release-workflow.yml.txt.gz
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/curated-project-summary-parity/project-parity-pre-repair-observations.json.gz
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-statistics.rs.gz
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-web_search_intent.rs.gz
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-reconstructed-formatted-web_search_intent.rs.gz
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/source-qualified-definitions/T2415-preimage-statistics.rs.gz
+            /experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/.github_workflows_release.yml.before.txt.gz
           sparse-checkout-cone-mode: false
       - name: Report DRY review and language coverage
         if: matrix.shard == 1

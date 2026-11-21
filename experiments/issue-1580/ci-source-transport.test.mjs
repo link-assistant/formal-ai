@@ -20,7 +20,9 @@ test('the actual layered sparse checkout retains consumed source fixtures', { ti
     return [...source.matchAll(/new URL\('([^']+\.gz)'/gu)].map(match =>
       relative(root, fileURLToPath(new URL(match[1], new URL('./' + file, import.meta.url)))));
   });
-  assert.equal(files.length, 2);
+  const captures = JSON.parse(read('experiments/issue-1580/fixtures/immutable-source-captures.json'));
+  files.push(...captures.map(row => row.archivePath));
+  assert.equal(files.length, 10);
   const directory = mkdtempSync(join(tmpdir(), 'issue-1580-sparse-fixtures-'));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const git = (...args) => execFileSync('git', args, { cwd: directory, stdio: 'pipe', timeout: 10_000,
