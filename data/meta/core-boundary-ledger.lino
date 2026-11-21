@@ -1,4 +1,5 @@
 core_boundary_ledger
+  note "Issue #1580 conserves the complete statistics word-problem function in a child module: statistics.rs 976 to 865 lines and statistics/word_problems.rs 111 lines. The complete extraction retains the original aggregate line count. All prior dispositions and outside-core ceilings remain unchanged; the exact recursive source census is 93 files and 36532 lines."
   note "Issue #1580 shares numeral spans for calendar clock parsing and removes the duplicate digit-only scanner. The reviewed calendar_create.rs baseline falls from 671 to 668 lines; source_lines_max and outside_core_lines_max each fall by three. Handler dispositions remain unchanged."
   issue 918
   note "PR1188 finite gate repair: generic seeded bare/prefix slot projections now belong to Lexicon; the proof interpreter reuses them, lowering its reviewed source from258 to239lines and both measured handler ceilings by19. Courtesy behavior remains covered by the original multilingual proof checks."
@@ -9,7 +10,7 @@ core_boundary_ledger
   note "Issue #1582 continuation measures the shared direct-request recognizer in solver_handler_how.rs; quoted permission text remains owned by its enclosing task. All dispositions are retained."
   note "Issue #1580 retains seeded membership evidence alongside retrieved matches. Removing the obsolete conditional and its trailing blank line lowers verifiable_task.rs from 795 to 793 lines and source_lines_max by two; dispositions and migration ceilings are unchanged."
   boundary "docs/design/minimal-core-boundary.md"
-  source_file_count_max 92
+  source_file_count_max 93
   source_lines_max 36532
   outside_core_file_count_max 50
   outside_core_lines_max 18639
@@ -433,9 +434,14 @@ core_boundary_ledger
     baseline_lines 660
     core_component sql_synthesis_interpreter
     reason "Issue #1177: maps request clauses to a single SELECT over seed vocabulary; the clause parser and emitter are the core interpreter."
+  source rust/src/solver_handlers/statistics/word_problems.rs
+    disposition promote
+    baseline_lines 111
+    core_component statistics_interpreter
+    reason "Issue #1580 extracts the existing complete seed-driven word-problem entry point from statistics.rs. The original body and comments are conserved; its promoted statistics disposition remains unchanged."
   source rust/src/solver_handlers/statistics.rs
     disposition promote
-    baseline_lines 976
+    baseline_lines 865
     core_component statistics_interpreter
     reason "Issue #1176: exact decimal statistics engine (mean, median, mode, variance, standard deviation, range) over an explicit dataset, plus the word-problem relation extractor over seed markers (price-times-count change and total); the operation meanings and every response template are seed data. Re-measured 2026-10-07 for PR #1188: issue #1176 percentiles and the R1017 primality arm, which dispatches to statistics/primality.rs (919 lines). The clippy if_not_else sweep spells the percentile rank as an if-else expression (920 lines). Re-measured 2026-10-08 for the PR #1188 R1175 probe pass: one-item change word problems (p350, the seeded pay/paid payment marker) and the measurement arm declining a statistic over a stated list (p273) (975 lines)."
   source rust/src/solver_handlers/summarization_request.rs

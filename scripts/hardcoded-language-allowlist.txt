@@ -227,19 +227,19 @@ rust/src/engine.rs	Execution status: {status_phrase} in {environment}.
 rust/src/engine.rs	Here is a minimal {language_name} {task_label} program:
 rust/src/engine.rs	Run command: `{run_command}`
 rust/src/engine.rs	Write-program template catalog is unavailable.
-rust/src/engine.rs	rule_assistant_free_time answer={}
-rust/src/engine.rs	rule_assistant_name answer={}
-rust/src/engine.rs	rule_courtesy_response answer={}
-rust/src/engine.rs	rule_greeting answer={}
-rust/src/engine.rs	rule_identity answer={}
-rust/src/engine.rs	rule_test_status answer={}
-rust/src/engine.rs	rule_unknown answer={}
-rust/src/engine.rs	rule_write_program parameters=language,task languages={} tasks={}
 rust/src/engine.rs	Вот минимальная программа на языке {language_name} ({task_label}):
 rust/src/engine.rs	Статус выполнения: {status_phrase} в среде «{environment}».
 rust/src/engine.rs	निष्पादन स्थिति: {status_phrase} ({environment} में)।
 rust/src/engine.rs	यहाँ {language_name} में एक न्यूनतम प्रोग्राम है ({task_label}):
 rust/src/engine.rs	这是一个最小的 {language_name} 程序（{task_label}）：
+rust/src/engine/knowledge_graph.rs	rule_assistant_free_time answer={}
+rust/src/engine/knowledge_graph.rs	rule_assistant_name answer={}
+rust/src/engine/knowledge_graph.rs	rule_courtesy_response answer={}
+rust/src/engine/knowledge_graph.rs	rule_greeting answer={}
+rust/src/engine/knowledge_graph.rs	rule_identity answer={}
+rust/src/engine/knowledge_graph.rs	rule_test_status answer={}
+rust/src/engine/knowledge_graph.rs	rule_unknown answer={}
+rust/src/engine/knowledge_graph.rs	rule_write_program parameters=language,task languages={} tasks={}
 rust/src/engine_responses.rs	add a rule in Links Notation, then run the request again.
 rust/src/es_meta.rs	token_class {class}
 rust/src/external_benchmarks/cases.rs	no case parser for suite `{other}`

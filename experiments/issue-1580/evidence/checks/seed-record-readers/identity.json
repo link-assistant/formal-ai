@@ -1,0 +1,19 @@
+{
+  "complete": true,
+  "maintainedIssueTestsPassed": 301,
+  "finalLocalGateInventory": {
+    "total": 141,
+    "passed": 88,
+    "hostedOnlySkipped": 53,
+    "failed": 0
+  },
+  "sourceWarnings": 11,
+  "coreSourceFiles": 93,
+  "coreSourceLines": 36532,
+  "coreDispositionsAndOutsideCoreCeilingsUnchanged": true,
+  "nativeExecutionVerified": false,
+  "projectionWorkers": 1,
+  "projectionHeapMiB": 768,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -2,8 +2,12 @@
 const formalAiWorkerScriptPrerequisites = Object.freeze([
   {
     "script": "js/seed_loader.js",
-    "sourceSha256": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666",
+    "sourceSha256": "57de2fd46c51297f1b67efd1e998b07cf3211d098d225219c2fa549c5bba44ca",
     "requires": [
+      {
+        "script": "js/seed-record-readers.js",
+        "sourceSha256": "0e069e7512106a04e8f9b7082a96fcf0c41918bf18f8fcd61bb9b9814682fd7b"
+      },
       {
         "script": "js/parser-cache-primordials.js",
         "sourceSha256": "84de01ad3dfd183c2b1bb80ab273d1bad9498acc44ac0691755b1e6ca3246c40"
@@ -16,7 +20,7 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
     "requires": [
       {
         "script": "js/seed_loader.js",
-        "sourceSha256": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666"
+        "sourceSha256": "57de2fd46c51297f1b67efd1e998b07cf3211d098d225219c2fa549c5bba44ca"
       }
     ]
   },
@@ -26,7 +30,7 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
     "requires": [
       {
         "script": "js/seed_loader.js",
-        "sourceSha256": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666"
+        "sourceSha256": "57de2fd46c51297f1b67efd1e998b07cf3211d098d225219c2fa549c5bba44ca"
       },
       {
         "script": "js/worker/formal_ai_worker_meta_reasoner.js",

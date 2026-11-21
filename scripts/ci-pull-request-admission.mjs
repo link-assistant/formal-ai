@@ -214,7 +214,7 @@ export function nativeCompileInput(path) {
   if (['js/server/', 'js/agentic/', 'js/worker/', 'js/seed/',
     'experiments/dynamic-meta/', 'experiments/js_dogfood/'].some(prefix => path.startsWith(prefix))
     || ['rust/tests/web/dynamic-meta.test.mjs', 'package.json', 'bun.lock', '.bun-version',
-      'js/parser-cache-primordials.js', 'js/seed_loader.js', 'js/worker-bootstrap-responses.js',
+      'js/parser-cache-primordials.js', 'js/seed-record-readers.js', 'js/seed_loader.js', 'js/worker-bootstrap-responses.js',
       'js/worker-modules.js'].includes(path)) return true;
   // The download contract discovers every shell script, including new paths.
   if (path.endsWith('.sh')) return true;

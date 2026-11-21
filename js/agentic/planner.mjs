@@ -378,7 +378,7 @@ function planRequestPreflight(task, messages, toolNames) {
   };
 }
 
-/** Mirrors `fn plan_chat_step_routes` in rust/src/agentic_coding/planner.rs. */
+/** Mirrors `fn plan_chat_step_routes` in rust/src/agentic_coding/planner/request_routes.rs. */
 async function planChatStepRoutes(messages, toolNames, received) {
   checkedRoutePrecedence();
   traceRoute('agentic_received', received);

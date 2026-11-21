@@ -194,7 +194,7 @@ export function symbolicRelations(text, terms) {
 }
 
 /**
- * Mirrors `fn read_proposition_structure` in rust/src/formalization/proposition_structure.rs.
+ * Mirrors `fn read_proposition_structure` in rust/src/formalization/proposition_structure/reader.rs.
  * `words` are the clause's words (text_formalization.readWords), `terms` its
  * statement terms (their ids name operands), `kinds` `{meaning, negation, isTerm}`.
  * Returns `{shape, significant, relations, operands, repetition, unresolved}`.
