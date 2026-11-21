@@ -698,8 +698,6 @@ fn fill_template(template: &str, replacements: &[(&str, String)]) -> String {
     rendered
 }
 
-use dialogue_rendering::serialize_dialogue_answer;
-
 fn decode_uri_component(value: &str) -> String {
     let bytes = value.as_bytes();
     let mut decoded = Vec::with_capacity(bytes.len());

@@ -179,7 +179,10 @@ function allGates() {
   const jsOnly = !process.argv.includes('--with-rust-scripts');
   return [...registry, ...workflowGates(known)].map((gate) => ({
     ...gate,
-    run: gate.run.replace(SCRIPT_TESTS, ''),
+    // Main rebuilds before diffing this binary; locally check recorded inputs without compiling.
+    run: jsOnly && gate.name === 'check-wasm-worker-current'
+      ? 'node scripts/wasm-worker-inputs.mjs --check'
+      : gate.run.replace(SCRIPT_TESTS, ''),
   })).map((gate) => (jsOnly ? { ...gate, run: withJsTwins(gate.run) } : gate)).map((gate) => ({
     ...gate,
     skipped: needsBuild(gate.run) ? 'needs a Rust build (CI only)'

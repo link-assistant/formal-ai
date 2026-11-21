@@ -71,3 +71,4 @@ import '../../../experiments/issue-1580/immutable-source-captures.test.mjs';
 import '../../../experiments/issue-1580/native-contract-artifact.test.mjs';
 import '../../../experiments/issue-1580/canonical-release-source.test.mjs';
 import '../../../experiments/issue-1580/worker-receipt-regeneration.test.mjs';
+import '../../../experiments/issue-1580/local-worker-currency.test.mjs';
