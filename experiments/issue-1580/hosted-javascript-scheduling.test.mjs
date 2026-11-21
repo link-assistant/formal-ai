@@ -5,9 +5,9 @@ import {readFileSync, readdirSync} from 'node:fs';
 import {durationLookup, partitionProblems, planShards} from '../../scripts/lib/ci-speed-shards.mjs';
 import {parseTestDurations} from '../../scripts/lib/ci-speed-durations.mjs';
 
-test('deployed JavaScript plan retains every suite and fits the retained four-worker cost model', () => {
-  const identity = JSON.parse(readFileSync(new URL('./fixtures/hosted-javascript-8d8/identity.json', import.meta.url), 'utf8'));
-  const observations = readFileSync(new URL('./fixtures/hosted-javascript-8d8/durations.jsonl', import.meta.url), 'utf8')
+for (const capture of ['8d8', '9e945']) test('deployed JavaScript plan retains every suite and fits hosted costs: ' + capture, () => {
+  const identity = JSON.parse(readFileSync(new URL('./fixtures/hosted-javascript-' + capture + '/identity.json', import.meta.url), 'utf8'));
+  const observations = readFileSync(new URL('./fixtures/hosted-javascript-' + capture + '/durations.jsonl', import.meta.url), 'utf8')
     .trimEnd().split('\n').map(line => JSON.parse(line));
   assert.equal(observations.length, identity.completeObservations);
   assert.equal(new Set(observations.map(row => row.file)).size, observations.length);
