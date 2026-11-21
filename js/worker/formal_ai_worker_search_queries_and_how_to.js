@@ -803,6 +803,22 @@ async function howToRecoverWikiHow(walked, task, language, preferences, discover
 
   const record = howToSourceRegistry().find((item) => item.id === "wikihow");
   const exact = sourceWalkEntryUrl(record, task, language);
+  if (discovered.size === 0 && outcome.pages === 0 && walked.bounds.maxPagesPerService > 1
+      && walked.bounds.maxDepth > 0 && self.FormalAIWebSearchComponent?.fetchUrl) {
+    const notes = [];
+    const api = howToSearchUrl({ api: exact }, task);
+    outcome.pages += 1;
+    const search = await howToCaptureThroughComponent(api, notes);
+    if (search) {
+      const read = howToReadCapture({ ...record, api }, task, search, 0, 0, walked.bounds, language);
+      for (const url of read.follow) {
+        const title = new URL(url).searchParams.get("page");
+        if (title) discovered.add(sourceWalkEntryUrl(record, title, language));
+      }
+      if (read.detail) notes.push(read.detail);
+    }
+    outcome.detail = [outcome.detail, ...notes].filter(Boolean).join(" | ");
+  }
   discovered.add(exact);
   for (const candidate of discovered) {
     if (!candidate) continue;

@@ -250,6 +250,31 @@ test("the browser tries the web capture component when the archive is unavailabl
   assert.ok(answer.guide.steps.every((step) => step.sourceUrl === RUSSIAN_ARTICLE));
 });
 
+test("the capture component can discover and verify a source after browser transport fails", async () => {
+  const context = await bootWorker(new Map());
+  const body = `<link rel="canonical" href="${RUSSIAN_ARTICLE}">${WIKIHOW_STEPS}`;
+  const captures = {
+    [wikiSearch(RUSSIAN_SHORT_TASK)]: searchCapture("Домашние растения", RUSSIAN_DISCOVERED_TITLE).body,
+    [RUSSIAN_ARTICLE]: body,
+  };
+  evaluate(context, `
+    self.componentRequests = [];
+    self.FormalAIWebSearchComponent = {
+      fetchUrl: async (url) => {
+        self.componentRequests.push(url);
+        const body = ${JSON.stringify(captures)}[url];
+        return body ? { ok: true, text: async () => body } : { ok: false, status: 404 };
+      },
+    };`);
+  const answer = await answerRussian(context, {}, "Как какать?");
+  assert.deepEqual(plain(evaluate(context, "self.componentRequests")), [
+    wikiSearch(RUSSIAN_SHORT_TASK), RUSSIAN_ARTICLE,
+  ]);
+  assert.equal(answer.guide.task, RUSSIAN_SHORT_TASK);
+  assert.equal(answer.guide.steps.length, 2);
+  assert.ok(answer.guide.steps.every((step) => step.sourceUrl === RUSSIAN_ARTICLE));
+});
+
 test("offline and wikiHow opt-out prevent both live and archived wikiHow requests", async () => {
   const requested = [];
   const context = await bootWorker(new Map(), requested);
