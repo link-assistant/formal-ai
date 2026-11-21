@@ -1,0 +1,6 @@
+{"type":"text","data":"Hi, how may I help you?"}
+{"type":"text","data":"What would you like to report? Select one or more.\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn."}
+{"type":"text","data":"Which context should the GitHub issue include?\n1. Both logs — Include harness and server logs; attach a trimmed preview and link the full context if too large.\n2. Harness log — Include the complete harness conversation only.\n3. Server log — Include the complete matching server log only."}
+{"type":"text","data":"I’ll file the report in the Formal AI GitHub repository."}
+{"type":"tool_call","toolCallId":"call_698a3d6652e4a728","title":"run_terminal_command","kind":"execute","status":"pending","toolName":"run_terminal_command","rawInput":{"command":"formal-ai report create-issue --session '100a1cc7-2483-46c2-803c-2ee707ab6c49' --source both --surface agentic-cli --repo 'link-assistant/formal-ai' --title 'Formal AI: `Hello`' --separate-context-links","description":"Both logs"},"content":[],"locations":[]}
+{"type":"text","data":"Filed the issue on GitHub: https://github.com/link-assistant/formal-ai/issues/9999"}

@@ -1,10 +1,22 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c0d8751e60a81ae5c680643e924c2062e948186e8cef71b32a60c358afa6c0d5 bytes=7957
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c4df65392455f935a32625a0a02ac446bd2f283bdc40db8570a7e65e53904a49 bytes=8429
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -52,7 +64,7 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | JSON.parse | Object.keys | call of a sibling function | call of an imported function | field access | let without a value | null | try statement | undefined
+// formal-ai:blockers JSDoc type {…} | JSON.parse | Object.keys | assignment of a field or element | call of a sibling function | call of an imported function | field access | imported value | let without a value | null | object without a $ tag | try statement | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal Array.isArray

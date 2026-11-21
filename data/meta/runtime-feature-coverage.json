@@ -1,18 +1,18 @@
 {
   "schema": "formal-ai-runtime-feature-coverage-v1",
   "sources": [
-    {"path":"rust/src/main.rs","sha256":"17a9bf43cb247d3e8fa7f82c193381f8f3d18798fffaf52845066d84a533cae1"},
+    {"path":"rust/src/main.rs","sha256":"8a8de6efb08bc5d740440e8efb7a1828b32e5a0e74c8248bcd89d7997e6d34e4"},
     {"path":"js/server/main.mjs","sha256":"231b1356d6b71533338cc8c3b5843151fcf96b78a77e749ae5f71e1b74254b7c"},
     {"path":"js/agentic/orchestration_cli.mjs","sha256":"bddd5ce346266f61e14de5a4a7052a087588cd4b0f3d337bc1b0763caa106e84"},
     {"path":"js/provenance/cli.mjs","sha256":"5f2385788ba008835e62021647b0d70355093db1819546b7d7d9cc82d91c56da"},
     {"path":"js/server/memory-upgrade.mjs","sha256":"071e1ff30b7470ff3eebcda0d05f3611e21942e8d2ebf6e5a1ce54f0ce27d887"},
     {"path":"data/meta/server-routes.lino","sha256":"ca1ce8520773fc8892c940b6ec0974680f5cd05d49c381d14f0b5da07a0ff561"},
-    {"path":"js/server/dispatch.mjs","sha256":"8a960d8d6593fc594d82ef7f0cd5a299cd6cc86039c271b67bf189873179e567"},
+    {"path":"js/server/dispatch.mjs","sha256":"39315146937768464b721342ae05e42f4055bc12d75cdfc6eb92c30b800b93a5"},
     {"path":"rust/tests/fixtures/server-parity/requests.lino","sha256":"8ccfe868a59b91b95a3c1cb860d8084f6ded602a81f28274beaef179d32beefd"},
     {"path":"js/worker/formal_ai_worker_solve.js","sha256":"413b4400887b2202c3522876e91e6873b8fbf3f863a78a60b0e4b3219be51ea3"},
     {"path":"data/seed/browser-handler-precedence.lino","sha256":"1a3490e203b38a64e86a6c9fa63e76539d17ab99bd8932232974e1205a37405c"},
     {"path":"data/seed/tools.lino","sha256":"fbdd0544f88bf76d628a397bcb1e721a27c0973424f52097ed91cf5ec6021548"},
-    {"path":"data/seed/agentic-tool-capabilities.lino","sha256":"63019d8f0d78131176718a905ffba99fe2a1adcf14a276ddfc9c1c72c3f20571"}
+    {"path":"data/seed/agentic-tool-capabilities.lino","sha256":"35ff90220979a63967736a2bd766285b9c6f496a15006ac14ed0165a0ca5b291"}
   ],
   "discovery": {"complete":false,"nativeCli":"pending_actual_clap_schema","browserActions":"handler registry and message kinds only; dynamic UI effects unmeasured","commandOptions":"not a complete option/default/alias census","entrypointRoots":"explicit authoritative product entrypoints; no glob/symbol denominator"},
   "behavioralParity": "unmeasured",

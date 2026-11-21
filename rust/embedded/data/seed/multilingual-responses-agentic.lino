@@ -479,6 +479,126 @@ multilingual_responses
     intent agentic_action_run
     language es
     text "Voy a ejecutar el comando solicitado para obtenerlo."
+  response response-agentic-action-run-program-name-en
+    intent agentic-action-run-program-name
+    language en
+    text "I’ll run `{target}`."
+  response response-agentic-action-run-program-name-ru
+    intent agentic-action-run-program-name
+    language ru
+    text "Запущу `{target}`."
+  response response-agentic-action-run-program-name-hi
+    intent agentic-action-run-program-name
+    language hi
+    text "मैं `{target}` चलाऊँगा।"
+  response response-agentic-action-run-program-name-zh
+    intent agentic-action-run-program-name
+    language zh
+    text "我来运行 `{target}`。"
+  response response-agentic-action-run-program-name-es
+    intent agentic-action-run-program-name
+    language es
+    text "Voy a ejecutar `{target}`."
+  response response-agentic-action-report-harness-en
+    intent agentic-action-report-harness
+    language en
+    text "I’ll export this client’s conversation log."
+  response response-agentic-action-report-harness-ru
+    intent agentic-action-report-harness
+    language ru
+    text "Выгружу журнал диалога из клиента."
+  response response-agentic-action-report-harness-hi
+    intent agentic-action-report-harness
+    language hi
+    text "मैं इस क्लाइंट का बातचीत लॉग निर्यात करूँगा।"
+  response response-agentic-action-report-harness-zh
+    intent agentic-action-report-harness
+    language zh
+    text "我来导出当前客户端的对话日志。"
+  response response-agentic-action-report-harness-es
+    intent agentic-action-report-harness
+    language es
+    text "Voy a exportar el registro de la conversación de este cliente."
+  response response-agentic-action-report-server-en
+    intent agentic-action-report-server
+    language en
+    text "I’ll export Formal AI’s server log for this conversation."
+  response response-agentic-action-report-server-ru
+    intent agentic-action-report-server
+    language ru
+    text "Выгружу серверный журнал Formal AI для этого диалога."
+  response response-agentic-action-report-server-hi
+    intent agentic-action-report-server
+    language hi
+    text "मैं इस बातचीत का Formal AI सर्वर लॉग निर्यात करूँगा।"
+  response response-agentic-action-report-server-zh
+    intent agentic-action-report-server
+    language zh
+    text "我来导出这次对话的 Formal AI 服务器日志。"
+  response response-agentic-action-report-server-es
+    intent agentic-action-report-server
+    language es
+    text "Voy a exportar el registro del servidor de Formal AI para esta conversación."
+  response response-agentic-action-report-learn-en
+    intent agentic-action-report-learn
+    language en
+    text "I’ll have Formal AI learn from this conversation."
+  response response-agentic-action-report-learn-ru
+    intent agentic-action-report-learn
+    language ru
+    text "Передам этот диалог Formal AI для обучения."
+  response response-agentic-action-report-learn-hi
+    intent agentic-action-report-learn
+    language hi
+    text "मैं इस बातचीत से Formal AI को सिखाऊँगा।"
+  response response-agentic-action-report-learn-zh
+    intent agentic-action-report-learn
+    language zh
+    text "我会让 Formal AI 从这次对话中学习。"
+  response response-agentic-action-report-learn-es
+    intent agentic-action-report-learn
+    language es
+    text "Voy a hacer que Formal AI aprenda de esta conversación."
+  response response-agentic-action-report-github-en
+    intent agentic-action-report-github
+    language en
+    text "I’ll file the report in the Formal AI GitHub repository."
+  response response-agentic-action-report-github-ru
+    intent agentic-action-report-github
+    language ru
+    text "Создам отчёт в репозитории Formal AI на GitHub."
+  response response-agentic-action-report-github-hi
+    intent agentic-action-report-github
+    language hi
+    text "मैं Formal AI के GitHub रिपॉज़िटरी में रिपोर्ट दर्ज करूँगा।"
+  response response-agentic-action-report-github-zh
+    intent agentic-action-report-github
+    language zh
+    text "我会在 Formal AI 的 GitHub 仓库中提交报告。"
+  response response-agentic-action-report-github-es
+    intent agentic-action-report-github
+    language es
+    text "Voy a abrir el informe en el repositorio de Formal AI en GitHub."
+  response response-agentic-report-open-issue-form-en
+    intent agentic-report-open-issue-form
+    language en
+    text "Open the Formal AI issue form to review and submit your report on GitHub."
+  response response-agentic-report-open-issue-form-ru
+    intent agentic-report-open-issue-form
+    language ru
+    text "Откройте форму Formal AI на GitHub, чтобы проверить и отправить отчёт."
+  response response-agentic-report-open-issue-form-hi
+    intent agentic-report-open-issue-form
+    language hi
+    text "रिपोर्ट की समीक्षा करने और उसे भेजने के लिए GitHub पर Formal AI का फ़ॉर्म खोलें।"
+  response response-agentic-report-open-issue-form-zh
+    intent agentic-report-open-issue-form
+    language zh
+    text "打开 GitHub 上的 Formal AI 问题表单，检查并提交报告。"
+  response response-agentic-report-open-issue-form-es
+    intent agentic-report-open-issue-form
+    language es
+    text "Abre el formulario de Formal AI en GitHub para revisar y enviar el informe."
   response response_agentic_action_compile_program_en
     intent agentic_action_compile_program
     language en

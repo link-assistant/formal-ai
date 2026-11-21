@@ -682,7 +682,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     formal_ai::structured_tracing::install().map_err(std::io::Error::other)?;
     let verbose = arguments.verbose && !arguments.silent;
     formal_ai::dialog_log::configure_verbose(!arguments.silent);
-    formal_ai::dialog_log::structured_log::configure_terminal(verbose);
+    // The wrapper shares a terminal with a client that may own the full screen.
+    formal_ai::dialog_log::structured_log::configure_terminal(
+        verbose && !matches!(&arguments.command, Some(Command::With(_))),
+    );
     formal_ai::dialog_log::structured_log::configure(
         arguments.silent,
         matches!(arguments.command.as_ref(), Some(Command::Serve(_))),

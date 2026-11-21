@@ -1,0 +1,214 @@
+█▀▀█  OpenCode
+█  █  /tmp/formal-ai-1609-evidence/stock-after/opencode
+▀▀▀▀
+
+Ask anything... "Fix a TODO in the codebase"
+
+ BUILD                                                               ctrl+p cmd
+
+
+ BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
+› Report
+
+
+
+ BUILD  ■■⬝⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ■■■⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ■■■■■⬝⬝⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ■■■■■■⬝⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝■■■■■■⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝⬝■■■■■■ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝⬝⬝■■■■■ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝■ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
+   Report   Confirm
+
+  What would you like to report? Select one or more. (select all that apply)
+
+  1. [ ] Harness log                                                        █
+     Export the complete agentic harness log.                               █
+  2. [ ] Server log                                                         █
+     Export the matching Formal AI server log.                              █
+  3. [ ] GitHub issue                                                       ▀
+     File an issue with complete context.
+  4. [ ] Report to Formal AI
+     Store the report so this instance can learn.
+
+  ⇆ tab  ↑↓ select  enter toggle  esc dismiss
+  1. [✓] Harness log
+     Export the complete agentic harness log.
+  2. [ ] Server log
+     Export the matching Formal AI server log.
+  3. [ ] GitHub issue
+     File an issue with complete context.
+  4. [ ] Report to Formal AI
+     Store the report so this instance can learn.
+  5. [ ] Type your own answer
+  ⇆ tab  ↑↓ select  enter toggle  esc dismiss
+Let me ask you a few questions so I get this right.
+
+
+   Report   Confirm
+
+  What would you like to report? Select one or more. (select all that apply)
+
+  1. [✓] Harness log
+     Export the complete agentic harness log.
+  2. [ ] Server log
+     Export the matching Formal AI server log.
+  3. [ ] GitHub issue
+     File an issue with complete context.
+  4. [ ] Report to Formal AI
+     Store the report so this instance can learn.
+  5. [ ] Type your own answer
+  ⇆ tab  ↑↓ select  enter toggle  esc dismiss
+  2. [✓] Server log
+     Export the matching Formal AI server log.
+  3. [ ] GitHub issue
+     File an issue with complete context.
+  4. [ ] Report to Formal AI
+     Store the report so this instance can learn.
+  5. [ ] Type your own answer
+  ⇆ tab  ↑↓ select  enter toggle  esc dismiss
+  3. [✓] GitHub issue
+     File an issue with complete context.
+  4. [ ] Report to Formal AI
+     Store the report so this instance can learn.
+  5. [ ] Type your own answer
+  ⇆ tab  ↑↓ select  enter toggle  esc dismiss
+  4. [✓] Report to Formal AI
+     Store the report so this instance can learn.
+  5. [ ] Type your own answer
+  ⇆ tab  ↑↓ select  enter toggle  esc dismiss
+   Review                                                                   █
+                                                                            █
+   Report: Harness log, Server log, GitHub issue, Report to Formal AI       █
+                                                                            █
+                                                                            █
+                                                                            ▀
+
+
+
+
+
+  ⇆ tab  enter submit  esc dismiss
+   Review
+
+   Report: Harness log, Server log, GitHub issue, Report to Formal AI
+
+
+
+
+
+
+
+
+  ⇆ tab  enter submit  esc dismiss
+  Waiting for question event...
+# Questions
+
+What would you like to report? Select one or more.
+Harness log, Server log, GitHub issue, Report to Formal AI
+
+
+
+
+ BUILD  ■■■⬝⬝⬝⬝⬝ esc interrupt                               10.1K · ctrl+p cmd
+ BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                               10.1K · ctrl+p cmd
+ BUILD  ■■■■■⬝⬝⬝ esc interrupt                               10.1K · ctrl+p cmd
+ BUILD  ■■■■■■⬝⬝ esc interrupt                               10.1K · ctrl+p cmd
+ BUILD  ⬝■■■■■■⬝ esc interrupt                               10.1K · ctrl+p cmd
+ BUILD  ⬝⬝■■■■■■ esc interrupt                               10.1K · ctrl+p cmd
+ BUILD  ⬝⬝⬝■■■■■ esc interrupt                               10.1K · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                               10.1K · ctrl+p cmd
+I’ll export this client’s conversation log.
+
+$ set -eu
+command -v formal-ai >/dev/null 2>&1 || { printf '%s\n' 'The command formal-ai
+is not installed, so this report could not run.' >&2; exit 1; }
+command -v printf >/dev/null 2>&1 || { printf '%s\n' 'The command printf is not
+installed, so this report could not run.' >&2; exit 1; }
+export_dir=$(mktemp -d "${TMPDIR:-/tmp}/formal-ai-export.XXXXXX")
+formal-ai context export --session 'ses_e0099ce38ffeg4P0n0aweENyS3' --source
+harness --output "$export_dir/formal-ai-harness-ses_e0099ce38ffeg4P0n0aweENyS3.
+lino"
+printf '%s\n' "$export_dir/formal-ai-harness-ses_e0099ce38ffeg4P0n0aweENyS3.
+lino"
+
+
+
+
+ BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                               10.1K · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                               10.1K · ctrl+p cmd
+Captured selected context
+/tmp/formal-ai-export.IalJDf/formal-ai-harness-ses_e0099ce38ffeg4P0n0aweENyS3.
+lino
+
+
+
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                               10.5K · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                               10.5K · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                               10.5K · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                               10.5K · ctrl+p cmd
+ BUILD  ⬝⬝⬝■■■■■ esc interrupt                               10.5K · ctrl+p cmd
+ BUILD  ⬝⬝■■■■■■ esc interrupt                               10.5K · ctrl+p cmd
+ BUILD  ⬝■■■■■■⬝ esc interrupt                               10.5K · ctrl+p cmd
+I’ll export Formal AI’s server log for this conversation.
+
+$ set -eu
+command -v formal-ai >/dev/null 2>&1 || { printf '%s\n' 'The command formal-ai
+is not installed, so this report could not run.' >&2; exit 1; }
+command -v printf >/dev/null 2>&1 || { printf '%s\n' 'The command printf is not
+installed, so this report could not run.' >&2; exit 1; }
+export_dir=$(mktemp -d "${TMPDIR:-/tmp}/formal-ai-export.XXXXXX")
+formal-ai context export --session 'ses_e0099ce38ffeg4P0n0aweENyS3' --source
+server --output "$export_dir/formal-ai-server-ses_e0099ce38ffeg4P0n0aweENyS3.
+lino"
+printf '%s\n' "$export_dir/formal-ai-server-ses_e0099ce38ffeg4P0n0aweENyS3.lino"
+
+Captured selected context
+/tmp/formal-ai-export.HxvnD1/formal-ai-server-ses_e0099ce38ffeg4P0n0aweENyS3.
+lino
+
+
+
+ BUILD  ■■■■■■⬝⬝ esc interrupt                               10.7K · ctrl+p cmd
+ BUILD  ■■■■■⬝⬝⬝ esc interrupt                               10.7K · ctrl+p cmd
+ BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                               10.7K · ctrl+p cmd
+ BUILD  ■■⬝⬝⬝⬝⬝⬝ esc interrupt                               10.7K · ctrl+p cmd
+ BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                               10.7K · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                               10.7K · ctrl+p cmd
+I’ll have Formal AI learn from this conversation.
+
+$ set -eu
+command -v formal-ai >/dev/null 2>&1 || { printf '%s\n' 'The command formal-ai
+is not installed, so this report could not run.' >&2; exit 1; }
+formal-ai context learn --session 'ses_e0099ce38ffeg4P0n0aweENyS3'
+
+{"learned":true}
+
+
+
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                               10.4K · ctrl+p cmd
+I’ll file the report in the Formal AI GitHub repository.
+
+$ formal-ai report create-issue --session 'ses_e0099ce38ffeg4P0n0aweENyS3' --
+source both --surface agentic-cli --repo 'link-assistant/formal-ai' --title
+'Formal AI: `Report`' --separate-context-links
+
+https://github.com/link-assistant/formal-ai/issues/9999
+
+
+
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                               10.5K · ctrl+p cmd
+Filed the issue on
+GitHub: https://github.com/link-assistant/formal-ai/issues/9999
+
+▣ Build · Formal AI · 6.4s
+
+
+
+ BUILD                                                       10.4K · ctrl+p cmd

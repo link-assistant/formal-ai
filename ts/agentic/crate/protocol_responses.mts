@@ -2,6 +2,9 @@
 // (rust/src/protocol_responses.rs).
 
 import { currentDirectory } from '../host.mjs';
+import { Capability } from '../capability.mjs';
+import { classifyTool } from '../capability_router.mjs';
+import { toolActionNarration } from '../narration.mjs';
 import { jsonText } from '../plan.mjs';
 import { findToolDefinition } from '../protocol_policy.mjs';
 import { applyPatchInput } from './protocol_responses_apply_patch.mjs';
@@ -50,6 +53,11 @@ export function responseArgumentsForTool(tools, toolName, args, userPrompt, work
     return args;
   }
   if (!isObject(source)) return args;
+  if (isObject(properties.description) && !has(properties.description, 'default')
+    && !has(properties.description, 'const') && !has(source, 'description')
+    && classifyTool(toolName) === Capability.Run) {
+    source.description = toolActionNarration(userPrompt, [{ tool: toolName, arguments: args }]);
+  }
   return jsonText(projectSchemaValue(source, schema, definition, userPrompt, workspace, 0));
 }
 

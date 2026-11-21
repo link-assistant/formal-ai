@@ -27,6 +27,13 @@ function contract(text,slim=false){
 }
 test('target-native Node26 donor and shared libraries precede agent capability checks',()=>contract(source));
 test('slim reuses the same donor payload and launchers without installing distro npm',()=>contract(slimSource,true));
+test('both image variants ship and run the greeting and issue form smoke', () => {
+ const smoke = readFileSync(new URL('../../../scripts/verify-docker-slim-runtime.sh', import.meta.url), 'utf8');
+ const fullSmoke = readFileSync(new URL('../../../scripts/verify-docker-runtime.sh', import.meta.url), 'utf8');
+ for (const dockerfile of [source, slimSource]) assert(dockerfile.includes('COPY scripts/verify-docker-slim-runtime.sh /usr/local/bin/verify-formal-ai-slim'));
+ assert.match(fullSmoke, /^verify-formal-ai-slim$/m);
+ for (const required of ['/mcp', '/telegram/webhook', 'Hello', 'Привет', 'issues\\/new']) assert(smoke.includes(required));
+});
 test('Node18 regression is rejected in both images',()=>{
  for(const [text,slim] of [[source,false],[slimSource,true]])assert.throws(()=>contract(text.replace('node:26.12.0-bookworm-slim','node:18.19.1-bookworm-slim'),slim));
 });

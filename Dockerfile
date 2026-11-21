@@ -129,7 +129,8 @@ RUN node /usr/local/lib/formal-ai-runtime-tools/scripts/configure-container-clie
     npm ls --global @playwright/mcp
 COPY --from=selected-binary /app/target/release/formal-ai /usr/local/bin/formal-ai
 COPY scripts/verify-docker-runtime.sh /usr/local/bin/verify-formal-ai-dind
-RUN chmod 0755 /usr/local/bin/formal-ai /usr/local/bin/verify-formal-ai-dind && \
+COPY scripts/verify-docker-slim-runtime.sh /usr/local/bin/verify-formal-ai-slim
+RUN chmod 0755 /usr/local/bin/formal-ai /usr/local/bin/verify-formal-ai-dind /usr/local/bin/verify-formal-ai-slim && \
     formal-ai --version
 
 EXPOSE 8080

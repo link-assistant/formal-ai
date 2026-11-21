@@ -1,6 +1,10 @@
 # Five-language parity completions split from multilingual-responses.lino.
 # This shard is loaded through the shared seed registry on every surface.
 multilingual_responses
+  response response-agentic-report-open-issue-form-es
+    intent agentic-report-open-issue-form
+    language es
+    text "Abre el formulario de incidencias de Formal AI para revisar y enviar el informe en GitHub."
   response response_agentic_report_target_question_es
     intent agentic_report_target_question
     language es

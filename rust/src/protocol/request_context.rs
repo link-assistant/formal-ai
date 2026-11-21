@@ -62,6 +62,7 @@ pub(super) struct RequestContext {
     prompt: String,
     history: Vec<ConversationTurn>,
     constraints: Vec<Constraint>,
+    title_task: bool,
 }
 
 impl RequestContext {
@@ -75,15 +76,22 @@ impl RequestContext {
     pub(super) fn new(messages: &[ChatMessage]) -> Self {
         let (prompt, history) = chat_prompt_and_history(messages);
         let mut constraints = Vec::new();
+        let mut title_task = false;
         for (index, message) in messages.iter().enumerate() {
             let role = message.role.to_lowercase();
             if !["system", "developer"].contains(&role.as_str()) {
                 continue;
             }
             let text = message.content.plain_text();
+            if role == "system" && pattern(RULES["titleTask"].as_str().unwrap()).is_match(&text) {
+                title_task = true;
+                continue;
+            }
             for text in pattern(RULES["clauseSeparator"].as_str().unwrap()).split(&text) {
                 let text = text.trim();
-                if text.is_empty() {
+                if text.is_empty()
+                    || pattern(RULES["responseGuidance"].as_str().unwrap()).is_match(text)
+                {
                     continue;
                 }
                 if pattern(RULES["negated"].as_str().unwrap()).is_match(text)
@@ -188,6 +196,7 @@ impl RequestContext {
             prompt,
             history,
             constraints,
+            title_task,
         }
     }
 
@@ -203,7 +212,8 @@ impl RequestContext {
     }
 
     pub(super) fn preserve_answer_body(&self) -> bool {
-        self.active("labels").is_some()
+        self.title_task
+            || self.active("labels").is_some()
             || self.active("length").is_some()
             || self
                 .active("format")
@@ -223,6 +233,25 @@ impl RequestContext {
     }
 
     pub(super) fn answer(&self) -> Option<SymbolicAnswer> {
+        if self.title_task && !self.prompt.trim().is_empty() {
+            let prompt = self.prompt.trim();
+            let language = crate::language::detect(prompt).slug();
+            let title = crate::summarization::generate_chat_title(
+                &[crate::summarization::DialogTurn::user(prompt)],
+                language,
+            );
+            let source = if title.is_empty() { prompt } else { &title };
+            let limit = RULES["titleMaxCharacters"].as_u64().unwrap() as usize;
+            let bounded: String = source
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or_default()
+                .chars()
+                .take(limit)
+                .collect();
+            return Some(answer(bounded.trim(), "conversation_title"));
+        }
         if let Some(recall) = capture("recall", &self.prompt) {
             for (index, turn) in self.history.iter().enumerate().rev() {
                 if turn.role != ConversationRole::User {

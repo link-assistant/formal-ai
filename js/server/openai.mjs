@@ -22,6 +22,7 @@ import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './requ
 import { outputObligation, projectStructuredOutput, structuredAnswerFromSource, structuredOutputRequested, structuredThinkingStep } from './structured-output.mjs';
 import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
 import { recipePrompt } from './dynamic-meta/wire.mjs';
+import { ensureNodeHost } from './node-host-install.mjs';
 
 /** Seconds since the epoch, never 0 (`response_timestamp`). */
 export function responseTimestamp() {
@@ -103,6 +104,7 @@ export async function createChatCompletion(ctx, request, options = {}) {
       confidence:1,evidence_links:['cnl:paraphrase'],thinking_steps:[],links_notation:''}, turn.config, {language: context.language});
     completion = chatCompletionFromSymbolic(request, original.prompt, symbolic);
   } else {
+    if (context.titleTask) await ensureNodeHost(selected);
     // Strip a recognized output directive only from the latest plain-text user
     // message. Preserve structured content, tool results and command arguments.
     let planningRequest = request;

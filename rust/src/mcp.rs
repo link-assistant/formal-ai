@@ -74,11 +74,12 @@ fn call_chat(request: &Value, id: &Value, solver: &UniversalSolver) -> ApiHttpRe
     else {
         return json_rpc_error(id, -32602, "prompt must be a string");
     };
-    let answer = solver.solve(prompt);
+    let answer = crate::agentic_coding::issue_form_for_prompt(prompt)
+        .unwrap_or_else(|| solver.solve(prompt).answer);
     json_rpc_result(
         id,
         &json!({
-            "content": [{ "type": "text", "text": answer.answer }],
+            "content": [{ "type": "text", "text": answer }],
             "isError": false
         }),
     )

@@ -34,10 +34,14 @@ const capture = await captureAgentTui({
     },
     {
       after: '[✓] GitHub issue',
+      text: '4',
+    },
+    {
+      after: '[✓] Report to Formal AI',
       key: 'TAB',
     },
     {
-      after: 'Harness log, Server log, GitHub issue',
+      after: 'Harness log, Server log, GitHub issue, Report to Formal AI',
       key: 'ENTER',
     },
   ],
@@ -55,7 +59,8 @@ for (const expected of [
   '[✓] Harness log',
   '[✓] Server log',
   '[✓] GitHub issue',
-  'Harness log, Server log, GitHub issue',
+  '[✓] Report to Formal AI',
+  'Harness log, Server log, GitHub issue, Report to Formal AI',
   issueUrl,
 ]) {
   if (!rendered.includes(expected)) {
@@ -64,7 +69,7 @@ for (const expected of [
     );
   }
 }
-if (capture.interactionCount !== 6) {
+if (capture.interactionCount !== 7) {
   throw new Error('OpenCode did not reach the report multi-select interaction');
 }
 if (!capture.output.includes(issueUrl)) {

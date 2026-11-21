@@ -47,7 +47,7 @@ export async function waitFor(read,{timeout=2000}={}){
   throw Error('fixture_observation_timeout');
 }
 
-export async function startCli(t,{args=[],env={},binary,lifetime=15_000}={}){
+export async function startCli(t,{args=[],env={},binary,lifetime=15_000,silent=true}={}){
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-structured-cli-'));
   const home=path.join(directory,'home');
   const privateEnv={PATH:'',HOME:home,FORMAL_AI_DREAMING:'false',FORMAL_AI_RECORD_CHAT:'0'};
@@ -64,7 +64,7 @@ export async function startCli(t,{args=[],env={},binary,lifetime=15_000}={}){
   const port=await availablePort();
   const entry=fileURLToPath(new URL('../../../../js/server/main.mjs',import.meta.url));
   const extra=typeof args==='function'?args(directory):args;
-  const commandArgs=binary?['serve','--silent','--host','127.0.0.1']:[...importFlags(),entry];
+  const commandArgs=binary?['serve',...(silent?['--silent']:[]),'--host','127.0.0.1']:[...importFlags(),entry];
   const child=spawn(binary??process.execPath,[...commandArgs,'--port',String(port),...extra],{
     cwd:home,env:privateEnv,stdio:['ignore','pipe','pipe'],
   });

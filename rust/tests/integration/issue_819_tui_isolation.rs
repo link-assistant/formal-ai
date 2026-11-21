@@ -65,6 +65,8 @@ fn temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui() {
     .env("HOME", &home)
     .env("PATH", path)
     .env("FORMAL_AI_DIALOG_LOG_DIR", &logs)
+    .env("FORMAL_AI_LOG_DIR", logs.join("diagnostics"))
+    .env_remove("FORMAL_AI_LOG_STDERR")
     .env("FORMAL_AI_TEST_PORT", port.to_string())
     .output()
     .expect("launch wrapper with temporary server in PTY");
@@ -77,6 +79,15 @@ fn temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui() {
     assert!(output.status.success(), "{terminal}");
     assert!(terminal.contains("TUI_REMAINED_INTACT"), "{terminal}");
     assert!(!terminal.contains("ISSUE819_RAW_REQUEST_MUST_NOT_REACH_TUI"));
+    assert!(!terminal.contains("formal-ai-log-v1"), "{terminal}");
+    assert!(
+        std::fs::read_dir(logs.join("diagnostics"))
+            .unwrap()
+            .filter_map(Result::ok)
+            .any(|entry| std::fs::read_to_string(entry.path())
+                .is_ok_and(|log| log.contains("started%20a%20temporary%20server"))),
+        "wrapper diagnostics should be retained"
+    );
     let server_log = std::fs::read_dir(&logs)
         .expect("temporary server log directory")
         .filter_map(Result::ok)

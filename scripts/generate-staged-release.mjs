@@ -156,6 +156,9 @@ export function buildStagedReleaseProjection(source, packet) {
         action('Validate physical ' + kind + ' producer transfer', activeIf + '        env:\n          EXPECT_BUNDLE: ' + expression(needsExpr(producer, 'bundle_sha')) + '\n          EXPECT_DESCRIPTOR: ' + expression(needsExpr(producer, 'descriptor_sha')) + '\n          EXPECT_PRODUCER: ' + id(producer) + '\n        run: node _protocol/scripts/release-stage-transfer.mjs import ' + kind + '\n');
       };
       if (['verify-package', 'publish-crate', 'publish-verify-images'].includes(stage)) importArtifact('compile-release', 'binary');
+      if (stage === 'verify-package') {
+        action('Verify greetings and issue reporting on the selected binary', '        timeout-minutes: 12\n        uses: ./_protocol/.github/actions/verify-released-clients\n        with:\n          binary: prepared-release/binary/formal-ai\n          artifact: release-client-reports-' + mode + '-' + expression('github.run_id') + '-' + expression('github.run_attempt') + '\n');
+      }
       if (['publish-crate', 'registry-availability'].includes(stage)) importArtifact('verify-package', 'package');
       if (stage === 'create-release') importArtifact('publish-verify-images', 'images');
       if (stage === 'create-release') action('Fail closed before any release publication', activeIf + '        run: node _protocol/scripts/release-stage-transfer.mjs guard-create\n');

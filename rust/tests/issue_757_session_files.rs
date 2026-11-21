@@ -92,6 +92,7 @@ fn prints_persistent_session_file_after_one_shot_and_interactive_runs() {
             .args(["with", "--no-start-server", mode, "codex", "hi"])
             .env("HOME", &home)
             .env("PATH", path_with_fake_clis(&bin_dir))
+            .env("FORMAL_AI_LOG_STDERR", "1")
             .output()
             .expect("run wrapper with fake transcript");
         assert!(output.status.success());
@@ -166,6 +167,7 @@ fn reports_every_requested_tool_session_and_proxy_log() {
             .env("HOME", &home)
             .env("PATH", path_with_fake_clis(&bin_dir))
             .env("FORMAL_AI_PROXY_LOG", &proxy_log)
+            .env("FORMAL_AI_LOG_STDERR", "1")
             .output()
             .expect("run wrapper with fake tool transcript");
         assert!(output.status.success(), "{tool} failed");

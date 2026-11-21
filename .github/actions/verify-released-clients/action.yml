@@ -1,0 +1,55 @@
+name: Verify released CLI client greetings and reports
+description: Exercise the selected Formal AI release binary with stock CLI clients.
+inputs:
+  binary:
+    description: Path to the verified release binary
+    required: true
+  artifact:
+    description: Artifact name for the verification logs
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v7
+      with: {node-version: 22}
+    - uses: actions/setup-python@v7
+      with: {python-version: '3.12'}
+    - uses: oven-sh/setup-bun@v2
+      with:
+        bun-version-file: ${{ github.action_path }}/../../../.bun-version
+        no-cache: true
+    - name: Install the pinned clients and test dependencies
+      shell: bash
+      run: |
+        cd "$GITHUB_ACTION_PATH/../../.."
+        bun install --cwd experiments/issue_1609_client_reports --frozen-lockfile
+        bun install --frozen-lockfile --ignore-scripts
+        bun install --cwd experiments/agent_cli_e2e/issue_819_tui --frozen-lockfile
+        echo "$PWD/experiments/issue_1609_client_reports/node_modules/.bin" >> "$GITHUB_PATH"
+        python -m venv "$RUNNER_TEMP/release-aider"
+        "$RUNNER_TEMP/release-aider/bin/pip" install --disable-pip-version-check --no-cache-dir 'aider-chat==0.86.2'
+        echo "$RUNNER_TEMP/release-aider/bin" >> "$GITHUB_PATH"
+        mkdir -p "$RUNNER_TEMP/release-grok"
+        grok="$RUNNER_TEMP/release-grok/grok"
+        curl --fail --silent --show-error --location --retry 3 'https://x.ai/cli/grok-1.0.92-linux-x86_64' --output "$grok"
+        echo "add4d201dbf2c0bd6077a36feb55a76939de30bae48dbb06f16b2307d38ceacb  $grok" | sha256sum --check
+        chmod +x "$grok"
+        echo "$RUNNER_TEMP/release-grok" >> "$GITHUB_PATH"
+    - name: Verify greetings and report receipts
+      shell: bash
+      env:
+        ARTIFACT_DIR: ${{ runner.temp }}/release-client-reports
+        RELEASE_BINARY: ${{ inputs.binary }}
+      run: |
+        if ! bash "$GITHUB_ACTION_PATH/../../../experiments/issue_1609_client_reports/verify-release.sh" "$GITHUB_WORKSPACE/$RELEASE_BINARY"; then
+          find "$ARTIFACT_DIR" -maxdepth 2 -name '*.log' -type f -exec tail -n 12 -- {} +
+          exit 1
+        fi
+    - name: Retain released-client verification logs
+      if: ${{ always() && inputs.artifact != '' }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.artifact }}
+        path: ${{ runner.temp }}/release-client-reports
+        if-no-files-found: ignore
+        retention-days: 7

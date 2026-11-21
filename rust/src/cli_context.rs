@@ -9,6 +9,8 @@ use clap::{Args, Subcommand, ValueEnum};
 use formal_ai::dialog_conversation::append_with_overlap;
 use serde_json::{Value, json};
 
+mod harness;
+
 const ERROR_PLACEHOLDER: &str = "{error}";
 const SESSION_PLACEHOLDER: &str = "{session}";
 const VARIABLE_PLACEHOLDER: &str = "{variable}";
@@ -217,7 +219,10 @@ fn session_candidates(
     if let Some(declared) = declared_session() {
         return Ok(vec![declared]);
     }
-    if matches!(source, ContextSource::Harness | ContextSource::Opencode) {
+    if source == ContextSource::Opencode {
+        return Ok(vec![opencode_session(db)?]);
+    }
+    if source == ContextSource::Harness {
         return Ok(vec![harness_session(db)?]);
     }
 
@@ -261,11 +266,11 @@ fn context_document(
     log_dir: Option<&Path>,
 ) -> Result<Value, Box<dyn Error>> {
     match source {
-        ContextSource::Harness | ContextSource::Opencode => harness_context(session, db),
+        ContextSource::Harness => harness_context(session, db, log_dir),
+        ContextSource::Opencode => opencode_context(session, db),
         ContextSource::Server => Ok(load_server_context(session, log_dir)?),
-        ContextSource::Auto => {
-            load_server_context(session, log_dir).map_or_else(|_| harness_context(session, db), Ok)
-        }
+        ContextSource::Auto => load_server_context(session, log_dir)
+            .map_or_else(|_| harness_context(session, db, log_dir), Ok),
         ContextSource::Both => merged_context(session, db, log_dir),
     }
 }
@@ -319,7 +324,20 @@ fn render_context(
 }
 
 /// Read the conversation the harness itself stored for this session.
-fn harness_context(session: &str, db: Option<&Path>) -> Result<Value, Box<dyn Error>> {
+fn harness_context(
+    session: &str,
+    db: Option<&Path>,
+    log_dir: Option<&Path>,
+) -> Result<Value, Box<dyn Error>> {
+    if db.is_none()
+        && let Some(harness) = harness::current()
+    {
+        return harness.export(session, log_dir);
+    }
+    opencode_context(session, db)
+}
+
+fn opencode_context(session: &str, db: Option<&Path>) -> Result<Value, Box<dyn Error>> {
     let output = run_extractor(&[session, "--format", "json"], db).map_err(|error| {
         config("context_harness_unavailable")
             .replace(SESSION_PLACEHOLDER, session)
@@ -339,7 +357,7 @@ fn merged_context(
     db: Option<&Path>,
     log_dir: Option<&Path>,
 ) -> Result<Value, Box<dyn Error>> {
-    let harness = harness_context(session, db);
+    let harness = harness_context(session, db, log_dir);
     let server = load_server_context(session, log_dir);
     if let (Err(harness_error), Err(server_error)) = (&harness, &server) {
         return Err(config("context_harness_unavailable")
@@ -409,6 +427,15 @@ fn declared_session() -> Option<String> {
 
 /// Ask the harness which session this shell is inside.
 fn harness_session(db: Option<&Path>) -> Result<String, Box<dyn Error>> {
+    if db.is_none()
+        && let Some(harness) = harness::current()
+    {
+        return Ok(harness.latest()?);
+    }
+    opencode_session(db)
+}
+
+fn opencode_session(db: Option<&Path>) -> Result<String, Box<dyn Error>> {
     let output = run_extractor(&[LATEST_SESSION, "--resolve-only"], db)?;
     let resolved = String::from_utf8(output)?.trim().to_owned();
     if resolved.is_empty() {

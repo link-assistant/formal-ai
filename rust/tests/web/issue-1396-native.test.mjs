@@ -261,13 +261,20 @@ const REPORT_TOOLS = [
 ];
 
 async function startReportSession(t, binary) {
-  const run = await startCli(t, { binary, args: ["--agent-mode"], lifetime: 25_000 });
+  // This fixture makes several sequential requests through an unoptimized debug
+  // binary. Use the test's bound for the whole conversation and a shorter bound
+  // for each individual request.
+  const run = await startCli(t, {
+    binary, args: ["--agent-mode"], lifetime: 120_000,
+    env: { FORMAL_AI_ALLOW_NETWORK: "0", FORMAL_AI_LIVE_FETCH: "0" },
+  });
   await run.ready();
   async function ask(input, advertised = REPORT_TOOLS) {
     const response = await fetch(`${run.url}/v1/responses`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ model: "formal-ai", stream: false, input, tools: advertised }),
+      signal: AbortSignal.timeout(18_000),
     });
     assert.ok(response.ok, await response.clone().text());
     return (await response.json()).output;
@@ -286,7 +293,7 @@ async function startReportSession(t, binary) {
 const user = content => ({ role: "user", content });
 
 for (const [server, binary] of [["JavaScript", undefined], ["native", NATIVE_CLI]]) {
-  const options = { skip: server === "native" && !binary, timeout: 30_000 };
+  const options = { skip: server === "native" && !binary, timeout: binary ? 90_000 : 30_000 };
   test(`${server} Codex report confirms destination and context without a Plan-only tool`, options, async (t) => {
     const { ask, question } = await startReportSession(t, binary);
     const report = user("зарепорти баг");
