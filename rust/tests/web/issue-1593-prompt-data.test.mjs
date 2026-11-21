@@ -48,6 +48,21 @@ const localClassification = [
   ['Определи тональность (положительная, отрицательная или нейтральная): Мне понравилось.', ['положительная', '«Мне понравилось.»']],
   ['Определи тональность (положительная, отрицательная или нейтральная): Мне не понравилось.', ['отрицательная', '«Мне не понравилось.»']],
 ];
+const additionalExamples = [
+  ['Choose one label [wear and tear, Waiting, OTHER]: We are still Waiting.', ['Waiting', '«We are still Waiting.»']],
+  ['Choose one label [wear and tear, Waiting, OTHER]: There is wear and tear on the door.', ['wear and tear', '«There is wear and tear on the door.»']],
+  ['Choose one label [salary, commute, OTHER]: The wages are low and the office is too far.', ['OTHER']],
+  ['Choose one label [salary, commute]: Blue.', ['unknown']],
+  ['Records:\nName: Irena\nCity: Bern\n\nName: Jo\nCity: Graz\nQuestion: What city is Jo in?', ['Graz', '«Name: Jo\nCity: Graz»']],
+  ['Records:\nCity: Graz\nQuestion: What is the city?', ['Graz', '«City: Graz»']],
+  ['Table:\n| ID | Forklift licence |\n| --- | --- |\n| Irena | no |\n| Jo | yes |\nWhich person has no forklift licence?', ['Irena', '«| Irena | no |»', '«| ID | Forklift licence |»']],
+  ['Records:\n1. Jo - city: Graz\n2. Jo - city: Bern\nQuestion: What city is Jo in?', ['I could not determine the requested answer from the supplied text.']],
+  ['Extract city and schedule:\nCity: Graz\nCity: Bern\nSchedule: Monday', ['city: No unique value in the supplied text.', '«Schedule: Monday»']],
+  ['Identify the language: 984 715 —', ['unknown']],
+  ['Исправь ошибки: Скажите пожалуйста что вы читаите сейчас?', [null, 'Скажите, пожалуйста, что вы читаете сейчас?', 'https://ru.wiktionary.org/wiki/читать']],
+  ...otherLanguages,
+  ...localClassification,
+];
 
 function assertAnswer(content, [firstLine, ...evidence], label) {
   assert.equal(typeof content, 'string', label);
@@ -85,32 +100,14 @@ test('worker answers from prompt data and records literal spans with no tools', 
       if (id === 'records') assert.ok(result.evidence.some((item) => item.startsWith('prompt_data:link:')));
     }
   }
-  const cases = [
-    ['Choose one label [wear and tear, Waiting, OTHER]: We are still Waiting.', ['Waiting', '«We are still Waiting.»']],
-    ['Choose one label [wear and tear, Waiting, OTHER]: There is wear and tear on the door.', ['wear and tear', '«There is wear and tear on the door.»']],
-    ['Choose one label [salary, commute, OTHER]: The wages are low and the office is too far.', ['OTHER']],
-    ['Choose one label [salary, commute]: Blue.', ['unknown']],
-    ['Records:\nName: Irena\nCity: Bern\n\nName: Jo\nCity: Graz\nQuestion: What city is Jo in?', ['Graz', '«Name: Jo\nCity: Graz»']],
-    ['Records:\nCity: Graz\nQuestion: What is the city?', ['Graz', '«City: Graz»']],
-    ['Table:\n| ID | Forklift licence |\n| --- | --- |\n| Irena | no |\n| Jo | yes |\nWhich person has no forklift licence?', ['Irena', '«| Irena | no |»', '«| ID | Forklift licence |»']],
-    ['Records:\n1. Jo - city: Graz\n2. Jo - city: Bern\nQuestion: What city is Jo in?', ['I could not determine the requested answer from the supplied text.']],
-    ['Extract city and schedule:\nCity: Graz\nCity: Bern\nSchedule: Monday', ['city: No unique value in the supplied text.', '«Schedule: Monday»']],
-    ['Identify the language: 984 715 —', ['unknown']],
-    ['Исправь ошибки: Скажите пожалуйста что вы читаите сейчас?', [null, 'Скажите, пожалуйста, что вы читаете сейчас?', 'https://ru.wiktionary.org/wiki/читать']],
-  ];
-  for (const [prompt, evidence] of cases) {
-    const result = await solve(prompt);
-    assertAnswer(result.content, evidence, prompt);
-    assert.equal(result.toolCalls.length, 0, prompt);
-  }
-  for (const [prompt, evidence] of [...otherLanguages, ...localClassification]) {
+  for (const [prompt, evidence] of additionalExamples) {
     const result = await solve(prompt);
     assertAnswer(result.content, evidence, prompt);
     assert.equal(result.toolCalls.length, 0, prompt);
   }
 });
 
-test('OpenAI completions answer the issue prompts in default and agent modes', { timeout: 120000 }, async (t) => {
+test('OpenAI completions answer the issue prompts in default and agent modes', { timeout: 190000 }, async (t) => {
   const binary = process.env.FORMAL_AI_TEST_NATIVE_CLI;
   for (const agentMode of [false, true]) {
     await t.test(`${binary ? 'native' : 'JavaScript'} ${agentMode ? 'agent' : 'default'} mode`, async (subtest) => {
@@ -118,7 +115,7 @@ test('OpenAI completions answer the issue prompts in default and agent modes', {
         binary,
         args: agentMode ? ['--agent-mode'] : [],
         env: { FORMAL_AI_LIVE_FETCH: '0' },
-        lifetime: 55000,
+        lifetime: 90000,
       });
       await run.ready();
       async function complete(prompt, label) {
@@ -138,16 +135,22 @@ test('OpenAI completions answer the issue prompts in default and agent modes', {
       for (const [id, languages] of Object.entries(expected)) {
         for (const [language, evidence] of Object.entries(languages)) {
           const label = `${id}/${language}`;
-          assertAnswer(await complete(fixture(id, language), label), evidence, label);
+          await subtest.test(label, async () => {
+            assertAnswer(await complete(fixture(id, language), label), evidence, label);
+          });
         }
       }
-      for (const [prompt, evidence] of [...otherLanguages, ...localClassification]) {
-        assertAnswer(await complete(prompt, prompt), evidence, prompt);
+      for (const [prompt, evidence] of additionalExamples) {
+        await subtest.test(prompt.replaceAll('\n', ' '), async () => {
+          assertAnswer(await complete(prompt, prompt), evidence, prompt);
+        });
       }
       for (const id of ['decision', 'sales', 'redaction', 'mobile', 'yaml']) {
         for (const language of ['en', 'ru']) {
           const label = `${id}/${language}`;
-          assert.doesNotMatch(await complete(fixture(id, language), label), cannedSearch, label);
+          await subtest.test(label, async () => {
+            assert.doesNotMatch(await complete(fixture(id, language), label), cannedSearch, label);
+          });
         }
       }
     });
