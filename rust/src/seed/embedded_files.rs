@@ -148,10 +148,22 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-research-table.lino", MEANINGS_RESEARCH_TABLE_LINO),
         ("data/seed/meanings-response-intents.lino", MEANINGS_RESPONSE_INTENTS_LINO),
         (
+            "data/seed/meanings-response-intents-additional.lino",
+            MEANINGS_RESPONSE_INTENTS_ADDITIONAL_LINO,
+        ),
+        (
             "data/seed/meanings-response-intents-handlers.lino",
             MEANINGS_RESPONSE_INTENTS_HANDLERS_LINO,
         ),
+        (
+            "data/seed/meanings-response-intents-handlers-additional.lino",
+            MEANINGS_RESPONSE_INTENTS_HANDLERS_ADDITIONAL_LINO,
+        ),
         ("data/seed/meanings-routing-vocabulary.lino", MEANINGS_ROUTING_VOCABULARY_LINO),
+        (
+            "data/seed/meanings-routing-vocabulary-additional.lino",
+            MEANINGS_ROUTING_VOCABULARY_ADDITIONAL_LINO,
+        ),
         ("data/seed/meanings-selection-criteria.lino", MEANINGS_SELECTION_CRITERIA_LINO),
         ("data/seed/meanings-semantic-meta.lino", MEANINGS_SEMANTIC_META_LINO),
         ("data/seed/meanings-skill-compiler.lino", MEANINGS_SKILL_COMPILER_LINO),
@@ -300,6 +312,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/multilingual-responses-symbolic.lino", MULTILINGUAL_RESPONSES_SYMBOLIC_LINO),
         ("data/seed/multilingual-responses-synthesis.lino", MULTILINGUAL_RESPONSES_SYNTHESIS_LINO),
+        (
+            "data/seed/multilingual-responses-synthesis-runtime.lino",
+            MULTILINGUAL_RESPONSES_SYNTHESIS_RUNTIME_LINO,
+        ),
         (
             "data/seed/multilingual-responses-text-transform.lino",
             MULTILINGUAL_RESPONSES_TEXT_TRANSFORM_LINO,

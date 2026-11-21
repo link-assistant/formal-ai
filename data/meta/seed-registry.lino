@@ -436,10 +436,19 @@ seed_registry
   seed meanings-response-intents
     bundle true
     lexicon meaning
+  seed meanings-response-intents-additional
+    bundle true
+    lexicon meaning
   seed meanings-response-intents-handlers
     bundle true
     lexicon meaning
+  seed meanings-response-intents-handlers-additional
+    bundle true
+    lexicon meaning
   seed meanings-routing-vocabulary
+    bundle true
+    lexicon meaning
+  seed meanings-routing-vocabulary-additional
     bundle true
     lexicon meaning
   seed meanings-search
@@ -713,6 +722,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-synthesis
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-synthesis-runtime
     bundle true
     lexicon response
     web true

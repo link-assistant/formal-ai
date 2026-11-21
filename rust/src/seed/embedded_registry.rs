@@ -233,10 +233,16 @@ pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-research-table.lino");
 pub const MEANINGS_RESPONSE_INTENTS_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-response-intents.lino");
+pub const MEANINGS_RESPONSE_INTENTS_ADDITIONAL_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-response-intents-additional.lino");
 pub const MEANINGS_RESPONSE_INTENTS_HANDLERS_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-response-intents-handlers.lino");
+pub const MEANINGS_RESPONSE_INTENTS_HANDLERS_ADDITIONAL_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-response-intents-handlers-additional.lino");
 pub const MEANINGS_ROUTING_VOCABULARY_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-routing-vocabulary.lino");
+pub const MEANINGS_ROUTING_VOCABULARY_ADDITIONAL_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-routing-vocabulary-additional.lino");
 pub const MEANINGS_SEARCH_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-search.lino");
 pub const MEANINGS_SELECTION_CRITERIA_LINO: &str =
@@ -378,6 +384,8 @@ pub const MULTILINGUAL_RESPONSES_SYMBOLIC_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-symbolic.lino");
 pub const MULTILINGUAL_RESPONSES_SYNTHESIS_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-synthesis.lino");
+pub const MULTILINGUAL_RESPONSES_SYNTHESIS_RUNTIME_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-synthesis-runtime.lino");
 pub const MULTILINGUAL_RESPONSES_TEXT_TRANSFORM_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-text-transform.lino");
 pub const MULTILINGUAL_RESPONSES_THINKING_LINO: &str =
@@ -516,6 +524,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO,
     MULTILINGUAL_RESPONSES_SYMBOLIC_LINO,
     MULTILINGUAL_RESPONSES_SYNTHESIS_LINO,
+    MULTILINGUAL_RESPONSES_SYNTHESIS_RUNTIME_LINO,
     MULTILINGUAL_RESPONSES_TEXT_TRANSFORM_LINO,
     MULTILINGUAL_RESPONSES_THINKING_LINO,
     MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
@@ -591,8 +600,11 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_REQUIREMENT_EXTRACTION_LINO,
     MEANINGS_RESEARCH_TABLE_LINO,
     MEANINGS_RESPONSE_INTENTS_LINO,
+    MEANINGS_RESPONSE_INTENTS_ADDITIONAL_LINO,
     MEANINGS_RESPONSE_INTENTS_HANDLERS_LINO,
+    MEANINGS_RESPONSE_INTENTS_HANDLERS_ADDITIONAL_LINO,
     MEANINGS_ROUTING_VOCABULARY_LINO,
+    MEANINGS_ROUTING_VOCABULARY_ADDITIONAL_LINO,
     MEANINGS_SEARCH_LINO,
     MEANINGS_SELECTION_CRITERIA_LINO,
     MEANINGS_SEMANTIC_META_LINO,
