@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import fs from 'node:fs';
@@ -31,7 +32,7 @@ test('ordinary context rejects noncanonical release version', () => {
 });
 test('generated ordinary source checks preserve commands and use immutable context', () => {
   const prefix = '../../../experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
-  const original = fs.readFileSync(new URL(prefix + 'original-release-workflow.yml', import.meta.url), 'utf8');
+  const original = readCanonicalSource(new URL('../../../',import.meta.url)).text;
   const packet = JSON.parse(fs.readFileSync(new URL(prefix + 'stage-source-coverage.json', import.meta.url)));
   const generated = buildStagedReleaseProjection(original, packet);
   assert.equal(generated.operations, 52);

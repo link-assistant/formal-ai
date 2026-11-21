@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -17,13 +18,13 @@ function layout() {
    'scripts/release-source-freshness.mjs',
    'scripts/refresh-release-specification-witness.mjs',
    'scripts/generate-staged-release.mjs',
-   'scripts/lib/ci-speed-workflows.mjs',
+   'scripts/lib/ci-speed-workflows.mjs','scripts/canonical-release-source.mjs',
    '.github/workflows/release.yml',
    '.github/workflows/release-staged.yml',
    ...['stage-source-coverage.json',
    'candidate-release-caller.yml',
    'candidate-output-bindings.json',
-   'original-release-workflow.yml'].map(name => evidence + name)];
+   'original-release-workflow.yml','original-release-workflow.part-1.txt','original-release-workflow.part-2.txt'].map(name => evidence + name)];
 
   for (const file of files) {
     fs.mkdirSync(path.dirname(path.join(directory, file)), {
@@ -190,7 +191,7 @@ test('actual subprocess refuses missing immutable protocol and supplied host aut
 test('separate current group proof rejects stale foreign duplicate and unsourced identities',async()=>{
  const directory=layout();try {
   const module=await import(pathToFileURL(path.join(directory,'scripts/staged-caller-authority.mjs')));
-  const canonical=fs.readFileSync(path.join(directory,evidence,'original-release-workflow.yml'),'utf8');
+  const canonical=readCanonicalSource(directory).text;
   const callerDraft=fs.readFileSync(path.join(directory,evidence,'candidate-release-caller.yml'),'utf8');
   const staged=fs.readFileSync(path.join(directory,'.github/workflows/release-staged.yml'),'utf8');
   const packet=JSON.parse(fs.readFileSync(path.join(directory,evidence,'stage-source-coverage.json'),'utf8'));

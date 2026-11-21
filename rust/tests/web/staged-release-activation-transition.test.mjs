@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -14,12 +15,12 @@ function fixture() {
  const directory=fs.mkdtempSync(path.join(tmpdir(),'staged-release-transition-'));
  const files=['scripts/checked-release-operation-view.mjs','scripts/generate-staged-release.mjs','scripts/maintained-staged-authority.mjs',
  'scripts/staged-caller-authority.mjs','scripts/governed-github-command-provider.mjs',
- 'scripts/release-source-freshness.mjs', 'scripts/refresh-release-specification-witness.mjs','scripts/lib/ci-speed-workflows.mjs',
- ...['stage-source-coverage.json','original-release-workflow.yml'].map(name=>evidence+name)];
+ 'scripts/release-source-freshness.mjs', 'scripts/refresh-release-specification-witness.mjs','scripts/lib/ci-speed-workflows.mjs','scripts/canonical-release-source.mjs',
+ ...['stage-source-coverage.json','original-release-workflow.yml','original-release-workflow.part-1.txt','original-release-workflow.part-2.txt'].map(name=>evidence+name)];
  for(const file of files){const destination=path.join(directory,file);fs.mkdirSync(path.dirname(destination),{recursive:true});fs.copyFileSync(path.join(root,file),destination);}
  fs.mkdirSync(path.join(directory,'.github/workflows'),{recursive:true});
  fs.writeFileSync(path.join(directory,'package.json'),'{}');fs.symlinkSync(path.join(root,'node_modules'),path.join(directory,'node_modules'));
- const original=fs.readFileSync(path.join(root,evidence,'original-release-workflow.yml'),'utf8');
+ const original=readCanonicalSource(root).text;
  const packet=JSON.parse(fs.readFileSync(path.join(root,evidence,'stage-source-coverage.json'),'utf8'));
  const projection=buildStagedReleaseProjection(original,packet);
  for(const [file,bytes] of projection.outputs)fs.writeFileSync(path.join(directory,file),bytes);
@@ -112,9 +113,19 @@ test('current physical view rejects source, permissions, order, output, compiler
    fs.writeFileSync(callerPath,mutate(caller));assert.throws(()=>module.readCheckedReleaseOperationView());fs.writeFileSync(callerPath,caller);
   }
   const retainedPath=path.join(value.directory,evidence,'original-release-workflow.yml');
-  fs.writeFileSync(retainedPath,value.original+'\n# retained drift\n');assert.throws(()=>module.readCheckedReleaseOperationView());
-  fs.writeFileSync(retainedPath,value.original);
+  const retainedIndex=fs.readFileSync(retainedPath,'utf8');fs.writeFileSync(retainedPath,retainedIndex+'\n# retained drift\n');assert.throws(()=>module.readCheckedReleaseOperationView());
+  fs.writeFileSync(retainedPath,retainedIndex);
   const alternate=path.join(value.directory,'same-caller.yml');fs.writeFileSync(alternate,caller);
   fs.rmSync(callerPath);fs.symlinkSync(alternate,callerPath);assert.throws(()=>module.readCheckedReleaseOperationView());
+ }finally{fs.rmSync(value.directory,{recursive:true,force:true});}
+});
+
+test('legacy single-file inline and deployed source fixtures retain checked generation',()=>{
+ const value=fixture();try{
+  const retained=path.join(value.directory,evidence,'original-release-workflow.yml');
+  fs.writeFileSync(retained,value.original);
+  assert.equal(check(value.directory,'--check').status,0);
+  fs.writeFileSync(path.join(value.directory,'.github/workflows/release.yml'),value.projection.outputs.get(evidence+'candidate-release-caller.yml'));
+  assert.equal(check(value.directory,'--check-deployed').status,0);
  }finally{fs.rmSync(value.directory,{recursive:true,force:true});}
 });

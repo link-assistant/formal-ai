@@ -1,4 +1,5 @@
 import '../../../experiments/issue-1580/fast-inventory-boundary.test.mjs';
+import '../../../experiments/issue-1580/hosted-javascript-scheduling.test.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync,existsSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
@@ -516,8 +517,7 @@ test('measured full JavaScript plans retain every suite within eight unchanged e
   const {shards} = planShards(selected, 8, secondsOf);
   assert.deepEqual(partitionProblems(selected, shards), {missing: [], repeated: [], extra: []});
   assert(isLongestFirst(shards, secondsOf));
-  for (const shard of shards) {
-    const workers = planShards(shard, 4, secondsOf);
-    assert(Math.max(...workers.load) <= 270, 'four-core measured work must fit below the unchanged warning threshold');
-  }
+  // Warning-budget assertions replay each retained hosted cohort above. The
+  // planning weights retain maxima across different heads and workloads; their
+  // sum is not an observed four-core workload from any one run.
 });

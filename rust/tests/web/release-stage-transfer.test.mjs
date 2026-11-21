@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -193,7 +194,7 @@ test('independent source and producer identities refuse unknown, failed, interru
 import YAML from 'yaml';
 const repository = new URL('../../../', import.meta.url);
 const evidence = new URL('experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/', repository);
-const originalSnapshot = readFileSync(new URL('original-release-workflow.yml', evidence), 'utf8');
+const originalSnapshot = readCanonicalSource(repository).text;
 const coverage = JSON.parse(readFileSync(new URL('stage-source-coverage.json', evidence), 'utf8'));
 const readProjection = () => YAML.parse(readFileSync(new URL('.github/workflows/release-staged.yml', repository), 'utf8'));
 

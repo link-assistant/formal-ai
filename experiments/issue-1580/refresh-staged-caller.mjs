@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../scripts/canonical-release-source.mjs';
 // External bootstrap, executed through Formal AI; zero autonomous-authorship credit.
 // Refresh non-release caller changes without rewriting the 52 release operations.
 import assert from 'node:assert/strict';
@@ -9,7 +10,7 @@ import {workflowJobs} from '../../scripts/lib/ci-speed-workflows.mjs';
 
 const prefix = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
 const read = file => readFileSync(file, 'utf8');
-const original = read(prefix + 'original-release-workflow.yml');
+const original = readCanonicalSource(process.cwd()).text;
 const packet = JSON.parse(read(prefix + 'stage-source-coverage.json'));
 const before = buildStagedReleaseProjection(original, packet);
 const callerPath = '.github/workflows/release.yml';

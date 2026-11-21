@@ -1,3 +1,4 @@
+import {readCanonicalSource,partitionCanonicalSource} from './canonical-release-source.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, realpathSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -15,11 +16,12 @@ export function runStagedReleaseGenerator(arguments_) {
   if (arguments_.includes('--write')) assert.ok(outputDirectory, 'write requires an explicit scratch/repository destination');
   const packet = JSON.parse(readFileSync(join(root, evidence, 'stage-source-coverage.json'), 'utf8'));
   const deployed = arguments_.includes('--check-deployed') || arguments_.includes('--deployed');
-  const source = readFileSync(join(root, deployed ? evidence + 'original-release-workflow.yml' : '.github/workflows/release.yml'), 'utf8');
+  const retained=readCanonicalSource(root);
+  const source = deployed ? retained.text : readFileSync(join(root,'.github/workflows/release.yml'),'utf8');
   const sha = value => createHash('sha256').update(value).digest('hex');
   assert.equal(sha(source), packet.workflowSha256, 'canonical source drift requires explicit original operation refresh');
-  assert.equal(readFileSync(join(root, evidence, 'original-release-workflow.yml'), 'utf8'), source);
-  const {operations,binding,outputs}=buildStagedReleaseProjection(source,packet);
+  assert.equal(readCanonicalSource(root).text, source);
+  const {operations,binding,outputs}=buildStagedReleaseProjection(source,packet,{partitioned:retained.files.length===3});
   if (deployed) assert.equal(readFileSync(join(root,'.github/workflows/release.yml'),'utf8'),outputs.get(evidence+'candidate-release-caller.yml'),'deployed caller differs from checked original projection');
   for (const [path, bytes] of outputs) {
     const destination = outputDirectory ? join(outputDirectory, path.split('/').at(-1)) : join(root, path);
@@ -43,7 +45,7 @@ export function runStagedReleaseGenerator(arguments_) {
   }));
   console.log('STAGED_RELEASE_GENERATOR_PASS');
 }
-export function buildStagedReleaseProjection(source, packet) {
+export function buildStagedReleaseProjection(source, packet, {partitioned=true}={}) {
   const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
   const sha = value => createHash('sha256').update(value).digest('hex');
   assert.equal(sha(source), packet.workflowSha256, 'canonical source drift requires explicit original operation refresh');
@@ -298,7 +300,7 @@ export function buildStagedReleaseProjection(source, packet) {
     bindings: binding,
     originalOperations: 52,
     scope: 'Executable candidate declaration; no scheduler/native/publication/cold execution proof'
-  }, null, 2) + '\n'], [evidence + 'original-release-workflow.yml', source], [evidence + 'stage-source-coverage.json', format(packet) + '\n']]);
+  }, null, 2) + '\n'], ...(partitioned?partitionCanonicalSource(source):[{path:evidence+'original-release-workflow.yml',text:source}]).map(({path,text})=>[path,text]), [evidence + 'stage-source-coverage.json', format(packet) + '\n']]);
   return { operations, binding, outputs };
 }
 if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) runStagedReleaseGenerator(process.argv.slice(2));

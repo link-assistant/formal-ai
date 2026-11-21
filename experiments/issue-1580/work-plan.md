@@ -908,3 +908,30 @@ The unchanged size gate also warns on both 1417-line code-task twins. The new fo
 - Merge current main 665795fe after publication preflight detects its advance. Preserve the added Codex replay and independent release admission; correct the eight-replay inventory and verify Bun prerequisites with negative controls. The full 141-gate run reports 86 passes, 53 explicit hosted-only skips and two handler-ceiling conflicts. Reuse the existing query parser at its sole policy caller without raising ceilings; both failed gates and affected generation, translation, specification and documentation gates pass afterward. Initial failures remain separate from successful retries. Hosted execution, remaining warnings and complete original acceptance stay open. See [current main integration](../../docs/case-studies/issue-1580/current-main-integration-checkpoint.md).
 
 - Merge released main f574289f (v0.356.0) after the ancestry preflight correctly refuses the earlier source. Preserve the backport description in a new fragment. Full witness equality permits only four reviewed Cargo fixture hashes, retaining 221 cases and 968 unsupported items. All 158 maintained observations and the fresh complete 141-gate run pass (88 executed, 53 explicit hosted-only skips). Hosted qualification, remaining warnings and wider issue acceptance remain open. See [released main integration](../../docs/case-studies/issue-1580/release-main-integration-checkpoint.md).
+
+
+### 2026-11-21: final canonical-source and worker-bootstrap local checkpoint
+
+- Preserve the actual 81,026-byte canonical release input as a strict index and
+  two authenticated parts; generated workflows/packet remain byte-identical,
+  retaining all 52 operations and 104 bindings. Publication hashes all six actual
+  physical sources. Legacy one-file layouts still pass the maintained paths.
+- Complete local inventory: 87 initial passes, 53 hosted-only exclusions and one
+  new readability failure; the corrected unchanged gate passes. Effective result
+  is 88 applicable passes, 53 explicit exclusions. Preserve the initial failure.
+- Final maintained regression entry: 331/331 pass. The production-profile suite
+  passes 21/21 on isolated retry after a retained 100 ms VM timeout. Worker receipt
+  admission and compiler-input separation pass 4/4 after a retained fixture escape
+  correction. No timeout, threshold, inventory or production assertion relaxed.
+- Activate the explicit read-only hosted worker regeneration exception, under the
+  user's standing authorization to repair CI. Push the complete source batch to
+  bootstrap the job, dispatch it, verify its actual artifact, then collect every
+  actionable terminal failure before the following push. Stale worker remains an
+  open hosted failure until its real regeneration passes unchanged checks.
+- Evidence: `evidence/checks/canonical-source-partition/`; case studies explain
+  exact source conservation, the historical-weight model and worker bootstrap.
+  Supplied procedures earn zero independent authorship or reasoning credit.
+- Issue-wide template/practice comparison, original failure reconciliation,
+  current hosted verification and independent-authorship floor remain unfinished.
+
+Pull request: https://github.com/link-assistant/formal-ai/pull/1581.

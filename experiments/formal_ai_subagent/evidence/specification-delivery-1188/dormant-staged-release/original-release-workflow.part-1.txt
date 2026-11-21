@@ -1,0 +1,744 @@
+name: CI/CD Pipeline
+on:
+  push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
+    branches: [main]
+  pull_request:
+    branches-ignore: ['e2e/**']
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request number whose checks are dispatched (informational)'
+        required: false
+        type: string
+      release_mode:
+        description: 'Manual release mode (checks runs no release job)'
+        required: false
+        type: choice
+        default: checks
+        options:
+          - checks
+          - instant
+          - changelog-pr
+      bump_type:
+        description: 'Version bump type'
+        required: false
+        default: patch
+        type: choice
+        options: [patch, minor, major]
+      description:
+        description: 'Release description (optional)'
+        required: false
+        type: string
+permissions:
+  contents: read
+env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_TERM_COLOR: always
+  FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
+  FORMAL_AI_NON_LINUX_CI: ${{ vars.FORMAL_AI_NON_LINUX_CI || 'skip' }}
+  RUSTFLAGS: -Dwarnings
+  RUST_BACKTRACE: full
+  CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
+  CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+  GHCR_IMAGE: ghcr.io/${{ github.repository }}
+  DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE || 'konard/formal-ai' }}
+jobs:
+  hive-source-provenance:
+    uses: ./.github/workflows/hive-source-provenance.yml
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-detect-changes${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    outputs:
+      rs-changed: ${{ steps.changes.outputs.rs-changed }}
+      toml-changed: ${{ steps.changes.outputs.toml-changed }}
+      docs-changed: ${{ steps.changes.outputs.docs-changed }}
+      workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+      pipeline-changed: ${{ steps.changes.outputs.pipeline-changed }}
+      agentic-routing-changed: ${{ steps.changes.outputs.agentic-routing-changed }}
+      any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+      native-type-check: ${{ steps.changes.outputs.native-type-check }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Setup Rust
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
+        run: bash scripts/install-rust-script.sh
+      - name: Detect changes
+        id: changes
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          # A fragment waiting on main runs lint/test/build, so Auto Release runs (#1064).
+          RELEASE_PIPELINE: 'true'
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = pull_request ] || { [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && [ "$GITHUB_REF" != refs/heads/main ]; }; then
+            node scripts/ci-pull-request-admission.mjs detect
+          else
+            rust-script scripts/detect-code-changes.rs
+          fi
+  changelog:
+    name: Changelog Fragment Check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-changelog${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    needs: [detect-changes]
+    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    steps:
+      - {uses: actions/checkout@v7, timeout-minutes: 2,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '30'},
+         with: {persist-credentials: false, fetch-depth: 0, filter: blob:none, sparse-checkout: "/scripts/check-changelog-fragment.mjs\n/Cargo.toml\n/rust/Cargo.toml\n/package.json\n", sparse-checkout-cone-mode: false}}
+      - uses: actions/setup-node@v7
+        with: {node-version: 22}
+      - name: Check for changelog fragments
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: node scripts/check-changelog-fragment.mjs
+  docker-build:
+    name: Docker Image Build & Runtime Check
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: read
+    timeout-minutes: 30
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-docker-build${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    needs: [detect-changes, build-artifacts]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.build-artifacts.result == 'success' && github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true') }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Skip when identical inputs already passed
+        id: ledger
+        uses: ./.github/actions/green-ledger
+        with:
+          check: docker-image
+          paths: >-
+            rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock Dockerfile docker scripts .github/workflows/release.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
+      - name: Free up runner disk space
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: bash scripts/free-runner-disk.sh
+      - uses: ./.github/actions/download-formal-ai-binary
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+      - name: Set up Docker Buildx
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        uses: ./.github/actions/setup-buildx-resilient
+      - name: Build image
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        # Issue #1076: a step-level cap reports an overrun as a step *failure*;
+        # the job cap reports it as `cancelled` and turns nothing red. 15m is
+        # 1.7x the worst of thirteen measured pull-request builds (8.6 min).
+        timeout-minutes: 15
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: false
+          load: true
+          tags: formal-ai:pr-check
+          # Publish jobs keep the default `compile`, so what ships is still
+          # built from source (issue #1051).
+          build-args: BINARY_SOURCE=prebuilt
+          cache-from: type=gha,scope=docker-image
+          # Issue #1057: prebuilt binary, nothing worth caching; exports were
+          # evicting sccache from the shared 10GB pool.
+          cache-to: type=inline
+      - name: Verify image runtime contract
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: |
+          set -euo pipefail
+          docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
+      - name: Log in to GHCR for the released upgrade fixture
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test released-to-candidate memory upgrade
+        if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        run: experiments/issue_982_memory_upgrade/run_container_upgrade.sh
+      - if: ${{ !cancelled() }}
+        run: scripts/prune-docker.sh
+  docker-slim:
+    name: Slim Docker build and runtime
+    concurrency:
+      group: ${{ github.workflow }}-docker-slim-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    needs: [detect-changes, build-artifacts]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.build-artifacts.result == 'success' && github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true') }}
+    uses: ./.github/workflows/docker-slim.yml
+    permissions:
+      contents: read
+  secrets-scan:
+    name: Secrets Scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    needs: [detect-changes]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.docs-changed == 'true' ||
+        needs.detect-changes.outputs.pipeline-changed == 'true'
+      )
+    steps:
+      - {uses: actions/checkout@v7, timeout-minutes: 10, env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 0, filter: blob:none}}
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with: {node-version: 22}
+      - name: Check for secrets
+        env:
+          BASE_REF: ${{ github.base_ref || github.event.before || 'HEAD~1' }}
+        run: bash scripts/check-secrets.sh
+  version-check:
+    name: Version Modification Check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-version-check${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    if: github.event_name == 'pull_request'
+    steps:
+      - {uses: actions/checkout@v7, timeout-minutes: 2, env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/scripts/ci-pull-request-admission.mjs\n/scripts/lib/cargo-package-version.py\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n", sparse-checkout-cone-mode: false}}
+      - name: Setup Rust
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
+        run: bash scripts/install-rust-script.sh
+      - name: Check for manual version changes
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/ci-pull-request-admission.mjs version
+  release-preflight:
+    name: Release Preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-release-preflight${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - {uses: actions/checkout@v7, timeout-minutes: 2,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: /scripts/preflight-credentials.sh, sparse-checkout-cone-mode: false}}
+      - name: Probe every release credential
+        env:
+          PREFLIGHT_MODE: >-
+            ${{ ((github.event_name == 'push' && github.ref == 'refs/heads/main')
+            || (github.event_name == 'workflow_dispatch'
+            && github.event.inputs.release_mode == 'instant'
+            && github.ref == 'refs/heads/main'))
+            && 'release' || 'report' }}
+          PREFLIGHT_VERBOSE: ${{ env.FORMAL_AI_CI_VERBOSE == 'true' && '1' || '0' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: bash scripts/preflight-credentials.sh
+  base:
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-base${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    uses: ./.github/workflows/pin-base-commit.yml
+    permissions:
+      contents: read
+  fast-pr-lint:
+    name: Fast Linux source and requirement checks
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-fast-pr-lint${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - {uses: actions/checkout@v7, timeout-minutes: 4,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/*\n!/dev/log/\n!/docs/case-studies/**/*.gz\n!/docs/case-studies/**/*.log\n!/docs/case-studies/**/*.zip\n!/docs/case-studies/**/*.tgz\n!/docs/case-studies/**/*.diff\n!/experiments/*/evidence/**/*.gz\n!/experiments/*/evidence/**/*.log\n!/experiments/*/evidence/**/*.zip\n!/experiments/*/evidence/**/*.tgz\n!/experiments/*/evidence/**/*.diff\n", sparse-checkout-cone-mode: false}}
+      - {uses: actions/setup-node@v7, with: {node-version: 22}}
+      - name: Validate source readability, CI budgets and requirements without a native build
+        run: |
+          node scripts/check-readable-code.mjs
+          node scripts/check-file-size.mjs
+          node scripts/check-ci-speed.mjs
+          node scripts/check-hardcoded-language.mjs
+          node scripts/check-js-literals.mjs
+          node scripts/check-tests-as-docs.mjs
+          node scripts/assemble-requirements.mjs
+          node scripts/generate-requirement-status.mjs
+          node scripts/check-requirement-status.mjs
+          node scripts/render-status.mjs --check
+          node scripts/render-progressive-plan.mjs --check
+          node scripts/mirror-package-data.mjs --check
+          node scripts/check-fast-governance.mjs
+  # Issue #1191: the one focused PR native check (main's clippy profile); never native or release evidence.
+  native-type-check:
+    name: Native type and lint check
+    needs: [detect-changes]
+    if: ${{ !cancelled() && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
+    uses: ./.github/workflows/native-type-check.yml
+    with:
+      compile-inputs-changed: ${{ needs.detect-changes.result != 'success' || needs.detect-changes.outputs.native-type-check != 'false' }}
+    permissions: {contents: read}
+  lint:
+    name: Lint and Format Check (lane ${{ matrix.lane }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [1, 2, 3, 4]
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-lint-${{ matrix.lane }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    needs: [detect-changes, base]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.docs-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' || needs.detect-changes.outputs.workflow-changed == 'true' )) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
+        run: bash scripts/simulate-fresh-merge.sh
+      - name: Setup Node
+        if: matrix.lane == 1
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: rust/tests/e2e/package-lock.json
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with: {bun-version-file: .bun-version}
+      - {name: Audit JavaScript dependencies before native compilation, if: matrix.lane == 1, timeout-minutes: 9, run: bash scripts/check-javascript-dependencies.sh}
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
+      - uses: ./.github/actions/setup-sccache
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - uses: ./.github/actions/cache-cargo-registry
+      - name: Run registered gates (stage rust)
+        # Issue #991: the gate list lives in data/meta/ci-gates/, one file per
+        # gate, so adding a gate no longer edits this file.
+        env:
+          FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          CI_GATE_LANE: ${{ matrix.lane }}
+        run: rust-script scripts/run-ci-gates.rs --stage rust
+      - name: Build Rust→WASM worker
+        id: selected_wasm
+        if: matrix.lane == 1
+        run: node scripts/build-selected-wasm.mjs build
+      - name: Upload rebuilt WASM worker
+        if: matrix.lane == 1
+        uses: actions/upload-artifact@v7
+        with:
+          name: formal-ai-worker-wasm
+          path: |
+            js/formal_ai_worker.wasm
+            js/formal_ai_worker.receipt.json
+          retention-days: 3
+      - name: Run registered gates (stage wasm)
+        if: matrix.lane == 1
+        run: rust-script scripts/run-ci-gates.rs --stage wasm
+      - name: Install web bundle dependencies
+        if: matrix.lane == 1
+        run: bun install --frozen-lockfile
+      - name: Build web vendor bundle
+        if: matrix.lane == 1
+        run: bun run build:web
+      - name: Check web bundles are current
+        if: matrix.lane == 1
+        run: git diff --exit-code -- js/vendor.bundle.js js/web-search-component.bundle.js js/ocr.bundle.js js/app.js
+      - name: Install web test dependencies
+        if: matrix.lane == 1
+        run: npm ci --prefix rust/tests/e2e --no-audit --no-fund
+      - name: Run registered gates (stage web)
+        if: matrix.lane == 1
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: rust-script scripts/run-ci-gates.rs --stage web
+  test:
+    name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    needs: [detect-changes, base, build-artifacts]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Eight parallel shards of the full lane, planned longest-first from
+          # data/meta/test-durations.lino (run 37802763478: 296-743s of tests
+          # at four). The entry without `shard` is shard 1 (data + census
+          # gates); default-feature doc tests run in their own prepared job.
+          - { os: ubuntu-24.04, test-suite: full, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 2, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 3, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 4, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 5, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 6, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 7, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 8, shards: 8 }
+          # The specification suite on Linux closes the blind spot of issue
+          # #1107. PR #1188 runs it as four shards of the prebuilt unit
+          # executable (its longest test took 520s; run 37802763478 ran three
+          # shards in 417-590s plus a 220-362s compile each). Its unsharded
+          # macOS leg is gone: issue #1059 runs on macOS only the tests whose
+          # behaviour can differ from Linux (data/meta/macos-platform-tests.lino,
+          # macos-core-tests.yml), and a 3600s compile-and-run leg could not fit
+          # the 30-minute cap.
+          - { os: ubuntu-24.04, test-suite: specification, shard: 1, shards: 4 }
+          - { os: ubuntu-24.04, test-suite: specification, shard: 2, shards: 4 }
+          - { os: ubuntu-24.04, test-suite: specification, shard: 3, shards: 4 }
+          - { os: ubuntu-24.04, test-suite: specification, shard: 4, shards: 4 }
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
+        run: bash scripts/simulate-fresh-merge.sh
+      - name: Skip non-Linux while non-Linux CI is switched off
+        id: non_linux
+        if: ${{ !startsWith(matrix.os, 'ubuntu') && vars.FORMAL_AI_NON_LINUX_CI != 'run' }}
+        env:
+          LEG: ${{ matrix.os }} / ${{ matrix.test-suite }}
+        run: |
+          set -euo pipefail
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+          echo "::notice title=$LEG skipped::non-Linux CI is switched off (issue #1111); set FORMAL_AI_NON_LINUX_CI to run to restore it"
+          printf '### %s: skipped, not run\n\nNothing on this platform was verified. Set FORMAL_AI_NON_LINUX_CI to run to restore it (issue #1111).\n' "$LEG" >> "$GITHUB_STEP_SUMMARY"
+      - name: Skip when identical inputs already passed
+        id: ledger
+        if: ${{ steps.non_linux.outputs.skip != 'true' }}
+        uses: ./.github/actions/green-ledger
+        with:
+          check: unit-tests-${{ matrix.os }}-${{ matrix.test-suite }}${{ matrix.shard && format('-shard-{0}', matrix.shard) || '' }}
+          paths: >-
+            rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/release.yml .github/actions
+          enabled: ${{ github.ref != 'refs/heads/main' }}
+      - name: Free up runner disk space
+        if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh
+      - name: Setup Rust
+        if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: ./.github/actions/setup-sccache
+        if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+      - uses: ./.github/actions/cache-cargo-registry
+        if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        with:
+          restore-only: 'true'
+      - name: Setup the pinned native fixture dependency installer
+        if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install actual locked native fixture dependencies
+        if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        run: node scripts/install-locked-fixture-dependencies.mjs
+      - name: Check LiNo data integrity
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
+        env:
+          TEST_BUDGET_SECONDS: 780
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "LiNo data integrity" \
+            cargo test --manifest-path rust/Cargo.toml --test unit data_files -- --nocapture
+      - name: sccache counters after the first compiling step
+        if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        run: sccache --show-stats
+      - name: Check source navigation and recursive content contracts
+        if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
+        env:
+          # Issue #1081: 153s worst measured over 39 runs.
+          TEST_BUDGET_SECONDS: 300
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "source navigation and recursive content" \
+            cargo test --manifest-path rust/Cargo.toml --test unit self_ast_census -- --nocapture
+      - name: Download test executables
+        if: ${{ !cancelled() && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        uses: ./.github/actions/download-artifact
+        with:
+          name: formal-ai-test-executables
+          path: dist/tests
+      - uses: ./.github/actions/download-formal-ai-binary
+        if: ${{ !cancelled() && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+      - name: Run tests
+        if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        env:
+          # PR #1188: historical five-shard planning; run 37802763478 ran
+          # four in 296-743s, so a fifth of the work is about 450s and 1080s
+          # held it at about 42%. Run 38187254541 shard 5/5 later exhausted
+          # the unchanged 1080s budget with 1379s predicted per shard; eight
+          # source-derived shards preserve the full compiled test inventory.
+          # The benchmark corpus gate runs in its own
+          # workflow (benchmark-corpus-gate.yml), skipped by run-prebuilt-tests.sh.
+          TEST_BUDGET_SECONDS: 1080
+          TEST_SUITE: full
+          SHARD_INDEX: ${{ matrix.shard || 1 }}
+          SHARD_TOTAL: ${{ matrix.shards }}
+          # PR #1188: seconds a shard spends in other steps (shard 1 the LiNo and
+          # census gates; run 37802763478), planned around.
+          SHARD_RESERVED_SECONDS: 1=330
+          RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          chmod +x dist/tests/*
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Test suite" \
+            bash scripts/run-prebuilt-tests.sh
+      - name: Run specification tests from the prebuilt executable
+        if: ${{ !cancelled() && (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        env:
+          # The longest specification test took 520s and three debug shards
+          # 417-590s (run 37802763478); four release shards fit well inside 1080s.
+          TEST_BUDGET_SECONDS: 1080
+          TEST_SUITE: specification
+          SHARD_INDEX: ${{ matrix.shard || 1 }}
+          SHARD_TOTAL: ${{ matrix.shards }}
+          RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          chmod +x dist/tests/*
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Specification test shard" \
+            bash scripts/run-prebuilt-tests.sh
+  doc-tests:
+    name: Default-feature documentation tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    needs: [detect-changes, base]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-doc-tests${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    steps:
+      - name: Check out the actual pull request source
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check out the triggering commit
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}
+        run: bash scripts/simulate-fresh-merge.sh
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          prefix: doc-tests-
+      - name: Prepare default-feature documentation dependencies
+        env:
+          TEST_BUDGET_SECONDS: 1080
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Documentation dependency preparation" \
+            cargo test --manifest-path rust/Cargo.toml --doc --verbose -- --list
+      - name: Run doc tests
+        env:
+          TEST_BUDGET_SECONDS: 120
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Doc tests" \
+            cargo test --manifest-path rust/Cargo.toml --doc --verbose
+  macos-core-tests:
+    name: macOS Core Tests
+    needs: [detect-changes, base]
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && vars.FORMAL_AI_NON_LINUX_CI == 'run' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
+    uses: ./.github/workflows/macos-core-tests.yml
+    with:
+      base-commit: ${{ needs.base.outputs.commit }}
+    permissions:
+      contents: read
+  build:
+    name: Build Package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-build${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    # The staged release builds and verifies its own publishable binary.
+    needs: [detect-changes]
+    if: |
+      !cancelled() && github.ref == 'refs/heads/main' && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && needs.detect-changes.result == 'success' &&
+         needs.detect-changes.outputs.any-code-changed == 'true')
+      )
+    steps:
+      - uses: actions/checkout@v7
+        with: {persist-credentials: false}
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - uses: ./.github/actions/cache-cargo-registry
+        with: {prefix: build-}
+      - name: Check package
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify
+      - name: Check crate package size
+        run: rust-script scripts/check-crate-package-size.rs
+  server-parity:
+    name: Server parity (JavaScript vs Rust)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-server-parity${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    needs: [build-artifacts]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success') }}
+    steps:
+      - {uses: actions/checkout@v7, timeout-minutes: 18,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false}}
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - uses: ./.github/actions/download-formal-ai-binary
+      - name: Both servers answer the parity corpus alike (R1013-R1015)
+        run: node scripts/check-server-parity.mjs --rust-binary rust/target/release/formal-ai --list
+  auto-release:
+    name: Auto Release
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
+    needs:
+      [
+        build,
+        secrets-scan,
+        release-preflight,
+      ]
+    if: |
+      !cancelled() &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      needs.build.result == 'success' &&
+      needs.release-preflight.result == 'success' &&
+      needs.secrets-scan.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    outputs:
+      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
+      pages_version: ${{ steps.release_pages_ref.outputs.version }}
+      container-tag: ${{ steps.create-release.outcome == 'success' && format('v{0}', steps.version.outputs.new_version || steps.current_version.outputs.version) || '' }}
+    env: {"DOCKERHUB_USERNAME":"${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}","DOCKERHUB_TOKEN":"${{ secrets.DOCKERHUB_TOKEN }}"}
+    permissions: {"contents":"write","packages":"write"}
+    steps:
+      # Version-and-commit pushes the version/tag on main, so issue #1079 retains persist-credentials only in this guarded publishing job.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Configure git
+        run: rust-script scripts/git-config.rs
+      - name: Determine bump type from changelog fragments
+        id: bump_type
+        run: rust-script scripts/get-bump-type.rs
+      - name: Check if version already released or no fragments
+        id: check
+        env:
+          HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: rust-script scripts/check-release-needed.rs
+      - name: Collect changelog and bump version
+        id: version
+        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
+        env:
+          # Issue #1085 (D3.3): the ledger row names who opened each qualifying
+          # pull request, read through `gh` with the job token.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORMAL_AI_PULL_REQUEST_AUTHOR_LOOKUP: gh
+        run: |
+          rust-script scripts/version-and-commit.rs \
+            --bump-type "${{ steps.bump_type.outputs.bump_type }}" \
+            --resume-prepared \
+            --branch main
+      - name: Get current version
+        id: current_version

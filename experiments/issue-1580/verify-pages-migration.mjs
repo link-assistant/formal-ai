@@ -1,3 +1,4 @@
+import {readCanonicalSource,CANONICAL_SOURCE} from '../../scripts/canonical-release-source.mjs';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
@@ -7,7 +8,7 @@ import YAML from 'yaml';
 const root=fileURLToPath(new URL('../../', import.meta.url));
 const baseline='f967e4efb247e1697f5226bb43bbac21e517e090';
 const old=file=>execFileSync('git',['show',baseline+':'+file],{cwd:root,encoding:'utf8',maxBuffer:2*1024*1024});
-const current=file=>readFileSync(root+file,'utf8');
+const current=file=>file===CANONICAL_SOURCE?readCanonicalSource(root).text:readFileSync(root+file,'utf8');
 const rows=[];
 for(const file of ['.github/workflows/release.yml','experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml']){
  const before=YAML.parse(old(file)),after=YAML.parse(current(file)),normalized=structuredClone(after);

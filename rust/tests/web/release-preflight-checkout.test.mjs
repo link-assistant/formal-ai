@@ -1,3 +1,4 @@
+import {readCanonicalSource} from '../../../scripts/canonical-release-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -21,7 +22,7 @@ function validatePreflight(workflow){
  return job;
 }
 test('canonical and deployed preflight retain the real credential gate with bounded sparse source checkout',()=>{
- const canonical=YAML.parse(read(evidence+'original-release-workflow.yml'));
+ const canonical=YAML.parse(readCanonicalSource(root).text);
  const expected=validatePreflight(canonical);
  for(const file of ['.github/workflows/release.yml',evidence+'candidate-release-caller.yml']){
   assert.deepEqual(validatePreflight(YAML.parse(read(file))),expected);
@@ -31,7 +32,7 @@ test('canonical and deployed preflight retain the real credential gate with boun
  assert.doesNotMatch(script,/^\s*(?:source|\.)\s+[^#\n]+/mu,'sparse closure must remain standalone');
 });
 test('broad checkout, lost transfer bounds, changed event source and bypassed probes are rejected',()=>{
- const original=YAML.parse(read(evidence+'original-release-workflow.yml'));
+ const original=YAML.parse(readCanonicalSource(root).text);
  const mutations=[
   x=>delete x.jobs['release-preflight'].steps[0].with['sparse-checkout'],
   x=>x.jobs['release-preflight'].steps[0].with['sparse-checkout']='/',
