@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Reuse only this workflow run's three focused native contract executables.
+// Reuse only this workflow run's focused contracts and their actual companion binaries.
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {execFileSync,spawnSync} from 'node:child_process';
@@ -9,8 +9,10 @@ import {pathToFileURL} from 'node:url';
 import {nativeInputIdentity} from './native-release-source.mjs';
 
 export const CONTRACT_TARGETS=Object.freeze(['coding_contracts','reasoning_contracts','interface_contracts']);
+export const COMPANION_BINARIES=Object.freeze(['formal-ai','with-formal-ai']);
+const ARTIFACT_EXECUTABLES=Object.freeze([...CONTRACT_TARGETS,...COMPANION_BINARIES]);
 const RECEIPT='native-contract-receipt.json';
-const RECIPE=Object.freeze({profile:'test',features:'default',targets:CONTRACT_TARGETS});
+const RECIPE=Object.freeze({profile:'test',features:'default',targets:CONTRACT_TARGETS,companions:COMPANION_BINARIES});
 const git=(cwd,args)=>execFileSync('git',args,{cwd,encoding:'utf8',maxBuffer:32*1024*1024}).trim();
 function digestFile(file,gitObject=false) {
   const before=lstatSync(file);assert(before.isFile()&&!before.isSymbolicLink(),'regular physical file required: '+file);
@@ -67,20 +69,20 @@ export function selectContractExecutables(messages,cwd) {
     if(row.reason!=='compiler-artifact'||!row.executable)continue;
     const name=row.target?.name;
     const target=CONTRACT_TARGETS.includes(name)&&row.target.kind.includes('test')?name:
-      name==='formal-ai'&&row.target.kind.includes('bin')&&!row.profile.test?'formal-ai':null;
+      COMPANION_BINARIES.includes(name)&&row.target.kind.includes('bin')&&!row.profile.test?name:null;
     if(target===null)continue;
     const file=resolve(row.executable),inside=relative(resolve(cwd,'rust/target/debug'),file);
     assert(inside&&!inside.startsWith('..')&&!isAbsolute(inside),'compiler executable outside debug target');
     assert(!selected[target],'duplicate compiler executable: '+target);selected[target]=file;
   }
-  assert.deepEqual(Object.keys(selected).sort(),[...CONTRACT_TARGETS,'formal-ai'].sort());
+  assert.deepEqual(Object.keys(selected).sort(),[...ARTIFACT_EXECUTABLES].sort());
   return selected;
 }
 
 export function sealContractArtifact(directory,identity,executables) {
   mkdirSync(directory,{recursive:true});const files={};
-  assert.deepEqual(Object.keys(executables).sort(),[...CONTRACT_TARGETS,'formal-ai'].sort());
-  for(const name of [...CONTRACT_TARGETS,'formal-ai']) {
+  assert.deepEqual(Object.keys(executables).sort(),[...ARTIFACT_EXECUTABLES].sort());
+  for(const name of ARTIFACT_EXECUTABLES) {
     const destination=join(directory,name);assert(!existsSync(destination),'artifact already exists');
     const before=digestFile(executables[name]);copyFileSync(executables[name],destination);
     assert.deepEqual(digestFile(destination),before);files[name]=before;
@@ -92,8 +94,8 @@ export function sealContractArtifact(directory,identity,executables) {
 export function verifyContractArtifact(directory,identity) {
   const receipt=JSON.parse(readFileSync(join(directory,RECEIPT),'utf8'));
   assert.equal(receipt.schema,'native-contract-artifact/v1');assert.deepEqual(receipt.identity,identity);
-  assert.deepEqual(Object.keys(receipt.files).sort(),[...CONTRACT_TARGETS,'formal-ai'].sort());
-  for(const name of [...CONTRACT_TARGETS,'formal-ai'])assert.deepEqual(digestFile(join(directory,name)),receipt.files[name],'artifact bytes changed: '+name);
+  assert.deepEqual(Object.keys(receipt.files).sort(),[...ARTIFACT_EXECUTABLES].sort());
+  for(const name of ARTIFACT_EXECUTABLES)assert.deepEqual(digestFile(join(directory,name)),receipt.files[name],'artifact bytes changed: '+name);
   return receipt;
 }
 
@@ -116,8 +118,11 @@ export function contractInvocation(args) {
 
 export function runContractArtifact(directory,identity,cargoArguments,cwd) {
   const invocation=contractInvocation(cargoArguments);verifyContractArtifact(directory,identity);
-  const binary=resolve(cwd,'rust/target/debug/formal-ai');mkdirSync(resolve(cwd,'rust/target/debug'),{recursive:true});
-  copyFileSync(join(directory,'formal-ai'),binary);chmodSync(binary,0o755);
+  mkdirSync(resolve(cwd,'rust/target/debug'),{recursive:true});
+  for(const name of COMPANION_BINARIES) {
+    const binary=resolve(cwd,'rust/target/debug',name);
+    copyFileSync(join(directory,name),binary);chmodSync(binary,0o755);
+  }
   const executable=resolve(directory,invocation.target);chmodSync(executable,0o755);
   const result=spawnSync(executable,invocation.args,{cwd,stdio:'inherit'});
   if(result.error)throw result.error;assert.equal(result.signal,null,'native contract process was signaled');

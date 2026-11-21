@@ -16,11 +16,11 @@ function workspace(t) {
   }
   git(['add','.']);git(['commit','--quiet','-m','finite fixture']);return {root,git};
 }
-function artifact(t) {
+function artifact(t,interfaceProgram) {
   const {root}=workspace(t),directory=join(root,'transport'),sources=join(root,'compiled');mkdirSync(sources);
   const executables={};
-  for(const name of [...CONTRACT_TARGETS,'formal-ai']) {
-    const file=join(sources,name);writeFileSync(file,'#!/usr/bin/env node\nif(process.argv.includes("fail::case"))process.exit(17);\nconsole.log(JSON.stringify(process.argv.slice(2)));\n');chmodSync(file,0o755);executables[name]=file;
+  for(const name of [...CONTRACT_TARGETS,'formal-ai','with-formal-ai']) {
+    const file=join(sources,name);writeFileSync(file,name==='interface_contracts'&&interfaceProgram?interfaceProgram:'#!/usr/bin/env node\nif(process.argv.includes("fail::case"))process.exit(17);\nconsole.log(JSON.stringify(process.argv.slice(2)));\n');chmodSync(file,0o755);executables[name]=file;
   }
   const identity={commit:'a'.repeat(40),run:'123',attempt:'1',physicalInputs:contractPhysicalIdentity(root)};
   sealContractArtifact(directory,identity,executables);return {root,directory,identity,executables};
@@ -39,12 +39,13 @@ test('untracked native tests cannot enter a compiled contract identity',t=>{
   const {root}=workspace(t);writeFileSync(join(root,'rust/tests/unit/injected.rs'),'// unexpected\n');
   assert.throws(()=>contractPhysicalIdentity(root),/untracked native contract input/);
 });
-test('compiler JSON selects all three actual targets and the companion binary without guessing hashes',t=>{
+test('compiler JSON selects all three actual targets and both actual companion binaries without guessing hashes',t=>{
   const {root}=workspace(t);
   const records=[...CONTRACT_TARGETS.map(name=>({reason:'compiler-artifact',target:{name,kind:['test']},profile:{test:true},executable:join(root,'rust/target/debug/deps',name+'-hash')})),
-    {reason:'compiler-artifact',target:{name:'formal-ai',kind:['bin']},profile:{test:false},executable:join(root,'rust/target/debug/formal-ai')}];
+    ...['formal-ai','with-formal-ai'].map(name=>({reason:'compiler-artifact',target:{name,kind:['bin']},profile:{test:false},executable:join(root,'rust/target/debug',name)}))];
   const text=rows=>rows.map(row=>JSON.stringify(row)).join('\n');
-  assert.deepEqual(Object.keys(selectContractExecutables(text(records),root)).sort(),[...CONTRACT_TARGETS,'formal-ai'].sort());
+  assert.deepEqual(Object.keys(selectContractExecutables(text(records),root)).sort(),[...CONTRACT_TARGETS,'formal-ai','with-formal-ai'].sort());
+  assert.throws(()=>selectContractExecutables(text(records.slice(0,-1)),root),'missing standalone companion must fail before upload');
   assert.throws(()=>selectContractExecutables(text(records.slice(1)),root));
   assert.throws(()=>selectContractExecutables(text([...records,records[0]]),root),/duplicate/);
   assert.throws(()=>selectContractExecutables(text(records.map((row,i)=>i===0?{...row,executable:'/tmp/foreign-executable'}:row)),root),/outside debug target/);
@@ -96,7 +97,7 @@ if(args.includes('--list')){
  process.stdout.write(names.map(name=>name+': test\\n').join(''));
 }
 `;
-  for(const name of [...CONTRACT_TARGETS,'formal-ai']){const file=join(sources,name);writeFileSync(file,program,{mode:0o755});executables[name]=file;}
+  for(const name of [...CONTRACT_TARGETS,'formal-ai','with-formal-ai']){const file=join(sources,name);writeFileSync(file,program,{mode:0o755});executables[name]=file;}
   const module=new URL('../../scripts/native-contract-artifact.mjs',import.meta.url).href;
   const identity=JSON.parse(execFileSync(process.execPath,['--input-type=module','-e',`import {contractIdentity} from ${JSON.stringify(module)};process.stdout.write(JSON.stringify(contractIdentity(process.cwd())));`],{cwd:root,env:environment,encoding:'utf8'}));
   sealContractArtifact(directory,identity,executables);
@@ -119,4 +120,17 @@ if(args.includes('--list')){
   const rejected=spawnSync('bash',[runner,'coding-1'],{cwd:root,env:environment,encoding:'utf8',timeout:5000});
   assert.notEqual(rejected.status,0);assert.match(rejected.stderr,/artifact bytes changed/u);
   assert.equal(readFileSync(calls,'utf8').trimEnd().split('\n').length,rows.length,'invalid receipt must not list or execute tests');
+});
+
+test('the interface executable can launch its receipt-bound standalone wrapper', {timeout:5000}, t=>{
+  const program=`#!/usr/bin/env node
+import {spawnSync} from 'node:child_process';import {resolve} from 'node:path';
+const result=spawnSync(resolve(process.cwd(),'rust/target/debug/with-formal-ai'),['--no-start-server'],{stdio:'inherit'});
+if(result.error)throw result.error;process.exit(result.status??1);
+`;
+  const {root,directory,identity}=artifact(t,program);
+  assert.equal(runContractArtifact(directory,identity,invocation('interface_contracts',['--test-threads=1','--nocapture']),root),0);
+  for(const name of ['formal-ai','with-formal-ai'])assert.deepEqual(readFileSync(join(root,'rust/target/debug',name)),readFileSync(join(directory,name)));
+  writeFileSync(join(directory,'with-formal-ai'),'tampered standalone wrapper');
+  assert.throws(()=>runContractArtifact(directory,identity,invocation('interface_contracts',['--test-threads=1','--nocapture']),root),/artifact bytes changed: with-formal-ai/u);
 });

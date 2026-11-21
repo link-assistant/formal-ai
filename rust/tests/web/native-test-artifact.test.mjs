@@ -195,7 +195,7 @@ test('all workflow artifact consumers use the raw adapter with its complete loca
    }
   }
  }
- assert.equal(consumers,98,'retain all 97 production transfers plus hosted qualification');
+ assert.equal(consumers,99,'retain all 97 production transfers, hosted qualification and native contract reuse');
 });
 test('artifact setup preserves the caller Python environment and uses the selected interpreter explicitly',()=>{
  const adapter=YAML.parse(readFileSync(new URL('../../../.github/actions/download-artifact/action.yml',import.meta.url),'utf8'));

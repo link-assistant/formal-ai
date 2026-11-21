@@ -346,6 +346,8 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             /*
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
             !/dev/log/
             !/experiments/**
             /experiments/**/*.sh
@@ -373,6 +375,8 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             /*
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
             !/dev/log/
             !/experiments/**
             /experiments/**/*.sh
@@ -397,7 +401,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: actions/setup-node@v7
         with: {node-version: 22}
-      - uses: actions/download-artifact@v8
+      - uses: ./.github/actions/download-artifact
         with:
           name: native-contracts-${{ github.sha }}
           path: ${{ runner.temp }}/native-contracts
