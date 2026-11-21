@@ -324,12 +324,36 @@ jobs:
         env:
           PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
         run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py install-fault "$PROBE_DIRECTORY"
+      - name: Contain annotations from the deliberate negative control
+        id: expected-outage-annotations
+        timeout-minutes: 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          token="$(python3 -c 'import uuid; print(uuid.uuid4())')"
+          printf 'token=%s\n' "$token" >> "$GITHUB_OUTPUT"
+          printf '::stop-commands::%s\n' "$token"
       - name: Initialize an actual daemon through the mirror fallback
         id: fallback
         timeout-minutes: 4
         uses: ./.github/actions/setup-buildx-resilient
         with:
           cleanup: 'false'
+      - name: Resume annotations after the expected outage
+        if: always() && steps.expected-outage-annotations.outcome == 'success'
+        timeout-minutes: 1
+        shell: bash
+        env:
+          TOKEN: ${{ steps.expected-outage-annotations.outputs.token }}
+          OUTCOME: ${{ steps.fallback.outcome }}
+        run: |
+          set -euo pipefail
+          printf '::%s::\n' "$TOKEN"
+          if [ "$OUTCOME" != success ]; then
+            echo '::error::BuildKit fallback control failed; inspect the retained Docker observations.'
+            exit 1
+          fi
+          echo '::notice::Expected canonical pull outage recovered; actual mirror image and daemon verification follows.'
       - name: Verify actual mirror recovery and the unchanged image digest
         timeout-minutes: 1
         env:

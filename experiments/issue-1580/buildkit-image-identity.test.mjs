@@ -114,7 +114,7 @@ test('hosted real-daemon probe retains read-only authority and immutable image o
   const faultIndex=job.steps.findIndex(step=>step.run?.includes(' install-fault '));
   assert(faultIndex>job.steps.findIndex(step=>step.run?.includes(' initial ')));
   assert(faultIndex<job.steps.findIndex(step=>step.id==='fallback'));
-  const verification=job.steps.find(step=>step.run?.includes(' mirror '));
+  const verification=job.steps.find(step=>step.run?.startsWith('python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify ') && step.run.includes(' mirror '));
   assert.equal(verification.env.IMAGE,'${{ steps.fallback.outputs.image }}');
   assert.equal(verification.env.BUILDER,'${{ steps.fallback.outputs.name }}');
   const upload=job.steps.at(-1);assert.equal(upload.uses,'actions/upload-artifact@v7');
@@ -126,4 +126,34 @@ test('hosted outage injector delegates every unrelated Docker command unchanged'
   });
   assert.equal(result.error,undefined,result.stderr?.toString());assert.equal(result.status,0,result.stderr?.toString());
   assert.equal(result.cleanup_complete,true);assert.match(result.stdout.toString(),/rejects only the exact canonical pull/u);
+});
+
+test('deliberate outage annotations are contained and unexpected setup failures remain fatal', async t => {
+  const job = YAML.parse(readFileSync('.github/workflows/workflows.yml', 'utf8')).jobs['buildkit-bootstrap'];
+  const start = job.steps.find(step => step.id === 'expected-outage-annotations');
+  const finish = job.steps.find(step => step.name === 'Resume annotations after the expected outage');
+  assert(start && finish, 'a deliberate failed action must not leave a failure annotation on a passing check');
+  assert.equal(start['timeout-minutes'], 1);
+  assert.equal(finish.if, "always() && steps.expected-outage-annotations.outcome == 'success'");
+  assert.equal(finish.env.OUTCOME, '${{ steps.fallback.outcome }}');
+  const before = job.steps.indexOf(start), after = job.steps.indexOf(finish);
+  assert.equal(after - before, 2, 'only the deliberate negative-control action is inside the command boundary');
+  assert.equal(job.steps[before + 1].id, 'fallback');
+  assert.equal(job.steps[before + 1]['continue-on-error'], undefined);
+  const stopped = await shell(t, start, {});
+  assert.equal(stopped.status, 0);
+  assert.match(stopped.outputs.token, /^[a-f0-9-]{36}$/u);
+  assert.equal(stopped.stdout, '::stop-commands::' + stopped.outputs.token + '\n');
+  for (const outcome of ['success', 'failure', 'cancelled', 'skipped', '']) {
+    const resumed = await shell(t, finish, {TOKEN: stopped.outputs.token, OUTCOME: outcome});
+    assert(resumed.stdout.startsWith('::' + stopped.outputs.token + '::\n'));
+    if (outcome === 'success') {
+      assert.equal(resumed.status, 0);
+      assert.match(resumed.stdout, /::notice::Expected canonical pull outage/u);
+    } else {
+      assert.notEqual(resumed.status, 0, 'unexpected outcomes stay fatal after annotations resume');
+      assert.match(resumed.stdout, /::error::BuildKit fallback control failed/u);
+    }
+  }
+  assert(after < job.steps.findIndex(step => step.run?.startsWith('python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify ') && step.run.includes(' mirror ')), 'real image and daemon verification runs with normal annotations');
 });
