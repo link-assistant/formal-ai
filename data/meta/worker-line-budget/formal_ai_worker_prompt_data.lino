@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_prompt_data.js"
+  ceiling 271
+  rationale "Issue #1593 adds the browser and JavaScript server mirror of the native prompt-data operations for classification, record questions, extraction and script plus lexicon identification."

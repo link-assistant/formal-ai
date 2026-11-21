@@ -358,26 +358,53 @@ function textTransformGrammarCorrection(prompt) {
   if (!cues.some((cue) => textTransformHeadCueMatches(headNormalized, cue))) return null;
   const payload = textTransformFreeTextPayload(prompt);
   if (payload === null) return null;
-  const records = textTransformSeedRecords(TEXT_TRANSFORM_AGREEMENT_FILE);
   const language = detectLanguage(payload);
+  const records = textTransformSeedRecords(TEXT_TRANSFORM_AGREEMENT_FILE)
+    .filter((record) => (record.name === "subject-verb-class" ? record.value : childValue(record, "language")) === language);
   const corrections = [];
   const tokens = textTransformWords(payload);
 
-  for (const record of records) {
-    if (record.name !== "subject_verb_rule") continue;
-    const rule = childValue(record, "name");
-    const wrong = childValue(record, "wrong").toLowerCase();
+  const verbRules = records.filter((record) => record.name === "subject-verb-class").flatMap((group) => {
+    const subjects = childValue(group, "subjects").toLowerCase().split(" ").filter(Boolean);
+    return group.children.filter((record) => record.name === "rule").map((record) => ({ record, subjects }));
+  });
+  for (const { record, subjects } of verbRules) {
+    const source = childValue(record, "source");
+    const name = childValue(record, "name");
+    const rule = source ? `${name}, ${source}` : name;
     const right = childValue(record, "right");
-    const subjects = textTransformRecordValues(record, "subject").map((subject) => subject.toLowerCase());
-    if (rule.length === 0 || wrong.length === 0 || right.length === 0 || subjects.length === 0) continue;
+    const suffix = childValue(record, "attested-suffix");
+    const wrong = (suffix && right.endsWith(suffix)
+      ? right.slice(0, -suffix.length) + childValue(record, "input-suffix")
+      : childValue(record, "wrong")).toLowerCase();
+    if (!name || !wrong || !right || !subjects.length) continue;
     for (let index = 0; index + 1 < tokens.length; index += 1) {
-      const subjectCore = textTransformTokenCore(tokens[index]).core.toLowerCase();
-      if (!subjects.includes(subjectCore)) continue;
+      const subject = textTransformTokenCore(tokens[index]);
+      if (subject.suffix || !subjects.includes(subject.core.toLowerCase())) continue;
       const verb = textTransformTokenCore(tokens[index + 1]);
       if (verb.core.toLowerCase() !== wrong) continue;
       const replacement = textTransformRebuildCore(verb.core, right);
       corrections.push([verb.core, replacement, rule]);
       tokens[index + 1] = `${verb.prefix}${replacement}${verb.suffix}`;
+    }
+  }
+
+  for (const record of records) {
+    if (record.name !== "request-parenthetical") continue;
+    const particle = childValue(record, "particle");
+    const verbs = textTransformRecordValues(record, "verb");
+    const rule = `${childValue(record, "name")}, ${childValue(record, "source")}`;
+    for (let index = 1; index < tokens.length; index += 1) {
+      const previous = textTransformTokenCore(tokens[index - 1]);
+      const current = textTransformTokenCore(tokens[index]);
+      if (!verbs.includes(previous.core.toLowerCase()) || current.core.toLowerCase() !== particle ||
+          (previous.suffix && previous.suffix !== ",") || current.prefix) continue;
+      const left = previous.suffix ? tokens[index - 1] : `${tokens[index - 1]},`;
+      const right = current.suffix || index + 1 === tokens.length ? tokens[index] : `${tokens[index]},`;
+      if (left === tokens[index - 1] && right === tokens[index]) continue;
+      corrections.push([`${tokens[index - 1]} ${tokens[index]}`, `${left} ${right}`, rule]);
+      tokens[index - 1] = left;
+      tokens[index] = right;
     }
   }
 

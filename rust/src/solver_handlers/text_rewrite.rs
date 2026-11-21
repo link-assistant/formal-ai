@@ -8,10 +8,10 @@
 //! `data/seed/multilingual-responses-text-transform.lino`, so no response
 //! prose lives in Rust. The handlers compute; the words are data.
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
-use super::finalize_simple;
 
 const REGISTER_PATH: &str = "data/seed/register-lexicon.lino";
 const AGREEMENT_PATH: &str = "data/seed/agreement-rules.lino";
@@ -206,7 +206,9 @@ fn token_core(token: &str) -> (&str, &str, &str) {
         .char_indices()
         .take_while(|(_, character)| is_core(*character))
         .last()
-        .map_or(start, |(offset, character)| start + offset + character.len_utf8());
+        .map_or(start, |(offset, character)| {
+            start + offset + character.len_utf8()
+        });
     (&token[..start], &token[start..end], &token[end..])
 }
 
@@ -283,7 +285,8 @@ pub fn handle_rewrite_register(
         .filter_map(|record| {
             let informal = record.find_child_value("informal");
             let formal = record.find_child_value("formal");
-            (!informal.is_empty() && !formal.is_empty()).then(|| (informal.to_owned(), formal.to_owned()))
+            (!informal.is_empty() && !formal.is_empty())
+                .then(|| (informal.to_owned(), formal.to_owned()))
         })
         .collect();
     let mut substitutions: Vec<(String, String)> = Vec::new();
@@ -305,9 +308,8 @@ pub fn handle_rewrite_register(
     }
     if substitutions.is_empty() {
         let language = crate::language::detect(prompt).slug();
-        let note =
-            crate::seed::localized_response("text_transform_rewrite_unchanged", language)
-                .unwrap_or_default();
+        let note = crate::seed::localized_response("text_transform_rewrite_unchanged", language)
+            .unwrap_or_default();
         log.append("register_rewrite", "no informal tokens found".to_owned());
         let body = if note.is_empty() {
             payload
@@ -361,12 +363,10 @@ fn apply_phrase_rule(
             });
             if window_matches {
                 let source = window.join(" ");
-                let leads_capitalized = window
-                    .first()
-                    .is_some_and(|token| {
-                        let (_, core, _) = token_core(token);
-                        core.chars().next().is_some_and(char::is_uppercase)
-                    });
+                let leads_capitalized = window.first().is_some_and(|token| {
+                    let (_, core, _) = token_core(token);
+                    core.chars().next().is_some_and(char::is_uppercase)
+                });
                 let rebuilt = if leads_capitalized {
                     capitalize_first(replacement)
                 } else {
@@ -402,37 +402,107 @@ pub fn handle_grammar_correction(
         return None;
     }
     let payload = free_text_payload(prompt)?;
-    let records = root_records(AGREEMENT_PATH);
-    let language = crate::language::detect(&payload).slug();
+    let source_language = crate::language::detect_input(&payload).slug();
+    let language = crate::language::forced_response_language_slug().unwrap_or(source_language);
+    let records: Vec<_> = root_records(AGREEMENT_PATH)
+        .into_iter()
+        .filter(|record| {
+            if record.name == "subject-verb-class" {
+                record.id == source_language
+            } else {
+                record.find_child_value("language") == source_language
+            }
+        })
+        .collect();
     let mut corrections: Vec<(String, String, String)> = Vec::new();
     let mut tokens: Vec<String> = payload.split_whitespace().map(str::to_owned).collect();
 
-    for record in records.iter().filter(|record| record.name == "subject_verb_rule") {
-        let rule = record.find_child_value("name").to_owned();
-        let wrong = record.find_child_value("wrong").to_lowercase();
-        let right = record.find_child_value("right").to_owned();
-        let subjects: Vec<String> = record_values(record, "subject")
-            .into_iter()
+    let verb_rules = records
+        .iter()
+        .filter(|record| record.name == "subject-verb-class")
+        .flat_map(|class| {
+            let subjects = class.find_child_value("subjects");
+            class
+                .children
+                .iter()
+                .filter(|record| record.name == "rule")
+                .map(move |record| (subjects, record))
+        });
+    for (subjects, record) in verb_rules {
+        let name = record.find_child_value("name");
+        let source = record.find_child_value("source");
+        let rule = if source.is_empty() {
+            name.to_owned()
+        } else {
+            format!("{name}, {source}")
+        };
+        let right = record.find_child_value("right");
+        let suffix = record.find_child_value("attested-suffix");
+        let wrong = if !suffix.is_empty()
+            && let Some(stem) = right.strip_suffix(suffix)
+        {
+            format!("{stem}{}", record.find_child_value("input-suffix"))
+        } else {
+            record.find_child_value("wrong").to_owned()
+        }
+        .to_lowercase();
+        let subjects: Vec<String> = subjects
+            .split_whitespace()
             .map(|subject| subject.to_lowercase())
             .collect();
-        if rule.is_empty() || wrong.is_empty() || right.is_empty() || subjects.is_empty() {
+        if name.is_empty() || wrong.is_empty() || right.is_empty() || subjects.is_empty() {
             continue;
         }
         for index in 0..tokens.len().saturating_sub(1) {
-            let (_, subject_core, _) = token_core(&tokens[index]);
-            if !subjects
-                .iter()
-                .any(|subject| *subject == subject_core.to_lowercase())
-            {
+            let (_, subject_core, subject_suffix) = token_core(&tokens[index]);
+            if !subject_suffix.is_empty() || !subjects.contains(&subject_core.to_lowercase()) {
                 continue;
             }
             let (prefix, verb_core, suffix) = token_core(&tokens[index + 1]);
             if verb_core.to_lowercase() != wrong {
                 continue;
             }
-            let replacement = rebuild_core(verb_core, &right);
+            let replacement = rebuild_core(verb_core, right);
             corrections.push((verb_core.to_owned(), replacement.clone(), rule.clone()));
             tokens[index + 1] = format!("{prefix}{replacement}{suffix}");
+        }
+    }
+
+    for record in records
+        .iter()
+        .filter(|record| record.name == "request-parenthetical")
+    {
+        let particle = record.find_child_value("particle");
+        let verbs = record_values(record, "verb");
+        let rule = format!(
+            "{}, {}",
+            record.find_child_value("name"),
+            record.find_child_value("source")
+        );
+        for index in 1..tokens.len() {
+            let (_, verb, left_suffix) = token_core(&tokens[index - 1]);
+            let (right_prefix, word, right_suffix) = token_core(&tokens[index]);
+            if !verbs.contains(&verb.to_lowercase())
+                || word.to_lowercase() != particle
+                || (!left_suffix.is_empty() && left_suffix != ",")
+                || !right_prefix.is_empty()
+            {
+                continue;
+            }
+            let add_left = left_suffix.is_empty();
+            let add_right = right_suffix.is_empty() && index + 1 < tokens.len();
+            if !add_left && !add_right {
+                continue;
+            }
+            let before = format!("{} {}", tokens[index - 1], tokens[index]);
+            if add_left {
+                tokens[index - 1].push(',');
+            }
+            if add_right {
+                tokens[index].push(',');
+            }
+            let after = format!("{} {}", tokens[index - 1], tokens[index]);
+            corrections.push((before, after, rule.clone()));
         }
     }
 
@@ -451,7 +521,10 @@ pub fn handle_grammar_correction(
         .map(|record| record.find_child_value("noun").to_lowercase())
         .filter(|noun| !noun.is_empty())
         .collect();
-    for record in records.iter().filter(|record| record.name == "numeral_noun_rule") {
+    for record in records
+        .iter()
+        .filter(|record| record.name == "numeral_noun_rule")
+    {
         let rule = record.find_child_value("name").to_owned();
         let suffix = record.find_child_value("suffix").to_owned();
         let numerals: Vec<String> = record_values(record, "numeral")
@@ -474,7 +547,10 @@ pub fn handle_grammar_correction(
             if noun_lower.is_empty() || noun_lower.ends_with(&suffix.to_lowercase()) {
                 continue;
             }
-            if let Some((_, plural)) = exceptions.iter().find(|(singular, _)| *singular == noun_lower) {
+            if let Some((_, plural)) = exceptions
+                .iter()
+                .find(|(singular, _)| *singular == noun_lower)
+            {
                 let replacement = rebuild_core(noun_core, plural);
                 corrections.push((noun_core.to_owned(), replacement.clone(), rule.clone()));
                 tokens[index + 1] = format!("{prefix}{replacement}{noun_suffix}");
@@ -490,9 +566,8 @@ pub fn handle_grammar_correction(
     }
 
     if corrections.is_empty() {
-        let note =
-            crate::seed::localized_response("text_transform_grammar_clean", language)
-                .unwrap_or_default();
+        let note = crate::seed::localized_response("text_transform_grammar_clean", language)
+            .unwrap_or_default();
         return Some(finalize_simple(
             prompt,
             log,
@@ -613,8 +688,12 @@ pub fn handle_genre_writing(
                 .into_iter()
                 .map(|article| article.to_lowercase())
                 .collect();
-            let preposition = guide.find_child_value("component_preposition").to_lowercase();
-            let verb_core = tokens.first().map(|token| token_core(token).1.to_lowercase());
+            let preposition = guide
+                .find_child_value("component_preposition")
+                .to_lowercase();
+            let verb_core = tokens
+                .first()
+                .map(|token| token_core(token).1.to_lowercase());
             let commit_type = verb_core.as_deref().and_then(|verb| {
                 slots
                     .iter()
@@ -624,9 +703,9 @@ pub fn handle_genre_writing(
             let preposition_index = if preposition.is_empty() {
                 None
             } else {
-                tokens.iter().rposition(|token| {
-                    token_core(token).1.to_lowercase() == preposition
-                })
+                tokens
+                    .iter()
+                    .rposition(|token| token_core(token).1.to_lowercase() == preposition)
             };
             let effect_range: Vec<&str> = preposition_index.map_or_else(
                 || tokens[1..].to_vec(),
@@ -708,7 +787,9 @@ pub fn handle_genre_writing(
         }
         "email" => {
             let tokens: Vec<&str> = payload.split_whitespace().collect();
-            let preposition = guide.find_child_value("recipient_preposition").to_lowercase();
+            let preposition = guide
+                .find_child_value("recipient_preposition")
+                .to_lowercase();
             let possessives: Vec<String> = record_values(guide, "possessive")
                 .into_iter()
                 .map(|possessive| possessive.to_lowercase())
@@ -758,9 +839,8 @@ pub fn handle_genre_writing(
                     &missing_slots,
                 ));
             }
-            let reason: Option<String> = reason_index.map(|reason_index| {
-                tokens[reason_index + 1..].join(" ")
-            });
+            let reason: Option<String> =
+                reason_index.map(|reason_index| tokens[reason_index + 1..].join(" "));
             let weekday_role = guide.find_child_value("weekday_role").to_owned();
             let weekday: Option<String> = if weekday_role.is_empty() {
                 None

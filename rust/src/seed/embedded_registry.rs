@@ -410,6 +410,7 @@ pub const PROGRAM_CST_GRAMMARS_LINO: &str =
 pub const PROGRAM_PLAN_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/program-plan-rules.lino");
 pub const PROJECTS_LINO: &str = include_str!("../../embedded/data/seed/projects.lino");
+pub const PROMPT_DATA_LINO: &str = include_str!("../../embedded/data/seed/prompt-data.lino");
 pub const PROMPT_PATTERNS_LINO: &str =
     include_str!("../../embedded/data/seed/prompt-patterns.lino");
 pub const PROOF_LIBRARY_LINO: &str = include_str!("../../embedded/data/seed/proof-library.lino");
@@ -791,6 +792,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/program-cst-grammars.lino", PROGRAM_CST_GRAMMARS_LINO),
         ("data/seed/program-plan-rules.lino", PROGRAM_PLAN_RULES_LINO),
         ("data/seed/projects.lino", PROJECTS_LINO),
+        ("data/seed/prompt-data.lino", PROMPT_DATA_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
         ("data/seed/proof-library.lino", PROOF_LIBRARY_LINO),
         ("data/seed/proof-program-templates.lino", PROOF_PROGRAM_TEMPLATES_LINO),
