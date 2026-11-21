@@ -781,3 +781,16 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [ ] Complete every unchanged/historical file and applicable practice comparison;
   verify live Pages, actual hosted artifact transport and remaining registry/lint
   policy acceptance. Mocked API and source checks do not satisfy these criteria.
+
+
+## Execution-budget diagnostic boundaries
+
+- [x] Reproduce all three unterminated-output failures against the exact old
+  wrapper; isolate the deadline case from warning output.
+- [x] Preserve streaming and process-group acknowledgement while making every
+  annotation/completion start a fresh line. Pass three focused cases and the
+  maintained 116-case adapter, syntax and three relevant source gates.
+- [x] Correct the saved Secretlint registry manifest filename rejected by the
+  abbreviation gate, preserving bytes, provenance and the original failure.
+- [ ] Verify the new repair in hosted CI after every active old-head run ends.
+- [ ] Finish all remaining original issue criteria; this is a local bug repair.

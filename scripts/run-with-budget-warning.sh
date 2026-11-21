@@ -114,7 +114,7 @@ command_is_running() {
   kill -0 "$command_pid" 2> /dev/null && return 0
   local processes
   if ! processes="$(ps -eo pgid=,stat=)"; then
-    echo "::error title=Execution budget monitoring failed::Cannot inspect the process group for ${label}." >&2
+    printf '\n%s\n' "::error title=Execution budget monitoring failed::Cannot inspect the process group for ${label}." >&2
     signal_command_tree KILL
     exit 125
   fi
@@ -139,7 +139,7 @@ while command_is_running; do
 
   if [ "$warned" = false ] && [ "$elapsed" -ge "$threshold" ]; then
     warned=true
-    echo "::warning title=${label} is approaching its timeout::The command is still running after ${elapsed}s (${warn_ratio}% of its ${budget_seconds}s execution budget). Speed up or repartition it before the budget terminates the step." >&2
+    printf '\n%s\n' "::warning title=${label} is approaching its timeout::The command is still running after ${elapsed}s (${warn_ratio}% of its ${budget_seconds}s execution budget). Speed up or repartition it before the budget terminates the step." >&2
     report_compiler_cache
   fi
 
@@ -155,7 +155,7 @@ while command_is_running; do
   if [ "$enforce" = true ] &&
     { [ "$budget_seconds" -eq 0 ] || [ "$elapsed" -gt "$budget_seconds" ]; }; then
     terminated=true
-    echo "::error title=${label} exceeded its execution budget::The command was terminated after ${elapsed}s, its full ${budget_seconds}s execution budget. The budget expires before \`timeout-minutes\` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout." >&2
+    printf '\n%s\n' "::error title=${label} exceeded its execution budget::The command was terminated after ${elapsed}s, its full ${budget_seconds}s execution budget. The budget expires before \`timeout-minutes\` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout." >&2
     report_compiler_cache
     signal_command_tree TERM
     grace_deadline=$((SECONDS + grace_seconds))
@@ -193,10 +193,10 @@ report_compiler_cache_write_health
 
 elapsed=$((SECONDS - started))
 if [ "$terminated" = true ]; then
-  printf '%s was terminated after %ss, its full %ss execution budget.\n' \
+  printf '\n%s was terminated after %ss, its full %ss execution budget.\n' \
     "$label" "$elapsed" "$budget_seconds"
   exit 124
 fi
 
-printf '%s took %ss of its %ss execution budget.\n' "$label" "$elapsed" "$budget_seconds"
+printf '\n%s took %ss of its %ss execution budget.\n' "$label" "$elapsed" "$budget_seconds"
 exit "$status"

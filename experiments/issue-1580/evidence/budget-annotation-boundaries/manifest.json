@@ -1,0 +1,177 @@
+{
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/worker.log",
+      "archiveMember": "worker.log",
+      "bytes": 1080,
+      "sha256": "a17c5a9375672a4768a0c606de877951652fade233bb5949da4e056b5cc30206"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/after-04.log",
+      "archiveMember": "after-04.log",
+      "bytes": 156,
+      "sha256": "f517830c7f4a1565295a202fb72490f939b9e49afb4893fc90e1c0ff392560e9"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/after-03.log",
+      "archiveMember": "after-03.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/after-02.log",
+      "archiveMember": "after-02.log",
+      "bytes": 11121,
+      "sha256": "31dcc7630e1f06849996d7c45a1a0a9ece77e772b3b725942964cc0604606a32"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/before.log",
+      "archiveMember": "before.log",
+      "bytes": 5194,
+      "sha256": "e70a4e15d606a2907ce5ef82e29d84b72b1ac6cda27a5ea5eff10db45d98a920"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/before-final.test.mjs",
+      "archiveMember": "before-final.test.mjs",
+      "bytes": 1804,
+      "sha256": "7a88fe584e201c3387776dfe5eaa55383f4fc8456d00c56fafa38b650c7b3f6a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/after-abbreviation-repair.log",
+      "archiveMember": "after-abbreviation-repair.log",
+      "bytes": 67,
+      "sha256": "1cdd4d716ee48508242e352b5206ce014602ad3b88e47adf27adc12bc926346d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/pid.json",
+      "archiveMember": "pid.json",
+      "bytes": 17,
+      "sha256": "779dc8f2d8b8dd652fd4059c4be81982eb67d3d510dbeb817751e23516a772c6"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/abbreviated-file-names.log",
+      "archiveMember": "abbreviated-file-names.log",
+      "bytes": 4052,
+      "sha256": "ceeea36b327674179b3b875bef2a703b0ccc0106c58ecdfb59df3b80af3aaa8c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/after-final.log",
+      "archiveMember": "after-final.log",
+      "bytes": 364,
+      "sha256": "9cd94ec379c6953321cf04770f7133ad273a18060e09ae53bb16ee5d36b4ca31"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/after-07.log",
+      "archiveMember": "after-07.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/final-outcome.json",
+      "archiveMember": "final-outcome.json",
+      "bytes": 1059,
+      "sha256": "ae9c5b8e372edb4562d525089abf149f1ee426ca646413f53214af7d7e8c5106"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/after-05.log",
+      "archiveMember": "after-05.log",
+      "bytes": 64,
+      "sha256": "79024e5d6db72501cb11b06a6d59d7d071dbb4e0ec9a9030192ee280c6eda830"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/outcome.json",
+      "archiveMember": "outcome.json",
+      "bytes": 1705,
+      "sha256": "eb3942d3fc5c00fef097b9d0dc5391e10064056f3e98153a43c9898a813b7081"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/before-final.log",
+      "archiveMember": "before-final.log",
+      "bytes": 4828,
+      "sha256": "14e610b1364d849347ab09a26373da354e37c5609b00e81e80243a12181663ee"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/final-abbreviations.log",
+      "archiveMember": "final-abbreviations.log",
+      "bytes": 67,
+      "sha256": "ae7984b716ee3f2e1d62b3e701ecf2b5099b01b26211150941139cba3def9e27"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/after-06.log",
+      "archiveMember": "after-06.log",
+      "bytes": 68,
+      "sha256": "3dcbdf378b8e4853153941199349892476630b14d700491e0106cec376357252"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/verify.py",
+      "archiveMember": "verify.py",
+      "bytes": 1266,
+      "sha256": "020fc9c409f1a2dc3a984814ea9e24022e664870265e63f3ea63b3d4003fadaf"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/before-wrapper.sh",
+      "archiveMember": "before-wrapper.sh",
+      "bytes": 8368,
+      "sha256": "2cac2f8212f7862a03686b29c499bd06cbda63fb728bbaf577a0d0b049f085ad"
+    },
+    {
+      "source": "/tmp/issue-1580-research/budget-annotation-boundaries/after-01.log",
+      "archiveMember": "after-01.log",
+      "bytes": 364,
+      "sha256": "faaf965d1acc869e93675e8ed4589481855b179c3b1e51a5481682c0e8f0bff7"
+    },
+    {
+      "source": "/tmp/issue-1580-research/add-budget-annotation-regression.py",
+      "archiveMember": "add-budget-annotation-regression.py",
+      "bytes": 2683,
+      "sha256": "7cea5371f872063879ae26cd5819dc9574554fd7ec7a005041edfda15cb46176"
+    },
+    {
+      "source": "/tmp/issue-1580-research/add-budget-annotation-regression.log",
+      "archiveMember": "add-budget-annotation-regression.log",
+      "bytes": 252,
+      "sha256": "a61e3fccaed4ea98dcbf9365acbefb67ea840b3d06a7d01d6d0602c2994b4734"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fix-budget-annotation-boundaries.py",
+      "archiveMember": "fix-budget-annotation-boundaries.py",
+      "bytes": 2331,
+      "sha256": "abe9b389905808f9f21a4be881fa7cf43718eb86322a5affae9d655283d0eae3"
+    },
+    {
+      "source": "/tmp/issue-1580-research/fix-budget-annotation-boundaries.log",
+      "archiveMember": "fix-budget-annotation-boundaries.log",
+      "bytes": 238,
+      "sha256": "5141bd4cd3553cb5a1a185ea071587f6117141133949bdef0dbc158e350a9fa1"
+    },
+    {
+      "source": "/tmp/issue-1580-research/finish-budget-boundary-verification.py",
+      "archiveMember": "finish-budget-boundary-verification.py",
+      "bytes": 2196,
+      "sha256": "8e1ef8c5df1b8664d3214084d39cdd63ebcbb01dc748fac586b5b3082ca0574e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/finish-budget-boundary-verification.log",
+      "archiveMember": "finish-budget-boundary-verification.log",
+      "bytes": 784,
+      "sha256": "cbb25f85ef3a081ccbedd9d7db74478794d2aaee839005e6346282ce67f17456"
+    },
+    {
+      "source": "/tmp/issue-1580-research/repair-secretlint-evidence-name.py",
+      "archiveMember": "repair-secretlint-evidence-name.py",
+      "bytes": 978,
+      "sha256": "af4aa14d82641f332fe5f313c5b0d9a15af674cb1c2abb3dcc1fb811e49841f1"
+    },
+    {
+      "source": "/tmp/issue-1580-research/repair-secretlint-evidence-name.log",
+      "archiveMember": "repair-secretlint-evidence-name.log",
+      "bytes": 178,
+      "sha256": "9f7b5b66138490ee0edafc6c5610439ef59e90fda6a921180bf96edb8a8b8403"
+    }
+  ],
+  "beforeFailures": 3,
+  "afterFocusedPasses": 3,
+  "maintainedAdapterPasses": 116,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}
