@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "018d71a4b7f4bc10d3a9cbedce85bd3e3f3f1aec",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/draft-native-headroom-coverage.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/draft-native-headroom-coverage.py'\"}\n   Output: {\"drafted\": true, \"regressionFailedBefore\": true, \"nativeBuildRun\": false}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/draft-native-headroom-coverage.py'` command completed. Output:\n\n```json\n{\n  \"drafted\": true,\n  \"nativeBuildRun\": false,\n  \"regressionFailedBefore\": true\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

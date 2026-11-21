@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "a947b39d41879a38a6c6948ab6ae49e82d3de63d",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/commit-reviewed-release-merge.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/commit-reviewed-release-merge.py'\"}\n   Output: 8f55d45eb0065886058d5822f938d9bce7b6b875\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/commit-reviewed-release-merge.py'` command completed. Output:\n\n```text\n8f55d45eb0065886058d5822f938d9bce7b6b875\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

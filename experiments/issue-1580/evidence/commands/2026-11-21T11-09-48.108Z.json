@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "e702a0cc6b7f34bab3e50267aafc0c6b6ab13041",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/read-rust-runner-origin-pr.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/read-rust-runner-origin-pr.py'\"}\n   Output: {\"complete\": true, \"records\": 4}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/read-rust-runner-origin-pr.py'` command completed. Output:\n\n```json\n{\n  \"complete\": true,\n  \"records\": 4\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

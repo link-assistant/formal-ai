@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "609d0f280a01e7b803be7b87a16472662f481382",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/reproduce-layered-failures.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/reproduce-layered-failures.py'\"}\n   Output: {\"pid\": 3825458, \"finite\": true}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/reproduce-layered-failures.py'` command completed. Output:\n\n```json\n{\n  \"finite\": true,\n  \"pid\": 3825458\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "9c10b67ef55a782a894aa63f1254dd047b68ab5e",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/start-dynamic-meta-merge-preflight.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/start-dynamic-meta-merge-preflight.py'\"}\n   Output: {\"pid\": 3732419, \"pushed\": false}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/start-dynamic-meta-merge-preflight.py'` command completed. Output:\n\n```json\n{\n  \"pid\": 3732419,\n  \"pushed\": false\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

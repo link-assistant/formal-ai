@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "a585d4ec7b779a5b7032462c7b66acbeba8539e9",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/repair-native-script-suite-observer.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/repair-native-script-suite-observer.py'\"}\n   Output: Aligned native suite observer with the runner; both JavaScript selection cases and formatting pass\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/repair-native-script-suite-observer.py'` command completed. Output:\n\n```text\nAligned native suite observer with the runner; both JavaScript selection cases and formatting pass\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

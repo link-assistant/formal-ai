@@ -16,6 +16,7 @@
 
 import { spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
+import {safeLogText} from './lib/github-actions-log.mjs';
 
 import {
   RustError, extension, fileName, lineCount, lines, readToString, trimStart, walkDir,
@@ -126,7 +127,7 @@ export function checkListedFiles(cwd, listed = null, warn = (line) => process.st
       content = readToString(entry.path);
     } catch (error) {
       if (!(error instanceof RustError)) throw error;
-      warn(`Warning: Could not read ${entry.path}: ${error.message}`);
+      warn(safeLogText(`Warning: Could not read ${entry.path}: ${error.message}`));
       continue;
     }
     if (limit) {
@@ -200,11 +201,11 @@ function printWarnings(warnings, out) {
   if (warnings.length === 0) return;
   for (const warning of warnings) {
     out(warningAnnotation(warning));
-    out(`WARNING: ${warning.file} has ${warning.lines} lines (approaching ${warning.label} limit of ${warning.maxLines}, warning threshold: ${warning.warnLines})`);
+    out(`WARNING: ${safeLogText(warning.file)} has ${warning.lines} lines (approaching ${warning.label} limit of ${warning.maxLines}, warning threshold: ${warning.warnLines})`);
   }
   out('');
   out('The following files are approaching their configured line limits:');
-  for (const warning of warnings) out(`  ${warning.file}`);
+  for (const warning of warnings) out(`  ${safeLogText(warning.file)}`);
   out('\nConsider extracting code to prevent concurrent PR merge limit violations.\n');
 }
 
@@ -212,7 +213,7 @@ function printViolations(violations, out) {
   if (violations.length === 0) return;
   out('Found files exceeding the line limit:\n');
   for (const violation of violations) {
-    out(`  ${violation.file}: ${violation.lines} lines (exceeds ${violation.label} limit of ${violation.maxLines})`);
+    out(`  ${safeLogText(violation.file)}: ${violation.lines} lines (exceeds ${violation.label} limit of ${violation.maxLines})`);
   }
   out('\nPlease refactor or split these files to stay under their limits\n');
 }
@@ -220,7 +221,7 @@ function printViolations(violations, out) {
 function printEmbeddedDataViolations(violations, out) {
   if (violations.length === 0) return;
   out('Found embedded Links Notation data in worker JavaScript:\n');
-  for (const violation of violations) out(`  ${violation.file}:${violation.line}: ${violation.message}`);
+  for (const violation of violations) out(`  ${safeLogText(violation.file)}:${violation.line}: ${violation.message}`);
   out('\nMove worker seed data to data/seed and load it through seed_loader.js\n');
 }
 

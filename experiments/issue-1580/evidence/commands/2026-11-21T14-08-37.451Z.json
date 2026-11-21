@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "8f55d45eb0065886058d5822f938d9bce7b6b875",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/start-committed-release-validation.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/start-committed-release-validation.py'\"}\n   Output: finish-committed-release-validation.py 3871664\n   publish-committed-release-ci-repairs.py 3871673\n   collect-committed-release-ci-repairs.py 3871682\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/start-committed-release-validation.py'` command completed. Output:\n\n```text\nfinish-committed-release-validation.py 3871664\npublish-committed-release-ci-repairs.py 3871673\ncollect-committed-release-ci-repairs.py 3871682\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

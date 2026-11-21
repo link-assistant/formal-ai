@@ -78,9 +78,13 @@
       "completeSourceRead": true,
       "readEvidence": "fresh-template-delta-sources page(s) 3",
       "formalAiComparison": [
-        ".github/workflows/release.yml"
+        ".github/workflows/rerun-unacquired.yml",
+        "scripts/rerun-unacquired-jobs.mjs",
+        "experiments/issue-1580/runner-acquisition-recovery.test.mjs"
       ],
-      "decision": "The upstream observer admits only same-repository default-branch workflow runs, bounded attempts and jobs with absent runner evidence. Formal AI has a strict terminal gate but no corresponding dedicated rerun-unacquired workflow; automatic infrastructure recovery remains an adoption gap. No hosted runner-capacity failure was exercised."
+      "decision": "Adopted in published e1b9a937b: trusted default-branch observer, complete job/annotation pagination, exact acquisition evidence, immutable same-repository identity, finite attempts/deadline and no retry of code failures. All 27 mocked API/actual CLI controls pass. Real hosted acquisition recovery requires default-branch installation and remains unexecuted.",
+      "previousDecision": "The upstream observer admits only same-repository default-branch workflow runs, bounded attempts and jobs with absent runner evidence. Formal AI has a strict terminal gate but no corresponding dedicated rerun-unacquired workflow; automatic infrastructure recovery remains an adoption gap. No hosted runner-capacity failure was exercised.",
+      "followupAt": "2026-11-21"
     },
     {
       "path": ".github/workflows/workflows.yml",
@@ -328,11 +332,14 @@
       "completeSourceRead": true,
       "role": "runner acquisition classification and bounded retry",
       "formalAiComparison": [
-        "scripts/report-runner-capacity.sh",
-        "scripts/check-pipeline-status.sh"
+        ".github/workflows/rerun-unacquired.yml",
+        "scripts/rerun-unacquired-jobs.mjs",
+        "experiments/issue-1580/runner-acquisition-recovery.test.mjs"
       ],
-      "decision": "Requires the acquisition annotation plus no runner and no steps; annotation lookup failure remains not-started. Paginated jobs/annotations, two automatic retries, same-repository filter, trusted default-branch checkout, and narrowly scoped write permission are applicable patterns. Do not rerun actual code failures or assert a cache/backend cause from counters. These upstream tests were read, not executed here.",
-      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+      "decision": "Adopted in published e1b9a937b: trusted default-branch observer, complete job/annotation pagination, exact acquisition evidence, immutable same-repository identity, finite attempts/deadline and no retry of code failures. All 27 mocked API/actual CLI controls pass. Real hosted acquisition recovery requires default-branch installation and remains unexecuted.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6",
+      "previousDecision": "Requires the acquisition annotation plus no runner and no steps; annotation lookup failure remains not-started. Paginated jobs/annotations, two automatic retries, same-repository filter, trusted default-branch checkout, and narrowly scoped write permission are applicable patterns. Do not rerun actual code failures or assert a cache/backend cause from counters. These upstream tests were read, not executed here.",
+      "followupAt": "2026-11-21"
     },
     {
       "path": "scripts/ci/runner-acquisition.mjs",
@@ -434,10 +441,14 @@
       "completeSourceRead": true,
       "role": "untrusted log output",
       "formalAiComparison": [
-        "scripts/check-pipeline-status.sh"
+        "scripts/lib/github-actions-log.mjs",
+        "scripts/lib/github-actions-log.rs",
+        "experiments/issue-1580/untrusted-scanner-logs.test.mjs"
       ],
-      "decision": "Read random 128-bit stop/resume guard and contributor changeset/filename tests. Keep contributor data out of command interpolation and classify diagnostics without treating printed text as execution. Copied helper remains unchanged in the regression fixture.",
-      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6"
+      "decision": "Adopted the untrusted-log boundary in file-size, hardcoded-language and associative-terminology diagnostics. Deterministic reversible JSON encoding preserves exact JavaScript/Rust output while disabling both command delimiters; intentional annotations retain their existing escaping. Actual JavaScript scanner reproducers fail before and pass after; native helper tests await hosted execution. Repository-wide log trust and complete template acceptance remain open.",
+      "readEvidence": "Unchanged Git blob; complete source review carried from go-semantic-review.json at 65c686846d7327d8c835a0d30b1a76cc6345cfc6",
+      "previousDecision": "Read random 128-bit stop/resume guard and contributor changeset/filename tests. Keep contributor data out of command interpolation and classify diagnostics without treating printed text as execution. Copied helper remains unchanged in the regression fixture.",
+      "followupAt": "2026-11-21"
     },
     {
       "path": "scripts/github-actions-log.test.mjs",
@@ -447,9 +458,13 @@
       "completeSourceRead": true,
       "readEvidence": "fresh-template-delta-sources page(s) 16",
       "formalAiComparison": [
-        "experiments/issue-1580/fixtures/go-current-pipeline/scripts/github-actions-log.mjs"
+        "scripts/lib/github-actions-log.mjs",
+        "scripts/lib/github-actions-log.rs",
+        "experiments/issue-1580/untrusted-scanner-logs.test.mjs"
       ],
-      "decision": "The retained immutable template helper disables Actions command processing around contributor-controlled text. The current upstream test change copies its shared Git dependency into the isolated fixture. This source comparison does not establish a repository-wide adoption of that log trust policy."
+      "decision": "Adopted the untrusted-log boundary in file-size, hardcoded-language and associative-terminology diagnostics. Deterministic reversible JSON encoding preserves exact JavaScript/Rust output while disabling both command delimiters; intentional annotations retain their existing escaping. Actual JavaScript scanner reproducers fail before and pass after; native helper tests await hosted execution. Repository-wide log trust and complete template acceptance remain open.",
+      "previousDecision": "The retained immutable template helper disables Actions command processing around contributor-controlled text. The current upstream test change copies its shared Git dependency into the isolated fixture. This source comparison does not establish a repository-wide adoption of that log trust policy.",
+      "followupAt": "2026-11-21"
     },
     {
       "path": "scripts/merge-changesets.mjs",

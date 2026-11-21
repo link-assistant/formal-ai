@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "44da99110f69a428005be81bfd78aea1e66c706d",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/publish-javascript-coverage-round.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/publish-javascript-coverage-round.py'\"}\n   Output: {\"pid\": 3800705, \"finite\": true}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/publish-javascript-coverage-round.py'` command completed. Output:\n\n```json\n{\n  \"finite\": true,\n  \"pid\": 3800705\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

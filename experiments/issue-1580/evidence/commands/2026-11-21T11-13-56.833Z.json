@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "e702a0cc6b7f34bab3e50267aafc0c6b6ab13041",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/repair-runner-evidence-file-names.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/repair-runner-evidence-file-names.py'\"}\n   Output: {\"head\": \"25e2e21efbd63b12c48910fca35425605f27440f\", \"committed\": true, \"pushed\": false, \"records\": 72, \"trackedWorkingTreeClean\": true, \"fullIssueComplete\": false}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/repair-runner-evidence-file-names.py'` command completed. Output:\n\n```json\n{\n  \"committed\": true,\n  \"fullIssueComplete\": false,\n  \"head\": \"25e2e21efbd63b12c48910fca35425605f27440f\",\n  \"pushed\": false,\n  \"records\": 72,\n  \"trackedWorkingTreeClean\": true\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

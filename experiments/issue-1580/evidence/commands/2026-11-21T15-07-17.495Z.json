@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "4818b062c67bae1ea3c9ababf8924e1e2198e1b8",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/observe-next-batch-source-and-feedback.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/observe-next-batch-source-and-feedback.py'\"}\n   Output: Complete issue, all three PR comment types, current jobs and remote-main identity saved\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/observe-next-batch-source-and-feedback.py'` command completed. Output:\n\n```text\nComplete issue, all three PR comment types, current jobs and remote-main identity saved\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

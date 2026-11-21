@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "8f55d45eb0065886058d5822f938d9bce7b6b875",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/propose-complete-cancellation-policy.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/propose-complete-cancellation-policy.py'\"}\n   Output: {\"files\":31,\"changedScopes\":75,\"behavioralAssertions\":1050,\"baselineDisallowedCancellationObservations\":249}\n   \n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/propose-complete-cancellation-policy.py'` command completed. Output:\n\n```json\n{\n  \"baselineDisallowedCancellationObservations\": 249,\n  \"behavioralAssertions\": 1050,\n  \"changedScopes\": 75,\n  \"files\": 31\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

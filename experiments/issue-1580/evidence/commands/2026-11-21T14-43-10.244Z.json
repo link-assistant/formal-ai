@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "fbac28e56a61dc763f264de3f4d74cbc8d4f6cce",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/download-completed-clippy-job.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/download-completed-clippy-job.py'\"}\n   Output: {\"exitCode\": 1, \"bytes\": 0, \"lines\": 0}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/download-completed-clippy-job.py'` command completed. Output:\n\n```json\n{\n  \"bytes\": 0,\n  \"exitCode\": 1,\n  \"lines\": 0\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

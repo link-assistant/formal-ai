@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "44da99110f69a428005be81bfd78aea1e66c706d",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/inspect-javascript-coverage-delivery.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/inspect-javascript-coverage-delivery.py'\"}\n   Output: {\"checks\": 129, \"completedNonPassing\": []}\n   {\"name\": \"in-progress\", \"count\": 1, \"heads\": [\"6672bfc98bf02cb8db124421a75b118e30abd349\"]}\n   {\"name\": \"queued\", \"count\": 9, \"heads\": [\"6672bfc98bf02cb8db124421a75b118e30abd349\"]}\n   {\"observedAt\": \"2026-11-21T12:05:28.747363+00:00\", \"readOnly\": true, \"fullIssueComplete\": false}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/inspect-javascript-coverage-delivery.py'` command completed. Output:\n\n```text\n{\"checks\": 129, \"completedNonPassing\": []}\n{\"name\": \"in-progress\", \"count\": 1, \"heads\": [\"6672bfc98bf02cb8db124421a75b118e30abd349\"]}\n{\"name\": \"queued\", \"count\": 9, \"heads\": [\"6672bfc98bf02cb8db124421a75b118e30abd349\"]}\n{\"observedAt\": \"2026-11-21T12:05:28.747363+00:00\", \"readOnly\": true, \"fullIssueComplete\": false}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

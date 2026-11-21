@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "ce1557b2f2c0fbf3aaff52a5d7dbb8f50b17fa77",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/commit-native-follow-up-headroom.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/commit-native-follow-up-headroom.py'\"}\n   Output: {\"head\": \"5d83bf4fbddb56e849df97cbc6ff3fa152a9ace7\", \"committed\": true, \"pushed\": false, \"trackedWorkingTreeClean\": true, \"records\": 41, \"fullIssueComplete\": false}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/commit-native-follow-up-headroom.py'` command completed. Output:\n\n```json\n{\n  \"committed\": true,\n  \"fullIssueComplete\": false,\n  \"head\": \"5d83bf4fbddb56e849df97cbc6ff3fa152a9ace7\",\n  \"pushed\": false,\n  \"records\": 41,\n  \"trackedWorkingTreeClean\": true\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

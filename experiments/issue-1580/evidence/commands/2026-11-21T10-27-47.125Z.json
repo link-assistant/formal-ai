@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "6672bfc98bf02cb8db124421a75b118e30abd349",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/validate-native-test-headroom.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/validate-native-test-headroom.py'\"}\n   Output: {\"pid\": 3734073, \"finite\": true}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/validate-native-test-headroom.py'` command completed. Output:\n\n```json\n{\n  \"finite\": true,\n  \"pid\": 3734073\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

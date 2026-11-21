@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "2e81d4fbb3cd3b45809c1f536d31e3f774613a2f",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/continue-6672-native-ci.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/continue-6672-native-ci.py'\"}\n   Output: {\"pid\": 3775682, \"finiteObservations\": 60}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/continue-6672-native-ci.py'` command completed. Output:\n\n```json\n{\n  \"finiteObservations\": 60,\n  \"pid\": 3775682\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

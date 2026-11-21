@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "25e2e21efbd63b12c48910fca35425605f27440f",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/finish-contributing-guide-extraction.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/finish-contributing-guide-extraction.py'\"}\n   Output: \n   Error: Traceback (most recent call last):\n     File \"/tmp/issue-1580-research/finish-contributing-guide-extraction.py\", line 12, in <module>\n       source=source[:start]+replacement+source[end:];assert len(source.splitlines())<=1400;owner.write_text(source)\n                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   AssertionError\n   \n   Exit Code: 1\n== answer ==\nThe command failed: `env sh -c 'python3 /tmp/issue-1580-research/finish-contributing-guide-extraction.py'` exited with code 1.\n\n```text\nTraceback (most recent call last):\n  File \"/tmp/issue-1580-research/finish-contributing-guide-extraction.py\", line 12, in <module>\n    source=source[:start]+replacement+source[end:];assert len(source.splitlines())<=1400;owner.write_text(source)\n                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

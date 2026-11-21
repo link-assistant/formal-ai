@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "54986d9a4edff48f8ecb0a4768e9cfb6fe1d12c2",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/repair-merged-core-boundary.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/repair-merged-core-boundary.py'\"}\n   Output: {\"reason\": \"Use the existing query parser directly at the sole policy caller; preserve evaluation order and short-circuit behavior without a redundant five-line handler wrapper.\", \"handlerLinesBefore\": 817, \"handlerLinesAfter\": 812, \"ceilingChanged\": false, \"parserBodyUnchanged\": true, \"fullIssueComplete\": false, \"independentAuthorshipCredit\": 0}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/repair-merged-core-boundary.py'` command completed. Output:\n\n```json\n{\n  \"ceilingChanged\": false,\n  \"fullIssueComplete\": false,\n  \"handlerLinesAfter\": 812,\n  \"handlerLinesBefore\": 817,\n  \"independentAuthorshipCredit\": 0,\n  \"parserBodyUnchanged\": true,\n  \"reason\": \"Use the existing query parser directly at the sole policy caller; preserve evaluation order and short-circuit behavior without a redundant five-line handler wrapper.\"\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

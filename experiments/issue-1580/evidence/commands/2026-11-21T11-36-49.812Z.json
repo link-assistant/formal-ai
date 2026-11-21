@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "068d8a8143ae6c51fd5bbdf756be02a597863ca9",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/draft-full-default-javascript.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/draft-full-default-javascript.py'\"}\n   Output: \n   Error: Traceback (most recent call last):\n     File \"/tmp/issue-1580-research/draft-full-default-javascript.py\", line 83, in <module>\n       body,count=re.subn(r\"shard: \\$\\{\\{ .*fromJSON\\('\\[1,2,3,4\\]'\\).* \\}\\}\", 'shard: [1, 2, 3, 4, 5, 6, 7, 8]',body);assert count==1,count\n                                                                                                                              ^^^^^^^^\n   AssertionError: 0\n   \n   Exit Code: 1\n== answer ==\nThe command failed: `env sh -c 'python3 /tmp/issue-1580-research/draft-full-default-javascript.py'` exited with code 1.\n\n```text\nTraceback (most recent call last):\n  File \"/tmp/issue-1580-research/draft-full-default-javascript.py\", line 83, in <module>\n    body,count=re.subn(r\"shard: \\$\\{\\{ .*fromJSON\\('\\[1,2,3,4\\]'\\).* \\}\\}\", 'shard: [1, 2, 3, 4, 5, 6, 7, 8]',body);assert count==1,count\n                                                                                                                           ^^^^^^^^\nAssertionError: 0\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

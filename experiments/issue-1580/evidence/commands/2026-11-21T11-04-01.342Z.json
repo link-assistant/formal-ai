@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "e702a0cc6b7f34bab3e50267aafc0c6b6ab13041",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/draft-rust-runner-annotation-regression.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/draft-rust-runner-annotation-regression.py'\"}\n   Output: {\"drafted\": true, \"cases\": 6, \"upstreamProductionFixed\": false, \"independentAuthorshipCredit\": 0}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/draft-rust-runner-annotation-regression.py'` command completed. Output:\n\n```json\n{\n  \"cases\": 6,\n  \"drafted\": true,\n  \"independentAuthorshipCredit\": 0,\n  \"upstreamProductionFixed\": false\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

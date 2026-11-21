@@ -37,3 +37,5 @@ import '../../../experiments/issue-1580/procedure-extraction-parity.test.mjs';
 import '../../../experiments/issue-1580/runner-acquisition-recovery.test.mjs';
 
 import '../../../experiments/issue-1580/readable-json-headroom.test.mjs';
+
+import '../../../experiments/issue-1580/untrusted-scanner-logs.test.mjs';

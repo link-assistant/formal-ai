@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "f6a4c9cd3e7270bd8e5a2030f281e5e5ce487c08",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/verify-layered-followup.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/verify-layered-followup.py'\"}\n   Output: 3828126\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/verify-layered-followup.py'` command completed. Output:\n\n```json\n3828126\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}

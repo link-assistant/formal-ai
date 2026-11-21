@@ -1,0 +1,11 @@
+{
+  "runtime": "formal-ai JavaScript driver",
+  "node": "v26.13.0",
+  "source": "6672bfc98bf02cb8db124421a75b118e30abd349",
+  "request": "Run env sh -c 'python3 /tmp/issue-1580-research/seal-native-test-headroom.py'",
+  "stdout": ">> bash {\"command\":\"env sh -c 'python3 /tmp/issue-1580-research/seal-native-test-headroom.py'\"}\n   Output: {\"staged\": true, \"records\": 44, \"remainingWarnings\": 84, \"fullIssueComplete\": false}\n   \n   Exit Code: 0\n== answer ==\nThe `env sh -c 'python3 /tmp/issue-1580-research/seal-native-test-headroom.py'` command completed. Output:\n\n```json\n{\n  \"fullIssueComplete\": false,\n  \"records\": 44,\n  \"remainingWarnings\": 84,\n  \"staged\": true\n}\n```\n",
+  "stderr": "",
+  "status": 0,
+  "signal": null,
+  "autonomousAuthorshipCredit": 0
+}
