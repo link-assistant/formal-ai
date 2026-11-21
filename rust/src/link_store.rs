@@ -12,6 +12,8 @@
 use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
+#[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
+use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 use std::sync::atomic::{AtomicU64, Ordering};
