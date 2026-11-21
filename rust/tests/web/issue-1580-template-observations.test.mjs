@@ -33,3 +33,5 @@ import '../../../experiments/issue-1580/documentation-headroom.test.mjs';
 import '../../../experiments/issue-1580/full-default-javascript-profile.test.mjs';
 
 import '../../../experiments/issue-1580/procedure-extraction-parity.test.mjs';
+
+import '../../../experiments/issue-1580/runner-acquisition-recovery.test.mjs';

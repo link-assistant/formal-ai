@@ -1,0 +1,1 @@
+Reuse conservative Go-template recovery for confirmed hosted-runner acquisition failures, with trusted default-branch code, complete paginated observations, source freshness checks, bounded attempts and CLI-level negative controls.
