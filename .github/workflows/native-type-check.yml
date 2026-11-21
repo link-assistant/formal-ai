@@ -100,3 +100,7 @@ jobs:
         run: |
           bun install --frozen-lockfile --ignore-scripts
           node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs
+      - name: Verify matched client transcripts and issue receipts against the native CLI
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs

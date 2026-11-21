@@ -71,13 +71,14 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const codexReplay = 'bash experiments/issue_859_codex_e2e/run.sh';
   const gatewayReplay = 'bun install --frozen-lockfile --ignore-scripts\n' +
     "node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs\n";
+  const clientReports = 'node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs';
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
     'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity -- --test-threads=1',
-    ...nativeReplays, codexReplay, gatewayReplay]);
+    ...nativeReplays, codexReplay, gatewayReplay, clientReports]);
   assert.deepEqual(check.steps.find(step => step.name === 'Verify calendar, currency, forced OpenAI function and CNL behavior').env,
     {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
-  for (const command of nativeReplays) {
+  for (const command of [...nativeReplays, clientReports]) {
     assert.deepEqual(check.steps.find(step => step.run === command).env,
       {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   }
