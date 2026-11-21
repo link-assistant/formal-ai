@@ -11,6 +11,7 @@ import {builtinModules} from 'node:module';
 import YAML from 'yaml';
 import '../../../experiments/issue-1580/native-regression-groups.test.mjs';
 import '../../../experiments/issue-1580/native-checkout-retry.test.mjs';
+import '../../../experiments/issue-1580/template-cpp-policy-result.test.mjs';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
 const workflow = name => YAML.parse(read('.github/workflows/' + name));
@@ -31,14 +32,37 @@ for (const [label, needs, expectedStatus] of [
   ['successful and skipped dependencies', {lint: {result: 'success'}, test: {result: 'skipped'}}, 0],
   ['a failed dependency', {lint: {result: 'failure'}}, 1],
   ['a cancelled dependency', {'native-type-check': {result: 'cancelled'}}, 1],
+  ['an empty dependency map', {}, 1],
+  ['a missing dependency result', {lint: {}}, 1],
+  ['a null dependency record', {lint: null}, 1],
+  ['an unknown dependency result', {lint: {result: 'timed_out'}}, 1],
+  ['a malformed dependency result', {lint: {result: []}}, 1],
+  ['a dependency array', [{result: 'success'}], 1],
+  ['a non-object dependency map', true, 1],
+  ['a null dependency map', null, 1],
+  ['a mixed valid and unknown dependency map', {lint: {result: 'success'}, test: {result: 'unknown'}}, 1],
 ]) {
   test('pipeline status reports ' + label + ' on every branch', {timeout: 15000}, () => {
     for (const isMain of ['true', 'false']) {
       const result = spawnSync('bash', ['scripts/check-pipeline-status.sh'], {encoding: 'utf8', timeout: 5000,
         env: {...process.env, NEEDS_JSON: JSON.stringify(needs), IS_MAIN: isMain}});
       assert.equal(result.signal, null, result.stderr);
-      assert.equal(result.status, expectedStatus, `IS_MAIN=${isMain}: ${result.stdout}${result.stderr}`);
+      assert.equal(result.status === 0, expectedStatus === 0, `IS_MAIN=${isMain}: ${result.stdout}${result.stderr}`);
       if (expectedStatus) assert.doesNotMatch(result.stdout, /All required jobs succeeded/u);
+    }
+  });
+}
+for (const [label, raw] of [
+  ['invalid JSON', '{'],
+  ['multiple JSON documents', '{"lint":{"result":"success"}}\n{"test":{"result":"success"}}'],
+]) {
+  test('pipeline status refuses ' + label, {timeout: 15000}, () => {
+    for (const isMain of ['true', 'false']) {
+      const result = spawnSync('bash', ['scripts/check-pipeline-status.sh'], {encoding: 'utf8', timeout: 5000,
+        env: {...process.env, NEEDS_JSON: raw, IS_MAIN: isMain}});
+      assert.equal(result.signal, null, result.stderr);
+      assert.notEqual(result.status, 0, result.stdout + result.stderr);
+      assert.doesNotMatch(result.stdout, /All required jobs succeeded/u);
     }
   });
 }

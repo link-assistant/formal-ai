@@ -32,6 +32,19 @@ set -euo pipefail
 : "${NEEDS_JSON:?NEEDS_JSON is required (pass toJSON(needs))}"
 IS_MAIN="${IS_MAIN:-false}"
 
+# Missing or unknown observations cannot establish a successful pipeline.
+# Slurping also rejects a stream containing more than one JSON document.
+if ! printf '%s' "$NEEDS_JSON" | jq -e -s '
+  length == 1 and (.[0] |
+    type == "object" and length > 0 and
+    all(.[]; type == "object" and
+      (.result | . == "success" or . == "failure" or
+        . == "cancelled" or . == "skipped")))
+' >/dev/null; then
+  echo "::error::Pipeline dependency results are missing or invalid. Expected a nonempty job map with known results."
+  exit 1
+fi
+
 # jq is preinstalled on GitHub-hosted runners.
 select_by_result() {
   printf '%s' "$NEEDS_JSON" \
