@@ -849,8 +849,9 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
   evidence bytes or the ratchet. The targeted retry restores the 90 ceiling.
 - [x] Run the actual Secretlint 14 engine on all 142 changed files / 128
   compressed streams before these final validation archives.
-- [ ] Qualify the final retained archives and terminal preceding-head hosted
-  logs before the next single push. Current source-size warnings remain 91.
+- [x] Qualify the terminal preceding-head hosted logs and final retained
+  archives: actual Secretlint 14 passes all 594 changed paths / 569 compressed
+  streams before the publication preflight archive. Source warnings remain 91.
 
 
 - [x] Confirm and report JavaScript code-gating false negatives in Python

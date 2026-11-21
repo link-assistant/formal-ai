@@ -36,3 +36,14 @@ experiments/issue-1580/evidence/checks/terminal-template-observation-validation/
 All supplied commands, code and conclusions earn zero independent Formal AI
 authorship or reasoning credit. The issue remains unfinished and the PR stays
 draft and unmerged: https://github.com/link-assistant/formal-ai/pull/1581 .
+
+
+The publication preflight scans all 594 changed files, including 569 compressed
+streams, with actual Secretlint 14. The final abbreviation gate retains its
+unchanged 90 ceiling. The default branch is merged; issue comments, PR
+conversation comments, inline comments and reviews are refreshed and read.
+There are one, eleven, zero and zero respectively, with no new feedback.
+The complete 1934-line source/metadata diff for this batch is reviewed;
+compressed records are checked by identity rather than called literal review.
+The full PR-wide review remains open. These preflight observations precede
+their own archive, which is scanned again before the single branch push.
