@@ -109,7 +109,7 @@ meanings
     unit "not applicable"
     example "Here is a reviewable sorting algorithm in python with a test:"
     grounding "data/seed/multilingual-responses-code-tasks.lino"
-  algorithm_operation_required
+  algorithm-operation-required
     defined-by answer
     role localized_response_template
     precondition "an algorithm request leaves the operation unspecified"

@@ -562,7 +562,7 @@ fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
         let mut log = EventLog::default();
         let unnamed = run_handler("algorithm", prompt, prompt, &mut log)
             .expect("an algorithm request without an operation asks for the operation");
-        assert_eq!(unnamed.intent, "algorithm_operation_required");
+        assert_eq!(unnamed.intent, "algorithm-operation-required");
         assert_eq!(
             unnamed.answer,
             "What should the algorithm do? Include its expected inputs and outputs."

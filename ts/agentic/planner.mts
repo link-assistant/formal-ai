@@ -63,7 +63,6 @@ import * as intentRouter from './intent_router.mjs';
 import * as learningReport from './learning_report.mjs';
 import * as ledger from './ledger.mjs';
 import * as localSearch from './local_search.mjs';
-import * as meaningDetail from './meaning_detail.mjs';
 import * as moduleExports from './module_exports.mjs';
 import * as moduleFunction from './module_function.mjs';
 import * as mutatingAction from './mutating_action.mjs';
@@ -533,7 +532,8 @@ async function planLaterRoutes(task, messages, toolNames) {
   if (formalizationRecipe.isFormalizationTask(task)) {
     return await formalizationRecipe.planFormalizationStep(task, messages, toolNames);
   }
-  if (meaningDetail.isMeaningDetailTask(task)) return await documentRecipe.planMeaningDetailStep(task, messages, toolNames);
+  const meaning = documentRecipe.planMeaningDetailStep(task, messages, toolNames);
+  if (meaning !== null) return meaning;
   if (diagram.isDiagramTask(task)) return await documentRecipe.planDiagramStep(messages, toolNames);
   return planOpenRoutes(task, messages, toolNames);
 }

@@ -338,11 +338,17 @@ test("the algorithm rule set answers unchanged in english, russian, hindi and ch
     assert.equal(response.content, expected, prompt);
     assert.ok(!response.evidence.some((link) => link.startsWith("algorithm:refusal")), prompt);
   }
-  for (const prompt of ["explain the algorithm", "write an algorithm with tests"]) {
+  for (const { language, prompt, expected } of [
+    { language: "en", prompt: "write an algorithm with tests", expected: "What should the algorithm do? Include its expected inputs and outputs." },
+    { language: "ru", prompt: "Напиши алгоритм с тестом", expected: "Что должен делать алгоритм? Укажите входные данные и ожидаемый результат." },
+    { language: "hi", prompt: "टेस्ट के साथ एक एल्गोरिदम लिखें", expected: "एल्गोरिदम को क्या करना चाहिए? अपेक्षित इनपुट और आउटपुट बताएं।" },
+    { language: "zh", prompt: "请写一个带测试的算法", expected: "算法应该完成什么任务？请说明预期的输入和输出。" },
+    { language: "es", prompt: "Por favor, escribe un algoritmo con pruebas.", expected: "¿Qué debe hacer el algoritmo? Indica las entradas y salidas esperadas." },
+  ]) {
     const unnamed = await rule("algorithm", prompt);
-    assert.equal(unnamed.intent, "algorithm_operation_required");
-    assert.equal(unnamed.content, "What should the algorithm do? Include its expected inputs and outputs.");
-    assert.ok(unnamed.evidence.includes("algorithm:refusal:no operation named"));
+    assert.equal(unnamed.intent, "algorithm-operation-required", language);
+    assert.equal(unnamed.content, expected, language);
+    assert.ok(unnamed.evidence.includes("algorithm:refusal:no operation named"), language);
   }
   assert.equal(await rule("algorithm", "What is the capital of France?"), null);
 });

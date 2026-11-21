@@ -401,10 +401,15 @@ handler-rules
       confidence 1.0
     rule algorithm-unnamed
       when
-        substring algorithm
+        any
+          substring algorithm
+          substring алгоритм
+          substring एल्गोरिदम
+          substring 算法
+          substring algoritmo
       log "algorithm:refusal" "no operation named"
-      respond algorithm_operation_required
-      intent algorithm_operation_required
+      respond algorithm-operation-required
+      intent algorithm-operation-required
       link "response:algorithm"
       confidence 1.0
   policy response_language_followup

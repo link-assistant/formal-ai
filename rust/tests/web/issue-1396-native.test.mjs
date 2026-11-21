@@ -122,7 +122,7 @@ test("native Agent CLI requires a retrieved capture for a known benchmark issue"
     assert.equal(step?.arguments.url, issue);
     return step.result;
   }
-  assert.match(await fetchIssue(), /offline/u);
+  assert.equal(await fetchIssue(), `no cached capture for ${endpoint}`);
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   storeCapture(cache, endpoint, JSON.stringify({ body }));
   assert.equal(await fetchIssue(), body);

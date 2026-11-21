@@ -63,7 +63,8 @@ async function catRecipe(module, path) {
  * @param {Array<string>} toolNames
  */
 export function planMeaningDetailStep(task, messages, toolNames) {
-  const concept = meaningDetail.conceptForTask(task) ?? meaningDetail.TOMATO;
+  const concept = meaningDetail.conceptForTask(task);
+  if (concept === null) return null;
   const searchTool = toolFor(toolNames, Capability.Search);
   const fetchTool = toolFor(toolNames, Capability.Fetch);
   const writeTool = toolFor(toolNames, Capability.Write);
