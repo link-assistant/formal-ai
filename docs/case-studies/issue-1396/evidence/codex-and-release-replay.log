@@ -1,0 +1,35 @@
+Stock Codex CLI 0.171.0 using the Responses API
+Baseline Formal AI native release v0.355.34, Default collaboration mode
+Observed advertised function: request_user_input
+Observed description suffix: This tool is only available in Plan mode.
+Observed next request's function result: request_user_input is unavailable in Default mode
+Regression verifier: Codex did not display the English reporting menu
+
+Source JavaScript server in the same CLI and mode
+Prompt: Report issue
+Observed: 3. GitHub issue — File an issue with complete context.
+Prompt: зарепорти баг
+Observed: 3. Задача GitHub — Создать задачу с полным контекстом.
+Resumed the Russian session with prompt: 3
+Observed: 1. Оба журнала — Включить журналы агента и сервера
+Proxy verifier: Both localized menus and context selection were displayed without requesting a tool.
+The same assertions passed with the CI-pinned Codex CLI 0.147.0.
+
+Baseline source JavaScript server, hosted web search advertised
+Prompt: Как какать?
+Observed output item types: message, web_search_call
+Observed narration: Поищу в интернете: Как какать?
+
+Source browser, Chromium, live wikiHow parse intercepted with HTTP 404
+Prompt: Как какать?
+Observed ordering: Russian wikiHow parse request, Wayback availability, matching 20241222160007 replay
+Rendered: Не откладывайте
+The Wayback response bodies were fixtures. A separate live index observation is stored alongside this file.
+
+Main diagnostic run 44374194864, head 53cbe4430f8b65330f47728401fc83b09977129f
+Failed-job log line 2928: test result: FAILED. 6 passed; 1 failed
+Failed-job log line 6612: rust/tests/unit/mod.rs does not declare 4 module(s) present
+Failed-job log line 8322: 6 content divergence(s) above the ceiling 0
+Failed-job log line 15529: The command was terminated after 1080s, its full 1080s execution budget
+Failed-job log lines 48919 and 54810: Process completed with exit code 1
+Jobs API: Release Preflight success, Secrets Scan success, Build Package skipped, Auto Release skipped, Pipeline Status failure
