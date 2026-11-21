@@ -38,6 +38,7 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'scripts/self-development-loop.rs',
   'scripts/detect-code-changes.rs',
   'scripts/cargo-package.rs',
+  'scripts/check-version-modification.rs',
   'scripts/rust-paths.rs',
   'scripts/bump-version.rs',
   'scripts/check-crate-package-size.rs',

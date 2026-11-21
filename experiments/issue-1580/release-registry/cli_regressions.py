@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise both release CLIs against a local registry; origins are local only."""
+"""Exercise release and PR version CLIs; registry and Git origins are local only."""
 import http.client
 import http.server
 import json
@@ -141,6 +141,58 @@ class RegistryRegressions(unittest.TestCase):
         args = ['--bump-type', 'patch', '--branch', 'main'] if name == 'version-and-commit.rs' else []
         return subprocess.run([str(self.target / 'debug' / name.removesuffix('.rs')), *args], cwd=self.work,
                               env=self.env, capture_output=True, text=True, timeout=40)
+
+    def version_base(self, content):
+        (self.work / 'Cargo.toml').write_text(content)
+        self.git('add', 'Cargo.toml')
+        self.git('commit', '-qm', 'version comparison base')
+        self.git('push', '-q')
+        self.env.update(GITHUB_EVENT_NAME='pull_request', GITHUB_BASE_REF='main')
+
+    def test_version_check_rejects_a_package_change_after_a_dependency_table(self):
+        base = ('[dependencies.decoy]\nversion = "9.9.9"\n'
+                '[package]\nname = "fixture"\nversion = "1.2.3"\n')
+        self.version_base(base)
+        changed = base.replace('"1.2.3"', '"1.2.4"')
+        (self.work / 'Cargo.toml').write_text(changed)
+        result = self.script('check-version-modification.rs')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Manual version change detected', result.stderr)
+        self.assertEqual((self.work / 'Cargo.toml').read_text(), changed)
+
+    def test_version_check_accepts_dependency_only_changes(self):
+        base = ('[dependencies.decoy]\nversion = "9.9.9"\n'
+                '[package]\nname = "fixture"\nversion = "1.2.3"\n')
+        self.version_base(base)
+        changed = base.replace('"9.9.9"', '"9.9.10"')
+        (self.work / 'Cargo.toml').write_text(changed)
+        result = self.script('check-version-modification.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Version check passed', result.stdout)
+        self.assertEqual((self.work / 'Cargo.toml').read_text(), changed)
+
+    def test_version_check_compares_parsed_identity_across_manifest_layouts(self):
+        base = "[package]\nname = 'fixture'\n  version = '1.2.3' # literal\n"
+        self.version_base(base)
+        nested = self.work / 'rust'
+        nested.mkdir()
+        (self.work / 'Cargo.toml').rename(nested / 'Cargo.toml')
+        result = self.script('check-version-modification.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Version check passed', result.stdout)
+
+    def test_version_check_refuses_missing_inherited_and_malformed_versions(self):
+        self.version_base("[package]\nname = 'fixture'\nversion = '1.2.3'\n")
+        for version in ['', 'version.workspace = true\n', 'version = { workspace = true }\n',
+                        'version = true\n', 'version = ""\n', 'version = "1.2.3"\nversion = "2.0.0"\n']:
+            with self.subTest(version=version):
+                content = ('[dependencies.decoy]\nversion = "1.2.3"\n'
+                           "[package]\nname = 'fixture'\n" + version)
+                (self.work / 'Cargo.toml').write_text(content)
+                result = self.script('check-version-modification.rs')
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('Could not read a crate version', result.stderr)
+                self.assertEqual((self.work / 'Cargo.toml').read_text(), content)
 
     def test_repository_contains_the_writer_status_staging_inputs(self):
         source = (ROOT / 'scripts/version-and-commit.rs').read_text()

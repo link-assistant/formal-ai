@@ -30,10 +30,11 @@
 //! edition = "2024"
 //!
 //! [dependencies]
-//! regex = "1"
+//! toml_edit = "0.25.15"
 //! ```
 
-use regex::Regex;
+#[path = "cargo-package.rs"]
+mod cargo_package;
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -73,8 +74,11 @@ fn get_rust_root() -> String {
 }
 
 fn version_in(manifest: &str) -> Option<String> {
-    let pattern = Regex::new(r#"(?m)^version\s*=\s*"([^"]+)""#).unwrap();
-    pattern.captures(manifest).map(|caps| caps[1].to_string())
+    // Compare the actual release identity, regardless of table order or quoting.
+    // Missing, inherited and malformed package versions must fail closed.
+    cargo_package::package_info_from_str(manifest)
+        .ok()
+        .map(|package| package.version)
 }
 
 fn head_version() -> Option<String> {

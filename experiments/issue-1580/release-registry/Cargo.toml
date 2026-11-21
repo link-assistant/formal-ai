@@ -17,6 +17,11 @@ name = "version-and-commit"
 path = "../../../scripts/version-and-commit.rs"
 test = false
 
+[[bin]]
+name = "check-version-modification"
+path = "../../../scripts/check-version-modification.rs"
+test = false
+
 # Compile the exact standalone sources and their split test modules. This
 # isolated manifest avoids another build of the application and its grammars.
 [[test]]
