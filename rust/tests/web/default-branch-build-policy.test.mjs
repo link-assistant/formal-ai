@@ -363,7 +363,11 @@ function versionCli(context,{base='main',headVersion='1.2.3',layout='root',apiSt
     "import fs from 'node:fs';",
     "import child from 'node:child_process';",
     "import {syncBuiltinESMExports} from 'node:module';",
-    "child.execFileSync=()=>{throw Error('GitFallbackForbidden');};",
+    "const execute=child.execFileSync;",
+    "child.execFileSync=(file,args,options)=>{",
+    " if(file!=='python3'||args.length!==2||args[0]!=='-I'||args[1]!=="+JSON.stringify(resolve('scripts/lib/cargo-package-version.py'))+")throw Error('GitFallbackForbidden');",
+    " return execute(file,args,options);",
+    "};",
     "syncBuiltinESMExports();",
     "const routes=JSON.parse(process.env.MOCK_API_ROUTES);let firstSignal;",
     apiResponse.toString(),
@@ -1168,4 +1172,41 @@ test('published search component regressions and their runtime fixtures select t
     assert.deepEqual(result.stdout.split('\0').filter(Boolean), inputs, 'the hosted sparse checkout must acquire every consumed fixture');
   } finally { rmSync(directory, {recursive: true, force: true}); }
   for (const fixture of inputs.filter(path => path.startsWith('docs/'))) assert(readFileSync(fixture).length > 0, fixture);
+});
+
+
+test('package version parser accepts valid table, string and key spellings', () => {
+  const base = '[package]\nversion = "1.2.3"\n';
+  for (const text of [
+    "[ 'package' ] # release\n  version = '1.2.3' # literal\n",
+    "[package]\n'" + "version' = '1.2.3'\n",
+    'package = { version = "1.2.3" }\n',
+    '[package]\nversion = "1.2.\\u0033"\n',
+    '[package]\r\nversion = "1.2.3"\r\n',
+  ]) checkVersions(text, base);
+});
+
+test('package version parser refuses malformed, duplicate and inherited identities', () => {
+  const base = '[package]\nversion = "1.2.3"\n';
+  for (const text of [
+    '[package]\nversion = "1.2.3"\nversion = "1.2.4"\n',
+    '[package]\nversion = "1.2.3" trailing\n',
+    '[package]\nversion = "1.2.3"\n[package]\nversion = "1.2.3"\n',
+    '[package]\nversion.workspace = true\n',
+    '[package]\nversion = { workspace = true }\n',
+    '[package]\nversion = true\n',
+    '[package]\nversion = ""\n',
+    '[dependencies.decoy]\nversion = "1.2.3"\n',
+  ]) {
+    assert.throws(() => checkVersions(text, base));
+    assert.throws(() => checkVersions(base, text));
+  }
+});
+
+test('package version parser cannot use a table header inside a multiline string', () => {
+  const decoy = 'description = \'\'\'\n[package]\nversion = "9.9.9"\n\'\'\'\n';
+  const base = decoy + '[package]\nversion = "1.2.3"\n';
+  const changed = decoy + '[package]\nversion = "1.2.4"\n';
+  assert.throws(() => checkVersions(changed, base));
+  checkVersions(base, '[package]\nversion = "1.2.3"\n');
 });

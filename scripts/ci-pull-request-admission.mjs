@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {appendFileSync, existsSync, readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
-import {pathToFileURL} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {isDocumentationPath} from './lib/documentation-paths.mjs';
 
@@ -229,10 +229,16 @@ export function admission(paths) {
         : key === 'native-type-check' ? paths.length === 0 || paths.some(nativeCompileInput) : code]));
 }
 export function versionIn(text) {
-  const section = /^\[package\]\s*\n([\s\S]*?)(?=^\[|$(?![\s\S]))/mu.exec(text);
-  const version = /^version\s*=\s*"([^"]+)"/mu.exec(section?.[1] ?? '');
-  assert(version, 'readable package version required; refusing unknown manifest');
-  return version[1];
+  // Use Python 3.11+'s standard TOML parser. Parsing the complete document
+  // prevents table/string decoys and
+  // duplicate keys from turning an invalid manifest into an unchanged version.
+  const parser = fileURLToPath(new URL('./lib/cargo-package-version.py', import.meta.url));
+  const version = JSON.parse(execFileSync('python3', ['-I', parser], {
+    input: text, encoding: 'utf8', timeout: 15000, maxBuffer: 4 * 1024 * 1024,
+    stdio: ['pipe', 'pipe', 'pipe'],
+  }));
+  assert(typeof version === 'string' && version.length > 0, 'literal package version required');
+  return version;
 }
 export function checkVersions(head, base) {
   assert.equal(versionIn(head), versionIn(base), 'Use a changelog fragment instead of changing the crate version');
