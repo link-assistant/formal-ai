@@ -49,6 +49,11 @@ server_routes
     path "/v1/models"
     path "/api/openai/v1/models"
     auth bearer
+  route embeddings
+    method POST
+    path "/v1/embeddings"
+    path "/api/openai/v1/embeddings"
+    auth bearer
   route network
     method GET
     path "/v1/network"

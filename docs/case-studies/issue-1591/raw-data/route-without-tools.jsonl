@@ -1,0 +1,4 @@
+{"type":"model_resolved","timestamp":"2026-11-21T22:04:48.329Z","requested":"formalai/formal-ai","selector":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","source":"cli","matchesRequest":true}
+{"type":"init","timestamp":"2026-11-21T22:05:41.248Z","session_id":"ses_dffdc027cffeCVnhtssNn3sX65","model":"formalai/formal-ai"}
+{"type":"message","timestamp":"2026-11-21T22:05:41.265Z","session_id":"ses_dffdc027cffeCVnhtssNn3sX65","role":"assistant","content":[{"type":"text","text":"Tool calls and function execution are not allowed without explicit agent mode. Enable agent mode only for an isolated execution environment."}]}
+{"type":"result","timestamp":"2026-11-21T22:05:41.817Z","session_id":"ses_dffdc027cffeCVnhtssNn3sX65","status":"success","duration_ms":53417}

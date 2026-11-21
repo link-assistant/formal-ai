@@ -101,6 +101,27 @@ server_parity_requests
     route models
     method GET
     path '/api/openai/v1/models'
+  request embeddings_concept_links
+    route embeddings
+    method POST
+    path '/v1/embeddings'
+    body '{"model":"formal-ai","input":["warehouse supervisor","forklift operator","storekeeper","кладовщик","томат","помидор","картофель"]}'
+  request embeddings_openai
+    route embeddings
+    method POST
+    path '/api/openai/v1/embeddings'
+    body '{"model":"formal-ai-embeddings","input":"tomato","encoding_format":"base64"}'
+  request embeddings_invalid_input
+    route embeddings
+    method POST
+    path '/v1/embeddings'
+    body '{"model":"formal-ai","input":[1]}'
+  request embeddings_unauthorized
+    route embeddings
+    method POST
+    path '/api/openai/v1/embeddings'
+    auth none
+    body '{"model":"formal-ai","input":"tomato"}'
   request models_unauthorized
     route models
     method GET
