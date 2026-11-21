@@ -64,7 +64,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'checks: normal checks; regenerate-translations: explicit source-only repair'
+        description: 'checks: normal checks; regenerate-translations: explicit source or worker receipt repair'
         required: false
         default: checks
         type: choice
@@ -74,7 +74,7 @@ on:
         required: false
         default: translations
         type: choice
-        options: [translations, specification-witness, debug-owner-baseline, module-projection]
+        options: [translations, specification-witness, debug-owner-baseline, module-projection, worker-receipt]
       regeneration-module:
         description: 'Exact tracked JS module; used only by module-projection regeneration'
         required: false
@@ -119,7 +119,7 @@ permissions:
 jobs:
   regenerate-translations:
     name: Explicit source-only translation regeneration
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'regenerate-translations' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'regenerate-translations' && inputs.regeneration-target != 'worker-receipt' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -162,6 +162,40 @@ jobs:
         with:
           name: targeted-source-translations-${{ github.sha }}
           path: translation-regeneration/
+          if-no-files-found: error
+          retention-days: 1
+
+  regenerate-worker-receipt:
+    name: Explicit browser worker receipt regeneration
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'regenerate-translations' && inputs.regeneration-target == 'worker-receipt' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    concurrency:
+      group: source-worker-receipt-${{ github.ref }}
+      cancel-in-progress: false
+    env:
+      CARGO_BUILD_JOBS: '2'
+      CARGO_INCREMENTAL: '0'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Build the exact selected worker and verify its input manifest
+        env:
+          FORMAL_AI_REGENERATION_TARGET: worker-receipt
+        run: bash scripts/run-with-budget-warning.sh 420 "Explicit worker receipt regeneration" node --max-old-space-size=256 scripts/regenerate-worker-receipt.mjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: worker-receipt-${{ github.sha }}
+          path: worker-regeneration/
           if-no-files-found: error
           retention-days: 1
 

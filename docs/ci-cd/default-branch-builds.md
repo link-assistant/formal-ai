@@ -5,8 +5,8 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
 - PRs and checks dispatched on feature branches run the complete default Linux
   JavaScript unit suite, including coding, question-answering, reporting, policy
   and security checks. They
-  never compile Cargo packages, Docker images, WASM or applications, and never
-  deploy Pages. The old FORMAL_AI_FULL_PR_CI variable cannot override this rule.
+  never compile production Cargo packages, Docker images, WASM or applications,
+  and never deploy Pages, except for the explicit focused maintenance exceptions below. The old FORMAL_AI_FULL_PR_CI variable cannot override this rule.
 - One focused exception (#1191): `native-type-check` in release.yml calls
   native-type-check.yml, which runs
   `bash scripts/ci-clippy-profile.sh --library-and-binaries`, main's clippy deny
@@ -44,6 +44,17 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   skip its compiler and native test steps. Its selector is
   `nativeCompileInput()` in scripts/ci-pull-request-admission.mjs;
   default-branch-build-policy.test.mjs pins the job and replays PR #1497.
+- An explicit `workflow_dispatch` on Layered CI with
+  `mode=regenerate-translations` and `regeneration-target=worker-receipt` may
+  regenerate the selected browser worker and its actual compiler/input receipts
+  on a feature branch (#1580). This maintenance exception implements
+  CONTRIBUTING.md's hosted WASM regeneration requirement. It verifies the exact
+  dispatched commit, repository, run and attempt, retains the generated worker,
+  selected-source receipt and input manifest for one day, and grants no release
+  authority. It has read-only contents, no persisted checkout credentials, no
+  cache writes and no publication or deployment. Ordinary pushes, PRs and check
+  dispatches never select this job. The source-only regeneration job excludes
+  this target so it cannot substitute a source projection for compiled output.
 - Production builds run on the current default branch, main. Release-tag and
   workflow-completion consumers must independently authorize their source against
   main; a release event is not permission to compile arbitrary feature code.

@@ -1,0 +1,1 @@
+Allow explicit hosted browser worker receipt regeneration, verifying the actual dispatched source and compiler output before preserving the worker and input manifest. Ordinary pull request checks retain their build restrictions.

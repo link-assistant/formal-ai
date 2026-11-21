@@ -177,7 +177,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
       '/experiments/dynamic-meta/**', '/experiments/js_dogfood/**',
       '/experiments/issue_859_codex_e2e/**',
       '/experiments/issue-1580/release-registry/', '/experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
-      ...['candidate-output-bindings.json', 'candidate-release-caller.yml', 'original-release-workflow.yml',
+      ...['candidate-output-bindings.json', 'candidate-release-caller.yml', 'original-release-workflow.yml','original-release-workflow.part-1.txt','original-release-workflow.part-2.txt',
         'stage-source-coverage.json'].map(file =>
         '/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/' + file)]);
   for (const step of check.steps.filter(step => step.uses === 'oven-sh/setup-bun@v2' || step.run === gatewayReplay))
@@ -1142,6 +1142,8 @@ test('complete native release and Pages contracts admit their actual source and 
     "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
     "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
     "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.part-1.txt",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.part-2.txt",
     "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
     "rust/tests/e2e/playwright.pages.config.js",
     "rust/tests/e2e/tests/connectivity.spec.js",
@@ -1189,6 +1191,8 @@ test('complete native release and Pages contracts admit their actual source and 
   for (const path of [
     'experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
     'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml',
+    'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.part-1.txt',
+    'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.part-2.txt',
     'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml',
     'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json',
     'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json'
