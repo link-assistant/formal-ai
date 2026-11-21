@@ -1,0 +1,36 @@
+{
+  "format": "partitioned-source-inventory",
+  "records": 188,
+  "parts": [
+    {
+      "file": "inventory-01.json",
+      "records": 40,
+      "sha256": "2f92098443bb5e1e0ba3d807892cd110f318869837d22b87cc3d5e77c8f9a286"
+    },
+    {
+      "file": "inventory-02.json",
+      "records": 40,
+      "sha256": "7135ac25dd6df88057b683d93fd7dd0448fe7bf989ec758ba43a1c81fa04c168"
+    },
+    {
+      "file": "inventory-03.json",
+      "records": 40,
+      "sha256": "bdb3cb2f8e730eb68006c57708bf54d6fc94d778aedae59f4902750ef9b1cf52"
+    },
+    {
+      "file": "inventory-04.json",
+      "records": 40,
+      "sha256": "dbad1ccbd34b3ad66af50f5cf48a9b693379ab1ab71eecbe9102720b3c2c5fb3"
+    },
+    {
+      "file": "inventory-05.json",
+      "records": 24,
+      "sha256": "734e950c45ded648ed9e923f5093133fac823e883181778e70ba03b2f3eb3706"
+    },
+    {
+      "file": "inventory-06.json",
+      "records": 4,
+      "sha256": "d618077f271fe920f0207455ac38abe599cb0294682a5d56d6420315c8f4d1dd"
+    }
+  ]
+}

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-20T21:36:35.235101+00:00",
+  "observedAt": "2026-11-21T03:09:59.870327+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 352,
-  "fullyReadSourceLines": 49166,
+  "fullyReadFiles": 353,
+  "fullyReadSourceLines": 51512,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -2092,6 +2092,30 @@
       "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/registry-latest.json",
+      "lines": 2346,
+      "sha256": "fb1657b446f189c58075b496dd3a1d58da9619c078c6e2435f4ed6dc0b9d5865",
+      "readLogs": [
+        "rust-registry-latest-review-01.log.gz",
+        "rust-registry-latest-review-02.log.gz",
+        "rust-registry-latest-review-03.log.gz",
+        "rust-registry-latest-review-04.log.gz",
+        "rust-registry-latest-review-05.log.gz",
+        "rust-registry-latest-review-06.log.gz",
+        "rust-registry-latest-review-07.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          2346
+        ]
+      ],
+      "literalReadLines": 2346,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false,
+      "reviewNote": "One tool display of lines 1201\u20131600 was truncated; the omitted release-body span was reread completely from the retained log, lines 1506\u20131563. No complete-file credit was assigned before all seven original source ranges and the omitted span were read."
     },
     {
       "path": "dev/log/issues/247/pulls/248/research.md",
@@ -7224,6 +7248,14 @@
         "dev/log/issues/247/pulls/248/lychee-release.json"
       ],
       "assessment": "The complete 44,015-byte historical Lychee release response is literally read through six contiguous slices and reassembled exactly. Its lychee-v0.24.2 tag, release identity, uploaded platform-specific archives, separate checksum assets and recorded digests are explicit; the response explicitly records immutable=false; preserve the exact asset identities and digests when choosing a release. The schema asset was uploaded months after the original binaries. The release body records user hints, a documentation typo fix and grouped dependency changes; it supplies no present tool adoption or current latest-version proof. Preserve platform/asset identity, digest validation and source dates. Current workflow consumer and tool execution acceptance remain pending.",
+      "status": "literal-source-comparison-and-current-consumer-verification-pending"
+    },
+    {
+      "practice": "Check runtime and runner compatibility before adopting registry and action updates",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/registry-latest.json"
+      ],
+      "assessment": "The complete 2,346-line pinned historical registry snapshot is literally read and reassembled to its original SHA256. Cargo rust_version fields, nullable engine declarations, npm Node minimum patch requirements, Python requirement markers and optional extras, and action release notes are separate compatibility inputs. The historical dependency-review major upgrade explicitly requires an Actions Runner minimum; a CodeQL bundle release tag is not the same artifact as a CodeQL action release. Preserve registry snapshot provenance and check actual resolved consumers, runtime/runner pins, immutable action identities and application versus script dependencies before applying updates. This historical snapshot establishes neither current latest versions nor current package safety, release success or complete template-practice adoption.",
       "status": "literal-source-comparison-and-current-consumer-verification-pending"
     }
   ],
