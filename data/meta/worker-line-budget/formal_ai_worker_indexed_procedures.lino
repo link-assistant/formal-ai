@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_indexed_procedures.js"
+  ceiling 129
+  rationale "Bounded discovery and extraction of publisher procedures nominated by a search index."

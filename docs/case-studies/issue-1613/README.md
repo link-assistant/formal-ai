@@ -82,6 +82,23 @@ and the implementation made only the first call.
   morphological or semantic discovery method.
   [MediaWiki search and discovery](https://www.mediawiki.org/wiki/API:Search_and_discovery) ·
   [Snowball Russian stemmer](https://snowballstem.org/algorithms/russian/stemmer.html)
+- For a task outside the registered catalogues, use web search to find candidate
+  pages and check the procedure on the captured publisher page. The page or
+  section heading must match the task, and distinct ordered procedures under
+  the same heading need more specific wording. A captured GitHub Docs page
+  exposed a navigation heading above the article and short steps that the
+  MediaWiki filters previously discarded. Scope parsing to the main content
+  and preserve the publisher's ordered list and icon labels. The source URL
+  and digest identify the bytes used in the answer.
+  [GitHub Docs publisher page](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository)
+- Replace the embedded recurrence harvest with a repeatable publisher lookup.
+  Resolve localized labels through Wikifunctions and, when needed, the matching
+  Wikipedia title and its language links. Read the definition, abstract
+  implementation, and test objects. Check that the recurrence terminates for
+  nonnegative integers before generating Python. The stored harvest still
+  exercises the formalization tests from an explicitly supplied path.
+  [Wikifunctions API](https://www.wikifunctions.org/wiki/Special:ApiHelp/wikilambdaload_zobjects) ·
+  [MediaWiki language links](https://www.mediawiki.org/wiki/API:Langlinks)
 - For captured GitHub issues, delete the production URL-to-document table and
   its 139 Rust mirrors, and give the deterministic test a source reader that
   explicitly uses the benchmark capture. For the CLI, use GitHub's public
@@ -118,7 +135,7 @@ and the implementation made only the first call.
 | Requirement from the issue | Evidence and current coverage |
 | --- | --- |
 | Explain and remove the reported hardcoding | Reproduced the exact bypass, removed both aliases, and added original-task and held-out replays. |
-| Generalize how-to across runtimes | Both runtimes use localized discovery, matching, and bounded article reads. The browser replay covers direct, archive, capture component, missing evidence, unrelated results, negative titles, and opt-out cases. The first native PR run passed all four localized Chat and Responses replays. Tasks outside the supported publisher contract still need broader verification. |
+| Generalize how-to across runtimes | Both runtimes use localized discovery, matching, and bounded article reads. The browser replay covers direct, archive, capture component, missing evidence, unrelated results, negative titles, and opt-out cases. The indexed publisher replay covers a task outside the catalogues, verifies the original capture, and rejects a page unrelated to the task. |
 | Keep canned input and expected output in tests | The two replay topics and their expected articles are explicit in test code. The benchmark issue test injects its recorded input. Additional production solution tables remain in the [repository audit](repository-audit.md). |
 | Use recoverable snapshots only to speed tests. Exclude pre-cache from lightweight distributions | The crate mirror no longer includes the 139 issue bodies. The previous native release returned the stored body with an empty cache, which the [baseline test](evidence/verification/baseline-native-issue-corpus.log) rejects. CI can replay the same command first with an empty cache and then with a supplied capture. Remaining embedded and web-distributed captures are listed in the [repository audit](repository-audit.md). |
 | Align the vision and conflicting guidance | [VISION](../../../VISION.md) and the [natural language design](../../design/no-hardcoded-natural-language.md) distinguish vocabulary, rendering templates, live discovery, and fixed test inputs. |
@@ -232,6 +249,16 @@ responses are explicit test inputs with recorded URLs and digests.
 [MediaWiki search API](https://www.mediawiki.org/wiki/API:Search) ·
 [Bread recipe](https://en.wikibooks.org/wiki/Cookbook:Basic_Bread_Dough) ·
 [Pancake recipe](https://en.wikibooks.org/wiki/Cookbook:Pancakes_(North_American))
+
+The fifth pipeline ran 22 native and browser replays in one step. The pancake
+request in the multi-turn web-search case lost its connection after 25.023
+seconds, matching the fixture's 25-second child-process cutoff. The first
+request against that child and the independent recipe replay passed. The
+fixture now uses the enclosing test's lifetime and surfaces the child's exit
+status and stderr when a request fails.
+[Native job log](evidence/workflows/native-job-137003375836.log.gz) ·
+[Fifth pipeline log](evidence/workflows/pipeline-44955707612.log.gz) ·
+[Fifth Layered CI log](evidence/workflows/layered-44955707231.log.gz)
 
 ## Evidence archive
 

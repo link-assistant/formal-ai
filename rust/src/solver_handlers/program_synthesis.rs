@@ -3,10 +3,10 @@
 use std::fmt::Write as _;
 
 use crate::coding::synthesis_runtime::{
-    attach_execution_recipe, discover_and_compose, live_fetch_enabled, procedure_ledger,
-    render_answer, research_trail_line, response_language,
+    attach_execution_recipe, discover_and_compose, discover_recurrence_and_compose,
+    live_fetch_enabled, procedure_ledger, render_answer, research_trail_line, response_language,
 };
-use crate::coding::task_spec::recognise;
+use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, recognise};
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 use crate::{engine::SymbolicAnswer, event_log::EventLog};
 
@@ -27,6 +27,28 @@ pub fn try_program_synthesis_with_online(
     online: bool,
 ) -> Option<SymbolicAnswer> {
     let spec = recognise(prompt)?;
+    synthesize(prompt, spec, log, online, false)
+}
+
+pub(crate) fn try_publisher_recurrence(
+    prompt: &str,
+    log: &mut EventLog,
+    online: bool,
+) -> Option<SymbolicAnswer> {
+    let spec = recognise(prompt)?;
+    if spec.artifact_shape != ArtifactShape::Function || spec.language != "python" {
+        return None;
+    }
+    synthesize(prompt, spec, log, online, true)
+}
+
+fn synthesize(
+    prompt: &str,
+    spec: CodingTaskSpec,
+    log: &mut EventLog,
+    online: bool,
+    recurrence_only: bool,
+) -> Option<SymbolicAnswer> {
     MetaAlgorithmBuilder::for_surface(CodingSurface::ProgramSynthesis).record(log);
     log.append("synthesis:spec", spec.to_links_notation());
     let procedure_ledger = procedure_ledger();
@@ -46,7 +68,11 @@ pub fn try_program_synthesis_with_online(
             format!("{} composition={}", procedure.id, procedure.composition),
         );
     }
-    let (concepts, outcome) = discover_and_compose(&spec, log, online);
+    let (concepts, outcome) = if recurrence_only {
+        discover_recurrence_and_compose(&spec, log, online)?
+    } else {
+        discover_and_compose(&spec, log, online)
+    };
     log.append("synthesis:concept_map", concepts.to_links_notation());
     for attempt in &outcome.attempts {
         log.append(
@@ -60,6 +86,9 @@ pub fn try_program_synthesis_with_online(
         );
     }
     let Some(selected) = outcome.selected else {
+        if recurrence_only {
+            return None;
+        }
         log.append("synthesis:verification", "tests_failed".to_owned());
         log.append("synthesis:research_trail", outcome.research_trail.clone());
         log.append(
@@ -86,7 +115,6 @@ pub fn try_program_synthesis_with_online(
             1.0,
         ));
     };
-
     log.append("synthesis:composition", selected.composition.clone());
     if let Some(procedure) = recalled
         && procedure.composition != selected.composition

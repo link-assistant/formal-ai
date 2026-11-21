@@ -13,12 +13,12 @@ use crate::coding::function_catalog::wikifunctions::{
     FunctionMatch, fetch_abstract_implementation, fetch_function, fetch_function_descriptors,
     fetch_implementations, fetch_testers, search_functions,
 };
-use crate::coding::recurrence::formalize;
+use crate::coding::recurrence::{cache::recurrence_fold, formalize};
 use crate::coding::task_spec::{CodingTaskSpec, Example};
 use crate::engine::{ExecutionRecipe, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::Language;
-use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
+use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
 
 /// Where every capture is read from and written to.
 ///
@@ -39,8 +39,8 @@ pub fn discovery_catalog(
     log: &mut EventLog,
     live: bool,
 ) -> DiscoveryCatalog {
-    let cache_dir = source_cache_root();
-    let client = CachedSourceClient::new(cache_dir, CurlSourceTransport).with_online(live);
+    let directory = source_cache_root();
+    let client = CachedSourceClient::new(directory, CurlSourceTransport).with_online(live);
     let stdlib = if live {
         fetch_index(&client).unwrap_or_default()
     } else {
@@ -50,41 +50,64 @@ pub fn discovery_catalog(
             .clone()
     };
 
-    let phrases = research_phrases(spec);
+    discovery_catalog_with_client(spec, log, &client, stdlib)
+}
+
+/// Discover function signatures, implementations and verification inputs through a
+/// caller-supplied client. Offline tests exercise the same path as live reads.
+fn discovery_catalog_with_client<T: SourceTransport>(
+    spec: &CodingTaskSpec,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+    stdlib: StdlibIndex,
+) -> DiscoveryCatalog {
+    let preferences = crate::solver_handler_how_synthesis::service_preferences_from_env(log);
+    if !crate::seed::source_record("wikifunctions")
+        .is_some_and(|record| preferences.allows(&record))
+    {
+        return DiscoveryCatalog::new(stdlib, Vec::new(), Vec::new());
+    }
+    let language = spec.prose_language.as_str();
+    let wikipedia = crate::seed::source_record("wikipedia").filter(|record| {
+        language != "en"
+            && record.api_language.iter().any(|locale| locale == language)
+            && preferences.allows(record)
+    });
     let mut matches: Vec<FunctionMatch> = Vec::new();
-    for phrase in phrases {
-        for language in [spec.prose_language.as_str(), "en"] {
-            match search_functions(&client, &phrase, language) {
-                Ok(found) => {
-                    for matched in found {
-                        if let Some(existing) = matches
-                            .iter_mut()
-                            .find(|existing| existing.page_title == matched.page_title)
-                        {
-                            if matched.match_rate > existing.match_rate {
-                                *existing = matched;
-                            }
-                        } else {
-                            log.append(
-                                "source:http",
-                                format!(
-                                    "url={};fetched_at={};sha256={};catalog_match={}",
-                                    matched.source_url,
-                                    matched.fetched_at,
-                                    matched.sha256,
-                                    matched.page_title
-                                ),
-                            );
-                            matches.push(matched);
-                        }
-                    }
-                }
-                Err(error) => {
-                    log.append("synthesis:source_miss", error.to_string());
+    for phrase in research_phrases(spec) {
+        let mut found = catalogue_matches(client, log, &phrase, language);
+        if let Some(record) = &wikipedia
+            && !found
+                .iter()
+                .any(|candidate| recurrence_match(&phrase, candidate))
+            && let Some(label) = english_article_title(client, log, &record.api, language, &phrase)
+        {
+            for mut matched in catalogue_matches(client, log, &label, "en") {
+                if recurrence_match(&label, &matched) {
+                    matched.match_label.clone_from(&phrase);
+                    matched.match_lang = language.to_owned();
+                    found.push(matched);
                 }
             }
-            if language == "en" || spec.prose_language == "en" {
-                break;
+        }
+        for matched in found {
+            let exact = recurrence_match(&phrase, &matched);
+            if let Some(index) = matches.iter().position(|existing| {
+                existing.page_title == matched.page_title
+                    && existing.match_label == matched.match_label
+            }) {
+                if matched.match_rate > matches[index].match_rate {
+                    matches[index] = matched;
+                }
+            } else {
+                log.append(
+                    "source:http",
+                    format!(
+                        "url={};fetched_at={};sha256={};catalog_match={};subject_match={exact}",
+                        matched.source_url, matched.fetched_at, matched.sha256, matched.page_title
+                    ),
+                );
+                matches.push(matched);
             }
         }
     }
@@ -102,21 +125,25 @@ pub fn discovery_catalog(
     });
 
     let mut functions = Vec::new();
+    let mut seen = BTreeSet::new();
     for matched in matches
         .iter()
-        .filter(|item| item.match_rate >= 0.65)
+        .filter(|item| item.match_rate >= 0.65 && seen.insert(item.page_title.as_str()))
         .take(4)
     {
-        let Ok(definition) = fetch_function(&client, &matched.page_title) else {
+        let Ok(definition) = fetch_function(client, &matched.page_title) else {
             continue;
         };
-        let implementations =
-            fetch_implementations(&client, &definition.implementation_zids).unwrap_or_default();
+        let implementations = fetch_implementations(
+            client,
+            &definition.implementation_zids[..definition.implementation_zids.len().min(8)],
+        )
+        .unwrap_or_default();
         let mut recurrence = None;
         let mut source_tests = Vec::new();
         for implementation_zid in definition.implementation_zids.iter().take(8) {
             let Ok(abstract_implementation) =
-                fetch_abstract_implementation(&client, implementation_zid)
+                fetch_abstract_implementation(client, implementation_zid)
             else {
                 continue;
             };
@@ -126,7 +153,10 @@ pub fn discovery_catalog(
                 .into_iter()
                 .filter(|zid| zid != &definition.zid)
                 .collect::<Vec<_>>();
-            let Ok(descriptors) = fetch_function_descriptors(&client, &operator_zids) else {
+            if operator_zids.is_empty() || operator_zids.len() > 8 {
+                continue;
+            }
+            let Ok(descriptors) = fetch_function_descriptors(client, &operator_zids) else {
                 continue;
             };
             let Ok(formalized) = formalize(&definition, &abstract_implementation, &descriptors)
@@ -139,7 +169,7 @@ pub fn discovery_catalog(
                 .take(8)
                 .cloned()
                 .collect::<Vec<_>>();
-            source_tests = fetch_testers(&client, &tester_zids)
+            source_tests = fetch_testers(client, &tester_zids)
                 .unwrap_or_default()
                 .into_iter()
                 .filter(|test| test.function_zid == definition.zid && test.arguments.len() == 1)
@@ -154,8 +184,10 @@ pub fn discovery_catalog(
                     expected: test.expected,
                 })
                 .collect();
-            recurrence = Some(formalized);
-            break;
+            if !source_tests.is_empty() {
+                recurrence = Some(formalized);
+                break;
+            }
         }
         functions.push(CatalogFunction {
             definition,
@@ -222,14 +254,6 @@ pub fn discover_and_compose(
     live: bool,
 ) -> (ConceptMap, composition::CompositionOutcome) {
     let mut catalog = discovery_catalog(spec, log, live);
-    // The committed recurrence cache is the browser's procedure memory
-    // (`trySourceRecurrenceSynthesis`); a recurrence the request names enters
-    // composition as a source candidate carrying its source tests, so the
-    // native solver composes the same program offline (issue #1173 p223).
-    if let Some(candidate) = crate::coding::recurrence::cache::source_recurrence_candidate(spec) {
-        log.append("synthesis:source_recurrence", candidate.id.clone());
-        catalog.source_candidates.push(candidate);
-    }
     let mut concepts = discover_over_registry(spec, &catalog, log, live);
     let mut outcome = composition::compose(spec, &concepts);
     if outcome.selected.is_none() {
@@ -299,6 +323,32 @@ pub fn discover_and_compose(
     (concepts, outcome)
 }
 
+/// Try publisher recurrences before a catalog template claims a callable request.
+pub(crate) fn discover_recurrence_and_compose(
+    spec: &CodingTaskSpec,
+    log: &mut EventLog,
+    live: bool,
+) -> Option<(ConceptMap, composition::CompositionOutcome)> {
+    let client =
+        CachedSourceClient::new(source_cache_root(), CurlSourceTransport).with_online(live);
+    let mut catalog = discovery_catalog_with_client(spec, log, &client, StdlibIndex::default());
+    catalog.functions.retain(|item| item.recurrence.is_some());
+    if catalog.functions.is_empty() {
+        return None;
+    }
+    for function in &mut catalog.functions {
+        function.implementations.clear();
+    }
+    let mut concepts = discover_over_registry(spec, &catalog, log, false);
+    for need in &mut concepts.needs {
+        need.candidates
+            .retain(|part| part.kind == "wikifunctions_recurrence");
+    }
+    let fragments = crate::coding::fragment_catalog::FragmentCatalog::bootstrap();
+    let outcome = composition::compose_with_ir(spec, &concepts, &fragments, []);
+    Some((concepts, outcome))
+}
+
 /// Discover with the registry lookup under it, so a word the seed does not
 /// contain is *asked about* rather than skipped (issue #1138, plan 01 L10).
 ///
@@ -314,7 +364,7 @@ pub fn discover_over_registry(
 ) -> ConceptMap {
     let client =
         CachedSourceClient::new(source_cache_root(), CurlSourceTransport).with_online(live);
-    let preferences = crate::how_to_guide::ServicePreferences::default();
+    let preferences = crate::solver_handler_how_synthesis::service_preferences_from_env(log);
     let mut availability = crate::service_accessibility::ServiceAccessibilityCache::new(
         std::path::Path::new(&source_cache_root()).join("cache/service-accessibility"),
     );
@@ -387,38 +437,143 @@ fn research_phrases(spec: &CodingTaskSpec) -> Vec<String> {
         crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT,
         crate::seed::ROLE_PROGRAM_SYNTHESIS_ACTION,
         crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN,
+        crate::seed::ROLE_PROGRAM_LANGUAGE_ALIAS,
     ];
     let mut phrases = Vec::new();
-    for sentence in &spec.requirement_sentences {
-        phrases.push(sentence.clone());
-        let normalized = crate::engine::normalize_prompt(sentence);
-        let content = normalized
-            .split_whitespace()
-            .filter(|token| {
-                !grammatical_roles
-                    .iter()
-                    .any(|role| lexicon.mentions_role(role, token))
-            })
-            .collect::<Vec<_>>();
-        if !content.is_empty() {
-            phrases.push(content.join(" "));
-        }
-        phrases.extend(
-            content
-                .into_iter()
-                .filter(|token| token.chars().count() >= 4)
-                .map(str::to_owned),
-        );
-    }
     if spec.name != crate::coding::task_spec::PROVISIONAL_FUNCTION_NAME {
         phrases.push(spec.name.replace('_', " "));
+    }
+    for sentence in &spec.requirement_sentences {
+        let normalized = crate::engine::normalize_prompt(sentence);
+        let words = normalized
+            .split_whitespace()
+            .take(24)
+            .filter(|token| {
+                token.chars().any(char::is_alphabetic)
+                    && !grammatical_roles
+                        .iter()
+                        .any(|role| lexicon.mentions_role(role, token))
+            })
+            .collect::<Vec<_>>();
+        for length in 1..=3 {
+            phrases.extend(
+                words
+                    .windows(length)
+                    .map(|span| span.join(" "))
+                    .filter(|phrase| {
+                        let size = phrase.chars().count();
+                        (3..=80).contains(&size)
+                    }),
+            );
+        }
     }
     let mut seen = BTreeSet::new();
     phrases
         .into_iter()
         .filter(|phrase| seen.insert(phrase.clone()))
-        .take(8)
+        .take(12)
         .collect()
+}
+
+fn recurrence_match(phrase: &str, candidate: &FunctionMatch) -> bool {
+    let phrase = recurrence_fold(phrase);
+    candidate.match_rate >= 0.65
+        && [&candidate.label, &candidate.match_label]
+            .into_iter()
+            .map(|label| recurrence_fold(label))
+            .any(|label| label.chars().count() >= 3 && phrase == label)
+}
+
+fn catalogue_matches<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    log: &mut EventLog,
+    phrase: &str,
+    language: &str,
+) -> Vec<FunctionMatch> {
+    match search_functions(client, phrase, language) {
+        Ok(results) => results,
+        Err(error) => {
+            log.append("synthesis:source_miss", error.to_string());
+            Vec::new()
+        }
+    }
+}
+
+fn english_article_title<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    log: &mut EventLog,
+    template: &str,
+    language: &str,
+    phrase: &str,
+) -> Option<String> {
+    use crate::seed::percent_encode;
+    use serde_json::Value;
+    let template = template.replace("{language}", language);
+    let url = url::Url::parse(&template).ok()?;
+    let api = format!(
+        "{}/w/api.php?action=query&format=json&formatversion=2",
+        url.origin().ascii_serialization()
+    );
+    let search = client
+        .fetch(&format!(
+            "{api}&list=search&srlimit=1&srnamespace=0&srsearch={}",
+            percent_encode(phrase)
+        ))
+        .ok()?;
+    let value: Value = serde_json::from_slice(search.bytes()).ok()?;
+    let result = value.pointer("/query/search/0")?;
+    let title = result.get("title")?.as_str()?;
+    if title.chars().count() > 160 {
+        return None;
+    }
+    let subject = recurrence_fold(phrase);
+    let highlight = result
+        .get("snippet")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .split("<span class=\"searchmatch\">")
+        .skip(1)
+        .filter_map(|span| span.split_once("</span>").map(|(text, _)| text))
+        .any(|text| !text.contains('<') && recurrence_fold(text) == subject);
+    if recurrence_fold(title) != subject && !highlight {
+        return None;
+    }
+    let links = client
+        .fetch(&format!(
+            "{api}&prop=langlinks&lllang=en&titles={}",
+            percent_encode(title)
+        ))
+        .ok()?;
+    let value: Value = serde_json::from_slice(links.bytes()).ok()?;
+    let page = value.pointer("/query/pages/0")?;
+    if page.get("title")?.as_str()? != title {
+        return None;
+    }
+    let label = page
+        .get("langlinks")?
+        .as_array()?
+        .iter()
+        .find_map(|link| {
+            (link.get("lang")?.as_str()? == "en")
+                .then(|| link.get("title")?.as_str())
+                .flatten()
+        })?
+        .trim();
+    if label.is_empty() || label.chars().count() > 80 {
+        return None;
+    }
+    for capture in [&search, &links] {
+        log.append(
+            "source:http",
+            format!(
+                "url={};sha256={};fetched_at={};catalog_subject={phrase}",
+                capture.source_url(),
+                capture.sha256(),
+                capture.fetched_at()
+            ),
+        );
+    }
+    Some(label.to_owned())
 }
 
 fn token_overlap(left: &str, right: &str) -> usize {

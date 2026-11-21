@@ -1071,6 +1071,8 @@ On 2026-10-11, the hosted Ubuntu shard completed `solver::issue_1175_routing_pro
 
 The [containing shard](https://github.com/link-assistant/formal-ai/actions/runs/38157149213/job/114527544865) still failed other tests. This passing test does not complete the broader requirement or qualify later source changes, emitted program behavior, universal browser/native equivalence, coding cohorts, or input/token/cost savings. Existing failures and broader acceptance conditions remain unchanged.
 
+Issue #1613 supersedes the bundled recurrence path in the October measurement. Both solvers retrieve a matching publisher definition, formalize the abstract implementation, and verify it against publisher test cases. The empty offline cache reports a skill gap. Test-only captures exercise English, Russian, Hindi, and a second recurrence. [Issue #1613 audit](../../case-studies/issue-1613/repository-audit.md)
+
 ## Issue #1174 Text Transforms Answered Formally
 
 Issue [#1174](https://github.com/link-assistant/formal-ai/issues/1174) (E139,

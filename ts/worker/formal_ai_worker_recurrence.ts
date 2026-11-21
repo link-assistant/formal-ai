@@ -1,45 +1,3 @@
-// Trusted-source recurrence discovery for the browser worker.
-//
-// This module consumes a rebuildable cache generated from captured
-// Wikifunctions abstract definitions, testers, and Wikidata aliases. The cache
-// is procedure memory rather than semantic seed knowledge: deleting it and
-// running `cargo run --example generate_recurrence_source_cache -- --write`
-// reconstructs it byte-for-byte.
-
-let cachedRecurrenceSourceRecords;
-
-async function hydrateLinoSeedAndSourceCaches(raw) {
-  hydrateLinoSeedText(raw);
-  self.FORMAL_AI_RECURRENCE_SOURCE_CACHE_LINO = "";
-  try {
-    const response = await fetch(
-      withAssetVersion("source-cache/wikifunctions-recurrences.lino"),
-    );
-    if (response && response.ok) {
-      self.FORMAL_AI_RECURRENCE_SOURCE_CACHE_LINO = await response.text();
-    }
-  } catch (_error) {
-    self.FORMAL_AI_RECURRENCE_SOURCE_CACHE_LINO = "";
-  }
-  cachedRecurrenceSourceRecords = undefined;
-}
-
-function recurrenceSourceRecords() {
-  if (cachedRecurrenceSourceRecords !== undefined) {
-    return cachedRecurrenceSourceRecords;
-  }
-  const root = parseLinoTree(
-    String(self.FORMAL_AI_RECURRENCE_SOURCE_CACHE_LINO || ""),
-  );
-  const catalog = root.children.find(
-    (node) => node.name === "recurrence_source_cache",
-  );
-  cachedRecurrenceSourceRecords = catalog
-    ? catalog.children.filter((node) => node.name === "recurrence")
-    : [];
-  return cachedRecurrenceSourceRecords;
-}
-
 function recurrenceFold(value) {
   return String(value || "")
     .toLowerCase()
@@ -47,26 +5,6 @@ function recurrenceFold(value) {
     .replace(/\p{M}/gu, "")
     .replace(/[^\p{L}\p{N}!]+/gu, " ")
     .trim();
-}
-
-function recurrenceSourceMatch(prompt) {
-  const folded = recurrenceFold(prompt);
-  let best = null;
-  for (const record of recurrenceSourceRecords()) {
-    const forms = [codingChildValue(record, "label")].concat(
-      record.children
-        .filter((child) => child.name === "alias")
-        .map((alias) => codingChildValue(alias, "text")),
-    );
-    const matched = forms
-      .map(recurrenceFold)
-      .filter((form) => form.length >= 3 && folded.includes(form))
-      .sort((left, right) => right.length - left.length)[0];
-    if (matched && (!best || matched.length > best.length)) {
-      best = { record, length: matched.length };
-    }
-  }
-  return best ? best.record : null;
 }
 
 function recurrenceExpressionNode(record) {
@@ -110,12 +48,11 @@ function renderRecurrenceExpression(node, functionName) {
   return null;
 }
 
-function evaluateRecurrenceExpression(node, root, parameter, value, depth) {
-  if (!node || depth > 10000) return null;
+function evaluateRecurrenceExpression(node, root, parameter, value, depth, memo = new Map()) {
+  if (!node || depth > 512) return null;
   if (node.name === "parameter") return node.value === parameter ? value : null;
   if (node.name === "literal") {
-    const literal = Number(node.value);
-    return Number.isFinite(literal) ? literal : null;
+    return /^-?\d{1,16}$/u.test(node.value) ? BigInt(node.value) : null;
   }
   if (node.name === "recur" && node.children.length === 1) {
     const argument = evaluateRecurrenceExpression(
@@ -124,15 +61,13 @@ function evaluateRecurrenceExpression(node, root, parameter, value, depth) {
       parameter,
       value,
       depth + 1,
+      memo,
     );
-    if (!Number.isInteger(argument) || argument < 0) return null;
-    return evaluateRecurrenceExpression(
-      root,
-      root,
-      parameter,
-      argument,
-      depth + 1,
-    );
+    if (typeof argument !== "bigint" || argument < 0n || argument >= value) return null;
+    if (!memo.has(argument)) {
+      memo.set(argument, evaluateRecurrenceExpression(root, root, parameter, argument, depth + 1, memo));
+    }
+    return memo.get(argument);
   }
   if (node.name === "conditional" && node.children.length === 3) {
     const condition = evaluateRecurrenceExpression(
@@ -141,20 +76,22 @@ function evaluateRecurrenceExpression(node, root, parameter, value, depth) {
       parameter,
       value,
       depth + 1,
+      memo,
     );
-    if (condition === null) return null;
+    if (typeof condition !== "boolean") return null;
     return evaluateRecurrenceExpression(
       condition ? node.children[1] : node.children[2],
       root,
       parameter,
       value,
       depth + 1,
+      memo,
     );
   }
   const operands = node.children.map((child) =>
-    evaluateRecurrenceExpression(child, root, parameter, value, depth + 1),
+    evaluateRecurrenceExpression(child, root, parameter, value, depth + 1, memo),
   );
-  if (operands.some((operand) => operand === null)) return null;
+  if (operands.some((operand) => typeof operand !== "bigint")) return null;
   if (node.name === "less_equal" && operands.length === 2) {
     return operands[0] <= operands[1];
   }
@@ -165,13 +102,15 @@ function evaluateRecurrenceExpression(node, root, parameter, value, depth) {
     return operands[0] + operands[1];
   }
   if (node.name === "multiply" && operands.length === 2) {
-    return operands[0] * operands[1];
+    const product = operands[0] * operands[1];
+    const limit = 1n << 126n;
+    return product > -limit && product < limit ? product : null;
   }
   if (node.name === "subtract" && operands.length === 2) {
     return operands[0] - operands[1];
   }
   if (node.name === "subtract_one" && operands.length === 1) {
-    return operands[0] - 1;
+    return operands[0] - 1n;
   }
   return null;
 }
@@ -188,9 +127,9 @@ function verifiedRecurrenceRecord(record) {
       const argument = Number(codingChildValue(test, "argument"));
       const expected = Number(codingChildValue(test, "expected"));
       return (
-        Number.isFinite(argument) &&
-        Number.isFinite(expected) &&
-        evaluateRecurrenceExpression(root, root, parameter, argument, 0) === expected
+        Number.isInteger(argument) && argument >= 0 && argument <= 20
+        && Number.isSafeInteger(expected)
+        && evaluateRecurrenceExpression(root, root, parameter, BigInt(argument), 0) === BigInt(expected)
       );
     })
   );
@@ -199,5 +138,6 @@ function verifiedRecurrenceRecord(record) {
 function recurrenceObservation(prompt) {
   const match = String(prompt || "").match(/\b(\d+)(?:st|nd|rd|th)?\b/i);
   // Shared policy for a bounded demonstration when no observation was asked.
-  return match ? Number(match[1]) : 10;
+  const value = match ? Number(match[1]) : 10;
+  return value >= 0 && value <= 20 ? value : null;
 }

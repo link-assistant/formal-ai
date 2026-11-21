@@ -1,19 +1,4 @@
-//! The committed recurrence source cache, read as the browser worker reads it.
-//!
-//! The cache `js/source-cache/wikifunctions-recurrences.lino` holds recurrences the
-//! example `generate_recurrence_source_cache` formalized from captured
-//! Wikifunctions abstract definitions, their source testers and the Wikidata
-//! aliases of the concept each one computes. The browser answers a function
-//! request that names one of them through `trySourceRecurrenceSynthesis`
-//! (`js/worker/formal_ai_worker_recurrence.js`); this module is its native
-//! twin, so the offline solver reads the same procedure memory instead of
-//! ending in a skill gap (issue #1173 R1173-3, routing probes p223-p225).
-//!
-//! The cache is procedure memory, not seed knowledge: deleting it and running
-//! the example rebuilds it byte for byte, and `rust/embedded/` mirrors it
-//! (`scripts/mirror-package-data.rs`).
-
-use std::sync::OnceLock;
+//! Read and evaluate a caller-supplied recurrence replay.
 
 use unicode_general_category::{GeneralCategory, get_general_category};
 
@@ -21,9 +6,6 @@ use crate::coding::concept_discovery::CandidatePart;
 use crate::coding::recurrence::{Expression, Operation, Recurrence, SourceCallableContract};
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
 use crate::seed::parser::{LinoNode, parse_lino};
-
-const RECURRENCE_SOURCE_CACHE_LINO: &str =
-    include_str!("../../../embedded/js/source-cache/wikifunctions-recurrences.lino");
 
 /// The candidate kind the composition renders a source recurrence as.
 const RECURRENCE_CANDIDATE_KIND: &str = "wikifunctions_recurrence";
@@ -47,15 +29,6 @@ pub struct CachedRecurrence {
     pub source_tests: Vec<Example>,
     /// The Wikidata concept page the aliases came from.
     pub concept_source_url: String,
-}
-
-/// Every record of the committed cache, in cache order.
-///
-/// The JavaScript twin is `recurrenceSourceRecords`.
-#[must_use]
-pub fn recurrence_source_records() -> &'static [CachedRecurrence] {
-    static RECORDS: OnceLock<Vec<CachedRecurrence>> = OnceLock::new();
-    RECORDS.get_or_init(|| records_from(RECURRENCE_SOURCE_CACHE_LINO))
 }
 
 /// Read the `recurrence` records of a cache document.
@@ -229,10 +202,13 @@ const fn keeps(category: GeneralCategory, character: char) -> bool {
 /// record on a tie.
 /// The JavaScript twin is `recurrenceSourceMatch`.
 #[must_use]
-pub fn recurrence_source_match(prompt: &str) -> Option<&'static CachedRecurrence> {
+pub fn recurrence_source_match<'a>(
+    prompt: &str,
+    records: &'a [CachedRecurrence],
+) -> Option<&'a CachedRecurrence> {
     let folded = recurrence_fold(prompt);
     let mut best: Option<(&CachedRecurrence, usize)> = None;
-    for record in recurrence_source_records() {
+    for record in records {
         let matched = record
             .forms
             .iter()
@@ -371,11 +347,14 @@ pub fn render_cached_recurrence(record: &CachedRecurrence) -> Option<String> {
 /// `trySourceRecurrenceSynthesis`; the browser evaluates the AST where the
 /// native composition also runs the rendered program under `python3`.
 #[must_use]
-pub fn source_recurrence_candidate(spec: &CodingTaskSpec) -> Option<CandidatePart> {
+pub fn source_recurrence_candidate(
+    spec: &CodingTaskSpec,
+    records: &[CachedRecurrence],
+) -> Option<CandidatePart> {
     if spec.language != "python" || spec.artifact_shape != ArtifactShape::Function {
         return None;
     }
-    let record = recurrence_source_match(&spec.requirement_sentences.join(" "))?;
+    let record = recurrence_source_match(&spec.requirement_sentences.join(" "), records)?;
     if !verified_recurrence_record(record) {
         return None;
     }

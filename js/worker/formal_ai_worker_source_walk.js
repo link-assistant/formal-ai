@@ -56,6 +56,7 @@ function sourceWalkRegistry() {
       extractor: value("extractor"),
       howToRole: value("how_to_role") || "none",
       api: value("api"),
+      fetchApi: value("fetch_api"),
       apiFallback: value("api-fallback"),
       languageApi: value("language_api"),
       apiLanguages: sourceWalkList(value("api_language")),
@@ -195,6 +196,7 @@ async function sourceWalkSha256Hex(text) {
 
 async function sourceWalkSources(kind, subject, language, preferences, bounds, extractor) {
   const entryUrl = extractor.entryUrl || sourceWalkEntryUrl;
+  const online = preferences?.offline !== true && extractor.online !== false;
   const candidates = sourceWalkCandidates(
     kind,
     subject,
@@ -226,7 +228,7 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
       if (outcome.pages >= bounds.maxPagesPerService || visited.includes(url)) continue;
       visited.push(url);
       // eslint-disable-next-line no-await-in-loop -- capture order is evidence.
-      const capture = await sourceWalkFetchCapture(url, { online: extractor.online !== false, bounded: extractor.bounded });
+      const capture = await sourceWalkFetchCapture(url, { online, bounded: extractor.bounded });
       if (!capture.ok) {
         const offline = capture.failureKind === "offline_cache_miss";
         const missing = sourceWalkResourceMissing(capture.error);

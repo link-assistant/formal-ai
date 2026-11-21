@@ -548,17 +548,9 @@ impl UniversalSolver {
                 return answer;
             }
 
-            // Issue #312: a concrete write_program request (recognized task and
-            // language with a matching template) must take precedence over the
-            // specialized handlers. Otherwise concept_lookup answers the language
-            // name ("Rust") as an encyclopedia definition instead of returning the
-            // requested program. Policy guards still run for these prompts below.
-            //
-            // A page query over a page the prompt supplies (issues #1163 R10,
-            // #1164 R1164-11) is a question about that page: the page's own
-            // code example ("prints Hello, world! in Rust") names a task and a
-            // language, but it is the object of the query, not a request to
-            // write it, so the dispatch keeps it as the browser worker does.
+            // A concrete program request outranks concept lookup (#312).
+            // A supplied page's code remains the subject of a page query
+            // (#1163 R10, #1164 R1164-11). Policy guards still apply.
             let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_))
                 && !crate::solver_handlers::page_query_text::page_query_text_claims(prompt);
             if !is_concrete_write_program
@@ -579,6 +571,16 @@ impl UniversalSolver {
                 log,
                 language,
             ) {
+                return answer;
+            }
+
+            if is_concrete_write_program
+                && let Some(answer) = crate::solver_handlers::try_publisher_recurrence(
+                    prompt,
+                    log,
+                    !self.config.offline && crate::solver_config::read_network_allowed(),
+                )
+            {
                 return answer;
             }
 

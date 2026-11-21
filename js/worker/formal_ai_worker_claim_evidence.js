@@ -176,7 +176,10 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
     .map((token) => token.replace(/^[^\p{L}\p{N}_]+|[^\p{L}\p{N}_]+$/gu, "")).filter((token) => token !== "")) !== null,
   filesystem_object: (prompt) => shellComposeSedSubstitution(prompt) !== null
     || codeTaskTokens(String(prompt || "").toLowerCase()).some((token) => codeTaskMapWords("file_context").includes(token)),
-  function_spec: (prompt) => extractPythonFunctionName(prompt) !== "" || Boolean(recurrenceSourceMatch(prompt)),
+  function_spec: (prompt, normalized) => looksLikePythonFunctionSynthesis(prompt, normalized)
+    && (extractPythonFunctionName(prompt) !== "" || claimEvidenceContentBeyond(prompt, [
+      "coding_request_verb", "coding_request_object", ROLE_PROGRAM_SYNTHESIS_SUBJECT, "program_language_alias",
+    ])),
   script_language: (prompt) => {
     const language = programLanguageFromPrompt(normalizeProgramPrompt(prompt));
     return Boolean(language && writeProgramTemplate("hello_world", language));

@@ -8,7 +8,10 @@ import { promisify } from "node:util";
 import { startCli, temporaryHome } from "./support/structured-log-fixture.mjs";
 import { startServer } from "../../../js/server/main.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
+import { indexedProcedure, indexedProcedureBody, unrelatedProcedure } from "./support/indexed-procedure-capture.mjs";
 import { procedureBooks, procedureBookCaptures } from "./support/procedure-publisher-captures.mjs";
+
+import { recurrenceCases, recurrenceNativeCaptures } from "./support/recurrence-publisher-captures.mjs";
 
 const RUSSIAN_REQUEST = "Как хорошо покакать?";
 const CODEX_REQUEST = "Как какать?";
@@ -25,6 +28,7 @@ const NHS_SOURCE = "https://www.nhs.uk/conditions/constipation/";
 const NHS_CAPTURE = readFileSync(new URL("../fixtures/practical-help/toilet.html", import.meta.url), "utf8");
 const NATIVE_CLI = process.env.FORMAL_AI_TEST_NATIVE_CLI;
 const NATIVE_CASE = { skip: !NATIVE_CLI, timeout: 30_000 };
+const NATIVE_MULTI_TURN_CASE = { ...NATIVE_CASE, timeout: 60_000 };
 const WEB_SEARCH_TOOLS = [{ type: "web_search" }];
 
 function storeCapture(cache, source, content) {
@@ -38,6 +42,36 @@ function storeCapture(cache, source, content) {
   writeFileSync(path.join(cache, "source-cache", `${key.toString(16).padStart(16, "0")}.meta`),
     `source-capture-v2\nurl=${source}\nfetched_at=${Math.floor(Date.now() / 1000)}\nsha256=${digest}\n`);
 }
+
+test("native offline chat synthesizes recurrences only from supplied publisher captures", NATIVE_MULTI_TURN_CASE, async (t) => {
+  const cache = temporaryHome(t);
+  mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
+  const run = await startCli(t, {
+    binary: NATIVE_CLI,
+    env: { FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_OFFLINE: "1" },
+    lifetime: NATIVE_MULTI_TURN_CASE.timeout,
+  });
+  await run.ready();
+  async function ask(prompt) {
+    const response = await fetch(`${run.url}/v1/chat/completions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        model: "formal-ai", stream: false, messages: [{ role: "user", content: prompt }],
+      }),
+    });
+    assert.ok(response.ok, await response.clone().text());
+    return (await response.json()).choices[0].message.content;
+  }
+
+  assert.doesNotMatch(await ask(recurrenceCases[0].prompt), /def factorial\(n\)/u);
+  for (const [url, body] of recurrenceNativeCaptures()) storeCapture(cache, url, body);
+  for (const { name, prompt } of recurrenceCases) {
+    const retrieved = await ask(prompt);
+    assert.ok(retrieved.includes(`def ${name}(n)`), `${prompt} \n${retrieved}`);
+    assert.match(retrieved, /https:\/\/www\.wikifunctions\.org\/w\/api\.php/u);
+  }
+});
 
 test("native offline chat discovers procedures from verified Wikibooks captures", NATIVE_CASE, async (t) => {
   const cache = temporaryHome(t);
@@ -72,7 +106,37 @@ test("native offline chat discovers procedures from verified Wikibooks captures"
   }
 });
 
-async function startNativeProcedureReplay(t, { agentMode = false } = {}) {
+test("native offline chat reads ranked publisher pages before giving procedural steps", NATIVE_CASE, async (t) => {
+  const { cache, url } = await startNativeProcedureReplay(t);
+  const query = encodeURIComponent(`how to ${indexedProcedure.task}`);
+  const index = `https://api.duckduckgo.com/?q=${query}&format=json&no_html=1&skip_disambig=1`;
+  storeCapture(cache, index, JSON.stringify({
+    RelatedTopics: [unrelatedProcedure.page, indexedProcedure.page].map(FirstURL => ({
+      FirstURL, Text: indexedProcedure.task,
+    })),
+  }));
+  const pages = path.join(cache, "public-search-pages");
+  mkdirSync(path.join(pages, "source-cache", "objects"), { recursive: true });
+  storeCapture(pages, unrelatedProcedure.page, unrelatedProcedure.body);
+  storeCapture(pages, indexedProcedure.page, indexedProcedureBody());
+  const response = await fetch(`${url}/v1/chat/completions`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    signal: t.signal,
+    body: JSON.stringify({
+      model: "formal-ai", stream: false,
+      messages: [{ role: "user", content: `How to ${indexedProcedure.task}?` }],
+    }),
+  });
+  assert.ok(response.ok, await response.clone().text());
+  const content = (await response.json()).choices[0].message.content;
+  assert.match(content.match(/^1\. (.+)$/mu)?.[1] ?? "", indexedProcedure.firstStep);
+  assert.match(content, indexedProcedure.finalAction);
+  assert.ok(content.includes(indexedProcedure.page), content);
+  assert.ok(!content.includes(unrelatedProcedure.page), content);
+});
+
+async function startNativeProcedureReplay(t, { agentMode = false, lifetime = NATIVE_CASE.timeout } = {}) {
   const cache = temporaryHome(t);
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   storeCapture(cache, RUSSIAN_API, RUSSIAN_CAPTURE);
@@ -82,11 +146,11 @@ async function startNativeProcedureReplay(t, { agentMode = false } = {}) {
   const run = await startCli(t, {
     binary: NATIVE_CLI,
     args: agentMode ? ["--agent-mode"] : [],
-    env: { FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_LIVE_FETCH: "0" },
-    lifetime: 25_000,
+    env: { FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_OFFLINE: "1" },
+    lifetime,
   });
   await run.ready();
-  return { cache, url: run.url };
+  return { cache, url: run.url, run };
 }
 
 async function askChatProcedure(url, messages, { source = RUSSIAN_API, tools } = {}) {
@@ -134,9 +198,16 @@ test("native chat recovers a matching article after discarding an unrelated one"
   assert.ok(!recovered.includes(RUSSIAN_API), recovered);
 });
 
-test("native Responses uses procedural sources with the client web search tool available", NATIVE_CASE, async (t) => {
-  const { url } = await startNativeProcedureReplay(t, { agentMode: true });
-  await assertProceduralAgentRouting(url);
+test("native Responses uses procedural sources with the client web search tool available", NATIVE_MULTI_TURN_CASE, async (t) => {
+  const { url, run } = await startNativeProcedureReplay(t, {
+    agentMode: true,
+    lifetime: NATIVE_MULTI_TURN_CASE.timeout,
+  });
+  try {
+    await assertProceduralAgentRouting(url, t.signal);
+  } catch (error) {
+    throw new Error(`native procedural replay exited=${run.closed} signal=${run.signal}\n${run.stderr}`, { cause: error });
+  }
 });
 
 test("native HTTP documentation answers require a matching publisher capture", NATIVE_CASE, async (t) => {
@@ -194,11 +265,12 @@ test("native Agent CLI requires a retrieved capture for a known benchmark issue"
   assert.equal(await fetchIssue(), body);
 });
 
-async function assertProceduralAgentRouting(url) {
+async function assertProceduralAgentRouting(url, signal) {
   async function ask(input) {
     const response = await fetch(`${url}/v1/responses`, {
       method: "POST",
       headers: { "content-type": "application/json" },
+      signal,
       body: JSON.stringify({ model: "formal-ai", input, stream: false, tools: WEB_SEARCH_TOOLS }),
     });
     assert.ok(response.ok, await response.clone().text());

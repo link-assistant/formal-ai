@@ -17,6 +17,8 @@
 //! live run refreshes them under the same code path.
 
 pub mod extract;
+#[cfg(not(target_arch = "wasm32"))]
+pub(crate) mod indexed;
 mod render;
 
 use std::collections::BTreeMap;

@@ -188,9 +188,12 @@ pub fn search_functions<T: SourceTransport>(
         .map_or(&[], Vec::as_slice);
     Ok(results
         .iter()
+        .take(5)
         .filter_map(|result| {
             Some(FunctionMatch {
-                page_title: string(result, "page_title")?.to_owned(),
+                page_title: string(result, "page_title")
+                    .filter(|identifier| is_object_identifier(identifier))?
+                    .to_owned(),
                 label: string(result, "label")?.to_owned(),
                 match_label: string(result, "match_label")?.to_owned(),
                 match_lang: string(result, "match_lang")?.to_owned(),
@@ -272,10 +275,11 @@ pub fn fetch_abstract_implementation<T: SourceTransport>(
         .ok_or_else(|| malformed(zid, "missing Z2K2 implementation body"))?;
     let function_zid = string(body, "Z14K1")
         .ok_or_else(|| malformed(zid, "missing Z14K1 implemented function"))?;
+    let mut node_budget = 128;
     let expression = body
         .get("Z14K2")
         .ok_or_else(|| malformed(zid, "missing Z14K2 abstract expression"))
-        .and_then(|value| parse_expression(value, zid))?;
+        .and_then(|value| parse_expression(value, zid, 0, &mut node_budget))?;
     Ok(AbstractImplementation {
         zid: zid.to_owned(),
         function_zid: function_zid.to_owned(),
@@ -287,7 +291,19 @@ pub fn fetch_abstract_implementation<T: SourceTransport>(
     })
 }
 
-fn parse_expression(value: &Value, context: &str) -> Result<ZExpression, FetchError> {
+fn parse_expression(
+    value: &Value,
+    context: &str,
+    depth: usize,
+    node_budget: &mut usize,
+) -> Result<ZExpression, FetchError> {
+    if depth >= 24 || *node_budget == 0 {
+        return Err(malformed(
+            context,
+            "abstract expression exceeds its node or depth limit",
+        ));
+    }
+    *node_budget -= 1;
     if let Some(value) = value.as_str() {
         return Ok(ZExpression::Literal(value.to_owned()));
     }
@@ -310,7 +326,10 @@ fn parse_expression(value: &Value, context: &str) -> Result<ZExpression, FetchEr
                 if key == "Z1K1" || key == "Z7K1" {
                     continue;
                 }
-                arguments.insert(key.clone(), parse_expression(value, context)?);
+                arguments.insert(
+                    key.clone(),
+                    parse_expression(value, context, depth + 1, node_budget)?,
+                );
             }
             Ok(ZExpression::Call {
                 function_zid: function_zid.to_owned(),
@@ -366,21 +385,29 @@ pub fn fetch_testers<T: SourceTransport>(
     client: &CachedSourceClient<T>,
     zids: &[String],
 ) -> Result<Vec<FunctionTest>, FetchError> {
+    if zids.is_empty() {
+        return Ok(Vec::new());
+    }
     let requested = zids.iter().map(String::as_str).collect::<Vec<_>>();
     let capture = client.fetch(&fetch_url(&requested))?;
     let outer = outer_objects(&capture)?;
     let mut out = Vec::new();
     for zid in zids {
-        let object = decoded_object(&outer, zid)?;
-        let body = object
-            .pointer("/Z2K2")
-            .ok_or_else(|| malformed(zid, "missing Z2K2 tester body"))?;
+        let Ok(object) = decoded_object(&outer, zid) else {
+            continue;
+        };
+        let Some(body) = object.pointer("/Z2K2") else {
+            continue;
+        };
         let Some(function_zid) = string(body, "Z20K1") else {
             continue;
         };
         let Some(call) = body.get("Z20K2").and_then(Value::as_object) else {
             continue;
         };
+        if call.get("Z7K1").and_then(Value::as_str) != Some(function_zid) {
+            continue;
+        }
         let mut arguments = call
             .iter()
             .filter(|(key, _)| key.starts_with(function_zid) && key.as_str() != "Z7K1")
@@ -424,7 +451,19 @@ fn decoded_object(outer: &Value, zid: &str) -> Result<Value, FetchError> {
         .and_then(|entry| entry.get("wikilambda_fetch"))
         .and_then(Value::as_str)
         .ok_or_else(|| malformed(zid, "object absent from wikilambda_fetch response"))?;
-    serde_json::from_str(encoded).map_err(|error| malformed(zid, &error.to_string()))
+    let value: Value =
+        serde_json::from_str(encoded).map_err(|error| malformed(zid, &error.to_string()))?;
+    let identity = value
+        .get("Z2K1")
+        .and_then(Value::as_str)
+        .or_else(|| value.pointer("/Z2K1/Z6K1").and_then(Value::as_str));
+    if identity != Some(zid) {
+        return Err(malformed(
+            zid,
+            "source object identity does not match its request",
+        ));
+    }
+    Ok(value)
 }
 
 fn parse_json(bytes: &[u8], context: &str) -> Result<Value, FetchError> {
@@ -439,6 +478,14 @@ fn string<'a>(object: &'a Value, key: &str) -> Option<&'a str> {
     object.get(key).and_then(Value::as_str)
 }
 
+fn is_object_identifier(value: &str) -> bool {
+    value.strip_prefix('Z').is_some_and(|digits| {
+        !digits.starts_with('0')
+            && (1..=10).contains(&digits.len())
+            && digits.bytes().all(|byte| byte.is_ascii_digit())
+    })
+}
+
 fn array_references(value: Option<&Value>, sentinel: &str) -> Vec<String> {
     value
         .and_then(Value::as_array)
@@ -446,7 +493,7 @@ fn array_references(value: Option<&Value>, sentinel: &str) -> Vec<String> {
             items
                 .iter()
                 .filter_map(Value::as_str)
-                .filter(|reference| *reference != sentinel)
+                .filter(|reference| *reference != sentinel && is_object_identifier(reference))
                 .map(str::to_owned)
                 .collect()
         })

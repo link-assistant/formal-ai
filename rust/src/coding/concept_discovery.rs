@@ -638,12 +638,20 @@ fn candidates_for(
             }
         }
         if let Some(recurrence) = &function.recurrence {
-            let recurrence_score = labels
+            let subject = crate::coding::recurrence::cache::recurrence_fold(recurrence_query);
+            let folded_subject = format!(" {subject} ");
+            let aliases = catalog
+                .function_matches
                 .iter()
-                .map(|label| overlap_score(recurrence_query, label))
-                .max_by(f64::total_cmp)
-                .unwrap_or(0.0);
-            if recurrence_score < 1.0 {
+                .filter(|matched| {
+                    matched.page_title == function.definition.zid && matched.match_rate >= 0.65
+                })
+                .flat_map(|matched| [&matched.label, &matched.match_label]);
+            let covers_subject = labels.iter().chain(aliases).any(|name| {
+                let label = crate::coding::recurrence::cache::recurrence_fold(name);
+                label.chars().count() >= 3 && folded_subject.contains(&format!(" {label} "))
+            });
+            if !covers_subject || function.source_tests.is_empty() {
                 continue;
             }
             let callable_name = recurrence.suggested_identifier();
@@ -664,7 +672,7 @@ fn candidates_for(
                 source_url: recurrence.source_url.clone(),
                 sha256: recurrence.source_sha256.clone(),
                 fetched_at: recurrence.fetched_at.clone(),
-                score: recurrence_score,
+                score: 1.0,
             });
         }
     }

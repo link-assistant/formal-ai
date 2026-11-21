@@ -298,7 +298,7 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            !runtime.solver_config.offline,
+            !runtime.solver_config.offline && crate::solver_config::read_network_allowed(),
         ),
         "shell_command_transform" => {
             try_shell_command_transform_with_history(prompt, normalized, log, history)

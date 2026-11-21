@@ -1,0 +1,18 @@
+✔ the browser worker reads the how-to services out of the seed registry (2737.143183ms)
+✔ settings opt-outs stay authoritative in the browser (2284.073369ms)
+✔ the committed captures synthesise a provenance-carrying guide (3319.539575ms)
+✔ insufficient evidence is reported instead of invented (2187.807196ms)
+✔ the browser follows ranked URLs and takes steps from the matching publisher document (3645.790302ms)
+✔ distinct ordered procedures under one matching heading require a narrower task (2405.49272ms)
+✔ per-service accessibility is remembered for at least seven days (1964.112462ms)
+✔ copies and contradictions follow the issue #709 source-tier policy (2013.831642ms)
+✔ the browser worker and the Rust solver synthesise the same guide (3941.664509ms)
+✔ the procedural how-to answer is the synthesised guide when it is sufficient (3776.699506ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29000.667027

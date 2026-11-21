@@ -228,8 +228,8 @@ function howToDecodeEntities(value) {
   return String(value == null ? "" : value).replace(/&(#?[0-9A-Za-z]{1,9});/gu, (whole, entity) => {
     const named = { nbsp: " ", "#160": " ", amp: "&", quot: '"', apos: "'", "#039": "'", lt: "<", gt: ">" };
     if (entity in named) return named[entity];
-    if (/^#\d+$/u.test(entity)) {
-      const code = Number(entity.slice(1));
+    if (/^#(?:\d+|x[0-9a-f]+)$/iu.test(entity)) {
+      const code = /^#x/iu.test(entity) ? Number.parseInt(entity.slice(2), 16) : Number(entity.slice(1));
       if (code <= 0x10ffff && (code < 0xd800 || code > 0xdfff)) return String.fromCodePoint(code);
     }
     return whole;

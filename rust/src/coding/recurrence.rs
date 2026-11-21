@@ -301,7 +301,10 @@ pub fn formalize(
     if implementation.function_zid != definition.zid {
         return Err("abstract implementation targets a different function".to_owned());
     }
-    if definition.argument_keys.len() != 1 {
+    if definition.argument_keys.len() != 1
+        || definition.argument_types.as_slice() != ["Z13518"]
+        || definition.return_type != "Z13518"
+    {
         return Err("only single-measure recurrences are currently bounded".to_owned());
     }
     let source_key = &definition.argument_keys[0];
@@ -326,11 +329,17 @@ pub fn formalize(
     if contains_recur(&branches[1]) {
         return Err("boundary result contains a recursive call".to_owned());
     }
-    validate_boundary(&branches[0], parameter)?;
+    let boundary = validate_boundary(&branches[0], parameter)?;
     let mut offsets = Vec::new();
     collect_offsets(&branches[2], parameter, &mut offsets)?;
     if offsets.is_empty() {
         return Err("transition has no recursive call".to_owned());
+    }
+    if offsets
+        .iter()
+        .any(|offset| *offset > boundary.saturating_add(1))
+    {
+        return Err("transition can leave the natural-number domain".to_owned());
     }
     offsets.sort_unstable();
     offsets.dedup();
@@ -455,7 +464,7 @@ fn operation_for_descriptor(descriptor: &FunctionPart) -> Result<Operation, Stri
     ))
 }
 
-fn validate_boundary(expression: &Expression, parameter: &str) -> Result<(), String> {
+fn validate_boundary(expression: &Expression, parameter: &str) -> Result<u64, String> {
     let Expression::Apply(operation @ (Operation::LessEqual | Operation::Equal), operands) =
         expression
     else {
@@ -467,7 +476,13 @@ fn validate_boundary(expression: &Expression, parameter: &str) -> Result<(), Str
     {
         return Err(format!("invalid {operation:?} boundary operands"));
     }
-    Ok(())
+    let Expression::Literal(boundary) = operands[1] else {
+        return Err("boundary is missing its integer value".to_owned());
+    };
+    if *operation == Operation::Equal && boundary != 0 {
+        return Err("an equality boundary for natural numbers must start at zero".to_owned());
+    }
+    u64::try_from(boundary).map_err(|error| error.to_string())
 }
 
 fn contains_recur(expression: &Expression) -> bool {

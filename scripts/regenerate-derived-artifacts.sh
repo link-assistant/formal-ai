@@ -36,7 +36,7 @@ run_step "ordered lists (src/lib.rs, tests/*/mod.rs, worker module list)" \
   rust-script scripts/normalize-ordered-lists.rs --write
 run_step "seed inventory (src/seed/embedded_registry.rs, js/seed-files.js)" \
   rust-script scripts/generate-seed-registry.rs --write
-run_step "trusted-source recurrence cache (js/source-cache/wikifunctions-recurrences.lino)" \
+run_step "recurrence test fixture (rust/tests/fixtures/coding-discovery/wikifunctions/recurrence-replay.lino)" \
   cargo run --manifest-path rust/Cargo.toml --quiet --example generate_recurrence_source_cache -- --write
 run_step "requirements document (REQUIREMENTS.md, docs/requirements/assembled/)" \
   rust-script scripts/assemble-requirements.rs --write

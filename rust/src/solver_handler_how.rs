@@ -169,6 +169,21 @@ pub fn procedural_how_to_task(normalized: &str) -> Option<String> {
     extract_procedural_how_to_task(normalized).map(|task| task.task)
 }
 
+pub(super) fn procedural_index_queries(normalized: &str) -> Vec<String> {
+    let Some(task) = extract_procedural_how_to_task(normalized) else {
+        return Vec::new();
+    };
+    let mut queries = vec![procedural_search_query(&task)];
+    if task.action == "install" {
+        queries.push(how_policy(
+            "procedural_how_to",
+            "fallback-query",
+            &[("task", &task.task)],
+        ));
+    }
+    queries
+}
+
 /// Handles follow-up requests for the concrete steps of an active procedure —
 /// "Can you give me specific instructions?", "give me the exact steps", "step
 /// by step", and their multilingual equivalents (issue #444). These prompts

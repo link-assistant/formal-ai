@@ -498,8 +498,14 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     prompt, normalized, history, memory, memoryEvents, language,
     responseLanguage, preferences, userContext, writeProgram, definitionMerge,
   });
+  let recurrenceDiscovery;
   for (const handler of syncHandlers) {
-    const hit = handler.run();
+    const local = handler.run();
+    const mayDiscoverRecurrence = handler.name === "tryProgramSynthesis"
+      || (handler.name === "tryWriteProgramConcrete" && local?.intent === "write_program");
+    const source = mayDiscoverRecurrence && !local?.evidence?.includes("synthesis:ir:type_checked")
+      ? await (recurrenceDiscovery ??= discoverSourceRecurrence(prompt, normalized, preferences)) : null;
+    const hit = source || local;
     if (hit) {
       events.push(`handler:${hit.intent}`);
       steps.push({ step: "dispatch_handler", detail: handler.name });
@@ -709,7 +715,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, originality, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "web_search" });
-  const webSearch = await claimRouteRun("tryWebSearch", prompt, normalized, history, () => tryWebSearch(prompt, language));
+  const webSearch = await claimRouteRun("tryWebSearch", prompt, normalized, history, () => tryWebSearch(prompt, language, preferences));
   if (webSearch) {
     events.push(`handler:${webSearch.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWebSearch" });
@@ -798,7 +804,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   const bareTermQuery = extractUnresolvedBareTermSearchQuery(prompt);
   if (bareTermQuery) {
     steps.push({ step: "invoke_tool", detail: "web_search_unresolved_bare_term" });
-    const bareTermSearch = await runWebSearchQuery(bareTermQuery, language, "unresolved_bare_term");
+    const bareTermSearch = await runWebSearchQuery(bareTermQuery, language, "unresolved_bare_term", preferences);
     if (bareTermSearch) {
       events.push(`handler:${bareTermSearch.intent}`);
       steps.push({ step: "dispatch_handler", detail: "tryUnresolvedBareTermWebSearch" });
@@ -1089,7 +1095,7 @@ async function loadSeed() {
       seedSourceTexts = (seed && seed.sourceRaw) || {};
       installBrowserHandlerPrecedence(seed && seed.browserHandlerPrecedence);
       installWorkerHandlerRegistry(SEED_RAW["seed/handler-precedence.lino"]);
-      await hydrateLinoSeedAndSourceCaches(SEED_RAW);
+      hydrateLinoSeedText(SEED_RAW);
       await loadCrateSeeds(SEED_RAW);
       if (seed && seed.responses) {
         const merged = {};

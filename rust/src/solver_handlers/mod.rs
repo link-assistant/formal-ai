@@ -73,6 +73,7 @@ pub use pattern_inference::{try_pattern_inference, try_pattern_inference_with_re
 pub use playwright_script::try_playwright_script;
 pub use product_search::{handle_product_search, names_marketplace};
 pub use program_blueprint::try_program_blueprint;
+pub(crate) use program_synthesis::try_publisher_recurrence;
 pub use program_synthesis::{
     looks_like_python_function_request, try_program_synthesis, try_program_synthesis_with_online,
 };

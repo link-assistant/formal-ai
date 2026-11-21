@@ -13,8 +13,8 @@ use crate::language::detect;
 use crate::seed::external_service_settings_keys;
 use crate::service_accessibility::{ServiceAccessibilityCache, unix_now};
 use crate::solver_handler_how::{
-    internet_access_help_requested, procedural_how_to_task, try_how_to_procedure,
-    try_procedural_how_to_followup_with,
+    internet_access_help_requested, procedural_how_to_task, procedural_index_queries,
+    try_how_to_procedure, try_procedural_how_to_followup_with,
 };
 use crate::solver_handlers::finalize_simple;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
@@ -64,6 +64,26 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     preferences: &ServicePreferences,
     availability: &mut ServiceAccessibilityCache,
 ) -> Option<SymbolicAnswer> {
+    try_how_to_procedure_with_clients(
+        prompt,
+        normalized,
+        log,
+        client,
+        client,
+        preferences,
+        availability,
+    )
+}
+
+fn try_how_to_procedure_with_clients<T: SourceTransport, P: SourceTransport>(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+    pages: &CachedSourceClient<P>,
+    preferences: &ServicePreferences,
+    availability: &mut ServiceAccessibilityCache,
+) -> Option<SymbolicAnswer> {
     if crate::legality_warning::assess(prompt, normalized).is_some() {
         return None;
     }
@@ -77,7 +97,7 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     }
     let task = procedural_how_to_task(normalized)?;
     let language = detect(prompt).slug();
-    let guide = synthesize_how_to_guide_in(
+    let mut guide = synthesize_how_to_guide_in(
         (&task, language),
         client,
         preferences,
@@ -87,6 +107,17 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     );
     if let Err(error) = availability.save() {
         log.append("service_accessibility:save_failed", error.to_string());
+    }
+    if !guide.is_sufficient() {
+        crate::how_to_guide::indexed::discover_indexed_procedure(
+            &mut guide,
+            language,
+            &procedural_index_queries(normalized),
+            client,
+            pages,
+            preferences,
+            log,
+        );
     }
     guide.record(log);
     if !guide.is_sufficient() {
@@ -114,15 +145,21 @@ pub fn try_how_to_procedure_with_offline(
     log: &mut EventLog,
     offline: bool,
 ) -> Option<SymbolicAnswer> {
-    let cache_dir = std::env::var(CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
-    let client = CachedSourceClient::new(&cache_dir, CurlSourceTransport).with_online(!offline);
+    let directory = std::env::var(CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
+    let client = CachedSourceClient::new(&directory, CurlSourceTransport).with_online(!offline);
+    let pages = CachedSourceClient::new(
+        std::path::Path::new(&directory).join("public-search-pages"),
+        crate::source_fetch::PublicPageTransport,
+    )
+    .with_online(!offline);
     let preferences = service_preferences_from_env(log);
     let mut availability = ServiceAccessibilityCache::load(&cache_dir);
-    try_how_to_procedure_with_client(
+    try_how_to_procedure_with_clients(
         prompt,
         normalized,
         log,
         &client,
+        &pages,
         &preferences,
         &mut availability,
     )

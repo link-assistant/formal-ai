@@ -200,6 +200,7 @@ debug_stage_sources
     js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"
   event "web_search:request"
     step http_chat
+    rust "rust/src/how_to_guide/indexed.rs" "discover_indexed_procedure"
     rust "rust/src/solver_handler_how.rs" "record_mechanism_query"
     rust "rust/src/solver_handler_how.rs" "try_how_to_procedure"
     rust "rust/src/solver_handlers/document_originality.rs" "log_statement_verification"

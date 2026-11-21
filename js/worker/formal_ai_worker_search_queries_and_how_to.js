@@ -853,17 +853,32 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const solverEvents = proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, query, wikihowEnabled, wikiAttempted);
   const evidence = [
     ...solverEvents.map(({ kind, payload }) => `${kind}:${payload}`),
-    ...research.evidence,
+    ...research.evidence.filter(item => !item.startsWith("how_to:insufficient_evidence ")),
     ...(task.corrections || []).map(({ from, to }) => `spelling_correction:${from}->${to}`),
   ];
 
   const fallbackQuery = isInstall ? query : searchQuery;
   const official = isInstall && preferences.offline !== true
-    ? await runWebSearchQuery(searchQuery, language, "official_documentation") : null;
+    ? await runWebSearchQuery(searchQuery, sourceLanguage, "official_documentation", preferences) : null;
   const indexed = preferences.offline !== true
-    ? await runWebSearchQuery(fallbackQuery, language, isInstall ? "general_how_to_fallback" : "") : null;
+    ? await runWebSearchQuery(fallbackQuery, sourceLanguage, isInstall ? "general_how_to_fallback" : "", preferences) : null;
   for (const result of [official, indexed]) {
     if (result) evidence.push(...result.evidence.filter((item) => !evidence.includes(item)));
+  }
+  const discovered = [official, indexed].flatMap(result => result?.diagnostics?.fused || []);
+  const candidates = indexedProcedureCandidates(searchQuery, sourceLanguage, discovered);
+  const before = research.guide.outcomes.length;
+  const accepted = await indexedProcedureGuide(research.guide, candidates, sourceLanguage, preferences);
+  for (const outcome of research.guide.outcomes.slice(before)) {
+    evidence.push(`how_to:source ${howToOutcomeTracePayload(outcome)}`);
+  }
+  if (accepted) {
+    evidence.push(`source:${research.guide.steps[0].sourceUrl}`);
+    for (const step of research.guide.steps) evidence.push(`how_to:step ${howToStepProvenance(step)}`);
+    return { intent: "procedural_how_to", content: howToGuideMarkdown(research.guide, language),
+      solverEvents, confidence: 0.8, evidence, guide: research.guide,
+      diagnostics: indexed?.diagnostics || official?.diagnostics || null,
+      query, wikihowCandidate: pageTitle, formalizedObject: `HOWTO:${task.task}` };
   }
   const rendered = proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery, query, providerSummary);
   const servicesEnabled = !Object.entries(preferences).some(([key, value]) =>
@@ -892,6 +907,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
       steps: research.guide.steps.length, required: HOW_TO_MIN_ACCEPTED_STEPS,
     });
   }
+  evidence.push(...research.evidence.filter(item => item.startsWith("how_to:insufficient_evidence ")));
   return {
     intent: "procedural_how_to", content, solverEvents, confidence: 0.78, evidence,
     diagnostics: indexed?.diagnostics || official?.diagnostics || null,

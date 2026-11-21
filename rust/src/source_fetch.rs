@@ -16,8 +16,13 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use sha2::{Digest, Sha256};
 
 mod cache_budget;
+#[cfg(not(target_arch = "wasm32"))]
+mod public_page;
 mod seed_captures;
 mod transport;
+
+#[cfg(not(target_arch = "wasm32"))]
+pub(crate) use public_page::{PublicPageTransport, search_page_url};
 
 use crate::event_log::EventLog;
 use crate::translation::cache::cache_key;
@@ -64,59 +69,71 @@ pub struct CurlSourceTransport;
 
 impl SourceTransport for CurlSourceTransport {
     fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
-        let maximum = cache_budget::policy()?.max_body_bytes.to_string();
-        let mut command = Command::new("curl");
-        command.args([
-            "--fail",
-            "--silent",
-            "--show-error",
-            "--location",
-            // Stack Exchange always gzips its API responses; without this
-            // the transport would hand callers compressed bytes that no
-            // extractor can read (issue #991).
-            "--compressed",
-            "--max-time",
-            "30",
-            "--max-filesize",
-            &maximum,
-            "--user-agent",
-            USER_AGENT,
-            // The status is written to *stderr* so it never mixes with the
-            // captured bytes, and it is what separates "no such page" from
-            // "this service is down".
-            "--write-out",
-            STATUS_TEMPLATE,
-            url,
-        ]);
-        let output = transport::bounded_output(
-            &mut command,
-            cache_budget::policy()?.max_body_bytes,
-            cache_budget::policy()?.max_metadata_bytes,
-        )?;
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        if !output.status.success() {
-            if let Some(status) = http_status(&stderr) {
-                return Err(FetchError::HttpStatus {
-                    url: url.to_owned(),
-                    status,
-                });
-            }
-            return Err(FetchError::Transport(
-                [
-                    "source_transport_curl_exit",
-                    &output.status.to_string(),
-                    stderr.trim(),
-                ]
-                .join(":"),
-            ));
-        }
-        if output.stdout.len() > cache_budget::policy()?.max_body_bytes {
-            return Err(FetchError::Transport(
-                "source_body_budget_exceeded".to_owned(),
-            ));
-        }
-        Ok(output.stdout)
+        fetch_with_curl(url, &["--location"], "30", false)
     }
+}
+
+fn fetch_with_curl(
+    url: &str,
+    options: &[&str],
+    timeout: &str,
+    require_success_status: bool,
+) -> Result<Vec<u8>, FetchError> {
+    let maximum = cache_budget::policy()?.max_body_bytes.to_string();
+    let mut command = Command::new("curl");
+    command.args(options).args([
+        "--fail",
+        "--silent",
+        "--show-error",
+        // Stack Exchange always gzips its API responses; without this
+        // the transport would hand callers compressed bytes that no
+        // extractor can read (issue #991).
+        "--compressed",
+        "--max-time",
+        timeout,
+        "--max-filesize",
+        &maximum,
+        "--user-agent",
+        USER_AGENT,
+        // The status is written to *stderr* so it never mixes with the
+        // captured bytes, and it is what separates "no such page" from
+        // "this service is down".
+        "--write-out",
+        STATUS_TEMPLATE,
+        "--",
+        url,
+    ]);
+    let output = transport::bounded_output(
+        &mut command,
+        cache_budget::policy()?.max_body_bytes,
+        cache_budget::policy()?.max_metadata_bytes,
+    )?;
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    let status = http_status(&stderr);
+    if !output.status.success()
+        || (require_success_status && !status.is_some_and(|code| (200..300).contains(&code)))
+    {
+        if let Some(status) = status {
+            return Err(FetchError::HttpStatus {
+                url: url.to_owned(),
+                status,
+            });
+        }
+        return Err(FetchError::Transport(
+            [
+                "source_transport_curl_exit",
+                &output.status.to_string(),
+                stderr.trim(),
+            ]
+            .join(":"),
+        ));
+    }
+    if output.stdout.len() > cache_budget::policy()?.max_body_bytes {
+        return Err(FetchError::Transport(
+            "source_body_budget_exceeded".to_owned(),
+        ));
+    }
+    Ok(output.stdout)
 }
 
 /// Why a source could not be captured.

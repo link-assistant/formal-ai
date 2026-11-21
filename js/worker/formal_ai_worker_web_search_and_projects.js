@@ -191,11 +191,11 @@ function hasGroundedUnresolvedBareTermResult(query, results) {
   );
 }
 
-async function tryWebSearch(prompt, language) {
+async function tryWebSearch(prompt, language, preferences) {
   const normalized = normalizePrompt(prompt);
   const request = extractWebSearchRequest(prompt, normalized);
   if (!request || !request.query) return null;
-  return runWebSearchQuery(request.query, language, request.kind);
+  return runWebSearchQuery(request.query, language, request.kind, preferences);
 }
 
 const UNKNOWN_RESEARCH_STOPWORDS = new Set([
@@ -219,7 +219,7 @@ function unknownResearchResultIsRelevant(query, entry) {
 
 async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
   query = String(query || "").trim();
-  if (!query) return null;
+  if (!query || preferences.offline === true) return null;
   const rrfK = webSearchRrfK();
   const concurrency = webSearchConcurrency();
   const providerLimit = webSearchProviderLimit();

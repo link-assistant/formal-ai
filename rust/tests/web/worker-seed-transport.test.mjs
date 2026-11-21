@@ -62,7 +62,8 @@ test('actual worker publishes one shared seed before held initialization without
     },
     installBrowserHandlerPrecedence: () => {},
     installWorkerHandlerRegistry: () => {},
-    hydrateLinoSeedAndSourceCaches: () => new Promise(() => {})
+    hydrateLinoSeedText: () => {},
+    loadCrateSeeds: () => new Promise(() => {})
   });
   vm.runInContext('let seedLoaded=false,seedLoadPromise=null,SEED_RAW={},seedSourceTexts={};\n' + source.slice(found[0].start, found[0].end) + '\nloadSeed();loadSeed();', context);
   await earlySeed;
