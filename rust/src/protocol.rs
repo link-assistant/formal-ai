@@ -13,9 +13,10 @@ use crate::engine::{
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
 use crate::protocol_policy::{
-    agentic_tool_permission_denial, is_hosted_tool_definition, is_tool_choice_request,
-    matches_tool_choice_none, response_tool_call_identity, tool_call_refusal_answer,
-    tool_choice_function_name, tool_definition_names, tool_permission_refusal_answer,
+    agentic_tool_permission_denial, groundable_tool_names, is_hosted_tool_definition,
+    is_tool_choice_request, matches_tool_choice_none, response_tool_call_identity,
+    tool_call_refusal_answer, tool_choice_function_name, tool_definition_names,
+    tool_permission_refusal_answer,
 };
 use crate::protocol_responses::{custom_response_tool_input, is_custom_response_tool};
 // Public because grounding is a property of the *emitted call*, and issue #1075
@@ -584,45 +585,6 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         }
     }
     outcome
-}
-
-/// The advertised tools this request can actually address.
-///
-/// A tool is withheld when its own schema requires an identity the request
-/// never states — the repository, project or channel the effect would land on.
-/// Withholding is what lets the planner replan onto a tool it *can* ground,
-/// which for a workspace file is the client's own writer or patch tool.
-fn groundable_tool_names(request: &ChatCompletionRequest, names: &[String]) -> Vec<String> {
-    let context = messages_text(&request.messages);
-    let empty = serde_json::Map::new();
-    names
-        .iter()
-        .filter(|name| {
-            crate::protocol_policy::find_tool_definition(&request.tools, name).is_none_or(
-                |definition| {
-                    crate::protocol_policy::available_client_tool(
-                        name,
-                        definition,
-                        &request.messages,
-                    ) && crate::tool_scope::ungrounded_identity_arguments(
-                        definition, &empty, &context,
-                    )
-                    .is_empty()
-                },
-            )
-        })
-        .cloned()
-        .collect()
-}
-
-/// Everything the client said this turn, in order — the text an identity is
-/// grounded in.
-fn messages_text(messages: &[ChatMessage]) -> String {
-    messages
-        .iter()
-        .map(|message| message.content.plain_text())
-        .collect::<Vec<_>>()
-        .join("\n")
 }
 
 /// Build a chat completion from a deterministic [`AgenticPlan`]. A

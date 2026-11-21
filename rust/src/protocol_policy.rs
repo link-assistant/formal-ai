@@ -2,13 +2,38 @@ use serde_json::Value;
 
 use crate::associative_package::{PackagePermissionDecision, default_package_store};
 use crate::engine::{SymbolicAnswer, ThinkingStep};
+use crate::protocol::{ChatCompletionRequest, ChatMessage};
+
+/// Keep the advertised tools that are available and whose required identities
+/// can be grounded in this request.
+pub(crate) fn groundable_tool_names(
+    request: &ChatCompletionRequest,
+    names: &[String],
+) -> Vec<String> {
+    let context = request
+        .messages
+        .iter()
+        .map(|message| message.content.plain_text())
+        .collect::<Vec<_>>()
+        .join("\n");
+    let empty = serde_json::Map::new();
+    names
+        .iter()
+        .filter(|name| {
+            find_tool_definition(&request.tools, name).is_none_or(|definition| {
+                available_client_tool(name, definition, &request.messages)
+                    && crate::tool_scope::ungrounded_identity_arguments(
+                        definition, &empty, &context,
+                    )
+                    .is_empty()
+            })
+        })
+        .cloned()
+        .collect()
+}
 
 /// A restricted schema needs affirmative client context. Codex omits it in Default mode.
-pub(crate) fn available_client_tool(
-    name: &str,
-    definition: &Value,
-    messages: &[crate::protocol::ChatMessage],
-) -> bool {
+fn available_client_tool(name: &str, definition: &Value, messages: &[ChatMessage]) -> bool {
     use crate::rule_interpreter::handler_table_value;
     let holder = definition.get("function").unwrap_or(definition);
     let restriction = handler_table_value("client-tool-unavailable-descriptions", name);
@@ -43,7 +68,7 @@ pub(crate) fn available_client_tool(
 
 pub(crate) fn defers_procedural_search(
     plan: &crate::agentic_coding::planner::AgenticPlan,
-    messages: &[crate::protocol::ChatMessage],
+    messages: &[ChatMessage],
 ) -> bool {
     use crate::agentic_coding::planner::{AgenticPlan, Capability, tool_capability};
     let AgenticPlan::ToolCalls(calls) = plan else {
