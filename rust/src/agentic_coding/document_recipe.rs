@@ -97,9 +97,8 @@ pub(super) fn plan_meaning_detail_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
-) -> AgenticPlan {
-    // Route to the concept the request names (default: tomato — the canonical task).
-    let concept = meaning_detail::concept_for_task(task).unwrap_or(&meaning_detail::TOMATO);
+) -> Option<AgenticPlan> {
+    let concept = meaning_detail::concept_for_task(task)?;
 
     let search_tool = tool_for(tool_names, Capability::Search);
     let fetch_tool = tool_for(tool_names, Capability::Fetch);
@@ -112,13 +111,16 @@ pub(super) fn plan_meaning_detail_step(
     if let Some(tool) = search_tool
         && !progress.done(Capability::Search)
     {
-        return plan_one(tool, json!({ "query": concept.search_query }).to_string());
+        return Some(plan_one(
+            tool,
+            json!({ "query": concept.search_query }).to_string(),
+        ));
     }
     // Step 2: fetch the lexeme forms (where the missing plural is recovered).
     if let Some(tool) = fetch_tool
         && !progress.done(Capability::Fetch)
     {
-        return plan_one(tool, fetch_arguments(concept.source_url));
+        return Some(plan_one(tool, fetch_arguments(concept.source_url)));
     }
 
     // Re-derive the enriched block from the fetched lexeme facts (or the canonical
@@ -129,7 +131,7 @@ pub(super) fn plan_meaning_detail_step(
     if let Some(tool) = write_tool
         && !progress.done(Capability::Write)
     {
-        return plan_one(tool, write_arguments(concept.kb_path, &block));
+        return Some(plan_one(tool, write_arguments(concept.kb_path, &block)));
     }
     // Step 4: verify by reading the enriched block back (mirrors the formalization
     // recipe; `cat` is the allowlisted read the sandbox workspace supports).
@@ -137,11 +139,13 @@ pub(super) fn plan_meaning_detail_step(
         && !progress.done(Capability::Run)
     {
         let arguments = json!({ "command": format!("cat {}", concept.kb_path) });
-        return plan_one(tool, arguments.to_string());
+        return Some(plan_one(tool, arguments.to_string()));
     }
 
     // Step 5: nothing left to do — answer with the enriched block inline.
-    AgenticPlan::Final(meaning_detail::final_answer_for(concept, &block))
+    Some(AgenticPlan::Final(meaning_detail::final_answer_for(
+        concept, &block,
+    )))
 }
 
 /// The issue-#538 diagram recipe: write the generated mermaid document → verify →

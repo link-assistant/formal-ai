@@ -322,6 +322,17 @@ describe('meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)',
     assert.ok(meaningDetail.isMeaningDetailTask(TASKS.potato));
   });
 
+  it('does not substitute a registered concept for an unrelated word', async () => {
+    const { planChatStep } = await import('../../../js/agentic/planner.mjs');
+    const task = 'Find the grammatical number for the word garden.';
+    const plan = await planChatStep([user(task)], ['web_search', 'web_fetch', 'write_file']);
+    const call = single(plan);
+    assert.equal(call.tool, 'web_search');
+    const { query } = JSON.parse(call.arguments);
+    assert.match(query, /garden/u);
+    assert.doesNotMatch(query, /tomato|томат|помидор/iu);
+  });
+
   it('enriched blocks match the seed byte for byte, fetched or not', () => {
     const tomato = meaningDetail.enrichBlock(meaningDetail.TOMATO, null);
     assert.equal(tomato, block('tomato', 'cucumber'));

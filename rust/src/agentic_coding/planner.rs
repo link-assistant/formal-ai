@@ -42,7 +42,6 @@ use super::intent_router;
 use super::learning_report;
 use super::ledger;
 use super::local_search;
-use super::meaning_detail;
 use super::mutating_action;
 use super::note_composition;
 use super::procedure;
@@ -758,8 +757,8 @@ pub(super) fn plan_settled_routes(
             task, messages, tool_names,
         ));
     }
-    if meaning_detail::is_meaning_detail_task(task) {
-        return Some(plan_meaning_detail_step(task, messages, tool_names));
+    if let Some(plan) = plan_meaning_detail_step(task, messages, tool_names) {
+        return Some(plan);
     }
     if diagram::is_diagram_task(task) {
         return Some(plan_diagram_step(messages, tool_names));

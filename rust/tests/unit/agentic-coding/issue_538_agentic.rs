@@ -122,6 +122,17 @@ fn answer_tool_call(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, res
 }
 
 #[test]
+fn unregistered_word_uses_the_requested_subject_for_research() {
+    let messages = [ChatMessage::user(
+        "Find the grammatical number for the word garden.",
+    )];
+    let call = expect_single_call(&messages, &["web_search", "web_fetch", "write_file"]);
+    assert_eq!(call.tool, "web_search");
+    assert!(call.arguments.contains("garden"), "{}", call.arguments);
+    assert!(!call.arguments.contains("tomato"), "{}", call.arguments);
+}
+
+#[test]
 fn planner_walks_the_full_recipe_for_the_meaning_detail_task() {
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
     let mut messages = vec![ChatMessage::user(meaning_detail::MEANING_DETAIL_TASK)];
