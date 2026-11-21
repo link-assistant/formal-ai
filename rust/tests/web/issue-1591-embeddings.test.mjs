@@ -9,7 +9,7 @@ const token = 'embeddings-test-token';
 const headers = { authorization: `Bearer ${token}`, 'content-type': 'application/json' };
 const launch = {
   binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
-  args: ['--ephemeral', '--silent'],
+  args: ['--ephemeral'],
   env: { FORMAL_AI_API_BEARER_TOKEN: token },
 };
 

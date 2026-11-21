@@ -33,6 +33,7 @@ flowchart LR
         r_vertex_models["vertex_models<br/>/api/vertex/v1/projects/{project}/locations/{location}/publishers/google/models"]
     end
     subgraph m_POST["POST"]
+        r_embeddings["embeddings<br/>/v1/embeddings<br/>/api/openai/v1/embeddings"]
         r_links_query["links_query<br/>/v1/links/query<br/>/api/formal-ai/v1/links/query"]
         r_memory_import["memory_import<br/>/v1/memory/import<br/>/api/formal-ai/v1/memory/import"]
         r_dynamic-meta["dynamic-meta<br/>/v1/dynamic-meta"]
@@ -54,6 +55,7 @@ flowchart LR
     server -->|"bearer"| r_api_hello
     server -.->|"none"| r_health
     server -->|"bearer"| r_models
+    server -->|"bearer"| r_embeddings
     server -->|"bearer"| r_network
     server -->|"bearer"| r_network_graph_alias
     server -->|"bearer"| r_bundle
@@ -89,6 +91,7 @@ flowchart LR
 | `api_hello` | GET | `/api/hello`, `/api/anthropic/api/hello` | bearer |
 | `health` | GET | `/health` | none |
 | `models` | GET | `/v1/models`, `/api/openai/v1/models` | bearer |
+| `embeddings` | POST | `/v1/embeddings`, `/api/openai/v1/embeddings` | bearer |
 | `network` | GET | `/v1/network`, `/api/formal-ai/v1/network` | bearer |
 | `network_graph_alias` | GET | `/v1/graph`, `/api/formal-ai/v1/graph` | bearer |
 | `bundle` | GET | `/v1/bundle`, `/api/formal-ai/v1/bundle` | bearer |

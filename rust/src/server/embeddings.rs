@@ -131,7 +131,10 @@ static MESSAGES: LazyLock<BTreeMap<String, String>> = LazyLock::new(|| {
         .into_iter()
         .filter(|node| node.name == "server_messages")
         .flat_map(|node| node.children)
-        .map(|node| (node.id.clone(), node.find_child_value("text").to_owned()))
+        .map(|node| {
+            let text = node.find_child_value("text").to_owned();
+            (node.id, text)
+        })
         .collect()
 });
 
