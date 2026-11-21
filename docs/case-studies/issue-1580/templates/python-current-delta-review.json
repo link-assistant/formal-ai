@@ -10,7 +10,7 @@
       "sha256": "86e59b0dc70fac1667e052e117c8c0899b0b143b6552cbf1b67ed9ec4b3d0e31",
       "gitBlob": "a759533dac04294f24a2ee0e87f757600cdeb929",
       "literalReviewComplete": false,
-      "assessment": "Generated bundle and dependency-lock comparison remain incomplete."
+      "assessment": "Pinned hosted clean install and actual ncc rebuild match the committed bundle and licenses; actual byte/empty-file and Pages-tar round trips pass. Literal minified-source review remains incomplete."
     },
     {
       "path": ".github/actions/artifact/dist/licenses.txt",
@@ -28,7 +28,7 @@
       "sha256": "04c2fa94d5024cb890152aedac20890032df6a6f3bc457483288c117c76045f6",
       "gitBlob": "e215cdca3b32d3704e666e35397d839da413e6c5",
       "literalReviewComplete": false,
-      "assessment": "Generated bundle and dependency-lock comparison remain incomplete."
+      "assessment": "All 247 package identities, licenses and Node engine rows reviewed; registry tarball/SHA512 shape and manifest agreement checked; actual npm lock-only graph, hosted clean install, vulnerability audit and live deprecation inventory pass. Literal lockfile and every graph-edge semantic review remain incomplete."
     },
     {
       "path": ".github/actions/artifact/package.json",
@@ -358,5 +358,44 @@
   },
   "evidence": "experiments/issue-1580/evidence/checks/current-template-findings",
   "independentAuthorshipCredit": 0,
-  "fullIssueComplete": false
+  "fullIssueComplete": false,
+  "javascriptDetectionObservation": {
+    "sourceSha256": "9e81f8022496676bb6b1f6459acef243f72fb7e39d8f47b5b2ed250843b0894f",
+    "testFile": "experiments/issue-1580/template-python-javascript-detection.test.mjs",
+    "testsPassed": 3,
+    "actualPython": true,
+    "actualGit": true,
+    "events": [
+      "push",
+      "pull_request"
+    ],
+    "candidatePreservesExclusions": true,
+    "upstreamReport": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/166",
+    "upstreamRepairApplied": false
+  },
+  "hostedArtifactValidation": {
+    "run": 44857673628,
+    "head": "62cc393707ddfe7ceeddbc580d43cc35334636f1",
+    "conclusion": "success",
+    "dependencyPackages": 247,
+    "rootManifestAgrees": true,
+    "registryTarballsAndSha512Validated": 247,
+    "actualNpmCleanInstall": true,
+    "generatedBundleAndLicensesMatchSourceAndLock": true,
+    "artifactTestsPassed": 21,
+    "deploymentMockTestsPassed": 30,
+    "actualArtifactRoundTrips": 2,
+    "livePagesDeploymentVerified": false
+  },
+  "hostedDependencyAudit": {
+    "run": 44857673553,
+    "conclusion": "success",
+    "npmVulnerabilities": 0,
+    "registryVersionsChecked": 245,
+    "registryDeprecated": 0,
+    "registryUnanswered": 0,
+    "actualPythonDependencyAudit": true
+  },
+  "generatedArtifactComparisonComplete": true,
+  "currentHostedEvidence": "experiments/issue-1580/evidence/checks/python-hosted-and-javascript-observations"
 }

@@ -1,0 +1,459 @@
+{
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/documentation-full-log.stderr",
+      "file": "hosted/documentation-full-log.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/documentation-full-log.stdout",
+      "file": "hosted/documentation-full-log.stdout.gz",
+      "bytes": 67012,
+      "lines": 606,
+      "rawSha256": "1eb1a2c84686cad065e068c238645a6e7f1a629ccafc9b71f23d557e69889869",
+      "archiveSha256": "6c36b23f3125f001f5f4a340651fd05e8d8add68fb0beb17d59a887f0ce0aa98"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/documentation-metadata.stderr",
+      "file": "hosted/documentation-metadata.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/documentation-metadata.stdout",
+      "file": "hosted/documentation-metadata.stdout.gz",
+      "bytes": 4004,
+      "lines": 1,
+      "rawSha256": "446212816ae152552cb218013465c724463590419a2b94c3dcaa57ce8f6d3d4e",
+      "archiveSha256": "e4ca61342d3f96d55c243fcf780d92f249b2c9fd810be3fbbb1f3111bc006965"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/links-full-log.stderr",
+      "file": "hosted/links-full-log.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/links-full-log.stdout",
+      "file": "hosted/links-full-log.stdout.gz",
+      "bytes": 50463,
+      "lines": 425,
+      "rawSha256": "e87802690e4080d34eb8189250558d89122386e896c144aca763df0d0d114b2d",
+      "archiveSha256": "b11529394d530ea05a00899fff8ed3167cf3c23e4d81a9871f6a988aa59eec1c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/links-metadata.stderr",
+      "file": "hosted/links-metadata.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/links-metadata.stdout",
+      "file": "hosted/links-metadata.stdout.gz",
+      "bytes": 3863,
+      "lines": 1,
+      "rawSha256": "fa6296504915029716cf5dc16100b97e4ad757b5a8ce91d81469917685fb2988",
+      "archiveSha256": "48d95132765a4c6f16a7c920c4348a785a03376f67f22f57777931461fbb9079"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/lock-packages.txt",
+      "file": "hosted/lock-packages.txt.gz",
+      "bytes": 21574,
+      "lines": 247,
+      "rawSha256": "f58c1a92d35b671530ae8263ac59d5f61445ec40fbd15499ef796dd13a6d08da",
+      "archiveSha256": "16af894ebc78b5861d447db84d43717fba04e46bb77be8eba0cc1a037b81848b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/lock-summary.json",
+      "file": "hosted/lock-summary.json.gz",
+      "bytes": 683,
+      "lines": 22,
+      "rawSha256": "3f9e1c2adb41477c4ca52a7855e4765c8825beecf20297586dd58574997d5788",
+      "archiveSha256": "cf37b0e860e37a3520deb789a865621a6effe182e7839792e0e61daf13a47f15"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/npm-lock-graph-retry.json",
+      "file": "hosted/npm-lock-graph-retry.json.gz",
+      "bytes": 236,
+      "lines": 7,
+      "rawSha256": "5cb2a31d84f82badac32a4282a6b90a87032c62c58b046c4a5ccf80d78075bef",
+      "archiveSha256": "87333cd7a773ffd8530c8420e469355cddced19d584f68fe10f1d685107c2a9f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/npm-lock-graph-retry.stderr",
+      "file": "hosted/npm-lock-graph-retry.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/npm-lock-graph-retry.stdout",
+      "file": "hosted/npm-lock-graph-retry.stdout.gz",
+      "bytes": 121881,
+      "lines": 2622,
+      "rawSha256": "70e9e8cd7a8cf1d3e3780496a31699ad11370f8de494efbe25a672849eebe0cf",
+      "archiveSha256": "1a6d0a58c7ff7b04e0281a1edccff191c63a122ee4d67f1e612ac63555474c6e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/npm-lock-graph.stderr",
+      "file": "hosted/npm-lock-graph.stderr.gz",
+      "bytes": 1037,
+      "lines": 20,
+      "rawSha256": "35cdee6cea8609b9dc34f81ca6843e7550fb34dc8292c77e0ce09949ad7046ce",
+      "archiveSha256": "95c8c603c20b8b71889f9d2aad7fdc2d414d03c7e77f86420713082f6601f3ba"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/npm-lock-graph.stdout",
+      "file": "hosted/npm-lock-graph.stdout.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/outcome.json",
+      "file": "hosted/outcome.json.gz",
+      "bytes": 4290,
+      "lines": 169,
+      "rawSha256": "3f142c361fa2f0304addc7a54dbb1c4a058dc8abc6d4d1b797db9b2d5fd5a465",
+      "archiveSha256": "7164cc0e23675dd4433c547754c3b1cd90cbb88485dc64a41b01c0abbe6c491b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/partial.json",
+      "file": "hosted/partial.json.gz",
+      "bytes": 3721,
+      "lines": 162,
+      "rawSha256": "ad01399acdd8d595fe60ceb7b7be0f3fa84b976f45efaf5e2fb5473a0badd613",
+      "archiveSha256": "7e06ba45bb67ea9d8880a2bf467cdbd168071e503fe88b0dc224b756c712a076"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/pid.json",
+      "file": "hosted/pid.json.gz",
+      "bytes": 17,
+      "lines": 1,
+      "rawSha256": "26c71ae0adf8b88afda7088359f02732c39484848f2f27c9f52b8dde485b0617",
+      "archiveSha256": "1e58b15a611f27d4a8ded7868124316b08b568cd708f41d0c906547ff714b8df"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/security-context.txt",
+      "file": "hosted/security-context.txt.gz",
+      "bytes": 31392,
+      "lines": 443,
+      "rawSha256": "23ca61fd76d1c28f1029a7db8f5b781c0dae0b1473c9be4ce9d2827806aec7df",
+      "archiveSha256": "1ff5844408e068b89f6a91fece9cae85740114b6a6c69dfb54fc91b7dd58aad3"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/security-full-log.stderr",
+      "file": "hosted/security-full-log.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/security-full-log.stdout",
+      "file": "hosted/security-full-log.stdout.gz",
+      "bytes": 656424,
+      "lines": 5131,
+      "rawSha256": "23c2f11e243a0582113f77e8362ddc273db7deb12e523801cf280b87655b8588",
+      "archiveSha256": "e4a26ff89588a03f579d641ec596981284694026a79e37c7aec78d818a78ee2c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/security-metadata.stderr",
+      "file": "hosted/security-metadata.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/security-metadata.stdout",
+      "file": "hosted/security-metadata.stdout.gz",
+      "bytes": 9998,
+      "lines": 1,
+      "rawSha256": "818a7a5d8e4d85424aaa3f6be5c91a157546759ee964fc43d4eca67b6846028e",
+      "archiveSha256": "30933abf06c8391ac405e447869b7b356bb9ef54eeb29ee03d7d920dc23574b5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/worker.log",
+      "file": "hosted/worker.log.gz",
+      "bytes": 2790,
+      "lines": 8,
+      "rawSha256": "135c0170fdbb3b12dee9f6413cd5bdd9e2db431cdad743d21c36fdc0f856e89b",
+      "archiveSha256": "b641b1f56cd8691ee1836010fa69e7c4ed945cc8e48288c9c9387f9662a0cfad"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/workflows-context.txt",
+      "file": "hosted/workflows-context.txt.gz",
+      "bytes": 16795,
+      "lines": 322,
+      "rawSha256": "16b50b38544f53314c453662cdd20c66863d50bdbb5bfbf058a814a5a398fbb0",
+      "archiveSha256": "d8ce16efa6ad441c8ad3c37506e7d657a3f733b4ea9bf59cf2b45934d91af346"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/workflows-full-log.stderr",
+      "file": "hosted/workflows-full-log.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/workflows-full-log.stdout",
+      "file": "hosted/workflows-full-log.stdout.gz",
+      "bytes": 152395,
+      "lines": 1227,
+      "rawSha256": "e88b3bd041fa0382433b0386fe8e48b3861548e5c73d6a2e608a3a058af53fcd",
+      "archiveSha256": "b509f1a0d878ae5eda86645f44f703f056d3386adf1d17c719749da7cd08c396"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/workflows-metadata.stderr",
+      "file": "hosted/workflows-metadata.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/workflows-metadata.stdout",
+      "file": "hosted/workflows-metadata.stdout.gz",
+      "bytes": 8845,
+      "lines": 1,
+      "rawSha256": "4b5573af49164197b73cf0e58f2b6adef59b1b8cf30c29b9030761943b3c5dc9",
+      "archiveSha256": "b8c81fbbe1f01f62d643dc2193dd90bdb13ecc07a817f3c426d6420d9eccd742"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-current-hosted-logs/workflows-selected.txt",
+      "file": "hosted/workflows-selected.txt.gz",
+      "bytes": 60608,
+      "lines": 458,
+      "rawSha256": "aba39079b0734a02c20228d3691253eb6f70d652e54da4193fb66a7717c3457c",
+      "archiveSha256": "699b5ee916cfa574ab2f4708b519afa1b8ada101bc8babf2c39cd3e35b41a43d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/current-issues.stdout",
+      "file": "detector/current-issues.stdout.gz",
+      "bytes": 1265547,
+      "lines": 1,
+      "rawSha256": "43c1769c8f7041ca1bb1e2b28cc082117da097c8a134d31e8f95ad7272fd602b",
+      "archiveSha256": "3cd102034a49ee879f96add487883412d06123d242a160577b1418c9b14f4ac0"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/current-issues.stderr",
+      "file": "detector/current-issues.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/all-titles.txt",
+      "file": "detector/all-titles.txt.gz",
+      "bytes": 12077,
+      "lines": 113,
+      "rawSha256": "802820193e78f0f9305c5732a085eec09ef6a663cbfe60e458ec8e023246ea41",
+      "archiveSha256": "843beb3abbadff2a88bf4b90df8860015c2f2f0e69addab3b7dc8e94886890a5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/narrow-duplicate-excerpts.txt",
+      "file": "detector/narrow-duplicate-excerpts.txt.gz",
+      "bytes": 9688,
+      "lines": 168,
+      "rawSha256": "1c8265e4d0f8c8694381cb9ad03aed0f4437d9d5fad631a89eed2155e067a059",
+      "archiveSha256": "901bbd103e157de3d9502d687a113739bb34cbd13f8fb9efd43ef66c8ddf3e5c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/issue-107.txt",
+      "file": "detector/issue-107.txt.gz",
+      "bytes": 1889,
+      "lines": 5,
+      "rawSha256": "6d5fd1997463f8faba0b9ba8a3065fd8d4c333d41d0cb9b576ab412253b3eadd",
+      "archiveSha256": "ea601616d5fa00c9533e810dadde5955947508a079692c599286e90537886c15"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/issue-107-comments.stdout",
+      "file": "detector/issue-107-comments.stdout.gz",
+      "bytes": 2344,
+      "lines": 1,
+      "rawSha256": "2cc92966be0939de3b0882ab2cd1daf7f7f130a324aad548b0ebf652b359d485",
+      "archiveSha256": "a8e9f79758224aa1d14de0524975c3d5b066608d8cb4dd88594c981986e9325b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/issue-107-comments.stderr",
+      "file": "detector/issue-107-comments.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/issue-145.txt",
+      "file": "detector/issue-145.txt.gz",
+      "bytes": 8699,
+      "lines": 141,
+      "rawSha256": "ad664716abfce206343a0dce8d868fe4d7b44f9be242df71c798d22f1fd614ba",
+      "archiveSha256": "e6ed8018085555047d4706ffc66c8bddad394a83f8b85b3b963c56ea04fd61cb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/focused.stdout",
+      "file": "detector/focused.stdout.gz",
+      "bytes": 414,
+      "lines": 11,
+      "rawSha256": "467d63a39b7f82356faa25bbbe424ae11c9c075bf0f2a71e0c4d0a01f2c080bb",
+      "archiveSha256": "38ded1bde6891c01e4faeaa031f98f8fcbad265880038eb5f168e9b7d4c64a8f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/focused.stderr",
+      "file": "detector/focused.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/focused-outcome.json",
+      "file": "detector/focused-outcome.json.gz",
+      "bytes": 165,
+      "lines": 8,
+      "rawSha256": "5c4e653f4a2157f9aec388abb5d8e34f05d28e70933a822af10ddbda5320c33a",
+      "archiveSha256": "fdf79d036efe1668534c07e12060e881f781d1d87aee2874cfff5c5762202a6a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/report-body.md",
+      "file": "detector/report-body.md.gz",
+      "bytes": 3284,
+      "lines": 43,
+      "rawSha256": "54cf29c9ba7114327b4a267fd24f2d1ed93fb181af20406dd229e0e787881279",
+      "archiveSha256": "bf832b81eade1db27ff1d5c63fb1c6bccff81c380c196167239622576872d6d9"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/create.stdout",
+      "file": "detector/create.stdout.gz",
+      "bytes": 93,
+      "lines": 1,
+      "rawSha256": "fd4aad8ff651b4bb6230e2c5efa3b9809023f0b2cad195e1e2043f3548d72d1e",
+      "archiveSha256": "919507ef1c65ec16cd8182fd1843095c09154c510f47e93de4abdaec0300bebb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/create.stderr",
+      "file": "detector/create.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-detection/created.json",
+      "file": "detector/created.json.gz",
+      "bytes": 320,
+      "lines": 7,
+      "rawSha256": "6c8ab3090776f01682769cbbb98b4343bf3e84f8662f164627277527ecea1ac9",
+      "archiveSha256": "7eef910d66960fb0a45ee6c1062040ea74130ab93b20ef0f4c7664491d0db9fe"
+    },
+    {
+      "source": "/tmp/issue-1580-research/collect-python-current-hosted-logs.py",
+      "file": "helper/collect-python-current-hosted-logs.py.gz",
+      "bytes": 2117,
+      "lines": 30,
+      "rawSha256": "45efbfd32d30bd7ea75a3dc3975f26f0dff4681f005a11a89d32e194618b1243",
+      "archiveSha256": "8f3fea6e0f1420933e105c982d9e76b11439215858d2f6f55d4d99adf2ac79e8"
+    },
+    {
+      "source": "/tmp/issue-1580-research/collect-python-current-hosted-logs.log",
+      "file": "helper/collect-python-current-hosted-logs.log.gz",
+      "bytes": 164,
+      "lines": 4,
+      "rawSha256": "a0c9077662e58bcc282dfe10957993122726b03371fa416387b0da864988b7b7",
+      "archiveSha256": "44c5d955cf48b8760e2ce1ba5a4ffff0f65df31801ab16da7806269a9372630e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/extract-python-hosted-and-detector-context.py",
+      "file": "helper/extract-python-hosted-and-detector-context.py.gz",
+      "bytes": 2440,
+      "lines": 24,
+      "rawSha256": "6a3c8ffda0e9aaeede21150e5f5eeb0984536723fabb8936dd29bbe390cf0561",
+      "archiveSha256": "dbdbbe9a8ad5b30a96cf3adf996258e0d20feccb81d024e5a520a75ab5e8c78a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/extract-python-hosted-and-detector-context.log",
+      "file": "helper/extract-python-hosted-and-detector-context.log.gz",
+      "bytes": 322,
+      "lines": 6,
+      "rawSha256": "abca36aec2b60dcf3fbfd6dcf71a9e0a42f41667ab8cde6fdc469b3958e0e7ad",
+      "archiveSha256": "274ac4bf3cb7aaaf15917a6f0b8ac61c42e5b93be7489d3b066c87b44988e78b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/review-python-lock-and-detection-duplicates.py",
+      "file": "helper/review-python-lock-and-detection-duplicates.py.gz",
+      "bytes": 3236,
+      "lines": 37,
+      "rawSha256": "3f4a10de22c130885c77c47ef5de7e85265396bb9e86d0294a8cafc2a357985f",
+      "archiveSha256": "9be49c515eafe535d27ee058a99de56908c780016f87719bcfb6340485f8c438"
+    },
+    {
+      "source": "/tmp/issue-1580-research/review-python-lock-and-detection-duplicates.log",
+      "file": "helper/review-python-lock-and-detection-duplicates.log.gz",
+      "bytes": 234,
+      "lines": 5,
+      "rawSha256": "11d6706913b237e4e142f0022548f5a97648354e36619f86d74c130b5d9ae5a7",
+      "archiveSha256": "82cdc4b84856c127ab9c384805f0fe3bea7b3e922f45b59ca05a7c4ad93f50f7"
+    },
+    {
+      "source": "/tmp/issue-1580-research/draft-python-javascript-detection.py",
+      "file": "helper/draft-python-javascript-detection.py.gz",
+      "bytes": 8120,
+      "lines": 116,
+      "rawSha256": "ff6eeed6fdef33dafbedcc1456bddccaa89f4560ea01fdbfbf9ed64ed46c906d",
+      "archiveSha256": "903675176127f12fd393b88b825a0e3a18cf764dd0e2cdb87701804f818bf064"
+    },
+    {
+      "source": "/tmp/issue-1580-research/draft-python-javascript-detection.log",
+      "file": "helper/draft-python-javascript-detection.log.gz",
+      "bytes": 592,
+      "lines": 4,
+      "rawSha256": "0a617f2b0b65a113d084f52a90fa6d03ae8ff377f87478f76ddfd82f36025775",
+      "archiveSha256": "1956485447a488c5bb9dd9911ecfb33fb3bfd7b1f4065a10b4b454bbff2aed66"
+    },
+    {
+      "source": "/tmp/issue-1580-research/publish-python-javascript-detection-report.py",
+      "file": "helper/publish-python-javascript-detection-report.py.gz",
+      "bytes": 5533,
+      "lines": 63,
+      "rawSha256": "6645cc8438d057d91b07a361b1f0a664054cbfbc48f0aaaaf4a6dceaa151482c",
+      "archiveSha256": "2e3656322df8fa6f12bd685959a7b8564481abe794db1372cfd669d7910d4798"
+    },
+    {
+      "source": "/tmp/issue-1580-research/publish-python-javascript-detection-report.log",
+      "file": "helper/publish-python-javascript-detection-report.log.gz",
+      "bytes": 275,
+      "lines": 5,
+      "rawSha256": "4bb5a9af9a7fb3304ae27005f8b8e91adf57f18feabdfdf58cc1d728d0842585",
+      "archiveSha256": "0e07c5844bc9de30d62ec7eb699ead25f69fe90daba210892f15a9e35089c82a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/seal-python-hosted-and-javascript-observations.py",
+      "file": "helper/seal-python-hosted-and-javascript-observations.py.gz",
+      "bytes": 10564,
+      "lines": 112,
+      "rawSha256": "adb1c92288a604049736149a6f53c28b8db54a1635d42a22b02377232abb2453",
+      "archiveSha256": "cc1ea3836a8987a7f24ae84ec2f7c2dbbb94ae18d341216eb60accf3c31f12f3"
+    }
+  ],
+  "allHashesVerified": true,
+  "actualGitRegressionCasesPassed": 3,
+  "hostedHead": "62cc393707ddfe7ceeddbc580d43cc35334636f1",
+  "fullTemplateComparisonComplete": false,
+  "upstreamRepairApplied": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

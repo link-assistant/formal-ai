@@ -25,17 +25,14 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Latest published head `e06d1f18` has 27 terminal workflows: 26 success, one skip
-and no failures. Pipeline, all eight native families, registry scripts and
-Layered CI pass. The separately dispatched actual CodeQL producer passes with
-2180 included-string rows and 122579 macro-context rows. The four-minute query
-bound and strict SARIF gate remain unchanged. All 148 producer files verify.
-Secretlint 14 and partial-output annotation repairs pass focused local tests;
-their next-head hosted qualification remains pending. JavaScript and PHP
-changed-file reviews have current pins and focused execution evidence. Full
-template and original issue acceptance remain open.
-See [successful producer and scanner repairs](../../docs/case-studies/issue-1580/e06-security-and-scanner-checkpoint.md).
+Latest published head `adeb4ff4` has 25 of 26 normal workflows terminal:
+24 success, one skip, no failures observed; Pipeline remains in progress.
 No push is permitted while a current-head workflow is queued or in progress.
+The previous `e06d1f18` round also has a successful separately dispatched actual
+CodeQL producer. Current local observation additions retain 123 previously
+passing maintained cases plus three new real-Git Python detector cases.
+Full template, source-warning and original issue acceptance remain open.
+See [current Python findings](../../docs/case-studies/issue-1580/python-current-findings-checkpoint.md).
 
 
 Latest checkpoint: [current native failures and gate inputs](../../docs/case-studies/issue-1580/current-native-failure-checkpoint.md). Published `8b0d6f59` has 24 successful workflows, one skip and two failures. All eight native contract families and registry-script checks pass. Process termination and pipeline schema regressions pass locally; the CodeQL thread candidate and failed-fetch native guard still need hosted qualification. Fresh observations identify changed heads in seven templates; earlier comparisons retain their original pins. Full issue acceptance remains unfinished.
@@ -851,3 +848,11 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
   compressed streams before these final validation archives.
 - [ ] Qualify the final retained archives and terminal preceding-head hosted
   logs before the next single push. Current source-size warnings remain 91.
+
+
+- [x] Confirm and report JavaScript code-gating false negatives in Python
+  template issue #166, with three actual-Python/Git regression cases.
+- [x] Retain exact-head Python hosted bundle/lock rebuild, real artifact round
+  trips and dependency audit observations; review all 247 package identity rows.
+- [ ] Complete literal bundle/lock and every dependency-edge semantic review,
+  full current/historical template scope and original issue acceptance.

@@ -70,3 +70,42 @@ inventory command exceeded Node's default child-output buffer; its captured
 ENOBUFS result and a successful 32 MiB bounded-buffer retry are retained.
 These warnings remain unfinished. The final validation evidence is under
 experiments/issue-1580/evidence/checks/current-template-publication-validation/ .
+
+
+The current Python detector has a separate confirmed false negative: production
+JavaScript module edits set both outputs false on pushes and pull requests.
+Three maintained cases run the pinned classifier and real Git entrypoint,
+then compare a disposable extension-list candidate and retained exclusion
+controls. They pass without skips. Upstream
+[issue #166](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/166)
+records this follow-up to the fixed shell/JSON issue #107. JavaScript helpers
+under scripts also miss the separate Workflows path filter. The Security
+workflow still runs. No upstream repair is claimed.
+
+Pinned [Workflows run 44857673628](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/actions/runs/44857673628)
+provides actual generated-artifact qualification. Full-log lines 529–543 show
+the 247-package clean install; lines 629–654 show ncc 0.45.0 rebuilding dist
+and a successful exact Git diff, including licenses. Its 21 artifact and 30
+mocked Pages-deployment cases pass. Lines 655–767 show real byte/empty-file
+and Pages-tar upload/download/diff round trips with matching SHA256 receipts.
+This proves artifact transport; it does not prove live Pages deployment.
+
+All 247 lock package identity/license/Node-engine rows are reviewed. Every
+resolved URL is an npm registry tarball with a correctly formed SHA512 digest;
+root dependency and engine declarations agree with package.json. Actual npm
+lock-only graph validation succeeds without installation. Its first attempted
+invocation used an incorrect npm location; the captured failure and resolved
+executable retry remain distinct. The pinned
+[Security run 44857673553](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/actions/runs/44857673553)
+reports zero npm vulnerabilities at lines 183–187 and all 245 registry versions
+answered, none deprecated, at lines 188–213. These observations qualify this
+pin, not future registry state or every dependency's behavior. Literal review
+of the minified bundle and lock and every graph-edge semantic comparison remain
+open. The 338-file full-template comparison remains unfinished.
+
+Formal AI's existing composite artifact actions use upstream upload/download
+actions rather than a locally bundled SDK. The maintained download composite
+already enforces raw transport digests, Python extraction, three attempts and
+temporary-directory cleanup; no new 247-package bundle is introduced here.
+Evidence is retained under
+experiments/issue-1580/evidence/checks/python-hosted-and-javascript-observations/ .
