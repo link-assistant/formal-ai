@@ -1,0 +1,52 @@
+{
+  "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+  "sourceCommit": "a0f2a171dc1ab02ad5d68147656660562f6e1504",
+  "baseCommit": "a5b9a1a46686cfe844f9afa2ace030094969e766",
+  "files": 339,
+  "previousFiles": 337,
+  "changedReviewed": 8,
+  "added": [
+    ".changeset/require-codecov-and-preserve-merged-changesets.md",
+    "scripts/merge-changesets.test.mjs"
+  ],
+  "removed": [],
+  "unchangedCarried": 331,
+  "earlierLiteralActiveFiles": 158,
+  "earlierLiteralActiveLines": 18327,
+  "historicalCompared": 179,
+  "methods": {
+    "unchanged-pinned-literal-source-review": 152,
+    "current-delta-literal-source-review": 8,
+    "complete-log-diagnostic-traversal": 78,
+    "complete-json-schema-and-terminal-state-traversal": 79,
+    "complete-literal-historical-source-review": 20,
+    "complete-markdown-release-catalog-traversal": 1,
+    "complete-html-text-and-link-traversal": 1
+  },
+  "allCurrentGitBlobsAndSha256Verified": true,
+  "allFilesHaveSourceApplicabilityDecisions": true,
+  "allComparisonPathsExist": true,
+  "allApplicablePracticesImplementedAndVerified": false,
+  "historicalLogsAreCurrentRuntimeProof": false,
+  "nativeBuildExecutedLocally": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "reviewedAt": "2026-11-21T19:59:41.792412+00:00",
+  "filesReceipt": "csharp-complete-files.jsonl",
+  "scope": "Complete per-file source applicability comparison at the selected pinned current C# tree; distinct literal, unchanged-source carry, structured log/JSON and catalog methods.",
+  "verification": {
+    "currentUpstreamBunTestsPreviouslyPassed": 18,
+    "mergedChangesetTests": 2,
+    "pipelineGateTests": 16,
+    "releaseWorkflowPolicySuiteExecuted": false,
+    "dotnetBuildOrPublicationExecutedLocally": false
+  },
+  "evidence": "experiments/issue-1580/evidence/checks/csharp-complete-file-comparison",
+  "limits": [
+    "All 310 diagnostic occurrences were grouped into 104 exact messages and reviewed with the complete original field/line locations retained. Controlled negative probes and quoted commands are not treated as current workflow annotations.",
+    "All 79 JSON artifacts retain complete recursive schemas and terminal/error state traversal; twenty small historical sources were read literally. The .NET release table and Alpine HTML catalog use explicit structured methods rather than an inflated literal-read claim.",
+    "Large initial catalog/diagnostic previews were truncated; subsequent compact complete diagnostic/state views supply the stated review. Initial source-counterpart guesses and the int-versus-list inspection failure remain retained.",
+    "Historical NuGet provider authorization, .NET locked restore, SDK/test and registry snapshots are C# context. They do not require adding that product/toolchain to Formal AI or establish current version/security status.",
+    "The current changeset collision repair and strict pipeline gate passed eighteen actual upstream Bun tests in the earlier delta check. This is not hosted workflow, scanner, package publication or proof that every applicable practice is implemented."
+  ]
+}

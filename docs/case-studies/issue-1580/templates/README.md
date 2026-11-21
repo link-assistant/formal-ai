@@ -152,3 +152,20 @@ All files now have source applicability decisions. The 74 practice assessments,
 applicable behavior verification and wider issue acceptance remain unfinished.
 Quoted solution-draft output and historical failures supply context; neither is
 a present workflow result. Earlier partial receipts remain dated evidence.
+
+## Complete C# file comparison, 2026-11-21
+
+The [339-file receipt](csharp-complete-file-comparison.json) binds every blob at
+`a0f2a171dc1ab02ad5d68147656660562f6e1504`: 331 unchanged files carry their
+verified identities and eight changed sources retain the separate delta review.
+The [per-file decisions](csharp-complete-files.jsonl) give actual Formal AI
+counterparts and applicability limits. The earlier 158 active files / 18,327
+literal lines remain a dated review; they are not relabeled as current runtime
+evidence. The remaining 179 historical files use 78 complete log traversals,
+79 recursive JSON/state reviews, twenty literal reads and two catalog traversals.
+All 104 distinct diagnostic messages were reviewed with their 310 original
+locations retained. Historical failures and passing snapshots retain their dates.
+The earlier eighteen actual upstream Bun tests remain narrowly attributed.
+Applicable practice implementation, current hosted CI and wider issue acceptance
+remain unfinished. Supplied procedures and conclusions earn zero independent
+authorship credit.
