@@ -19,6 +19,7 @@
     "rust/tests/web/picomatch-compat.test.mjs",
     "rust/tests/web/issue-1586-structured-output.test.mjs",
     "rust/tests/web/issue-1590-forced-functions.test.mjs",
+    "rust/tests/web/issue-1591-embeddings.test.mjs",
     "rust/tests/web/issue-1592-server-retention.test.mjs",
     "rust/tests/web/issue-1609-client-reports.test.mjs",
     "rust/tests/web/dynamic-meta.test.mjs",

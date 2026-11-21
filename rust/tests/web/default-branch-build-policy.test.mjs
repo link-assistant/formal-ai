@@ -67,6 +67,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const nativeReplays = [
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1591-embeddings.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs'];
   const clientReportReplay = 'node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs';
   const codexReplay = 'bash experiments/issue_859_codex_e2e/run.sh';

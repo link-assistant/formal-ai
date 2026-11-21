@@ -36,6 +36,7 @@ mod debug_session;
 mod debug_stage;
 mod debug_stage_sources;
 mod dynamic_meta;
+mod embeddings;
 mod retention;
 mod shutdown;
 mod transport;
@@ -285,6 +286,7 @@ fn dispatch_api_request_with_auth(
             }),
         ),
         ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),
+        ("POST", "/v1/embeddings" | "/api/openai/v1/embeddings") => embeddings::handle(body),
         ("GET", "/v1/network" | "/api/formal-ai/v1/network") => handle_network_request(query),
         // Deprecated alias: the project's associative vocabulary is a *links
         // network*, not a graph (issue #664). `/v1/graph` keeps working for
@@ -518,6 +520,13 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "memory_used_bytes": context.memory_used_bytes,
                 "avg_utf8_bytes_per_char": context.avg_utf8_bytes_per_char,
                 "context": context_metadata
+            }, {
+                "id": embeddings::MODEL,
+                "slug": embeddings::MODEL,
+                "capabilities": ["embeddings"],
+                "dimensions": embeddings::DIMENSIONS,
+                "object": "model",
+                "owned_by": "link-assistant"
             }],
             "models": [{
                 "id": model_id,
@@ -533,6 +542,12 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "memory_used_bytes": context.memory_used_bytes,
                 "avg_utf8_bytes_per_char": context.avg_utf8_bytes_per_char,
                 "context": context_metadata
+            }, {
+                "id": embeddings::MODEL,
+                "slug": embeddings::MODEL,
+                "name": embeddings::MODEL,
+                "capabilities": ["embeddings"],
+                "dimensions": embeddings::DIMENSIONS
             }],
             "rate_limit": {
                 "requests_per_minute": 60,

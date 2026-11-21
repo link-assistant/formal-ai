@@ -1389,3 +1389,29 @@ meanings
     lexeme es
       surface
         text "todo sistema formal es incompleto o inconsistente"
+  warehouse_supervisor
+    defined-by concept
+    lexeme en
+      surface
+        text "warehouse supervisor"
+    lexeme ru
+      surface
+        text "начальник склада"
+  forklift_operator
+    defined-by concept
+    lexeme en
+      surface
+        text "forklift operator"
+    lexeme ru
+      surface
+        text "водитель погрузчика"
+  storekeeper
+    defined-by concept
+    lexeme en
+      surface
+        text storekeeper
+      surface
+        text "stockroom attendant"
+    lexeme ru
+      surface
+        text кладовщик
