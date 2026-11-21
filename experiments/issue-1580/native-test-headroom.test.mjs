@@ -1,6 +1,7 @@
 // Run the maintained scanner against the native regression module owners.
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {existsSync, readFileSync} from 'node:fs';
+import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import test from 'node:test';
 import YAML from 'yaml';
@@ -41,4 +42,30 @@ test('both core checkout attempts retain the original upstream-report fixtures',
   for (const step of attempts) {
     assert(step.with['sparse-checkout'].split('\n').includes('/dev/log/issues/1079/pulls/1080/upstream-reports/'));
   }
+});
+
+for (const [owner, child] of [
+  ['rust/tests/unit/ci-cd/workflow_release', 'workflow_policy'],
+  ['rust/tests/unit/data_files', 'text_rows'],
+  ['rust/tests/unit/specification/benchmarks', 'evaluation'],
+]) {
+  test(owner + ' keeps native policy module headroom', () => {
+    const result = checkListedFiles(root, new Set([owner + '.rs', owner + '/' + child + '.rs']));
+    assert.deepEqual(result, {warnings: [], violations: [], embeddedDataViolations: []});
+    assert.match(readFileSync(root + '/' + owner + '.rs', 'utf8'), new RegExp('^mod ' + child + ';$', 'mu'));
+    assert.match(readFileSync(root + '/' + owner + '/' + child + '.rs', 'utf8'), /^(?:pub\(super\) )?fn /mu);
+  });
+}
+
+test('the standalone data-files Cargo target resolves its extracted helper', () => {
+  const cargo = readFileSync(root + '/rust/Cargo.toml', 'utf8');
+  const target = cargo.split('[[test]]').find(block => /^name = "data_files"$/mu.test(block));
+  assert(target, 'the data-files target must remain registered');
+  const cratePath = /^path = "([^"]+)"$/mu.exec(target)?.[1];
+  assert(cratePath, 'the target must identify its real Rust crate root');
+  const crateFile = resolve(root, 'rust', cratePath);
+  const declaration = /(?:#\[path = "([^"]+)"\]\n)?mod text_rows;/u.exec(readFileSync(crateFile, 'utf8'));
+  assert(declaration, 'the crate root must retain its text-row helpers');
+  const child = resolve(dirname(crateFile), declaration[1] ?? 'text_rows.rs');
+  assert(existsSync(child), 'the crate-root module declaration resolves to a missing file: ' + child);
 });

@@ -28,16 +28,17 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 Published `6672bfc9` merges current main `873f1c33`; its 26 normal workflows
 are still being collected. The preceding published `84e1ad85` has 25 successful
 workflows and one skip, including all eight native families and registry checks.
-The merged source passes all 88 executed local gates (53 explicit skips),
+The merged source passed all 88 executed local gates (53 explicit skips),
 TypeScript generation/runtime, gateway/server checks and 133 maintained cases.
 
-Local commit `018d71a4` removes three more Rust test size warnings through
-ordinary child modules, preserving every original body: 84 warnings remain
-under unchanged limits. Follow-up coverage repairs connect all three owners
-to the existing hosted core/coding targets and retain their original fixtures.
-Five coverage cases, 50 native-runner cases and 138 maintained observation
-cases pass locally; hosted native compilation/execution is still pending.
-See the [native coverage checkpoint](../../docs/case-studies/issue-1580/native-headroom-coverage-checkpoint.md).
+Local commits extract six Rust test/helper groups without changing their
+bodies or scanner limits: 81 warnings remain. Coverage connects the original
+planner, budget and image owners to the existing core/coding targets. Actual
+Git sparse rules select their nine real fixtures in both core checkout attempts.
+Nine focused headroom/path cases and 50 native-runner cases pass. The preceding
+maintained entry passed 141 cases before the final path regression was added;
+hosted native compilation/execution of these local edits remains pending.
+See the [native policy checkpoint](../../docs/case-studies/issue-1580/native-policy-headroom-checkpoint.md).
 
 Full template/practice, original budget/live, complete PR review, independent
 authorship/reasoning and complete issue acceptance remain unfinished.
