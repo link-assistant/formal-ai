@@ -1,7 +1,6 @@
 // Issue #1064 (no silent release deferral): a push to main that carries a
-// changelog fragment but changes no code used to skip lint, test and the
-// binary build (all gated on `any-code-changed`), so `build` and Auto Release
-// skipped too while Pipeline Status stayed green. Merge #1150 left
+// changelog fragment but changes no code used to skip Build Package and
+// Auto Release while Pipeline Status stayed green. Merge #1150 left
 // `20260926_215107_issue-1149-coverage-budget.md` unreleased that way.
 //
 // The release workflow asks scripts/detect-code-changes.rs to count a
@@ -50,9 +49,8 @@ test("the release workflow opts in, and Auto Release's prerequisites follow any-
   assert.match(detect, /rust-script scripts\/detect-code-changes\.rs/);
   const auto = job("auto-release");
   assert.match(auto, /needs\.build\.result == 'success'/);
-  assert.match(job("build"), /needs\.lint\.result == 'success' && needs\.test\.result == 'success'/);
-  assert.match(job("build"), /needs: \[[^\]]*build-artifacts[^\]]*\]/);
-  for (const name of ["lint", "test", "build-artifacts"]) {
+  assert.match(job("build"), /needs: \[detect-changes\]/);
+  for (const name of ["build", "secrets-scan", "lint", "test", "build-artifacts"]) {
     assert.match(job(name), /needs\.detect-changes\.outputs\.any-code-changed == 'true'/, `${name} runs when any-code-changed is true`);
   }
 });

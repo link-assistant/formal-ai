@@ -12,14 +12,14 @@ import YAML from 'yaml';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
 const workflow = name => YAML.parse(read('.github/workflows/' + name));
-function evaluate(expression, event, ref, variables = {}) {
+function evaluate(expression, event, ref, variables = {}, {results = {}, outputs: changed = {}, releaseMode = 'checks', isCancelled = false} = {}) {
   const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
-  const outputs = new Proxy({}, {get: () => 'true'});
-  const needs = new Proxy({}, {get: () => ({result:'success', outputs})});
-  return new Script(source).runInNewContext({github:{event_name:event,ref,event:{inputs:{release_mode:"checks"},workflow_run:{head_branch:'main'}}},
+  const outputs = new Proxy(changed, {get: (target, key) => target[key] ?? 'true'});
+  const needs = new Proxy(results, {get: (target, key) => ({result:target[key] ?? 'success', outputs})});
+  return new Script(source).runInNewContext({github:{event_name:event,ref,event:{inputs:{release_mode:releaseMode},workflow_run:{head_branch:'main'}}},
     vars:{FORMAL_AI_FULL_PR_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',...variables}, needs,
-    inputs:{},cancelled:()=>false,always:()=>true,fromJSON:JSON.parse}, {timeout:100});
+    inputs:{},cancelled:()=>isCancelled,always:()=>true,fromJSON:JSON.parse}, {timeout:100});
 }
 test('all former heavy PR overrides remain closed, including bot branch dispatch', () => {
   const manifest = JSON.parse(read('data/benchmarks/fast-pull-request-retained-jobs.json'));
@@ -172,6 +172,32 @@ test('recorded Docker cold rebuild is optional and cannot hold the production bu
     assert(publish.needs.includes(mode+'_compile-release'));
     assert.match(publish.steps.find(s=>s.name==='Publish to Crates.io').run,/--verified-build true/u);
   }
+});
+test('main release depends on package and admission checks while broad failures reach pipeline status', () => {
+  const jobs = workflow('release.yml').jobs;
+  const main = 'refs/heads/main';
+  const diagnostics = ['lint', 'test', 'macos-core-tests', 'build-artifacts',
+    'server-parity', 'test-e2e-local', 'test-agent-cli-e2e', 'native-response-observations'];
+  const failed = Object.fromEntries(diagnostics.map(id => [id, 'failure']));
+  assert.deepEqual(jobs.build.needs, ['detect-changes']);
+  assert(!jobs.build.steps.some(step => step.uses?.includes('download-formal-ai-binary')));
+  assert.equal(evaluate(jobs.build.if, 'push', main, {}, {results: failed}), true);
+  assert.equal(Boolean(evaluate(jobs.build.if, 'push', main, {}, {outputs: {'any-code-changed': 'false'}})), false);
+  assert.equal(Boolean(evaluate(jobs.build.if, 'push', main, {}, {results: {'detect-changes': 'failure'}})), false);
+  assert.equal(evaluate(jobs.build.if, 'workflow_dispatch', main, {}, {results: {'detect-changes': 'skipped'}}), true);
+  for (const id of diagnostics) assert(jobs['pipeline-status'].needs.includes(id), id);
+  for (const [id, event] of [['auto-release', 'push'], ['manual-release', 'workflow_dispatch']]) {
+    const job = jobs[id];
+    assert.deepEqual(job.needs, ['build', 'secrets-scan', 'release-preflight']);
+    const admitted = (options, ref = main) => evaluate(job.if, event, ref, {}, {releaseMode: 'instant', ...options});
+    assert.equal(admitted({results: failed}), true, id);
+    assert.equal(admitted({isCancelled: true}), false, id);
+    assert.equal(admitted({}, 'refs/heads/topic'), false, id);
+    for (const gate of job.needs) {
+      for (const status of ['failure', 'skipped']) assert.equal(admitted({results: {[gate]: status}}), false, gate);
+    }
+  }
+  assert.equal(evaluate(jobs['manual-release'].if, 'workflow_dispatch', main), false);
 });
 // Issue #1569: one PR group outgrew its 360s budget (run 43693412224), so the
 // fast inventory splits over two groups, and the step divides by the same count.
