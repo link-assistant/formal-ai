@@ -25,14 +25,16 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Latest observed published head `f156be6e` has all 27 terminal workflows: 24 success,
-one skip and two failures. Pipeline, all eight native families and registry scripts
-pass. The generated TypeScript drift and included-string timeout have local
-repairs; hosted performance of the bounded memory candidate remains unverified.
-Current Go (all 39 blobs), C++ (six changed files), C# (eight changed files) and
-Rust (twelve changed files) have pinned comparison ledgers and narrow executable
-checks. The original full-template and issue acceptance criteria remain open.
-See [terminal native qualification and memory candidate](../../docs/case-studies/issue-1580/f156-terminal-and-memory-checkpoint.md).
+Latest published head `e06d1f18` has 27 terminal workflows: 26 success, one skip
+and no failures. Pipeline, all eight native families, registry scripts and
+Layered CI pass. The separately dispatched actual CodeQL producer passes with
+2180 included-string rows and 122579 macro-context rows. The four-minute query
+bound and strict SARIF gate remain unchanged. All 148 producer files verify.
+Secretlint 14 and partial-output annotation repairs pass focused local tests;
+their next-head hosted qualification remains pending. JavaScript and PHP
+changed-file reviews have current pins and focused execution evidence. Full
+template and original issue acceptance remain open.
+See [successful producer and scanner repairs](../../docs/case-studies/issue-1580/e06-security-and-scanner-checkpoint.md).
 No push is permitted while a current-head workflow is queued or in progress.
 
 
