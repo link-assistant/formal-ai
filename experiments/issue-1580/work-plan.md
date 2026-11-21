@@ -25,6 +25,8 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
+New local repair: [generated source witness checkpoint](../../docs/case-studies/issue-1580/generated-native-registry-repair-checkpoint.md). The current published head is `27e895c1`; its final Pipeline and Security results are still being collected before the next push. The fully collected prior-head account follows.
+
 Latest fully collected published head `bd6fe77b98aa1cb89c53bfc0667107f6afb13122`
 has 27 terminal workflows: 23 success, one skip and three failures. All 178
 retained original/compressed command streams verify by SHA256, bytes and lines.
