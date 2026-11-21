@@ -480,9 +480,7 @@ jobs:
       - name: Download the current native self-coding test executable
         if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 3
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           name: formal-ai-self-coding-test-executable
           path: dist/self-coding-tests

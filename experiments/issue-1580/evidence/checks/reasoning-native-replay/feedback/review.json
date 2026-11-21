@@ -1,0 +1,26 @@
+{
+  "endpoints": [
+    {
+      "name": "issue-comments",
+      "count": 1,
+      "bodyIdentityUnchanged": true
+    },
+    {
+      "name": "conversation-comments",
+      "count": 9,
+      "bodyIdentityUnchanged": true
+    },
+    {
+      "name": "inline-comments",
+      "count": 0,
+      "bodyIdentityUnchanged": true
+    },
+    {
+      "name": "reviews",
+      "count": 0,
+      "bodyIdentityUnchanged": true
+    }
+  ],
+  "newFeedback": false,
+  "independentAuthorshipCredit": 0
+}

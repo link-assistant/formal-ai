@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/staged-release-activation-transition.test.mjs"
+  ],
+  "exitCode": 1,
+  "seconds": 5.768,
+  "counts": {
+    "tests": 3,
+    "pass": 2,
+    "fail": 1,
+    "skipped": 0
+  },
+  "rawSha256": "e7c734b621fb9a7d33f1b216df9162713a469f8091736cd52342cd51767923dd",
+  "rawBytes": 1316,
+  "rawLines": 28
+}

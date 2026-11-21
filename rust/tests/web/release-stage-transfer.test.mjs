@@ -314,7 +314,12 @@ function validateProjection(projection, canonicalBytes = readCheckedReleaseOpera
       const sourceDownload = job.steps.find(step => step.name === 'Download immutable selected source artifact');
       assert.equal(sourceDownload.with['artifact-ids'], '${{ needs.' + mode + '_prepare-source.outputs.artifact_id }}');
       assert.equal(sourceDownload.with.path, '.release-transfer/source');
-      assert.equal(sourceDownload.with['digest-mismatch'], 'error');
+      assert.equal(sourceDownload.uses, './_protocol/.github/actions/download-artifact');
+      assert.deepEqual(Object.keys(sourceDownload.with).sort(), ['artifact-ids', 'path'],
+        'the checked adapter takes only its supported source identity and destination');
+      assert.ok(job.steps.indexOf(sourceDownload) < job.steps.findIndex(step =>
+        step.run === 'node _protocol/scripts/release-stage-transfer.mjs verify-source'),
+        'independent descriptor and source-byte verification follows the checked transfer');
       const sourceVerifier = job.steps.find(step => step.run === 'node _protocol/scripts/release-stage-transfer.mjs verify-source');
       assert.ok(sourceVerifier);
       if (id.endsWith('_create-release')) {
@@ -348,7 +353,12 @@ test('dormant workflow is a checked exact canonical operation/order/output/autho
 test('canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail', () => {
   const projection = readProjection();
   assert.throws(() => validateProjection(projection, originalSnapshot + '\n# canonical changed'));
-  const mutations = [candidate => candidate.jobs['auto_verify-package'].steps.splice(candidate.jobs['auto_verify-package'].steps.findIndex(step => step.name === 'Verify packaged crate archive'),
+  const mutations = [
+    candidate => candidate.jobs['auto_compile-release'].steps.find(step =>
+      step.name === 'Download immutable selected source artifact').uses = 'actions/download-artifact@v5',
+    candidate => candidate.jobs['auto_compile-release'].steps.find(step =>
+      step.name === 'Download immutable selected source artifact').with['digest-mismatch'] = 'error',
+    candidate => candidate.jobs['auto_verify-package'].steps.splice(candidate.jobs['auto_verify-package'].steps.findIndex(step => step.name === 'Verify packaged crate archive'),
      1),
      candidate => candidate.jobs['auto_published-crate-smoke'].steps.splice(candidate.jobs['auto_published-crate-smoke'].steps.findIndex(step => step.name === 'Smoke test the published crate'),
      1),

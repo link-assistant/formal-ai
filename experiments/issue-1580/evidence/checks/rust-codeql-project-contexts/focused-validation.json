@@ -1,0 +1,44 @@
+[
+  {
+    "label": "projects-final",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/security-codeql-results.test.mjs"
+    ],
+    "exitCode": 0,
+    "rawSha256": "ad7c9f7e9553b5a6d4b78b0747e9c7ecbdeeb6a49e2182fba369a9f55db225f6"
+  },
+  {
+    "label": "retained-main-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "rawSha256": "402b17da8900f686087351b6c60038de1b33a64714310877c7ce2e04f1376e36"
+  },
+  {
+    "label": "production-profile",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 1,
+    "rawSha256": "39171e9a0de02b84c19699427028b2887d7650d1073a1c4af5be10a72e2201ac"
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "exitCode": 0,
+  "seconds": 9.326,
+  "file": "after.log.gz",
+  "rawSha256": "4d7e9a0fe0ce5e7db830b644237d89388ea61a1f6e0ed09e81f4dc7970adf2e4",
+  "archiveSha256": "c4e55fbeaa2b91a7b72f3dec4a00d13beffc146614c6794b7e5dc3d1cf2611fc"
+}

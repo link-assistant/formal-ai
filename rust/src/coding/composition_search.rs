@@ -182,6 +182,7 @@ pub fn search_with_structures(
         .map(|fragment| fragment_binder_slots(fragment, &spec.language))
         .collect();
     let mut pool = atom_expressions(spec, &parameters, &ranked, structure_ids);
+    crate::diagnostic!("trace"; "coding_search: language={} shape={:?} structures={} ranked={:?} parameters={} atoms={}", spec.language, spec.artifact_shape, structure_ids.len(), ranked.iter().map(|fragment| fragment.id.as_str()).collect::<Vec<_>>(), parameters.len(), pool.len());
     let fold_roots = ranked
         .iter()
         .filter_map(|fragment| {
@@ -516,6 +517,7 @@ pub fn search_with_structures(
             candidate.content_id(),
         )
     });
+    crate::diagnostic!("trace"; "coding_search: language={} surviving_programs={}", spec.language, candidates.len());
     candidates
 }
 

@@ -1,0 +1,462 @@
+{
+  "observedAt": "2026-11-21T05:47:12.977117+00:00",
+  "publishedHead": "8b0d6f59071c7577e8d0563d7220bef4db137001",
+  "terminalWorkflows": 27,
+  "successfulWorkflows": 24,
+  "skippedWorkflows": 1,
+  "failedWorkflows": [
+    {
+      "id": 44867529175,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44867529175"
+    },
+    {
+      "id": 44867525559,
+      "name": "Security",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44867525559"
+    }
+  ],
+  "verifiedCommandStreams": 340,
+  "retainedFullRunLogs": 27,
+  "nativeFamilies": [
+    {
+      "job": "Native type and lint check / Native contracts (reasoning-2)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (benchmarks)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (interfaces)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (reasoning-1)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (hive-1)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (hive-2)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (hive-3)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (coding)",
+      "conclusion": "success"
+    }
+  ],
+  "checks": {
+    "version-fetch-failure-checks": {
+      "head": "a29599f78a975c864e0e94b7d7ef64f35493297c",
+      "checks": [
+        {
+          "name": "rustfmt",
+          "command": [
+            "rustfmt",
+            "--edition",
+            "2024",
+            "--check",
+            "scripts/check-version-modification.rs"
+          ],
+          "exitCode": 0
+        },
+        {
+          "name": "gates",
+          "command": [
+            "node",
+            "experiments/formal_ai_subagent/local-gates.mjs",
+            "--only",
+            "check-abbreviations,check-file-size,check-readable-code"
+          ],
+          "exitCode": 0
+        },
+        {
+          "name": "whitespace",
+          "command": [
+            "git",
+            "diff",
+            "--check"
+          ],
+          "exitCode": 0
+        }
+      ],
+      "nativeRuntimeVerified": false,
+      "pushed": false,
+      "independentAuthorshipCredit": 0
+    },
+    "process-and-pipeline-checks": {
+      "checks": [
+        {
+          "name": "run-with-deadline-syntax",
+          "command": [
+            "bash",
+            "-n",
+            "scripts/run-with-deadline.sh"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.01111711678095162
+        },
+        {
+          "name": "run-with-budget-warning-syntax",
+          "command": [
+            "bash",
+            "-n",
+            "scripts/run-with-budget-warning.sh"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.010061718989163637
+        },
+        {
+          "name": "gates",
+          "command": [
+            "node",
+            "experiments/formal_ai_subagent/local-gates.mjs",
+            "--only",
+            "check-abbreviations,check-file-size,check-readable-code"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 18.610299926018342
+        },
+        {
+          "name": "whitespace",
+          "command": [
+            "git",
+            "diff",
+            "--check"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.2448386289179325
+        },
+        {
+          "name": "pipeline-stage",
+          "command": [
+            "git",
+            "add",
+            "--",
+            "scripts/check-pipeline-status.sh",
+            "rust/tests/web/default-branch-build-policy.test.mjs",
+            "experiments/issue-1580/template-cpp-policy-result.test.mjs",
+            "experiments/issue-1580/fixtures/cpp-template/scripts/check-pipeline-status.sh",
+            "experiments/issue-1580/fixtures/cpp-template/source.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.2684828119818121
+        },
+        {
+          "name": "pipeline-commit",
+          "command": [
+            "git",
+            "commit",
+            "-m",
+            "Reject incomplete pipeline result observations",
+            "-m",
+            "Formal-AI-Development: JavaScript tool execution; supplied repair receives zero autonomous authorship credit."
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.6375623580534011
+        },
+        {
+          "name": "process-stage",
+          "command": [
+            "git",
+            "add",
+            "--",
+            "scripts/run-with-deadline.sh",
+            "scripts/run-with-budget-warning.sh",
+            "experiments/issue-1580/probe-budget-process-lifetime.py",
+            "experiments/issue-1580/deadline-process-lifetime.test.mjs",
+            "experiments/issue-1580/budget-process-lifetime.test.mjs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.36463838210329413
+        },
+        {
+          "name": "process-commit",
+          "command": [
+            "git",
+            "commit",
+            "-m",
+            "Wait for process-group termination after deadline signals",
+            "-m",
+            "Formal-AI-Development: JavaScript tool execution; supplied repair receives zero autonomous authorship credit."
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.6296693249605596
+        }
+      ],
+      "independentAuthorshipCredit": 0,
+      "nativeRuntimeExecuted": false,
+      "fullIssueComplete": false
+    },
+    "codeql-thread-inheritance-checks": {
+      "checks": [
+        {
+          "name": "adapter",
+          "argv": [
+            "node",
+            "--test",
+            "--test-concurrency=1",
+            "experiments/issue-1580/codeql-included-string-observation.test.mjs"
+          ],
+          "exitCode": 0,
+          "seconds": 2.793235076125711
+        },
+        {
+          "name": "security",
+          "argv": [
+            "node",
+            "--test",
+            "--test-concurrency=1",
+            "rust/tests/web/security-codeql-results.test.mjs"
+          ],
+          "exitCode": 0,
+          "seconds": 10.328010642901063
+        },
+        {
+          "name": "gates",
+          "argv": [
+            "node",
+            "experiments/formal_ai_subagent/local-gates.mjs",
+            "--only",
+            "check-abbreviations,check-file-size,check-readable-code"
+          ],
+          "exitCode": 0,
+          "seconds": 23.887761653168127
+        },
+        {
+          "name": "whitespace",
+          "argv": [
+            "git",
+            "diff",
+            "--check"
+          ],
+          "exitCode": 0,
+          "seconds": 0.2358064940199256
+        },
+        {
+          "name": "stage",
+          "argv": [
+            "git",
+            "add",
+            "--",
+            "experiments/issue-1580/codeql-macro-contexts/observe.py",
+            "experiments/issue-1580/codeql-included-string-observation.test.mjs",
+            "experiments/issue-1580/codeql-macro-contexts/README.md"
+          ],
+          "exitCode": 0,
+          "seconds": 0.25888436404056847
+        },
+        {
+          "name": "commit",
+          "argv": [
+            "git",
+            "commit",
+            "-m",
+            "Honor hosted CodeQL evaluator thread capacity",
+            "-m",
+            "Formal-AI-Development: JavaScript tool execution; supplied repair receives zero autonomous authorship credit."
+          ],
+          "exitCode": 0,
+          "seconds": 0.5559687959030271
+        }
+      ],
+      "hostedPerformanceVerified": false,
+      "localCodeqlExecuted": false,
+      "fullIssueComplete": false,
+      "independentAuthorshipCredit": 0
+    },
+    "cpp-input-extension-checks": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 23.43906064191833,
+      "upstreamRepairApplied": false,
+      "fullIssueComplete": false,
+      "independentAuthorshipCredit": 0
+    }
+  },
+  "upstreamTemplateHeads": {
+    "observedAt": "2026-11-21T05:41:33.432596+00:00",
+    "source": {
+      "source": "/tmp/issue-1580-research/template-head-refresh-20261121/outcome.json",
+      "file": "434-evidence.gz",
+      "bytes": 25197,
+      "lines": 938,
+      "rawSha256": "80364ec6b9776d400179b6643ee832fbdcc67e2d9cfc962c1386fe101b25f868",
+      "archiveSha256": "4d9a71fa55fa72a5d9621fbc897f0e94e14dba4ec41273da23a54bad5ab1a9a2"
+    },
+    "templates": [
+      {
+        "language": "js",
+        "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+        "pinnedHead": "74de898dd6ce548af5bcb9359e1dae75fd4ebd75",
+        "currentHead": "8e72538d579d904aff818c2447fb3c2413d3a989",
+        "committedAt": "2026-11-21T02:33:23Z",
+        "changed": true,
+        "comparisonStatus": "ahead",
+        "aheadBy": 9,
+        "behindBy": 0,
+        "totalCommits": 9,
+        "returnedFiles": 32,
+        "fileListMayBeTruncated": false
+      },
+      {
+        "language": "rust",
+        "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+        "pinnedHead": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+        "currentHead": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f",
+        "committedAt": "2026-11-21T02:46:00Z",
+        "changed": true,
+        "comparisonStatus": "ahead",
+        "aheadBy": 9,
+        "behindBy": 0,
+        "totalCommits": 9,
+        "returnedFiles": 12,
+        "fileListMayBeTruncated": false
+      },
+      {
+        "language": "python",
+        "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+        "pinnedHead": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+        "currentHead": "62cc393707ddfe7ceeddbc580d43cc35334636f1",
+        "committedAt": "2026-11-21T02:46:13Z",
+        "changed": true,
+        "comparisonStatus": "ahead",
+        "aheadBy": 12,
+        "behindBy": 0,
+        "totalCommits": 12,
+        "returnedFiles": 35,
+        "fileListMayBeTruncated": false
+      },
+      {
+        "language": "php",
+        "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+        "pinnedHead": "3a034b27a56067971ca74dd4c74c7707056b215d",
+        "currentHead": "b61e334703d93a15e08bf1a278e0df0a9d6e98a8",
+        "committedAt": "2026-11-20T05:39:12Z",
+        "changed": true,
+        "comparisonStatus": "ahead",
+        "aheadBy": 15,
+        "behindBy": 0,
+        "totalCommits": 15,
+        "returnedFiles": 19,
+        "fileListMayBeTruncated": false
+      },
+      {
+        "language": "csharp",
+        "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+        "pinnedHead": "a5b9a1a46686cfe844f9afa2ace030094969e766",
+        "currentHead": "a0f2a171dc1ab02ad5d68147656660562f6e1504",
+        "committedAt": "2026-11-20T04:23:37Z",
+        "changed": true,
+        "comparisonStatus": "ahead",
+        "aheadBy": 5,
+        "behindBy": 0,
+        "totalCommits": 5,
+        "returnedFiles": 8,
+        "fileListMayBeTruncated": false
+      },
+      {
+        "language": "java",
+        "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+        "pinnedHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+        "currentHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+        "committedAt": "2026-11-14T11:52:23Z",
+        "changed": false
+      },
+      {
+        "language": "cpp",
+        "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+        "pinnedHead": "3769fa70a1bc30ce9516e01f78bcd7edea3b3f80",
+        "currentHead": "45c42aff119b366ba103a9342ec3c33731bb7e2e",
+        "committedAt": "2026-11-20T04:25:57Z",
+        "changed": true,
+        "comparisonStatus": "ahead",
+        "aheadBy": 5,
+        "behindBy": 0,
+        "totalCommits": 5,
+        "returnedFiles": 6,
+        "fileListMayBeTruncated": false
+      },
+      {
+        "language": "go",
+        "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+        "pinnedHead": "65c686846d7327d8c835a0d30b1a76cc6345cfc6",
+        "currentHead": "065985538e6d1ede54116e11b70f5a2f1f6ad7b3",
+        "committedAt": "2026-11-20T05:29:08Z",
+        "changed": true,
+        "comparisonStatus": "ahead",
+        "aheadBy": 6,
+        "behindBy": 0,
+        "totalCommits": 6,
+        "returnedFiles": 23,
+        "fileListMayBeTruncated": false
+      }
+    ],
+    "sourceComparisonOfChangedFilesComplete": false,
+    "fullIssueComplete": false,
+    "independentAuthorshipCredit": 0
+  },
+  "archivedRecords": 551,
+  "hostedPerformanceVerifiedForThreadCandidate": false,
+  "nativeExecutionVerifiedForNewFetchGuard": false,
+  "cppUpstreamRepairApplied": false,
+  "literalFullLogReviewComplete": false,
+  "localNativeBuildExecuted": false,
+  "sourceWarningLimitsChanged": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "postReviewExactStatusCheck": {
+    "argv": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 21.787806839914992,
+    "originalExactStatusAssertionPreserved": true,
+    "independentAuthorshipCredit": 0
+  },
+  "finalDocumentationChecks": {
+    "checks": [
+      {
+        "name": "gates",
+        "argv": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-abbreviations,check-file-size,check-readable-code"
+        ],
+        "exitCode": 0,
+        "seconds": 16.752637484110892
+      },
+      {
+        "name": "whitespace",
+        "argv": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exitCode": 0,
+        "seconds": 0.3993864059448242
+      }
+    ],
+    "allPassed": true,
+    "fullIssueComplete": false,
+    "independentAuthorshipCredit": 0
+  }
+}

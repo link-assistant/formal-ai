@@ -1,0 +1,18 @@
+{
+  "observedAt": "2026-11-17T22:34:21.098918+00:00",
+  "gateReceipt": "experiments/issue-1580/evidence/checks/runtime-replay-all-gates/all-local-gates.json",
+  "counts": {
+    "PASS": 86,
+    "SKIP": 52,
+    "FAIL": 0
+  },
+  "perGateHashesVerified": 86,
+  "correctedFocusedTests": [
+    4,
+    15
+  ],
+  "incomingMain": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "combinedSourceVerificationPending": true,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

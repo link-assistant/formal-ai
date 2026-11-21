@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "experiments/issue-1580/template-php-input-integrity.test.mjs"
+  ],
+  "exitCode": 0,
+  "independentAuthorshipCredit": 0,
+  "templateRepaired": false
+}

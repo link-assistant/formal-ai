@@ -1,0 +1,1 @@
+Fix the single-branch repeated-extglob denial of service in desktop and VS Code development dependencies with a reviewed local picomatch backport for GHSA-fc5q-39xc-vjpf. Preserve the upstream MIT license and source hashes, block nested wildcard repetitions through the existing literal fallback, and add bounded regression and installed-consumer checks.

@@ -1,0 +1,56 @@
+[
+  {
+    "name": "maintained-loader-clean",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/release-workflow-scope-controls.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 19.48671969305724,
+    "file": "maintained-loader-clean.log.gz",
+    "rawSha256": "fbd8454a64541104fdcf1dd8a211794cab7eb6c3dd780868375f7a38bd2e8a8d",
+    "archiveSha256": "883899f87947362c9afdeffcb644afdb3ee4e88de065c5b2a1c3b7fc0afe782b",
+    "nodeOptionsEnvironmentAbsent": true
+  },
+  {
+    "name": "cache-report-controls",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/sccache-outage-fallback.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 3.2737545459531248,
+    "file": "cache-report-controls.log.gz",
+    "rawSha256": "5c9a6b0d34a594ae2a83ac57dd75aed6e1f497e7ace10eae2d19052911c0abdf",
+    "archiveSha256": "6323432f6f193b2f7abc0b175bbb036b85aada8c63e2d98a1ff324866cd912f3",
+    "nodeOptionsEnvironmentAbsent": true
+  },
+  {
+    "name": "budget-registry-controls",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/ci-budget-and-registry-identities.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.9458937069866806,
+    "file": "budget-registry-controls.log.gz",
+    "rawSha256": "73d05a7f8a31645f68c1ce0282bc23cfc393badcafbed8f019ad85d06184bee3",
+    "archiveSha256": "6d1686556e0451986d2a9a16628a17bd61220ff5236d594a3f456d51ca2127a0",
+    "nodeOptionsEnvironmentAbsent": true
+  }
+]

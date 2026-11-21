@@ -1,0 +1,41 @@
+{
+  "observedAt": "2026-11-18T12:43:38.840129+00:00",
+  "head": "acb9fa51085c8ba88ff8fae006b45698d355921e",
+  "workflowsPassed": 23,
+  "wholeJobLogsLiterallyRead": false,
+  "literalRanges": [
+    {
+      "jobId": 134796391789,
+      "first": 1601,
+      "last": 1730
+    },
+    {
+      "jobId": 134798922483,
+      "first": 4758,
+      "last": 4780
+    },
+    {
+      "jobId": 134798922501,
+      "first": 2875,
+      "last": 2898
+    }
+  ],
+  "nativeTests": {
+    "calendarCurrency": 1,
+    "metaExecutor": 6,
+    "forcedFunctions": 1,
+    "http": 2
+  },
+  "nativeAlgebraTestPassed": true,
+  "javaScriptShards": [
+    {
+      "passed": 1188,
+      "skipped": 4
+    },
+    {
+      "passed": 1528,
+      "skipped": 13
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

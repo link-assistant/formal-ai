@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
   copyFileSync,
+  existsSync,
   mkdtempSync,
   mkdirSync,
   readFileSync,
@@ -73,7 +74,22 @@ test("release regeneration records a consumed fragment in the release commit", (
   const repo = join(root, "repo");
   const source = process.cwd();
   try {
-    execFileSync("git", ["clone", "--shared", "--quiet", source, repo]);
+    // History is shared for the real release reconstruction. Only its input
+    // paths need a worktree; checking out unrelated evidence copies the repo.
+    execFileSync("git", [
+      "clone", "--shared", "--no-checkout", "--quiet",
+      "--config", "core.deltaBaseCacheLimit=16m", source, repo,
+    ]);
+    execFileSync("git", ["-C", repo, "sparse-checkout", "set", "--no-cone", "--stdin"], {
+      input: [
+        "/CHANGELOG.md", "/changelog.d/", "/docs/changelog/",
+        "/docs/case-studies/issue-711/fragment-release-map.tsv",
+        "/experiments/issue_711_rebuild_changelog.mjs", "",
+      ].join("\n"),
+    });
+    execFileSync("git", ["-C", repo, "checkout", "--quiet", "HEAD"]);
+    assert.equal(existsSync(join(repo, "rust/src/lib.rs")), false);
+    assert.equal(existsSync(join(repo, "experiments/issue-1580/evidence")), false);
     execFileSync("git", ["-C", repo, "config", "user.email", "test@example.com"]);
     execFileSync("git", ["-C", repo, "config", "user.name", "Test"]);
     copyFileSync(

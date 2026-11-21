@@ -69,3 +69,27 @@ test("the shipped browser registry resolves every seed-declared implementation",
     "worker startup installs the seed order byte-for-byte",
   );
 });
+
+test("named argument lists preserve order, context values and inline fields", () => {
+  const context = createBrowserContext();
+  loadBrowserScript(context, "js/seed_loader.js");
+  loadBrowserScript(context, "js/worker/formal_ai_worker_dispatch.js");
+  context.firstHandler = (...values) => ({ intent: "first", content: values, evidence: [] });
+  const parse = (source) => context.FormalAiSeed.extractBrowserHandlerPrecedence(context.FormalAiSeed.parse(source));
+  const source = `browser-handler-precedence
+  arguments calendar
+    argument_prompt
+    argument_normalized
+    argument_userContext
+  handler firstHandler
+    arguments calendar
+    result_intent_first
+`;
+  const before = parse(source.replace("    arguments calendar", "    argument_prompt\n    argument_normalized\n    argument_userContext"));
+  context.testRegistry = parse(source);
+  assert.deepEqual(plain(context.testRegistry), plain(before));
+  context.testContext = { prompt: "request", normalized: "normalized", userContext: { timezone: "UTC" } };
+  assert.deepEqual(plain(evaluate(context, "synchronousHandlerCandidates(testContext, testRegistry)[0].run().content")),
+    ["request", "normalized", { timezone: "UTC" }]);
+  assert.throws(() => parse(source.replace("    arguments calendar", "    arguments missing")), /unknown browser handler arguments: missing/);
+});

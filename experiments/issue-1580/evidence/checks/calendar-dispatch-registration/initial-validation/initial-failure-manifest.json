@@ -1,0 +1,34 @@
+[
+  {
+    "name": "check-closure-audit",
+    "file": "initial-check-closure-audit.log.gz",
+    "rawSha256": "7b283f17b5a8c51b68cca925293b5a6dadd4019d4a6da88293445913ca949b5b",
+    "archiveSha256": "b50e32b8c001bf74b1c529617a62760239f0cf0a2ffb03e7bcd7056d94c2153d",
+    "lines": 4,
+    "literalRead": true
+  },
+  {
+    "name": "check-notation",
+    "file": "initial-check-notation.log.gz",
+    "rawSha256": "5b9d8d5a1ed7fd5d5fb1d284371e73a20cbd57f23f4fd409cf047c076667e5d7",
+    "archiveSha256": "68da3c606b800f01c407e94cc0ca27dfebbc95a38d9defca51c8c6bbe2447ca7",
+    "lines": 15,
+    "literalRead": true
+  },
+  {
+    "name": "check-runtime-feature-inventory",
+    "file": "initial-check-runtime-feature-inventory.log.gz",
+    "rawSha256": "5d0c2f5a61c56f41faa1ab9a606fbb672b8bc409e35f4deb945fb101fc08e591",
+    "archiveSha256": "897691355851c4491f28a8d955a4f015d7e7b08b9dbd41b631226674af8a159c",
+    "lines": 2,
+    "literalRead": true
+  },
+  {
+    "name": "check-system-diagrams",
+    "file": "initial-check-system-diagrams.log.gz",
+    "rawSha256": "2f0e68aaa908de195c95df374e85c9f8a9538106c5b65134ce17e98e45aa2cc2",
+    "archiveSha256": "25d195ac7e7123cb458356f090ca75cbf25e5451c56c787c406f536cc40a5bdd",
+    "lines": 2,
+    "literalRead": true
+  }
+]

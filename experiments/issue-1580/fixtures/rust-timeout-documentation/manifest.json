@@ -1,0 +1,25 @@
+{
+  "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+  "reviewedPin": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f",
+  "currentHead": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f",
+  "currentSourcesByteIdentical": true,
+  "sources": [
+    {
+      "path": "README.md",
+      "file": "readme.source.gz",
+      "gitBlob": "6c0299ec43ee4593c4c7787e6bf9366fa150e7c9",
+      "sha256": "53929867193fc7d56354f4dac721d8363bf69c8220718e1d217d09fe55a82dd3",
+      "bytes": 20592,
+      "archiveSha256": "e707abf6cfa6de404604a95526f33859df2d0af0c7d1a236b902840c79e57197"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "file": "release.source.gz",
+      "gitBlob": "1228b2be27e153a77632cc73ae440be4fe348221",
+      "sha256": "e0c18c1e8544dcef98615bda72db1e3ecdef3791b13105814585a2b54f70aa11",
+      "bytes": 66566,
+      "archiveSha256": "04b41c336f9a6a84bd7dbd02d90c50efa6b8739770cd50f93ae57bad54f76037"
+    }
+  ],
+  "previousRecordedIdentifier": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f3"
+}

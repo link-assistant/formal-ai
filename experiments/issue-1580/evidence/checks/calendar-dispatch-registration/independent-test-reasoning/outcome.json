@@ -1,0 +1,41 @@
+{
+  "complete": true,
+  "exitCode": 0,
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "experiments/js_dogfood/drive.mjs",
+    "--dir",
+    "/tmp/gh-issue-solver-1794900398048",
+    "--steps",
+    "4",
+    "Compare two strategies for a full-worker calendar regression: directly calling the calendar helper or solving through the normal browser dispatcher. Explain which can detect a scheduling request accidentally becoming a memory write, and describe a negative control that checks ordinary memory writes."
+  ],
+  "payloads": [
+    {
+      "stream": "stdout",
+      "file": "stdout.log.gz",
+      "bytes": 98,
+      "lines": 2,
+      "rawSha256": "a61083a5e87363eefe6daf17d2cab2626c583e05eb2bef52f1b6977c26cd28ac",
+      "archiveSha256": "3edc1c7e7642fe5437f070f678f6dc40a6bf21d58626597e4d5e534438303131"
+    },
+    {
+      "stream": "stderr",
+      "file": "stderr.log.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "accepted": false,
+  "status": "reviewed-rejected",
+  "fullIssueComplete": false,
+  "reason": "The actual response refuses execution under declared-create contract admission. It provides neither a comparison of coverage nor an ordinary memory-write control. Exit code zero is not reasoning success.",
+  "allPayloadHashesVerified": true,
+  "fullResponseLiterallyRead": true,
+  "acceptedIndependentUnits": 0,
+  "frozenSubstantiveUnits": 20,
+  "broaderCriteriaRemainOpen": true
+}

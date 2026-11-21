@@ -1,0 +1,4 @@
+import {createWorkerContext,evaluate,plain} from '../../rust/tests/web/support/browser-runtime.mjs';
+const worker=createWorkerContext();await evaluate(worker,'loadSeed()');worker.navigator={...worker.navigator,onLine:false};worker.fetch=async()=>{throw new Error('Network disabled by bounded issue-1580 probe');};
+const prompts=['Find apple on the internet','Найди яблоко в интернете','सेब के बारे में इंटरनेट पर खोजो','查找苹果网上信息','Find information about Rust programming','Поищи материалы по Rust программированию в Википедии','Rust programming के बारे में विकिपीडिया में खोजें','在维基百科上查一下 Rust 编程'];
+for(const prompt of prompts){const response=plain(await worker.solve(prompt,[],{},{},[],{}));console.log(JSON.stringify({prompt,intent:response.intent,content:response.content,evidence:response.evidence}));}

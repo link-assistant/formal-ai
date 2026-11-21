@@ -1,0 +1,111 @@
+{
+  "sourceFiles": [
+    {
+      "path": "packages/picomatch-compat/LICENSE",
+      "bytes": 1091,
+      "lines": 21,
+      "sha256": "d0cd141b0c322fded5dfad1d4645bb2fedfc05b7321fe1009469638190d59ef9"
+    },
+    {
+      "path": "packages/picomatch-compat/README.md",
+      "bytes": 1732,
+      "lines": 30,
+      "sha256": "579a9ac00e65874e6e4897b6ced22bb9efe863b2f5ce3ca257f8481b714df665"
+    },
+    {
+      "path": "packages/picomatch-compat/index.js",
+      "bytes": 479,
+      "lines": 17,
+      "sha256": "02ae26406508e28f9ba0865be16cf77f0b33de6c4d4d49c212c4176df1d5625a"
+    },
+    {
+      "path": "packages/picomatch-compat/lib/constants.js",
+      "bytes": 4552,
+      "lines": 184,
+      "sha256": "c28f952d2758261fe5428a121add485cc25b03e0193633f649de903dc0e5e222"
+    },
+    {
+      "path": "packages/picomatch-compat/lib/extglob-guard.js",
+      "bytes": 8310,
+      "lines": 368,
+      "sha256": "e9a46e9ad44d15bef4755a9750b7ecad753d730eabdde3c06e29b5a885705aea"
+    },
+    {
+      "path": "packages/picomatch-compat/lib/parse.js",
+      "bytes": 29126,
+      "lines": 1125,
+      "sha256": "4df850ea17ca83ffd0f2d47271b142c4dc2b991f0d561f2038c30e58d69ef121"
+    },
+    {
+      "path": "packages/picomatch-compat/lib/picomatch.js",
+      "bytes": 10722,
+      "lines": 361,
+      "sha256": "fdd249d7ffff853f3bb1c77eafc8baa1a437bea85a94c35877b83c6a40d9ca94"
+    },
+    {
+      "path": "packages/picomatch-compat/lib/scan.js",
+      "bytes": 9483,
+      "lines": 403,
+      "sha256": "6457a1764e5c2e543cc3a0c00ce12ebb3764097628868198370b64d4e642aaae"
+    },
+    {
+      "path": "packages/picomatch-compat/lib/utils.js",
+      "bytes": 1994,
+      "lines": 72,
+      "sha256": "f04604f70cd1a3f6ace80b84766468674ff38b4bb83818d2ef1d81fc6355f935"
+    },
+    {
+      "path": "packages/picomatch-compat/package.json",
+      "bytes": 383,
+      "lines": 19,
+      "sha256": "bfc68fbd03e95f8591cd8f7fa9637c46cf4bac857a660f1a11a6416567ab533c"
+    },
+    {
+      "path": "packages/picomatch-compat/posix.js",
+      "bytes": 60,
+      "lines": 3,
+      "sha256": "5695ff5dfcd5a338a40630bd506056f2950bcb08fe1cc068519cbbfe60add480"
+    },
+    {
+      "path": "packages/picomatch-compat/upstream.json",
+      "bytes": 3037,
+      "lines": 69,
+      "sha256": "1e07073b07a459b769a92403c06aab42d3f407752e046a0b2839c884d8ef58b8"
+    }
+  ],
+  "finalFocusedChecks": "final-rechecks.json",
+  "correctedInvocationSelectors": "final-recheck-corrections.json",
+  "securityCases": 20,
+  "securityPassed": 20,
+  "consumerProbePassed": true,
+  "packageDryRunFiles": 12,
+  "parserComparisons": 1092,
+  "parserDifferences": 28,
+  "differenceCounts": {
+    "+([!]*])": 6,
+    "+([[:alpha:]*])": 1,
+    "+([[]*)": 21
+  },
+  "parserDifferenceReview": "All 28 differences are intentional literalization: 21 nested literal-opening-bracket patterns with an active wildcard, 6 non-POSIX-negation patterns whose star follows a closed class, and 1 disabled-POSIX-class pattern whose star remains active. The valid posix:true negated class now has no difference. This finite probe does not prove general equivalence or raw-regex safety.",
+  "finalTouchedGatesPassed": true,
+  "newPicomatchFileSizeWarnings": 0,
+  "nativeExecuted": false,
+  "autonomousAuthorshipCredit": 0,
+  "limits": "No patched upstream release or general regex-safety claim. Existing maxExtglobRecursion:false opt-out retained. Broader main-only native, warning, benchmark, semantic-review and live-identity requirements remain unfinished.",
+  "historicalLocalGateRun": {
+    "passed": 86,
+    "explicitExclusions": 52,
+    "failed": 0,
+    "receipt": "validation-completion.json",
+    "sourceScope": "Before the later POSIX/unescape cases and helper extraction; all later source changes receive the focused rechecks below."
+  },
+  "completeLocalGateRun": {
+    "passed": 86,
+    "explicitExclusions": 52,
+    "failed": 0,
+    "receipt": "sealed-complete-gates.json",
+    "durationSeconds": 675.184,
+    "rawSha256": "4b852c9e3c99f00524708b8da64e863acbb8501db801aabc956d5d633be47ead",
+    "sourceScope": "Final extracted parser and option refinements, corrected evidence filename and lowered JavaScript abbreviation ceiling."
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "records": 164,
+  "parts": [
+    {
+      "file": "records-part-1.json",
+      "sha256": "1a76385937a044ce3b216a323c16939eca56c7ea30b795c110560a69bf9b9558"
+    },
+    {
+      "file": "records-part-2.json",
+      "sha256": "e2e1f1046c7761f1ae9810cda928a49ece2416925a055389110296e6fb203f39"
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

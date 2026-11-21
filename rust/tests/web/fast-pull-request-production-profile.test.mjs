@@ -1,6 +1,7 @@
+import '../../../experiments/issue-1580/fast-inventory-boundary.test.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,existsSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
+import {readFileSync,readdirSync,existsSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {execFileSync} from 'node:child_process';
@@ -13,13 +14,13 @@ import {ROOTS,familyOf} from '../../../scripts/check-readable-code.mjs';
 const read = file => readFileSync(file, 'utf8');
 const manifest = JSON.parse(read('data/benchmarks/fast-pull-request-retained-jobs.json'));
 const workflow = file => YAML.parse(read('.github/workflows/' + file));
-const evaluate = (expression, context) => new Script(expression.trim()
+const evaluate = (expression, context) => typeof expression!=='string' ? expression : new Script(expression.trim()
   .replace(/^\$\{\{\s*/u, '').replace(/\s*\}\}$/u, '')
   .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']'))
   .runInNewContext({cancelled: () => false, always: () => true, ...context}, {timeout: 100});
 function context(event, ref = 'refs/pull/1500/merge', enabled = false) {
   const outputs = Object.fromEntries(['any-code-changed','rs-changed','toml-changed','pipeline-changed','rust-changed','js-changed','ts-changed'].map(k => [k,'true']));
-  return {github: {event_name:event,ref}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',FORMAL_AI_FULL_LINK_CHECKS:'run',FORMAL_AI_FULL_CODING_LADDER:'run'},
+  return {github: {event_name:event,ref,event:{action:event==='pull_request'?'synchronize':undefined}}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',FORMAL_AI_FULL_LINK_CHECKS:'run',FORMAL_AI_FULL_CODING_LADDER:'run'},
     inputs:{}, needs:Object.fromEntries(['detect-changes','changes','build-artifacts','lint','test','macos-core-tests','js','ts','native-source','native','resolve']
       .map(k => [k,{result:'success',outputs:{...outputs,should_build:'true',build:'true'}}]))};
 }
@@ -50,7 +51,8 @@ test('fast inventory retains coding, questions, reports and captured CI failure 
   const selected=selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
   for(const name of ['ordinary-literal-addition','issue-1180-repository-qa','issue-1438-report-and-edit','generated-test-retirement','scheduled-published-admission-race',
     'inactive-desktop-publication','verify-public-release-downloads','dependency-update-publication','create-release-with-recovery',
-    'github-json-observation','self-authored-publication-source','hive-pre-effect-deferral',
+    'github-json-observation','self-authored-publication-source','hive-pre-effect-deferral','javascript-audit-inventory',
+    'server-memory-schema','hive-work-item-consumer','issue-1168-source-cache',
     // Issue #1569: each of these failed only on main, after its PR passed.
     'issue-1165-no-memorization','bounded-subprocess-boundaries','dependency-summarization',
     'native-library-creation-qualification','issue-1569-collect-build-artifacts','issue-1569-ordered-module-lists',
@@ -62,9 +64,9 @@ test('fast inventory retains coding, questions, reports and captured CI failure 
   const layer=workflow('layered-ci.yml').jobs.js;
   assert(evaluate(layer.if,context('pull_request')));
   const step=layer.steps.find(s=>s.name==='Run this shard of the JavaScript suites');
-  assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('pull_request')),true);
-  assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('push','refs/heads/main')),false);
-  assert.match(step.run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
+  assert.equal(evaluate(step.env.PULL_REQUEST_CHECKS,context('pull_request')),true);
+  assert.equal(evaluate(step.env.PULL_REQUEST_CHECKS,context('push','refs/heads/main')),false);
+  assert.match(workflow('layered-ci.yml').jobs.js.steps.find(s=>s.id==='javascript-plan').run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
   assert.match(read('.github/workflows/pull-request-check-profile.yml'),/no execution or acceptance credit/u);
 });
 
@@ -72,7 +74,7 @@ test('fast source lint is mandatory on PRs without invoking native compilation',
   const release = workflow('release.yml'), job = release.jobs['fast-pr-lint'];
   assert.equal(evaluate(job.if, context('pull_request')), true);
   assert.equal(evaluate(job.if, context('push', 'refs/heads/main')), false);
-  assert.match(job.concurrency.group, /-fast-pr-lint$/u);
+  assert(job.concurrency.group.endsWith('-fast-pr-lint'+"${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}"));
   assert.equal(evaluate(job.concurrency['cancel-in-progress'], context('pull_request')), true);
   assert.equal(evaluate(job.concurrency['cancel-in-progress'], context('push', 'refs/heads/main')), false);
   assert(release.jobs['pipeline-status'].needs.includes('fast-pr-lint'));
@@ -106,15 +108,15 @@ test('explicit translation regeneration selects only the source emitter on every
     assert.equal(Boolean(evaluate(regeneration.if, context(event, 'refs/heads/main'))), false, event);
 });
 
-test('measured TeachF integration stays on main while fast coding and QA controls remain selected', () => {
+test('the local fast inventory stays small while hosted profiles include TeachF', () => {
   const selected=selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
   const teach='rust/tests/web/pull-request-1188-teach-f.test.mjs';
   assert.equal(selected.includes(teach),false);
   assert.equal(existsSync(teach),true);
   const step=workflow('layered-ci.yml').jobs.js.steps
     .find(item=>item.name==='Run this shard of the JavaScript suites');
-  assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('push','refs/heads/main')),false);
-  assert.match(step.run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
+  assert.equal(evaluate(step.env.PULL_REQUEST_CHECKS,context('push','refs/heads/main')),false);
+  assert.match(workflow('layered-ci.yml').jobs.js.steps.find(s=>s.id==='javascript-plan').run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
   for(const name of ['ordinary-literal-addition','issue-1180-repository-qa',
     'issue-1438-report-and-edit','file-command-contract','literal-create-shell-readback',
     'file-obligation-receipts','source-read-provenance','owned-edit-contract'])
@@ -148,9 +150,9 @@ test('essential PR checkouts reserve their original test clocks and avoid unrela
     }
   }
   assert.equal(version.steps[0].with['sparse-checkout'],
-    '/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n');
+    '/scripts/ci-pull-request-admission.mjs\n/scripts/lib/cargo-package-version.py\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n');
   assert.equal(javascript.steps[0].with['sparse-checkout'],
-    '/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n!/dev/log/\n/dev/log/issues/702/pulls/818/agent-cli/\n');
+    '/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n!/dev/log/\n/dev/log/issues/702/pulls/818/agent-cli/\n!/docs/case-studies/**/*.gz\n!/docs/case-studies/**/*.log\n!/docs/case-studies/**/*.zip\n!/docs/case-studies/**/*.tgz\n!/docs/case-studies/**/*.diff\n!/experiments/*/evidence/**/*.gz\n!/experiments/*/evidence/**/*.log\n!/experiments/*/evidence/**/*.zip\n!/experiments/*/evidence/**/*.tgz\n!/experiments/*/evidence/**/*.diff\n/docs/case-studies/issue-717/e2e-npm-ci.log\n/docs/case-studies/issue-896/self-hosting-authorship/agent-cli.log\n/docs/case-studies/issue-896/self-hosting-authorship/formal-ai.log\n/docs/case-studies/issue-932/raw-data/verify-*.log\n/docs/case-studies/issue-982/self-hosting/contract/*.gz\n/experiments/issue-1580/evidence/ci/main-826289fc/cli/opencode-interactive-proxy.jsonl.gz\n/experiments/issue-1580/evidence/ci/main-826289fc/cli/qwen-interactive-proxy.jsonl.gz\n/experiments/issue-1580/evidence/ci/native-families-7fce5c19/job-136011692528.stdout.gz\n/experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959548.stdout.gz\n/experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959657.stdout.gz\n/experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959672.stdout.gz\n/experiments/issue-1580/evidence/checks/native-reasoning-budget/job-136423862321.stdout.gz\n');
   assert.equal(javascript.steps.find(step=>step.name==='Run this shard of the JavaScript suites').env.TEST_BUDGET_SECONDS, 360);
   assert.match(release.jobs['version-check'].steps.at(-1).run, /ci-pull-request-admission[.]mjs version/u);
 });
@@ -229,6 +231,35 @@ function checkoutSelection(patterns,files) {
 }
 
 
+test('JavaScript acquisition excludes historical archives and retains consumed regression operands', () => {
+  const patterns=workflow('layered-ci.yml').jobs.js.steps[0].with['sparse-checkout'];
+  const retained=['docs/case-studies/issue-717/e2e-npm-ci.log',
+    'docs/case-studies/issue-932/raw-data/verify-python.log',
+    'docs/case-studies/issue-982/self-hosting/contract/actual.log.gz',
+    ...['opencode','qwen'].map(client=>`experiments/issue-1580/evidence/ci/main-826289fc/cli/${client}-interactive-proxy.jsonl.gz`),
+    'experiments/issue-1580/evidence/ci/native-families-7fce5c19/job-136011692528.stdout.gz',
+    'rust/tests/fixtures/expected.log','experiments/issue-1580/evidence/checks/receipt.json',
+    'docs/case-studies/issue-703/comparison/sessions/000-codex.json'];
+  const omitted=['gz','log','zip','tgz','diff'].flatMap(extension=>[
+    `docs/case-studies/history/nested/archive.${extension}`,
+    `experiments/issue-1580/evidence/ci/old/archive.${extension}`]);
+  assert.deepEqual(checkoutSelection(patterns,[...retained,...omitted]),retained);
+  const files=execFileSync('git',['ls-files','--cached','-z'],{
+    encoding:'utf8',timeout:5000,maxBuffer:16*1024*1024
+  }).split('\0').filter(Boolean);
+  const selected=new Set(checkoutSelection(patterns,files));
+  for(const file of files){
+    if(file.startsWith('dev/log/')||file.startsWith('experiments/formal_ai_subagent/evidence/coordinator-1188/'))continue;
+    if(!selected.has(file)){
+      assert.match(file,/^(?:docs\/case-studies\/|experiments\/[^/]+\/evidence\/).*\.(?:gz|log|zip|tgz|diff)$/u);
+      assert.equal(fileLimit(file),null,'preserve measured source: '+file);
+    }
+  }
+  for(const file of files.filter(file=>file==='Cargo.lock'||file.endsWith('/Cargo.lock')))
+    assert.ok(selected.has(file),'preserve repo-wide lockfile audit: '+file);
+});
+
+
 test('fast source checkout retains every measured tracked source while excluding only unmeasured archives', () => {
   const job=workflow('release.yml').jobs['fast-pr-lint'],step=job.steps[0];
   assert.equal(job['timeout-minutes'],5);assert.equal(step['timeout-minutes'],4);
@@ -242,7 +273,7 @@ test('fast source checkout retains every measured tracked source while excluding
   const omitted=files.filter(file=>!retained.has(file));assert.ok(omitted.length>0);
   for(const file of omitted){
     if(file.startsWith('dev/log/'))continue;
-    assert.match(file,/^experiments\/formal_ai_subagent\/evidence\/coordinator-1188\/.*[.]gz$/u);
+    assert.match(file,/^(?:docs\/case-studies\/|experiments\/[^/]+\/evidence\/).*\.(?:gz|log|zip|tgz|diff)$/u);
     assert.equal(fileLimit(file),null,'do not omit measured content: '+file);
   }
   for(const file of files){
@@ -250,6 +281,22 @@ test('fast source checkout retains every measured tracked source while excluding
     const readable=ROOTS.some(root=>file.startsWith(root+'/'))&&familyOf(file);
     if(readable||fileLimit(file)!==null)assert.ok(retained.has(file),'missing source input '+file);
   }
+});
+
+
+test('source checkout excludes historical archive formats and retains authored diagnostics', () => {
+  const patterns=workflow('release.yml').jobs['fast-pr-lint'].steps[0].with['sparse-checkout'];
+  const archives=['docs/case-studies/issue-730/raw-data/ci-logs/branch-29482019343.log',
+    ...['gz','log','zip','tgz','diff'].flatMap(extension=>[
+      `docs/case-studies/issue-1580/raw-data/archive.${extension}`,
+      `experiments/issue-1580/evidence/round/archive.${extension}`])];
+  const retained=['docs/requirements/1580.md','docs/case-studies/issue-1580/README.md',
+    'experiments/issue-1580/evidence/round/proof.lino',
+    'experiments/issue-1580/evidence/round/receipt.json',
+    'experiments/issue-1580/evidence/round/reproduce.mjs',
+    'rust/tests/fixtures/expected.log','scripts/read-archive.mjs','Cargo.lock'];
+  assert.deepEqual(checkoutSelection(patterns,[...retained,...archives]),retained);
+  for(const file of archives)assert.equal(fileLimit(file),null,file);
 });
 
 
@@ -382,7 +429,7 @@ test('secrets scanning retains full history and every current file within separa
   };
   verify(job);
   assert.deepEqual(document.permissions,{"contents":"read"});
-  assert.deepEqual(job.concurrency,{"group":"${{ github.workflow }}-${{ github.ref }}-secrets-scan","cancel-in-progress":"${{ github.ref != 'refs/heads/main' }}"});
+  assert.deepEqual(job.concurrency,{"group":"${{ github.workflow }}-${{ github.ref }}-secrets-scan${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}","cancel-in-progress":"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"});
   assert.equal(job.if.trim().replace(/\s+/gu,' '),"!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.docs-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )");
   for(const event of ['pull_request','push','workflow_dispatch']) {
     assert.equal(Boolean(evaluate(job.if,context(event))),true);
@@ -390,10 +437,12 @@ test('secrets scanning retains full history and every current file within separa
   assert.equal(Boolean(evaluate(job.if,{...context('pull_request'),cancelled:()=>true})),false);
   const scanner=read('scripts/check-secrets.sh');
   for(const marker of ['git merge-base "$base" HEAD',
-    'git diff --name-only --diff-filter=ACMRT -z "$merge_base" HEAD',
-    'git ls-files -z | exclude','SECRETLINT_VERSION:-13.0.5',
-    '-p "secretlint@${SECRETLINT_VERSION}"','-p "@secretlint/secretlint-rule-preset-recommend@${SECRETLINT_VERSION}"'])
+    'read_inventory git diff --name-only --diff-filter=ACMRT -z "$merge_base" HEAD',
+    'read_inventory git ls-files -z','if ! wait "$producer"; then',
+    'SECRETLINT_VERSION:-14.0.0',
+    '-p "secretlint@${SECRETLINT_VERSION}"'])
     assert.ok(scanner.includes(marker),'full reviewed secret selection/guard lost: '+marker);
+  assert.equal(scanner.includes('-p "@secretlint/secretlint-rule-preset-recommend@'),false,'recommended rules are built into the pinned scanner');
   for(const mutate of [
     value=>value.steps[0].with['fetch-depth']=1,
     value=>value.steps[0].with['sparse-checkout']='/*\n!/some-source/\n',
@@ -434,4 +483,41 @@ test('complete Coding Ladder is explicit main-only with mandatory default consis
   assert.match(gate,/stage rust/u);assert(gate.includes('rust-script --test scripts/check-coding-ladder.rs && rust-script scripts/check-coding-ladder.rs --base origin/main'));
   assert(read('.github/workflows/release.yml').includes('rust-script scripts/run-ci-gates.rs --stage rust'),'ordinary main lint retains the mandatory consistency gate');
   for(const [file,expected] of Object.entries({"experiments/issue_847_coding_ladder/run_coding_ladder.sh":"64f9fa51b7809b7ce6bde6ecb789e84324a5911fd2cf37130eae276e47feebd4","experiments/issue_847_coding_ladder/prompts.json":"d06dc4bd0d1eb17133f407be92a1b6f0ca2323a91e31047261240c734b2f3f0d","experiments/issue_847_coding_ladder/results.json":"450255f7d1d97083f365d66a92b3d5e9a96a10425de456ea0baf066ee0598230","data/meta/ladder-ratchet.lino":"58bc9c284d95115011c187c2f1bacba316a8fee026b4cfe0ef3f46c5981e6c4d","scripts/check-coding-ladder.rs":"42765a4a1ca3f8c2c69dbca408b4a255670f67f305a7b179009b8e52651f67f6","data/meta/ci-gates/coding-ladder.lino":"e76930c5c87a4ffaa9475118ae089bbae13850310f338af5c18b335a6feaa04d"}))assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),expected,'retained original benchmark/ratchet '+file);
+});
+
+
+test('measured full JavaScript plans retain every suite within eight unchanged execution budgets', async () => {
+  const job = workflow('layered-ci.yml').jobs.js;
+  const plan = job.steps.find(step => step.id === 'javascript-plan');
+  const execute = job.steps.find(step => step.name === 'Run this shard of the JavaScript suites');
+  for (const [event, ref, count] of [
+    ['pull_request', 'refs/pull/1581/merge', 8],
+    ['workflow_dispatch', 'refs/heads/feature', 8],
+    ['push', 'refs/heads/main', 8],
+    ['workflow_dispatch', 'refs/heads/main', 8],
+  ]) {
+    const values = {...context(event, ref), fromJSON: JSON.parse};
+    const shards = Array.from(evaluate(job.strategy.matrix.shard, values));
+    assert.deepEqual(shards, Array.from({length: count}, (_, index) => index + 1));
+    assert.equal(evaluate(plan.env.SHARDS, values), count);
+    assert.equal(evaluate(execute.env.SHARDS, values), count);
+  }
+  assert.equal(job['timeout-minutes'], 12);
+  assert.equal(job.strategy['fail-fast'], false);
+  assert.equal(execute.env.TEST_BUDGET_SECONDS, 360);
+  assert.equal(execute.env.TEST_WARN_RATIO_PERCENT, 75);
+  assert.match(execute.run, /run-ordered-javascript-tests[.]mjs --concurrency "\$\(nproc\)"/u);
+  const {readTestDurations} = await import('../../../scripts/lib/ci-speed-durations.mjs');
+  const {durationLookup, isLongestFirst, partitionProblems, planShards} =
+    await import('../../../scripts/lib/ci-speed-shards.mjs');
+  const path = 'data/meta/javascript-test-durations.lino';
+  const secondsOf = durationLookup(readTestDurations(path), Number(read(path).match(/^  default-seconds (\S+)$/mu)[1]));
+  const selected = readdirSync('rust/tests/web').filter(name=>name.endsWith('.test.mjs')).map(name=>'rust/tests/web/'+name);
+  const {shards} = planShards(selected, 8, secondsOf);
+  assert.deepEqual(partitionProblems(selected, shards), {missing: [], repeated: [], extra: []});
+  assert(isLongestFirst(shards, secondsOf));
+  for (const shard of shards) {
+    const workers = planShards(shard, 4, secondsOf);
+    assert(Math.max(...workers.load) <= 270, 'four-core measured work must fit below the unchanged warning threshold');
+  }
 });

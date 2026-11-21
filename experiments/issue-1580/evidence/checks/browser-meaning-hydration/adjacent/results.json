@@ -1,0 +1,154 @@
+[
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/worker-boot-crate-seed-prefetch.test.mjs"
+    ],
+    "log": "01.log.gz",
+    "exitCode": 0,
+    "durationSeconds": 3.592,
+    "startedAt": "2026-11-18T14:18:56.276490+00:00",
+    "sha256": "1855886622556e14e929ad608bd1cf2228cb9b315fa31dc403a4024986016f38",
+    "rawBytes": 225,
+    "lines": 9
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/worker-seed-transport.test.mjs"
+    ],
+    "log": "02.log.gz",
+    "exitCode": 0,
+    "durationSeconds": 0.405,
+    "startedAt": "2026-11-18T14:18:59.870242+00:00",
+    "sha256": "780663a1c29fc045b035f4f9ec45d575d5e3971a30424cec15e5aee160696079",
+    "rawBytes": 347,
+    "lines": 10
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/unresolved-research-routing.test.mjs"
+    ],
+    "log": "03.log.gz",
+    "exitCode": 0,
+    "durationSeconds": 10.941,
+    "startedAt": "2026-11-18T14:19:00.276514+00:00",
+    "sha256": "5707565450007a795ad7fe9232d8105ad4b0a506a6406c9a02a7c0fc4a931172",
+    "rawBytes": 694,
+    "lines": 13
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "log": "04.log.gz",
+    "exitCode": 0,
+    "durationSeconds": 0.381,
+    "startedAt": "2026-11-18T14:19:11.218338+00:00",
+    "sha256": "1b1ea00715c7abbb4f8bc21e21a83267db9996e752fdbcbf3356b0ed419ddd24",
+    "rawBytes": 309,
+    "lines": 10
+  },
+  {
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-worker-prerequisites"
+    ],
+    "log": "05.log.gz",
+    "exitCode": 0,
+    "durationSeconds": 2.73,
+    "startedAt": "2026-11-18T14:19:11.600019+00:00",
+    "sha256": "1e23388d5a7611835119c04920fa8c037b082cb8a163d712e8f87cc7263b55e8",
+    "rawBytes": 74,
+    "lines": 3
+  },
+  {
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-worker-line-budget"
+    ],
+    "log": "06.log.gz",
+    "exitCode": 0,
+    "durationSeconds": 1.803,
+    "startedAt": "2026-11-18T14:19:14.331067+00:00",
+    "sha256": "ccaaa4d02e09f5a2e5fb5c2217a0c1e866b18ad101e6337cfa78ec20d0194585",
+    "rawBytes": 72,
+    "lines": 3
+  },
+  {
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-worker-line-budget-js-twin"
+    ],
+    "log": "07.log.gz",
+    "exitCode": 0,
+    "durationSeconds": 1.821,
+    "startedAt": "2026-11-18T14:19:16.135087+00:00",
+    "sha256": "55ca2e62d7308d39405f309519ffe413251b89f5f5cef466961e5864019b3560",
+    "rawBytes": 80,
+    "lines": 3
+  },
+  {
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-worker-crate-modules"
+    ],
+    "log": "08.log.gz",
+    "exitCode": 0,
+    "durationSeconds": 2.556,
+    "startedAt": "2026-11-18T14:19:17.956779+00:00",
+    "sha256": "911a672f7053df4066d8b3e939d84cd46f297af02aac82a34253a656635bd879",
+    "rawBytes": 74,
+    "lines": 3
+  },
+  {
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-specification-in-javascript"
+    ],
+    "log": "09.log.gz",
+    "exitCode": 0,
+    "durationSeconds": 72.016,
+    "startedAt": "2026-11-18T14:21:53.898208+00:00",
+    "sha256": "45309c09061587b3136f58cfa79bdfb289a444121155d271c6ab5f629c9fff48",
+    "rawBytes": 82,
+    "lines": 3
+  }
+]

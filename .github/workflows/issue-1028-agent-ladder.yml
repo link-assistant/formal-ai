@@ -81,8 +81,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: issue-1028-agent-cli-binary-tree-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: issue-1028-agent-cli-binary-tree-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
 
 jobs:
   plan:
@@ -243,9 +243,7 @@ jobs:
           CHECK: Agent CLI ladder primary wave
         run: bash scripts/check-shard-results.sh
       - name: Download exactly the measured leaf legs
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           pattern: issue-1028-agent-cli-binary-tree-depth-5-*
           path: ${{ runner.temp }}/leaf-legs
@@ -325,9 +323,7 @@ jobs:
         run: node scripts/agent-cli-bash-receipts.mjs "$(command -v agent)"
 
       - name: Download validated current-run leaves
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           name: issue-1028-agent-cli-current-leaves
           path: ${{ runner.temp }}/current-leaves
@@ -396,12 +392,7 @@ jobs:
           bash scripts/check-shard-results.sh
 
       - name: Download every leg's evidence
-        uses: actions/download-artifact@v8
-        env:
-          # v8's bundled unzip dependency still calls Buffer(); suppress only
-          # that reviewed upstream diagnostic, never all Node warnings:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           pattern: issue-1028-agent-cli-binary-tree-*
           path: ${{ runner.temp }}/agent-tree-legs

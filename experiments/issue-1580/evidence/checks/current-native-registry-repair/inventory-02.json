@@ -1,0 +1,122 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/inspect-current-repair-run-state.log",
+    "file": "036-inspect-current-repair-run-state.log.gz",
+    "bytes": 5735,
+    "lines": 5,
+    "rawSha256": "f72428caf92f5b397af36bf71313240666be76d277fead78fd373a7cb6d397ac",
+    "archiveSha256": "a1b2e2fc1f922bb26eed6caf3f9da42c93207efb92d7d2d0ee8309685fce946f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/inspect-current-repair-run-state.py",
+    "file": "037-inspect-current-repair-run-state.py.gz",
+    "bytes": 1070,
+    "lines": 14,
+    "rawSha256": "ba65c420bfe9508cfd7723b676999c083c6cab2c3f0469b9b627300084d79b37",
+    "archiveSha256": "da80fa8d58bfd02dd29d9e83c941a151544ea7fc303f59eb86e6390e7291013d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/inspect-repaired-layered-failure.py",
+    "file": "038-inspect-repaired-layered-failure.py.gz",
+    "bytes": 657,
+    "lines": 13,
+    "rawSha256": "839f8009c65600ba6399d2fa4184161c369999bc83f3270c02468261e9fc0c4e",
+    "archiveSha256": "4fcb3c72d396bf7cc3e5419a03732f2693969201c58ba966d69a44eb96c4fa99"
+  },
+  {
+    "source": "/tmp/issue-1580-research/regenerate-current-native-registry-retry.log",
+    "file": "039-regenerate-current-native-registry-retry.log.gz",
+    "bytes": 375,
+    "lines": 9,
+    "rawSha256": "7b9b32d4765af8d0fa7570076e6d06a5fc4bf0025a6c5af294739e3153774bf7",
+    "archiveSha256": "78f307f75eee5ab18fc219e67be35fd6435c65d6026916c54ebe67df43dc6397"
+  },
+  {
+    "source": "/tmp/issue-1580-research/regenerate-current-native-registry.log",
+    "file": "040-regenerate-current-native-registry.log.gz",
+    "bytes": 398,
+    "lines": 9,
+    "rawSha256": "9509018bf758a8ccea024b2f7677e3a6f6458feafbdba6c6b580a00bb501a14f",
+    "archiveSha256": "e056fbb16e22427241d668be7fb57a36f97613de91f8dd5caee2f9f0e7f0b0c1"
+  },
+  {
+    "source": "/tmp/issue-1580-research/regenerate-current-native-registry.py",
+    "file": "041-regenerate-current-native-registry.py.gz",
+    "bytes": 1816,
+    "lines": 27,
+    "rawSha256": "443cc64bb5dc1f7e40758014ecad17bb924c38f32cae285b69b8f2c9c33cd499",
+    "archiveSha256": "aeb6afcd46eb31c07707ac434e607047ff13d51902cec0df58f10b7af320a213"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repaired-layered-failure-context.log",
+    "file": "042-repaired-layered-failure-context.log.gz",
+    "bytes": 27992,
+    "lines": 131,
+    "rawSha256": "ab4f61aefcd81144a6c8865d68a1c9cfacaf0e785e6ed9a30d872686530b78dd",
+    "archiveSha256": "760ef5d8947fb3bb88a9663773ecd7816d0a161c25b85e2f95a54cfb51200b16"
+  },
+  {
+    "source": "/tmp/issue-1580-research/reproduce-current-native-registry-retry.log",
+    "file": "043-reproduce-current-native-registry-retry.log.gz",
+    "bytes": 669,
+    "lines": 4,
+    "rawSha256": "f9431fc17329776f885f8dc05cae89a859d23c8deacc7f17cd528f8538d4cdba",
+    "archiveSha256": "91ea79b31c6349d116cce67ac9ae1f88120c051516cbea980d957a1916118c00"
+  },
+  {
+    "source": "/tmp/issue-1580-research/reproduce-current-native-registry.log",
+    "file": "044-reproduce-current-native-registry.log.gz",
+    "bytes": 379,
+    "lines": 9,
+    "rawSha256": "cd9652eb4e5ce67203b3f5b0af44300eebe69c46fe64552676ffda4f622883e0",
+    "archiveSha256": "b710702a1ade3b1d8264ec434452416b4ba35a14f5517103f68a830d7405ee49"
+  },
+  {
+    "source": "/tmp/issue-1580-research/reproduce-current-native-registry.py",
+    "file": "045-reproduce-current-native-registry.py.gz",
+    "bytes": 1519,
+    "lines": 21,
+    "rawSha256": "cb06a90aeac9b7e939c8185e7109ec8265e328dc3bc7db189e4f906405d3cc09",
+    "archiveSha256": "bf3d0fcda4d2b6b08f7d7a29713b844f5dde52872a960cf8efe5f587efbee9c7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-current-native-registry-repair-retry.log",
+    "file": "046-seal-current-native-registry-repair-retry.log.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-current-native-registry-repair.log",
+    "file": "047-seal-current-native-registry-repair.log.gz",
+    "bytes": 496,
+    "lines": 9,
+    "rawSha256": "7ac24793266cc25345d64f9218641469dc5d183a209ce70bf96b2351e39501a5",
+    "archiveSha256": "8857eef7f87ff2c7e28135249a103d5bdfb37cd49a6d1d5a2013aad927173101"
+  },
+  {
+    "source": "/tmp/issue-1580-research/seal-current-native-registry-repair.py",
+    "file": "048-seal-current-native-registry-repair.py.gz",
+    "bytes": 6066,
+    "lines": 103,
+    "rawSha256": "8d2c0cb208efa7d4f20c67b9d473d7deec41f7ea5a08a08807c3207323665ef6",
+    "archiveSha256": "4ff045035d338be565c4aeb9b0f5b5f6e1a9086b759d2482d7aa30b1875ac615"
+  },
+  {
+    "source": "/tmp/issue-1580-research/verify-current-native-registry-diff.log",
+    "file": "049-verify-current-native-registry-diff.log.gz",
+    "bytes": 952,
+    "lines": 22,
+    "rawSha256": "78728464645163977d4e8702d5870dd56d1513280e39c04c13e19844080561ee",
+    "archiveSha256": "240f59dc2345b126462608b0af541c11cd98b67c09fdf525546622a0455da957"
+  },
+  {
+    "source": "/tmp/issue-1580-research/verify-current-native-registry-diff.py",
+    "file": "050-verify-current-native-registry-diff.py.gz",
+    "bytes": 1604,
+    "lines": 19,
+    "rawSha256": "32f973ada07ea4aef46c1b567e88e0b904a25491f05942cbf905f73a7bca8797",
+    "archiveSha256": "a2ad2367e745f9f5a47f2193e63e22a824831406b80da942f330b0d850dc508a"
+  }
+]

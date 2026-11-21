@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "gh",
+    "run",
+    "view",
+    "44386721819",
+    "--repo",
+    "link-assistant/formal-ai",
+    "--json",
+    "jobs"
+  ],
+  "file": "20261118T201035Z.json.gz",
+  "rawSha256": "fa8fb78c976d754907833d251b3af5ec5f9a2bf9398adcbfedd2041526520622",
+  "archiveSha256": "459100669c97d795aa6411a25199f829c733b2474659529c177dfc441c0372a9"
+}

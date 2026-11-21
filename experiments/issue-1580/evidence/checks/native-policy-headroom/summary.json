@@ -1,0 +1,76 @@
+{
+  "observedAt": "2026-11-21T10:48:42.433498+00:00",
+  "sourceHead": "56d36a02f501a45192431e390118a224e81379ee",
+  "files": [
+    {
+      "parent": "rust/tests/unit/ci-cd/workflow_release.rs",
+      "child": "rust/tests/unit/ci-cd/workflow_release/workflow_policy.rs",
+      "marker": "#[test]\nfn release_workflow_jobs_have_explicit_timeouts()",
+      "offset": 35054,
+      "prefix": "use std::fs;\n\nuse super::super::workflow_fixtures::{\n    job_block, minimum_job_timeout, pages_artifact_workflow, release_workflow, workflow_job_names,\n};\n\n",
+      "expose": false,
+      "beforeLines": 985,
+      "afterLines": 761,
+      "childLines": 232,
+      "originalSha256": "e16c455ce479a37a360eaea79eeb389b27b267bcc58a4a66472146c257062093",
+      "movedSha256": "351475e9264d1b59cab028f3c75cd28147bce00f03862d41c0ad339e274d7795",
+      "exactInverse": true,
+      "actualParentLines": 760,
+      "actualChildLines": 232
+    },
+    {
+      "parent": "rust/tests/unit/data_files.rs",
+      "child": "rust/tests/unit/data_files/text_rows.rs",
+      "marker": "fn strip_lino_comment(line: &str)",
+      "offset": 34995,
+      "prefix": "use std::path::Path;\n\n",
+      "expose": true,
+      "beforeLines": 970,
+      "afterLines": 841,
+      "childLines": 138,
+      "originalSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+      "movedSha256": "ab8d730c014048d6f08a8257b39d52ad35172da3e94e4ceec0a19fb6097e7c07",
+      "exactInverse": true,
+      "actualParentLines": 841,
+      "actualChildLines": 138
+    },
+    {
+      "parent": "rust/tests/unit/specification/benchmarks.rs",
+      "child": "rust/tests/unit/specification/benchmarks/evaluation.rs",
+      "marker": "fn assert_required_domains_are_covered(suite: &BenchmarkSuite)",
+      "offset": 29059,
+      "prefix": "use std::sync::{Mutex, MutexGuard, OnceLock};\n\nuse super::{\n    BTreeSet, BenchmarkCase, BenchmarkReport, BenchmarkSuite, ExecutionSurface,\n    HELD_OUT_VARIANT, PERMISSIVE_LICENSES, REQUIRED_DOMAINS, SolverConfig, UniversalSolver,\n};\n\n",
+      "expose": true,
+      "beforeLines": 907,
+      "afterLines": 747,
+      "childLines": 175,
+      "originalSha256": "0082fc741991ca113ae3ca594f07ae4fb3863e1cee7349224c523d205d7a905a",
+      "movedSha256": "3958fe2f27cee37773fe1eec7d8b4a8a952ee9973442d3b0a60074d133a69b63",
+      "exactInverse": true,
+      "actualParentLines": 746,
+      "actualChildLines": 175
+    }
+  ],
+  "warningRegressionBefore": {
+    "passed": 5,
+    "failed": 3
+  },
+  "crateRootRegressionBefore": {
+    "passed": 8,
+    "failed": 1
+  },
+  "after": {
+    "headroomCasesPassed": 9,
+    "nativeGroupCasesPassed": 50,
+    "maintainedCasesPassedBeforeFinalPathRegression": 141
+  },
+  "sparseCheckoutAttempts": 2,
+  "actualFixturesSelectedPerAttempt": 9,
+  "remainingWarnings": 81,
+  "scannerLimitsUnchanged": true,
+  "records": 51,
+  "nativeBuildRun": false,
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

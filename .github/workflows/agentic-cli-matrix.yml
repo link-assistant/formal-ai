@@ -74,8 +74,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: ${{ github.workflow }}-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
 
 env:
   CARGO_NET_RETRY: '10'
@@ -165,12 +165,7 @@ jobs:
 
       - name: Download formal-ai binary
         if: ${{ needs.build.outputs.already-green != 'true' }}
-        uses: actions/download-artifact@v8
-        env:
-          # v8's bundled unzip dependency still calls Buffer(); suppress only
-          # that reviewed upstream diagnostic, never all Node warnings:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           name: formal-ai-binary
           path: rust/target/release
@@ -328,22 +323,27 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
+      - name: Check out workflow-owned artifact extraction
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
+          sparse-checkout-cone-mode: false
       - name: Download formal-ai binary
         if: ${{ needs.build.outputs.already-green != 'true' }}
-        uses: actions/download-artifact@v8
-        env:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           name: formal-ai-binary
           path: rust/target/release
 
       - name: Download every real-client observation
         if: ${{ needs.build.outputs.already-green != 'true' }}
-        uses: actions/download-artifact@v8
-        env:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           pattern: transcripts-*
           path: matrix-evidence

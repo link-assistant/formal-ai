@@ -1,0 +1,90 @@
+{
+  "observedAt": "2026-11-18T16:05:29.750169+00:00",
+  "records": [
+    {
+      "name": "issue",
+      "argv": [
+        "gh",
+        "issue",
+        "view",
+        "https://github.com/link-assistant/formal-ai/issues/1580",
+        "--json",
+        "title,body,state,updatedAt"
+      ],
+      "file": "issue.json.gz",
+      "rawSha256": "66a4c04fd4fde0fe2130f5e12a11b56a70293617c43cba37abdf8a87284f201a",
+      "exitCode": 0
+    },
+    {
+      "name": "issue-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate"
+      ],
+      "file": "issue-comments.json.gz",
+      "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "exitCode": 0
+    },
+    {
+      "name": "pull-request-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate"
+      ],
+      "file": "pull-request-comments.json.gz",
+      "rawSha256": "2cffae8254b44e50a21dc5a3ad7651471653a4435b2de254acd8b2bfb16cf302",
+      "exitCode": 0
+    },
+    {
+      "name": "inline-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate"
+      ],
+      "file": "inline-comments.json.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "exitCode": 0
+    },
+    {
+      "name": "reviews",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate"
+      ],
+      "file": "reviews.json.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "exitCode": 0
+    },
+    {
+      "name": "required-sub-issues",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/sub_issues",
+        "--paginate"
+      ],
+      "file": "required-sub-issues.json.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "exitCode": 0
+    },
+    {
+      "name": "main-current",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/git/ref/heads/main"
+      ],
+      "file": "main-current.json.gz",
+      "rawSha256": "135c08a541407c00e4b89cafd034698be9a486f098029e4cf56306c01b110362",
+      "exitCode": 0
+    }
+  ]
+}

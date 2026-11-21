@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "experiments/issue-1580/template-csharp-changeset-integrity.test.mjs"
+  ],
+  "exitCode": 0,
+  "testSha256": "454908fe2b5e04209478d6e938fae955db078ce491a51d4c518614128006f751",
+  "logSha256": "17b21e8b7f85ed733266d72f6cf114b4bd1bea4d2a884fc1b05c65d5386ec00e",
+  "expectedTests": 4,
+  "network": false,
+  "nativeBuild": false,
+  "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/after.tap.gz",
+  "compression": "gzip; hashes refer to original uncompressed bytes"
+}

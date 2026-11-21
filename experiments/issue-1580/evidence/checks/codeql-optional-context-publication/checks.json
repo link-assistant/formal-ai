@@ -1,0 +1,96 @@
+[
+  {
+    "name": "documentation-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/documentation-only-ci-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "file": "documentation-policy.log.gz",
+    "bytes": 3540,
+    "lines": 40,
+    "rawSha256": "217154b36b99a0c7a48a21f75b4ddc64b7309c8f5100eaed3192a7e797994fcb",
+    "archiveSha256": "dd614909d800bb11600de1d3514b5e6401a47d64b97e11ca51beab93b3a43610"
+  },
+  {
+    "name": "production-profile",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "file": "production-profile.log.gz",
+    "bytes": 2055,
+    "lines": 26,
+    "rawSha256": "f5ed94c3f7d6f78291ba4160e51bf91bd181ced9117d90bb5689df973d22d411",
+    "archiveSha256": "40eed33cb20d48bab0a455a89d290db525b14f2e668daddb21af54e85e37e65f"
+  },
+  {
+    "name": "check-abbreviations",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 1,
+    "file": "check-abbreviations.log.gz",
+    "bytes": 156,
+    "lines": 3,
+    "rawSha256": "37add0c40f8bea919ebfc3a6949290f3a08ad08ebe40722f6318a3d47807a7ac",
+    "archiveSha256": "9a26aad3583d749faebe844ae7e24e35c8a92fde6abf9c3de1228eb61da9e7af"
+  },
+  {
+    "name": "check-abbreviations-after-filename-correction",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 0,
+    "file": "check-abbreviations-after-filename-correction.log.gz",
+    "bytes": 67,
+    "lines": 3,
+    "rawSha256": "1cdd4d716ee48508242e352b5206ce014602ad3b88e47adf27adc12bc926346d",
+    "archiveSha256": "25ea033d66d7b5de890a9982062c3f39f8486310216663cf8a7d580b19166089"
+  },
+  {
+    "name": "check-file-size-after-filename-correction",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 0,
+    "file": "check-file-size-after-filename-correction.log.gz",
+    "bytes": 63,
+    "lines": 3,
+    "rawSha256": "3adb454f84c6ea8b6cbb596f20b0f3582125135769b339e694b0d1fcb8b67aee",
+    "archiveSha256": "f70056259e407e14cd50690a809e3645e10e2f6ddf368dc7aa275650cf66ba45"
+  },
+  {
+    "name": "check-file-size-js-twin-after-filename-correction",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size-js-twin"
+    ],
+    "exitCode": 0,
+    "file": "check-file-size-js-twin-after-filename-correction.log.gz",
+    "bytes": 71,
+    "lines": 3,
+    "rawSha256": "3695b0c34f14409bfb353959c338ad194ac7098c0cabd88d02772b60259172dd",
+    "archiveSha256": "386f35bc8fe07a5f8f5dd2b02285b2b5605f040e629f0f538f52369969f55da6"
+  }
+]

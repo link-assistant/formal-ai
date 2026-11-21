@@ -1,0 +1,146 @@
+[
+  {
+    "name": "focused-test-map",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.026,
+    "file": "focused-test-map.log.gz",
+    "rawSha256": "37cca25d7e0718c0905a856f7e15143f31d4c21753e78bed258cd7ee40b247f0",
+    "archiveSha256": "1ee3aff8c2435202b3439e7800fe5cb9f2d1b954c757e6800946a9738e26bd5c",
+    "lines": 16
+  },
+  {
+    "name": "scripts-js-twins-checks",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/scripts-js-twins-checks.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.849,
+    "file": "scripts-js-twins-checks.log.gz",
+    "rawSha256": "b0f0926990ccda89f352c6f68eb24bff571a47bdc3cb708298158490f5ae3857",
+    "archiveSha256": "466621c6fed0ef51a067e56e600734cd6e329c5d7ca154453e20214ed3591524",
+    "lines": 34
+  },
+  {
+    "name": "affected-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-runner-labels,lint-shell-scripts,check-ci-speed,check-abbreviations,check-changelog-fragment-js-twin,check-file-size-js-twin,check-file-size,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+    ],
+    "exitCode": 0,
+    "seconds": 50.74,
+    "file": "affected-gates.log.gz",
+    "rawSha256": "3ac068b7a8fba64cb09b7b7c9d3cfbfd2f88d63b0bb9866f798269e2ddb5876a",
+    "archiveSha256": "ad484f1fe6249f56bbfe7e3d4521d12e9a2b3c548eb1cd13cf5d92e018e4f1f1",
+    "lines": 11
+  },
+  {
+    "name": "branch",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "exitCode": 0,
+    "seconds": 0.006,
+    "file": "branch.log.gz",
+    "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+    "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0",
+    "lines": 1
+  },
+  {
+    "name": "stage",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      ".github/workflows/native-type-check.yml",
+      "rust/tests/web/default-branch-build-policy.test.mjs",
+      "changelog.d/issue-1580-native-failure-collection.md"
+    ],
+    "exitCode": 0,
+    "seconds": 0.203,
+    "file": "stage.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "staged-names",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--name-only"
+    ],
+    "exitCode": 0,
+    "seconds": 0.045,
+    "file": "staged-names.log.gz",
+    "rawSha256": "7de9eb20046950853df1344fa27fd81ad8393bc5e83ebe536913d8e5da94e042",
+    "archiveSha256": "529306562f15233fe8a0a5a05094b43f29f8cc1677db647b3765cecd22444324",
+    "lines": 3
+  },
+  {
+    "name": "staged-whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 0.052,
+    "file": "staged-whitespace.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "commit",
+    "argv": [
+      "git",
+      "-c",
+      "gc.auto=0",
+      "commit",
+      "-m",
+      "Collect independent native regression failures in one run"
+    ],
+    "exitCode": 0,
+    "seconds": 0.449,
+    "file": "commit.log.gz",
+    "rawSha256": "1e9dde8050b953e2726d97e70949222e6aa6c09c050dfcf96dbb8b361182cde3",
+    "archiveSha256": "9cd1c1b48969435d864bc02cb10c7cfc9c263329e28a13f8744f275ac5a5220a",
+    "lines": 3
+  },
+  {
+    "name": "head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "seconds": 0.006,
+    "file": "head.log.gz",
+    "rawSha256": "ba002f8f818529d260c244f3d250f8142af33fc0e8a409914d318b16093bfd47",
+    "archiveSha256": "7c1d540ac51d6e7d01901ead0e13fe4d8dc6c565004fe995448f60641f58d0a9",
+    "lines": 1
+  }
+]

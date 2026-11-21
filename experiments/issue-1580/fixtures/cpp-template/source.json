@@ -1,0 +1,15 @@
+{
+  "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+  "commit": "3769fa70a1bc30ce9516e01f78bcd7edea3b3f80",
+  "files": [
+    {
+      "path": "scripts/check-pipeline-status.sh",
+      "gitBlob": "52646d454661fdf5b1cb4df3971606281ff41185",
+      "sha256": "636eb4ffe7c301210f6217dafb88b85365fc0f33dc6e62d132ea2acf259d66ce"
+    }
+  ],
+  "upstreamRepairApplied": false,
+  "latestVerifiedCommit": "45c42aff119b366ba103a9342ec3c33731bb7e2e",
+  "latestVerifiedSourceUnchanged": true,
+  "latestVerificationEvidence": "experiments/issue-1580/evidence/checks/current-native-failure-repairs/index.json"
+}

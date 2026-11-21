@@ -1,0 +1,30 @@
+{
+  "observedAt": "2026-11-21T04:02:16.666151+00:00",
+  "gates": {
+    "source": "396a4af71319535aad812ab930cc2d2020daef8c",
+    "exitCode": 0,
+    "seconds": 577.591,
+    "passed": 88,
+    "failed": 0,
+    "skipped": 53,
+    "allExecutedLogsRetained": 88,
+    "childrenPeakRssKiB": 382472,
+    "localRustBuild": false,
+    "independentAuthorshipCredit": 0,
+    "fullIssueComplete": false
+  },
+  "allExecutedGateIdentitiesVerified": true,
+  "rustLiteralFiles": 356,
+  "rustLiteralSourceLines": 57336,
+  "rustPracticeDecisions": 74,
+  "dependencyMutation": false,
+  "maintenanceMigrationComplete": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "postArchiveAbbreviationFailure": {
+    "retained": true,
+    "cause": "Evidence filename expanded a maintained fixed-name abbreviation into a new prefixed filename",
+    "repair": "075-check-tests-as-documentation.log.gz.gz",
+    "gateLimitsChanged": false
+  }
+}

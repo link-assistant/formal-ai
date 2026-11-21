@@ -1,0 +1,477 @@
+{
+  "schema": "meta-executor-parity/v1",
+  "cases": [
+    {
+      "name": "passage-cue-en",
+      "text": "Read this and answer: \"Marisol owns pears and plums.\" Which fruit?",
+      "language": "en",
+      "answers": {
+        "Read this and answer: \"Marisol owns pears and plums.\" Which fruit?": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "Read this and answer: \"Marisol owns pears and plums.\" Which fruit?"
+        ],
+        "status": "resolved",
+        "content": "1",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=Read this and answer: \"Marisol owns pears and plums.\" Which fruit?",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-ru",
+      "text": "Прочитай и ответь: «У Марины груши и сливы». Какие фрукты?",
+      "language": "ru",
+      "answers": {
+        "Прочитай и ответь: «У Марины груши и сливы». Какие фрукты?": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "Прочитай и ответь: «У Марины груши и сливы». Какие фрукты?"
+        ],
+        "status": "resolved",
+        "content": "1",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=Прочитай и ответь: «У Марины груши и сливы». Какие фрукты?",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-hi",
+      "text": "पढ़ें और उत्तर दें: \"सीमा के पास आम और सेब हैं।\" कौन से फल?",
+      "language": "hi",
+      "answers": {
+        "पढ़ें और उत्तर दें: \"सीमा के पास आम और सेब हैं।\" कौन से फल?": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "पढ़ें और उत्तर दें: \"सीमा के पास आम और सेब हैं।\" कौन से फल?"
+        ],
+        "status": "resolved",
+        "content": "1",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=पढ़ें और उत्तर दें: \"सीमा के पास आम और सेब हैं।\" कौन से फल?",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-zh",
+      "text": "阅读并回答：「小明有梨并且有李子。」有什么水果？",
+      "language": "zh",
+      "answers": {
+        "阅读并回答：「小明有梨并且有李子。」有什么水果？": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "阅读并回答：「小明有梨并且有李子。」有什么水果？"
+        ],
+        "status": "resolved",
+        "content": "1",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=阅读并回答：「小明有梨并且有李子。」有什么水果？",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-es",
+      "text": "Lee esto y responde: \"Marisol tiene peras y ciruelas.\" ¿Qué fruta?",
+      "language": "es",
+      "answers": {
+        "Lee esto y responde: \"Marisol tiene peras y ciruelas.\" ¿Qué fruta?": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "Lee esto y responde: \"Marisol tiene peras y ciruelas.\" ¿Qué fruta?"
+        ],
+        "status": "resolved",
+        "content": "1",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=Lee esto y responde: \"Marisol tiene peras y ciruelas.\" ¿Qué fruta?",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-case-spacing",
+      "text": "READ THIS AND ANSWER  :  “Pears and plums.” Which fruit?",
+      "language": "en",
+      "answers": {
+        "READ THIS AND ANSWER  :  “Pears and plums.” Which fruit?": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "READ THIS AND ANSWER  :  “Pears and plums.” Which fruit?"
+        ],
+        "status": "resolved",
+        "content": "1",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=READ THIS AND ANSWER  :  “Pears and plums.” Which fruit?",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-preceding-task",
+      "text": "Count a and read this and answer: \"Pears and plums.\" Which fruit?",
+      "language": "en",
+      "answers": {
+        "Count a": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "read this and answer: \"Pears and plums.\" Which fruit?": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Count a",
+          "read this and answer: \"Pears and plums.\" Which fruit?"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Count a and read this and answer: \"Pears and plums.\" Which fruit?",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Count a",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=read this and answer: \"Pears and plums.\" Which fruit?",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-following-task",
+      "text": "Read this and answer: \"Pears and plums.\" and count a",
+      "language": "en",
+      "answers": {
+        "Read this and answer: \"Pears and plums.\"": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "count a": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Read this and answer: \"Pears and plums.\"",
+          "count a"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Read this and answer: \"Pears and plums.\" and count a",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Read this and answer: \"Pears and plums.\"",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=count a",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-no-quotation",
+      "text": "Read this and answer briefly",
+      "language": "en",
+      "answers": {
+        "Read this": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "answer briefly": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Read this",
+          "answer briefly"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Read this and answer briefly",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Read this",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=answer briefly",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-escaped-opener",
+      "text": "Read this and answer: \\\"Pears\\\" and count a",
+      "language": "en",
+      "answers": {
+        "Read this": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "answer: \\\"Pears\\\"": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        },
+        "count a": {
+          "intent": "answered",
+          "content": "3",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf,leaf)",
+        "leaves": [
+          "Read this",
+          "answer: \\\"Pears\\\"",
+          "count a"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2\n\n3",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=3 atomic=- text=Read this and answer: \\\"Pears\\\" and count a",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Read this",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=answer: \\\"Pears\\\"",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.3 depth=1 relation=- children=0 atomic=no_relation text=count a",
+          "meta_exec:test task=t0.3 checks=answered requires=-",
+          "meta_exec:draft task=t0.3 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.3 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2,t0.3 resolved=3/3 built=true",
+          "meta_exec:draft task=t0 method=composition steps=7 code_units=7 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=7 code_units=7 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=4"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-word-boundary",
+      "text": "Preread this and answer: \"Pears and plums.\"",
+      "language": "en",
+      "answers": {
+        "Preread this": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "answer: \"Pears and plums.\"": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Preread this",
+          "answer: \"Pears and plums.\""
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Preread this and answer: \"Pears and plums.\"",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Preread this",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=answer: \"Pears and plums.\"",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "passage-cue-inside-quotation",
+      "text": "Quote \"read this and answer\" and count a",
+      "language": "en",
+      "answers": {
+        "Quote \"read this and answer\"": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "count a": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Quote \"read this and answer\"",
+          "count a"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Quote \"read this and answer\" and count a",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Quote \"read this and answer\"",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=count a",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,248 @@
+{
+  "observedAt": "2026-11-18T07:36:06.707133+00:00",
+  "branch": "issue-1580-8d61a32a61e1",
+  "head": "510c24983e5bbacb0e5ab21d2de491af56902055",
+  "publishedInput": "b26f5eebd3393b145c8693e985c8db24248380ad",
+  "main": "19235c49abaf1e71aad89e4badbe1f9bba5d4786",
+  "mainIsAncestor": true,
+  "counts": {
+    "issue-comments": 1,
+    "pull-request-comments": 9,
+    "inline-comments": 0,
+    "reviews": 0
+  },
+  "changes": [],
+  "requiredSubIssues": [],
+  "publishedInputWorkflowSuccess": 23,
+  "active": {
+    "in_progress": [],
+    "queued": []
+  },
+  "draft": true,
+  "records": [
+    {
+      "name": "branch",
+      "command": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "head",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "95834daffbf9791c36c1b679b9ad2b5fac9b72a5dce725bab178c177937d2e5a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "issue-view",
+      "command": [
+        "gh",
+        "issue",
+        "view",
+        "https://github.com/link-assistant/formal-ai/issues/1580",
+        "--json",
+        "title,body,comments"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "7fd7e0bc448e54a777bdecdaf2c2fa441eb570092f3b2624201856ef61637f37",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "issue-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "pull-request-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "inline-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "reviews",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "subissues",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/sub_issues?per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "pull-request",
+      "command": [
+        "gh",
+        "pr",
+        "view",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "title,body,isDraft,headRefOid,baseRefName"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "b7597847f366ba294f7a6a8cdf5f35e0f979df4f521d046cc980b252e5772953",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "main",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/branches/main"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "c5da674d5780363b45a2b2bb19d74a9ba61840ad822a02bcadd617dbb131ba0f",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "main-ancestor",
+      "command": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "19235c49abaf1e71aad89e4badbe1f9bba5d4786",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "recent-runs",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--limit",
+        "5",
+        "--json",
+        "databaseId,conclusion,createdAt,headSha"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "c999f52e98e00c276a34bb6d077d52e1bf3c097da794109209603a3d3d8ab967",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "head-runs",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/runs?branch=issue-1580-8d61a32a61e1&head_sha=b26f5eebd3393b145c8693e985c8db24248380ad&per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "777a9603e63fe2c90baadce7a27d8911ec329987c4f3e591067a8bfc5997d512",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "in_progress",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "in_progress",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "queued",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "queued",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "working-tree",
+      "command": [
+        "git",
+        "status",
+        "--short",
+        "--untracked-files=all"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "61f6a5b902c7b937f4aa1713110d3af830358b4d99f262c4d9749aa6c21c42d1",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

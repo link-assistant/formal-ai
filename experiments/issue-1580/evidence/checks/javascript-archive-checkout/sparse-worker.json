@@ -1,0 +1,9 @@
+{
+  "startedAt": "2026-11-18T08:26:42.409903+00:00",
+  "pid": 1214525,
+  "stdout": "/tmp/issue-1580-research/javascript-sparse-worker.stdout",
+  "stderr": "/tmp/issue-1580-research/javascript-sparse-worker.stderr",
+  "serializedTests": true,
+  "memoryEventsBefore": "low 0\nhigh 0\nmax 148934\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "independentAuthorshipCredit": 0
+}

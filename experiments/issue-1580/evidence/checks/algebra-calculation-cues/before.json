@@ -1,0 +1,12 @@
+{
+  "tests": 8,
+  "pass": 6,
+  "fail": 2,
+  "exitCode": 1,
+  "rawLines": 56,
+  "rawSha256": "72f772720dba9425e09dd5c92559a13545ffb0bf556919d03fab95e4389ca881",
+  "archiveSha256": "6857ebfed60c41902100ff025246cb430e342cf8773b929238dc669ff0b4a52c",
+  "wholePayloadLiterallyRead": true,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

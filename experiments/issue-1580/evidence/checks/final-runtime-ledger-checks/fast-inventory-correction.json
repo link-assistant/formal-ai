@@ -1,0 +1,16 @@
+{
+  "recordedAt": "2026-11-17T22:19:46.752240+00:00",
+  "path": "data/benchmarks/fast-pull-request-javascript-tests.json",
+  "beforeSha256": "a6c77a67b116b869bad8a2dcd5b85d24bd944429c73cf3ea0ef879768f17dc9d",
+  "afterSha256": "996287970e8a00e2bfe4adceeef4829898973d29ad831e14a5da02036d67ab07",
+  "beforeCount": 235,
+  "afterCount": 239,
+  "added": [
+    "rust/tests/web/page-formalization-route.test.mjs",
+    "rust/tests/web/rust-specification-generated-programs.test.mjs",
+    "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs",
+    "rust/tests/web/issue-1328-bounded-retries.test.mjs"
+  ],
+  "reason": "All four new production-only regression rows must replay before merge.",
+  "independentAuthorshipCredit": 0
+}

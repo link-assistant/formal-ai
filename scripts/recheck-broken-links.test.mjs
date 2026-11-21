@@ -323,3 +323,38 @@ test('end to end: a missing report claims nothing', async (t) => {
 
   assert.match(readFileSync(outputs, 'utf-8'), /all_recovered=false/);
 });
+
+test('retry waits stop when no request would fit in the remaining budget', {timeout: 1000}, async () => {
+  let clock = 0;
+  const waits = [];
+  let calls = 0;
+  const results = await recheckAll(['https://reset.example/'], {
+    budgetMs: 30,
+    waitMs: 50,
+    now: () => clock,
+    sleep: async ms => { waits.push(ms); clock += ms; },
+    fetchImpl: async () => { calls += 1; throw new Error('reset'); },
+  });
+  assert.equal(calls, 1);
+  assert.deepEqual(waits, []);
+  assert.equal(results.get('https://reset.example/').outcome, 'unreachable');
+});
+
+test('a request uses only the remaining shared budget', {timeout: 1000}, async t => {
+  t.mock.timers.enable({apis: ['setTimeout']});
+  let requestSignal;
+  const pending = recheckAll(['https://silent.example/'], {
+    budgetMs: 15,
+    timeoutMs: 500,
+    attempts: 1,
+    now: () => 0,
+    fetchImpl: (_url, {signal}) => new Promise((_resolve, reject) => {
+      requestSignal = signal;
+      signal.addEventListener('abort', () => reject(new Error('deadline')));
+    }),
+  });
+  t.mock.timers.tick(15);
+  assert.equal(requestSignal.aborted, true, 'per-request timeout exceeded the shared budget');
+  const result = await pending;
+  assert.equal(result.get('https://silent.example/').outcome, 'unreachable');
+});

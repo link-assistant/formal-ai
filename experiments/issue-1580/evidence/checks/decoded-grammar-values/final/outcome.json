@@ -1,0 +1,72 @@
+{
+  "complete": true,
+  "seconds": 125.622,
+  "records": [
+    {
+      "name": "rust-format-write",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "rust/src/formalization/mod.rs",
+        "rust/tests/source/source_tests/formalization/grammar_native_parity.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.072,
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "rust-format-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "rust/src/formalization/mod.rs",
+        "rust/tests/source/source_tests/formalization/grammar_native_parity.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.078,
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "focused-gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-changelog-fragment-js-twin,check-fragment-release-map,check-file-size,check-reconstructed-changelog,check-hardcoded-language,check-tests-as-docs,check-twin-citations,check-package-self-containment,check_js_rust_translation"
+      ],
+      "exitCode": 0,
+      "seconds": 125.23,
+      "bytes": 391,
+      "lines": 12,
+      "sha256": "6f79d0514b4fd73b29ad7aa5022addafc26724b05ba59c707044caa27a33ffc8"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.239,
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "nodeHeapMiB": 256,
+  "childrenPeakRssKiB": 1116796,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

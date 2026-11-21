@@ -1,0 +1,30 @@
+{
+  "before": {
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "--test-name-pattern=the worker entry exits only through the procedure",
+      "rust/tests/web/issue-1550-procedure-census.test.mjs"
+    ],
+    "exitCode": 1,
+    "file": "shared-draft-before.log.gz",
+    "rawSha256": "cb10d1ec1959612b9db136cdb4a3171825bfd59f3cd806b587626429572868ca"
+  },
+  "sources": [
+    {
+      "file": "ts/worker/formal_ai_worker_solve.ts",
+      "beforeSha256": "238f5bc974ee634020989ae032b2a510baa377356dfcbec9c0ce45899b3907b2",
+      "afterSha256": "460b49f1fc17ec6b0f65f6b3d64ab3973a12d5f87cb49756d27019522a42c287"
+    },
+    {
+      "file": "js/worker/formal_ai_worker_solve.js",
+      "beforeSha256": "238f5bc974ee634020989ae032b2a510baa377356dfcbec9c0ce45899b3907b2",
+      "afterSha256": "460b49f1fc17ec6b0f65f6b3d64ab3973a12d5f87cb49756d27019522a42c287"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

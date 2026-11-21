@@ -1,0 +1,13 @@
+{
+  "createdAt": "2026-11-18T13:25:15.082507+00:00",
+  "commit": "e3b50624c1c7f694373cb406fbb2293f49cd05a9",
+  "files": [
+    "rust/tests/unit/specification/synthesis.rs",
+    "changelog.d/issue-1580-native-summary-expectation.md"
+  ],
+  "sourcePatchSha256": "24404a00262db722432ea0c58eaf29bb82f795acaca5f456f262ea9b7f359fc8",
+  "checksComplete": true,
+  "nativeExecutionPending": true,
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0
+}

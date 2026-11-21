@@ -1,0 +1,23 @@
+[
+  {
+    "name": "check-notation",
+    "log": "gate-001.log.gz",
+    "rawLines": 16,
+    "rawSha256": "d66f598a626fbcbfbba24cc2607c77a60afcf4fe30e53d7d6a2ed1f788381afd",
+    "archiveSha256": "4742cd10bc28fd305aca818f2186ff6965bb342cc676c98a2209c4864db6fb35"
+  },
+  {
+    "name": "check-package-self-containment",
+    "log": "gate-002.log.gz",
+    "rawLines": 2,
+    "rawSha256": "091a5fa4b6978f9758fc0224748107b7fd865816524580f24f323c38a6f2c796",
+    "archiveSha256": "200aa9f6fe9c45fc8a9251bfb64227c44ea0ccc315521526e1649a39dde5fb4b"
+  },
+  {
+    "name": "check-status-render",
+    "log": "gate-003.log.gz",
+    "rawLines": 2,
+    "rawSha256": "9b14f08702ccdcdca9eecf9d23582bc01011fd9abba32e63f13003d1b4fced58",
+    "archiveSha256": "93d67b84a6b2cc287a2c05cb02bc5ea76f72c1738bbed595cfef83b446860d63"
+  }
+]

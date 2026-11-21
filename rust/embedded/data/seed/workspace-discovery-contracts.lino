@@ -10,9 +10,9 @@ workspace-discovery-contracts
   template original-request-5
     text "Inspect the task model"
   template source-template-1
-    text "# {}\nprintf '%s\\n' 'workspace-discovery-v1'; find . -maxdepth 4 -type f -not -path './.git/*' -print; discovery_status=$?; printf '%s\\n' 'workspace-discovery-end'; exit \"$discovery_status\""
+    text '# {}\nprintf ''%s\\n'' ''workspace-discovery-v1''; find . -maxdepth 4 -type f -not -path ''./.git/*'' -print; discovery_status=$?; printf ''%s\\n'' ''workspace-discovery-end''; exit "$discovery_status"'
   template source-template-2
-    text "# {}\nprintf '%s\\n' 'workspace-source-v1'; head -c 65537 < '{}'; discovery_status=$?; printf '\\n%s\\n' 'workspace-source-end'; exit \"$discovery_status\""
+    text '# {}\nprintf ''%s\\n'' ''workspace-source-v1''; head -c 65537 < ''{}''; discovery_status=$?; printf ''\\n%s\\n'' ''workspace-source-end''; exit "$discovery_status"'
   template source-template-3
     text "A successful bounded workspace listing at depth at most four contained {} file paths and no filename matching all subject terms {}. This establishes no matching filename in that observed scope; model and schema remain unknown."
   template source-template-4

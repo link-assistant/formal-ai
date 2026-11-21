@@ -6,6 +6,10 @@
 # authority for both membership and first-match-wins order.  Child node names
 # are executable symbols rather than natural-language meaning references.
 browser-handler-precedence
+  arguments calendar
+    argument_prompt
+    argument_normalized
+    argument_userContext
   handler tryAgenticContinuation
     argument_prompt
     argument_normalized
@@ -93,10 +97,10 @@ browser-handler-precedence
   handler tryKupiSlona
     argument_prompt
     argument_normalized
+  handler tryCalendarCreateEvent
+    arguments calendar
   handler tryCalendarReasoning
-    argument_prompt
-    argument_normalized
-    argument_userContext
+    arguments calendar
   handler tryProofRequest
     argument_prompt
     argument_normalized

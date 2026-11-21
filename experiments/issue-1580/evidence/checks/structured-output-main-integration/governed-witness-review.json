@@ -1,0 +1,253 @@
+{
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "writerExitCode": 0,
+  "writerStdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "writerStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "total": 1185,
+  "supported": 221,
+  "unsupported": 964,
+  "parents": [
+    {
+      "parent": "7b7e189d770c4fbd8786b996d065282422e93b5c",
+      "previousSha256": "38ee9dd10b5dab49aad7cca22deda84940d0981780ac5e2e46da1dcc1a2c1834",
+      "currentSha256": "95c727a8b3d0312dbf948e804f6776c4c6fa2aeed1d80b54934abb3d36e01fba",
+      "completeObjectEqualAfterSourceHashUpdates": true,
+      "hashChanges": [
+        {
+          "path": "inventory/cases/58/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/59/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/60/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/61/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/62/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/63/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/64/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/65/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/79/program/fixtures/7/sha256",
+          "source": "rust/Cargo.toml",
+          "before": "e2b0fc95fccc55b59cb8d7b3591e8eaa6ba303b62bb431eb773cb6f05e15ec6b",
+          "after": "0f561a7537382e81e7440a1525472746ada346f4b3e4fba64ed0834a34de77b3"
+        },
+        {
+          "path": "inventory/cases/81/program/fixtures/3/sha256",
+          "source": "rust/Cargo.toml",
+          "before": "e2b0fc95fccc55b59cb8d7b3591e8eaa6ba303b62bb431eb773cb6f05e15ec6b",
+          "after": "0f561a7537382e81e7440a1525472746ada346f4b3e4fba64ed0834a34de77b3"
+        },
+        {
+          "path": "inventory/cases/160/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/161/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/162/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/163/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/164/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/165/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/166/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/167/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/171/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/172/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/173/program/fixtures/2/sha256",
+          "source": "rust/src/solver.rs",
+          "before": "cd9b0a10abb1aac2f49f683d89f51c6dd957eb2f8682fc0b36559efd50563db4",
+          "after": "8205f9a8609ed4178f8093eecf36a6c88b60255afd53bc6f6935bb9d7c0e44b1"
+        },
+        {
+          "path": "inventory/cases/190/program/fixtures/7/sha256",
+          "source": "rust/Cargo.toml",
+          "before": "e2b0fc95fccc55b59cb8d7b3591e8eaa6ba303b62bb431eb773cb6f05e15ec6b",
+          "after": "0f561a7537382e81e7440a1525472746ada346f4b3e4fba64ed0834a34de77b3"
+        },
+        {
+          "path": "inventory/cases/193/program/fixtures/8/sha256",
+          "source": "rust/Cargo.toml",
+          "before": "e2b0fc95fccc55b59cb8d7b3591e8eaa6ba303b62bb431eb773cb6f05e15ec6b",
+          "after": "0f561a7537382e81e7440a1525472746ada346f4b3e4fba64ed0834a34de77b3"
+        },
+        {
+          "path": "sourceManifest/27/sha256",
+          "source": "rust/tests/unit/specification/debug_session.rs",
+          "before": "8da5534f8a41bab9b89b8dbd25bc93baa1d1e76f2c041c0f70a05e90b39dcaac",
+          "after": "8faf53bf31998b6212a4ae5feb8eaaa103f9b9c4fa9d7ad82de45dfb8827b680"
+        },
+        {
+          "path": "sourceManifest/38/sha256",
+          "source": "rust/tests/unit/specification/formalization.rs",
+          "before": "96038b52dc0f1ce195bf9f3034ca7a82a5707c58d3ffacbcb9d59a9f0e5dff65",
+          "after": "d7d4870303bb2c05843769a063942f3f75766e9215447088e37671bb688dd7b3"
+        },
+        {
+          "path": "sourceManifest/117/sha256",
+          "source": "rust/tests/unit/specification/synthesis.rs",
+          "before": "257e83c8d00c70af9ce40adeb4708cc63fb778b103487d4accb0da9545e872b9",
+          "after": "7f002374b4092ca4626db9f278189f583570aefa74c08dc7cc4e109c8c346a93"
+        }
+      ],
+      "differences": []
+    },
+    {
+      "parent": "7cacbc714ec6600f70bf93f1467a741189bdcfb6",
+      "previousSha256": "071f50ca86edcdf82ad96272954665d9397a86cbbde88e4128350a09418e74d1",
+      "currentSha256": "95c727a8b3d0312dbf948e804f6776c4c6fa2aeed1d80b54934abb3d36e01fba",
+      "completeObjectEqualAfterSourceHashUpdates": true,
+      "hashChanges": [
+        {
+          "path": "inventory/cases/58/program/fixtures/0/sha256",
+          "source": "rust/tests/unit/specification/conversation_history.rs",
+          "before": "1c54c1a36ac0675f00077f9ba39e757a7ec322c4c15a02e4350159bc47994783",
+          "after": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022"
+        },
+        {
+          "path": "inventory/cases/59/program/fixtures/0/sha256",
+          "source": "rust/tests/unit/specification/conversation_history.rs",
+          "before": "1c54c1a36ac0675f00077f9ba39e757a7ec322c4c15a02e4350159bc47994783",
+          "after": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022"
+        },
+        {
+          "path": "inventory/cases/60/program/fixtures/0/sha256",
+          "source": "rust/tests/unit/specification/conversation_history.rs",
+          "before": "1c54c1a36ac0675f00077f9ba39e757a7ec322c4c15a02e4350159bc47994783",
+          "after": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022"
+        },
+        {
+          "path": "inventory/cases/61/program/fixtures/0/sha256",
+          "source": "rust/tests/unit/specification/conversation_history.rs",
+          "before": "1c54c1a36ac0675f00077f9ba39e757a7ec322c4c15a02e4350159bc47994783",
+          "after": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022"
+        },
+        {
+          "path": "inventory/cases/62/program/fixtures/0/sha256",
+          "source": "rust/tests/unit/specification/conversation_history.rs",
+          "before": "1c54c1a36ac0675f00077f9ba39e757a7ec322c4c15a02e4350159bc47994783",
+          "after": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022"
+        },
+        {
+          "path": "inventory/cases/63/program/fixtures/0/sha256",
+          "source": "rust/tests/unit/specification/conversation_history.rs",
+          "before": "1c54c1a36ac0675f00077f9ba39e757a7ec322c4c15a02e4350159bc47994783",
+          "after": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022"
+        },
+        {
+          "path": "inventory/cases/64/program/fixtures/0/sha256",
+          "source": "rust/tests/unit/specification/conversation_history.rs",
+          "before": "1c54c1a36ac0675f00077f9ba39e757a7ec322c4c15a02e4350159bc47994783",
+          "after": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022"
+        },
+        {
+          "path": "inventory/cases/65/program/fixtures/0/sha256",
+          "source": "rust/tests/unit/specification/conversation_history.rs",
+          "before": "1c54c1a36ac0675f00077f9ba39e757a7ec322c4c15a02e4350159bc47994783",
+          "after": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022"
+        },
+        {
+          "path": "inventory/cases/125/program/fixtures/0/sha256",
+          "source": "rust/tests/unit/specification/openai_compatibility.rs",
+          "before": "b043725684e9ccbd695eab1093186c28289b77d29eefec135d32682aa9244f58",
+          "after": "914c6382208e724c2ae1501c336b77dd83f318feb9fefdabe722e95070f69d31"
+        },
+        {
+          "path": "sourceManifest/24/sha256",
+          "source": "rust/tests/unit/specification/conversation_history.rs",
+          "before": "1c54c1a36ac0675f00077f9ba39e757a7ec322c4c15a02e4350159bc47994783",
+          "after": "ef504b3d0aa7852360769128e06240a3e2a22e45ddbed84ba85eeaef876c6022"
+        },
+        {
+          "path": "sourceManifest/66/sha256",
+          "source": "rust/tests/unit/specification/openai_compatibility.rs",
+          "before": "b043725684e9ccbd695eab1093186c28289b77d29eefec135d32682aa9244f58",
+          "after": "914c6382208e724c2ae1501c336b77dd83f318feb9fefdabe722e95070f69d31"
+        }
+      ],
+      "differences": []
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "nativeExecutionVerified": false
+}

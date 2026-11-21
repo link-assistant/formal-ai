@@ -13,12 +13,11 @@
 //! - A version that arrived by merging the base branch back in keeps
 //!   both sides equal and passes; a moved manifest no longer reads as
 //!   a version change the way a raw merge-base diff did
-//! - Skips check for automated release branches (changelog-manual-release-*)
+//! - Checks every pull request regardless of its branch name
 //!
 //! Usage: rust-script scripts/check-version-modification.rs
 //!
 //! Environment variables (set by GitHub Actions):
-//!   - GITHUB_HEAD_REF: The head branch name for PRs
 //!   - GITHUB_BASE_REF: The base branch name for PRs
 //!   - GITHUB_EVENT_NAME: Should be 'pull_request'
 //!
@@ -31,10 +30,11 @@
 //! edition = "2024"
 //!
 //! [dependencies]
-//! regex = "1"
+//! toml_edit = "0.25.15"
 //! ```
 
-use regex::Regex;
+#[path = "cargo-package.rs"]
+mod cargo_package;
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -42,38 +42,20 @@ use std::process::{Command, exit};
 
 fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
-        Ok(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
-        Err(_) => String::new(),
+        Ok(output) if output.status.success() => {
+            String::from_utf8_lossy(&output.stdout).trim().to_string()
+        }
+        _ => String::new(),
     }
 }
 
-fn exec_ignore_error(command: &str, args: &[&str]) {
-    let _ = Command::new(command)
+fn exec_quiet(command: &str, args: &[&str]) -> bool {
+    Command::new(command)
         .args(args)
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
-        .status();
-}
-
-fn should_skip_version_check() -> bool {
-    let head_ref = env::var("GITHUB_HEAD_REF").unwrap_or_default();
-
-    // Skip for automated release PRs
-    let automated_branch_prefixes = [
-        "changelog-manual-release-",
-        "changeset-release/",
-        "release/",
-        "automated-release/",
-    ];
-
-    for prefix in &automated_branch_prefixes {
-        if head_ref.starts_with(prefix) {
-            println!("Skipping version check for automated branch: {}", head_ref);
-            return true;
-        }
-    }
-
-    false
+        .status()
+        .is_ok_and(|status| status.success())
 }
 
 fn get_rust_root() -> String {
@@ -95,8 +77,11 @@ fn get_rust_root() -> String {
 }
 
 fn version_in(manifest: &str) -> Option<String> {
-    let pattern = Regex::new(r#"(?m)^version\s*=\s*"([^"]+)""#).unwrap();
-    pattern.captures(manifest).map(|caps| caps[1].to_string())
+    // Compare the actual release identity, regardless of table order or quoting.
+    // Missing, inherited and malformed package versions must fail closed.
+    cargo_package::package_info_from_str(manifest)
+        .ok()
+        .map(|package| package.version)
 }
 
 fn head_version() -> Option<String> {
@@ -135,13 +120,13 @@ fn main() {
         exit(0);
     }
 
-    // Skip for automated release branches
-    if should_skip_version_check() {
-        exit(0);
-    }
-
+    // A release-like branch name is not authorization to change the version.
     let base_ref = env::var("GITHUB_BASE_REF").unwrap_or_else(|_| "main".to_string());
-    exec_ignore_error("git", &["fetch", "origin", &base_ref, "--depth=1"]);
+    if !exec_quiet("git", &["fetch", "origin", &base_ref, "--depth=1"]) {
+        eprintln!("Error: Could not fetch the current base branch {base_ref}.");
+        eprintln!("Refusing to compare against a possibly stale cached base version.");
+        exit(1);
+    }
 
     let Some(head) = head_version() else {
         eprintln!("Error: Could not read a crate version from the checked-out tree.");

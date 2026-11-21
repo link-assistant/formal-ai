@@ -64,8 +64,8 @@ test('each packaging job captures the pinned workflow protocol before selecting 
   const checkout=steps.findIndex((step,index)=>index>capture&&step.with?.ref==='${{ github.sha }}');
   if(name!=='native-source'){
    const restore=steps.findIndex(step=>step.run?.includes('native-release-source.mjs" import-offline'));
-   const artifact=steps.findIndex(step=>step.uses?.startsWith('actions/download-artifact@')&&step.with?.name==='native-release-source');
-   const history=steps.findIndex(step=>step.uses?.startsWith('actions/download-artifact@')&&step.with?.name==='native-release-source-history');
+   const artifact=steps.findIndex(step=>step.uses?.endsWith('/.github/actions/download-artifact')&&step.with?.name==='native-release-source');
+   const history=steps.findIndex(step=>step.uses?.endsWith('/.github/actions/download-artifact')&&step.with?.name==='native-release-source-history');
    assert.ok(capture>protocol&&artifact>capture&&history>artifact&&restore>history,'pinned protocol and same-run source artifacts precede offline source restoration');
    assert.equal(checkout,-1,name+' source uses authenticated complete history, without another GitHub checkout');
   }else assert.ok(capture>protocol&&checkout>capture,'pinned checkout and capture must precede event-pinned source checkout');
@@ -84,7 +84,7 @@ test('long Windows checkout paths are enabled before any native, desktop or CLI 
 });
 
 test('protocol capture is isolated from full source and survives unavailable promisor blobs',context=>{
- const workflow=YAML.parse(text),folders=['scripts','desktop/scripts'];
+ const workflow=YAML.parse(text),folders=['scripts','desktop/scripts','.github/actions/download-artifact'];
  assert.equal(workflow.env.GIT_HTTP_LOW_SPEED_LIMIT,'1024');
  assert.equal(workflow.env.GIT_HTTP_LOW_SPEED_TIME,'20');
  for(const name of ['native','build','cli','vscode']){

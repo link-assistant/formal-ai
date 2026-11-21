@@ -1,0 +1,66 @@
+{
+  "complete": true,
+  "checks": [
+    {
+      "name": "focused-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-php-push-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 8.457,
+      "rawLines": 17,
+      "rawSha256": "6d20f16e0b003cbb307311a3477dd5234272c70390b2e56b937cbc2639083d9e"
+    },
+    {
+      "name": "maintained-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 44.619,
+      "rawLines": 60,
+      "rawSha256": "75ee6ad0dcd696322acb5923644ba6f85de1d0083c14612efc2b17ca5fd4d9e7"
+    },
+    {
+      "name": "affected-gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 38.682,
+      "rawLines": 8,
+      "rawSha256": "5f687e7e0a0d28a8fcb07819a928a60928003f9ecdee6761ffc0ac56f1a561bf"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.522,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "observedAt": "2026-11-18T13:09:53.115050+00:00",
+  "nativeExecuted": false,
+  "upstreamRepaired": false,
+  "independentAuthorshipCredit": 0
+}

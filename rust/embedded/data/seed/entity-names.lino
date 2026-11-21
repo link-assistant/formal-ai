@@ -89,7 +89,7 @@ entity_names
     timezone "Asia/Tbilisi"
     lexeme en "Tbilisi"
     lexeme ru "Тбилиси"
-    lexeme hi "त्बिलिसी"
+    lexeme hi "त्बिलिसी" "तिबिलिसी"
     lexeme zh "第比利斯"
     lexeme es "Tiflis"
   entity berlin

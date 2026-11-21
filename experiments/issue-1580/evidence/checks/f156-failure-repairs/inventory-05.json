@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/merge-changesets.stdout",
+    "file": "0141-evidence.gz",
+    "bytes": 28,
+    "lines": 1,
+    "rawSha256": "bbe6a94c29cc8d3ff5a1792a5abae1f1122aed0642111b52036ab7e0b2b2ca47",
+    "archiveSha256": "2811d7fe2fd05cfa5d8e55ae3a2b8e73e7f0e57bff95f57da5c6b4944fb7cc32"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/outcome.json",
+    "file": "0142-evidence.gz",
+    "bytes": 814,
+    "lines": 29,
+    "rawSha256": "2c84684f0890d9b6f3f164fd7245e92697f25e649acabafbdbe6407a988d4635",
+    "archiveSha256": "8358bfd834b8f6fba830e81da8d5fdba299413070ee7aa66d7e861463ad71d77"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/pipeline-gate.stderr",
+    "file": "0143-evidence.gz",
+    "bytes": 1458,
+    "lines": 23,
+    "rawSha256": "a6392f05061f7f0ba9fe2653cbf2d61c40fe1b52ece19edfe3aba9bacd984c55",
+    "archiveSha256": "c60e9a61c2951d90e7ee8406657a87aa88e7134918e20808f897dd5a576b7f48"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-csharp-delta-check-retry/pipeline-gate.stdout",
+    "file": "0144-evidence.gz",
+    "bytes": 28,
+    "lines": 1,
+    "rawSha256": "bbe6a94c29cc8d3ff5a1792a5abae1f1122aed0642111b52036ab7e0b2b2ca47",
+    "archiveSha256": "2811d7fe2fd05cfa5d8e55ae3a2b8e73e7f0e57bff95f57da5c6b4944fb7cc32"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-f156-security-jobs.log",
+    "file": "0145-evidence.gz",
+    "bytes": 8911,
+    "lines": 4,
+    "rawSha256": "29c7db92db09c03fd6e1f1b75f5970cccd14df477e4b98ea2948e0edd0753f2a",
+    "archiveSha256": "d4d1ad30d596c577523ee5da8c59737e27f3088d3c813afa332fca8bd703e931"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/check-abbreviations.stderr",
+    "file": "0146-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/check-abbreviations.stdout",
+    "file": "0147-evidence.gz",
+    "bytes": 67,
+    "lines": 3,
+    "rawSha256": "8bc78f211dc0d4ed6971d94191181146de6076c4a6c567ac49d2f2b3474c5165",
+    "archiveSha256": "634feb81f7f02e79b49aef9b86ec6e5fbbb19564faf8719ffed782aca0a350bf"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/check-file-size.stderr",
+    "file": "0148-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/check-file-size.stdout",
+    "file": "0149-evidence.gz",
+    "bytes": 63,
+    "lines": 3,
+    "rawSha256": "ba13b1752b9f45cfb22b248dd2b4df42c58f6523891330b67f3b7232a4c175fd",
+    "archiveSha256": "ffdc05daf61f2e6814766eb10ef144ecd48e3b2e1885c757b037093eb81c3d44"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/check-readable-code.stderr",
+    "file": "0150-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/check-readable-code.stdout",
+    "file": "0151-evidence.gz",
+    "bytes": 67,
+    "lines": 3,
+    "rawSha256": "bcb8ec6fab44ca98e5ae0e786db5f650e0d08b3bf11d3db5ad3d879ceb8c9b4c",
+    "archiveSha256": "db84cdd5bc443a1f18294a61005472c5b28d32a31ed511c9835750b97fa6c2bc"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/maintained-template-tests.stderr",
+    "file": "0152-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/maintained-template-tests.stdout",
+    "file": "0153-evidence.gz",
+    "bytes": 10870,
+    "lines": 121,
+    "rawSha256": "452837e34efcf6d30d98a9f0cf1c5b41432485888a42f46949314b26ab6b7a82",
+    "archiveSha256": "327767e884f0a0f4c385f3f65ee556487a3d580c6ba828fb252bf0d4910cca54"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/missing-comparison-paths.json",
+    "file": "0154-evidence.gz",
+    "bytes": 367,
+    "lines": 10,
+    "rawSha256": "a27051c58c67685ddfd6e23aab46063076264cf3ab350e4149bb5bd70990e896",
+    "archiveSha256": "08ae46292228fbe70d61cea06823ce2ed56fe256c65db1819100054bb62aa1e3"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/outcome.json",
+    "file": "0155-evidence.gz",
+    "bytes": 2648,
+    "lines": 106,
+    "rawSha256": "8132c6e4f7fa5b074a7f6bd3c6fb55943924712e76f8e4bfe8145fba54f8e0bb",
+    "archiveSha256": "8cb254f6be3f385ef4c05f6f51f818786ee200247794e2f06dbf33d5fc7e8b26"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/whitespace.stderr",
+    "file": "0156-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/whitespace.stdout",
+    "file": "0157-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-maintained-verification/worker.log",
+    "file": "0158-evidence.gz",
+    "bytes": 3746,
+    "lines": 6,
+    "rawSha256": "03bd48cf4d6b9cd4048d5f8195f1e5da9b29854da293c65f772e1afe4d9f7bc5",
+    "archiveSha256": "a84e58708d7ed807cd06c6490641c13fc49aaefe277e341fba211d23978a7db6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-17-comments.json",
+    "file": "0159-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-17-comments.stderr",
+    "file": "0160-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-17.json",
+    "file": "0161-evidence.gz",
+    "bytes": 4704,
+    "lines": 1,
+    "rawSha256": "779cce0fb033e391067b118c8c0725d4c6a4d335ee1a25fa149d9b1cbd07b0c3",
+    "archiveSha256": "d8fd1f44cda035b8b1757dffaf1063eb975d83c26ead524164d6f578a32cc843"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-17.stderr",
+    "file": "0162-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-18-comments.json",
+    "file": "0163-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-18-comments.stderr",
+    "file": "0164-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-18.json",
+    "file": "0165-evidence.gz",
+    "bytes": 6948,
+    "lines": 1,
+    "rawSha256": "7d8a456dbb7f64de98514270d78d61baf5f8fcacc5a74ef16fdebef3f024851f",
+    "archiveSha256": "2061a1a43d4d9800a4ec9db62d2189f104abc3913841cb0c72c4f5115eaedc11"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-18.stderr",
+    "file": "0166-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-19-comments.json",
+    "file": "0167-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-19-comments.stderr",
+    "file": "0168-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-19.json",
+    "file": "0169-evidence.gz",
+    "bytes": 6994,
+    "lines": 1,
+    "rawSha256": "896f6f428816855f8115912340fd1fa970e11b8d6a7c36b7e3da0f55deb116f1",
+    "archiveSha256": "2c39a8b5e09844708a468aff8c1e1c3f652a397626e5dce95e917bd986c4086f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-19.stderr",
+    "file": "0170-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-20-comments.json",
+    "file": "0171-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-20-comments.stderr",
+    "file": "0172-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-20.json",
+    "file": "0173-evidence.gz",
+    "bytes": 6188,
+    "lines": 1,
+    "rawSha256": "7f1e4011e9db606bd43a1ed115cddf635ea14ee347ae204227c8a29a5e12b864",
+    "archiveSha256": "a3f1b61c6b477d8997ff66c20ee8eb78390954a0a27cf07b0b870b630417ea6e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-20.stderr",
+    "file": "0174-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-21-comments.json",
+    "file": "0175-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  }
+]

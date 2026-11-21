@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/worker-unknown-language.test.mjs"
+  ],
+  "exitCode": 0,
+  "seconds": 5.962,
+  "rawBytes": 669,
+  "rawSha256": "84ee432c6d362afa4029c63540236f8d8b775da8bc2f7a8837198bc02c9e6960",
+  "sourceSha256": {
+    "rust/tests/web/worker-unknown-language.test.mjs": "823b8262abec926d9aa02ac616e206ac51cd4f2018e3d96c47c1aea91256db32",
+    "js/worker/formal_ai_worker_seed_responses_and_language.js": "f750f917a5d66a1ae29aef9177f7b7c45e15adff46d0153371edb2527ba9af9e",
+    "rust/src/unknown_opener.rs": "521b670096b49123b8d5839dd39812c57905e5797c1a0682f706b9bad8223946",
+    "rust/src/web_engine_core.rs": "3d3fe50e5d94740474927a2f5bf3ac7eaea3bc64a8ffbca4a51ad372ea07ee34"
+  },
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

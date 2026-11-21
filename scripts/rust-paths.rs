@@ -22,21 +22,22 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! ```
 
 #![allow(dead_code)]
 
-use regex::Regex;
 use std::env;
-use std::fs;
 use std::path::{Path, PathBuf};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct PackageInfo {
-    pub name: String,
-    pub version: String,
-}
+#[path = "cargo-package.rs"]
+mod cargo_package;
+#[allow(unused_imports)] // Callers intentionally use different parts of this shared API.
+pub use cargo_package::{
+    PackageInfo, get_package_manifest_path, package_info_from_str, read_package_info,
+    read_package_name, update_package_version,
+};
 
 /// Detect Rust package root directory
 /// Checks in order:
@@ -167,117 +168,6 @@ pub fn parse_rust_root_from_args() -> Option<String> {
         return args.get(idx + 1).cloned();
     }
     env::var("RUST_ROOT").ok().filter(|s| !s.is_empty())
-}
-
-pub fn get_package_manifest_path(root_manifest: &Path) -> Result<PathBuf, String> {
-    let content = fs::read_to_string(root_manifest)
-        .map_err(|e| format!("Failed to read {}: {}", root_manifest.display(), e))?;
-
-    if has_package_section(&content) {
-        return Ok(root_manifest.to_path_buf());
-    }
-
-    if has_workspace_section(&content) {
-        return resolve_workspace_member_manifest(root_manifest, &content);
-    }
-
-    Err(format!(
-        "Could not find [package] or [workspace] in {}",
-        root_manifest.display()
-    ))
-}
-
-pub fn read_package_info(manifest_path: &Path) -> Result<PackageInfo, String> {
-    let content = fs::read_to_string(manifest_path)
-        .map_err(|e| format!("Failed to read {}: {}", manifest_path.display(), e))?;
-
-    let name = find_manifest_value(&content, "name")
-        .ok_or_else(|| format!("Could not find name in {}", manifest_path.display()))?;
-    let version = find_manifest_value(&content, "version")
-        .ok_or_else(|| format!("Could not find version in {}", manifest_path.display()))?;
-
-    Ok(PackageInfo { name, version })
-}
-
-fn has_package_section(content: &str) -> bool {
-    Regex::new(r"(?m)^\[package\]\s*$")
-        .unwrap()
-        .is_match(content)
-}
-
-fn has_workspace_section(content: &str) -> bool {
-    Regex::new(r"(?m)^\[workspace\]\s*$")
-        .unwrap()
-        .is_match(content)
-}
-
-fn resolve_workspace_member_manifest(
-    root_manifest: &Path,
-    content: &str,
-) -> Result<PathBuf, String> {
-    let members = parse_workspace_members(content).ok_or_else(|| {
-        format!(
-            "Could not find workspace members in {}",
-            root_manifest.display()
-        )
-    })?;
-
-    let base_dir = root_manifest.parent().ok_or_else(|| {
-        format!(
-            "Could not determine parent directory for {}",
-            root_manifest.display()
-        )
-    })?;
-
-    for member in members {
-        let manifest = base_dir.join(member).join("Cargo.toml");
-        let Ok(member_content) = fs::read_to_string(&manifest) else {
-            continue;
-        };
-
-        if !has_package_section(&member_content) || is_publish_false(&member_content) {
-            continue;
-        }
-
-        return Ok(manifest);
-    }
-
-    Err(format!(
-        "No publishable workspace members found in {}",
-        root_manifest.display()
-    ))
-}
-
-fn parse_workspace_members(content: &str) -> Option<Vec<String>> {
-    let re = Regex::new(r"(?s)members\s*=\s*\[(.*?)\]").unwrap();
-    let captures = re.captures(content)?;
-    let body = captures.get(1)?.as_str();
-
-    let members = body
-        .split(',')
-        .map(str::trim)
-        .filter(|entry| !entry.is_empty())
-        .map(|entry| entry.trim_matches('"').to_string())
-        .filter(|entry| !entry.is_empty())
-        .collect::<Vec<_>>();
-
-    if members.is_empty() {
-        None
-    } else {
-        Some(members)
-    }
-}
-
-fn is_publish_false(content: &str) -> bool {
-    Regex::new(r"(?m)^publish\s*=\s*false\s*$")
-        .unwrap()
-        .is_match(content)
-}
-
-fn find_manifest_value(content: &str, key: &str) -> Option<String> {
-    let re = Regex::new(&format!(r#"(?m)^{}\s*=\s*"([^"]+)""#, regex::escape(key))).unwrap();
-    re.captures(content)
-        .and_then(|caps| caps.get(1).map(|m| m.as_str().to_string()))
 }
 
 #[cfg(not(test))]

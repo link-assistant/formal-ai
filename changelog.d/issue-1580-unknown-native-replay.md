@@ -1,0 +1,1 @@
+Correct the unknown-term regression to use uncaptured terms in four languages, preserve the complete attributed cursor definition as a positive control, and execute all nine unknown-source contracts in the focused native pull-request check.

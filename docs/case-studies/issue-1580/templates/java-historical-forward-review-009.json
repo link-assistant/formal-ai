@@ -1,0 +1,45 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 121,
+    "totalPages": 254,
+    "completeFiles": 111,
+    "partialFiles": 1,
+    "literalLines": 7986,
+    "nextForwardPage": 122,
+    "remainingPages": 133,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    122
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/node.json",
+      "newReadRange": [
+        408,
+        435
+      ],
+      "cumulativeReadRange": [
+        1,
+        435
+      ],
+      "totalLines": 884,
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 122,
+    "totalPages": 254,
+    "completeFiles": 111,
+    "partialFiles": 1,
+    "literalLines": 8014,
+    "nextForwardPage": 123,
+    "remainingPages": 132,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "Page 122 was literally read without truncation: historical Node v12.3.1 through v10.23.0, including dependency, platform, ABI, security and LTS fields. This is historical source evidence, not current compatibility or semantic applicability. Pages 123\u2013254 remain unfinished. Supplied review earns zero independent authorship credit."
+  ]
+}

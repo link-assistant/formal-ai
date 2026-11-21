@@ -1,0 +1,38 @@
+[
+  {
+    "file": "outcome.json.gz",
+    "rawSha256": "5c3b08a2ab43dff924cda7ca30981d6d9989b6282f629ec0edf0138180c4bc0e",
+    "archiveSha256": "679d899015e7f93b3bfa3f18b09ab1a3e4a1dbebdc867c7295e33361d11b414b",
+    "bytes": 746
+  },
+  {
+    "file": "worker.log.gz",
+    "rawSha256": "8c8e54de7793eba363e94f57f71dd5b1540bef988ea5642e9ed5c18b2082b140",
+    "archiveSha256": "e9a1bde27e06a06e697e1278b5f19f157321005767e8e75d70f7170067c4ca8e",
+    "bytes": 1263
+  },
+  {
+    "file": "collect-current-repair-head-ci.py.gz",
+    "rawSha256": "d72259639d0cb328d8435c93e710210efcfd0949cd889d3dddac8cab1c0973c3",
+    "archiveSha256": "8ba287247a6dbacbfdc82c4f7eeba0ac6c427aea47498c1faadb0decead9276e",
+    "bytes": 6272
+  },
+  {
+    "file": "launch-current-repair-collector.stdout.gz",
+    "rawSha256": "756b7d7049479a089529da391b03d780d6a7d979078815f7093203a0a300fc75",
+    "archiveSha256": "f4f1ee70b5097cd8d5019f94c5d7ff9a6404568e0ab0003d86148a25cdf67989",
+    "bytes": 79
+  },
+  {
+    "file": "launch-current-repair-collector.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0
+  },
+  {
+    "file": "assess-current-repair-hosted-ci.py.gz",
+    "rawSha256": "5517187bd0923532a5905b2b03e2256b7a5b48a8620b55b36717c63154c96718",
+    "archiveSha256": "272db34cf2b8b013e94c71d163c213e32639fe0628f606738e1fc9f9261719c4",
+    "bytes": 3884
+  }
+]

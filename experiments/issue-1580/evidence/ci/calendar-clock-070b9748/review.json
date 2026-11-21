@@ -1,0 +1,43 @@
+{
+  "head": "070b9748cfddbdad80dfd802c79d697b82cce99c",
+  "workflowCount": 23,
+  "workflowSuccess": 22,
+  "workflowFailure": 1,
+  "failedRun": 44421974106,
+  "nativeJob": 135217168022,
+  "nativePassed": 99,
+  "nativeFailed": 1,
+  "nativeHttpPassed": 4,
+  "nativeLogLines": 2086,
+  "nativeLogRawSha256": "74c632956f5d8596ac01a57063b23ca31b0db05da89ea2473b1d723466623d22",
+  "failureLines": [
+    1708,
+    1714,
+    1715,
+    1722
+  ],
+  "failure": "The restored complete experiment shell checkout exposes the existing issue_1582 ShellCheck download, which lacks retry flags and a native inventory entry. All other native and HTTP contracts pass.",
+  "literalNativeSpans": [
+    [
+      1620,
+      1785
+    ],
+    [
+      1810,
+      1990
+    ]
+  ],
+  "nativeFullLogLiterallyRead": false,
+  "fullFailedWorkflowLiterallyRead": false,
+  "pipelineStatusFullLogLiterallyRead": true,
+  "collectionRecords": 34,
+  "payloadsHashVerified": 68,
+  "calendarClockEventFixturesPassed": 27,
+  "schedulingNativeTestsPassed": 18,
+  "strictOriginalPassingReplayUnion": 16,
+  "strictOriginalWithoutPassingReplay": 37,
+  "originalBudgetFailuresOpen": 3,
+  "localRepair": "Finite curl retry/deadline flags plus exact inventory entry; all 32 JavaScript policy tests pass after a 31-pass/one-failure baseline. Native replay of this repair and the new 28-case reasoning target remains pending.",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

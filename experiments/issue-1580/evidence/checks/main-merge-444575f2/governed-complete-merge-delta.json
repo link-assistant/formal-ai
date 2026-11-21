@@ -1,0 +1,53 @@
+{
+  "pairs": 7016,
+  "caseCount": 221,
+  "unsupportedCount": 964,
+  "nativeManifestUnchanged": false,
+  "differences": [
+    {
+      "path": "/inventory/cases/79/program/fixtures/8/sha256",
+      "before": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183",
+      "after": "010246547aa7eafb25a6ddf0d5491575c3b1fbb1120c18888ab3aefd051fc51b"
+    },
+    {
+      "path": "/inventory/cases/81/program/fixtures/4/sha256",
+      "before": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183",
+      "after": "010246547aa7eafb25a6ddf0d5491575c3b1fbb1120c18888ab3aefd051fc51b"
+    },
+    {
+      "path": "/inventory/cases/190/program/fixtures/8/sha256",
+      "before": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183",
+      "after": "010246547aa7eafb25a6ddf0d5491575c3b1fbb1120c18888ab3aefd051fc51b"
+    },
+    {
+      "path": "/inventory/cases/193/program/fixtures/9/sha256",
+      "before": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183",
+      "after": "010246547aa7eafb25a6ddf0d5491575c3b1fbb1120c18888ab3aefd051fc51b"
+    },
+    {
+      "path": "/sourceManifest/34/sha256",
+      "before": "840f672d2261ad596fd505b77b75a584f430a521247c94b077f0c91e2123da4f",
+      "after": "9f025d32f43f74c0b2d8e09073d89762918b4f249c353e99f9f9f1aef6336a01"
+    }
+  ],
+  "previousRevision": "8bb60c78433f770abf2603889e6ffaddbc12bd52",
+  "mergedMain": "444575f2ac28f609c94497865f125f99415ff6d5",
+  "reviewedSources": [
+    {
+      "path": "rust/tests/unit/mod.rs",
+      "beforeSha256": "fd4854204726db79408b9a41706099e645c1ede23184d0229b5c8cc4b6650183",
+      "afterSha256": "010246547aa7eafb25a6ddf0d5491575c3b1fbb1120c18888ab3aefd051fc51b",
+      "diffSha256": "bd728629e0480ed6ae9c229cebf042e3e0d4e4bbefae3e570d80677c22c3418a"
+    },
+    {
+      "path": "rust/tests/unit/specification/external_benchmarks.rs",
+      "beforeSha256": "840f672d2261ad596fd505b77b75a584f430a521247c94b077f0c91e2123da4f",
+      "afterSha256": "9f025d32f43f74c0b2d8e09073d89762918b4f249c353e99f9f9f1aef6336a01",
+      "diffSha256": "44902fde6f68a8eb12ca61134d3f2e0a94aeb04a332cde4ceee0839820c11d69"
+    }
+  ],
+  "assertionsAndCaseValuesUnchanged": true,
+  "refreshedBy": "existing --refresh-reviewed-baseline command; no witness hash substitution",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

@@ -114,7 +114,7 @@ multilingual_responses
   response response_feature_capability_web_search_available_en
     intent feature_capability_web_search_available
     language en
-    text "Yes. Web search is enabled in this configuration: I can use DuckDuckGo Instant Answer by default plus the configured CORS-readable providers (`{providers}`) for explicit prompts such as `Search the web for Nikola Tesla`. The top-10 results from each provider are merged with reciprocal rank fusion (k = {k}). If the browser session disables or blocks every provider, I will say that instead of claiming search is available."
+    text 'Yes. Web search is enabled in this configuration: I can use DuckDuckGo Instant Answer by default plus the configured CORS-readable providers (`{providers}`) for explicit prompts such as `Search the web for Nikola Tesla`. The top-10 results from each provider are merged with reciprocal rank fusion (k = {k}). If the browser session disables or blocks every provider, I will say that instead of claiming search is available.'
   response response_feature_capability_web_search_unavailable_en
     intent feature_capability_web_search_unavailable
     language en
@@ -126,7 +126,7 @@ multilingual_responses
   response response_feature_capability_web_search_available_ru
     intent feature_capability_web_search_available
     language ru
-    text "Да. В этой конфигурации веб-поиск включен: я могу использовать DuckDuckGo Instant Answer по умолчанию и доступные CORS-провайдеры (`{providers}`) для явных запросов вроде `Найди в интернете Никола Тесла`. Результаты из top-10 по каждому провайдеру объединяются через reciprocal rank fusion (k = {k}). Если провайдеры отключены или заблокированы в браузерной сессии, я сообщу об этом вместо ответа \"да\"."
+    text 'Да. В этой конфигурации веб-поиск включен: я могу использовать DuckDuckGo Instant Answer по умолчанию и доступные CORS-провайдеры (`{providers}`) для явных запросов вроде `Найди в интернете Никола Тесла`. Результаты из top-10 по каждому провайдеру объединяются через reciprocal rank fusion (k = {k}). Если провайдеры отключены или заблокированы в браузерной сессии, я сообщу об этом вместо ответа "да".'
   response response_feature_capability_web_search_unavailable_ru
     intent feature_capability_web_search_unavailable
     language ru
@@ -138,7 +138,7 @@ multilingual_responses
   response response_feature_capability_web_search_available_hi
     intent feature_capability_web_search_available
     language hi
-    text "हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (`{providers}`) का उपयोग explicit prompts जैसे `Search the web for Nikola Tesla` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = {k}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं \"हाँ\" कहने के बजाय स्थिति बताऊँगा।"
+    text 'हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (`{providers}`) का उपयोग explicit prompts जैसे `Search the web for Nikola Tesla` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = {k}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं "हाँ" कहने के बजाय स्थिति बताऊँगा।'
   response response_feature_capability_web_search_unavailable_hi
     intent feature_capability_web_search_unavailable
     language hi
@@ -150,11 +150,11 @@ multilingual_responses
   response response_feature_capability_web_search_available_zh
     intent feature_capability_web_search_available
     language zh
-    text "可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（`{providers}`）处理明确的搜索请求，例如 `Search the web for Nikola Tesla`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = {k}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。"
+    text '可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（`{providers}`）处理明确的搜索请求，例如 `Search the web for Nikola Tesla`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = {k}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。'
   response response_feature_capability_web_search_available_es
     intent feature_capability_web_search_available
     language es
-    text "Sí. La búsqueda web está activada en esta configuración: puedo usar DuckDuckGo Instant Answer por defecto y los proveedores configurados legibles por CORS (`{providers}`) para solicitudes explícitas como `Busca en la web Nikola Tesla`. Los 10 primeros resultados de cada proveedor se combinan con reciprocal rank fusion (k = {k}). Si la sesión del navegador desactiva o bloquea todos los proveedores, lo diré en lugar de afirmar que la búsqueda está disponible."
+    text 'Sí. La búsqueda web está activada en esta configuración: puedo usar DuckDuckGo Instant Answer por defecto y los proveedores configurados legibles por CORS (`{providers}`) para solicitudes explícitas como `Busca en la web Nikola Tesla`. Los 10 primeros resultados de cada proveedor se combinan con reciprocal rank fusion (k = {k}). Si la sesión del navegador desactiva o bloquea todos los proveedores, lo diré en lugar de afirmar que la búsqueda está disponible.'
   response response_feature_capability_web_search_unavailable_zh
     intent feature_capability_web_search_unavailable
     language zh

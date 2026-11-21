@@ -1,0 +1,22 @@
+{
+  "head": "e582b270a01443b995d7f36fd2fa685d508fde77",
+  "run": 44089535561,
+  "attempt": 1,
+  "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/44089535561",
+  "workflows": 24,
+  "passed": 23,
+  "failed": 1,
+  "active": 0,
+  "logLines": 5681,
+  "logSha256": "e6d5f50587aea47d8d1f1f62692cdd6b43b8dfda7fdec2448111eae125aa6375",
+  "failureLines": [
+    5634,
+    5635,
+    5636,
+    5665
+  ],
+  "failure": "Checkout of the PR merge ref exited 128: curl 28 low throughput for 20 seconds, bad pack header, missing promisor object. No test step ran in the failed shard.",
+  "recovery": "Rerun only failed jobs on the identical head after preserving attempt 1; do not change checkout policy on evidence of one transport interruption.",
+  "applicationOrNativeVerification": false,
+  "capturedAt": "2026-11-17T13:12:53.261822+00:00"
+}

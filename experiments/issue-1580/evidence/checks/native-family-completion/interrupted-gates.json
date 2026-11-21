@@ -1,0 +1,7 @@
+{
+  "terminalResult": "unverified",
+  "reason": "Formal AI shell command has an intrinsic 60000ms deadline. The combined validation command exceeded that while gates were in progress; no failing assertion was observed. Preserve the six completed PASS lines, give the incomplete aggregate no pass credit, and run the complete batch in a file-logged background worker.",
+  "file": "interrupted-gates.log.gz",
+  "rawSha256": "aacdf4ed012f3ed9eb7c689a8d10b3dd0839aadd42d9fe556e3637d199dd0b46",
+  "archiveSha256": "3007e4b207d83179ed08646d63ad09adecfe48d1281bf884507bc41d085d167f"
+}

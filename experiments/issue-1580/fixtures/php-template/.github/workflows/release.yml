@@ -1,0 +1,511 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      description:
+        description: 'Release description (optional)'
+        required: false
+        type: string
+
+# Never cancel an in-progress run on main (a release may be mid-flight); do
+# cancel superseded PR runs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+env:
+  PHP_VERSION: '8.5.12'
+
+jobs:
+  # === DETECT CHANGES - determines which downstream jobs need to run ===
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    if: github.event_name != 'workflow_dispatch'
+    outputs:
+      php-changed: ${{ steps.changes.outputs.php-changed }}
+      tests-changed: ${{ steps.changes.outputs.tests-changed }}
+      package-changed: ${{ steps.changes.outputs.package-changed }}
+      docs-changed: ${{ steps.changes.outputs.docs-changed }}
+      workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
+      any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.40.0
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+
+      - name: Detect changes
+        id: changes
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: php scripts/detect-code-changes.php
+
+  # === LINT AND STATIC ANALYSIS ===
+  # Independent of the changeset check so a fast quality gate always runs.
+  lint:
+    name: Lint and Static Analysis
+    runs-on: ubuntu-26.04
+    timeout-minutes: 20
+    needs: [detect-changes]
+    # always() && !cancelled() lets this evaluate even though detect-changes is
+    # skipped for workflow_dispatch; otherwise the skip would propagate here.
+    if: |
+      always() && !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.php-changed == 'true' ||
+        needs.detect-changes.outputs.tests-changed == 'true' ||
+        needs.detect-changes.outputs.docs-changed == 'true' ||
+        needs.detect-changes.outputs.package-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.40.0
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:2.11.2
+
+      - name: Validate composer.json
+        # --no-check-version: the version field is intentionally present and
+        # owned by the release pipeline, which is at odds with Packagist's
+        # "omit version" recommendation; keep strict checks for everything else.
+        run: composer validate --strict --no-check-version
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@4.0.0
+        # A `uses:` step cannot be wrapped by run-with-budget-warning.sh, so
+        # it declares its deadline with a step-level timeout-minutes: an
+        # exhausted step budget fails the step, while an exhausted job cap
+        # only cancels the job (issue #10).
+        timeout-minutes: 5
+
+      - name: Check coding standards (PHP-CS-Fixer)
+        env:
+          LINT_BUDGET_SECONDS: 600
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$LINT_BUDGET_SECONDS" "Coding standards" \
+            composer lint
+
+      - name: Static analysis (PHPStan)
+        env:
+          ANALYSE_BUDGET_SECONDS: 600
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$ANALYSE_BUDGET_SECONDS" "Static analysis" \
+            composer analyse
+
+      - name: Check file size limit
+        run: composer check:file-size
+
+  # === RELEASE PREFLIGHT ===
+  # Prove the release preconditions before the pipeline spends an hour of
+  # build minutes on top of them (issue #11). wait-for-packagist.php is the
+  # first step that ever asks whether Packagist knows the package -- after
+  # the version tag is already pushed -- and create-github-release.php is
+  # the first that learns the token cannot push. The preflight asks both
+  # questions first. In report mode (pull requests, where a fork cannot
+  # satisfy the repository's preconditions) the same probes annotate without
+  # blocking, which is why the release jobs gate on
+  # `needs.release-preflight.result == 'success'` rather than on greenness.
+  release-preflight:
+    name: Release Preflight
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.40.0
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+
+      - name: Probe every release precondition
+        env:
+          # Expressions have no ternary operator; this idiom is safe because
+          # both branch values are non-empty string literals.
+          PREFLIGHT_MODE: >-
+            ${{
+              (
+                (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+                github.event_name == 'workflow_dispatch'
+              ) && 'release' || 'report'
+            }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: php scripts/preflight-credentials.php
+
+  # === TEST ===
+  test:
+    name: Test (PHP ${{ matrix.php }})
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    needs: [detect-changes]
+    if: |
+      always() && !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.php-changed == 'true' ||
+        needs.detect-changes.outputs.tests-changed == 'true' ||
+        needs.detect-changes.outputs.package-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.5.12']
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.40.0
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+          tools: composer:2.11.2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@4.0.0
+        # A `uses:` step cannot be wrapped by run-with-budget-warning.sh, so
+        # it declares its deadline with a step-level timeout-minutes: an
+        # exhausted step budget fails the step, while an exhausted job cap
+        # only cancels the job (issue #10).
+        timeout-minutes: 5
+
+      - name: Run tests
+        env:
+          TEST_BUDGET_SECONDS: 1200
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Test suite" \
+            php vendor/bin/phpunit --coverage-text
+
+  # === CHANGESET CHECK - only on PRs that touch code ===
+  # Docs-only PRs are exempt (no changelog fragment required).
+  changeset:
+    name: Changeset Check
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    needs: [detect-changes]
+    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.40.0
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:2.11.2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@4.0.0
+        # A `uses:` step cannot be wrapped by run-with-budget-warning.sh, so
+        # it declares its deadline with a step-level timeout-minutes: an
+        # exhausted step budget fails the step, while an exhausted job cap
+        # only cancels the job (issue #10).
+        timeout-minutes: 5
+
+      - name: Ensure the version was not bumped by hand
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: php scripts/check-version-modification.php
+
+      - name: Validate changelog fragment
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: php scripts/validate-changeset.php
+
+  # === BUILD ===
+  # Verifies the package installs cleanly for consumers; runs if lint+test
+  # succeeded or were skipped (docs-only PR).
+  build:
+    name: Build
+    runs-on: ubuntu-26.04
+    timeout-minutes: 20
+    needs: [detect-changes, lint, test]
+    if: |
+      always() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        (
+          (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
+          (needs.test.result == 'success' || needs.test.result == 'skipped')
+        )
+      )
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.40.0
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:2.11.2
+
+      - name: Validate composer.json
+        # --no-check-version: the version field is intentionally present and
+        # owned by the release pipeline, which is at odds with Packagist's
+        # "omit version" recommendation; keep strict checks for everything else.
+        run: composer validate --strict --no-check-version
+
+      - name: Install dependencies (no dev, as a consumer would)
+        env:
+          BUILD_BUDGET_SECONDS: 800
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$BUILD_BUDGET_SECONDS" "Build" \
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Verify autoloading works
+        run: php -r "require 'vendor/autoload.php'; echo (new LinkFoundation\Template\Calculator())->add(2, 3), PHP_EOL;"
+
+  # === AUTO RELEASE - push to main ===
+  # Idempotent and self-healing: Packagist + GitHub Releases are the source of
+  # truth, not git tags. Re-running after a partial failure resumes safely.
+  auto-release:
+    name: Auto Release
+    needs: [lint, test, build, release-preflight]
+    # A refused precondition must stop the release even when everything else
+    # is green: `result == 'success'`, not mere non-failure, is the gate
+    # (issue #11).
+    if: |
+      always() && !cancelled() &&
+      github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+      needs.release-preflight.result == 'success'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      # This checkout keeps credentials in .git/config on purpose:
+      # scripts/version-and-commit.php runs `git push` to publish the version
+      # bump, which needs the token wired into the remote. Every other
+      # checkout in this repository sets persist-credentials: false (issue
+      # #8).
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.40.0
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:2.11.2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@4.0.0
+        # A `uses:` step cannot be wrapped by run-with-budget-warning.sh, so
+        # it declares its deadline with a step-level timeout-minutes: an
+        # exhausted step budget fails the step, while an exhausted job cap
+        # only cancels the job (issue #10).
+        timeout-minutes: 5
+
+      - name: Decide whether a release is needed
+        id: decide
+        env:
+          DECIDE_BUDGET_SECONDS: 300
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$DECIDE_BUDGET_SECONDS" "Release decision" \
+            php scripts/check-release-needed.php
+
+      - name: Version, changelog, commit and tag
+        id: version
+        if: steps.decide.outputs.should_release == 'true'
+        env:
+          VERSION_BUDGET_SECONDS: 600
+        run: |
+          if [ "${{ steps.decide.outputs.skip_bump }}" = "true" ]; then
+            bash scripts/run-with-budget-warning.sh \
+              "$VERSION_BUDGET_SECONDS" "Version, changelog, commit and tag" \
+              php scripts/version-and-commit.php --skip-bump
+          else
+            bash scripts/run-with-budget-warning.sh \
+              "$VERSION_BUDGET_SECONDS" "Version, changelog, commit and tag" \
+              php scripts/version-and-commit.php --mode=changeset
+          fi
+
+      - name: Wait for Packagist to import the release
+        if: steps.version.outputs.new_version != ''
+        env:
+          PACKAGIST_WAIT_BUDGET_SECONDS: 600
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$PACKAGIST_WAIT_BUDGET_SECONDS" "Packagist import wait" \
+            php scripts/wait-for-packagist.php --version "${{ steps.version.outputs.new_version }}"
+
+      - name: Create GitHub release
+        if: steps.version.outputs.new_version != ''
+        env:
+          GITHUB_RELEASE_BUDGET_SECONDS: 300
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$GITHUB_RELEASE_BUDGET_SECONDS" "GitHub release" \
+            php scripts/create-github-release.php --version "${{ steps.version.outputs.new_version }}"
+
+  # === MANUAL RELEASE - workflow_dispatch ===
+  manual-release:
+    name: Manual Release
+    needs: [lint, test, build, release-preflight]
+    # always() && !cancelled() prevents the skipped detect-changes dependency
+    # from propagating; explicit result checks gate release behind green CI
+    # and a passed preflight (issue #11).
+    if: |
+      always() && !cancelled() &&
+      github.event_name == 'workflow_dispatch' &&
+      needs.lint.result == 'success' &&
+      needs.test.result == 'success' &&
+      needs.build.result == 'success' &&
+      needs.release-preflight.result == 'success'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      # This checkout keeps credentials in .git/config on purpose:
+      # scripts/version-and-commit.php runs `git push` to publish the version
+      # bump, which needs the token wired into the remote. Every other
+      # checkout in this repository sets persist-credentials: false (issue
+      # #8).
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.40.0
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:2.11.2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@4.0.0
+        # A `uses:` step cannot be wrapped by run-with-budget-warning.sh, so
+        # it declares its deadline with a step-level timeout-minutes: an
+        # exhausted step budget fails the step, while an exhausted job cap
+        # only cancels the job (issue #10).
+        timeout-minutes: 5
+
+      - name: Version, changelog, commit and tag
+        id: version
+        env:
+          VERSION_BUDGET_SECONDS: 600
+          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+          RELEASE_DESCRIPTION: ${{ github.event.inputs.description }}
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$VERSION_BUDGET_SECONDS" "Version, changelog, commit and tag" \
+            php scripts/version-and-commit.php \
+              --mode=instant \
+              --bump="$BUMP_TYPE" \
+              --description="$RELEASE_DESCRIPTION"
+
+      - name: Wait for Packagist to import the release
+        if: steps.version.outputs.new_version != ''
+        env:
+          PACKAGIST_WAIT_BUDGET_SECONDS: 600
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$PACKAGIST_WAIT_BUDGET_SECONDS" "Packagist import wait" \
+            php scripts/wait-for-packagist.php --version "${{ steps.version.outputs.new_version }}"
+
+      - name: Create GitHub release
+        if: steps.version.outputs.new_version != ''
+        env:
+          GITHUB_RELEASE_BUDGET_SECONDS: 300
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash scripts/run-with-budget-warning.sh \
+            "$GITHUB_RELEASE_BUDGET_SECONDS" "GitHub release" \
+            php scripts/create-github-release.php --version "${{ steps.version.outputs.new_version }}"
+
+  # === PIPELINE STATUS ===
+  # GitHub reports jobs killed by timeout-minutes as cancelled. Observe every
+  # job so a timeout on main becomes a visible failure instead of a grey run,
+  # while a run superseded by a newer commit is recognised as expected churn
+  # (issue #9).
+  pipeline-status:
+    name: Pipeline Status
+    needs:
+      - detect-changes
+      - lint
+      - release-preflight
+      - test
+      - changeset
+      - build
+      - auto-release
+      - manual-release
+    if: always()
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check aggregate pipeline status
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          RUN_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          BRANCH_REF: ${{ github.head_ref || github.ref_name }}
+          GIT_REMOTE: ${{ github.event.pull_request.head.repo.clone_url || 'origin' }}
+        run: bash scripts/check-pipeline-status.sh

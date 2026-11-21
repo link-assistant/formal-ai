@@ -1,0 +1,74 @@
+{
+  "changed": [
+    {
+      "old": "changed-init.stderr.gz",
+      "new": "changed-initialize.stderr.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "changed-init.stdout.gz",
+      "new": "changed-initialize.stdout.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "invalid-init.stderr.gz",
+      "new": "invalid-initialize.stderr.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "invalid-init.stdout.gz",
+      "new": "invalid-initialize.stdout.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "new-file-init.stderr.gz",
+      "new": "new-file-initialize.stderr.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "new-file-init.stdout.gz",
+      "new": "new-file-initialize.stdout.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "removed-init.stderr.gz",
+      "new": "removed-initialize.stderr.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "removed-init.stdout.gz",
+      "new": "removed-initialize.stdout.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "unavailable-base-init.stderr.gz",
+      "new": "unavailable-base-initialize.stderr.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "unavailable-base-init.stdout.gz",
+      "new": "unavailable-base-initialize.stdout.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "unchanged-init.stderr.gz",
+      "new": "unchanged-initialize.stderr.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "unchanged-init.stdout.gz",
+      "new": "unchanged-initialize.stdout.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "old": "gate-check-tests-as-docs.log.gz",
+      "new": "gate-check-tests-as-documentation.log.gz",
+      "sha256": "4b4edd87795b99b9d73a11eeb5b031911cdd1b3b9661f52ac81122aa3b4491a4"
+    }
+  ],
+  "exitCode": 0,
+  "payloadBytesPreserved": true,
+  "ratchetChanged": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,348 @@
+{
+  "capturedAt": "2026-11-17T23:19:43.029121+00:00",
+  "head": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "pushRuns": 18,
+  "successes": 15,
+  "downloads": [
+    {
+      "run": {
+        "conclusion": "failure",
+        "createdAt": "2026-11-17T22:17:04Z",
+        "databaseId": 44188508378,
+        "event": "push",
+        "headSha": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+        "status": "completed",
+        "updatedAt": "2026-11-17T22:33:32Z",
+        "workflowName": "Agentic CLI Matrix"
+      },
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44188508378",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "44188508378",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--log"
+      ],
+      "exitCode": 0,
+      "archive": "agentic-client-matrix-44188508378.log.gz",
+      "rawSha256": "7b689393187c24bbf8321af61059147aa0284d13d5db406d68999a28bc3dbe87",
+      "rawBytes": 1158711,
+      "rawLines": 7755,
+      "failedJobs": [
+        {
+          "name": "E2E (agent)",
+          "conclusion": "failure",
+          "steps": [
+            "Run agent leg"
+          ]
+        },
+        {
+          "name": "E2E (opencode)",
+          "conclusion": "failure",
+          "steps": [
+            "Run opencode leg"
+          ]
+        },
+        {
+          "name": "E2E (aider)",
+          "conclusion": "failure",
+          "steps": [
+            "Run aider leg"
+          ]
+        },
+        {
+          "name": "E2E (t3code)",
+          "conclusion": "failure",
+          "steps": [
+            "Run t3code leg"
+          ]
+        },
+        {
+          "name": "E2E (cursor)",
+          "conclusion": "failure",
+          "steps": [
+            "Run cursor leg"
+          ]
+        },
+        {
+          "name": "E2E (qwen)",
+          "conclusion": "failure",
+          "steps": [
+            "Run qwen leg"
+          ]
+        },
+        {
+          "name": "E2E (grok)",
+          "conclusion": "failure",
+          "steps": [
+            "Run grok leg"
+          ]
+        },
+        {
+          "name": "E2E (opencode-vscode)",
+          "conclusion": "failure",
+          "steps": [
+            "Run opencode-vscode leg"
+          ]
+        },
+        {
+          "name": "E2E (codex)",
+          "conclusion": "failure",
+          "steps": [
+            "Run codex leg"
+          ]
+        },
+        {
+          "name": "E2E (gemini)",
+          "conclusion": "failure",
+          "steps": [
+            "Run gemini leg"
+          ]
+        },
+        {
+          "name": "E2E (opencode-desktop)",
+          "conclusion": "failure",
+          "steps": [
+            "Run opencode-desktop leg"
+          ]
+        },
+        {
+          "name": "E2E (claude)",
+          "conclusion": "failure",
+          "steps": [
+            "Run claude leg"
+          ]
+        },
+        {
+          "name": "Matrix summary",
+          "conclusion": "failure",
+          "steps": [
+            "Fail if any leg failed"
+          ]
+        }
+      ]
+    },
+    {
+      "run": {
+        "conclusion": "failure",
+        "createdAt": "2026-11-17T22:17:04Z",
+        "databaseId": 44188508650,
+        "event": "push",
+        "headSha": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+        "status": "completed",
+        "updatedAt": "2026-11-17T22:52:04Z",
+        "workflowName": "CI/CD Pipeline"
+      },
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44188508650",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "44188508650",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--log"
+      ],
+      "exitCode": 0,
+      "archive": "pipeline-44188508650.log.gz",
+      "rawSha256": "6677b1a7ec34736fca5ac168353f249723c7fca3f55a8478d8870051ca7cabc6",
+      "rawBytes": 12613146,
+      "rawLines": 69890,
+      "failedJobs": [
+        {
+          "name": "Lint and Format Check (lane 1)",
+          "conclusion": "failure",
+          "steps": [
+            "Audit JavaScript dependencies before native compilation"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 8/8",
+          "conclusion": "failure",
+          "steps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / specification) shard 1/4",
+          "conclusion": "failure",
+          "steps": [
+            "Run specification tests from the prebuilt executable"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / specification) shard 2/4",
+          "conclusion": "failure",
+          "steps": [
+            "Run specification tests from the prebuilt executable"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 5/8",
+          "conclusion": "failure",
+          "steps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 7/8",
+          "conclusion": "failure",
+          "steps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 6/8",
+          "conclusion": "failure",
+          "steps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / specification) shard 3/4",
+          "conclusion": "failure",
+          "steps": [
+            "Run specification tests from the prebuilt executable"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 4/8",
+          "conclusion": "failure",
+          "steps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 2/8",
+          "conclusion": "failure",
+          "steps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "E2E Tests (agent CLI \u2194 formal-ai) / E2E Tests (agent CLI \u2194 formal-ai)",
+          "conclusion": "failure",
+          "steps": [
+            "Run Agent CLI E2E \u2014 held-out algorithm discovery (issue #531)"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / specification) shard 4/4",
+          "conclusion": "failure",
+          "steps": [
+            "Run specification tests from the prebuilt executable"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full)",
+          "conclusion": "failure",
+          "steps": [
+            "Check LiNo data integrity",
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Test (ubuntu-24.04 / full) shard 3/8",
+          "conclusion": "failure",
+          "steps": [
+            "Run tests"
+          ]
+        },
+        {
+          "name": "Pipeline Status",
+          "conclusion": "failure",
+          "steps": [
+            "Fail the run when a required job was cancelled or failed"
+          ]
+        }
+      ]
+    },
+    {
+      "run": {
+        "conclusion": "cancelled",
+        "createdAt": "2026-11-17T22:17:03Z",
+        "databaseId": 44188508228,
+        "event": "push",
+        "headSha": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+        "status": "completed",
+        "updatedAt": "2026-11-17T22:37:18Z",
+        "workflowName": "Layered CI"
+      },
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44188508228",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "44188508228",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--log"
+      ],
+      "exitCode": 1,
+      "archive": "layered-44188508228.log.gz",
+      "rawSha256": "d4e7bd2c3055008b9ccc945a009a71b6176d57f820536cb450a4d8803d643172",
+      "rawBytes": 2516383,
+      "rawLines": 14379,
+      "failedJobs": [
+        {
+          "name": "Full source network serialization (15/16)",
+          "conclusion": "cancelled",
+          "steps": [
+            "Run actions/checkout@v7"
+          ]
+        },
+        {
+          "name": "js tier (node --check over js, suite group 1)",
+          "conclusion": "failure",
+          "steps": [
+            "Run this shard of the JavaScript suites"
+          ]
+        },
+        {
+          "name": "js tier (node --check over js, suite group 3)",
+          "conclusion": "cancelled",
+          "steps": [
+            "Run this shard of the JavaScript suites",
+            "Post Provision the actual pinned source-model frontend",
+            "Post Setup the pinned web dependency installer",
+            "Post Check out relative-meta-logic for the rml export step (R1186-4)",
+            "Post Run actions/checkout@v7"
+          ]
+        },
+        {
+          "name": "js tier (node --check over js, suite group 2)",
+          "conclusion": "failure",
+          "steps": [
+            "Run this shard of the JavaScript suites"
+          ]
+        },
+        {
+          "name": "js tier (node --check over js, suite group 8)",
+          "conclusion": "failure",
+          "steps": [
+            "Run this shard of the JavaScript suites"
+          ]
+        },
+        {
+          "name": "js tier (node --check over js, suite group 7)",
+          "conclusion": "failure",
+          "steps": [
+            "Run this shard of the JavaScript suites"
+          ]
+        },
+        {
+          "name": "js tier (node --check over js, suite group 5)",
+          "conclusion": "failure",
+          "steps": [
+            "Run this shard of the JavaScript suites"
+          ]
+        }
+      ]
+    }
+  ],
+  "fullManualLogReview": false,
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0
+}

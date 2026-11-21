@@ -1,0 +1,34 @@
+{
+  "head": "d0b8b895661c6b5e809810c4da8a3db9f79138b3",
+  "observedAt": "2026-11-17T17:16:25.280592+00:00",
+  "githubDiffStatus": 1,
+  "githubDiffLimit300Files": true,
+  "fallback": "complete local base-to-head diff and paginated GitHub file inventory",
+  "fullDiffLines": 51298,
+  "fullDiffRawSha256": "299c09d8d032978d6062944ebcfc014fd94c30709fd804667b96af87701ebfb8",
+  "newSourceFiles": [
+    "experiments/issue-1580/browser-deadline-descendant.mjs",
+    "experiments/issue-1580/template-python-release-formatting.test.mjs",
+    "rust/tests/web/browser-engine-release-integration.test.mjs",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+    "rust/tests/web/generated-files.test.mjs",
+    "rust/tests/web/issue-1580-template-observations.test.mjs",
+    "rust/tests/web/pull-request-1188-subagent-folder.test.mjs",
+    "scripts/check-generated-files.mjs"
+  ],
+  "newSourceLines": 530,
+  "pageSize": 350,
+  "pages": 2,
+  "githubInventoryFiles": 2003,
+  "githubInventoryMatchesAllChangedPaths": true,
+  "githubBlobIdentitiesMatchGitTrees": true,
+  "base": "512ce428029a92687628b4180309ee5ab660fe08",
+  "verificationAt": "2026-11-17T17:22:36.551837+00:00",
+  "fullDiffClaimedAsFullyRead": false,
+  "reviewedNewSourceLines": 530,
+  "reviewedNewSourcePages": [
+    1,
+    2
+  ],
+  "autonomousAuthorshipCredit": 0
+}

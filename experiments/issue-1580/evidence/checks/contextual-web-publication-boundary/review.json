@@ -1,0 +1,42 @@
+{
+  "result": "2 boundary gates fail after supplied-script and command receipt archival; no push occurred",
+  "logs": [
+    {
+      "file": "check-file-size-js-twin.log.gz",
+      "archiveSha256": "6bde5dd3b0707046f2cefb9359c74b4e43740e4b4006f4518bedcae776f94c9f",
+      "rawSha256": "ac3d0339d375f12d23f40f0e228153d387a04c034c0caa798b6c6ed90657fc5a",
+      "lines": 2,
+      "completeLiteralRead": false
+    },
+    {
+      "file": "check-file-size.log.gz",
+      "archiveSha256": "3795430936a19bbb6f402fe782f663619382f027c1ab0ef467422183f4d31269",
+      "rawSha256": "2f32c23458c6ee81a9afc3c22846ddb460305eedda50272c3cb72b1f92ad5832",
+      "lines": 394,
+      "completeLiteralRead": false
+    }
+  ],
+  "fullLiteralReadClaim": false,
+  "independentAuthorshipCredit": 0,
+  "manifestRepairs": [
+    {
+      "path": "experiments/issue-1580/evidence/checks/java-historical-forward-025/manifest.json",
+      "beforeSha256": "4befbf6cec771526db479fdea1f3cfd329d8527b19bd899f957f3b3d20bcaa11",
+      "afterSha256": "04b224bc4827fe2e441b92120d3f414b555450f4cdd0862498a417fef4237d74",
+      "beforeLines": 2706,
+      "afterLines": 8,
+      "completeDecodedObjectEqual": true,
+      "allPageEntriesPreserved": 6
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/java-historical-forward-026/manifest.json",
+      "beforeSha256": "e51871510ab111d1b562b484ac359e7e16eec0bba2bab0f9fb752b9483bd7b23",
+      "afterSha256": "9b4dadcde6b361736276c1a015c53eaeac7c88c09f3647aff43639f7eb4f7bb6",
+      "beforeLines": 4138,
+      "afterLines": 12,
+      "completeDecodedObjectEqual": true,
+      "allPageEntriesPreserved": 10
+    }
+  ],
+  "ceilingOrGateChanged": false
+}

@@ -1,0 +1,42 @@
+{
+  "reviewedAt": "2026-11-20",
+  "baseMain": "53cbe4430f8b65330f47728401fc83b09977129f",
+  "publishedHead": "e627fa307e0374bf6813159257915f342d8d2419",
+  "seedDiffLanguages": [
+    "en",
+    "es",
+    "hi",
+    "ru",
+    "zh"
+  ],
+  "seedDiffLines": 3454,
+  "refreshedChangedEntries": [
+    {
+      "path": "scripts/ci-pull-request-admission.mjs",
+      "previousSourceSha256": "1ca7b6ef650e2096bcc0e5887580e01451fcaf0a57c5b24d96fe87047750d9f9",
+      "previousDiffSha256": "07b0313bfc0f42648366fcabccf4bf67cf521a8e4a0bd0e28c98946491b6647d"
+    },
+    {
+      "path": ".github/workflows/native-type-check.yml",
+      "previousSourceSha256": "0af06839dda1b638eb4a990d92199981aa518946a0e7dba2dbdb6091362b2270",
+      "previousDiffSha256": "f5ff9f97623d9bee22f0ff938d086c83f57498d7411c7576000986c192bfcdcc"
+    },
+    {
+      "path": "scripts/ci-native-regressions.sh",
+      "previousSourceSha256": "4c7aa057fcd935fb8a719093debed8eeea0a148c88c7d916a2733d07ab761a7d",
+      "previousDiffSha256": "bae4b6ea6fbcfeac2780221ff69c6efb64cb855625a1dceef0e2b34a06cde6e8"
+    }
+  ],
+  "selectedProductionDiffsReviewed": 106,
+  "selectedProductionDiffsTotal": 106,
+  "observations": [
+    "The five language seed diffs preserve the order, repetitions and Unicode text of pipe-delimited forms while expressing lists as named rows.",
+    "Term cases, input-only ambiguous mouse forms, replies, task templates and styles remain represented.",
+    "The three stale CI-source entries were reread against the same main base before their identities were refreshed; the native runner overlaps three isolated processes, waits for each, and preserves nonzero group status.",
+    "No new defect was established by this review. Full sources were not reread for the language seeds."
+  ],
+  "wholePullRequestReviewed": false,
+  "allPriorFeaturesProvenPreserved": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

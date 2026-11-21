@@ -1,0 +1,50 @@
+[
+  {
+    "file": "scripts/ci-pull-request-admission.mjs",
+    "sha256": "671a2957f94689bb884cf6082e1adffa21d232cc480b5bde89e621658c09911b"
+  },
+  {
+    "file": "rust/tests/web/default-branch-build-policy.test.mjs",
+    "sha256": "9e562ae36d9fb2b53336859bbda6acbf45bb10a712f580ca286c78eb2dc7e160"
+  },
+  {
+    "file": "rust/tests/unit/workflow_contracts.rs",
+    "sha256": "2d15d026f362f15d0699ecb41113a7079a0e6dd162434a0aa106ffd220df7b7d"
+  },
+  {
+    "file": "rust/tests/unit/ci-cd/workflow_fixtures.rs",
+    "sha256": "ef384a79b95a42730be9e344eef42a5b002192ac5d8d7e93b2d84d79e654ec9f"
+  },
+  {
+    "file": ".github/workflows/security.yml",
+    "sha256": "ffb2c188b19009bf48ca684eafd18b5f49f27d807a90dd5b2647a3295d4e1786"
+  },
+  {
+    "file": "changelog.d/1580-codeql-result-gate.md",
+    "sha256": "510b2c7e556cde8f1f8b6285a5f2d67660b1a570bdd15362cd4f0c89f7e31af2"
+  },
+  {
+    "file": "data/benchmarks/fast-pull-request-javascript-tests.json",
+    "sha256": "095c06f075fa3b4a8560d7cfde6c97df0d447778357a523ca521352e043bdb03"
+  },
+  {
+    "file": "data/benchmarks/fast-pull-request-retained-jobs.json",
+    "sha256": "810def1da5f7958a5a671bf18b1fd4c3a5599bdd127455345250e44ad8b30e9c"
+  },
+  {
+    "file": "rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs",
+    "sha256": "4a7c328ff6474c0f1c3916b6540610cd3cc6899e4b6b2071f99199e9cbef1e90"
+  },
+  {
+    "file": "rust/tests/unit/ci-cd/step_budgets_within_job_clocks/codeql.rs",
+    "sha256": "5a61e59d7ed8668f69c8170c5086004146c5e07903164c5c67f3925bef57bc9a"
+  },
+  {
+    "file": "rust/tests/web/security-codeql-results.test.mjs",
+    "sha256": "68dffa6ca19b3aacf52c37de0c853b58407fd31516431a3bb742d31e8c67d25b"
+  },
+  {
+    "file": "scripts/check-codeql-results.mjs",
+    "sha256": "a81157c87d5cf7fa9e0db8af4bf17cd7ffc0d02c0cdead5240ca3ae1ffc55c6d"
+  }
+]

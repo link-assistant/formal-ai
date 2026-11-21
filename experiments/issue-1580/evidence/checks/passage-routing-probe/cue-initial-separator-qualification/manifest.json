@@ -1,0 +1,50 @@
+{
+  "pid": 1084957,
+  "state": "Z",
+  "exitCode": 0,
+  "qualificationPassed": 6,
+  "qualificationTotal": 10,
+  "all25FixtureResultsAndTracesUnchanged": true,
+  "all2StructuralControlsPassed": true,
+  "literalStdoutReview": "All 32 lines read completely.",
+  "resultArtifact": "experiments/issue-1580/evidence/checks/passage-routing-probe/passage-cue-coverage.json.gz",
+  "resultArtifactSha256": "6658f729763ab99943abe923e28722d50c786b0d794219f9a5713fa2fd765cce",
+  "limits": [
+    "No passage cue is masked before colon because task edge punctuation excludes colon.",
+    "A parent passage answer still refuses composition with an independent calculation."
+  ],
+  "productionModified": false,
+  "independentAuthorshipCredit": 0,
+  "files": [
+    {
+      "file": "probe-passage-cue-coverage.mjs.gz",
+      "rawBytes": 18160,
+      "rawSha256": "25de07aa4e7f121065cc02765dc1cadd7fc8db1b49e789b247aa7aa7487d0e79",
+      "archivedSha256": "3c0f009ecdf5eea892b39f7dbb056ab63c1538871acef87ff5a6c56c0a1e5dbc"
+    },
+    {
+      "file": "process.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "924c46ca3d10e64d7ded67247064b5f216ebdbcb28412a366729b66f854c0cad",
+      "archivedSha256": "8e3f7c9af16a841aef70ebfb0bcb345592afe083dbf084bf6b5703c365853ffd"
+    },
+    {
+      "file": "stderr.log.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archivedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "file": "stdout.log.gz",
+      "rawBytes": 12506,
+      "rawSha256": "bf04912ee308549ba195085ad5c6786a04a0b15d5c7a372412a90fd2dd7c535a",
+      "archivedSha256": "65f1d74282a25905c0d0da371e75c59b97acc72e2acb3932716dba01c703e1c5"
+    },
+    {
+      "file": "syntax.json.gz",
+      "rawBytes": 52,
+      "rawSha256": "6d620d1c454a90e41ee536109b1fee6ba5177ac2ee9d3aeb3a9f1e108bf3f044",
+      "archivedSha256": "5aa35498186d04f67d5176b5f1d30dcd77a4607b32fbf0cef5faed1b287f769e"
+    }
+  ]
+}

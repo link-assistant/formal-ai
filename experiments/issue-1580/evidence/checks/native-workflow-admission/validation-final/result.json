@@ -1,0 +1,104 @@
+{
+  "complete": true,
+  "sourceHashes": {
+    "rust/tests/unit/workflow_contracts.rs": "4f9480f7e0853e4c6dfae0dc60b0a0462c845e92e48798fb0574ba3aad04eab3",
+    "rust/Cargo.toml": "32ee0fb999d81aa30d6c1fe195ab40d25f4ad59598eedca237907b15e7381cce",
+    "scripts/ci-native-regressions.sh": "bf4c76a571da7da5048b821050be946de7288e25327d86cc685c431b016c1026",
+    "scripts/ci-pull-request-admission.mjs": "c444ac672ca713c632f61e94d2bf25ec48e0b0ce8cfa08f29f4d922298feec62",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "c73822c31f24899d6364419e3cd092f3d40f69a2f3284aef02ac308b9896bbd6",
+    ".github/workflows/native-type-check.yml": "427adc2f56c44a83d470c4ae91fe0deb9f8a71acf8661c2914614d74f46606ca",
+    "changelog.d/issue-1580-native-workflow-contracts.md": "f094c4b4fc45d7b3a44b6f392ec620240917c7e8554ebd003041b6ce50dcf88e",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8": "0400d5b28de6935a20287deb569468c5abd40faed5bc998e584e4756cc7cdb09"
+  },
+  "rows": [
+    {
+      "name": "policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.898,
+      "file": "policy.log.gz",
+      "rawSha256": "3d48d3759e3da4483f33c49fdd917264314bc82ed68b67e1181534485455d5ae",
+      "archiveSha256": "42dbb1025a39675cffc72a485af9c45a04e1aa538e364e2c5b497dfbeaf39971"
+    },
+    {
+      "name": "focused-map",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.797,
+      "file": "focused-map.log.gz",
+      "rawSha256": "8334bcef5ee8f6fd6e7d83a6fad0395541cae5960af3066a86b2d00e9623cd97",
+      "archiveSha256": "b1c7a02e01613340c0004d5986638b6235b58b41afa228f26e41830f163f6300"
+    },
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/workflow_contracts.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.126,
+      "file": "rust-format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "shellcheck",
+      "argv": [
+        "shellcheck",
+        "scripts/ci-native-regressions.sh"
+      ],
+      "exitCode": 0,
+      "seconds": 0.051,
+      "file": "shellcheck.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "affected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-runner-labels,check-ci-speed,lint-shell-scripts"
+      ],
+      "exitCode": 0,
+      "seconds": 38.186,
+      "file": "affected-gates.log.gz",
+      "rawSha256": "313acc45e7f46ffac6311b9072e71ff4f495b6e94b8442edebbc1219d5d4689f",
+      "archiveSha256": "5c3d1b4f99bf6d9d8302d2b306e261afcf33854891ac0723f93661afe2372e48"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.219,
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "nativeExecutionObserved": false,
+  "nativeCasesAdmitted": 49,
+  "fullIssueComplete": false
+}

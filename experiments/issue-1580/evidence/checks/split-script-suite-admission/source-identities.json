@@ -1,0 +1,26 @@
+[
+  {
+    "path": ".github/workflows/native-type-check.yml",
+    "sha256": "c76dda5e051c4b24d9525ce068aa340027cda5e65b3a327c6b79dfbcc8e416fe"
+  },
+  {
+    "path": "experiments/issue-1580/native-regression-groups.test.mjs",
+    "sha256": "e8169ebf0370e4bdf41e4db9eee7210bde313e43df8d9cea0fd9118aa85979c3"
+  },
+  {
+    "path": "experiments/issue-1580/release-registry/Cargo.toml",
+    "sha256": "717f63104f629c3f5555d0405c564ce5bd142a36bc9a2b603c38b2f650917881"
+  },
+  {
+    "path": "experiments/issue-1580/release-registry/Cargo.lock",
+    "sha256": "d65e65d566439c274d0fa97b73891013f787e597e52efc1668f6d05ce4ca9d99"
+  },
+  {
+    "path": "rust/tests/web/default-branch-build-policy.test.mjs",
+    "sha256": "b57ca77fb4b8b67a719ae715bc3d23b28b3b9d1825f544cede65480754a6968c"
+  },
+  {
+    "path": "scripts/ci-pull-request-admission.mjs",
+    "sha256": "2a7d3d8318e1e7af7f9cd73411f2d26de44ed21949bd3d1f573beb2483d98d19"
+  }
+]

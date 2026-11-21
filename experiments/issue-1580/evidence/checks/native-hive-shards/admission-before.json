@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=complete Hive planner input closure",
+    "experiments/issue-1580/native-regression-groups.test.mjs"
+  ],
+  "exitCode": 1,
+  "file": "admission-before.log.gz",
+  "rawSha256": "2cf8d1767db842d99ad43a5de90c4ef48c882732b1d0c7402f0bb840a685e1b1",
+  "archiveSha256": "9a6016979efc22af9ae56e6b867c7c35bf9b31179238f4146b3897fb0eb20e73"
+}

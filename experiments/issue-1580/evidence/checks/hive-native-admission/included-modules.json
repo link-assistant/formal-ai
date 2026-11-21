@@ -1,0 +1,72 @@
+{
+  "originalMain": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "records": [
+    {
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs.rs",
+      "sha256": "06d531fd838275793e1648dc4320936cabe3a2133c57d2d8ff5ae5cc0e8c4a0e",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": false,
+      "originalFileAvailable": true,
+      "testCount": 5,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sha256": "03540cabfa6375a71fab2175a7b743b5c02e25a22432b589a0d2840fe684e480",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": false,
+      "originalFileAvailable": true,
+      "testCount": 30,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/unit/issue_1066_ladder_capability/tool_workspace.rs",
+      "sha256": "ee742a1e29d1223eea053557b6942c44cffe6c382d8ed6898924defd57c46c4a",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 3,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/atomic-record-append.rs",
+      "sha256": "a3d4ffa7220935ea181c18fec2e2c4d0b3a8633a3b8579d619cf4e8d1a73bc66",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 0,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/observed-plan-tools.rs",
+      "sha256": "8d12c9edfbedf492fc1a405f57d736e4cb95c1fd21d95f9158bf14c75e277fec",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 0,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/commit-cue-masking.rs",
+      "sha256": "af5616c0b72bffa6b13439b02844bd33fc28b3f195fc384aa6f9d9e523954575",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 1,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/hive-workflow-original-task.json",
+      "sha256": "669f84dc5a01c577e4dd5d4d2ff73735d173cfef61ce0438a5ec5c64c77b7947",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 0,
+      "completeSourceLiterallyRead": true
+    }
+  ],
+  "nativeTestsAdded": 39,
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

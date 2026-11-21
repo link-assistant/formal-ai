@@ -1,0 +1,37 @@
+{
+  "semanticEquality": true,
+  "canonicalLinesBefore": 1513,
+  "canonicalLinesAfter": 1494,
+  "operations": 52,
+  "bindings": 104,
+  "identicalStagedWorkflow": true,
+  "identicalBindingArray": true,
+  "outputs": [
+    {
+      "path": ".github/workflows/release-staged.yml",
+      "beforeSha256": "a041a93826b166f6557d1e303460e638382eebac301431864abd8b60c6b39e5a",
+      "afterSha256": "a041a93826b166f6557d1e303460e638382eebac301431864abd8b60c6b39e5a"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
+      "beforeSha256": "a858e77148b02fd8e53e7bd440670df11b31087d2717a0e5b8089aa53be09497",
+      "afterSha256": "625cc84c5c2a9773e5e04d427590df6b4686d7ce15fb8c9cb5e80ebd61d0b9ad"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
+      "beforeSha256": "bdb6b93dd9ecc3993c376d940882f57c96e69983a2aa5e0c62d14c363841e0cf",
+      "afterSha256": "f37cb545b39492e1dd988b6cf1b25d328a47a06e1291a86eed47d37ab7ae631e"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+      "beforeSha256": "03a51b3df14cbcc51edce242a2af342f14d802535f66bfcd9839bbd2245b0960",
+      "afterSha256": "8654a6bf8d2a9d26998971d3a87db2e3110ea86c2192e23967cc89b5f4db23ce"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
+      "beforeSha256": "fbb9c83af42f9d1f662076abd6855ed755fba0d634289d77b78e83516eccda7b",
+      "afterSha256": "81754b18b2cc927ed0e2b17562436747e8500bf9bba12b055a38b5da5910cf31"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

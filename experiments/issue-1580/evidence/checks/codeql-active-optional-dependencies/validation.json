@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-11-20T11:04:21.217579+00:00",
+  "baseHead": "78ab5d46c39e4ffb8ca94a7b408830670e34339c",
+  "cause": "Cargo metadata contains the inactive serde_core optional edge of toml_datetime, while cargo check correctly builds 13 dependency libraries without serde_core. The adapter had treated every normal metadata edge as active.",
+  "negativeControl": "15 existing groups pass and both new groups fail before the change; original captured metadata reproduces Build script output absent for serde_core 1.0.229.",
+  "localValidation": "All 17 groups pass after the change, including the unchanged SARIF gate, exact original Cargo metadata/build graph replay, seven feature/alias cases and refusal when required or activated build output is missing.",
+  "sourceCoverage": "No source file, finding or diagnostic exclusion; active required and optional dependencies retain their original build-output checks.",
+  "nativeBuildPerformedLocally": false,
+  "hostedProducerVerification": "pending a new head after all current-head failures are collected",
+  "fullIssueComplete": false,
+  "independentFormalAiReasoningCredit": 0,
+  "sources": {
+    "scripts/codeql-rust-projects.py": "c465e6ed5123d9b77f8cb3e10d4dfedfe5ee0893793d0aee5a527037726cc015",
+    "rust/tests/web/security-codeql-results.test.mjs": "55d44661f020c4f7b3036dd3dac7fa1a01270051c8c312a98ee09399e04f5d36",
+    "rust/tests/fixtures/codeql/hosted-inactive-optional-dependency.json.gz": "b311543f6e69dcab01f51de514b9c3b0ede33652a718aea1ded690ea95898c27",
+    "changelog.d/1580-codeql-optional-dependencies.md": "4b9d780989742eab4cdbc8fa00c1b1e82bf8935aa9f1c9cd41ba234bc569a1a0"
+  },
+  "review": {
+    "completeCurrentAdapterRead": true,
+    "completeAddedRegressionTestsAndDiffRead": true,
+    "wholePullRequestReviewed": false,
+    "independentReasoningCredit": 0
+  },
+  "additionalLocalChecks": {
+    "release#1": "pass",
+    "check-changelog-fragment-js-twin": "pass"
+  }
+}

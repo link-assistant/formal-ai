@@ -1,0 +1,1 @@
+Parse calendar clock phrases through shared numeral spans and clock markers in five languages. Preserve requested minutes, AM/PM, explicit 24-hour times and the existing source-admission controls; exclude unrelated years and counts from clock selection. Recognize the additional Hindi spelling of Tbilisi through the existing entity registry.

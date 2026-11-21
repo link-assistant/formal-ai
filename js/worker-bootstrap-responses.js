@@ -1,4 +1,4 @@
-// Generated response data from data/seed/multilingual-responses.lino; do not edit by hand.
+// Generated response data from data/seed/multilingual-responses.lino, data/seed/multilingual-responses-administration.lino; do not edit by hand.
 // Regenerate with node scripts/generate-worker-bootstrap.mjs --write.
 self.FORMAL_AI_BOOTSTRAP_RESPONSES = Object.freeze({
   "agentic_report_target_question": {

@@ -1,0 +1,68 @@
+{
+  "observedAt": "2026-11-20T02:00:18.425519+00:00",
+  "originalWrapperSha256": "504d04c32679555e6e7c47d5aa5f7525b3c0d85860e4207f6df641789d49755c",
+  "sourceIdentities": [
+    {
+      "path": "scripts/run-with-budget-warning.sh",
+      "sha256": "8a2c203268d43b221db123f65580eb3a71df8a4c0857f0cc71db3d43a5c254b3"
+    },
+    {
+      "path": "experiments/issue-1580/probe-budget-process-lifetime.py",
+      "sha256": "631ac3c6712583d5e5e9c6e7a82537706023b558a78de04a5537e25db516fbce"
+    },
+    {
+      "path": "experiments/issue-1580/budget-process-lifetime.test.mjs",
+      "sha256": "de5a4854936db13144e237c028df7b1192808f76a08c1010ef5222c33dc81bd2"
+    },
+    {
+      "path": "rust/tests/web/release-workflow-scope-controls.test.mjs",
+      "sha256": "da87cad9d067f46f7972b9781ed0b1d7aa10ced0f15a112afa487d9dea4045fb"
+    }
+  ],
+  "originalRegression": {
+    "pass": 0,
+    "fail": 6,
+    "exitCode": 1
+  },
+  "focusedAfter": {
+    "pass": 7,
+    "fail": 0,
+    "skip": 0
+  },
+  "maintainedAfter": {
+    "pass": 10,
+    "fail": 0,
+    "skip": 0
+  },
+  "cacheControls": {
+    "pass": 12,
+    "fail": 0,
+    "skip": 0
+  },
+  "budgetRegistryControls": {
+    "pass": 3,
+    "fail": 0,
+    "skip": 0
+  },
+  "shellcheck": {
+    "argv": [
+      "shellcheck",
+      "scripts/run-with-budget-warning.sh"
+    ],
+    "exitCode": 0,
+    "file": "shellcheck.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  "harnessRetry": "Initial maintained entrypoint refused NODE_OPTIONS, including the memory cap, as designed. Retain that failure. Pass the same cap as a Node argv option and remove NODE_OPTIONS; all ten tests then pass. No production bypass was added.",
+  "fixtureBounds": {
+    "workerMaximumSeconds": 4,
+    "observationLoopMaximumSeconds": 10,
+    "addressSpaceMiB": 192,
+    "stackMiB": 8,
+    "linuxChildSubreaper": true
+  },
+  "rustBuildExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

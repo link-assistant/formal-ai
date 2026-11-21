@@ -48,9 +48,9 @@ rule
     language python
     scope loop_body
     severity medium
-    detect "+= \""
+    detect '+= "'
     detect "+= '"
-    detect "+= f\""
+    detect '+= f"'
     title "string built by += inside a loop is quadratic"
     advice "collect the pieces in a list and join them once after the loop, so the total work stays linear instead of copying the string on every iteration"
     source "https://docs.python.org/3/faq/programming.html#what-is-the-most-efficient-way-to-concatenate-many-strings-together"

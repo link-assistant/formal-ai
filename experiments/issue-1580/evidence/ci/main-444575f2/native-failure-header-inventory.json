@@ -1,0 +1,185 @@
+{
+  "run": 44163378148,
+  "head": "444575f2ac28f609c94497865f125f99415ff6d5",
+  "rawSha256": "2abed0a78ba46b0373070224070dc6522eebd61be3fc6ea934f0443afe893d3f",
+  "failureHeaders": [
+    {
+      "name": "specification::formalization::same_prompt_and_config_produce_same_interpretation_choice",
+      "job": "Test (ubuntu-24.04 / specification) shard 2/4",
+      "line": 30488
+    },
+    {
+      "name": "formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct",
+      "job": "Test (ubuntu-24.04 / full) shard 4/8",
+      "line": 47853
+    },
+    {
+      "name": "issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder",
+      "job": "Test (ubuntu-24.04 / full) shard 4/8",
+      "line": 47880
+    },
+    {
+      "name": "issue_1173_fallback_executes_search::unknown_reasoning_fallback_executes_instead_of_describing",
+      "job": "Test (ubuntu-24.04 / full) shard 5/8",
+      "line": 51518
+    },
+    {
+      "name": "issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages",
+      "job": "Test (ubuntu-24.04 / full) shard 5/8",
+      "line": 51548
+    },
+    {
+      "name": "pull_request_1188_fix_gaps::g102_a_file_described_rather_than_given_is_never_written",
+      "job": "Test (ubuntu-24.04 / full) shard 5/8",
+      "line": 51578
+    },
+    {
+      "name": "seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap",
+      "job": "Test (ubuntu-24.04 / full) shard 5/8",
+      "line": 51604
+    },
+    {
+      "name": "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "line": 54958
+    },
+    {
+      "name": "specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "line": 54990
+    },
+    {
+      "name": "specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "line": 55018
+    },
+    {
+      "name": "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "line": 55046
+    },
+    {
+      "name": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage",
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "line": 55074
+    },
+    {
+      "name": "specification::pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces",
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "line": 55106
+    },
+    {
+      "name": "specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation",
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "line": 55136
+    },
+    {
+      "name": "specification::reasoning_loop::step_6_candidates_are_validated_against_constraints",
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "line": 63132
+    },
+    {
+      "name": "specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan",
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "line": 63158
+    },
+    {
+      "name": "specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage",
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "line": 63188
+    },
+    {
+      "name": "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order",
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "line": 63219
+    },
+    {
+      "name": "specification::synthesis::decomposed_sub_results_are_composed_for_algebra",
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "line": 63253
+    },
+    {
+      "name": "specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value",
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "line": 63283
+    },
+    {
+      "name": "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "line": 63313
+    },
+    {
+      "name": "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "line": 63343
+    },
+    {
+      "name": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin",
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "line": 66816
+    },
+    {
+      "name": "solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface",
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "line": 66842
+    },
+    {
+      "name": "web_requests::latest_news_routes_to_wikinews_search_across_supported_languages",
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "line": 66868
+    },
+    {
+      "name": "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family",
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "line": 66970
+    },
+    {
+      "name": "with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down",
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "line": 67000
+    },
+    {
+      "name": "with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes",
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "line": 67026
+    },
+    {
+      "name": "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt",
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "line": 67093
+    },
+    {
+      "name": "agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe",
+      "job": "Test (ubuntu-24.04 / full)",
+      "line": 77834
+    }
+  ],
+  "timeouts": [
+    {
+      "line": 27308,
+      "job": "Test (ubuntu-24.04 / full) shard 7/8",
+      "detail": "2026-11-17T20:25:41.0864958Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 35677,
+      "job": "Test (ubuntu-24.04 / full) shard 3/8",
+      "detail": "2026-11-17T20:27:41.5288006Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 58642,
+      "job": "Test (ubuntu-24.04 / full) shard 8/8",
+      "detail": "2026-11-17T20:27:51.8127430Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 70674,
+      "job": "Test (ubuntu-24.04 / full) shard 2/8",
+      "detail": "2026-11-17T20:25:59.9093311Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 73919,
+      "job": "Test (ubuntu-24.04 / specification) shard 4/4",
+      "detail": "2026-11-17T20:26:19.5975348Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    }
+  ],
+  "notACompleteRuntimeDiagnosis": true
+}

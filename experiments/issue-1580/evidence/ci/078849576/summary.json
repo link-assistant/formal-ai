@@ -1,0 +1,13 @@
+{
+  "headSha": "078849576b539e0e6adf2843306af16981d5c09a",
+  "observedAt": "2026-11-17T13:03:18.763004+00:00",
+  "runs": 24,
+  "completed": 24,
+  "success": 24,
+  "failed": 0,
+  "active": 0,
+  "source": "gh run list --repo link-assistant/formal-ai --branch issue-1580-8d61a32a61e1 --commit 078849576b539e0e6adf2843306af16981d5c09a --limit 100 --json databaseId,workflowName,status,conclusion,createdAt,headSha",
+  "sourceSha256": "c06b7737af4d04f8b4330ed750bf188dd2a2a55ce0ad80b6c8d6c533e5a77f3a",
+  "compressedSha256": "781e993aafc1387c59742c99eaf77990dbf61a107efae43bc9b90c5389b6e839",
+  "limits": "Scoped PR results do not execute main-only native runtime, application builds, benchmark capability, or live qualification."
+}

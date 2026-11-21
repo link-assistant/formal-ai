@@ -1,0 +1,214 @@
+{
+  "completeWorkflowCollection": true,
+  "head": "1388db5502f71d0f2bcf522da01ef8fdb8a6ef89",
+  "workflowCount": 23,
+  "success": 22,
+  "failure": 1,
+  "verifiedPayloadHashes": 96,
+  "nativePassed": 180,
+  "nativeFailed": 5,
+  "nativeTotals": [
+    {
+      "line": 1634,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "line": 1649,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "line": 1657,
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "line": 1685,
+      "passed": 22,
+      "failed": 0
+    },
+    {
+      "line": 1699,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "line": 1706,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "line": 1716,
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "line": 1851,
+      "passed": 80,
+      "failed": 5
+    },
+    {
+      "line": 1876,
+      "passed": 18,
+      "failed": 0
+    },
+    {
+      "line": 1894,
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "line": 1909,
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "line": 1956,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "line": 1965,
+      "passed": 1,
+      "failed": 0
+    }
+  ],
+  "behaviorPassed": 166,
+  "behaviorFailed": 5,
+  "libraryAndLanguagePassed": 14,
+  "httpPassed": 4,
+  "cancelled": false,
+  "jobTimeoutMinutes": 20,
+  "failureInventory": [
+    {
+      "test": "reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient",
+      "lines": [
+        1811,
+        1812
+      ],
+      "cause": "Specialized fact/web handlers omit the universal external lookup boundary. Production request markers repair the original unchanged assertion."
+    },
+    {
+      "test": "web_requests::information_search_variants_route_to_web_search_handler",
+      "lines": [
+        1817,
+        1820
+      ],
+      "cause": "Exact routing expectations retain an obsolete off-by-default paragraph. Explicit offline solver configuration and the current exact canonical paragraph retain all other query, language, evidence and intent assertions. Changed tests do not earn unchanged-original-source replay credit."
+    },
+    {
+      "test": "web_requests::latest_news_routes_to_wikinews_search_across_supported_languages",
+      "lines": [
+        1824,
+        1827
+      ],
+      "cause": "Exact routing expectations retain an obsolete off-by-default paragraph. Explicit offline solver configuration and the current exact canonical paragraph retain all other query, language, evidence and intent assertions. Changed tests do not earn unchanged-original-source replay credit."
+    },
+    {
+      "test": "web_requests::source_search_prompts_still_cover_supported_languages",
+      "lines": [
+        1831,
+        1834
+      ],
+      "cause": "Exact routing expectations retain an obsolete off-by-default paragraph. Explicit offline solver configuration and the current exact canonical paragraph retain all other query, language, evidence and intent assertions. Changed tests do not earn unchanged-original-source replay credit."
+    },
+    {
+      "test": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker",
+      "lines": [
+        1838,
+        1841
+      ],
+      "cause": "Exact routing expectations retain an obsolete off-by-default paragraph. Explicit offline solver configuration and the current exact canonical paragraph retain all other query, language, evidence and intent assertions. Changed tests do not earn unchanged-original-source replay credit."
+    }
+  ],
+  "pipelineStatus": {
+    "job": 135768721876,
+    "lines": [
+      211,
+      214
+    ],
+    "result": "Correctly fails the native failure; no dependency was cancelled."
+  },
+  "javascript": [
+    {
+      "job": 135757189471,
+      "summary": {
+        "tests": {
+          "count": 1393,
+          "line": 3152
+        },
+        "pass": {
+          "count": 1383,
+          "line": 3154
+        },
+        "fail": {
+          "count": 0,
+          "line": 3155
+        },
+        "cancelled": {
+          "count": 0,
+          "line": 3156
+        },
+        "skipped": {
+          "count": 10,
+          "line": 3157
+        }
+      }
+    },
+    {
+      "job": 135757189738,
+      "summary": {
+        "tests": {
+          "count": 1516,
+          "line": 4825
+        },
+        "pass": {
+          "count": 1509,
+          "line": 4827
+        },
+        "fail": {
+          "count": 0,
+          "line": 4828
+        },
+        "cancelled": {
+          "count": 0,
+          "line": 4829
+        },
+        "skipped": {
+          "count": 7,
+          "line": 4830
+        }
+      }
+    }
+  ],
+  "unchangedRegistryCurrency": {
+    "job": 135757189471,
+    "line": 1330,
+    "passed": true
+  },
+  "literalReview": {
+    "nativeJob": 135757374368,
+    "ranges": [
+      [
+        1620,
+        2191
+      ]
+    ],
+    "statusJob": 135768721876,
+    "statusRanges": [
+      [
+        1,
+        215
+      ]
+    ],
+    "setupAndCompilerLinesRemainUnread": [
+      1,
+      1619
+    ],
+    "wholeJavascriptLogsRead": false
+  },
+  "limits": "Original failure collection, five actionable assertion failures and relevant finished target/status/HTTP output are reviewed. Setup/compiler output and whole JavaScript logs remain retained but not wholly literally read. A prior commentary double-counted the fourteen library/language cases; all stored totals here count each test-result summary once. Pending new native execution is not credited.",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

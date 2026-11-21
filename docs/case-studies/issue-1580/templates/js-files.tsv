@@ -1,0 +1,562 @@
+path	git_blob	bytes	role	local_same_name	comparison
+.changeset/README.md	9f5c74999fe7560707523202d859b0c173b429f4	497	build-or-policy-configuration	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+.changeset/ci-audit-coverage.md	e258f2c7d33cf05c7e0d234642d319eb6b339af4	389	build-or-policy-configuration		no-same-name-file
+.changeset/ci-infrastructure-resilience.md	eaa31eb6cddda863d3b305968c7597816db22d35	515	build-or-policy-configuration		no-same-name-file
+.changeset/config.json	6679c8be0914a505a268feeaf9d3e1d2a8f54743	295	build-or-policy-configuration		no-same-name-file
+.changeset/fix-repository-audits-and-test-coverage.md	e75c9073230796570e241e0c9a06a62094f02cf3	397	build-or-policy-configuration		no-same-name-file
+.changeset/javascript-first-rust-integration.md	49b87c27007797da62f8f43331566e7a4853dfa9	413	build-or-policy-configuration		no-same-name-file
+.changeset/quiet-safe-release-gates.md	a0e4227e3c4dcb31f32593447f7d9a08a796ab28	229	build-or-policy-configuration		no-same-name-file
+.changeset/release-and-ci-integrity.md	1bc9449a29f928cac761ecae6c9b261bc5ecf4e2	310	build-or-policy-configuration		no-same-name-file
+.changeset/release-formatter-exact-moves.md	63b3ac4b0348717f7e82c4b13bb97b0e76dcbc52	299	build-or-policy-configuration		no-same-name-file
+.changeset/reliable-template-ci-helpers.md	c9bfbcf7bd09bc39833246b76426dff0e8a7e37f	252	build-or-policy-configuration		no-same-name-file
+.changeset/reliable-template-pipelines.md	d07da0271e6df365daddc61b5a75e56289f7e409	360	build-or-policy-configuration		no-same-name-file
+.changeset/repair-release-security-evidence.md	66631032fb3ea3f0c4b1e00e87c07695c111df3b	279	build-or-policy-configuration		no-same-name-file
+.changeset/repository-pipeline-repairs.md	59a1a076ff2d5a5e53985046341939d2b14d3460	486	build-or-policy-configuration		no-same-name-file
+.changeset/tidy-checks-hooks-links.md	8c53a240fe3d722f7f787e2559961608e18087ec	283	build-or-policy-configuration		no-same-name-file
+.changeset/transient-links-bun-pin.md	abd6991ee5a16f70065bf0d98bd66d46fa003365	292	build-or-policy-configuration		no-same-name-file
+.gitattributes	9aea61732aff7c996e436702a65ec9c04654a57d	99	application-source-or-asset	.gitattributes	different-implementation
+.github/actions/artifact-transport/README.md	e072748c25e1b82414210986533196bc24e4008d	3852	composite-action	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+.github/actions/artifact-transport/action.yml	d09c772f19600f0f22b8d2aa373972636a48a91d	1736	composite-action	.github/actions/author-with-formal-ai/action.yml,.github/actions/automation-token/action.yml,.github/actions/cache-cargo-registry/action.yml,.github/actions/dispatch-checks/action.yml,.github/actions/download-formal-ai-binary/action.yml,.github/actions/formal-ai-binary/action.yml	different-implementation
+.github/actions/artifact-transport/extract.mjs	0005a511b93afb1f1a9c7c67114191f8d49d0a89	4028	composite-action		no-same-name-file
+.github/actions/artifact-transport/index.mjs	5b772f4621ecdf824c7bc771db2ffa97e3b229e1	2299	composite-action	packages/minimatch-compat/index.mjs	different-implementation
+.github/actions/artifact-transport/package-lock.json	74a22f8ee85c6be58c03ffcaa38cd992022a3e5e	111091	composite-action	desktop/package-lock.json,packages/minimatch-compat/package-lock.json,packages/source-cst-runtime/package-lock.json,rust/tests/e2e/package-lock.json,scripts/documentation-policy-dependencies/package-lock.json,vscode/package-lock.json	different-implementation
+.github/actions/artifact-transport/package.json	69e95bc0e8d1d87b795688eeb9c7d406cba60d33	444	composite-action	desktop/package.json,package.json,packages/container-runtime-tools/package.json,packages/formal-ai-engine/package.json,packages/minimatch-compat/package.json,packages/source-cst-runtime/package.json	different-implementation
+.github/actions/artifact-transport/run/action.yml	d55d40f052ac9c19641488937d693955c57cb5f8	609	composite-action	.github/actions/author-with-formal-ai/action.yml,.github/actions/automation-token/action.yml,.github/actions/cache-cargo-registry/action.yml,.github/actions/dispatch-checks/action.yml,.github/actions/download-formal-ai-binary/action.yml,.github/actions/formal-ai-binary/action.yml	different-implementation
+.github/actions/publish-dockerhub/action.yml	ae70008cca3c60bccead2847423971cba3ab34a1	1959	composite-action	.github/actions/author-with-formal-ai/action.yml,.github/actions/automation-token/action.yml,.github/actions/cache-cargo-registry/action.yml,.github/actions/dispatch-checks/action.yml,.github/actions/download-formal-ai-binary/action.yml,.github/actions/formal-ai-binary/action.yml	different-implementation
+.github/actions/setup-buildx-resilient/action.yml	375a1f7e951b7a267e447754cf9b7d87e03c3469	5246	composite-action	.github/actions/author-with-formal-ai/action.yml,.github/actions/automation-token/action.yml,.github/actions/cache-cargo-registry/action.yml,.github/actions/dispatch-checks/action.yml,.github/actions/download-formal-ai-binary/action.yml,.github/actions/formal-ai-binary/action.yml	different-implementation
+.github/codeql/codeql-config.yml	f306e386d6cd1b61be86d88db1202d0b3798286c	70	build-or-policy-configuration	.github/codeql/codeql-config.yml	different-implementation
+.github/workflows/example-app.yml	56d7a30d00586827a92d936aa2d2329ff3c70014	20113	workflow		no-same-name-file
+.github/workflows/javascript-first-example.yml	ea630c77726b18d228181bf7e4dce3e61040f99e	5155	workflow		no-same-name-file
+.github/workflows/javascript-first-gate.yml	b8b8ed2943a6b2d231d16447cbf7ffb17c08a05d	3085	workflow		no-same-name-file
+.github/workflows/links.yml	2032e7c90f971dfaabff0913d02980fad9779b59	9498	workflow	.github/workflows/links.yml	different-implementation
+.github/workflows/release.yml	2baad6e6bafea6850c7efaf45c41c39084aabef6	43301	workflow	.github/workflows/release.yml	different-implementation
+.github/workflows/rerun-unacquired.yml	b2510949059acf3444f52968e11816d766b36b35	1764	workflow		no-same-name-file
+.github/workflows/security.yml	b9e207e1e297021af75b4f282e20c6a4d1ed5af3	6590	workflow	.github/workflows/security.yml	different-implementation
+.github/workflows/workflows.yml	be2ad907bbf0eee1623c065e64d330704eeac34b	11103	workflow	.github/workflows/workflows.yml	different-implementation
+.github/zizmor.yml	a1c9c8aea4a4907c92cdb4f2cc8009c66c8d2f50	1238	build-or-policy-configuration	.github/zizmor.yml	different-implementation
+.gitignore	d6a4d9047490a69e097860182c47a9488aae57e5	2195	application-source-or-asset	.gitignore,js/.gitignore,packages/formal-ai-engine/.gitignore,rust/tests/e2e/.gitignore,vscode/.gitignore	different-implementation
+.husky/pre-commit	6a28abfe71fd879017849969d7399b63eeb825f2	56	script-or-test	.githooks/pre-commit	different-implementation
+.jscpd.json	1c8e8c675bee649d7f0296a4d66fd15ce4620348	481	application-source-or-asset		no-same-name-file
+.lycheeignore	6285ad244b6c8469a0f988d71d3cb2545d35b552	721	application-source-or-asset	.lycheeignore	different-implementation
+.prettierignore	7fff56c1e5f58049b17f630aaca8dc09e5e985de	192	build-or-policy-configuration		no-same-name-file
+.prettierrc	3171de5af7f79900ca857d7462c20b108430a958	173	build-or-policy-configuration		no-same-name-file
+.secretlintrc.json	7a1a5df3c28e6739fd639bc2a2eac39f62f9a122	92	application-source-or-asset	.secretlintrc.json	identical:.secretlintrc.json
+AGENTS.md	c5b848254ff07366f3872caf260821a2fffc5315	1079	documentation-or-license	AGENTS.md	different-implementation
+CHANGELOG.md	3a2951a62457d5b3c516e976d2c05daf72a0f72f	22252	documentation-or-license	CHANGELOG.md	different-implementation
+LICENSE	fdddb29aa445bf3d6a5d843d6dd77e10a9f99657	1211	documentation-or-license	LICENSE	identical:LICENSE
+README.md	0a2c0c04d8d5613b8280a84544fc1f25cbd32f4c	19108	documentation-or-license	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+bin/example-package-name.js	9edc8df84a060cebc5b9a33d805a058436e446c4	1940	application-source-or-asset		no-same-name-file
+bunfig.toml	4f929f20712c82fb633ad930ec483f70216d3d81	83	application-source-or-asset		no-same-name-file
+deno.json	115c1b9b64e43dc6ed82ba110e9b64b91f9f5aae	181	application-source-or-asset		no-same-name-file
+deno.lock	fb61ec02503de398022828e92a25bf4facd3c78f	45783	build-or-policy-configuration		no-same-name-file
+docs/BEST-PRACTICES.md	53c78e52b8aad1fe9d3834c74f1946b92ce3f292	13975	documentation-or-license		no-same-name-file
+docs/CI-TIMEOUT-BUDGETS.md	b2d27b93ca983368f8c13a5506f3ac7b7b72dde6	6096	documentation-or-license		no-same-name-file
+docs/CONTRIBUTING.md	360a66d7e8c838e730ba0f05c5b5bd7667ea0857	14439	documentation-or-license	CONTRIBUTING.md	different-implementation
+docs/ISSUE-199-RELEASE-ANALYSIS.md	f89b7b90b0a4ea9e0b76ffb3e52729bd11af9bbe	7262	documentation-or-license		no-same-name-file
+docs/ISSUE-203-ANALYSIS.md	076a6faa772f5fba1ef3ad9237b6eff39ab0caf9	13634	documentation-or-license		no-same-name-file
+docs/ISSUE-216-ANALYSIS.md	3b6a4811808cba31335a10bcafc596b8e98a7d53	18204	documentation-or-license		no-same-name-file
+docs/ISSUE-228-ANALYSIS.md	e25e5c0449209a1247a79f1bc8a6ef39c3fd91b7	23921	documentation-or-license		no-same-name-file
+docs/ISSUE-262-ANALYSIS.md	4a0cbe65d936acd99b5d542be243944ea8b13e03	17032	documentation-or-license		no-same-name-file
+docs/case-studies/issue-13/README.md	4240ba09297c62b04e4723f5205a515fe6c76a76	7506	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-13/hive-mind-issue-960.json	6ae0c75dc93183e84012c4d621f7ff45a1e85ab4	2202	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-13/hive-mind-pr-961-diff.txt	ecf74200e52c77859a53df980bfa28a95a695a2c	27983	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-13/hive-mind-pr-961.json	3415e7d7db73b9bf577ba00c558eb856b8bd512c	6745	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-21/README.md	1a26fcba8943ec81eff9e8819a43f266328313fb	14434	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-21/ci-logs/run-20803315337.txt	a62468e1e45ca89d6c21424e0d1e871078b7b5ec	133670	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-21/ci-logs/run-20885464993.txt	20541feb33031aa60099af8d8213470b4384bc0e	155417	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-21/issue-111-data.txt	42a4b7b4687914dea32905cab0835ac43ba44a36	700	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-21/issue-113-data.txt	157d5bd29fcd9f80e4b97c98308f90fbf9c0b4a3	708	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-21/pr-112-data.json	2bde54d68433cb1db973e8fc7a3ff96b28cfeba4	4967	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-21/pr-112-diff.patch	9a61051d2643cf8d43205bf902576c136579b658	140742	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-21/pr-114-data.json	bb5f52db99e307cce9c67de5f45f3f7c0eafeca8	7852	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-21/pr-114-diff.patch	33f28bdfa6ba98300f0a4ffb3335c6a36862b298	31790	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-212/README.md	033d9e0c77d872300a653b09175d365fa631ede2	25285	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-212/validation/baseline-regressions.log.gz	6516e91c63f79a10c3df6f2445a056edcefec8b1	12383	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-212/validation/bun-tests.log.gz	c927f3fb4e11fc3f6a5d1260d4905a34b799ab08	15492	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-212/validation/checks-and-release-37557125805.log.gz	f92bb8c0a2adf13dfd417282dfd38e6322ea4e16	303694	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-212/validation/commit-message-crlf-after.log.gz	e887ff04033d44092d3b2e86fb466d04d88a1d62	333	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-212/validation/commit-message-crlf-before.log.gz	ee659bf3bf97f71e0a9c77f542303ee0eda623d3	654	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-212/validation/deno-tests.log.gz	0e4bf25960fd36f590276c81718ba7240094f1fc	13870	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-212/validation/node-tests.log.gz	458d896a20efe4e91edabc5ac82ec65350aab423	17835	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-212/validation/security-37555257997.log.gz	1e3d9b519b18b716e4009454b5af1855ae0a4966	66777	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/README.md	3a8e974437af04ba3cbb23fe804be4ebb3fd4ec5	9202	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-23/data/hive-mind-check-version.mjs	d177e0f8996fb2ea13878762b32a3ddc118d7fc3	3689	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/hive-mind-ci.yml	b464861d9f38abbd9893395100b807e99a0aa873	3	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/hive-mind-eslint.config.mjs	ac4d804b59be76659fb96c468c7bdd12a10a0d7e	2312	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/hive-mind-release.yml	f7730771b91d644f9861e821921ccaf57dfb00ec	85858	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/issue-1126-details.txt	686a3eae848a63a25af64799fa490f4a46411b83	485	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/issue-1141-comments.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/issue-1141-details.txt	f66b85d7dd36bd9b880b1326ffebee17bb45b969	1151	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/pr-1127-conversation-comments.json	bae16e06b841f0a19ddb6e96d689812f44c89bd3	17911	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/pr-1127-diff.txt	1c10df9d656e357ae0067c3225e245348b4c20b8	11091	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/pr-1127-review-comments.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/pr-1142-conversation-comments.json	340a0373059f1c82ab6e29bfa1287a3f3696de53	8054	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/pr-1142-diff.txt	6ec5321e04e194106aa9e5c57f722803f4907115	27946	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-23/data/pr-1142-review-comments.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-25/DETAILED-COMPARISON.md	51fcbe8ba6d381928e23542df83d7192d4be982b	17912	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-25/README.md	10e19af530e13ea946942010df0ba5bd273d188d	10084	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-25/data/hive-mind-file-tree.txt	d0fb16c96e0aa58e71f53b64c5012a9919dff6c4	84928	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-25/data/issue-1274-case-study.md	6102ea583918590ca11e9cd725c0288679757d79	9175	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-25/data/issue-1278-case-study.md	f9bc708565466c654d41b4824686c1f3fde3f9f7	13738	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-25/data/template-file-tree.txt	4af61d7e9eb7a96d4045badf2ab896bd30aec9b8	3372	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-29/README.md	df6f5b5a6e695f2d3a34496db4fbe18fb682e9e7	6303	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-299/README.md	998c127fa0534ab24b4f4adf21cd440e88898e26	11667	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-3/README.md	cb499c982431d42276b0d220d6e2c0be8aa9db6c	10928	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-3/created-issues.md	8d274a177a7d701f4eca924a0e0e7e9ab515e7f9	1274	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-3/issue-data.json	9a79ea323d9678ecdc9d4d710b8ba46b61a5e55f	4625	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-3/original-format-release-notes.mjs	31be79849c24e1723db3e5df079c5d82f4af0663	7818	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-3/reference-pr-59-diff.txt	78ad4aced552e07bfc57936e231e42e886431464	23744	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-3/reference-pr-59.json	4e8c49d707edce4fa721e329197276f6c5284998	7914	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-3/release-v0.1.0.json	421a03f99c59fd3f90a0db29710baabec2efa046	1008	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-3/repositories-with-same-script.json	a43feeb47fe3a106f0a3719a8eb247a87ec4f8b0	771	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-3/research-notes.md	9b121414628c2cd9e2005cddc4f1835e948216e0	1394	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-31/README.md	d1af67f1749fdf2563580f722d1a0ba1af133c68	4832	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-31/web-capture-pr49-commits.json	98837b09fb090fda8dafa41d5e21deac2922b060	2633	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-33/README.md	9ea7d4313d8de96b21c0e5eee68f3e4730140866	7513	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-33/ci-logs/release-24395209194.txt	364d1424f87d4b83307b9929a7911fcb104839fb	786370	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-33/ci-logs/upstream-nodejs-62430.json	1202138f19c247d9c53be06f7b539afbd7ffb89a	2053	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-33/ci-logs/upstream-npm-cli-9151.json	b5a72cccbd560ba720394e4b476608dc53915110	6870	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-33/ci-logs/upstream-runner-images-13883.json	fb9133223f9fb47b3933bba70ce9dce1207e4e43	4055	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-36/README.md	eeef8d57301beb189c3c1d33c48236897c79584e	5048	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-36/ci-logs/release-24399965550.txt	b27caae8745d5233aff3960abfde293370d59622	845925	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-38/CASE-STUDY.md	44c49b962bcbcfb317e3f7269144a4e9adbad90e	3067	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/CICD-COMPARISON.md	dcc0662bbfa535600b0508b4abe5f7906f6fab09	10773	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/README.md	141a57808f16d380b35f62fb2088a63828a09d72	13277	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-40/data/ci-run-25212337438.json	6ba06512776d76ac7fdd42bbfd386ea3d7d6bf11	411	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/ci-runs-branch.json	53d01b68b5c31786f0db4606d8982dfac7450356	197	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/downstream-web-capture-issue-98.json	9eec8aaaafad9306078d1402c38114a080926dbf	2335	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/downstream-web-capture-pr-99.diff	33ac3c7c6100fbb9355ccd35a5b2a0b3676c675b	35718	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/downstream-web-capture-pr-99.json	5466c04cd452251ba2fa9142c7f5f8b65dd2a432	6895	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/issue-40.json	f56937f019b5bde2f2ee9cf1761559b343c0edc0	5646	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/js-cicd-files.txt	74669dac64e1e2e9fa005ef10cf1c1a6913a5a83	767	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/js-template-file-tree.txt	4da2f847e90677a8a38e2dbb8a58895ff0463f1c	4718	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/pr-43.json	dfac2dcad34b62d2e4edb9b48c37ad60ce3b1f5d	7356	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/related-js-merged-prs.json	19d1be1136b48816a56410966ee5e71bc29597ae	228	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/rust-cicd-files.txt	4e8ca4cf7dd7e49856f983a0c8abf6e2bbf1430a	486	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/rust-template-file-tree.txt	26f06a79bf244229cf8ef15f12300e9fc4af9300	3283	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/rust-template-head.txt	13690f5598b5637035d11317b3c32d72c3ce57ac	46	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/shields-broken-prefixed-badge.svg	6c8701aa112c554eee24d9fdaf8f225032a4f541	1123	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/shields-broken-prefixed-prerelease-badge.svg	6c8701aa112c554eee24d9fdaf8f225032a4f541	1123	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/shields-working-normalized-badge.svg	0f2c111a6329420dc96ec24f4fe3cda0af62e8a6	1083	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/data/shields-working-prerelease-badge.svg	fea633df9d9d5af5248916497de2fc981479a24d	1114	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-40/rust-template/create-github-release.rs	fb45ae8ad9baa3d49a1e0007f959e0ffb5b0144a	7005	historical-evidence-or-experiment	scripts/create-github-release.rs	different-implementation
+docs/case-studies/issue-40/rust-template/release.yml	e8b6fb77030f59ecbb748c3e98c2d1cdeba0e079	16372	historical-evidence-or-experiment	.github/workflows/release.yml	different-implementation
+docs/case-studies/issue-41/README.md	e7a11e92f4d85d7e038c8a70f18a11cd19b77ecd	11477	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-41/data/hive-mind-check-file-line-limits.sh	65630d5c03e8fc939158a1ea0ae7a0bd6f2c39b7	3061	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/hive-mind-file-tree.txt	a34017ffb02a64aa83ac0bfb79f09bf516883d19	149581	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/hive-mind-issue-1593-case-study.md	e06ec2958ee042bf0880209664c18509dc946ad9	5126	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/hive-mind-issue-1593-comments.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/hive-mind-issue-1593.json	974f28e357c4a075c4d4cc1bb0d385507f16f332	5063	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/hive-mind-issue-1730-case-study.md	bb5c8cee718a3f5589831531974d36b7dfac95a1	11040	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/hive-mind-issue-1730-comments.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/hive-mind-issue-1730.json	1f233f4ddcfcb852074e51885bdecfa349fcbcb9	5509	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/js-template-check-file-line-limits-before.sh	ae66f276e915cebabf8fc40fb2f21034acb24540	1634	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/js-template-eslint.config.js	ee9438eaf039289497c80c99dd512e54601be5e8	2850	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/js-template-file-tree.txt	0d097a3f8e1f718d11176cbe8fe31444516def9a	4857	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/js-template-issue-41-comments.json	3dad1f8506041d5a34ef8fee2f9791f4b3f3ff75	3398	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/js-template-issue-41.json	b53a5ae005d9b1ef351fde3fbf8ca2e6388265a7	5693	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/js-template-release.yml	7090eb5402bbe81fdda60c8a16e991cf33b22842	19369	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/js-template-warn-threshold-search-before.json	fe51488c7066f6687ef680d6bfaa4f7768ef205c	3	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/rust-template-check-file-size.rs	f5eb668f5bea2a043c810163f6e506951fd1a2ea	2764	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/rust-template-created-issue-url.txt	48194880154ae0f69a51822eee76d87e4f95bf3f	90	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/rust-template-file-tree.txt	b450b235bffc24455f31e6f0803fa339699bd019	3730	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/rust-template-issue-40.json	252b8b76588b657cf639df12fca6a479ff248bd5	2561	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/rust-template-issues.json	6da0d1785e2aaef43da001247d894f7989e5a846	10031	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/rust-template-max-lines-search.json	fe51488c7066f6687ef680d6bfaa4f7768ef205c	3	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-41/data/rust-template-release.yml	e8b6fb77030f59ecbb748c3e98c2d1cdeba0e079	16372	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/README.md	63c1cdeabfb47052b10f3003115185e53962d76f	6516	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-42/data/ci-runs-branch.json	c4762b0ceeaf9f94548d6f0b0091907b8c61774c	197	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/issue-42-comments.json	68b41b48f493453376926ded7f77289a6f886b5a	3398	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/issue-42.json	2141397162ffcddbbb1523094cc39d15ea96d034	3513	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/js-template-file-tree.txt	b1155ad314a059cf5d88b4a2dfbe47eda3d0a833	4793	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/js-template-pre-fix-head.txt	12d1272ba47453fba0e3753446e5995c16e8fc29	41	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/link-foundation-my-package-search.txt	b65cceb6b0cb36a42fd83c8d4df48bd785f921d9	4692	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/link-foundation-package-name-search.txt	d06ee4f3368eb20ef0e3e20d8eaf7c51b47525af	7460	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/pr-45-conversation-comments.json	fe51488c7066f6687ef680d6bfaa4f7768ef205c	3	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/pr-45-review-comments.json	fe51488c7066f6687ef680d6bfaa4f7768ef205c	3	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/pr-45-reviews.json	fe51488c7066f6687ef680d6bfaa4f7768ef205c	3	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/pr-45.json	d572a0d618c6e1dc0b55785879f47a4976e45d83	8012	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/related-merged-prs-check-release-needed.json	d40584a362b598dfeeb83e256184502f8645a430	638	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/related-merged-prs-publish-to-npm.json	fa8fc68a81e4beb9b9f022f5a0177333804ba6a3	1252	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/rust-template-ci-cd-findings.txt	c9006adf7c8151f39b1144cdf812d78b0bba3706	3070	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/rust-template-file-tree.txt	4665a655c09cbc003d2d548813ccef33b55baec4	3222	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-42/data/rust-template-head.txt	e0ae5c96230d55e2a0ece9aac2524f5dbb547148	41	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/README.md	5472a380d84ec531d7d65ad1636943fc98c47e9e	11579	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-56/artifacts/universal-app-mobile.png	6b499c74e52dea4106193d97ddc7d4d9bfae6422	80586	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/artifacts/universal-app-web.png	b556f7d42a15bd06f82aaef6dfd1870de4f0cd6e	179773	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/actions-checkout-release.json	3c7f153d82affbb7e1ed3e8b75161d35ee4f12cf	122	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/actions-configure-pages-release.json	dd2331409299beef659c995a96db3b82faa6f667	58	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/actions-deploy-pages-release.json	8a030d8fc12159783ba91340b2bd3711cf2f95a1	58	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/actions-setup-node-release.json	7a12823d671c0b3a2ee8b749cfe678734d9e8724	124	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/actions-upload-artifact-release.json	3998d30979d81b2c61d57247e3899d754445d76e	129	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/actions-upload-pages-artifact-release.json	df8443358aa99a7c71471a3d6df3e93be68bdcf7	58	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/bun-test-final.log	7f61e2762301df34f507ee40defb04509e16bf01	5369	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/changeset-status-after-stage.log	6125608d9786f91aeac648dd9746688792050569	260	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/check-file-line-limits-final-2.log	3b33ea202f2662158c856c13ced1bc062408a258	1830	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/check-mjs-syntax-final-2.log	d4296eff7a16eef849cf690cf10dfa9d60591493	962	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/deep-sdk-capacitor.config.ts	39a98561bff5629cc2206ab202bc00ab70d5d45d	321	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/deep-sdk-electron-package.json	2e713ea0f6c7934d74db79a192d0834d4525e122	2911	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/deep-sdk-file-tree.txt	57d07f56a204b060e44faa44e5c6407a1a1827d1	7845	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/deep-sdk-gh-pages.yml	1df1ce27dbe53d4c58fe548f46cc342d1dde2761	2930	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/deep-sdk-package.json	7c02a08faec43bfcf25d9a09d0904fc00a339480	3778	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/deep-sdk-repo.json	0c711a4bfaa1f00e5c35174c504ef456d31b77c7	344	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/deno-test-final.log	86703126adb14c07cee07a801714cbd27a2e2668	12781	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/example-desktop-package-final-2.log	7cedf02d2e323c1ff1f3c18e80ffb303703352cd	1292	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/example-mobile-sync-final-2.log	fb1662b60a56ec7d3c22126fb1ed7ed229c8305b	625	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/example-web-build-final-2.log	14b2fda2a2d23c83da71fb40fecc7d38cc6fa39e	466	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/issue-56-comments.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/issue-56.json	3e08c4e2cadba2c5f41cd3f5e911a23097756d77	5024	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/link-foundation-code-search.json	fe51488c7066f6687ef680d6bfaa4f7768ef205c	3	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/npm-capacitor-cli.json	d1a583dce4d4e36a420cc7882c53e652756704fd	268	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/npm-capacitor-core.json	d1a583dce4d4e36a420cc7882c53e652756704fd	268	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/npm-check-final-4.log	00404e50341b76d7c6642cb1efa4def388b0085f	524	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/npm-electron-forge-cli.json	ec4183d044e0ea534bbf7b747420e23ccf15ed53	279	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/npm-install-root.log	4e70da35565c29705d1d025e6b750905a531542a	269	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/npm-install-universal-app-node20-compatible.log	ecfa7964478025b50fd97214a9aebd8990418c3d	3407	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/npm-test-final-3.log	888e10e42bbde4fefebe9af992d1f76a132ada66	11932	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/npm-vite.json	8d95d054a7bfe783100d45eaa6b7cf5503e1176d	266	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/pr-57.json	248d3a3d43c49aa5adb8023b615ae6be3153a27e	8201	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/recent-merged-prs.json	81c8e8cdfdc05540b902d561b79a293ae5753c6f	2170	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/universal-app-test-before.log	144c79b0931e5930c5136952caaeb49382107566	5907	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/universal-app-test-final-2.log	b29057aecee4cb8fa33bc7b7b0d369588e8f9248	1218	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/validate-changeset-final.log	837a84ac2c1b92ec6f770f1805f0c8351ebd2ea7	508	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/vk-bot-desktop-build-renderer.mjs	8c1c30bc9ecc91f4fe8a17806a571966bdbe183a	1511	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/vk-bot-desktop-electron-main.cjs	3b1bd5d146be2bcc75bb7ab7b2010aa53c2ee996	6128	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/vk-bot-desktop-file-tree.txt	92352becc1a7fd772f14fb5caaf7656d9a316834	32571	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/vk-bot-desktop-js-workflow.yml	090cb1790fbf183dbdb6f1e770a04a7043152637	51231	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/vk-bot-desktop-package.json	4e13d7f1a4e8f8ad24aa7652b61216636f99acd6	4667	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-56/data/vk-bot-desktop-repo.json	1c9bbc56fcb352985a43794d53a3657fabed6372	388	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/README.md	68c8f334e8d79c8e264c232953ec0ae66d999177	16087	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-58/data/actions-configure-pages-release.json	d7edac730c22fb4fb34c0f51dde00bcf987cb994	129	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/actions-deploy-pages-release.json	f234bbe5d4b37bc7139ae5eb0c063cdecd45375e	126	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/actions-upload-artifact-release.json	3998d30979d81b2c61d57247e3899d754445d76e	129	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/actions-upload-pages-artifact-release.json	7813651e3bdbf058671a23674e57dc5fd77fd055	135	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/bun-test.log	41dbb38a2b60b96ec4649d66397c16a02a461e55	5894	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/check-file-line-limits.log	3b33ea202f2662158c856c13ced1bc062408a258	1830	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/check-mjs-syntax.log	d4296eff7a16eef849cf690cf10dfa9d60591493	962	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/checks-and-release-25733140225.json	e6ee8169579ffd7ffcabc2caa9f819b413277308	34615	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/checks-and-release-25733140225.log	89176333af05dacd9e61d91c255fe14aab1da381	922703	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/checks-and-release-25743983223.log	6977b0ce9647db319a394062cc045969aaa054c8	862109	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/ci-run-25743983223.json	18fde5b129f00f12581516438d897ed479357bc7	28333	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/csharp-template-file-tree.txt	d9d5a99a20d94c02448c1d204511122b8b5f23fd	942	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/csharp-template-release.yml	499b729cdb5811aa72d350eeddcf0f02663316f9	17724	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/deno-test.log	4e95e9205a4b87598c421effa1f39ad1f7c9942e	4002	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/example-app-25733140224.json	efbb9b42e3758516f9feb55d6227f52a457110aa	8976	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/example-app-25733140224.log	c04157f00887b181dfdef47f1e7fb272e802f736	167869	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/example-desktop-package.log	a31473070434ac735c0db8c514a37bb2eba431ed	1320	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/example-mobile-sync.log	9c4d5ca53c3e5920c2d91322916f133f8497b814	653	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/example-web-build.log	751f367821563754645c88a66afdf5841400313c	494	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/issue-58-comments.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/issue-58.json	43d2fd3f08f90b8058dd33fd185194baa4ef3fa6	2845	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/js-template-file-tree.txt	fc43d46a2c4459053b6a91ace927607dde4267bd	12582	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/link-foundation-example-package-name-search.json	fe51488c7066f6687ef680d6bfaa4f7768ef205c	3	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/main-ci-runs.json	ec48d538bd319d15807f0522e74f61ccc0fd62ff	8650	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/npm-check-final.log	cddd97e17a94b14621cfc02f3bf2d9caab8af99b	674	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/npm-example-package-name-view.json	f10c59fe6679986d1b6d1d438ff2c3cf7e189f9e	896	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/npm-global-install.log	260887b9e90b658a65b3f368460645e51156d0bf	29	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/npm-install-after-metadata.log	f0a4742a3e0436e9a943866a112389ab0f41f122	297	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/npm-install-universal-app.log	d255a7cb3eabaacc84795947fc658b04f3163734	3407	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/npm-install.log	d32f92729c9c23ce52a83dcaf9c94b1f252cd414	279	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/npm-pack-dry-run-final.json	523433b559cc79ee47c422537a613cb2a4a0984a	1140	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/npm-test-2.log	63551cf4220a04ff91aed19395332db34c5b6d5a	12944	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/npm-whoami.log	ea0af632f5ca3ceb7cdda8d20698d9760946292b	275	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/pages-enable-result.json	bd113afcdcd98aa31e53819fc774f40dd6f3702f	404	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/pages-status-after-enable.json	bd113afcdcd98aa31e53819fc774f40dd6f3702f	404	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/pr-57.diff	8f15847b04dfe66e4434c8ba424b70c3c756567b	588460	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/pr-57.json	ac38dc02634d0c8c60f563ffd01208239773bea5	10610	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/pr-59-conversation-comments.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/pr-59-review-comments.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/pr-59-reviews.json	0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc	2	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/pr-59.json	959bb6287d292120ab307096f741385de4fa2376	1376	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/python-template-file-tree.txt	e0b8bb5a2d8e4060cef27c06f456570356094e07	817	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/python-template-release.yml	c8999ba00878ebbe3c90efeedbe1787708e6937b	11674	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/regression-after-2.log	151748754dbfc0a63ebb2f7a8b50541f83b734fb	2021	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/regression-after-3.log	753b1ddac2d1d3892e8de12f5786f34f6182c408	2202	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/regression-after.log	c839b5158267e8a21817155392cece119a33321b	2021	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/regression-before.log	1095318176f1a5c9a32c4449fd18ca9950da6603	11519	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/rust-template-file-tree.txt	a2207248efbca0d35b0cb76d61c3231f8a8ef4d5	5909	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/rust-template-release.yml	c3afcd9223549f041c824682f5f1e465454408e4	23022	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/secretlint.log	e69de29bb2d1d6434b8b29ae775ad8c2e48c5391	0	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-58/data/validate-changeset.log	e839af906d428243448fcc2b3861c63600426f58	549	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-7/BEST-PRACTICES-COMPARISON.md	16d3820926b0c7ed9dfa24e60a76874924766771	9478	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-7/FORMATTER-COMPARISON.md	89daa474e1760ccf43c3a7165b28fdee9beb65ff	17660	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-7/current-repository-analysis.json	149f113a42b073f46ca5adfeb921b58496ce9235	1988	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-7/effect-template-analysis.json	5be40318ed4346f5c649d6522a56a510f748df52	4644	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-75/CASE-STUDY.md	a35f798b0ea8c9096af5a87c43e69a685bd6914b	2745	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-93/README.md	5de1150eb8ebb885918fd9ec8cb3d34d40fac2d5	5759	historical-evidence-or-experiment	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+docs/case-studies/issue-93/data/ci-runs-issue-93.json	742e2e9f640f278c890516651c20c3ee26a41caf	189	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-93/data/issue-93-comments.json	25394c426f708f978389b2923d74cccccf001c69	10482	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-93/data/issue-93.json	2d0c7d145cf5983e1c7b43111d1a5cd762da7606	8144	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-93/data/link-foundation-eslint-rules-search.json	3ea08ad5af43f807c727da6d6c6b3f0272aa2f11	4731	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-93/data/link-foundation-no-changelog-comments-search.json	fe51488c7066f6687ef680d6bfaa4f7768ef205c	3	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-93/data/merged-prs-case-study.json	50b5127bb8f9890a1d407faa2c805cc8a5ae5817	2446	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-93/data/merged-prs-eslint.json	f52ac36d8fa125e0c642ff9a069c922f3cd74a8c	2512	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-93/data/npm-search-eslint-changelog-comments.json	ac0b2cf4cc398036063f50eba5f283a480dabca5	17013	historical-evidence-or-experiment		no-same-name-file
+docs/case-studies/issue-93/data/pr-94.json	4f5ed51a77375763a758d52ae27cdc1046c33961	5540	historical-evidence-or-experiment		no-same-name-file
+docs/issue-273-analysis.md	7923ebcf0a88baa0bd297318a1c887fc8271a6bf	14849	documentation-or-license		no-same-name-file
+docs/issue-287/plan.md	ee0752c5951064a352822750c26d8784536901fa	6743	documentation-or-license		no-same-name-file
+docs/issue-287/research.md	d3257e3aac6d5f44ff4fcb560bc2c294279cd1d2	7090	documentation-or-license		no-same-name-file
+docs/issue-287/verification.md	78175bfbc65283d263de2790b26d998b5103437b	3614	documentation-or-license		no-same-name-file
+docs/issue-292/plan.md	aa2f23637ffff489dc64086b1a50849abd41e676	6574	documentation-or-license		no-same-name-file
+docs/issue-292/research.md	c9bdbccc230277896c43d62f3e86bba6bc4575f3	3095	documentation-or-license		no-same-name-file
+docs/issue-292/verification.md	b4f2d77ba99b52ab66670a5bb1ded76a449b4afb	3743	documentation-or-license		no-same-name-file
+docs/javascript-first.md	627c377645d77245f7b55c615863f6f5babb6c75	6611	documentation-or-license		no-same-name-file
+docs/screenshots/example-app/example-app-en-dark.png	fc2e45055e40cb1029770ebfc2ee3341e8b9786e	116764	binary-asset		no-same-name-file
+docs/screenshots/example-app/example-app-en-light.png	fc2e45055e40cb1029770ebfc2ee3341e8b9786e	116764	binary-asset		no-same-name-file
+docs/screenshots/example-app/example-app-ru-dark.png	fc2e45055e40cb1029770ebfc2ee3341e8b9786e	116764	binary-asset		no-same-name-file
+docs/screenshots/example-app/example-app-ru-light.png	fc2e45055e40cb1029770ebfc2ee3341e8b9786e	116764	binary-asset		no-same-name-file
+docs/screenshots/example-app/example-app.png	fc2e45055e40cb1029770ebfc2ee3341e8b9786e	116764	binary-asset		no-same-name-file
+eslint-rules/no-changelog-comments.js	9dc728dcb49f87cd306006ba550a3abe40be2ec1	4606	application-source-or-asset		no-same-name-file
+eslint.config.js	195debf0fa2358aab6e862416956a75f97762b76	4135	build-or-policy-configuration		no-same-name-file
+examples/basic-usage.js	714025b9b45a4fdfd2524ce6b162249b05d2a54c	747	application-source-or-asset		no-same-name-file
+examples/javascript-first/Dockerfile	6c55110d6db846bc6830c9b3fb3719f1b0feb73e	101	build-or-policy-configuration	Dockerfile	different-implementation
+examples/javascript-first/README.md	2ab0ac2329f20afbf97fd796cf108d72b9fdcea1	2738	documentation-or-license	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+examples/javascript-first/cases.json	c1e7278e1dfe2ef77a9e2d6e791e206654cf1b62	118	application-source-or-asset		no-same-name-file
+examples/javascript-first/check-parity.mjs	05ec9793c618131a7bb79780007170a88cc11278	1141	application-source-or-asset		no-same-name-file
+examples/javascript-first/generate.mjs	c233e445164139b4f97673bd84501c8957603ad0	2226	application-source-or-asset		no-same-name-file
+examples/javascript-first/generated/lib.rs	855189f0f68bdca87bcdae081ec33ea6101f3974	455	application-source-or-asset	js/wasm-worker/src/lib.rs,rust/src/lib.rs	different-implementation
+examples/javascript-first/generated/typed-ir.json	c160e440592961f5986e524f3ef6eedd342609b7	294	application-source-or-asset		no-same-name-file
+examples/javascript-first/inventory.json	b15d93e2cc60ee8715845e924c9844714191f4ac	235	application-source-or-asset	data/cache/wordnet/en/inventory.json	different-implementation
+examples/javascript-first/native-check.mjs	b17cffa83f65416028754343413715ffc1b1aafc	570	application-source-or-asset		no-same-name-file
+examples/javascript-first/native.mjs	101e32ee7a0a868bd0e249a1d1a2694d2851dfe0	205	application-source-or-asset		no-same-name-file
+examples/javascript-first/pins.json	f3f1c548411c54bb072a7d114f29cbedcbe5a5a2	200	application-source-or-asset		no-same-name-file
+examples/universal-app/README.md	568bc892960cb0d62e9774c29e80200d95a8d8f2	2349	documentation-or-license	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+examples/universal-app/capacitor.config.json	9d8ec491b62efedc0e47be610b3d57e71d6c1d96	156	build-or-policy-configuration		no-same-name-file
+examples/universal-app/compat/README.md	6cc8f230a07de963c3fb9e0751bd7d9a631afc5a	2367	documentation-or-license	README.md,changelog.d/README.md,data/README.md,data/meta/self-ast/README.md,data/overrides/README.md,data/training/README.md	different-implementation
+examples/universal-app/compat/temp-rimraf/index.cjs	6d0dedfb0eb1ede54fdb1ac03e16bd0a70e2a0a3	894	application-source-or-asset	packages/minimatch-compat/index.cjs	different-implementation
+examples/universal-app/compat/temp-rimraf/package.json	9d36b0ab0509048de71debaa785ed45bd7568a28	212	build-or-policy-configuration	desktop/package.json,package.json,packages/container-runtime-tools/package.json,packages/formal-ai-engine/package.json,packages/minimatch-compat/package.json,packages/source-cst-runtime/package.json	different-implementation
+examples/universal-app/electron/main.cjs	141cb19585cee1b6594c10cab49c66a3d5a5c226	1129	application-source-or-asset	desktop/main.cjs	different-implementation
+examples/universal-app/electron/preload.cjs	285d7f319e718e893796e4d385e5314ad079f303	151	application-source-or-asset	desktop/preload.cjs	different-implementation
+examples/universal-app/index.html	2c0ba45de0e5c0a07e129aa7882394a68799e8dd	495	application-source-or-asset	js/app/index.html,js/cli/index.html,js/docs/index.html,js/download/index.html,js/index.html,js/telegram/index.html	different-implementation
+examples/universal-app/package-lock.json	1db5b1bbdf49f62b8feeb0d1a54853caa294c0d9	206055	build-or-policy-configuration	desktop/package-lock.json,packages/minimatch-compat/package-lock.json,packages/source-cst-runtime/package-lock.json,rust/tests/e2e/package-lock.json,scripts/documentation-policy-dependencies/package-lock.json,vscode/package-lock.json	different-implementation
+examples/universal-app/package.json	9e6443cfdd514212d330d38f3a1d5f3d5f4e564b	2266	build-or-policy-configuration	desktop/package.json,package.json,packages/container-runtime-tools/package.json,packages/formal-ai-engine/package.json,packages/minimatch-compat/package.json,packages/source-cst-runtime/package.json	different-implementation
+examples/universal-app/public/favicon.svg	68d6a43a251ee84b8bea4db2db4f9d56141a17e8	210	application-source-or-asset		no-same-name-file
+examples/universal-app/src/App.js	8152275269a507524f1149347e2505ce96d894b1	3676	application-source-or-asset		no-same-name-file
+examples/universal-app/src/main.js	0d76e39ad43a22879738c5b14e2fcd072109bfcc	240	application-source-or-asset		no-same-name-file
+examples/universal-app/src/styles.css	7b08a2da6d7442ff063d49c1c2c52c22ec8e9124	3051	application-source-or-asset		no-same-name-file
+examples/universal-app/vite.config.js	6782d92633f1a7b0093f1bf78fd8373546370d87	498	build-or-policy-configuration		no-same-name-file
+experiments/budget-runner-demo.sh	a513fb49374bba3e3588d0aa53ba1b4530fadc6d	606	historical-evidence-or-experiment		no-same-name-file
+experiments/ci-lockfile-probe.mjs	0002ad9cf3d180183de0f26c768dbf721c8d8446	1226	historical-evidence-or-experiment		no-same-name-file
+experiments/cli-symlink-probe.mjs	007524bf265354e998db35438d4c68f1f2dbcad4	871	historical-evidence-or-experiment		no-same-name-file
+experiments/codemod-visible-skips.mjs	ae85c61ac20658ecba3896d6e19a5aa9815647f8	5843	historical-evidence-or-experiment		no-same-name-file
+experiments/find-conditional-tests.mjs	f704776f2d9595bb4349b8990170119b03cf23cb	1009	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-141-multilang-ignore-list.sh	00331c624223ec8f143abea74face6877971b797	642	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-203-changesets-version.mjs	d6aec03764792642e0070255af9046a0011bcd16	338	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-212-regressions.mjs	a375f91d0130ba1dbfed402b9f654bbca5240b82	1802	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-212-secretlint.mjs	bc64509c29dfee8fccec3325fa9cea1353b3b70c	1469	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-216-ci-fixtures.mjs	3b1d333847ef99e485615bbbbb6832945ba6625d	2238	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-216-release-dry-run.mjs	dfc167e13ea105c86d336b932be9ea875ebf2464	1953	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-230-plan.md	03dfbeee7f39c7aec6c55d8445252a0b9842104d	5530	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-254-plan.md	245c16700e638dbe93df4e9e8c592803e4e0c641	14211	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-262-crlf-checkout.mjs	92f2aab674032068719bd7001bbd4b149a42d73c	1357	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-273-large-pr.mjs	1b66954ffb981828906be1b64739ebb67a9e4f3a	1489	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-273-offline-release.mjs	dc6dc4bc927590c6f17a84e0d27223d0f1679c40	1219	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-273-plan.md	b5172de227cf576223ed7b4213855f5d53336c82	12396	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-273-release-fixture.mjs	ec317f45a6f0e12f2263261f5e3fb120c792ee5a	854	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-275-deno-allow-scripts.mjs	177357c779e74b4cb9e256087278ad18c1fee914	1622	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-275-deno-native.mjs	b91be1fcffee8319867f22ac412dc8a3983e6186	2992	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-275-desktop-apis.mjs	4cf1885a60e6b8d6f85a57f6272a6192fec18856	1063	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-287/reproduce.mjs	d5ee274d2b3d19a03c5cb80002ad5cc322c27cc8	3561	historical-evidence-or-experiment		no-same-name-file
+experiments/issue-299/verify-compressed-scan.mjs	2907201f9610bd4983f27e7d315ae033d4da8a53	1917	historical-evidence-or-experiment		no-same-name-file
+experiments/release-notes-fixture.mjs	83743f9ccb4a99c2535b4c9d66ce4e5f2ebb80dc	1878	historical-evidence-or-experiment		no-same-name-file
+experiments/test-changeset-scripts.mjs	7eea8c9f3196cccc54540baf7caa619ea9b68e82	8607	historical-evidence-or-experiment		no-same-name-file
+experiments/test-check-release-needed.mjs	43298882d8170a590eafee8621f670ad2510888a	2751	historical-evidence-or-experiment		no-same-name-file
+experiments/test-detect-changes.mjs	e8fb3782f855d8dd754367cc57d8fc19ffbc7056	4045	historical-evidence-or-experiment		no-same-name-file
+experiments/test-failure-detection.mjs	7a8cad0d18031279e30f09ee05c908a6a1bb3088	4407	historical-evidence-or-experiment		no-same-name-file
+experiments/test-format-major-changes.mjs	309f0f0404fb09ebfce30a920bc9ad908b50a6ca	1536	historical-evidence-or-experiment		no-same-name-file
+experiments/test-format-minor-changes.mjs	a45d6136cf9bee1fa2137c7bb087c2db4856afa8	1745	historical-evidence-or-experiment		no-same-name-file
+experiments/test-format-no-hash.mjs	db9c50d2cd738a243f87518013c72da1876f2842	1263	historical-evidence-or-experiment		no-same-name-file
+experiments/test-format-patch-changes.mjs	38b0e4688533323efcc55fc65c16f7470f174f0d	1439	historical-evidence-or-experiment		no-same-name-file
+experiments/test-issue75-buildx-mirror-fallback.sh	938af0db68fc89101a96230d77a24821617e06c7	4953	historical-evidence-or-experiment		no-same-name-file
+experiments/trace-changeset-fixture.cjs	e03f113d55fdbf9ba423e5b6bc39f1e248e0a5e4	1827	historical-evidence-or-experiment		no-same-name-file
+experiments/use-m-cdn-unreachable.mjs	24cb1d67977932cf409735cd7223cc3b7fbc7af5	678	historical-evidence-or-experiment		no-same-name-file
+package-lock.json	81c8b9f06dd688e9333ca3f6a76cca642fa880ca	101654	build-or-policy-configuration	desktop/package-lock.json,packages/minimatch-compat/package-lock.json,packages/source-cst-runtime/package-lock.json,rust/tests/e2e/package-lock.json,scripts/documentation-policy-dependencies/package-lock.json,vscode/package-lock.json	different-implementation
+package.json	2649bab9298163b2e4f67585b2086f59c2eb2684	3122	build-or-policy-configuration	desktop/package.json,package.json,packages/container-runtime-tools/package.json,packages/formal-ai-engine/package.json,packages/minimatch-compat/package.json,packages/source-cst-runtime/package.json	different-implementation
+scripts/artifact-files.mjs	a28fa87fe9fed6ba77c39132a48b79eef1f03ef1	2364	script-or-test		no-same-name-file
+scripts/artifact-transport.mjs	e4d14c3d2b9f037cadf33e4b9835f71df5766d21	3321	script-or-test		no-same-name-file
+scripts/bootstrap-dependencies.mjs	790bcacdab36c0b1edcbd4f78572fb2673010b6f	3035	script-or-test		no-same-name-file
+scripts/changeset-version.mjs	a07876423c4b585c2f0a807f4531bece8dcf5b9c	2596	script-or-test		no-same-name-file
+scripts/check-artifact-archive.mjs	591eff8ae043780ee48ff201af7d263cefd0d6c9	7260	script-or-test		no-same-name-file
+scripts/check-changesets.mjs	30c0025a9dc708f3493b1f4c224c178a751669c9	3693	script-or-test		no-same-name-file
+scripts/check-ci-workflows.mjs	1edff9d6115054a80767a85ddc1f7a21e6a3ea46	4236	script-or-test		no-same-name-file
+scripts/check-codeql-results.mjs	71e0200121ad0b9af5b62307d4bcf2899526e856	4683	script-or-test		no-same-name-file
+scripts/check-dependency-graph.sh	5cd220253dce15e7dec29b06f7c2a0cfec2eff4c	3000	script-or-test		no-same-name-file
+scripts/check-desktop-compat.mjs	b11dba8cefc96626254cf4f4a0b2ea0fa699789f	3006	script-or-test		no-same-name-file
+scripts/check-docker-build.mjs	59f39e0d4efd7ca40a39ea8c4fd7b6e261a8b01e	2694	script-or-test		no-same-name-file
+scripts/check-docker-publish.mjs	e2793f140c2302c7ee811238dfa59b52a3655911	3528	script-or-test		no-same-name-file
+scripts/check-file-line-limits.sh	0979d27f20d0b6718039c9f75d77c4f2a216bc6d	4113	script-or-test		no-same-name-file
+scripts/check-javascript-syntax.mjs	14799c1dbdb1191b9b4c90038843b37f7a8ccb04	1768	script-or-test		no-same-name-file
+scripts/check-mjs-syntax.sh	7af8da0283cb10c608f93f4607f6cdd1d2c2b4f1	547	script-or-test		no-same-name-file
+scripts/check-npm-tarball-size.mjs	089008031e64ba1a3428a87c795544d7fae74f26	2852	script-or-test		no-same-name-file
+scripts/check-package-manager.mjs	426d26b0e8f004f53d8e9e0f7431cd5edbd0459b	4515	script-or-test		no-same-name-file
+scripts/check-pages.sh	4dc62f664c65aa23f185d20a921308f3e8e4e5c2	2501	script-or-test		no-same-name-file
+scripts/check-pipeline-status.sh	88cc6fe9c3cc03cbc6a1929ad9b950c917aaad9f	6940	script-or-test	scripts/check-pipeline-status.sh	different-implementation
+scripts/check-preview-tools.sh	801efa9013f50bfc5d3c9d720bf17c92f1b9fb1a	1091	script-or-test		no-same-name-file
+scripts/check-release-needed.mjs	4e3e6c7d45628226939d2c4ecc61897ee7eafa50	4134	script-or-test		no-same-name-file
+scripts/check-required-docs.sh	b099b07d23dad405aa6927d1c73dde8faa6ac8fd	3390	script-or-test		no-same-name-file
+scripts/check-secrets.mjs	ef9c637560fb35a0fb487010a61817fe767adb46	6893	script-or-test		no-same-name-file
+scripts/check-staged-formatting.mjs	d22ff2c0a49af834f50e7ab0cbb6cd12ad611d51	801	script-or-test		no-same-name-file
+scripts/check-status-gate-covers-all-jobs.mjs	b57d8afd3ec80f508aeaca05b530331f923140f9	4971	script-or-test		no-same-name-file
+scripts/check-version.mjs	3a9bd1e183814099dd4c5b434c485954d2c22249	1361	script-or-test		no-same-name-file
+scripts/check-web-archive.mjs	5112dde070524432ca96df1273730c0b59115d29	16351	script-or-test	scripts/check-web-archive.mjs	different-implementation
+scripts/create-github-release.mjs	0ab9a24604cedf40b7d4d020ff97c3507588339f	8369	script-or-test		no-same-name-file
+scripts/create-manual-changeset.mjs	5a80b404959833797fc049f92841708e4904bddf	3604	script-or-test		no-same-name-file
+scripts/debug-print.mjs	53b2764cce14c73e0d53000188237e5ce8cc6f0d	3393	script-or-test		no-same-name-file
+scripts/deploy-pages.mjs	daf912b49d64f380eda494e5399fe44128149017	9361	script-or-test		no-same-name-file
+scripts/detect-code-changes.mjs	87f231de7cde7de40e6d60b7970e0aab4f5c1a1f	12074	script-or-test		no-same-name-file
+scripts/format-github-release.mjs	aa7a8bfe547b1c75d2fa93769619230be7cdd5e6	4125	script-or-test		no-same-name-file
+scripts/format-release-notes-helpers.mjs	215442cc3fe5f9ac55fbdc8720b7ef6bfccf0c81	3814	script-or-test		no-same-name-file
+scripts/format-release-notes.mjs	fa86e800b0659486e5f7f903643e5d3b1e7243a9	6420	script-or-test		no-same-name-file
+scripts/github-actions-log.mjs	d90597feb62e70bef29485e75b2a0d98a626ea42	1196	script-or-test		no-same-name-file
+scripts/github-api-evidence.mjs	780d48ab99982d7400843d33cb270d40d84a241f	937	script-or-test		no-same-name-file
+scripts/github-api.mjs	bc84822c119b0fe8cfc4d52ae25f043edcc92b6d	2570	script-or-test		no-same-name-file
+scripts/github-release-state.mjs	d5d4ba0bb5230a330708a93c3dec985f0ab04cb2	1519	script-or-test		no-same-name-file
+scripts/install-git-hooks.mjs	9614f18251884a936111f3ea5a1e59106bd9a7f7	1470	script-or-test		no-same-name-file
+scripts/install-lychee.sh	c6d6e394cc6b693ace401ad2b24c4fff86f6d8c8	2906	script-or-test		no-same-name-file
+scripts/instant-version-bump.mjs	c37488560db5e8a3c5da5b2070e26fef5f2942c9	6005	script-or-test		no-same-name-file
+scripts/js-paths.mjs	0f124c98d313c846c07559b24c6eeecd70030bf3	5516	script-or-test		no-same-name-file
+scripts/land-via-pull-request.mjs	f48a67b9a981291a4978bdda6afb97c8e80d1674	14830	script-or-test		no-same-name-file
+scripts/lint-changed-lines.mjs	db0ea89db3f9d0800cb5eea2557e2aad3518c7be	3475	script-or-test		no-same-name-file
+scripts/lint.mjs	5f003285dc51c8244353d8fc1e6d1781539a6247	2633	script-or-test		no-same-name-file
+scripts/lychee-report.mjs	eaa44a0043b48e6de4ce28ab9f6607527c181692	1437	script-or-test		no-same-name-file
+scripts/markdown-lines.mjs	cdb51517aee0536b4bdab37bfa6ea0cc30bb9956	991	script-or-test		no-same-name-file
+scripts/merge-changesets.mjs	f5295e5513e6744602446ba3fc48605145e9c367	7114	script-or-test		no-same-name-file
+scripts/npm-audit-report.mjs	839d33a07af5a9b8e8c72d6ef53b56f4a40cb56c	10552	script-or-test		no-same-name-file
+scripts/npm-registry.mjs	57bd9398eaeee5767a21b076209b2bd1b219fd96	3044	script-or-test		no-same-name-file
+scripts/package-info.mjs	2fc44bd2cb2e4f2b284ad8026b78e7194b9fc514	2590	script-or-test		no-same-name-file
+scripts/pr-comparison.mjs	52309c80ec8faf9a292bb8b356517125a993ef06	2444	script-or-test		no-same-name-file
+scripts/preflight-credentials.sh	ec26006d0d8518713dde6617ee7eefff90387db6	13971	script-or-test	scripts/preflight-credentials.sh	different-implementation
+scripts/publish-failure-classifier.mjs	5b301cc307500a2f760d2f82dfe357c50a0dbb5e	3928	script-or-test		no-same-name-file
+scripts/publish-retry.mjs	7001e0aa3c548b2a941b41e4d374387e57dc4319	7408	script-or-test		no-same-name-file
+scripts/publish-to-npm.mjs	bc7bcf0a40e1a8fb9c0b12dc87055742eb134845	10432	script-or-test		no-same-name-file
+scripts/push-failure-classifier.mjs	aeb7705c50012e8b850675abb250617d7b92d2d2	3882	script-or-test		no-same-name-file
+scripts/push-main-with-rebase-retry.mjs	d2d85712ad0e235e717f961cbcc72e51e72ff79e	7249	script-or-test		no-same-name-file
+scripts/read-job-cancel-in-progress.sh	c10fdfd4ffa225e356dbc1b69969cba2b75e8fbd	2637	script-or-test		no-same-name-file
+scripts/recheck-broken-links.mjs	abc88da3de55a737a4186a28ff9872685de0b490	13384	script-or-test	scripts/recheck-broken-links.mjs	different-implementation
+scripts/release-metadata.mjs	927d3a605bcbb8e8693b0e3e3b574e617bd496bb	3946	script-or-test		no-same-name-file
+scripts/release-naming.mjs	50cbac339b5c6f2a60766b93c7ac217fd2528bd4	2048	script-or-test		no-same-name-file
+scripts/release-publication.mjs	cdbfb2efd8818b7b315ec892ed682c80070ddd39	2040	script-or-test		no-same-name-file
+scripts/rerun-unacquired.mjs	24305c750869c7bc0dd045aa653160a995540d92	7457	script-or-test		no-same-name-file
+scripts/run-command.mjs	4fac0033e700f78f5f9888f5d371bae936687363	2878	script-or-test		no-same-name-file
+scripts/run-with-budget-warning.sh	f9ea8cb4d2970e1e3ad5cddacb2d1c3f35f999da	9470	script-or-test	scripts/run-with-budget-warning.sh	different-implementation
+scripts/sanitize-npm-userconfig.mjs	b344a25c1c543176af72fd0b75c227ec1cc512f8	2361	script-or-test		no-same-name-file
+scripts/setup-npm.mjs	46f97157492690437d7985d6f4b6faac53ca9910	8253	script-or-test		no-same-name-file
+scripts/setup-preview-gh.sh	a7ca5d08f1e54a76f81f03f8e67422ceaf87f776	1132	script-or-test		no-same-name-file
+scripts/simulate-fresh-merge.sh	c6c9220100f993a69fe6e19e27d9ab344cb04283	3166	script-or-test	scripts/simulate-fresh-merge.sh	different-implementation
+scripts/smoke-test-package.mjs	653fef06bd5428648fc1b761ca2a274dd51fafee	13943	script-or-test		no-same-name-file
+scripts/update-preview-images.mjs	059e02753bcf6bacf605b742fec2910661976ffc	9989	script-or-test		no-same-name-file
+scripts/use-module.mjs	096b9472c8fb063a6c5811acdc0d3382082d2250	4009	script-or-test		no-same-name-file
+scripts/validate-changeset.mjs	1f235f3e20e2c35bf083f50860b98ebfcef188c8	7170	script-or-test		no-same-name-file
+scripts/version-and-commit.mjs	25d8e7369bc5886d8440cdab95ebde2111aa8770	10621	script-or-test		no-same-name-file
+scripts/version-lock.mjs	7d0eac3a875960e1e5722a5f4c2fa7ed8520169f	2404	script-or-test		no-same-name-file
+scripts/wait-for-npm.mjs	b25a587581fd11ab4f7be6cf5007df07d5c793be	10429	script-or-test		no-same-name-file
+src/index.d.ts	658cd82a79657e0ec6727a883d8953d87f3fbe6f	651	application-source-or-asset	packages/formal-ai-engine/src/index.d.ts	different-implementation
+src/index.js	22705fde8c7f091053953d6015a8fc4503f5aecf	694	application-source-or-asset	packages/formal-ai-engine/src/index.js	different-implementation
+tests/action-versions.test.js	edaee866d60007116f92cdcfe258d95006d3aca3	1474	script-or-test		no-same-name-file
+tests/archive-and-discovery.test.js	0fbce762aba0d2fbb3079e4332ad34ff8bebfac6	5877	script-or-test		no-same-name-file
+tests/artifact-files.test.js	e40dd0bf433ebe2bd4da5bbec14fba852f63c830	3734	script-or-test		no-same-name-file
+tests/artifact-transport.test.js	033c50064798f92ead80761bdaf177d3acfff058	6998	script-or-test		no-same-name-file
+tests/bootstrap-dependencies.test.js	a4705168ffff39455f368c9c74272e4219dc6cb4	3937	script-or-test		no-same-name-file
+tests/bot-commit-attribution.test.js	12ea1efe140dd47699b599ec321f08fee3419947	2188	script-or-test		no-same-name-file
+tests/bounded-run.test.js	5e86943f502b30b0480e8e938371bb5734969a74	5304	script-or-test		no-same-name-file
+tests/changeset-config.test.js	96d4a8d8373c9fd9de3a2595ce1616fabf0630b1	7192	script-or-test		no-same-name-file
+tests/check-changesets.test.js	7107ea6e74fe896a7a8bf1670229611e1c612929	3442	script-or-test		no-same-name-file
+tests/check-file-line-limits.test.js	2e5c4ef026b7fc5887a1b7ed6e6eb25ecc400461	10332	script-or-test		no-same-name-file
+tests/check-pages.test.js	532b48345b35808ac0efa522201eae87696e40d9	4263	script-or-test		no-same-name-file
+tests/check-release-needed.test.js	e6b9e928982ed20ada10b9334976a512f5cf5336	5337	script-or-test		no-same-name-file
+tests/check-staged-formatting.test.js	f61a1c12844365e0daddb1e19c5b8fe3c24deaa2	2200	script-or-test		no-same-name-file
+tests/check-web-archive.test.js	c71c653110a0b53e35db2689f9559c7949ab51ce	6436	script-or-test		no-same-name-file
+tests/checkout-credentials.test.js	ddf955c8ba0da9325b4419319065bb24d344b538	3717	script-or-test		no-same-name-file
+tests/ci-audit-regressions.test.js	d6caa55f23e55664b1700c4e59a53de0b58a5676	6132	script-or-test		no-same-name-file
+tests/ci-issue-299.test.js	9d87af25678fe0157ee8ff9501c541622031709a	5823	script-or-test		no-same-name-file
+tests/ci-timeouts.test.js	416f4a6223bce0aa210abad7e7407830ee436e0d	17977	script-or-test		no-same-name-file
+tests/ci-workflow-policy.test.js	b8086b04d62eefe522a63a9559ec5980cb357f9b	1947	script-or-test		no-same-name-file
+tests/codeql-results.test.js	5372fd439a01947021caf3ea1f6219799e3d2084	6457	script-or-test		no-same-name-file
+tests/commit-message.test.js	23c703e758d43d2a30a3f89de660b9ffdbcaf7b3	2029	script-or-test		no-same-name-file
+tests/compressed-secrets.test.js	6ba87b6c09ec168901337faf5eb5e85fa5d66c41	3669	script-or-test		no-same-name-file
+tests/container-jobs.test.js	829660ec0fe40159f4c40338002d7c6a8c012823	8801	script-or-test		no-same-name-file
+tests/create-github-release.test.js	2253532f998a1abfe35a39dd063cf00c1c2fce9f	12299	script-or-test		no-same-name-file
+tests/debug-print.test.js	ec11dc8b0d85b6775788fb91b5a9f0d261e50512	2078	script-or-test		no-same-name-file
+tests/dependency-graph.test.js	01a0424305d6c205995ea111340b993e11edda23	3289	script-or-test		no-same-name-file
+tests/deploy-pages.test.js	e49e91c7687436432b7ddedb32a1d548aabe6b17	11330	script-or-test		no-same-name-file
+tests/deprecated-packages.test.js	96026c5c0dae2be5580702ff50a24ff5a8a9bd47	1462	script-or-test		no-same-name-file
+tests/detect-code-changes.test.js	cffc2f45b1747a04f57bb9e678dfe749bf377f73	18631	script-or-test		no-same-name-file
+tests/docker-build.test.js	143d4064a07dd0c081cf34732ecd1b3fd0d8b339	4111	script-or-test		no-same-name-file
+tests/docker-publish.test.js	91619c8f2e5cd23ebc5c5e76a746aba53a005ad4	7102	script-or-test		no-same-name-file
+tests/fixtures/lychee-report.md	bf60228e38784b84aed1f4a56b0ed8a91917b8f4	1366	script-or-test		no-same-name-file
+tests/fixtures/npm-audit-moderate.json	f0fb32c8675538dc9605b0da390365174526504d	2654	script-or-test		no-same-name-file
+tests/fixtures/pages-stub/gh	26121752c9e9275eb7f76e61120af547d8286e96	722	script-or-test		no-same-name-file
+tests/fixtures/preflight-stub/curl	9944ba763e75f1e6efbabefcb13cab736ae4d9c9	2070	script-or-test		no-same-name-file
+tests/fixtures/wayback-fetch.mjs	f6e4734e78837fe24bb782214c184e31fab5d225	589	script-or-test		no-same-name-file
+tests/github-actions-log.test.js	001a66140a38c38d1da03a9031ed99b9b58c685a	2213	script-or-test		no-same-name-file
+tests/helpers/bounded-run.js	bfc3c27e9c679d7a199959175c9cd92e50a24ba5	4563	script-or-test		no-same-name-file
+tests/helpers/conditional-registration.js	f459774dae53bcb9a4f7fd4df38a2cd7908863be	3602	script-or-test		no-same-name-file
+tests/helpers/env.js	2297df98e46b0ffb5e6c04998a9cbd2b4021ea7c	986	script-or-test		no-same-name-file
+tests/helpers/network.js	fc551d0b0b8d14dc022450771c3777479914709a	802	script-or-test		no-same-name-file
+tests/helpers/skip.js	1eb32366923e370c64f454edcad449224d2c154f	2279	script-or-test		no-same-name-file
+tests/index.test.js	15fbcb6e7506b227036495a1b0cb4cf44d142bb4	783	script-or-test		no-same-name-file
+tests/install-git-hooks.test.js	0d0c56386fec70ce4d6da46915fe5e293dcfec11	3987	script-or-test		no-same-name-file
+tests/issue-228-regressions.test.js	6f773c29b36a12bb6f148a22b7c4dd709b9827a4	7129	script-or-test		no-same-name-file
+tests/issue-262-regressions.test.js	8fc6a195252c10ce2c0b2ce6d24fd36d88bc50af	3811	script-or-test		no-same-name-file
+tests/issue-287-policy.test.js	d1f374d22f10a429876e628687b0106770c79943	4611	script-or-test		no-same-name-file
+tests/javascript-first-adoption.test.js	5d051c878f8450838b81e5da5099ace857ae63d5	2785	script-or-test		no-same-name-file
+tests/javascript-first-gate.test.js	a480c21d581fcad57918d5580ff0098d899237e0	7847	script-or-test		no-same-name-file
+tests/land-via-pull-request.test.js	6ba5435999dd0a18e1204034fdda80473d287dbe	13075	script-or-test		no-same-name-file
+tests/links-workflow.test.js	c993050307829a834428da535d9dbd3a3d1b3234	5652	script-or-test		no-same-name-file
+tests/lint-changed-lines.test.js	de2864a0a84fd1e11a808bdd038847d867824297	4683	script-or-test		no-same-name-file
+tests/lychee-install.test.js	82edeada9c4b7821d414b5089baa91d96c3d6feb	4984	script-or-test		no-same-name-file
+tests/lychee-step.test.js	719ad2f2943b837ed3e214dbbe0a2cf9904bbdc8	4248	script-or-test		no-same-name-file
+tests/merge-changesets.test.js	e00b93820af44d735ee7836ddd27e0b0b297d59b	3484	script-or-test		no-same-name-file
+tests/network-skip-reason.test.js	a4bfa3123b5a77c58f70c1435fb71e4a3c3f30f3	2055	script-or-test		no-same-name-file
+tests/no-changelog-comments.test.js	34705e60c594253d8168b0bda9553c764bc510c7	3621	script-or-test		no-same-name-file
+tests/npm-audit-report.test.js	f697a8e2fdfb4fc30e9b206a77d24f8a16e1cfb2	7171	script-or-test		no-same-name-file
+tests/npm-registry.test.js	4d1c240e86f63a28268f700d49469aadfcc49a39	2667	script-or-test		no-same-name-file
+tests/package-info.test.js	201a5e2815007e529e43517d656b3465c2e17f1b	2118	script-or-test		no-same-name-file
+tests/package-manager.test.js	e3c6fd06398560307eee7bb1135fd5099c80649c	6483	script-or-test		no-same-name-file
+tests/package-metadata.test.js	74701ad99d6bfc8072a845649e8c50407f54b4eb	3221	script-or-test		no-same-name-file
+tests/pipeline-requirements.test.js	377768467d5a7dd0beb184d8370cc82c9d17ce12	5121	script-or-test		no-same-name-file
+tests/pipeline-status.test.js	1c22584fef405a8481f6092cbdf429c84d494643	18255	script-or-test		no-same-name-file
+tests/pr-guards.test.js	4f6341cf75f5e7b8d5a61d86f46faccb55d8f063	16062	script-or-test		no-same-name-file
+tests/preview-tools.test.js	87defdc780e924975f8f46eb4920ee445083ed7d	4724	script-or-test		no-same-name-file
+tests/publish-failure-classifier.test.js	055b5cdb7ef59185444f27f04162fd5bcbed237a	2920	script-or-test		no-same-name-file
+tests/publish-retry.test.js	647cb986bfa8fce1f65002cbba5c4ceec8a1db8c	8308	script-or-test		no-same-name-file
+tests/push-failure-classifier.test.js	360890e8c4c6d138ee15fd02c021ebebdf013289	3163	script-or-test		no-same-name-file
+tests/push-main-with-rebase-retry.test.js	f445983703245f74cb4cb7043e5e83394a4e6166	11523	script-or-test		no-same-name-file
+tests/recheck-broken-links.test.js	8a3c2d7b9e592389ffccbec584436350ede49703	16892	script-or-test		no-same-name-file
+tests/release-api-integrity.test.js	ca94ff81fb80bf5eb59d0522a08ed2167f4a968c	4944	script-or-test		no-same-name-file
+tests/release-badge.test.js	2782ffb7e9c89d5a54e9d0f003bba9e3ab35e9ea	3967	script-or-test		no-same-name-file
+tests/release-integrity.test.js	c7a07979ac9d4404476874b2d9587bb19fbaa80b	2298	script-or-test		no-same-name-file
+tests/release-metadata.test.js	e38eba5bedbc91fbbe1e4132ba3e778ef056e810	3784	script-or-test		no-same-name-file
+tests/release-naming.test.js	4a7c63f42652f4061ed068a92fc7030862563b69	3706	script-or-test		no-same-name-file
+tests/release-notes-description.test.js	915939989e62c2208c63aec263ee5bb458aa9d37	2456	script-or-test		no-same-name-file
+tests/release-notes-integration.test.js	b506b5fcd9e97e37c95a0be61c44dfdf0cde41f1	2751	script-or-test		no-same-name-file
+tests/release-preflight.test.js	01ca12fdedb9422732a7cf1fec99eb5a2544b615	15435	script-or-test		no-same-name-file
+tests/release-publication.test.js	49526665518738d8c0a7d835d704d53b3c1dbc11	4598	script-or-test		no-same-name-file
+tests/release-push-recovery.test.js	24990d96c7830e390b53a9da73c55c2958225135	5943	script-or-test		no-same-name-file
+tests/required-docs.test.js	ec1d62f9e0f7784d5969bb63da4c50166a2f5712	5193	script-or-test		no-same-name-file
+tests/rerun-unacquired.test.js	f6e2d911a8e2564f1fd7ce7ba27345aa4cc92c44	9539	script-or-test		no-same-name-file
+tests/run-with-budget-warning.test.js	c3bb2655d68ce18cbc6c099fc198aec94288151c	10306	script-or-test		no-same-name-file
+tests/sanitize-npm-userconfig.test.js	5edb4c500f94e7702fb9e846317e26fa0aa08357	1912	script-or-test		no-same-name-file
+tests/scripts-use-module-adoption.test.js	93cbb20141098531e0a78a3d9995fba660d530e4	2568	script-or-test		no-same-name-file
+tests/security-workflow.test.js	edba61e49c1c49066de153e200b6c8df60eff6fa	5978	script-or-test		no-same-name-file
+tests/setup-buildx-resilient.test.js	3bdbf5858d60b049dd422525847e1a6479d05b89	5694	script-or-test		no-same-name-file
+tests/setup-npm.test.js	2c61cd351e3cf288e92e5b975cb296801e96b2d1	2895	script-or-test		no-same-name-file
+tests/simulate-fresh-merge.test.js	e44b3c2ed9efc2ac21561d9b2e9abb18f3b48ce4	3931	script-or-test		no-same-name-file
+tests/smoke-test-package.test.js	be6dfe2655abbada8242c5dfbc9be5fb98db622b	5373	script-or-test		no-same-name-file
+tests/status-gate-coverage.test.js	ed84257ba288adca17f99dcb56e8c6bbadae233b	6130	script-or-test		no-same-name-file
+tests/tag-prefix.test.js	b790b3c6b28eebb760c57a4c89b9fc4cd20ddcc0	1253	script-or-test		no-same-name-file
+tests/temp-cleanup.test.js	bbecb9592e66aebdd2ae0177712d0655c2e12d0c	2387	script-or-test		no-same-name-file
+tests/transient-links.test.js	67efd1b10f711eccd523623e37dec05d079a64bd	4226	script-or-test		no-same-name-file
+tests/universal-app.test.js	946bc8b8988791b5a8dc3d0cb19833e178502bdd	5988	script-or-test		no-same-name-file
+tests/use-module-integration.test.js	20742a2a5914a25385c35ea118da7e9506c9bd03	1481	script-or-test		no-same-name-file
+tests/use-module.test.js	35d18503ad764fa208ec792c532f27c8862c78cb	4699	script-or-test		no-same-name-file
+tests/version-and-commit.test.js	a4661600019e472f168d4076c44c703c7880503a	2108	script-or-test		no-same-name-file
+tests/version-lock-integrity.test.js	0249b511995859dcc3642d35469ba77bdcbd4309	4182	script-or-test		no-same-name-file
+tests/version-lock-validation.test.js	339857df5794b5725ca915849e1b0e1f38d71dcd	2780	script-or-test		no-same-name-file
+tests/visible-skips.test.js	bb23806e6a854a5bdf3491f51c295f67b9a7b3ee	6052	script-or-test		no-same-name-file
+tests/wait-for-npm.test.js	d3f5e89387e6766430ec5b458b6887099a56e4cb	9331	script-or-test		no-same-name-file
+tests/wayback-cli.test.js	0d7e069536c1525999ae76c808bdaa0ce98d3d97	2527	script-or-test		no-same-name-file
+tests/wayback-retry.test.js	95bddcb4f6b7999813d3dcf02c745c965a9cd88e	3365	script-or-test		no-same-name-file
+tests/workflow-permissions.test.js	3c07c5db8decec4f301b5e8588b208de8eba38c1	3733	script-or-test		no-same-name-file
+tests/workflow-reliability.test.js	59b4f065854ca72a72b6568bebaa6bef4bd8fcce	23976	script-or-test		no-same-name-file
+tests/workflows-lint.test.js	32e6950870b0f74b5ada69f32ba9fb6f9f8a8893	8904	script-or-test		no-same-name-file

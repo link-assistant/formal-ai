@@ -1,0 +1,322 @@
+[
+  {
+    "source": "record-rust-registry-latest-review.py",
+    "file": "121-record-rust-registry-latest-review.py.gz",
+    "rawSha256": "9d410a622ab2c997e687dde24e1a022aaf1aa57b540031524bbe1d1efc999921",
+    "archiveSha256": "2ffaf37278f189d46937478b46f3ec413597dde13146ee88cd8811ff502a9f1e",
+    "bytes": 4125,
+    "lines": 44
+  },
+  {
+    "source": "refresh-bd6-retained-producer-identity.log",
+    "file": "122-refresh-bd6-retained-producer-identity.log.gz",
+    "rawSha256": "3d1235e18c63ef19754ad63b352bb309c349d28082345e6818ed5ffadd6fa64a",
+    "archiveSha256": "fbc77c1f050f084042789fabc3e3dcf551a2811f51ebcc5226c644c68d7a285c",
+    "bytes": 288,
+    "lines": 4
+  },
+  {
+    "source": "refresh-bd6-retained-producer-identity.py",
+    "file": "123-refresh-bd6-retained-producer-identity.py.gz",
+    "rawSha256": "38a74a6299f557869e29618d8dbe2fe3195fcd5fe96d058460c52882e5d6990f",
+    "archiveSha256": "a9057f5e206130443d5ebc02b8a90e5bfa393735afa083053a3f947d70042c45",
+    "bytes": 1638,
+    "lines": 30
+  },
+  {
+    "source": "repair-bd6-planner-parity.log",
+    "file": "124-repair-bd6-planner-parity.log.gz",
+    "rawSha256": "7a2d7eabdf5ff956f4df43fd5aa283ecddf34a2f12deda51000a7d880f74c25c",
+    "archiveSha256": "37ff33a7e555a878da9104207544c8f8460be23762c4ab332fd796b228a36fd2",
+    "bytes": 231,
+    "lines": 4
+  },
+  {
+    "source": "repair-bd6-planner-parity.py",
+    "file": "125-repair-bd6-planner-parity.py.gz",
+    "rawSha256": "becb75ff65e391cd2f33222f5d4d85c73e1f9348f5e22f3d26f618d9c8745b87",
+    "archiveSha256": "2bed68cacaac32b7e37a9da91174a772f01a67860841554cf2d57d8bcce50b08",
+    "bytes": 4004,
+    "lines": 58
+  },
+  {
+    "source": "repair-bd6-remaining-ci-failures.log",
+    "file": "126-repair-bd6-remaining-ci-failures.log.gz",
+    "rawSha256": "08daad716a4b08bc61c09667e733dc3bda93bcda53ad60d5eadeada335664169",
+    "archiveSha256": "39900b4c7a03bee6b8fe934b92bc64892260d31e191402cbe88c97b6b771ba77",
+    "bytes": 251,
+    "lines": 4
+  },
+  {
+    "source": "repair-bd6-remaining-ci-failures.py",
+    "file": "127-repair-bd6-remaining-ci-failures.py.gz",
+    "rawSha256": "72182b78a84ebeb060e5a055669615ae831bda9a4a7c85c2e98d5dec1b1814ed",
+    "archiveSha256": "8b8221c0ace30aaea0c7a2fd08cf74e8a1a53a8c520bb20c3ac5ff5156771325",
+    "bytes": 4085,
+    "lines": 61
+  },
+  {
+    "source": "repair-repository-qa-source-navigation.log",
+    "file": "128-repair-repository-qa-source-navigation.log.gz",
+    "rawSha256": "3a106b03e28b1ef6c99083960dd4b65da3148a28fb4479408e7b74f4ef12d34d",
+    "archiveSha256": "b52fb337ca176ba6948a0646ebaefaf5ed460973f92d87bbe200418ee41621fb",
+    "bytes": 439,
+    "lines": 9
+  },
+  {
+    "source": "repair-repository-qa-source-navigation.py",
+    "file": "129-repair-repository-qa-source-navigation.py.gz",
+    "rawSha256": "2b9932ffc93c90a4040a10db4811028ae52f4fc7fb0df6c440c7c9cbfe1c56d1",
+    "archiveSha256": "46f8432f68effa9545914b6eef26995e30cac9c54e8a355e069141a2cb932bd5",
+    "bytes": 10967,
+    "lines": 185
+  },
+  {
+    "source": "repair-repository-qa-source-navigation.retry.log",
+    "file": "130-repair-repository-qa-source-navigation.retry.log.gz",
+    "rawSha256": "ae39c371cb3cf48c49b33db847d09ca2bc95a3983393de427f20d0215a78aa94",
+    "archiveSha256": "bf35d51c8fb8e22e9f9270f218de775240d33ff0345c1a04cd0d784260b42291",
+    "bytes": 899,
+    "lines": 7
+  },
+  {
+    "source": "repository-qa-source-navigation/before.log",
+    "file": "131-before.log.gz",
+    "rawSha256": "9305bab707cef4c7ea4884ce910464ae9cbf3ac999c9526b8d3a4543b67e1513",
+    "archiveSha256": "21ad33fbfc7670590fdcb4d039b639596c4f06c52bb53faf6f198cb06945fcba",
+    "bytes": 2751,
+    "lines": 35
+  },
+  {
+    "source": "repository-qa-source-navigation/codeql-options-before.log",
+    "file": "132-codeql-options-before.log.gz",
+    "rawSha256": "b901a8b70a1b5a5717cc5d558a2102176de5292b9896eeeda1591717ffa54360",
+    "archiveSha256": "97702dde6c0ad5252c8ce7db880b6d2019612090894addd8f38a58b4bc9fe8f3",
+    "bytes": 1448,
+    "lines": 34
+  },
+  {
+    "source": "repository-qa-source-navigation/draft.json",
+    "file": "133-draft.json.gz",
+    "rawSha256": "5af197795d543f91ea3f9c9f480b213a39766ac913e42ab219e100063d52f452",
+    "archiveSha256": "51e601c12a81a1f9280b8d6f599a6039596afba83aa15d198952d0bda367f2b0",
+    "bytes": 906,
+    "lines": 18
+  },
+  {
+    "source": "repository-qa-source-navigation/focused-0.log",
+    "file": "134-focused-0.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "repository-qa-source-navigation/focused-1.log",
+    "file": "135-focused-1.log.gz",
+    "rawSha256": "af62a81a6f29314f7e5ebf295f1f6623468661961442ab8e75f163495d0d077a",
+    "archiveSha256": "56351696dc59ff7ed4cc68dc70403ee4a5409b385d3088e22cec827706f0a1ac",
+    "bytes": 580,
+    "lines": 14
+  },
+  {
+    "source": "repository-qa-source-navigation/focused-2.log",
+    "file": "136-focused-2.log.gz",
+    "rawSha256": "5df615f0a76dec2a93525c91ba7c3cc919922b9aaf1a41b67f015a8eefbb6344",
+    "archiveSha256": "3cb552987f0d0eea25319185a42a1f34c2cefce03a9eb13b875dfead4770ad2b",
+    "bytes": 193,
+    "lines": 2
+  },
+  {
+    "source": "repository-qa-source-navigation/focused-3.log",
+    "file": "137-focused-3.log.gz",
+    "rawSha256": "f9e8ecdc6e50d58a0830bdc2536597f29f2d4b7e1d0bc161cb6ee95b66bb43e2",
+    "archiveSha256": "01594d576a155139f67ce815ad7e8e0b98616e07e6584c044573ce3888448afa",
+    "bytes": 17946,
+    "lines": 141
+  },
+  {
+    "source": "repository-qa-source-navigation/focused-results.json",
+    "file": "138-focused-results.json.gz",
+    "rawSha256": "66903188b9955f4d1e2de86d62b3c6d81cff6276cb6ea74eee282b23ed05d7a1",
+    "archiveSha256": "363161addbb41631de67b208b7170efb51c9515cc39292dc292c81c1df1d60a0",
+    "bytes": 1360,
+    "lines": 47
+  },
+  {
+    "source": "repository-qa-source-navigation/js_agentic_crate_history_repository_qa.mjs",
+    "file": "139-js_agentic_crate_history_repository_qa.mjs.gz",
+    "rawSha256": "bffa47e9bd24c046a966ae8a4fadee6fed98c4fde2e50cf131b5fe0f43576a22",
+    "archiveSha256": "8c253da7aa303511fcf425ccf614587ea7a5f8e59742a2d62cafb4c8ec2eaafd",
+    "bytes": 7405,
+    "lines": 198
+  },
+  {
+    "source": "repository-qa-source-navigation/rust_src_history_context_repository_qa.rs",
+    "file": "140-rust_source_history_context_repository_qa.rs.gz",
+    "rawSha256": "96d927dc0978cba0e7d42fae8cfb5e5f64195606f69e095d65eb9caf4f9a032a",
+    "archiveSha256": "e2a8798d2f8298af56bae33bc2e0152bad707dc2af83fdda2335532890ed76ce",
+    "bytes": 15672,
+    "lines": 449
+  },
+  {
+    "source": "repository-qa-source-navigation/rust_tests_unit_issue_1180_repository_qa.rs",
+    "file": "141-rust_tests_unit_issue_1180_repository_qa.rs.gz",
+    "rawSha256": "ca20034df4ea43cdbf36d4c2dd1430e1993c9df253c4af9585279310edc1b086",
+    "archiveSha256": "d678d9d8e020f2209fadb0625e0a259c12844be535bb1a8b4a177aa4d44c10f3",
+    "bytes": 6225,
+    "lines": 161
+  },
+  {
+    "source": "repository-qa-source-navigation/rust_tests_web_issue-1180-repository-qa.test.mjs",
+    "file": "142-rust_tests_web_issue-1180-repository-qa.test.mjs.gz",
+    "rawSha256": "6a66c58292c07f9fa556aedfca769297d704f749bcb85eaa82afd62b5d61f9fe",
+    "archiveSha256": "ade6c0c220c3d8541e176130607e3f0ea97e363932e1a4387012f0a3f79da24e",
+    "bytes": 5386,
+    "lines": 92
+  },
+  {
+    "source": "repository-qa-stale-navigation.before-wrapper.log",
+    "file": "143-repository-qa-stale-navigation.before-wrapper.log.gz",
+    "rawSha256": "38ae34cbd513c104b415fcdeec0ff12859126c4451035db84ccc55137e1ec835",
+    "archiveSha256": "b7746ab4798bbbcc68d3c0d3974bbf2de286366c217130bf15028d40ec958f94",
+    "bytes": 69,
+    "lines": 1
+  },
+  {
+    "source": "review-bd6-draft-diff.log",
+    "file": "144-review-bd6-draft-diff.log.gz",
+    "rawSha256": "2b8327ec2b9f6f4534c19fa808f1e9e17a1f15af3b7a09e27906bc04678114f9",
+    "archiveSha256": "cabd08f5e0220c58de0e8ad7b9b5bfb808e444c5403108cdc8ef2b9a5da62a5f",
+    "bytes": 291,
+    "lines": 8
+  },
+  {
+    "source": "review-bd6-draft-diff.py",
+    "file": "145-review-bd6-draft-diff.py.gz",
+    "rawSha256": "de084b416c0ba00cf545c1805dd087186fa3c4090b6f355eb37d39069caf8a90",
+    "archiveSha256": "a8a178f54469b6da18e3106620fefb36728d607955bef488670049113ccaec8f",
+    "bytes": 1226,
+    "lines": 11
+  },
+  {
+    "source": "review-bd6-final-projection.log",
+    "file": "146-review-bd6-final-projection.log.gz",
+    "rawSha256": "165834b92ca6ea5af8a8f38df41b6be58b9bf38d739f44ec26ce117d500b39f5",
+    "archiveSha256": "871db78b68329f4a699846be7169e043db8ff7a391fdf1dea23ea3399f5800a6",
+    "bytes": 313,
+    "lines": 4
+  },
+  {
+    "source": "review-bd6-final-projection.py",
+    "file": "147-review-bd6-final-projection.py.gz",
+    "rawSha256": "5257811aeea2ca7d09aec26723445011187a3bd3f1dcc6a313b1c7484cc48896",
+    "archiveSha256": "20e740051529321b8eaf65432bb2e925ecf5019d773a037448c337c7b519dcdd",
+    "bytes": 585,
+    "lines": 8
+  },
+  {
+    "source": "run-bd6-all-javascript-gates.log",
+    "file": "148-run-bd6-all-javascript-gates.log.gz",
+    "rawSha256": "4d3f706127ea7bf7d13d431b12d0ca9f7aaf8280e1fbd61018f5023596d6a0c9",
+    "archiveSha256": "e96b2975d781a84b27060f763379413fa0b0ae1b98677ad1c31545ec665034a7",
+    "bytes": 213,
+    "lines": 4
+  },
+  {
+    "source": "run-bd6-all-javascript-gates.py",
+    "file": "149-run-bd6-all-javascript-gates.py.gz",
+    "rawSha256": "a99654415e1aa9b1766a43b2793ff3432a1220f9e31b565609c5080ae6c6c96c",
+    "archiveSha256": "4e78cb5cd8fda3fcf71f8450f0c45ffd6f3055586488b1317d0bb7c0e1bc1f3d",
+    "bytes": 1951,
+    "lines": 25
+  },
+  {
+    "source": "seal-bd6-ci-repair-batch.log",
+    "file": "150-seal-bd6-ci-repair-batch.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "source": "seal-bd6-ci-repair-batch.py",
+    "file": "151-seal-bd6-ci-repair-batch.py.gz",
+    "rawSha256": "97ca22e810b3137bd09f28a05d56b958d0fac9813ca98da8511ab998c81f3daa",
+    "archiveSha256": "6a133d50f0b5698147deae76135e4a45c1242f7344d7d751dd7166c5cd34e8e8",
+    "bytes": 15806,
+    "lines": 146
+  },
+  {
+    "source": "verify-bd6-ci-repairs.log",
+    "file": "152-verify-bd6-ci-repairs.log.gz",
+    "rawSha256": "5360a28a92c955f6020c8f9766262c5b9bdd9b3e3d558b7d6349ab1f25b59717",
+    "archiveSha256": "e11ede4d7c8da0eb578621de12e49314dcfc71ddc54198d3c1871bacd8231f04",
+    "bytes": 200,
+    "lines": 4
+  },
+  {
+    "source": "verify-bd6-ci-repairs.py",
+    "file": "153-verify-bd6-ci-repairs.py.gz",
+    "rawSha256": "e5e9064f49ff3ec38fdfae5a92183431c08b35f28d4e27472c6abdcb50c80c84",
+    "archiveSha256": "407c9cf57d4cc1b3c50e419c8a4ceda284c9324c7e0ce2ad8aed9f0b0adb1458",
+    "bytes": 2243,
+    "lines": 29
+  },
+  {
+    "source": "verify-bd6-ci-repairs.retry.log",
+    "file": "154-verify-bd6-ci-repairs.retry.log.gz",
+    "rawSha256": "e135d37b3b08ffa9fa70c1004aa466f37e4944fe7e5e2b906c1f4aca17fc3af2",
+    "archiveSha256": "f9c5075d5438d69d53f8a4ad071221c6f87058c90f57ea6e58a357e9da5d74e2",
+    "bytes": 206,
+    "lines": 4
+  },
+  {
+    "source": "verify-bd6-final-draft.log",
+    "file": "155-verify-bd6-final-draft.log.gz",
+    "rawSha256": "1ec65788dbf648f6dc2b839663573db30ca5d1c27ba47beaebcba7e40c28d9c2",
+    "archiveSha256": "2ff369f2deaca52973d887e232b19d2e82a8b86d938181ea978e188404d4332e",
+    "bytes": 209,
+    "lines": 4
+  },
+  {
+    "source": "verify-bd6-final-draft.py",
+    "file": "156-verify-bd6-final-draft.py.gz",
+    "rawSha256": "3bb7b56e32463940f4027b9cceec2a430f8234cdbdd5aca44122ee09c4e342ff",
+    "archiveSha256": "12d9914ec750f9b89978ae23e9649441e72702d09a1a86dabdff31ed4db89ccd",
+    "bytes": 2790,
+    "lines": 36
+  },
+  {
+    "source": "verify-bd6-preserved-ci-identities.log",
+    "file": "157-verify-bd6-preserved-ci-identities.log.gz",
+    "rawSha256": "1da0451288e793c57b35c3f089fa0d0c8dc3b19b78bb7f356370ad5d4aed30b5",
+    "archiveSha256": "4dc6792ba9aae7eac47af5cc11ef12cf53a2e746d2b2dbb1083f931e3eea3e9b",
+    "bytes": 3397,
+    "lines": 86
+  },
+  {
+    "source": "verify-bd6-preserved-ci-identities.py",
+    "file": "158-verify-bd6-preserved-ci-identities.py.gz",
+    "rawSha256": "cf62d8a1262f1001e55bda5af4e9725291915db111c24e68cd49db384dbfa85e",
+    "archiveSha256": "0fdf16ee6d16c02c64c569d43df2d3d7497f57cee12d42aeb96092e528ad62a3",
+    "bytes": 1465,
+    "lines": 21
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-30-31.525Z.json",
+    "file": "command-2026-11-21T02-30-31.525Z.json.gz",
+    "rawSha256": "51697d5fd55b061b850cb157fda8e0c9dfd28c2003eddbc5046897f434bb15c3",
+    "archiveSha256": "e45ec6207c1307e551eefa27f2fe67071c3335d547decb587a25993e7b9d7944",
+    "bytes": 34133,
+    "lines": 11
+  },
+  {
+    "source": "experiments/issue-1580/evidence/commands/2026-11-21T02-37-46.172Z.json",
+    "file": "command-2026-11-21T02-37-46.172Z.json.gz",
+    "rawSha256": "f60ab4fdbf39e32beb1fd77e8e5449bc1d8d3be5a36bb5750cf660ebbac6b27b",
+    "archiveSha256": "2990fb781e7c67422a708ab4b8a2bab9722d1e976370a1102e85648a72920f9a",
+    "bytes": 1229,
+    "lines": 11
+  }
+]

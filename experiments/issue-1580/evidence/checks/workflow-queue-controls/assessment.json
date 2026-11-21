@@ -1,0 +1,19 @@
+{
+  "officialReleaseIdentity": {
+    "officialRelease": "https://github.com/rhysd/actionlint/releases/tag/v1.7.12",
+    "releaseAssetSha256": "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8",
+    "releaseAssetDigestVerified": true,
+    "binarySha256": "c872d6db8c6bf83a8eaa704fc93999f027d55dffbc63b8a6abdccb47df5f4cd4",
+    "configurationSha256": "bbc1baf164efb5b3be8bb8f6c72745acc237dc32d30d9ae51bbf5c730531c9f8",
+    "scope": "schema only; ShellCheck and Pyflakes intentionally disabled for no shell/Python findings",
+    "fullIssueComplete": false,
+    "independentAuthorshipCredit": 0
+  },
+  "officialActionlintAcceptedInvalidPolicies": 3,
+  "companionRejectedThosePolicies": true,
+  "focusedControlsPassed": 13,
+  "actualHostedCompanionVerified": false,
+  "expressionOutcomesStaticallyProven": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

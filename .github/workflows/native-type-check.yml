@@ -2,21 +2,27 @@ name: Native type and lint check
 
 # Issue #1191: PR #1497 passed every PR check, then main failed with E0308
 # (run 43710854562) and, once that was fixed, with clippy::manual_contains
-# (run 43730270231), since no PR job ran rustc. This is the one focused
-# native check a PR runs: main's clippy profile on the library and binaries,
-# called from release.yml when a Rust compile input changed or the
-# classification is unknown. It uploads nothing and records no receipt.
-# The isolated regressions verify native calendar, currency, OpenAI and localized procedure behavior.
+# (run 43730270231), since no PR job ran rustc. This focused workflow runs
+# main's clippy profile on the library and binaries,
+# called from release.yml on every PR, compiling when a Rust input changed
+# or the classification is unknown. Only deterministic fixture data is retained;
+# the focused lane publishes no products or semantic authorization.
+# The isolated regressions verify native calendar, currency, OpenAI, executor and localized procedure behavior.
 # Main still runs full lint, tests and every build.
 on:
   workflow_call:
+    inputs:
+      compile-inputs-changed:
+        description: Compile when inputs changed or their classification is unknown
+        type: boolean
+        default: true
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-native-type-check
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: ${{ github.workflow }}-${{ github.ref }}-native-type-check${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
 
 env:
   CARGO_NET_RETRY: '10'
@@ -33,8 +39,17 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v7
-        timeout-minutes: 4
+      - name: Report unchanged compile inputs
+        if: ${{ !inputs.compile-inputs-changed }}
+        run: echo '::notice::Rust compile inputs unchanged; required check is satisfied without compiling.'
+      # A promisor-blob transfer can fail after the initial fetch succeeds.
+      # Keep the original four-minute checkout allowance across both attempts.
+      - name: Check out native inputs
+        id: native-checkout
+        continue-on-error: true
+        uses: actions/checkout@v7
+        if: ${{ inputs.compile-inputs-changed }}
+        timeout-minutes: 2
         env:
           GIT_HTTP_LOW_SPEED_LIMIT: '1024'
           GIT_HTTP_LOW_SPEED_TIME: '20'
@@ -45,48 +60,122 @@ jobs:
           sparse-checkout: |
             /*
             !/dev/log/
-            !/experiments/*
-            /experiments/dynamic-meta/
-            /experiments/issue_859_codex_e2e/
-            /experiments/js_dogfood/
+            /dev/log/issues/1079/pulls/1080/upstream-reports/
+            !/experiments/**
+            /experiments/**/*.sh
+            /experiments/dynamic-meta/**
+            /experiments/js_dogfood/**
+            /experiments/issue_859_codex_e2e/**
+            /experiments/issue-1580/release-registry/
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
           sparse-checkout-cone-mode: false
+      - name: Retry native input checkout once
+        id: native-checkout-retry
+        continue-on-error: true
+        uses: actions/checkout@v7
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-checkout.outcome == 'failure' }}
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            /dev/log/issues/1079/pulls/1080/upstream-reports/
+            !/experiments/**
+            /experiments/**/*.sh
+            /experiments/dynamic-meta/**
+            /experiments/js_dogfood/**
+            /experiments/issue_859_codex_e2e/**
+            /experiments/issue-1580/release-registry/
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
+          sparse-checkout-cone-mode: false
+      - name: Require a successful native checkout
+        if: ${{ inputs.compile-inputs-changed }}
+        env:
+          INITIAL_OUTCOME: ${{ steps.native-checkout.outcome }}
+          RETRY_OUTCOME: ${{ steps.native-checkout-retry.outcome }}
+        run: |
+          if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then
+            echo '::error::Native input checkout failed after two bounded attempts.' >&2
+            exit 1
+          fi
       - uses: dtolnay/rust-toolchain@stable
+        if: ${{ inputs.compile-inputs-changed }}
         with:
           components: clippy
       - uses: ./.github/actions/setup-sccache
+        if: ${{ inputs.compile-inputs-changed }}
       - uses: ./.github/actions/cache-cargo-registry
+        if: ${{ inputs.compile-inputs-changed }}
         with:
           restore-only: 'true'
       - name: Type-check and lint the library and binaries
+        id: native-lint
+        if: ${{ inputs.compile-inputs-changed }}
         run: bash scripts/ci-clippy-profile.sh --library-and-binaries
-      - name: Verify calendar, currency, forced OpenAI function and CNL behavior
+      - uses: actions/setup-node@v7
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        with: {node-version: 22}
+      - name: Install the pinned workflow parser
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies
+          mkdir -p node_modules
+          ln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml
+      - name: Verify isolated native behavior regressions
+        if: ${{ inputs.compile-inputs-changed }}
         env:
           CARGO_BUILD_JOBS: '2'
-          CARGO_PROFILE_TEST_OPT_LEVEL: '0'
-        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity -- --test-threads=1
-      - uses: actions/setup-node@v7
-        with: {node-version: 22}
+          # Inherit profile.test: optimized computation with assertions and overflow checks.
+          # Routing assertions use committed captures; fixture transports opt in explicitly.
+          FORMAL_AI_OFFLINE: '1'
+        run: bash scripts/ci-native-regressions.sh core
+      - name: Verify native unresolved-language source binding
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        env:
+          CARGO_BUILD_JOBS: '2'
+        run: |
+          regression_status=0
+          cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?
+          cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?
+          exit "$regression_status"
       - name: Replay the forced function requests against the native CLI
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs
       - name: Replay structured output and refusals against the native CLI
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs
       - name: Replay localized procedures and issue reporting against the native CLI
         id: report-http
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs
       - uses: oven-sh/setup-bun@v2
         id: bun
-        if: ${{ !cancelled() && (success() || steps.report-http.outcome == 'failure') }}
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         with:
           bun-version-file: .bun-version
           no-cache: true
       - name: Replay Codex Default mode reporting against the native CLI
-        if: ${{ !cancelled() && steps.bun.outcome == 'success' }}
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' && steps.bun.outcome == 'success' }}
         timeout-minutes: 2
         env:
           BIN: ${{ github.workspace }}/rust/target/debug/formal-ai
@@ -94,9 +183,150 @@ jobs:
           SCENARIO: report
         run: bash experiments/issue_859_codex_e2e/run.sh
       - name: Replay dynamic meta authorization and receipts through the native gateway
-        if: ${{ !cancelled() && steps.bun.outcome == 'success' }}
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' && steps.bun.outcome == 'success' }}
         env:
           FORMAL_AI_DYNAMIC_META_NATIVE: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: |
           bun install --frozen-lockfile --ignore-scripts
           node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs
+      - name: Stage deterministic Google Trends fixtures from the native driver
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        env:
+          CARGO_BUILD_JOBS: '2'
+          CARGO_PROFILE_DEV_OPT_LEVEL: '0'
+          FORMAL_AI_OFFLINE: '1'
+          CATALOG_OUTPUT: ${{ runner.temp }}/google-trends-fixtures
+        run: |
+          cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog
+          rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"
+          {
+            git rev-parse HEAD 'HEAD^{tree}'
+            rustc -vV
+            sha256sum rust/target/debug/examples/dump_google_trends_catalog rust/examples/dump_google_trends_catalog.rs rust/src/google_trends_catalog.rs data/seed/google-trends-prompts.lino
+          } > "$CATALOG_OUTPUT/generation-identity.txt"
+      - name: Retain actual Google Trends fixture projections
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: google-trends-native-fixtures
+          path: ${{ runner.temp }}/google-trends-fixtures
+          if-no-files-found: error
+          retention-days: 7
+
+  # Run 44648187857 compiled successfully, then spent 637 seconds on coding
+  # alone. Separate families keep coverage within the existing 20-minute clock.
+  contract-family:
+    name: Native contracts (${{ matrix.group }})
+    if: ${{ inputs.compile-inputs-changed }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        group: [coding, reasoning-1, reasoning-2, benchmarks, interfaces, hive-1, hive-2, hive-3]
+    env:
+      CARGO_BUILD_JOBS: '2'
+      FORMAL_AI_OFFLINE: '1'
+    steps:
+      # A promisor-blob transfer can fail after the initial fetch succeeds.
+      # Keep the original four-minute checkout allowance across both attempts.
+      - name: Check out native inputs
+        id: native-checkout
+        continue-on-error: true
+        uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            !/experiments/**
+            /experiments/**/*.sh
+            /experiments/issue-1580/release-registry/
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
+          sparse-checkout-cone-mode: false
+      - name: Retry native input checkout once
+        id: native-checkout-retry
+        continue-on-error: true
+        uses: actions/checkout@v7
+        if: ${{ !cancelled() && steps.native-checkout.outcome == 'failure' }}
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            !/experiments/**
+            /experiments/**/*.sh
+            /experiments/issue-1580/release-registry/
+            /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json
+          sparse-checkout-cone-mode: false
+      - name: Require a successful native checkout
+        env:
+          INITIAL_OUTCOME: ${{ steps.native-checkout.outcome }}
+          RETRY_OUTCOME: ${{ steps.native-checkout-retry.outcome }}
+        run: |
+          if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then
+            echo '::error::Native input checkout failed after two bounded attempts.' >&2
+            exit 1
+          fi
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
+      - uses: actions/setup-node@v7
+        with: {node-version: 22}
+      - name: Verify the complete selected contract family
+        run: bash scripts/ci-native-regressions.sh "${{ matrix.group }}"
+
+  release-registry:
+    name: Release registry scripts
+    if: ${{ inputs.compile-inputs-changed }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      CARGO_BUILD_JOBS: '2'
+      CARGO_TARGET_DIR: ${{ github.workspace }}/rust/target/release-registry
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /scripts/
+            /.github/actions/cache-cargo-registry/
+            /experiments/issue-1580/release-registry/
+          sparse-checkout-cone-mode: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
+      - name: Verify real release registry requests and CLI decisions
+        run: |
+          cargo test --manifest-path experiments/issue-1580/release-registry/Cargo.toml --locked --lib --test assemble_requirements --test normalize_ordered_lists --test self_hosting_metric -- --test-threads=1 --nocapture
+          python3 experiments/issue-1580/release-registry/cli_regressions.py

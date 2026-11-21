@@ -410,7 +410,7 @@ client_integrations
       temp_home_env "GEMINI_CLI_HOME"
       temp_home_config_path ".gemini/settings.json"
       temp_home_json_set "security.auth.selectedType={google_auth_type}"
-      temp_home_json_set "modelConfigs.overrides=json+:[{\"match\":{\"model\":\"{model}\"},\"modelConfig\":{\"generateContentConfig\":{\"maxOutputTokens\":{max_output_tokens}}}}]"
+      temp_home_json_set 'modelConfigs.overrides=json+:[{"match":{"model":"{model}"},"modelConfig":{"generateContentConfig":{"maxOutputTokens":{max_output_tokens}}}}]'
       model_arg "-m"
       model_arg_position "before_args"
       orchestration_arg "--skip-trust"
@@ -437,7 +437,7 @@ client_integrations
         kind "json"
         backup_suffix ".formal-ai.bak"
         json_set "security.auth.selectedType={google_auth_type}"
-        json_set "modelConfigs.overrides=json+:[{\"match\":{\"model\":\"{model}\"},\"modelConfig\":{\"generateContentConfig\":{\"maxOutputTokens\":{max_output_tokens}}}}]"
+        json_set 'modelConfigs.overrides=json+:[{"match":{"model":"{model}"},"modelConfig":{"generateContentConfig":{"maxOutputTokens":{max_output_tokens}}}}]'
         headless_require "json=.gemini/settings.json:security.auth.selectedType"
   tool "claude"
     label "Claude Code"
@@ -489,7 +489,7 @@ client_integrations
       companion ".claude/settings.json"
         kind "json"
         backup_suffix ".formal-ai.bak"
-        json_set "permissions.allow=json+:[\"Read\",\"Glob\",\"Grep\",\"WebFetch\",\"WebSearch\"]"
+        json_set 'permissions.allow=json+:["Read","Glob","Grep","WebFetch","WebSearch"]'
   tool "qwen"
     label "Qwen Code"
     command "qwen"

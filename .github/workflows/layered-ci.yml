@@ -175,8 +175,8 @@ jobs:
       GIT_HTTP_LOW_SPEED_LIMIT: '1024'
       GIT_HTTP_LOW_SPEED_TIME: '30'
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-tier-changes
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-tier-changes${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     outputs:
       js-changed: ${{ steps.changes.outputs.js-changed }}
       ts-changed: ${{ steps.changes.outputs.ts-changed }}
@@ -226,8 +226,8 @@ jobs:
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-source-networks-${{ matrix.shard }}
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-source-networks-${{ matrix.shard }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -283,15 +283,20 @@ jobs:
     # 77s. By run 43693412224 (2026-11-15) it was 1283s of test time on four
     # cores and the single group was terminated at 361s; other PRs that day
     # took 220s and 279s with the 75% budget warning. PRs now split the
-    # selected files over two longest-first groups.
+    # selected files over two longest-first groups. Run 44679541559 exhausted
+    # group 2 with stale weights (13.7s for a measured 189.8s suite). Four
+    # groups retained that fast inventory. Issue #1580 removes the hosted
+    # subset: PRs, feature dispatches and main use the same full default suite,
+    # eight longest-first groups and unchanged execution budgets. The explicit
+    # fast inventory remains available for local development only.
     timeout-minutes: 12
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     strategy:
       fail-fast: false
       matrix:
-        shard: ${{ fromJSON((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && '[1,2]' || '[1,2,3,4,5,6,7,8]') }}
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 5
@@ -302,11 +307,35 @@ jobs:
           persist-credentials: false
           fetch-depth: 1
           filter: blob:none
+          # Keep consumed client transcripts, session operands and language logs
+          # while excluding historical archives from this JavaScript test checkout.
           sparse-checkout: |
             /*
             !/experiments/formal_ai_subagent/evidence/coordinator-1188/
             !/dev/log/
             /dev/log/issues/702/pulls/818/agent-cli/
+            !/docs/case-studies/**/*.gz
+            !/docs/case-studies/**/*.log
+            !/docs/case-studies/**/*.zip
+            !/docs/case-studies/**/*.tgz
+            !/docs/case-studies/**/*.diff
+            !/experiments/*/evidence/**/*.gz
+            !/experiments/*/evidence/**/*.log
+            !/experiments/*/evidence/**/*.zip
+            !/experiments/*/evidence/**/*.tgz
+            !/experiments/*/evidence/**/*.diff
+            /docs/case-studies/issue-717/e2e-npm-ci.log
+            /docs/case-studies/issue-896/self-hosting-authorship/agent-cli.log
+            /docs/case-studies/issue-896/self-hosting-authorship/formal-ai.log
+            /docs/case-studies/issue-932/raw-data/verify-*.log
+            /docs/case-studies/issue-982/self-hosting/contract/*.gz
+            /experiments/issue-1580/evidence/ci/main-826289fc/cli/opencode-interactive-proxy.jsonl.gz
+            /experiments/issue-1580/evidence/ci/main-826289fc/cli/qwen-interactive-proxy.jsonl.gz
+            /experiments/issue-1580/evidence/ci/native-families-7fce5c19/job-136011692528.stdout.gz
+            /experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959548.stdout.gz
+            /experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959657.stdout.gz
+            /experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-136489959672.stdout.gz
+            /experiments/issue-1580/evidence/checks/native-reasoning-budget/job-136423862321.stdout.gz
           sparse-checkout-cone-mode: false
       - name: Report DRY review and language coverage
         if: matrix.shard == 1
@@ -383,6 +412,27 @@ jobs:
         run: bash scripts/install-agentic-search-tools.sh
       - name: Provision the actual pinned source-model frontend
         uses: ./.github/actions/setup-source-model
+      - name: Plan this shard of the JavaScript suites
+        id: javascript-plan
+        env:
+          SHARD: ${{ matrix.shard }}
+          SHARDS: 8
+        run: |
+          set -euo pipefail
+          suites="$RUNNER_TEMP/javascript-suites.txt"
+          printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
+          node scripts/plan-test-shards.mjs --of "$SHARDS" --durations data/meta/javascript-test-durations.lino --check < "$suites"
+          node scripts/plan-test-shards.mjs --shard "$SHARD" --of "$SHARDS" --durations data/meta/javascript-test-durations.lino < "$suites" > "$RUNNER_TEMP/javascript-shard.txt"
+          if grep -Fxq 'rust/tests/web/issue-1580-template-observations.test.mjs' "$RUNNER_TEMP/javascript-shard.txt"; then
+            printf 'python-required=true\n' >> "$GITHUB_OUTPUT"
+          else
+            printf 'python-required=false\n' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Set up Python for the pinned template observations
+        if: steps.javascript-plan.outputs.python-required == 'true'
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.15.2'
       # Issue #1486: the captured draft replays and contract tests mapped to
       # the changed components (data/benchmarks/focused-test-map.json) run
       # first, so a planner, adapter or workflow regression fails in seconds,
@@ -413,8 +463,8 @@ jobs:
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 2 || 8 }}
-          FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
+          SHARDS: 8
+          PULL_REQUEST_CHECKS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75
         # PR #1188: the suite files are planned longest-first from
@@ -424,17 +474,10 @@ jobs:
         # exactly one shard, and a shard's files run on every core, longest first.
         run: |
           set -euo pipefail
-          if [[ "$FAST_PR_PROFILE" == 'true' && "$SHARD" == '1' ]]; then
+          if [[ "$PULL_REQUEST_CHECKS" == 'true' && "$SHARD" == '1' ]]; then
             python3 -m unittest discover -s experiments/issue_916_write_effect_ladder -p test_ladder.py
           fi
-          suites="$RUNNER_TEMP/javascript-suites.txt"
-          if [[ "$FAST_PR_PROFILE" == 'true' ]]; then
-            node scripts/list-fast-pull-request-tests.mjs > "$suites"
-          else
-            printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
-          fi
-          node scripts/plan-test-shards.mjs --of "$SHARDS" --durations data/meta/javascript-test-durations.lino --check < "$suites"
-          mapfile -t files < <(node scripts/plan-test-shards.mjs --shard "$SHARD" --of "$SHARDS" --durations data/meta/javascript-test-durations.lino < "$suites")
+          mapfile -t files < "$RUNNER_TEMP/javascript-shard.txt"
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "JavaScript suites shard $SHARD/$SHARDS" \
             node scripts/run-ordered-javascript-tests.mjs --concurrency "$(nproc)" "${files[@]}"
@@ -454,8 +497,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-provers
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-provers${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     env:
       LEAN_VERSION: 4.34.1
     steps:
@@ -519,8 +562,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-js-rust
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-js-rust${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -572,8 +615,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-ts
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-ts${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 2
@@ -629,8 +672,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-rust
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-rust${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -672,8 +715,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -700,8 +743,8 @@ jobs:
 
   server-parity-diagnostic:
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity-diagnostic
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity-diagnostic${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     name: Explicit server parity diagnostic from existing main binary
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (github.event_name == 'workflow_dispatch' && inputs.diagnostic-native-run != '') }}
     runs-on: ubuntu-24.04
@@ -737,9 +780,7 @@ jobs:
             if (selected.length !== 1) throw Error('DiagnosticProducerArtifactUnavailable');
             core.notice(JSON.stringify({scope:'diagnostic-only; no release or current-head acceptance',producerRun:runId,producerSource:source,artifactId:selected[0].id,artifactDigest:selected[0].digest ?? null}));
       - name: Reuse the actual CI native binary without rebuilding
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.github/actions/download-artifact
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ inputs.diagnostic-native-run }}

@@ -1,0 +1,245 @@
+{
+  "failures": [
+    {
+      "line": 25611,
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "test": "capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses"
+    },
+    {
+      "line": 25675,
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "test": "ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait"
+    },
+    {
+      "line": 25779,
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin"
+    },
+    {
+      "line": 25785,
+      "job": "Test (ubuntu-24.04 / full) shard 6/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian"
+    },
+    {
+      "line": 29675,
+      "job": "Test (ubuntu-24.04 / full) shard 3/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::a_verified_work_item_is_committed_and_pushed_to_the_named_branch"
+    },
+    {
+      "line": 29680,
+      "job": "Test (ubuntu-24.04 / full) shard 3/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands"
+    },
+    {
+      "line": 29930,
+      "job": "Test (ubuntu-24.04 / full) shard 3/8",
+      "test": "solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface"
+    },
+    {
+      "line": 33487,
+      "job": "Test (ubuntu-24.04 / full) shard 8/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language"
+    },
+    {
+      "line": 33491,
+      "job": "Test (ubuntu-24.04 / full) shard 8/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language"
+    },
+    {
+      "line": 33503,
+      "job": "Test (ubuntu-24.04 / full) shard 8/8",
+      "test": "issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity"
+    },
+    {
+      "line": 33576,
+      "job": "Test (ubuntu-24.04 / full) shard 8/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish"
+    },
+    {
+      "line": 33707,
+      "job": "Test (ubuntu-24.04 / full) shard 8/8",
+      "test": "pull_request_1188_fix_gaps::g102_a_file_described_rather_than_given_is_never_written"
+    },
+    {
+      "line": 37419,
+      "job": "Test (ubuntu-24.04 / full) shard 5/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_chinese"
+    },
+    {
+      "line": 37466,
+      "job": "Test (ubuntu-24.04 / full) shard 5/8",
+      "test": "issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures"
+    },
+    {
+      "line": 42908,
+      "job": "Test (ubuntu-24.04 / specification) shard 2/4",
+      "test": "specification::synthesis::renumbered_word_problem_recomputes_from_quantities"
+    },
+    {
+      "line": 47253,
+      "job": "Test (ubuntu-24.04 / full) shard 2/8",
+      "test": "formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback"
+    },
+    {
+      "line": 50790,
+      "job": "Test (ubuntu-24.04 / full) shard 7/8",
+      "test": "issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome"
+    },
+    {
+      "line": 54337,
+      "job": "Test (ubuntu-24.04 / full) shard 4/8",
+      "test": "ci_cd::ci_warning_audit::audited_warning_band_sources_stay_below_their_limits"
+    },
+    {
+      "line": 54491,
+      "job": "Test (ubuntu-24.04 / full) shard 4/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder"
+    },
+    {
+      "line": 54492,
+      "job": "Test (ubuntu-24.04 / full) shard 4/8",
+      "test": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_hindi"
+    },
+    {
+      "line": 58302,
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "test": "specification::reasoning_loop::step_6_candidates_are_validated_against_constraints"
+    },
+    {
+      "line": 58357,
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "test": "specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage"
+    },
+    {
+      "line": 58359,
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "test": "specification::synthesis::decomposed_sub_results_are_composed_for_algebra"
+    },
+    {
+      "line": 58360,
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "test": "specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value"
+    },
+    {
+      "line": 58368,
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "test": "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver"
+    },
+    {
+      "line": 58379,
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "test": "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order"
+    },
+    {
+      "line": 58406,
+      "job": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "test": "specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation"
+    },
+    {
+      "line": 73432,
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "test": "specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts"
+    },
+    {
+      "line": 73433,
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "test": "specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace"
+    },
+    {
+      "line": 73434,
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "test": "specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit"
+    },
+    {
+      "line": 73435,
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "test": "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case"
+    },
+    {
+      "line": 73535,
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "test": "specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage"
+    },
+    {
+      "line": 73789,
+      "job": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "test": "specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation"
+    },
+    {
+      "line": 78918,
+      "job": "Test (ubuntu-24.04 / full)",
+      "test": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule"
+    },
+    {
+      "line": 79041,
+      "job": "Test (ubuntu-24.04 / full)",
+      "test": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content"
+    },
+    {
+      "line": 79042,
+      "job": "Test (ubuntu-24.04 / full)",
+      "test": "issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified"
+    },
+    {
+      "line": 79061,
+      "job": "Test (ubuntu-24.04 / full)",
+      "test": "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification"
+    },
+    {
+      "line": 79312,
+      "job": "Test (ubuntu-24.04 / full)",
+      "test": "solver::issue_869_meeting_scheduling::reported_meeting_prompt_names_participant_time_and_zone"
+    }
+  ],
+  "results": [
+    {
+      "line": 26241,
+      "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T19:46:26.8754729Z test result: FAILED. 535 passed; 4 failed; 2 ignored; 0 measured; 5014 filtered out; finished in 888.96s"
+    },
+    {
+      "line": 30101,
+      "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-17T19:45:00.7674464Z test result: FAILED. 539 passed; 3 failed; 0 ignored; 0 measured; 5013 filtered out; finished in 748.09s"
+    },
+    {
+      "line": 33984,
+      "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-17T19:44:06.5141443Z test result: FAILED. 537 passed; 5 failed; 2 ignored; 0 measured; 5011 filtered out; finished in 764.24s"
+    },
+    {
+      "line": 37754,
+      "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T19:48:50.7062709Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 42992,
+      "text": "Test (ubuntu-24.04 / specification) shard 2/4\tUNKNOWN STEP\t2026-11-17T19:33:18.8491543Z test result: FAILED. 294 passed; 1 failed; 0 ignored; 0 measured; 5260 filtered out; finished in 102.16s"
+    },
+    {
+      "line": 47540,
+      "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-17T19:46:26.2330669Z test result: FAILED. 61 passed; 1 failed; 2 ignored; 0 measured; 369 filtered out; finished in 32.87s"
+    },
+    {
+      "line": 51122,
+      "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-17T19:40:21.3602730Z test result: FAILED. 541 passed; 1 failed; 2 ignored; 0 measured; 5011 filtered out; finished in 532.38s"
+    },
+    {
+      "line": 54985,
+      "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-17T19:39:49.7137224Z test result: FAILED. 537 passed; 3 failed; 2 ignored; 0 measured; 5013 filtered out; finished in 474.02s"
+    },
+    {
+      "line": 58631,
+      "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T19:33:51.4575012Z test result: FAILED. 286 passed; 7 failed; 0 ignored; 0 measured; 5262 filtered out; finished in 78.68s"
+    },
+    {
+      "line": 74025,
+      "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T19:36:00.0130324Z test result: FAILED. 300 passed; 6 failed; 1 ignored; 0 measured; 5248 filtered out; finished in 285.52s"
+    },
+    {
+      "line": 79564,
+      "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T19:42:50.2243599Z test result: FAILED. 538 passed; 5 failed; 0 ignored; 0 measured; 5012 filtered out; finished in 457.82s"
+    },
+    {
+      "line": 80099,
+      "text": "Pipeline Status\tFail the run when a required job was cancelled or failed\t2026-11-17T19:49:12.3903730Z ##[error]Pipeline failed. Failing jobs: lint, test"
+    }
+  ],
+  "errors": []
+}

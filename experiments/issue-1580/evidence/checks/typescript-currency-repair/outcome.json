@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "sourceUnchanged": true,
+  "onlyGeneratedProjectionChanged": true,
+  "beforeSha256": "b06ad7c4608310314181370e23effd2f5d9f3447e2a36e44c07e57a1ebaeb15a",
+  "afterSha256": "1c9dbffe797473ed8544e748dc0a137c300056001e3b8aa904ff87eaae964967",
+  "generator": "scripts/translate-es.mjs --write",
+  "failedRun": 44848472242,
+  "originalLogLines": [
+    13034,
+    13035,
+    13036
+  ],
+  "localNativeExecution": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

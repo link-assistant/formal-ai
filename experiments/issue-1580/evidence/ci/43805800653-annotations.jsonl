@@ -1,0 +1,7 @@
+{"line": 18703, "text": "js tier (node --check over js, suite group 7)\tUNKNOWN STEP\t2026-11-16T04:52:13.8230187Z   Failed to check Wayback Machine for https://example.com/fine: Wayback API timed out"}
+{"line": 18763, "text": "js tier (node --check over js, suite group 7)\tUNKNOWN STEP\t2026-11-16T04:52:14.6515928Z ##[error]Process completed with exit code 1."}
+{"line": 21255, "text": "js tier (node --check over js, suite group 2)\tUNKNOWN STEP\t2026-11-16T04:51:18.7420057Z ##[error]Process completed with exit code 1."}
+{"line": 24787, "text": "js tier (node --check over js, suite group 8)\tUNKNOWN STEP\t2026-11-16T04:52:01.1561748Z ✔ timed out actual provider metadata remains Failure (2.41513ms)"}
+{"line": 25024, "text": "js tier (node --check over js, suite group 8)\tUNKNOWN STEP\t2026-11-16T04:52:50.5566642Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step."}
+{"line": 30316, "text": "js tier (node --check over js, suite group 1)\tUNKNOWN STEP\t2026-11-16T04:55:21.5425257Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step."}
+{"line": 31853, "text": "js tier (node --check over js, suite group 1)\tUNKNOWN STEP\t2026-11-16T04:55:21.9942752Z ✔ the real report of run 32454084765 names only the link that timed out (1.876374ms)"}

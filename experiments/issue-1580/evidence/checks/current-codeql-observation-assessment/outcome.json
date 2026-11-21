@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-11-21T03:47:01.558239+00:00",
+  "publishedHead": "27e895c1103926b4f73862c0eb15fa77fb505089",
+  "runId": 44860038851,
+  "allProducerIdentitiesVerified": true,
+  "producerFiles": 142,
+  "commandStreams": 22,
+  "macroRows": 122574,
+  "includedStringRows": 2179,
+  "warningErrorNotifications": 0,
+  "maintainedSourceSizeWarnings": 92,
+  "sourceSizeViolations": 0,
+  "initialAssessmentVocabularyMismatchRetained": true,
+  "unfilteredSourceInventoryIncludesFiveIgnoredSeedCopies": true,
+  "aggregateLiteralReviewComplete": false,
+  "allMacroSemanticsQualified": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

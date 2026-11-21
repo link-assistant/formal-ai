@@ -1,0 +1,91 @@
+{
+  "originalMain": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "records": [
+    {
+      "path": "rust/tests/unit/issue_1157_idempotent_commit.rs",
+      "sha256": "f7c7af77da9ec5b1908fbc81bf44d1f6bdbc91f0a3f04155bd04944bcb64ac33",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 1,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/unit/issue_1158_pull_request_steps.rs",
+      "sha256": "4338b3b9b4fd77c4505edcefd4af577a9c820438a5656d63126a70613152d46e",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": false,
+      "originalFileAvailable": true,
+      "testCount": 1,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/unit/issue_1160_regular_prompt.rs",
+      "sha256": "558c57698015916c8fa27ee8e5f591ba0913650881bab96e3fb370c52d6b728d",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 3,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/hive-mind/offline_delivery.rs",
+      "sha256": "757f8c1331eec0126b4aa4cf1f6125f087894a15d5d8d08f27d8b67bd193dd6f",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 0,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/hive-mind/fake-gh.cjs",
+      "sha256": "78e9cda63b07aede545287882b8be3dcf148df75613c66af2c78e0d5f4e14a7b",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 0,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/hive-mind/formal-ai-prompt.txt",
+      "sha256": "4294d6f7ed329d631eaa977b6e4a1468adcfbc782b33c4e39fc0323182ff1cdf",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 0,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/hive-mind/regular-prompt.txt",
+      "sha256": "35337f8e4a7ee6c758ec48d18b19cf2b0cb9cd9924176c8432f7079c0aecd09a",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 0,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/hive-mind/restart-uncommitted-main-jar.txt",
+      "sha256": "815f2fb08cf9c1533b847ed0d5667b6752c35d1641e0759f12bbcdc73adfa6cb",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 0,
+      "completeSourceLiterallyRead": true
+    },
+    {
+      "path": "rust/tests/fixtures/issue-1162/hello-world-kotlin-issue.md",
+      "sha256": "28c39acc4737806048176608de5e4bc3d0a3e0521be85b314ea3dfdd3a1d0f34",
+      "publishedByteIdentical": true,
+      "originalMainByteIdentical": true,
+      "originalFileAvailable": true,
+      "testCount": 0,
+      "completeSourceLiterallyRead": true
+    }
+  ],
+  "existingNativeTestsAdded": 5,
+  "toolchainPrerequisiteAssertionsAdded": 1,
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

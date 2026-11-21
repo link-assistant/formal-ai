@@ -1,0 +1,123 @@
+{
+  "completeWorkflowCollection": true,
+  "head": "e6ca6bc899a8e846de2dc885d3124547b64fd906",
+  "workflowCount": 23,
+  "success": 22,
+  "failure": 1,
+  "verifiedPayloadHashes": 104,
+  "individualNativePassed": 68,
+  "completedTargetPassed": 47,
+  "unfinishedReasoningTargetPassed": 21,
+  "assertionFailuresObserved": 0,
+  "libraryAndLanguageExecuted": false,
+  "httpExecuted": false,
+  "jobTimeoutMinutes": 20,
+  "nativeCancellationLine": 1744,
+  "failureInventory": [
+    {
+      "job": 135780498020,
+      "lines": [
+        763,
+        768
+      ],
+      "cause": "The published request traces grew fact_live_answer.rs by ten lines and live_search.rs by three, violating exact handler and total ceilings. The next draft shares request logging in EventLog, removes a redundant forwarder, corrects stale transport documentation and lowers the measured baseline by three lines."
+    },
+    {
+      "job": 135780697644,
+      "lines": [
+        1723,
+        1744
+      ],
+      "cause": "All eleven benchmark contracts pass but consume eleven minutes fifty-five seconds serially after earlier targets. The job reaches its unchanged twenty-minute deadline before the other reasoning, synthesis, scheduling, unknown, library and HTTP checks complete. The next draft compiles once and overlaps the serialized benchmark process with other contracts, preserving one test thread per process and both failure statuses."
+    }
+  ],
+  "benchmarks": [
+    {
+      "name": "benchmarks::issue_304_benchmark_fixture_parses_with_windows_line_endings",
+      "line": 1723
+    },
+    {
+      "name": "benchmarks::issue_304_benchmark_research_note_records_provenance",
+      "line": 1724
+    },
+    {
+      "name": "benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts",
+      "line": 1725
+    },
+    {
+      "name": "benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace",
+      "line": 1726
+    },
+    {
+      "name": "benchmarks::issue_315_program_synthesis_accepts_supported_language_wrappers",
+      "line": 1727
+    },
+    {
+      "name": "benchmarks::issue_315_programming_benchmark_cases_synthesize_and_verify",
+      "line": 1728
+    },
+    {
+      "name": "benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit",
+      "line": 1729
+    },
+    {
+      "name": "benchmarks::issue_317_benchmark_suite_grows_with_held_out_ratchet",
+      "line": 1730
+    },
+    {
+      "name": "benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation",
+      "line": 1731
+    },
+    {
+      "name": "benchmarks::issue_326_program_synthesis_accepts_native_operation_verbs",
+      "line": 1732
+    },
+    {
+      "name": "benchmarks::issue_704_portfolio_rescues_the_industry_search_case",
+      "line": 1733
+    }
+  ],
+  "pipelineStatus": {
+    "job": 135793463597,
+    "lines": [
+      211,
+      215
+    ],
+    "correctlyFailsLintAndNativeCancellation": true
+  },
+  "literalReview": {
+    "nativeJob": 135780697644,
+    "ranges": [
+      [
+        1620,
+        1824
+      ]
+    ],
+    "statusJob": 135793463597,
+    "statusRanges": [
+      [
+        1,
+        216
+      ]
+    ],
+    "fastLintJob": 135780498020,
+    "fastLintRanges": [
+      [
+        761,
+        770
+      ],
+      [
+        977,
+        981
+      ]
+    ],
+    "nativeSetupAndCompilerUnread": [
+      1,
+      1619
+    ],
+    "wholeJavascriptLogsRead": false
+  },
+  "limits": "Individually completed native tests count once even in an unfinished target. No unexecuted tests or HTTP result receive credit. All workflow and payload collection completed, but the whole retained compiler/JavaScript logs have not been literally reviewed. Production repair and fixture generation in the next draft remain unverified.",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

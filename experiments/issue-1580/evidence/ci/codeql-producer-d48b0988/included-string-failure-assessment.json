@@ -1,0 +1,24 @@
+{
+  "head": "d48b09883ac91cd1d2319bea2afbaf0df2df8f86",
+  "runId": 44843748460,
+  "runConclusion": "failure",
+  "filesVerified": 136,
+  "includedStringQueryCompiled": true,
+  "includedStringEvaluationComplete": false,
+  "includedStringTableUnavailable": true,
+  "missingExpectedFiles": [
+    "included-string-payloads/manifest.json",
+    "included-string-payloads/included-string-payloads.json",
+    "included-string-payloads/included-string-payloads.bqrs"
+  ],
+  "originalErrors": [
+    {
+      "line": 4819,
+      "text": "CodeQL producer verification (rust)\tObserve included Rust string payloads\t2026-11-21T00:46:12.0911305Z ##[error]The action 'Observe included Rust string payloads' has timed out after 4 minutes."
+    }
+  ],
+  "standardSarifAndMacroProfileAssessment": "macro-observation-assessment.json",
+  "fullIssueComplete": false,
+  "semanticCoverageProven": false,
+  "independentAuthorshipCredit": 0
+}

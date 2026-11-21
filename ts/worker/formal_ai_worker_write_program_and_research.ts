@@ -734,19 +734,16 @@ function trimUrlToken(token) {
 
 function looksLikeHostname(value) {
   const host = String(value || "").trim();
-  if (!host.includes(".") || host.startsWith(".") || host.endsWith(".")) {
-    return false;
+  // Numeric dotted operands follow the native IPv4 parser, including range
+  // and leading-zero checks; a numeric suffix is not a domain suffix.
+  if (/^[0-9.]+$/u.test(host)) {
+    const octets = host.split('.');
+    return octets.length === 4 && octets.every(octet =>
+      /^(?:0|[1-9][0-9]{0,2})$/u.test(octet) && Number(octet) <= 255);
   }
   const labels = host.split(".");
-  if (labels.some((label) => !label)) return false;
-  const tld = labels[labels.length - 1] || "";
-  if (tld.length < 2) return false;
-  return labels.every(
-    (label) =>
-      /^[a-z0-9-]+$/i.test(label) &&
-      !label.startsWith("-") &&
-      !label.endsWith("-"),
-  );
+  return labels.length > 1 && labels[labels.length - 1].length >= 2 &&
+    labels.every((label) => /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(label));
 }
 
 // Mirror probable_local_file_name in src/solver_handlers/web_search_intent.rs.

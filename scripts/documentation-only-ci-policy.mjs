@@ -5,12 +5,16 @@ import assert from 'node:assert/strict';
 import YAML from 'yaml';
 import {documentationPaths, lightweightWorkflows} from './lib/documentation-paths.mjs';
 export {documentationPaths, lightweightWorkflows} from './lib/documentation-paths.mjs';
+// Required contexts must exist on documentation PRs. Their build admission is
+// tested separately; the same workflow's heavy main push stays path-filtered.
+export const contextReportingWorkflows = new Set(['release.yml']);
 
 /** Edit only event filters; retained jobs, manual controls and schedules are untouched. */
-export function filteredWorkflow(source) {
+export function filteredWorkflow(source, {file} = {}) {
   const document = YAML.parseDocument(source);
   const edits = [];
   for (const event of ['push', 'pull_request']) {
+    if (event === 'pull_request' && contextReportingWorkflows.has(file)) continue;
     if (!document.hasIn(['on', event])) continue;
     const include = document.getIn(['on', event, 'paths']);
     const key = include ? 'paths' : 'paths-ignore';
@@ -51,7 +55,7 @@ export function checkDocumentationPolicy({write = false} = {}) {
     const source = readFileSync(path, 'utf8');
     const triggers = YAML.parse(source).on;
     if (!triggers || typeof triggers !== 'object' || !['push','pull_request'].some(event => Object.hasOwn(triggers,event))) continue;
-    const expected = filteredWorkflow(source);
+    const expected = filteredWorkflow(source, {file});
     if (write) writeFileSync(path, expected);
     else assert.equal(source, expected, path + ': run node scripts/documentation-only-ci-policy.mjs --write');
     checked++;

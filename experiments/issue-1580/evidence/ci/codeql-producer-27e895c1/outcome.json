@@ -1,0 +1,21 @@
+{
+  "complete": true,
+  "head": "27e895c1103926b4f73862c0eb15fa77fb505089",
+  "runId": 44860038851,
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44860038851",
+  "conclusion": "success",
+  "producerFiles": 142,
+  "captureComplete": true,
+  "producerAnalysisComplete": true,
+  "sarifReports": [
+    "rust.sarif",
+    "actions.sarif"
+  ],
+  "rustSarifMissing": false,
+  "macroProfileFiles": [
+    "included-string-payloads/included-string-payloads.json",
+    "macro-contexts/macro-contexts.json"
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

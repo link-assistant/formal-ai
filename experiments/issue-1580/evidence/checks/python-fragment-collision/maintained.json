@@ -1,0 +1,20 @@
+{
+  "arguments": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "rust/tests/web/issue-1580-template-observations.test.mjs"
+  ],
+  "exitCode": 0,
+  "rawBytes": 6957,
+  "rawSha256": "2b278b7e606bb203efc62f23a11836e107f75c85502a50f3d91b777cdb731c8a",
+  "summary": [
+    "# tests 29",
+    "# pass 29",
+    "# fail 0",
+    "# skipped 0"
+  ]
+}

@@ -138,6 +138,10 @@ pub fn try_fact_live_answer<T: SourceTransport>(
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
     let question = live_fact_question(prompt)?;
+    log.append_search_request(
+        "wikidata",
+        format!("{}:{}", question.relation, question.subject_term),
+    );
     let language = detect_language(prompt).slug();
     log.append("fact_live:relation", question.relation.as_str());
     log.append("fact_live:subject", question.subject_term.as_str());
@@ -280,24 +284,17 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
-    if let Some(answer) = super::try_fact_lookup(prompt, normalized, log) {
-        return Some(answer);
+    // Conversation references belong to the coreference row.
+    if super::resolves_coreference_request(prompt, log) {
+        return None;
     }
-    if let Some(answer) = try_fact_live_answer(prompt, log, client) {
-        return Some(answer);
-    }
-    explanation_fallback(prompt, log, client)
+    super::try_fact_lookup(prompt, normalized, log)
+        .or_else(|| try_fact_live_answer(prompt, log, client))
+        .or_else(|| explanation_fallback(prompt, log, client))
 }
 
-/// The R8 step of the row.
 #[cfg(feature = "meta-language")]
-fn explanation_fallback<T: SourceTransport>(
-    prompt: &str,
-    log: &mut EventLog,
-    client: &CachedSourceClient<T>,
-) -> Option<SymbolicAnswer> {
-    try_explanation_research(prompt, log, client)
-}
+use self::try_explanation_research as explanation_fallback;
 
 /// Without the page formalizer there is no retrieve-and-formalize path.
 #[cfg(not(feature = "meta-language"))]

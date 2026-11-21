@@ -1,0 +1,41 @@
+[
+  {
+    "gate": "check-abbreviations",
+    "arguments": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 0,
+    "path": "experiments/issue-1580/evidence/checks/python-fragment-collision/after-archive-check-abbreviations.log.gz",
+    "rawBytes": 67,
+    "rawSha256": "123e92e8e7a7002d86979e23ac177e553162625280d2bae866a00927ba003a9e"
+  },
+  {
+    "gate": "check-file-size",
+    "arguments": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 0,
+    "path": "experiments/issue-1580/evidence/checks/python-fragment-collision/after-archive-check-file-size.log.gz",
+    "rawBytes": 64,
+    "rawSha256": "859d08768d890f345dd90e95a2b4e43461b8c14e096a6c73e5a4f3d59f577e5c"
+  },
+  {
+    "gate": "check-file-size-js-twin",
+    "arguments": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size-js-twin"
+    ],
+    "exitCode": 0,
+    "path": "experiments/issue-1580/evidence/checks/python-fragment-collision/after-archive-check-file-size-js-twin.log.gz",
+    "rawBytes": 71,
+    "rawSha256": "71a856405de6eabdd843d0613686313b276407b9e825a6dfe794165c2a31ab6c"
+  }
+]

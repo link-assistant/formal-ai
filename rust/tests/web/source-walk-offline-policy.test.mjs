@@ -59,3 +59,22 @@ test('offline capture diagnostic is seeded and preserves every URL byte',async()
   assert.deepEqual(c.__network,[]);assert.equal(evaluate(c,'sourceWalkAccessibility.size'),0);
  }
 });
+
+
+test('localized wikiHow endpoints preserve their candidate title and combining marks',async()=>{
+ const c=await boot();
+ for(const [language,subject,title] of [
+  ['en','connect mysql to node js','Connect-Mysql-To-Node-Js'],
+  ['ru','подключить MYSQL к Node JS','подключить-mysql-к-node-js'],
+  ['hi','कनेक्ट करें mysql को node js से','कनेक्ट-करें-Mysql-को-Node-Js-से'],
+  ['zh','连接 mysql 到 node js','连接-Mysql-到-Node-Js'],
+  ['es','conectar MYSQL a Node JS','conectar-mysql-a-node-js'],
+ ]){
+  c.__language=language;c.__subject=subject;
+  const endpoint=evaluate(c,'sourceWalkEntryUrl(sourceWalkRegistry().find(record=>record.id==="wikihow"),__subject,__language)');
+  const url=new URL(endpoint);
+  assert.equal(url.searchParams.get('page'),title,language);
+  assert.equal(url.hostname,language==='en'?'www.wikihow.com':language+'.wikihow.com');
+ }
+ assert.deepEqual(c.__network,[]);
+});

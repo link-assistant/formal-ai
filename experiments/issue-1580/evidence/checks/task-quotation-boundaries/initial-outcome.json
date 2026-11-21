@@ -1,0 +1,88 @@
+{
+  "complete": false,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "checks": [
+    {
+      "name": "before-original-quotation-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1550-meta-executor.test.mjs"
+      ],
+      "startedAt": "2026-11-18T04:22:51.880457+00:00",
+      "finishedAt": "2026-11-18T04:22:55.301810+00:00",
+      "exitCode": 1,
+      "rawBytes": 4026,
+      "rawLines": 80,
+      "rawSha256": "4dd545e8875a4fbc69800f2b00373f5c1b22b79fbe71be94cd3d61cb641ff2d0",
+      "log": "experiments/issue-1580/evidence/checks/task-quotation-boundaries/before-original-quotation-policy.log"
+    },
+    {
+      "name": "worker-projection-write",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/generate-worker-crate-modules.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-11-18T04:22:55.303159+00:00",
+      "finishedAt": "2026-11-18T04:22:56.242981+00:00",
+      "exitCode": 0,
+      "rawBytes": 36,
+      "rawLines": 1,
+      "rawSha256": "27bc71c1aa3e5c9daa50575c2de66a719d3e9de69cc180158e366f86c81f38e5",
+      "log": "experiments/issue-1580/evidence/checks/task-quotation-boundaries/worker-projection-write.log"
+    },
+    {
+      "name": "shared-fixture-refresh",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/issue-1580/refresh-task-quotation-fixture.mjs"
+      ],
+      "startedAt": "2026-11-18T04:22:56.243538+00:00",
+      "finishedAt": "2026-11-18T04:22:59.527232+00:00",
+      "exitCode": 0,
+      "rawBytes": 1043,
+      "rawLines": 1,
+      "rawSha256": "1b6274506272a4bd2fa77b306c5182a77e50525341f80c0b0dd8acb6b1914632",
+      "log": "experiments/issue-1580/evidence/checks/task-quotation-boundaries/shared-fixture-refresh.log"
+    },
+    {
+      "name": "typescript-projection-write",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-es.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-11-18T04:22:59.527743+00:00",
+      "finishedAt": "2026-11-18T04:23:03.036366+00:00",
+      "exitCode": 0,
+      "rawBytes": 99,
+      "rawLines": 1,
+      "rawSha256": "07c1f5ed851a6441c72492b3512c00db15b1cf7b77705bd481a25a5fabf724ef",
+      "log": "experiments/issue-1580/evidence/checks/task-quotation-boundaries/typescript-projection-write.log"
+    },
+    {
+      "name": "native-format",
+      "command": [
+        "rustfmt",
+        "--check",
+        "rust/src/meta_executor.rs"
+      ],
+      "startedAt": "2026-11-18T04:23:03.036985+00:00",
+      "finishedAt": "2026-11-18T04:23:03.606368+00:00",
+      "exitCode": 1,
+      "rawBytes": 1961,
+      "rawLines": 40,
+      "rawSha256": "b4ce7410b51a6fd7d6c628136a686cb75d1232935879bea7d92b5ba3e58833b6",
+      "log": "experiments/issue-1580/evidence/checks/task-quotation-boundaries/native-format.log"
+    }
+  ]
+}

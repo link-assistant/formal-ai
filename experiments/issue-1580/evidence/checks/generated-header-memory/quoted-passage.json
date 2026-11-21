@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 13.697,
+  "nodeHeapMiB": 256,
+  "childrenPeakRssKiB": 265400,
+  "rawSha256": "83ec6090e12608de4e3807b0872b4a18a3ad0ddfdba45329cb4f308bc5feba91",
+  "rawBytes": 1556,
+  "log": "quoted-passage.log.gz",
+  "independentAuthorshipCredit": 0
+}

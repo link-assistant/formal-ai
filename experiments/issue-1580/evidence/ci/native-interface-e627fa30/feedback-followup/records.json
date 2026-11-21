@@ -1,0 +1,72 @@
+{
+  "capturedAt": "2026-11-20T01:14:30.950672+00:00",
+  "records": [
+    {
+      "name": "issue",
+      "argv": [
+        "gh",
+        "issue",
+        "view",
+        "https://github.com/link-assistant/formal-ai/issues/1580",
+        "--json",
+        "body,title,state,url"
+      ],
+      "file": "issue.json.gz",
+      "rawSha256": "18d2c7fdaa1d9ca81d78ca1e8f3e643a0a272fb4dd39ce954e79b734da8a09ff",
+      "archiveSha256": "d810d0dd73ead1c0a0f0eb3b684bffd5812919d1b22abea4c492df06f9f2965e",
+      "count": 1
+    },
+    {
+      "name": "issue-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate"
+      ],
+      "file": "issue-comments.json.gz",
+      "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "archiveSha256": "d996d3a37147a526df1fca7610ca1d0edf5638875e5648b8a511c0606aab8d25",
+      "count": 1
+    },
+    {
+      "name": "pull-request-conversation-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate"
+      ],
+      "file": "pull-request-conversation-comments.json.gz",
+      "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
+      "archiveSha256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30",
+      "count": 11
+    },
+    {
+      "name": "pull-request-inline-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate"
+      ],
+      "file": "pull-request-inline-comments.json.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7",
+      "count": 0
+    },
+    {
+      "name": "pull-request-reviews",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate"
+      ],
+      "file": "pull-request-reviews.json.gz",
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7",
+      "count": 0
+    }
+  ]
+}

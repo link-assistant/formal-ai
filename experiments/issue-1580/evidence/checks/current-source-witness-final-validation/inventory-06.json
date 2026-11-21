@@ -1,0 +1,34 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-current-witness-validation-retry.py",
+    "file": "146-check-and-commit-current-witness-validation-retry.py.gz",
+    "bytes": 1877,
+    "lines": 32,
+    "rawSha256": "b92e9e35ca62381b2559ddf7b0d5e660656b4d830fc8fdd6a57cc7468ce561a2",
+    "archiveSha256": "a27f52b41d532ed4cd308dcb9adb8adf0609ae1f9f8e6bccb15bfa3ec451d96a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-current-witness-validation-retry.log",
+    "file": "147-check-and-commit-current-witness-validation-retry.log.gz",
+    "bytes": 636,
+    "lines": 12,
+    "rawSha256": "7cf6e539a990026418deb3e2b0f6624202ca1deb96751c5d0dd296523f5fcfb2",
+    "archiveSha256": "6e7f19fe4020ac72239ebf3e1c5bcc14c6bbd9bd0de08d738254866355a07ac9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-current-witness-archive-filenames.log",
+    "file": "148-repair-current-witness-archive-filenames.log.gz",
+    "bytes": 288,
+    "lines": 4,
+    "rawSha256": "7ddd9a089536d6bd74da36a3cced5161dd2ca3d82c0cbc5ee0e7a916f5b26d70",
+    "archiveSha256": "65e2ac713b4cf201e98c107ec93e3a8139ce9d405e85ac2699a54642ecad59a7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/prepare-current-witness-validation-final.py",
+    "file": "149-prepare-current-witness-validation-final.py.gz",
+    "bytes": 1879,
+    "lines": 37,
+    "rawSha256": "489eb8b9d870c64ca839ecc956a679ee6f5247fec5bc10165fc5daa59b94c4b2",
+    "archiveSha256": "23096490e8edf0fea7527064e3adb0573db5aa36438e246d1325e661fc15da2e"
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "checks": [
+    {
+      "phase": "before",
+      "observation": {
+        "phase": "before",
+        "sha256": "88f11d513f881cf51b3d3afb9b2f9355d784d5ebf35c7cfc5870f641129fd79a",
+        "bytes": 20032,
+        "port": 8048
+      },
+      "screenshot": "docs/screenshots/issue-1580/meaning-hydration-before.png",
+      "imageFile": "/tmp/gh-issue-solver-1794900398048/docs/screenshots/issue-1580/meaning-hydration-before.png: PNG image data, 1120 x 1003, 8-bit/color RGB, non-interlaced",
+      "screenshotSha256": "e81dc2772fed632e6f773b2ca30dc7961a62a4d91e0237cd5d82b73c66978c67"
+    },
+    {
+      "phase": "after",
+      "observation": {
+        "phase": "after",
+        "sha256": "039e19c1ac84b4ae40777779c86bd02eaabda900c2b4e8009bce6fc732918d9a",
+        "bytes": 20005,
+        "port": 8049
+      },
+      "screenshot": "docs/screenshots/issue-1580/meaning-hydration-after.png",
+      "imageFile": "/tmp/gh-issue-solver-1794900398048/docs/screenshots/issue-1580/meaning-hydration-after.png: PNG image data, 1120 x 1000, 8-bit/color RGB, non-interlaced",
+      "screenshotSha256": "6c4ae730ce8a015d4a549702c21e822e9d6b4688e72c14f7944647c7937716a6"
+    }
+  ],
+  "completeSpanishHowBodyUnchanged": true,
+  "productionWorkerInRealChromium": true,
+  "productionAppUiVerified": false,
+  "nativeBehaviorVerified": false,
+  "externalNetwork": "blocked by the Playwright context",
+  "optionalSearchComponent": "absent; the maintained component-unavailable fallback was used",
+  "serverStopped": true,
+  "independentAuthorshipCredit": 0
+}

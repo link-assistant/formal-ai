@@ -1,0 +1,167 @@
+[
+  {
+    "name": "evidence-commit",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/commits/ac9cd6a55e3ea7d8738e6122f623d7676666630d"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:11:59.895394+00:00",
+    "stdout": {
+      "file": "evidence-commit.stdout.gz",
+      "rawSha256": "87134370009fbfa65997d66c31a940c73f9319590979b055697e966dd2bdad00",
+      "archiveSha256": "e5dba0848137d49352fd2b1ddddcbe48d76c3513cdc8528ce50063eb3e4020a7",
+      "bytes": 324119,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "evidence-commit.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "fresh-issues",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-foundation/php-ai-driven-development-pipeline-template/issues?state=all&per_page=100",
+      "--paginate",
+      "--slurp"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:12:00.781399+00:00",
+    "stdout": {
+      "file": "fresh-issues.stdout.gz",
+      "rawSha256": "30eb8703ab64bf5ba6388f048eba2d60090fbd156770c2e2013548374fcf407c",
+      "archiveSha256": "0f67a21b8e04fbd4d279a9a321f806136e81775abb98aa635cf8e0002879c521",
+      "bytes": 300391,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "fresh-issues.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "create-version",
+    "argv": [
+      "gh",
+      "issue",
+      "create",
+      "--repo",
+      "link-foundation/php-ai-driven-development-pipeline-template",
+      "--title",
+      "Version guard treats malformed or unavailable manifest evidence as unchanged",
+      "--body-file",
+      "/tmp/issue-1580-research/php-input-integrity-upstream-publication/version.md"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:12:02.086017+00:00",
+    "stdout": {
+      "file": "create-version.stdout.gz",
+      "rawSha256": "fe7f65ce69469107c27b08b8d00d2107d9ed3dbd0f41ce19e9fe31d6e6361900",
+      "archiveSha256": "a1d87be051d2dd9ada8e07c1b607b0c991291bb956548e7088753f3ef3b6a26f",
+      "bytes": 89,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "create-version.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "create-notes",
+    "argv": [
+      "gh",
+      "issue",
+      "create",
+      "--repo",
+      "link-foundation/php-ai-driven-development-pipeline-template",
+      "--title",
+      "Release-note truncation emits invalid UTF-8 at complete character boundaries",
+      "--body-file",
+      "/tmp/issue-1580-research/php-input-integrity-upstream-publication/notes.md"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:12:03.521543+00:00",
+    "stdout": {
+      "file": "create-notes.stdout.gz",
+      "rawSha256": "924b9f037243c5d8d20822d1e6ceef255502a0153d894a90207acf7e3da751cf",
+      "archiveSha256": "b060126baa8a517dd6428e49ce7ef7ec1bd9e81a7c75d6115faaf6df75904737",
+      "bytes": 89,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "create-notes.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "fresh-budget-comments",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-foundation/php-ai-driven-development-pipeline-template/issues/15/comments",
+      "--paginate",
+      "--slurp"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:12:04.100475+00:00",
+    "stdout": {
+      "file": "fresh-budget-comments.stdout.gz",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe",
+      "bytes": 4,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "fresh-budget-comments.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "comment-budget",
+    "argv": [
+      "gh",
+      "issue",
+      "comment",
+      "15",
+      "--repo",
+      "link-foundation/php-ai-driven-development-pipeline-template",
+      "--body-file",
+      "/tmp/issue-1580-research/php-input-integrity-upstream-publication/budget-comment.md"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:12:05.803915+00:00",
+    "stdout": {
+      "file": "comment-budget.stdout.gz",
+      "rawSha256": "93054026d3735a38b9ed81a999fea71de8ce90326b2fbbbf5376e729337647cb",
+      "archiveSha256": "6326169de5758b9afc3e614ab9731c9e2c408cc609d1f45300904a81424f7ba0",
+      "bytes": 113,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "comment-budget.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

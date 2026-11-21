@@ -1,0 +1,11 @@
+{
+  "streams": 402,
+  "allHashesBytesAndLinesVerified": true,
+  "annotationRows": [
+    {
+      "stream": "full-run-44894111644.stdout.gz",
+      "line": 473,
+      "text": "Cargo audit\tRun taiki-e/install-action@v2\t2026-11-21T11:16:30.9105896Z ^[[36;1m  printf '::error::install-action: %s\\n' \"$*\"^[[0m"
+    }
+  ]
+}

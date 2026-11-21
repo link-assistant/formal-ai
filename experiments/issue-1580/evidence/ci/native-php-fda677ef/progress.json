@@ -1,0 +1,136 @@
+{
+  "snapshots": [
+    {
+      "observedAt": "2026-11-18T13:04:46.214069+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 20,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:05:17.286326+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:05:48.454989+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:06:19.423250+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:06:50.550591+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:07:21.599289+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:07:52.635772+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:08:23.688306+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:08:54.830028+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:09:26.123177+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:09:57.343390+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:10:28.385699+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:10:59.374001+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:11:30.526616+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:12:02.017689+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:12:33.063057+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:13:04.127309+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T13:13:35.219659+00:00",
+      "head": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+      "workflowCount": 23,
+      "completed": 23,
+      "failed": [
+        {
+          "id": 44309937639,
+          "name": "CI/CD Pipeline",
+          "conclusion": "failure"
+        }
+      ]
+    }
+  ]
+}

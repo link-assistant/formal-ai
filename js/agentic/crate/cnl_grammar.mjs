@@ -2,6 +2,7 @@
 // language drives realization, parsing (its exact inverse) and validation.
 // Rust counterpart: rust/src/cnl_output/grammar.rs. Data: data/seed/cnl-*.lino.
 import { childValue, childrenNamed } from '../host.mjs';
+import { splitPipeList } from './seed.mjs';
 
 export const CNL_LANGUAGE_PATH = 'data/seed/cnl-language-{language}.lino';
 /** Term register of input-only surfaces; realization never selects it. */
@@ -11,11 +12,20 @@ const NUMBER = /^[0-9]+(?:\.[0-9]+)?$/u;
 const SLOT = /\{([a-z]+)\.([a-z-]+)\}/gu;
 const MAXIMUM_SPAN = 24;
 
-function list(value) {
-  return String(value ?? '').split('|').filter(Boolean);
+/** Canonical references retain empty positional forms; legacy scalars remain readable. */
+export function referenceValues(value) {
+  const text = String(value ?? '');
+  return text.trim().startsWith('(') && text.trim().endsWith(')')
+    ? splitPipeList(text) : text.split('|');
 }
 
-function keyed(value) {
+function list(value) {
+  return referenceValues(value).filter(Boolean);
+}
+
+function keyed(node) {
+  if (childrenNamed(node, 'forms').length) return [node.value, list(childValue(node, 'forms'))];
+  const value = node.value;
   const at = value.indexOf(': ');
   return at < 0 ? [value, []] : [value.slice(0, at), list(value.slice(at + 2))];
 }
@@ -57,15 +67,18 @@ export function parseLanguageGrammar(text, parse) {
     fillers: list(childValue(root, 'fillers')),
     typos: list(childValue(root, 'typos')).map(pair => pair.split('=')),
     loose: list(childValue(root, 'loose')).map(pair => pair.split('=')),
-    primes: childrenNamed(root, 'prime').map(node => keyed(node.value)),
-    lists: childrenNamed(root, 'list').map(node => keyed(node.value)),
-    tiers: childrenNamed(root, 'tier').map(node => keyed(node.value)).map(([bound, words]) => [Number(bound), words]),
+    primes: childrenNamed(root, 'prime').map(node => keyed(node)),
+    lists: childrenNamed(root, 'list').map(node => keyed(node)),
+    tiers: childrenNamed(root, 'tier').map(node => keyed(node)).map(([bound, words]) => [Number(bound), words]),
     terms: childrenNamed(root, 'term').map(node => ({
       id: node.value,
-      registers: Object.fromEntries((node.children ?? []).map(child => [child.name, child.value.split('|')])),
+      registers: Object.fromEntries((node.children ?? []).map(child => [child.name, referenceValues(child.value)])),
     })),
     templates: childrenNamed(root, 'template').map(node => {
-      const [frame, styles, mood] = node.value.split(' ');
+      const head = node.value.split(' ');
+      const canonical = childrenNamed(node, 'styles').length > 0;
+      const [frame, styles, mood] = canonical
+        ? [head[0], childValue(node, 'styles'), head[1]] : head;
       return {frame, styles: list(styles), mood,
         positive: childrenNamed(node, 'positive').map(item => item.value),
         negative: childrenNamed(node, 'negative').map(item => item.value)};

@@ -1,0 +1,75 @@
+{
+  "recordedAt": "2026-11-20T10:59:51.387977+00:00",
+  "run": 44720120798,
+  "head": "1fd0c4fd131e318593299cfe05d0167f6efd35fc",
+  "verifiedArchiveStreams": 126,
+  "sarif": [
+    {
+      "artifact": 14622153988,
+      "file": "producer-14622153988-actions.sarif.gz",
+      "rawSha256": "7f806dd7ff1e576995defc0723fa0e24731e4bceb4f14723e843982d5776b914",
+      "bytes": 2449633,
+      "version": "2.1.0",
+      "runs": [
+        {
+          "tool": "CodeQL",
+          "version": "2.27.4",
+          "results": [],
+          "successfulInvocations": [
+            true
+          ],
+          "notificationsByLevel": {
+            "none": 5733
+          },
+          "notificationIds": {
+            "actions/diagnostics/successfully-extracted-files": 74,
+            "cli/expected-extracted-files/javascript": 2203,
+            "cli/expected-extracted-files/rust": 2573,
+            "cli/expected-extracted-files/typescript": 731,
+            "cli/expected-extracted-files/python": 30,
+            "cli/expected-extracted-files/actions": 74,
+            "cli/expected-extracted-files/html": 40,
+            "cli/expected-extracted-files/java": 1,
+            "cli/expected-extracted-files/ruby": 1,
+            "cli/expected-extracted-files/csharp": 1,
+            "cli/expected-extracted-files/cpp": 1,
+            "cli/expected-extracted-files/go": 1,
+            "cli/expected-extracted-files/kotlin": 1,
+            "cli/expected-extracted-files/swift": 1,
+            "codeql-action/overlay-disabled": 1
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "databaseId": 136233430159,
+      "name": "CodeQL producer verification (rust)",
+      "conclusion": "failure"
+    },
+    {
+      "databaseId": 136233430466,
+      "name": "Cargo audit",
+      "conclusion": "success"
+    },
+    {
+      "databaseId": 136233430592,
+      "name": "CodeQL producer verification (actions)",
+      "conclusion": "success"
+    },
+    {
+      "databaseId": 136233431695,
+      "name": "Dependency Review",
+      "conclusion": "skipped"
+    },
+    {
+      "databaseId": 136233432659,
+      "name": "CodeQL (${{ matrix.language }})",
+      "conclusion": "skipped"
+    }
+  ],
+  "rustAcceptance": "open: context preparation failed before init/analysis; no Rust SARIF exists",
+  "fullIssueComplete": false,
+  "independentFormalAiReasoningCredit": 0
+}

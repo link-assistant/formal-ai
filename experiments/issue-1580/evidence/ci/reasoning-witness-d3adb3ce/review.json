@@ -1,0 +1,83 @@
+{
+  "head": "d3adb3ce0b471b94f173b204b1e0091903c8a958",
+  "allWorkflowsComplete": true,
+  "workflows": 23,
+  "successfulWorkflows": 23,
+  "nativeRun": 44549609309,
+  "nativeJob": 135649800212,
+  "nativePassed": 128,
+  "nativeFailed": 0,
+  "nativeHttpPassed": 4,
+  "reasoningCasesPassed": 28,
+  "operationalCasesPassed": 4,
+  "payloadsVerified": 72,
+  "nativeLogRawSha256": "30dc2b9a8dc353ffbb45dd1038f5cd107648409da21e7c27c4230434fa626d4e",
+  "literalReview": {
+    "filteredResultSummaryRowsOnly": [
+      {
+        "line": 1635,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:05:35.1500815Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 146.03s"
+      },
+      {
+        "line": 1650,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:05:48.6111233Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.45s"
+      },
+      {
+        "line": 1658,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:06:53.2482991Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 64.63s"
+      },
+      {
+        "line": 1686,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:06:58.2204059Z test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.97s"
+      },
+      {
+        "line": 1700,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:07:58.2282226Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 60.00s"
+      },
+      {
+        "line": 1707,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:07:58.9735366Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.74s"
+      },
+      {
+        "line": 1717,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:08:00.4621596Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.48s"
+      },
+      {
+        "line": 1751,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:08:55.6650187Z test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 55.19s"
+      },
+      {
+        "line": 1775,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:09:28.1217759Z test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 32.45s"
+      },
+      {
+        "line": 1793,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:11:34.7753111Z test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 126.64s"
+      },
+      {
+        "line": 1808,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:12:10.3092817Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 35.52s"
+      },
+      {
+        "line": 1852,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:12:52.5019894Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 149 filtered out; finished in 3.02s"
+      },
+      {
+        "line": 1861,
+        "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-19T15:13:02.2958698Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 8.48s"
+      }
+    ],
+    "literalNativeHttpRanges": [
+      [
+        1860,
+        2010
+      ]
+    ],
+    "fullNativeLog": false,
+    "allIndividualJobLogs": false
+  },
+  "originalSourcePassingReplayUnion": 17,
+  "originalPanicsWithoutQualifyingReplay": 36,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

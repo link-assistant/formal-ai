@@ -1,0 +1,14 @@
+{
+  "stdout": {
+    "file": "stdout.log.gz",
+    "rawSha256": "4881fc3bab7845f775c151304b86bbf876ecb4390f19fd17e7ec00bd842e2584",
+    "archiveSha256": "527ac897f7e1288995265f5cfdce6f5658d29beb391ebd458e3ae119f76685f6"
+  },
+  "stderr": {
+    "file": "stderr.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  "exitCode": 1,
+  "expectedFailure": true
+}

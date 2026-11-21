@@ -1,0 +1,27 @@
+{
+  "historicalPreview": {
+    "source": "https://github.com/konard/vk-bot-desktop/blob/issue-51-60ec0489f01f/site/assets/app-preview-en-light.png?raw=true",
+    "sha256": "7b72b5b656f59bfdb7da70b2bb65f8db0494679f886addfd646be1272b235066",
+    "bytes": 69451,
+    "verifiedMime": "PNG",
+    "viewed": true,
+    "assessment": "English/light VK Bot, Local/Remote controls, Start, empty token field, six checked features and empty logs. Historical static visual only.",
+    "currentFormalAiRuntimeProof": false
+  },
+  "freshPublishedDependencies": {
+    "command-stream": {
+      "version": "1.13.0",
+      "chrono": "^0.4.45",
+      "upstreamIssueState": "CLOSED"
+    },
+    "link-calculator": {
+      "version": "0.24.0",
+      "chrono": "^0.4",
+      "upstreamIssueState": "OPEN"
+    },
+    "bothChronoDependenciesUnconditional": true,
+    "publishedJiffMigrationVerified": false
+  },
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

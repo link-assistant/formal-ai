@@ -249,6 +249,19 @@ describe('the measured records', () => {
     assert.deepEqual([...parseJavaScriptFileEvents(lines.slice(0, -1).join('\n')).keys()], ['w/done.test.mjs']);
   });
 
+  test('a fast-cohort import raises shared costs without erasing full-suite measurements', () => {
+    const table = 'javascript-test-durations\n  default-seconds 1\n  test "full"\n    seconds 50\n  test "grown"\n    seconds 5\n';
+    const observed = new Map([
+      ['full', {seconds: 20, complete: true}],
+      ['grown', {seconds: 80, complete: true}],
+      ['tiny', {seconds: 0.2, complete: true}],
+    ]);
+    const merged = mergeJavaScriptDurations(table, observed, {raiseOnly: true});
+    assert.deepEqual([...parseTestDurations(merged)], [['grown', 80], ['full', 50]]);
+    assert.match(merged, /^  default-seconds 1$/mu);
+    assert.equal(mergeJavaScriptDurations(merged, observed, {raiseOnly: true}), merged);
+  });
+
   test('observed js seconds replace records, never lower a bound or a receipt, and set default-seconds', () => {
     const table = [
       '# generated',

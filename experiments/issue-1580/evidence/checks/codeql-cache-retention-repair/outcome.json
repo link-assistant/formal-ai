@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "observedAt": "2026-11-21T02:12:30.880197+00:00",
+  "fullReplayPassedOrSkipped": 140,
+  "fullReplayEntries": 141,
+  "fullReplaySoleFailure": "layered-ci#4: local 192 MiB JavaScript heap cap",
+  "sourceModelFocusedReplayPassedAt256Mebibytes": true,
+  "allGateEntriesCovered": true,
+  "regressionFailedBeforeFix": true,
+  "unchangedFourMinuteBounds": true,
+  "unchangedQuery": true,
+  "querySha256": "eeb84162315440b60e8aa2f647d99d42a69fbdaaa3ca2f8fb523e7f7f39f4167",
+  "standardSecurityGatePreserved": true,
+  "cacheRetentionOnlyForOptInRustInvestigation": true,
+  "actionRevision": "1bd86f2fdb4b86187fa4059f16f31a3202acc9ea",
+  "paths": [
+    {
+      "path": ".github/workflows/security.yml",
+      "sha256": "12d34258337eb8b9e865938e2f7980a79f64fe853ee70544fa8872ebaffddd9a"
+    },
+    {
+      "path": "data/benchmarks/fast-pull-request-retained-jobs.json",
+      "sha256": "61a7ef6ff22ffe4358ad99a6e0aaf43f541e428156003c3f88e18829d07c4bd0"
+    },
+    {
+      "path": "experiments/issue-1580/codeql-macro-contexts/observe.py",
+      "sha256": "ef977988bd6fd096a10a12bff4a756462c50fd81eba8f9d3d1f83c2f91a93fd3"
+    },
+    {
+      "path": "experiments/issue-1580/codeql-macro-contexts/README.md",
+      "sha256": "9bcd28945ec4b237705d78b1398cf06e1a4748ffbf9a3839156ad329f9f02def"
+    },
+    {
+      "path": "experiments/issue-1580/codeql-included-string-observation.test.mjs",
+      "sha256": "8006ba289e3f398f536f3db3ec9ecc8df5eaff22cbc5d3b61ba9f38363bb151c"
+    },
+    {
+      "path": "rust/tests/web/security-codeql-results.test.mjs",
+      "sha256": "2d580c4211f2ad8e5a93ba6780c5c3809aa67c5184eefc2acb6008257f920add"
+    }
+  ],
+  "actualCodeQLExecution": false,
+  "hostedRepairQualificationPending": true,
+  "rootCauseFullyQualified": false,
+  "interruptedReplayPreserved": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "source": "rust/tests/web/server-memory-schema.test.mjs",
+    "sourceSha256": "6f54ec1ea1b676eb6abb9c0c1f4d9b72e445b0211657cd1aac9966559b2d97f4",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/server-memory-schema.test.mjs"
+    ],
+    "startedAt": "2026-11-17T23:57:36.476121+00:00",
+    "seconds": 0.959,
+    "exitCode": 0,
+    "log": "server-memory-schema.test.mjs.log.gz",
+    "rawSha256": "1bf8a5cf0ed682d604a88aa1f0ba7d7e102c7a5448c8c8e57e60052904663bfc",
+    "rawBytes": 2176,
+    "rawLines": 64,
+    "mockCurlCalls": [],
+    "actualNetworkRequests": 0,
+    "nativeExecuted": false,
+    "independentAuthorshipCredit": 0
+  },
+  {
+    "source": "rust/tests/web/issue-1168-source-cache.test.mjs",
+    "sourceSha256": "6cd090b1cd9dcd1e3693baf63b8a1a33bd33ae33f5f8c38a2a5fa7ad89ac9d0c",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1168-source-cache.test.mjs"
+    ],
+    "startedAt": "2026-11-17T23:57:37.436146+00:00",
+    "seconds": 4.407,
+    "exitCode": 0,
+    "log": "issue-1168-source-cache.test.mjs.log.gz",
+    "rawSha256": "e12661e2ad549b634698e9453491fc63bccb022df563b41d6b1802a37d117a68",
+    "rawBytes": 1446,
+    "rawLines": 46,
+    "mockCurlCalls": [],
+    "actualNetworkRequests": 0,
+    "nativeExecuted": false,
+    "independentAuthorshipCredit": 0
+  },
+  {
+    "source": "rust/tests/web/hive-work-item-consumer.test.mjs",
+    "sourceSha256": "7188dff9703528ce61c244f2a93eb82260b7a55b333cf2cddca69886f7626463",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/hive-work-item-consumer.test.mjs"
+    ],
+    "startedAt": "2026-11-17T23:57:41.844059+00:00",
+    "seconds": 15.591,
+    "exitCode": 0,
+    "log": "hive-work-item-consumer.test.mjs.log.gz",
+    "rawSha256": "f597ef039c998db490724f6b305548e49b0a713107d261109bcfc1082b528a4a",
+    "rawBytes": 2073,
+    "rawLines": 64,
+    "mockCurlCalls": [],
+    "actualNetworkRequests": 0,
+    "nativeExecuted": false,
+    "independentAuthorshipCredit": 0
+  }
+]

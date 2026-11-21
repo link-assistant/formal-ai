@@ -1,0 +1,18 @@
+{
+  "run": 44648187857,
+  "head": "e627fa307e0374bf6813159257915f342d8d2419",
+  "verifiedLogStreams": 104,
+  "outcome": "cancelled after native execution exceeded the existing job limit",
+  "nativeJob": 135996221984,
+  "nativeLogEvidence": {
+    "compileFinished": 1724,
+    "codingPassed": 1809,
+    "reasoningStarted": 1870,
+    "cancelled": 1925
+  },
+  "allWorkflowCount": 23,
+  "successfulWorkflowCount": 22,
+  "cancelledWorkflowCount": 1,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

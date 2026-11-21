@@ -1,0 +1,21 @@
+{
+  "head": "21dcb086857edbfc0859dc4135574ea6bc4f52c2",
+  "message": "Share calendar argument bindings and refresh derived contracts",
+  "sourceSha256": {
+    "data/meta/closure-audit.lino": "bdad0a3fec79ab4c803bb0c8c48cf09ea3f7d7f4e590648ee006cc4cd17a0488",
+    "data/meta/runtime-feature-coverage.json": "70bdeb44b51a51948e9ea1838d7c34d2c9188c26cd9e3e2521859de3fc2fb50c",
+    "data/meta/shared-lexeme-fields-schema.lino": "34e67eb675a71bec504b61dc9979f611d28ff67dc6582b2797d89ae7f47508e6",
+    "data/seed/browser-handler-precedence.lino": "f7f96bf0a461949f1fc6945f3eb1a4e67547fdd1e236e0cc31f9efd01ae6cb44",
+    "docs/diagrams/solver-handlers.md": "7eb67b48992ee22c3fc97a1777927f9613dd5d0441f3f131e017fc0f19f0e1c2",
+    "js/seed_loader.js": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666",
+    "js/server/worker-script-prerequisites.mjs": "414f0a7f03d0b5017cee6f3cd6be3e1606411fb2be2301430ac39127bdfd5739",
+    "js/worker-script-prerequisites.js": "ee9255a09ea413140a45a57dc708b8fc8d99ecd6be95610113cca38d2749bb86",
+    "rust/tests/web/handler-registry.test.mjs": "f1a8d2fea0490eaa4bbfd7eaafd88fda15f705fe58fab576516f909d131836f2",
+    "ts/seed_loader.ts": "b1631c4cfb48d9f24d1218340b45f05ccf1f67d9c32ff451c303f2d5b9d0d666",
+    "ts/server/worker-script-prerequisites.mts": "414f0a7f03d0b5017cee6f3cd6be3e1606411fb2be2301430ac39127bdfd5739",
+    "ts/worker-script-prerequisites.ts": "ee9255a09ea413140a45a57dc708b8fc8d99ecd6be95610113cca38d2749bb86",
+    "changelog.d/issue-1580-worker-calendar-dispatch.md": "f3d76b516424b0ed16eccf8a99c3325cdcbb253191cdd2ac57c6dbeb7e5f71d3"
+  },
+  "pushExecuted": false,
+  "independentAuthorshipCredit": 0
+}

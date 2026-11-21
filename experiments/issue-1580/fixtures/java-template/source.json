@@ -1,0 +1,36 @@
+{
+  "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+  "commit": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "files": [
+    {
+      "path": "scripts/detect-code-changes.mjs",
+      "gitBlob": "681079b3e92928a631db1a93a5f789e881e62209",
+      "sha256": "9599ea5b5297bc1df59114044de12ae05e9cca233946ac5523e490be896b7737"
+    },
+    {
+      "path": "scripts/github-actions-log.mjs",
+      "gitBlob": "9bc18a78512941ef309b44029a87a5c9243571a9",
+      "sha256": "39d091b802b0d140b85874b254b912257bc269bf7628acab65f0e298ef7d8d57"
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    },
+    {
+      "path": "scripts/version-and-commit.mjs",
+      "gitBlob": "0f6812d46591f3f6615f52d834f8c42f965662fc",
+      "sha256": "1162d6fed85dfff0b93477879cf92980c8d4384405f32763007c5753bb3fe5b3"
+    },
+    {
+      "path": "scripts/github-release-state.mjs",
+      "gitBlob": "ade97a05e1089d5837d1980a1557060673ca1ac7",
+      "sha256": "fae9c0c8114031f6d2a3553d62605cdfd7026e9006eedfca6c7fe8f3002b5c93"
+    },
+    {
+      "path": "scripts/collect-changelog.mjs",
+      "gitBlob": "659ecc112fe75039abd66af0ac61bdb9849c84ad",
+      "sha256": "afefed46692d3f56e122c13328810d7a26e7448b38656ba0c6fc0920ae41017a"
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+[
+  {
+    "name": "retained-producer-inverse",
+    "argv": [
+      "node",
+      "--input-type=module",
+      "-e",
+      "import fs from 'node:fs'; import assert from 'node:assert/strict'; import YAML from 'yaml';\nimport {execFileSync} from 'node:child_process'; import {createHash} from 'node:crypto';\nconst old=YAML.parse(execFileSync('git',['show','HEAD:.github/workflows/security.yml'],{encoding:'utf8'})).jobs.codeql;\nconst current=YAML.parse(fs.readFileSync('.github/workflows/security.yml','utf8')).jobs.codeql;\nconst reverted=structuredClone(current), analysis=reverted.steps.find(s=>s.id==='codeql-analyze');\nassert.equal(old.steps.find(s=>s.id==='codeql-analyze').env,undefined);\nassert.deepEqual(Object.keys(analysis.env),['CODEQL_ACTION_EXTRA_OPTIONS']);\nassert.match(analysis.env.CODEQL_ACTION_EXTRA_OPTIONS,/github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts/u);\ndelete analysis.env; assert.deepEqual(reverted,old);\nconst payload=j=>({steps:j.steps,uses:j.uses,with:j.with,strategy:j.strategy});\nconst hash=j=>createHash('sha256').update(JSON.stringify(payload(j))).digest('hex');\nconst path='data/benchmarks/fast-pull-request-retained-jobs.json', data=JSON.parse(fs.readFileSync(path,'utf8'));\nconst rows=data.jobs.filter(r=>r.file==='security.yml'&&r.id==='codeql'); assert.equal(rows.length,1);\nassert.equal(rows[0].payloadSha256,hash(old)); rows[0].payloadSha256=hash(current);\nfs.writeFileSync(path,JSON.stringify(data,null,2)+'\\n');\nconsole.log(JSON.stringify({onlyOptInCacheEnvironmentAdded:true,jobAdmissionAndTimeoutsUnchanged:true,payloadSha256:rows[0].payloadSha256}));"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "adapter",
+    "argv": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "experiments/issue-1580/codeql-included-string-observation.test.mjs"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "profile",
+    "argv": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "security",
+    "argv": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/security-codeql-results.test.mjs"
+    ],
+    "exitCode": 1
+  },
+  {
+    "name": "security",
+    "argv": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/security-codeql-results.test.mjs"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "pinned-analyze",
+    "argv": [
+      "gh",
+      "api",
+      "-H",
+      "Accept: application/vnd.github.raw+json",
+      "repos/github/codeql-action/contents/src/analyze.ts?ref=1bd86f2fdb4b86187fa4059f16f31a3202acc9ea"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "pinned-codeql",
+    "argv": [
+      "gh",
+      "api",
+      "-H",
+      "Accept: application/vnd.github.raw+json",
+      "repos/github/codeql-action/contents/src/codeql.ts?ref=1bd86f2fdb4b86187fa4059f16f31a3202acc9ea"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "pinned-util",
+    "argv": [
+      "gh",
+      "api",
+      "-H",
+      "Accept: application/vnd.github.raw+json",
+      "repos/github/codeql-action/contents/src/util.ts?ref=1bd86f2fdb4b86187fa4059f16f31a3202acc9ea"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "all-javascript-gates",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 1
+  },
+  {
+    "name": "qualify-cache-wording",
+    "argv": [
+      "python3",
+      "/tmp/issue-1580-research/qualify-cache-comment-wording.py"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 192,
+    "largestReapedChildRssKibibytes": 19968
+  },
+  {
+    "name": "terminal-ci-assessment",
+    "argv": [
+      "python3",
+      "/tmp/issue-1580-research/assess-bbda-terminal-ci.py"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 192,
+    "largestReapedChildRssKibibytes": 66076
+  },
+  {
+    "name": "warning-inventory",
+    "argv": [
+      "python3",
+      "/tmp/issue-1580-research/inventory-world-algorithm-warning-checkpoint.py"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 192,
+    "largestReapedChildRssKibibytes": 147068
+  },
+  {
+    "name": "source-model-256-mebibyte",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "layered-ci#4"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 256,
+    "largestReapedChildRssKibibytes": 376580
+  },
+  {
+    "name": "adapter-final",
+    "argv": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "experiments/issue-1580/codeql-included-string-observation.test.mjs"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 192,
+    "largestReapedChildRssKibibytes": 376580
+  },
+  {
+    "name": "final-fingerprint-currency",
+    "argv": [
+      "node",
+      "--input-type=module",
+      "-e",
+      "import fs from 'node:fs'; import assert from 'node:assert/strict'; import YAML from 'yaml';\nimport {createHash} from 'node:crypto';\nconst job=YAML.parse(fs.readFileSync('.github/workflows/security.yml','utf8')).jobs.codeql;\nconst value=createHash('sha256').update(JSON.stringify({steps:job.steps,uses:job.uses,with:job.with,strategy:job.strategy})).digest('hex');\nconst row=JSON.parse(fs.readFileSync('data/benchmarks/fast-pull-request-retained-jobs.json','utf8')).jobs.find(r=>r.file==='security.yml'&&r.id==='codeql');\nassert.equal(value,row.payloadSha256); console.log(value);"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 192,
+    "largestReapedChildRssKibibytes": 376580
+  },
+  {
+    "name": "final-check-abbreviations",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 192,
+    "largestReapedChildRssKibibytes": 376580
+  },
+  {
+    "name": "final-check-file-size",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 192,
+    "largestReapedChildRssKibibytes": 376580
+  },
+  {
+    "name": "final-check-readable-code",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-readable-code"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 192,
+    "largestReapedChildRssKibibytes": 376580
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "nodeHeapMebibytes": 192,
+    "largestReapedChildRssKibibytes": 376580
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "observedAt": "2026-11-21T06:44:51.263456+00:00",
+  "publishedHead": "f156be6e821addc2c3c405f482d830493183e3c0",
+  "terminalWorkflows": 27,
+  "successfulWorkflows": 24,
+  "skippedWorkflows": 1,
+  "failedWorkflows": [
+    {
+      "id": 44872982415,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44872982415"
+    },
+    {
+      "id": 44872977660,
+      "name": "Security",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44872977660"
+    }
+  ],
+  "verifiedCommandStreams": 302,
+  "retainedFullRunLogs": 27,
+  "nativeFamilies": [
+    {
+      "job": "Native type and lint check / Native contracts (interfaces)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (coding)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (reasoning-1)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (hive-3)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (benchmarks)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (hive-1)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (reasoning-2)",
+      "conclusion": "success"
+    },
+    {
+      "job": "Native type and lint check / Native contracts (hive-2)",
+      "conclusion": "success"
+    }
+  ],
+  "archivedRecords": 925,
+  "hostedPerformanceVerifiedForMemoryCandidate": false,
+  "failedFetchGuardVerifiedOnPublishedHead": true,
+  "fullTemplateAcceptance": false,
+  "fullLiteralLogReviewComplete": false,
+  "localNativeBuildExecuted": false,
+  "sourceWarningLimitsChanged": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -315,9 +315,15 @@ pub fn describe_turn(stages: &[ThinkingStep]) -> TurnView {
     };
     let views = stages
         .iter()
-        .map(|stage| StageView {
-            rust: at(RUST, &stage.source_event, rust.as_ref()),
-            js: at(JS, &stage.source_event, js.as_ref()),
+        .map(|stage| {
+            let origin = stage
+                .source_origin
+                .as_deref()
+                .unwrap_or(&stage.source_event);
+            StageView {
+                rust: at(RUST, origin, rust.as_ref()),
+                js: at(JS, origin, js.as_ref()),
+            }
         })
         .collect();
     TurnView {

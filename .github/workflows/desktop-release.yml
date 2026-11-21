@@ -49,8 +49,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-resolve${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-resolve${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     permissions:
       contents: read
     if: >-
@@ -85,16 +85,16 @@ jobs:
         run: bash scripts/desktop-release-resolve.sh
   base:
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-base${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-base${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     uses: ./.github/workflows/pin-base-commit.yml
     permissions:
       contents: read
   native-source:
     name: Select exact native release source
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-native-source${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-native-source${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     needs: [resolve, base]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
     runs-on: ubuntu-24.04
@@ -253,8 +253,8 @@ jobs:
   native:
     name: Produce native ${{ matrix.target }}
     concurrency:
-      group: ${{ github.workflow }}-native-${{ github.event.pull_request.number || github.ref }}-${{ matrix.target }}${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.workflow }}-native-${{ github.event.pull_request.number || github.ref }}-${{ matrix.target }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     needs: [native-source]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.native-source.result == 'success') }}
     runs-on: ${{ matrix.os }}
@@ -286,7 +286,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
+        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts\n.github/actions/download-artifact"}
       - name: Capture release protocol before selecting binary source
         working-directory: .formal-ai-protocol-source
         env:
@@ -319,13 +319,11 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+      - uses: ./.formal-ai-protocol-source/.github/actions/download-artifact
         with:
           name: native-release-source
           path: native-source
-      - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
+      - {name: Download selected source history, uses: ./.formal-ai-protocol-source/.github/actions/download-artifact, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
         timeout-minutes: 7
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source
@@ -435,7 +433,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
+        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts\n.github/actions/download-artifact"}
       - name: Capture release protocol before selecting binary source
         working-directory: .formal-ai-protocol-source
         env:
@@ -470,13 +468,11 @@ jobs:
         with:
           node-version: 22
       - name: Download the exact selected source
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-protocol-source/.github/actions/download-artifact
         with:
           name: native-release-source
           path: native-source
-      - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
+      - {name: Download selected source history, uses: ./.formal-ai-protocol-source/.github/actions/download-artifact, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
         timeout-minutes: 7
         env:
@@ -486,9 +482,7 @@ jobs:
       - uses: ./.github/actions/release-web
         with: {mode: import}
       - name: Download the same-run target executable
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-protocol-source/.github/actions/download-artifact
         with:
           name: native-release-${{ matrix.target }}
           path: native-bin
@@ -497,9 +491,7 @@ jobs:
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify native-bin native-source "${{ matrix.target }}"
       - name: Download the same-run selected-source worker
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-protocol-source/.github/actions/download-artifact
         with:
           name: native-release-wasm
           path: selected-wasm
@@ -920,7 +912,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
+        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts\n.github/actions/download-artifact"}
       - name: Capture release protocol before selecting binary source
         working-directory: .formal-ai-protocol-source
         env:
@@ -951,13 +943,11 @@ jobs:
         with:
           node-version: 22
       - name: Download the exact selected source
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-protocol-source/.github/actions/download-artifact
         with:
           name: native-release-source
           path: native-source
-      - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
+      - {name: Download selected source history, uses: ./.formal-ai-protocol-source/.github/actions/download-artifact, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
         timeout-minutes: 7
         env:
@@ -965,9 +955,7 @@ jobs:
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source
       - name: Download the same-run target executable
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-protocol-source/.github/actions/download-artifact
         with:
           name: native-release-${{ matrix.target }}
           path: native-bin
@@ -1071,7 +1059,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
+        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts\n.github/actions/download-artifact"}
       - name: Capture release protocol before selecting binary source
         working-directory: .formal-ai-protocol-source
         env:
@@ -1102,13 +1090,11 @@ jobs:
         with:
           node-version: 22
       - name: Download the exact selected source
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-protocol-source/.github/actions/download-artifact
         with:
           name: native-release-source
           path: native-source
-      - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
+      - {name: Download selected source history, uses: ./.formal-ai-protocol-source/.github/actions/download-artifact, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
         timeout-minutes: 7
         env:
@@ -1118,9 +1104,7 @@ jobs:
       - uses: ./.github/actions/release-web
         with: {mode: import}
       - name: Download the same-run selected-source worker
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-protocol-source/.github/actions/download-artifact
         with:
           name: native-release-wasm
           path: selected-wasm
@@ -1267,10 +1251,20 @@ jobs:
         run: >-
           node scripts/release-protocol.mjs capture "$GITHUB_WORKSPACE"
           "$RUNNER_TEMP/desktop-engine-protocol" "$RELEASE_PROTOCOL_COMMIT" engine
+      - name: Check out workflow-owned artifact extraction
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .formal-ai-artifact-protocol
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
+          sparse-checkout-cone-mode: false
       - name: Download exact source and protocol observations
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
         with:
           name: native-release-source
           path: native-source
@@ -1280,9 +1274,7 @@ jobs:
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
       - name: Download the same-run selected-source worker
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
         with:
           name: native-release-wasm
           path: selected-wasm
@@ -1293,16 +1285,12 @@ jobs:
           node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" selected-wasm "$WASM_RECEIPT_SHA256"
           cp selected-wasm/formal_ai_worker.wasm selected-wasm/formal_ai_worker.receipt.json js/
       - name: Download receipt-only target observations
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
         with:
           pattern: native-receipt-*
           path: native-receipts
       - name: Download actual macOS signing observations
-        uses: actions/download-artifact@v8
-        env:
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
         with:
           pattern: signing-*
           path: native-signing
@@ -1342,12 +1330,7 @@ jobs:
         with:
           subject-path: release-evidence/formal-ai-*.json
       - name: Download checksum fragments
-        uses: actions/download-artifact@v8
-        env:
-          # v8's bundled unzip dependency still calls Buffer(); suppress only
-          # that reviewed upstream diagnostic, never all Node warnings:
-          # https://github.com/actions/download-artifact/issues/484
-          NODE_OPTIONS: --disable-warning=DEP0005
+        uses: ./.formal-ai-artifact-protocol/.github/actions/download-artifact
         with:
           pattern: checksums-*
           path: fragments

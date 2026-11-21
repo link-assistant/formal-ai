@@ -1,0 +1,175 @@
+{
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/before-real-14.log",
+      "stored": "before-real-14.log.gz",
+      "bytes": 1024,
+      "sha256": "86e0cf92f15174e8f5f5861fa80ff44e1d8fb6bde0c9c19f8116f2dc964e90f0"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/before-regression.log",
+      "stored": "before-regression.log.gz",
+      "bytes": 2400,
+      "sha256": "d032de622afa67b5f4be6aa91f84848a448b843f6ed3d2b300da936a5aa6599a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/install.log",
+      "stored": "install.log.gz",
+      "bytes": 26,
+      "sha256": "7c79d4f701c69ff40783748f631e74dac80012b9893cf3381a4b5717c971700b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/install-outcome.json",
+      "stored": "install-outcome.json.gz",
+      "bytes": 299,
+      "sha256": "5f1f43584386fd7053fab8cd7d342abfcf654c08e013c94f05001c8f480c2128"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-outcome.json",
+      "stored": "verify-outcome.json.gz",
+      "bytes": 2199,
+      "sha256": "f4495674c77c96516f15eeec6779a6cdf1f1d9495cffe2c332d4818ee58d282f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-worker.py",
+      "stored": "verify-worker.py.gz",
+      "bytes": 1719,
+      "sha256": "c48932823d045556b9304d8f198ae8a0f1198e8a2589bf9e9fae6e0f9efdc10a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-live-final.log",
+      "stored": "verify-live-final.log.gz",
+      "bytes": 324,
+      "sha256": "3248d8201ac8e19f827ac9b1f5718176a0ef19fede6c968f33665cff3cfe9ec6"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-01.log",
+      "stored": "verify-01.log.gz",
+      "bytes": 1143,
+      "sha256": "f5124c818c434919ff2b1889f0c387b6922d21b7c3e6c57d49a6481d9dbcfe90"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-02.log",
+      "stored": "verify-02.log.gz",
+      "bytes": 3461,
+      "sha256": "0205adbe555e3c725751f08eb32a11052133942cc293d00118b4947048821d3a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-03.log",
+      "stored": "verify-03.log.gz",
+      "bytes": 2057,
+      "sha256": "b1b5b9465c8c9de78dc64f003c11a9066893fb9954898a267742c7ac8e7e7d5b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-04.log",
+      "stored": "verify-04.log.gz",
+      "bytes": 324,
+      "sha256": "3248d8201ac8e19f827ac9b1f5718176a0ef19fede6c968f33665cff3cfe9ec6"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-05.log",
+      "stored": "verify-05.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-06.log",
+      "stored": "verify-06.log.gz",
+      "bytes": 67,
+      "sha256": "7888153859515be6f7ed0d54bf1d61352ebe6283ccd0ec9555e0bc7454db6b1a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-07.log",
+      "stored": "verify-07.log.gz",
+      "bytes": 64,
+      "sha256": "e0dff12d5e87651c5b6223f68a1b156c232c7f2efab14ee78e8726172268d2bc"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-08.log",
+      "stored": "verify-08.log.gz",
+      "bytes": 67,
+      "sha256": "5ded09074e4e81c561425a20c68f9360e64460baf7fc55a173d1e32479b52b23"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-09.log",
+      "stored": "verify-09.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/install-pid.json",
+      "stored": "install-pid.json.gz",
+      "bytes": 17,
+      "sha256": "0700307cde0362cfcac62575ce317a8d060b0cb8724ab9e58ed573bcafeab42e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/secretlint-14.0.0.json",
+      "stored": "secretlint-14.0.0.json.gz",
+      "bytes": 3089,
+      "sha256": "2539eb4381b259f32ffc701413b5907f54c062d3f300701176ea8366dd8a55fb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/secretlint-config-loader-14.0.0.json",
+      "stored": "secretlint-configuration-loader-14.0.0.json.gz",
+      "bytes": 3083,
+      "sha256": "8397b1767a61708d13574028b2316808f13f97b464dbb34dd2e854ae89da2808"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/secretlint-node-14.0.0.json",
+      "stored": "secretlint-node-14.0.0.json.gz",
+      "bytes": 3099,
+      "sha256": "14afd939a24ef4e7735bc65e7629e57b282898e56a08e100520f320e1d900496"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/secretlint-resolver-14.0.0.json",
+      "stored": "secretlint-resolver-14.0.0.json.gz",
+      "bytes": 2724,
+      "sha256": "9dc449389d4d2b1b3ff7d8ee9b339f3fe9510bf096e293f00d5665a076ae320d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/secretlint-secretlint-rule-preset-recommend-13.0.5.json",
+      "stored": "secretlint-secretlint-rule-preset-recommend-13.0.5.json.gz",
+      "bytes": 5334,
+      "sha256": "19ef18a021f4bfa1348cb8db984f937317ff61bfba268854deb9a7a6868e27a9"
+    },
+    {
+      "source": "/tmp/issue-1580-research/secretlint-built-in-migration/verify-pid.json",
+      "stored": "verify-pid.json.gz",
+      "bytes": 17,
+      "sha256": "c582c26b3fe486171b8af044339903f194b83d9b0e72b2643e88d92da7b18159"
+    },
+    {
+      "source": "/tmp/issue-1580-research/read-secretlint14-api.log",
+      "stored": "read-secretlint14-api.log.gz",
+      "bytes": 48516,
+      "sha256": "376f793504c5b72140beaf5b8fdfde079fb01048297d4ab5bb06722235ce8ad6"
+    },
+    {
+      "source": "/tmp/issue-1580-research/apply-secretlint14-migration.log",
+      "stored": "apply-secretlint14-migration.log.gz",
+      "bytes": 7968,
+      "sha256": "72784dd00fac72f31a09829876414eb7504307f056bc53a07f8399d78580d7c4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/start-secretlint14-verification.log",
+      "stored": "start-secretlint14-verification.log.gz",
+      "bytes": 629,
+      "sha256": "6170c393d4b4a130c283946cbad490b1d0741c4c461393690988eec6ea53223a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/finish-current-js-workflow-fixture.py",
+      "stored": "finish-current-js-workflow-fixture.py.gz",
+      "bytes": 1033,
+      "sha256": "aef31ee537e6736541fd50e30a51947bdd11eb2c7e23dfb3d41d285e0f1189b5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/finish-current-js-workflow-fixture.log",
+      "stored": "finish-current-js-workflow-fixture.log.gz",
+      "bytes": 2066,
+      "sha256": "d41cc979c72ddb0c94a9c64dff4417d386fbfe258c0b71f71182bdec2df69719"
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "allChecksPassed": true,
+  "fullIssueComplete": false
+}

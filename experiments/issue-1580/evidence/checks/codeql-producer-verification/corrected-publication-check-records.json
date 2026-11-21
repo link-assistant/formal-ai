@@ -1,0 +1,28 @@
+[
+  {
+    "name": "check-file-size",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 0,
+    "file": "corrected-publication-check-file-size.log.gz",
+    "rawSha256": "220ef8795311acc13aa5e5773a3423718b325f031e4b6c71663b200003b82d46",
+    "archiveSha256": "a8969daaf5b462fcc2e938d6e70b9fd85b8e343453502a5807c004be4efd5389"
+  },
+  {
+    "name": "check-file-size-js-twin",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size-js-twin"
+    ],
+    "exitCode": 0,
+    "file": "corrected-publication-check-file-size-js-twin.log.gz",
+    "rawSha256": "86b5145d15759c414ffee7619144899570d4fc2f2ed916ad90b5d6c41aa2bc25",
+    "archiveSha256": "67cce9a33eac4043085f14507ea4e6e470fc99dedbe2766f614177e3e665a0e2"
+  }
+]

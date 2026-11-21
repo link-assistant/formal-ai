@@ -1,0 +1,14 @@
+{
+  "paths": {
+    "data/meta/js-rust-translation.lino": "888160b50008c311027bcd59d15174f72820867d69fb12965098fad1fd31bec1",
+    "data/meta/translation-blockers.lino": "28c3c58d7aba06ad67c3b04d4ebca80e79589cca4877d31ff1926ae5b7cbc340",
+    "js/agentic/crate/solver_handlers_web_search.mjs": "3bc4bbb367b55ee55c271a1c8f94f8635071f4e7f20c81d05369ed2fb1b7a3c6",
+    "js/worker/formal_ai_worker_write_program_and_research.js": "f9c78f8db7d8a3b8662fd06dedc9ccc44b9a52703a1c08625655bdde08cb4c3d",
+    "rust/src/solver_handlers/web_requests/url_parse.rs": "39584f21e7a13294942f4d6079c67b61cc9f51b1ebb16b039f7bc04f51accd67",
+    "rust/tests/fixtures/js-rust-translation/crate/solver_handlers_web_search.rs": "46cc1b4eeed7a39fbd78f79de2996dee5dc3a82def7d6af9a1f8cd630e8a2d6e",
+    "rust/tests/web/attachment-url-scope.test.mjs": "e2651ca1ea515b5789a14dba47d49af2c46501ac7222d6a9e5c8c1489fe375fa"
+  },
+  "nativeExecution": "pending hosted CI; no local Rust execution",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

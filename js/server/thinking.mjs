@@ -269,6 +269,7 @@ export function localizeThinkingSteps(steps) {
     if (summary) out.summary = summary;
     out.level = step.level;
     out.source_event = step.source_event;
+    if (typeof step.source_origin === 'string') out.source_origin = step.source_origin;
     if (step.parent_id) out.parent_id = step.parent_id;
     return out;
   });

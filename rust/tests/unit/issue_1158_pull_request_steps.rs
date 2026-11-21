@@ -9,7 +9,9 @@
 //! retitled, described or marked ready. The prompt below is that run's prompt,
 //! verbatim (`rust/tests/fixtures/hive-mind/formal-ai-prompt.txt`).
 
-use crate::offline_delivery::{FORMAL_AI_PROMPT, PR, Workspace, assert_delivered, available, offline};
+use crate::offline_delivery::{
+    FORMAL_AI_PROMPT, PR, Workspace, assert_delivered, available, offline,
+};
 
 #[cfg(unix)]
 #[test]

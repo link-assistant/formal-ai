@@ -1,0 +1,204 @@
+{
+  "records": [
+    {
+      "name": "before-admission",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=native admission includes fallible",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 1,
+      "log": "before-admission.log.gz",
+      "rawSha256": "4c96efa4aaaf166074e2b7424cbc4bb315ba82c3e1315d35a549c017338be387",
+      "archiveSha256": "b52501b10a070e7e1aec0feb5b37f73b294737e243f6b5c8641165aa4d42edc5"
+    },
+    {
+      "name": "format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "scripts/changelog-files.rs",
+        "scripts/collect-changelog.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "rustfmt-check",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "scripts/changelog-files.rs",
+        "scripts/collect-changelog.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "rustfmt-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "native-groups",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-groups.log.gz",
+      "rawSha256": "3c03590e7b04168e9872e1349bf883b7a185ec097ee86c79afe85a1419b329bb",
+      "archiveSha256": "b07ba17a5c5182dbdc91561a6bc62619c2378999bb2504e9d0925885ba6c8e0d"
+    },
+    {
+      "name": "default-build-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExit": 0,
+      "log": "default-build-policy.log.gz",
+      "rawSha256": "e2be37af31d64aea732463f5b1a5b60d3293f5548a3aa71d3bb007cf72586d9d",
+      "archiveSha256": "4aa20fcefe79b185852c6689b054c59f6716bb849afdd92c1367f8d68780ea72",
+      "resolvedBy": "default-build-policy-repaired",
+      "failure": "Maintained PR shard policy still expected two groups after actual measured scheduling repair selected four; eight main groups and all clocks remain required."
+    },
+    {
+      "name": "default-build-policy-repaired",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "default-build-policy-repaired.log.gz",
+      "rawSha256": "406db038e8aa3d7e05d04c7b0c283f28cc23605c6c47a6a80f5bccfaded3340a",
+      "archiveSha256": "9a151267d53e2b40744d7efd5e971f03c7e55fdad19727d77b55a03e2b60962f"
+    },
+    {
+      "name": "documentation-policy",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/documentation-only-ci-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "documentation-policy.log.gz",
+      "rawSha256": "c1fc10bba7017e969e3676a4b29c0e19dd34159cfe953c0a05395a746e6b0dea",
+      "archiveSha256": "9c85a256bab6b90c3155d7bdeadac0cb45b89301114f0b4dd0925fa7aeb7fb39"
+    },
+    {
+      "name": "gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-changelog-fragment-js-twin,check-generated-files,check-runner-labels,check_js_rust_translation,layered-ci"
+      ],
+      "exitCode": 1,
+      "expectedExit": 0,
+      "log": "gates.log.gz",
+      "rawSha256": "76816afb34b8aa64190f9eec4f60d9d3f5c8127789153702523a06a217a64968",
+      "archiveSha256": "e381092d5fb300b6eb4c1a0c57a2374f239badb608a1e385511fc43c04abd6a8",
+      "resolvedBy": "gates-corrected",
+      "failure": "The gate selector requires expanded IDs such as layered-ci#1, not the workflow label; no selected gate ran in this invalid invocation."
+    },
+    {
+      "name": "native-shard-rustfmt",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "/tmp/gh-issue-solver-1794900398048/rust/tests/unit/ci-cd/issue_1138_layered_ci.rs"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "native-shard-rustfmt.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "gates-corrected",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-changelog-fragment-js-twin,check-generated-files,check-runner-labels,check_js_rust_translation,layered-ci#1,layered-ci#2,layered-ci#3,layered-ci#4"
+      ],
+      "exitCode": 0,
+      "expectedExit": 0,
+      "log": "gates-corrected.log.gz",
+      "rawSha256": "c6dac186558cf2a20af5d92518a3826ec5d8bda29db68b6d5e5dfbe8ddf3f7f3",
+      "archiveSha256": "7ccb14132c0257826780b09a9cbb43ef564ac954897a8d9384f6ce246af11a69"
+    }
+  ],
+  "nativeBehaviorExecuted": false,
+  "fullIssueComplete": false,
+  "complete": true,
+  "sourceIdentities": [
+    {
+      "path": "scripts/changelog-files.rs",
+      "sha256": "6a670f58415fd25daa82e5920864e6d99acfa9714f9f17d3bf506d6a7efecd27"
+    },
+    {
+      "path": "scripts/collect-changelog.rs",
+      "sha256": "b67e5e9e76588eeb4a07ef35eaebc3255d77b7bb1132d22ba44b0263088bdff6"
+    },
+    {
+      "path": "scripts/ci-pull-request-admission.mjs",
+      "sha256": "556c51beaf574b11dd710b7e76e0dcbd8d271a996c49f42aca4d5910b2e6631d"
+    },
+    {
+      "path": "experiments/issue-1580/native-regression-groups.test.mjs",
+      "sha256": "c4e42e3a69cd6f067cffd4270f744923a9826ace73098f940f8c83478676f987"
+    },
+    {
+      "path": "rust/tests/web/default-branch-build-policy.test.mjs",
+      "sha256": "9eed08c2d0e044d36933d3a72bb21045b5a2693fb9aa8855fd1de9c69d82c663"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/issue_1138_layered_ci.rs",
+      "sha256": "5ea197417def2fe6c4255f4057c1481c98ef4408a8bc2cb7a0fa5611deddde78"
+    }
+  ],
+  "verificationLimits": "The before/after control executes actual native-admission logic. Rust filesystem regressions are retained in the focused hosted target and are not locally executed."
+}

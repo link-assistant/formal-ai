@@ -14,14 +14,14 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
-  modules 163
+  modules 164
   translated_items 342
   workaround_items 38
   inferred_signatures 3
-  carried_items 2652
+  carried_items 2659
   translated_modules 114
   fully_translated_modules 1
-  refused_modules 49
+  refused_modules 50
 workaround array-push items 2
 workaround callback-loops items 1
 workaround import-pruning items 13
@@ -32,7 +32,7 @@ module js/agentic/crate/calculation.mjs translated 0 workaround 0 inferred 0 car
 module js/agentic/crate/capability_routing.mjs translated 7 workaround 0 inferred 0 carried 66
 module js/agentic/crate/change_request.mjs translated 1 workaround 1 inferred 0 carried 15
 module js/agentic/crate/client_contract_learning.mjs translated 0 workaround 1 inferred 0 carried 15
-module js/agentic/crate/cnl_grammar.mjs translated 3 workaround 0 inferred 0 carried 33
+module js/agentic/crate/cnl_grammar.mjs translated 3 workaround 0 inferred 0 carried 35
 module js/agentic/crate/cnl_output.mjs translated 2 workaround 1 inferred 0 carried 31
 module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 27
 module js/agentic/crate/coding_cjk.mjs translated 0 workaround 0 inferred 0 carried 1
@@ -70,7 +70,7 @@ module js/agentic/crate/formalization_structures.mjs translated 0 workaround 0 i
 module js/agentic/crate/history_context.mjs translated 5 workaround 0 inferred 0 carried 18
 module js/agentic/crate/history_github.mjs translated 1 workaround 0 inferred 0 carried 17
 module js/agentic/crate/history_lineage.mjs translated 3 workaround 0 inferred 0 carried 8
-module js/agentic/crate/history_repository_qa.mjs translated 1 workaround 0 inferred 0 carried 16
+module js/agentic/crate/history_repository_qa.mjs translated 1 workaround 0 inferred 0 carried 17
 module js/agentic/crate/history_store.mjs translated 3 workaround 0 inferred 0 carried 30
 module js/agentic/crate/implementation_language.mjs translated 1 workaround 0 inferred 0 carried 22
 module js/agentic/crate/intent_formalization.mjs translated 5 workaround 0 inferred 0 carried 24
@@ -88,7 +88,7 @@ module js/agentic/crate/literal_content.mjs translated 0 workaround 0 inferred 0
 module js/agentic/crate/literal_instruction_view.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/memory.mjs translated 5 workaround 0 inferred 0 carried 19
 module js/agentic/crate/meta_core.mjs translated 2 workaround 0 inferred 0 carried 31
-module js/agentic/crate/meta_executor.mjs translated 2 workaround 0 inferred 0 carried 35
+module js/agentic/crate/meta_executor.mjs translated 2 workaround 0 inferred 0 carried 36
 module js/agentic/crate/meta_frame.mjs translated 6 workaround 0 inferred 0 carried 47
 module js/agentic/crate/meta_translate.mjs translated 1 workaround 1 inferred 0 carried 8
 module js/agentic/crate/method_registry.mjs translated 9 workaround 0 inferred 0 carried 22
@@ -173,6 +173,7 @@ module js/agentic/crate/summarization_recheck.mjs translated 1 workaround 0 infe
 module js/agentic/crate/summarization_resource.mjs translated 1 workaround 0 inferred 0 carried 17
 module js/agentic/crate/summarization_vocabulary.mjs translated 4 workaround 0 inferred 0 carried 15
 module js/agentic/crate/task_decomposition.mjs translated 4 workaround 0 inferred 0 carried 35
+module js/agentic/crate/task_decomposition_cues.mjs translated 0 workaround 0 inferred 0 carried 3
 module js/agentic/crate/task_decomposition_stated_task.mjs translated 1 workaround 0 inferred 0 carried 8
 module js/agentic/crate/task_decomposition_tree.mjs translated 1 workaround 0 inferred 0 carried 15
 module js/agentic/crate/text_formalization.mjs translated 8 workaround 0 inferred 0 carried 65
@@ -189,8 +190,8 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 7
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
-refusal "import of names its module does not translate" 358
-refusal "JSDoc type {…}" 220
+refusal "import of names its module does not translate" 362
+refusal "JSDoc type {…}" 221
 refusal "import from '…'" 214
 refusal "null" 194
 refusal "arrow function" 144
@@ -198,11 +199,11 @@ refusal "type: unknown name (a sibling item or an import)" 125
 refusal "function value …" 113
 refusal "object without a $ tag" 104
 refusal "new expression" 97
-refusal "regular expression" 68
+refusal "regular expression" 69
 refusal "method call .find()" 65
+refusal "method call .filter()" 61
 refusal "method call .map()" 61
-refusal "method call .filter()" 60
-refusal "method call .split()" 60
+refusal "method call .split()" 59
 refusal "method call .some()" 51
 refusal "method call .slice()" 48
 refusal "Array.from" 47
@@ -218,8 +219,8 @@ refusal "method call .every()" 19
 refusal "try statement" 19
 refusal "case test" 18
 refusal "undefined" 18
+refusal "method call .flatMap()" 16
 refusal "syntax: @param needs a type and a name" 16
-refusal "method call .flatMap()" 15
 refusal "typeof operator" 15
 refusal "method call .join()" 13
 refusal "for with const" 12

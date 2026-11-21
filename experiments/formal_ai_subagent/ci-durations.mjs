@@ -22,6 +22,7 @@
 //   folded into `data/meta/javascript-test-durations.lino`: slower files are
 //   raised, unrecorded files of at least 2 s are added, and `default-seconds`
 //   becomes the mean of the rest. `--log <file>` reads saved job logs instead.
+//   Add `--raise-only` for fast-PR logs to preserve slower main-suite weights.
 //
 // Usage:
 //   node experiments/formal_ai_subagent/ci-durations.mjs [--branch B] [--runs N] [--write]
@@ -356,6 +357,7 @@ function measureJavaScriptCiLogs() {
   return mergeJavaScriptDurations(readFileSync(JAVASCRIPT_OUTPUT, 'utf8'), observed, {
     source: runIds.join(' ') || undefined,
     recordedDate: new Date().toISOString().slice(0, 10),
+    raiseOnly: argv.includes('--raise-only'),
   });
 }
 

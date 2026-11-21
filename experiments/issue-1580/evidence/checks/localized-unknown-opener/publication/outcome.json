@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "records": [
+    {
+      "name": "gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-changelog-fragment-js-twin,check-fragment-release-map,check-file-size,check-reconstructed-changelog,check-worker-line-budget,check-status-render"
+      ],
+      "exitCode": 1,
+      "seconds": 95.733,
+      "rawBytes": 369,
+      "rawLines": 9,
+      "rawSha256": "a39a86200fed411734cf5689f524119c4c885c1ec268f92942d7c8de04a80391"
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.228,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

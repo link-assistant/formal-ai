@@ -1,0 +1,868 @@
+{
+  "attempt": 1,
+  "conclusion": "failure",
+  "createdAt": "2026-11-18T00:20:37Z",
+  "databaseId": 44207033000,
+  "headSha": "6b1d75a62a610e58914ef594c107f3fa402ded9d",
+  "jobs": [
+    {
+      "completedAt": "2026-11-18T00:20:51Z",
+      "conclusion": "success",
+      "databaseId": 134475515868,
+      "name": "Release Preflight",
+      "startedAt": "2026-11-18T00:20:44Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:45Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:47Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:48Z",
+          "conclusion": "success",
+          "name": "Probe every release credential",
+          "number": 3,
+          "startedAt": "2026-11-18T00:20:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:48Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 6,
+          "startedAt": "2026-11-18T00:20:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:48Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 7,
+          "startedAt": "2026-11-18T00:20:48Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475515868"
+    },
+    {
+      "completedAt": "2026-11-18T00:21:05Z",
+      "conclusion": "success",
+      "databaseId": 134475516223,
+      "name": "Version Modification Check",
+      "startedAt": "2026-11-18T00:20:46Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:50Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:56Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:56Z",
+          "conclusion": "skipped",
+          "name": "Setup Rust",
+          "number": 3,
+          "startedAt": "2026-11-18T00:20:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:56Z",
+          "conclusion": "skipped",
+          "name": "Install rust-script",
+          "number": 4,
+          "startedAt": "2026-11-18T00:20:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:02Z",
+          "conclusion": "success",
+          "name": "Check for manual version changes",
+          "number": 5,
+          "startedAt": "2026-11-18T00:20:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:02Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 10,
+          "startedAt": "2026-11-18T00:21:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:02Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-11-18T00:21:02Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475516223"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:52Z",
+      "conclusion": "success",
+      "databaseId": 134475516314,
+      "name": "Detect Changes",
+      "startedAt": "2026-11-18T00:20:45Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:47Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:49Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:49Z",
+          "conclusion": "skipped",
+          "name": "Setup Rust",
+          "number": 3,
+          "startedAt": "2026-11-18T00:20:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:49Z",
+          "conclusion": "skipped",
+          "name": "Install rust-script",
+          "number": 4,
+          "startedAt": "2026-11-18T00:20:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:49Z",
+          "conclusion": "success",
+          "name": "Detect changes",
+          "number": 5,
+          "startedAt": "2026-11-18T00:20:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:50Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 10,
+          "startedAt": "2026-11-18T00:20:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:50Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-11-18T00:20:50Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475516314"
+    },
+    {
+      "completedAt": "2026-11-18T00:21:17Z",
+      "conclusion": "failure",
+      "databaseId": 134475516431,
+      "name": "Fast Linux source and requirement checks",
+      "startedAt": "2026-11-18T00:20:46Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:49Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:15Z",
+          "conclusion": "failure",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:15Z",
+          "conclusion": "skipped",
+          "name": "Run actions/setup-node@v7",
+          "number": 3,
+          "startedAt": "2026-11-18T00:21:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:15Z",
+          "conclusion": "skipped",
+          "name": "Validate source readability, CI budgets and requirements without a native build",
+          "number": 4,
+          "startedAt": "2026-11-18T00:21:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:15Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 8,
+          "startedAt": "2026-11-18T00:21:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:15Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 9,
+          "startedAt": "2026-11-18T00:21:15Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475516431"
+    },
+    {
+      "completedAt": "2026-11-18T00:21:10Z",
+      "conclusion": "success",
+      "databaseId": 134475516448,
+      "name": "hive-source-provenance / Hive source event provenance",
+      "startedAt": "2026-11-18T00:20:49Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:54Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:59Z",
+          "conclusion": "success",
+          "name": "Run actions/github-script@v9",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:05Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v7",
+          "number": 3,
+          "startedAt": "2026-11-18T00:20:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:05Z",
+          "conclusion": "success",
+          "name": "Preserve minimal original source coordinates",
+          "number": 4,
+          "startedAt": "2026-11-18T00:21:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:07Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v7",
+          "number": 5,
+          "startedAt": "2026-11-18T00:21:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:07Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-node@v7",
+          "number": 10,
+          "startedAt": "2026-11-18T00:21:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:07Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-11-18T00:21:07Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475516448"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:55Z",
+      "conclusion": "success",
+      "databaseId": 134475516511,
+      "name": "base / Pin base commit",
+      "startedAt": "2026-11-18T00:20:48Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:50Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:52Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:52Z",
+          "conclusion": "success",
+          "name": "Run bash scripts/pin-base-commit.sh",
+          "number": 3,
+          "startedAt": "2026-11-18T00:20:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:53Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 6,
+          "startedAt": "2026-11-18T00:20:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:53Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 7,
+          "startedAt": "2026-11-18T00:20:53Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475516511"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:38Z",
+      "conclusion": "skipped",
+      "databaseId": 134475517504,
+      "name": "Create Changelog PR",
+      "startedAt": "2026-11-18T00:20:39Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475517504"
+    },
+    {
+      "completedAt": "2026-11-18T00:22:07Z",
+      "conclusion": "success",
+      "databaseId": 134475622891,
+      "name": "Secrets Scan",
+      "startedAt": "2026-11-18T00:20:54Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:56Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:38Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:40Z",
+          "conclusion": "success",
+          "name": "Setup Node",
+          "number": 3,
+          "startedAt": "2026-11-18T00:21:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:22:05Z",
+          "conclusion": "success",
+          "name": "Check for secrets",
+          "number": 4,
+          "startedAt": "2026-11-18T00:21:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:22:05Z",
+          "conclusion": "success",
+          "name": "Post Setup Node",
+          "number": 7,
+          "startedAt": "2026-11-18T00:22:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:22:05Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 8,
+          "startedAt": "2026-11-18T00:22:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:22:06Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 9,
+          "startedAt": "2026-11-18T00:22:05Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475622891"
+    },
+    {
+      "completedAt": "2026-11-18T00:21:15Z",
+      "conclusion": "success",
+      "databaseId": 134475622945,
+      "name": "Changelog Fragment Check",
+      "startedAt": "2026-11-18T00:20:55Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:58Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:06Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:11Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v7",
+          "number": 3,
+          "startedAt": "2026-11-18T00:21:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:11Z",
+          "conclusion": "success",
+          "name": "Check for changelog fragments",
+          "number": 4,
+          "startedAt": "2026-11-18T00:21:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:11Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-node@v7",
+          "number": 7,
+          "startedAt": "2026-11-18T00:21:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:12Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 8,
+          "startedAt": "2026-11-18T00:21:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:12Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 9,
+          "startedAt": "2026-11-18T00:21:12Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475622945"
+    },
+    {
+      "completedAt": "2026-11-18T00:26:38Z",
+      "conclusion": "success",
+      "databaseId": 134475623271,
+      "name": "Native type and lint check / Rust compile inputs changed",
+      "startedAt": "2026-11-18T00:20:55Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:59Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:59Z",
+          "conclusion": "skipped",
+          "name": "Report unchanged compile inputs",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:21Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 3,
+          "startedAt": "2026-11-18T00:20:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:34Z",
+          "conclusion": "success",
+          "name": "Run dtolnay/rust-toolchain@stable",
+          "number": 4,
+          "startedAt": "2026-11-18T00:21:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:36Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/setup-sccache",
+          "number": 5,
+          "startedAt": "2026-11-18T00:21:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:44Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/cache-cargo-registry",
+          "number": 6,
+          "startedAt": "2026-11-18T00:21:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:23:17Z",
+          "conclusion": "success",
+          "name": "Type-check and lint the library and binaries",
+          "number": 7,
+          "startedAt": "2026-11-18T00:21:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:26:34Z",
+          "conclusion": "success",
+          "name": "Verify calendar and currency native behavior",
+          "number": 8,
+          "startedAt": "2026-11-18T00:23:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:26:34Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/cache-cargo-registry",
+          "number": 14,
+          "startedAt": "2026-11-18T00:26:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:26:34Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/setup-sccache",
+          "number": 15,
+          "startedAt": "2026-11-18T00:26:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:26:34Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 16,
+          "startedAt": "2026-11-18T00:26:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:26:34Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 17,
+          "startedAt": "2026-11-18T00:26:34Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475623271"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:52Z",
+      "conclusion": "skipped",
+      "databaseId": 134475624219,
+      "name": "Build binaries and tests",
+      "startedAt": "2026-11-18T00:20:52Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475624219"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:52Z",
+      "conclusion": "skipped",
+      "databaseId": 134475624710,
+      "name": "E2E Tests (local web app)",
+      "startedAt": "2026-11-18T00:20:52Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475624710"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:52Z",
+      "conclusion": "skipped",
+      "databaseId": 134475625192,
+      "name": "Slim Docker build and runtime",
+      "startedAt": "2026-11-18T00:20:52Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475625192"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:52Z",
+      "conclusion": "skipped",
+      "databaseId": 134475625249,
+      "name": "E2E Tests (agent CLI \u2194 formal-ai)",
+      "startedAt": "2026-11-18T00:20:52Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475625249"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:52Z",
+      "conclusion": "skipped",
+      "databaseId": 134475625590,
+      "name": "Docker Image Build & Runtime Check",
+      "startedAt": "2026-11-18T00:20:52Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475625590"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:52Z",
+      "conclusion": "skipped",
+      "databaseId": 134475625700,
+      "name": "Box Image Projects (${{ matrix.language }})",
+      "startedAt": "2026-11-18T00:20:52Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475625700"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:52Z",
+      "conclusion": "skipped",
+      "databaseId": 134475625936,
+      "name": "Server parity (JavaScript vs Rust)",
+      "startedAt": "2026-11-18T00:20:52Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475625936"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:52Z",
+      "conclusion": "skipped",
+      "databaseId": 134475626169,
+      "name": "native-response-observations",
+      "startedAt": "2026-11-18T00:20:52Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475626169"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:55Z",
+      "conclusion": "skipped",
+      "databaseId": 134475653688,
+      "name": "Lint and Format Check (lane ${{ matrix.lane }})",
+      "startedAt": "2026-11-18T00:20:56Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475653688"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:55Z",
+      "conclusion": "skipped",
+      "databaseId": 134475653702,
+      "name": "Default-feature documentation tests",
+      "startedAt": "2026-11-18T00:20:56Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475653702"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:55Z",
+      "conclusion": "skipped",
+      "databaseId": 134475653964,
+      "name": "macOS Core Tests",
+      "startedAt": "2026-11-18T00:20:56Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475653964"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:55Z",
+      "conclusion": "skipped",
+      "databaseId": 134475654190,
+      "name": "Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ ((matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards)) || '') }}",
+      "startedAt": "2026-11-18T00:20:56Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475654190"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:56Z",
+      "conclusion": "skipped",
+      "databaseId": 134475654425,
+      "name": "Build Package",
+      "startedAt": "2026-11-18T00:20:56Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134475654425"
+    },
+    {
+      "completedAt": "2026-11-18T00:22:08Z",
+      "conclusion": "skipped",
+      "databaseId": 134476215696,
+      "name": "Auto Release",
+      "startedAt": "2026-11-18T00:22:08Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134476215696"
+    },
+    {
+      "completedAt": "2026-11-18T00:22:08Z",
+      "conclusion": "skipped",
+      "databaseId": 134476216068,
+      "name": "Instant Release",
+      "startedAt": "2026-11-18T00:22:08Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134476216068"
+    },
+    {
+      "completedAt": "2026-11-18T00:22:08Z",
+      "conclusion": "skipped",
+      "databaseId": 134476216765,
+      "name": "Build GitHub Pages artifact",
+      "startedAt": "2026-11-18T00:22:08Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134476216765"
+    },
+    {
+      "completedAt": "2026-11-18T00:22:08Z",
+      "conclusion": "skipped",
+      "databaseId": 134476216953,
+      "name": "self-authored-after-publication",
+      "startedAt": "2026-11-18T00:22:08Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134476216953"
+    },
+    {
+      "completedAt": "2026-11-18T00:22:08Z",
+      "conclusion": "skipped",
+      "databaseId": 134476216999,
+      "name": "Native full and slim container publication",
+      "startedAt": "2026-11-18T00:22:08Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134476216999"
+    },
+    {
+      "completedAt": "2026-11-18T00:22:08Z",
+      "conclusion": "skipped",
+      "databaseId": 134476217487,
+      "name": "Deploy Web App to GitHub Pages",
+      "startedAt": "2026-11-18T00:22:08Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134476217487"
+    },
+    {
+      "completedAt": "2026-11-18T00:22:08Z",
+      "conclusion": "skipped",
+      "databaseId": 134476217805,
+      "name": "E2E Tests (GitHub Pages)",
+      "startedAt": "2026-11-18T00:22:08Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134476217805"
+    },
+    {
+      "completedAt": "2026-11-18T00:26:50Z",
+      "conclusion": "failure",
+      "databaseId": 134478311028,
+      "name": "Pipeline Status",
+      "startedAt": "2026-11-18T00:26:41Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:26:44Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:26:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:26:48Z",
+          "conclusion": "success",
+          "name": "Run actions/github-script@v9",
+          "number": 2,
+          "startedAt": "2026-11-18T00:26:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:26:48Z",
+          "conclusion": "failure",
+          "name": "Fail the run when a required job was cancelled or failed",
+          "number": 3,
+          "startedAt": "2026-11-18T00:26:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:26:48Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 4,
+          "startedAt": "2026-11-18T00:26:48Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000/job/134478311028"
+    }
+  ],
+  "status": "completed",
+  "updatedAt": "2026-11-18T00:26:50Z",
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207033000"
+}

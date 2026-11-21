@@ -1,0 +1,42 @@
+{
+  "claim": "All three touched gates pass after archiving 333 supplied bootstrap scripts and the current Formal AI command evidence. Existing six-case abbreviation regression passed before archival. No Rust or template runtime build performed.",
+  "checks": [
+    {
+      "gate": "check-abbreviations",
+      "exitCode": 0,
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/active-review-archive-check-abbreviations.log.gz",
+      "rawSha256": "ac5a44e26ba8bf83de7fefc7c1c01b4d0757501d01e0f94e7ea0d9c756b8b565"
+    },
+    {
+      "gate": "check-file-size",
+      "exitCode": 0,
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/active-review-archive-check-file-size.log.gz",
+      "rawSha256": "e8779baf81a98f3253306d9ad56c126c9e65f7ea84baa90cce7400b76228ea5b"
+    },
+    {
+      "gate": "check-file-size-js-twin",
+      "exitCode": 0,
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/active-review-archive-check-file-size-js-twin.log.gz",
+      "rawSha256": "a04e5fbe9eeeeb87b3dc7e68bc8c53f9ba7d6a64736a8e6e2fa8ba94ae056298"
+    }
+  ],
+  "independentFormalAiReasoningCredit": 0
+}

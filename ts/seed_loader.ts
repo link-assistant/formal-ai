@@ -566,14 +566,12 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
     return match ? match.id : "";
   }
   function findChildValueAlias(node, primary, fallback) {
-    var value = findChildValue(node, primary);
-    return value || findChildValue(node, fallback);
+    return findChildValue(node, primary) || findChildValue(node, fallback);
   }
-  // Project the ordered, uniform browser-handler bindings from seed data.
-  // Executable symbols are stored as node names (`argument_prompt`,
-  // `context_binding_writeProgram`, …) so the meaning-closure audit does not
-  // mistake JavaScript identifiers for natural-language references. A bare
-  // `rule_set` field marks a row the seed rule interpreter runs by its name.
+  // Project ordered browser bindings and their shared named argument lists.
+  // Executable symbols are node names (`argument_prompt`,
+  // `context_binding_writeProgram`, …), not natural-language references.
+  // A bare `rule-set` field selects the seed rule interpreter.
   function extractBrowserHandlerPrecedence(root) {
     if (!root) return [];
     var section = root.name === "browser-handler-precedence"
@@ -589,8 +587,12 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         resultIntent: "",
         evidenceKind: "",
       };
-      for (var i = 0; i < handler.children.length; i += 1) {
-        var field = handler.children[i].name;
+      var reference = findChildValue(handler, "arguments");
+      var shared = findChildren(section, "arguments").find(function (list) { return list.id === reference; });
+      if (reference && !shared) throw new Error("unknown browser handler arguments: " + reference);
+      var fields = handler.children.concat(shared ? shared.children : []);
+      for (var i = 0; i < fields.length; i += 1) {
+        var field = fields[i].name;
         if (field.indexOf("argument_") === 0) {
           record.arguments.push(field.slice("argument_".length));
         } else if (field.indexOf("context_binding_") === 0) {

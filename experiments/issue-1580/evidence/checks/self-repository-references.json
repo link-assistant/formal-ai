@@ -1,0 +1,114 @@
+{
+  "observedAt": "2026-11-17T13:03:18.758308+00:00",
+  "primarySyntaxReference": "https://github.blog/changelog/2026-07-30-reference-same-repository-actions-with-self-repository-syntax/",
+  "commands": [
+    "timeout 600 node --test --test-concurrency=1 experiments/issue-1580/template-reference-graph.test.mjs",
+    "timeout 600 node --test --test-concurrency=1 rust/tests/web/issue-1580-template-observations.test.mjs",
+    "NODE_PATH=/tmp/issue-1580-research/node_modules node --max-old-space-size=96 experiments/issue-1580/trace-template-ci.mjs",
+    "node experiments/formal_ai_subagent/local-gates.mjs --only check-file-size,check-file-size-js-twin,check-changelog-fragment-js-twin,check-ci-speed"
+  ],
+  "results": {
+    "before": {
+      "pass": 2,
+      "fail": 3,
+      "skip": 0
+    },
+    "intermediate": {
+      "pass": 4,
+      "fail": 1,
+      "skip": 0,
+      "explanation": "The new negative assertion incorrectly excluded an existing conservative sibling index expansion; corrected the assertion to check the unrelated file instead. Production expansion was retained."
+    },
+    "after": {
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    "maintained": {
+      "pass": 21,
+      "fail": 0,
+      "skip": 0
+    },
+    "regeneration": {
+      "languages": 8,
+      "pinnedSourceBlobs": 3007,
+      "workflowRoots": 48,
+      "addedSelfRepositoryEdges": 13,
+      "addedFiles": 0
+    },
+    "gates": {
+      "pass": 4,
+      "fail": 0,
+      "skip": 0
+    }
+  },
+  "limits": [
+    "Lexical review aid, not complete execution closure or semantic verification.",
+    "The pinned real templates already included the target files through other conservative paths; this repair adds explicit reference attribution.",
+    "No hosted self-repository action, native runtime, or application build execution.",
+    "C# active review is partial; full semantic reviews remain unfinished.",
+    "Supplied scripts and decisions earn zero independent Formal AI reasoning/authorship credit."
+  ],
+  "sources": [
+    {
+      "file": "experiments/issue-1580/trace-template-ci.mjs",
+      "sha256": "8d35df2d83afb0cf8a172ee1627f7cb810c0ef18c1c96e9338e4b1714d52b62a"
+    },
+    {
+      "file": "experiments/issue-1580/template-reference-graph.test.mjs",
+      "sha256": "2ae5df9a8444d6e0e6acb79ccabb62de1058c0a611dc3cfa94d8d980c1c50fed"
+    },
+    {
+      "file": "rust/tests/web/issue-1580-template-observations.test.mjs",
+      "sha256": "6b9abb8839f05c5809a1eeca238d75d3afb3eb172114cc9995ea06aea89e6e31"
+    },
+    {
+      "file": "docs/case-studies/issue-1580/templates/ci-reference-graphs.json",
+      "sha256": "70ccb9276272a91824bcd40fd37b96850afa236d222967d663739d154087b958"
+    }
+  ],
+  "files": [
+    {
+      "file": "self-repository-reference-before.log.gz",
+      "bytes": 4517,
+      "sha256": "6766839051c7b43bcc96f360f94d6b0fba88f94f8a382dbd5bd434301eb1f4bf",
+      "compressedSha256": "8a4e606491a132aa24a56509b7439b8d0ba55cfa92c96b04b7781904a3366865"
+    },
+    {
+      "file": "self-repository-reference-intermediate.log.gz",
+      "bytes": 1845,
+      "sha256": "53074be1609095e8bd68eb3592f7300d872152e90f7e41e19ab1eae2398bf664",
+      "compressedSha256": "75d80e75b764e656e25c62639b1c400418f8dd3e7257f181e71b70068b2d82a6"
+    },
+    {
+      "file": "self-repository-reference-after.log.gz",
+      "bytes": 624,
+      "sha256": "ec33e3231a852312c0b4a9f3aa7eeaaab5e8b169e5999c61125c072056f36ea7",
+      "compressedSha256": "c9dda38d2d4b379e9de68ff2841e0fcbb952b74b0f5f9044ec60c1859e39b462"
+    },
+    {
+      "file": "self-repository-reference-maintained.log.gz",
+      "bytes": 2223,
+      "sha256": "fe929b3a724981c2cd07799c3c21b65a52f0d2026e78369737fd4fd3763fb054",
+      "compressedSha256": "5b5df1a7e39b6f5a4337f192a074c5d79344c4b140e0a1f18b730e07ca616256"
+    },
+    {
+      "file": "self-repository-reference-regeneration.log.gz",
+      "bytes": 3244,
+      "sha256": "ce1c0491c17f38933d0001abae3804acc509c25f3743309f57eac9d740a4c8df",
+      "compressedSha256": "3f37e8f5b59d6b34faf4bfad4a2bd94641836b8e6f56273dfea93c4318d5ba3c"
+    },
+    {
+      "file": "self-repository-reference-graph-delta.json.gz",
+      "bytes": 3204,
+      "sha256": "67d28c07dc95c72fb5976b721bb8d256eecac48fd02524ad3198c8c91c4c0ee6",
+      "compressedSha256": "d28f99982cb6d82d465b073157c6531b067f5e03644669deaae74d70f53e426b"
+    },
+    {
+      "file": "self-repository-reference-gates.log.gz",
+      "bytes": 166,
+      "sha256": "6550e0c40856987ec81b2409d8aa6b87ea2690cfcc5bb5604eb6e92a811fd2bf",
+      "compressedSha256": "4579c1d59374af6afd5b205b93ff2056eb4f1d0dc169e4415e1f8ccbedb16183"
+    }
+  ]
+}

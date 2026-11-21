@@ -77,3 +77,7 @@ test('canonical Python and JavaScript projections agree on held-out and actual r
       }
     }finally{dispose(root);}
   });
+
+test('the committed role registry equals the meanings loaded by the current runtime',()=>{
+  assert.equal(fs.readFileSync(path.join(repository,'data/seed/roles.lino'),'utf8'),render(collect(repository)));
+});

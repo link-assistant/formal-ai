@@ -1,0 +1,21 @@
+{
+  "pinnedHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "activeFiles": 62,
+  "historicalFiles": 145,
+  "completeDisjointPathUnion": 207,
+  "historicalIdentitiesMatchContentCoverage": true,
+  "historicalComparisonReferencesExist": true,
+  "practiceCounts": {
+    "source-and-requirements": 8,
+    "maven-runtime": 18,
+    "upstream-evidence": 24,
+    "historical-result": 41,
+    "audit-scope": 8,
+    "normalized-evidence": 1,
+    "dependency-catalog": 44,
+    "dependency-update-guidance": 1
+  },
+  "fullRepositorySemanticComparisonComplete": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

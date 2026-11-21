@@ -1,0 +1,20 @@
+{
+  "parent": "rust/src/seed.rs",
+  "child": "rust/src/seed/responses.rs",
+  "beforeSha256": "d05d66ad2e12007777679bc1bbd2f5eb67acb3dd91e423c3e08ee2cfa9553dbc",
+  "afterParentSha256": "b9f16626abf5eeb5b190d14e75933a09d030e93feda5c9564bed2a628888ec6e",
+  "childSha256": "0749b80b6a31d105f41cd1a71942d7c5ac7aa64becb93f14d2727b76ce1cacac",
+  "originalLines": 983,
+  "parentLines": 822,
+  "childLines": 169,
+  "exactInverseBeforeFormatting": true,
+  "normalizedFinalBlockBoundaryOnly": true,
+  "formattingPreservesTokensAndCommentsExceptDeclaredOptionalParserImportComma": true,
+  "publicNamesPreservedByReexports": true,
+  "lookupVariantFallbackAndTemplateBodiesUnchanged": true,
+  "originalStrictFormattingProofFailureRetained": true,
+  "localRustExecution": false,
+  "hostedNativeVerificationPending": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,139 @@
+{
+  "observedAt": "2026-11-18T20:34:39.683959+00:00",
+  "records": [
+    {
+      "name": "issue",
+      "argv": [
+        "gh",
+        "issue",
+        "view",
+        "https://github.com/link-assistant/formal-ai/issues/1580",
+        "--json",
+        "title,body,state,updatedAt"
+      ],
+      "file": "issue.json.gz",
+      "rawSha256": "66a4c04fd4fde0fe2130f5e12a11b56a70293617c43cba37abdf8a87284f201a",
+      "archiveSha256": "c220c444abccfb825948e174f8023f03cec189ed45ab480673d23a99d9bf6726",
+      "exitCode": 0
+    },
+    {
+      "name": "pull-request",
+      "argv": [
+        "gh",
+        "pr",
+        "view",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "title,body,state,isDraft,headRefOid,updatedAt"
+      ],
+      "file": "pull-request.json.gz",
+      "rawSha256": "217fc62efe63ff4731edb0b61c03b25e417e98119a30fb83642fce99b764dc53",
+      "archiveSha256": "4adc52526bd0ba109b257f627bc44381403b16fe36f13555bb64432dedada5a3",
+      "exitCode": 0
+    },
+    {
+      "name": "issue-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "file": "issue-comments.json.gz",
+      "rawSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2",
+      "archiveSha256": "e58aa06dd389ebca87f43ba61d6b1fa0df4211e037a983ba266a8db672883638",
+      "exitCode": 0
+    },
+    {
+      "name": "pull-request-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "file": "pull-request-comments.json.gz",
+      "rawSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb",
+      "archiveSha256": "c488e703c8e7c60b730b6d2765b05d9b57882cd2f396b63ec9e563e942fafa67",
+      "exitCode": 0
+    },
+    {
+      "name": "inline-comments",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "file": "inline-comments.json.gz",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe",
+      "exitCode": 0
+    },
+    {
+      "name": "reviews",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate",
+        "--slurp"
+      ],
+      "file": "reviews.json.gz",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe",
+      "exitCode": 0
+    },
+    {
+      "name": "required-sub-issues",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/sub_issues",
+        "--paginate",
+        "--slurp"
+      ],
+      "file": "required-sub-issues.json.gz",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe",
+      "exitCode": 0
+    },
+    {
+      "name": "main-current",
+      "argv": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/git/ref/heads/main"
+      ],
+      "file": "main-current.json.gz",
+      "rawSha256": "2edaaf35d238c2bc691383ddd9ab2983642b7da4b6fab9c7aa81b0c1a0b25a0a",
+      "archiveSha256": "b278550548b14b386fcbe16fbcf5800a86dc875cbc0e2fa62531b35cf5292dd4",
+      "exitCode": 0
+    },
+    {
+      "name": "recent-runs",
+      "argv": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--limit",
+        "5",
+        "--json",
+        "databaseId,conclusion,createdAt,headSha"
+      ],
+      "file": "recent-runs.json.gz",
+      "rawSha256": "4e16865e209951bf7fe570ddc4ed59b438a9b22fdd0be948ff3180c2bdf9ca33",
+      "archiveSha256": "103cc06e98ceb7983d9e8e31e6f44d623fd791741e67c4fe37bcaf4e21010c74",
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+  "checkedAt": "2026-11-17T14:22:54.629900+00:00",
+  "pinnedCommit": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+  "currentMainFileGitBlob": "24f4c2b023e08ebb9397c497f2a12f95dd88a93e",
+  "currentMainFileSha256": "69dff7dae4675f4ae2573761be12b72930c6cdc947d9e7d0aa0ea442fcc5e9f2",
+  "allIssuesAndPullRequestsSearched": 156,
+  "exactKeywords": [
+    "collision",
+    "overwrite",
+    "create_manual_changeset",
+    "manual fragment"
+  ],
+  "narrowMatches": [
+    79,
+    66
+  ],
+  "conclusion": "No matching fragment-creation collision report found. Validator replacement handling (#100/#101), release attestation (#148), and dependency locking (#152) concern different boundaries. Current main helper is byte-identical to the tested pin.",
+  "upstreamRepairClaimed": false
+}

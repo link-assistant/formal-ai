@@ -1,0 +1,19 @@
+{
+  "observedAt": "2026-11-18T07:55:00.625176+00:00",
+  "sourceHead": "26f3f332aeffb7ced6985e58e682b209a71346c7",
+  "mainMerged": "19235c49abaf1e71aad89e4badbe1f9bba5d4786",
+  "focusedTestsPassed": 84,
+  "fullLocalInventory": {
+    "pass": 85,
+    "excluded": 52,
+    "fail": 1
+  },
+  "correctionGatesPassed": 4,
+  "nativeExecuted": false,
+  "hostedCiPendingPublication": true,
+  "javaLiteralPages": 100,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "previousBodySha256": "1274903a0d5472a240ba689790053860364ce122b8477705ecc4720c5c60d199",
+  "newBodySha256": "d1a4fa5528589afe858d1101fac03f47a1c7dfb68cc911c1aea96dc1f8e59c84"
+}

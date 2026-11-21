@@ -51,7 +51,7 @@ fn documented_answer(id: &str) -> &'static str {
         }
         "e34_text_manipulation_chain" => "RULES NOTATION LINKS",
         "e1174_summarization_free_text" => {
-            "The Halley research station opened in 1956 is used to study the Antarctic ice shelf."
+            "The Halley research station, opened in 1956, is used to study the Antarctic ice shelf. It provides year-round measurements of ozone and sea temperature."
         }
         "e1176_statistics_mean_median" => {
             "The values are 4, 8, 15, 16, 23, 42 (n = 6).\nmean: 18 (108 / 6 = 18)\nmedian: \
@@ -85,7 +85,7 @@ fn shared_cross_runtime_synthesis_fixture_matches_rust_solver() {
             documented => Some(documented_answer(documented)),
         };
         if let Some(documented) = documented {
-            assert_eq!(response.answer, documented);
+            assert_eq!(response.answer, documented, "{}", case.id);
         }
         assert_eq!(
             response.intent, case.expected_intent,

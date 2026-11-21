@@ -1,0 +1,382 @@
+[
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:16:39Z",
+    "databaseId": 44167585150,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:16:40Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44167585150",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:16:39Z",
+    "databaseId": 44167585050,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:16:40Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44167585050",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:16:34Z",
+    "databaseId": 44167569956,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:16:36Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44167569956",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:08:13Z",
+    "databaseId": 44166057915,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:08:14Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44166057915",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:08:13Z",
+    "databaseId": 44166057908,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:08:14Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44166057908",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:08:08Z",
+    "databaseId": 44166042845,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:08:10Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44166042845",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:05:19Z",
+    "databaseId": 44165541477,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:05:21Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44165541477",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:05:19Z",
+    "databaseId": 44165541722,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:05:21Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44165541722",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:05:14Z",
+    "databaseId": 44165525807,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:05:16Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44165525807",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:02:07Z",
+    "databaseId": 44164967927,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:02:08Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164967927",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:02:07Z",
+    "databaseId": 44164967915,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:02:08Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164967915",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:02:02Z",
+    "databaseId": 44164951069,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:02:04Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164951069",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:01:45Z",
+    "databaseId": 44164902091,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:46Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164902091",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:01:45Z",
+    "databaseId": 44164902151,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:53Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164902151",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:01:39Z",
+    "databaseId": 44164882799,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:42Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164882799",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:01:14Z",
+    "databaseId": 44164808208,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:15Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164808208",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:01:14Z",
+    "databaseId": 44164808191,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:15Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164808191",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:01:10Z",
+    "databaseId": 44164797690,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:11Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164797690",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:01:10Z",
+    "databaseId": 44164797763,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:11Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164797763",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:01:07Z",
+    "databaseId": 44164786952,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:09Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164786952",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:01:05Z",
+    "databaseId": 44164779387,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:07Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164779387",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:00:57Z",
+    "databaseId": 44164754770,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:01Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164754770",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:00:57Z",
+    "databaseId": 44164754399,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:01:09Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164754399",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T20:00:51Z",
+    "databaseId": 44164733906,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T20:00:53Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44164733906",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:56:34Z",
+    "databaseId": 44163979885,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:56:44Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163979885",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:56:34Z",
+    "databaseId": 44163979993,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:56:36Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163979993",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:56:29Z",
+    "databaseId": 44163965111,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:56:31Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163965111",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:56:00Z",
+    "databaseId": 44163875194,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:56:01Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163875194",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:56:00Z",
+    "databaseId": 44163875133,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:56:01Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163875133",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:55:54Z",
+    "databaseId": 44163858681,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:55:56Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163858681",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:55:00Z",
+    "databaseId": 44163692711,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:55:01Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163692711",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:54:59Z",
+    "databaseId": 44163692561,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:55:01Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163692561",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:54:54Z",
+    "databaseId": 44163676104,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:54:55Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163676104",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:54:14Z",
+    "databaseId": 44163562018,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:54:16Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163562018",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:54:14Z",
+    "databaseId": 44163562273,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:54:25Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163562273",
+    "workflowName": "Hive CI phase timing"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:54:10Z",
+    "databaseId": 44163548187,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:54:11Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163548187",
+    "workflowName": "Original Hive Mind three-client delivery"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:53:49Z",
+    "databaseId": 44163486853,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:53:52Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163486853",
+    "workflowName": "Finalize original Hive generated tasks"
+  },
+  {
+    "conclusion": "skipped",
+    "createdAt": "2026-11-17T19:53:49Z",
+    "databaseId": 44163486769,
+    "headSha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "status": "completed",
+    "updatedAt": "2026-11-17T19:53:53Z",
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44163486769",
+    "workflowName": "Hive CI phase timing"
+  }
+]

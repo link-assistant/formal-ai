@@ -1,0 +1,37 @@
+[
+  {
+    "runId": 44262999002,
+    "workflow": "Layered CI",
+    "head": "9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8",
+    "conclusion": "failure",
+    "failedJobs": [
+      {
+        "id": 134660726252,
+        "name": "js tier (node --check over js, suite group 2)",
+        "conclusion": "failure"
+      },
+      {
+        "id": 134660726256,
+        "name": "js tier (node --check over js, suite group 1)",
+        "conclusion": "failure"
+      }
+    ],
+    "archives": [
+      {
+        "archive": "run-44262999002.log.gz",
+        "rawBytes": 287873,
+        "rawLines": 1863,
+        "rawSha256": "4daf6b31e74c812bbc89aa3ee7198ce389537057d58d7e199641da74e534322e",
+        "archiveSha256": "cbcbaa59cd1bb30a1df39bae89515667ba9141912f493457751c575ec47ddb78"
+      },
+      {
+        "archive": "run-44262999002-jobs.json.gz",
+        "rawBytes": 12788,
+        "rawLines": 1,
+        "rawSha256": "d236c32c2e0cddc1e16c2a5b60d9f64b58e018256face25c01a7b5bb34dfd64d",
+        "archiveSha256": "2085dd82193afac86251d1bf30f18bb197f0f36406909a1697e3cea987eb61b1"
+      }
+    ],
+    "logPath": "/tmp/issue-1580-research/ci-logs/executor-status-9095abcb/run-44262999002.log"
+  }
+]

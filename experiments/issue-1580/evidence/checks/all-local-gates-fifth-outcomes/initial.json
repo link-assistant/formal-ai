@@ -1,0 +1,692 @@
+[
+  {
+    "status": "PASS",
+    "gate": "check-abbreviations",
+    "detail": " 3.7s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-architecture-contents",
+    "detail": " 1.2s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-architecture-principles",
+    "detail": " 1.3s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-assemble-requirements-js-twin",
+    "detail": " 4.0s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-associative-terminology",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-bootstrap-deletability",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-cache-budget",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-capability-routing",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-cargo-lock-is-synchronized",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-changelog-fragment-js-twin",
+    "detail": " 1.4s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-ci-gate-registry",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-ci-speed",
+    "detail": " 1.4s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-ci-wall-clock",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-closure-audit",
+    "detail": " 6.9s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-condition-source-parity",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-conversational-variation-floor",
+    "detail": " 2.1s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-coverage-ratchet",
+    "detail": " (compiles script unit tests (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-debt-ratchet-js-twin",
+    "detail": " 2.5s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check_debt_ratchet",
+    "detail": " 2.3s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-debug-stage-sources",
+    "detail": " 2.5s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-dependencies-latest",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-dependency-direction",
+    "detail": " 2.5s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-desktop-library",
+    "detail": " 3.5s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-desktop-packaging",
+    "detail": " 1.7s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-disk-usage-policy",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-docs-rs-dependency-profile",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-fact-captures",
+    "detail": " 1.7s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-file-size-js-twin",
+    "detail": " 12.4s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-file-size",
+    "detail": " 4.4s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-formal-ai-contribution",
+    "detail": " (compiles script unit tests (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-formal-ai-tally",
+    "detail": " 1.7s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-formatting",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-fragment-release-map",
+    "detail": " 58.9s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-generate-module-map-js-twin",
+    "detail": " 1.4s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-generate-requirement-status-js-twin",
+    "detail": " 4.5s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-generated-files",
+    "detail": " 54.4s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-generated-version-literals-js-twin",
+    "detail": " 3.6s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-generated-version-literals",
+    "detail": " 2.5s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-hardcoded-language-js-twin",
+    "detail": " 3.8s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-hardcoded-language",
+    "detail": " 2.9s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-head-pipeline-coverage",
+    "detail": " (compiles script unit tests (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-i18n-catalog-coverage",
+    "detail": " 2.2s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-issue-citations",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-javascript-dependencies",
+    "detail": " 3.4s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check_job_headroom",
+    "detail": " (compiles script unit tests (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check_js_rust_translation",
+    "detail": " 4.3s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-language-change-parity",
+    "detail": " 3.1s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-language-parity-js-twin",
+    "detail": " 2.2s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-language-parity",
+    "detail": " 1.8s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-language-test-coverage",
+    "detail": " 3.4s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-llm-task-parity",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-merge-conflict-policy",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-minimal-core-boundary-js-twin",
+    "detail": " 1.8s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-minimal-core-boundary",
+    "detail": " 2.4s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-multilingual-intent-coverage",
+    "detail": " 3.3s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-notation",
+    "detail": " 23.8s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-ordered-lists-are-canonical",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-package-self-containment",
+    "detail": " 2.1s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-planner-twins",
+    "detail": " 2.0s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-portable-string-contracts",
+    "detail": " 1.8s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-progressive-plan",
+    "detail": " 2.4s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-project-motto",
+    "detail": " 1.8s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-prompt-specialization",
+    "detail": " 8.7s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-pull-request-link",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-readable-code",
+    "detail": " 11.9s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-reconstructed-changelog",
+    "detail": " 25.7s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-release-changelog-collection",
+    "detail": " (compiles script unit tests (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check_rename_map",
+    "detail": " 39.2s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-render-status-js-twin",
+    "detail": " 5.9s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-requirement-coverage",
+    "detail": " 11.5s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-requirement-extraction",
+    "detail": " 7.2s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-requirement-status-js-twin",
+    "detail": " 8.2s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-requirement-status",
+    "detail": " 3.0s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-requirements-document",
+    "detail": " 1.4s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-response-parity-debt",
+    "detail": " 1.3s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-round-trip-translation",
+    "detail": " 8.1s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-runner-labels",
+    "detail": " 2.4s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-runtime-feature-inventory",
+    "detail": " 2.4s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-rust-api-documentation",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-seed-answer-duplicates",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-seed-registry-js-twin",
+    "detail": " 1.6s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-seed-registry",
+    "detail": " 1.6s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-self-translation",
+    "detail": " 1.7s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-semantic-grounding",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-specification-in-javascript",
+    "detail": " 71.3s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-status-render",
+    "detail": " 2.4s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-step-budget-headroom",
+    "detail": " (compiles script unit tests (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-system-diagrams",
+    "detail": " 3.0s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-test-partition-balance",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-tests-as-docs",
+    "detail": " 10.9s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-tests-as-documentation-javascript-twin",
+    "detail": " 10.5s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-text-summarization",
+    "detail": " 21.3s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-twin-citations",
+    "detail": " 2.6s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-vscode-extension",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-wasm-worker-current",
+    "detail": " 1.4s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "check-wasm-worker-size",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-web-formalization",
+    "detail": " 4.9s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-web-hardcoded-ui",
+    "detail": " 1.8s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-web-tdz",
+    "detail": " 1.7s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-worker-crate-modules",
+    "detail": " 2.5s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-worker-handler-registry",
+    "detail": " 6.7s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-worker-line-budget-js-twin",
+    "detail": " 2.1s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-worker-line-budget",
+    "detail": " 1.9s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-worker-prerequisites",
+    "detail": " 2.7s"
+  },
+  {
+    "status": "PASS",
+    "gate": "check-worker-terminal-vocabulary",
+    "detail": " 1.5s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "coding-ladder",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "FAIL",
+    "gate": "lint-shell-scripts",
+    "detail": " 1.5s -> experiments/formal_ai_subagent/sandboxes/gates/lint-shell-scripts.log"
+  },
+  {
+    "status": "SKIP",
+    "gate": "repository_workspace_protocol",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "run_clippy",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "test-script-suites",
+    "detail": " (compiles script unit tests (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "agentic-cli-matrix#1",
+    "detail": " (reads CI context (secrets, variables or artifacts))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "agentic-cli-matrix#2",
+    "detail": " (reads CI context (secrets, variables or artifacts))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "benchmark-corpus-gate",
+    "detail": " (reads CI context (secrets, variables or artifacts))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "coding-ladder#2",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "coverage#2",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "coverage#4",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "dependencies-latest",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "evidence-check#1",
+    "detail": " 1.4s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "evidence-check#2",
+    "detail": " (reads CI context (secrets, variables or artifacts))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "job-headroom#1",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "job-headroom#2",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "job-headroom#3",
+    "detail": " (reads CI context (secrets, variables or artifacts))"
+  },
+  {
+    "status": "PASS",
+    "gate": "layered-ci#1",
+    "detail": " 1.5s"
+  },
+  {
+    "status": "PASS",
+    "gate": "layered-ci#2",
+    "detail": " 1.4s"
+  },
+  {
+    "status": "PASS",
+    "gate": "layered-ci#3",
+    "detail": " 3.3s"
+  },
+  {
+    "status": "PASS",
+    "gate": "layered-ci#4",
+    "detail": " 86.5s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "layered-ci#5",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "layered-ci#6",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "links",
+    "detail": " (reads CI context (secrets, variables or artifacts))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "question-necessity-ratchet",
+    "detail": " (compiles script unit tests (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "release-staged#1",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "release#1",
+    "detail": " 2.2s"
+  },
+  {
+    "status": "PASS",
+    "gate": "release#2",
+    "detail": " 6.5s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "release#3",
+    "detail": " (needs a Rust build (CI only))"
+  },
+  {
+    "status": "SKIP",
+    "gate": "security",
+    "detail": " (reads CI context (secrets, variables or artifacts))"
+  },
+  {
+    "status": "PASS",
+    "gate": "self-development-status#1",
+    "detail": " 3.3s"
+  },
+  {
+    "status": "SKIP",
+    "gate": "self-development-status#3",
+    "detail": " (compiles a Rust script with no JS twin (CI only))"
+  },
+  {
+    "status": "PASS",
+    "gate": "web-ui-boundary",
+    "detail": " 2.9s"
+  }
+]

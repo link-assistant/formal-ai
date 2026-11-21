@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "head": "5f64ad16450a84ae1384d6fba753ab0efbd47866",
+  "sourceHead": "a8643b4a7df4a665fbd1c003040906ccde7fb5d6",
+  "priorPublishedHead": "d3adb3ce0b471b94f173b204b1e0091903c8a958",
+  "pushExecuted": true,
+  "observedAt": "2026-11-19T15:55:11.420006+00:00",
+  "fullIssueComplete": false,
+  "newNativeExecution": "pending current-head CI; prior d3adb3ce passes 128 Rust plus four HTTP cases",
+  "independentAuthorshipCredit": 0
+}

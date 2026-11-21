@@ -39,10 +39,8 @@ runs:
         path: ${{ runner.temp }}/native-release-web/
         if-no-files-found: error
         retention-days: 7
-    - uses: actions/download-artifact@v8
+    - uses: ./.github/actions/download-artifact
       if: inputs.mode == 'import'
-      env:
-        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: native-release-web
         path: ${{ runner.temp }}/native-release-web

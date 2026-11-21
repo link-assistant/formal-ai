@@ -1,0 +1,489 @@
+{
+  "records": [
+    {
+      "source": "included-string-observation-checks/commands.json",
+      "file": "record-0000.gz",
+      "rawSha256": "1c74f709f2f5231798356696fd23b00946819ef160185063a5e11bc8314f6b2e",
+      "archiveSha256": "63ba51882ce2413a710885433a8cc85d5c854cc4beed77c83360cee1457ff8e8",
+      "bytes": 702,
+      "lines": 32
+    },
+    {
+      "source": "included-string-observation-checks/failure.json",
+      "file": "record-0001.gz",
+      "rawSha256": "582780b41e78b6ca6df6dcc62793634a5a45f30059f97afdcef7559bbe42b5ef",
+      "archiveSha256": "3e136c409b9df034d6000ed8f121597637e76bd3eeba1d2682d567ea01b165a2",
+      "bytes": 279,
+      "lines": 4
+    },
+    {
+      "source": "included-string-observation-checks/four-source-gates.stderr",
+      "file": "record-0002.gz",
+      "rawSha256": "9631c0854f8217e0afe9a099a9f41099780d1ba60d7fd1355fe573f5c2eddb9b",
+      "archiveSha256": "de5d9bef94e90d95b56f09ba4737de834e5e07084926cbba9bb3cc89d2c0877c",
+      "bytes": 91,
+      "lines": 1
+    },
+    {
+      "source": "included-string-observation-checks/four-source-gates.stdout",
+      "file": "record-0003.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "included-string-observation-checks/included-string-controls.stderr",
+      "file": "record-0004.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "included-string-observation-checks/included-string-controls.stdout",
+      "file": "record-0005.gz",
+      "rawSha256": "457aa2951f940ae879491566373d77fb7f7935a2adc523fe9e72d6143ec53111",
+      "archiveSha256": "e04fc2cd342f48e6651c85507cb36997f9d820adf3e6b4681d1626e4aa365e0f",
+      "bytes": 346,
+      "lines": 10
+    },
+    {
+      "source": "included-string-observation-checks/maintained-security-controls.stderr",
+      "file": "record-0006.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "included-string-observation-checks/maintained-security-controls.stdout",
+      "file": "record-0007.gz",
+      "rawSha256": "861c524a03739008eb1ebe7dabb3941e40047cc521c9de7c2f681c28cb0061fe",
+      "archiveSha256": "ad39f2b90fc75e48c763239dca8e2234bff1ef6e5d7f26d0c0160d12a0379c84",
+      "bytes": 2352,
+      "lines": 29
+    },
+    {
+      "source": "included-string-observation-checks/worker.log",
+      "file": "record-0008.gz",
+      "rawSha256": "f137d32956ed7873e2081e3b7e6602fce936977b4cadd01432bf81629780c6d4",
+      "archiveSha256": "f9f77a76594bdc2f3216b7d2e3d2eadf6ce8508338f6913b3fc071519fc35552",
+      "bytes": 309,
+      "lines": 8
+    },
+    {
+      "source": "included-string-observation-final-checks/outcome.json",
+      "file": "record-0009.gz",
+      "rawSha256": "029066de5d8d0872dac5a6c2f67de74084c0889cb84468615d65e59aa9ebbd9f",
+      "archiveSha256": "ee5e3d4b3f503c645656a9202c083e63fc14bdf78d254d1358dfa4e29ea43a4d",
+      "bytes": 162,
+      "lines": 7
+    },
+    {
+      "source": "included-string-observation-final-checks/source-gates.stderr",
+      "file": "record-0010.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "included-string-observation-final-checks/source-gates.stdout",
+      "file": "record-0011.gz",
+      "rawSha256": "ca383ebbca86860a0c420813dee45a21e9f1bac4fc43056bd87a68ba96c27b4a",
+      "archiveSha256": "aabb7a18c0459e8c419f7766e6c0cdc5a3a90b52e9440840bab4ef68f1c62aae",
+      "bytes": 186,
+      "lines": 6
+    },
+    {
+      "source": "included-string-observation-final-checks/whitespace.stderr",
+      "file": "record-0012.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "included-string-observation-final-checks/whitespace.stdout",
+      "file": "record-0013.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "included-string-observation-final-checks/worker.log",
+      "file": "record-0014.gz",
+      "rawSha256": "83e8c06422c884f2da82398033a5c4f93040dbcf15ba304341d6ff82739366d3",
+      "archiveSha256": "d98232537eeec2dada6bf16dc227b2bd3dcd0959401d3f4042ee9b3dbf125d85",
+      "bytes": 64,
+      "lines": 1
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-LiteralExprImpl.qll",
+      "file": "record-0015.gz",
+      "rawSha256": "6333804c49ef4f633046424987b0d8439e00ba7db777df6c1cf772b2d24fea42",
+      "archiveSha256": "08451f2af9554519ed3360116fc6f8fb7fd79501bbc910918b7e5763a13293d3",
+      "bytes": 6274,
+      "lines": 220
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-LiteralExprImpl.qll.stderr",
+      "file": "record-0016.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-LiteralExprImpl.qll.stdout.json",
+      "file": "record-0017.gz",
+      "rawSha256": "9725e7547634826ccb3b15c2a2fb78c8389fc1bfa564c6e6018d259ae17db938",
+      "archiveSha256": "5738788d6550784845dc94e0c0cc4d5f02774198da092c28ec613dae7a060d29",
+      "bytes": 9773,
+      "lines": 1
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-PathImpl.qll",
+      "file": "record-0018.gz",
+      "rawSha256": "42deac615139c76cd2ef1f81e4f2c00fe47739a54434229eebbf33b47a097f16",
+      "archiveSha256": "5701276509af1c3bd33a5ba19df7a0500309d373387d5d136b90e1860f2337cb",
+      "bytes": 1996,
+      "lines": 76
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-PathImpl.qll.stderr",
+      "file": "record-0019.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-PathImpl.qll.stdout.json",
+      "file": "record-0020.gz",
+      "rawSha256": "86e666958719054926577c5d569e63a2ae112f0e0d5f4719744435c84a587be3",
+      "archiveSha256": "3b5533475c665ba74857bcbb892d5a1299c26c4bdd4d015c0382389ee83a3f7d",
+      "bytes": 3830,
+      "lines": 1
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-TokenTreeImpl.qll",
+      "file": "record-0021.gz",
+      "rawSha256": "793e04299d571a8cea2097e6c43136c5e618b31da91ccc68bda334c3d2c3793d",
+      "archiveSha256": "172109112b5ff61944666b85d9395e42a942f332f465fa6afe48e2c63b00bb6a",
+      "bytes": 783,
+      "lines": 29
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-TokenTreeImpl.qll.stderr",
+      "file": "record-0022.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-TokenTreeImpl.qll.stdout.json",
+      "file": "record-0023.gz",
+      "rawSha256": "29d08d1a45f49e857e2e4f0a685e3e4a877414fff8021cd41bc1f8d7a32fed96",
+      "archiveSha256": "63e62bd2fb453346459bd2f22d8108d6d20f9a16b0b42c5030bffbb1e2c5eafb",
+      "bytes": 2190,
+      "lines": 1
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-generated-Element.qll",
+      "file": "record-0024.gz",
+      "rawSha256": "0e48426ca72179f675ac29aa49bbaadb8b1d27b08ad5cbc72ec5a005c291848e",
+      "archiveSha256": "b9f80f2876c474af1c01649900ffb97c46834c2f523b9ad5f009481ba095b1cd",
+      "bytes": 2433,
+      "lines": 72
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-generated-Element.qll.stderr",
+      "file": "record-0025.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-generated-Element.qll.stdout.json",
+      "file": "record-0026.gz",
+      "rawSha256": "c7e32a2f8e9d6f3d3db6c4726436f6bd69124540ea7c60623bef9d80d06294dc",
+      "archiveSha256": "13ae87e78052d42b99c84d97207ceab1a49ebf07fce25cbe45a6f96bd35a79fd",
+      "bytes": 4483,
+      "lines": 1
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-generated-LiteralExpr.qll",
+      "file": "record-0027.gz",
+      "rawSha256": "314b41fff5e243c99bff82d373cb3092f9175bd7451d2251a3b64a8d1f880279",
+      "archiveSha256": "9f98560f19b3e7d4626745cc98d897d1c76bfc72f24f54b64b99d632c5dc15ba",
+      "bytes": 1921,
+      "lines": 67
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-generated-LiteralExpr.qll.stderr",
+      "file": "record-0028.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-generated-LiteralExpr.qll.stdout.json",
+      "file": "record-0029.gz",
+      "rawSha256": "dd23778a757aefdf7e6bf4df98ff442c95503ad2c5a187a63d1503280e5b6e3b",
+      "archiveSha256": "302210a94232cea46e506b48c221efef0bff93467892c4883a86d7e9cca2b491",
+      "bytes": 3807,
+      "lines": 1
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-generated-TokenTree.qll",
+      "file": "record-0030.gz",
+      "rawSha256": "b85fed50862f97bce98fb4cbd3f275b553ef3e8dedf215915736197078867427",
+      "archiveSha256": "e1cc00aafcc4ddd9941346d19e662ebdb55eb089beb3b65e13680a8699caa7a6",
+      "bytes": 1180,
+      "lines": 36
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-generated-TokenTree.qll.stderr",
+      "file": "record-0031.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "pinned-macro-token-semantics/internal-generated-TokenTree.qll.stdout.json",
+      "file": "record-0032.gz",
+      "rawSha256": "439f8a75ed993651177247f470a3267a3002d5c993f3628c7a5da91b52adfac5",
+      "archiveSha256": "f732b581c4a68e620f6668b2f066800b2463aff2a81ec61151e31d13f74242aa",
+      "bytes": 2773,
+      "lines": 1
+    },
+    {
+      "source": "pinned-macro-token-semantics/records.json",
+      "file": "record-0033.gz",
+      "rawSha256": "e2b383a6cf57c211f2224d9e6c94f756ef6b0ef15c73d13f1a73953d96970c3e",
+      "archiveSha256": "66154f9efc1aec446f786cab1d7ec18bf41698e949bc9f5f69a5f3059a7afda9",
+      "bytes": 2685,
+      "lines": 80
+    },
+    {
+      "source": "security-practice-producer-evidence/verification.json",
+      "file": "record-0034.gz",
+      "rawSha256": "0b18cef9061c45c7a71e617a10a63eb35e7e6dabbdaabbfedd1f0ea57755d03d",
+      "archiveSha256": "c0179de4f6041eca353d97ec3973daef8a5643a7de1a877bee2a343459a3daad",
+      "bytes": 2118,
+      "lines": 65
+    },
+    {
+      "source": "post-extraction-ci-and-alerts/jobs.stderr",
+      "file": "record-0035.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "post-extraction-ci-and-alerts/jobs.stdout.json",
+      "file": "record-0036.gz",
+      "rawSha256": "1fe675c1efd9a11ffe53007f9fdc6ccdc53888532f4f0eaeba97a56278266ebc",
+      "archiveSha256": "1969b6aaa06fc291127565b4bda455356977f439512e329d5ee811172071e840",
+      "bytes": 44436,
+      "lines": 1
+    },
+    {
+      "source": "post-extraction-ci-and-alerts/open-alerts.stderr",
+      "file": "record-0037.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "source": "post-extraction-ci-and-alerts/open-alerts.stdout.json",
+      "file": "record-0038.gz",
+      "rawSha256": "ef868f604722cf2ef50cd9964091c723c6aa635c6f19fff2bb6634f8db090a9e",
+      "archiveSha256": "fa7fa415d52faf024662ea83a389a5a8ef97183ada4c6263bb3ba95e9b6d5a9f",
+      "bytes": 11773,
+      "lines": 1
+    },
+    {
+      "source": "post-extraction-ci-and-alerts/summary.json",
+      "file": "record-0039.gz",
+      "rawSha256": "cd671fa17b944e734b72c2823a93a150bb98bd0100ff33e976113c27ac6bd7ee",
+      "archiveSha256": "60da67fb360e502efc11a138c961a1bcb68269d1f6f66f8a2f2da03701219393",
+      "bytes": 2004,
+      "lines": 73
+    },
+    {
+      "source": "draft-included-string-observation-tests-corrected.log",
+      "file": "record-0040.gz",
+      "rawSha256": "b5f3f4c0995497071a7a4e6089f806f015ca7158b5ffc6660b10b957784325fa",
+      "archiveSha256": "482ece07a784699b462854eb69b74a5f60e7d36767ae6a6b60c3287e58ebad55",
+      "bytes": 308,
+      "lines": 7
+    },
+    {
+      "source": "draft-included-string-observation-tests-quote-repair.log",
+      "file": "record-0041.gz",
+      "rawSha256": "77b5757d5f287d1605d5e22ab00414a1c417bb8b7e868f89119cf02c14622e05",
+      "archiveSha256": "2834a3d8209ff7b9a3f1ec9a2e9cf2d856df100ca8576cbed307977fd8d41db5",
+      "bytes": 225,
+      "lines": 4
+    },
+    {
+      "source": "draft-included-string-observation-tests.log",
+      "file": "record-0042.gz",
+      "rawSha256": "0063fac992b706e62bedaced36d9e5b24ec76ea0343828c660e51f43647d0dc1",
+      "archiveSha256": "3837c18be30cc7414201d4dedb59fc657a6b32dcfdf440d63cf0f793abc6dc57",
+      "bytes": 314,
+      "lines": 8
+    },
+    {
+      "source": "draft-included-string-observation-tests.py",
+      "file": "record-0043.gz",
+      "rawSha256": "39ebb7c919ef249e25ba1c6f7663223cf0101b309c9cd2b314b021c5c86bced0",
+      "archiveSha256": "0674626184c941d6b7252a676635e8742a1897bcb1cb05da2454ae51988c8f26",
+      "bytes": 6870,
+      "lines": 129
+    },
+    {
+      "source": "draft-included-string-observation.log",
+      "file": "record-0044.gz",
+      "rawSha256": "02963c314330b2edbfe07e1e08ee70f082fdcb4d4f4cb9ebe6903269bf7775f6",
+      "archiveSha256": "f423ea11232e21b206cced49937201cc970709628340ab58b008376d9aa1a4c3",
+      "bytes": 227,
+      "lines": 4
+    },
+    {
+      "source": "draft-included-string-observation.py",
+      "file": "record-0045.gz",
+      "rawSha256": "92d668fbbba0fab21c63d5b0bcfb0df081516ac46815aa2b5c31b5797ec21fee",
+      "archiveSha256": "c191a3c9372c30a18f8f5ea684baf1878cd222135ce9e9dd79fc7070af30eec7",
+      "bytes": 4039,
+      "lines": 77
+    },
+    {
+      "source": "draft-included-string-observation-tests-corrected.log",
+      "file": "record-0046.gz",
+      "rawSha256": "b5f3f4c0995497071a7a4e6089f806f015ca7158b5ffc6660b10b957784325fa",
+      "archiveSha256": "482ece07a784699b462854eb69b74a5f60e7d36767ae6a6b60c3287e58ebad55",
+      "bytes": 308,
+      "lines": 7
+    },
+    {
+      "source": "draft-included-string-observation-tests-quote-repair.log",
+      "file": "record-0047.gz",
+      "rawSha256": "77b5757d5f287d1605d5e22ab00414a1c417bb8b7e868f89119cf02c14622e05",
+      "archiveSha256": "2834a3d8209ff7b9a3f1ec9a2e9cf2d856df100ca8576cbed307977fd8d41db5",
+      "bytes": 225,
+      "lines": 4
+    },
+    {
+      "source": "draft-included-string-observation-tests.log",
+      "file": "record-0048.gz",
+      "rawSha256": "0063fac992b706e62bedaced36d9e5b24ec76ea0343828c660e51f43647d0dc1",
+      "archiveSha256": "3837c18be30cc7414201d4dedb59fc657a6b32dcfdf440d63cf0f793abc6dc57",
+      "bytes": 314,
+      "lines": 8
+    },
+    {
+      "source": "draft-included-string-observation-tests.py",
+      "file": "record-0049.gz",
+      "rawSha256": "39ebb7c919ef249e25ba1c6f7663223cf0101b309c9cd2b314b021c5c86bced0",
+      "archiveSha256": "0674626184c941d6b7252a676635e8742a1897bcb1cb05da2454ae51988c8f26",
+      "bytes": 6870,
+      "lines": 129
+    },
+    {
+      "source": "check-included-string-observation.log",
+      "file": "record-0050.gz",
+      "rawSha256": "1c6226af83ec0b588bd94ec1ba234d236c672f29bb2aad2a3f9794b62ed5a1d4",
+      "archiveSha256": "1535af41675b36283da30c0e48c8b561cca71703b826516c85b40da25d9928cc",
+      "bytes": 211,
+      "lines": 4
+    },
+    {
+      "source": "check-included-string-observation.py",
+      "file": "record-0051.gz",
+      "rawSha256": "33ce10664820ea295d978984b4a306cb7cd5dfa75d65a322b567ad62d8587c6a",
+      "archiveSha256": "9bd0a131feb8793514669bbaf7e2a095ce69dfb54833599dde343071624645f1",
+      "bytes": 1921,
+      "lines": 25
+    },
+    {
+      "source": "finish-included-string-checks-and-replay.log",
+      "file": "record-0052.gz",
+      "rawSha256": "74b75f18e9510e77c34184ec4bd83ef740c538f3d4ec9c450921d9ab567079d4",
+      "archiveSha256": "8c7c5dce9e2020227fd22d072f8e700e4e684b03cd453ca80bdbc1bb341bc3c3",
+      "bytes": 218,
+      "lines": 4
+    },
+    {
+      "source": "finish-included-string-checks-and-replay.py",
+      "file": "record-0053.gz",
+      "rawSha256": "13776b6e6f260d61cae5ef98b9c214547294afaebf63062b7027f7fe8dbfdb44",
+      "archiveSha256": "9936e0c0fee26d17a15dcd926de361b94c39545c0e091c0a2f7bde405fd77ed0",
+      "bytes": 2131,
+      "lines": 25
+    },
+    {
+      "source": "read-pinned-codeql-token-semantics.log",
+      "file": "record-0054.gz",
+      "rawSha256": "c5af27dd738e6d3eeb9269b14fe80b87f66b632b2e295a9bd5a4f3a19a6812cb",
+      "archiveSha256": "e8abcd1382f6dc0c2d6c19792563d0e8dd91f4ef7925dbcc3ad850e0a3c11eda",
+      "bytes": 236,
+      "lines": 4
+    },
+    {
+      "source": "read-pinned-codeql-token-semantics.py",
+      "file": "record-0055.gz",
+      "rawSha256": "6c6456a69411ff638a578b86b73250a139c45d05900edfe892006d73c511480d",
+      "archiveSha256": "41af5a30265303d4f43f139840ab5abb7d32ee3930544faf87a69d361b99890d",
+      "bytes": 1390,
+      "lines": 20
+    },
+    {
+      "source": "refresh-security-practice-producer-evidence.log",
+      "file": "record-0056.gz",
+      "rawSha256": "4c7ba2760e5515b3023d4b3180451b31b01b550613b1cb5b20a57dc0d62e7371",
+      "archiveSha256": "1d535611fa35fb1567fabc23f384fb854d8129dbd7e2aa0db9cc8d188a8017f4",
+      "bytes": 263,
+      "lines": 4
+    },
+    {
+      "source": "refresh-security-practice-producer-evidence.py",
+      "file": "record-0057.gz",
+      "rawSha256": "e96e66ba28ee6cedea781f7d059bf96020480c6664790954f6b91ef349c332f2",
+      "archiveSha256": "803fa6fbafd1079e9103735382077eafabc9986649ab089b76020ad53b978dba",
+      "bytes": 5682,
+      "lines": 35
+    },
+    {
+      "source": "observe-post-extraction-ci-and-alerts.log",
+      "file": "record-0058.gz",
+      "rawSha256": "15d10fa3d9d322595368b0644682a562408a600c894e66719b99b4e7f3ac5540",
+      "archiveSha256": "e889022fe8126ce425e63e4a6b6b458664cbd46db57f43c61c4f082b7dcf9bc3",
+      "bytes": 2359,
+      "lines": 76
+    },
+    {
+      "source": "observe-post-extraction-ci-and-alerts.py",
+      "file": "record-0059.gz",
+      "rawSha256": "d6e681a5c63386a009c9ed236d4d82292030ae63c1aecafa8b898067a3b523ff",
+      "archiveSha256": "4c23f39befa9dd107a3722fda0ecd3395ae1c3d1e4914e9c6785ca8655542c9c",
+      "bytes": 1652,
+      "lines": 20
+    }
+  ],
+  "localQueryCompilationOrExecution": false,
+  "hostedQueryVerificationPending": true,
+  "semanticCoverageProven": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

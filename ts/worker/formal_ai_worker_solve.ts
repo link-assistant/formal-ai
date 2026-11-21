@@ -1,4 +1,3 @@
-// Solve dispatch, handler registry, seed loading and worker initialization.
 // @worker-prerequisite js/worker/formal_ai_worker_web_providers_and_wasm_calls.js
 function projectControlledAnswer(answer, config, options) { // Issue #1584: Rust `render_output` after `controlled_solve`.
   if (!answer || typeof answer.content !== "string" || answer.outputProjection?.content === answer.content) return answer;
@@ -35,14 +34,14 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     if (diagnostic) return projectControlledAnswer(diagnostic, turn.config, options);
     // Issue #1584: a paraphrase directive re-renders the previous answer; otherwise the crate hook
     // (Rust `controlled_solve`) answers, clarifies or re-solves. Every draft goes through the procedure.
-    const draft = (text) => solveImpl(text, history, prefs, userContext, memory, options);
+    const draft = (text, draftOptions = options) => solveImpl(text, history, prefs, userContext, memory, draftOptions);
     const solved = turn.rewrite === null
       ? await cnl.controlledSolve(turn, history || [], draft)
       : {prompt, answer: {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, detectLanguage(turn.rewrite)),
         confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []}};
     prompt = solved.prompt;
     const answer = solved.answer;
-    const subTask = async (text) => metaResolveImpasse(text, await draft(text), prefs);
+    const subTask = async (text) => metaResolveImpasse(text, await draft(text, { ...options, metaSubTask: true }), prefs);
     return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
   } finally {
     setForcedResponseLanguage(previousForced);
@@ -821,7 +820,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     }
   }
   steps.push({ step: "invoke_tool", detail: "unknown_intent_research" });
-  const researchedUnknown = await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
+  // Issue #1580: a #1550 sub-task is a speculative candidate; it never researches the web or learns from it.
+  const researchedUnknown = options.metaSubTask ? null : await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
   const researchedSources = researchedUnknown?.diagnostics?.fused;
   if (Array.isArray(researchedSources) && researchedSources.length > 0) {
     const associationId = associativeResearchId(prompt);
@@ -843,7 +843,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {
-    intent: "unknown",
+    intent: validation?.answer ? NUMBER_PROPERTY_PRIME_SLUG : "unknown",
     content: validation?.answer ?? unresolved?.content ?? unknownAnswerWithVariation(prompt, language),
     confidence: validation?.answer ? 1 : unresolved ? 0 : 0.1,
     evidence: ["fallback:unknown", `language:${language}`],

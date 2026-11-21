@@ -283,3 +283,60 @@ fn a_reduction_over_three_scalar_parameters_reads_all_three() {
         .expect("the reduction lowers");
     assert!(lowered.contains("return a + b + c\n"), "{lowered}");
 }
+
+#[test]
+fn closed_program_sequence_slots_have_typed_base_cases() {
+    let catalog = FragmentCatalog::bootstrap();
+    let spec = CodingTaskSpec {
+        language: "python".to_owned(),
+        artifact_shape: ArtifactShape::Program,
+        callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+            signature: String::new(),
+        },
+        name: "main".to_owned(),
+        parameters: Vec::new(),
+        return_annotation: None,
+        imports: Vec::new(),
+        requirement_sentences: vec!["materialize iterable as list".to_owned()],
+        examples: Vec::new(),
+        expected_stdout: None,
+        prose_language: "en".to_owned(),
+    };
+    let bounds = SearchBounds {
+        max_candidates: 8,
+        max_depth: 2,
+    };
+    let structures = ["python_materialize_list".to_owned()];
+    let first = search_with_structures(&spec, &catalog, bounds, &structures);
+    assert!(
+        !first.is_empty(),
+        "closed programs can apply ranked sequence operations"
+    );
+    assert!(first.len() <= bounds.max_candidates);
+    assert!(
+        first
+            .iter()
+            .all(|ir| ir.parameters.is_empty() && ir.type_check(&catalog).is_ok())
+    );
+    assert!(
+        first.iter().any(|ir| matches!(
+            &ir.body,
+            formal_ai::program_ir::IrNode::Apply { fragment, arguments }
+                if fragment == "python_materialize_list" && matches!(arguments.as_slice(),
+                    [formal_ai::program_ir::IrNode::Literal { text, .. }] if text == "[]")
+        )),
+        "the empty sequence is an actual typed argument, not an invented input"
+    );
+    let lower = lowering_for("python").unwrap();
+    assert!(first.iter().all(|ir| lower.lower(ir, &catalog).is_ok()));
+    assert_eq!(
+        first.iter().map(ProgramIr::content_id).collect::<Vec<_>>(),
+        search_with_structures(&spec, &catalog, bounds, &structures)
+            .iter()
+            .map(ProgramIr::content_id)
+            .collect::<Vec<_>>()
+    );
+    assert!(
+        search_with_structures(&spec, &FragmentCatalog::default(), bounds, &structures).is_empty()
+    );
+}

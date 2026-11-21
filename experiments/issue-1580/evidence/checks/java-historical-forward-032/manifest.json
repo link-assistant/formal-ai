@@ -1,0 +1,104 @@
+{
+  "pinnedHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "pages": [
+    {
+      "page": 219,
+      "parts": 20,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+        "16.1/2"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+        "31"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "16.1/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "16.2/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "17"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "18"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "19"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "20.1/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "20.2/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "21"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "22"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "23"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "24.1/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "24.2/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "25"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "26"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "27"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "28.1/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "28.2/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "29"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "30"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+          "31"
+        ]
+      ],
+      "file": "page-219.log.gz",
+      "archiveSha256": "77477f3b96c1e8d79958c160c4c28008ee78a5ff9cbc725ca018185f345f3f8b",
+      "rawSha256": "b076a8a16fa9aed3afd07bf452668a0f07341bb373547017fadc9148e1b3b9f6",
+      "completeLiteralOutputRead": true
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

@@ -99,6 +99,9 @@ jobs:
       - name: Re-resolve the JavaScript lockfiles from the rewritten manifests
         run: |
           set -euo pipefail
+          # Finish enumeration before resolving anything: process substitution
+          # loses a failed Git status, including failures after partial output.
+          locks="$(git ls-files -- '*bun.lock' '*package-lock.json')"
           while IFS= read -r lock; do
             directory="$(dirname "$lock")"
             case "$lock" in
@@ -109,7 +112,7 @@ jobs:
                 (cd "$directory" && npm install --package-lock-only --ignore-scripts --no-audit --no-fund)
                 ;;
             esac
-          done < <(git ls-files -- '*bun.lock' '*package-lock.json')
+          done <<< "$locks"
 
       - name: Run registered gates (stage rust)
         run: rust-script scripts/run-ci-gates.rs --stage rust

@@ -1,0 +1,260 @@
+[
+  {
+    "label": "default-branch-build-policy",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 4.709,
+    "completedAt": "2026-11-17T22:45:11.130328+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/default-branch-build-policy.log.gz",
+    "rawSha256": "9abf5c1eade6106fc1af4bdcbe2ed0cc5882e8af9d68827860f0321b85375353",
+    "rawLines": 29
+  },
+  {
+    "label": "generated-files",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/generated-files.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 18.82,
+    "completedAt": "2026-11-17T22:45:29.950916+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/generated-files.log.gz",
+    "rawSha256": "0d0cf418278ab6b67564e22d210eb87bae62b2c48b6764317b111e8e87c9ec11",
+    "rawLines": 18
+  },
+  {
+    "label": "fast-pull-request-production-profile",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 4.484,
+    "completedAt": "2026-11-17T22:45:34.436180+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/fast-pull-request-production-profile.log.gz",
+    "rawSha256": "f1bf80b8d27a59c1170207b584f1282c2a727d508d051b21fd85244b9a03b21c",
+    "rawLines": 23
+  },
+  {
+    "label": "main-only-regression-ledger",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/main-only-regression-ledger.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.252,
+    "completedAt": "2026-11-17T22:45:34.688979+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/main-only-regression-ledger.log.gz",
+    "rawSha256": "3ebb615c2d1ccf87d9276d37e2b1e2179e9ef37f26384d58b634813900e71aa4",
+    "rawLines": 12
+  },
+  {
+    "label": "issue-1589-calendar-currency",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1589-calendar-currency.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 27.08,
+    "completedAt": "2026-11-17T22:46:01.771897+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/issue-1589-calendar-currency.log.gz",
+    "rawSha256": "f972dda530dce5fd52eaf320f6c8289f66b7d73f7dca7e111fb0f43c0a727810",
+    "rawLines": 47
+  },
+  {
+    "label": "calendar-clock-preservation",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/calendar-clock-preservation.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 14.149,
+    "completedAt": "2026-11-17T22:46:15.927540+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/calendar-clock-preservation.log.gz",
+    "rawSha256": "b14bfd10ae00917b88a39ab7c6d8a156ecf9e15bf623c990e23c2ad69a8613fc",
+    "rawLines": 21
+  },
+  {
+    "label": "page-formalization-route",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/page-formalization-route.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 7.306,
+    "completedAt": "2026-11-17T22:46:23.234435+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/page-formalization-route.log.gz",
+    "rawSha256": "a920f435d8bcc91c79d5c367cded3855e0a7a0a62ddcaa1ddb055e6f4d69c935",
+    "rawLines": 14
+  },
+  {
+    "label": "rust-specification-generated-programs",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-generated-programs.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 17.533,
+    "completedAt": "2026-11-17T22:46:40.767725+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/rust-specification-generated-programs.log.gz",
+    "rawSha256": "e0bc6c3af313e00e6177419ba7187cfa517666a90fed8a40f31496fb8210ab79",
+    "rawLines": 13
+  },
+  {
+    "label": "rust-specification-fixture-integrity",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.311,
+    "completedAt": "2026-11-17T22:46:41.092574+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/rust-specification-fixture-integrity.log.gz",
+    "rawSha256": "1a7c7f36c8b2c28d46d7e02f8ef675676305b937fd79929eb8e0a3806bf50eba",
+    "rawLines": 10
+  },
+  {
+    "label": "issue-1582-defaults",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1582-defaults.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 27.545,
+    "completedAt": "2026-11-17T22:47:08.638874+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/issue-1582-defaults.log.gz",
+    "rawSha256": "aecaf33ec20ad1b05d69ef7995e37ae79a098d2a246a0ccce5fc4007ab2ad3e2",
+    "rawLines": 20
+  },
+  {
+    "label": "issue-1582-permissions",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1582-permissions.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 7.77,
+    "completedAt": "2026-11-17T22:47:16.410398+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/issue-1582-permissions.log.gz",
+    "rawSha256": "44d85a6ae05d71b7992732b5bfc141e0528fd23c0c6e1096e9f9e2c9991f5f82",
+    "rawLines": 44
+  },
+  {
+    "label": "generated-programs-current",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/lib/generate-native-specification-programs.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 15.38,
+    "completedAt": "2026-11-17T22:47:31.790666+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/generated-programs-current.log.gz",
+    "rawSha256": "df87305aedb537c1d1f3ba75ccd79f6e68e7cf4bc6f875b426e178b5ea1488c1",
+    "rawLines": 1
+  },
+  {
+    "label": "debug-stage-current",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/generate-debug-stage-sources.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 1.11,
+    "completedAt": "2026-11-17T22:47:32.901998+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/debug-stage-current.log.gz",
+    "rawSha256": "0905d80a02c6747bbeb9dd5f02268b7a8070ea0498b702ea80fc15bb3a64cf79",
+    "rawLines": 1
+  },
+  {
+    "label": "translated-rust-current",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/translate-js-rust.mjs",
+      "--verify"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 2.667,
+    "completedAt": "2026-11-17T22:47:35.570051+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/translated-rust-current.log.gz",
+    "rawSha256": "fc3f033428548a4500f1df0ec78e77db7050b95e954089f214ea64b8cb6ed814",
+    "rawLines": 1
+  },
+  {
+    "label": "embedded-mirror-current",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/mirror-package-data.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.685,
+    "completedAt": "2026-11-17T22:47:36.255611+00:00",
+    "logArchive": "experiments/issue-1580/evidence/checks/main-merge-015a6831/focused/embedded-mirror-current.log.gz",
+    "rawSha256": "def32e2815224f03be262ff1436d0498f6b1abdc19d8daf0405c2aafc3e040db",
+    "rawLines": 1
+  }
+]

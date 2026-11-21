@@ -1,0 +1,46 @@
+{
+  "allPassed": true,
+  "sourceHead": "070b9748cfddbdad80dfd802c79d697b82cce99c",
+  "sourceHashes": {
+    ".github/workflows/native-type-check.yml": "3e7849770d28f873847d44f414b3207ed56ba11a5dcb830df7f58d57aecb4b1f",
+    "rust/Cargo.toml": "bd74b9a63d0c4111623a92b6c594b4817f1de52af52c4ba460bc8b8dac28c1b9",
+    "scripts/ci-pull-request-admission.mjs": "4dca4bbb530686795d9a886bfa5fb902ae20f5fe5443dc78ec3d27a00d7c266b",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "61090f657009fe5b4e38a8c0675c5bd8b9cf8e3aa7a56aa4afd852093a1c09ec",
+    "rust/tests/unit/reasoning_contracts.rs": "21ad36629d1aeb80ea552fb11714702c32d313aca65dc6691e15a5c8d0e0fdb7",
+    "changelog.d/issue-1580-native-reasoning-replay.md": "70a2bb7bc31ead26ab947292fa21ea9ad83891a3a3c72d169670bebde58057a6"
+  },
+  "focusedTests": 43,
+  "policyTests": 31,
+  "candidateValidationTests": 4,
+  "focusedMapTests": 8,
+  "gateCounts": {
+    "PASS": 8,
+    "FAIL": 0,
+    "SKIP": 0
+  },
+  "nativeTestsAddedToHostedLane": 28,
+  "nativeExecuted": false,
+  "preservedReasoningLoopTests": 17,
+  "maintainedFormalizationTests": 11,
+  "baseline": {
+    "pass": 30,
+    "fail": 1,
+    "reason": "The new native target and consumed test modules were excluded from native admission."
+  },
+  "firstDraftAfter": {
+    "pass": 30,
+    "fail": 1,
+    "reason": "The new admission check passed; the existing exact workflow command inventory still needed the added target."
+  },
+  "literalReview": {
+    "beforeLog": true,
+    "firstDraftAfterLog": true,
+    "afterLog": true,
+    "bothAdjacentFocusedLogs": true,
+    "aggregateGateLog": true,
+    "allDetailedPassingGateLogs": false,
+    "bothCompleteNativeModules": true
+  },
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

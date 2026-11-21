@@ -1,0 +1,64 @@
+{
+  "observedAt": "2026-11-18T12:28:22.207929+00:00",
+  "localLogsLiterallyRead": true,
+  "relatedWorkLiterallyRead": {
+    "lines": 842,
+    "ranges": [
+      [
+        1,
+        210
+      ],
+      [
+        211,
+        420
+      ],
+      [
+        421,
+        630
+      ],
+      [
+        631,
+        842
+      ]
+    ]
+  },
+  "workflowLiterallyRead": {
+    "lines": 511,
+    "ranges": [
+      [
+        1,
+        270
+      ],
+      [
+        271,
+        511
+      ]
+    ]
+  },
+  "image": {
+    "sha256": "aa1f8ae164a6e12731b3e9abccc983144c97e4a2be69cefc15ef31a2687afb27",
+    "validPngVerified": true,
+    "viewed": true,
+    "observation": "Existing upstream screenshot displays addition 2+3=5 and multiplication 2*3=6; unrelated to release publication."
+  },
+  "sourceHashes": {
+    "experiments/issue-1580/template-php-release-integrity.test.mjs": "25f77988707b932e2c23b7d33de347cc18fafd61d3dffa5689543c77a3257e8c",
+    "experiments/issue-1580/fixtures/php-template/source.json": "41407eb5bd3cce6533e983e7d7ec94a31c955c7b87311d7f4234e94836ae5128",
+    "experiments/issue-1580/fixtures/php-template/.github/workflows/release.yml": "b1ea5a8b7a2c103e2bad5a92a36229ea56397642fb48db733af0db6d3dfd3899",
+    "rust/tests/web/issue-1580-template-observations.test.mjs": "bee59deca6b323634310858400f2a06be3f9fa4f60e24547b68c97f77a716904"
+  },
+  "nativeExecution": false,
+  "hostedPublication": false,
+  "wholeRepositorySemanticReview": false,
+  "independentAuthorshipCredit": 0,
+  "upstreamIssueFiled": false,
+  "textPatchLiterallyRead": true,
+  "unmodifiedWorkflowHashVerified": true,
+  "finalFocusedTests": 5,
+  "finalMaintainedTests": 43,
+  "finalLogsLiterallyRead": true,
+  "capturedWorkflowLiterallyRead": {
+    "path": ".github/workflows/templates.yml",
+    "lines": 159
+  }
+}

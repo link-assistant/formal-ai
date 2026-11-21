@@ -1,0 +1,114 @@
+[
+  {
+    "name": "focused-deadline",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "experiments/issue-1580/deadline-process-lifetime.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 5.995832018088549,
+    "file": "focused-deadline.log.gz",
+    "rawSha256": "cac4ab2b05ff845a2facf3e07fce84d0d0df3bcd71416d99a46f92c81105870d",
+    "archiveSha256": "57732fa128361b1e8ebe2f2cbbad5259757635d99727f6a6d50b3d807ec3879b"
+  },
+  {
+    "name": "container-apt",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/container-apt-retry.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 6.209192622918636,
+    "file": "container-apt.log.gz",
+    "rawSha256": "707c51039b8babd4999d7bd908df91ec2b453c3b20ed979bec12d12e5f4d0880",
+    "archiveSha256": "20296ba6af1d662e2ec26066e5fc0d8bf100f2980f76b56cf0ff9eb498252d7f"
+  },
+  {
+    "name": "native-artifact",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/native-test-artifact.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.6808995939791203,
+    "file": "native-artifact.log.gz",
+    "rawSha256": "2ff539fddd4b9f8edec9616f972735a80c55274a2236220fd947a804d543fccd",
+    "archiveSha256": "1999d24d1b0626e81b32ff6eb61d1e7c0d8b69611b9184f6491cf1b29a96751e"
+  },
+  {
+    "name": "maintained-template",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1580-template-observations.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 49.19604424899444,
+    "file": "maintained-template.log.gz",
+    "rawSha256": "d0f4cb561fbfe59eb471f227841dbbc4fe71b44a038923930beb50bdea3b7985",
+    "archiveSha256": "e0d302b48b05b8b8f749376b905602e8f7795064d5d35e7f3745ad7e3d6d2de2"
+  },
+  {
+    "name": "shellcheck",
+    "argv": [
+      "shellcheck",
+      "scripts/run-with-deadline.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.2160678079817444,
+    "file": "shellcheck.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "name": "shell-syntax",
+    "argv": [
+      "bash",
+      "-n",
+      "scripts/run-with-deadline.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.007014252012595534,
+    "file": "shell-syntax.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "name": "relevant-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog,check-readable-code"
+    ],
+    "exitCode": 0,
+    "seconds": 115.92899439088069,
+    "file": "relevant-gates.log.gz",
+    "rawSha256": "9456c4e63e859d5619b9c1545fcf416cb60e88a7ea8fd4291f52f19e3c5a7764",
+    "archiveSha256": "4bef1fcc5ca669bb000d3a9d3f42d2951f6c323710dc09d296427191e0b69e0e"
+  }
+]

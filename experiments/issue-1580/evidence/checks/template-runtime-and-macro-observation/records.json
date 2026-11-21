@@ -1,0 +1,32 @@
+[
+  {
+    "name": "budget-before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "--test-name-pattern",
+      "retry waits stop|a request uses only",
+      "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580-before-lwjee4xm/budget-before.test.mjs"
+    ],
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "stdout": {
+      "file": "budget-before.stdout.gz",
+      "rawSha256": "e99c4541bd42a16908533d30844a5e0478a1b8ee55214c3433710d755c63c1ab",
+      "archiveSha256": "e828911b704007b878465b69a952cf32b38bd78f75f1b77d64f0dc8468588a43",
+      "bytes": 1978,
+      "lines": 55
+    },
+    "stderr": {
+      "file": "budget-before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  }
+]

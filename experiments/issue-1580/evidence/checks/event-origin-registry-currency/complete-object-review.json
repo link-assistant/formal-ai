@@ -1,0 +1,22 @@
+{
+  "beforeWitnessSha256": "e08d3960fe47d0365a81a299b3bf3a59cc6afb851993fda312a4179f82cce2c8",
+  "afterWitnessSha256": "e08d3960fe47d0365a81a299b3bf3a59cc6afb851993fda312a4179f82cce2c8",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "registryObjects": 158,
+  "changedRegistryObjects": 1,
+  "changedRegistryField": "sourceWitnesses/0/sha256",
+  "program": "formal_ai::thinking::DEFAULT_THINKING_LANGUAGE",
+  "source": "rust/src/thinking.rs",
+  "beforeSourceSha256": "bce5adb875301e2cd98155c354ec06aa2a1f8f09fc0f15d1fb9ce13df333f766",
+  "afterSourceSha256": "f201388abe5b9f7198d684a392d823daafc0aa78f78848c6a48316ad4838bd3b",
+  "normalizedGovernedWitnessPaths": [],
+  "completeNormalizedRegistryEqual": true,
+  "completeNormalizedGovernedInventoryEqual": true,
+  "total": 1189,
+  "supported": 221,
+  "unsupported": 968,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "serializationOnlyRegenerationDiscarded": true
+}

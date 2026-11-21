@@ -1,0 +1,1 @@
+Fix Windows and other artifact consumers failing on a lookup immediately after a successful upload. Retry the pinned raw download at most three times under existing caller deadlines, discard partial archives before each retry, and preserve strict digest validation, cancellation and extraction failures.

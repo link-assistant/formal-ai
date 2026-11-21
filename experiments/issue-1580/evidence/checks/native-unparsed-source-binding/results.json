@@ -1,0 +1,136 @@
+[
+  {
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/solver_unknown_reasoning.rs",
+      "rust/src/solver_unknown_reasoning_tests.rs"
+    ],
+    "log": "01.log.gz",
+    "startedAt": "2026-11-18T14:27:21.237414+00:00",
+    "durationSeconds": 0.638,
+    "exitCode": 1,
+    "sha256": "98976477fca69a6958c4c073d2d098dc585fb4d41c8c18f5bf9575bdfdd1a99f",
+    "rawBytes": 2056,
+    "lines": 48
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "log": "02.log.gz",
+    "startedAt": "2026-11-18T14:27:21.875745+00:00",
+    "durationSeconds": 3.568,
+    "exitCode": 1,
+    "sha256": "b31ea2758b89924515a221f49116f12c88f1fbbb24035ca493d2504cd6295c75",
+    "rawBytes": 5017,
+    "lines": 61
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "log": "03.log.gz",
+    "startedAt": "2026-11-18T14:27:25.444943+00:00",
+    "durationSeconds": 0.255,
+    "exitCode": 1,
+    "sha256": "65061bd7b8adf66273479f4431e7e3e7adea945dc30b3bc323286018d3ef642b",
+    "rawBytes": 1447,
+    "lines": 33
+  },
+  {
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/translate-js-rust.mjs",
+      "--verify"
+    ],
+    "log": "04.log.gz",
+    "startedAt": "2026-11-18T14:27:25.700082+00:00",
+    "durationSeconds": 3.006,
+    "exitCode": 0,
+    "sha256": "67bffc6883d5a86bf70b01bd6b76f283b3a7987b726187978d3a3eb926f98799",
+    "rawBytes": 188,
+    "lines": 1
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/worker-mirror.test.mjs"
+    ],
+    "log": "05.log.gz",
+    "startedAt": "2026-11-18T14:27:28.707042+00:00",
+    "durationSeconds": 28.045,
+    "exitCode": 0,
+    "sha256": "396405fdb60a10523a9bf15dfc9c3d11ae886e1117b8f51e6a79fa7e0c9dc5c4",
+    "rawBytes": 1623,
+    "lines": 27
+  },
+  {
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-changelog-fragment-js-twin"
+    ],
+    "log": "06.log.gz",
+    "startedAt": "2026-11-18T14:27:56.752981+00:00",
+    "durationSeconds": 1.908,
+    "exitCode": 0,
+    "sha256": "2ed5e4fe6c34aece2c65ea12524c1118fe89d5d189748cbcb6225f8a1a682001",
+    "rawBytes": 80,
+    "lines": 3
+  },
+  {
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-ci-speed"
+    ],
+    "log": "07.log.gz",
+    "startedAt": "2026-11-18T14:27:58.661218+00:00",
+    "durationSeconds": 1.924,
+    "exitCode": 0,
+    "sha256": "4b4bbd2c135ecd64d654d2af16e834f3e877d0c506a4f1475f758c5fbe7ca351",
+    "rawBytes": 62,
+    "lines": 3
+  },
+  {
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-runner-labels"
+    ],
+    "log": "08.log.gz",
+    "startedAt": "2026-11-18T14:28:00.585555+00:00",
+    "durationSeconds": 3.075,
+    "exitCode": 0,
+    "sha256": "12058ea41549cb06a03653f02c0fe607abd113a79b5bc56154cf95e78fa4ef7b",
+    "rawBytes": 67,
+    "lines": 3
+  }
+]

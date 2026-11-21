@@ -123,7 +123,10 @@ export function thinkingStepsFromEvents(events, finalAnswer = '') {
     }
     if (calculation.hasData()) calculation.drainInto(plan);
     const step = curateThinkingEvent(kind, event.payload, answer);
-    if (step) plan.push(step);
+    if (step) {
+      if (typeof event.source_origin === 'string') step.source_origin = event.source_origin;
+      plan.push(step);
+    }
   }
   if (calculation.hasData()) calculation.drainInto(plan);
 
@@ -137,6 +140,7 @@ export function thinkingStepsFromEvents(events, finalAnswer = '') {
     previousKey = key;
     const parent = isChild ? currentParent : null;
     const step = thinkingStep(steps.length, entry.step, entry.detail, entry.level, entry.source, parent);
+    if (typeof entry.source_origin === 'string') step.source_origin = entry.source_origin;
     if (entry.role === ROLE_PARENT) currentParent = step.id;
     else if (entry.role === ROLE_NORMAL) currentParent = null;
     steps.push(step);

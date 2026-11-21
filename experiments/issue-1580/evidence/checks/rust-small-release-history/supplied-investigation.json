@@ -1,0 +1,68 @@
+{
+  "files": [
+    {
+      "file": "read-next-recording-references.log",
+      "bytes": 69,
+      "sha256": "38ae34cbd513c104b415fcdeec0ff12859126c4451035db84ccc55137e1ec835"
+    },
+    {
+      "file": "read-rust-next-small-history.log",
+      "bytes": 1846,
+      "sha256": "1ee3a4cdbadc9b91d089cac37e17306b49085f1e3dd6979c950e70fdd4f4f8fc"
+    },
+    {
+      "file": "read-rust-next-small-history.py",
+      "bytes": 1015,
+      "sha256": "aec7fe54b9482c3ced53b4cea1d323f0050bc647c847c858524e11e17c9fbb58"
+    },
+    {
+      "file": "record-rust-small-release-history.log",
+      "bytes": 423,
+      "sha256": "f89fe0460efbf5e38c65b7d512647439e864731c77d6935678d788e6ec023249"
+    },
+    {
+      "file": "record-rust-small-release-history.py",
+      "bytes": 6508,
+      "sha256": "421f3e702591381b0020d6011edb9299e08fef468fd21dba1feeb1a278bbced8"
+    },
+    {
+      "file": "rust-next-small-history/1.read.txt",
+      "bytes": 9159,
+      "sha256": "d7c2baf6b8ccac77c533393f7965cf48e00e024c17eb5be19cda0fa304a32aba"
+    },
+    {
+      "file": "rust-next-small-history/2.read.txt",
+      "bytes": 6713,
+      "sha256": "7da7f0d203d35b73090bbca70f18eb0c6f3d392304597ef9b05eea5c11f9e3c2"
+    },
+    {
+      "file": "rust-next-small-history/3.read.txt",
+      "bytes": 13701,
+      "sha256": "d450e56629f1e2d98c648a17f81a716828b579cf578feddf4f0a3d11da13b50f"
+    },
+    {
+      "file": "rust-next-small-history/4.read.txt",
+      "bytes": 11060,
+      "sha256": "452048eaef6a9de3a9623d62c30f9b87e391d7874ee680de48e2ba1b6577e5fa"
+    },
+    {
+      "file": "rust-next-small-history/5.read.txt",
+      "bytes": 17425,
+      "sha256": "1329aedca6ba1b599a23188548c27ca05d7d81fc5681124bd01ebc4e7c15f749"
+    },
+    {
+      "file": "rust-next-small-history/6.read.txt",
+      "bytes": 25813,
+      "sha256": "8b5b9ded043fced4d37cac71d0b428b9ec03901eff1b9233814972625e4380f8"
+    },
+    {
+      "file": "rust-next-small-history/sources.json",
+      "bytes": 1569,
+      "sha256": "af05bf067ea9d67e1b4493a54a1ca518fe39c8ce8160ed33a6836069ba3add40"
+    }
+  ],
+  "rawSha256": "1e86c5e6c9e52ec8bc15d078dea8d7215fa39e993d3b24e4b64250c38a77f394",
+  "archiveSha256": "843555e6183e5ffe78f5746a0ec49e5d71171c08a9cd902d18a0acca8797fb9c",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

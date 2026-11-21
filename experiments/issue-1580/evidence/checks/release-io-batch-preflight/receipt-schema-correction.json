@@ -1,0 +1,5 @@
+{
+  "failedAttemptArchiveSha256": "874452a765fa5db95b8d931b5ae560bd4247c116072823431dda6318b56e4dd3",
+  "failedAttemptRawSha256": "1724079c80d881e7a7af0675b6ce45c43c8a1970fcf5aca95efab493059aaebd",
+  "reason": "The earlier documentation receipt schema has no top-level complete field; every raw log and its final successful documentation, checkout, maintained-policy and gate observations remain individually checked."
+}

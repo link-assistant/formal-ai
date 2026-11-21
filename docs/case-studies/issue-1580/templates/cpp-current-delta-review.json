@@ -1,0 +1,96 @@
+{
+  "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+  "commit": "45c42aff119b366ba103a9342ec3c33731bb7e2e",
+  "scope": "Only the six files changed since the earlier pinned inventory; all six completely read. This does not assert complete review of the other 546 current blobs.",
+  "completeChangedFileComparison": true,
+  "completeCurrentSourceComparison": false,
+  "completeTemplateAcceptance": false,
+  "upstreamPipelineIssue": "https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/39",
+  "files": [
+    {
+      "path": ".github/workflows/docs.yml",
+      "gitBlob": "bfca7648bb64dc02819d14e63a02261806d990e2",
+      "bytes": 6780,
+      "sha256": "d0c802effcfe573b93f5be3daf1f204b10a02374b6cbc9e8a79ab9a396397e49",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page 20",
+      "formalAiComparison": [
+        ".github/workflows/pages-artifact.yml",
+        "scripts/download-artifact-with-retry.sh"
+      ],
+      "decision": "Compare pinned, checksum-verified downloads, bounded jobs, nonempty generated outputs, read-only PR validation, explicit Pages opt-in and a serialized noncancelling writer. The new helper retries incomplete Doxygen downloads. Formal AI uses its own renderer and artifact downloader; actual fallback Pages publication and served identity remain unfinished."
+    },
+    {
+      "path": "CHANGELOG.md",
+      "gitBlob": "6237272d78dbcd742caa454df3fe10e1220f68fd",
+      "bytes": 5675,
+      "sha256": "0c1960b2406297c13e0d84fb7d50ef47cae751a3e2e9e086df6e1e88015fee79",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page 21",
+      "formalAiComparison": [
+        "changelog.d"
+      ],
+      "decision": "Retain as upstream release history. Version 0.2.8 records a retry repair, not proof that Formal AI has adopted every template practice."
+    },
+    {
+      "path": "CMakeLists.txt",
+      "gitBlob": "a219ce800e5ccda4f5eb53667b8d87c2d2bcb54a",
+      "bytes": 3210,
+      "sha256": "c5de030fcb3d2d5de5e6234f177506a057bd7248395262fe20746360dff8aba5",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page 22",
+      "formalAiComparison": [
+        "rust/Cargo.toml"
+      ],
+      "decision": "Top-level-only tooling options, consumer-minimal defaults and one version source are C++ package choices. Preserve Formal AI Cargo tooling and generated release version contracts; do not add CMake to the Rust package."
+    },
+    {
+      "path": "scripts/download-archive.sh",
+      "gitBlob": "d683912cdb4024dfb01b672568522a6f817d800f",
+      "bytes": 250,
+      "sha256": "2ccaf31a6f952779fc57814a67e5d74145c5a63ab94b1d03a8cacc153d5a8b8e",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page 23",
+      "formalAiComparison": [
+        "scripts/download-artifact-with-retry.sh"
+      ],
+      "decision": "Bounded curl retries target a regular file, retry partial transfers, remove terminal failed output, retain fail-on-HTTP errors and pass quoted positional inputs after option parsing ends. This is an applicable archive-download pattern; its adoption across all Formal AI archive downloads is not yet established."
+    },
+    {
+      "path": "scripts/tests/test_download_archive.py",
+      "gitBlob": "6444289d640cb40ba49a9350da7b687ffc835751",
+      "bytes": 2616,
+      "sha256": "e531307a83f312a3d9eb5ff29b4f64970bffe20817ffbf9d4708c82f75d7632c",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page 24",
+      "formalAiComparison": [
+        "rust/tests/web/issue-1328-artifact-retry.test.mjs"
+      ],
+      "decision": "The exact current two tests passed locally against a loopback HTTP server: truncated output is replaced on retry, and repeated HTTP errors fail with no archive. The subprocess has a 12-second test timeout and four finite requests; no external archive or compiler is invoked."
+    },
+    {
+      "path": "vcpkg.json",
+      "gitBlob": "9737bcc5052aef3c3434ba97a01701dafcea5141",
+      "bytes": 694,
+      "sha256": "846ed006c9ff011fda8fb2272d685dbee4787353cdb00b490f17283c0bff25b5",
+      "completeSourceRead": true,
+      "readEvidence": "fresh-template-delta-sources page 25",
+      "formalAiComparison": [
+        "rust/Cargo.toml"
+      ],
+      "decision": "The new package version agrees with CMake 0.2.8 and keeps the exact vcpkg baseline. This is upstream C++ distribution metadata, not a Formal AI dependency update."
+    }
+  ],
+  "verification": {
+    "argv": [
+      "python3",
+      "-m",
+      "unittest",
+      "scripts.tests.test_download_archive"
+    ],
+    "exitCode": 0,
+    "tests": 2,
+    "stderrSha256": "950c2b6a9d1c0a067d20a245b9001fbc2ce62f3045a6c8aefae17943c2650453"
+  },
+  "independentAuthorshipCredit": 0
+}

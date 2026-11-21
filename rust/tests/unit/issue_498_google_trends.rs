@@ -84,7 +84,7 @@ fn checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages() 
 
     assert_eq!(
         catalog.topics[0].answered[0].answer,
-        "No captured provider response is available for `julián andrés quiñones`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews.",
+        "No captured provider response is available for `julián andrés quiñones`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews.",
         "the first generated prompt documents one exact catalog answer"
     );
     assert_eq!(

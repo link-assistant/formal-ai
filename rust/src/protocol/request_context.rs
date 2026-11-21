@@ -29,7 +29,7 @@ fn capture(name: &str, text: &str) -> Option<Vec<String>> {
             found
                 .iter()
                 .skip(1)
-                .map(|value| value.unwrap().as_str().to_owned())
+                .map(|value| value.map_or_else(String::new, |value| value.as_str().to_owned()))
                 .collect()
         })
     })
@@ -84,6 +84,41 @@ impl RequestContext {
             for text in pattern(RULES["clauseSeparator"].as_str().unwrap()).split(&text) {
                 let text = text.trim();
                 if text.is_empty() {
+                    continue;
+                }
+                // A quoted example or conditional continuation is not a direct instruction.
+                if !pattern(RULES["directiveCue"].as_str().unwrap()).is_match(text) {
+                    continue;
+                }
+                if pattern(RULES["briefOutput"].as_str().unwrap()).is_match(text) {
+                    constraints.push(Constraint {
+                        role: role.clone(),
+                        index,
+                        text: text.to_owned(),
+                        kind: "output",
+                        value: RULES["briefOutputKind"].as_str().unwrap().to_owned(),
+                        status: "pending",
+                    });
+                    continue;
+                }
+                if let Some(found) = capture("lineLimit", text) {
+                    let count = RULES["numberWords"][found[1].to_lowercase()]
+                        .as_u64()
+                        .map_or_else(|| found[1].clone(), |count| count.to_string());
+                    constraints.push(Constraint {
+                        role: role.clone(),
+                        index,
+                        text: text.to_owned(),
+                        kind: "output",
+                        value: format!(
+                            "{}|{}|{count}|{}|{}",
+                            RULES["lineLimitKind"].as_str().unwrap(),
+                            found[0].to_lowercase(),
+                            if found[2].is_empty() { "" } else { "code" },
+                            if found[3].is_empty() { "" } else { "detail" }
+                        ),
+                        status: "pending",
+                    });
                     continue;
                 }
                 if pattern(RULES["negated"].as_str().unwrap()).is_match(text)
@@ -198,8 +233,13 @@ impl RequestContext {
     }
 
     pub(super) fn language(&self) -> Option<&'static str> {
-        self.active("language")
-            .and_then(|item| language(&item.value))
+        self.active("language").and_then(|item| {
+            if Some(item.value.as_str()) == RULES["sameLanguage"].as_str() {
+                Some(crate::language::detect(&self.prompt).slug())
+            } else {
+                language(&item.value)
+            }
+        })
     }
 
     pub(super) fn preserve_answer_body(&self) -> bool {
@@ -320,13 +360,57 @@ impl RequestContext {
             }
             let satisfied = match item.kind {
                 "language" => {
-                    language(&item.value).is_some()
-                        && (target != Some("en")
-                            || !pattern(r"[\p{Cyrillic}\p{Han}\p{Devanagari}]")
-                                .is_match(&language_text))
+                    (if Some(item.value.as_str()) == RULES["sameLanguage"].as_str() {
+                        target.is_some_and(|code| RULES["languages"][code].is_array())
+                    } else {
+                        language(&item.value).is_some()
+                    }) && (target != Some("en")
+                        || !pattern(r"[\p{Cyrillic}\p{Han}\p{Devanagari}]")
+                            .is_match(&language_text))
                         && (target != Some("ru")
                             || pattern(r"\p{Cyrillic}").is_match(&language_text)
                             || !pattern(r"\p{L}").is_match(&language_text))
+                }
+                "output" => {
+                    let fields: Vec<_> = item.value.split('|').collect();
+                    if Some(item.value.as_str()) == RULES["briefOutputKind"].as_str() {
+                        answer.answer.lines().count() as u64
+                            <= RULES["briefLimits"]["lines"].as_u64().unwrap()
+                            && pattern(RULES["word"].as_str().unwrap())
+                                .find_iter(&answer.answer)
+                                .count() as u64
+                                <= RULES["briefLimits"]["words"].as_u64().unwrap()
+                    } else if fields.len() != 5
+                        || Some(fields[0]) != RULES["lineLimitKind"].as_str()
+                    {
+                        false
+                    } else {
+                        // An explicit code-generation exemption measures prose outside fences.
+                        let measured = if fields[3] == "code" {
+                            pattern(RULES["fencedCodeBlock"].as_str().unwrap())
+                                .replace_all(&answer.answer, "")
+                                .into_owned()
+                        } else {
+                            answer.answer.clone()
+                        };
+                        let comparison =
+                            compare_decimals(&measured.lines().count().to_string(), fields[2]);
+                        (fields[4] == "detail"
+                            && pattern(RULES["detailRequest"].as_str().unwrap())
+                                .is_match(&self.prompt))
+                            || if fields[1] == "exactly" {
+                                comparison.is_eq()
+                            } else if RULES["strictLineModes"]
+                                .as_array()
+                                .unwrap()
+                                .iter()
+                                .any(|mode| mode.as_str() == Some(fields[1]))
+                            {
+                                comparison.is_lt()
+                            } else {
+                                !comparison.is_gt()
+                            }
+                    }
                 }
                 "labels" => item
                     .value
@@ -394,7 +478,7 @@ impl RequestContext {
             for item in self.constraints.iter_mut().filter(|item| {
                 item.kind == "language"
                     && item.status == "applied"
-                    && language(&item.value) != RULES["refusalLanguage"].as_str()
+                    && target != RULES["refusalLanguage"].as_str()
             }) {
                 item.status = "unmet";
                 unmet.push(

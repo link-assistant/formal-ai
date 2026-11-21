@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFileSync, mkdtempSync, rmSync} from 'node:fs';
+import {readFileSync, readdirSync, mkdtempSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
@@ -60,5 +60,61 @@ test('English, Russian, Hindi, Chinese and Spanish duration responses retain the
     const answer=await worker.solve(prompt,[],{},{},[],{});
     assert.equal(answer.intent,'calendar-duration-sum',JSON.stringify(answer));
     assert.ok(answer.content.includes(expected),answer.content);
+  }
+});
+
+// Replays main run 44188508650: calendar-duration-sum was defined as both
+// a handler cue and a response intent; alias strings also used in-band pipes.
+function duplicateMeaningSlugs(documents) {
+  const owners = new Map();
+  for (const [name, content] of documents) {
+    content.split('\n').forEach((line, index) => {
+      const header = /^ {2}([^\s#]+)(?:\s+#.*)?$/u.exec(line.trimEnd());
+      if (!header || header[1] === 'meanings') return;
+      const locations = owners.get(header[1]) || [];
+      locations.push(`${name}:${index + 1}`);
+      owners.set(header[1], locations);
+    });
+  }
+  return [...owners].filter(([, locations]) => locations.length > 1);
+}
+
+test('calendar meanings stay globally unique across all seed meaning documents', () => {
+  const seed = new URL('../../../data/seed/', import.meta.url);
+  const documents = readdirSync(seed, {recursive:true})
+    .filter(name => /(?:^|\/)meanings[^/]*\.lino$/u.test(name))
+    .map(name => [name, readFileSync(new URL(name, seed), 'utf8')]);
+  assert.ok(documents.length > 0, 'seed meaning documents were inspected');
+  assert.deepEqual(duplicateMeaningSlugs(documents), []);
+});
+
+test('meaning uniqueness replay detects duplicates within and across documents', () => {
+  const first = 'meanings\n  same\n    defined-by time\n  distinct\n';
+  assert.deepEqual(duplicateMeaningSlugs([['first', first]]), []);
+  assert.deepEqual(duplicateMeaningSlugs([['first', first + '  same\n']]),
+    [['same', ['first:2', 'first:5']]]);
+  assert.deepEqual(duplicateMeaningSlugs([['first', first], ['second', 'meanings\n  same # second definition\n']]),
+    [['same', ['first:2', 'second:2']]]);
+});
+
+test('handler table rows carry one surface each without pipe-packed aliases', () => {
+  const tables = evaluate(worker, 'handlerRulesTables()');
+  const packed = Object.entries(tables).flatMap(([name, table]) =>
+    table.rows.filter(([, value]) => value.includes('|')).map(row => ({name, row})));
+  assert.deepEqual(packed, []);
+});
+
+test('separate vocabulary rows retain alternative addition, interval and currency surfaces', {timeout:15000}, async () => {
+  for (const [prompt, intent, expected] of [
+    ['Sum 12 months + 1 year in years.', 'calendar-duration-sum', '2 years'],
+    ['Суммируй 1 год и 2 месяца. В месяцах.', 'calendar-duration-sum', '14 месяцев'],
+    ['Сложите 1 год и 2 месяца. Ответ в месяцах.', 'calendar-duration-sum', '14 месяцев'],
+    ['How many whole years are from March 2021 until June 2024?', 'calendar-full-periods', '3 years'],
+    ['How many complete months are from March 2021 to June 2024?', 'calendar-full-periods', '39 months'],
+    ['Convert 1000 RUB as USD', 'calculation', '12.12 USD'],
+  ]) {
+    const answer = await worker.solve(prompt, [], {}, {}, [], {});
+    assert.equal(answer.intent, intent, JSON.stringify(answer));
+    assert.ok(answer.content.includes(expected), answer.content);
   }
 });

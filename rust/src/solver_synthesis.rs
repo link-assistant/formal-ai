@@ -42,6 +42,8 @@ struct ComposedCandidate {
     /// The structural steps of the composition: its least-action cost.
     steps: u32,
     source_result_ids: Vec<String>,
+    /// Only an answer assembled from child answers depends on their verdicts.
+    consumes_sub_answers: bool,
 }
 
 pub fn record_solved_sub_impulse(
@@ -218,6 +220,7 @@ fn child_outcomes(sub_results: &[SolvedSubImpulse]) -> Vec<TaskOutcome> {
                 intent: result.intent.clone(),
                 content: result.answer.clone(),
                 confidence: 0.0,
+                evidence: Vec::new(),
             };
             let resolved = run_task_test(&test, Some(&draft), &[]).passed;
             TaskOutcome {
@@ -237,22 +240,30 @@ fn parent_verdict(candidate: &ComposedCandidate, children: &[TaskOutcome]) -> Ve
     let rule =
         |kind: &str| crate::formalization::structural_rule_values("task-decomposition", kind);
     let mut checks = rule("leaf-check");
-    checks.extend(
-        rule("composite-check")
-            .into_iter()
-            .map(|check| format!("{check}:{}", candidate.relation)),
-    );
+    if candidate.consumes_sub_answers {
+        checks.extend(
+            rule("composite-check")
+                .into_iter()
+                .map(|check| format!("{check}:{}", candidate.relation)),
+        );
+    }
     let test = TaskTest {
         task: candidate.target.clone(),
         checks,
-        requires: rule(&format!("{}-requires", candidate.relation))
-            .into_iter()
-            .next(),
+        requires: candidate
+            .consumes_sub_answers
+            .then(|| {
+                rule(&format!("{}-requires", candidate.relation))
+                    .into_iter()
+                    .next()
+            })
+            .flatten(),
     };
     let draft = Draft {
         intent: candidate.intent.clone(),
         content: candidate.answer.clone(),
         confidence: candidate.confidence,
+        evidence: Vec::new(),
     };
     run_task_test(&test, Some(&draft), children)
 }
@@ -302,6 +313,7 @@ fn compose_algebra_substitution(
         evaluation.formatted,
         ("sequence", steps),
         sub_results,
+        false,
     ))
 }
 
@@ -343,6 +355,7 @@ fn compose_remainder_sale(
         evaluation.formatted,
         ("sequence", steps),
         sub_results,
+        false,
     ))
 }
 
@@ -380,6 +393,7 @@ fn compose_compound_response(
         answers.join("\n\n"),
         ("aggregation", steps),
         sub_results,
+        true,
     ))
 }
 
@@ -388,6 +402,7 @@ fn candidate(
     answer: String,
     (relation, steps): (&'static str, usize),
     sub_results: &[SolvedSubImpulse],
+    consumes_sub_answers: bool,
 ) -> ComposedCandidate {
     let source_result_ids = sub_results
         .iter()
@@ -406,6 +421,7 @@ fn candidate(
         relation,
         steps: u32::try_from(steps).unwrap_or(u32::MAX),
         source_result_ids,
+        consumes_sub_answers,
     }
 }
 
@@ -507,7 +523,10 @@ fn extract_requested_expression(prompt: &str) -> Option<String> {
             }
         }
     }
-    None
+    crate::calculation::calculation_expression_candidates(prompt)
+        .into_iter()
+        .find(|candidate| candidate.explicit && !candidate.expression.contains('='))
+        .map(|candidate| candidate.expression)
 }
 
 fn clean_expression(value: &str) -> String {
@@ -644,3 +663,7 @@ fn truncate_for_trace(value: &str, limit: usize) -> String {
     }
     out
 }
+
+#[cfg(test)]
+#[path = "../tests/fixtures/synthesis-parent-tests.rs"]
+mod parent_tests;

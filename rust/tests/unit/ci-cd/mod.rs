@@ -3,6 +3,7 @@ mod artifact_download_retry;
 mod attestation_and_coverage_audit;
 mod authoring_effects;
 mod box_language_release_legs;
+mod cargo_package_identity;
 mod changelog_parsing;
 #[path = "../../../../scripts/check-associative-terminology.rs"]
 mod check_associative_terminology;
@@ -14,6 +15,7 @@ mod check_file_size;
 mod ci_diagnostic_audit;
 mod ci_warning_audit;
 mod codeql_sink_heuristics;
+mod collect_job_durations;
 mod container_image_visibility;
 #[allow(clippy::duplicate_mod)]
 #[path = "../../../../scripts/create-github-release.rs"]
@@ -73,3 +75,15 @@ mod workflow_release;
 mod workflow_release_desktop;
 mod workflow_task_ladder;
 mod workspace_manifest_resolution;
+
+#[allow(dead_code, clippy::duplicate_mod)]
+#[path = "../../../../scripts/collect-changelog.rs"]
+mod collect_changelog;
+
+#[allow(dead_code, clippy::duplicate_mod)]
+#[path = "../../../../scripts/get-bump-type.rs"]
+mod get_bump_type;
+
+#[allow(dead_code, clippy::duplicate_mod)]
+#[path = "../../../../scripts/version-changelog.rs"]
+mod version_changelog;

@@ -1,0 +1,26 @@
+[
+  {
+    "file": "source-web_requests.rs.log.gz",
+    "rawSha256": "b201b4bcc5fb9c74e1bf209612a820091b1559d85caef6553a068c2e52e17b15",
+    "archiveSha256": "f5ff55e587cbbe19e43c66752b4bc1338dc017c664f770ca2f9956b504fe7a6d",
+    "lines": 832,
+    "path": "rust/tests/unit/web_requests.rs",
+    "cases": 17
+  },
+  {
+    "file": "source-extended.rs.log.gz",
+    "rawSha256": "2231d20abcaffcafa5af52cfec5cffdc229c03fbce120c0d3116c894f0d7f4e2",
+    "archiveSha256": "932a266caf8f60534bc7a41986e411b62c65ce6bc21a037fefdcf3552c7dc92f",
+    "lines": 210,
+    "path": "rust/tests/unit/web_requests/extended.rs",
+    "cases": 7
+  },
+  {
+    "file": "source-page_formalization_route.rs.log.gz",
+    "rawSha256": "3f5b90614851c906716c9f2808cc5e9abfc25039641021103ffd97985d2e2477",
+    "archiveSha256": "ad3410c52be716ee301737e6562455f22ad7a6e51412ab2a99d0ed8d6b3ad3ff",
+    "lines": 186,
+    "path": "rust/tests/unit/page_formalization_route.rs",
+    "cases": 6
+  }
+]

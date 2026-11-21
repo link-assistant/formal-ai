@@ -1,0 +1,128 @@
+{
+  "files": [
+    {
+      "file": "assess-reasoning-budget-macro-observations.py",
+      "bytes": 6519,
+      "sha256": "336dfea531d19158bfb858922b075b6a06c8ede1f5826e3c2d9a2c4f8349420d"
+    },
+    {
+      "file": "assess-reasoning-budget-producer.log",
+      "bytes": 1314,
+      "sha256": "f71882a088371a2b9ce4850352a964629279a48c57eec7aa37e0bb7698574c23"
+    },
+    {
+      "file": "assess-reasoning-budget-producer.py",
+      "bytes": 2567,
+      "sha256": "011c811624f4ee48d87df61829ae6c5e4ab8323c9e36896d4059588d652c9716"
+    },
+    {
+      "file": "collect-reasoning-budget-producer-reports.py",
+      "bytes": 5368,
+      "sha256": "8c6b2578e5c5ea65471c999aa64b38aef66fe15e3f34c42fa31ad3c79a40bbf4"
+    },
+    {
+      "file": "draft-second-macro-memory-repair.log",
+      "bytes": 242,
+      "sha256": "0ace5cb2ea925b5128ce4b82c73d33cec8a9a6b15f7cc0f0b61e2797b7854cd3"
+    },
+    {
+      "file": "draft-second-macro-memory-repair.py",
+      "bytes": 388,
+      "sha256": "3d20d6266fd8630668962edc1ecdd51c816697781b142dc6bf33698a84a224b9"
+    },
+    {
+      "file": "read-macro-seal-references.log",
+      "bytes": 10300,
+      "sha256": "94490aa62ded09ed57d2c7b16c931602ec2b26e2c3f367da472f09b465018dff"
+    },
+    {
+      "file": "read-next-recording-references.log",
+      "bytes": 69,
+      "sha256": "38ae34cbd513c104b415fcdeec0ff12859126c4451035db84ccc55137e1ec835"
+    },
+    {
+      "file": "record-second-macro-memory-repair.py",
+      "bytes": 6127,
+      "sha256": "97a15f552ad9e0b57598a9cd5b78ef2b03b63acb8463ebe780c4e55a14610df2"
+    },
+    {
+      "file": "second-macro-memory-repair/before.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "second-macro-memory-repair/before.stdout",
+      "bytes": 2591,
+      "sha256": "44f868c18f92c136aa08e3ff6dfd8fa87da4e9c07ed69e3b6e94e174ebdcf32e"
+    },
+    {
+      "file": "second-macro-memory-repair/outcome.json",
+      "bytes": 122,
+      "sha256": "4a2bc30c7a15db22dfdeac8169ab16ccd36ea41877914ac8dea93083745c70be"
+    },
+    {
+      "file": "second-macro-memory-repair/profile.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "second-macro-memory-repair/profile.stdout",
+      "bytes": 4622,
+      "sha256": "2cc794855bf1d906b4d12db2f52063d79b8546cc26a3b8df5136c2757bc5217e"
+    },
+    {
+      "file": "second-macro-memory-repair/records.json",
+      "bytes": 1138,
+      "sha256": "d589e1da5b34a5c1a7a7c4d5f0e2d4a9a198078b88e6bccc8aa17c67697766ef"
+    },
+    {
+      "file": "second-macro-memory-repair/security.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "second-macro-memory-repair/security.stdout",
+      "bytes": 4786,
+      "sha256": "ea6184a7f7b50be592f6164b7d291dcd5297ad615770cb20a253a21f6c2d6d9c"
+    },
+    {
+      "file": "second-macro-memory-repair/whitespace.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "second-macro-memory-repair/whitespace.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "second-macro-memory-repair/worker.log",
+      "bytes": 79,
+      "sha256": "5efaadcd4143d2013ca8e2dde150f98e815a5f2324164177f74084418e29b734"
+    },
+    {
+      "file": "start-reasoning-budget-producer-collection.log",
+      "bytes": 249,
+      "sha256": "364455106131e177a0c764c85ca5498253cae16ca71e5340769a89093ec10408"
+    },
+    {
+      "file": "start-reasoning-budget-producer-collection.py",
+      "bytes": 1052,
+      "sha256": "c0c7965d224dcd7974f46148b10b2a8ca0ab127ce5cfe5b19b08eaaa892c94f2"
+    },
+    {
+      "file": "verify-second-macro-memory-repair.log",
+      "bytes": 218,
+      "sha256": "d4e5e06e2356f2b536a9f2478afe46989ea07fb01c261c2843079d0f4fe6ab85"
+    },
+    {
+      "file": "verify-second-macro-memory-repair.py",
+      "bytes": 3924,
+      "sha256": "1adaff06a2749d6b2d6ae35e67b48df6dab8ec3b99cb239343ee6d6b58c021f5"
+    }
+  ],
+  "rawSha256": "ce689c9fe863ebf015e0d7bff636567058b99a2cfd214c67d39f1cfb8ccdcc72",
+  "archiveSha256": "850e76aa5b356433b68ee105e9c4deb92c823ac89292af196d96695f256183ce",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

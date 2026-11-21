@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "beforeExitCode": 1,
+  "afterExitCode": 0,
+  "boundedFixturePaths": 12002,
+  "maxGitDiffBytes": 16777216,
+  "gitFailureRemainsTerminal": true,
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

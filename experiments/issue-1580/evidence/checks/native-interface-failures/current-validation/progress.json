@@ -1,0 +1,95 @@
+{
+  "complete": false,
+  "records": [
+    {
+      "name": "whole-witness-review",
+      "argv": [
+        "node",
+        "/tmp/issue-1580-research/review-current-native-witness.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 9.561,
+      "file": "whole-witness-review.log.gz",
+      "rawSha256": "efb2bf937d32120085f4737ee14e3ab0f3ef28ff661809614adba6baf35b8eb0",
+      "archiveSha256": "918e3a378f64c78581b076b90a3450332fa746a0948ec855c9edf61c81a86563"
+    },
+    {
+      "name": "unicode",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.574,
+      "file": "unicode.log.gz",
+      "rawSha256": "fa073171627a8d655319e0d329a784077a8f70e8df08b8ef85622dd121522727",
+      "archiveSha256": "d22984a5ca16ce0e73e97c45fd8e4027013cdca059a2c6c9b4caa76267c6f262"
+    },
+    {
+      "name": "fixture-integrity",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.299,
+      "file": "fixture-integrity.log.gz",
+      "rawSha256": "fc097ff3858aab66ac7592eb032450472667ef2c0c1a18e0b6bef1dedb45a3de",
+      "archiveSha256": "0a2a84d237272c880e8374f11a739bc0d6e7a803b41e10b0b87142f73c6a0c5b"
+    },
+    {
+      "name": "structured-log",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/server-structured-log.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.479,
+      "file": "structured-log.log.gz",
+      "rawSha256": "57ce55cb7779818661d374d7750bf868b7d3b0a07dda6a9f24247c5b3da58523",
+      "archiveSha256": "da194e731dbf9e59eb5b26a62f4d54e208b1c1bb76b7e2bef6c6d604bbc4a884"
+    },
+    {
+      "name": "all-local-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 769.898,
+      "file": "all-local-gates.log.gz",
+      "rawSha256": "e038a4ac04bb643fca59b78492b8d9f2f2dae604a734a8068b24452e4cf81e6d",
+      "archiveSha256": "3a418a86c246c2195cd28c60fd8f2092a2e0e79ad46aa7f15d03ad59124950f5"
+    },
+    {
+      "name": "rustfmt",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/main.rs",
+        "rust/src/coding/composition.rs",
+        "rust/src/coding/composition_search.rs",
+        "rust/tests/integration/with_formal_ai.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.327,
+      "file": "rustfmt.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ]
+}

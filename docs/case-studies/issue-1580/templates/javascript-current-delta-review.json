@@ -1,0 +1,578 @@
+{
+  "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+  "commit": "8e72538d579d904aff818c2447fb3c2413d3a989",
+  "currentBlobCount": 566,
+  "scope": "Thirty changed current files and two removed paths only. Earlier unchanged-file and historical comparison gaps remain open.",
+  "completeChangedFileComparison": true,
+  "completeCurrentSourceComparison": false,
+  "completeTemplateAcceptance": false,
+  "files": [
+    {
+      "path": ".changeset/pages-artifact-retry.md",
+      "gitBlob": "569987ed56ee903174abca38b41b0a726e8207d3",
+      "sha256": "55a9cd4dcbfc149be53590acfb10a9d1de48bb1e79a9277e74babb4c399d6170",
+      "bytes": 227,
+      "lines": 5,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        66
+      ],
+      "formalAiComparison": [
+        ".github/actions/deploy-pages/deploy.mjs"
+      ],
+      "decision": "The patch changeset releases immutable artifact retry identity; Formal AI retains its separate existing release trigger."
+    },
+    {
+      "path": ".changeset/whole-file-ci-budgets.md",
+      "gitBlob": "8f1ca5f80fcbf779c8e55951d4d446fe467e1349",
+      "sha256": "c7e5707b62b035aad8599727b49f5e766a98ac1dcd08fcf23efe46e1f6616e13",
+      "bytes": 294,
+      "lines": 5,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        67
+      ],
+      "formalAiComparison": [
+        "scripts/check-secrets.sh",
+        "scripts/run-with-budget-warning.sh"
+      ],
+      "decision": "The upstream patch collects whole-file lint, live registry checks, built-in Secretlint and network budgets. Individual local acceptance remains explicit."
+    },
+    {
+      "path": ".github/actions/artifact-transport/action.yml",
+      "gitBlob": "ba9ee3a31b65620d106e1c02ff0bc4f5d02f72ea",
+      "sha256": "19662b690d8139f2a6e8332151b969d057320092c9ed79ae1a9ad2c03f6d3826",
+      "bytes": 1822,
+      "lines": 49,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        68
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml"
+      ],
+      "decision": "The composite owns a 60-second install budget before credential use. Native artifact transport remains separately verified; no hosted transport roundtrip is credited here."
+    },
+    {
+      "path": ".github/actions/artifact-transport/package-lock.json",
+      "gitBlob": "d1f56c6968b9766dafb018444550754a33f0f5c3",
+      "sha256": "ecb4210e3d21952861b2c86834abd3659082efbf955ca357629031c464650ce7",
+      "bytes": 111091,
+      "lines": 3072,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77
+      ],
+      "formalAiComparison": [
+        "bun.lock",
+        "packages/source-cst-runtime/package-lock.json"
+      ],
+      "decision": "The complete 3072-line lock was read, including the fast-xml-parser update and scoped glob/minimatch overrides. Its Node engine and integrity entries are dependency evidence, not an independently repeated audit."
+    },
+    {
+      "path": ".github/workflows/example-app.yml",
+      "gitBlob": "330603553bfa754e009bc2beede5542c4f002320",
+      "sha256": "7ea60704e49d30e3c8e06e49b3b732e5876b68fbf7d502c8385ead289a0b7317",
+      "bytes": 20800,
+      "lines": 528,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        78,
+        79
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml"
+      ],
+      "decision": "Preview installs and desktop setup receive individual budgets before credentials. Template desktop/native and Docker PR builds conflict with the local fast PR policy and are not copied."
+    },
+    {
+      "path": ".github/workflows/links.yml",
+      "gitBlob": "ab5f1446d33360a9dbf477ba02424c41bbeefb91",
+      "sha256": "a42b51dad6a787a847812ffde70b7617a4a0e32fcca440bede93117cdd206a6d",
+      "bytes": 9649,
+      "lines": 239,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        80
+      ],
+      "formalAiComparison": [
+        ".github/workflows/links.yml",
+        "scripts/recheck-broken-links.mjs"
+      ],
+      "decision": "Daily cache restore, main-only saves, weekly checks, report freshness and positive counts remain failure-preserving. Archive suggestions do not convert unresolved links into success."
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "20c830fda840f01fbbc59b22c7e71e6d0e32a5c4",
+      "sha256": "c9a873b5616f68b73058af34d8b7b56bfa0e8a00eced01dafea322310cce6322",
+      "bytes": 43994,
+      "lines": 1102,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        81,
+        82,
+        83,
+        84
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml",
+        ".github/workflows/release-staged.yml"
+      ],
+      "decision": "Explicit network setup budgets precede publication. The template retains full runtime/OS and package gates; no hosted publish, release race or writer credential proof is inferred from reading this workflow."
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "gitBlob": "92a5870f663b7f6de24c980834934e736998d305",
+      "sha256": "03510e8ca9662bb03554775600564427dda7e279c94bc74736671115527b5612",
+      "bytes": 7088,
+      "lines": 208,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        85
+      ],
+      "formalAiComparison": [
+        ".github/workflows/security.yml"
+      ],
+      "decision": "The live registry deprecation check fails missing or invalid metadata and distinguishes PR warning policy from scheduled failure. Formal AI still needs complete current transitive deprecation coverage."
+    },
+    {
+      "path": ".github/workflows/workflows.yml",
+      "gitBlob": "559b880d9032f89ad80d1cf35fb1f93bf32d3e76",
+      "sha256": "6945bbfa5a05c990ed14c796c49a053366b916f093587ab9d9e5f7fbdd16eb99",
+      "bytes": 11373,
+      "lines": 290,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        86
+      ],
+      "formalAiComparison": [
+        ".github/workflows/workflows.yml"
+      ],
+      "decision": "The maintained workflow policy and artifact roundtrip have separate assertions; the local focused run verifies their configuration without executing hosted artifact transfer."
+    },
+    {
+      "path": "docs/CI-TIMEOUT-BUDGETS.md",
+      "gitBlob": "f2762194a8410521971038b609fb42f3d2650cfc",
+      "sha256": "00db769870fecdca50b23ffaa28d1dfa0653eade766a3025273f2c8f27da6d8b",
+      "bytes": 7000,
+      "lines": 141,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        87
+      ],
+      "formalAiComparison": [
+        "scripts/run-with-budget-warning.sh"
+      ],
+      "decision": "The documented 70-percent allowance includes repeated composite invocations and distinguishes mutually exclusive branches. Local budget coverage across all workflows remains a separate open criterion."
+    },
+    {
+      "path": "docs/CONTRIBUTING.md",
+      "gitBlob": "6ef62cb5b0464ca7830ec06146e2cfeeb7a4a981",
+      "sha256": "4c303c0ca32b53f63f60f0c2b68904a7de82a0856c3e146dba2da5121a1a69e4",
+      "bytes": 14842,
+      "lines": 347,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        88
+      ],
+      "formalAiComparison": [
+        "CONTRIBUTING.md"
+      ],
+      "decision": "The template documents whole changed-file warnings and complete lint-error checks. Formal AI retains its repository rules; complete warning remediation is not satisfied by upstream documentation."
+    },
+    {
+      "path": "docs/issue-308-analysis.md",
+      "gitBlob": "cd3e42f05f745904dc2e4304e8a612b180f94098",
+      "sha256": "e35f6dc268390cbc02093f3fe42685bd83d323e3e115252b367ff774a638d291",
+      "bytes": 8289,
+      "lines": 26,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        89
+      ],
+      "formalAiComparison": [
+        "docs/case-studies/issue-1580/secretlint14-migration.md"
+      ],
+      "decision": "The concise upstream requirement mapping records independent alternatives and verification limits. Those upstream success statements are attributed rather than credited as local execution."
+    },
+    {
+      "path": "experiments/issue-212-secretlint.mjs",
+      "gitBlob": "94ff3e4a5add07ec391672fd132bcad9f67e28eb",
+      "sha256": "6602c1d0bee609530671dd18ac8c60242b63ba2829cebe7789d02ade84df81b8",
+      "bytes": 2009,
+      "lines": 67,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        90
+      ],
+      "formalAiComparison": [
+        "experiments/issue-1580/secretlint14-live-check.mjs"
+      ],
+      "decision": "The upstream real-engine fixture informed a finite local probe using only Secretlint 14. The local probe additionally verifies command-boundary restoration and rejects inventory errors as finding substitutes."
+    },
+    {
+      "path": "scripts/check-deprecated-packages.mjs",
+      "gitBlob": "cae52d29716609b50f260bf20f034919e057c445",
+      "sha256": "b8b24825bdd85401691c4fb7a9fe8b96e39146a89625a322fb7992f111752d69",
+      "bytes": 3758,
+      "lines": 138,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        91
+      ],
+      "formalAiComparison": [
+        ".github/workflows/security.yml"
+      ],
+      "decision": "Eight bounded registry workers check exact locked versions, including metadata added after locking. Transport failures and incomplete responses fail closed; full local adoption remains open."
+    },
+    {
+      "path": "scripts/check-secrets.mjs",
+      "gitBlob": "d05d7c6002fda60d271e63cd531cf6115fa9eda6",
+      "sha256": "52c43958669a5e90347cb55d0f2621a856a3d84f0f5246bbda5ca489d6034f99",
+      "bytes": 6883,
+      "lines": 220,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        92
+      ],
+      "formalAiComparison": [
+        "scripts/check-secrets-files.mjs",
+        "scripts/lib/compressed-secrets.mjs"
+      ],
+      "decision": "The built-in preset removes the deprecated external package. Local adoption preserves exact identities, masked results, disabled profiling, NUL filenames and bounded compressed scans with before/after tests."
+    },
+    {
+      "path": "scripts/deploy-pages.mjs",
+      "gitBlob": "6d69a97a923db7bb3fddebf38f6eaa0004c43ba0",
+      "sha256": "0341c29bb6702e108f108a4d41df509008474b922d78e1fe122aea37d8bc80ed",
+      "bytes": 9921,
+      "lines": 311,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        93
+      ],
+      "formalAiComparison": [
+        ".github/actions/deploy-pages/deploy.mjs"
+      ],
+      "decision": "Retries bind repository, immutable upload ID and source SHA; only the requested upload can recover from a lost response. The local helper already has artifact-bound identity; live deployed content remains unverified."
+    },
+    {
+      "path": "scripts/lint-changed-files.mjs",
+      "gitBlob": "2505bfe1dbfdd2cd7006f86bce4e1b6927b35556",
+      "sha256": "9adb55120eed1b63a8bb878d11b355a23c9a98f3fbd5e048b2008af97e411232",
+      "bytes": 1154,
+      "lines": 41,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        94
+      ],
+      "formalAiComparison": [
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "decision": "The file-level policy replaces changed-line suppression and treats configuration/dependency changes as repository-wide. Whole-file gate coverage for every Formal AI language remains open."
+    },
+    {
+      "path": "scripts/lint.mjs",
+      "gitBlob": "c49007bf08fd7e5267e6d2c7e27021eacf8772cf",
+      "sha256": "274a1b10fd618515d7d44511889b7bb34406b9bdbfe808260348945adcb2e6a5",
+      "bytes": 3327,
+      "lines": 125,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        95
+      ],
+      "formalAiComparison": [
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "decision": "Errors are always checked globally; warnings use complete changed files with a full-scope configuration fallback. Its real ESLint fixture was executed locally, not adopted as a substitute for warning cleanup."
+    },
+    {
+      "path": "scripts/run-with-budget-warning.sh",
+      "gitBlob": "82b03f0c8e52f3c987e8ddaa9cf06f3a362f557b",
+      "sha256": "ae1f124f7d71f1fb6122ffcff7488ad33a35bc8005e97d4150e95730b903d6d5",
+      "bytes": 10409,
+      "lines": 323,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        96
+      ],
+      "formalAiComparison": [
+        "scripts/run-with-budget-warning.sh"
+      ],
+      "decision": "Upstream relays buffered output before diagnostics and checks final byte boundaries. Local reproduction found the same unterminated-output defect; a minimal fresh-line repair retains process-group termination acknowledgement without copying the relay architecture."
+    },
+    {
+      "path": "tests/ci-issue-299.test.js",
+      "gitBlob": "2b5caab563272a7b47b049fa0a57326214f57c57",
+      "sha256": "751cf88d56ba7ad31268f979bbf1a1eac4db05ad8d003817ed5853b31c947eaf",
+      "bytes": 5892,
+      "lines": 172,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        97
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/bounded-subprocess-boundaries.test.mjs"
+      ],
+      "decision": "Seventeen upstream cases passed, including compressed scanning wiring, main-only cache writes and existing workflow acceptance. These are focused configuration assertions."
+    },
+    {
+      "path": "tests/ci-timeouts.test.js",
+      "gitBlob": "5dcc55ff09068c4550713b5c6ae49189651da76b",
+      "sha256": "228868d33965fdbf579c02330729e875c21bdbf34253a50d60e64647db2943dc",
+      "bytes": 14832,
+      "lines": 467,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        98,
+        99
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/ci-budget-and-registry-identities.test.mjs"
+      ],
+      "decision": "Sixteen upstream cases passed for network setup, quoted budgets, local composites, repeated invocations and conditional overlap. This does not complete local workflow coverage."
+    },
+    {
+      "path": "tests/deploy-pages.test.js",
+      "gitBlob": "1881e7602f96e5c93a8496d0fd70e685b6e4a092",
+      "sha256": "c2bba0a6d339a7b56e755b002a717dc6cee6375cf13c05b843078c1fbb5c8577",
+      "bytes": 12664,
+      "lines": 349,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        100
+      ],
+      "formalAiComparison": [
+        "experiments/issue-1580/template-pages-adoption.test.mjs"
+      ],
+      "decision": "Eighteen mocked API cases passed, including old-upload rejection and lost-response recovery. No live GitHub Pages deployment is credited."
+    },
+    {
+      "path": "tests/deprecated-packages.test.js",
+      "gitBlob": "f62a05fec031b6666791ae6e1c74829475cd1814",
+      "sha256": "81b06844e9823e30a75c9398aaa0e71ac1ae17f3073f0d4f712d006673ee5bca",
+      "bytes": 5720,
+      "lines": 172,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        101
+      ],
+      "formalAiComparison": [
+        ".github/workflows/security.yml"
+      ],
+      "decision": "Seven upstream mocked registry cases passed; live checks of every local locked version remain separate."
+    },
+    {
+      "path": "tests/helpers/ci-workflow-budgets.js",
+      "gitBlob": "9fb168b1a98251632556c13b670714be32fc2b1a",
+      "sha256": "89f4718959a8fc5c74b093113f5aedb4294846fec58e8ccdf8b7539445804f11",
+      "bytes": 6621,
+      "lines": 221,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        102
+      ],
+      "formalAiComparison": [
+        "scripts/run-with-budget-warning.sh"
+      ],
+      "decision": "The YAML helper parses commands and composites rather than accepting marker substrings; conditional exclusivity and repeated calls contribute to the budget sum."
+    },
+    {
+      "path": "tests/links-workflow.test.js",
+      "gitBlob": "d8391780b066fca9abcd56fb1c66d0d421292ba7",
+      "sha256": "6dac859548915038694f9e0fe5b0ac8cf2d5f0f4723a3a4cf98c9c41cb9c6c33",
+      "bytes": 5690,
+      "lines": 147,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        103
+      ],
+      "formalAiComparison": [
+        "scripts/recheck-broken-links.test.mjs"
+      ],
+      "decision": "Eight upstream workflow cases passed, preserving strict failure and diagnostic behavior. Actual link availability is time-dependent and not inferred from mocks."
+    },
+    {
+      "path": "tests/lint-changed-files.test.js",
+      "gitBlob": "cd9476ed2e57ccd10e071aa061f328352d9e7de4",
+      "sha256": "73fd0a76e221eb15c80f7497cd4db0f668d9d94dfd7849898346d8b3c7741ee0",
+      "bytes": 5703,
+      "lines": 179,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        104
+      ],
+      "formalAiComparison": [
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "decision": "Nine cases passed using actual ESLint 10.13.0 in scratch Git repositories, including a changed body that produces a line-one warning. Setup failures are retained separately."
+    },
+    {
+      "path": "tests/preview-tools.test.js",
+      "gitBlob": "fcf4e12cd8aead1098af1b681218099609c02302",
+      "sha256": "eb030202d0508577f9ad661c5ee508c828efa416ca9582ade5cc4092a3d12151",
+      "bytes": 4814,
+      "lines": 136,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        105
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml"
+      ],
+      "decision": "Six source-policy cases passed; they prove pinned tooling precedes credential checks, not a live preview container."
+    },
+    {
+      "path": "tests/run-with-budget-warning.test.js",
+      "gitBlob": "604ee38ced1cddeb9ebb6a0fc79e365a5fa635ed",
+      "sha256": "35da77fe47f1affb47f4e7fd98b6f91f0636bbab5679a896f27f63cde2bce6b5",
+      "bytes": 11501,
+      "lines": 390,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        106,
+        107
+      ],
+      "formalAiComparison": [
+        "experiments/issue-1580/budget-annotation-boundaries.test.mjs"
+      ],
+      "decision": "Two selected boundary cases passed under Node. The full upstream wrapper suite and other runtimes were not executed in this focused batch."
+    },
+    {
+      "path": "tests/security-workflow.test.js",
+      "gitBlob": "92786d8811cc5b86f74be793b9f64e17e06feace",
+      "sha256": "f5e8ed04ca6f9a1ecf2f890e56d59c1f463137babd27657183c8fab4a220d6d7",
+      "bytes": 6514,
+      "lines": 166,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        108
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/security-codeql-results.test.mjs"
+      ],
+      "decision": "Eight upstream security workflow cases passed after restoring a verified support lock and Git inventory. No upstream CodeQL analysis is credited."
+    },
+    {
+      "path": "tests/workflows-lint.test.js",
+      "gitBlob": "d1781aae7fd3d7d62a6b4b70a9fc5e04c247a97d",
+      "sha256": "f93ffdd9bfa2c35b9e1bb90c831e4bc1b7befccdf5497580846d67d3ea3fc9be",
+      "bytes": 8965,
+      "lines": 237,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        109
+      ],
+      "formalAiComparison": [
+        ".github/workflows/workflows.yml"
+      ],
+      "decision": "Sixteen cases passed after adding the verified Secretlint configuration fixture. Earlier harness failures are retained rather than described as production failures."
+    }
+  ],
+  "removedPaths": [
+    "scripts/lint-changed-lines.mjs",
+    "tests/lint-changed-lines.test.js"
+  ],
+  "verification": {
+    "focusedNodeAssertionsPassed": 107,
+    "testFiles": 10,
+    "wrapperCasesSelected": 2,
+    "fullWrapperSuiteExecuted": false,
+    "bunDenoOrOsMatrixExecuted": false,
+    "livePagesPublicationVerified": false,
+    "actualEslintVersion": "10.13.0",
+    "actualSecretlintVersion": "14.0.0",
+    "finalLogs": [
+      {
+        "file": "check-01.log",
+        "passed": 18
+      },
+      {
+        "file": "retry-01.log",
+        "passed": 7
+      },
+      {
+        "file": "check-03.log",
+        "passed": 16
+      },
+      {
+        "file": "check-04.log",
+        "passed": 8
+      },
+      {
+        "file": "retry-02.log",
+        "passed": 8
+      },
+      {
+        "file": "retry-final-workflow.log",
+        "passed": 16
+      },
+      {
+        "file": "check-07.log",
+        "passed": 6
+      },
+      {
+        "file": "check-08.log",
+        "passed": 17
+      },
+      {
+        "file": "retry-04.log",
+        "passed": 9
+      },
+      {
+        "file": "check-10.log",
+        "passed": 2
+      }
+    ]
+  },
+  "relatedWork": {
+    "pullRequests": [
+      311,
+      309,
+      300,
+      293,
+      288
+    ],
+    "allConversationInlineAndReviewCommentsRead": true,
+    "upstreamHostedSuccessStatementsAreAttributed": true
+  },
+  "independentAuthorshipCredit": 0
+}

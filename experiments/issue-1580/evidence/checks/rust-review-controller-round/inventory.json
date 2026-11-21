@@ -1,0 +1,152 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/read-rust-pinned-byte-range.py",
+    "file": "001-read-rust-pinned-byte-range.py.gz",
+    "rawSha256": "929c163e8b2aeaf4cc9a83c94647f17c69a400cadb0117b2a7e25a9d029d944e",
+    "archiveSha256": "618856d946921d73d84dff8e28a93a4b62090292448d6f26dbfff71da82bd7b6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/record-rust-issue19-ci-review.py",
+    "file": "002-record-rust-issue19-ci-review.py.gz",
+    "rawSha256": "d27393e8f10152df7f973cea051d5824972110b354189b04c201562e7fd9aab4",
+    "archiveSha256": "c3721937c973094ce204e3c9d9f693e3bcde4d9bc4edf6cff99b3d014831b99f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/record-rust-issue19-ci-review.log",
+    "file": "003-record-rust-issue19-ci-review.log.gz",
+    "rawSha256": "206696381b85c487eb52facc5ac3b29fc4642433742201225eb1ab22211a5b60",
+    "archiveSha256": "9b4127267aa141c732120f925d184bf7736bad586c3888254b2288cb421b46bf"
+  },
+  {
+    "source": "/tmp/issue-1580-research/record-rust-recent-merged-review.py",
+    "file": "004-record-rust-recent-merged-review.py.gz",
+    "rawSha256": "ecc3451e772c221caa88b36b6fd3c008cbcdcba6677be2261f3734c12ebfef39",
+    "archiveSha256": "f59e147afcf414294e692e2d5686d6d0f9fd462e8f9275a0b8489c4f20472d4a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/record-rust-recent-merged-review.log",
+    "file": "005-record-rust-recent-merged-review.log.gz",
+    "rawSha256": "b365c1e39eca1c3710bfc643582d8d59cf1141d9e2fc59651d0e8e7d49fb2c00",
+    "archiveSha256": "89ffce39f60f43ead3f896bdca2b2b3b295bf460f8dda0730a7982a7d63c2391"
+  },
+  {
+    "source": "/tmp/issue-1580-research/commit-rust-literal-review-round.py",
+    "file": "006-commit-rust-literal-review-round.py.gz",
+    "rawSha256": "6f6630cc6421db2547a8976565a236f727f86367cc1a283e1c2bb018435e2df2",
+    "archiveSha256": "aeafe6d3c1f9630e086169a8d926b03557afca913332fbe343ab34882dd531c6"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-34-21.006Z.json",
+    "file": "007-2026-11-21T03-34-21.006Z.json.gz",
+    "rawSha256": "5db94b594b0e5e8fa9e5d62323146304be5b88a9d7a1da40bb9c1974a2dce7c2",
+    "archiveSha256": "83754bb76b55d2c81f33ef558a50579a5ab1b9d60d97f9b4e47e8a60c92425d1"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-15-52.282Z.json",
+    "file": "008-2026-11-21T03-15-52.282Z.json.gz",
+    "rawSha256": "3a7bea8d92589b33f55242d87a720417b5a12ad5debcac3fee83b77280a24d46",
+    "archiveSha256": "4cba5aba5fdb87f67640c0d0019806630d872c8f1f9375fff46896c27d979fb8"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-36-50.307Z.json",
+    "file": "009-2026-11-21T03-36-50.307Z.json.gz",
+    "rawSha256": "5aad24d0f22765a8f91e1a6b305606cd0d98aad5d383bb3e9356aaf1b505eef2",
+    "archiveSha256": "27bea9800b59c74087b5246fd54b8aeef1234506eaaa5ef1cd97a61a94b279fc"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-35-27.535Z.json",
+    "file": "010-2026-11-21T03-35-27.535Z.json.gz",
+    "rawSha256": "2cf981f64e4e2ceec3f795b21f487e0738ed1091c34c94588e7ec452e3e1621e",
+    "archiveSha256": "e49932a127ae15ad1d7a5f4284660634fb0cf80989e92e319a063b3223864820"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-20-06.425Z.json",
+    "file": "011-2026-11-21T03-20-06.425Z.json.gz",
+    "rawSha256": "3adb49b181eb678aeef6bd9f6efa40fccdc7626c12b9b3cd9799293583c577fa",
+    "archiveSha256": "92191ced43f0a586d83657a14c1816819632a9c52f84f55c297100b407212a3b"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-15-15.157Z.json",
+    "file": "012-2026-11-21T03-15-15.157Z.json.gz",
+    "rawSha256": "4942c1a169493559c1c959504781e3b24aa4395e9c89a0526263a589f158d681",
+    "archiveSha256": "267ce2e309039cbf8018652624184f43e44bd9d840b938b076a61188ac91b4a5"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-18-49.218Z.json",
+    "file": "013-2026-11-21T03-18-49.218Z.json.gz",
+    "rawSha256": "ff6bd37e565a7922e85d7322fa23d8db40e75ba7c6d4dc715ba935617a61d182",
+    "archiveSha256": "ed02a27d8d7893a87190cb6c0553e52ea9df70c7c908780d6b954d97b915e690"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-19-06.417Z.json",
+    "file": "014-2026-11-21T03-19-06.417Z.json.gz",
+    "rawSha256": "637a302f57a1ab58bdda5681c77db9ce35ae2991dcb2d0ad15a93078fab0e01a",
+    "archiveSha256": "f45b3acd9555cc13482bf48e9e7c8ca6862f054e1619897de7a15494a41384c8"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-33-19.609Z.json",
+    "file": "015-2026-11-21T03-33-19.609Z.json.gz",
+    "rawSha256": "890ade75c8fd506402944de510f4f81e68ecfc639744b57f26b066cdbbd5e5db",
+    "archiveSha256": "8784efa15b2241d31bc65e456efff3cb618a583ebda0af23a77ebf5661297116"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-18-33.710Z.json",
+    "file": "016-2026-11-21T03-18-33.710Z.json.gz",
+    "rawSha256": "15d2a52ae50fd674af89d167bb152e80a8de2a7695af9b98f1bcfdacc12cdd88",
+    "archiveSha256": "51083515a940bfde415c351498a6f5b4d110695c5a29664af3e97c739b24481c"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-33-42.295Z.json",
+    "file": "017-2026-11-21T03-33-42.295Z.json.gz",
+    "rawSha256": "3484850abade345de25fd884f9b00826d693176bde917fafb2bfaf4b72c63f40",
+    "archiveSha256": "64090c8503392cb5f5e1a62dec7af4e02fe0675a01f741744341388b1479624c"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-35-48.804Z.json",
+    "file": "018-2026-11-21T03-35-48.804Z.json.gz",
+    "rawSha256": "280e9b705678130cadde70809c16107f48ad024e196e904260bb3bd64fd8237d",
+    "archiveSha256": "e6418ab9ad2fb949a7604a7fb4057b2911c53962d6457a0b7217318060811cc8"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-19-48.250Z.json",
+    "file": "019-2026-11-21T03-19-48.250Z.json.gz",
+    "rawSha256": "16777231ca7fd43f752e3b58a08ba3f0adbef9977dac17cb921bd411ca12e67f",
+    "archiveSha256": "55ced965af26c6cee082eb67c8b7a51ed284cb30ca6a9914273b5e328ccffede"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-34-44.931Z.json",
+    "file": "020-2026-11-21T03-34-44.931Z.json.gz",
+    "rawSha256": "68d081e63a5b9d1cf32059453459fdd4b0231b082e61d1e1157ab14d9638a299",
+    "archiveSha256": "af7454810770ecbd73a79e71d7393839ec1d1001b1d7ca2ca2f0bc1be6667135"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-19-26.391Z.json",
+    "file": "021-2026-11-21T03-19-26.391Z.json.gz",
+    "rawSha256": "5410752eb979727019bc155eca3b272e78c44208bf7becb70212c70f94cf19c1",
+    "archiveSha256": "60013fffc5f69ae268a15b122f12c16fb3a50e4f84acc5466c949a20831d2a5b"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-21-19.066Z.json",
+    "file": "022-2026-11-21T03-21-19.066Z.json.gz",
+    "rawSha256": "4560d6f49f2913823ff71f6815d63830dede2fd90c52629ef0f421b859df6b83",
+    "archiveSha256": "cad16c72e1d10b622edcb72ea3e080e0a10ccbcf8ed7391705586cc8394a32f2"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-34-04.479Z.json",
+    "file": "023-2026-11-21T03-34-04.479Z.json.gz",
+    "rawSha256": "0c7af8629520ba37020e034a62df90d3f750c16ad2ccde6ece309cb8b9d5e7ab",
+    "archiveSha256": "60c0bc9bd72c8c809a6ffe6c48984400bdc0f9716c0486ab55ea3dd6e8f0d389"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-18-13.155Z.json",
+    "file": "024-2026-11-21T03-18-13.155Z.json.gz",
+    "rawSha256": "440189b80dea964277df3c370811baadf010b352fd0f4b9b5adbcb1c351bca32",
+    "archiveSha256": "8a832a606c587b57b5da3b77c6100d538fb798e13fc6cce3afb3b39af31d2951"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T03-32-29.842Z.json",
+    "file": "025-2026-11-21T03-32-29.842Z.json.gz",
+    "rawSha256": "fddb3a21057b12fb35fcf11169db8e21347787e4b09e8cb129e7d5757819c1e7",
+    "archiveSha256": "a7d3235660e228ff1ae6fc3ee459a1b3ac40a2c28c7dcb58aeeeb390b11003a2"
+  }
+]

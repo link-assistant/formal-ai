@@ -1,0 +1,24 @@
+{
+  "observedAt": "2026-11-20T07:42:15.554901+00:00",
+  "argv": [
+    "gh",
+    "run",
+    "view",
+    "44692731148",
+    "--repo",
+    "link-assistant/formal-ai",
+    "--json",
+    "jobs"
+  ],
+  "exitCode": 0,
+  "stdout": {
+    "file": "current-native-jobs.stdout.gz",
+    "rawSha256": "8853ce0cf60d2b03ea7931b00b49d0b0bc8b72e1bbb81e1bb014fe0024764de6",
+    "archiveSha256": "a254551c270df51078eb85362e1b13d7bc282379b1f8aa247d4fea78624a9482"
+  },
+  "stderr": {
+    "file": "current-native-jobs.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+}

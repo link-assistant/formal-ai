@@ -1,0 +1,1 @@
+Fixed native fallback cache lookups treating an arbitrary “about” clause as a definition request. Cached definitions now cover the complete requested subject, and link-memory focus keeps operative requests intact. Explicit cache requests and bare known terms retain their attributed answers.

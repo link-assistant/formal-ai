@@ -1,0 +1,146 @@
+{
+  "complete": true,
+  "allFinalChecksPassed": true,
+  "records": [
+    {
+      "name": "javascript-syntax",
+      "argv": [
+        "node",
+        "--check",
+        "experiments/issue-1580/native-hive-fixture-probe.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.057091854978352785,
+      "file": "javascript-syntax.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "before-omitted-prepared-pull-request",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=original Claude Kotlin request",
+        "rust/tests/web/hive-work-item-consumer.test.mjs"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "seconds": 15.379444032907486,
+      "file": "before-omitted-prepared-pull-request.log.gz",
+      "rawSha256": "88505156dfa449b03ee56305acde4c7c707d6101bde870f32ff82f719733ec1d",
+      "archiveSha256": "18361006828c514a3a2f1bb54db782c856609ed8f487cf0fdd54b6b5c8ee023a"
+    },
+    {
+      "name": "full-consumer",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "rust/tests/web/hive-work-item-consumer.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 175.87694747303613,
+      "file": "full-consumer.log.gz",
+      "rawSha256": "a64de2aea18c46348d4c073e24d7a5fdeb2ac8cf9e1f9f20440a24eef6da8b2e",
+      "archiveSha256": "40d0446be9d8a428605b098adaf339d17e554b4e15b3c1c331ea3adaf90d6877"
+    },
+    {
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.07648832607083023,
+      "file": "rust-format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "relevant-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog,check-readable-code"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 0,
+      "seconds": 115.50587036297657,
+      "file": "relevant-gates.log.gz",
+      "rawSha256": "114ca95f4fc5ef4ce8351ea0c6803175fbf76e285f6c235a17bbc971c41ef285",
+      "archiveSha256": "819de2847d1af8e89174f651ff13c248970648d5b3c75cfd228a5dd58fb3532d"
+    },
+    {
+      "name": "rust-format-final",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.054967642994597554,
+      "file": "rust-format-final.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "corrected-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size"
+      ],
+      "exitCode": 0,
+      "seconds": 10.111394386040047,
+      "file": "corrected-gates.log.gz",
+      "rawSha256": "24df4150012e34e33002d94f8ae5abb31125d2a8f54f70e713d6aacf2f9c1307",
+      "archiveSha256": "8ea55c17ea2468ce15581ca3f8af39b65259149e051130ce7d6cf5ecb2aedc9d"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "experiments/issue-1580/native-hive-fixture-probe.mjs",
+      "sha256": "12f981c53e163911656a783fdca463f257b6488adcc9e15e25e7e6d3151da8c5"
+    },
+    {
+      "path": "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs",
+      "sha256": "8b5c99f18a4d304e273c97008d2f2f657c521395c470be856283c3921962984a"
+    },
+    {
+      "path": "rust/tests/web/hive-work-item-consumer.test.mjs",
+      "sha256": "8e1c613a9f8f5d7cd7eccb4ba09f9cbd46731387eb6e0ea5879b77548cfeb4b5"
+    },
+    {
+      "path": "changelog.d/20261120_033000_issue_1580_claude_delivery.md",
+      "sha256": "d73f96fae140b53315e4d91dfd2cd721624f30b2d0aaa84c30e9a72f9eda9dea"
+    }
+  ],
+  "negativeControl": "Removing the prepared pull-request sentence fails the delivery assertion because the prepared pull request remains a draft.",
+  "initialGateFailures": "The new native fixture was 1008 lines, a prior evidence ledger was 1773 lines, and an evidence filename added an abbreviation. The fixture is now 1000 lines, the ledger is serialized without changing any JSON value, and the filename spells out pull-request. Only these three gates needed rerunning; the five other relevant gates already passed.",
+  "compilerAndNetworkAreMocks": true,
+  "rustCompiledLocally": false,
+  "hostedNativeValidationPending": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

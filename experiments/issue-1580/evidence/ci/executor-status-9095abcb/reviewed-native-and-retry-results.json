@@ -1,0 +1,62 @@
+{
+  "recordedAt": "2026-11-18T08:19:23.600029+00:00",
+  "head": "9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8",
+  "native": {
+    "workflowRun": 44262999525,
+    "jobId": 134660858273,
+    "conclusion": "success",
+    "logSha256": "ee1b839370bdad84e2e9bd94fd38bf1f1777677c37d816a4af195ff033aef481",
+    "literallyReadRanges": [
+      [
+        1605,
+        1722
+      ]
+    ],
+    "rustTestsPassed": 6,
+    "httpTestsPassed": 2,
+    "executorTestsPassed": 4,
+    "sharedExecutorFixtureCases": 29,
+    "completedAcceptanceScope": "The named isolated native and HTTP regression targets executed successfully. This does not establish the broad issue acceptance criteria."
+  },
+  "layered": {
+    "workflowRun": 44262999002,
+    "attempt": 2,
+    "conclusion": "failure",
+    "allFailedPayloadsLiterallyRead": true,
+    "literallyReadJobs": [
+      {
+        "jobId": 134665248683,
+        "range": [
+          1,
+          171
+        ],
+        "errorLines": [
+          124,
+          125,
+          126,
+          155
+        ]
+      },
+      {
+        "jobId": 134665249345,
+        "range": [
+          1,
+          171
+        ],
+        "errorLines": [
+          124,
+          125,
+          126,
+          155
+        ]
+      }
+    ],
+    "testsReached": false,
+    "observedFailure": "Missing-blob fetch during checkout exceeded the unchanged 20-second Git HTTP low-speed limit in both groups. The full requested pack size and server-side preparation cost are not known.",
+    "transportCauseEstablished": false,
+    "retryRequests": 1,
+    "furtherIdenticalRetryRequested": false
+  },
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

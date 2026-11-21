@@ -1,0 +1,62 @@
+{
+  "records": [
+    {
+      "panic": 16,
+      "job": 134419506413,
+      "sourceLines": {
+        "left": 3374,
+        "right": 3375
+      },
+      "sides": {
+        "left": {
+          "bytes": 53208,
+          "lines": 980,
+          "sha256": "9b62806d8adaa41e1ec98d62369f2c124130eab2dbbb45c8184cc05d7cbae6d7"
+        },
+        "right": {
+          "bytes": 182267,
+          "lines": 980,
+          "sha256": "20a6b2c28e48e6442520bcdd5860866f3b0349ff4319a18a5814719f059f1201"
+        }
+      },
+      "diff": {
+        "path": "experiments/issue-1580/evidence/ci/main-015a6831/panic-16-catalog-difference.diff.gz",
+        "lines": 711,
+        "sha256": "412131cfcfe6ee713b2f2164ad648131a37025bc24a4fc83127f8a3f0d948c06"
+      }
+    },
+    {
+      "panic": 39,
+      "job": 134419506816,
+      "sourceLines": {
+        "left": 3858,
+        "right": 3859
+      },
+      "sides": {
+        "left": {
+          "bytes": 53208,
+          "lines": 980,
+          "sha256": "9b62806d8adaa41e1ec98d62369f2c124130eab2dbbb45c8184cc05d7cbae6d7"
+        },
+        "right": {
+          "bytes": 181964,
+          "lines": 980,
+          "sha256": "ab441f92ec66a89c8fe1f767e374050ba37982703ab3a12aa935ece6df7ea3eb"
+        }
+      },
+      "diff": {
+        "path": "experiments/issue-1580/evidence/ci/main-015a6831/panic-39-catalog-difference.diff.gz",
+        "lines": 711,
+        "sha256": "ef90f2a83351f0600de3e45323443e59380b0adf4ea2b757e83d175bc3d4a8b4"
+      }
+    }
+  ],
+  "sameCapturedArtifact": true,
+  "sameFreshArtifacts": false,
+  "currentCommittedArtifact": {
+    "sha256": "9b62806d8adaa41e1ec98d62369f2c124130eab2dbbb45c8184cc05d7cbae6d7",
+    "matchesOldCaptured": true,
+    "matchesOldFresh": false
+  },
+  "reviewMethod": "Complete direct-job Rust debug strings decoded and byte-compared, including both right values missing from gh run view --log. Only the initial 65 diff lines were previewed, capped at 600 characters per line. Full semantic review and native replay remain unfinished."
+}

@@ -102,6 +102,23 @@ signal_command_tree() {
     true
 }
 
+# The root may finish while a child still owns the output pipe or does work.
+# Keep the deadline until every live process in its group has finished. Zombies
+# have already exited and cannot hold a pipe open; do not wait for their reaper.
+command_is_running() {
+  kill -0 "$command_pid" 2> /dev/null && return 0
+  local processes
+  if ! processes="$(ps -eo pgid=,stat=)"; then
+    echo "Cannot inspect the process group for the deadline command." >&2
+    signal_command_tree KILL
+    exit 125
+  fi
+  awk -v group="$command_pid" '
+    $1 == group && $2 !~ /^[ZX]/ { alive = 1 }
+    END { exit !alive }
+  ' <<< "$processes"
+}
+
 # shellcheck disable=SC2329  # invoked indirectly by the trap below
 forward_cancellation() {
   signal_command_tree TERM
@@ -110,9 +127,9 @@ trap forward_cancellation INT TERM
 
 # Sets `elapsed_tenths` to the tenths of a second since `$1` (a `SECONDS`
 # reading) given `$2` tenths of counted polling since then. A function that
-# assigns rather than echoes, and `kill -0` rather than `ps`, keep the whole
-# poll to one fork -- the `sleep` itself. Every other fork is drift the counted
-# bound pays for.
+# assigns rather than echoes keeps the common poll to one fork, the sleep.
+# Process-group inspection is needed only after the command root has exited;
+# extra forks affect the counted bound, while the clock bound stays independent.
 measure_elapsed() {
   elapsed_tenths=$(((SECONDS - $1 - 1) * 10))
   [ "$elapsed_tenths" -gt "$2" ] || elapsed_tenths="$2"
@@ -121,7 +138,7 @@ measure_elapsed() {
 expired=false
 counted_tenths=0
 elapsed_tenths=0
-while kill -0 "$command_pid" 2> /dev/null; do
+while command_is_running; do
   measure_elapsed "$started" "$counted_tenths"
   if [ "$elapsed_tenths" -ge "$deadline_tenths" ]; then
     expired=true
@@ -129,12 +146,25 @@ while kill -0 "$command_pid" 2> /dev/null; do
     grace_started=$SECONDS
     counted_tenths=0
     measure_elapsed "$grace_started" "$counted_tenths"
-    while kill -0 "$command_pid" 2> /dev/null && [ "$elapsed_tenths" -lt "$grace_tenths" ]; do
+    while command_is_running && [ "$elapsed_tenths" -lt "$grace_tenths" ]; do
       sleep "$poll_seconds"
       counted_tenths=$((counted_tenths + poll_tenths))
       measure_elapsed "$grace_started" "$counted_tenths"
     done
     signal_command_tree KILL
+    # SIGKILL delivery is asynchronous. An exited root cannot reap its live
+    # descendants; acknowledge group termination before reporting the deadline.
+    # Bound both observations and wall time if a process cannot leave the kernel.
+    kill_started=$SECONDS
+    for ((kill_check = 0; kill_check < 100; kill_check++)); do
+      command_is_running || break
+      [ $((SECONDS - kill_started)) -lt 10 ] || break
+      sleep 0.1 2> /dev/null || sleep 1
+    done
+    if command_is_running; then
+      echo "Cannot confirm process-group termination after SIGKILL." >&2
+      exit 125
+    fi
     break
   fi
   sleep "$poll_seconds"

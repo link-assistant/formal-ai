@@ -1,0 +1,268 @@
+{
+  "dependencies": [
+    {
+      "id": 38412362,
+      "version_id": 3396613,
+      "crate_id": "chrono",
+      "req": "^0.4",
+      "optional": false,
+      "default_features": false,
+      "features": [
+        "alloc",
+        "std",
+        "serde",
+        "clock",
+        "wasmbind"
+      ],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412363,
+      "version_id": 3396613,
+      "crate_id": "console_error_panic_hook",
+      "req": "^0.1",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412364,
+      "version_id": 3396613,
+      "crate_id": "js-sys",
+      "req": "^0.3",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412365,
+      "version_id": 3396613,
+      "crate_id": "lazy_static",
+      "req": "^1.4",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412366,
+      "version_id": 3396613,
+      "crate_id": "num-bigint",
+      "req": "^0.5",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412367,
+      "version_id": 3396613,
+      "crate_id": "num-integer",
+      "req": "^0.1",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412368,
+      "version_id": 3396613,
+      "crate_id": "num-rational",
+      "req": "^0.4",
+      "optional": false,
+      "default_features": false,
+      "features": [
+        "std"
+      ],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412369,
+      "version_id": 3396613,
+      "crate_id": "num-traits",
+      "req": "^0.2",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412370,
+      "version_id": 3396613,
+      "crate_id": "regex",
+      "req": "^1.10",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412371,
+      "version_id": 3396613,
+      "crate_id": "rust_decimal",
+      "req": "^1.33",
+      "optional": false,
+      "default_features": true,
+      "features": [
+        "serde"
+      ],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412372,
+      "version_id": 3396613,
+      "crate_id": "serde",
+      "req": "^1.0",
+      "optional": false,
+      "default_features": true,
+      "features": [
+        "derive"
+      ],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412373,
+      "version_id": 3396613,
+      "crate_id": "serde-wasm-bindgen",
+      "req": "^0.6",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412374,
+      "version_id": 3396613,
+      "crate_id": "serde_json",
+      "req": "^1.0",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412375,
+      "version_id": 3396613,
+      "crate_id": "thiserror",
+      "req": "^2.0",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412379,
+      "version_id": 3396613,
+      "crate_id": "tokio",
+      "req": "^1.0",
+      "optional": false,
+      "default_features": true,
+      "features": [
+        "rt-multi-thread",
+        "macros",
+        "time"
+      ],
+      "target": null,
+      "kind": "dev",
+      "downloads": 0
+    },
+    {
+      "id": 38412380,
+      "version_id": 3396613,
+      "crate_id": "tokio-test",
+      "req": "^0.4",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "dev",
+      "downloads": 0
+    },
+    {
+      "id": 38412376,
+      "version_id": 3396613,
+      "crate_id": "wasm-bindgen",
+      "req": "^0.2",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412377,
+      "version_id": 3396613,
+      "crate_id": "wasm-bindgen-futures",
+      "req": "^0.4",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    },
+    {
+      "id": 38412381,
+      "version_id": 3396613,
+      "crate_id": "wasm-bindgen-test",
+      "req": "^0.3",
+      "optional": false,
+      "default_features": true,
+      "features": [],
+      "target": null,
+      "kind": "dev",
+      "downloads": 0
+    },
+    {
+      "id": 38412378,
+      "version_id": 3396613,
+      "crate_id": "web-sys",
+      "req": "^0.3",
+      "optional": false,
+      "default_features": true,
+      "features": [
+        "Window",
+        "WorkerGlobalScope",
+        "Request",
+        "RequestInit",
+        "RequestMode",
+        "Response",
+        "Headers"
+      ],
+      "target": null,
+      "kind": "normal",
+      "downloads": 0
+    }
+  ]
+}

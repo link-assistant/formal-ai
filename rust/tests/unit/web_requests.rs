@@ -1,6 +1,14 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use formal_ai::{ConversationTurn, FormalAiEngine, UniversalSolver};
+use formal_ai::{ConversationTurn, FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
+
+fn offline_answer(prompt: &str) -> SymbolicAnswer {
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve(prompt)
+}
 
 const WEB_SEARCH_SOURCE_MARKER_CASES: &[(&str, &str, &str)] = &[
     ("en", "Find apple on the internet", "apple"),
@@ -166,11 +174,11 @@ fn expected_no_results_research_followup(prior_search: &str) -> String {
 #[test]
 fn latest_news_routes_to_wikinews_search_across_supported_languages() {
     for &(language, prompt, expected_query) in WEB_SEARCH_LATEST_NEWS_CASES {
-        let response = FormalAiEngine.answer(prompt);
+        let response = offline_answer(prompt);
         if language == "English" {
             assert_eq!(
                 response.answer,
-                "No captured provider response is available for `latest news`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+                "No captured provider response is available for `latest news`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
             );
         }
 
@@ -416,11 +424,11 @@ fn web_search_event_listing_cases_cover_every_supported_language() {
 #[test]
 fn web_search_source_marker_prompts_extract_query_without_source_marker() {
     for &(language, prompt, expected_query) in WEB_SEARCH_SOURCE_MARKER_CASES {
-        let response = FormalAiEngine.answer(prompt);
+        let response = offline_answer(prompt);
         if language == "en" {
             assert_eq!(
                 response.answer,
-                "No captured provider response is available for `apple`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+                "No captured provider response is available for `apple`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
             );
         }
 
@@ -619,11 +627,11 @@ fn information_search_variants_route_to_web_search_handler() {
         "在维基百科上查一下 Rust 编程",
     ];
     for prompt in prompts {
-        let response = FormalAiEngine.answer(prompt);
+        let response = offline_answer(prompt);
         if prompt == "Find information about Rust programming" {
             assert_eq!(
                 response.answer,
-                "No captured provider response is available for `rust programming`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+                "No captured provider response is available for `rust programming`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
             );
         }
         assert_eq!(
@@ -692,11 +700,11 @@ fn source_search_prompts_still_cover_supported_languages() {
     ];
 
     for (language, prompt) in cases {
-        let response = FormalAiEngine.answer(prompt);
+        let response = offline_answer(prompt);
         if language == "English" {
             assert_eq!(
                 response.answer,
-                "No captured provider response is available for `rust programming`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
+                "No captured provider response is available for `rust programming`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews."
             );
         }
 

@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-timeout-context.log",
+    "file": "351-evidence.gz",
+    "bytes": 85450,
+    "lines": 415,
+    "rawSha256": "be65b763d2708ed2e651b4537121b37d05b9fa50abe9c5502b9f967d827d467f",
+    "archiveSha256": "e4edaedf994231e7b2025185510e81b6f593c4a53b5c3311cecc4fc671715b29"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-codeql-timeout-context.py",
+    "file": "352-evidence.gz",
+    "bytes": 1371,
+    "lines": 23,
+    "rawSha256": "ffbe82487da5ee7a11d32a81ca17e34979df77397c1f22d7881107b08abe324f",
+    "archiveSha256": "959faeca749ae014e61047983e0ae457fd1ab0a6ae5f1984b542c4c3c919c8a6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-cpp-check-and-ci-context.log",
+    "file": "353-evidence.gz",
+    "bytes": 23449,
+    "lines": 261,
+    "rawSha256": "34a5f35b207f85cb5b6b9a678130d4684dd705ae160af11ebda9e1842cb53171",
+    "archiveSha256": "6f5287010bb5e7a1a5b56437cb3cbfbb2784db81fa260b5c1e6cc93541366146"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-cpp-check-and-ci-context.py",
+    "file": "354-evidence.gz",
+    "bytes": 725,
+    "lines": 16,
+    "rawSha256": "718821718581d291a6a995c71ea79fda2b516336dc018560ab5297674fcfeed7",
+    "archiveSha256": "22f5485135d973a3a1f3229838159ea9e2b1d950c24d65d4a40ab5831bbe003d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-cpp-related-policy-feedback.log",
+    "file": "355-evidence.gz",
+    "bytes": 16146,
+    "lines": 20,
+    "rawSha256": "df99d9c2c7db95becf34c4adfdba2b033d26a7e735db62fbf66708ac04e920bc",
+    "archiveSha256": "172b20aa65775450223f4b94c525b4e23c8a08fb89b3a8677b7c93a669ee3a48"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-cpp-related-policy-feedback.py",
+    "file": "356-evidence.gz",
+    "bytes": 1640,
+    "lines": 24,
+    "rawSha256": "4a5028a87f0b6e78739995ce850e0dbe0d7a319430414b3757570a52fa5afa03",
+    "archiveSha256": "00fe282cff460158ae81a5060987c642e923cf5ab0f7faa919d00254102ea311"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-current-cpp-regression.log",
+    "file": "357-evidence.gz",
+    "bytes": 4966,
+    "lines": 78,
+    "rawSha256": "202116483ee70ce045be4ba014005f2d12289a7165e1c285195a0dac41ff33d8",
+    "archiveSha256": "918ce9cfe5747b60a17bc56791b947e2fe0adad5c7b99ae21a4e2bfdc92e7783"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-current-publication-controller.log",
+    "file": "358-evidence.gz",
+    "bytes": 11515,
+    "lines": 135,
+    "rawSha256": "623d973854ccd8f8f86737902c12d1f292b5471f3fb6d5487f25e20a22a0d4ec",
+    "archiveSha256": "8e6837bae7e745564e851f187dc6c04b5712d4e2d75f613284b6be06011dad00"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-current-publication-controller.py",
+    "file": "359-evidence.gz",
+    "bytes": 898,
+    "lines": 14,
+    "rawSha256": "a9bd750dfb1bf7c093d7167f55c2219fda29356a7520b7e04b9544a3060a0dd2",
+    "archiveSha256": "d89774dc647b106cb88d72db3302d77858d3907594b51def361a0e62b98abdd2"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-current-rust-review-remainder.log",
+    "file": "360-evidence.gz",
+    "bytes": 14260,
+    "lines": 306,
+    "rawSha256": "f0738ee91dc9e6328367b69a33769d860443e7d99b52e83a9620d8a899e6b1b6",
+    "archiveSha256": "4e313e74a93247194d0d285caee661a258d114f0c32d2f33fceadc62ddf8ef7d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-current-rust-review-remainder.py",
+    "file": "361-evidence.gz",
+    "bytes": 672,
+    "lines": 15,
+    "rawSha256": "804497354ac2c13ea3494a5d0d590e59bf16ec958d09e1f58765f76007eaf3db",
+    "archiveSha256": "7d091f327761d46ba6ffa5b720a90fe9f5e57604354bcf47cc9b3ea7646f91f3"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-current-workplan-and-cfg-stage.log",
+    "file": "362-evidence.gz",
+    "bytes": 14944,
+    "lines": 278,
+    "rawSha256": "7bfff485f61ce6ed007126bb46bae5b6e6f72e0892a95d185be5a49462065ea0",
+    "archiveSha256": "e20dffbb9220a982c2c033bef17e798cca2d09c455129492db61c3f33705a5ab"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-deadline-lifetime-sources.log",
+    "file": "363-evidence.gz",
+    "bytes": 12481,
+    "lines": 238,
+    "rawSha256": "372d75e19d1f5df7219ea1692208b301949873d1045b76e19f84c3b392c3ed41",
+    "archiveSha256": "4df70cf83ff2dafd146b352678ecba21ec852ea8ea8ce9ab7d73fcb2d5f644e7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-deadline-lifetime-sources.py",
+    "file": "364-evidence.gz",
+    "bytes": 806,
+    "lines": 14,
+    "rawSha256": "8d4a525faf476d2e58a05f8129c7d8d6b662f852582e4a09da0ca687a32bd887",
+    "archiveSha256": "7a0f2a19b4b2af95f04d59f921ecf6e99d328c4a646f298965010a42d671c994"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-evaluator-summary-and-current-ci.log",
+    "file": "365-evidence.gz",
+    "bytes": 8680,
+    "lines": 142,
+    "rawSha256": "d4a9b6649c8052004e08f9a85eca9a5f0be8eca7aa065415d0177a526564f785",
+    "archiveSha256": "c602dac72775c525d469620eeacff7be6c1d948646b316fcf0f3159a6839ec59"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-evidence-sealer-and-template-repositories.log",
+    "file": "366-evidence.gz",
+    "bytes": 14886,
+    "lines": 144,
+    "rawSha256": "890236bfc52f1e34e80aa50fd6530e289c237fb93f709052d369914b2496267b",
+    "archiveSha256": "4e232fcf85411913c2c825d26edbff8b0f20d52521ab6bbacfe69b6dc5482371"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-kill-ack-test-context.log",
+    "file": "367-evidence.gz",
+    "bytes": 108173,
+    "lines": 1554,
+    "rawSha256": "8030a1764346909781e85f7ebdbde536c725a87c379e21419f7069f067317ad6",
+    "archiveSha256": "69de6d5ae597f231a21926adb47f19ba1f402f684775ad9206f3fe09a7940765"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-kill-ack-test-context.py",
+    "file": "368-evidence.gz",
+    "bytes": 763,
+    "lines": 15,
+    "rawSha256": "fa39ab1eddd84f4bf67cdab169f62494ce607d0532f258f561ee77db8c90d0c8",
+    "archiveSha256": "37c616dd1e1ebaae0d625648860720dd709ab078a5b45939f53171999fda37d7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-prior-check-driver.log",
+    "file": "369-evidence.gz",
+    "bytes": 3004,
+    "lines": 50,
+    "rawSha256": "803415e0984323fa4533c17aa08f5797e04a6a3051a447007d3ee40972104042",
+    "archiveSha256": "268a5070c5d047eb6137abc384932c5bb053911c770d5baf1999887dcefd84cb"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-prior-included-evaluation-assessor.log",
+    "file": "370-evidence.gz",
+    "bytes": 16309,
+    "lines": 228,
+    "rawSha256": "33887d6377c111e5bd92778226e762bac92a340b646be8b42ecd589dbe9711af",
+    "archiveSha256": "9c4c02bffc3cefef62932ecb0827560a8f423e368cf8727b14b40b145b6ee73d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-query-and-resource-context.log",
+    "file": "371-evidence.gz",
+    "bytes": 208295,
+    "lines": 797,
+    "rawSha256": "3e8509e6497c243d3a00dba7052f3b64c7466a69dbf0331915bdd2935cd3077c",
+    "archiveSha256": "f81b9c507faaa310ef8dc42e13ba4318867b26e376c3ff350c39c79c04f4c107"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-template-cancellation-classifiers.log",
+    "file": "372-evidence.gz",
+    "bytes": 24116,
+    "lines": 525,
+    "rawSha256": "03bb4539f15971f7175631e618d96b8e2096e8f16edfe1116a0396547d185dcd",
+    "archiveSha256": "09f545872f80b30f14b241930530ccfa3140cfc9a820dd27ef1b8fbef0fde9f6"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-template-cancellation-classifiers.py",
+    "file": "373-evidence.gz",
+    "bytes": 329,
+    "lines": 6,
+    "rawSha256": "fccef507e967ca649c085acb6d62b020ca7608d3c4c69d35f3549ae43a07e407",
+    "archiveSha256": "31089f92c808323744e2a1a413e1be33b5e3c9d4cda368bfc03d86bd8d885f0c"
+  },
+  {
+    "source": "/tmp/issue-1580-research/read-template-sources.log",
+    "file": "374-evidence.gz",
+    "bytes": 2286,
+    "lines": 69,
+    "rawSha256": "511f8c59ee1d77b5830d1fdb55301bbcbd16cc80fcbec2378ec4c2d5dda79837",
+    "archiveSha256": "da92dd34dc5cc15357dcb7608fef41f7b9f157de89aa5ef0121ca4a162c96252"
+  },
+  {
+    "source": "/tmp/issue-1580-research/refresh-cpp-policy-reader-source.log",
+    "file": "375-evidence.gz",
+    "bytes": 10301,
+    "lines": 194,
+    "rawSha256": "018f1396ec5665ca095e42c40b8c726c97e7e423df75bb5f315fe0b06663d7db",
+    "archiveSha256": "da02c4e088252813a25d37b81bbd6143db5157bd421bbf9d69709954f37513ff"
+  },
+  {
+    "source": "/tmp/issue-1580-research/refresh-cpp-policy-reader-source.py",
+    "file": "376-evidence.gz",
+    "bytes": 1267,
+    "lines": 21,
+    "rawSha256": "c0bf6b83d1858d955120b664d7028b38626822584a4ce4f849f1c9c037bc08b9",
+    "archiveSha256": "e45d498a43b056236535aa0af87bde93e1e5cf95ba94e9883b440bead814993d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/refresh-eight-template-heads.log",
+    "file": "377-evidence.gz",
+    "bytes": 16599,
+    "lines": 11,
+    "rawSha256": "d920173d2fcfb21c8793e15e8a7c2d0159182853d86354e56a35427c7801652a",
+    "archiveSha256": "a4c7073b443da9dc2e4105b2c68484f38dd13f9db6a991c464f5fcb6eb6c09ea"
+  },
+  {
+    "source": "/tmp/issue-1580-research/refresh-eight-template-heads.py",
+    "file": "378-evidence.gz",
+    "bytes": 1802,
+    "lines": 30,
+    "rawSha256": "748695144838f88a8e1a74473b7fbd798df9a81bd6d3e457a13baf2669b91353",
+    "archiveSha256": "fc1903efccd184e4df1e23c5262b33067eb874030b8984bfce3479bb686c3508"
+  },
+  {
+    "source": "/tmp/issue-1580-research/remaining-rust-inventory-and-practices.log",
+    "file": "379-evidence.gz",
+    "bytes": 20350,
+    "lines": 294,
+    "rawSha256": "be12f839a005415d6d7f1b6c74a002fcb67daae031833bb9f7c6ad0aeb578241",
+    "archiveSha256": "dbe87c171c50833547d2f140bc7eeff035653e6090cf4905e2b736dbdceebbd8"
+  },
+  {
+    "source": "/tmp/issue-1580-research/remaining-rust-script-error/diagnostics.json",
+    "file": "380-evidence.gz",
+    "bytes": 20988,
+    "lines": 246,
+    "rawSha256": "140cbc2edaadcab9ee7b17621222a3a54810b555f1ff0e22be8abe723772a1f8",
+    "archiveSha256": "278de517c1e208f2e638e68e21acff2011550b006b8b9d245f1c149697072777"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-codeql-thread-inheritance.log",
+    "file": "381-evidence.gz",
+    "bytes": 295,
+    "lines": 4,
+    "rawSha256": "a24ae4fcd9f6e333b160d10120da2a3e144b1f3d069bb7f183ae6bdb6c5d6040",
+    "archiveSha256": "10b1bc1960fe0be5d7fd4cea990ae6d015e083617c4264f4cefe823ae70f7e26"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-codeql-thread-inheritance.py",
+    "file": "382-evidence.gz",
+    "bytes": 5694,
+    "lines": 75,
+    "rawSha256": "aab79d64547759db31f0ce13af87d03b03877121b43c110a953c8faf4e17d918",
+    "archiveSha256": "ad27e9fa97059e4cba7e55d654249cfa817efeb37438b2c27da6d644a6c2ee7f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-cpp-policy-candidate-literal.log",
+    "file": "383-evidence.gz",
+    "bytes": 218,
+    "lines": 4,
+    "rawSha256": "b4413ebefe6b9e6e7395a762884c4cdb0556f126e1ac24c6081b6520ed507c35",
+    "archiveSha256": "dd6a8247c993221e0c561a1c6b65a0c05853dda57579a57da4b0552821bdbd1b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-cpp-policy-candidate-literal.py",
+    "file": "384-evidence.gz",
+    "bytes": 442,
+    "lines": 9,
+    "rawSha256": "9fcdb4f11ee543d8577489eedf588792b65b197a8c7b6993c5e28c11cdd7fa5f",
+    "archiveSha256": "afa89f37c356cccc0a8185d61b1927fb74e30dd512997a4134e1d6b9bafcab50"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-kill-acknowledgement.log",
+    "file": "385-evidence.gz",
+    "bytes": 1950,
+    "lines": 11,
+    "rawSha256": "d711269ee20eb4683c5ed3c9c54e5738d6ab14fba6ff57ed82bd1589f62861e2",
+    "archiveSha256": "a7a0abbedde739856f570391e28673de7b8d2a34886b18c3c1b26eaf95952ffe"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "arguments": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "experiments/issue-1580/python-fragment-before-control.test.mjs"
+  ],
+  "exitCode": 1,
+  "rawBytes": 2018,
+  "rawSha256": "682741d4e6e279a4235abe9debb2a33e5960732f2f1aee9af307759a5d781eff",
+  "summary": [
+    "# tests 4",
+    "# pass 3",
+    "# fail 1",
+    "# skipped 0"
+  ]
+}

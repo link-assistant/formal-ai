@@ -1,0 +1,45 @@
+{
+  "files": [
+    {
+      "path": "changelog.d/20261117_120000_issue-1580-ci-regressions.md",
+      "sha256": "5c384fcd4407d17a443cba86bccf491ad267b1ca24f855a720b1211395a79fc8"
+    },
+    {
+      "path": "data/seed/text-formalization.lino",
+      "sha256": "7ec3c809005692204ee968d0c6ce34c2b5103c3cad7f0a22356da5da07b9a44a"
+    },
+    {
+      "path": "rust/embedded/data/seed/text-formalization.lino",
+      "sha256": "7ec3c809005692204ee968d0c6ce34c2b5103c3cad7f0a22356da5da07b9a44a"
+    },
+    {
+      "path": "experiments/issue-1550/parity-fixture.mjs",
+      "sha256": "c39b021066b958a51ea8cad29c5ffa82d64797ded930a1ba8c0245c8e0a1913b"
+    },
+    {
+      "path": "rust/tests/unit/meta_executor_parity.rs",
+      "sha256": "6f2d798baff5609b04cbe9eb75882d4491bffd627e5e45abcf9f7010db75a8de"
+    },
+    {
+      "path": "rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs",
+      "sha256": "9176d35ee8071bcb0020cbc03ff2c607d714d9daac057a155e4a5e5708e4ce90"
+    },
+    {
+      "path": "rust/tests/web/issue-1550-meta-executor.test.mjs",
+      "sha256": "eb848e0d962e20a1810b59ca37b789dd052c7ba5c25b91cec20815b0d3eb7e12"
+    },
+    {
+      "path": "rust/tests/fixtures/meta-executor-status-parity.json",
+      "sha256": "392ada0ec67a39f1fa282290e264fe445851476400e1393b43783477e520b28b"
+    }
+  ],
+  "patchSha256": "e062222b721a697a2fa023c8f73fe036e0cda80aa8abedec45d1c0f285c38138",
+  "patchBytes": 16546,
+  "patchLines": 379,
+  "literalReviewComplete": true,
+  "independentAuthorshipCredit": 0,
+  "reviewedPatchLines": [
+    1,
+    379
+  ]
+}

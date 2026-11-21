@@ -98,7 +98,7 @@ fn the_leg_generates_the_project_and_refuses_to_skip_in_ci() {
 }
 
 /// The leg is as expensive as the other container legs, so it is gated the same
-/// way and cancels superseded pushes on branches.
+/// way and cancels only superseded pull request synchronize checks.
 #[test]
 fn the_leg_is_gated_like_the_other_slow_legs() {
     let workflow = release_workflow();
@@ -106,7 +106,7 @@ fn the_leg_is_gated_like_the_other_slow_legs() {
 
     assert!(job.contains("needs: [detect-changes, build-artifacts]"));
     assert!(job.contains("timeout-minutes: 30"));
-    assert!(job.contains("cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}"));
+    assert!(job.contains("cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"));
     for gate in [
         "github.event_name == 'workflow_dispatch'",
         "needs.detect-changes.outputs.any-code-changed == 'true'",

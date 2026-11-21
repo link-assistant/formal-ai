@@ -1,0 +1,18 @@
+{
+  "originals": [
+    {
+      "path": "rust/tests/fixtures/meta-executor-parity.json",
+      "unchanged": true,
+      "sha256": "0657136c9c6a0b378192d6742dc4dbffe9c5bd520bfeedaa2b5c9b9b43384d7e",
+      "cases": 25
+    },
+    {
+      "path": "rust/tests/fixtures/meta-executor-status-parity.json",
+      "unchanged": true,
+      "sha256": "392ada0ec67a39f1fa282290e264fe445851476400e1393b43783477e520b28b",
+      "cases": 4
+    }
+  ],
+  "newCueCases": 12,
+  "independentAuthorshipCredit": 0
+}

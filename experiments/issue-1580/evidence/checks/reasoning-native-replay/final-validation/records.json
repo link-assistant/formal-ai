@@ -1,0 +1,85 @@
+[
+  {
+    "name": "shell-syntax",
+    "argv": [
+      "bash",
+      "-n",
+      "experiments/issue_1582/continuation-local-tools.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.01,
+    "file": "shell-syntax.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2024",
+      "rust/tests/unit/reasoning_contracts.rs",
+      "rust/tests/unit/ci-cd/network_download_retry.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.109,
+    "file": "rust-format.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "candidate-validation",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/worker-candidate-validation.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 10.003,
+    "file": "candidate-validation.log.gz",
+    "rawSha256": "a89e90a211af3fee71516f995b7a1679af2bfbb290670ec954a29d0dafb88176",
+    "archiveSha256": "31b9d6785f51cf055de65175241f03f38530dbda09330ebb39550575c511d8c1",
+    "lines": 12
+  },
+  {
+    "name": "focused-test-map",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.34,
+    "file": "focused-test-map.log.gz",
+    "rawSha256": "ed22686744a1cc9f62b479cdd1934c1e90d7093bb9a526498bf7228693b6338e",
+    "archiveSha256": "0cae67b787716a99926073761fe35572fde6d0c6e468d88c8bd8339fb05b8cc3",
+    "lines": 16
+  },
+  {
+    "name": "relevant-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations,check-ci-speed,check-generated-files,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+    ],
+    "exitCode": 0,
+    "seconds": 41.774,
+    "file": "relevant-gates.log.gz",
+    "rawSha256": "57a29b86a9cde7fa3b2b411f34093b40b4b12c4ee91f99531c546910e6eea86a",
+    "archiveSha256": "6d01b28c032fa62a843fa22b1fd0223a5fc6bd5673929a025730efb28b341b1c",
+    "lines": 10
+  }
+]

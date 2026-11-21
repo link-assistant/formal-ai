@@ -1,3 +1,5 @@
+import '../../../experiments/issue-1580/buildkit-image-identity.test.mjs';
+import '../../../experiments/issue-1580/compressed-secrets.test.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -148,21 +150,21 @@ test('readable capture projection is valid canonical notation and round-trips qu
 });
 
 
-test('secret scanner bounds npm shell arguments and retains every literal filename', {timeout: 60000}, async t => {
+test('secret scanner uses one bounded npm command and retains every literal filename through NUL stdin', {timeout: 60000}, async t => {
   const os = await import('node:os');
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-secret-batches-'));
   t.after(() => fs.rmSync(temporary, {recursive: true, force: true}));
   const receipts = path.join(temporary, 'receipts.jsonl');
-  // npm turns each npx argument batch into one shell command. Model its
-  // quoting cost without installing packages or exposing actual credentials.
+  // Model npm's fixed shell command and the separate filename stream.
   fs.writeFileSync(path.join(temporary, 'npx'), `#!${process.execPath}
 const fs = require('node:fs');
 const args = process.argv.slice(2);
-const marker = args.indexOf('secretlint');
+const marker = args.indexOf('node');
 if (marker < 0) process.exit(2);
-const files = args.slice(marker + 1);
+if (args[marker + 1] !== 'scripts/check-secrets-files.mjs' || args.length !== marker + 2) process.exit(3);
+const files = fs.readFileSync(0, 'utf8').split(String.fromCharCode(0)).filter(Boolean);
 const quote = value => "'" + value.replaceAll("'", "'" + String.fromCharCode(92) + "''") + "'";
-const bytes = Buffer.byteLength('secretlint ' + files.map(quote).join(' '));
+const bytes = Buffer.byteLength(args.map(quote).join(' '));
 fs.appendFileSync(process.env.SECRET_SCAN_RECEIPTS, JSON.stringify({files, bytes}) + '\\n');
 if (bytes > 120 * 1024) { console.error('mock npm spawn E2BIG'); process.exit(7); }
 if (files.includes('fixture-detected-secret')) process.exit(1);
@@ -180,11 +182,49 @@ if (files.includes('fixture-detected-secret')) process.exit(1);
   assert.equal(result.status, 0, result.stderr.toString());
   assert.equal(result.cleanup_complete, true);
   const batches = fs.readFileSync(receipts, 'utf8').trim().split('\n').map(line => JSON.parse(line));
-  assert.ok(batches.length > 1);
+  assert.equal(batches.length, 1);
   assert.deepEqual(batches.flatMap(batch => batch.files), files);
   assert.ok(batches.every(batch => batch.bytes <= 120 * 1024));
   const finding = await run(['fixture-detected-secret']);
   assert.equal(finding.error, undefined);
   assert.notEqual(finding.status, 0, 'scanner findings must still fail the gate');
   assert.equal(finding.cleanup_complete, true);
+});
+
+
+test('secret scanner refuses a failed or partial Git inventory before scanning', {timeout: 30000}, async t => {
+  const os = await import('node:os');
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'secret-inventory-'));
+  t.after(() => fs.rmSync(directory, {recursive: true, force: true}));
+  const receipt = path.join(directory, 'scanner-called');
+  fs.writeFileSync(path.join(directory, 'git'), `#!${process.execPath}
+const command=process.argv[2],mode=process.env.SECRET_INVENTORY_CASE;
+if(command==='rev-parse'||command==='merge-base'){console.log('fixture-commit');process.exit(0);}
+if(command==='diff'||command==='ls-files'){
+  if(mode==='empty')process.exit(0);
+  process.stdout.write('partial inventory.txt'+String.fromCharCode(0));
+  if(command==='diff'||mode==='all')process.exit(17);
+  process.exit(0);
+}
+process.exit(18);
+`, {mode: 0o755});
+  fs.writeFileSync(path.join(directory, 'npx'), `#!${process.execPath}
+require('node:fs').writeFileSync(process.env.SECRET_INVENTORY_RECEIPT,'called');
+`, {mode: 0o755});
+  for (const mode of ['all', 'uncommitted', 'base', 'empty']) {
+    fs.rmSync(receipt, {force: true});
+    const result = await boundedCommand('bash', [path.join(root, 'scripts/check-secrets.sh'),
+      ...(['all', 'empty'].includes(mode) ? ['--all'] : [])], {
+      cwd: root, timeout: 5000, maxBuffer: 65536,
+      env: {...process.env, PATH: `${directory}${path.delimiter}${process.env.PATH}`,
+        BASE_REF: mode === 'base' ? 'main' : '', SECRET_INVENTORY_CASE: mode,
+        SECRET_INVENTORY_RECEIPT: receipt},
+    });
+    assert.equal(result.error, undefined, mode);
+    assert.equal(result.cleanup_complete, true, mode);
+    assert.equal(result.status === 0, mode === 'empty', mode+' must preserve inventory failure');
+    assert.equal(fs.existsSync(receipt), false, mode+' must not scan an incomplete inventory');
+    if (mode === 'empty') assert.match(result.stdout.toString(), /No files to scan/u);
+    else assert.doesNotMatch(result.stdout.toString(), /No secrets found/u);
+  }
 });

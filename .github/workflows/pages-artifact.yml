@@ -22,6 +22,9 @@ on:
       pages_sha:
         description: The commit the artifact was built from and stamped with.
         value: ${{ jobs.build.outputs.pages_sha }}
+      artifact_id:
+        description: Immutable ID of the Pages artifact uploaded by this build.
+        value: ${{ jobs.build.outputs.artifact_id }}
 
 permissions:
   contents: read
@@ -34,6 +37,7 @@ jobs:
     timeout-minutes: 30
     outputs:
       pages_sha: ${{ steps.pages_ref.outputs.sha }}
+      artifact_id: ${{ steps.pages_artifact.outputs.artifact_id }}
     steps:
       - name: Select Pages deployment ref
         id: pages_ref
@@ -46,10 +50,19 @@ jobs:
           fi
           echo "sha=${PAGES_DEPLOY_SHA}" >> "$GITHUB_OUTPUT"
           echo "Pages deployment SHA: ${PAGES_DEPLOY_SHA}"
+      # A successful release may resolve a new child on the trusted branch.
+      # Otherwise build the immutable triggering source, even if main advanced
+      # during a publisher failure. Neither checkout executes an input ref.
       - uses: actions/checkout@v7
+        if: ${{ inputs.sha != github.sha }}
         with:
           persist-credentials: false
           ref: ${{ github.ref }}
+      - uses: actions/checkout@v7
+        if: ${{ inputs.sha == github.sha }}
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
       - name: Verify trusted release branch matches the requested artifact commit
         env:
           PAGES_DEPLOY_SHA: ${{ steps.pages_ref.outputs.sha }}
@@ -107,6 +120,7 @@ jobs:
           WASM_RECEIPT_SHA256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
         run: node scripts/build-selected-wasm.mjs verify "$GITHUB_WORKSPACE" js "$WASM_RECEIPT_SHA256"
       - name: Upload GitHub Pages artifact
+        id: pages_artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: js

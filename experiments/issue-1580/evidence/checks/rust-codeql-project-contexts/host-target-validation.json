@@ -1,0 +1,16 @@
+{
+  "label": "explicit-host-target",
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/security-codeql-results.test.mjs"
+  ],
+  "exitCode": 0,
+  "rawSha256": "0b8f4cdf1a1856b2801dc90c07f6e8eebadb4b2a0e97ccc3c002069a61b289fd",
+  "archiveSha256": "45a93fa59d318d6e70b15fbdf69e05a727d607fcb2a169bae8c1ab6aa9a75943",
+  "file": "host-target-final.log.gz"
+}

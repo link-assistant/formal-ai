@@ -1,0 +1,128 @@
+{
+  "records": [
+    {
+      "name": "rustfmt",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/solver_handlers/verifiable_task.rs",
+        "rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.329,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "connector",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/connector-work-item-receipts.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 24.269,
+      "rawBytes": 2100,
+      "rawLines": 28,
+      "rawSha256": "2f3375640aef1ba279e5fb1018fbea39917d6baa5e27fb137fbdc3ad5be5206b"
+    },
+    {
+      "name": "browser-execution-boundary",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1138-execution-parity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 13.959,
+      "rawBytes": 323,
+      "rawLines": 10,
+      "rawSha256": "38c6f920855177f9051e9eca36af07f7e12232374c5c03e33a3242899574b576"
+    },
+    {
+      "name": "source-projection-currency",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 2.76,
+      "rawBytes": 188,
+      "rawLines": 1,
+      "rawSha256": "fc3f033428548a4500f1df0ec78e77db7050b95e954089f214ea64b8cb6ed814"
+    },
+    {
+      "name": "abbreviations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "seconds": 6.295,
+      "rawBytes": 67,
+      "rawLines": 3,
+      "rawSha256": "487460e76ebd8fc3e84361c4111c0cba32ad91bc7180e54680c115da320a9cc7"
+    },
+    {
+      "name": "file-size",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "seconds": 12.363,
+      "rawBytes": 64,
+      "rawLines": 3,
+      "rawSha256": "79024e5d6db72501cb11b06a6d59d7d071dbb4e0ec9a9030192ee280c6eda830"
+    },
+    {
+      "name": "file-size-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 5.68,
+      "rawBytes": 71,
+      "rawLines": 3,
+      "rawSha256": "549cd0dc7d6413f686425dd900d6725c2a389013e3861251137969e77b597518"
+    },
+    {
+      "name": "diff",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.361,
+      "rawBytes": 0,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "complete": true,
+  "nativeBehaviorVerified": false
+}

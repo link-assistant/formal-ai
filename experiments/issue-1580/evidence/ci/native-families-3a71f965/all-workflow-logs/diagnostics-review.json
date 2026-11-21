@@ -1,0 +1,180 @@
+{
+  "rawSha256": "a5c41f9b945d79fd3a57b196da775b3ec4a3541a40e8bccf9bc1a0baa4ee9e45",
+  "allDiagnosticRecords": 270,
+  "sourceSizeRecords": 246,
+  "otherDiagnosticRecords": [
+    {
+      "workflow": "Workflows",
+      "run": 44702570352,
+      "line": 465,
+      "text": "Actionlint\tProve the linter can still see inside a run block\t2026-11-20T08:26:54.4008824Z rust/tests/fixtures/actionlint/shellcheck-canary.yml:22:9: shellcheck reported issue in this script: SC1072:error:3:1: Expected end of double quoted string. Fix any mentioned problems and try again [shellcheck]",
+      "classification": "Expected negative control: malformed canary rejected, delegation live; not a production linter failure"
+    },
+    {
+      "workflow": "Workflows",
+      "run": 44702570352,
+      "line": 469,
+      "text": "Actionlint\tProve the linter can still see inside a run block\t2026-11-20T08:26:54.4010613Z rust/tests/fixtures/actionlint/shellcheck-canary.yml:22:9: shellcheck reported issue in this script: SC1073:error:1:6: Couldn't parse this double quoted string. Fix to allow more checks [shellcheck]",
+      "classification": "Expected negative control: malformed canary rejected, delegation live; not a production linter failure"
+    },
+    {
+      "workflow": "Security",
+      "run": 44702570410,
+      "line": 473,
+      "text": "Cargo audit\tRun taiki-e/install-action@v2\t2026-11-20T08:27:27.3244484Z ^[[36;1m  printf '::error::install-action: %s\\n' \"$*\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "Security",
+      "run": 44702570410,
+      "line": 542,
+      "text": "Cargo audit\tAudit committed Cargo.lock\t2026-11-20T08:27:36.6071925Z ^[[0m^[[0m^[[1m^[[33mwarning:^[[0m 1 allowed warning found",
+      "classification": "UNRESOLVED actual unsafe-libyaml 0.2.11 unmaintained warning, RUSTSEC-2024-0449, experimental Cargo lock; Security log lines 542-549"
+    },
+    {
+      "workflow": "Layered CI",
+      "run": 44702570483,
+      "line": 8653,
+      "text": "js tier (node --check over js, suite group 1)\tSyntax-check every committed js file\t2026-11-20T08:27:40.0347750Z ^[[36;1m  echo \"::error::the js tier found no js files -- the tier predicate is wrong\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "Layered CI",
+      "run": 44702570483,
+      "line": 12516,
+      "text": "ts tier (js<->ts file-set parity)\tUNKNOWN STEP\t2026-11-20T08:31:57.1381613Z ^[[36;1m    echo \"::error::the ts file set drifted from the js file set; regenerate with: formal-ai translate --from js --to ts --write\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "Layered CI",
+      "run": 44702570483,
+      "line": 12529,
+      "text": "ts tier (js<->ts file-set parity)\tUNKNOWN STEP\t2026-11-20T08:31:57.1540106Z ^[[36;1m  echo \"::error::ts/ drifted from js/; regenerate with: node scripts/translate-es.mjs --write\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 2935,
+      "text": "Release Preflight\tProbe every release credential\t2026-11-20T08:27:11.6050025Z ##[warning]UNKNOWN: crates.io publish token -- token present; crates.io offers no token-accepting read endpoint (GET /api/v1/me is cookie-only), so only `cargo publish` can prove it",
+      "classification": "UNRESOLVED crates.io credential certainty: report mode cannot establish token validity without an actual publish; pipeline log lines 2932-2936"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 29820,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:27:47.9121353Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 30148,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-20T08:27:53.7403250Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 33273,
+      "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-20T08:48:12.3823074Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 33630,
+      "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-20T08:48:16.8627228Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 34775,
+      "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-20T08:52:07.9418508Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 35132,
+      "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-20T08:52:11.3317959Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 36224,
+      "text": "Native type and lint check / Native contracts (reasoning)\tUNKNOWN STEP\t2026-11-20T08:28:06.5197347Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 36581,
+      "text": "Native type and lint check / Native contracts (reasoning)\tUNKNOWN STEP\t2026-11-20T08:28:08.8154980Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 37762,
+      "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-20T08:41:33.0566899Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 38119,
+      "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-20T08:41:39.9474519Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 39203,
+      "text": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-20T09:01:10.0949972Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 39567,
+      "text": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-20T09:01:19.2703687Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 40643,
+      "text": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-20T08:28:02.0804604Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 41007,
+      "text": "Native type and lint check / Native contracts (coding)\tUNKNOWN STEP\t2026-11-20T08:28:11.7894539Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 42078,
+      "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-20T08:56:54.0589023Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    },
+    {
+      "workflow": "CI/CD Pipeline",
+      "run": 44702570685,
+      "line": 42442,
+      "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-20T08:57:07.8235631Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+      "classification": "Quoted command source in Actions group; this row is not an emitted error or warning"
+    }
+  ],
+  "fullIssueComplete": false,
+  "classificationPending": false,
+  "remainingAcceptance": "123 actual source-size warnings, the experimental dependency warning and publish-token certainty remain open; passing jobs do not resolve them.",
+  "sourceArchive": "diagnostics.json.gz",
+  "sourceArchiveSha256": "fc4e84fa7d0dc7656b9ef9967b2f316352556cb41b87d7d1009611e70b4d7445"
+}

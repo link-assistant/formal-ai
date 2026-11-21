@@ -1,0 +1,40 @@
+[
+  {
+    "path": "data/seed/multilingual-responses-capabilities.lino",
+    "beforeArchive": "multilingual-responses-capabilities.lino.before.gz",
+    "rawSha256": "d0311615019c38e7cba7e69b680114d3589ee231db52d25de0100d21f1b3807e",
+    "archiveSha256": "b424158d7f906076c67d96faf5813a45d556b3c1c705793b0d86bc74e31f7722",
+    "lines": [
+      117,
+      153,
+      157
+    ]
+  },
+  {
+    "path": "data/seed/multilingual-responses-text-transform.lino",
+    "beforeArchive": "multilingual-responses-text-transform.lino.before.gz",
+    "rawSha256": "01873bf1e85dc537835f441fad7843807e8cc7fa8798895c3f5688efbc8d760f",
+    "archiveSha256": "0755807a57e1245655c23d88f95d4c8b8c916ed1194dbce9d9ed60b04f4b8333",
+    "lines": [
+      155,
+      159,
+      163,
+      167,
+      235,
+      239,
+      243,
+      247
+    ]
+  },
+  {
+    "path": "data/seed/multilingual-responses-web.lino",
+    "beforeArchive": "multilingual-responses-web.lino.before.gz",
+    "rawSha256": "b4721bb3405596b9bdfc04265a744e334268ca9fd5b6555068982b36f08db5a4",
+    "archiveSha256": "6e9a350f87a0002f1e805bca1f111fcb830c23ad46fa216b9fd086ce49cdb1b1",
+    "lines": [
+      676,
+      680,
+      688
+    ]
+  }
+]

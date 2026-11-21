@@ -1,0 +1,19 @@
+{
+  "sourceFilesFullyRead": [
+    "dev/log/issues/247/pulls/248/actionlint-release.json",
+    "dev/log/issues/247/pulls/248/npm-major-migration.json",
+    "dev/log/issues/247/pulls/248/actionlint-upstream.json",
+    "dev/log/issues/247/pulls/248/buildkit-release.json",
+    "dev/log/issues/247/pulls/248/branch-security-run-before.json",
+    "dev/log/issues/247/pulls/248/branch-desktop-before.json"
+  ],
+  "desktopMetadataInitialDisplayTruncated": true,
+  "desktopMetadataRereadComplete": true,
+  "historicalDesktopPackageFailures": 6,
+  "historicalRustAnalysisSucceeded": true,
+  "historicalStrictSarifAndAuditFailed": true,
+  "queueSuppressionFullyQualifiesConcurrency": false,
+  "currentRuntimeAdoptionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-11-17T22:34:54.683458+00:00",
+  "previousHead": "369b438f943baf5db75bbd5cd71c8cd4ec7426ca",
+  "incomingMain": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "mergeExitCode": 1,
+  "conflicts": [
+    ".github/workflows/native-type-check.yml",
+    "data/benchmarks/fast-pull-request-javascript-tests.json",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+    "rust/tests/web/default-branch-build-policy.test.mjs",
+    "rust/tests/web/generated-files.test.mjs",
+    "scripts/check-generated-files.mjs"
+  ],
+  "rawSha256": "f7f50487cd70a5c2391d8ff37c1be4acfe9a0bfde57d7861382677e56da57aa0",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

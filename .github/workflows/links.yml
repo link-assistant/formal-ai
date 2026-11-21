@@ -67,8 +67,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-link-parser-checks
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-link-parser-checks${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     permissions:
       contents: read
     steps:
@@ -102,8 +102,8 @@ jobs:
     # external hosts or Wayback Machine probes from hanging the workflow.
     timeout-minutes: 10
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-link-checker
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-link-checker${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     permissions:
       contents: read
     steps:

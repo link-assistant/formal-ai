@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "--max-old-space-size=64",
+    "experiments/issue-1580/browser-deadline-descendant.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 1.195,
+  "rawSha256": "c859fad79ef2604dd49c71d08ecd2473b73084077758590c0c74e045bf0e2cdc",
+  "log": "descendant-original.log.gz",
+  "independentAuthorshipCredit": 0
+}

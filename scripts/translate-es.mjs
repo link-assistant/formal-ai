@@ -3,7 +3,7 @@
 //
 // A byte-for-byte twin of rust/src/es_tokenizer.rs (`tokenize`, whose body
 // lives in js/agentic/crate/es_tokenizer.mjs so the agentic port can count
-// tokens too) and the renderer in rust/src/es_meta.rs (`layout_of` and
+// tokens too) and the renderer in rust/src/es_meta/source_layout.rs (`layout_of` and
 // `write_source`). The pivot carries the source's layout: the text before
 // every token (whitespace, comments, a leading shebang line) and after the
 // last one. The renderer writes each token after its own layout text, so a

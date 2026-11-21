@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "experiments/issue-1580/unresolved-request-probe.mjs",
+    "after-opener-fix"
+  ],
+  "exitCode": 0,
+  "rawSha256": "1b28816bb1bd51fa66ab9ff67b35f8e164cb94c16c3879f582ca7e6292df9e38",
+  "originalRawSha256": "2a5396973e7ecdd47ffa44347ecfa62703eb9e5a3b5fb25229ae21728a2ef614"
+}

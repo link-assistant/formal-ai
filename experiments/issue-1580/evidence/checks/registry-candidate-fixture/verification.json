@@ -1,0 +1,101 @@
+{
+  "observedAt": "2026-11-20T06:44:22.439311+00:00",
+  "rootCause": "The wrong-identity fixture previously produced 404 for unpublished bump candidates, so that candidate path never supplied an invalid success identity.",
+  "records": [
+    {
+      "label": "before",
+      "command": [
+        "python3",
+        "experiments/issue-1580/release-registry/check_fixture.py"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "rawSha256": "4379dcd488c862a2a796c26ee6807f00135940b427dec078f9f5e5d9f107e8b7",
+      "archiveSha256": "ce0e51a9cc574303cca586574b8806f6b33ed2ee38bd119d241903502dffb1e2",
+      "nativeBehaviorExecuted": false
+    },
+    {
+      "label": "after",
+      "command": [
+        "python3",
+        "experiments/issue-1580/release-registry/check_fixture.py"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "rawSha256": "6d2842126a71338946a9846f4caf79ffb5fde5a8f25445baa09fe714a0214832",
+      "archiveSha256": "b9242844406d5aed5c366303728326e7d6eaa13b504ada35fe503a8aef3c8c1d",
+      "nativeBehaviorExecuted": false
+    },
+    {
+      "label": "http-fixture-final",
+      "command": [
+        "python3",
+        "experiments/issue-1580/release-registry/check_fixture.py"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "rawSha256": "78dfb12d9cfcdcf7b3320e7eb2783d969654716833fec427357630a59b2d3d9f",
+      "archiveSha256": "70495653f22b2e9924d2b8a408d9ee4a9800d38436e8f74e8cfa01431bf30226",
+      "nativeBehaviorExecuted": false
+    },
+    {
+      "label": "native-admission-final",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/native-regression-groups.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "rawSha256": "6a955455ac833288f567694bcf9436cea273bf705d03d49399f6bc1c1d455d5f",
+      "archiveSha256": "23210f3007766c53d69063c1ee184c8307e8e3255441d88773d4ee51438ccea5",
+      "nativeBehaviorExecuted": false
+    },
+    {
+      "label": "gates-final",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-changelog-fragment-js-twin,check-generated-files,check-runner-labels,check_js_rust_translation,layered-ci#1,layered-ci#2,layered-ci#3,layered-ci#4"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "rawSha256": "12fb5ba5db16fa52e30bf4d57f9da7d4ac9539f04be741c25400474582192aa0",
+      "archiveSha256": "202d6a12260237f3359261b138274c864bae2cc88fd7e9d193d3ee10370f6cce",
+      "nativeBehaviorExecuted": false
+    },
+    {
+      "label": "diff-check-final",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "nativeBehaviorExecuted": false
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "experiments/issue-1580/release-registry/check_fixture.py",
+      "sha256": "3ea17abb1a3d04a3f009322997bfe42f31b6b3bb8732d56c6c835b5f4b78471a"
+    },
+    {
+      "path": "experiments/issue-1580/release-registry/cli_regressions.py",
+      "sha256": "3f7a20f7e76769d9c70359ad2995c1f6ef9878fe7579ef2875f2e92bba577d12"
+    }
+  ],
+  "httpFixtureExecuted": true,
+  "nativeBehaviorExecuted": false,
+  "independentAuthorshipCredit": false,
+  "fullIssueComplete": false,
+  "complete": true
+}

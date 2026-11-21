@@ -1,0 +1,7 @@
+{
+  "originalCases": 15,
+  "newCases": 10,
+  "totalCases": 25,
+  "allOriginalInputExpectedTraceEntriesEqual": true,
+  "nativeExecuted": false
+}

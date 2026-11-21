@@ -37,18 +37,23 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
-//! ureq = "2"
+//! ureq = "3.5.2"
 //! serde = { version = "1", features = ["derive"] }
 //! serde_json = "1"
 //! ```
 
-use serde::Deserialize;
 use std::env;
-use std::fs;
 use std::path::Path;
 use std::process::exit;
 
+#[path = "github-output.rs"]
+mod github_output;
+use github_output::set_output;
+
+#[path = "registry.rs"]
+mod registry;
 #[path = "rust-paths.rs"]
 mod rust_paths;
 
@@ -64,68 +69,11 @@ fn get_arg(name: &str) -> Option<String> {
     env::var(&env_name).ok().filter(|s| !s.is_empty())
 }
 
-fn set_output(key: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Err(e) = fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(&output_file)
-            .and_then(|mut f| {
-                use std::io::Write;
-                writeln!(f, "{}={}", key, value)
-            })
-        {
-            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {}", e);
-        }
-    }
-    println!("Output: {}={}", key, value);
-}
-
-#[derive(Deserialize)]
-struct CratesIoVersion {
-    version: Option<CratesIoVersionInfo>,
-}
-
-#[derive(Deserialize)]
-struct CratesIoVersionInfo {
-    #[allow(dead_code)]
-    num: String,
-}
-
-#[derive(Deserialize)]
-struct CratesIoCrate {
-    versions: Option<Vec<CratesIoVersionEntry>>,
-}
-
-#[derive(Deserialize)]
-struct CratesIoVersionEntry {
-    num: String,
-    yanked: bool,
-}
-
 fn check_version_on_crates_io(crate_name: &str, version: &str) -> bool {
-    let url = format!("https://crates.io/api/v1/crates/{}/{}", crate_name, version);
-
-    match ureq::get(&url)
-        .set("User-Agent", "rust-script-check-release")
-        .call()
-    {
-        Ok(response) => {
-            if response.status() == 200 {
-                if let Ok(body) = response.into_string() {
-                    if let Ok(data) = serde_json::from_str::<CratesIoVersion>(&body) {
-                        return data.version.is_some();
-                    }
-                }
-            }
-            false
-        }
-        Err(ureq::Error::Status(404, _)) => false,
-        Err(e) => {
-            eprintln!("Warning: Could not check crates.io: {}", e);
-            false
-        }
-    }
+    registry::or_exit(
+        "crates.io version",
+        registry::version_exists(crate_name, version),
+    )
 }
 
 fn split_docker_image(image: &str) -> Option<(&str, &str)> {
@@ -142,56 +90,37 @@ fn split_docker_image(image: &str) -> Option<(&str, &str)> {
 
 fn check_docker_hub_tag(image: &str, version: &str) -> bool {
     let Some((namespace, repository)) = split_docker_image(image) else {
-        eprintln!(
-            "Warning: Could not parse Docker Hub image '{}'; expected namespace/repository",
-            image
+        registry::or_exit::<()>(
+            "Docker Hub image",
+            Err(format!(
+                "Invalid image '{image}'; expected namespace/repository"
+            )),
         );
-        return false;
+        unreachable!();
     };
-
-    let url = format!(
-        "https://hub.docker.com/v2/repositories/{}/{}/tags/{}",
-        namespace, repository, version
-    );
-
-    match ureq::get(&url)
-        .set("User-Agent", "rust-script-check-release")
-        .call()
-    {
-        Ok(response) => response.status() == 200,
-        Err(ureq::Error::Status(404, _)) => false,
-        Err(e) => {
-            eprintln!("Warning: Could not check Docker Hub tag: {}", e);
-            false
-        }
-    }
+    let url =
+        format!("https://hub.docker.com/v2/repositories/{namespace}/{repository}/tags/{version}");
+    registry::or_exit(
+        "Docker Hub tag",
+        registry::artifact_exists(&url, &[], "name", version),
+    )
 }
 
 fn check_github_release(repository: &str, tag_prefix: &str, version: &str) -> bool {
-    let url = format!(
-        "https://api.github.com/repos/{}/releases/tags/{}{}",
-        repository, tag_prefix, version
-    );
-
-    let mut request = ureq::get(&url)
-        .set("User-Agent", "rust-script-check-release")
-        .set("Accept", "application/vnd.github+json");
-
-    if let Ok(token) = env::var("GITHUB_TOKEN") {
-        if !token.is_empty() {
-            let auth_header = format!("Bearer {}", token);
-            request = request.set("Authorization", &auth_header);
-        }
+    let tag = format!("{tag_prefix}{version}");
+    let url = format!("https://api.github.com/repos/{repository}/releases/tags/{tag}");
+    let authorization = env::var("GITHUB_TOKEN")
+        .ok()
+        .filter(|token| !token.is_empty())
+        .map(|token| format!("Bearer {token}"));
+    let mut headers = vec![("Accept", "application/vnd.github+json")];
+    if let Some(ref authorization) = authorization {
+        headers.push(("Authorization", authorization));
     }
-
-    match request.call() {
-        Ok(response) => response.status() == 200,
-        Err(ureq::Error::Status(404, _)) => false,
-        Err(e) => {
-            eprintln!("Warning: Could not check GitHub release: {}", e);
-            false
-        }
-    }
+    registry::or_exit(
+        "GitHub release",
+        registry::artifact_exists(&url, &headers, "tag_name", &tag),
+    )
 }
 
 fn docker_hub_image_to_check() -> Option<String> {
@@ -210,67 +139,11 @@ fn release_is_complete(
     crate_published && (!dockerhub_required || dockerhub_published) && github_release_published
 }
 
-fn parse_semver(version: &str) -> Option<(u32, u32, u32)> {
-    let parts: Vec<&str> = version.split('-').next()?.split('.').collect();
-    if parts.len() != 3 {
-        return None;
-    }
-    Some((
-        parts[0].parse().ok()?,
-        parts[1].parse().ok()?,
-        parts[2].parse().ok()?,
-    ))
-}
-
 fn get_max_published_version(crate_name: &str) -> Option<String> {
-    let url = format!("https://crates.io/api/v1/crates/{}", crate_name);
-
-    match ureq::get(&url)
-        .set("User-Agent", "rust-script-check-release")
-        .call()
-    {
-        Ok(response) => {
-            if response.status() == 200 {
-                if let Ok(body) = response.into_string() {
-                    if let Ok(data) = serde_json::from_str::<CratesIoCrate>(&body) {
-                        if let Some(versions) = data.versions {
-                            let mut max_version: Option<(u32, u32, u32, String)> = None;
-                            for v in &versions {
-                                if v.yanked {
-                                    continue;
-                                }
-                                if let Some(parsed) = parse_semver(&v.num) {
-                                    match &max_version {
-                                        None => {
-                                            max_version =
-                                                Some((parsed.0, parsed.1, parsed.2, v.num.clone()));
-                                        }
-                                        Some(current) => {
-                                            if parsed > (current.0, current.1, current.2) {
-                                                max_version = Some((
-                                                    parsed.0,
-                                                    parsed.1,
-                                                    parsed.2,
-                                                    v.num.clone(),
-                                                ));
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            return max_version.map(|v| v.3);
-                        }
-                    }
-                }
-            }
-            None
-        }
-        Err(ureq::Error::Status(404, _)) => None,
-        Err(e) => {
-            eprintln!("Warning: Could not query crates.io for versions: {}", e);
-            None
-        }
-    }
+    registry::or_exit(
+        "crates.io published versions",
+        registry::max_published_name(crate_name),
+    )
 }
 
 // Bound the observer independently of its own API and source-check deadlines.
@@ -488,8 +361,10 @@ fn main() {
             .or_else(|| env::var("GITHUB_REPOSITORY").ok().filter(|s| !s.is_empty()))
             .map(|repository| check_github_release(&repository, &tag_prefix, &current_version))
             .unwrap_or_else(|| {
-                eprintln!("Warning: GITHUB_REPOSITORY not set; assuming GitHub release is missing");
-                false
+                registry::or_exit::<bool>(
+                    "GitHub release",
+                    Err("GITHUB_REPOSITORY or --repository is required".into()),
+                )
             });
 
         set_output(

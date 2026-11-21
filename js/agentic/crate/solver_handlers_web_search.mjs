@@ -53,6 +53,13 @@ export function probableLocalFileName(candidate) {
 /** Mirrors `fn looks_like_hostname` in rust/src/solver_handlers/web_requests/url_parse.rs. */
 export function looksLikeHostname(value) {
   const host = trim(value);
+  // Numeric dotted operands follow the native IPv4 parser, including range
+  // and leading-zero checks; a numeric suffix is not a domain suffix.
+  if (/^[0-9.]+$/u.test(host)) {
+    const octets = host.split('.');
+    return octets.length === 4 && octets.every(octet =>
+      /^(?:0|[1-9][0-9]{0,2})$/u.test(octet) && Number(octet) <= 255);
+  }
   if (!host.includes('.') || host.startsWith('.') || host.endsWith('.')) return false;
   const labels = host.split('.');
   if (labels.some((label) => label === '')) return false;

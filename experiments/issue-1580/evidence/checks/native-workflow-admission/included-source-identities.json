@@ -1,0 +1,36 @@
+{
+  "nativeCases": 49,
+  "nativeExecutionObserved": false,
+  "unchangedIncludedSources": [
+    {
+      "path": "rust/tests/unit/ci_gates.rs",
+      "sha256": "7c57e50dc24137b051b76bc9b6b48eb6595e196d89d73327e57daa648041bcfa",
+      "cases": 4
+    },
+    {
+      "path": "scripts/run-ci-gates.rs",
+      "sha256": "bbda7740ceb1e27e92a159f6c253673c02b3b58d39f0e3042e284a5ae289ea4c",
+      "cases": 20
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/workflow_fixtures.rs",
+      "sha256": "845ee621a093b016c47cc24983191817396c6730571948936823e86f3489dc8d",
+      "cases": 3
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/workflow_release.rs",
+      "sha256": "7584214fc1ef3e2849effd5877cc6020cd45741c2e2458e97d42f4ad6ff4c475",
+      "cases": 22
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/workflow_release_operations.rs",
+      "sha256": "738a6353f1186a8fc6758039fc3d826c72c667fbb87eee8b629ae6c78c34f47b",
+      "cases": 0
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/staged_release_operations.rs",
+      "sha256": "ae52050fa077fdb95b9b9c120697bbc6c6090a14e3cd755f07640246b8180df8",
+      "cases": 0
+    }
+  ]
+}

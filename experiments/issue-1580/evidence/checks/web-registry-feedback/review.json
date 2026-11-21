@@ -1,0 +1,32 @@
+{
+  "observedAt": "2026-11-19T16:11:34.434786+00:00",
+  "records": [
+    {
+      "file": "issue-comments.json.gz",
+      "items": 1,
+      "rawSha256": "e94df1a56d52510058eeb6ab365abc0dd54576e105efc5378186562dbc2e135a",
+      "archiveSha256": "50aabef111fe99868b8cdc3a1370a144c585686f208182d77fb8626b48820133"
+    },
+    {
+      "file": "conversation-comments.json.gz",
+      "items": 11,
+      "rawSha256": "728d63f225ee69aecabe5476690cdfc80c0bb990cba22a2687181d7bf25440e0",
+      "archiveSha256": "c9b1616df9116712900c8e8efcb8d6cea85d8944ccc97c1cb829703679ceac35"
+    },
+    {
+      "file": "inline-comments.json.gz",
+      "items": 0,
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    {
+      "file": "reviews.json.gz",
+      "items": 0,
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    }
+  ],
+  "newOrChangedFeedbackComparedWithPrior": 0,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

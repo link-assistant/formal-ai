@@ -15,314 +15,446 @@
 # question mark still reads as the corresponding question.
 # The E-Prime analog forbids every form of ser and estar.
 cnl-language es
-  keys "bare|indef|plural|def-plural|every|none"
-  grammar "un|una|el|la|los|las|lo|de|del|a|al|que|y|o|en|con|se|es|son|para"
-  copula "ser|soy|eres|es|somos|sois|son|era|eras|éramos|erais|eran|fui|fuiste|fue|fuimos|fuisteis|fueron|sea|seas|seamos|seáis|sean|fuera|fueras|fuéramos|fueran|fuese|fuesen|sería|serías|seríamos|serían|seré|será|seremos|serán|sido|siendo|estar|estoy|estás|está|estamos|estáis|están|estaba|estabas|estábamos|estaban|estuve|estuvo|estuvimos|estuvieron|esté|estés|estemos|estén|estuviera|estuvieran|estaría|estarían|estará|estarán|estado|estando"
-  pronouns "él|ella|ellos|ellas|le|les|esto|eso|aquello|este|esta|ese|esa|estos|estas|esos|esas|su|sus"
-  fillers "eh|em|ehm|mmm|pues|oye|porfa|por favor|mira|a ver|vale|venga|o sea|digamos|dime|una pregunta rápida|hola|jaja|en plan|sabes"
-  loose "una=un|las=los|unas=unos"
-  typos "anmal=animal|animl=animal|aninal=animal|gaot=gato|perrro=perro|raton=ratón|ratn=ratón|arbol=árbol|arboles=árboles|hija=hoja|dedso=dedo|computador=computadora|computadra=computadora|ordenador=computadora|ordenadores=computadoras|cuneta=cuenta|contrasena=contraseña|contrasenas=contraseñas|contraseña=contraseña|cuanto=cuánto|cuantos=cuántos|cuantas=cuántas|cual=cuál|funcion=función|numero=número|numeros=números|maximo=máximo|mayor=mayor|xq=porque|pq=porque|q=que|tb=también"
-  prime "I: yo|mí|me"
-  prime "YOU: tú|ti|te"
-  prime "SOMEONE: alguien|persona|personas"
-  prime "SOMETHING: algo|cosa|cosas"
-  prime "PEOPLE: gente"
-  prime "BODY: cuerpo"
-  prime "KIND: tipo|tipos"
-  prime "PART: parte|partes"
-  prime "THIS: este|esta|esto|estos|estas"
-  prime "THE SAME: mismo|misma|mismos|mismas"
-  prime "OTHER: otro|otra|otros|otras"
-  prime "ONE: uno"
-  prime "TWO: dos"
-  prime "SOME: alguno|alguna|algunos|algunas"
-  prime "ALL: todo|toda|todos|todas"
-  prime "MUCH: mucho|mucha|muchos|muchas"
-  prime "LITTLE: poco|poca|pocos|pocas"
-  prime "GOOD: bueno|buena|bien"
-  prime "BAD: malo|mala|mal"
-  prime "BIG: grande|grandes"
-  prime "SMALL: pequeño|pequeña|pequeños|pequeñas"
-  prime "THINK: pensar|pienso|piensa"
-  prime "KNOW: saber|sé|sabe|sabes|saben"
-  prime "WANT: querer|quiero|quieres|quiere"
-  prime "DON'T WANT: no querer"
-  prime "FEEL: sentir|siento|siente"
-  prime "SEE: ver|veo|ve"
-  prime "HEAR: oír|oigo|oye"
-  prime "SAY: decir|digo|dice|digas"
-  prime "WORDS: palabras|palabra"
-  prime "TRUE: verdad|verdadero"
-  prime "DO: hacer|hago|hace"
-  prime "HAPPEN: pasar|pasa|ocurrir"
-  prime "MOVE: moverse|mover|mueve|mueven"
-  prime "BE SOMEWHERE: estar"
-  prime "THERE IS: hay"
-  prime "BE SOMEONE: ser|es|son"
-  prime "MINE: mío|mía|míos|mías"
-  prime "LIVE: vivir|vive|viven|vivo|viva|vivos|vivas"
-  prime "DIE: morir|muere"
-  prime "WHEN: cuando|tiempo"
-  prime "NOW: ahora"
-  prime "BEFORE: antes"
-  prime "AFTER: después"
-  prime "A LONG TIME: mucho tiempo"
-  prime "A SHORT TIME: poco tiempo"
-  prime "FOR SOME TIME: por un tiempo"
-  prime "MOMENT: momento"
-  prime "WHERE: donde|dónde|lugar"
-  prime "HERE: aquí"
-  prime "ABOVE: arriba|encima"
-  prime "BELOW: abajo|debajo"
-  prime "FAR: lejos"
-  prime "NEAR: cerca"
-  prime "SIDE: lado"
-  prime "INSIDE: dentro"
-  prime "TOUCH: tocar|toca|tocan"
-  prime "NOT: no"
-  prime "MAYBE: quizás|tal vez"
-  prime "CAN: poder|puede|pueden|puedo"
-  prime "BECAUSE: porque"
-  prime "IF: si"
-  prime "VERY: muy"
-  prime "MORE: más"
-  prime "LIKE: como|así|manera"
-  list "ste: sí|no|todo|toda|ningún|ninguna|cada|tipo|parte|debe|deba|tener|necesita|necesitan|cierto|falso|verdad|gato|gatos|perro|perros|animal|animales|planta|plantas|árbol|árboles|hoja|hojas|mano|manos|dedo|dedos|computadora|computadoras|ratón|ratones|doméstico|domésticos|cuenta|cuentas|contraseña|contraseñas|pregunta|tiene|tienen|posibles|significado|significados|responde|número|quieres|elige|por|clase|pertenecen|forman|requieren|carecen"
-  list "minimal: sí|no|todo|toda|ningún|ninguna|cada|tipo|parte|debe|deba|tener|necesita|necesitan|cierto|falso|verdad|gato|gatos|perro|perros|animal|animales|planta|plantas|árbol|árboles|hoja|hojas|mano|manos|dedo|dedos|computadora|computadoras|ratón|ratones|doméstico|domésticos|cuenta|cuentas|contraseña|contraseñas|yo|sé|pregunta|tiene|tienen|posibles|significado|significados|responde|número|quieres|elige|por|clase|pertenecen|forman|requieren|carecen"
-  list "basic: sí|no|todo|toda|ningún|ninguna|tipo|parte|necesita|tener|cierto|falso|gato|gatos|perro|perros|animal|animales|planta|plantas|árbol|árboles|hoja|hojas|mano|manos|dedo|dedos|máquina|máquinas|número|números|puntero|punteros|cuenta|cuentas|palabra|palabras|secreta|secretas|pequeño|pequeños|familia|rata|ratas|yo|sé|pregunta|tiene|posibles|sentido|sentidos|da|tienes|mente"
-  list "special: sí|no|todo|toda|ningún|ninguna|tipo|parte|debe|tener|necesita|cierto|falso|gato|gatos|perro|perros|animal|animales|planta|plantas|árbol|árboles|hoja|hojas|mano|manos|dedo|dedos|computadora|computadoras|cuenta|cuentas|contraseña|contraseñas|pequeño|pequeños|vive|viven|casa|casas|control|controles|mueve|mueven|yo|sé|pregunta|tiene|posibles|significado|significados|responde|número|quieres|elige|por|clase"
-  list "globish: sí|no|todo|toda|ningún|ninguna|tipo|parte|debe|tener|necesita|cierto|falso|gato|gatos|perro|perros|animal|animales|planta|plantas|árbol|árboles|hoja|hojas|mano|manos|dedo|dedos|computadora|computadoras|ratón|ratones|doméstico|domésticos|cuenta|cuentas|contraseña|contraseñas|yo|sé|pregunta|tiene|posibles|significado|significados|responde|número|quieres|elige|por|clase"
-  list "gellish: especialización|parte|deberá|tener|requiere|no|sí|gato|perro|animal|planta|árbol|hoja|mano|dedo|computadora|ratón|doméstico|cuenta|contraseña|pregunta|tiene|posibles|significado|significados|responde|número|quieres|elige|por|clase"
-  tier "100: de|la|que|el|en|y|a|los|se|del|las|un|por|con|no|una|su|para|es|al|lo|como|más|o|pero|sus|le|ha|me|si|sin|sobre|este|ya|entre|cuando|todo|esta|ser|son|dos|también|fue|había|era|muy|hasta|desde|está|mi|porque|qué|solo|han|yo|hay|vez|puede|todos|así|nos|ni|parte|tiene|él|uno|donde|bien|tiempo|mismo|ese|ahora|cada|otro|después|te|otros|esa|eso|hace|otra|siempre|día|tanto|ella|tres|sí|esto|toda|tienen|tener|decir|hacer|cosas|algo|cosa"
-  tier "200: año|antes|forma|caso|nada|poco|estos|mayor|unos|hombre|sea|mucho|tipo|gente|lugar|saber|ver|querer|quiero|quieres|quiere|grande|grandes|pequeño|pequeña|bueno|malo|pensar|sentir|vivir|morir|debe|número|palabra|palabras|cuerpo|mano|manos|verdad|aquí|cerca|lejos|lado|dentro|alguien|persona|personas|otras|algunos|algunas|mucha|muchas|muchos|casa|casas|vida|sé|sabe|saben|pueden|vive|viven|viva|vivas|tú|momento|pasar|pregunta|clase|da|necesita|cierto"
-  tier "500: animal|animales|perro|perros|árbol|árboles|planta|plantas|hoja|hojas|dedo|dedos|cuenta|cuentas|máquina|máquinas|números|significado|significados|sentido|sentidos|posibles|responde|elige|mente|familia|control|controles|mueve|mueven|moverse|tocar|falso|secreta|secretas|tienes|debajo|arriba|encima|quizás|deba|necesitan|forman|pequeños|pequeñas|digas|dice"
-  tier "1000: gato|gatos|ratón|ratones|computadora|computadoras|contraseña|contraseñas|doméstico|domésticos|rata|ratas|pertenecen|carecen|requiere|requieren|ningún|ninguna|puntero|punteros"
-  tier "5000: especialización|deberá|omnisciente|obligatorio|permitido|imposible|necesario|felino"
+  keys ("bare" "indef" "plural" "def-plural" "every" "none")
+  grammar ("un" "una" "el" "la" "los" "las" "lo" "de" "del" "a" "al" "que" "y" "o" "en" "con" "se" "es" "son" "para")
+  copula ("ser" "soy" "eres" "es" "somos" "sois" "son" "era" "eras" "éramos" "erais" "eran" "fui" "fuiste" "fue" "fuimos" "fuisteis" "fueron" "sea" "seas" "seamos" "seáis" "sean" "fuera" "fueras" "fuéramos" "fueran" "fuese" "fuesen" "sería" "serías" "seríamos" "serían" "seré" "será" "seremos" "serán" "sido" "siendo" "estar" "estoy" "estás" "está" "estamos" "estáis" "están" "estaba" "estabas" "estábamos" "estaban" "estuve" "estuvo" "estuvimos" "estuvieron" "esté" "estés" "estemos" "estén" "estuviera" "estuvieran" "estaría" "estarían" "estará" "estarán" "estado" "estando")
+  pronouns ("él" "ella" "ellos" "ellas" "le" "les" "esto" "eso" "aquello" "este" "esta" "ese" "esa" "estos" "estas" "esos" "esas" "su" "sus")
+  fillers ("eh" "em" "ehm" "mmm" "pues" "oye" "porfa" "por favor" "mira" "a ver" "vale" "venga" "o sea" "digamos" "dime" "una pregunta rápida" "hola" "jaja" "en plan" "sabes")
+  loose ("una=un" "las=los" "unas=unos")
+  typos ("anmal=animal" "animl=animal" "aninal=animal" "gaot=gato" "perrro=perro" "raton=ratón" "ratn=ratón" "arbol=árbol" "arboles=árboles" "hija=hoja" "dedso=dedo" "computador=computadora" "computadra=computadora" "ordenador=computadora" "ordenadores=computadoras" "cuneta=cuenta" "contrasena=contraseña" "contrasenas=contraseñas" "contraseña=contraseña" "cuanto=cuánto" "cuantos=cuántos" "cuantas=cuántas" "cual=cuál" "funcion=función" "numero=número" "numeros=números" "maximo=máximo" "mayor=mayor" "xq=porque" "pq=porque" "q=que" "tb=también")
+  prime "I"
+    forms ("yo" "mí" "me")
+  prime "YOU"
+    forms ("tú" "ti" "te")
+  prime "SOMEONE"
+    forms ("alguien" "persona" "personas")
+  prime "SOMETHING"
+    forms ("algo" "cosa" "cosas")
+  prime "PEOPLE"
+    forms ("gente")
+  prime "BODY"
+    forms ("cuerpo")
+  prime "KIND"
+    forms ("tipo" "tipos")
+  prime "PART"
+    forms ("parte" "partes")
+  prime "THIS"
+    forms ("este" "esta" "esto" "estos" "estas")
+  prime "THE SAME"
+    forms ("mismo" "misma" "mismos" "mismas")
+  prime "OTHER"
+    forms ("otro" "otra" "otros" "otras")
+  prime "ONE"
+    forms ("uno")
+  prime "TWO"
+    forms ("dos")
+  prime "SOME"
+    forms ("alguno" "alguna" "algunos" "algunas")
+  prime "ALL"
+    forms ("todo" "toda" "todos" "todas")
+  prime "MUCH"
+    forms ("mucho" "mucha" "muchos" "muchas")
+  prime "LITTLE"
+    forms ("poco" "poca" "pocos" "pocas")
+  prime "GOOD"
+    forms ("bueno" "buena" "bien")
+  prime "BAD"
+    forms ("malo" "mala" "mal")
+  prime "BIG"
+    forms ("grande" "grandes")
+  prime "SMALL"
+    forms ("pequeño" "pequeña" "pequeños" "pequeñas")
+  prime "THINK"
+    forms ("pensar" "pienso" "piensa")
+  prime "KNOW"
+    forms ("saber" "sé" "sabe" "sabes" "saben")
+  prime "WANT"
+    forms ("querer" "quiero" "quieres" "quiere")
+  prime "DON'T WANT"
+    forms ("no querer")
+  prime "FEEL"
+    forms ("sentir" "siento" "siente")
+  prime "SEE"
+    forms ("ver" "veo" "ve")
+  prime "HEAR"
+    forms ("oír" "oigo" "oye")
+  prime "SAY"
+    forms ("decir" "digo" "dice" "digas")
+  prime "WORDS"
+    forms ("palabras" "palabra")
+  prime "TRUE"
+    forms ("verdad" "verdadero")
+  prime "DO"
+    forms ("hacer" "hago" "hace")
+  prime "HAPPEN"
+    forms ("pasar" "pasa" "ocurrir")
+  prime "MOVE"
+    forms ("moverse" "mover" "mueve" "mueven")
+  prime "BE SOMEWHERE"
+    forms ("estar")
+  prime "THERE IS"
+    forms ("hay")
+  prime "BE SOMEONE"
+    forms ("ser" "es" "son")
+  prime "MINE"
+    forms ("mío" "mía" "míos" "mías")
+  prime "LIVE"
+    forms ("vivir" "vive" "viven" "vivo" "viva" "vivos" "vivas")
+  prime "DIE"
+    forms ("morir" "muere")
+  prime "WHEN"
+    forms ("cuando" "tiempo")
+  prime "NOW"
+    forms ("ahora")
+  prime "BEFORE"
+    forms ("antes")
+  prime "AFTER"
+    forms ("después")
+  prime "A LONG TIME"
+    forms ("mucho tiempo")
+  prime "A SHORT TIME"
+    forms ("poco tiempo")
+  prime "FOR SOME TIME"
+    forms ("por un tiempo")
+  prime "MOMENT"
+    forms ("momento")
+  prime "WHERE"
+    forms ("donde" "dónde" "lugar")
+  prime "HERE"
+    forms ("aquí")
+  prime "ABOVE"
+    forms ("arriba" "encima")
+  prime "BELOW"
+    forms ("abajo" "debajo")
+  prime "FAR"
+    forms ("lejos")
+  prime "NEAR"
+    forms ("cerca")
+  prime "SIDE"
+    forms ("lado")
+  prime "INSIDE"
+    forms ("dentro")
+  prime "TOUCH"
+    forms ("tocar" "toca" "tocan")
+  prime "NOT"
+    forms ("no")
+  prime "MAYBE"
+    forms ("quizás" "tal vez")
+  prime "CAN"
+    forms ("poder" "puede" "pueden" "puedo")
+  prime "BECAUSE"
+    forms ("porque")
+  prime "IF"
+    forms ("si")
+  prime "VERY"
+    forms ("muy")
+  prime "MORE"
+    forms ("más")
+  prime "LIKE"
+    forms ("como" "así" "manera")
+  list "ste"
+    forms ("sí" "no" "todo" "toda" "ningún" "ninguna" "cada" "tipo" "parte" "debe" "deba" "tener" "necesita" "necesitan" "cierto" "falso" "verdad" "gato" "gatos" "perro" "perros" "animal" "animales" "planta" "plantas" "árbol" "árboles" "hoja" "hojas" "mano" "manos" "dedo" "dedos" "computadora" "computadoras" "ratón" "ratones" "doméstico" "domésticos" "cuenta" "cuentas" "contraseña" "contraseñas" "pregunta" "tiene" "tienen" "posibles" "significado" "significados" "responde" "número" "quieres" "elige" "por" "clase" "pertenecen" "forman" "requieren" "carecen")
+  list "minimal"
+    forms ("sí" "no" "todo" "toda" "ningún" "ninguna" "cada" "tipo" "parte" "debe" "deba" "tener" "necesita" "necesitan" "cierto" "falso" "verdad" "gato" "gatos" "perro" "perros" "animal" "animales" "planta" "plantas" "árbol" "árboles" "hoja" "hojas" "mano" "manos" "dedo" "dedos" "computadora" "computadoras" "ratón" "ratones" "doméstico" "domésticos" "cuenta" "cuentas" "contraseña" "contraseñas" "yo" "sé" "pregunta" "tiene" "tienen" "posibles" "significado" "significados" "responde" "número" "quieres" "elige" "por" "clase" "pertenecen" "forman" "requieren" "carecen")
+  list "basic"
+    forms ("sí" "no" "todo" "toda" "ningún" "ninguna" "tipo" "parte" "necesita" "tener" "cierto" "falso" "gato" "gatos" "perro" "perros" "animal" "animales" "planta" "plantas" "árbol" "árboles" "hoja" "hojas" "mano" "manos" "dedo" "dedos" "máquina" "máquinas" "número" "números" "puntero" "punteros" "cuenta" "cuentas" "palabra" "palabras" "secreta" "secretas" "pequeño" "pequeños" "familia" "rata" "ratas" "yo" "sé" "pregunta" "tiene" "posibles" "sentido" "sentidos" "da" "tienes" "mente")
+  list "special"
+    forms ("sí" "no" "todo" "toda" "ningún" "ninguna" "tipo" "parte" "debe" "tener" "necesita" "cierto" "falso" "gato" "gatos" "perro" "perros" "animal" "animales" "planta" "plantas" "árbol" "árboles" "hoja" "hojas" "mano" "manos" "dedo" "dedos" "computadora" "computadoras" "cuenta" "cuentas" "contraseña" "contraseñas" "pequeño" "pequeños" "vive" "viven" "casa" "casas" "control" "controles" "mueve" "mueven" "yo" "sé" "pregunta" "tiene" "posibles" "significado" "significados" "responde" "número" "quieres" "elige" "por" "clase")
+  list "globish"
+    forms ("sí" "no" "todo" "toda" "ningún" "ninguna" "tipo" "parte" "debe" "tener" "necesita" "cierto" "falso" "gato" "gatos" "perro" "perros" "animal" "animales" "planta" "plantas" "árbol" "árboles" "hoja" "hojas" "mano" "manos" "dedo" "dedos" "computadora" "computadoras" "ratón" "ratones" "doméstico" "domésticos" "cuenta" "cuentas" "contraseña" "contraseñas" "yo" "sé" "pregunta" "tiene" "posibles" "significado" "significados" "responde" "número" "quieres" "elige" "por" "clase")
+  list "gellish"
+    forms ("especialización" "parte" "deberá" "tener" "requiere" "no" "sí" "gato" "perro" "animal" "planta" "árbol" "hoja" "mano" "dedo" "computadora" "ratón" "doméstico" "cuenta" "contraseña" "pregunta" "tiene" "posibles" "significado" "significados" "responde" "número" "quieres" "elige" "por" "clase")
+  tier "100"
+    forms ("de" "la" "que" "el" "en" "y" "a" "los" "se" "del" "las" "un" "por" "con" "no" "una" "su" "para" "es" "al" "lo" "como" "más" "o" "pero" "sus" "le" "ha" "me" "si" "sin" "sobre" "este" "ya" "entre" "cuando" "todo" "esta" "ser" "son" "dos" "también" "fue" "había" "era" "muy" "hasta" "desde" "está" "mi" "porque" "qué" "solo" "han" "yo" "hay" "vez" "puede" "todos" "así" "nos" "ni" "parte" "tiene" "él" "uno" "donde" "bien" "tiempo" "mismo" "ese" "ahora" "cada" "otro" "después" "te" "otros" "esa" "eso" "hace" "otra" "siempre" "día" "tanto" "ella" "tres" "sí" "esto" "toda" "tienen" "tener" "decir" "hacer" "cosas" "algo" "cosa")
+  tier "200"
+    forms ("año" "antes" "forma" "caso" "nada" "poco" "estos" "mayor" "unos" "hombre" "sea" "mucho" "tipo" "gente" "lugar" "saber" "ver" "querer" "quiero" "quieres" "quiere" "grande" "grandes" "pequeño" "pequeña" "bueno" "malo" "pensar" "sentir" "vivir" "morir" "debe" "número" "palabra" "palabras" "cuerpo" "mano" "manos" "verdad" "aquí" "cerca" "lejos" "lado" "dentro" "alguien" "persona" "personas" "otras" "algunos" "algunas" "mucha" "muchas" "muchos" "casa" "casas" "vida" "sé" "sabe" "saben" "pueden" "vive" "viven" "viva" "vivas" "tú" "momento" "pasar" "pregunta" "clase" "da" "necesita" "cierto")
+  tier "500"
+    forms ("animal" "animales" "perro" "perros" "árbol" "árboles" "planta" "plantas" "hoja" "hojas" "dedo" "dedos" "cuenta" "cuentas" "máquina" "máquinas" "números" "significado" "significados" "sentido" "sentidos" "posibles" "responde" "elige" "mente" "familia" "control" "controles" "mueve" "mueven" "moverse" "tocar" "falso" "secreta" "secretas" "tienes" "debajo" "arriba" "encima" "quizás" "deba" "necesitan" "forman" "pequeños" "pequeñas" "digas" "dice")
+  tier "1000"
+    forms ("gato" "gatos" "ratón" "ratones" "computadora" "computadoras" "contraseña" "contraseñas" "doméstico" "domésticos" "rata" "ratas" "pertenecen" "carecen" "requiere" "requieren" "ningún" "ninguna" "puntero" "punteros")
+  tier "5000"
+    forms ("especialización" "deberá" "omnisciente" "obligatorio" "permitido" "imposible" "necesario" "felino")
   term animal
-    forms "animal|un animal|animales|los animales|todo animal|ningún animal"
-    primes "cosa viva que puede moverse|una cosa viva que puede moverse|cosas vivas que pueden moverse|las cosas vivas que pueden moverse|toda cosa viva que puede moverse|ninguna cosa viva que puede moverse"
+    forms ("animal" "un animal" "animales" "los animales" "todo animal" "ningún animal")
+    primes ("cosa viva que puede moverse" "una cosa viva que puede moverse" "cosas vivas que pueden moverse" "las cosas vivas que pueden moverse" "toda cosa viva que puede moverse" "ninguna cosa viva que puede moverse")
   term plant
-    forms "planta|una planta|plantas|las plantas|toda planta|ninguna planta"
-    primes "cosa viva que no puede moverse|una cosa viva que no puede moverse|cosas vivas que no pueden moverse|las cosas vivas que no pueden moverse|toda cosa viva que no puede moverse|ninguna cosa viva que no puede moverse"
+    forms ("planta" "una planta" "plantas" "las plantas" "toda planta" "ninguna planta")
+    primes ("cosa viva que no puede moverse" "una cosa viva que no puede moverse" "cosas vivas que no pueden moverse" "las cosas vivas que no pueden moverse" "toda cosa viva que no puede moverse" "ninguna cosa viva que no puede moverse")
   term cat
-    forms "gato|un gato|gatos|los gatos|todo gato|ningún gato"
-    primes "cosa viva pequeña que puede moverse y puede vivir donde vive la gente|una cosa viva pequeña que puede moverse y puede vivir donde vive la gente|cosas vivas pequeñas que pueden moverse y pueden vivir donde vive la gente|las cosas vivas pequeñas que pueden moverse y pueden vivir donde vive la gente|toda cosa viva pequeña que puede moverse y puede vivir donde vive la gente|ninguna cosa viva pequeña que puede moverse y puede vivir donde vive la gente"
+    forms ("gato" "un gato" "gatos" "los gatos" "todo gato" "ningún gato")
+    primes ("cosa viva pequeña que puede moverse y puede vivir donde vive la gente" "una cosa viva pequeña que puede moverse y puede vivir donde vive la gente" "cosas vivas pequeñas que pueden moverse y pueden vivir donde vive la gente" "las cosas vivas pequeñas que pueden moverse y pueden vivir donde vive la gente" "toda cosa viva pequeña que puede moverse y puede vivir donde vive la gente" "ninguna cosa viva pequeña que puede moverse y puede vivir donde vive la gente")
   term dog
-    forms "perro|un perro|perros|los perros|todo perro|ningún perro"
-    primes "cosa viva grande que puede moverse y puede vivir donde vive la gente|una cosa viva grande que puede moverse y puede vivir donde vive la gente|cosas vivas grandes que pueden moverse y pueden vivir donde vive la gente|las cosas vivas grandes que pueden moverse y pueden vivir donde vive la gente|toda cosa viva grande que puede moverse y puede vivir donde vive la gente|ninguna cosa viva grande que puede moverse y puede vivir donde vive la gente"
+    forms ("perro" "un perro" "perros" "los perros" "todo perro" "ningún perro")
+    primes ("cosa viva grande que puede moverse y puede vivir donde vive la gente" "una cosa viva grande que puede moverse y puede vivir donde vive la gente" "cosas vivas grandes que pueden moverse y pueden vivir donde vive la gente" "las cosas vivas grandes que pueden moverse y pueden vivir donde vive la gente" "toda cosa viva grande que puede moverse y puede vivir donde vive la gente" "ninguna cosa viva grande que puede moverse y puede vivir donde vive la gente")
   term mouse-animal
-    forms "ratón|un ratón|ratones|los ratones|todo ratón|ningún ratón"
-    precise "ratón doméstico|un ratón doméstico|ratones domésticos|los ratones domésticos|todo ratón doméstico|ningún ratón doméstico"
-    ste "ratón doméstico|un ratón doméstico|ratones domésticos|los ratones domésticos|todo ratón doméstico|ningún ratón doméstico"
-    special "animal pequeño que vive en las casas|un animal pequeño que vive en las casas|animales pequeños que viven en las casas|los animales pequeños que viven en las casas|todo animal pequeño que vive en las casas|ningún animal pequeño que vive en las casas"
-    basic "animal pequeño de la familia de las ratas|un animal pequeño de la familia de las ratas|animales pequeños de la familia de las ratas|los animales pequeños de la familia de las ratas|todo animal pequeño de la familia de las ratas|ningún animal pequeño de la familia de las ratas"
-    primes "cosa viva muy pequeña que puede moverse|una cosa viva muy pequeña que puede moverse|cosas vivas muy pequeñas que pueden moverse|las cosas vivas muy pequeñas que pueden moverse|toda cosa viva muy pequeña que puede moverse|ninguna cosa viva muy pequeña que puede moverse"
+    forms ("ratón" "un ratón" "ratones" "los ratones" "todo ratón" "ningún ratón")
+    precise ("ratón doméstico" "un ratón doméstico" "ratones domésticos" "los ratones domésticos" "todo ratón doméstico" "ningún ratón doméstico")
+    ste ("ratón doméstico" "un ratón doméstico" "ratones domésticos" "los ratones domésticos" "todo ratón doméstico" "ningún ratón doméstico")
+    special ("animal pequeño que vive en las casas" "un animal pequeño que vive en las casas" "animales pequeños que viven en las casas" "los animales pequeños que viven en las casas" "todo animal pequeño que vive en las casas" "ningún animal pequeño que vive en las casas")
+    basic ("animal pequeño de la familia de las ratas" "un animal pequeño de la familia de las ratas" "animales pequeños de la familia de las ratas" "los animales pequeños de la familia de las ratas" "todo animal pequeño de la familia de las ratas" "ningún animal pequeño de la familia de las ratas")
+    primes ("cosa viva muy pequeña que puede moverse" "una cosa viva muy pequeña que puede moverse" "cosas vivas muy pequeñas que pueden moverse" "las cosas vivas muy pequeñas que pueden moverse" "toda cosa viva muy pequeña que puede moverse" "ninguna cosa viva muy pequeña que puede moverse")
   term tree
-    forms "árbol|un árbol|árboles|los árboles|todo árbol|ningún árbol"
-    primes "cosa viva muy grande que no puede moverse|una cosa viva muy grande que no puede moverse|cosas vivas muy grandes que no pueden moverse|las cosas vivas muy grandes que no pueden moverse|toda cosa viva muy grande que no puede moverse|ninguna cosa viva muy grande que no puede moverse"
+    forms ("árbol" "un árbol" "árboles" "los árboles" "todo árbol" "ningún árbol")
+    primes ("cosa viva muy grande que no puede moverse" "una cosa viva muy grande que no puede moverse" "cosas vivas muy grandes que no pueden moverse" "las cosas vivas muy grandes que no pueden moverse" "toda cosa viva muy grande que no puede moverse" "ninguna cosa viva muy grande que no puede moverse")
   term leaf
-    forms "hoja|una hoja|hojas|las hojas|toda hoja|ninguna hoja"
-    primes "parte pequeña de una cosa viva que no puede moverse|una parte pequeña de una cosa viva que no puede moverse|partes pequeñas de cosas vivas que no pueden moverse|las partes pequeñas de cosas vivas que no pueden moverse|toda parte pequeña de una cosa viva que no puede moverse|ninguna parte pequeña de una cosa viva que no puede moverse"
+    forms ("hoja" "una hoja" "hojas" "las hojas" "toda hoja" "ninguna hoja")
+    primes ("parte pequeña de una cosa viva que no puede moverse" "una parte pequeña de una cosa viva que no puede moverse" "partes pequeñas de cosas vivas que no pueden moverse" "las partes pequeñas de cosas vivas que no pueden moverse" "toda parte pequeña de una cosa viva que no puede moverse" "ninguna parte pequeña de una cosa viva que no puede moverse")
   term hand
-    forms "mano|una mano|manos|las manos|toda mano|ninguna mano"
-    primes "parte del cuerpo que puede tocar cosas|una parte del cuerpo que puede tocar cosas|partes del cuerpo que pueden tocar cosas|las partes del cuerpo que pueden tocar cosas|toda parte del cuerpo que puede tocar cosas|ninguna parte del cuerpo que puede tocar cosas"
+    forms ("mano" "una mano" "manos" "las manos" "toda mano" "ninguna mano")
+    primes ("parte del cuerpo que puede tocar cosas" "una parte del cuerpo que puede tocar cosas" "partes del cuerpo que pueden tocar cosas" "las partes del cuerpo que pueden tocar cosas" "toda parte del cuerpo que puede tocar cosas" "ninguna parte del cuerpo que puede tocar cosas")
   term finger
-    forms "dedo|un dedo|dedos|los dedos|todo dedo|ningún dedo"
-    primes "parte pequeña del cuerpo que puede tocar cosas|una parte pequeña del cuerpo que puede tocar cosas|partes pequeñas del cuerpo que pueden tocar cosas|las partes pequeñas del cuerpo que pueden tocar cosas|toda parte pequeña del cuerpo que puede tocar cosas|ninguna parte pequeña del cuerpo que puede tocar cosas"
+    forms ("dedo" "un dedo" "dedos" "los dedos" "todo dedo" "ningún dedo")
+    primes ("parte pequeña del cuerpo que puede tocar cosas" "una parte pequeña del cuerpo que puede tocar cosas" "partes pequeñas del cuerpo que pueden tocar cosas" "las partes pequeñas del cuerpo que pueden tocar cosas" "toda parte pequeña del cuerpo que puede tocar cosas" "ninguna parte pequeña del cuerpo que puede tocar cosas")
   term computer
-    forms "computadora|una computadora|computadoras|las computadoras|toda computadora|ninguna computadora"
-    basic "máquina de números|una máquina de números|máquinas de números|las máquinas de números|toda máquina de números|ninguna máquina de números"
-    primes "cosa que puede hacer muchas cosas con palabras|una cosa que puede hacer muchas cosas con palabras|cosas que pueden hacer muchas cosas con palabras|las cosas que pueden hacer muchas cosas con palabras|toda cosa que puede hacer muchas cosas con palabras|ninguna cosa que puede hacer muchas cosas con palabras"
+    forms ("computadora" "una computadora" "computadoras" "las computadoras" "toda computadora" "ninguna computadora")
+    basic ("máquina de números" "una máquina de números" "máquinas de números" "las máquinas de números" "toda máquina de números" "ninguna máquina de números")
+    primes ("cosa que puede hacer muchas cosas con palabras" "una cosa que puede hacer muchas cosas con palabras" "cosas que pueden hacer muchas cosas con palabras" "las cosas que pueden hacer muchas cosas con palabras" "toda cosa que puede hacer muchas cosas con palabras" "ninguna cosa que puede hacer muchas cosas con palabras")
   term mouse-device
-    forms "ratón|un ratón|ratones|los ratones|todo ratón|ningún ratón"
-    precise "ratón de computadora|un ratón de computadora|ratones de computadora|los ratones de computadora|todo ratón de computadora|ningún ratón de computadora"
-    ste "ratón de computadora|un ratón de computadora|ratones de computadora|los ratones de computadora|todo ratón de computadora|ningún ratón de computadora"
-    special "control de computadora que se mueve con la mano|un control de computadora que se mueve con la mano|controles de computadora que se mueven con la mano|los controles de computadora que se mueven con la mano|todo control de computadora que se mueve con la mano|ningún control de computadora que se mueve con la mano"
-    basic "puntero|un puntero|punteros|los punteros|todo puntero|ningún puntero"
-    primes "cosa pequeña que la gente mueve para hacer algo con palabras|una cosa pequeña que la gente mueve para hacer algo con palabras|cosas pequeñas que la gente mueve para hacer algo con palabras|las cosas pequeñas que la gente mueve para hacer algo con palabras|toda cosa pequeña que la gente mueve para hacer algo con palabras|ninguna cosa pequeña que la gente mueve para hacer algo con palabras"
+    forms ("ratón" "un ratón" "ratones" "los ratones" "todo ratón" "ningún ratón")
+    precise ("ratón de computadora" "un ratón de computadora" "ratones de computadora" "los ratones de computadora" "todo ratón de computadora" "ningún ratón de computadora")
+    ste ("ratón de computadora" "un ratón de computadora" "ratones de computadora" "los ratones de computadora" "todo ratón de computadora" "ningún ratón de computadora")
+    special ("control de computadora que se mueve con la mano" "un control de computadora que se mueve con la mano" "controles de computadora que se mueven con la mano" "los controles de computadora que se mueven con la mano" "todo control de computadora que se mueve con la mano" "ningún control de computadora que se mueve con la mano")
+    basic ("puntero" "un puntero" "punteros" "los punteros" "todo puntero" "ningún puntero")
+    primes ("cosa pequeña que la gente mueve para hacer algo con palabras" "una cosa pequeña que la gente mueve para hacer algo con palabras" "cosas pequeñas que la gente mueve para hacer algo con palabras" "las cosas pequeñas que la gente mueve para hacer algo con palabras" "toda cosa pequeña que la gente mueve para hacer algo con palabras" "ninguna cosa pequeña que la gente mueve para hacer algo con palabras")
   term account
-    forms "cuenta|una cuenta|cuentas|las cuentas|toda cuenta|ninguna cuenta"
-    primes "cosa con palabras que es mía|una cosa con palabras que es mía|cosas con palabras que son mías|las cosas con palabras que son mías|toda cosa con palabras que es mía|ninguna cosa con palabras que es mía"
+    forms ("cuenta" "una cuenta" "cuentas" "las cuentas" "toda cuenta" "ninguna cuenta")
+    primes ("cosa con palabras que es mía" "una cosa con palabras que es mía" "cosas con palabras que son mías" "las cosas con palabras que son mías" "toda cosa con palabras que es mía" "ninguna cosa con palabras que es mía")
   term password
-    forms "contraseña|una contraseña|contraseñas|las contraseñas|toda contraseña|ninguna contraseña"
-    basic "palabra secreta|una palabra secreta|palabras secretas|las palabras secretas|toda palabra secreta|ninguna palabra secreta"
-    primes "palabra que yo sé y otras personas no saben|una palabra que yo sé y otras personas no saben|palabras que yo sé y otras personas no saben|las palabras que yo sé y otras personas no saben|toda palabra que yo sé y otras personas no saben|ninguna palabra que yo sé y otras personas no saben"
-  template "reply plain|ste|ace|gellish|sbvr|eprime|dense|basic statement"
+    forms ("contraseña" "una contraseña" "contraseñas" "las contraseñas" "toda contraseña" "ninguna contraseña")
+    basic ("palabra secreta" "una palabra secreta" "palabras secretas" "las palabras secretas" "toda palabra secreta" "ninguna palabra secreta")
+    primes ("palabra que yo sé y otras personas no saben" "una palabra que yo sé y otras personas no saben" "palabras que yo sé y otras personas no saben" "las palabras que yo sé y otras personas no saben" "toda palabra que yo sé y otras personas no saben" "ninguna palabra que yo sé y otras personas no saben")
+  template "reply statement"
+    styles ("plain" "ste" "ace" "gellish" "sbvr" "eprime" "dense" "basic")
     positive "Sí."
     negative "No."
-  template "reply primes statement"
+  template "reply statement"
+    styles ("primes")
     positive "Esto es verdad."
     negative "Esto no es verdad."
-  template "kind-of plain|basic|ste|primes statement"
+  template "kind-of statement"
+    styles ("plain" "basic" "ste" "primes")
     positive "{subject.indef} es un tipo de {object.bare}."
     negative "{subject.indef} no es un tipo de {object.bare}."
-  template "kind-of plain|basic|ste|primes question"
+  template "kind-of question"
+    styles ("plain" "basic" "ste" "primes")
     positive "¿Es {subject.indef} un tipo de {object.bare}?"
     negative "¿No es {subject.indef} un tipo de {object.bare}?"
-  template "kind-of ace statement"
+  template "kind-of statement"
+    styles ("ace")
     positive "{subject.every} es {object.indef}."
     negative "{subject.none} es {object.indef}."
-  template "kind-of ace question"
+  template "kind-of question"
+    styles ("ace")
     positive "¿Es {subject.every} {object.indef}?"
     negative "¿Es cierto que {subject.none} es {object.indef}?"
-  template "kind-of gellish statement"
+  template "kind-of statement"
+    styles ("gellish")
     positive "{subject.bare} es una especialización de {object.bare}."
     negative "{subject.bare} no es una especialización de {object.bare}."
-  template "kind-of gellish question"
+  template "kind-of question"
+    styles ("gellish")
     positive "¿Es {subject.bare} una especialización de {object.bare}?"
     negative "¿No es {subject.bare} una especialización de {object.bare}?"
-  template "kind-of sbvr statement"
+  template "kind-of statement"
+    styles ("sbvr")
     positive "Es necesario que cada {subject.bare} sea {object.indef}."
     negative "Es imposible que {subject.indef} sea {object.indef}."
-  template "kind-of sbvr question"
+  template "kind-of question"
+    styles ("sbvr")
     positive "¿Es cierto que es necesario que cada {subject.bare} sea {object.indef}?"
     negative "¿Es cierto que es imposible que {subject.indef} sea {object.indef}?"
-  template "kind-of eprime statement"
+  template "kind-of statement"
+    styles ("eprime")
     positive "{subject.def-plural} pertenecen a la clase de {object.def-plural}."
     negative "{subject.def-plural} no pertenecen a la clase de {object.def-plural}."
-  template "kind-of eprime question"
+  template "kind-of question"
+    styles ("eprime")
     positive "¿Pertenecen {subject.def-plural} a la clase de {object.def-plural}?"
     negative "¿No pertenecen {subject.def-plural} a la clase de {object.def-plural}?"
-  template "kind-of dense statement"
+  template "kind-of statement"
+    styles ("dense")
     positive "{subject.def-plural} son {object.plural}."
     negative "{subject.def-plural} no son {object.plural}."
-  template "kind-of dense question"
+  template "kind-of question"
+    styles ("dense")
     positive "¿Son {subject.def-plural} {object.plural}?"
     negative "¿No son {subject.def-plural} {object.plural}?"
-  template "kind-of colloquial question"
+  template "kind-of question"
+    styles ("colloquial")
     positive "es {subject.indef} {object.indef}"
     positive "es {subject.bare} {object.indef}"
     positive "son {subject.plural} {object.plural}"
     positive "un {subject.bare} es {object.indef} o no"
     positive "dirías que un {subject.bare} es {object.indef}"
     negative "no es {subject.indef} {object.indef}"
-  template "kind-of colloquial statement"
+  template "kind-of statement"
+    styles ("colloquial")
     positive "un {subject.bare} es {object.indef}"
     positive "el {subject.bare} es {object.indef}"
     positive "{subject.plural} son {object.plural}"
     positive "un {subject.bare} cuenta como {object.indef}"
     negative "un {subject.bare} no es {object.indef}"
     negative "{subject.plural} no son {object.plural}"
-  template "part-of plain|basic|ste|primes statement"
+  template "part-of statement"
+    styles ("plain" "basic" "ste" "primes")
     positive "{subject.indef} es una parte de {object.indef}."
     negative "{subject.indef} no es una parte de {object.indef}."
-  template "part-of plain|basic|ste|primes question"
+  template "part-of question"
+    styles ("plain" "basic" "ste" "primes")
     positive "¿Es {subject.indef} una parte de {object.indef}?"
     negative "¿No es {subject.indef} una parte de {object.indef}?"
-  template "part-of ace statement"
+  template "part-of statement"
+    styles ("ace")
     positive "{subject.every} es una parte de {object.indef}."
     negative "{subject.none} es una parte de {object.indef}."
-  template "part-of ace question"
+  template "part-of question"
+    styles ("ace")
     positive "¿Es {subject.every} una parte de {object.indef}?"
     negative "¿Es cierto que {subject.none} es una parte de {object.indef}?"
-  template "part-of gellish statement"
+  template "part-of statement"
+    styles ("gellish")
     positive "{subject.bare} es parte de {object.bare}."
     negative "{subject.bare} no es parte de {object.bare}."
-  template "part-of gellish question"
+  template "part-of question"
+    styles ("gellish")
     positive "¿Es {subject.bare} parte de {object.bare}?"
     negative "¿No es {subject.bare} parte de {object.bare}?"
-  template "part-of sbvr statement"
+  template "part-of statement"
+    styles ("sbvr")
     positive "Es necesario que cada {subject.bare} sea una parte de {object.indef}."
     negative "Es imposible que {subject.indef} sea una parte de {object.indef}."
-  template "part-of sbvr question"
+  template "part-of question"
+    styles ("sbvr")
     positive "¿Es cierto que es necesario que cada {subject.bare} sea una parte de {object.indef}?"
     negative "¿Es cierto que es imposible que {subject.indef} sea una parte de {object.indef}?"
-  template "part-of eprime statement"
+  template "part-of statement"
+    styles ("eprime")
     positive "{subject.def-plural} forman parte de {object.def-plural}."
     negative "{subject.def-plural} no forman parte de {object.def-plural}."
-  template "part-of eprime question"
+  template "part-of question"
+    styles ("eprime")
     positive "¿Forman {subject.def-plural} parte de {object.def-plural}?"
     negative "¿No forman {subject.def-plural} parte de {object.def-plural}?"
-  template "part-of dense statement"
+  template "part-of statement"
+    styles ("dense")
     positive "{object.def-plural} tienen {subject.plural}."
     negative "{object.def-plural} carecen de {subject.plural}."
-  template "part-of dense question"
+  template "part-of question"
+    styles ("dense")
     positive "¿Tienen {object.def-plural} {subject.plural}?"
     negative "¿Carecen {object.def-plural} de {subject.plural}?"
-  template "part-of colloquial question"
+  template "part-of question"
+    styles ("colloquial")
     positive "es {subject.indef} parte de {object.indef}"
     positive "es {subject.bare} parte de {object.bare}"
     positive "tiene {object.indef} {subject.indef}"
     positive "tiene {object.indef} {subject.plural}"
     positive "tienen {object.plural} {subject.plural}"
-  template "part-of colloquial statement"
+  template "part-of statement"
+    styles ("colloquial")
     positive "{subject.indef} es parte de {object.indef}"
     positive "{subject.plural} son parte de {object.plural}"
     positive "{object.indef} tiene {subject.plural}"
     positive "{object.plural} tienen {subject.plural}"
     negative "{subject.indef} no es parte de {object.indef}"
-  template "must-have plain|ste|eprime statement"
+  template "must-have statement"
+    styles ("plain" "ste" "eprime")
     positive "{subject.indef} debe tener {object.indef}."
     negative "{subject.indef} no necesita {object.indef}."
-  template "must-have plain|ste|eprime question"
+  template "must-have question"
+    styles ("plain" "ste" "eprime")
     positive "¿Debe {subject.indef} tener {object.indef}?"
     negative "¿No necesita {subject.indef} {object.indef}?"
-  template "must-have basic statement"
+  template "must-have statement"
+    styles ("basic")
     positive "{subject.indef} necesita tener {object.indef}."
     negative "{subject.indef} no necesita tener {object.indef}."
-  template "must-have basic question"
+  template "must-have question"
+    styles ("basic")
     positive "¿Necesita {subject.indef} tener {object.indef}?"
     negative "¿No necesita {subject.indef} tener {object.indef}?"
-  template "must-have ace statement"
+  template "must-have statement"
+    styles ("ace")
     positive "{subject.every} debe tener {object.indef}."
     negative "No {subject.every} debe tener {object.indef}."
-  template "must-have ace question"
+  template "must-have question"
+    styles ("ace")
     positive "¿Debe {subject.every} tener {object.indef}?"
     negative "¿Es falso que {subject.every} deba tener {object.indef}?"
-  template "must-have gellish statement"
+  template "must-have statement"
+    styles ("gellish")
     positive "{subject.bare} deberá tener {object.bare}."
     negative "{subject.bare} no requiere {object.bare}."
-  template "must-have gellish question"
+  template "must-have question"
+    styles ("gellish")
     positive "¿Deberá {subject.bare} tener {object.bare}?"
     negative "¿No requiere {subject.bare} {object.bare}?"
-  template "must-have sbvr statement"
+  template "must-have statement"
+    styles ("sbvr")
     positive "Es obligatorio que cada {subject.bare} tenga {object.indef}."
     negative "Está permitido que {subject.indef} no tenga {object.bare}."
-  template "must-have sbvr question"
+  template "must-have question"
+    styles ("sbvr")
     positive "¿Es cierto que es obligatorio que cada {subject.bare} tenga {object.indef}?"
     negative "¿Es cierto que está permitido que {subject.indef} no tenga {object.bare}?"
-  template "must-have primes statement"
+  template "must-have statement"
+    styles ("primes")
     positive "Si algo es {subject.indef}, {object.indef} es una parte de esto."
     negative "Algo puede ser {subject.indef} si {object.indef} no es una parte de esto."
-  template "must-have primes question"
+  template "must-have question"
+    styles ("primes")
     positive "Si algo es {subject.indef}, ¿es {object.indef} una parte de esto?"
     negative "¿Puede algo ser {subject.indef} si {object.indef} no es una parte de esto?"
-  template "must-have dense statement"
+  template "must-have statement"
+    styles ("dense")
     positive "{subject.def-plural} requieren {object.plural}."
     negative "{subject.def-plural} no requieren {object.plural}."
-  template "must-have dense question"
+  template "must-have question"
+    styles ("dense")
     positive "¿Requieren {subject.def-plural} {object.plural}?"
     negative "¿No requieren {subject.def-plural} {object.plural}?"
-  template "must-have colloquial question"
+  template "must-have question"
+    styles ("colloquial")
     positive "necesita {subject.indef} {object.indef}"
     positive "necesitan {subject.plural} {object.plural}"
     positive "hace falta {object.indef} para {subject.indef}"
     positive "se necesita {object.indef} para {subject.indef}"
-  template "must-have colloquial statement"
+  template "must-have statement"
+    styles ("colloquial")
     positive "{subject.indef} necesita {object.indef}"
     positive "{subject.plural} necesitan {object.plural}"
     positive "{subject.indef} tiene que tener {object.indef}"
-  template "relation stream question"
+  template "relation question"
+    styles ("stream")
     positive "{subject.bare} ... {object.bare}"
     positive "{subject.plural} ... {object.plural}"
     positive "{subject.bare} y {object.bare} ... cómo"
-  template "clarify plain|ste|ace|gellish|sbvr|eprime statement"
+  template "clarify statement"
+    styles ("plain" "ste" "ace" "gellish" "sbvr" "eprime")
     positive "La pregunta tiene {count.number} significados posibles."
-  template "clarify basic statement"
+  template "clarify statement"
+    styles ("basic")
     positive "La pregunta tiene {count.number} sentidos posibles."
-  template "clarify primes statement"
+  template "clarify statement"
+    styles ("primes")
     positive "Las palabras pueden decir {count.number} cosas."
-  template "clarify dense statement"
+  template "clarify statement"
+    styles ("dense")
     positive "La pregunta tiene {count.number} significados."
-  template "choose plain|ste|ace|gellish|sbvr|eprime request"
+  template "choose request"
+    styles ("plain" "ste" "ace" "gellish" "sbvr" "eprime")
     positive "Responde con el número del significado que quieres."
-  template "choose basic request"
+  template "choose request"
+    styles ("basic")
     positive "Da el número del sentido que tienes en mente."
-  template "choose primes request"
+  template "choose request"
+    styles ("primes")
     positive "Quiero que tú digas una de estas cosas."
-  template "choose dense request"
+  template "choose request"
+    styles ("dense")
     positive "Elige un significado por número."
-  template "sum task request"
+  template "sum request"
+    styles ("task")
     positive "calcula la suma de {left.number} y {right.number}"
     positive "cuál es la suma de {left.number} y {right.number}"
     positive "halla la suma de {left.number} y {right.number}"
@@ -335,7 +467,8 @@ cnl-language es
     positive "qué obtienes si sumas {left.number} y {right.number}"
     positive "si tengo {left.number} manzanas y me dan {right.number} más cuántas manzanas tengo"
     positive "tomás tiene {left.number} libros y compra {right.number} libros más cuántos libros tiene ahora"
-  template "difference task request"
+  template "difference request"
+    styles ("task")
     positive "resta {right.number} de {left.number}"
     positive "resta {right.number} a {left.number}"
     positive "cuánto es {left.number} menos {right.number}"
@@ -343,7 +476,8 @@ cnl-language es
     positive "cuál es la diferencia entre {left.number} y {right.number}"
     positive "quita {right.number} de {left.number}"
     positive "si tengo {left.number} manzanas y me como {right.number} cuántas manzanas quedan"
-  template "product task request"
+  template "product request"
+    styles ("task")
     positive "multiplica {left.number} por {right.number}"
     positive "cuánto es {left.number} por {right.number}"
     positive "{left.number} por {right.number}"
@@ -351,22 +485,26 @@ cnl-language es
     positive "multiplica {left.number} y {right.number}"
     positive "cuál es el producto de {left.number} y {right.number}"
     positive "hay {left.number} cajas con {right.number} lápices en cada caja cuántos lápices hay"
-  template "reverse-text task request"
+  template "reverse-text request"
+    styles ("task")
     positive "escribe una función para invertir una cadena"
     positive "escribe una función que invierta una cadena"
     positive "haz una función que invierta una cadena"
     positive "escribe código que invierta una cadena"
     positive "necesito una función que invierta un texto"
     positive "función para invertir una cadena"
-  template "list-maximum task request"
+  template "list-maximum request"
+    styles ("task")
     positive "escribe una función para encontrar el número más grande de una lista"
     positive "escribe una función que encuentre el máximo de una lista"
     positive "haz una función que devuelva el número más grande de una lista"
-  template "list-sum task request"
+  template "list-sum request"
+    styles ("task")
     positive "escribe una función para sumar una lista de números"
     positive "escribe una función que devuelva la suma de una lista de números"
     positive "haz una función que sume todos los números de una lista"
-  template "factorial task request"
+  template "factorial request"
+    styles ("task")
     positive "escribe una función para calcular el factorial de un número"
     positive "escribe una función para el factorial"
     positive "haz una función que devuelva el factorial de n"

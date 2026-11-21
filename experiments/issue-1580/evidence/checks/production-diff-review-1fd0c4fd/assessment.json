@@ -1,0 +1,17 @@
+{
+  "head": "1fd0c4fd131e318593299cfe05d0167f6efd35fc",
+  "baseMain": "53cbe4430f8b65330f47728401fc83b09977129f",
+  "observedAt": "2026-11-20T10:40:35.560496+00:00",
+  "reviewedCurrentProductionDiffs": 154,
+  "previousMatchingReviews": 79,
+  "newCompleteDiffReads": 75,
+  "newDiffLines": 6267,
+  "archiveSha256": "ae01ae3fbc498017f48e3577fb3d0f287d5919df43574e1fb21d0389b3ce6002",
+  "archiveBytes": 76986,
+  "completeCurrentProductionDiffRead": true,
+  "completeCurrentSourceRead": false,
+  "wholePrReviewed": false,
+  "allExistingFeaturesPreservedVerified": false,
+  "fullIssueComplete": false,
+  "independentFormalAiReasoningCredit": 0
+}

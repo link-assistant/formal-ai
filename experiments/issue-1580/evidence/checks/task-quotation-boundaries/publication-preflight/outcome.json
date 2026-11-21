@@ -1,0 +1,459 @@
+{
+  "complete": true,
+  "observedAt": "2026-11-18T05:02:26.311685+00:00",
+  "inputHead": "a97832237cbb365000dd7296050984e4bdd59ebb",
+  "feedbackUnchanged": true,
+  "requiredSubIssues": 0,
+  "noActiveRuns": true,
+  "mainMerged": true,
+  "currentHeadRuns": [
+    {
+      "id": 44233931246,
+      "name": "Proactive failure report Agent CLI E2E",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:12Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931112,
+      "name": "container-images",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:12Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233930980,
+      "name": "Benchmark Corpus Gate",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:12Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931143,
+      "name": "External Benchmarks",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:13Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931149,
+      "name": "Broken Link Checker",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:14Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931277,
+      "name": "CI/CD Pipeline",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T04:02:05Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931314,
+      "name": "Stock Rust Install",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:14Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233930877,
+      "name": "Verify full readable source content",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:15Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931082,
+      "name": "Desktop Release",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:25Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931073,
+      "name": "Publish VS Code extension",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:26Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931043,
+      "name": "Publish browser engine",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:26Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931212,
+      "name": "Workflows",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:27Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233932007,
+      "name": "Self-hosting evidence",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:21Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931088,
+      "name": "Self-development status",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:21Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931048,
+      "name": "Agentic CLI Matrix",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:12Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931128,
+      "name": "Coverage",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:31Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233930901,
+      "name": "Documentation policy",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:29Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233932016,
+      "name": "Regenerate native session projections",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:23Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233932010,
+      "name": "Publish source networks",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:23Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931029,
+      "name": "Guarded staged release authority refusal",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:24Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233930928,
+      "name": "Security",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:57:39Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233931186,
+      "name": "Source scanner qualification and debt inventory",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T03:58:16Z",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 44233930887,
+      "name": "Layered CI",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "updatedAt": "2026-11-18T04:06:29Z",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "recentRuns": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "databaseId": 44233931246,
+      "headSha": "a97832237cbb365000dd7296050984e4bdd59ebb"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "databaseId": 44233931112,
+      "headSha": "a97832237cbb365000dd7296050984e4bdd59ebb"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "databaseId": 44233930980,
+      "headSha": "a97832237cbb365000dd7296050984e4bdd59ebb"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "databaseId": 44233931143,
+      "headSha": "a97832237cbb365000dd7296050984e4bdd59ebb"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-11-18T03:57:06Z",
+      "databaseId": 44233931149,
+      "headSha": "a97832237cbb365000dd7296050984e4bdd59ebb"
+    }
+  ],
+  "records": [
+    {
+      "name": "branch",
+      "command": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "rawBytes": 24,
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "stderrBytes": 0
+    },
+    {
+      "name": "head",
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "rawBytes": 41,
+      "rawSha256": "539e626d834bffb3bab574ef9ccc49bbd9b9c1da61aec23100a589938121a2e7",
+      "stderrBytes": 0
+    },
+    {
+      "name": "issue",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580"
+      ],
+      "exitCode": 0,
+      "rawBytes": 13290,
+      "rawSha256": "65e68241dbd56474d58a6033d4aba87fd9490b96ab9c6e5e81fa689a917b2cab",
+      "stderrBytes": 0
+    },
+    {
+      "name": "pull-request",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581"
+      ],
+      "exitCode": 0,
+      "rawBytes": 26455,
+      "rawSha256": "ae3d58e2b571c90074a67135bb1c7713298cee8bfcfd7ce7ebce615a2e5f15a8",
+      "stderrBytes": 0
+    },
+    {
+      "name": "issue-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "rawBytes": 4477,
+      "rawSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2",
+      "stderrBytes": 0
+    },
+    {
+      "name": "pull-request-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "rawBytes": 31786,
+      "rawSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb",
+      "stderrBytes": 0
+    },
+    {
+      "name": "inline-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "rawBytes": 4,
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "stderrBytes": 0
+    },
+    {
+      "name": "reviews",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "rawBytes": 4,
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "stderrBytes": 0
+    },
+    {
+      "name": "main",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/commits/main"
+      ],
+      "exitCode": 0,
+      "rawBytes": 381214,
+      "rawSha256": "c120e2026a4796c271fa525d5f7081f53672f3a96592573b05161adc3092f8a5",
+      "stderrBytes": 0
+    },
+    {
+      "name": "fetch-main",
+      "command": [
+        "git",
+        "fetch",
+        "origin",
+        "main"
+      ],
+      "exitCode": 0,
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 99
+    },
+    {
+      "name": "main-ancestor",
+      "command": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "origin/main",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 0
+    },
+    {
+      "name": "main-sha",
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main"
+      ],
+      "exitCode": 0,
+      "rawBytes": 41,
+      "rawSha256": "738f2ab5cc36a13f21eb8b93c566bb1b0f65302304f5b662e56093ab94dc9d2b",
+      "stderrBytes": 0
+    },
+    {
+      "name": "recent-runs",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--limit",
+        "5",
+        "--json",
+        "databaseId,conclusion,createdAt,headSha"
+      ],
+      "exitCode": 0,
+      "rawBytes": 692,
+      "rawSha256": "a5bc9995fa30b81958ceed8da5fee9842f8a32c23306bf4104b0f008bb94e498",
+      "stderrBytes": 0
+    },
+    {
+      "name": "runs-in_progress",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "in_progress",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "exitCode": 0,
+      "rawBytes": 3,
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "stderrBytes": 0
+    },
+    {
+      "name": "runs-queued",
+      "command": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "queued",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "exitCode": 0,
+      "rawBytes": 3,
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "stderrBytes": 0
+    },
+    {
+      "name": "all-runs",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/actions/runs?branch=issue-1580-8d61a32a61e1&per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "rawBytes": 7576412,
+      "rawSha256": "f6e8942d6e13daec39ca5344aaf1287bc60cde3d356b0b54393524f3877e35a1",
+      "stderrBytes": 0
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

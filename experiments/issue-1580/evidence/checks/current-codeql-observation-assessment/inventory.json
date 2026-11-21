@@ -1,0 +1,10 @@
+{
+  "records": 16,
+  "parts": [
+    {
+      "file": "inventory-01.json",
+      "records": 16,
+      "sha256": "a38290cf003521266c19c7f5e2a15500061d146e76595afc8768ff67f7d3c0c3"
+    }
+  ]
+}

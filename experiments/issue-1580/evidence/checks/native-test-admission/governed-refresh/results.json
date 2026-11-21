@@ -1,0 +1,67 @@
+{
+  "complete": true,
+  "checks": [
+    {
+      "name": "before-fixture-integrity",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 1,
+      "bytes": 1451,
+      "lines": 33,
+      "sha256": "ff1d7e7919d355ea45ecd5d23ae0a88dd6d032de938cb7d7c61dcfea95e2c1dc"
+    },
+    {
+      "name": "reviewed-refresh",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "/tmp/issue-1580-research/refresh-synthesis-cargo-witness.mjs"
+      ],
+      "exitCode": 0,
+      "bytes": 478,
+      "lines": 1,
+      "sha256": "997905cdbf3eebafdc2539ea09fd8ffffe78890be863d6820dd02b3493c0aa0c"
+    },
+    {
+      "name": "after-fixture-integrity",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "bytes": 309,
+      "lines": 10,
+      "sha256": "8f4af041e85426cf7ffec5625371fdbd36d75e660d20fb9522bbeaa102716e14"
+    },
+    {
+      "name": "after-specification-identifiers",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "exitCode": 0,
+      "bytes": 2953,
+      "lines": 42,
+      "sha256": "929ed4a78cf656a8a5bc4a78e30da36af256208c58e2af49ad79cd3d90f5b685"
+    }
+  ],
+  "nativeExecution": false,
+  "independentAuthorshipCredit": 0
+}

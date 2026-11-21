@@ -1,0 +1,34 @@
+[
+  {
+    "file": ".github/workflows/security.yml",
+    "sha256": "ffb2c188b19009bf48ca684eafd18b5f49f27d807a90dd5b2647a3295d4e1786"
+  },
+  {
+    "file": "changelog.d/1580-codeql-result-gate.md",
+    "sha256": "510b2c7e556cde8f1f8b6285a5f2d67660b1a570bdd15362cd4f0c89f7e31af2"
+  },
+  {
+    "file": "data/benchmarks/fast-pull-request-javascript-tests.json",
+    "sha256": "095c06f075fa3b4a8560d7cfde6c97df0d447778357a523ca521352e043bdb03"
+  },
+  {
+    "file": "data/benchmarks/fast-pull-request-retained-jobs.json",
+    "sha256": "810def1da5f7958a5a671bf18b1fd4c3a5599bdd127455345250e44ad8b30e9c"
+  },
+  {
+    "file": "rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs",
+    "sha256": "ad27f62ee0c38b86341f8f7b172bd12e480df19943e48230d699379c4ecbd037"
+  },
+  {
+    "file": "rust/tests/unit/ci-cd/step_budgets_within_job_clocks/codeql.rs",
+    "sha256": "5a61e59d7ed8668f69c8170c5086004146c5e07903164c5c67f3925bef57bc9a"
+  },
+  {
+    "file": "rust/tests/web/security-codeql-results.test.mjs",
+    "sha256": "68dffa6ca19b3aacf52c37de0c853b58407fd31516431a3bb742d31e8c67d25b"
+  },
+  {
+    "file": "scripts/check-codeql-results.mjs",
+    "sha256": "a81157c87d5cf7fa9e0db8af4bf17cd7ffc0d02c0cdead5240ca3ae1ffc55c6d"
+  }
+]

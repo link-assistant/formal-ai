@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--max-old-space-size=256",
+    "scripts/lib/generate-native-specification-programs.mjs"
+  ],
+  "exitCode": 0,
+  "beforeSha256": "ce3df225f8efe82f1485fee331b82ebb65f6625e1eeea7fb509e8e66090331d8",
+  "afterSha256": "ddd45a6b27c92548813d5f1482ccfbc98a3c4622c4a1420df2287aa2e2449d3f",
+  "beforeBytes": 121087,
+  "afterBytes": 121087,
+  "beforeLines": 1175,
+  "afterLines": 1175
+}

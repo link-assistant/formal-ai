@@ -1,0 +1,99 @@
+{
+  "complete": true,
+  "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+  "receipts": [
+    {
+      "run": 44245878901,
+      "workflow": "Layered CI",
+      "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+      "createdAt": "2026-11-18T05:40:30Z",
+      "completedAt": "2026-11-18T05:47:31Z",
+      "conclusion": "failure",
+      "selectedJobs": [
+        {
+          "id": 134604653318,
+          "name": "js tier (node --check over js, suite group 2)",
+          "conclusion": "failure",
+          "failedSteps": [
+            {
+              "name": "Run actions/checkout@v7",
+              "status": "completed",
+              "conclusion": "failure",
+              "number": 2,
+              "started_at": "2026-11-18T05:40:45Z",
+              "completed_at": "2026-11-18T05:41:10Z"
+            }
+          ]
+        }
+      ],
+      "downloads": [
+        {
+          "file": "44245878901-workflow.log.gz",
+          "exitCode": 0,
+          "bytes": 1134767,
+          "lines": 6597,
+          "sha256": "8f9dd4badc8db0686a36876b530595b19f6a1befa5302b7b4795f349a33b4dc3"
+        },
+        {
+          "file": "44245878901-job-134604653318.log.gz",
+          "exitCode": 0,
+          "bytes": 26985,
+          "lines": 171,
+          "sha256": "2bacb1e23f6556cbc60fdc22ed9da9689f9e081c855c524217226f24f0583756"
+        }
+      ]
+    },
+    {
+      "run": 44245879421,
+      "workflow": "CI/CD Pipeline",
+      "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+      "createdAt": "2026-11-18T05:40:30Z",
+      "completedAt": "2026-11-18T05:46:41Z",
+      "conclusion": "success",
+      "selectedJobs": [
+        {
+          "id": 134604725409,
+          "name": "Native type and lint check / Rust compile inputs changed",
+          "conclusion": "success",
+          "failedSteps": []
+        },
+        {
+          "id": 134604727339,
+          "name": "native-response-observations",
+          "conclusion": "skipped",
+          "failedSteps": []
+        },
+        {
+          "id": 134605201778,
+          "name": "Native full and slim container publication",
+          "conclusion": "skipped",
+          "failedSteps": []
+        }
+      ],
+      "downloads": [
+        {
+          "file": "44245879421-job-134604725409.log.gz",
+          "exitCode": 0,
+          "bytes": 257677,
+          "lines": 1751,
+          "sha256": "ba94bdae350fcd560379d1f55d2a47e76b79ca23152e1908afaf446a8af52675"
+        },
+        {
+          "file": "44245879421-job-134604727339.log.gz",
+          "exitCode": 0,
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "44245879421-job-134605201778.log.gz",
+          "exitCode": 0,
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "allLogsLiterallyRead": false
+}

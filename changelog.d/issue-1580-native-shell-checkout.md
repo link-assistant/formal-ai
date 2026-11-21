@@ -1,0 +1,1 @@
+Retain nested experiment shell scripts in the focused native sparse checkout so the unchanged network-download contracts can read and sweep their inputs. Keep experiment payloads excluded and exercise the actual checkout patterns in a finite Git fixture.

@@ -1,0 +1,20 @@
+[
+  {
+    "file": "native-registry-complete-delta.json",
+    "beforeLines": 1949,
+    "afterLines": 4,
+    "originalSha256": "86fcc62f959e87726984d757236bbeb1932b038fcf0c769273b28c4d2bb6d05f",
+    "compactSha256": "f963ac6fc53d07f96e516c8b237ff839a69471014ef182645ac42cfd646a522b",
+    "originalArchiveSha256": "ca590854c4f7641bb4ded8ff0245fab8b015f299944de44c13b45fdee1d3aa6b",
+    "completeStructuredEquality": true
+  },
+  {
+    "file": "native-registry-merged-review.json",
+    "beforeLines": 1399,
+    "afterLines": 1,
+    "originalSha256": "af8c59c48f63fa772ad2d5694a78f82c43e454e0aab4818cb4e1ae05c23f311a",
+    "compactSha256": "e1ee2bb19ea16aeafd9f3f0af37bffcfd04f597ce61bb7d502af8d70892da30b",
+    "originalArchiveSha256": "c7e9264a6109dabd4fad6fc48a81cf35e145c3ceef74578f5740e234623ebd96",
+    "completeStructuredEquality": true
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "state": "complete",
+  "rows": [
+    {
+      "file": "rust/tests/web/issue-1587-request-context.test.mjs",
+      "exitCode": 0,
+      "seconds": 11.165,
+      "bytes": 452,
+      "sha256": "933450743d80bbce190dffd215b8a63bd2442939d7c3dc36c7a0024561aa4abd"
+    },
+    {
+      "file": "rust/tests/web/source-read-provenance.test.mjs",
+      "exitCode": 0,
+      "seconds": 8.042,
+      "bytes": 4635,
+      "sha256": "c80da07cce3d369523e521ce220a8d791fe238ff9bf4633d75faecd20883442e"
+    },
+    {
+      "file": "rust/tests/web/source-read-owned-provider.test.mjs",
+      "exitCode": 0,
+      "seconds": 7.651,
+      "bytes": 4906,
+      "sha256": "5069181011322ed6f0dcc15b5295c81fb099355008b5e55358a86df8517f8d58"
+    },
+    {
+      "file": "rust/tests/web/source-read-consumers.test.mjs",
+      "exitCode": 0,
+      "seconds": 45.463,
+      "bytes": 2961,
+      "sha256": "a2441c6c26c8b53cc51365cbedbc795710666950b842958415c6c8ac755de239"
+    },
+    {
+      "file": "rust/tests/web/line-slice-read-ownership.test.mjs",
+      "exitCode": 0,
+      "seconds": 19.949,
+      "bytes": 218,
+      "sha256": "4b5c0e891c3b06bf0a1d5494db2a2b0c59973ec30c6a23627d4fda2ca22f65ed"
+    },
+    {
+      "file": "rust/tests/web/main-only-regressions.test.mjs",
+      "exitCode": 1,
+      "seconds": 0.099,
+      "bytes": 63,
+      "sha256": "501ada41f2ef77cb941dee907c750d85d7434b808978f27bab1b6ac9596b15a0"
+    },
+    {
+      "file": "rust/tests/web/fast-pull-request-javascript-profile.test.mjs",
+      "exitCode": 1,
+      "seconds": 0.108,
+      "bytes": 78,
+      "sha256": "ea78e45772b080871d066effe07d7dd82a993bf9aaedf3654546063fcd64cdca"
+    }
+  ]
+}

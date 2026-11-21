@@ -1,0 +1,1025 @@
+{
+  "entries": [
+    {
+      "file": "record-0000.gz",
+      "source": "unexpanded-macro-ownership/unexpanded-files.json",
+      "rawSha256": "e3b412476632120a3fc6b46fd37d3c6cd729de0d4570ecc0ad3a75efbaa35114",
+      "archiveSha256": "49be8832daecc91148279f370875bc4e42f36b47dd55aeccce7c31ef613b7154",
+      "bytes": 7737,
+      "lines": 206
+    },
+    {
+      "file": "record-0001.gz",
+      "source": "unexpanded-macro-ownership/unexpanded-labels.json",
+      "rawSha256": "c87f8ba0760b79bcb9261e0c553fd401d456e6b7657340b4ab8989f950a841e1",
+      "archiveSha256": "07e822de62fe5ef8b1af479a4f0ea651d33346f0d0016aaabfa5c3ddc7c31a94",
+      "bytes": 215,
+      "lines": 12
+    },
+    {
+      "file": "record-0002.gz",
+      "source": "unexpanded-macro-ownership/upstream-directory.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0003.gz",
+      "source": "unexpanded-macro-ownership/upstream-directory.stdout.json",
+      "rawSha256": "d113b7a8e916b420eea278ca27e6723feca380d3a1f601b1acec9a453993e43f",
+      "archiveSha256": "d34baa973ca14d0d77640644c491b560c1c1a69a58218fc921818480cc49dda9",
+      "bytes": 9459,
+      "lines": 1
+    },
+    {
+      "file": "record-0004.gz",
+      "source": "pinned-macro-library/MacroCall.qll",
+      "rawSha256": "4ebd0e15a79a4917bf7b5b9551dd0c7a026e0a84a4873d33895869d3b4fd1317",
+      "archiveSha256": "a6f3d58773264ae58d16df95d3fd34ce518f165ae2a1bcaef77ec231bf3c32ea",
+      "bytes": 498,
+      "lines": 22
+    },
+    {
+      "file": "record-0005.gz",
+      "source": "pinned-macro-library/MacroCall.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0006.gz",
+      "source": "pinned-macro-library/MacroCall.qll.stdout.json",
+      "rawSha256": "ef65d4645e532df2fe15c1b59d780ac426e3e6185989f598898633e7502f8245",
+      "archiveSha256": "d863533d397fb0464d3ac8a96a7f0ebfc26e0a241ae411f1e8b3a07ff9fc9a5e",
+      "bytes": 1716,
+      "lines": 1
+    },
+    {
+      "file": "record-0007.gz",
+      "source": "pinned-macro-library/MacroDef.qll",
+      "rawSha256": "0ee343f5cdaf94b355b4061c6e56ede21e131aa6c647338c1102fe4e6e70d63c",
+      "archiveSha256": "7ed279cdfbfc6c4929761ba38a23a7cc1b665bb400fb689ed2e8ecf353a29da3",
+      "bytes": 528,
+      "lines": 23
+    },
+    {
+      "file": "record-0008.gz",
+      "source": "pinned-macro-library/MacroDef.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0009.gz",
+      "source": "pinned-macro-library/MacroDef.qll.stdout.json",
+      "rawSha256": "0804417ffa2cfe3cdef5e6e4791840e8ee93eaf6c40bc899d02ce40ef355f0a2",
+      "archiveSha256": "72714beba23d5ef8f34edc9a7e754f58061c01aa231f78d33034d9f80472c37a",
+      "bytes": 1749,
+      "lines": 1
+    },
+    {
+      "file": "record-0010.gz",
+      "source": "pinned-macro-library/MacroExpr.qll",
+      "rawSha256": "8a8dae1b3dbd9f1d84f9274bb85d71dba8739a2e75fb869cd2106b157523ad29",
+      "archiveSha256": "55cce12db1085f32de7992945bdf32af765ae5ae30ca69f1cf206df4be8475f7",
+      "bytes": 449,
+      "lines": 19
+    },
+    {
+      "file": "record-0011.gz",
+      "source": "pinned-macro-library/MacroExpr.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0012.gz",
+      "source": "pinned-macro-library/MacroExpr.qll.stdout.json",
+      "rawSha256": "6e05263639fbbcec722c02ac11ec68ed41893cb63e9455f1e909496894a93a2a",
+      "archiveSha256": "927115b9ec66d1ffe35ead669cafd2211af80f8444f507cde729c15b02631a9c",
+      "bytes": 1648,
+      "lines": 1
+    },
+    {
+      "file": "record-0013.gz",
+      "source": "pinned-macro-library/MacroItems.qll",
+      "rawSha256": "f794f751b77fc50d7cc3069c93c22dd3a479182edce15c1b22c8da31d2e30a12",
+      "archiveSha256": "25dfe594dcd139bd1836d683d5308dd7eff599a8b75901b94dc5642c5fe1513b",
+      "bytes": 539,
+      "lines": 26
+    },
+    {
+      "file": "record-0014.gz",
+      "source": "pinned-macro-library/MacroItems.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0015.gz",
+      "source": "pinned-macro-library/MacroItems.qll.stdout.json",
+      "rawSha256": "674dc7d39dd60357aa7db8e66d18f6a264a2a9ae5dd66008d197ad8d098dbf92",
+      "archiveSha256": "fa23e090605217b98a95237fb02eb49898301c476a105f44f6036393e392ab68",
+      "bytes": 1779,
+      "lines": 1
+    },
+    {
+      "file": "record-0016.gz",
+      "source": "pinned-macro-library/MacroPat.qll",
+      "rawSha256": "1561e5597c8dd6b6359dc7f0a01e3afe6568bf0aa4e9cc865469d5308c270b0e",
+      "archiveSha256": "cd72b0ff6b2d7a8d03e2410659cd2c5ca9a5fe7c6a2efede8625582e4686e55c",
+      "bytes": 546,
+      "lines": 27
+    },
+    {
+      "file": "record-0017.gz",
+      "source": "pinned-macro-library/MacroPat.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0018.gz",
+      "source": "pinned-macro-library/MacroPat.qll.stdout.json",
+      "rawSha256": "44e449dadbab1c47419ee66029d58bdddfe0c8cb53b4b59d7ab20522c4eec3a0",
+      "archiveSha256": "7b394e26b804923292c72c2127d20c3fdab9c1adb6bb0bbca88f8e07c8f1d32e",
+      "bytes": 1775,
+      "lines": 1
+    },
+    {
+      "file": "record-0019.gz",
+      "source": "pinned-macro-library/MacroRules.qll",
+      "rawSha256": "800e3a899897d60131b17b98c51553d667983ed8ec6629ba2c8110f9838975af",
+      "archiveSha256": "b64e077391b1f669ab402fc1f72d8407cded7c475a5512f57f5b662d2cbe921e",
+      "bytes": 542,
+      "lines": 23
+    },
+    {
+      "file": "record-0020.gz",
+      "source": "pinned-macro-library/MacroRules.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0021.gz",
+      "source": "pinned-macro-library/MacroRules.qll.stdout.json",
+      "rawSha256": "1d4042865a0f3a4162848690fdd847ffa2a8ef9ad332489ff7d7c360434f1953",
+      "archiveSha256": "b704ee3f92a0c989fe75b46694d056f6eda492c2d185108ee55c36182a87d6be",
+      "bytes": 1785,
+      "lines": 1
+    },
+    {
+      "file": "record-0022.gz",
+      "source": "pinned-macro-library/MacroTypeRepr.qll",
+      "rawSha256": "7601309ad9cf7159955af8f6eec7968bbecf5bfcc05201bc8573cf1e7ea14b08",
+      "archiveSha256": "9bc6ce90dcd6357a9ace6d5dee43d0739bec299e50f4d6602465e5baccd11ad7",
+      "bytes": 456,
+      "lines": 22
+    },
+    {
+      "file": "record-0023.gz",
+      "source": "pinned-macro-library/MacroTypeRepr.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0024.gz",
+      "source": "pinned-macro-library/MacroTypeRepr.qll.stdout.json",
+      "rawSha256": "430d210c72cf338d6354842ae5825f3b31233d78406fc44f76c981a3574049d3",
+      "archiveSha256": "ac5abbcfa2bece790a6b81969169a6d4b61714a5b675c4202062e1566bfa3373",
+      "bytes": 1686,
+      "lines": 1
+    },
+    {
+      "file": "record-0025.gz",
+      "source": "pinned-macro-library/elements-directory.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0026.gz",
+      "source": "pinned-macro-library/elements-directory.stdout.json",
+      "rawSha256": "feeb5592b26d02ad529a03455d00c5a2fb9a778bba9fe43d663b08bbeb96784d",
+      "archiveSha256": "0094b016109ad45003261b2c2f87fd681333fd80231ba4f08d4c53acf5eb6a0b",
+      "bytes": 227956,
+      "lines": 1
+    },
+    {
+      "file": "record-0027.gz",
+      "source": "pinned-macro-implementation/AstNodeImpl.qll",
+      "rawSha256": "c8b2ed3a66d90ecbc685375af311e63352079b76a361120eef6ef7bfdcd634cb",
+      "archiveSha256": "0301073fac64441e8c430163525b52dfb9300295460a20b4d62eae261928093d",
+      "bytes": 3898,
+      "lines": 133
+    },
+    {
+      "file": "record-0028.gz",
+      "source": "pinned-macro-implementation/AstNodeImpl.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0029.gz",
+      "source": "pinned-macro-implementation/AstNodeImpl.qll.stdout.json",
+      "rawSha256": "83ac81956f0404089a7e6ce9a16114c8523acd32de34803641ccdf6e3721c527",
+      "archiveSha256": "dacbf02e13a6c5fcb349aedcfe471d829f67051e083194a2bcbca8aeabc28919",
+      "bytes": 6471,
+      "lines": 1
+    },
+    {
+      "file": "record-0030.gz",
+      "source": "pinned-macro-implementation/ElementImpl.qll",
+      "rawSha256": "b5648da97c3efedd78184d032086603e54f8173f5e85147f37660fb18ad2a8fb",
+      "archiveSha256": "19cd683bafab8423501e1c6fdaa48c483ddbaa70d6df372e337651610e43f125",
+      "bytes": 4976,
+      "lines": 140
+    },
+    {
+      "file": "record-0031.gz",
+      "source": "pinned-macro-implementation/ElementImpl.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0032.gz",
+      "source": "pinned-macro-implementation/ElementImpl.qll.stdout.json",
+      "rawSha256": "4cc073794d779e4170cf50a1c2e4f797707f3aba1653e84770cea0e7718154d1",
+      "archiveSha256": "606ac9b6c583645d4be1a214bdfe57d94422f8084390043862230d1186356ae7",
+      "bytes": 7955,
+      "lines": 1
+    },
+    {
+      "file": "record-0033.gz",
+      "source": "pinned-macro-implementation/MacroCallImpl.qll",
+      "rawSha256": "d9b7a9d95bb857ee497ded55cd601f275ff2f134288e2ddefb013138082eadff",
+      "archiveSha256": "08704e0c9b4e15e9e0fd8f5770ebc24622b6ca952e866622191b8664e6fc6d37",
+      "bytes": 995,
+      "lines": 38
+    },
+    {
+      "file": "record-0034.gz",
+      "source": "pinned-macro-implementation/MacroCallImpl.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0035.gz",
+      "source": "pinned-macro-implementation/MacroCallImpl.qll.stdout.json",
+      "rawSha256": "074f9d259fe477385a09427c621a598777c78148fb10b7155bf453b82c896d41",
+      "archiveSha256": "331642b3ec708c59a11eb9cdb1ca37c26bafc4efd2dc3e26a88114d043feda67",
+      "bytes": 2484,
+      "lines": 1
+    },
+    {
+      "file": "record-0036.gz",
+      "source": "pinned-macro-implementation/MacroItemsImpl.qll",
+      "rawSha256": "12e9f6d7196871fb3f0d53cccf19869dc44f623b4888a439a7c213dbe1e439be",
+      "archiveSha256": "28f40cba371bd4062bd12cb5039d3a4651898beaf3893be5497cc55d1a73009c",
+      "bytes": 785,
+      "lines": 32
+    },
+    {
+      "file": "record-0037.gz",
+      "source": "pinned-macro-implementation/MacroItemsImpl.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0038.gz",
+      "source": "pinned-macro-implementation/MacroItemsImpl.qll.stdout.json",
+      "rawSha256": "2747e3cd40c9336dab6bb0dda28a5877e2a313d7321ce1495b37ca3faf048f73",
+      "archiveSha256": "046824956f33e1cbb72d990712fae8ab70fa9ebb7a4fe1e086d7099158c18782",
+      "bytes": 2201,
+      "lines": 1
+    },
+    {
+      "file": "record-0039.gz",
+      "source": "pinned-generated-macro-api/FileImpl.qll.stderr",
+      "rawSha256": "d2c8985c89b29a842ac4946d13bdbc297709f44f20bb968faf9682664b211db6",
+      "archiveSha256": "18b3850be3c936476d677e0ecef6924a4511017f03f4aa21f854b5c1075595ac",
+      "bytes": 25,
+      "lines": 1
+    },
+    {
+      "file": "record-0040.gz",
+      "source": "pinned-generated-macro-api/FileImpl.qll.stdout.json",
+      "rawSha256": "e45906ce02e79f16fb87a838d86bb4e497e37a9591f97608fa013bbcd8b9cbc2",
+      "archiveSha256": "00c65a0532d4180c5e7db8b2dfbe4f47e7ed84dde7c00a6cafdcc2d869919fd2",
+      "bytes": 127,
+      "lines": 1
+    },
+    {
+      "file": "record-0041.gz",
+      "source": "pinned-generated-macro-api/Locatable.qll",
+      "rawSha256": "b32d242f8c9480dc9b53c1e13a5cb8dcfce575b0373991c082c1db460a3e37b8",
+      "archiveSha256": "619339ac56f44626dc6d6e29e3c14d1ab9fea663b4662eb8260b82693d7e9c76",
+      "bytes": 728,
+      "lines": 21
+    },
+    {
+      "file": "record-0042.gz",
+      "source": "pinned-generated-macro-api/Locatable.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0043.gz",
+      "source": "pinned-generated-macro-api/Locatable.qll.stdout.json",
+      "rawSha256": "37bca99f3876ec9cadc2af72f88f225c26348c35eddd18da287c1bfb5725b709",
+      "archiveSha256": "9b4605d7c494910b0bc12781c5b0a4beacb7e4a9753282aade22290f3bb66f8b",
+      "bytes": 2148,
+      "lines": 1
+    },
+    {
+      "file": "record-0044.gz",
+      "source": "pinned-generated-macro-api/LocationImpl.qll",
+      "rawSha256": "f2f8e146d04c58982a7da84dcce73ff7b5541ae9bf999ef57cfb916a0e2d5529",
+      "archiveSha256": "d7c988b76ca3cebf489da746aacff8ddcd46d2b1f48883ff51398bc3da14864c",
+      "bytes": 6538,
+      "lines": 177
+    },
+    {
+      "file": "record-0045.gz",
+      "source": "pinned-generated-macro-api/LocationImpl.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0046.gz",
+      "source": "pinned-generated-macro-api/LocationImpl.qll.stdout.json",
+      "rawSha256": "c05d0940d40a29fb3c3414a046c1f41fb402730901a4681d27a06f7e42c35cef",
+      "archiveSha256": "856c647efd8678fe1aeffb7fe44582cdc66f8db2a961df321267c0d83653b895",
+      "bytes": 10116,
+      "lines": 1
+    },
+    {
+      "file": "record-0047.gz",
+      "source": "pinned-generated-macro-api/MacroCall.qll",
+      "rawSha256": "292a5add471407e33d2a449f7b52b92db09a7148596437dc1d152deccd41095f",
+      "archiveSha256": "b9e05f5bb32fd6b05ce15c4a4213a6ec921a4d7e325d715dfdaf1b5cb9f98993",
+      "bytes": 2855,
+      "lines": 97
+    },
+    {
+      "file": "record-0048.gz",
+      "source": "pinned-generated-macro-api/MacroCall.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0049.gz",
+      "source": "pinned-generated-macro-api/MacroCall.qll.stdout.json",
+      "rawSha256": "6fd83ba4cd1cd146eb235a4f1fc15304d6ee3a1a3587229d50efb9fd64f08851",
+      "archiveSha256": "1573928e949b518620489f6ec5ad176d5ddb5a77a09f93b3a56651ef30755383",
+      "bytes": 5079,
+      "lines": 1
+    },
+    {
+      "file": "record-0050.gz",
+      "source": "pinned-token-tree-api/LocatableImpl.qll",
+      "rawSha256": "8c6f8f3cb1fb5cbaa85a5f61a5d4d50e1a15bb70948f5e2508076fbce97a0da9",
+      "archiveSha256": "b8ea6976e4c9eea747dd9146ca7211a2d6578f41f8157a237167c3c1b4c0db11",
+      "bytes": 2081,
+      "lines": 62
+    },
+    {
+      "file": "record-0051.gz",
+      "source": "pinned-token-tree-api/LocatableImpl.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0052.gz",
+      "source": "pinned-token-tree-api/LocatableImpl.qll.stdout.json",
+      "rawSha256": "8cf9909771b35847c59192a4cc35d08a89142571f8f512d79bf7c48366448fc1",
+      "archiveSha256": "a8c91bf84fb12c7623bc0a95dacef970c4abe7e405076e21fe8995c6bd459155",
+      "bytes": 3981,
+      "lines": 1
+    },
+    {
+      "file": "record-0053.gz",
+      "source": "pinned-token-tree-api/TokenTree.qll",
+      "rawSha256": "b85fed50862f97bce98fb4cbd3f275b553ef3e8dedf215915736197078867427",
+      "archiveSha256": "e1cc00aafcc4ddd9941346d19e662ebdb55eb089beb3b65e13680a8699caa7a6",
+      "bytes": 1180,
+      "lines": 36
+    },
+    {
+      "file": "record-0054.gz",
+      "source": "pinned-token-tree-api/TokenTree.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0055.gz",
+      "source": "pinned-token-tree-api/TokenTree.qll.stdout.json",
+      "rawSha256": "439f8a75ed993651177247f470a3267a3002d5c993f3628c7a5da91b52adfac5",
+      "archiveSha256": "f732b581c4a68e620f6668b2f066800b2463aff2a81ec61151e31d13f74242aa",
+      "bytes": 2773,
+      "lines": 1
+    },
+    {
+      "file": "record-0056.gz",
+      "source": "pinned-token-tree-api/TokenTreeImpl.qll",
+      "rawSha256": "793e04299d571a8cea2097e6c43136c5e618b31da91ccc68bda334c3d2c3793d",
+      "archiveSha256": "172109112b5ff61944666b85d9395e42a942f332f465fa6afe48e2c63b00bb6a",
+      "bytes": 783,
+      "lines": 29
+    },
+    {
+      "file": "record-0057.gz",
+      "source": "pinned-token-tree-api/TokenTreeImpl.qll.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0058.gz",
+      "source": "pinned-token-tree-api/TokenTreeImpl.qll.stdout.json",
+      "rawSha256": "29d08d1a45f49e857e2e4f0a685e3e4a877414fff8021cd41bc1f8d7a32fed96",
+      "archiveSha256": "63e62bd2fb453346459bd2f22d8108d6d20f9a16b0b42c5030bffbb1e2c5eafb",
+      "bytes": 2190,
+      "lines": 1
+    },
+    {
+      "file": "record-0059.gz",
+      "source": "actual-macro-paths/summary.json",
+      "rawSha256": "24ee47c638a73d692779570954324afb143587fd04133491c73964f3de363c4b",
+      "archiveSha256": "b1a9548b33d85022b18daaa72486bde344a2f20576a07469cd3126384d726200",
+      "bytes": 13937,
+      "lines": 611
+    },
+    {
+      "file": "record-0060.gz",
+      "source": "generated-macro-copies/examples.json",
+      "rawSha256": "3563b78bc578e5b0198d1f0cacd6e5d7a4b75f9296a9f067594a4e58fb01ea2a",
+      "archiveSha256": "9bac3d30996840f02d978fff9903c8c40006efcec4c143a5e42b420da1a27832",
+      "bytes": 3219,
+      "lines": 162
+    },
+    {
+      "file": "record-0061.gz",
+      "source": "generated-macro-copies/internal-directory.stderr",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0062.gz",
+      "source": "generated-macro-copies/internal-directory.stdout.json",
+      "rawSha256": "737349a376e3b44b723f2dc97c36198d345ccc5856b13f5c15347a2805f36122",
+      "archiveSha256": "2ef595784dfc350388f853f27fef0457623ada8653d4bee716a32482a3d0137d",
+      "bytes": 6086,
+      "lines": 1
+    },
+    {
+      "file": "record-0063.gz",
+      "source": "included-macro-count-crosswalk/crosswalk.json",
+      "rawSha256": "b29ea4bbeb635025e66053e3e9ab47d0a31fd37c68db789632c6fad1d45f6468",
+      "archiveSha256": "4b33acf1fbad6587b8b97b4c15913055d1ed32f4c97c8fd57b51b97442fd1a28",
+      "bytes": 4867,
+      "lines": 183
+    },
+    {
+      "file": "record-0064.gz",
+      "source": "included-macro-count-crosswalk/rust__src__agentic_coding__mod.rs.source.gz",
+      "rawSha256": "9430d01d0bbabfbd396863482235ad962c3972e34144d6ef53437c347972ceea",
+      "archiveSha256": "9baeb15e688e7e136522ac3419eec237486ef7ce60730586c9a1c9ceb8dbe8ea",
+      "bytes": 692,
+      "lines": 4
+    },
+    {
+      "file": "record-0065.gz",
+      "source": "included-macro-count-crosswalk/rust__src__arithmetic.rs.source.gz",
+      "rawSha256": "d4bbe8a4be775b6a72cf4c46e36f2631426495a5ab235fd961ec20f13b193696",
+      "archiveSha256": "576a2837ef0fcc8318077ac7a9b068dd477701a938f702473d24f69a75484e1d",
+      "bytes": 7242,
+      "lines": 63
+    },
+    {
+      "file": "record-0066.gz",
+      "source": "included-macro-count-crosswalk/rust__src__discovery_production.rs.source.gz",
+      "rawSha256": "29fd837940115b08fbb69abfdf418d8267a9f3c7445a56cd99e9fa521f2556c6",
+      "archiveSha256": "be7ab04e95703630d86a4f3f1e597c115d5a56f0c5ad0f44e8724d643cef0075",
+      "bytes": 7038,
+      "lines": 53
+    },
+    {
+      "file": "record-0067.gz",
+      "source": "included-macro-count-crosswalk/rust__src__seed__embedded.rs.source.gz",
+      "rawSha256": "cfa592e8618f1b6bfe1135edd895f657b717ebd0e90e741a258bcf3ee74524af",
+      "archiveSha256": "7093bfe774d83d0245dcdd501297a0c66463f7242f79d22437fb42b709cfa89b",
+      "bytes": 622,
+      "lines": 4
+    },
+    {
+      "file": "record-0068.gz",
+      "source": "included-macro-count-crosswalk/rust__src__self_source_links.rs.source.gz",
+      "rawSha256": "ca01a9b7fe3ee2a9beccb4bb1be1b27007661ee184b6197683de5081903848a4",
+      "archiveSha256": "6315be9098682e54ad3cae7cc6094524ac0b51e4b527e121e3163da432c43fd1",
+      "bytes": 3612,
+      "lines": 29
+    },
+    {
+      "file": "record-0069.gz",
+      "source": "included-macro-count-crosswalk/rust__src__solver_handlers__creative_writing.rs.source.gz",
+      "rawSha256": "a6c0ec7071fe2f06467e42ea5021a32eaa7ef9a492e4622b9dbccab9ddb99bfa",
+      "archiveSha256": "31c5398017318f4f423052d36e7fd5c843e444da859ed1b84957a29122b28db4",
+      "bytes": 5746,
+      "lines": 42
+    },
+    {
+      "file": "record-0070.gz",
+      "source": "included-macro-count-crosswalk/rust__src__solver_handlers__formalization_task.rs.source.gz",
+      "rawSha256": "628cbd38bff1e48b1e5c786c8526a5049aade746eaf2c47ccea346c9b8e323a5",
+      "archiveSha256": "d2c61631998586d46283fb0a0e566a22861ea8ca0ddb22c61ad3d88e64497ecd",
+      "bytes": 6693,
+      "lines": 37
+    },
+    {
+      "file": "record-0071.gz",
+      "source": "included-macro-count-crosswalk/rust__src__solver_handlers__mod.rs.source.gz",
+      "rawSha256": "eb6a4dca972af63fffc7808b1c7854d6486f9166919cfededbe87b314ba5db53",
+      "archiveSha256": "d0d3c52e2f8894ae8d519edf294644513f4887496fc5d94062ad0646c979e50c",
+      "bytes": 8963,
+      "lines": 65
+    },
+    {
+      "file": "record-0072.gz",
+      "source": "included-macro-count-crosswalk/rust__src__translation__cache.rs.source.gz",
+      "rawSha256": "7b2695cc35b0cbf819abd4163bcfe75a9083ef7765d01bad98f71650d2e4b41a",
+      "archiveSha256": "ae6e3934bb5fe0eb1fcf90fc25ea2bbf370c84955ebd25d28b4a6a0fae3168ca",
+      "bytes": 7368,
+      "lines": 59
+    },
+    {
+      "file": "record-0073.gz",
+      "source": "included-macro-count-crosswalk/rust__src__web_formalize.rs.source.gz",
+      "rawSha256": "2cabc13d0709a98a0760f9cc936e4a75efb54e0e71212d4a8b14cad25f685531",
+      "archiveSha256": "eb7260f53e68c89a9611a339dc8c638b592f83b73b6d7c8c6e4bcbc78ded25a7",
+      "bytes": 9887,
+      "lines": 86
+    },
+    {
+      "file": "record-0074.gz",
+      "source": "included-macro-count-crosswalk/rust__tests__integration__issue_982_self_hosting.rs.source.gz",
+      "rawSha256": "aa26187593d5717f0fe2f558fae7f390ee9b6071721fc2af793b5610996b7d39",
+      "archiveSha256": "4923364b3ba54995b2bd169379dcbef4e955edeae9d5e622e53634c6809ae37b",
+      "bytes": 788,
+      "lines": 10
+    },
+    {
+      "file": "record-0075.gz",
+      "source": "included-macro-count-crosswalk/rust__tests__source__arithmetic.rs.source.gz",
+      "rawSha256": "9a1852eafe3e673ddb6cf8c87e4cb2c39a2f380ea22d276f507da80cf55eb2ec",
+      "archiveSha256": "bd57836c951551ac7abb6df5c13809feebfe65807ce394a94997d1e4b0f787c4",
+      "bytes": 7243,
+      "lines": 62
+    },
+    {
+      "file": "record-0076.gz",
+      "source": "included-macro-count-crosswalk/rust__tests__source__translation__cache.rs.source.gz",
+      "rawSha256": "ba52a3e431b68dbe3a175277aad5cc24b0cb2989f19bd3864afdfccd1910a84e",
+      "archiveSha256": "d6e4d8156dbb9d038ad8453dcf911d0d6d34ad574e959ec0268eb91b8ef9e49c",
+      "bytes": 7443,
+      "lines": 62
+    },
+    {
+      "file": "record-0077.gz",
+      "source": "included-macro-count-crosswalk/rust__tests__unit__agentic-coding__issue_527_question_catalog.rs.source.gz",
+      "rawSha256": "b7fef50d97ff65ad6f678eb8be3ba18805e5ee1f90e544814f3a15b9f1a95777",
+      "archiveSha256": "ddb81bc326bc51ae3f7545ecec6398d1cdd51b18a2d0c1630d994e2d612f676e",
+      "bytes": 3669,
+      "lines": 30
+    },
+    {
+      "file": "record-0078.gz",
+      "source": "included-macro-count-crosswalk/rust__tests__unit__agentic-coding__issue_538_agentic.rs.source.gz",
+      "rawSha256": "c6396a21c2e553940afde9ec80443757c57964cbfac5a2c3c4e68f51e8b42581",
+      "archiveSha256": "2a32b4bd5b31ba3d04f0a985439c5b62ee683d82106f872b91b7c3711c962644",
+      "bytes": 7492,
+      "lines": 61
+    },
+    {
+      "file": "record-0079.gz",
+      "source": "included-macro-count-crosswalk/rust__tests__unit__agentic-coding__issue_686_agent_cli.rs.source.gz",
+      "rawSha256": "d8f411930a00430609bcf025a9e1797612ebcfc6880640c62a892f688bc6816d",
+      "archiveSha256": "5854cc574c333bcbbf08c834ba7e271b2b365f9839ca50a0c89f7cabca67ce75",
+      "bytes": 1352,
+      "lines": 13
+    },
+    {
+      "file": "record-0080.gz",
+      "source": "included-macro-count-crosswalk/rust__tests__unit__agentic-coding__issue_749_shell_routing.rs.source.gz",
+      "rawSha256": "a4f6a4e66314ec17f81c321f193228399ff929f1f27325d83ecf14f861315383",
+      "archiveSha256": "16f9905448f1bff2bc3c71dada271fff4d090940d925bed78310b42bd4dd2a81",
+      "bytes": 6063,
+      "lines": 49
+    },
+    {
+      "file": "record-0081.gz",
+      "source": "included-macro-count-crosswalk/rust__tests__unit__ci-cd__ci_warning_audit.rs.source.gz",
+      "rawSha256": "247f1e29a6a64dfc490282fe4cb46d86a748ff0f32708ad8516be3bde47ad4ea",
+      "archiveSha256": "dc7c3571deb31ab7654d7464ddbda1c3162b9efb70c4e889792d36f06270b2eb",
+      "bytes": 7475,
+      "lines": 63
+    },
+    {
+      "file": "record-0082.gz",
+      "source": "included-macro-count-crosswalk/rust__tests__unit__issue_1138_source_walk_parity.rs.source.gz",
+      "rawSha256": "a6f3c7360f67a456e553199ce88d9943d601409008b888ed12ddd2386f991acc",
+      "archiveSha256": "2032b45eeaa6660ca9792ca498448587a2af71bc4ba7f6405efddafc260494ed",
+      "bytes": 1670,
+      "lines": 17
+    },
+    {
+      "file": "record-0083.gz",
+      "source": "current-size-warning-inventory-after-fifteen-extractions/stderr.log",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0084.gz",
+      "source": "current-size-warning-inventory-after-fifteen-extractions/stdout.json",
+      "rawSha256": "25eba9793c2b44cc834cf10f311844a9e3ddd6bd8ac87bc8664baae9d49a5585",
+      "archiveSha256": "fadd9e0aff77555e6bf34006433aad1476d6b130286baa66b18b62db444bf8ea",
+      "bytes": 12653,
+      "lines": 1
+    },
+    {
+      "file": "record-0085.gz",
+      "source": "current-size-warning-inventory-after-fifteen-extractions/tracked-files.bin",
+      "rawSha256": "3656381626e2c339b434d013003087107f5ea338b5b2c1b98e6a1308e91a8396",
+      "archiveSha256": "ab2b591540a711dc424431a7b2db2f74447d3ffec8dda2aea792cc9c41519edc",
+      "bytes": 12462317,
+      "lines": 1
+    },
+    {
+      "file": "record-0086.gz",
+      "source": "current-size-warning-inventory-after-seventeen-extractions/stderr.log",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0087.gz",
+      "source": "current-size-warning-inventory-after-seventeen-extractions/stdout.json",
+      "rawSha256": "ed696531941a1c21125c84ad87c229e5833dd87bff63834fae74c640460a7260",
+      "archiveSha256": "0e3ae7dacd4351d903d8e16ed7307d38f6ec90ea335e23706379ffad27d25af3",
+      "bytes": 12457,
+      "lines": 1
+    },
+    {
+      "file": "record-0088.gz",
+      "source": "current-size-warning-inventory-after-seventeen-extractions/tracked-files.bin",
+      "rawSha256": "6e2290ac6fe19ca364b3a9b877bfe576d02ff535eba1347d39d2d6acd153236d",
+      "archiveSha256": "6f661bd87cf5f728bf5af7e653e881249a2e0bb1cd59f4cb221628493e31f7c8",
+      "bytes": 12465783,
+      "lines": 1
+    },
+    {
+      "file": "record-0089.gz",
+      "source": "current-size-warning-inventory-after-nineteen-extractions/stderr.log",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    {
+      "file": "record-0090.gz",
+      "source": "current-size-warning-inventory-after-nineteen-extractions/stdout.json",
+      "rawSha256": "f844f8ccce39355c6afe228ae7f258de22e1fecc4aa816d1ce66f71e77f05ed4",
+      "archiveSha256": "3b9177aaec5ee96d9991644b64659ed70db4cc6eef4f79700f8f04157bbb60b0",
+      "bytes": 12247,
+      "lines": 1
+    },
+    {
+      "file": "record-0091.gz",
+      "source": "current-size-warning-inventory-after-nineteen-extractions/tracked-files.bin",
+      "rawSha256": "6e2290ac6fe19ca364b3a9b877bfe576d02ff535eba1347d39d2d6acd153236d",
+      "archiveSha256": "6f661bd87cf5f728bf5af7e653e881249a2e0bb1cd59f4cb221628493e31f7c8",
+      "bytes": 12465783,
+      "lines": 1
+    },
+    {
+      "file": "record-0092.gz",
+      "source": "research-unexpanded-macro-ownership.py",
+      "rawSha256": "c9fbf32bd73bf213072273ca1771a9b6a74beea5fbe17854ad70d1c1a6026874",
+      "archiveSha256": "940d34a57065dc93cd5a86458106c1aaaa2f53accf2b532f23d925101f6502cc",
+      "bytes": 1597,
+      "lines": 25
+    },
+    {
+      "file": "record-0093.gz",
+      "source": "research-unexpanded-macro-ownership.log",
+      "rawSha256": "2282617a6069c85ad7d850fbdd8e0b336470c3daa0d4be9e0cfdfe9ed970ed84",
+      "archiveSha256": "41436240f1d7868bf38e209ea9b776f72f7fe980e4c450ec8f410e5a6c94d0a4",
+      "bytes": 3447,
+      "lines": 42
+    },
+    {
+      "file": "record-0094.gz",
+      "source": "research-pinned-macro-library.py",
+      "rawSha256": "7f4a75c049b519cf6fdf2d1bac509ffa0e861b98334e95f9bdf53b80fc2b1f8e",
+      "archiveSha256": "752c6e06c37dea4287fd5b9e92f34c4c0e585a6f63d56144265edcdf05325bcd",
+      "bytes": 957,
+      "lines": 20
+    },
+    {
+      "file": "record-0095.gz",
+      "source": "research-pinned-macro-library.log",
+      "rawSha256": "b1ebcbbc4d0a810605730b6ca41cc4bebedd2a31b1e609a74f6e543ea6ffc96c",
+      "archiveSha256": "7a895c2b2e6093806587ede4a3ab4babc52aab95991f8771b5dd65be218a906a",
+      "bytes": 17144,
+      "lines": 399
+    },
+    {
+      "file": "record-0096.gz",
+      "source": "research-pinned-macro-implementation.py",
+      "rawSha256": "73e907991dd44aa72eec3cb95fa57ce8cb3a4e27aa093ff86db45d46286c1071",
+      "archiveSha256": "da53859a7da62e5c27eb9f1ee7d65424cd17013c61500ab015790ed868dbf078",
+      "bytes": 834,
+      "lines": 16
+    },
+    {
+      "file": "record-0097.gz",
+      "source": "research-pinned-macro-implementation.log",
+      "rawSha256": "9a217ce81bd4eb4ef8cb945d4cebd59c4f2c1d440f298ab2661b9c5cd6c53d51",
+      "archiveSha256": "b7a3d3627d1d42d74b1cf8efcdddf8dc79658df0e39da9a6dafebb25749207bf",
+      "bytes": 248,
+      "lines": 7
+    },
+    {
+      "file": "record-0098.gz",
+      "source": "research-pinned-generated-macro-api.py",
+      "rawSha256": "cf54b8ff97dc0a93a251853f2b2814b2076da9491d5ffa66cbca6d213b05fd36",
+      "archiveSha256": "71ab877ea837ac6caa0657cfb05a14c1febed3520becc7c005ce6aca38087791",
+      "bytes": 1076,
+      "lines": 24
+    },
+    {
+      "file": "record-0099.gz",
+      "source": "research-pinned-generated-macro-api.log",
+      "rawSha256": "f1c4bf78d1e63540edf120ff893e49c8918b19090fd0c30cb24b5c0e912ebdb5",
+      "archiveSha256": "43439590e8b7b89ad92dbcfd399a2ead0799dffdbc9b00b5374e91528695ad13",
+      "bytes": 271,
+      "lines": 8
+    },
+    {
+      "file": "record-0100.gz",
+      "source": "research-pinned-token-tree-api.py",
+      "rawSha256": "90b05c545143f16c8c9c94d7631cb396a7151eff6df7242497916e343538535c",
+      "archiveSha256": "8730a38d303edeb3e878b40151b140c51fe2d8c3a829b0d39c9b940accce0d13",
+      "bytes": 859,
+      "lines": 15
+    },
+    {
+      "file": "record-0101.gz",
+      "source": "research-pinned-token-tree-api.log",
+      "rawSha256": "959089a737c8867cc4ac855daf0d1a3f101a6028922a913235326d9a57c9ea28",
+      "archiveSha256": "b722110d6e1381c5d7ea50662701168a10db0741572447fe14f3a82a3de0f6da",
+      "bytes": 211,
+      "lines": 6
+    },
+    {
+      "file": "record-0102.gz",
+      "source": "inspect-actual-macro-paths.py",
+      "rawSha256": "88c1b022024091aae39fb621f9350fb399f0c55175b6c4eace1b5df8135eee60",
+      "archiveSha256": "e0871d740bc72139eb034918d6021a8bc99954d4549b49c9a40caad628d1ee46",
+      "bytes": 1025,
+      "lines": 13
+    },
+    {
+      "file": "record-0103.gz",
+      "source": "inspect-actual-macro-paths.log",
+      "rawSha256": "7301c8016ada628ec318e793cdeda88b209b979e2498e41e0b445c857f7a91f3",
+      "archiveSha256": "36b8f8ea04e63170877f49d4911eb2a506fc087ccc08cf2332034566c09b9022",
+      "bytes": 15895,
+      "lines": 614
+    },
+    {
+      "file": "record-0104.gz",
+      "source": "inspect-generated-macro-copies.py",
+      "rawSha256": "63b2709306569b12c5bc19ef84c6eed9a309b3b409edf0b83d65f20875e21dad",
+      "archiveSha256": "88c4820a2a920210e3006334c76242faee533d0132a9a0c59d93567aba372d58",
+      "bytes": 1032,
+      "lines": 17
+    },
+    {
+      "file": "record-0105.gz",
+      "source": "inspect-generated-macro-copies.log",
+      "rawSha256": "3fbc5074b280e7f95aa0851e77b5c37e571f50567eb2fdb69b511ed53045d1cb",
+      "archiveSha256": "9fc42b8ce37a1f1b8d8a03b6984ff9b918977c247d49fd55001c1c2a01c58063",
+      "bytes": 4194,
+      "lines": 171
+    },
+    {
+      "file": "record-0106.gz",
+      "source": "crosswalk-included-macro-counts.py",
+      "rawSha256": "97e0e43af14358f4a7c944acef6ab5320710a5afc2c1929d1bc9be2cc8ed0f18",
+      "archiveSha256": "f9ceea18aa0c9009a327fc7fd353b84f4f64649b4807396b2490da5898170015",
+      "bytes": 2884,
+      "lines": 42
+    },
+    {
+      "file": "record-0107.gz",
+      "source": "crosswalk-included-macro-counts.log",
+      "rawSha256": "e60dc603cb8df35afbb57841b5f287ccf947161d4b5cb0ab4f15e09eb9bd2c64",
+      "archiveSha256": "25cccae092da2d08929f0ccdefc64ec7a7a79edddba8301d5f2707cc39d528b7",
+      "bytes": 1517,
+      "lines": 21
+    },
+    {
+      "file": "record-0108.gz",
+      "source": "inventory-after-fifteen-extractions.py",
+      "rawSha256": "3ad6e5e96351118ed85bb2cc05824522112fbb51e1a03d783dab73f340e64af4",
+      "archiveSha256": "0c8aac0877029bf407b098ea0e1e231904e842c682de53348f796dadb6bff0c0",
+      "bytes": 330,
+      "lines": 5
+    },
+    {
+      "file": "record-0109.gz",
+      "source": "inventory-after-fifteen-extractions.log",
+      "rawSha256": "0f89e718b57a01da82675d66fdae2038fc0c0cd077a93e26b5e61f1acc0fb87c",
+      "archiveSha256": "b36b0636a77079dcfc38a96605d641bb34374c1c4eabd6b3208c21db72096c91",
+      "bytes": 8190,
+      "lines": 107
+    },
+    {
+      "file": "record-0110.gz",
+      "source": "inventory-after-seventeen-extractions.py",
+      "rawSha256": "21cc396bc80ad2b396b134d9459e1bf7700981d9bb449ebf82b1f757d90407d6",
+      "archiveSha256": "13e510301cab866150f9a0b5d9f50b8bf8287adfa76d9c8cb6576af14662b027",
+      "bytes": 332,
+      "lines": 5
+    },
+    {
+      "file": "record-0111.gz",
+      "source": "inventory-after-seventeen-extractions.log",
+      "rawSha256": "234f966fef9d486190ff9d5ecbc6e5708f4efcafc8b9046b2b95fa5a9e143eca",
+      "archiveSha256": "c0f44d904d597ccbf1f970c7685a3850f627d8ad2233d6d52a6a0afe828c213e",
+      "bytes": 8080,
+      "lines": 105
+    },
+    {
+      "file": "record-0112.gz",
+      "source": "inventory-after-nineteen-extractions.py",
+      "rawSha256": "f07679fdc24b17c84c57bb70a183f85bd5a6c47620934cbe228bc5b98b2bbc2a",
+      "archiveSha256": "af715e02e77f3ee1a42dd20d21cd794b09e0856b543d5d947b3670873648f4bb",
+      "bytes": 323,
+      "lines": 4
+    },
+    {
+      "file": "record-0113.gz",
+      "source": "inventory-after-nineteen-extractions.log",
+      "rawSha256": "845678237fb4aa2ff03c584bc27ce0757e3d6b9ad25540400e6b543283b6a601",
+      "archiveSha256": "d009b70fe6b81c0cc1549062e1d31e9bebbb959c62addb84d9911648e30d698d",
+      "bytes": 7952,
+      "lines": 103
+    },
+    {
+      "file": "record-0114.gz",
+      "source": "update-source-warning-checkpoint.py",
+      "rawSha256": "f58308a306e365f0d671b8fb3b78bc3c9926a3b1f6ba15b619c79c83f5c5d8d6",
+      "archiveSha256": "60b3a61fbf2a42ae2130d948b0986b26d2f60b4c4e0e5f5aa497d720e8ca6d4d",
+      "bytes": 5259,
+      "lines": 77
+    },
+    {
+      "file": "record-0115.gz",
+      "source": "update-source-warning-checkpoint.log",
+      "rawSha256": "8300d9d3ebfe76935f124419fc530f3506042bdf486f7bb9040756f8e02c6777",
+      "archiveSha256": "b6731f01bcbd8a7ffdff059669937532018445f2eb5982918c786d238745119c",
+      "bytes": 228,
+      "lines": 4
+    },
+    {
+      "file": "record-0116.gz",
+      "source": "record-rust-lychee-release-review.py",
+      "rawSha256": "662ccd649fc7e89412135d21c915bdabbaa9f6420bf8b7b58253d82b05b0e2ba",
+      "archiveSha256": "fd2fc5005b079067c628ef6df97230b9f9494432f84a2fbd65a6ba27cc99278c",
+      "bytes": 2616,
+      "lines": 18
+    },
+    {
+      "file": "record-0117.gz",
+      "source": "record-rust-lychee-release-review.log",
+      "rawSha256": "8dd7c986be8e615bd52806725e2acb5bef4b65dc78adfeedfeac508c4993e195",
+      "archiveSha256": "7f6f2d4b95100fd508416b47b4bfb52cc9625e93af91c2d5b97ad0135c29a2b4",
+      "bytes": 279,
+      "lines": 4
+    },
+    {
+      "file": "record-0118.gz",
+      "source": "correct-rust-lychee-review-wording.py",
+      "rawSha256": "5fd28fb531b5f3f289969bd52f7c0dd3d85b5371be2d4a9c210db91c7451b12b",
+      "archiveSha256": "b24cefdf257d9c89588b9232dcef14d07431266dff3dd2af6d1d79bc613e5125",
+      "bytes": 679,
+      "lines": 11
+    },
+    {
+      "file": "record-0119.gz",
+      "source": "correct-rust-lychee-review-wording.log",
+      "rawSha256": "71257f6c67b1b52d7aed6bfbbcc54380a4220674551b1b696bc1556dce0c33ba",
+      "archiveSha256": "f3af752c7aa452831f082d545abf6663a742785f28c9a3c45f83d7f1815543b3",
+      "bytes": 508,
+      "lines": 4
+    },
+    {
+      "file": "record-0120.gz",
+      "source": "inspect-rust-review-remaining-current.py",
+      "rawSha256": "39a157e7874b97ec6ceaee610561db22a22a32ddce9fcd51924f38632ab4f761",
+      "archiveSha256": "02fa3b49e095c4258dccf0b84d07bce281bf99e3ceb8db5767ecb617b0394d67",
+      "bytes": 698,
+      "lines": 12
+    },
+    {
+      "file": "record-0121.gz",
+      "source": "inspect-rust-review-remaining-current.log",
+      "rawSha256": "9703df1a24fc83840a8010664e187f42f411c1116b5d6148988b908dd097f64d",
+      "archiveSha256": "90d0bfb0f7055d99a21dc9518ed34f495c21d24f268882711f5cb979bd035f77",
+      "bytes": 6623,
+      "lines": 26
+    },
+    {
+      "file": "record-0122.gz",
+      "source": "commit-research-adoption-and-method-execution.py",
+      "rawSha256": "d3a13edfabf1fe3fa79d484b735fbb221dbbf0543eebcb43c3ade2c0650cb046",
+      "archiveSha256": "34e9b8a75929fa2e1002c30b385f74ffaa52e6e3625cf78dddf868652632c58b",
+      "bytes": 4046,
+      "lines": 48
+    },
+    {
+      "file": "record-0123.gz",
+      "source": "commit-research-adoption-and-method-execution.log",
+      "rawSha256": "41b7ca81002bb6b82ebb69b75e66411184fa363bcbec2476e373473987078fa2",
+      "archiveSha256": "092fb92616f3598c92223e382125bd4709ac1dd21ccbd31ea348572840fc739f",
+      "bytes": 1082,
+      "lines": 15
+    },
+    {
+      "file": "record-0124.gz",
+      "source": "commit-research-adoption-and-method-execution-final.log",
+      "rawSha256": "fd95b8156d5c2e31be59485fe299a30e84960ac6dd8d75083a29268884ccbfee",
+      "archiveSha256": "491285d151a0c2ba145d241c53a104fa0a6a9fec30cd331da8463eb49517ef49",
+      "bytes": 224,
+      "lines": 9
+    },
+    {
+      "file": "record-0125.gz",
+      "source": "seal-reviewed-warning-checkpoint.py",
+      "rawSha256": "211d3b0e10c35033385d09b0d1318ac7a23ddbe47058edd3f354433e952dbfcb",
+      "archiveSha256": "50b78c7be22b6d2f8de38274789058b00da6bdce2aefdd802c161c606cfdd8a7",
+      "bytes": 8672,
+      "lines": 116
+    }
+  ],
+  "sourceReview": {
+    "rustFiles": 352,
+    "rustPinnedFiles": 373,
+    "rustReviewedLines": 49166,
+    "codeqlPrimaryLibraryTag": "codeql-cli/v2.27.5",
+    "unexpandedContexts": 631,
+    "productionIncludedCalls": 282,
+    "perChildSemanticCoverageProven": false
+  },
+  "warnings": 99,
+  "allWarningsResolved": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

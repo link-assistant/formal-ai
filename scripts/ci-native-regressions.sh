@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+# CI runs expensive families in separate bounded jobs. The default invocation
+# preserves the complete three-process runner, with one Rust test thread each.
+set -euo pipefail
+
+contract_targets=(
+  --test calendar_currency
+  --test openai_forced_functions
+  --test meta_executor_parity
+  --test synthesis_contracts
+  --test coding_contracts
+  --test cnl_output
+  --test cnl_parity
+  --test unknown_reasoning
+  --test data_files
+  --test scheduling_contracts
+  --test operational_contracts
+  --test reasoning_contracts
+  --test workflow_contracts
+)
+# Validate before invoking Cargo so misspelled matrix groups cannot replay all tests.
+group="${1:-all}"
+if [[ "$#" -gt 1 ]]; then
+  echo 'Usage: ci-native-regressions.sh [all|core|coding|reasoning|reasoning-1|reasoning-2|hive|hive-1|hive-2|hive-3|benchmarks|interfaces]' >&2
+  exit 2
+fi
+case "$group" in
+  all) ;;
+  core)
+    core_targets=()
+    for ((index=0; index<${#contract_targets[@]}; index+=2)); do
+      target="${contract_targets[index+1]}"
+      if [[ "$target" != coding_contracts && "$target" != reasoning_contracts ]]; then
+        core_targets+=(--test "$target")
+      fi
+    done
+    cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast "${core_targets[@]}" -- --test-threads=1 --nocapture
+    exit "$?"
+    ;;
+  hive-1|hive-2|hive-3|reasoning-1|reasoning-2)
+    # Whole-family clocks expired after successful cases in runs 44652802985
+    # (Hive) and 44775337494 (reasoning). Plan the actual compiled listing
+    # using those sequential observations, keeping every original test once.
+    runner_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+    family="${group%-*}"
+    if [[ "$family" == hive ]]; then
+      shard_count=3
+      listing="$(cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
+        --test reasoning_contracts issue_1133_hive_mind_three_runs:: -- --list --format terse)"
+    else
+      shard_count=2
+      listing="$(cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast \
+        --test reasoning_contracts -- --skip benchmarks:: --skip issue_1133_hive_mind_three_runs:: --list --format terse)"
+    fi
+    names="$(printf '%s\n' "$listing" | sed -n 's/: test$//p')"
+    all_names=()
+    while IFS= read -r name; do
+      valid=false
+      if [[ "$family" == hive ]]; then
+        [[ "$name" == issue_1133_hive_mind_three_runs::* ]] && valid=true
+      elif [[ "$name" =~ ^([[:alnum:]_]+::)+[[:alnum:]_]+$ &&
+        "$name" != benchmarks::* && "$name" != issue_1133_hive_mind_three_runs::* ]]; then
+        valid=true
+      fi
+      if [[ "$valid" != true ]]; then
+        echo "::error::The native $family listing is empty or contains a foreign test." >&2
+        exit 1
+      fi
+      all_names+=("$name")
+    done <<< "$names"
+    if [[ "${#all_names[@]}" -lt "$shard_count" ]] ||
+      ! printf '%s\n' "${all_names[@]}" | awk 'seen[$0]++ { exit 1 }'; then
+      echo "::error::The native $family listing must contain at least $shard_count distinct tests." >&2
+      exit 1
+    fi
+    planner="$runner_root/scripts/plan-test-shards.mjs"
+    weights="$runner_root/scripts/ci-native-$family-durations.lino"
+    printf '%s\n' "$names" | node "$planner" --of "$shard_count" --durations "$weights" --check
+    selected="$(printf '%s\n' "$names" | node "$planner" --of "$shard_count" --durations "$weights" --shard "${group##*-}")"
+    selected_names=()
+    while IFS= read -r name; do
+      [[ -n "$name" ]] && selected_names+=("$name")
+    done <<< "$selected"
+    [[ "${#selected_names[@]}" -gt 0 ]] || { echo "::error::The native $family shard is empty." >&2; exit 1; }
+    cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test reasoning_contracts \
+      -- --exact "${selected_names[@]}" --test-threads=1 --nocapture
+    exit "$?"
+    ;;
+  coding|reasoning|hive|benchmarks|interfaces)
+    family_arguments=()
+    test_arguments=(--test-threads=1 --nocapture)
+    case "$group" in
+      coding) family_arguments=(--test coding_contracts) ;;
+      reasoning)
+        family_arguments=(--test reasoning_contracts)
+        test_arguments=(--skip benchmarks:: --skip issue_1133_hive_mind_three_runs:: "${test_arguments[@]}")
+        ;;
+      hive) family_arguments=(--test reasoning_contracts issue_1133_hive_mind_three_runs::) ;;
+      benchmarks) family_arguments=(--test reasoning_contracts benchmarks::) ;;
+      interfaces) family_arguments=(--test interface_contracts) ;;
+    esac
+    cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast "${family_arguments[@]}" -- "${test_arguments[@]}"
+    exit "$?"
+    ;;
+  *)
+    echo 'Usage: ci-native-regressions.sh [all|core|coding|reasoning|reasoning-1|reasoning-2|hive|hive-1|hive-2|hive-3|benchmarks|interfaces]' >&2
+    exit 2
+    ;;
+esac
+native_targets=("${contract_targets[@]}" --test interface_contracts)
+cargo test --manifest-path rust/Cargo.toml --locked --no-run "${native_targets[@]}"
+benchmark_log="$(mktemp "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/formal-ai-native-benchmarks.XXXXXX.log")"
+benchmark_pid=''
+interface_pid=''
+interface_log="$(mktemp "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/formal-ai-native-interfaces.XXXXXX.log")"
+# Invoked indirectly by the EXIT trap below.
+# shellcheck disable=SC2329
+cleanup_native_regressions() {
+  if [[ -n "$benchmark_pid" ]]; then
+    kill "$benchmark_pid" 2>/dev/null || true
+    wait "$benchmark_pid" 2>/dev/null || true
+  fi
+  if [[ -n "$interface_pid" ]]; then
+    kill "$interface_pid" 2>/dev/null || true
+    wait "$interface_pid" 2>/dev/null || true
+  fi
+  cat "$benchmark_log" "$interface_log"
+  rm -f "$benchmark_log" "$interface_log"
+}
+trap 'cleanup_native_regressions' EXIT
+cargo test --manifest-path rust/Cargo.toml --locked --test reasoning_contracts benchmarks:: -- --test-threads=1 --nocapture >"$benchmark_log" 2>&1 &
+benchmark_pid=$!
+cargo test --manifest-path rust/Cargo.toml --locked --test interface_contracts -- --test-threads=1 --nocapture >"$interface_log" 2>&1 &
+interface_pid=$!
+regression_status=0
+cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast "${contract_targets[@]}" -- --skip benchmarks:: --test-threads=1 --nocapture || regression_status=$?
+wait "$interface_pid" || regression_status=$?
+interface_pid=''
+wait "$benchmark_pid" || regression_status=$?
+benchmark_pid=''
+exit "$regression_status"

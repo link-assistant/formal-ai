@@ -1,0 +1,39 @@
+{
+  "ownerLinesBefore": 1491,
+  "ownerLinesAfter": 1399,
+  "sections": [
+    {
+      "path": "docs/development/merge-conflict-layout.md",
+      "originalLines": 70,
+      "guideLines": 70,
+      "normalizedContentConserved": true,
+      "linkRewrites": [
+        {
+          "before": "docs/case-studies/issue-991/merge-conflict-analysis.md",
+          "after": "../case-studies/issue-991/merge-conflict-analysis.md"
+        },
+        {
+          "before": "data/meta/merge-conflict-policy.lino",
+          "after": "../../data/meta/merge-conflict-policy.lino"
+        }
+      ],
+      "sha256": "fb590d9d252c37457b907e90038dfa333c3ecaebc53f62922fd77cfc467ea2fb"
+    },
+    {
+      "path": "docs/development/changelog-management.md",
+      "originalLines": 34,
+      "guideLines": 34,
+      "normalizedContentConserved": true,
+      "linkRewrites": [],
+      "sha256": "ad8e3a3eda8ec4d964239ec333ab6b78bbf08b1a53461e0ce66a5087e712b50c"
+    }
+  ],
+  "allOriginalContentConserved": true,
+  "legacyChangelogAnchorsPreserved": true,
+  "initialDraftsStillOverWarningThreshold": true,
+  "finalEmptyLineRepair": {
+    "removedPerGuide": 1,
+    "relativeLinkChanges": 2,
+    "allOtherMovedContentConserved": true
+  }
+}

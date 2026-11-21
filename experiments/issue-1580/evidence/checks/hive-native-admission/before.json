@@ -1,0 +1,11 @@
+{
+  "expectedFailure": true,
+  "exitCode": 1,
+  "javascriptPassed": 46,
+  "failed": 1,
+  "file": "before.log.gz",
+  "rawSha256": "a19feb1998a233a71f43ffb8c1c87f293270c1a24eff2ab9a9f647770e18a3ee",
+  "archiveSha256": "25daa4c1f1bf174824f212c0068960ab8b0a5e19baf7ca0554de059388cc5ccc",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

@@ -243,9 +243,11 @@ export function parseJavaScriptFileEvents(log) {
  * - writes `default-seconds`, the mean of the observed files left unrecorded,
  *   which is the weight the planner gives a file it has no record for.
  *
+ * `raiseOnly` preserves existing weights and the fallback when importing a
+ * faster cohort, such as PR tests that skip full integration work on main.
  * The result is sorted longest first and is a pure function of its inputs.
  */
-export function mergeJavaScriptDurations(text, observed, { source, floor = 2, recordedDate } = {}) {
+export function mergeJavaScriptDurations(text, observed, { source, floor = 2, recordedDate, raiseOnly = false } = {}) {
   const lines = text.replace(/\n$/u, '').split('\n');
   const firstTest = lines.findIndex((line) => /^ {2}test /u.test(line));
   let headerEnd = firstTest < 0 ? lines.length : firstTest;
@@ -277,7 +279,7 @@ export function mergeJavaScriptDurations(text, observed, { source, floor = 2, re
     const entry = byFile.get(file);
     if (entry) {
       const replace = round(seconds) > entry.seconds
-        || (complete && entry.extra.length === 0 && round(seconds) !== entry.seconds);
+        || (complete && !raiseOnly && entry.extra.length === 0 && round(seconds) !== entry.seconds);
       if (replace) {
         Object.assign(entry, { seconds: round(seconds), text: String(round(seconds)), comments: [], extra: [] });
       }
@@ -294,7 +296,8 @@ export function mergeJavaScriptDurations(text, observed, { source, floor = 2, re
   if (source) out.push(note, `  observed-run ${source}`);
   if (unrecorded.length) {
     const mean = unrecorded.reduce((sum, value) => sum + value, 0) / unrecorded.length;
-    out.push(`  default-seconds ${Math.max(0.1, Math.round(mean * 100) / 100)}`);
+    const previousDefault = raiseOnly ? Number(text.match(/^ {2}default-seconds (\S+)$/mu)?.[1] ?? 0) : 0;
+    out.push(`  default-seconds ${Math.max(previousDefault, 0.1, Math.round(mean * 100) / 100)}`);
   }
   for (const entry of entries) out.push(...entry.comments, `  test "${entry.file}"`, `    seconds ${entry.text}`, ...entry.extra);
   return `${out.join('\n')}\n`;

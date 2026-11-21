@@ -1,0 +1,138 @@
+{
+  "previousRevision": "d0b8b895661c6b5e809810c4da8a3db9f79138b3",
+  "previousBaselineSha256": "f6cb2488ea79b01df79598946f5397a89f2b107ad8c24a4393102b4e98616f97",
+  "currentBaselineSha256": "85b90bc60200d7eb881b6f0f767e7b60f7d6cc68b079dee03729d7732bbdc6ff",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "nativeSourceManifestUnchanged": true,
+  "caseCount": 221,
+  "unsupportedCount": 964,
+  "visitedPairs": 7016,
+  "differenceCount": 16,
+  "manifests": [
+    {
+      "file": "desktop/package.json",
+      "previousSha256": "f0b2301962b2ac88c55598cd8d0e89e6ee57cabec7ae9cf8f133849929c35c14",
+      "currentSha256": "51506cff9a2e4c7cce1fd89dbcf39f21d67ea4726b05106f6a607c2e5f3b26a2"
+    },
+    {
+      "file": "vscode/package.json",
+      "previousSha256": "964b20a5784e9fdccc0149de6fe45738d0022ad702b1d2bdd727ce49df54a38f",
+      "currentSha256": "1e9e14707c75922070d70bc239c06af68ce57b913f5c0f8b05b7373d2d729f29"
+    }
+  ],
+  "differences": [
+    {
+      "path": "/inventory/cases/68/program/initial/0/1/value",
+      "file": "desktop/package.json",
+      "kind": "source",
+      "previousSha256": "f0b2301962b2ac88c55598cd8d0e89e6ee57cabec7ae9cf8f133849929c35c14",
+      "currentSha256": "51506cff9a2e4c7cce1fd89dbcf39f21d67ea4726b05106f6a607c2e5f3b26a2"
+    },
+    {
+      "path": "/inventory/cases/68/program/fixtures/1/sha256",
+      "file": "desktop/package.json",
+      "kind": "sha256",
+      "previousSha256": "4117c082c7e1148230a735a498fb5d40728029cce77ef85646df6daf5f10fd9e",
+      "currentSha256": "c0c4a3eef343577d45844553c6374d4054e21b1db942870c46edeb7aa80d1d47"
+    },
+    {
+      "path": "/inventory/cases/69/program/initial/0/1/value",
+      "file": "desktop/package.json",
+      "kind": "source",
+      "previousSha256": "f0b2301962b2ac88c55598cd8d0e89e6ee57cabec7ae9cf8f133849929c35c14",
+      "currentSha256": "51506cff9a2e4c7cce1fd89dbcf39f21d67ea4726b05106f6a607c2e5f3b26a2"
+    },
+    {
+      "path": "/inventory/cases/69/program/fixtures/1/sha256",
+      "file": "desktop/package.json",
+      "kind": "sha256",
+      "previousSha256": "4117c082c7e1148230a735a498fb5d40728029cce77ef85646df6daf5f10fd9e",
+      "currentSha256": "c0c4a3eef343577d45844553c6374d4054e21b1db942870c46edeb7aa80d1d47"
+    },
+    {
+      "path": "/inventory/cases/70/program/initial/0/1/value",
+      "file": "desktop/package.json",
+      "kind": "source",
+      "previousSha256": "f0b2301962b2ac88c55598cd8d0e89e6ee57cabec7ae9cf8f133849929c35c14",
+      "currentSha256": "51506cff9a2e4c7cce1fd89dbcf39f21d67ea4726b05106f6a607c2e5f3b26a2"
+    },
+    {
+      "path": "/inventory/cases/70/program/fixtures/1/sha256",
+      "file": "desktop/package.json",
+      "kind": "sha256",
+      "previousSha256": "4117c082c7e1148230a735a498fb5d40728029cce77ef85646df6daf5f10fd9e",
+      "currentSha256": "c0c4a3eef343577d45844553c6374d4054e21b1db942870c46edeb7aa80d1d47"
+    },
+    {
+      "path": "/inventory/cases/216/program/initial/0/1/value",
+      "file": "vscode/package.json",
+      "kind": "source",
+      "previousSha256": "964b20a5784e9fdccc0149de6fe45738d0022ad702b1d2bdd727ce49df54a38f",
+      "currentSha256": "1e9e14707c75922070d70bc239c06af68ce57b913f5c0f8b05b7373d2d729f29"
+    },
+    {
+      "path": "/inventory/cases/216/program/fixtures/1/sha256",
+      "file": "vscode/package.json",
+      "kind": "sha256",
+      "previousSha256": "bdb9bd51f8a8e97bd8b9ff09737d530349675b20a3954af000afc7612f86bb8e",
+      "currentSha256": "8c02756db03a09d947dfdc747e8d7d92025f89bc1da71bf32bc06dcdd8f229f7"
+    },
+    {
+      "path": "/inventory/cases/217/program/initial/0/1/value",
+      "file": "vscode/package.json",
+      "kind": "source",
+      "previousSha256": "964b20a5784e9fdccc0149de6fe45738d0022ad702b1d2bdd727ce49df54a38f",
+      "currentSha256": "1e9e14707c75922070d70bc239c06af68ce57b913f5c0f8b05b7373d2d729f29"
+    },
+    {
+      "path": "/inventory/cases/217/program/fixtures/1/sha256",
+      "file": "vscode/package.json",
+      "kind": "sha256",
+      "previousSha256": "bdb9bd51f8a8e97bd8b9ff09737d530349675b20a3954af000afc7612f86bb8e",
+      "currentSha256": "8c02756db03a09d947dfdc747e8d7d92025f89bc1da71bf32bc06dcdd8f229f7"
+    },
+    {
+      "path": "/inventory/cases/218/program/initial/0/1/value",
+      "file": "vscode/package.json",
+      "kind": "source",
+      "previousSha256": "964b20a5784e9fdccc0149de6fe45738d0022ad702b1d2bdd727ce49df54a38f",
+      "currentSha256": "1e9e14707c75922070d70bc239c06af68ce57b913f5c0f8b05b7373d2d729f29"
+    },
+    {
+      "path": "/inventory/cases/218/program/fixtures/1/sha256",
+      "file": "vscode/package.json",
+      "kind": "sha256",
+      "previousSha256": "bdb9bd51f8a8e97bd8b9ff09737d530349675b20a3954af000afc7612f86bb8e",
+      "currentSha256": "8c02756db03a09d947dfdc747e8d7d92025f89bc1da71bf32bc06dcdd8f229f7"
+    },
+    {
+      "path": "/inventory/cases/219/program/initial/0/1/value",
+      "file": "vscode/package.json",
+      "kind": "source",
+      "previousSha256": "964b20a5784e9fdccc0149de6fe45738d0022ad702b1d2bdd727ce49df54a38f",
+      "currentSha256": "1e9e14707c75922070d70bc239c06af68ce57b913f5c0f8b05b7373d2d729f29"
+    },
+    {
+      "path": "/inventory/cases/219/program/fixtures/1/sha256",
+      "file": "vscode/package.json",
+      "kind": "sha256",
+      "previousSha256": "bdb9bd51f8a8e97bd8b9ff09737d530349675b20a3954af000afc7612f86bb8e",
+      "currentSha256": "8c02756db03a09d947dfdc747e8d7d92025f89bc1da71bf32bc06dcdd8f229f7"
+    },
+    {
+      "path": "/inventory/cases/220/program/initial/0/1/value",
+      "file": "vscode/package.json",
+      "kind": "source",
+      "previousSha256": "964b20a5784e9fdccc0149de6fe45738d0022ad702b1d2bdd727ce49df54a38f",
+      "currentSha256": "1e9e14707c75922070d70bc239c06af68ce57b913f5c0f8b05b7373d2d729f29"
+    },
+    {
+      "path": "/inventory/cases/220/program/fixtures/1/sha256",
+      "file": "vscode/package.json",
+      "kind": "sha256",
+      "previousSha256": "bdb9bd51f8a8e97bd8b9ff09737d530349675b20a3954af000afc7612f86bb8e",
+      "currentSha256": "8c02756db03a09d947dfdc747e8d7d92025f89bc1da71bf32bc06dcdd8f229f7"
+    }
+  ],
+  "limitation": "Complete source-fixture delta review only; no native specification was executed."
+}

@@ -1,0 +1,1489 @@
+{
+  "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+  "commit": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "completeRepositorySemanticReview": false,
+  "pagesFullyRead": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100
+  ],
+  "totalHistoricalPages": 254,
+  "files": [
+    {
+      "path": "dev/log/issues/24/pulls/25/ANALYSIS.md",
+      "sha256": "19d89a12114694a5f1c8e5002a69e421d3f614d31674bb3707ea96ac9461ca1e",
+      "totalLines": 75,
+      "readRanges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/DEPENDENCIES.md",
+      "sha256": "9b7a75c4e9f126f2f8ee156327ce66641803abcbba7dca2ea5121d1c2d1e6cf5",
+      "totalLines": 57,
+      "readRanges": [
+        [
+          1,
+          57
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/PLAN.md",
+      "sha256": "6f4e07ee07403c3f45d06b3826f813e0ab01429bedbf323cbbb73ba573084919",
+      "totalLines": 14,
+      "readRanges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/REQUIREMENTS.md",
+      "sha256": "8acaff3b07d6f758f1ed2ca42aaaa97d384299bc4ae7b8a129a38764d958b650",
+      "totalLines": 29,
+      "readRanges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/TRANSITIVE-DEPENDENCIES.md",
+      "sha256": "30ed6f8676c5a1959f44abde2dacab3531e8e94458e678b5466fa3ee8dbd1023",
+      "totalLines": 211,
+      "readRanges": [
+        [
+          1,
+          211
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/VERIFICATION.md",
+      "sha256": "d4c76f6a7a7eac530ae59326b0f581a6ad3f5d91e4c9d0bee9a2169ae19eda39",
+      "totalLines": 42,
+      "readRanges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/actionlint-upstream-report.txt",
+      "sha256": "da2ac6b6b7e7d89ab2a4427b9fc21ab3981fba175c1e190648c0561b1c615b22",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/baseline-all-syntax.log",
+      "sha256": "8de8be7094f873f9bb486eab6ed179e29263a9bfd8b8c066619488742e9c6612",
+      "totalLines": 8,
+      "readRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/baseline-node-syntax.log",
+      "sha256": "8de8be7094f873f9bb486eab6ed179e29263a9bfd8b8c066619488742e9c6612",
+      "totalLines": 8,
+      "readRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/bun-checks.log",
+      "sha256": "d41dfb34de6a5b2f70dc2e26568780f11e34890ec04edc82af3e900faac798c2",
+      "totalLines": 7,
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/ci-dependencies.log",
+      "sha256": "b597e6bbbf8dd083df72788e71ff2cd94b04693f7ea5bce72e16f88496be490b",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/cli-runtime-tests.log",
+      "sha256": "80aa5b95967535297a82bb513d244fe3eaf158de0340f499fe43eaf6cecf0628",
+      "totalLines": 11,
+      "readRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/file-size.log",
+      "sha256": "9895ba38d13050aac1af5a7b0c73ba9085af78b47f08030b7de099730c445eed",
+      "totalLines": 3,
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/format-final.log",
+      "sha256": "9733d5b64bacb4cc4667aca7f2bfd989baf71ab25dd9ecd4403bfbbf307f915b",
+      "totalLines": 23,
+      "readRanges": [
+        [
+          1,
+          23
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/jacoco-upstream-report.txt",
+      "sha256": "1d1cd8b56072b1746e5ac4b998a2769890ae732065703b465a1240729612d38f",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/javascript-tests.log",
+      "sha256": "3c370c3e0e211565bf33c0c22d7f057cd4b4cf701e9507861b494607992f2ac9",
+      "totalLines": 120,
+      "readRanges": [
+        [
+          1,
+          120
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-original-resolution.log",
+      "sha256": "914975852f96dc6cb09a50ea4ec131e8b88221f817347a779c3e2b92aaa742bc",
+      "totalLines": 18,
+      "readRanges": [
+        [
+          1,
+          18
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-resolution-updated.log",
+      "sha256": "9a3d94ea0c7fb0aaf004d87b6b1f2c5e1e6e9eec96192a66c06360880ea0fa7e",
+      "totalLines": 19,
+      "readRanges": [
+        [
+          1,
+          19
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-resolution.log",
+      "sha256": "0ffdfb23c271e96c9a90cf7cfc853833064f8099e2d0950457c40920411f4824",
+      "totalLines": 18,
+      "readRanges": [
+        [
+          1,
+          18
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration-2.log",
+      "sha256": "1810dd68bc8095bf8ec1bdde5bb65b8e3a2bf1e0d0cfe19174aa1c02b1ad9303",
+      "totalLines": 119,
+      "readRanges": [
+        [
+          1,
+          119
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration-3.log",
+      "sha256": "aef271dc60dbc2f1914c965a93259dd0697ba48ce03fe22f775dbe0e2afa2eb1",
+      "totalLines": 114,
+      "readRanges": [
+        [
+          1,
+          114
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration-4.log",
+      "sha256": "1a91dd6e93d747682184d1f854af5981192eb2f1110b70cf60694ea6b9c59059",
+      "totalLines": 267,
+      "readRanges": [
+        [
+          1,
+          267
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration-5.log",
+      "sha256": "285d3ee64293875212baef39d71d08704c2ce5a441fb9389db00873b12635ac5",
+      "totalLines": 136,
+      "readRanges": [
+        [
+          1,
+          136
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration.log",
+      "sha256": "7e4d041b77158b4fa7e5608bdd90357468425b46c3d15cbe619f2c254667b754",
+      "totalLines": 24,
+      "readRanges": [
+        [
+          1,
+          24
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-verify.log",
+      "sha256": "71ddf9b33fad8f47615394e4aa4300bcf61aad9218698ebffb17abf51df050f3",
+      "totalLines": 138,
+      "readRanges": [
+        [
+          1,
+          138
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-wrapper-generation.log",
+      "sha256": "ba9932a553510e7c129de0e76e15f73a0571c41e68b8f288f8498c6c7ed64aaf",
+      "totalLines": 120,
+      "readRanges": [
+        [
+          1,
+          120
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/metadata-consolidation.log",
+      "sha256": "475f07e6f12a3441a0e0e2fb8713a0493eaef7838d4af1e3f62dc55630a4ddb7",
+      "totalLines": 5,
+      "readRanges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/migration-regressions.log",
+      "sha256": "12afce25d0689482fddb0a5eed56844bd56aa8bc8a91c54074ca1c4a5a0013c4",
+      "totalLines": 45,
+      "readRanges": [
+        [
+          1,
+          45
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/osv-before-resolved-artifacts.log",
+      "sha256": "56b20c04d53cebb98397e4823b3a92e9f3b203289e9861d4b9a8dcac046b88a3",
+      "totalLines": 9,
+      "readRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/osv-dependencies.json",
+      "sha256": "54345d5194d238b6017d0f3181f392109ce35023cc6b4bdfa8c134943dcb578e",
+      "totalLines": 9,
+      "readRanges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/osv-dependencies.log",
+      "sha256": "7fd962ffcb2fc82d240e4846ef3364a026dd98808d93097536a16a1231563cc8",
+      "totalLines": 4,
+      "readRanges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/osv-plugins.log",
+      "sha256": "03ee2a70fcfc5b1f5d7b8d662ad2bd56ab1bdf8b1fc9e43c11108aaeca59b4b7",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/osv-resolved-artifacts.log",
+      "sha256": "dd741345806ba5d32df4dad6254d9c604c0f176eef169f0faff9ab182657b8f0",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/osv-scope-reproduction-summary.log",
+      "sha256": "612148e61082fad7c0394d10185456e2987e16c4998a3b499b3a9249af1c238b",
+      "totalLines": 3,
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/osv-scope-reproduction.log",
+      "sha256": "e96fc48f7e5cbef0052c5c9878753fcc6ca39472097fd0245960f5ccae1f463b",
+      "totalLines": 3,
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/osv-upstream-report.txt",
+      "sha256": "b38e54522cbc764b56e3ff4e3e858089a56352da644ed88eed924f4802ab831a",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/plexus-upstream-report.txt",
+      "sha256": "87f979cbaced6e3d19270c3153745145f0a9e93f924bfe847ae4d852d6e9e763",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit-evidence-normalization.log",
+      "sha256": "02eb109a42ff4f8c848bac30f6c2ca828a1bbf3df5f02c5e4e27e1871fb663b9",
+      "totalLines": 54,
+      "readRanges": [
+        [
+          1,
+          54
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit-final.log",
+      "sha256": "109312f736323648c99d2e999daf0d0831d0b539f353b04e92cbd54021e4bb2f",
+      "totalLines": 11,
+      "readRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit-install.log",
+      "sha256": "bb82503d0c4dddc421a6cf2943275c5415d5fd327499ebe966f20af571608154",
+      "totalLines": 38,
+      "readRanges": [
+        [
+          1,
+          38
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit-registry-snapshots.log",
+      "sha256": "5ea04352d2bd6676d49d5b855ee89ea7c3ad8c12bf953ed1d5eb795ce1bc1a63",
+      "totalLines": 11,
+      "readRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit.log",
+      "sha256": "109312f736323648c99d2e999daf0d0831d0b539f353b04e92cbd54021e4bb2f",
+      "totalLines": 11,
+      "readRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/registry-inventory.log",
+      "sha256": "91306cf46dbab88c1d9357fa0d025b784b2781dacbdef51f76f3c553eaced1c4",
+      "totalLines": 35,
+      "readRanges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/resolved-audit-tests.log",
+      "sha256": "f87f98c8be3ff959453ebf839cc305573777b264b369790edd6a5cbec1ee8fa4",
+      "totalLines": 14,
+      "readRanges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-queue-issue.json",
+      "sha256": "525edcfe6fa2dd098ac737f09aae5b41b00ac76c998262f9d7cf40582916eb19",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-queue-original.json",
+      "sha256": "9dc387943577224a24743336a60037d3590273ddec4a9d242648cde7ed036175",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-queue-pr.json",
+      "sha256": "cb93e7191bb8a0836755ee795c39a1351df254dc4960fdec64a065075ca8eccd",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-ubuntu26-issue.json",
+      "sha256": "0128ac11f67bdc3210c04345a5a8cbbda79dcf3d3412e1a63efe06203d9c3f1f",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-ubuntu26-search.json",
+      "sha256": "215f2ba725243f239cec7f0c45000f471c1395ff5dac75a27241aa267004a9cf",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/adoptium.json",
+      "sha256": "24363565f828de7ecc260b8c03e8a679ccb8b6b2c532a02a0e16dda1ed761859",
+      "totalLines": 29,
+      "readRanges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/current-pr-runs.json",
+      "sha256": "caaae01887a4f15fef27b31cdb39263d3b9b86f8193a098a0aef23a82d1eeeb2",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/dependabot-pr-21.json",
+      "sha256": "fc89e8665d5f82d9098f4858e4f0ef45b84f3cde1362e3920bd2cefe7256b76a",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/dependency-update-practices.md",
+      "sha256": "7945526bcd969cd07b2d26539ab750069311c13949899827ddecf5b84fd6926a",
+      "totalLines": 260,
+      "readRanges": [
+        [
+          1,
+          260
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/durian-swt-changelog.md",
+      "sha256": "be0e2273c0f94b3b1228d19b0bc2dbf36b42bd1c2a6afd0cea05a610405de97c",
+      "totalLines": 287,
+      "readRanges": [
+        [
+          1,
+          287
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-issue-comments.json",
+      "sha256": "58190636a983119b02bf3bc5d8030d0ef1ddfd090e557d6d4d340fd7450700b5",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-main-sha.txt",
+      "sha256": "b623fc0ee24a00b11499bd396a583d8b7608868717d9d15c5733b4b0241f28c8",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-pr-conversation-comments.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-pr-inline-comments.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-pr-reviews.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-sub-issues.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-actions-checkout.json",
+      "sha256": "05d6ed71fd4a08304a45518d144743971b4be1d8fc1446258675be97b09f1649",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-actions-setup-java.json",
+      "sha256": "8954e50a741cafdcd68cd1ff20c3b667212e18785c78597b8ac890f746aa1cc8",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-actions-setup-node.json",
+      "sha256": "b9e02f90e78f5a7304215a9f504a3ec07ae858ab492b7844251b4a6f9a1dad93",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-actions-upload-artifact.json",
+      "sha256": "5ce00ca5deffdacc1e164aff23395ed1146468a8a9086700fed5099f50f65f04",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-codecov-codecov-action.json",
+      "sha256": "ad8ada7e5aca4b70e4a9ba19a5fbdfb7264b38936539dacfa58181944ee81ab7",
+      "totalLines": 43,
+      "readRanges": [
+        [
+          1,
+          43
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-google-osv-scanner.json",
+      "sha256": "55982df2cd024bc19a94d9480b94d3fdb586ee77d46bf3ffde6e9da71d2ffed7",
+      "totalLines": 344,
+      "readRanges": [
+        [
+          1,
+          344
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-oven-sh-bun.json",
+      "sha256": "af90404e9d93dee0f8cd22a361c569b70a54a725855f59de2f8a9baf56aa29a5",
+      "totalLines": 1424,
+      "readRanges": [
+        [
+          1,
+          1424
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-oven-sh-setup-bun.json",
+      "sha256": "4da1eea5f8362c4f810a325b01c38cfb48f08d69ff4472b034bfe20b5b032e46",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-peter-evans-create-pull-request.json",
+      "sha256": "d7fc03190f4dea066cb0ef850838fa911f83626508e18c256268fbeb37481aba",
+      "totalLines": 43,
+      "readRanges": [
+        [
+          1,
+          43
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-pre-commit-pre-commit-hooks.json",
+      "sha256": "7646bbede73003321a8ffa0ffbb5c4d933163a6f4e33861dc9399809a5cd04c9",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-pre-commit-pre-commit.json",
+      "sha256": "ccb756c2e3e43065756dcdef909f70ea98ba111d73ac34b1cddfb8bf3a8fc998",
+      "totalLines": 92,
+      "readRanges": [
+        [
+          1,
+          92
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-rhysd-actionlint.json",
+      "sha256": "822000e63c37642f95af8f788644e828faf30d9320d78e7baa4220270ef6e7bf",
+      "totalLines": 488,
+      "readRanges": [
+        [
+          1,
+          488
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/google-java-format-release.json",
+      "sha256": "15d6f871b7264a8a496e9995fdcc2c13fd7ca3b35ba947ca3d3505d83e0f5b2f",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/implementation-pipeline.json",
+      "sha256": "8622dd92a3c731ca5432aa2d76cf2c806f364b5a6e3a3feef4e0e6f3fe4a585d",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/implementation-policy.json",
+      "sha256": "b8588ee6f7b296bfc7bc2ea8cfb2e4fe880fad41e43b419c96da1a7bc8979d27",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/implementation-security.json",
+      "sha256": "46eba2f796f21c4559499aa524e8689dbb0d72716f5fd8f2ad9e2bba73045d26",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/initial-main-runs.json",
+      "sha256": "b7700316b95d7f283017bb67c93556162e264d5e7fc527d6353f9d0b80ea191a",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/initial-pr-runs.json",
+      "sha256": "5ca9bbea5f61aded1f74896d82cb5c3a6ef9df8e4d519a25d16de10d39c953ce",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/issue-24.json",
+      "sha256": "6780ba648fb2ec534b4032a1d3cf0ebafcb2583668d66b9330e2ecc10c0429b2",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/issue-comments.json",
+      "sha256": "58190636a983119b02bf3bc5d8030d0ef1ddfd090e557d6d4d340fd7450700b5",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/java27.json",
+      "sha256": "c961f42cabf2f42d47fa0323bba103b85df7b6dc7ae1c0b1d92f0ed5b53871a9",
+      "totalLines": 37,
+      "readRanges": [
+        [
+          1,
+          37
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/json-simple-changelog.txt",
+      "sha256": "1f71509e6c5e5d56d6304f50199b29f62d7caea2e1edd2ad962bdcec2593d585",
+      "totalLines": 137,
+      "readRanges": [
+        [
+          1,
+          137
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/junit6-migration.md",
+      "sha256": "3b40791b085dff0c139337efada0986c7affed5360c5a00f5c41dbb38c265f91",
+      "totalLines": 71,
+      "readRanges": [
+        [
+          1,
+          71
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/main-pipeline.json",
+      "sha256": "f83a69e46fccea082be2a7091a8846962a626b2cec0a9d077c6bdbce3f52471b",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/main-security.json",
+      "sha256": "96b42ccfe1bcb42ddbe7d3f303574b4f27dcb3bed0e1d1d9da3d7ff7b454a89d",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-apache-maven.xml",
+      "sha256": "c353c296e75593b77b942fbb48d9cde72a0ecb4678889fc3cd489b4f2a6af371",
+      "totalLines": 102,
+      "readRanges": [
+        [
+          1,
+          102
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-checkstyle.xml",
+      "sha256": "4079aaac782c0b7e7278882aad23a58021b01bf7a512490a4e4855f86b38b7d0",
+      "totalLines": 207,
+      "readRanges": [
+        [
+          1,
+          207
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-google-java-format.xml",
+      "sha256": "63b763d8069833b3c84c8ffc4225fbc7b9a969a4fc66c98b271f6ba3560455a1",
+      "totalLines": 59,
+      "readRanges": [
+        [
+          1,
+          59
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-jacoco-maven-plugin.xml",
+      "sha256": "a2e6335709927f02b60a1d5e3063af33ac15f723d644e8788cc61c10466d174f",
+      "totalLines": 53,
+      "readRanges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-junit-jupiter-params.xml",
+      "sha256": "668a93a83af54a6f0ad96d55aff4e3ac0a16e9cd61f4968fb26e83814fa984b2",
+      "totalLines": 122,
+      "readRanges": [
+        [
+          1,
+          122
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-junit-jupiter.xml",
+      "sha256": "8c200889ad17c89a3f88419f0c0e7550436cbc8fe25b95327821044b9f5f7c0f",
+      "totalLines": 99,
+      "readRanges": [
+        [
+          1,
+          99
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-clean-plugin.xml",
+      "sha256": "cc806bbdff9fb4ef5072c9d5c2f5e81feb4c82092bdf942306e2159741d5f670",
+      "totalLines": 35,
+      "readRanges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-compiler-plugin.xml",
+      "sha256": "a9497cbfe76f06c2f7682b12e0c2cea8725ee69cdc1c7640481405e9e80eed26",
+      "totalLines": 52,
+      "readRanges": [
+        [
+          1,
+          52
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-dependency-plugin.xml",
+      "sha256": "597c3b5f3181eca12d8151fc59d786cda051ed72f4764daac74e0616342021b2",
+      "totalLines": 47,
+      "readRanges": [
+        [
+          1,
+          47
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-deploy-plugin.xml",
+      "sha256": "b11cbef3fcfba913daa2168d8be2564788cdd8cead36be4954d7fb253838c66e",
+      "totalLines": 37,
+      "readRanges": [
+        [
+          1,
+          37
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-enforcer-plugin.xml",
+      "sha256": "4b58111a46979123b2ee3773900105d5296591e472a8f0a7c82f06a2680bc805",
+      "totalLines": 41,
+      "readRanges": [
+        [
+          1,
+          41
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-gpg-plugin.xml",
+      "sha256": "6048f4378288f1df66a9540cf8103740d0983dfe5a328bbbfa388230dea7f481",
+      "totalLines": 33,
+      "readRanges": [
+        [
+          1,
+          33
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-install-plugin.xml",
+      "sha256": "74f6e8453779aef836394b4297b43c8191a3cd178a2f12e485e962a8f22269e9",
+      "totalLines": 34,
+      "readRanges": [
+        [
+          1,
+          34
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-jar-plugin.xml",
+      "sha256": "332d78d2683b31a6fb5983c9ea298a9d152cf27db8d29c3a895f5ac081505160",
+      "totalLines": 40,
+      "readRanges": [
+        [
+          1,
+          40
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-javadoc-plugin.xml",
+      "sha256": "4714383a26d6eac40640bfe676623c4038bd4875f3e68a870654121f5240d6f9",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-resources-plugin.xml",
+      "sha256": "a4ca8c94f86a81472da7118d37eed3ecbf0365cc117435b9f44561209c6838f6",
+      "totalLines": 36,
+      "readRanges": [
+        [
+          1,
+          36
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-site-plugin.xml",
+      "sha256": "165b40d905bbb0662c5cd70b272cf9643de555d343418455bf0e463108f352aa",
+      "totalLines": 65,
+      "readRanges": [
+        [
+          1,
+          65
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-source-plugin.xml",
+      "sha256": "38cc2595cdaa11e76baf677a9c996cd3b52b82f32a3339123dbd4d45a513980e",
+      "totalLines": 35,
+      "readRanges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-surefire-plugin.xml",
+      "sha256": "ce52db2a631de836bca791d42992cb54918c3c13fd9d5a776d946080f77209eb",
+      "totalLines": 85,
+      "readRanges": [
+        [
+          1,
+          85
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-wrapper-plugin.xml",
+      "sha256": "f46009a69226a26610b85822412c114f9d48df47aad4abc046ca52a9f2f47738",
+      "totalLines": 22,
+      "readRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-spotbugs-maven-plugin.xml",
+      "sha256": "5abf58f0f2e272174baf1a4620a913c3dbc54b8fae6169502a24a7efc343ceb2",
+      "totalLines": 99,
+      "readRanges": [
+        [
+          1,
+          99
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-spotless-maven-plugin.xml",
+      "sha256": "d5b5ce5aeb349592bc39676c2caf089df63419f96cc25938f3d0d2ea4b0ceeee",
+      "totalLines": 159,
+      "readRanges": [
+        [
+          1,
+          56
+        ]
+      ],
+      "completeSourceRead": false
+    }
+  ],
+  "decision": "Historical Java toolchain migration, audit and requirements records supply context only. Successful dependency resolution does not establish plugin runtime compatibility. The historical transitive inventory is fully read, but remaining historical source and complete-repository applicability remain unfinished. Preserve Formal AI default-branch builds, exact source/result identity, actual successful audit inventories and compatibility regressions. No current Java, Maven or Formal AI native execution is claimed.",
+  "independentAuthorshipCredit": 0,
+  "observationsThroughPage14": [
+    "The completed transitive inventory documents three compatibility exceptions: legacy Doxia/Sink ABI for JaCoCo, Plexus duplicate Guice scopes, and stable XML dependencies that require Maven release candidates. These historical claims are not a basis for upgrading unrelated Formal AI dependencies without execution.",
+    "Historical verification distinguishes source-tree auditing from actual resolved plugin/project artifacts and retains before/after advisories. Formal AI must keep its own successful dependency inventory before audit; historical Java success does not establish that result.",
+    "Historical verification identifies commit SHAs and timestamps, distinguishes corrected experimental failures from outstanding failures, and records final source/CI identities. Existing Formal AI evidence must retain the same distinction.",
+    "At checkpoint 14, pages 15 through 254 remained unread. These observations are historical context and claim no current Java or Formal AI native execution."
+  ],
+  "observationsThroughPage22": [
+    "Original and updated dependency-resolution logs succeed, but migration attempts 2 and 3 fail at the resources Mojo with duplicate Guice scope annotations. Artifact resolution is insufficient evidence of executable compatibility.",
+    "Migration attempt 4 runs all 28 Java tests successfully but fails during the JaCoCo report with NoClassDefFoundError for the legacy org/codehaus/doxia/sink/Sink class. Its printed plugin realm contains the incompatible Doxia 2.2.0 sink artifact.",
+    "Migration attempt 5 completes all 28 tests, JaCoCo reporting, jar/source/javadoc production and SpotBugs with BUILD SUCCESS. This verifies the recorded historical combination only, not a current upgrade or Formal AI behavior.",
+    "A separate migration log fails Spotless dependency resolution because kotlin-stdlib-common 2.4.21 is unavailable from Maven Central. Latest-version overrides need artifact availability and compatibility checks rather than resolution-only assumptions.",
+    "The maven-verify.log review covers source lines 1 through 43 only. Pages 23 through 254 and the remainder of that file remain unread. No executable Java or Formal AI native validation is inferred from source reading."
+  ],
+  "observationsThroughPage37": [
+    "Pages 23 through 28 and 29 through 37 were read in consecutive sessions. Page 35 was separately reread after a combined output truncated it. These are text reads, not executions.",
+    "The first long OSV response in osv-scope-reproduction.log is fully read, including all 66 fragments of its first line. It records historical Log4j core 2.14.1 and API 2.14.1 advisories. This historical dependency state is not current security verification.",
+    "The second long line has only fragments 1 through 3 of 66 read at page 37. The log remains partial, so the file is not counted as fully read.",
+    "Pages 38 through 254 remain unread. Complete repository semantic review, current upstream runtime/publication acceptance, and the broader Formal AI acceptance criteria remain unfinished."
+  ],
+  "structuredComparison": {
+    "path": "experiments/issue-1580/evidence/checks/java-historical-osv-scope-comparison.json.gz",
+    "scope": "Complete parsed compile/test OSV records; all three differences read, with seven recursively equal subtrees hashed. Equal vulnerability payload reuses the fully read compile record. This is comparative review, not a claim of literal reading of test fragments on pages 39–47.",
+    "literalUnreadPagesWithinForwardProgress": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+    ]
+  },
+  "observationsThroughPage55": [
+    "Literal pages 38 and 48–55 are fully read. Pages 39–47 remain literally unread; complete parsed OSV comparison separately establishes that both scopes share the vulnerability results, differing only in the test dependency-group label, record name and elapsed diagnostic. The OSV log is still marked partial under literal source reads.",
+    "The plugin-dependency OSV record exits 128 with no package sources and an empty stdout. Historical source-only scanning does not establish coverage of resolved Maven plugin artifacts; the existing six resolved-audit regressions preserve this distinction.",
+    "The pre-commit normalization record changes retained logs using whitespace and end-of-file hooks. These versioned files are normalized historical evidence; their current hashes must not be represented as hashes of unmodified original command streams.",
+    "The original actionlint issue and queue proposal, Ubuntu runner report, Adoptium release data and JUnit Dependabot pull request are fully read as historical context. Their versions and status are not current dependency compatibility verification.",
+    "The linked actionlint screenshot is downloaded with authenticated GitHub access, verified as a valid PNG and viewed. It shows queue rejected under concurrency at workflow line 60; no current application UI or actionlint execution is claimed.",
+    "The complete historical dependency-update practices source is read. Its discussion of automatic merges and administrative bypass describes the upstream tool; it does not authorize changing Formal AI branch protection or merging this draft. Current applicability, remaining historical pages and broader issue acceptance stay unfinished."
+  ],
+  "nextUnreviewedLiteralPage": 39,
+  "nextForwardLiteralPage": 101,
+  "observationsThroughPage58": [
+    "Pages 56–58 are fully read. Together with page 55 they complete the historical Durian SWT changelog. Its Java 17, Kotlin flow and platform notes are third-party historical context, not verification of current Formal AI dependencies.",
+    "The retained final issue conversation, final main SHA, empty pull-request conversation/review/inline-comment lists and empty sub-issue list are fully read. These are historical snapshots rather than fresh GitHub state.",
+    "The complete retained actions/checkout release record and the first six lines of the actions/setup-java record are read. Historical release data is not current action compatibility verification.",
+    "Literal pages 39–47 remain unread. Complete repository semantic review and the issue acceptance criteria remain unfinished."
+  ],
+  "observationsThroughPage60": [
+    "Pages 59–60 complete the retained actions/setup-java, actions/setup-node and actions/upload-artifact release records. Their Maven mirror, Node-version retry, ESM/authentication and rate-limit handling notes are historical dependency context. Current version and workflow compatibility review remain separate acceptance work.",
+    "The first 33 lines of the retained Codecov action release record are read. Literal pages 39–47 and forward pages 61–254 remain unread; complete repository review is not claimed."
+  ],
+  "observationsThroughPage64": [
+    "Pages 61–64 complete the retained Codecov action and google/osv-scanner v2.7.1 release records, including every release-note fragment and asset record. They remain historical evidence; no asset download or current dependency execution is claimed.",
+    "The OSV record describes deterministic vulnerability sorting, malformed archive-size rejection, confined extraction, lockfile extraction and fix-command argument validation. These are review context rather than evidence that the current Formal AI project exercises those release paths.",
+    "Only the first three lines of the retained oven-sh/bun release record have been read. Pages 39–47 and forward pages 65–254 remain unread; complete repository review is not claimed."
+  ],
+  "observationsPage39": [
+    "Page 39 was fully read: retained osv-scope-reproduction.log line 2 fragments 10–15 of 66, covering historical Log4j advisory and affected-package records. This is historical review, not current execution or security advice.",
+    "The long second source line is still incomplete; this page adds no complete source line or file. Pages 40–47 and forward pages 65–254 remain unread."
+  ],
+  "observationsPages40And41": [
+    "Both pages were read completely: osv-scope-reproduction.log line 2 fragments 16–27 of 66. These retained records cover Log4j advisory references and package ranges, including JDBC appender configuration scope; no current package execution or security conclusion is claimed.",
+    "The second source line remains incomplete; neither page adds a complete source line or file. Pages 42–47 and forward 65–254 remain unread."
+  ],
+  "observationsPages42Through47": [
+    "All six pages were read completely: retained osv-scope-reproduction.log line 2 fragments 28–63 of 66. Together with previously read fragments, the historical file is now complete.",
+    "The payload includes XML-layout event-loss, Log4Shell, self-referential lookup, Socket Appender TLS verification and Log4j API advisory records with their package ranges and references. These are retained scope-reproduction data, not present dependency execution or current remediation advice.",
+    "Literal pages 1–64 are now complete with no internal page gap. Forward pages 65–254 remain unread; full template semantic review is unfinished."
+  ],
+  "observationsPages65Through72": [
+    "All eight pages were read completely: retained github-oven-sh-bun.json lines 4–938. Together with the previously read opening three lines, the historical release record is partially read through line 938.",
+    "The record identifies Bun v1.4.4, a published non-prerelease snapshot, and release archive metadata for Darwin, FreeBSD and Linux ARM/x64 variants including Android, musl and profile builds. URLs, digests and download counts are historical response data; no asset download or present runtime/compatibility verification is claimed.",
+    "Literal pages 1–72 are complete with no internal page gap. Forward pages 73–254 remain unread; full template semantic review is unfinished."
+  ],
+  "observationsPages73Through78": [
+    "Pages 73–78 were read in full. They finish the historical Bun v1.4.4 release response, setup-bun v2.2.0, create-pull-request v8.1.3 and pre-commit-hooks v6.0.0; the retained pre-commit response is partially read through line 18.",
+    "Bun asset names, digests, dates and download counts are historical response data. The setup-bun notes describe a Node.js 24 action runtime, create-pull-request describes a signed-commit ref check, and pre-commit-hooks describes Python >=3.9 and removal or replacement of two hooks. None establishes that the current repository runs those versions or passes affected paths.",
+    "Literal coverage is continuous pages 1–78/254. Pages 79–254 remain unread, and full template semantic applicability remains unfinished."
+  ],
+  "observationsPages79Through92": [
+    "All fourteen pages were literally read without truncation. They complete the retained pre-commit, actionlint and google-java-format release responses; implementation and initial/final pipeline/security records; issue 24 and its comments; Java 27 metadata; json-simple changelog; JUnit 6 migration guidance; and the Maven and Checkstyle version catalogs.",
+    "The retained JUnit migration raises its Java baseline to 17 and Kotlin baseline to 2.1, aligns module versions and replaces deprecated extension-store APIs. These are historical migration context and do not establish current library compatibility or applicability to Formal AI.",
+    "Historical main head 600f3c713ca5b8cec3718a0713c2220fe154118c records successful Java 21 tests on Windows, Linux and macOS, lint and packaging, while release jobs are skipped. This is template history, not execution of the current Formal AI head or a new release.",
+    "Continuous literal coverage is pages 1–92/254. The google-java-format Maven catalog is partly read through line 35; pages 93–254 and full semantic applicability remain unfinished. No download or present runtime verification is claimed from catalog metadata."
+  ],
+  "observationsPages93Through100": [
+    "All eight pages were literally read without truncation. They finish the retained google-java-format, JaCoCo, JUnit Jupiter, Maven plugin and SpotBugs catalogs and begin the Spotless catalog.",
+    "The retained catalogs include JUnit Jupiter 6.1.3, JaCoCo 0.8.16, compiler 4.0.0-beta-5, Surefire 3.6.1 and SpotBugs 4.10.5.0. These are historical catalog observations, not compatibility, download or current runtime verification.",
+    "Continuous literal coverage is pages 1–100/254. The Spotless catalog is partly read through line 56; pages 101–254 and full semantic applicability remain unfinished. No independent Formal AI authorship credit is claimed."
+  ]
+}

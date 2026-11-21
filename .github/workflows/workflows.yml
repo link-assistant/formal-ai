@@ -22,8 +22,8 @@
 # cannot quietly narrow itself. The `-ignore` flag the step used to carry now
 # lives in `.github/actionlint.yaml`, which the image reads as well.
 #
-# Both jobs are gated on `paths: ['.github/**']`: their findings can only change
-# when the workflows do.
+# Workflow checks are gated on `paths: ['.github/**']`: their findings can only change
+# when workflow sources do; the artifact fixture also selects its extractor.
 
 name: Workflows
 
@@ -46,12 +46,12 @@ on:
         type: string
   push:
     branches: [main]
-    paths: ['.github/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
-    paths: ['.github/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
 permissions:
@@ -63,8 +63,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-actionlint
-      cancel-in-progress: true
+      group: check-${{ github.workflow }}-${{ github.ref }}-actionlint${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 3
@@ -74,7 +74,23 @@ jobs:
           sparse-checkout: |
             /.github/
             /rust/tests/fixtures/actionlint/
+            /scripts/check-workflow-concurrency.mjs
+            /experiments/issue-1580/workflow-concurrency.test.mjs
+            /scripts/documentation-policy-dependencies/
+            /package.json
           sparse-checkout-cone-mode: false
+
+      # The upstream schema still rejects queue. Qualify its values and the
+      # forbidden cancellation combination separately, using only the locked parser.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies
+      - run: |
+          mkdir -p node_modules
+          ln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml
+      - run: node scripts/check-workflow-concurrency.mjs
+      - run: node --test --test-concurrency=1 experiments/issue-1580/workflow-concurrency.test.mjs
 
       # The image bundles ShellCheck and pyflakes, so this lints every `run:`
       # block as well as the workflow schema. Reproduce locally with:
@@ -134,8 +150,8 @@ jobs:
     permissions:
       contents: read
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-zizmor
-      cancel-in-progress: true
+      group: check-${{ github.workflow }}-${{ github.ref }}-zizmor${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 3
@@ -221,3 +237,110 @@ jobs:
           min-severity: high
           persona: pedantic
           version: 1.29.0
+
+  artifact-roundtrip:
+    name: Artifact transport (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-artifact-${{ matrix.os }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 3
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/download-artifact/
+            /scripts/extract-artifacts.py
+            /experiments/issue-1580/artifact-transport-roundtrip.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Prepare a bounded artifact and cached destination
+        shell: bash
+        env:
+          ROUNDTRIP: ${{ runner.temp }}/artifact-roundtrip
+        run: python experiments/issue-1580/artifact-transport-roundtrip.py prepare "$ROUNDTRIP"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: artifact-roundtrip-${{ matrix.os }}
+          path: ${{ runner.temp }}/artifact-roundtrip/source
+          if-no-files-found: error
+          retention-days: 1
+      - uses: ./.github/actions/download-artifact
+        with:
+          name: artifact-roundtrip-${{ matrix.os }}
+          path: ${{ runner.temp }}/artifact-roundtrip/download
+      - name: Verify actual downloaded bytes and cached replacement
+        shell: bash
+        env:
+          ROUNDTRIP: ${{ runner.temp }}/artifact-roundtrip
+        run: python experiments/issue-1580/artifact-transport-roundtrip.py verify "$ROUNDTRIP"
+
+  buildkit-bootstrap:
+    name: Immutable BuildKit bootstrap and registry fallback
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-buildkit-bootstrap${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 3
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/actions/setup-buildx-resilient/
+            /experiments/issue-1580/buildkit-bootstrap-probe.py
+          sparse-checkout-cone-mode: false
+      - name: Prepare bootstrap identity evidence
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py prepare "$PROBE_DIRECTORY"
+      - name: Initialize an actual BuildKit daemon
+        id: initial
+        timeout-minutes: 4
+        uses: ./.github/actions/setup-buildx-resilient
+        with:
+          cleanup: 'false'
+      - name: Verify the running daemon and actual image identity
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+          IMAGE: ${{ steps.initial.outputs.image }}
+          BUILDER: ${{ steps.initial.outputs.name }}
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify "$PROBE_DIRECTORY" initial "$IMAGE" "$BUILDER"
+      - name: Inject only a canonical image-pull outage
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py install-fault "$PROBE_DIRECTORY"
+      - name: Initialize an actual daemon through the mirror fallback
+        id: fallback
+        timeout-minutes: 4
+        uses: ./.github/actions/setup-buildx-resilient
+        with:
+          cleanup: 'false'
+      - name: Verify actual mirror recovery and the unchanged image digest
+        timeout-minutes: 1
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
+          IMAGE: ${{ steps.fallback.outputs.image }}
+          BUILDER: ${{ steps.fallback.outputs.name }}
+        run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify "$PROBE_DIRECTORY" mirror "$IMAGE" "$BUILDER"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: buildkit-bootstrap-identity
+          path: ${{ runner.temp }}/buildkit-bootstrap/
+          if-no-files-found: error
+          retention-days: 7

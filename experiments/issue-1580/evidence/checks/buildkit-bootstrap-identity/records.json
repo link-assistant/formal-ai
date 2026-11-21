@@ -1,0 +1,975 @@
+[
+  {
+    "file": "buildkit-immutable-identity/action-before.yml.gz",
+    "rawSha256": "7bfd46eb9bbeaa8ec42aeb05abd16a454cced8ed859bb957ebe0c87e0b948a0f",
+    "archiveSha256": "136dfd52f7ab5c2321f6065903a3e3c19bbff232f11dec1d6e859560e76993fb",
+    "bytes": 5458,
+    "lines": 112
+  },
+  {
+    "file": "buildkit-immutable-identity/container-workflow-before.yml.gz",
+    "rawSha256": "ec92bbf3b115a4a552341494fc063aba5494e92ea12fb0e1b5f7aec47ff1cf54",
+    "archiveSha256": "602dd65b6664616ecae5b9f566501f242b5140a1a3c0db3d6b7f9474cdd39f1b",
+    "bytes": 50836,
+    "lines": 1023
+  },
+  {
+    "file": "buildkit-immutable-identity/docker-digest-tag.result.json.gz",
+    "rawSha256": "247fe44b19fe29619150b740adc66d4d12044b2ed00fa281686b5ae66f9845c3",
+    "archiveSha256": "75d54937234f31876b866677cc40c38a7d2ef0cf7dac790ee09f3de53e8d24c5",
+    "bytes": 184,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-immutable-identity/docker-digest-tag.stderr.gz",
+    "rawSha256": "19444d72ba7503841cc27b4fecc9f930411f7d78fcb77229db2a10d90c2228b6",
+    "archiveSha256": "e15c6e9b2928db3ded308389c60cc3ea58cb458fb166e502e33134e830561eb2",
+    "bytes": 49,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-immutable-identity/docker-digest-tag.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-immutable-identity/docker-version.result.json.gz",
+    "rawSha256": "7637224eb03ffedb17f7837a697ba7428a339a7c6c6d64928d56cf0bb731f4d0",
+    "archiveSha256": "9b4476b61fea19b39357106c3ecf150d82267ba5443730d0190ef68314adfe2f",
+    "bytes": 49,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-immutable-identity/docker-version.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-immutable-identity/docker-version.stdout.gz",
+    "rawSha256": "a2fa5f03e0900d5934ab5c2732523974f35937d80aa03174ebd249ef81c481d0",
+    "archiveSha256": "d776e8fbc094693853cbf8134bbf4fa0e7ce98eeb44c8a26206fa45e1e1e6d54",
+    "bytes": 37,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-immutable-identity/registry-headers.json.gz",
+    "rawSha256": "3150e6c3a5b6a08a97d5090e7ff31db1ed1f3a7bd701fb8b76d905e72d3ff4b6",
+    "archiveSha256": "23e2a8a8db4519b3b322b4fecbf39d0da0d197b02b0b59046b1524b25478b842",
+    "bytes": 501,
+    "lines": 11
+  },
+  {
+    "file": "buildkit-immutable-identity/registry-index.json.gz",
+    "rawSha256": "baf6138eb8c37644800c7c913fba051e840ebb9ba13eaf92d92ef9a1712d0b4c",
+    "archiveSha256": "416aef72c20ab2d6b4acdb22682fa1e121deff030ba92400e63f03993f9887d0",
+    "bytes": 5296,
+    "lines": 150
+  },
+  {
+    "file": "buildkit-immutable-identity/regression-after.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-immutable-identity/regression-after.stdout.gz",
+    "rawSha256": "3b21afb92cefc5469f25ee1c2bde38a3104574f5046830ca951a5a32644317b2",
+    "archiveSha256": "d777f9dc0f3895f107cc9f4f3d710f90a34d876ff24a115bbc12db5673f2f678",
+    "bytes": 1278,
+    "lines": 40
+  },
+  {
+    "file": "buildkit-immutable-identity/regression-before.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-immutable-identity/regression-before.stderr.initial-fixture.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-immutable-identity/regression-before.stdout.gz",
+    "rawSha256": "6fe48a5a15adcfd4a699937f7f4a96557078bd26b5dce432ca5495804e1e7abb",
+    "archiveSha256": "68cce114b03cb3fe61127ee7f0974569bc2366eff5a285db9828743ca1c86a62",
+    "bytes": 5887,
+    "lines": 165
+  },
+  {
+    "file": "buildkit-immutable-identity/regression-before.stdout.initial-fixture.gz",
+    "rawSha256": "27d7885e3d2005b3e1494ab9f70aa7b9f0f30b6b8c60a7bab20b647dd8688979",
+    "archiveSha256": "5c076d445486499603a2665938d0d5960ce52aeef2137d598ad67e3d98343663",
+    "bytes": 5248,
+    "lines": 94
+  },
+  {
+    "file": "buildkit-immutable-identity/regression-initial-fixture.mjs.gz",
+    "rawSha256": "8bb7bdbe6af2f479fb8a1dcb35596b05d8ea3b3677471e82a24491e2c0d804de",
+    "archiveSha256": "e9b3c1575e6da9b472ddf42209dd0d8c69354925c9867adfeb0b71e2aca182b8",
+    "bytes": 4795,
+    "lines": 79
+  },
+  {
+    "file": "buildkit-immutable-identity/resolution.json.gz",
+    "rawSha256": "d4933212bdc1def6ac62b590742ab693c144a4bf97980e32a1e9c74b36cc6486",
+    "archiveSha256": "1dacb126a42bd8d1db24440d1873360c67b49996b00417b70a60ed54e358c42d",
+    "bytes": 655,
+    "lines": 19
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-action.yml.decoded.gz",
+    "rawSha256": "9c55229011a0566758962f36c74309c8ab06f8905a5997591a6a46319401ab38",
+    "archiveSha256": "87ab5ff3d447429c67c6f8061a86ed9a4c94c8dc6eebceb0860ad066fdf57676",
+    "bytes": 2409,
+    "lines": 77
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-action.yml.result.json.gz",
+    "rawSha256": "700de530cf3bb1aa8dee41d9ecc307a69b1cd5b6c760c85c6184b4f551703014",
+    "archiveSha256": "258b6f21480c0d551d017b1ec26a9b9dd03cddeaccc38aef652a0e0882590c65",
+    "bytes": 102,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-action.yml.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-action.yml.stdout.gz",
+    "rawSha256": "c1b5026907a754e3ab8cb12a689237855dc6388333d51996932caf4e0c40cc56",
+    "archiveSha256": "e11798fdc2f37392a73c2ffcbb75e2327485973b95949589ffe73dfd6ef65021",
+    "bytes": 4141,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-package.json.decoded.gz",
+    "rawSha256": "4e18c755d84dcd403af7b136bac535c58f7dc4e19fca8e7b6abce42f8871e840",
+    "archiveSha256": "b1df9588b76ebdcb73e0297df3b965ec15a8f4124dc5167432ac4d437e04edf5",
+    "bytes": 1487,
+    "lines": 48
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-package.json.result.json.gz",
+    "rawSha256": "6f43d95cfea0879216d062701259473895018d829f82b3bd4fdb8a5def2fbe97",
+    "archiveSha256": "0dacfac778b5a43eea98162b99120dc083e5cfc3cc3bada77c42f2a7bbf42654",
+    "bytes": 104,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-package.json.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-package.json.stdout.gz",
+    "rawSha256": "466c12cde6ffabf1529cde7a8f53158c7e5715cc56940de7bce441b040f71b5e",
+    "archiveSha256": "be502383775eb8c5291b6e1a0ff628cb188e075d912d83d8f57dae1a1a8e9188",
+    "bytes": 2887,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-source-main.ts.decoded.gz",
+    "rawSha256": "e37c541ba7804b1471dd77a93a84ff7a81e6e37ba36fb4f7504aa82c0c3c592a",
+    "archiveSha256": "277e258c3e3a63d4dbbc1c53003e8247660d1910b7f708d42b887f985e672cd2",
+    "bytes": 12756,
+    "lines": 310
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-source-main.ts.result.json.gz",
+    "rawSha256": "48779707cce30bd61bda57c95a11f376235eba274c6bcbf22fd3f956454d33f8",
+    "archiveSha256": "d431d4be9ece9ae31c1f2af95e9e62fa9c90cd0d7b7457ede114bf88d519aafa",
+    "bytes": 103,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-source-main.ts.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-sources/docker-buildx-source-main.ts.stdout.gz",
+    "rawSha256": "da336a70826fc7af8fd2ee9b7ef554625a37548d739b0111e82fe77ff2eec85c",
+    "archiveSha256": "774563fdbed06dfa6e5531d35a0bf55aac903179882acd12af2bd8ff34e4c23e",
+    "bytes": 18401,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-sources/mirror-index.json.gz",
+    "rawSha256": "baf6138eb8c37644800c7c913fba051e840ebb9ba13eaf92d92ef9a1712d0b4c",
+    "archiveSha256": "416aef72c20ab2d6b4acdb22682fa1e121deff030ba92400e63f03993f9887d0",
+    "bytes": 5296,
+    "lines": 150
+  },
+  {
+    "file": "buildkit-bootstrap-sources/mirror-resolution.json.gz",
+    "rawSha256": "e35bcfcf7bb7fe48adab95dcc78a9743606d86600c45d98d3f48acb7812206b0",
+    "archiveSha256": "aa65e5aa833389126c56be7440f3ea4b55a0e300e985184fca515842fadaa369",
+    "bytes": 752,
+    "lines": 17
+  },
+  {
+    "file": "buildkit-bootstrap-sources/rust-template-action.result.json.gz",
+    "rawSha256": "c56e244da9667d943ee256c2b0bfb575a0f47812484f2ada11c80bde9b5189b6",
+    "archiveSha256": "7638f26c438aaa63d31f2f78000b3fe94f391b6f690ada56422f687f7d0c4f50",
+    "bytes": 213,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-sources/rust-template-action.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-sources/rust-template-action.stdout.gz",
+    "rawSha256": "4e553cc3bf812c58ec95fe56f521efb5c3c02b61400c8c4f22e8a6ca9f52e433",
+    "archiveSha256": "4f51578e8df82e9e58f1dc32f86a82cc85a5185eac943fbd372989378ac4015a",
+    "bytes": 4171,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-sources/rust-template-action.yml.gz",
+    "rawSha256": "89a51d45d2681204c18b26245940ad8b908cf12bd2a4993a1c2c84dfd33bb6f3",
+    "archiveSha256": "0178843743b9f768451c2d80fd46817acaccf5cc443683bf4ac3e808d27fc790",
+    "bytes": 1950,
+    "lines": 51
+  },
+  {
+    "file": "buildkit-bootstrap-sources/rust-template-head.result.json.gz",
+    "rawSha256": "c2f1ad07980d6ea4ab0468ee31452bb22a3a3e624abb94af66dda831acb127c2",
+    "archiveSha256": "d47caf2fad8737e25bfb96c773ab2adc5fc1bd87868610d2ec529eb89686f247",
+    "bytes": 122,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-sources/rust-template-head.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-sources/rust-template-head.stdout.gz",
+    "rawSha256": "f19792419db0c159e491adc110f7ae9cbcf9e83d6461b9ee70a78aa955b88a47",
+    "archiveSha256": "807faa5c4fbb3fec998e0d5e03a9f8d3849f9c469d520c96dd05ac292e5a8c0d",
+    "bytes": 8024,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-adaptation/action.yml.earlier-draft.gz",
+    "rawSha256": "105a96db627f86e089c8c0aad73301ea8e693730102bad321932a776b9633e21",
+    "archiveSha256": "d8da26dd9a9f72fc7e5159a0c3e774ac9e704d7d811a1addd21942aec0304afa",
+    "bytes": 6302,
+    "lines": 126
+  },
+  {
+    "file": "buildkit-bootstrap-adaptation/buildkit-image-identity.test.mjs.earlier-draft.gz",
+    "rawSha256": "4597503018edc1e9bdf94c171f329348cdd55673d350e917e61eaf474bd0a9ec",
+    "archiveSha256": "d715b32ec584ff3c770a291f5424822d9088010c76938d1de1fcae5a2cfe73a6",
+    "bytes": 5276,
+    "lines": 87
+  },
+  {
+    "file": "buildkit-identity-final/buildkit-identity.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final/buildkit-identity.stdout.gz",
+    "rawSha256": "a1c82dc3f154cbaa3c7ade48093005607bbbf6e74f68d2415a88d3d02c9a8ec0",
+    "archiveSha256": "6a55334a7226c505343a4b73e5e68b4802cb2b676411d606ac5b56e38639f290",
+    "bytes": 1499,
+    "lines": 46
+  },
+  {
+    "file": "buildkit-identity-final/container-workflow.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final/container-workflow.stdout.gz",
+    "rawSha256": "da620eabbc859c70783687b28163f0d8cbe480630df4e0dd6f1762a444d9bd01",
+    "archiveSha256": "ff3dd8fd8ac06bdd5528211fb21f2a996b88262ba17fa5c085091e7fc9e6c9aa",
+    "bytes": 3358,
+    "lines": 78
+  },
+  {
+    "file": "buildkit-identity-final/results.json.gz",
+    "rawSha256": "9a291314ee359642d1680e9ee3e3836ef9b43fab33499a875b45c30e8fe61a1b",
+    "archiveSha256": "7d582a944570dff294605585d1a46d8c94c12d082be4b4d70a4f34d919816030",
+    "bytes": 1166,
+    "lines": 50
+  },
+  {
+    "file": "buildkit-identity-final/subprocess-boundaries.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final/subprocess-boundaries.stdout.gz",
+    "rawSha256": "7b54a483890d6701d8c0aaa2fd1a139d659107817128e92c89da73c15ea2edee",
+    "archiveSha256": "d3f7a4fd25bbd4a095ed97d5196d6c303e249e6ce286ee157d352642987d1ed9",
+    "bytes": 7426,
+    "lines": 208
+  },
+  {
+    "file": "buildkit-identity-final/worker.log.gz",
+    "rawSha256": "d4cdb5c3995ef677812a22870874fad8648c29ae329132e1e2d8baab7801bc1d",
+    "archiveSha256": "e30ba119a060c804487dea5aa44dc84bdbd3bb7c10db2dbbdd2551d7f8e52af8",
+    "bytes": 295,
+    "lines": 8
+  },
+  {
+    "file": "buildkit-identity-final-corrected/buildkit-identity.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final-corrected/buildkit-identity.stdout.gz",
+    "rawSha256": "8af57b10fd8b9642cf006fa28eecad50e922899be278d61d130f7029549aed2e",
+    "archiveSha256": "17e347160b9879945218e0a85c26a89f672b37d4ef6d0781d6b48b44403974c1",
+    "bytes": 1499,
+    "lines": 46
+  },
+  {
+    "file": "buildkit-identity-final-corrected/container-step-boundary.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final-corrected/container-step-boundary.stdout.gz",
+    "rawSha256": "f992bde9709501bb9d913601a792e25b13d11a19eb40eb58b57c432a61b562ae",
+    "archiveSha256": "efee28fe2577547d941fb246475dbd8d6291d1f862964217479b6e1e22194ed8",
+    "bytes": 1627,
+    "lines": 52
+  },
+  {
+    "file": "buildkit-identity-final-corrected/container-workflow.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final-corrected/container-workflow.stdout.gz",
+    "rawSha256": "b8a3e61bd450663d0555aaaae6e3e6fe0a64febc7058eb6c00489bb5db714538",
+    "archiveSha256": "a83727f077c4e6fc462a60838ea26d1293328cdfc6659881e132722d5ed019b1",
+    "bytes": 1589,
+    "lines": 46
+  },
+  {
+    "file": "buildkit-identity-final-corrected/default-branch-policy.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final-corrected/default-branch-policy.stdout.gz",
+    "rawSha256": "0deb52bebaab3dbc529fc72df406b9729490f4bf2e48574b11196158864dfbe9",
+    "archiveSha256": "425aedb27cb5679075ae266ec951d890f48de82420ba60f5f880aed3441c89ae",
+    "bytes": 22542,
+    "lines": 598
+  },
+  {
+    "file": "buildkit-identity-final-corrected/outcome.json.gz",
+    "rawSha256": "e29add51518a446b49749d25d99fcb95ed98393ab50140d8770362749b348487",
+    "archiveSha256": "f0dd3f01667bd9fc84781c0c5a4b5f3dfe0f89291a36ebd8ef5c39335dc4b81e",
+    "bytes": 3132,
+    "lines": 121
+  },
+  {
+    "file": "buildkit-identity-final-corrected/production-profile.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final-corrected/production-profile.stdout.gz",
+    "rawSha256": "147f082480d92dce2af5c70ca4eb1a2e656883dd523707789250f0d188f39a30",
+    "archiveSha256": "95f37cdff8e51b6d63ff8369c36c39befa78740227a025b3c46f55abd7c69812",
+    "bytes": 4616,
+    "lines": 118
+  },
+  {
+    "file": "buildkit-identity-final-corrected/registry-transport.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final-corrected/registry-transport.stdout.gz",
+    "rawSha256": "ef1768f84b1758308bb23c3425d8f5421dfd9777187fc8924b8c2ee3e29b0f1f",
+    "archiveSha256": "8363e9a26c13054a0fb18420790e6fb616e51b5ec3ac7186181ad8a9cc9d8055",
+    "bytes": 813,
+    "lines": 28
+  },
+  {
+    "file": "buildkit-identity-final-corrected/results.json.gz",
+    "rawSha256": "e8ea670705903e63eb9b1b14ed2864d1eb8f1d5c73fa954748e62143afadd10e",
+    "archiveSha256": "e4c5e03695c848796985f23ffc78156923dd1bc9a324eee26759b8c071bb2f12",
+    "bytes": 2742,
+    "lines": 114
+  },
+  {
+    "file": "buildkit-identity-final-corrected/subprocess-boundaries.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-identity-final-corrected/subprocess-boundaries.stdout.gz",
+    "rawSha256": "c2a7fb8a4f71b1825ed4bc5511076c92c2a16d5f3129f017aa446621f12fc924",
+    "archiveSha256": "f59d63817223e58cd0de78a29b88183b54cb8726b6097a28f664b7eb63fa53e4",
+    "bytes": 7429,
+    "lines": 208
+  },
+  {
+    "file": "buildkit-identity-final-corrected/worker.log.gz",
+    "rawSha256": "a8f852782d63312efddb8061f2c057baa3e3f0c79a49783d25cbb9d84fd51460",
+    "archiveSha256": "f6c5d628d9dd0e187e8374f6cd18ff61390fa9022bbb352460f1dd0c243ea505",
+    "bytes": 157,
+    "lines": 7
+  },
+  {
+    "file": "buildkit-bootstrap-final/additional-worker.log.gz",
+    "rawSha256": "040b2bf85eb4ce550f1325b8f64d23fe47a440b94bc1b9693b7d1466b95d128d",
+    "archiveSha256": "5b79fa2b1fc8700c0241e03a30db92e6912bce85003f08561f5404c5c0c4415f",
+    "bytes": 230,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-final/buildkit-identity.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/buildkit-identity.stdout.gz",
+    "rawSha256": "d5f24698781247043c7980a1e50789957479b271de00dcb5bca1b5b05a0df1ee",
+    "archiveSha256": "8e80d8b1f499f013f3bef3a91c320ff5c7faac8bec2458c9f443f65df962537c",
+    "bytes": 2171,
+    "lines": 70
+  },
+  {
+    "file": "buildkit-bootstrap-final/buildkit-shell-0.sh.gz",
+    "rawSha256": "ace2bb56ad4538a97b6a0ea5cb5f2d9dec60de8bd85e093597912ffc677f0ac7",
+    "archiveSha256": "bd4eb2d9b586566b6e7aff1410698ec1f36b464bf3c20f0ccf516e75ae7c4a60",
+    "bytes": 542,
+    "lines": 11
+  },
+  {
+    "file": "buildkit-bootstrap-final/buildkit-shell-2.sh.gz",
+    "rawSha256": "00a2a440cc651705493dcc1e339b369cd4bac0a6f9db75e4da09de6725ea0107",
+    "archiveSha256": "9f2e1d7d2c82e3ecde600b489410bf249d85e8f07f32e845333174f5caae5717",
+    "bytes": 320,
+    "lines": 10
+  },
+  {
+    "file": "buildkit-bootstrap-final/cache-only-draft.yml.gz",
+    "rawSha256": "105a96db627f86e089c8c0aad73301ea8e693730102bad321932a776b9633e21",
+    "archiveSha256": "d8da26dd9a9f72fc7e5159a0c3e774ac9e704d7d811a1addd21942aec0304afa",
+    "bytes": 6302,
+    "lines": 126
+  },
+  {
+    "file": "buildkit-bootstrap-final/cache-only-setup-regression-before.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/cache-only-setup-regression-before.stdout.gz",
+    "rawSha256": "917df49560d551f127343c1b4c69bcfe8e91a8f6759b216771049855611abd32",
+    "archiveSha256": "587a0c80eff0c0828615c45dc999bd0d56a638297c7113d1ec3e6f72dcdec156",
+    "bytes": 1123,
+    "lines": 30
+  },
+  {
+    "file": "buildkit-bootstrap-final/container-step-boundary.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/container-step-boundary.stdout.gz",
+    "rawSha256": "b419570b160a5befc14e575996b8c7232844abff40c0423c388af12e6f5cbb1d",
+    "archiveSha256": "db977e3e3d9fa958156a36387a4ecbb4726a97162ced56da6534213370e7878b",
+    "bytes": 1625,
+    "lines": 52
+  },
+  {
+    "file": "buildkit-bootstrap-final/container-workflow.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/container-workflow.stdout.gz",
+    "rawSha256": "7dec967d83e7160c87c7a9382514535e343d1443983e4e3c59d6ddc949c170a2",
+    "archiveSha256": "f9df1032190fa44ef9a3e468edac881d3239f96b2225171bd00ef81e85d652e4",
+    "bytes": 1590,
+    "lines": 46
+  },
+  {
+    "file": "buildkit-bootstrap-final/default-branch-policy.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/default-branch-policy.stdout.gz",
+    "rawSha256": "28fc53f8157e9d785d830d9c484e774d2580ac5aa8e1278a438017ae45417201",
+    "archiveSha256": "f4ef2a67f0543b532e5e680c239a0f1fa010532aff60603c676fce0db85f40fa",
+    "bytes": 22533,
+    "lines": 598
+  },
+  {
+    "file": "buildkit-bootstrap-final/interrupted-additional-checks.json.gz",
+    "rawSha256": "800748d80940be8e52a2aba26acfad3e3dc705b61c7ac65d77a95204382c5c68",
+    "archiveSha256": "b3b7df436947ba3c1ee1cfbe049dc3d43a77838a32687a31ef055c149c215321",
+    "bytes": 533,
+    "lines": 23
+  },
+  {
+    "file": "buildkit-bootstrap-final/interrupted-touched-gates.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/interrupted-touched-gates.stdout.gz",
+    "rawSha256": "d656145909e72d609efbfe9526eb107a0661b0861ae4314e7186c93422315339",
+    "archiveSha256": "420d5b6c4d2f63825b1a3e4fa05405b60726041160269f2952dbb6b5d9698a8c",
+    "bytes": 103,
+    "lines": 3
+  },
+  {
+    "file": "buildkit-bootstrap-final/outcome.json.gz",
+    "rawSha256": "247e4c2895af1489018c2713a8c3c39874ecbc271ab43cb0bbb31ddd4c90188c",
+    "archiveSha256": "fdd3371d657b16f9f887b5944e24af7eb670fd97551102967cbf0637c738db0a",
+    "bytes": 3532,
+    "lines": 150
+  },
+  {
+    "file": "buildkit-bootstrap-final/production-profile.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/production-profile.stdout.gz",
+    "rawSha256": "7c6985479d30bbbe9561fb6c84ded76f43b07ba417c4c64624daaf5ff26b31a0",
+    "archiveSha256": "6db3defb0a70c7f2eb9f358dc0ed8eb69aed7b91dbfab37cf34213df4431ca9a",
+    "bytes": 4617,
+    "lines": 118
+  },
+  {
+    "file": "buildkit-bootstrap-final/registry-transport.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/registry-transport.stdout.gz",
+    "rawSha256": "faeace353202890826ba16fbfa65f67ff29618824c9e01a59045e414d8fec304",
+    "archiveSha256": "8e0ac72e58a010d3e1337229ebab31e0e9870eae57c58f64105662b6e1ecc6a9",
+    "bytes": 813,
+    "lines": 28
+  },
+  {
+    "file": "buildkit-bootstrap-final/remaining-gates.json.gz",
+    "rawSha256": "9d5fcba93bab0a88b5e5516dddc1a9a1a3aba277ba4ff7f62b41ee321c6fa18a",
+    "archiveSha256": "f2e87031a64fff64df98ad549509d33eb95281eca3d2272d24880657ad8a9170",
+    "bytes": 255,
+    "lines": 12
+  },
+  {
+    "file": "buildkit-bootstrap-final/remaining-gates.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/remaining-gates.stdout.gz",
+    "rawSha256": "d1ea58b1df6f6409297ca58055d181baa1f0ac8cd0446208e2f7d856f0d85a12",
+    "archiveSha256": "b0d6c98061e538b780116e41b1a940a27abbf245b6e81c076fe6452e2dbc3ee2",
+    "bytes": 105,
+    "lines": 4
+  },
+  {
+    "file": "buildkit-bootstrap-final/results.json.gz",
+    "rawSha256": "d8feda15f5b90b0edbf705be4a74399e816ca6726647834c4888a55e387cc7bc",
+    "archiveSha256": "e0d626559223e23dac55c6f28b4955a0e3024caabd105d8bb7db58762447adb5",
+    "bytes": 3044,
+    "lines": 142
+  },
+  {
+    "file": "buildkit-bootstrap-final/shellcheck.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/shellcheck.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/subprocess-boundaries.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/subprocess-boundaries.stdout.gz",
+    "rawSha256": "0f8619811864054bc5c045bc82e2ceeabd595e1503aa93abc0fe1c5aad2c4f5f",
+    "archiveSha256": "ba0690de6694c19668fa5f6dbda0d5aebddb8c346368d32ab21ed6e35cce7edc",
+    "bytes": 8097,
+    "lines": 232
+  },
+  {
+    "file": "buildkit-bootstrap-final/whitespace.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/whitespace.stdout.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/whole-workflow-preservation.json.gz",
+    "rawSha256": "3883124f544823b130268130e801f6cd0e3250abd9afe6b42badf71509948817",
+    "archiveSha256": "f0e0e27d6193238ebc51a0859f0f779201ad0e4f42d9148928fc14b3e6a5c5f1",
+    "bytes": 900,
+    "lines": 28
+  },
+  {
+    "file": "buildkit-bootstrap-final/whole-workflow-preservation.stderr.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "bytes": 0,
+    "lines": 0
+  },
+  {
+    "file": "buildkit-bootstrap-final/whole-workflow-preservation.stdout.gz",
+    "rawSha256": "72ac961f74d5e3d51c26224593ca3d7dbdc5c15c695282a060b86cdaaff8be6d",
+    "archiveSha256": "3a57d40bea2731d9835c08ca6259a65333ecafcfd7a19b69d5062dc05c4eb16c",
+    "bytes": 130,
+    "lines": 1
+  },
+  {
+    "file": "buildkit-bootstrap-final/worker.log.gz",
+    "rawSha256": "bb0445eee41854ead43016eec312edce288231ba5760937854fa58ec2215b884",
+    "archiveSha256": "f20474848e4a3ff6a919cb33c00b234cecd2054182e97600b69d2565e321a74e",
+    "bytes": 207,
+    "lines": 9
+  },
+  {
+    "file": "helpers/resolve-buildkit-manifest.py.gz",
+    "rawSha256": "ddbabb74e7e69bf976dc581aa1c8ac1a07cb5d7094a39d31d04b1db62b341010",
+    "archiveSha256": "2c4d1d3f7337a79130fdb7cbd4a82e0bfdb6d7c3e78e8815022fb07dbfb4438e",
+    "bytes": 1694,
+    "lines": 28
+  },
+  {
+    "file": "helpers/resolve-buildkit-manifest.log.gz",
+    "rawSha256": "5b246e90418521cc1abb2ca8005cedadcf3010ee970aa87c8ed54d3d99fb54da",
+    "archiveSha256": "9dbe0c81cb4a9c9934cef2182f128e2fd83ec441a587f4c86ed3318c95d32b25",
+    "bytes": 840,
+    "lines": 23
+  },
+  {
+    "file": "helpers/draft-buildkit-regression.py.gz",
+    "rawSha256": "2a08608234526d5dfbce09fc4a52e4fc0c3d034e978aaca64ec8400a0b13cff2",
+    "archiveSha256": "fd459dff1da3c2c18ee4a37ddad70b91de0dc701abee89c7f8c5e0aa06e0bb6b",
+    "bytes": 5276,
+    "lines": 88
+  },
+  {
+    "file": "helpers/draft-buildkit-regression.log.gz",
+    "rawSha256": "e3cdcc171723fb9cd0205a6cac0ea11c4b30329e811b15cce4db50b6beb2c27e",
+    "archiveSha256": "2103e3c855aa1f703b744d8766361a96e6ae27f66666cebd2daae821ccbe0464",
+    "bytes": 205,
+    "lines": 4
+  },
+  {
+    "file": "helpers/repair-buildkit-identity.py.gz",
+    "rawSha256": "515cbc942bfcc9d92ef5bd4ca0768973da391f96cb6c8818462dde9b1c6a0395",
+    "archiveSha256": "4661a7efce491ae7e92a04ebf80881dd7b6964c84f23099741c6bdd273609fa8",
+    "bytes": 4955,
+    "lines": 63
+  },
+  {
+    "file": "helpers/repair-buildkit-identity.log.gz",
+    "rawSha256": "e8fb48f5abeb20a197e42d2cabf089a8519d7a78800eca490d326bbd28afdc15",
+    "archiveSha256": "3496cb123b82ce3018d84aef60e3d587ea31577d80b61fdfb7eb3e51ade5170d",
+    "bytes": 407,
+    "lines": 9
+  },
+  {
+    "file": "helpers/repair-buildkit-identity-corrected.log.gz",
+    "rawSha256": "e2cec6b954a114a62a59382f467c6d7b5d704836e24a6e7b5e26da225e08f479",
+    "archiveSha256": "44364d7532fc68b6c9e6b388c873b899ba31e07eb19bfed779bf82531c43ddb9",
+    "bytes": 328,
+    "lines": 5
+  },
+  {
+    "file": "helpers/correct-buildkit-probe-fixture.py.gz",
+    "rawSha256": "15be80a3089b3912268184769e7abd6a5266b03631c2215183521b3896164b64",
+    "archiveSha256": "0a6e62b5985e3a6afe7043047690db0a39c1043253a440b92f96a4f33646bbee",
+    "bytes": 1152,
+    "lines": 20
+  },
+  {
+    "file": "helpers/correct-buildkit-probe-fixture.log.gz",
+    "rawSha256": "deb24d0e454b11ede8cf7379db2693d6ad522b5795ebe8fa70f65cba9c787991",
+    "archiveSha256": "9dca5331e70c83b0e6254c9c2e84a1f58e9888cd442a1865431f5c71ec3300bd",
+    "bytes": 231,
+    "lines": 4
+  },
+  {
+    "file": "helpers/extend-buildkit-negative-controls.py.gz",
+    "rawSha256": "2fa9f5accf7d2f41218e75b6a6085480ad7d882c96dc80e688eeee75c18ad466",
+    "archiveSha256": "41509bf281b63830f95ad4725fe202a39729a6e562aa61fb3e449315ec7c5ecc",
+    "bytes": 2538,
+    "lines": 37
+  },
+  {
+    "file": "helpers/extend-buildkit-negative-controls.log.gz",
+    "rawSha256": "bd50154653329097f698ad4ffd6e3d2dd244eb5ccfa39a57af91d72e9489a6de",
+    "archiveSha256": "aa02fdcb8b1ed824a1936f678695ba218ff147e41a0914a9df7354bec487a7a9",
+    "bytes": 263,
+    "lines": 5
+  },
+  {
+    "file": "helpers/validate-buildkit-identity.py.gz",
+    "rawSha256": "d975525bbd0d60f1a68a158a4ffdace1cb3c9465b3a2a1343275df22dbca716a",
+    "archiveSha256": "43db98c67447e3572cef0632a1b1bdd2a618279ccefc70bf64c25798cb0da6e3",
+    "bytes": 2400,
+    "lines": 41
+  },
+  {
+    "file": "helpers/validate-buildkit-identity.log.gz",
+    "rawSha256": "1829411dde984076b9adf58a370af736a9ff287b6f60f3135be3c3ee710f0378",
+    "archiveSha256": "20b70a796079733de9d5bbd1684dae99c68080e1ee44b354765a9db9fc2765ca",
+    "bytes": 210,
+    "lines": 4
+  },
+  {
+    "file": "helpers/validate-buildkit-identity-corrected.log.gz",
+    "rawSha256": "b0e65d2962d7f72fdd49ea9dcf24b496d1b3d6f516bb7c2bb32ed9f14103bf2f",
+    "archiveSha256": "9d89ba520979bb9641dc243d6b49f2c8768ffd06f4c00909758cd1dacc309510",
+    "bytes": 220,
+    "lines": 4
+  },
+  {
+    "file": "helpers/review-buildx-bootstrap-sources.py.gz",
+    "rawSha256": "0f2626219d7b583dd69a45c85e08fb24d1c8ecad5aa0f90df37e12eeb5a9a0ec",
+    "archiveSha256": "5e04764ab3c5f456149737d3449b93cb18b636e9b21c4a075fad24eed356bb66",
+    "bytes": 2427,
+    "lines": 33
+  },
+  {
+    "file": "helpers/review-buildx-bootstrap-sources.log.gz",
+    "rawSha256": "af5ffaabfcfa2885d2b9c8c321cd992df4b121fcb027a0fe466656cc24b3be2d",
+    "archiveSha256": "f22f29f4afe394cb7d7d9042be3369e815556c8a23c19d5837e4d2ddba108f97",
+    "bytes": 254,
+    "lines": 4
+  },
+  {
+    "file": "helpers/adapt-buildkit-setup-fallback.py.gz",
+    "rawSha256": "8d1b6e9b0791396914c061f10bdda1116078f85d727a77edc886263b6de386ba",
+    "archiveSha256": "7ef3b06815c53c86b6dff27e6ce2f46685d09ed0dcf62b481618fa32cbf735bb",
+    "bytes": 4516,
+    "lines": 99
+  },
+  {
+    "file": "helpers/adapt-buildkit-setup-fallback.log.gz",
+    "rawSha256": "7af05d459273ba504c50ea22619cdfd872da903e37521da08a3beb48720c02f7",
+    "archiveSha256": "ff8a8b83d621f78d36c114bf42eb80567c5757f4fe045304d392bf0451c5cd4a",
+    "bytes": 260,
+    "lines": 4
+  },
+  {
+    "file": "helpers/draft-buildkit-setup-regressions.py.gz",
+    "rawSha256": "2f0bb5f8119928332dffad02af03d3d6d02ef9bd9b78d78a5a0eb4be8223c7b1",
+    "archiveSha256": "7dd833d27fa591505b79827ee21492e2abef38c48d2f48452c7c718efeea7f95",
+    "bytes": 6811,
+    "lines": 105
+  },
+  {
+    "file": "helpers/draft-buildkit-setup-regressions.log.gz",
+    "rawSha256": "738ab6d9e08fa3347811651532a409019b7ee2cd0a6c7814dd5f270dcae3f850",
+    "archiveSha256": "1886eb902b3ac916b3912effd2978889c6af60a7509a848f0f65ec5175c3db3d",
+    "bytes": 238,
+    "lines": 4
+  },
+  {
+    "file": "helpers/draft-buildkit-hosted-probe.py.gz",
+    "rawSha256": "4b5c9912dd11d5129ca9ae04a3cf138e5fdbab6b3c1b67de51772014fae3d188",
+    "archiveSha256": "59c267a2ae48104a6cc9f72510d1222f3b427beb802041d414c6d85b556be6e0",
+    "bytes": 681,
+    "lines": 12
+  },
+  {
+    "file": "helpers/draft-buildkit-hosted-probe.log.gz",
+    "rawSha256": "66c5f6cd5168ff57a3f9cc2ff523b71249d256677dc6d83a21669ac1e190b72f",
+    "archiveSha256": "81e0ed80bb13e8ee8ea684cce132b0bc833b401c03dcc7faadbba0bb882f9284",
+    "bytes": 232,
+    "lines": 4
+  },
+  {
+    "file": "helpers/finish-buildkit-probe-regressions.py.gz",
+    "rawSha256": "3ca0f5818c7a88848ffbcd887f9d0503b5ae4f5032d4d4978a03db364801b130",
+    "archiveSha256": "06c70e6b7d3f22038b4884dbecb73ba1b168c3b063996e2ee099d47cfa291c71",
+    "bytes": 3066,
+    "lines": 42
+  },
+  {
+    "file": "helpers/finish-buildkit-probe-regressions.log.gz",
+    "rawSha256": "ede89d898ddb0e72e6bfc2756b2a328915c9d77913912d9923493a585cafaf48",
+    "archiveSha256": "cb11eff997e2ec320006990cb3c19be9fbadf5bdda2f8a33244c34f18aeefc08",
+    "bytes": 255,
+    "lines": 4
+  },
+  {
+    "file": "helpers/validate-buildkit-bootstrap.py.gz",
+    "rawSha256": "64ae3ea19e6be48f5d9f57690fb2e18e69cacc3b453ada2a17befa3bf48557e9",
+    "archiveSha256": "37df5aeca7ca174f935a8cdf7e8d59457325e72ac1fd8aa2ae793f22906c8fd7",
+    "bytes": 2934,
+    "lines": 43
+  },
+  {
+    "file": "helpers/validate-buildkit-bootstrap.log.gz",
+    "rawSha256": "fdfcfa2b961cc9e3db9245c4d8623e53c813d0a77b7fcefba5e4939f9b9457a4",
+    "archiveSha256": "91dd546fa5de069d8317aef3d980472611e03557a482fc0fd846e56eff65107c",
+    "bytes": 212,
+    "lines": 4
+  },
+  {
+    "file": "helpers/prove-buildkit-workflow-preservation.mjs.gz",
+    "rawSha256": "e92fdd00e3b9900221768589ad7b320e18647a7705d55794ed4bfef608d63edf",
+    "archiveSha256": "7d40453d7616e5e8a5de6f67c53a07f99804a93e4543e10c3a1c45017b62fc1b",
+    "bytes": 2921,
+    "lines": 44
+  },
+  {
+    "file": "helpers/check-buildkit-workflow-gates.py.gz",
+    "rawSha256": "57c80a81a52e5dfbd89ac20a5b29943b554643cc1e82e59b84e5b0b87b8a995d",
+    "archiveSha256": "f1f5db479d3d64fc2f564f7f5e2c09767d472534fc0724c212567162360ae207",
+    "bytes": 1299,
+    "lines": 19
+  },
+  {
+    "file": "helpers/check-buildkit-workflow-gates.log.gz",
+    "rawSha256": "76e6e22795a9771246d7c5435b5bfb9a9aa754852da58ba2fa07d36764aafa1d",
+    "archiveSha256": "79696dc37e25bc2ce39e7857bacea16728344b2634e189de5645b0aeee20060e",
+    "bytes": 734,
+    "lines": 2
+  },
+  {
+    "file": "helpers/continue-buildkit-gates.py.gz",
+    "rawSha256": "9bca24ed87d618d37fd7eef2681e30cde151b753d2a4423fe962d61cac6cbeac",
+    "archiveSha256": "995b466290ee8e3b125c7619b24086847d5ae761b371b49b458a4c2022a5c67d",
+    "bytes": 1312,
+    "lines": 20
+  },
+  {
+    "file": "helpers/continue-buildkit-gates.log.gz",
+    "rawSha256": "a54f35b8c5622eac5bb313b15262560ae1f2656170de7d51fbec254630c50419",
+    "archiveSha256": "7e1c5c3ae9ef59fb3655f12b1560ba306fee94f8f1908d861fbc303bd7a93b83",
+    "bytes": 161,
+    "lines": 4
+  },
+  {
+    "file": "reviewed-source/.github/actions/setup-buildx-resilient/action.yml.gz",
+    "rawSha256": "77029707cceacfd8bd26d502c850ac461fa8e8b332fd88a3c0ec0aed9a4f8531",
+    "archiveSha256": "ffba4cb81e0e5f9ca36fe914ec9d4fbbb1edaba3c4892328fccfc82cd07c016e",
+    "bytes": 3770,
+    "lines": 87
+  },
+  {
+    "file": "reviewed-source/.github/workflows/container-images.yml.gz",
+    "rawSha256": "bfb1984192db839c2b2800d9a5f511a36bdc86cd4092b81755fa9c0c1dc57782",
+    "archiveSha256": "2c9882d4ffe6ce9ec2633a1322fd83ffad29132541244ff85b5aa161b3d58c12",
+    "bytes": 51312,
+    "lines": 1031
+  },
+  {
+    "file": "reviewed-source/.github/workflows/workflows.yml.gz",
+    "rawSha256": "668c95ef6ba10dc8a6abf13887e7722b37613202331dff75c057ecd1a5d72988",
+    "archiveSha256": "9ba1989245f226ec86048dec1bc9ec47615ad97cdcf7cc0b07e38ad4eac1188f",
+    "bytes": 15854,
+    "lines": 330
+  },
+  {
+    "file": "reviewed-source/experiments/issue-1580/buildkit-bootstrap-probe.py.gz",
+    "rawSha256": "8aa37829b9c7583094ca7dc80507a62f32d94cba9f00a78c632339e737766ce9",
+    "archiveSha256": "0df93bef0b0cd381c897513a6b2758f8a0828079490f1f5d98d480b140389904",
+    "bytes": 7656,
+    "lines": 140
+  },
+  {
+    "file": "reviewed-source/experiments/issue-1580/buildkit-image-identity.test.mjs.gz",
+    "rawSha256": "2ec7b8ba6999dcafb37cd40a9b4a7326a18e5e2bebd95ee4ff38c3116ac31b93",
+    "archiveSha256": "62adb350f6d8beaf32f10d8a521930d63bd9a60f0ffa6a79c98292eb6f8d9316",
+    "bytes": 8816,
+    "lines": 129
+  },
+  {
+    "file": "helpers/archive-buildkit-bootstrap-repair.py.gz",
+    "rawSha256": "111ece565768c5572ce324398ff5216af1f3195eb3fb4a378923adcab45671cc",
+    "archiveSha256": "4878e090c836ed8eebefe4c89238dddd18390088b4dde8fbf20799b8a90f57be",
+    "bytes": 7485,
+    "lines": 92
+  }
+]

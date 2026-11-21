@@ -1,0 +1,19 @@
+{
+  "parent": "rust/src/protocol.rs",
+  "child": "rust/src/protocol/chat_message.rs",
+  "beforeSha256": "56faae9a076769d351a815f3141c77e2f2e74eb8a96aef10a91b24f5be4114b4",
+  "afterParentSha256": "01ef575b175e0a642317521cf02f1fca9c20e122e727098e95cd81896c215ad2",
+  "childSha256": "03bec637c617c86b001738c819d995fd0b2ee81ebe1991cdc931ac0a9e5c8211",
+  "originalLines": 989,
+  "parentLines": 776,
+  "childLines": 221,
+  "originalRecoveredByExactInverseBeforeFormatting": true,
+  "normalizedBlockBoundaryEmptyLine": true,
+  "formattingPreservesSyntaxAndComments": true,
+  "publicTypePathsPreservedByReexports": true,
+  "serializationAttributesAndMethodBodiesUnchanged": true,
+  "localRustExecution": false,
+  "hostedNativeVerificationPending": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

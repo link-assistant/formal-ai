@@ -1,0 +1,307 @@
+#!/usr/bin/env python3
+"""Exercise release and PR version CLIs; registry and Git origins are local only."""
+import http.client
+import http.server
+import json
+import os
+import re
+from pathlib import Path
+import shutil
+import socket
+import subprocess
+import tempfile
+import threading
+import unittest
+
+ROOT = Path(__file__).resolve().parents[3]
+HARNESS = Path(__file__).resolve().parent
+
+
+class RegistryRegressions(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.requests = []
+        cls.mode = 'success'
+        cls.scope = ''
+        cls.maximum = '1.2.3'
+
+        class Registry(http.server.BaseHTTPRequestHandler):
+            def log_message(self, *_args):
+                pass
+
+            def do_GET(self):
+                cls.requests.append(self.path)
+                affected = cls.scope in self.path
+                if affected and (cls.mode == 'drop' or (cls.mode == 'drop-once' and len(cls.requests) == 2)):
+                    self.connection.shutdown(socket.SHUT_RDWR)
+                    self.connection.close()
+                    return
+                if affected and cls.mode in ['429', '503', '403', '404']:
+                    status, data = int(cls.mode), {}
+                elif affected and cls.mode == 'malformed':
+                    status, data = 200, {}
+                else:
+                    status = 200
+                    if self.path.endswith('/fixture'):
+                        data = {'versions': [{'num': cls.maximum, 'yanked': False}]}
+                    elif '/releases/tags/' in self.path:
+                        data = {'tag_name': self.path.rsplit('/', 1)[1]}
+                    elif '/tags/' in self.path:
+                        data = {'name': self.path.rsplit('/', 1)[1]}
+                    elif self.path.endswith('/1.2.3') or (affected and cls.mode == 'wrong-identity'
+                                                                  and '/crates/fixture/' in self.path):
+                        data = {'version': {'num': '1.2.3'}}
+                    else:
+                        status, data = 404, {}
+                if affected and cls.mode == 'wrong-identity' and status == 200:
+                    for field in ['tag_name', 'name']:
+                        if field in data:
+                            data[field] = 'unrelated'
+                    if 'version' in data:
+                        data['version']['num'] = '0.0.0'
+                body = json.dumps(data).encode()
+                self.send_response(status)
+                self.send_header('Content-Length', str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+        cls.server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), Registry)
+        cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
+        cls.thread.start()
+        cls.temp = tempfile.TemporaryDirectory(prefix='registry-scripts-')
+        cls.scripts = Path(cls.temp.name) / 'scripts'
+        shutil.copytree(ROOT / 'scripts', cls.scripts)
+        address = f'http://127.0.0.1:{cls.server.server_port}'
+        for path in cls.scripts.rglob('*.rs'):
+            source = path.read_text()
+            for url in ['https://crates.io', 'https://api.github.com', 'https://hub.docker.com']:
+                source = source.replace(url, address)
+            source = source.replace('Duration::from_secs(1)', 'Duration::ZERO')
+            path.write_text(source)
+        cls.env = {**os.environ, 'RUST_LOG': 'error'}
+        cls.env.pop('GITHUB_ACTIONS', None)
+        cls.target = Path(cls.env.get('CARGO_TARGET_DIR', str(Path(cls.temp.name) / 'target'))).resolve()
+        cls.env['CARGO_TARGET_DIR'] = str(cls.target)
+        harness = Path(cls.temp.name) / 'harness'
+        harness.mkdir()
+        (harness / 'Cargo.toml').write_text((HARNESS / 'Cargo.toml').read_text()
+                                           .replace('../../../scripts/', '../scripts/'))
+        shutil.copyfile(HARNESS / 'Cargo.lock', harness / 'Cargo.lock')
+        result = subprocess.run(['cargo', 'build', '--manifest-path', str(harness / 'Cargo.toml'),
+                                 '--locked', '--bins'], env=cls.env, capture_output=True, text=True)
+        if result.returncode:
+            raise RuntimeError(result.stdout + result.stderr)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.server.shutdown()
+        cls.server.server_close()
+        cls.thread.join()
+        cls.temp.cleanup()
+
+    def setUp(self):
+        self.__class__.requests = []
+        self.__class__.mode = 'success'
+        self.__class__.scope = ''
+        self.__class__.maximum = '1.2.3'
+        temp = tempfile.TemporaryDirectory(prefix='registry-cli-')
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        self.work = root / 'work'
+        self.work.mkdir()
+        self.output = root / 'outputs'
+        self.env = {**self.__class__.env, 'GITHUB_REF_NAME': 'main', 'GITHUB_OUTPUT': str(self.output),
+                    'GITHUB_REPOSITORY': 'fixture/repo', 'HAS_FRAGMENTS': 'false'}
+        for key in ['RUST_ROOT', 'GITHUB_TOKEN', 'DOCKERHUB_IMAGE', 'RELEASE_RECOVERY_PROTOCOL_ROOT']:
+            self.env.pop(key, None)
+        (self.work / 'data/meta').mkdir(parents=True)
+        (self.work / 'data/meta/self-hosting-ledger.lino').write_text('')
+        (self.work / 'Cargo.toml').write_text('[package]\nname="fixture"\nversion="1.2.3"\n')
+        (self.work / 'src').mkdir()
+        (self.work / 'src/lib.rs').write_text('pub fn fixture() {}\n')
+        (self.work / 'CHANGELOG.md').write_text('## [1.2.3]\n\nOriginal notes.\n')
+        (self.work / 'docs').mkdir()
+        for path in ['docs/status.md', 'docs/benchmarks.md', 'README.md']:
+            (self.work / path).write_text('# Fixture status surface\n')
+        self.git('init', '-q', '-b', 'main')
+        self.git('config', 'user.name', 'Fixture')
+        self.git('config', 'user.email', 'fixture@example.invalid')
+        self.git('add', '.')
+        self.git('commit', '-qm', 'fixture')
+        self.git('tag', 'v1.2.3')
+        origin = root / 'origin.git'
+        subprocess.run(['git', 'init', '--bare', '-q', str(origin)], check=True)
+        self.git('remote', 'add', 'origin', str(origin))
+        self.git('push', '-q', '-u', 'origin', 'main')
+
+    def git(self, *args):
+        return subprocess.run(['git', *args], cwd=self.work, capture_output=True, text=True, check=True).stdout
+
+    def script(self, name):
+        args = ['--bump-type', 'patch', '--branch', 'main'] if name == 'version-and-commit.rs' else []
+        return subprocess.run([str(self.target / 'debug' / name.removesuffix('.rs')), *args], cwd=self.work,
+                              env=self.env, capture_output=True, text=True, timeout=40)
+
+    def version_base(self, content):
+        (self.work / 'Cargo.toml').write_text(content)
+        self.git('add', 'Cargo.toml')
+        self.git('commit', '-qm', 'version comparison base')
+        self.git('push', '-q')
+        self.env.update(GITHUB_EVENT_NAME='pull_request', GITHUB_BASE_REF='main')
+
+    def test_version_check_rejects_a_package_change_after_a_dependency_table(self):
+        base = ('[dependencies.decoy]\nversion = "9.9.9"\n'
+                '[package]\nname = "fixture"\nversion = "1.2.3"\n')
+        self.version_base(base)
+        changed = base.replace('"1.2.3"', '"1.2.4"')
+        (self.work / 'Cargo.toml').write_text(changed)
+        result = self.script('check-version-modification.rs')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Manual version change detected', result.stderr)
+        self.assertEqual((self.work / 'Cargo.toml').read_text(), changed)
+
+    def test_version_check_accepts_dependency_only_changes(self):
+        base = ('[dependencies.decoy]\nversion = "9.9.9"\n'
+                '[package]\nname = "fixture"\nversion = "1.2.3"\n')
+        self.version_base(base)
+        changed = base.replace('"9.9.9"', '"9.9.10"')
+        (self.work / 'Cargo.toml').write_text(changed)
+        result = self.script('check-version-modification.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Version check passed', result.stdout)
+        self.assertEqual((self.work / 'Cargo.toml').read_text(), changed)
+
+    def test_version_check_compares_parsed_identity_across_manifest_layouts(self):
+        base = "[package]\nname = 'fixture'\n  version = '1.2.3' # literal\n"
+        self.version_base(base)
+        nested = self.work / 'rust'
+        nested.mkdir()
+        (self.work / 'Cargo.toml').rename(nested / 'Cargo.toml')
+        result = self.script('check-version-modification.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Version check passed', result.stdout)
+
+    def test_version_check_refuses_cached_base_after_failed_fetch(self):
+        self.version_base("[package]\nname = 'fixture'\nversion = '1.2.3'\n")
+        cached = self.git('show', 'origin/main:Cargo.toml')
+        self.assertIn("version = '1.2.3'", cached)
+        self.git('remote', 'set-url', 'origin', str(self.work / 'unavailable-origin.git'))
+        result = self.script('check-version-modification.rs')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Could not fetch the current base branch', result.stderr)
+        self.assertNotIn('Version check passed', result.stdout)
+        self.assertEqual(self.git('show', 'origin/main:Cargo.toml'), cached)
+
+    def test_version_check_refuses_missing_inherited_and_malformed_versions(self):
+        self.version_base("[package]\nname = 'fixture'\nversion = '1.2.3'\n")
+        for version in ['', 'version.workspace = true\n', 'version = { workspace = true }\n',
+                        'version = true\n', 'version = ""\n', 'version = "1.2.3"\nversion = "2.0.0"\n']:
+            with self.subTest(version=version):
+                content = ('[dependencies.decoy]\nversion = "1.2.3"\n'
+                           "[package]\nname = 'fixture'\n" + version)
+                (self.work / 'Cargo.toml').write_text(content)
+                result = self.script('check-version-modification.rs')
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('Could not read a crate version', result.stderr)
+                self.assertEqual((self.work / 'Cargo.toml').read_text(), content)
+
+    def test_repository_contains_the_writer_status_staging_inputs(self):
+        source = (ROOT / 'scripts/version-and-commit.rs').read_text()
+        declaration = re.search(r'const STATUS_SURFACES:.*?= &\[(.*?)\];', source, re.DOTALL)
+        self.assertIsNotNone(declaration, 'the actual writer declares its status surfaces')
+        paths = re.findall(r'"([^"]+)"', declaration.group(1))
+        self.assertTrue(paths, 'the fixture must exercise the real staging contract')
+        self.git('ls-files', '--error-unmatch', '--', *paths)
+        self.assertEqual(self.git('status', '--porcelain'), '')
+
+    def test_fixture_can_return_wrong_identity_for_an_unpublished_candidate(self):
+        self.__class__.scope = '/crates/fixture/'
+        for version in ['1.2.4', '2.4.10']:
+            self.__class__.mode = 'success'
+            connection = http.client.HTTPConnection('127.0.0.1', self.server.server_port, timeout=5)
+            try:
+                connection.request('GET', f'/api/v1/crates/fixture/{version}')
+                response = connection.getresponse()
+                self.assertEqual(response.status, 404)
+                response.read()
+                self.__class__.mode = 'wrong-identity'
+                connection.request('GET', f'/api/v1/crates/fixture/{version}')
+                response = connection.getresponse()
+                self.assertEqual(response.status, 200)
+                self.assertEqual(json.loads(response.read()), {'version': {'num': '0.0.0'}})
+            finally:
+                connection.close()
+
+    def test_failed_lookup_never_decides_release_or_mutates_version(self):
+        for mode in ['503', '429', '403', 'malformed', 'drop']:
+            for script in ['check-release-needed.rs', 'version-and-commit.rs']:
+                with self.subTest(mode=mode, script=script):
+                    self.__class__.mode = mode
+                    self.__class__.requests = []
+                    self.output.unlink(missing_ok=True)
+                    before = (self.work / 'Cargo.toml').read_bytes()
+                    result = self.script(script)
+                    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                    self.assertNotIn('should_release=true', self.output.read_text() if self.output.exists() else '')
+                    self.assertEqual((self.work / 'Cargo.toml').read_bytes(), before)
+                    self.assertEqual(self.git('status', '--porcelain'), '')
+
+    def test_individual_artifact_and_candidate_lookup_failures_stop_the_clis(self):
+        (self.work / 'Dockerfile').write_text('FROM scratch\n')
+        self.git('add', 'Dockerfile')
+        self.git('commit', '-qm', 'Docker fixture')
+        self.git('push', '-q')
+        self.env['DOCKERHUB_IMAGE'] = 'fixture/image'
+        for scope, scripts in [('/crates/fixture/', ['check-release-needed.rs', 'version-and-commit.rs']),
+                               ('/repos/', ['check-release-needed.rs']),
+                               ('/tags/', ['check-release-needed.rs'])]:
+            for mode in ['503', '429', '403', 'malformed', 'wrong-identity', 'drop']:
+                for script in scripts:
+                    with self.subTest(scope=scope, mode=mode, script=script):
+                        self.__class__.scope = scope
+                        self.__class__.mode = mode
+                        self.output.unlink(missing_ok=True)
+                        result = self.script(script)
+                        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                        self.assertNotIn('should_release=true', self.output.read_text() if self.output.exists() else '')
+                        self.assertIn('version="1.2.3"', (self.work / 'Cargo.toml').read_text())
+                        self.assertEqual(self.git('status', '--porcelain'), '')
+
+    def test_missing_repository_and_invalid_docker_image_are_errors(self):
+        del self.env['GITHUB_REPOSITORY']
+        result = self.script('check-release-needed.rs')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn('should_release=true', self.output.read_text())
+        self.env['GITHUB_REPOSITORY'] = 'fixture/repo'
+        self.env['DOCKERHUB_IMAGE'] = 'invalid/image/name'
+        (self.work / 'Dockerfile').write_text('FROM scratch\n')
+        self.output.unlink()
+        result = self.script('check-release-needed.rs')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn('should_release=true', self.output.read_text())
+
+    def test_writer_uses_highest_published_version_as_its_floor(self):
+        self.__class__.maximum = '2.4.9'
+        result = self.script('version-and-commit.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('version="2.4.10"', (self.work / 'Cargo.toml').read_text())
+        self.assertTrue(any(path.endswith('/2.4.10') for path in self.requests))
+        self.assertEqual(self.git('status', '--porcelain'), '')
+
+    def test_dropped_version_request_recovers_without_rerelease(self):
+        self.__class__.mode = 'drop-once'
+        result = self.script('check-release-needed.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('should_release=false', self.output.read_text())
+        self.assertGreaterEqual(len(self.requests), 4)
+
+    def test_only_not_found_makes_a_missing_artifact_decision(self):
+        self.__class__.mode = '404'
+        result = self.script('check-release-needed.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('should_release=true', self.output.read_text())
+        self.assertIn('skip_bump=true', self.output.read_text())
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,0 +1,21 @@
+{
+  "sourceHead": "26f3f332aeffb7ced6985e58e682b209a71346c7",
+  "mergedMain": "19235c49abaf1e71aad89e4badbe1f9bba5d4786",
+  "archivedCommands": 2988,
+  "priorImmutableCommandRows": 2920,
+  "newCommandHashesVerified": 68,
+  "validationArchivesVerified": 110,
+  "javaLiteralPages": 100,
+  "newJavaPageArchivesVerified": 8,
+  "focusedTestsPassed": 84,
+  "fullInventory": {
+    "pass": 85,
+    "excluded": 52,
+    "fail": 1
+  },
+  "correctionGatesPassed": 4,
+  "nativeExecuted": false,
+  "hostedCiPendingPublication": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,28 @@
+{
+  "case": "inspection-unavailable",
+  "wrapper": "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+  "argv": [
+    "bash",
+    "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+    "1",
+    "finite child fixture",
+    "bash",
+    "-c",
+    "sleep 4 & printf \"%s\\n\" \"$!\" > \"$BUDGET_FIXTURE_PID\"; printf \"fixture stdout\\n\"; printf \"fixture stderr\\n\" >&2; exit 0"
+  ],
+  "exitCode": 125,
+  "wrapperExitSeconds": 0.07431360892951488,
+  "pipeClosedSeconds": 0.07666119700297713,
+  "workerRunningWhenWrapperExited": false,
+  "workerStateWhenWrapperExited": "Z",
+  "stdout": "fixture stdout\n",
+  "stderr": "fixture stderr\n::error title=Execution budget monitoring failed::Cannot inspect the process group for finite child fixture.\n",
+  "fixtureWorkerMaximumSeconds": 4,
+  "budgetSeconds": 1,
+  "fixtureDescendantsReaped": [
+    {
+      "pid": 3502173,
+      "waitStatus": 9
+    }
+  ]
+}

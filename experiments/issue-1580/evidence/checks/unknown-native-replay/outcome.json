@@ -1,0 +1,12 @@
+{
+  "sourceHead": "f6ecab596c331da59c40abd07d69c431beba1066",
+  "complete": true,
+  "observedAt": "2026-11-18T17:39:34.648503+00:00",
+  "fixtureUnchangedSinceOriginalFailure": true,
+  "originalFixtureSha256": "42ad3d57c94a9072cae8611954c92eed344c967fdd73a6d217b96395128538cd",
+  "policyBeforeExitCode": 1,
+  "policyAfterExitCode": 0,
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

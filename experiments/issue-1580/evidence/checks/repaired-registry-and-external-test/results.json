@@ -1,0 +1,18 @@
+[
+  {
+    "label": "registry-comparison",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "/tmp/issue-1580-research/compare-native-program-registry.mjs"
+    ],
+    "completedAt": "2026-11-17T21:57:59.222469+00:00",
+    "seconds": 0.133,
+    "exitCode": 1,
+    "log": "/tmp/issue-1580-research/repaired-registry-registry-comparison.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/registry-comparison.log.gz",
+    "bytes": 521,
+    "lines": 18,
+    "sha256": "6d3d5e5d0fce8aecc6ecc65535cb3ca1f839f06c4d0afb83572f3147751da4fe"
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "before",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/calendar-act-paraphrases.test.mjs"
+    ],
+    "exitCode": 1,
+    "counts": {
+      "tests": 13,
+      "pass": 8,
+      "fail": 5,
+      "skipped": 0
+    },
+    "seconds": 4.312,
+    "file": "before.log.gz",
+    "rawSha256": "989cfe6528e7f55dab87dfbeb8070b83a8d72c2ea198686f95798989782e19ab",
+    "archiveSha256": "a1b8f6ad2b061ce50ff41529776851ccfb2c9de37f9df20f2e1b5888da73ef6c",
+    "lines": 136
+  },
+  {
+    "name": "after",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/calendar-act-paraphrases.test.mjs"
+    ],
+    "exitCode": 0,
+    "counts": {
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "skipped": 0
+    },
+    "seconds": 4.467,
+    "file": "after.log.gz",
+    "rawSha256": "3643e056b03d3dba4f11d4935e4abd2ae30adbbca395d778985fea4db7ce8871",
+    "archiveSha256": "cb99fdc8133368c468006c55f906157d6266df6d2962d4d8f253f321c6b66e50",
+    "lines": 21
+  }
+]

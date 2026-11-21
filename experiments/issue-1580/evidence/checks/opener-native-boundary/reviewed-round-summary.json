@@ -1,0 +1,22 @@
+{
+  "publishedInput": "d0b395bb2310e285c89d93818571e4d54ed59c02",
+  "focusedJavaScriptCases": {
+    "sourceTestPlacement": 5,
+    "wasmWorkerInputs": 5,
+    "localizedWorker": 6
+  },
+  "affectedGatesPassed": 12,
+  "sharedDataChangedThisRound": false,
+  "fullGateRunThisRound": false,
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0,
+  "sourceHashes": {
+    "rust/src/unknown_opener.rs": "3cdf49c0003be9870482e26b1bf2c55e5488386e93f5730cacac64a5b3274e58",
+    "rust/src/web_engine_core.rs": "f9b487f9622e579ff880affc8182a4b087646df83aec3417b3ed65a553ea5934",
+    "rust/tests/source/unknown_opener_language_tests.rs": "0ddadb0cc7029a642cd1955bb4c7985df578dd4e1a0aa99b0d903ca35fa0cd72",
+    "js/worker/formal_ai_worker_seed_responses_and_language.js": "f750f917a5d66a1ae29aef9177f7b7c45e15adff46d0153371edb2527ba9af9e",
+    "rust/tests/web/worker-unknown-language.test.mjs": "823b8262abec926d9aa02ac616e206ac51cd4f2018e3d96c47c1aea91256db32",
+    "data/meta/wasm-worker-inputs.lino": "42e708e52f845f6d7c3791f7bff0eecb2307806f4c7a57d76fad68fc3784e963",
+    "js/formal_ai_worker.wasm": "856629870a9ce099af5a803f850085e5b12590aa4a83c51306589ed31892374b"
+  }
+}

@@ -1,0 +1,454 @@
+{
+  "observedAt": "2026-11-20T09:20:27.746397+00:00",
+  "archiveSha256": "dcdc74519174d040c63c08db7219b3ac5b5125c26e67abf13d679b6430368b67",
+  "records": [
+    {
+      "path": "archive-current-native-core.log",
+      "bytes": 2504,
+      "sha256": "1607ac7342a0c94d6d2dcf04bcaa3fecffc3946e8c81b7adca1854508fc365ca"
+    },
+    {
+      "path": "archive-current-native-core.py",
+      "bytes": 1530,
+      "sha256": "131e7789a267f200bf6d21b78a106f3132799d777c97dc8b794e1be3e30a6b35"
+    },
+    {
+      "path": "archive-current-registry-proof.log",
+      "bytes": 355,
+      "sha256": "575fc29fee33623a21631346bdc3fdc3ff36b2250820dd7799b290d5ceda69e5"
+    },
+    {
+      "path": "archive-current-registry-proof.py",
+      "bytes": 1874,
+      "sha256": "46b88ffb0a33c2e2a6bb431a772a26398a9e3210698d2a52a01adbfaa2dee7f5"
+    },
+    {
+      "path": "archive-current-source-warnings.log",
+      "bytes": 264,
+      "sha256": "9fa38ce1eb0722d4075e5393fe1e036cd43d066faf9356651a4c7dbe0c3e1a71"
+    },
+    {
+      "path": "archive-current-source-warnings.py",
+      "bytes": 1842,
+      "sha256": "be3c48c336842be52123c8fc723b1c40be17a7b5be6b52e2bd394179c4c29fba"
+    },
+    {
+      "path": "assess-producer-predecessor-ci.log",
+      "bytes": 212,
+      "sha256": "fb08be6d200c31f75f4d9b72430a2aebdc8d40852bd43fa61fd301e3e9eb4a76"
+    },
+    {
+      "path": "assess-producer-predecessor-ci.py",
+      "bytes": 4185,
+      "sha256": "b3bea7c0f579c5a79f9003f66d9ec1bcc1597f78dc7969cd6d8faee3e1163955"
+    },
+    {
+      "path": "codeql-producer-commit/commit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "codeql-producer-commit/commit.stdout",
+      "bytes": 213,
+      "sha256": "bf1103540a2dce4e39b9f5e9522d1fe767e74fd27b42fac4299796a8329d2be8"
+    },
+    {
+      "path": "codeql-producer-commit/outcome.json",
+      "bytes": 122,
+      "sha256": "88283802c990c77f4fa8dad779891031a790cfeefc690e49c8ae4026661f2991"
+    },
+    {
+      "path": "codeql-producer-focused/outcome.json",
+      "bytes": 1180,
+      "sha256": "65f0a866fefcb557dfca68bd3198c668b4ae3394367daf4e450f8a958b545b33"
+    },
+    {
+      "path": "codeql-producer-focused/worker.log",
+      "bytes": 5398,
+      "sha256": "4989a6b83be51beb81781975efe95d5c2c2ba8b9ec597785221cc887ba9f6821"
+    },
+    {
+      "path": "codeql-producer-full/outcome.json",
+      "bytes": 47,
+      "sha256": "f98d6cfbb789222ccd1a0067b466457b8636a5ede923fd98cd28c055e164f8d4"
+    },
+    {
+      "path": "codeql-producer-full/worker.log",
+      "bytes": 3663,
+      "sha256": "69f274691ecaa0e26eab8cfee266ff6a057d7417381e602561918205f3329434"
+    },
+    {
+      "path": "codeql-producer-pr-body.md",
+      "bytes": 12544,
+      "sha256": "de542b0f9083f31661217e8b3807fde2602729d06c6abe829c23f9e5d3637edb"
+    },
+    {
+      "path": "codeql-producer-preflight/outcome.json",
+      "bytes": 47,
+      "sha256": "f98d6cfbb789222ccd1a0067b466457b8636a5ede923fd98cd28c055e164f8d4"
+    },
+    {
+      "path": "codeql-producer-preflight/worker.log",
+      "bytes": 3879,
+      "sha256": "81a7d2ffd0dee8205593292091b0b08950bd071d150efc6997eae640c9cb93c0"
+    },
+    {
+      "path": "codeql-producer-source-review/commit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "codeql-producer-source-review/commit.stdout",
+      "bytes": 606,
+      "sha256": "d1713ccb08ea5203a5c133b8d58d2efb0a335af564d4985bb07d1e02a923ab2d"
+    },
+    {
+      "path": "codeql-producer-source-review/diff.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "codeql-producer-source-review/diff.stdout",
+      "bytes": 7191,
+      "sha256": "d8f6ad9fb1e8f01501b77d4bff67e9bfe22f5de26a7dd79a34a9950e40e2ae8d"
+    },
+    {
+      "path": "codeql-producer-source-review/fetch.stderr",
+      "bytes": 99,
+      "sha256": "f694fbaa5fdcdaea1514acbf57d0fe8b435415ef941c8159035a4a9a57d8aed5"
+    },
+    {
+      "path": "codeql-producer-source-review/fetch.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "codeql-producer-source-review/main-ancestor.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "codeql-producer-source-review/main-ancestor.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "codeql-upload-controls/analyze-action.yml",
+      "bytes": 5295,
+      "sha256": "46967f21b52b5f78ba49192d432bca6c6b8a1027b3d2eb8b29d33c3f3012ec78"
+    },
+    {
+      "path": "codeql-upload-controls/analyze-action.yml.api.stderr.gz",
+      "bytes": 20,
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "codeql-upload-controls/analyze-action.yml.api.stdout.gz",
+      "bytes": 3535,
+      "sha256": "54b55e3218784345e506fdcac36c674e648710c98fa672328c2b683125236aec"
+    },
+    {
+      "path": "codeql-upload-controls/src-analyze-action.ts",
+      "bytes": 16527,
+      "sha256": "2d8c8e0960ad07d64a0ef5467c467e8997e9696f65d544b7affe3007b1e49cee"
+    },
+    {
+      "path": "codeql-upload-controls/src-analyze-action.ts.api.stderr.gz",
+      "bytes": 20,
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "codeql-upload-controls/src-analyze-action.ts.api.stdout.gz",
+      "bytes": 8771,
+      "sha256": "47477d6876855f91f02ea7ce97b0ac12ffbf45cc023cce1d06546c0d24974a82"
+    },
+    {
+      "path": "codeql-upload-controls/src-database-upload.ts",
+      "bytes": 11680,
+      "sha256": "622f89bd483dedf9a082b81a9c6cc461984d8b68c5310d18c62ce76a04dec519"
+    },
+    {
+      "path": "codeql-upload-controls/src-database-upload.ts.api.stderr.gz",
+      "bytes": 20,
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "codeql-upload-controls/src-database-upload.ts.api.stdout.gz",
+      "bytes": 6971,
+      "sha256": "bb9c4e1e411da0a331b6d243230e6f9250c1c20365a7ce15d66d763521495a37"
+    },
+    {
+      "path": "commit-producer-path.log",
+      "bytes": 398,
+      "sha256": "16e8e6e88895f5dce6a212c7b9af9738ad00bfde40689a288662c45d1cb262d1"
+    },
+    {
+      "path": "commit-producer-path.py",
+      "bytes": 1220,
+      "sha256": "e118b6c8ef491eb7960a37cc7079625feb1f30339a69db1b87d8a49d4b48a2a2"
+    },
+    {
+      "path": "commit-producer-verification-evidence.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "commit-producer-verification-evidence.py",
+      "bytes": 2415,
+      "sha256": "5bc0e5dca8de266035605dcddce56c45e240ae7b8fb0172d33d3f8369c131c33"
+    },
+    {
+      "path": "correct-producer-diagnostic-archive.log",
+      "bytes": 187,
+      "sha256": "df84308e5f00e33512506f58c0c209faf0de9d9b6d65cfdbfbcc43c06cd71cef"
+    },
+    {
+      "path": "correct-producer-diagnostic-archive.py",
+      "bytes": 3159,
+      "sha256": "0da23652ab79289ff70f3582d8dd528d092f51b7d8e55f543df9c4c69a62ef0e"
+    },
+    {
+      "path": "current-feedback/issue-comments.json",
+      "bytes": 4475,
+      "sha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834"
+    },
+    {
+      "path": "current-feedback/issue.json",
+      "bytes": 10608,
+      "sha256": "18d2c7fdaa1d9ca81d78ca1e8f3e643a0a272fb4dd39ce954e79b734da8a09ff"
+    },
+    {
+      "path": "current-feedback/pr-comments.json",
+      "bytes": 36069,
+      "sha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92"
+    },
+    {
+      "path": "current-feedback/pr-inline.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "current-feedback/pr-reviews.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "current-feedback/pr.json",
+      "bytes": 12470,
+      "sha256": "c6473a031920885c687b2baf685921e2b62dbe5bef40a10aedafa9ded67c10bc"
+    },
+    {
+      "path": "current-feedback/runs.json",
+      "bytes": 992,
+      "sha256": "fc477e6409858ffdaf2577b3586f1c841f54030a5e6d38013c80023af916b292"
+    },
+    {
+      "path": "current-native-jobs-post-commit.log",
+      "bytes": 3090,
+      "sha256": "187688011277472ffe835d3b852e5de2548116a1b6cc937c17bbd6ac554b66a0"
+    },
+    {
+      "path": "document-and-validate-producer-batch.log",
+      "bytes": 215,
+      "sha256": "fb82cc219d1ed9cf982ad1ef2d40b938d7d90f829d3d2ee3f72e4f07b0b37fae"
+    },
+    {
+      "path": "document-and-validate-producer-batch.py",
+      "bytes": 5614,
+      "sha256": "8d2fc8d008b3072077307c02f645f35bf62dcd8533e76c35b69bcb0bdf271f5a"
+    },
+    {
+      "path": "draft-readonly-codeql-producer-check.log",
+      "bytes": 2126,
+      "sha256": "b730ec77dfe56560f8e61bdac9809d5af2f70ff2552e88233790109291847fd2"
+    },
+    {
+      "path": "draft-readonly-codeql-producer-check.py",
+      "bytes": 6039,
+      "sha256": "3dea14a57574a0db7c97ecc7c09699dc924a30e02009ec3684d4bd2fdd2a743e"
+    },
+    {
+      "path": "finalize-producer-local-evidence.log",
+      "bytes": 262,
+      "sha256": "867343cd48e7cac16d79322bdbd54531ff43ea97e5139196ff961f96b8c60006"
+    },
+    {
+      "path": "finalize-producer-local-evidence.py",
+      "bytes": 6092,
+      "sha256": "6a7df85a960a9c8c31a0491d62c602b9d6962e8a971706688d111cbc42734bec"
+    },
+    {
+      "path": "finalize-producer-publication-evidence.log",
+      "bytes": 249,
+      "sha256": "cbc3962e76af26493d1b90dce8d96a31bc7397bb1715a87b8212a29a196369ef"
+    },
+    {
+      "path": "finalize-producer-publication-evidence.py",
+      "bytes": 9883,
+      "sha256": "f5aeb3044d1e24dce0bd32a577fd1cc8f12a141087194a55bddbaa8a86af50f4"
+    },
+    {
+      "path": "inspect-codeql-upload-controls.log",
+      "bytes": 5104,
+      "sha256": "faad018f3526b6424e0d6b79408b8d2d285b2550a58573101dda91b3678755a5"
+    },
+    {
+      "path": "inspect-codeql-upload-controls.py",
+      "bytes": 1132,
+      "sha256": "e2f11927d31d37809a6dd0470b8d8caa2d9478c3cf1fe06390392d420b03a147"
+    },
+    {
+      "path": "inspect-wrapper-stderr-producers.py",
+      "bytes": 562,
+      "sha256": "bedb1a752aa2a261c11821ca5b1f757f647bb035074a557a873a9385539a9f80"
+    },
+    {
+      "path": "prepare-producer-evidence-inputs.py",
+      "bytes": 3341,
+      "sha256": "23072ddd5e3d4d83d962f2464e37842eb2691d4e39c1d2e88cd0a4692733d636"
+    },
+    {
+      "path": "producer-predecessor-ci/outcome.json",
+      "bytes": 120,
+      "sha256": "e758ebe02e43fd4aa53f0b366219dfff232f2dbe48645abab9e00bb6993da66f"
+    },
+    {
+      "path": "producer-predecessor-ci/worker.log",
+      "bytes": 29493,
+      "sha256": "dcc2732efef45c518f20f0df8b127909e074d1d1f92c598fe07abbe57f37a4af"
+    },
+    {
+      "path": "producer-publication-preflight-corrected/outcome.json",
+      "bytes": 47,
+      "sha256": "f98d6cfbb789222ccd1a0067b466457b8636a5ede923fd98cd28c055e164f8d4"
+    },
+    {
+      "path": "producer-publication-preflight-corrected/worker.log",
+      "bytes": 189,
+      "sha256": "c0be07a8ecf99b642a7250975f23897be1a86510e9d1cf6de948ffc67d503322"
+    },
+    {
+      "path": "producer-publication-preflight/failure.json",
+      "bytes": 1397,
+      "sha256": "ac74ba476d8569cea5f03e777115278a9afc97bb6fe277444c8d79a4ef0e7855"
+    },
+    {
+      "path": "producer-publication-preflight/worker.log",
+      "bytes": 4747,
+      "sha256": "3aa1ae5a231ef54b92def569a535b35b119f5e44313746eee3c59895c497e354"
+    },
+    {
+      "path": "producer-publication-size-failure.log",
+      "bytes": 45055,
+      "sha256": "3617ec3eb8580060757b44b6bd3a05c1e5036126ad0563860fe06f7d5e00e8d3"
+    },
+    {
+      "path": "producer-verification-feedback.log",
+      "bytes": 48376,
+      "sha256": "384a4a86f32a7bf050e9a9b143781a422ba6390d8794e5d7093a94514c9102a2"
+    },
+    {
+      "path": "read-current-native-jobs.py",
+      "bytes": 1412,
+      "sha256": "92a4ceb9befe8224682d10875885aee2152d51c3c9765a5b8500e7ac7c6342b5"
+    },
+    {
+      "path": "read-producer-ci-warning-context.log",
+      "bytes": 13552,
+      "sha256": "bc67f5e63f5b579891b674b356c3fb31c36668cb10d9d78248366066d6a02e3c"
+    },
+    {
+      "path": "read-producer-ci-warning-context.py",
+      "bytes": 519,
+      "sha256": "bd5a4b6ab027551dca637d0e875e39444ec0ab629b1ed0731e73eeb7de494ac9"
+    },
+    {
+      "path": "read-rust-case-studies-range.py",
+      "bytes": 2084,
+      "sha256": "ed79af1ae55979a3b7de7a924b541acaf98788fe9cf8ebfc53c73e365e7015ef"
+    },
+    {
+      "path": "read-rust-dependency-locks.py",
+      "bytes": 607,
+      "sha256": "f330b7fd61d0bfd03ed904a63bae15caffdd646f49f010a411430029a20121d6"
+    },
+    {
+      "path": "read-trends-producer-and-gates-result.py",
+      "bytes": 427,
+      "sha256": "be5cee1eaff97feb2fb0edbbe7e7e4bf5bb2e939819f6fb0e0b6078707e8a070"
+    },
+    {
+      "path": "record-rust-delivery-history-review.log",
+      "bytes": 352,
+      "sha256": "f491093c258a7d8fce585a69dd886378d56b5a2ab5dc7b93f8780cc8405e7145"
+    },
+    {
+      "path": "record-rust-delivery-history-review.py",
+      "bytes": 3704,
+      "sha256": "5696eca91f0f675a2d13a81b7bfe8afc9052365685b3b2040b54542201c09fab"
+    },
+    {
+      "path": "record-rust-dependency-lock-review.log",
+      "bytes": 351,
+      "sha256": "5ef8fa1d1bc1f6be18737947b16e2d0be530da785f48acfe461fa3aaa9f8e6ef"
+    },
+    {
+      "path": "record-rust-dependency-lock-review.py",
+      "bytes": 3403,
+      "sha256": "f7eccde1d67221d8509004b57234b042756feeaac8ec48cbd9918e03a697c314"
+    },
+    {
+      "path": "record-rust-historical-workflow-review.log",
+      "bytes": 355,
+      "sha256": "9d8c046065535d2cf43e71b0b80bd4b0c6961a87ef2ee37f3f0ee228f0c0cede"
+    },
+    {
+      "path": "record-rust-historical-workflow-review.py",
+      "bytes": 4350,
+      "sha256": "9a8830816eed6ff38b0d0ba1dc3aba22dba695cc12d86fe451c68f056800fb41"
+    },
+    {
+      "path": "refresh-issue-feedback.py",
+      "bytes": 1487,
+      "sha256": "83831b68d59533820f96b986e8fff0ef0ad3449f4515c3fa82e80ba080a87c62"
+    },
+    {
+      "path": "review-producer-batch-source.log",
+      "bytes": 452,
+      "sha256": "8c468a617d07b9a0512e00a6f8108e737a6072d6853ca2d96922dd020faf1cde"
+    },
+    {
+      "path": "review-producer-batch-source.py",
+      "bytes": 801,
+      "sha256": "9d7ef9414df4f954596a5266f777b38458b7aadf4966168fe7f99db897aa3625"
+    },
+    {
+      "path": "review-producer-ci-diagnostics.log",
+      "bytes": 6197,
+      "sha256": "e766d67267e542dcfcb4b39c94d716e4f2dd9319b53bba1d897646fdeb3e58d4"
+    },
+    {
+      "path": "review-producer-ci-diagnostics.py",
+      "bytes": 870,
+      "sha256": "afaee431ff17d266971d08b5195d7aec4e178beadc6c58a1dfaf5df6045f3429"
+    },
+    {
+      "path": "review-producer-current-draft.log",
+      "bytes": 10644,
+      "sha256": "e9b26b0efed05ce88250a83792919d487f5a37c7b8b3d50bf30320c7658bb90b"
+    },
+    {
+      "path": "review-producer-current-draft.py",
+      "bytes": 572,
+      "sha256": "7c554b007dd2d3ec3ff7747c43913f92dafc69b3bfb4c9c2c69f645a0ae751f3"
+    },
+    {
+      "path": "stderr-producers.py",
+      "bytes": 884,
+      "sha256": "dddefb796a07de734394fc99b287aba29fc4c5c77ad5a65dc5a017749365fb45"
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "scope": "Supplied helpers, drafts, negative controls, validation and refreshed GitHub feedback. These command-driven actions supply no independent reasoning credit.",
+  "fullIssueComplete": false
+}

@@ -24,18 +24,27 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! ```
 
+use regex::Regex;
 use std::env;
+#[cfg(test)]
 use std::fs;
-use std::io::Write;
 use std::path::Path;
 use std::process::exit;
-use regex::Regex;
+
+#[path = "github-output.rs"]
+mod github_output;
+use github_output::set_output;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
+
+#[allow(dead_code)]
+#[path = "changelog-files.rs"]
+mod changelog_files;
 
 fn get_arg(name: &str) -> Option<String> {
     let args: Vec<String> = env::args().collect();
@@ -75,15 +84,6 @@ fn get_changelog_dir(rust_root: &str) -> String {
         .to_string()
 }
 
-fn set_output(key: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Ok(mut file) = fs::OpenOptions::new().create(true).append(true).open(&output_file) {
-            let _ = writeln!(file, "{}={}", key, value);
-        }
-    }
-    println!("Output: {}={}", key, value);
-}
-
 fn bump_priority(bump_type: &str) -> u8 {
     match bump_type {
         "patch" => 1,
@@ -111,57 +111,37 @@ fn parse_frontmatter(content: &str) -> Option<String> {
     None
 }
 
-fn determine_bump_type(changelog_dir: &str, default_bump: &str) -> (String, usize) {
-    let dir_path = Path::new(changelog_dir);
-    if !dir_path.exists() {
-        println!("No {} directory found", changelog_dir);
-        return (default_bump.to_string(), 0);
-    }
-
-    let mut files: Vec<_> = match fs::read_dir(dir_path) {
-        Ok(entries) => entries
-            .filter_map(|e| e.ok())
-            .map(|e| e.path())
-            .filter(|p| {
-                p.extension().map_or(false, |ext| ext == "md")
-                    && p.file_name().map_or(false, |name| name != "README.md")
-            })
-            .collect(),
-        Err(_) => {
-            println!("No changelog fragments found");
-            return (default_bump.to_string(), 0);
-        }
-    };
-
+fn determine_bump_type(
+    changelog_dir: &str,
+    default_bump: &str,
+) -> std::io::Result<(String, usize)> {
+    let files = changelog_files::read_fragments(Path::new(changelog_dir))?;
     if files.is_empty() {
         println!("No changelog fragments found");
-        return (default_bump.to_string(), 0);
+        return Ok((default_bump.to_string(), 0));
     }
-
-    files.sort();
-
     let mut highest_priority: u8 = 0;
     let mut highest_bump_type = default_bump.to_string();
-
     for file in &files {
-        if let Ok(content) = fs::read_to_string(file) {
-            if let Some(bump) = parse_frontmatter(&content) {
-                let priority = bump_priority(&bump);
-                if priority > highest_priority {
-                    highest_priority = priority;
-                    highest_bump_type = bump.clone();
-                }
-                println!("Fragment {}: bump={}", file.file_name().unwrap().to_string_lossy(), bump);
-            } else {
-                println!(
-                    "Fragment {}: no bump specified, using default",
-                    file.file_name().unwrap().to_string_lossy()
-                );
+        if let Some(bump) = parse_frontmatter(&file.content) {
+            let priority = bump_priority(&bump);
+            if priority > highest_priority {
+                highest_priority = priority;
+                highest_bump_type = bump.clone();
             }
+            println!(
+                "Fragment {}: bump={}",
+                file.path.file_name().unwrap().to_string_lossy(),
+                bump
+            );
+        } else {
+            println!(
+                "Fragment {}: no bump specified, using default",
+                file.path.file_name().unwrap().to_string_lossy()
+            );
         }
     }
-
-    (highest_bump_type, files.len())
+    Ok((highest_bump_type, files.len()))
 }
 
 fn main() {
@@ -169,11 +149,81 @@ fn main() {
     let rust_root = get_rust_root();
     let changelog_dir = get_changelog_dir(&rust_root);
 
-    let (bump_type, fragment_count) = determine_bump_type(&changelog_dir, &default_bump);
+    let (bump_type, fragment_count) = match determine_bump_type(&changelog_dir, &default_bump) {
+        Ok(result) => result,
+        Err(error) => {
+            eprintln!("Error: {error}");
+            exit(1);
+        }
+    };
 
-    println!("\nDetermined bump type: {} (from {} fragment(s))", bump_type, fragment_count);
+    println!(
+        "\nDetermined bump type: {} (from {} fragment(s))",
+        bump_type, fragment_count
+    );
 
     set_output("bump_type", &bump_type);
     set_output("fragment_count", &fragment_count.to_string());
-    set_output("has_fragments", if fragment_count > 0 { "true" } else { "false" });
+    set_output(
+        "has_fragments",
+        if fragment_count > 0 { "true" } else { "false" },
+    );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn bump_selection_refuses_incomplete_inventory_and_unreadable_fragments() {
+        let root = env::temp_dir().join(format!(
+            "bump-fragment-io-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        fs::create_dir(&root).unwrap();
+        struct Cleanup(std::path::PathBuf);
+        impl Drop for Cleanup {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+        let _cleanup = Cleanup(root.clone());
+        let directory = root.join("changelog.d");
+        let dir = directory.to_str().unwrap();
+        assert_eq!(
+            determine_bump_type(dir, "minor").unwrap(),
+            ("minor".to_string(), 0)
+        );
+        fs::write(&directory, "not a directory").unwrap();
+        assert!(
+            determine_bump_type(dir, "patch")
+                .unwrap_err()
+                .to_string()
+                .contains("changelog.d")
+        );
+        fs::remove_file(&directory).unwrap();
+        fs::create_dir(&directory).unwrap();
+        let major = directory.join("a.md");
+        let invalid = directory.join("b.md");
+        fs::write(&major, "---\nbump: major\n---\nA major change").unwrap();
+        fs::write(&invalid, [0xff]).unwrap();
+        assert!(
+            determine_bump_type(dir, "patch")
+                .unwrap_err()
+                .to_string()
+                .contains("b.md")
+        );
+        assert_eq!(fs::read(&invalid).unwrap(), [0xff]);
+        fs::write(&invalid, "---\nbump: patch\n---\nA patch change").unwrap();
+        fs::write(directory.join("README.md"), "instructions").unwrap();
+        assert_eq!(
+            determine_bump_type(dir, "patch").unwrap(),
+            ("major".to_string(), 2)
+        );
+        assert!(major.exists() && invalid.exists());
+    }
 }

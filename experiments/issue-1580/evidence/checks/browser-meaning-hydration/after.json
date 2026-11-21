@@ -1,0 +1,20 @@
+{
+  "stage": "after",
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/worker-unknown-language.test.mjs"
+  ],
+  "startedAt": "2026-11-18T14:16:08.216138+00:00",
+  "durationSeconds": 13.895,
+  "exitCode": 0,
+  "rawBytes": 1084,
+  "lines": 18,
+  "sha256": "9a1184fb04e02a133cbe91c7e1be61d7919ab0d50de795b24705364e7f20c051",
+  "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+  "independentAuthorshipCredit": 0
+}

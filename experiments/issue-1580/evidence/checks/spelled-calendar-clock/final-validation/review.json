@@ -1,0 +1,66 @@
+{
+  "allPassed": true,
+  "sourceHead": "58a35f7d9ecdd0cb6af89778e910dcc347afba60",
+  "sourceHashes": {
+    ".github/workflows/native-type-check.yml": "5f20ab0af395fb9b8d6c4e47a1ec92889bffaf27660c72519d9007ac111c19a9",
+    "data/meta/abbreviation-ratchet.lino": "abcf2ad4804fd39de12f01e672a1f4665a3785139429b8d53e496d645304f960",
+    "data/meta/core-boundary-ledger.lino": "3a2473bff35055bb99b56b912b95b88268d8adc6ba23fdddee3a45d4082033e5",
+    "data/seed/entity-names.lino": "1a971fda34e2b3166d7c5c3d6f6965fa3fdbae0c76b84cc4726141dcbbdccafd",
+    "data/seed/handler-rules.lino": "eeedc689a3c2849afbf3353c297dd88ec45cc90bd58a6df74d68bc2dff720ca4",
+    "js/worker/formal_ai_worker_calendar_and_proofs.js": "1d7da8066790597befaa938c59c7cfc89c0ba3a5ecd22d2160a0186c3297f356",
+    "js/worker/formal_ai_worker_calendar_offset.js": "83f5f3e6a2b20a80c9e350a8bfdcfd41efcd3752af5f962fe38a349a32b62464",
+    "rust/embedded/data/seed/entity-names.lino": "1a971fda34e2b3166d7c5c3d6f6965fa3fdbae0c76b84cc4726141dcbbdccafd",
+    "rust/embedded/data/seed/handler-rules.lino": "eeedc689a3c2849afbf3353c297dd88ec45cc90bd58a6df74d68bc2dff720ca4",
+    "rust/src/solver_handlers/calendar_create.rs": "404bd798a61809aa1caeb342edb61ca089a58e87f215bf53f4dfdef2eaabf0a0",
+    "rust/src/verifiable_task/quantities.rs": "a648b599251f3f3b2ee44531836d0b40d7052a7adda675f8b2c50d669b0fa0e7",
+    "rust/tests/fixtures/issue-1580-calendar-clock.json": "03e96c29fe549da0ecf73103eb1fa8f47385986bd6ed14af9ef381b3d4fbf8e3",
+    "rust/tests/web/calendar-clock-preservation.test.mjs": "b84bc88cbd8830398baf27ca6be7fe111f3276445497e22a84ad42c9a5a23c7f",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "f709c3d9e0de4d4bd22f5950a6f7344a1f64de978961af5f398a906f3db0e197",
+    "ts/worker/formal_ai_worker_calendar_and_proofs.ts": "1d7da8066790597befaa938c59c7cfc89c0ba3a5ecd22d2160a0186c3297f356",
+    "ts/worker/formal_ai_worker_calendar_offset.ts": "83f5f3e6a2b20a80c9e350a8bfdcfd41efcd3752af5f962fe38a349a32b62464"
+  },
+  "focusedCounts": {
+    "tests": 192,
+    "pass": 192,
+    "fail": 0,
+    "skipped": 0
+  },
+  "gateCounts": {
+    "PASS": 87,
+    "FAIL": 0,
+    "SKIP": 52
+  },
+  "completeInventoryRaw": {
+    "PASS": 85,
+    "FAIL": 2,
+    "SKIP": 52
+  },
+  "focusedRepairedGates": [
+    "check-abbreviations",
+    "check-status-render"
+  ],
+  "verifiedCommandPayloads": 20,
+  "verifiedDetailedGatePayloads": 87,
+  "literalReview": {
+    "allSevenFocusedLogs": true,
+    "completeAggregateLog": true,
+    "bothFailedDetailedGateLogs": true,
+    "allFollowUpOutputs": true,
+    "allPassingDetailedGateLogs": false,
+    "generatorOutputFullRead": false
+  },
+  "initialInventory": {
+    "PASS": 80,
+    "FAIL": 7,
+    "SKIP": 52
+  },
+  "failureRepairs": [
+    "Merge the Hindi Tbilisi spelling into its existing lexeme declaration",
+    "Lower the calendar handler baseline and both summed handler ceilings by three",
+    "Spell both archived gate filenames in full",
+    "Lower abbreviated JS and Rust binding ceilings from 722 to 718 and from 909 to 908",
+    "Regenerate stale status with the maintained JavaScript twin"
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

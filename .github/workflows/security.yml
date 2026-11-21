@@ -33,6 +33,16 @@ on:
         default: checks
         type: choice
         options: [checks]
+      codeql:
+        description: 'Run read-only CodeQL producer verification on this branch'
+        required: false
+        default: false
+        type: boolean
+      macro-contexts:
+        description: 'Observe Rust macro AST contexts in the read-only CodeQL run'
+        required: false
+        default: false
+        type: boolean
       pull-request:
         description: 'Pull request the dispatched checks report for'
         required: false
@@ -50,8 +60,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     permissions:
       # `actions: read` is what the `actions` language extractor needs to read
       # workflow run metadata; the templates set it on the CodeQL job.
@@ -62,52 +72,48 @@ jobs:
       fail-fast: false
       matrix:
         language: [rust, actions]
-    env:
-      # Issue #1017 / github/codeql#19982. The CodeQL Rust extractor vendors its
-      # own rust-analyzer (`ra_ap_* 0.0.301` in measured CLI 2.26.3) and, with
-      # no sysroot override, resolves `std` from the runner's ambient toolchain.
-      # When that
-      # `std` is newer than the vendored parser understands, *every* call to a
-      # `std` macro fails to expand and the file is recorded as "extracted with
-      # errors" — its bodies are then not analysed at all. Re-checked
-      # 2026-09-01: github/codeql#19982 remains open and the 2.26.4 changelog
-      # contains no Rust extractor fix. Run 31937348308
-      # produced 20,725 such diagnostics across 1,023 live source files, so this
-      # is an analysis-coverage false negative, not cosmetic noise. Pinning the
-      # extractor (and only the extractor — nothing else in this repository
-      # builds with it) to the newest `std` the bundle can parse restores that
-      # coverage. Raise this as CodeQL picks up newer rust-analyzer releases.
-      CODEQL_RUST_SYSROOT_TOOLCHAIN: '1.94.0'
-    steps:
+    env: &codeql-extractor-environment
+      # CodeQL CLI 2.27.4 vendors ra_ap 0.0.358 and selects Rust 1.99.0.
+      # Original producer run 44710630318 proved that the old 1.94.0 sysroot
+      # also supplies an incompatible proc-macro server: 406 macro failures.
+      # Keep binary sysroot, rust-src and compiled dependency macros on the
+      # extractor's compiler ABI; revalidate original SARIF when upgrading it.
+      CODEQL_RUST_SYSROOT_TOOLCHAIN: '1.99.0'
+    steps: &codeql-analysis-steps
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
       # Both variables are required: setting only `_SYSROOT_SRC` leaves the
       # extractor on the discovered (ambient) binary sysroot and the macro
-      # failures remain. A missing toolchain warns rather than fails — the
-      # override is a mitigation for an upstream defect, so losing it must not
-      # turn a security scan red while still being impossible to overlook.
+      # failures remain. Both paths must be available before analysis: the
+      # override is required for complete extraction; losing either prerequisite
+      # must fail before a scan can report success with missing coverage.
       - name: Pin the extractor sysroot to a std the CodeQL bundle can parse
         if: matrix.language == 'rust'
         run: |
-          set -uo pipefail
+          set -euo pipefail
           toolchain="$CODEQL_RUST_SYSROOT_TOOLCHAIN"
           if ! rustup toolchain install "$toolchain" --profile minimal --component rust-src; then
-            echo "::warning title=CodeQL sysroot pin unavailable::Could not install Rust ${toolchain}; the Rust extractor will fall back to the ambient toolchain and macro expansion may fail (github/codeql#19982)."
-            exit 0
+            echo "::error title=CodeQL sysroot pin unavailable::Could not install Rust ${toolchain}. Restore the pinned toolchain or select a verified compatible sysroot (github/codeql#19982)." >&2
+            exit 1
           fi
           sysroot="$(rustup run "$toolchain" rustc --print sysroot)"
           src="${sysroot}/lib/rustlib/src/rust/library"
           if [[ ! -d "$src" ]]; then
-            echo "::warning title=CodeQL sysroot pin unavailable::${src} is missing; the Rust extractor will fall back to the ambient toolchain (github/codeql#19982)."
-            exit 0
+            echo "::error title=CodeQL sysroot pin unavailable::${src} is missing. Install rust-src for the pinned toolchain before analysis (github/codeql#19982)." >&2
+            exit 1
           fi
           echo "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT=${sysroot}" >> "$GITHUB_ENV"
           echo "CODEQL_EXTRACTOR_RUST_OPTION_SYSROOT_SRC=${src}" >> "$GITHUB_ENV"
           echo "Pinned the Rust extractor to ${sysroot}"
 
+      - name: Prepare standalone Rust analysis contexts
+        if: matrix.language == 'rust'
+        run: python3 scripts/codeql-rust-projects.py --output "${{ runner.temp }}/codeql-rust-contexts"
+
       - uses: github/codeql-action/init@v4
+        id: codeql-init
         with:
           languages: ${{ matrix.language }}
           # Issue #1017: keeps archived evidence trees out of the extractor so a
@@ -116,15 +122,105 @@ jobs:
 
       - uses: github/codeql-action/autobuild@v4
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
       - uses: github/codeql-action/analyze@v4
+        id: codeql-analyze
+        env:
+          # The following observations query the same completed Rust dataset.
+          # Keep available cached stages for the following observations. The action
+          # supplies --expect-discarded-cache; its inverse cannot be appended.
+          # Hosted execution must qualify actual cache reuse.
+          CODEQL_ACTION_EXTRA_OPTIONS: >-
+            ${{ github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts
+              && '{"database":{"run-queries":["--keep-full-cache","--max-disk-cache=4096"]}}'
+              || '{}' }}
+        with:
+          output: ${{ runner.temp }}/codeql-results
+          upload: ${{ github.job == 'codeql' && 'always' || 'never' }}
+
+      - name: Observe Rust macro expansion contexts
+        if: ${{ github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts }}
+        timeout-minutes: 4
+        env:
+          CODEQL_BINARY: ${{ steps.codeql-init.outputs.codeql-path }}
+          CODEQL_DATABASES: ${{ steps.codeql-analyze.outputs.db-locations }}
+        run: >-
+          python3 experiments/issue-1580/codeql-macro-contexts/observe.py
+          --codeql "$CODEQL_BINARY" --databases "$CODEQL_DATABASES"
+          --output "${{ runner.temp }}/codeql-results/macro-contexts"
+
+      - name: Observe included Rust string payloads
+        if: ${{ github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts }}
+        timeout-minutes: 4
+        env:
+          CODEQL_BINARY: ${{ steps.codeql-init.outputs.codeql-path }}
+          CODEQL_DATABASES: ${{ steps.codeql-analyze.outputs.db-locations }}
+        run: >-
+          python3 experiments/issue-1580/codeql-macro-contexts/observe.py
+          --codeql "$CODEQL_BINARY" --databases "$CODEQL_DATABASES"
+          --profile included-string-payloads --trace-evaluation
+          --output "${{ runner.temp }}/codeql-results/included-string-payloads"
+
+      - name: Reject unresolved CodeQL findings
+        if: ${{ !cancelled() }}
+        run: node scripts/check-codeql-results.mjs "${{ runner.temp }}/codeql-results"
+
+      - name: Preserve CodeQL reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-results-${{ matrix.language }}-${{ github.job }}
+          path: ${{ runner.temp }}/codeql-results/
+          if-no-files-found: error
+
+      - name: Preserve Rust analysis contexts
+        if: ${{ !cancelled() && matrix.language == 'rust' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: codeql-rust-contexts-${{ github.job }}
+          path: |
+            ${{ runner.temp }}/codeql-rust-contexts/contexts.json
+            ${{ runner.temp }}/codeql-rust-contexts/rustc-version.txt*
+            ${{ runner.temp }}/codeql-rust-contexts/**/*.json
+            ${{ runner.temp }}/codeql-rust-contexts/**/*.json.stderr
+            ${{ runner.temp }}/codeql-rust-contexts/**/*.jsonl*
+            ${{ runner.temp }}/codeql-rust-contexts/**/Cargo.toml
+            ${{ runner.temp }}/codeql-rust-contexts/**/Cargo.lock
+            scripts/rust-project.json
+            js/wasm-worker/rust-project.json
+          if-no-files-found: error
+
+  # Explicit branch verification reuses the exact producer and keeps all tokens read-only.
+  # Default PR/bot dispatches stay light; only the main job uploads code-scanning state.
+  codeql-readonly:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main' && inputs.codeql }}
+    name: CodeQL producer verification (${{ matrix.language }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-codeql-readonly-${{ matrix.language }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+    permissions:
+      actions: read
+      contents: read
+      security-events: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [rust, actions]
+    env: *codeql-extractor-environment
+    steps: *codeql-analysis-steps
 
   cargo-audit:
     name: Cargo audit
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-cargo-audit
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-cargo-audit${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 2
@@ -177,8 +273,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-dependency-review
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-dependency-review${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     permissions:
       contents: read
       pull-requests: write

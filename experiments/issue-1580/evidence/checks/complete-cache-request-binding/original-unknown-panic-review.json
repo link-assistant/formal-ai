@@ -1,0 +1,12 @@
+{
+  "source": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506752.log.gz",
+  "archiveSha256": "8d2033611180747dae8570bc166b8037636ec11b3b7433a4a19eba1bb2edb1e6",
+  "rawSha256": "662e84cfd45402de68bd6bbd982e1cc19de9e58f64d5e3d5795ffb1f8597e1f5",
+  "literalRange": [
+    3100,
+    3155
+  ],
+  "prefixDisplayOnly": true,
+  "currentExecutionVerified": false,
+  "independentAuthorshipCredit": 0
+}

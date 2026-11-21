@@ -1,0 +1,60 @@
+{
+  "files": [
+    {
+      "file": "in-progress.json.gz",
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "rawBytes": 3
+    },
+    {
+      "file": "issue-comments.json.gz",
+      "rawSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2",
+      "rawBytes": 4477
+    },
+    {
+      "file": "issue.json.gz",
+      "rawSha256": "ebdc16dc262b2cb1b55b6b5bd7ae978660c1695fbfc2bc84a54d57007fb35d4c",
+      "rawBytes": 10657
+    },
+    {
+      "file": "pull-conversation.json.gz",
+      "rawSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb",
+      "rawBytes": 31786
+    },
+    {
+      "file": "pull-inline.json.gz",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "rawBytes": 4
+    },
+    {
+      "file": "pull-request.json.gz",
+      "rawSha256": "65e4904f6fafc53f2c2e1b34145b8a64b447d50f0f098a670b863d97d13ab90c",
+      "rawBytes": 9429
+    },
+    {
+      "file": "pull-reviews.json.gz",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "rawBytes": 4
+    },
+    {
+      "file": "queued.json.gz",
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "rawBytes": 3
+    },
+    {
+      "file": "recent-runs.json.gz",
+      "rawSha256": "428617298b56b4ad6f6c028e5ebe285e1269d9a58ba4479d947c33b91eae731e",
+      "rawBytes": 692
+    },
+    {
+      "file": "remote-head-runs.json.gz",
+      "rawSha256": "9b2ed4113a23cfbb92a3edba0d0f4c276846c8990ecfce356e9b2a9465424dbb",
+      "rawBytes": 7470
+    },
+    {
+      "file": "summary.json.gz",
+      "rawSha256": "465d778f0d3036761751c8ebac51cc261a8faba9303e40cbf6362c083f3331c1",
+      "rawBytes": 504
+    }
+  ],
+  "autonomousAuthorshipCredit": 0
+}

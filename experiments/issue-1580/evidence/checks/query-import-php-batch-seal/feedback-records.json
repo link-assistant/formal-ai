@@ -1,0 +1,182 @@
+[
+  {
+    "name": "fetch-main",
+    "argv": [
+      "git",
+      "fetch",
+      "origin",
+      "main"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:01:24.664028+00:00",
+    "stdout": {
+      "file": "fetch-main.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "fetch-main.stderr.gz",
+      "rawSha256": "f694fbaa5fdcdaea1514acbf57d0fe8b435415ef941c8159035a4a9a57d8aed5",
+      "archiveSha256": "b4665725e37b8fc351f63ee82bef06b90506666038876d7b4e2388b87afe3bb0",
+      "bytes": 99,
+      "lines": 2
+    }
+  },
+  {
+    "name": "main",
+    "argv": [
+      "git",
+      "rev-parse",
+      "origin/main"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:01:24.670819+00:00",
+    "stdout": {
+      "file": "main.stdout.gz",
+      "rawSha256": "6f674250dd7a08adf0f561f99ccbe15ca03226028532de1d6d27140c62e41282",
+      "archiveSha256": "00bc666a0f885c9c8a1fe798ed7d681137e5700f76ef157230b98467ea35c5c9",
+      "bytes": 41,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "main.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "issue-comments",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/issues/1580/comments",
+      "--paginate",
+      "--slurp"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:01:25.205073+00:00",
+    "stdout": {
+      "file": "issue-comments.stdout.gz",
+      "rawSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2",
+      "archiveSha256": "e58aa06dd389ebca87f43ba61d6b1fa0df4211e037a983ba266a8db672883638",
+      "bytes": 4477,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "issue-comments.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "conversation",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/issues/1581/comments",
+      "--paginate",
+      "--slurp"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:01:25.755007+00:00",
+    "stdout": {
+      "file": "conversation.stdout.gz",
+      "rawSha256": "a278356a74e24895f54119da90cd4e92ec86c68956914a919a18d989d934dd0f",
+      "archiveSha256": "d55f55897f5102da22e3961ffa856eccc66b3cd4a4db30fbcb27a7058ae429df",
+      "bytes": 36071,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "conversation.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "inline",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/pulls/1581/comments",
+      "--paginate",
+      "--slurp"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:01:26.223269+00:00",
+    "stdout": {
+      "file": "inline.stdout.gz",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe",
+      "bytes": 4,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "inline.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "reviews",
+    "argv": [
+      "gh",
+      "api",
+      "repos/link-assistant/formal-ai/pulls/1581/reviews",
+      "--paginate",
+      "--slurp"
+    ],
+    "exitCode": 0,
+    "observedAt": "2026-11-21T01:01:26.808426+00:00",
+    "stdout": {
+      "file": "reviews.stdout.gz",
+      "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+      "archiveSha256": "aeec2deddde135d2208dc60210e2c4341f65011174bd9001de0ca86713770efe",
+      "bytes": 4,
+      "lines": 1
+    },
+    "stderr": {
+      "file": "reviews.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    }
+  },
+  {
+    "name": "pull-request-diff",
+    "argv": [
+      "gh",
+      "pr",
+      "diff",
+      "1581",
+      "--repo",
+      "link-assistant/formal-ai"
+    ],
+    "exitCode": 1,
+    "observedAt": "2026-11-21T01:01:28.674218+00:00",
+    "stdout": {
+      "file": "pull-request-diff.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytes": 0,
+      "lines": 0
+    },
+    "stderr": {
+      "file": "pull-request-diff.stderr.gz",
+      "rawSha256": "06dda70ebfef8b578f4e212792b89631413563da7dfaa7598b90c00adb13cfe5",
+      "archiveSha256": "3064591bc8bc81382ccf3efad6a3d49e9ad0bc111959202d619054be8452903b",
+      "bytes": 287,
+      "lines": 2
+    }
+  }
+]

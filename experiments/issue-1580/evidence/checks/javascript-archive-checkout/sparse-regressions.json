@@ -1,0 +1,168 @@
+{
+  "createdAt": "2026-11-18T08:28:03.240528+00:00",
+  "sourceHead": "9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8",
+  "patternsSha256": "a16cf2076220cb7fa691704d06bc3aa57273c6e26f09d51e1c3fcb71f2af5a0a",
+  "selectedFiles": 23313,
+  "selectedBytes": 301945027,
+  "omittedFiles": 60575,
+  "changedOriginalOperands": [],
+  "commands": [
+    {
+      "name": "fast-pull-request-production-profile",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 5.715,
+      "log": "sparse-01-fast-pull-request-production-profile.log.gz",
+      "rawBytes": 1947,
+      "rawLines": 25,
+      "rawSha256": "ae7aec732e184e830314ae79ffd79182ac03cd04066ebd045ddd3c88d631fa7e",
+      "archiveSha256": "681c06fece3ff560371f83aae78bb51a64ada611808f22c400006565e1083c96"
+    },
+    {
+      "name": "issue-1580-client-output-constraints",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1580-client-output-constraints.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 14.394,
+      "log": "sparse-02-issue-1580-client-output-constraints.log.gz",
+      "rawBytes": 691,
+      "rawLines": 14,
+      "rawSha256": "a3a404fdcf92023310a669986db0c36a12982651e1f3cbb0a8e5bc90d4534d40",
+      "archiveSha256": "87a914d44017b3538376197227016f42aaeb89025ada4fb378b3a5753b72fef1"
+    },
+    {
+      "name": "issue-982-native-session-observation",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-982-native-session-observation.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.108,
+      "log": "sparse-03-issue-982-native-session-observation.log.gz",
+      "rawBytes": 425,
+      "rawLines": 11,
+      "rawSha256": "942eae04d9efa134b12f8e3f48c9adc8fbf855ec1672c40d40bc3482b18808d1",
+      "archiveSha256": "83c638ce52b22c570282002fc4b7cf2b55e01cbd6013ad25d62ab28edb6d80d0"
+    },
+    {
+      "name": "issue-0932-box-language-projects",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-0932-box-language-projects.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 18.116,
+      "log": "sparse-04-issue-0932-box-language-projects.log.gz",
+      "rawBytes": 1500,
+      "rawLines": 33,
+      "rawSha256": "b432372d20b6898464b44113bc8441579f2efd4f8bfc27edc78394741b5ec82b",
+      "archiveSha256": "490449e0b6dba7c1a781bd9c8917a2ae3ad3bebbd4975393cb7c5692ce9c28d7"
+    },
+    {
+      "name": "native-protocol-capture",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/native-protocol-capture.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 8.831,
+      "log": "sparse-05-native-protocol-capture.log.gz",
+      "rawBytes": 1306,
+      "rawLines": 19,
+      "rawSha256": "04252c7abe22c9031e6d9e380a1e34e13ef2916702fb7fcecfc6f4fa4787d38b",
+      "archiveSha256": "13df7d0feb84b2c569b424012b2bd5b25dd4f57688d642070fa75b5a3a88b325"
+    },
+    {
+      "name": "natural-unary-cst-evidence",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/natural-unary-cst-evidence.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.654,
+      "log": "sparse-06-natural-unary-cst-evidence.log.gz",
+      "rawBytes": 390,
+      "rawLines": 11,
+      "rawSha256": "a5f2d82dcfa1074c57e4777270272fda6540abe58390acf85b5b019ef2b6c5b1",
+      "archiveSha256": "77c14af983d8d328af4e27ae585eccece28d99f63bd19c11c9d214bcb4c9b121"
+    },
+    {
+      "name": "issue-1163-1164-case-study-evidence",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1163-1164-case-study-evidence.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 4.669,
+      "log": "sparse-07-issue-1163-1164-case-study-evidence.log.gz",
+      "rawBytes": 606,
+      "rawLines": 13,
+      "rawSha256": "2c3e6f0aedc631c509cd40c279c5f2ec959a851fc80fc92dc5110e525d14a353",
+      "archiveSha256": "0616ff3c8cf37b7ef38659207b37307cc0a6014be271f249290bd5eca51fd7ac"
+    },
+    {
+      "name": "issue-0531-pattern-inference",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-0531-pattern-inference.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 9.942,
+      "log": "sparse-08-issue-0531-pattern-inference.log.gz",
+      "rawBytes": 3235,
+      "rawLines": 44,
+      "rawSha256": "5519b7c5b6d866a93d26628511c00d2e1bd812c39a89e78562c4fbcace60dfe8",
+      "archiveSha256": "995a09bd9556ead16a30bb201ad5101b576dd9d8fb91ecdb41c95d80edfb7f55"
+    }
+  ],
+  "seconds": 80.58,
+  "cumulativeChildPeakKiB": 390252,
+  "remoteCheckoutVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

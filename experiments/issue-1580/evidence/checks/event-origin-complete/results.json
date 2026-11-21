@@ -1,0 +1,994 @@
+{
+  "complete": false,
+  "sourceHead": "d3adb3ce0b471b94f173b204b1e0091903c8a958",
+  "checks": [
+    {
+      "name": "worker-writer",
+      "file": "worker-writer.log.gz",
+      "rawSha256": "9b9ec9d31ef46fc68255839fa904f613f1c3530e29f9ddc8f00e9dbf49a16878",
+      "archiveSha256": "81bed06556b1b45262c5af39f6bede4f67e06c0f866480bd6711fcb5cb566ab8",
+      "lines": 1,
+      "argv": [
+        "node",
+        "scripts/generate-worker-crate-modules.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "seconds": 1.131
+    },
+    {
+      "name": "translation-writer",
+      "file": "translation-writer.log.gz",
+      "rawSha256": "e5180ed1b9a2b27cb1f7c6d0cd6b7880916ce0b921c9bb6da7fb552528b36676",
+      "archiveSha256": "a78b7d52473a3610064374aec442f2a024adf71d3de022dfea0a444c478699d1",
+      "lines": 21,
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-js-rust.mjs",
+        "--write",
+        "--fetch",
+        "--jobs",
+        "1",
+        "js/agentic/crate/solver_event_projection.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 198.005
+    },
+    {
+      "name": "rust-format",
+      "file": "rust-format.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "rust/tests/unit/specification/event_source_origin.rs",
+        "rust/tests/unit/reasoning_contracts.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.472
+    },
+    {
+      "name": "rust-format-check",
+      "file": "rust-format-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "argv": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2024",
+        "rust/src/event_log.rs",
+        "rust/src/thinking.rs",
+        "rust/src/solver_helpers/mod.rs",
+        "rust/src/server/debug_stage.rs",
+        "rust/tests/unit/specification/event_source_origin.rs",
+        "rust/tests/unit/reasoning_contracts.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.137
+    },
+    {
+      "name": "translation-verify",
+      "file": "translation-verify.log.gz",
+      "rawSha256": "90aed8bda8b21c7aa680e4a45bd86a1a9b72fcd87d27782ec19d86d8dfcb40c4",
+      "archiveSha256": "e49d5aae5ac9baef68b9660805d75bc20ab1dfb914063e838009a00740af9463",
+      "lines": 1,
+      "argv": [
+        "node",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 2.6
+    },
+    {
+      "name": "catalog-check",
+      "file": "catalog-check.log.gz",
+      "rawSha256": "0905d80a02c6747bbeb9dd5f02268b7a8070ea0498b702ea80fc15bb3a64cf79",
+      "archiveSha256": "6104460ae557c1a727b288cb1286f0abb44d8181802b91b88f9202b5c9926d03",
+      "lines": 1,
+      "argv": [
+        "node",
+        "scripts/generate-debug-stage-sources.mjs",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 1.547
+    },
+    {
+      "name": "solver-event-origin",
+      "file": "solver-event-origin.log.gz",
+      "rawSha256": "169f8ae70b261a7b7dd820cbf0171ed58aefe30fc879ca8ea583872f73d66cbd",
+      "archiveSha256": "ac091a465238fe9ba23022e1848f764661ba3408d8481cf47410034519192efd",
+      "lines": 13,
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/solver-event-origin.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.245
+    },
+    {
+      "name": "server-debug-session",
+      "file": "server-debug-session.log.gz",
+      "rawSha256": "2b3f9734c5da35720298c23cdb585a423a9917ef8409b3129fe3822c3cf2d038",
+      "archiveSha256": "f66f7866e3901fc5abbeebdf45413e01401ba8b65b7a5a6dc9e405a6641fe202",
+      "lines": 25,
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/server-debug-session.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 13.848
+    },
+    {
+      "name": "worker-candidate-validation",
+      "file": "worker-candidate-validation.log.gz",
+      "rawSha256": "311bb158412f56835ddc52d66ad2f8ee7034ca9242ac617972bb22c4d001ea82",
+      "archiveSha256": "644c974dc19a0cc66c7edb5f80235c804c5d99b5aee093ecbd1b98a33efe84cd",
+      "lines": 12,
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/worker-candidate-validation.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.475
+    },
+    {
+      "name": "default-branch-build-policy",
+      "file": "default-branch-build-policy.log.gz",
+      "rawSha256": "ef6839be000554adf1b565eb0c439bccf35898f5f8bb9d6187cb60869ea63dab",
+      "archiveSha256": "11d53820f92f77425c7301989387914c912699abca6c86c20ad75549ba917ca1",
+      "lines": 41,
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.666
+    },
+    {
+      "name": "focused-test-map",
+      "file": "focused-test-map.log.gz",
+      "rawSha256": "46f0f659d1ec3bdc28db3bc1e715f1fc4fba1a836bace77d293efa8d7dff26ed",
+      "archiveSha256": "1c32603fbf660e76777a73558165afc24dad8e5506e14b583fd4b61dc4d277a5",
+      "lines": 16,
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.748
+    },
+    {
+      "name": "rust-specification-fixture-integrity",
+      "file": "rust-specification-fixture-integrity.log.gz",
+      "rawSha256": "c3901e5b6fc4ca1596d5e7b453b75bb840e05f0056740c39cdf6903dbd080517",
+      "archiveSha256": "7edc64c6bd3d9e145f2931b933eec16b4481de518165d8fdef21da8c8f8c1afa",
+      "lines": 10,
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.302
+    },
+    {
+      "name": "rust-specification-unicode-identifiers",
+      "file": "rust-specification-unicode-identifiers.log.gz",
+      "rawSha256": "2e271e39c6a4ac5a848bebaaa4da4548163298a289629581c0e0bd44176c8c26",
+      "archiveSha256": "e9e1412081e8b18c8f081f9d94bfcfcd5e9eb6bc77da487135ef7ececf68e378",
+      "lines": 162,
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 10.423
+    },
+    {
+      "name": "server-solver-trace",
+      "file": "server-solver-trace.log.gz",
+      "rawSha256": "e518b8b0e7ced01c844a9408537d42c79bc712c30b01faab627b4331f9bb4c6e",
+      "archiveSha256": "84c7936dc13c9bd50dfaa9aed9c5f5047f7816234bb1ac1b3b6aa28ff1d3a8a8",
+      "lines": 13,
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/server-solver-trace.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 5.226
+    },
+    {
+      "name": "server-evidence-links",
+      "file": "server-evidence-links.log.gz",
+      "rawSha256": "f4eca7f427621c0d4be117722a0c9b33b9ec421db402b48ee635140bef6310a9",
+      "archiveSha256": "9d2c9c550dee9985b1b6004da871dc8f580cd8abf23a601c819f925e098f2d5f",
+      "lines": 17,
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/server-evidence-links.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 10.256
+    },
+    {
+      "name": "all-local-gates",
+      "file": "all-local-gates.log.gz",
+      "rawSha256": "f1041f54c7f677a6deab6247b3df0b7b8162c5fb3c0fd40135d80e3fa4039994",
+      "archiveSha256": "65bc309cd9db678b02e379924794db2e1c8b01322ee64cde3d4a99f8fcc3e1ec",
+      "lines": 141,
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 757.394
+    },
+    {
+      "name": "whitespace",
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.293
+    }
+  ],
+  "gatePayloads": [
+    {
+      "name": "gate-check-abbreviations",
+      "file": "gate-check-abbreviations.log.gz",
+      "rawSha256": "a16a6e691640a6b1ed059bc9714362370e0851827c62df31b05c89befc7e8b24",
+      "archiveSha256": "085b4e538ce13f5e68cfeb4014a96dfb5506e97b26b268e1f71e21f5dc64f5be",
+      "lines": 5,
+      "gateName": "check-abbreviations"
+    },
+    {
+      "name": "gate-check-architecture-contents",
+      "file": "gate-check-architecture-contents.log.gz",
+      "rawSha256": "2e7bf48690f5b10f769f2f273a2d1b7b49068b10de4b987c85df027bcfc06aec",
+      "archiveSha256": "2971512d462d0a8597148530b3959940c1e288b71d1ac8844a25da933d592ef1",
+      "lines": 2,
+      "gateName": "check-architecture-contents"
+    },
+    {
+      "name": "gate-check-architecture-principles",
+      "file": "gate-check-architecture-principles.log.gz",
+      "rawSha256": "d56a3af900c1c4bae06fa733e8ff1144c92e25328035e0d717e46bf685e916c3",
+      "archiveSha256": "13a4ba702514bae8d4ed3de6369f36416d6ba4b1de788c3fbac281877100f627",
+      "lines": 2,
+      "gateName": "check-architecture-principles"
+    },
+    {
+      "name": "gate-check-assemble-requirements-js-twin",
+      "file": "gate-check-assemble-requirements-js-twin.log.gz",
+      "rawSha256": "4db95bdf6952f6d560fd3500b400c6a3fd1688240108f3088396875762ac09b9",
+      "archiveSha256": "f0199ca30a1f13380f2e8b6a8083017c9ebb701648598d74443181a3b7af6e13",
+      "lines": 7,
+      "gateName": "check-assemble-requirements-js-twin"
+    },
+    {
+      "name": "gate-check-changelog-fragment-js-twin",
+      "file": "gate-check-changelog-fragment-js-twin.log.gz",
+      "rawSha256": "dcf80a72b0128ad5e68a8f4e4f51de3cd3d4386acde041a0c43079b5de6fdbc7",
+      "archiveSha256": "cf212b8db84d6e8512f4d0a14432e9fb3006bcd8760a9299f3d06702ff7cb2db",
+      "lines": 2,
+      "gateName": "check-changelog-fragment-js-twin"
+    },
+    {
+      "name": "gate-check-ci-speed",
+      "file": "gate-check-ci-speed.log.gz",
+      "rawSha256": "4188f9e32a92eecb4e097342bac1801ea722d96b348ae3f4eae4820110668a00",
+      "archiveSha256": "4f9860ea104601ac8a2f15c7761e47c89d1c15cee79e4dbb090e16caf808542b",
+      "lines": 34,
+      "gateName": "check-ci-speed"
+    },
+    {
+      "name": "gate-check-closure-audit",
+      "file": "gate-check-closure-audit.log.gz",
+      "rawSha256": "9ce325ed0d1936067494153932393c52bfd41fe3a0eb0f91d38e14373665e8a8",
+      "archiveSha256": "b06839e164ff737ab13cb38edb7bddf2d991bda9048a4f41e223f602e893831a",
+      "lines": 4,
+      "gateName": "check-closure-audit"
+    },
+    {
+      "name": "gate-check-conversational-variation-floor",
+      "file": "gate-check-conversational-variation-floor.log.gz",
+      "rawSha256": "48c0781d7c87f73a6a2de5434317010b8538fb209f03d0c7872623d8defd7487",
+      "archiveSha256": "9a245e881cd4bab6aae02b4a25dc4de6b20a7d9fa82ef951c9a1188b6f20f5a8",
+      "lines": 19,
+      "gateName": "check-conversational-variation-floor"
+    },
+    {
+      "name": "gate-check-debt-ratchet-js-twin",
+      "file": "gate-check-debt-ratchet-js-twin.log.gz",
+      "rawSha256": "3483adc5c9cc4b38e6e173424f583bbd0bbca5425da0edebe961c586dfd4808a",
+      "archiveSha256": "08471655b602264f3b62b0d3bc16e086fe8ba0aea7234abd758c91a33661d17b",
+      "lines": 2,
+      "gateName": "check-debt-ratchet-js-twin"
+    },
+    {
+      "name": "gate-check_debt_ratchet",
+      "file": "gate-check_debt_ratchet.log.gz",
+      "rawSha256": "ba0cace7d67781b5f3a19ec8a68f5297c858c1fe30e60cf35d1c59111b3ab326",
+      "archiveSha256": "c7a249130bd75b4722e071e926fcc7ce18e87ee9c20cf28760143b5438957ca2",
+      "lines": 15,
+      "gateName": "check_debt_ratchet"
+    },
+    {
+      "name": "gate-check-debug-stage-sources",
+      "file": "gate-check-debug-stage-sources.log.gz",
+      "rawSha256": "f611d67f647e22765665e8cd3974c7c85927e0d955d4ebb6b231805ae59f9a1e",
+      "archiveSha256": "1476ebd5a9c8af0304dda605b9f96ba35ea200ad3624fcee0b61d84204053fe5",
+      "lines": 2,
+      "gateName": "check-debug-stage-sources"
+    },
+    {
+      "name": "gate-check-dependency-direction",
+      "file": "gate-check-dependency-direction.log.gz",
+      "rawSha256": "d0c15065c1cbff32dd511013de075ae9af15cf8ff4369cc7afbaa92e94d10ba4",
+      "archiveSha256": "d22b34ab70b9bc63e9cb0bc6c54c1140558b35e3e584d891a9ea2abb4a082036",
+      "lines": 3,
+      "gateName": "check-dependency-direction"
+    },
+    {
+      "name": "gate-check-desktop-library",
+      "file": "gate-check-desktop-library.log.gz",
+      "rawSha256": "697dcf6db250955dffa0bd0143cb717d528e7fcb6da4cd94fcb8ba124de23536",
+      "archiveSha256": "54ebc9bdbd65efc89bbfe84f82b76fb8ed8b140a5f8b1f150ea9d36a692f6207",
+      "lines": 180,
+      "gateName": "check-desktop-library"
+    },
+    {
+      "name": "gate-check-desktop-packaging",
+      "file": "gate-check-desktop-packaging.log.gz",
+      "rawSha256": "a28b7915e800a60bf169e7d2ca3540c7f17f5c7a3c986743c01609f937a3d919",
+      "archiveSha256": "b4c2b7c800239f7b232f317b2039ac6d08a00caba23da54532fa3ab967771b14",
+      "lines": 23,
+      "gateName": "check-desktop-packaging"
+    },
+    {
+      "name": "gate-check-fact-captures",
+      "file": "gate-check-fact-captures.log.gz",
+      "rawSha256": "2af1f1a3e12739497b496f3e70283787b9f89aca23f7c5257bec57773636df11",
+      "archiveSha256": "81775dd2353acf09d4a688e5ce1f0e20cefd3b8f14a25d413d6cc066bbcf2409",
+      "lines": 2,
+      "gateName": "check-fact-captures"
+    },
+    {
+      "name": "gate-check-file-size-js-twin",
+      "file": "gate-check-file-size-js-twin.log.gz",
+      "rawSha256": "07918a2152b578cba2b518dd25d361689d3c2e6a91848afeb3ac8af20d8aeee9",
+      "archiveSha256": "5ee4009241ee13da1c71e44fd09fb5ba26e15b6bfda355aee981d571bca96f50",
+      "lines": 2,
+      "gateName": "check-file-size-js-twin"
+    },
+    {
+      "name": "gate-check-file-size",
+      "file": "gate-check-file-size.log.gz",
+      "rawSha256": "4be86dfa5ae5bcdf5f8d8a0809babff1300ce607d3147c79b081f941ec5094d8",
+      "archiveSha256": "ac753a784d7f6ce89bf18943f1d8cf5658ad5e54ee9603c2ce34f039fa316dd6",
+      "lines": 389,
+      "gateName": "check-file-size"
+    },
+    {
+      "name": "gate-check-formal-ai-tally",
+      "file": "gate-check-formal-ai-tally.log.gz",
+      "rawSha256": "4ef881b8aeb94d9a4c3b0bc2f5a904009c7b06b92bc00b68837bb979640c18be",
+      "archiveSha256": "e134d3fae23fb83ea98209f6b38809d8f316e821baa781cc8e5a4d8611c2d70e",
+      "lines": 2,
+      "gateName": "check-formal-ai-tally"
+    },
+    {
+      "name": "gate-check-fragment-release-map",
+      "file": "gate-check-fragment-release-map.log.gz",
+      "rawSha256": "90e1ea6de8b36f7c2f3c8b629f558c9264214ea5dd63bdded192635256d7228c",
+      "archiveSha256": "943149aec2e0a713278a9302b8e26fb555b0f5804cc56dd67f9306fb8496cdcc",
+      "lines": 17,
+      "gateName": "check-fragment-release-map"
+    },
+    {
+      "name": "gate-check-generate-module-map-js-twin",
+      "file": "gate-check-generate-module-map-js-twin.log.gz",
+      "rawSha256": "c8fed834e2c43300562ba22c8432d44a9cb69043470510f5a94b62b2ff34ce82",
+      "archiveSha256": "1249400ca3baf38dae87f643ffac02b25b8e56c772194f3db235f74c2f8363cf",
+      "lines": 2,
+      "gateName": "check-generate-module-map-js-twin"
+    },
+    {
+      "name": "gate-check-generate-requirement-status-js-twin",
+      "file": "gate-check-generate-requirement-status-js-twin.log.gz",
+      "rawSha256": "f48e9eaff099cc7fa7db14e5736bb8560986ea71748df0e20e26419e7bd36fb9",
+      "archiveSha256": "9814d201ab63b1d2f3c4451d36bbd4ec9e6ae9ea2fca4b5ce09a45094d8718ac",
+      "lines": 3,
+      "gateName": "check-generate-requirement-status-js-twin"
+    },
+    {
+      "name": "gate-check-generated-files",
+      "file": "gate-check-generated-files.log.gz",
+      "rawSha256": "aafc2db72afff2b9dd8495e1a0e89b100c57e1cec340e6e36bc1cf3ea33e22aa",
+      "archiveSha256": "bf0d6c45c5bce24a40de71cf973cf46b0932710d3d4e636d09535c867ddd3509",
+      "lines": 2,
+      "gateName": "check-generated-files"
+    },
+    {
+      "name": "gate-check-generated-version-literals-js-twin",
+      "file": "gate-check-generated-version-literals-js-twin.log.gz",
+      "rawSha256": "1de530944d1d149fc27884c67953c8900bc6bca977a08cbbc2d1fbff3f8b737d",
+      "archiveSha256": "9b516190db33030fa2c201fdf9f9b5903224aa9e537b928e0ba1c0534ff0a3da",
+      "lines": 2,
+      "gateName": "check-generated-version-literals-js-twin"
+    },
+    {
+      "name": "gate-check-generated-version-literals",
+      "file": "gate-check-generated-version-literals.log.gz",
+      "rawSha256": "cabe678506faf1aa52dc610252357dca7eb5b39b89d456201b280337885b2694",
+      "archiveSha256": "fb40d46f4edbb52ae7a9d9bbf3d04fcd450a6aa8ef067798ab101da8ecd45fd8",
+      "lines": 3,
+      "gateName": "check-generated-version-literals"
+    },
+    {
+      "name": "gate-check-hardcoded-language-js-twin",
+      "file": "gate-check-hardcoded-language-js-twin.log.gz",
+      "rawSha256": "eb9012b30119da9f98da794407071b6fb528e056824fc98b54649d15f120c008",
+      "archiveSha256": "902006218726a7ab0d9e6af1a467f17ed701355058c9e43841564d78bc91ff19",
+      "lines": 2,
+      "gateName": "check-hardcoded-language-js-twin"
+    },
+    {
+      "name": "gate-check-hardcoded-language",
+      "file": "gate-check-hardcoded-language.log.gz",
+      "rawSha256": "9a4477632b3f38195fd0383db46e35d71db51c6f39ac742ab6621cc93ac6e4d6",
+      "archiveSha256": "e4d6898ec39dd81b9782841f9402e258ba8c37ce72372123f048d894c175c2ef",
+      "lines": 8,
+      "gateName": "check-hardcoded-language"
+    },
+    {
+      "name": "gate-check-i18n-catalog-coverage",
+      "file": "gate-check-i18n-catalog-coverage.log.gz",
+      "rawSha256": "c5946a5419f2e8180f9a6b96e1a0203ef3706137041e464febf4a4afdb34bac0",
+      "archiveSha256": "2a26bc94c50b77d4aef40cbc2d52ab634fff7bd9b051f935b12a2aa7de24cfff",
+      "lines": 6,
+      "gateName": "check-i18n-catalog-coverage"
+    },
+    {
+      "name": "gate-check-javascript-dependencies",
+      "file": "gate-check-javascript-dependencies.log.gz",
+      "rawSha256": "f4d56ef110e8f7b2911b727ae0a66730933bbac1f208c455f5ca53f1ffbced68",
+      "archiveSha256": "533558f3f0cf713c394818ffa6237d24b5f6e7e6387a23b985bb85748eb308b5",
+      "lines": 37,
+      "gateName": "check-javascript-dependencies"
+    },
+    {
+      "name": "gate-check_js_rust_translation",
+      "file": "gate-check_js_rust_translation.log.gz",
+      "rawSha256": "2299df88e7fa425c178b232f21e7580a7e900284cadc3d719d011e0107065615",
+      "archiveSha256": "a153e12b494fb71ae22e66349a54e03ac49db87342620b76194f30ff054716a4",
+      "lines": 2,
+      "gateName": "check_js_rust_translation"
+    },
+    {
+      "name": "gate-check-language-change-parity",
+      "file": "gate-check-language-change-parity.log.gz",
+      "rawSha256": "93ed09342753e23cb36b9eb5c30ef751ed6d3512c7d852cd252c62b193a1cf4a",
+      "archiveSha256": "34e05cfed4dbf37b24efe68de97729dcffd10150bc05573b020bb67e2a5688b4",
+      "lines": 6,
+      "gateName": "check-language-change-parity"
+    },
+    {
+      "name": "gate-check-language-parity-js-twin",
+      "file": "gate-check-language-parity-js-twin.log.gz",
+      "rawSha256": "0832784ee0ac06716efdec73c7fbb4c2966b946ddf24aa648b4d38e2ac370487",
+      "archiveSha256": "744fadd2fcd03bfb4899eecf16c4a895a9427ef95e515d0f6e325be189811200",
+      "lines": 2,
+      "gateName": "check-language-parity-js-twin"
+    },
+    {
+      "name": "gate-check-language-parity",
+      "file": "gate-check-language-parity.log.gz",
+      "rawSha256": "0a8018346c18ffe8512cbfee983f5a1b9023e02a4e94b461b5b1a189191e0728",
+      "archiveSha256": "df5a4183b5471241d35b5b1b496d48d74efa80b1fdf4b22bb08c7e3d7a4e5b76",
+      "lines": 2,
+      "gateName": "check-language-parity"
+    },
+    {
+      "name": "gate-check-language-test-coverage",
+      "file": "gate-check-language-test-coverage.log.gz",
+      "rawSha256": "e413dfb34259438d40d1acc2d9689fb6505edcf783b85bc2e62612807c0fbc60",
+      "archiveSha256": "220c61725f4bb958e3120ed479c5b1a06cd778918c66137abc4d4d2b6cc0009a",
+      "lines": 6,
+      "gateName": "check-language-test-coverage"
+    },
+    {
+      "name": "gate-check-minimal-core-boundary-js-twin",
+      "file": "gate-check-minimal-core-boundary-js-twin.log.gz",
+      "rawSha256": "4164b77447d28be0d6740a0d878d0904727af900de1d727d83b0d35e9b54c061",
+      "archiveSha256": "c6b143abc9ceda1bf9812d0d9fdcc9a5234af5b069609e0ccba1ed0dfda03802",
+      "lines": 2,
+      "gateName": "check-minimal-core-boundary-js-twin"
+    },
+    {
+      "name": "gate-check-minimal-core-boundary",
+      "file": "gate-check-minimal-core-boundary.log.gz",
+      "rawSha256": "edf565829b58bb1fe379972d6c735dfb1e512859c003cee971abc5363ab2fb9b",
+      "archiveSha256": "b28f59304f9e9615cb9b3fc20fcf5766320797cbee9c7194e2bb5ce2103d44bb",
+      "lines": 3,
+      "gateName": "check-minimal-core-boundary"
+    },
+    {
+      "name": "gate-check-multilingual-intent-coverage",
+      "file": "gate-check-multilingual-intent-coverage.log.gz",
+      "rawSha256": "4dedf7e6ef0e7badec22271f9e3a22e605f6405f079279fdaf8de53913f14bcd",
+      "archiveSha256": "27588e7ca6753127a73d8aa919dad24ae420325dacb74bf90da53acd0b045ad7",
+      "lines": 6,
+      "gateName": "check-multilingual-intent-coverage"
+    },
+    {
+      "name": "gate-check-notation",
+      "file": "gate-check-notation.log.gz",
+      "rawSha256": "2d28939cf2c995ac09f4c7dbcf35e717292d8d4576321d1be5b60bc2c54736c5",
+      "archiveSha256": "41fe88f19b6702d1fa9dcfb633abe03f1bc54956c3e85b5b5dfaa836324f0706",
+      "lines": 15,
+      "gateName": "check-notation"
+    },
+    {
+      "name": "gate-check-package-self-containment",
+      "file": "gate-check-package-self-containment.log.gz",
+      "rawSha256": "ff05b77e66fbf371eb943914dad99e66459c4acd1f0fe5e4ae99b74ab2336c2c",
+      "archiveSha256": "4330e4335fd6381c8a61f55ffd7fc996ee6f7f28590133b9e35cb5c36b018373",
+      "lines": 2,
+      "gateName": "check-package-self-containment"
+    },
+    {
+      "name": "gate-check-planner-twins",
+      "file": "gate-check-planner-twins.log.gz",
+      "rawSha256": "e612114583da81f0ba47da6691b0fb436ac7c77d84c93a705c15b986972226a1",
+      "archiveSha256": "d0245fa412b957094e709a133026b6e11b918c23e86ccfd731764d1cbf2bcfc5",
+      "lines": 2,
+      "gateName": "check-planner-twins"
+    },
+    {
+      "name": "gate-check-portable-string-contracts",
+      "file": "gate-check-portable-string-contracts.log.gz",
+      "rawSha256": "93561e9e5ab4d83285c8f800dcb52c37c4e1633ca92174eeec70d95025365e2d",
+      "archiveSha256": "2b6fc8df566f2503d797061c448a2dd7009da61bd2932f7ea98e1315102522b5",
+      "lines": 2,
+      "gateName": "check-portable-string-contracts"
+    },
+    {
+      "name": "gate-check-progressive-plan",
+      "file": "gate-check-progressive-plan.log.gz",
+      "rawSha256": "fbf5bd8d08dacfa21c92145c5b241d38ef0e8f2c164ceb2adca8ae1f1d5b0f8c",
+      "archiveSha256": "f09ac0861fda66833ad21948f32dd1c2879bc0620fc1b4280ef068acd25b27a6",
+      "lines": 2,
+      "gateName": "check-progressive-plan"
+    },
+    {
+      "name": "gate-check-project-motto",
+      "file": "gate-check-project-motto.log.gz",
+      "rawSha256": "a6e37432f8bc390e7087428e5e3dcfe90740081a8a0dc493263f4805ade86edb",
+      "archiveSha256": "9777cbf1f954c812122e89b0d091b401fd41850b269b0fcf3903fb0f6165c6ab",
+      "lines": 30,
+      "gateName": "check-project-motto"
+    },
+    {
+      "name": "gate-check-prompt-specialization",
+      "file": "gate-check-prompt-specialization.log.gz",
+      "rawSha256": "b52dd33e12b410e8da31544616ee0beef7fe520dc783bd5bc837ab4a2375e56b",
+      "archiveSha256": "7fc72de9fbcb1095a249dbade5b1401fcdafc22c5ece202035fd8b115e3123ef",
+      "lines": 2,
+      "gateName": "check-prompt-specialization"
+    },
+    {
+      "name": "gate-check-readable-code",
+      "file": "gate-check-readable-code.log.gz",
+      "rawSha256": "ee2f84cf98e4c944c31f5773f21c52a63fe6d113f85bc3ae405a7c6025debf83",
+      "archiveSha256": "f47c0faa065e9430ae2f99f85d4bda37171239873013ab023777582d69c8f4c4",
+      "lines": 2,
+      "gateName": "check-readable-code"
+    },
+    {
+      "name": "gate-check-reconstructed-changelog",
+      "file": "gate-check-reconstructed-changelog.log.gz",
+      "rawSha256": "e80cef669295f0169172d21f0d139b6ee3607c8c0c92d2d368f17544dd2fa9d2",
+      "archiveSha256": "09582e7c8242a9b73f7ddc7c74e4d6a96b4f9bd712bc4f9d012480307db00b78",
+      "lines": 2,
+      "gateName": "check-reconstructed-changelog"
+    },
+    {
+      "name": "gate-check_rename_map",
+      "file": "gate-check_rename_map.log.gz",
+      "rawSha256": "784bb3c0f1f593dd765f0bfbb0dfd2231cbac465fea91adda1857106baa917be",
+      "archiveSha256": "c0c178393feee0d544a97f6ba7e6c47476089f59d368a135e91f4a18780a3e85",
+      "lines": 2,
+      "gateName": "check_rename_map"
+    },
+    {
+      "name": "gate-check-render-status-js-twin",
+      "file": "gate-check-render-status-js-twin.log.gz",
+      "rawSha256": "010bc90e2755f255739ed653626ca326ed0abea583be35993cebba7cb0c7e458",
+      "archiveSha256": "c02bd30622d81a8f3a99197fe427fe8debad209f199bf92fe1c31aa313421f67",
+      "lines": 3,
+      "gateName": "check-render-status-js-twin"
+    },
+    {
+      "name": "gate-check-requirement-coverage",
+      "file": "gate-check-requirement-coverage.log.gz",
+      "rawSha256": "2df271b38d84abe4681a3d685cd5ea751027d4a1a83123de6dc60a4252ede0ac",
+      "archiveSha256": "9a504d5467853a8912833733a0e1cc195912e09df7b5a83e34bbcaee4fdd76b0",
+      "lines": 2,
+      "gateName": "check-requirement-coverage"
+    },
+    {
+      "name": "gate-check-requirement-extraction",
+      "file": "gate-check-requirement-extraction.log.gz",
+      "rawSha256": "2707e78e1d8348e85fbd73b0b7327c402f1419e3225f5594e6c3b89ad98b734a",
+      "archiveSha256": "d8a142abf14a9b1f9d5981731daf2539bbf224c6f55fbdff20e90a278ea10871",
+      "lines": 3,
+      "gateName": "check-requirement-extraction"
+    },
+    {
+      "name": "gate-check-requirement-status-js-twin",
+      "file": "gate-check-requirement-status-js-twin.log.gz",
+      "rawSha256": "01f55f92915c2939d63d3bf0e8da439260d85a4c492f92dcbe3b49a85f1fee69",
+      "archiveSha256": "6bf054120b37a826eee26d5839f15fdb577f7056324b999cfbeaf6e99a05c05a",
+      "lines": 3,
+      "gateName": "check-requirement-status-js-twin"
+    },
+    {
+      "name": "gate-check-requirement-status",
+      "file": "gate-check-requirement-status.log.gz",
+      "rawSha256": "7ed7fa62a10fa5d2d7c5f524dc7c96121e8912baa8b74ac8ed888a584dbea57d",
+      "archiveSha256": "e352d6290423335f5e99dd3098f0acb5d7343ff783e3f13f4cb64713790e9ad9",
+      "lines": 3,
+      "gateName": "check-requirement-status"
+    },
+    {
+      "name": "gate-check-requirements-document",
+      "file": "gate-check-requirements-document.log.gz",
+      "rawSha256": "2d042d554255a0832950f82e72f60aa861265887f24c70ba29dcdcc1c0a3793d",
+      "archiveSha256": "594dd7f0303674aa55bb1f3107d251e5e17de2070c0bf1b26a094c06e047adf4",
+      "lines": 6,
+      "gateName": "check-requirements-document"
+    },
+    {
+      "name": "gate-check-response-parity-debt",
+      "file": "gate-check-response-parity-debt.log.gz",
+      "rawSha256": "18a8b17ae4940c5b03a09ac605621b2046f4ed78f567c8087f6125488e4c2267",
+      "archiveSha256": "243b5cd2bed419e2e580cb1acb339d24c48063c0a92677c3f7823198da5a47d1",
+      "lines": 2,
+      "gateName": "check-response-parity-debt"
+    },
+    {
+      "name": "gate-check-role-registry",
+      "file": "gate-check-role-registry.log.gz",
+      "rawSha256": "3db7ca6f2474f31044c1365666d0858681f2d0dd88687f30b4b5956610dbeac3",
+      "archiveSha256": "3d1f6e233b3abf250346ce43ef7127aebd8cad8cd1afb60a6d81be3bf6e95b57",
+      "lines": 3,
+      "gateName": "check-role-registry"
+    },
+    {
+      "name": "gate-check-round-trip-translation",
+      "file": "gate-check-round-trip-translation.log.gz",
+      "rawSha256": "d92340c2f631142b80062dfd328fdbcb3aacdc226e45074716c1f3de674603f4",
+      "archiveSha256": "0fee3e481082cc36b88ee005da69a11c28335426a776bf9d41c2d17fdb0689f9",
+      "lines": 47,
+      "gateName": "check-round-trip-translation"
+    },
+    {
+      "name": "gate-check-runner-labels",
+      "file": "gate-check-runner-labels.log.gz",
+      "rawSha256": "be1a0846791ca63b74c1ccae844fb0450a47de65a7b43a484de8d77958221dee",
+      "archiveSha256": "93eab7aab169777b0175a9f6dac96c21e7abc81d471d9f3246a85232cb461b03",
+      "lines": 2,
+      "gateName": "check-runner-labels"
+    },
+    {
+      "name": "gate-check-runtime-feature-inventory",
+      "file": "gate-check-runtime-feature-inventory.log.gz",
+      "rawSha256": "97eb58c744597d15347ef151c3621486b9b9f9f4d97c731a6c63f6b056cb5cba",
+      "archiveSha256": "f963a19880f0cb9ac474ff988c25eb692065aff87c614cb1f405c54153bf2b6a",
+      "lines": 1,
+      "gateName": "check-runtime-feature-inventory"
+    },
+    {
+      "name": "gate-check-seed-registry-js-twin",
+      "file": "gate-check-seed-registry-js-twin.log.gz",
+      "rawSha256": "b0c172dc2286cf9874a298af0321d3a78ef648cd3f3a2864447a15a2f6607f30",
+      "archiveSha256": "7396830647f67721c3328e10319d3aeaf042ed4a39c018edf1341af5f2b302de",
+      "lines": 2,
+      "gateName": "check-seed-registry-js-twin"
+    },
+    {
+      "name": "gate-check-seed-registry",
+      "file": "gate-check-seed-registry.log.gz",
+      "rawSha256": "c1d9e9876fc0bd01a69dc72d2dad1290e8f740bae7578e82ea484b4ae0e7e054",
+      "archiveSha256": "abf0d9a8d6f78b3a0af03832dde16507c10a65ba4c550baf3f457214a33bacf9",
+      "lines": 9,
+      "gateName": "check-seed-registry"
+    },
+    {
+      "name": "gate-check-self-translation",
+      "file": "gate-check-self-translation.log.gz",
+      "rawSha256": "7678beb2ff3f7420cab133257412b941f191ff3ca6c64e555aa1a4f6f7d999b5",
+      "archiveSha256": "ac6c118211c796bcd217af8c89f8e7aedabe06ff0b4ae3051fec76185fefe204",
+      "lines": 2,
+      "gateName": "check-self-translation"
+    },
+    {
+      "name": "gate-check-specification-in-javascript",
+      "file": "gate-check-specification-in-javascript.log.gz",
+      "rawSha256": "cb40654cdf71879075bc1838a68b551d784fba3f0c6515ca73a22f910338abf2",
+      "archiveSha256": "d1daeb5d8ec65cda7c91de65163bd9c51bb6305be9fee3c054af0b4271a4ac58",
+      "lines": 2,
+      "gateName": "check-specification-in-javascript"
+    },
+    {
+      "name": "gate-check-status-render",
+      "file": "gate-check-status-render.log.gz",
+      "rawSha256": "9b14f08702ccdcdca9eecf9d23582bc01011fd9abba32e63f13003d1b4fced58",
+      "archiveSha256": "93d67b84a6b2cc287a2c05cb02bc5ea76f72c1738bbed595cfef83b446860d63",
+      "lines": 2,
+      "gateName": "check-status-render"
+    },
+    {
+      "name": "gate-check-system-diagrams",
+      "file": "gate-check-system-diagrams.log.gz",
+      "rawSha256": "9bcf60d47f8a1371419695561d6dde5d3923c5217540b089f65a39c577a74b37",
+      "archiveSha256": "9932a7be646c2220dadeddf498fbecd21440003cd8d45f6ed84464cab16095a3",
+      "lines": 2,
+      "gateName": "check-system-diagrams"
+    },
+    {
+      "name": "gate-check-tests-as-documentation",
+      "file": "gate-check-tests-as-documentation.log.gz",
+      "rawSha256": "4c41d72c51bbe463871ad0778b35e99b4f75ff10bcbbd0578dc223ffc2b13939",
+      "archiveSha256": "4b4edd87795b99b9d73a11eeb5b031911cdd1b3b9661f52ac81122aa3b4491a4",
+      "lines": 6,
+      "gateName": "check-tests-as-docs"
+    },
+    {
+      "name": "gate-check-tests-as-documentation-javascript-twin",
+      "file": "gate-check-tests-as-documentation-javascript-twin.log.gz",
+      "rawSha256": "82f197120309e260e1f7655fa313dd31c3bed567b5e00d65149bbec9c8af0ff6",
+      "archiveSha256": "678733a772a9882364c4bd8cb0822ae20823e27212e5ac460dbb280d90e24f4c",
+      "lines": 2,
+      "gateName": "check-tests-as-documentation-javascript-twin"
+    },
+    {
+      "name": "gate-check-text-summarization",
+      "file": "gate-check-text-summarization.log.gz",
+      "rawSha256": "8c1387652bdf24e3efd212d859a56dffd4a49da584ff6afd42cf7e315207187c",
+      "archiveSha256": "b4403b8cba386e569201a12475539e8e17b2baaea5270f5fd8e1632058ef4bd9",
+      "lines": 5,
+      "gateName": "check-text-summarization"
+    },
+    {
+      "name": "gate-check-twin-citations",
+      "file": "gate-check-twin-citations.log.gz",
+      "rawSha256": "66a42aeeebaac4bae716a10c2ea341636e9c6ad9eef8e1f8f95332565f3abed5",
+      "archiveSha256": "02a708fcc210ab94e92e13d87eb4c35d1e2aa663ac909117453a843d228ea506",
+      "lines": 2,
+      "gateName": "check-twin-citations"
+    },
+    {
+      "name": "gate-check-wasm-worker-current",
+      "file": "gate-check-wasm-worker-current.log.gz",
+      "rawSha256": "c65e44f3a1c7f66c35423c38dcd91a6dff6388435ff45b2d029b6f6e6700f42b",
+      "archiveSha256": "0145295efc2167e2668982e558a638f5ec604114d5ce6092cf32a63fce489713",
+      "lines": 1,
+      "gateName": "check-wasm-worker-current"
+    },
+    {
+      "name": "gate-check-web-formalization",
+      "file": "gate-check-web-formalization.log.gz",
+      "rawSha256": "ebcb20e874e0c149680e34f182d916cd258bb311b8d2c311c03ac8f2ead7dabc",
+      "archiveSha256": "0c3451f6a90db5105302a100c7860e6db16c772bda8822bf401985830a79fc7b",
+      "lines": 15,
+      "gateName": "check-web-formalization"
+    },
+    {
+      "name": "gate-check-web-hardcoded-ui",
+      "file": "gate-check-web-hardcoded-ui.log.gz",
+      "rawSha256": "80f67b112b8b6e5673cce96fb0d02d67cb0d3df89302297f9a408e3f4c4f12d1",
+      "archiveSha256": "a967953d52990a91c9779e6557620b8eec3c2b7164cba05d64e91bacd02a19dc",
+      "lines": 6,
+      "gateName": "check-web-hardcoded-ui"
+    },
+    {
+      "name": "gate-check-web-tdz",
+      "file": "gate-check-web-tdz.log.gz",
+      "rawSha256": "6c62c20fe5cd9cc96ac44effed19b2eb17104225fc581039595d59c7433ca43e",
+      "archiveSha256": "dba068351a96e306a141aeefec99f1fb5516cc2e785258605f2bc12e2db92846",
+      "lines": 6,
+      "gateName": "check-web-tdz"
+    },
+    {
+      "name": "gate-check-worker-crate-modules",
+      "file": "gate-check-worker-crate-modules.log.gz",
+      "rawSha256": "606fdaa630f387f314a9fc491f9550a5225d4d590aee38431c01f4956713dae3",
+      "archiveSha256": "d15d338003476b89b0d4f2a0622079b55801b2dd144311a9e15366eaa87bcb14",
+      "lines": 2,
+      "gateName": "check-worker-crate-modules"
+    },
+    {
+      "name": "gate-check-worker-handler-registry",
+      "file": "gate-check-worker-handler-registry.log.gz",
+      "rawSha256": "8460e58ff64d7ad5d5534146bce33b569fe46648f731ed26c7615f452d2e2a75",
+      "archiveSha256": "fdbf237f5bed0d1181949b44d678a866313da2341a6477f6337288b13b557daa",
+      "lines": 13,
+      "gateName": "check-worker-handler-registry"
+    },
+    {
+      "name": "gate-check-worker-line-budget-js-twin",
+      "file": "gate-check-worker-line-budget-js-twin.log.gz",
+      "rawSha256": "20a483460a9f4510cee8a22e55d30f5882026de00dbe484c5ba661ba768fa7b2",
+      "archiveSha256": "3d636a7e7a876557be6029a6f69a2483b54c3e3bcfea900168c5e6c97b206c37",
+      "lines": 2,
+      "gateName": "check-worker-line-budget-js-twin"
+    },
+    {
+      "name": "gate-check-worker-line-budget",
+      "file": "gate-check-worker-line-budget.log.gz",
+      "rawSha256": "ba8baf9d0816be53c38d8d8066eb2a4fe1a1cfb7491690e663e2e8fa99c4c3b2",
+      "archiveSha256": "d518c860ff2c16bcaf84bcfbc18eaecae655b6ed056324dd7645ccf9d0e1feb6",
+      "lines": 189,
+      "gateName": "check-worker-line-budget"
+    },
+    {
+      "name": "gate-check-worker-prerequisites",
+      "file": "gate-check-worker-prerequisites.log.gz",
+      "rawSha256": "1155fed4fad52bc6fe427baacfc1481ce09b48f6d340d205203f4631672034c4",
+      "archiveSha256": "e0a075396b3a503f3297fd23936bdb91c954b8ea17d2862ef535597480d2dbcb",
+      "lines": 2,
+      "gateName": "check-worker-prerequisites"
+    },
+    {
+      "name": "gate-check-worker-terminal-vocabulary",
+      "file": "gate-check-worker-terminal-vocabulary.log.gz",
+      "rawSha256": "67e1d9218554ba48f11f6f21d32b13fa053ca6b247eddfc471e0416c7e8051e9",
+      "archiveSha256": "b5b9c9b50d684b41d262fb2ce03842ae2eb1bd1e80516630eb9e8729c6b53c72",
+      "lines": 2,
+      "gateName": "check-worker-terminal-vocabulary"
+    },
+    {
+      "name": "gate-lint-shell-scripts",
+      "file": "gate-lint-shell-scripts.log.gz",
+      "rawSha256": "024c92fe6b5f22b061e1d57bc038c3b9f6d8933e68a3138c0ba621ac319a8084",
+      "archiveSha256": "8dca12f5e139aa102fb4118120af7e0767f23db86b3d77a806f380fb6a9322c8",
+      "lines": 2,
+      "gateName": "lint-shell-scripts"
+    },
+    {
+      "name": "gate-evidence-check#1",
+      "file": "gate-evidence-check#1.log.gz",
+      "rawSha256": "e6542485e36dfc15e773378bd9625feea05b11980a7b5da749171e027dc14cfe",
+      "archiveSha256": "e0c47c4417cdacc19a446664d55a51ce3226f7261068be656b249e0734c4865a",
+      "lines": 2,
+      "gateName": "evidence-check#1"
+    },
+    {
+      "name": "gate-layered-ci#1",
+      "file": "gate-layered-ci#1.log.gz",
+      "rawSha256": "0cfce439927b99824c1d7ad5591138cb51301d56f0d89171fa411640602be4d2",
+      "archiveSha256": "4fb66c5298708eba0e76cb30d972a946001471ba7de52e4ffb53b44fd01e983a",
+      "lines": 2,
+      "gateName": "layered-ci#1"
+    },
+    {
+      "name": "gate-layered-ci#2",
+      "file": "gate-layered-ci#2.log.gz",
+      "rawSha256": "80a27ac173c71e4d5a13b5d8802181924e6646475a2a2e89abb4862a470dec9b",
+      "archiveSha256": "f8bfd2e8bbabf78cadf7f0359984c9e648e36cc0c31f6ce99f62039158800fd9",
+      "lines": 2,
+      "gateName": "layered-ci#2"
+    },
+    {
+      "name": "gate-layered-ci#3",
+      "file": "gate-layered-ci#3.log.gz",
+      "rawSha256": "0e0529c6ba97f71948d6e4301d7e571abab7b4c69d978ef5cb4b33f48f0ec457",
+      "archiveSha256": "3a938502caa4d014450842cb03b972fff4e08f19dcbc4ca3f8cad250e6a9fbab",
+      "lines": 44,
+      "gateName": "layered-ci#3"
+    },
+    {
+      "name": "gate-layered-ci#4",
+      "file": "gate-layered-ci#4.log.gz",
+      "rawSha256": "11cf8e0ecd88461fe2c025d1caae514e852c8337e27977bfba92fde9dbed388c",
+      "archiveSha256": "9493103014b940c49a13a401248156961209f047280b8d65cb8fad5a2705f6fd",
+      "lines": 2,
+      "gateName": "layered-ci#4"
+    },
+    {
+      "name": "gate-release#1",
+      "file": "gate-release#1.log.gz",
+      "rawSha256": "64cf592569988d6957f970ec62c24018bffbeb6bea1f0c9863a8a451772b6a3b",
+      "archiveSha256": "ff3e5a8f7a3a9eeb181454a73ccec97e1a8ac6aff26284f6828f686a660c8b9b",
+      "lines": 15323,
+      "gateName": "release#1"
+    },
+    {
+      "name": "gate-release#2",
+      "file": "gate-release#2.log.gz",
+      "rawSha256": "df16936cb89a44e1483e61670d343e39b787d0937734c9da272c37b2268f49e9",
+      "archiveSha256": "9b5858f5de81f0f1264131883342ef0e71b8b0690a8dbd56019d918f41ce9df9",
+      "lines": 4,
+      "gateName": "release#2"
+    },
+    {
+      "name": "gate-self-development-status#1",
+      "file": "gate-self-development-status#1.log.gz",
+      "rawSha256": "ba0cace7d67781b5f3a19ec8a68f5297c858c1fe30e60cf35d1c59111b3ab326",
+      "archiveSha256": "c7a249130bd75b4722e071e926fcc7ce18e87ee9c20cf28760143b5438957ca2",
+      "lines": 15,
+      "gateName": "self-development-status#1"
+    },
+    {
+      "name": "gate-web-ui-boundary",
+      "file": "gate-web-ui-boundary.log.gz",
+      "rawSha256": "81f15ad4e17bd71c452bef5ece8500827ca0fd6f70d6f0666fcb37bf6fbf6814",
+      "archiveSha256": "6bc2188ad5b2b849cf0bd2b7a70c65952c79d7c6c382dda848b684b69f7dc414",
+      "lines": 2,
+      "gateName": "web-ui-boundary"
+    }
+  ],
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -1,0 +1,5 @@
+{
+  "stoppedUnstartedSupervisor": 688583,
+  "reason": "Correct fast profile filename after checking the repository inventory",
+  "testsExecutedByStoppedSupervisor": 0
+}

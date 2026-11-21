@@ -1,0 +1,9 @@
+{
+  "originalReceipt": "resumed-validation.json",
+  "originalPath": "resumed-check-tests-as-docs.log.gz",
+  "expandedPath": "resumed-check-tests-as-documentation.log.gz",
+  "archiveSha256": "dc22e35769abb33cd33dd32f88ae1b0ef5378697bf61eb611ddb0362f9a0024f",
+  "rawSha256": "be5d9f88bea4c600a43e92545f48e1cb04c84392f4210ddf2a87fd4de90672b4",
+  "bytesUnchanged": true,
+  "originalReceiptUnchanged": true
+}

@@ -1,0 +1,7 @@
+{
+  "rawSha256": "9996b44c0b4d3e69a1ca847248e7c5694170ad1a5d704e4a0c01010b3c7280b3",
+  "archiveSha256": "a24e0b74c905e4c04087a7356bc3ef9e435d00ee00413d642611043462f9a382",
+  "bytesChanged": false,
+  "reason": "Preserve literal patch context spaces in a compressed evidence artifact. No source whitespace changes.",
+  "independentAuthorshipCredit": 0
+}

@@ -1,11 +1,10 @@
 // Status and definition questions about the repository: a port of the pure
 // half of rust/src/history_context/repository_qa.rs (issue #1180 R10, R11).
 //
-// The claim halves (`statusSubject`, `definitionSubjects`), the census reader
-// (`censusDocumentSymbols`), the documentation-comment reader (`symbolDoc`) and
-// both renders. Running git and walking the census directory stay with the
-// native route; a JavaScript caller hands in the census text, the source, the
-// formalized commits and the measured range.
+// Status and definition subjects, current-source navigation, documentation and
+// answer rendering mirror the native route. Hosts supply current source modules,
+// source text, formalized commits and the measured range. The historical census
+// decoder remains available for diagnostics; it does not locate live definitions.
 
 import { localizedResponse } from './seed.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
@@ -49,7 +48,20 @@ export function definitionSubjects(prompt, rules) {
   return names;
 }
 
-/** Mirrors `census_document_symbols`. */
+/** Mirrors `census_symbols` for current owned-source navigation.
+ * The caller supplies modules freshly observed by the existing source host.
+ * These spans navigate actual content; they are not persisted source models.
+ */
+export function sourceSymbols(modules) {
+  return modules.flatMap(module => module.symbols.map(symbol => ({
+    target: module.path, kind: symbol.kind, name: symbol.name,
+    start: symbol.start_line, end: symbol.end_line,
+  })));
+}
+
+/** Mirrors `census_document_symbols` for historical diagnostics only.
+ * Live lookup uses sourceSymbols over current source modules.
+ */
 export function censusDocumentSymbols(text) {
   let target = '';
   let inSymbols = false;

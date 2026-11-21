@@ -5,7 +5,7 @@
 // back to the cached capture and then the shipped baseline, each said out
 // loud. `forGeneration()` reads the installed host's `sourceFetch`, which
 // js/agentic/node-host.mjs builds from `FORMAL_AI_SOURCE_CACHE_DIR` and the
-// `FORMAL_AI_LIVE_FETCH` opt-in exactly as `VersionSet::for_generation` does.
+// shared default-on read policy; cache-only replay explicitly disables live reads.
 // No test here reaches the network: the transport is a fixture.
 
 import assert from 'node:assert/strict';
@@ -113,7 +113,7 @@ test('forGeneration reads the host source cache named by FORMAL_AI_SOURCE_CACHE_
   const previous = process.env.FORMAL_AI_SOURCE_CACHE_DIR;
   const live = process.env.FORMAL_AI_LIVE_FETCH;
   try {
-    delete process.env.FORMAL_AI_LIVE_FETCH;
+    process.env.FORMAL_AI_LIVE_FETCH = '0';
     process.env.FORMAL_AI_SOURCE_CACHE_DIR = path.join(scratch, 'live');
     const versions = forGeneration();
     assert.equal(versions.checkout.origin, 'cache');
@@ -123,7 +123,8 @@ test('forGeneration reads the host source cache named by FORMAL_AI_SOURCE_CACHE_
   } finally {
     if (previous === undefined) delete process.env.FORMAL_AI_SOURCE_CACHE_DIR;
     else process.env.FORMAL_AI_SOURCE_CACHE_DIR = previous;
-    if (live !== undefined) process.env.FORMAL_AI_LIVE_FETCH = live;
+    if (live === undefined) delete process.env.FORMAL_AI_LIVE_FETCH;
+    else process.env.FORMAL_AI_LIVE_FETCH = live;
   }
 });
 

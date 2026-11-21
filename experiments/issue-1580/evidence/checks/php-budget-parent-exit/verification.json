@@ -1,0 +1,488 @@
+{
+  "complete": true,
+  "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+  "commit": "3a034b27a56067971ca74dd4c74c7707056b215d",
+  "observedAt": "2026-11-21T00:31:49.347248+00:00",
+  "source": "scripts/run-with-budget-warning.sh",
+  "observations": [
+    {
+      "implementation": "pinned-php",
+      "sourceSha256": "94a1e3adf3156d3d086f545370a6edf337736e2f2ce8017782394832642e5fca",
+      "case": "expired-parent-success",
+      "expectedExitCode": 124,
+      "exitCode": 0,
+      "workerRunningWhenWrapperExited": true,
+      "pass": false,
+      "observation": "pinned-php-expired-parent-success.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/issue-1580-research/templates/php-complete/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/pinned-php-expired-parent-success.json",
+        "--case",
+        "expired-parent-success"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "pinned-php-expired-parent-success.stdout.gz",
+          "bytes": 897,
+          "lines": 1,
+          "sha256": "bf9ab9fcdc981dc63f54c7b6b0dfcc9a7d5323ffc275a2a7ab124005789496fd",
+          "archiveSha256": "beceac7a3cf3c254cc863e2aaad59c025186a056a456b417e8f3a7cdda697e79"
+        },
+        "stderr": {
+          "file": "pinned-php-expired-parent-success.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "pinned-php",
+      "sourceSha256": "94a1e3adf3156d3d086f545370a6edf337736e2f2ce8017782394832642e5fca",
+      "case": "expired-parent-failure",
+      "expectedExitCode": 124,
+      "exitCode": 7,
+      "workerRunningWhenWrapperExited": true,
+      "pass": false,
+      "observation": "pinned-php-expired-parent-failure.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/issue-1580-research/templates/php-complete/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/pinned-php-expired-parent-failure.json",
+        "--case",
+        "expired-parent-failure"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "pinned-php-expired-parent-failure.stdout.gz",
+          "bytes": 898,
+          "lines": 1,
+          "sha256": "fc5f87265d7d3f1b7049cd0a926fe25780bfdbb3eb367d2bd741a1b78fccb196",
+          "archiveSha256": "b9d3d5a2f3b0b73779018bbd1587e13c0a407bbd310f97c3d97c1a9335483910"
+        },
+        "stderr": {
+          "file": "pinned-php-expired-parent-failure.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "pinned-php",
+      "sourceSha256": "94a1e3adf3156d3d086f545370a6edf337736e2f2ce8017782394832642e5fca",
+      "case": "term-resistant",
+      "expectedExitCode": 124,
+      "exitCode": 0,
+      "workerRunningWhenWrapperExited": true,
+      "pass": false,
+      "observation": "pinned-php-term-resistant.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/issue-1580-research/templates/php-complete/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/pinned-php-term-resistant.json",
+        "--case",
+        "term-resistant"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "pinned-php-term-resistant.stdout.gz",
+          "bytes": 920,
+          "lines": 1,
+          "sha256": "e72d0f59ed4b52d4cb1fa6bff0b998bad520418276f3bb1af01b256431e2e19e",
+          "archiveSha256": "951b5a438d3a125b2ca89567a601e084eedd9257ae38057755ad5f41b0425541"
+        },
+        "stderr": {
+          "file": "pinned-php-term-resistant.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "pinned-php",
+      "sourceSha256": "94a1e3adf3156d3d086f545370a6edf337736e2f2ce8017782394832642e5fca",
+      "case": "short-success",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "workerRunningWhenWrapperExited": true,
+      "pass": false,
+      "observation": "pinned-php-short-success.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/issue-1580-research/templates/php-complete/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/pinned-php-short-success.json",
+        "--case",
+        "short-success"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "pinned-php-short-success.stdout.gz",
+          "bytes": 891,
+          "lines": 1,
+          "sha256": "b8af9f7e3a5fb35b2939ff95f3229bbb73203dba7b476d63e2863eea40871163",
+          "archiveSha256": "6103e5c104dd8339aab29df7df53c1e67c7efd55763ffb7769cfa60f31b746f3"
+        },
+        "stderr": {
+          "file": "pinned-php-short-success.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "pinned-php",
+      "sourceSha256": "94a1e3adf3156d3d086f545370a6edf337736e2f2ce8017782394832642e5fca",
+      "case": "short-failure",
+      "expectedExitCode": 7,
+      "exitCode": 7,
+      "workerRunningWhenWrapperExited": true,
+      "pass": false,
+      "observation": "pinned-php-short-failure.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/issue-1580-research/templates/php-complete/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/pinned-php-short-failure.json",
+        "--case",
+        "short-failure"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "pinned-php-short-failure.stdout.gz",
+          "bytes": 891,
+          "lines": 1,
+          "sha256": "ddbb768cc008069e9bf09616413e1edd49c5ec1fb86eedd76f9ae95db55755ab",
+          "archiveSha256": "002f95cfa5a2a650df38c845b1ac9fc135a9d02de47e895820f041dee25ad492"
+        },
+        "stderr": {
+          "file": "pinned-php-short-failure.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "pinned-php",
+      "sourceSha256": "94a1e3adf3156d3d086f545370a6edf337736e2f2ce8017782394832642e5fca",
+      "case": "warning-only",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "workerRunningWhenWrapperExited": true,
+      "pass": false,
+      "observation": "pinned-php-warning-only.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/issue-1580-research/templates/php-complete/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/pinned-php-warning-only.json",
+        "--case",
+        "warning-only"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "pinned-php-warning-only.stdout.gz",
+          "bytes": 887,
+          "lines": 1,
+          "sha256": "9598a21a45b3daa8d5fe1b026787a80280b1156b683d49561d9b7e44b446d1d9",
+          "archiveSha256": "7f60550f8c030c05eeb577b9b87bf71bbadea9f1e4c64087e0f489cc43ee2f90"
+        },
+        "stderr": {
+          "file": "pinned-php-warning-only.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "pinned-php",
+      "sourceSha256": "94a1e3adf3156d3d086f545370a6edf337736e2f2ce8017782394832642e5fca",
+      "case": "inspection-unavailable",
+      "expectedExitCode": 125,
+      "exitCode": 0,
+      "workerRunningWhenWrapperExited": true,
+      "pass": false,
+      "observation": "pinned-php-inspection-unavailable.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/issue-1580-research/templates/php-complete/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/pinned-php-inspection-unavailable.json",
+        "--case",
+        "inspection-unavailable"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "pinned-php-inspection-unavailable.stdout.gz",
+          "bytes": 896,
+          "lines": 1,
+          "sha256": "a04709be55b20afb60b24548661891c4e26c87d9a0b33f1a9046b2f7effbe3db",
+          "archiveSha256": "5f1e9e4f5bde3eee1d5cddc2f3ed847c40ff978a739d091b35e04e1fac049414"
+        },
+        "stderr": {
+          "file": "pinned-php-inspection-unavailable.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "current-formal-ai",
+      "sourceSha256": "0866dc1bf0e4fd200ec124c7362a020d90b6cb73566c1617c80f0b2a0c8748f7",
+      "case": "expired-parent-success",
+      "expectedExitCode": 124,
+      "exitCode": 124,
+      "workerRunningWhenWrapperExited": false,
+      "pass": true,
+      "observation": "current-formal-ai-expired-parent-success.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/current-formal-ai-expired-parent-success.json",
+        "--case",
+        "expired-parent-success"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "current-formal-ai-expired-parent-success.stdout.gz",
+          "bytes": 1373,
+          "lines": 1,
+          "sha256": "7435898589a2d5927b19db38c5c07bdb4d2933bb6a907b83d04a76ebab6d72bb",
+          "archiveSha256": "bb1ace69b9b4b4cc62b687e287768aef1c4c7db0f0ad6ce4aeaaf3b9ca839531"
+        },
+        "stderr": {
+          "file": "current-formal-ai-expired-parent-success.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "current-formal-ai",
+      "sourceSha256": "0866dc1bf0e4fd200ec124c7362a020d90b6cb73566c1617c80f0b2a0c8748f7",
+      "case": "expired-parent-failure",
+      "expectedExitCode": 124,
+      "exitCode": 124,
+      "workerRunningWhenWrapperExited": false,
+      "pass": true,
+      "observation": "current-formal-ai-expired-parent-failure.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/current-formal-ai-expired-parent-failure.json",
+        "--case",
+        "expired-parent-failure"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "current-formal-ai-expired-parent-failure.stdout.gz",
+          "bytes": 1373,
+          "lines": 1,
+          "sha256": "f14c8fb0138e9792aa2e0b3ecb8dab910c9844d8a8fa745b92393ea2397cc00d",
+          "archiveSha256": "164f358f020ecfd007b9e262b1a38c1f7ef5a3959af2624a82f998d74b0f6060"
+        },
+        "stderr": {
+          "file": "current-formal-ai-expired-parent-failure.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "current-formal-ai",
+      "sourceSha256": "0866dc1bf0e4fd200ec124c7362a020d90b6cb73566c1617c80f0b2a0c8748f7",
+      "case": "term-resistant",
+      "expectedExitCode": 124,
+      "exitCode": 124,
+      "workerRunningWhenWrapperExited": false,
+      "pass": true,
+      "observation": "current-formal-ai-term-resistant.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/current-formal-ai-term-resistant.json",
+        "--case",
+        "term-resistant"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "current-formal-ai-term-resistant.stdout.gz",
+          "bytes": 1395,
+          "lines": 1,
+          "sha256": "6f3aa3c54602e77b06cd32a93bc58b69eb60c02bd04b6590199b640b8b935a62",
+          "archiveSha256": "a7cd06e47005e59e8c504133987d7fc45a411d76e856f1864b9b77f45a863991"
+        },
+        "stderr": {
+          "file": "current-formal-ai-term-resistant.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "current-formal-ai",
+      "sourceSha256": "0866dc1bf0e4fd200ec124c7362a020d90b6cb73566c1617c80f0b2a0c8748f7",
+      "case": "short-success",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "workerRunningWhenWrapperExited": false,
+      "pass": true,
+      "observation": "current-formal-ai-short-success.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/current-formal-ai-short-success.json",
+        "--case",
+        "short-success"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "current-formal-ai-short-success.stdout.gz",
+          "bytes": 795,
+          "lines": 1,
+          "sha256": "b4b874d002b98f378d3f906345fdfdc0429d5c83636b29c6a9671cd2d8e72125",
+          "archiveSha256": "eb998c8b68754d6ac1297de8b477090797ffcd4d476797ec2d93a5f19f3a4213"
+        },
+        "stderr": {
+          "file": "current-formal-ai-short-success.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "current-formal-ai",
+      "sourceSha256": "0866dc1bf0e4fd200ec124c7362a020d90b6cb73566c1617c80f0b2a0c8748f7",
+      "case": "short-failure",
+      "expectedExitCode": 7,
+      "exitCode": 7,
+      "workerRunningWhenWrapperExited": false,
+      "pass": true,
+      "observation": "current-formal-ai-short-failure.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/current-formal-ai-short-failure.json",
+        "--case",
+        "short-failure"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "current-formal-ai-short-failure.stdout.gz",
+          "bytes": 795,
+          "lines": 1,
+          "sha256": "fb57b44b32dfeb49e767b41f2a51fafe48726e68e899c5d337bf7536659c8526",
+          "archiveSha256": "136ef7bba09ae3cd32b2c0774e486e6786bd4d0317ed6a3cac0e18045f11e164"
+        },
+        "stderr": {
+          "file": "current-formal-ai-short-failure.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "current-formal-ai",
+      "sourceSha256": "0866dc1bf0e4fd200ec124c7362a020d90b6cb73566c1617c80f0b2a0c8748f7",
+      "case": "warning-only",
+      "expectedExitCode": 0,
+      "exitCode": 0,
+      "workerRunningWhenWrapperExited": false,
+      "pass": true,
+      "observation": "current-formal-ai-warning-only.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/current-formal-ai-warning-only.json",
+        "--case",
+        "warning-only"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "current-formal-ai-warning-only.stdout.gz",
+          "bytes": 992,
+          "lines": 1,
+          "sha256": "cf1326488e56328f246508ac436924cef73ab0e90a49e755fe1f18dfe215eedc",
+          "archiveSha256": "d21acf9d07bf6658cd13fec3b5adc3d20963f7c2918937230abcdb76d36247fa"
+        },
+        "stderr": {
+          "file": "current-formal-ai-warning-only.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    },
+    {
+      "implementation": "current-formal-ai",
+      "sourceSha256": "0866dc1bf0e4fd200ec124c7362a020d90b6cb73566c1617c80f0b2a0c8748f7",
+      "case": "inspection-unavailable",
+      "expectedExitCode": 125,
+      "exitCode": 125,
+      "workerRunningWhenWrapperExited": false,
+      "pass": true,
+      "observation": "current-formal-ai-inspection-unavailable.json",
+      "argv": [
+        "python3",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/probe-budget-process-lifetime.py",
+        "/tmp/gh-issue-solver-1794900398048/scripts/run-with-budget-warning.sh",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/php-budget-parent-exit/current-formal-ai-inspection-unavailable.json",
+        "--case",
+        "inspection-unavailable"
+      ],
+      "streams": {
+        "stdout": {
+          "file": "current-formal-ai-inspection-unavailable.stdout.gz",
+          "bytes": 857,
+          "lines": 1,
+          "sha256": "ba1bbef85a06547bd6ac90fc9f2b0c10090e89a8d9dcaca8eaf4dd4349ef4a21",
+          "archiveSha256": "53ff715053bf3bf98212e70dd0fbf69b482514bc55836b48d08ad8f186f25c34"
+        },
+        "stderr": {
+          "file": "current-formal-ai-inspection-unavailable.stderr.gz",
+          "bytes": 0,
+          "lines": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+        }
+      }
+    }
+  ],
+  "upstreamFixApplied": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

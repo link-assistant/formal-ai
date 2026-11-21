@@ -4,10 +4,13 @@
 // stays native, so the measured range and the commits are handed in.
 
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { before, test } from 'node:test';
 
-import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { censusDocuments, installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 
 const ROOT = new URL('../../../', import.meta.url);
@@ -46,9 +49,9 @@ test('the documentation comment above the item is quoted', () => {
   assert.equal(qa.symbolDoc(source, 1, rules), null);
 });
 
-test('the census locates evaluate_calculation and the answer quotes its documentation', () => {
-  const census = readFileSync(new URL('data/meta/self-ast/src/calculation.lino', ROOT), 'utf8');
-  const symbol = qa.censusDocumentSymbols(census).find((found) => found.name === 'evaluate_calculation');
+test('current source locates evaluate_calculation and the answer quotes its documentation', () => {
+  const modules = censusDocuments(fileURLToPath(ROOT)).map(document => document.module);
+  const symbol = qa.sourceSymbols(modules).find((found) => found.name === 'evaluate_calculation');
   assert.equal(symbol.target, 'src/calculation.rs');
   assert.equal(symbol.kind, 'function');
   const source = readFileSync(new URL('rust/src/calculation.rs', ROOT), 'utf8');
@@ -62,6 +65,34 @@ test('the census locates evaluate_calculation and the answer quotes its document
     `\`evaluate_calculation\` is a function in rust/src/calculation.rs, lines ${symbol.start} to ${symbol.end}. Its documentation comment reads: Evaluate an expression, delegating calculator-supported syntax to \`link-calculator\` and preserving the in-repo evaluator as a fallback for syntax the upstream crate does not support yet. The symbol was introduced by commit 850e52409 for issue #1180 (read from \`git log -S\`, with the issue from the commit's trailer).`,
   );
   assert.ok(qa.definitionAnswer(symbol, null, [], 'en', rules).includes('It carries no documentation comment'));
+});
+
+test('source edits, moves and deletion supersede stale committed symbol positions', t => {
+  const repository = mkdtempSync(join(tmpdir(), 'formal-ai-qa-current-source-'));
+  t.after(() => rmSync(repository, { recursive: true, force: true }));
+  const sourceDirectory = join(repository, 'rust/src');
+  const legacyDirectory = join(repository, 'data/meta/self-ast/src');
+  mkdirSync(sourceDirectory, { recursive: true });
+  mkdirSync(legacyDirectory, { recursive: true });
+  writeFileSync(join(legacyDirectory, 'current.lino'),
+    'self_ast_census\n  target src/current.rs\n  symbols\n    function measured_value 1 1\n    function historical_only 8 8\n');
+  // Legacy decoding remains compatible, but its stale positions confer no authority.
+  assert.deepEqual(qa.censusDocumentSymbols(readFileSync(join(legacyDirectory, 'current.lino'), 'utf8')),
+    [{ target: 'src/current.rs', kind: 'function', name: 'measured_value', start: 1, end: 1 },
+      { target: 'src/current.rs', kind: 'function', name: 'historical_only', start: 8, end: 8 }]);
+  const current = join(sourceDirectory, 'current.rs');
+  writeFileSync(current, '/// Current contract.\nfn measured_value() {}\n');
+  const observe = () => qa.sourceSymbols(censusDocuments(repository).map(document => document.module));
+  assert.deepEqual(observe(), [{ target: 'src/current.rs', kind: 'function', name: 'measured_value', start: 2, end: 2 }]);
+  const edited = '// Added framing: नमस्ते.\n\n/// Edited contract.\nfn measured_value() {}\n';
+  writeFileSync(current, edited);
+  assert.deepEqual(observe(), [{ target: 'src/current.rs', kind: 'function', name: 'measured_value', start: 4, end: 4 }]);
+  assert.equal(qa.symbolDoc(edited, observe()[0].start, rules), 'Edited contract.');
+  const moved = join(sourceDirectory, 'moved.rs');
+  renameSync(current, moved);
+  assert.deepEqual(observe(), [{ target: 'src/moved.rs', kind: 'function', name: 'measured_value', start: 4, end: 4 }]);
+  unlinkSync(moved);
+  assert.deepEqual(observe(), []);
 });
 
 test('the status answer reads the floor and the target from the ledger', () => {

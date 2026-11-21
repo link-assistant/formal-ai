@@ -1,0 +1,31 @@
+{
+  "exitCode": 1,
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "experiments/issue-1580/budget-clock-boundary.test.mjs"
+  ],
+  "records": [
+    {
+      "file": "before.stdout.gz",
+      "rawSha256": "2a437c46732c8739e84ba96f3ff94afce51ef9e75854d090ad5ba14a44bb20f3",
+      "archiveSha256": "bcf823c798aa47495b73397f6fd514e8115680694c5fc546d18dc8dd92201b26"
+    },
+    {
+      "file": "before.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "sourceSha256": "8a2c203268d43b221db123f65580eb3a71df8a4c0857f0cc71db3d43a5c254b3",
+  "counts": {
+    "pass": 0,
+    "fail": 2,
+    "skipped": 0
+  },
+  "harnessObservation": "Both behavioral assertions fail as expected. The initial recording helper then incorrectly expected TAP from Node default spec output; raw streams and return code are retained. Subsequent checks select TAP explicitly."
+}

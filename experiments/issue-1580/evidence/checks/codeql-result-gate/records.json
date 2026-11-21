@@ -1,0 +1,80 @@
+[
+  {
+    "label": "new-codeql-regressions",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/security-codeql-results.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 5.835,
+    "file": "new-codeql-regressions.log.gz",
+    "rawSha256": "51101cae75aec9d48e6d04fdf4ab6684da494f0592c1df0cafeed9ccdaf81c82",
+    "archiveSha256": "00b908a5472637f87813323ff27203ca3d1ac0b172daaab91c0b0a09d9f633f9"
+  },
+  {
+    "label": "fast-production-profile",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 5.413,
+    "file": "fast-production-profile.log.gz",
+    "rawSha256": "b723f066134073b187dfd45bb6c2b960e91574ccc89ff05ab6a74a8f825a6001",
+    "archiveSha256": "195b41d614e8b993dc57714be07baadbe246b391f8f90b37797b492c2e46a265"
+  },
+  {
+    "label": "maintained-workflow-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 13.705,
+    "file": "maintained-workflow-policy.log.gz",
+    "rawSha256": "f9764ac6e430f120a0b5eb8f2e7a8bf076390d602bcc831049b1e6dc1b313051",
+    "archiveSha256": "cc9485ee338afb2a7b33bf171ddaf27c44fcbd49550c43d857914a9250d93eb5"
+  },
+  {
+    "label": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.295,
+    "file": "rust-format.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "label": "all-local-gates",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 683.418,
+    "file": "all-local-gates.log.gz",
+    "rawSha256": "31fb70f3e91f76a4ade251a0dbdee349d5881840d335beb06134bce1059205f0",
+    "archiveSha256": "1338278d90ee7bd9b9f69bb5ab3d13bffaa0e77842c487b3fb29b9f05556963a"
+  }
+]

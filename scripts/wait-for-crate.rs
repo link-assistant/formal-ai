@@ -22,15 +22,19 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! toml_edit = "0.25.15"
 //! regex = "1"
 //! ureq = "2"
 //! ```
 
 use std::env;
-use std::fs;
 use std::process::exit;
 use std::thread;
 use std::time::Duration;
+
+#[path = "github-output.rs"]
+mod github_output;
+use github_output::set_output;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
@@ -45,23 +49,6 @@ fn get_arg(name: &str) -> Option<String> {
 
     let env_name = name.to_uppercase().replace('-', "_");
     env::var(&env_name).ok().filter(|s| !s.is_empty())
-}
-
-fn set_output(key: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        if let Err(e) = fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(&output_file)
-            .and_then(|mut f| {
-                use std::io::Write;
-                writeln!(f, "{}={}", key, value)
-            })
-        {
-            eprintln!("Warning: Could not write to GITHUB_OUTPUT: {}", e);
-        }
-    }
-    println!("Output: {}={}", key, value);
 }
 
 fn parse_count_arg(name: &str, default: u64) -> u64 {

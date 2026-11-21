@@ -7,6 +7,8 @@ use formal_ai::fragment_catalog::FragmentCatalog;
 use formal_ai::needs::{NeedKind, NeedState};
 use formal_ai::program_ir::{IrNode, IrType, ProgramIr, ReuseMode};
 
+mod rejected_ir;
+
 fn parameter(name: &str, annotation: Option<&str>) -> Parameter {
     Parameter {
         name: name.to_owned(),

@@ -1,0 +1,57 @@
+{
+  "headSha": "11c0bd05cc63049a0bc865944385efe3982b4344",
+  "observedAt": "2026-11-20T04:52:12.443194+00:00",
+  "aggregateRunStillActive": true,
+  "logs": [
+    {
+      "job": 136080808912,
+      "log": "early-core-job-api-136080808912.log.gz",
+      "rawLines": 2604,
+      "rawSha256": "704fcbeb77e9b8ddc04124e9b3308b58a2b1554eb4abc52e4973957a0b2d4734",
+      "archiveSha256": "d6e3586a155b783000487dd8163d77962db8708e43194ed1e01bfec4cbc85d63"
+    },
+    {
+      "job": 136080809086,
+      "log": "early-coding-job-api-136080809086.log.gz",
+      "rawLines": 187,
+      "rawSha256": "879d572ad5674eae1938ec7c97887523c3824124162457f7efb001db24c1536d",
+      "archiveSha256": "90fb75d242571bf69e19824483bc2f72767b5cd64077468cdce64516131391ff"
+    },
+    {
+      "job": 136080748101,
+      "log": "early-layered-job-136080748101.log.gz",
+      "rawLines": 5229,
+      "rawSha256": "e4ae8ba31f951ace35a08ff7209ed504ac93e8f0f14b005d10d7bd09c868c187",
+      "archiveSha256": "a588967597f1a5bdb9e00b3cb9ecd6b24be668b8777de9653f57a25be7e07ea4"
+    }
+  ],
+  "behavioralProof": {
+    "coreJob": 136080808912,
+    "workflowContractsPassed": 60,
+    "fragmentOwnershipTestsPassed": 4,
+    "fallibleOutputTestsPassed": 7,
+    "rawLines": [
+      1866,
+      1934
+    ]
+  },
+  "failures": [
+    {
+      "job": 136080748101,
+      "rawLines": [
+        5162,
+        5176
+      ],
+      "cause": "A new redirected checksum output is not guaranteed to exist when find enumerates."
+    },
+    {
+      "job": 136080809086,
+      "rawLines": [
+        140,
+        142
+      ],
+      "cause": "Lazy promisor blob checkout transfer aborted at Git low-speed threshold, before any compilation."
+    }
+  ],
+  "fullIssueComplete": false
+}

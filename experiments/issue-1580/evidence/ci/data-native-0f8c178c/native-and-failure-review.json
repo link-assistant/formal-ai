@@ -1,0 +1,30 @@
+{
+  "head": "0f8c178ca9c4a2c6fd9bf07e67a2babd450436bb",
+  "workflowCount": 23,
+  "success": 22,
+  "failure": 1,
+  "archivedCommandRecords": 22,
+  "allPayloadHashesVerified": 44,
+  "nativeJob": "https://github.com/link-assistant/formal-ai/actions/runs/44371961425/job/135041066368",
+  "nativeRawSha256": "d6cfec496bf8c482c57e7bfaf514c17e0ef804d846ad5e5f4aac69c9bd2d89d0",
+  "nativeLiteralLinesRead": [
+    1610,
+    1714
+  ],
+  "fullWorkflowPayloadLiterallyRead": false,
+  "dataTestsPassed": 20,
+  "dataTestsFailed": 2,
+  "nativePassedBeforeAbort": 32,
+  "blockedBy": [
+    "client-integrations.lino:440 invalid embedded JSON quoting",
+    "cnl-language-ru.lino:13 pipe-packed alternatives"
+  ],
+  "laterNativeTargetsNotExecuted": true,
+  "newOriginalContractVerified": "data_files::meaning_slugs_are_globally_unique",
+  "originalDataTestFileSha256": "6015d875c1bfa97ed46fe7c6e82869adef14664629f5a9a1aeba1ccf2e3fa0f2",
+  "originalNativeContractsVerified": 10,
+  "originalNativeContractsOpen": 43,
+  "originalBudgetFailuresOpen": 3,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

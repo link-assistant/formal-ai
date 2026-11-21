@@ -1,0 +1,178 @@
+[
+  {
+    "name": "focused-clock",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "experiments/issue-1580/budget-clock-boundary.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 7.771652727853507,
+    "file": "focused-clock.log.gz",
+    "rawSha256": "64f2f1298a3308e8a3b9e7ea7c163dca7c866ff81cb6033f03ad8f37c92c858a",
+    "archiveSha256": "6bbbd616b99a0072b1ce9a3fa9576288522a3c32af87585c90ee78f3264ae7df",
+    "lines": 22
+  },
+  {
+    "name": "live-children",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "experiments/issue-1580/budget-process-lifetime.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 11.110631315037608,
+    "file": "live-children.log.gz",
+    "rawSha256": "b4ac98c2e5f9f9a9b951f91929330768c80cc78e531ffd4122316cdb76feb17f",
+    "archiveSha256": "6473dbcf9e069045443cb70545b567abb83804c435b3425b68e46353425d863b",
+    "lines": 52
+  },
+  {
+    "name": "maintained-template",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1580-template-observations.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 41.907178438967094,
+    "file": "maintained-template.log.gz",
+    "rawSha256": "eb00df6e85f740d5616ee3dadfd3102e6d92c3caac503c22937a276ec981f93d",
+    "archiveSha256": "1f899c30a1f2d789dbcb365d8f569f1fb80b785ba23e83c563348b797a595dcc",
+    "lines": 364
+  },
+  {
+    "name": "maintained-cache",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/cache-budget-observation.test.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 0.06979159591719508,
+    "file": "maintained-cache.log.gz",
+    "rawSha256": "9c33ba4bb640968a500abffd30b21d84246d7487e236459db6a91023ecf43605",
+    "archiveSha256": "601046e773169130fd840e4d5035c0c396bb2c682fa6d71d1cf564e27f80658e",
+    "lines": 1
+  },
+  {
+    "name": "maintained-cache-corrected",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/sccache-outage-fallback.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 3.5883084889501333,
+    "file": "maintained-cache-corrected.log.gz",
+    "rawSha256": "ea7f504f876655ab457ad86cf8374ec39abea99e8b88055dba342023a24c4c87",
+    "archiveSha256": "615ea543fd31849aee92c50501d25c5e786909682604fce85d8bf5d3f62d221f",
+    "lines": 82
+  },
+  {
+    "name": "maintained-release-corrected",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/release-workflow-scope-controls.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 24.274558862205595,
+    "file": "maintained-release-corrected.log.gz",
+    "rawSha256": "86d15a55fbe4b5c4289e94dfc2993e961bf4c4ba61a945cdb3b6125c593f4ec3",
+    "archiveSha256": "6b8e31996672d797de731f3815909f94e6b3109c5607cb029a1f754bdae9ab78",
+    "lines": 76
+  },
+  {
+    "name": "budget-registry",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "rust/tests/web/ci-budget-and-registry-identities.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.5683405541349202,
+    "file": "budget-registry.log.gz",
+    "rawSha256": "474cb5062e6634a74a6546cf3ca4d20db8b5207ba35a289799dd06f53ae76116",
+    "archiveSha256": "a9cebfff25ff5249d87de9d5df588bf16294ae20673d6ee827686d6e6c446edb",
+    "lines": 28
+  },
+  {
+    "name": "shellcheck",
+    "argv": [
+      "shellcheck",
+      "scripts/run-with-budget-warning.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.21479751612059772,
+    "file": "shellcheck.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "shell-syntax",
+    "argv": [
+      "bash",
+      "-n",
+      "scripts/run-with-budget-warning.sh"
+    ],
+    "exitCode": 0,
+    "seconds": 0.006644173990935087,
+    "file": "shell-syntax.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "relevant-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations,check-file-size-js-twin,check-file-size,check-architecture-contents,check-changelog-fragment-js-twin,check-fragment-release-map,check-reconstructed-changelog,check-readable-code"
+    ],
+    "exitCode": 0,
+    "seconds": 112.76227265805937,
+    "file": "relevant-gates.log.gz",
+    "rawSha256": "061169090b0359daf49ba721dc74bdf0ee6e29e8720a68942e3f72b4718572ff",
+    "archiveSha256": "bdf6e25c9335d8226b4298688e94f5e94a4c784089e8202ebb2f2df612c1bd3d",
+    "lines": 10
+  }
+]

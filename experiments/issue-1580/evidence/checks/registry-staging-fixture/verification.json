@@ -1,0 +1,89 @@
+{
+  "rootCause": "The successful native writer reached its real Git staging step, but the temporary repository omitted all three status surfaces required by that writer.",
+  "failedHostedHead": "c5b6850813d20fa7d3d5e9f4a496b6b8c5220009",
+  "failedHostedJob": 136142391919,
+  "failedHostedRawLines": [
+    660,
+    684
+  ],
+  "records": [
+    {
+      "label": "before",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "file": "before.log.gz",
+      "rawSha256": "c44957088dfe9f27fd7b4fb49ace19854ad21fab6d61abb7fbef875ef2937374",
+      "archiveSha256": "a4e311f70669a06ef8e6af83c5a19a437c80effcce8cca7be645e07fbed08ca3",
+      "source": "interrupted synchronous helper completed this step; full stdout retained"
+    },
+    {
+      "label": "after",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "file": "after.log.gz",
+      "rawSha256": "428da1183b12f6f454826a5a0614b860364c7d374bd2a2061695856ee80fbd11",
+      "archiveSha256": "0aece355e2eefa7196a295f754cfe8ad21ae78830615b460207bfb4d61cb180e",
+      "source": "interrupted synchronous helper completed this step; full stdout retained"
+    },
+    {
+      "label": "admission",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "file": "admission.log.gz",
+      "rawSha256": "4a79296b2873cfde6f1a3a5484c451f703683fd275ee96ffb8343d8b4e1feb89",
+      "archiveSha256": "cbc77ba88be487419ae1aff4fe0e4afdc5f707cb8932ddc7cae3eb01d352f3f3",
+      "source": "interrupted synchronous helper completed this step; full stdout retained"
+    },
+    {
+      "label": "fixture-final",
+      "argv": [
+        "python3",
+        "experiments/issue-1580/release-registry/check_fixture.py"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "file": "fixture-final.log.gz",
+      "rawSha256": "2b672dcd6be6086c90fc6b76c2f9f1d65d9db8fc4ef67a7a71827bf2a9dcb0d4",
+      "archiveSha256": "259a766b109a693c0008799d2c21aa20c83505f18c05c7a5f28a08aa80ead1db"
+    },
+    {
+      "label": "affected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-changelog-fragment-js-twin,check-generated-files,check-runner-labels,check_js_rust_translation,layered-ci#1,layered-ci#2,layered-ci#3,layered-ci#4"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "file": "affected-gates.log.gz",
+      "rawSha256": "8739d9b59984b11fc96c538758954d9a850cfc0898f8d517d4efa32ae3095aeb",
+      "archiveSha256": "6e22b1aff1b89828497d2122c26e9c4ccdb8d9c55fb1faf143be55a10fb79e3d"
+    },
+    {
+      "label": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "file": "diff-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    }
+  ],
+  "files": {
+    "experiments/issue-1580/release-registry/cli_regressions.py": "41f976d0c2cbb1cf3e409d51b245ec1b48e449347761f9cf542c0b702c1b16ec",
+    "experiments/issue-1580/release-registry/check_fixture.py": "e2fa0bbd80ca22cd18ee25759e3f8b535e9c23d3029b24bd82b21793c5887093"
+  },
+  "fixtureOnlyExecuted": true,
+  "nativeRegistryHelperHostedTestsPassed": 3,
+  "nativeCliHostedTestsPassed": 6,
+  "nativeCliHostedTestsFailed": 1,
+  "nativeCliAfterCorrectionExecuted": false,
+  "interruptedAttemptPreserved": true,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

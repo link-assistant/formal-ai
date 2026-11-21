@@ -1,0 +1,23 @@
+[
+  {
+    "file": "record-artifact-child-memory-checkpoint.py.gz",
+    "rawSha256": "c8295dfc4ff709e6ec612284becc85d57ea6b8f933e3a9df77df6bfc3170e772",
+    "archiveSha256": "78c4fa7a2577fa3ff99dbfda6fe43d042e951f7a06cde025a921852d78118891",
+    "bytes": 12868,
+    "lines": 140
+  },
+  {
+    "file": "record-artifact-child-memory-checkpoint.log.gz",
+    "rawSha256": "17cef4924074ccb6bc489741a556a1eb63d93858c52482f7396c4d4b4f23abf2",
+    "archiveSha256": "07a24e811eea232845b002da7dfa452a32556ecfe9f06f9631e42d6c2e60d79e",
+    "bytes": 295,
+    "lines": 4
+  },
+  {
+    "file": "seal-artifact-child-memory-batch.py.gz",
+    "rawSha256": "52060e1d6abefc0418c0730750ec984991d0399dfe8b62ceff983c3fba59712f",
+    "archiveSha256": "e14d42b4a7b78a53422f7680a2c2860966a316681a2f10c682d09a5e158c756e",
+    "bytes": 5053,
+    "lines": 69
+  }
+]

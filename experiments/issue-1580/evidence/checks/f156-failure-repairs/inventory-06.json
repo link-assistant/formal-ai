@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-21-comments.stderr",
+    "file": "0176-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-21.json",
+    "file": "0177-evidence.gz",
+    "bytes": 5963,
+    "lines": 1,
+    "rawSha256": "1895eb35299fb204e107c4edefcffc72e56dc97f15c585f9e47de1daca773c5b",
+    "archiveSha256": "63fc10cdf6f3879b7aa3cc8e032e1ce75b1bcb2b868c23a8467b094ee733c8f3"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/issue-21.stderr",
+    "file": "0178-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/pr-22-conversation.json",
+    "file": "0179-evidence.gz",
+    "bytes": 8248,
+    "lines": 1,
+    "rawSha256": "949b83db926dc58c0372c885b20b1d780322da9d7ed30609c2aedf6c204912ae",
+    "archiveSha256": "d2d01d8d4c8fc19c3ddc680de958dac42b693cadd79261e1e2c3978bfc19a984"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/pr-22-conversation.stderr",
+    "file": "0180-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/pr-22-inline.json",
+    "file": "0181-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/pr-22-inline.stderr",
+    "file": "0182-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/pr-22-reviews.json",
+    "file": "0183-evidence.gz",
+    "bytes": 2,
+    "lines": 1,
+    "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/pr-22-reviews.stderr",
+    "file": "0184-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/pr-22.json",
+    "file": "0185-evidence.gz",
+    "bytes": 7421,
+    "lines": 1,
+    "rawSha256": "0e9efd4aec7ed38b8eb661c0cf7ecb3787be3065dcc93d8cac0fa467f7078958",
+    "archiveSha256": "c652648e4b868cd71aab2223b52c6181de0a559138078df490f79a9fed45b3b9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-feedback/pr-22.stderr",
+    "file": "0186-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-input/candidate.stderr",
+    "file": "0187-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-input/candidate.stdout",
+    "file": "0188-evidence.gz",
+    "bytes": 1541,
+    "lines": 26,
+    "rawSha256": "c3006c2900e0ea05b1c20ec71ae39eb2857e2b7212821cde4f336a3e0be71f4f",
+    "archiveSha256": "2254b2ece83b52fcd23d2995f0cf8906ab6681697ca1661300b7c5bfa363fa9f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-input/disabled-candidate.stderr",
+    "file": "0189-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-input/disabled-candidate.stdout",
+    "file": "0190-evidence.gz",
+    "bytes": 10801,
+    "lines": 246,
+    "rawSha256": "cc32d3ddd179d07d097c255fd0fb4ff7b7dcd5c5e6af9b62f512b7543a9c1165",
+    "archiveSha256": "78d84545effad1eebd49d178c1868d88e0832e0a3e1c52bfa994ecae6069e474"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-input/issues.json",
+    "file": "0191-evidence.gz",
+    "bytes": 205542,
+    "lines": 1,
+    "rawSha256": "93d68bd1ecf1a6561e6e007740d6d350c13fbd3bd3570871636266b03496b2e9",
+    "archiveSha256": "11eb7e5a44a1c287c8e07413b7bc520a12df66411a249892379b9d06852e94c1"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-go-pipeline-input/issues.stderr",
+    "file": "0192-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/branch.stderr",
+    "file": "0193-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/branch.stdout",
+    "file": "0194-evidence.gz",
+    "bytes": 24,
+    "lines": 1,
+    "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+    "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/commit-evidence.stderr",
+    "file": "0195-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/commit-evidence.stdout",
+    "file": "0196-evidence.gz",
+    "bytes": 97354,
+    "lines": 916,
+    "rawSha256": "65194a2558e4a4eb197692ce2ea0c64aec6f1fdf5c23a5dbd50635c5cf2d78ad",
+    "archiveSha256": "9113d2ce0e24d732f73892aa9327232fd2732d313dffcb7bfc5f1a25da25864b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/commit-exact-status.stderr",
+    "file": "0197-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/commit-exact-status.stdout",
+    "file": "0198-evidence.gz",
+    "bytes": 125,
+    "lines": 2,
+    "rawSha256": "14bed1e7e5522ad0bb7b528d4fc01ac67f1312a25aecb1d6ac11ae687aabef7d",
+    "archiveSha256": "672bcb443e80b62948e25032b379407cd94c6637062bbd34e12a27743f9b3282"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/evidence-whitespace.stderr",
+    "file": "0199-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/evidence-whitespace.stdout",
+    "file": "0200-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/exact-status-whitespace.stderr",
+    "file": "0201-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/exact-status-whitespace.stdout",
+    "file": "0202-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/head.stderr",
+    "file": "0203-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/head.stdout",
+    "file": "0204-evidence.gz",
+    "bytes": 41,
+    "lines": 1,
+    "rawSha256": "1594c408a6d6c47a2f26f1bb13d2a0449337b83d4cd3df58298351a35b44d24e",
+    "archiveSha256": "5247344f1bffcd7c005577f33f3fc88bc13fd6f11b6d34698e93b8a7ecdd5644"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/outcome.json",
+    "file": "0205-evidence.gz",
+    "bytes": 2468,
+    "lines": 120,
+    "rawSha256": "a68facacc9d84ec6fdcd96e197bfb437960a9325f5abc6fa0f31f3857967ef84",
+    "archiveSha256": "2c54793965c288bfab0ab9100939d35005bd8ce20b6ad20bb9a303ccf8025b76"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/stage-evidence.stderr",
+    "file": "0206-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/stage-evidence.stdout",
+    "file": "0207-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/stage-exact-status.stderr",
+    "file": "0208-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/stage-exact-status.stdout",
+    "file": "0209-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-native-repair-evidence-commit/staged-before.stderr",
+    "file": "0210-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]

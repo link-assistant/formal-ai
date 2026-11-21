@@ -1,8 +1,11 @@
 // Fast, conservative PR admission. Production retains its full Rust classifier.
 import assert from 'node:assert/strict';
-import {appendFileSync, existsSync, readFileSync} from 'node:fs';
+import {appendFileSync, existsSync, readFileSync, mkdtempSync, openSync, closeSync, readSync, rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {StringDecoder} from 'node:string_decoder';
 import {execFileSync} from 'node:child_process';
-import {pathToFileURL} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {isDocumentationPath} from './lib/documentation-paths.mjs';
 
@@ -20,12 +23,209 @@ const NON_NATIVE_PREFIXES = ['docs/', 'changelog.d/', 'experiments/', 'dev/', 'e
 const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 'tsconfig.json', 'Dockerfile',
   'Dockerfile.slim', 'compose.yaml', '.dockerignore', '.gitignore', '.gitattributes', '.gitkeep',
   '.lycheeignore', '.pre-commit-config.yaml', '.secretlintrc.json', 'LICENSE']);
+// The focused native lane also executes isolated integration targets and an
+// HTTP replay. Changes to their sources or consumed fixtures must run that lane.
+const NATIVE_REGRESSION_INPUTS = new Set([
+  'scripts/assemble-requirements.rs',
+  'scripts/assemble-requirements-tests.rs',
+  'scripts/normalize-ordered-lists.rs',
+  'scripts/normalize-ordered-lists-tests.rs',
+  'scripts/lib/registered-module-paths.rs',
+  'scripts/self-hosting-metric.rs',
+  'scripts/self-hosting-metric-cli.rs',
+  'scripts/self-hosting-ledger.rs',
+  'scripts/self-hosting-ledger-rows.rs',
+  'scripts/self-hosting-retraction.rs',
+  'scripts/self-hosting-attribution.rs',
+  'scripts/self-hosting-replay.rs',
+  'scripts/self-development-loop.rs',
+  'scripts/detect-code-changes.rs',
+  'scripts/cargo-package.rs',
+  'scripts/check-version-modification.rs',
+  'scripts/rust-paths.rs',
+  'scripts/bump-version.rs',
+  'scripts/check-crate-package-size.rs',
+  'scripts/collect-changelog.rs',
+  'scripts/create-github-release.rs',
+  'scripts/version-and-commit-tests.rs',
+  'rust/tests/unit/ci-cd/cargo_package_identity.rs',
+  'rust/tests/unit/ci-cd/workspace_manifest_resolution.rs',
+
+  'scripts/check-release-needed.rs',
+  'scripts/get-bump-type.rs',
+  'scripts/get-version.rs',
+  'scripts/publish-crate.rs',
+  'scripts/wait-for-crate.rs',
+  'scripts/version-and-commit.rs',
+  'scripts/github-output.rs',
+  'scripts/changelog-fragment-file.rs',
+  'scripts/changelog-files.rs',
+  'scripts/version-changelog.rs',
+  'scripts/registry.rs',
+  'experiments/issue-1580/release-registry/Cargo.toml',
+  'experiments/issue-1580/release-registry/Cargo.lock',
+  'experiments/issue-1580/release-registry/cli_regressions.py',
+  'scripts/create-changelog-fragment.rs',
+  'scripts/ci-native-hive-durations.lino',
+  'scripts/ci-native-reasoning-durations.lino',
+  'scripts/plan-test-shards.mjs',
+  'scripts/lib/ci-speed-durations.mjs',
+  'scripts/lib/ci-speed-shards.mjs',
+  "experiments/agent_cli_e2e/mock-meaning-mcp.mjs",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+  "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
+  "rust/tests/e2e/playwright.pages.config.js",
+  "rust/tests/e2e/tests/connectivity.spec.js",
+  "rust/tests/e2e/tests/demo.spec.js",
+  "rust/tests/e2e/tests/multilingual-chat.spec.js",
+  "rust/tests/e2e/tests/multilingual-issue-27.spec.js",
+  "rust/tests/e2e/tests/multilingual-memory-settings.spec.js",
+  "rust/tests/e2e/tests/multilingual-wikipedia.spec.js",
+  "rust/tests/unit/ci-cd/staged_release_operations.rs",
+  "rust/tests/unit/ci-cd/step_budgets_within_job_clocks/codeql.rs",
+  "docs/case-studies/issue-96/raw-data/link-calculator-lib-excerpt.rs",
+  "rust/tests/unit/ci-cd/workflow_fixtures.rs",
+  "rust/tests/unit/ci-cd/workflow_release.rs",
+  "rust/tests/unit/ci-cd/workflow_release_operations.rs",
+  "rust/tests/unit/ci_gates.rs",
+  "rust/tests/unit/workflow_contracts.rs",
+  "scripts/check-disk-usage-policy.rs",
+  "scripts/checked-release-operation-view.mjs",
+  "scripts/documentation-policy-dependencies/package-lock.json",
+  "scripts/documentation-policy-dependencies/package.json",
+  "scripts/generate-staged-release.mjs",
+  "scripts/governed-github-command-provider.mjs",
+  "scripts/lib/ci-speed-workflows.mjs",
+  "scripts/maintained-staged-authority.mjs",
+  "scripts/native-staged-release-operation-view.mjs",
+  "scripts/refresh-release-specification-witness.mjs",
+  "scripts/release-source-freshness.mjs",
+  "scripts/run-ci-gates.rs",
+  "scripts/staged-caller-authority.mjs",
+  'rust/tests/integration/interface_contracts.rs',
+  'rust/tests/integration/formal_ai_cli.rs',
+  'rust/tests/integration/http_server.rs',
+  'rust/tests/integration/pty.rs',
+  'rust/tests/support/structured_stderr.rs',
+  'rust/tests/integration/with_formal_ai.rs',
+  'rust/tests/integration/with_formal_ai/fixture_env.rs',
+  'rust/tests/integration/with_formal_ai/issue_1582.rs',
+  'rust/tests/integration/with_formal_ai/model_metadata.rs',
+  'rust/tests/integration/with_formal_ai/verbosity.rs',
+  'rust/tests/integration/with_formal_ai_argv.rs',
+  'rust/tests/integration/issue_819_tui_isolation.rs',
+  'rust/tests/integration/issue_1138_family_behaviour.rs',
+  'rust/tests/unit/formal_ai/seed_and_memory.rs',
+  'rust/tests/unit/seed/issue_699_handler_migration.rs',
+  'docs/case-studies/issue-552/raw-data/chatgpt-share-6a3825b9.html',
+  'docs/case-studies/issue-781/raw-data/chatgpt-web-capture.json',
+  'docs/case-studies/issue-699/agent-cli-evidence/handler-migration-batch-report.lino',
+  'rust/tests/unit/calendar-currency.rs',
+  'rust/tests/unit/openai_forced_functions.rs',
+  'rust/tests/unit/cnl_output.rs',
+  'rust/tests/unit/cnl_parity.rs',
+  'rust/tests/unit/meta_executor_parity.rs',
+  'rust/tests/unit/specification/synthesis.rs',
+  'rust/tests/unit/coding_contracts.rs',
+  'rust/tests/unit/coding_discovery/composition.rs',
+  'rust/tests/unit/coding_discovery/composition_search.rs',
+  'rust/tests/unit/coding_discovery/composition/rejected_ir.rs',
+  'rust/tests/unit/specification/unknown_reasoning.rs',
+  'rust/tests/unit/data_files.rs',
+  'rust/tests/unit/data_files/technical_scalar.rs',
+  'rust/tests/unit/scheduling_contracts.rs',
+  'rust/tests/unit/operational_contracts.rs',
+  'rust/tests/unit/reasoning_contracts.rs',
+  'rust/tests/unit/issue_896_component_boundaries.rs',
+  'docs/case-studies/issue-896/self-hosting-authorship/web-component-boundary-invariant.lino',
+  'docs/case-studies/issue-896/self-hosting-authorship/agent-cli.log',
+  'docs/case-studies/issue-896/self-hosting-authorship/formal-ai.log',
+  'docs/case-studies/issue-896/self-hosting-authorship/decomposition.lino',
+  'rust/tests/unit/issue_1157_idempotent_commit.rs',
+  'rust/tests/unit/issue_1158_pull_request_steps.rs',
+  'rust/tests/unit/issue_1160_regular_prompt.rs',
+  'rust/tests/unit/hive_delivery_prerequisites.rs',
+  'rust/tests/fixtures/hive-mind/offline_delivery.rs',
+  'rust/tests/fixtures/hive-mind/fake-gh.cjs',
+  'rust/tests/fixtures/hive-mind/formal-ai-prompt.txt',
+  'rust/tests/fixtures/hive-mind/regular-prompt.txt',
+  'rust/tests/fixtures/hive-mind/restart-uncommitted-main-jar.txt',
+  'rust/tests/fixtures/issue-1162/hello-world-kotlin-issue.md',
+  'rust/tests/unit/offline_instruction_research.rs',
+  'rust/tests/unit/issue_1133_hive_mind_three_runs.rs',
+  'rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs',
+  'rust/tests/unit/issue_1066_ladder_capability/tool_workspace.rs',
+  'rust/tests/fixtures/atomic-record-append.rs',
+  'rust/tests/fixtures/observed-plan-tools.rs',
+  'rust/tests/fixtures/commit-cue-masking.rs',
+  'rust/tests/fixtures/hive-workflow-original-task.json',
+  'rust/tests/unit/specification/reasoning_paths_procedures.rs',
+  'rust/tests/unit/solver/issue_1138_self_use_concept_lookup.rs',
+  'rust/tests/unit/issue_1138_retrieval_method.rs',
+  'rust/tests/unit/issue_498_google_trends.rs',
+  'rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs',
+  'rust/examples/dump_google_trends_catalog.rs',
+  'docs/case-studies/issue-498/agent-cli-session-google-trends.json',
+  'rust/tests/unit/specification/reasoning_loop.rs',
+  'rust/tests/unit/specification/benchmarks.rs',
+  'data/benchmarks/LICENSES.md',
+  'docs/case-studies/issue-244/raw-data/online-research.md',
+  'rust/tests/unit/specification/formalization.rs',
+  'rust/tests/unit/specification/pronoun_topic_follow_up.rs',
+  'rust/tests/unit/specification/debug_session.rs',
+  'rust/tests/unit/specification/event_source_origin.rs',
+  'rust/tests/unit/web_requests.rs',
+  'rust/tests/unit/web_requests/extended.rs',
+  'rust/tests/unit/page_formalization_route.rs',
+  'rust/tests/unit/seed/issue_1172_live_fact_answer.rs',
+  'rust/tests/unit/issue_1173_fallback_executes_search.rs',
+  'rust/tests/unit/docs_requirements/agent_cli_shell.rs',
+  'rust/tests/unit/ci-cd/network_download_retry.rs',
+  'README.md',
+  'docs/desktop/server-api.md',
+  'rust/tests/unit/issue_1138_place_timezone.rs',
+  'rust/tests/unit/solver/issue_869_meeting_scheduling.rs',
+  'rust/tests/unit/specification/spoken_hour_scheduling.rs',
+  'rust/tests/unit/capability-routing/issue_1138_self_use_intent_routing.rs',
+  'rust/tests/fixtures/issue-1580-calendar-clock.json',
+  'rust/tests/unit/issue_706_any_language.rs',
+  'rust/tests/unit/solver_unknown_reasoning_captured_sources.rs',
+  'rust/tests/fixtures/issue-1138-b1/expected-senses.json',
+  'rust/tests/fixtures/meta-executor-parity.json',
+  'rust/tests/fixtures/meta-executor-status-parity.json',
+  'rust/tests/fixtures/meta-executor-cue-parity.json',
+  'data/parity/issue-1589-calendar-currency.json',
+  'data/parity/issue-1590-forced-functions.json',
+  'data/parity/cross-runtime-synthesis.json',
+  'rust/tests/web/issue-1590-forced-functions.test.mjs',
+  'rust/tests/web/issue-1586-structured-output.test.mjs',
+  'rust/tests/web/issue-1396-native.test.mjs',
+  'rust/tests/fixtures/issue-1396/wiki-how-ru.json',
+  'rust/tests/web/support/structured-log-fixture.mjs',
+  'js/server/structured-log.mjs',
+]);
 export function nativeCompileInput(path) {
-  if (path === 'scripts/ci-clippy-profile.sh') return true;
+  // The native dynamic-meta replay starts the JavaScript HTTP host and its
+  // worker. Retain these discovered module trees and frozen package inputs;
+  // a changed host must not silently bypass its native gateway qualification.
+  if (['js/server/', 'js/agentic/', 'js/worker/', 'js/seed/',
+    'experiments/dynamic-meta/', 'experiments/js_dogfood/'].some(prefix => path.startsWith(prefix))
+    || ['rust/tests/web/dynamic-meta.test.mjs', 'package.json', 'bun.lock', '.bun-version',
+      'js/parser-cache-primordials.js', 'js/seed_loader.js', 'js/worker-bootstrap-responses.js',
+      'js/worker-modules.js'].includes(path)) return true;
+  // The download contract discovers every shell script, including new paths.
+  if (path.endsWith('.sh')) return true;
+  if (path.startsWith('data/parity/issue-1584-cnl/') || NATIVE_REGRESSION_INPUTS.has(path) || ['scripts/ci-clippy-profile.sh',
+    'scripts/ci-pull-request-admission.mjs', 'scripts/lib/documentation-paths.mjs'].includes(path)) return true;
   if (isDocumentation(path) || NON_NATIVE_FILES.has(path)) return false;
-  if (path.startsWith('data/')) return path.startsWith('data/seed/api-cache/');
-  // Its own job definition and the composite actions it runs stay inputs.
-  if (path.startsWith('.github/workflows/')) return ['release.yml', 'native-type-check.yml'].some(file => path === '.github/workflows/' + file);
+  // The isolated data-file target parses all LiNo and cached source JSON.
+  if (path.startsWith('data/')) return path.endsWith('.lino')
+    || (path.startsWith('data/cache/') && path.endsWith('.json'))
+    || path.startsWith('data/seed/api-cache/');
+  // The native workflow contracts discover every workflow and traverse local calls.
+  if (path.startsWith('.github/workflows/')) return true;
   return !NON_NATIVE_PREFIXES.some(prefix => path.startsWith(prefix));
 }
 // Classify conservatively: extra lightweight checks are cheaper than missed changes.
@@ -40,10 +240,16 @@ export function admission(paths) {
         : key === 'native-type-check' ? paths.length === 0 || paths.some(nativeCompileInput) : code]));
 }
 export function versionIn(text) {
-  const section = /^\[package\]\s*\n([\s\S]*?)(?=^\[|$(?![\s\S]))/mu.exec(text);
-  const version = /^version\s*=\s*"([^"]+)"/mu.exec(section?.[1] ?? '');
-  assert(version, 'readable package version required; refusing unknown manifest');
-  return version[1];
+  // Use Python 3.11+'s standard TOML parser. Parsing the complete document
+  // prevents table/string decoys and
+  // duplicate keys from turning an invalid manifest into an unchanged version.
+  const parser = fileURLToPath(new URL('./lib/cargo-package-version.py', import.meta.url));
+  const version = JSON.parse(execFileSync('python3', ['-I', parser], {
+    input: text, encoding: 'utf8', timeout: 15000, maxBuffer: 4 * 1024 * 1024,
+    stdio: ['pipe', 'pipe', 'pipe'],
+  }));
+  assert(typeof version === 'string' && version.length > 0, 'literal package version required');
+  return version;
 }
 export function checkVersions(head, base) {
   assert.equal(versionIn(head), versionIn(base), 'Use a changelog fragment instead of changing the crate version');
@@ -51,16 +257,45 @@ export function checkVersions(head, base) {
 function git(args) {
   return execFileSync('git', args, {encoding: 'utf8', timeout: 15000, maxBuffer: 4 * 1024 * 1024});
 }
+// Spool Git's complete NUL inventory instead of imposing execFileSync's stdout
+// buffer limit on a valid large change. Decode bounded chunks; no path is dropped.
+function gitPathInventory(args) {
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-admission-inventory-'));
+  let descriptor;
+  try {
+    const file=join(directory,'paths');
+    descriptor=openSync(file,'wx',0o600);
+    execFileSync('git',args,{stdio:['ignore',descriptor,'pipe'],timeout:15000,maxBuffer:4*1024*1024});
+    closeSync(descriptor);descriptor=undefined;descriptor=openSync(file,'r');
+    const buffer=Buffer.alloc(32768),decoder=new StringDecoder('utf8'),paths=[];
+    let pending='',bytes=0,count;
+    while((count=readSync(descriptor,buffer,0,buffer.length,null))>0) {
+      bytes+=count;
+      const parts=(pending+decoder.write(buffer.subarray(0,count))).split('\0');
+      pending=parts.pop();
+      for(const path of parts)if(path)paths.push(path);
+    }
+    pending+=decoder.end();
+    assert.equal(pending,'','complete NUL-terminated Git inventory required');
+    if(process.env.FORMAL_AI_CI_VERBOSE==='true')
+      console.error(JSON.stringify({admissionInventory:{bytes,paths:paths.length}}));
+    return paths;
+  } finally {
+    if(descriptor!==undefined)closeSync(descriptor);
+    rmSync(directory,{recursive:true,force:true});
+  }
+}
 export function changedPaths(event, before, invoke = git) {
+  const inventory=args=>invoke===git?gitPathInventory(args):invoke(args).split('\0').filter(Boolean);
   if (event === 'pull_request') {
     const parents = invoke(['rev-list', '--parents', '-n', '1', 'HEAD']).trim().split(/\s+/u);
     assert(parents.length === 3, 'PR admission requires the checked-out synthetic merge commit');
-    return invoke(['diff', '--no-renames', '--name-only', '-z', parents[1], parents[2]]).split('\0').filter(Boolean);
+    return inventory(['diff', '--no-renames', '--name-only', '-z', parents[1], parents[2]]);
   }
   // Bot dispatch checks the whole branch against the latest default branch.
   const base = event === 'workflow_dispatch' ? 'origin/main' : before;
   assert(base && !/^0+$/u.test(base), 'known comparison base required');
-  return invoke(['diff', '--no-renames', '--name-only', '-z', base, 'HEAD']).split('\0').filter(Boolean);
+  return inventory(['diff', '--no-renames', '--name-only', '-z', base, 'HEAD']);
 }
 
 const SOURCE_READ_LIMIT = 4 * 1024 * 1024;
@@ -218,8 +453,7 @@ async function main(mode) {
   } else {
     assert.equal(mode, 'version');
     if (process.env.GITHUB_EVENT_NAME !== 'pull_request') return;
-    if (['changelog-manual-release-', 'changeset-release/', 'release/', 'automated-release/']
-      .some(prefix => process.env.GITHUB_HEAD_REF?.startsWith(prefix))) return;
+    // Branch names are caller-controlled; every pull request needs the version check.
     const base = process.env.GITHUB_BASE_REF || 'main';
     assert(/^[a-zA-Z0-9_./-]+$/u.test(base) && !base.startsWith('-'), 'valid base branch required');
     const manifest = await readBaseManifest({repository:process.env.GITHUB_REPOSITORY,base,

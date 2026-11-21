@@ -1,0 +1,188 @@
+{
+  "complete": true,
+  "baseHead": "1388db5502f71d0f2bcf522da01ef8fdb8a6ef89",
+  "checks": [
+    {
+      "file": "policy.log.gz",
+      "rawSha256": "dca523119a3b568a2e53255b7eb4e9f565b7856365aa29fa24ad3e331b40c785",
+      "archiveSha256": "d02a4642ef1dc74aa8895033a15d752ce19b40f701bf6580c3993aea6410ca55",
+      "lines": 47,
+      "name": "policy",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/default-branch-build-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 7.643
+    },
+    {
+      "file": "focused-map.log.gz",
+      "rawSha256": "f28f5acc34cdd7314d1c0415457139024d34b3ec5ce2d678e7c07ab6af6c4b29",
+      "archiveSha256": "67671596fdd7415a8160b45afd72fd4a9bedeffd17a35fa402649966971c4e2e",
+      "lines": 16,
+      "name": "focused-map",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.8
+    },
+    {
+      "file": "rust-format.log.gz",
+      "rawSha256": "b45e48ab1ad568f4729abf5b3448fcfc94ed50943c0bd0682cde83d86d15575c",
+      "archiveSha256": "e9d5e88a6bce57bd0a8f4e827c8c7537f1cb3d813c676959ef196ec5db7d564c",
+      "lines": 13,
+      "name": "rust-format",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/reasoning_contracts.rs",
+        "rust/src/solver_handlers/fact_live_answer.rs",
+        "rust/src/solver_handlers/web_requests/live_search.rs",
+        "rust/tests/unit/web_requests.rs",
+        "rust/tests/unit/seed/issue_1172_live_fact_answer.rs",
+        "rust/tests/unit/issue_1173_fallback_executes_search.rs"
+      ],
+      "exitCode": 1,
+      "seconds": 0.169
+    },
+    {
+      "file": "selected-gates.log.gz",
+      "rawSha256": "d83e8b8707bc1abb28ee824af639423ce00c3e22f3afbf079e9f2f02c3d18c3b",
+      "archiveSha256": "93c753de61b3adbc87ad40a4240a065145d8b8b619bfd445e3365fa9f930a15e",
+      "lines": 11,
+      "name": "selected-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-ci-speed,check-runner-labels,check-readable-code"
+      ],
+      "exitCode": 0,
+      "seconds": 48.367
+    },
+    {
+      "file": "whitespace.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.34
+    }
+  ],
+  "gates": [
+    {
+      "file": "gate-check-abbreviations.log.gz",
+      "rawSha256": "9d706e09ccc0e2ed635bd9d6afc31dda7ecccbc5c7033a67d1cb2abd63a79cdc",
+      "archiveSha256": "0d98b455a8ecbd2206064e6f46eb440a146288475047af09290ccbd31eb80221",
+      "lines": 4,
+      "gateName": "check-abbreviations"
+    },
+    {
+      "file": "gate-check-changelog-fragment-js-twin.log.gz",
+      "rawSha256": "dcf80a72b0128ad5e68a8f4e4f51de3cd3d4386acde041a0c43079b5de6fdbc7",
+      "archiveSha256": "cf212b8db84d6e8512f4d0a14432e9fb3006bcd8760a9299f3d06702ff7cb2db",
+      "lines": 2,
+      "gateName": "check-changelog-fragment-js-twin"
+    },
+    {
+      "file": "gate-check-ci-speed.log.gz",
+      "rawSha256": "4188f9e32a92eecb4e097342bac1801ea722d96b348ae3f4eae4820110668a00",
+      "archiveSha256": "4f9860ea104601ac8a2f15c7761e47c89d1c15cee79e4dbb090e16caf808542b",
+      "lines": 34,
+      "gateName": "check-ci-speed"
+    },
+    {
+      "file": "gate-check-file-size-js-twin.log.gz",
+      "rawSha256": "07918a2152b578cba2b518dd25d361689d3c2e6a91848afeb3ac8af20d8aeee9",
+      "archiveSha256": "5ee4009241ee13da1c71e44fd09fb5ba26e15b6bfda355aee981d571bca96f50",
+      "lines": 2,
+      "gateName": "check-file-size-js-twin"
+    },
+    {
+      "file": "gate-check-file-size.log.gz",
+      "rawSha256": "4be86dfa5ae5bcdf5f8d8a0809babff1300ce607d3147c79b081f941ec5094d8",
+      "archiveSha256": "ac753a784d7f6ce89bf18943f1d8cf5658ad5e54ee9603c2ce34f039fa316dd6",
+      "lines": 389,
+      "gateName": "check-file-size"
+    },
+    {
+      "file": "gate-check-readable-code.log.gz",
+      "rawSha256": "c722bbb9dc5c2a857abed16a989df04b67d28ad612d50f2ebc89fbdb4067ae54",
+      "archiveSha256": "19f1800dd4ba8ddd6f7982d2c31482170b4bb3d6d14960daa2fe04749c0dda45",
+      "lines": 2,
+      "gateName": "check-readable-code"
+    },
+    {
+      "file": "gate-check-runner-labels.log.gz",
+      "rawSha256": "be1a0846791ca63b74c1ccae844fb0450a47de65a7b43a484de8d77958221dee",
+      "archiveSha256": "93eab7aab169777b0175a9f6dac96c21e7abc81d471d9f3246a85232cb461b03",
+      "lines": 2,
+      "gateName": "check-runner-labels"
+    },
+    {
+      "file": "gate-check-tests-as-documentation.log.gz",
+      "rawSha256": "4c41d72c51bbe463871ad0778b35e99b4f75ff10bcbbd0578dc223ffc2b13939",
+      "archiveSha256": "4b4edd87795b99b9d73a11eeb5b031911cdd1b3b9661f52ac81122aa3b4491a4",
+      "lines": 6,
+      "gateName": "check-tests-as-docs"
+    },
+    {
+      "file": "gate-check-tests-as-documentation-javascript-twin.log.gz",
+      "rawSha256": "82f197120309e260e1f7655fa313dd31c3bed567b5e00d65149bbec9c8af0ff6",
+      "archiveSha256": "678733a772a9882364c4bd8cb0822ae20823e27212e5ac460dbb280d90e24f4c",
+      "lines": 2,
+      "gateName": "check-tests-as-documentation-javascript-twin"
+    }
+  ],
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "formatRepair": {
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/tests/unit/reasoning_contracts.rs",
+      "rust/src/solver_handlers/fact_live_answer.rs",
+      "rust/src/solver_handlers/web_requests/live_search.rs",
+      "rust/tests/unit/web_requests.rs",
+      "rust/tests/unit/seed/issue_1172_live_fact_answer.rs",
+      "rust/tests/unit/issue_1173_fallback_executes_search.rs"
+    ],
+    "exitCode": 0,
+    "file": "rust-format-repaired.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "originalFailurePreserved": true
+  },
+  "sourceHashes": {
+    "rust/tests/unit/reasoning_contracts.rs": "102ee00b862e452e1ce1943391cce54054d676d1181f6d64a14b0d516728ca2f",
+    "rust/src/solver_handlers/fact_live_answer.rs": "14498c824acc106f4d6e1c77b2657de3682dc131cc09941558efb32e0089182c",
+    "rust/src/solver_handlers/web_requests/live_search.rs": "aa40b7f8091dede9ac9c07ea7415da611ab9c4095b636bd188d56aef72d68d5f",
+    "rust/tests/unit/web_requests.rs": "3e304c3ff7504b33bc6cfdfb9b91a2f89b4351dd033d125738a6f17da2d692ca",
+    "rust/tests/unit/seed/issue_1172_live_fact_answer.rs": "8248f62b0a8134f600eb17f750ac05f7819dbd5ad4ecd1a932b0990264577abb",
+    "rust/tests/unit/issue_1173_fallback_executes_search.rs": "dc4bc28858a49c569cdc1625c2b760fc211c8c7c54f5eb893c31ba850354324e",
+    "scripts/ci-pull-request-admission.mjs": "b10b01dd218550125efd6dd27af85789b125489feec2c0782ac1214196da5a1d",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "940c8c6cf79973a24b436e0575a7958f0ffb445f87e6e86e8e0e9726131a586e",
+    "changelog.d/issue-1580-native-retrieval-contracts.md": "9691ab646ee06f189c42ea02d82e4f09305c1ad205ba900970cd0a8c30e5214f"
+  }
+}

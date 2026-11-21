@@ -1,0 +1,44 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 218,
+    "totalPages": 254,
+    "completeFiles": 137,
+    "partialFiles": 1,
+    "literalLines": 13643,
+    "nextForwardPage": 219,
+    "remainingPages": 36,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    219
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+      "newReadLines": [
+        16,
+        31
+      ],
+      "cumulativeReadLines": [
+        1,
+        31
+      ],
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 219,
+    "totalPages": 254,
+    "completeFiles": 137,
+    "partialFiles": 1,
+    "literalLines": 13659,
+    "nextForwardPage": 220,
+    "remainingPages": 35,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "Page 219 was literally read without truncation in the prior research turn. The remaining 35 version-metadata pages are covered by the separate complete structured JSON/XML analysis, not claimed as literal page reads. Full semantic applicability remains unfinished; independent authorship stays zero."
+  ]
+}

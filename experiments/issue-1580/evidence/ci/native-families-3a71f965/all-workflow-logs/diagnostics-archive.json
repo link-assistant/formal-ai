@@ -1,0 +1,9 @@
+{
+  "file": "diagnostics.json.gz",
+  "rawSha256": "a5c41f9b945d79fd3a57b196da775b3ec4a3541a40e8bccf9bc1a0baa4ee9e45",
+  "archiveSha256": "fc4e84fa7d0dc7656b9ef9967b2f316352556cb41b87d7d1009611e70b4d7445",
+  "rawBytes": 105206,
+  "rawLines": 1622,
+  "records": 270,
+  "scope": "Original complete diagnostic inventory archived losslessly, using the same storage format as full workflow logs. No warning rule or actual source warning is changed."
+}

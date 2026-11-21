@@ -1,0 +1,108 @@
+[
+  {
+    "label": "new-codeql-regressions",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/security-codeql-results.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 4.756,
+    "file": "new-codeql-regressions.log.gz",
+    "rawSha256": "162a89b35f8f1b72fbba2b2aa422c75a5bf0e4faf06ae57285971807692322b2",
+    "archiveSha256": "a5ac0f0f08cd61c815d98f2c3e77dabd1a15a3c3b88788f86993c4955f5138b4"
+  },
+  {
+    "label": "fast-production-profile",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 4.72,
+    "file": "fast-production-profile.log.gz",
+    "rawSha256": "3811e0d500d323e7e6894d71ab5797da060a2ffa68d5f28daf4c00dd71c91555",
+    "archiveSha256": "79f9edee5e3dc6f2e9a19998df67aaa864eee364588d4579241f685b56ab26f4"
+  },
+  {
+    "label": "maintained-workflow-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 11.808,
+    "file": "maintained-workflow-policy.log.gz",
+    "rawSha256": "ac3d3fbcc59f32621f67f95472d6ca599a39b286d54c53b9e9ef5cb4187d5bfe",
+    "archiveSha256": "37b4b039232c8b9b649aa0d4d03e8e455d8973ca38d479ef3eb2e9c973eff0d2"
+  },
+  {
+    "label": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs",
+      "rust/tests/unit/ci-cd/step_budgets_within_job_clocks/codeql.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.096,
+    "file": "rust-format.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "label": "all-local-gates",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 715.09,
+    "file": "all-local-gates.log.gz",
+    "rawSha256": "722fc9cddee30500510183bbf55768a5b1cf5bc1e1bef255ba0f85a9ef160d41",
+    "archiveSha256": "97384150f072753fc59fbb3c37ba736cb5e503d09eff700f73738670aadc4855"
+  },
+  {
+    "label": "diff-check",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 0.345,
+    "file": "diff-check.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "label": "staged-diff-check",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 0.07,
+    "file": "staged-diff-check.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]

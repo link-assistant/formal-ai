@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/cpp/bfca7648bb64dc02819d14e63a02261806d990e2.json",
+    "file": "0386-evidence.gz",
+    "bytes": 9667,
+    "lines": 1,
+    "rawSha256": "4b1787207def8f7836fd334e600baa4b5569ff4d8d66c1bf9e5455bd6da13998",
+    "archiveSha256": "c84e67a027a174abe4ad6494874fd5f6e1ee1bcee8733cedfe2198c60db7051d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/cpp/bfca7648bb64dc02819d14e63a02261806d990e2.stderr",
+    "file": "0387-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/cpp/d683912cdb4024dfb01b672568522a6f817d800f.json",
+    "file": "0388-evidence.gz",
+    "bytes": 672,
+    "lines": 1,
+    "rawSha256": "3c81945438ad816698b6f07d99d2c9340d16363558c42734e6c644535b35fe3f",
+    "archiveSha256": "b36ed59d1aea448316437ffd1bcdd3d1a4c6fe0c31d5cc3488cd7f6c14551039"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/cpp/d683912cdb4024dfb01b672568522a6f817d800f.stderr",
+    "file": "0389-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/655b4ba43de1842aa0f89d9324d08a84f94a28e6.json",
+    "file": "0390-evidence.gz",
+    "bytes": 3726,
+    "lines": 1,
+    "rawSha256": "a7a744b807048ed4d93d16adce9e602bc876722b02946ae2c24c52b9e6980b3e",
+    "archiveSha256": "ea434cfc26d3233121c2edf01bd767a6ea14256c3f010a6c61940c106c5900ee"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/655b4ba43de1842aa0f89d9324d08a84f94a28e6.stderr",
+    "file": "0391-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/7efdc178d1aa61ce3dc371c712911295812e4ae1.json",
+    "file": "0392-evidence.gz",
+    "bytes": 9340,
+    "lines": 1,
+    "rawSha256": "22c9bb388dd983bba326c467ca9a67ed6f1643c59b24bd496cc4f07fe5da7900",
+    "archiveSha256": "5580fc834e323bda0444bfe82c8242af8d71b44709e3adb860bd47f5515b6401"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/7efdc178d1aa61ce3dc371c712911295812e4ae1.stderr",
+    "file": "0393-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/b0c9e3930d25c65b2d450925315bff30de54d6a6.json",
+    "file": "0394-evidence.gz",
+    "bytes": 28301,
+    "lines": 1,
+    "rawSha256": "b877e3856e64b044e84a7de9c468146454f7e1a4c506c65c82628109b55dc47f",
+    "archiveSha256": "c2b4bcb1cf4b46d1863e70a0524f9612b99f2a4a94242277ff679e995ed715b9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/b0c9e3930d25c65b2d450925315bff30de54d6a6.stderr",
+    "file": "0395-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/b5f8c7a8c1f909453b7848b96f94496fa53b436a.json",
+    "file": "0396-evidence.gz",
+    "bytes": 5628,
+    "lines": 1,
+    "rawSha256": "0901596cb50015060d9a871fcdbed1fdbaedea48fc79dbd014cf0d013c070814",
+    "archiveSha256": "ca5629e0928c47d042c333cef69194e2681563d468969f6c903f291f8b36f70e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/b5f8c7a8c1f909453b7848b96f94496fa53b436a.stderr",
+    "file": "0397-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/bb3d1c61fa3ca49172cfedeab0fddaa9763da22a.json",
+    "file": "0398-evidence.gz",
+    "bytes": 55183,
+    "lines": 1,
+    "rawSha256": "0ef482d6782009b828cd32bf70ff4e5bc250886336e9bc48522d3bd6808193de",
+    "archiveSha256": "b81c2ad73f9ae3c8490e45768837a7c3c254392c9409ac269d6fecf98d45579c"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/bb3d1c61fa3ca49172cfedeab0fddaa9763da22a.stderr",
+    "file": "0399-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/be6478c7b305c13e51ce3f77aefeb0c1525f5a74.json",
+    "file": "0400-evidence.gz",
+    "bytes": 26995,
+    "lines": 1,
+    "rawSha256": "d9e35364aae8a8392e78a7774e1000bc5d2886cfb979b7e71b5a84d50bc63aa4",
+    "archiveSha256": "6c1f08b2059b81e9d621189fedd447552a10b8423bedfc5db534f2b73a61600d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/be6478c7b305c13e51ce3f77aefeb0c1525f5a74.stderr",
+    "file": "0401-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/d08045990e572f14c38facfa89928ba0682ec9b8.json",
+    "file": "0402-evidence.gz",
+    "bytes": 647,
+    "lines": 1,
+    "rawSha256": "09cc5fc65954bd38695653b1370c769b3b1ac14f5d7be0b0a6bff792bc7bb067",
+    "archiveSha256": "64ef3b762334cac5390cf99c9a4f6b99e857fb65cb03fed7aeab966fbd17702a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/d08045990e572f14c38facfa89928ba0682ec9b8.stderr",
+    "file": "0403-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/f3a77aaeb6d2d9f0afbf87806d4d882317b91ffb.json",
+    "file": "0404-evidence.gz",
+    "bytes": 6834,
+    "lines": 1,
+    "rawSha256": "76e28e581a23fd7f019ea6eb12116cd4b13c973f5fb1651920b8d934f6f58161",
+    "archiveSha256": "726a6447d7f324fa50214ed6ba054c3acfd95d67412c917c7218a263ed754e11"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/csharp/f3a77aaeb6d2d9f0afbf87806d4d882317b91ffb.stderr",
+    "file": "0405-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/082fc7b9e82fed04140c6211cac187448ba590fd.json",
+    "file": "0406-evidence.gz",
+    "bytes": 13642,
+    "lines": 1,
+    "rawSha256": "d894450c9694db3bdb64c68508c9cf1f23fa9ed1613068c41c4625f096cd359d",
+    "archiveSha256": "b0dd8975d712adf7732ffad69a13faea0b967551b4a0023065b0ac85930815c0"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/082fc7b9e82fed04140c6211cac187448ba590fd.stderr",
+    "file": "0407-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/2a44e6c3661bc52d0a81590bb563b435194c98c4.json",
+    "file": "0408-evidence.gz",
+    "bytes": 3528,
+    "lines": 1,
+    "rawSha256": "a7ba4106e43e6ac475497071224dc097d40a956b8dd84e21328d6e4becdaeea5",
+    "archiveSha256": "e1bcdf8280a48142643c5ddee7df1177068f6c3795843444d64a55183eb7d3fc"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/2a44e6c3661bc52d0a81590bb563b435194c98c4.stderr",
+    "file": "0409-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/3ad234064749f45f9a969b3f12730d78cc2dd5ba.json",
+    "file": "0410-evidence.gz",
+    "bytes": 13506,
+    "lines": 1,
+    "rawSha256": "cfc0b937ca914a911c76eaac3e6c0b5365eecc0a154d9b1cd0ac79c424d17749",
+    "archiveSha256": "d55039537da5840ada5f05f0aea1a76f61373195c1d7d7f03845682866bf76dd"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/3ad234064749f45f9a969b3f12730d78cc2dd5ba.stderr",
+    "file": "0411-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/57cb54b5c4b3ca986c0d832cab2f5dc0e8eb5a45.json",
+    "file": "0412-evidence.gz",
+    "bytes": 13440,
+    "lines": 1,
+    "rawSha256": "f3dbd0bdae28e2f7156dfde95318f7dfb4db5c84f0dc7785e4d9954ca19b1464",
+    "archiveSha256": "fedd6878556170c3a3c65c4d7351bf76d0af9d66c19a5949a1e8aab6f3f342e7"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/57cb54b5c4b3ca986c0d832cab2f5dc0e8eb5a45.stderr",
+    "file": "0413-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/5900d8e442410e4df4ffe31f679230232815c549.json",
+    "file": "0414-evidence.gz",
+    "bytes": 9208,
+    "lines": 1,
+    "rawSha256": "91dd34c2e3df40834bc4b66789579feab0056b2d33b505d0e3c1f7f1a7e923ba",
+    "archiveSha256": "46c3d4cfe076ca04fd1dd5954b6ad15a96cd2ff9bf3e713a9b9682ac328d990b"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/5900d8e442410e4df4ffe31f679230232815c549.stderr",
+    "file": "0415-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/5c9b9b87438de1cc9561941828415647a7eb3c4d.json",
+    "file": "0416-evidence.gz",
+    "bytes": 14957,
+    "lines": 1,
+    "rawSha256": "869f4520d1cb0efb4d28c6fa3e5449a1fb20be28abde0d7eba886d74b5eebfe8",
+    "archiveSha256": "914e635b0c90babdefbdd47f159e9ef2ed950977881f29ec7ed759920ed5461e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/5c9b9b87438de1cc9561941828415647a7eb3c4d.stderr",
+    "file": "0417-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/6e61b4706e06c1d8cccf5b2aef6ffc6074c7a43b.json",
+    "file": "0418-evidence.gz",
+    "bytes": 13672,
+    "lines": 1,
+    "rawSha256": "bf6c971d781a3b4527cb6ba637453e4c06ea5a5d5dac2e022c89b48a0a4d73e1",
+    "archiveSha256": "a4bdf7318584ddae5ef2cf229592acdd06c6766b3b3852f03c5ce18c0635a80e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/6e61b4706e06c1d8cccf5b2aef6ffc6074c7a43b.stderr",
+    "file": "0419-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/fresh-template-delta-sources/blobs/go/70749fc937b26fa95cea6040cf0f8932623812d2.json",
+    "file": "0420-evidence.gz",
+    "bytes": 1990,
+    "lines": 1,
+    "rawSha256": "8e88eeea22688f230b406ad3f5a9da2c743cf47a6f505bec50132fe879325a8e",
+    "archiveSha256": "42b99dfc1c8712c2911ac40706ff28e5007620eaaddebd760980ddaa387f6fb3"
+  }
+]
