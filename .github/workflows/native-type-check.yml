@@ -47,6 +47,7 @@ jobs:
             !/dev/log/
             !/experiments/*
             /experiments/dynamic-meta/
+            /experiments/issue_859_codex_e2e/
             /experiments/js_dogfood/
           sparse-checkout-cone-mode: false
       - uses: dtolnay/rust-toolchain@stable
@@ -73,7 +74,7 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs
-      - name: Replay localized procedures against the native CLI
+      - name: Replay localized procedures and issue reporting against the native CLI
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs
@@ -81,6 +82,13 @@ jobs:
         with:
           bun-version-file: .bun-version
           no-cache: true
+      - name: Replay Codex Default mode reporting against the native CLI
+        timeout-minutes: 2
+        env:
+          BIN: ${{ github.workspace }}/rust/target/debug/formal-ai
+          CODEX_VERSION: '0.147.0'
+          SCENARIO: report
+        run: bash experiments/issue_859_codex_e2e/run.sh
       - name: Replay dynamic meta authorization and receipts through the native gateway
         env:
           FORMAL_AI_DYNAMIC_META_NATIVE: ${{ github.workspace }}/rust/target/debug/formal-ai
