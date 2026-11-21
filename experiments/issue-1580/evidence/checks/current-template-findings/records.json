@@ -402,7 +402,7 @@
     },
     {
       "source": "/tmp/issue-1580-research/direct-docs-current-ci/tests-as-docs.stdout",
-      "file": "direct-docs-current-ci/tests-as-docs.stdout.gz",
+      "file": "direct-docs-current-ci/tests-as-documentation.stdout.gz",
       "bytes": 188,
       "lines": 5,
       "rawSha256": "4973e1f972fd34b082dfe0976977b4763aefa73eeaee914466e50078d77340dd",
@@ -410,7 +410,7 @@
     },
     {
       "source": "/tmp/issue-1580-research/direct-docs-current-ci/tests-as-docs.stderr",
-      "file": "direct-docs-current-ci/tests-as-docs.stderr.gz",
+      "file": "direct-docs-current-ci/tests-as-documentation.stderr.gz",
       "bytes": 0,
       "lines": 0,
       "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -538,7 +538,7 @@
     },
     {
       "source": "/tmp/issue-1580-research/check-direct-docs-and-ci.py",
-      "file": "helper/check-direct-docs-and-ci.py.gz",
+      "file": "helper/check-direct-documentation-and-ci.py.gz",
       "bytes": 1692,
       "lines": 14,
       "rawSha256": "c519fff2af13256542a5cc8813a4d08bb393a824c3feaf9a5ed0928a0743e2cc",
@@ -546,7 +546,7 @@
     },
     {
       "source": "/tmp/issue-1580-research/check-direct-docs-and-ci.log",
-      "file": "helper/check-direct-docs-and-ci.log.gz",
+      "file": "helper/check-direct-documentation-and-ci.log.gz",
       "bytes": 206,
       "lines": 5,
       "rawSha256": "ed2faf5692b4d833eb4ac2450ba45a9464b293c173a4e69fabccd22874764409",
@@ -634,7 +634,7 @@
     },
     {
       "source": "/tmp/issue-1580-research/fresh-template-delta-sources/files/python/.github/workflows/docs.yml",
-      "file": "python-current-source/.github/workflows/docs.yml.gz",
+      "file": "python-current-source/.github/workflows/documentation.yml.gz",
       "bytes": 5814,
       "lines": 163,
       "rawSha256": "da8010ce780cdb632065503fc622482b75529654ff44428ba9f79e858dfbdb80",
