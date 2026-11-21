@@ -138,3 +138,17 @@ The collector package-version consumer now has its own physical manifest regress
 Nine further pinned Rust regression sources (2,148 lines) bring literal coverage to 131/373 files and 22,323 lines. Their security, credential preflight, delivery, documentation and process-budget assertions still need Formal AI counterpart comparison and behavioral verification. The checksum [upstream correction](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/251#issuecomment-7031138172) now records both fresh-output race outcomes and deterministic stale output inclusion; its publication receipt is in `experiments/issue-1580/evidence/checks/rust-desktop-checksum-comparison/report-correction/`.
 
 The pinned Rust release-I/O regression adds 145 fully read lines: literal review now covers 132/373 files and 22,468 lines, leaving 241 files plus behavioral comparison. Its fallible inventory practice is adopted in Formal AI's bump selection, standalone collection and version-preparation collection. Actual filesystem regressions are admitted to focused native CI; hosted execution of this new batch remains pending. Hash-verified source review is not completion of the full template comparison.
+
+## Complete Rust file comparison, 2026-11-21
+
+The [current 374-file receipt](rust-complete-file-comparison.json) compares every
+blob at `5f1e7a96acbf7a93b567195443cf6e5158fbbf1f`: 362 unchanged sources
+carry their pinned review and 12 changed files retain the separate delta review.
+The [per-file decisions](rust-complete-files.jsonl) bind Git/SHA256 identities,
+comparison methods and actual Formal AI paths. The final 17 historical artifacts
+use complete structured log/JSON/history comparison and an existing verified
+visual review; they do not inflate the earlier 356-file literal-read count.
+All files now have source applicability decisions. The 74 practice assessments,
+applicable behavior verification and wider issue acceptance remain unfinished.
+Quoted solution-draft output and historical failures supply context; neither is
+a present workflow result. Earlier partial receipts remain dated evidence.
