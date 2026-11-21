@@ -59,8 +59,16 @@ function promptDataChoices(text, rules, splitConjunctions = false) {
 function promptDataClassify(head, payload, rules, locale) {
   const start = head.search(/[[(]/u);
   const end = start < 0 ? -1 : head.indexOf(head[start] === "[" ? "]" : ")", start + 1);
-  const source = end < 0 ? "" : head.slice(start + 1, end);
-  const labels = promptDataChoices(source, rules, head[start] === "(");
+  let source = head.slice(start + 1, end);
+  if (end < 0) {
+    const starts = promptDataSurfaces(rules, "label-start");
+    const words = head.split(/\s+/u);
+    const opening = words.findIndex((word) => starts.includes(word.toLowerCase()));
+    source = opening < 0 ? "" : words.slice(opening + 1).join(" ");
+    const closing = promptDataSurfaces(rules, "label-end").find((cue) => source.toLowerCase().endsWith(" " + cue));
+    if (closing) source = source.slice(0, -closing.length);
+  }
+  const labels = promptDataChoices(source, rules, end < 0 || head[start] === "(");
   const unknown = promptDataField(rules, locale, "unknown");
   if (labels.length < 2 || labels.length > 64) {
     return promptDataReply("classification", unknown, [], rules, locale);

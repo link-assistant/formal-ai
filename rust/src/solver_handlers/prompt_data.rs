@@ -152,7 +152,19 @@ fn classification(head: &str, payload: &str, locale: &str) -> Reply {
             let end = tail.find(if parenthesized { ')' } else { ']' })?;
             Some(choices(&tail[..end], parenthesized))
         })
-        .unwrap_or_default();
+        .unwrap_or_else(|| {
+            let mut options = head
+                .split_whitespace()
+                .skip_while(|word| !cues("label-start").any(|cue| cue == word.to_lowercase()))
+                .skip(1)
+                .collect::<Vec<_>>()
+                .join(" ");
+            let lower = options.to_lowercase();
+            if let Some(end) = cues("label-end").find(|cue| lower.ends_with(&format!(" {cue}"))) {
+                options.truncate(options.len() - end.len());
+            }
+            choices(&options, true)
+        });
     let unknown = localized(locale, "unknown");
     if !(2..=64).contains(&domain.len()) {
         return reply("classification", unknown, &[], locale);

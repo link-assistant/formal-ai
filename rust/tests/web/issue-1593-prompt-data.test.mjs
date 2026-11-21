@@ -42,6 +42,12 @@ const otherLanguages = [
   ['Identify the language: नमस्ते, आप कैसे हैं?', ['Hindi', 'Dictionary matches: नमस्ते']],
   ['Identify the language: 你好，谢谢。', ['Chinese', 'Dictionary matches: 你好, 谢谢']],
 ];
+const localClassification = [
+  ['Classify this message as Salary, Commute, Schedule or Other: Wages are low.', ['Salary', '«Wages are low.»']],
+  ['Классифицируй замечание как зарплата, дорога, график или другое: Офис слишком далеко.', ['дорога', '«Офис слишком далеко.»']],
+  ['Определи тональность (положительная, отрицательная или нейтральная): Мне понравилось.', ['положительная', '«Мне понравилось.»']],
+  ['Определи тональность (положительная, отрицательная или нейтральная): Мне не понравилось.', ['отрицательная', '«Мне не понравилось.»']],
+];
 
 function assertAnswer(content, [firstLine, ...evidence], label) {
   assert.equal(typeof content, 'string', label);
@@ -97,7 +103,7 @@ test('worker answers from prompt data and records literal spans with no tools', 
     assertAnswer(result.content, evidence, prompt);
     assert.equal(result.toolCalls.length, 0, prompt);
   }
-  for (const [prompt, evidence] of otherLanguages) {
+  for (const [prompt, evidence] of [...otherLanguages, ...localClassification]) {
     const result = await solve(prompt);
     assertAnswer(result.content, evidence, prompt);
     assert.equal(result.toolCalls.length, 0, prompt);
@@ -135,7 +141,7 @@ test('OpenAI completions answer the issue prompts in default and agent modes', {
           assertAnswer(await complete(fixture(id, language), label), evidence, label);
         }
       }
-      for (const [prompt, evidence] of otherLanguages) {
+      for (const [prompt, evidence] of [...otherLanguages, ...localClassification]) {
         assertAnswer(await complete(prompt, prompt), evidence, prompt);
       }
       for (const id of ['decision', 'sales', 'redaction', 'mobile', 'yaml']) {
