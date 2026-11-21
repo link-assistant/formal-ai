@@ -8,7 +8,7 @@ use super::planner::{AgenticPlan, Capability, Progress, plan_one, tool_for};
 use super::report_script::{ReportScript, shell_quote};
 use crate::engine::normalize_prompt;
 use crate::issue_report::{ReportTurn, TitleSettings, issue_title};
-use crate::protocol::ChatMessage;
+use crate::protocol::{ChatMessage, MessageContent, system_prompt_text};
 use crate::{language, seed};
 
 const REPORT_SUBMIT_COMMAND: &str = "formal-ai report create-issue";
@@ -47,6 +47,42 @@ enum ReportContents {
     Both,
     Harness,
     Server,
+}
+
+/// Continue the report flow for clients that send no callable tools.
+pub(crate) fn plan_text_report_flow(messages: &[ChatMessage]) -> Option<AgenticPlan> {
+    let system = system_prompt_text(messages);
+    let marker = config("aider-whole-file-format");
+    if marker.is_empty() || !system.contains(&marker) {
+        return plan_report_flow(messages, &[]);
+    }
+    let notices = config("aider-report-injected-file-notices");
+    let acknowledgment = config("aider-injected-acknowledgment");
+    let mut conversation = Vec::with_capacity(messages.len());
+    let mut messages = messages.iter().peekable();
+    while let Some(message) = messages.next() {
+        if !message.role.eq_ignore_ascii_case("user") {
+            conversation.push(message.clone());
+            continue;
+        }
+        let text = message
+            .content
+            .user_request_text_without_system_echo(&system);
+        if notices.lines().any(|prefix| text.starts_with(prefix))
+            && !acknowledgment.is_empty()
+            && messages.peek().is_some_and(|next| {
+                next.role.eq_ignore_ascii_case("assistant")
+                    && next.content.plain_text().starts_with(&acknowledgment)
+            })
+        {
+            messages.next();
+        } else {
+            let mut message = message.clone();
+            message.content = MessageContent::Text(text);
+            conversation.push(message);
+        }
+    }
+    plan_report_flow(&conversation, &[])
 }
 
 /// Continue a report confirmation/execution flow, or return `None` when the
@@ -127,8 +163,17 @@ pub(super) fn plan_report_flow(
     }
 
     // Earlier harness commands are part of the context being reported, not the
-    // execution of this confirmation flow. Only inspect turns after "Report".
-    let progress = Progress::scan(&messages[report_index + 1..]);
+    // execution of this confirmation flow. Injected reminders after the
+    // receipt also do not start a new turn.
+    let report_turns: Vec<_> = messages[report_index + 1..]
+        .iter()
+        .filter(|message| {
+            !message.role.eq_ignore_ascii_case("user")
+                || !message.content.user_request_text().is_empty()
+        })
+        .cloned()
+        .collect();
+    let progress = Progress::scan(&report_turns);
     let dialog_id = dialog_id();
     let commands = commands_for_targets(
         &targets,
@@ -149,9 +194,20 @@ pub(super) fn plan_report_flow(
     if let Some(tool) = tool_for(tool_names, Capability::Run) {
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     }
+    if dialog_id == LATEST_SESSION {
+        return Some(AgenticPlan::Final(render(
+            "issue-report-session-missing",
+            &[],
+        )));
+    }
+    let actions = commands[progress.run_outputs.len()..]
+        .iter()
+        .map(|command| command.replace('\n', "; "))
+        .collect::<Vec<_>>()
+        .join("\n\n");
     Some(AgenticPlan::Final(render(
-        "issue_report_tool_missing",
-        &[("repository", &formal_ai_repo())],
+        "issue-report-manual",
+        &[("commands", &actions)],
     )))
 }
 
@@ -289,6 +345,7 @@ fn option_matcher(
         && previous
             .content
             .plain_text()
+            .trim_start()
             .starts_with(&format!("{question}\n1. "));
     move |index, value| {
         let matches = |option: &str| {
@@ -324,6 +381,20 @@ pub(super) fn is_report_intent(task: &str) -> bool {
         || (action
             && lexicon.mentions_role(seed::ROLE_AGENT_ACTION_REPORT_SUBJECT, &normalized)
             && report_action_governs_subject(lexicon, &normalized))
+}
+
+/// Give chat surfaces without exportable sessions the Formal AI issue form.
+pub(crate) fn issue_form_for_prompt(prompt: &str) -> Option<String> {
+    is_report_intent(prompt).then(|| {
+        let instruction = localized(
+            "agentic-report-open-issue-form",
+            language::detect(prompt).slug(),
+        );
+        format!(
+            "{instruction}\nhttps://github.com/{}/issues/new",
+            formal_ai_repo()
+        )
+    })
 }
 
 fn report_action_governs_subject(lexicon: &seed::Lexicon, normalized: &str) -> bool {

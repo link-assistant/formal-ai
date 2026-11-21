@@ -4,6 +4,7 @@
 // `estimate_tokens`) and the tool-policy refusals of
 // rust/src/protocol_policy.rs.
 
+import { issueFormForPrompt } from '../agentic/report_issue.mjs';
 import { finalizeServerAnswer } from './derivation-store.mjs';
 import { beginTurn, endTurn, gateTurn } from './debug-session.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
@@ -22,6 +23,11 @@ import { thinkingStep, thinkingStepsFromWorker } from './thinking.mjs';
 import { currentRequestScope, eventsInScope } from './standing-scope.mjs';
 
 export { estimateTokens, stableId };
+
+export async function statelessIssueForm(ctx, prompt) {
+  await ensureNodeHost(ctx);
+  return issueFormForPrompt(prompt);
+}
 
 /**
  * @typedef {{

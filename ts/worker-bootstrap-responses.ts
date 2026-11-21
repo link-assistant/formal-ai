@@ -1,6 +1,16 @@
 // Generated response data from data/seed/multilingual-responses.lino; do not edit by hand.
 // Regenerate with node scripts/generate-worker-bootstrap.mjs --write.
 self.FORMAL_AI_BOOTSTRAP_RESPONSES = Object.freeze({
+  "agentic-report-open-issue-form": {
+    "en": {"text": "Open the Formal AI issue form to review and submit your report on GitHub.", "variants": ["Open the Formal AI issue form to review and submit your report on GitHub."],
+      "acknowledgements": [], "followUps": []},
+    "ru": {"text": "Откройте форму Formal AI на GitHub, чтобы проверить и отправить отчёт.", "variants": ["Откройте форму Formal AI на GitHub, чтобы проверить и отправить отчёт."],
+      "acknowledgements": [], "followUps": []},
+    "hi": {"text": "रिपोर्ट की समीक्षा करने और उसे भेजने के लिए GitHub पर Formal AI का फ़ॉर्म खोलें।", "variants": ["रिपोर्ट की समीक्षा करने और उसे भेजने के लिए GitHub पर Formal AI का फ़ॉर्म खोलें।"],
+      "acknowledgements": [], "followUps": []},
+    "zh": {"text": "打开 GitHub 上的 Formal AI 问题表单，检查并提交报告。", "variants": ["打开 GitHub 上的 Formal AI 问题表单，检查并提交报告。"],
+      "acknowledgements": [], "followUps": []}
+  },
   "agentic_report_target_question": {
     "en": {"text": "What would you like to report? Select one or more.", "variants": ["What would you like to report? Select one or more."],
       "acknowledgements": [], "followUps": []},

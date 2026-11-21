@@ -24,6 +24,7 @@ import { toolActionNarration } from '../agentic/narration.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
 import { agenticMessage } from '../agentic/messages.mjs';
 import { planSymbolicCommandReroute } from '../agentic/command_reroute.mjs';
+import { planTextReportFlow } from '../agentic/report_issue.mjs';
 import { suppliedFileAnswer } from '../agentic/file_read/supplied.mjs';
 import { planChatStepResolved, toolCapability } from '../agentic/planner.mjs';
 import { projectDeclaredCommandKeys } from '../agentic/tool_result.mjs';
@@ -113,6 +114,8 @@ export async function agenticOutcome(ctx, request, refusal) {
   if (!requestsToolExecution(request)) {
     if (ctx.agentMode) {
       await ensureHost(ctx);
+      const report = planTextReportFlow(request.messages);
+      if (report !== null) return { kind: 'planned', plan: report };
       const answer = suppliedFileAnswer(request.messages);
       if (answer !== null) return {
         kind: 'planned',

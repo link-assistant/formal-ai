@@ -17,7 +17,7 @@ import { childValue, childrenNamed, parseLino, readRepoFile } from './lino.mjs';
 import { serverMessage } from './messages.mjs';
 import { JSON_TYPE, rawResponse } from './response.mjs';
 import { packageVersion } from './seed.mjs';
-import { solveSymbolic } from './solve.mjs';
+import { solveSymbolic, statelessIssueForm } from './solve.mjs';
 
 const PROTOCOL_VERSION = '2025-06-18';
 const CHAT_TOOL = 'formal_ai_chat';
@@ -757,8 +757,8 @@ function callComputerPrimitive(ctx, request, id, primitive) {
 async function callChat(ctx, request, id) {
   const prompt = field(field(field(request, 'params'), 'arguments'), 'prompt');
   if (typeof prompt !== 'string') return jsonRpcError(id, -32602, serverMessage('mcp_prompt_not_string'));
-  const answer = await solveSymbolic(ctx, prompt, []);
-  return jsonRpcResult(id, { content: [{ type: 'text', text: answer.answer }], isError: false });
+  const text = await statelessIssueForm(ctx, prompt) ?? (await solveSymbolic(ctx, prompt, [])).answer;
+  return jsonRpcResult(id, { content: [{ type: 'text', text }], isError: false });
 }
 
 async function callTool(ctx, request, id) {

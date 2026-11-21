@@ -12,10 +12,7 @@ use crate::solver::ConversationTurn;
 /// Recover completed client-side tool executions from an agentic transcript.
 #[must_use]
 pub fn chat_tool_executions(messages: &[ChatMessage]) -> Vec<RecordedToolExecution> {
-    let start = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-        .unwrap_or(0);
+    let start = super::content::latest_user_turn(messages).map_or(0, |(index, _)| index);
     let mut calls_by_id = HashMap::new();
     let mut executions = Vec::new();
 
@@ -95,16 +92,9 @@ pub fn responses_exchange_to_record(
 }
 
 pub fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<ConversationTurn>) {
-    let Some(latest_user_index) = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-    else {
+    let Some((latest_user_index, prompt)) = super::content::latest_user_turn(messages) else {
         return (String::new(), Vec::new());
     };
-
-    let prompt = messages[latest_user_index]
-        .content
-        .user_request_text_without_system_echo(&super::system_prompt_text(messages));
     let history = messages[..latest_user_index]
         .iter()
         .filter_map(chat_message_to_turn)

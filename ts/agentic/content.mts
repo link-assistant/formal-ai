@@ -45,8 +45,17 @@ function stripBlock(text, open, close) {
 
 /** `strip_caller_context_blocks`. */
 export function stripCallerContextBlocks(text, blocks) {
+  const envelope = text.trim();
+  for (const { tag, unwrap } of blocks) {
+    const open = `<${tag}>\n`;
+    const close = `\n</${tag}>`;
+    if (unwrap && envelope.startsWith(open) && envelope.endsWith(close)) {
+      return envelope.slice(open.length, -close.length).trim();
+    }
+  }
   return blocks
-    .reduce((text, { tag, prefix }) => {
+    .reduce((text, { tag, prefix, unwrap }) => {
+      if (unwrap) return text;
       const open = `<${tag}>`;
       const close = `</${tag}>`;
       if (prefix) text = stripBlock(text, `${prefix}\n${open}`, close);
@@ -100,11 +109,17 @@ export function systemPromptText(messages) {
 
 /** `latest_user_request`: the latest user turn, decorations stripped, or null. */
 export function latestUserRequest(messages) {
+  return latestUserTurn(messages)?.prompt ?? null;
+}
+
+/** `latest_user_turn`: include the index for callers that need earlier history. */
+export function latestUserTurn(messages, requestText = userRequestText) {
   const system = systemPromptText(messages);
   for (let index = messages.length - 1; index >= 0; index -= 1) {
     const message = messages[index];
     if (message.role.toLowerCase() === 'user') {
-      return stripSystemEcho(userRequestText(message.content), system);
+      const prompt = stripSystemEcho(requestText(message.content), system);
+      if (prompt) return { index, prompt };
     }
   }
   return null;

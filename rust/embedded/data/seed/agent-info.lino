@@ -55,8 +55,16 @@ agent_info
     value "note: no session was declared and the harness could not name one, so `latest` resolved to the most recently recorded conversation ({recorded}). Pass `--session <id>` or set {variable} to export a specific conversation."
   field issue_report_ran_command
     value "Ran {command} to file the issue on GitHub."
-  field issue_report_tool_missing
-    value "I can report this to {repository} once the client advertises a shell tool."
+  field issue-report-session-missing
+    value "Start this client with `formal-ai with` to attach the active conversation to your report."
+  field issue-report-manual
+    value "Run these commands in this session’s terminal. In Aider, paste each command after `/run`.\n\n{commands}"
+  field aider-report-injected-file-notices
+    value "Change the greeting to be more casual\nI switched to a new code base. Please don't consider the above files or try to edit them any longer.\nI am not sharing any files that you can edit yet.\nI have *added these files to the chat*\nDon't try and edit any existing code without asking me to add the files to the chat!\nHere are some READ ONLY files, provided for your reference."
+  field aider-whole-file-format
+    value "*file listing* format"
+  field aider-injected-acknowledgment
+    value "Ok"
   field issue_report_dialog_legend
     value "Legend: `U` = user, `A` = agent, `T` = tool result."
   field issue_report_no_messages

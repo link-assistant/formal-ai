@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=90330582f9c88650b97a19924fad9ce968e6c914be725fe89bd4da3a4af36d01 bytes=4147
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=ba16da623e4ff65a704b19829bde37a31f81fab5a4dabfb0117f1e2a248d4ff2 bytes=4230
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2; string-methods items=1
 
@@ -42,7 +42,7 @@ pub fn wa_str_code_point_at(text: String, index: f64) -> f64 {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow function | assignment of a field or element | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .find() | method call .map() | null | nullish coalescing | object without a $ tag | optional chaining
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | arrow function | assignment of a field or element | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .find() | method call .map() | method call .some() | null | nullish coalescing | object without a $ tag | optional chaining
 
 // formal-ai:workaround string-methods JavaScript function_declaration items=1 sha256=09cb445220d41e9e0d176bafbd7e105c30c7e325b6ffbf98ad06aeb950aea7c9
 // | /** Mirrors `const fn is_unspaced_script`. @param {string} character */

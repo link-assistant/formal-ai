@@ -8,6 +8,8 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use serde_json::{Value, json};
 
+mod terminal;
+
 const CODEX_ROLLOUT_PREFIX: &str = "rollout-";
 
 pub(super) enum Harness {
@@ -16,6 +18,8 @@ pub(super) enum Harness {
     Agent(PathBuf),
     Gemini(PathBuf),
     Qwen(PathBuf),
+    Aider(PathBuf),
+    Grok(PathBuf),
 }
 
 pub(super) fn current() -> Option<Harness> {
@@ -46,13 +50,22 @@ pub(super) fn current() -> Option<Harness> {
             Some(Harness::Gemini(configuration.join(".gemini/tmp")))
         }
         "qwen" => Some(Harness::Qwen(home()?.join(".qwen/projects"))),
+        "aider" => Some(Harness::Aider(
+            std::env::var_os("FORMAL_AI_REPORT_AIDER_HISTORY").map(PathBuf::from)?,
+        )),
+        "grok" => {
+            let configuration = std::env::var_os("GROK_HOME")
+                .map(PathBuf::from)
+                .or_else(|| home().map(|path| path.join(".grok")))?;
+            Some(Harness::Grok(configuration.join("sessions")))
+        }
         _ => None,
     }
 }
 
 impl Harness {
     pub(super) fn latest(&self) -> io::Result<String> {
-        if matches!(self, Self::Agent(_) | Self::Gemini(_))
+        if matches!(self, Self::Agent(_) | Self::Gemini(_) | Self::Aider(_))
             && let Ok(identifier) = std::env::var("FORMAL_AI_REPORT_DIALOG_ID")
             && valid_identifier(&identifier)
         {
@@ -91,6 +104,17 @@ impl Harness {
                     .max()
                     .map(|(_, identifier)| identifier)
                     .ok_or_else(|| io::ErrorKind::NotFound.into());
+            }
+            Self::Aider(_) => return Err(io::ErrorKind::NotFound.into()),
+            Self::Grok(root) => {
+                return terminal::grok_session(root, None)
+                    .map(|(identifier, _)| identifier)
+                    .or_else(|error| {
+                        std::env::var("FORMAL_AI_REPORT_DIALOG_ID")
+                            .ok()
+                            .filter(|identifier| valid_identifier(identifier))
+                            .ok_or(error)
+                    });
             }
         };
         let identifier = find_session(&root, extension, None)?
@@ -145,6 +169,16 @@ impl Harness {
                     .max_by_key(|path| modified(path).ok())
                     .ok_or_else(|| io::Error::from(io::ErrorKind::NotFound))?;
                 ("qwen", qwen_messages(&path, identifier)?)
+            }
+            Self::Aider(history) => {
+                if std::env::var("FORMAL_AI_REPORT_DIALOG_ID").as_deref() != Ok(identifier) {
+                    return Err(io::ErrorKind::NotFound.into());
+                }
+                ("aider", terminal::aider_messages(history)?)
+            }
+            Self::Grok(root) => {
+                let (_, transcript) = terminal::grok_session(root, Some(identifier))?;
+                ("grok", terminal::grok_messages(&transcript)?)
             }
         };
         Ok(document(tool, identifier, messages))

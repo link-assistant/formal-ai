@@ -30,7 +30,7 @@ jobs:
   clippy:
     name: Rust compile inputs changed
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     permissions:
       contents: read
     steps:
@@ -67,7 +67,7 @@ jobs:
         env:
           CARGO_BUILD_JOBS: '2'
           CARGO_PROFILE_TEST_OPT_LEVEL: '0'
-        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity -- --test-threads=1
+        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity --test t3code_launch -- --test-threads=1
       - uses: actions/setup-node@v7
         with: {node-version: 22}
       - name: Replay the forced function requests against the native CLI
@@ -105,6 +105,8 @@ jobs:
           bun install --frozen-lockfile --ignore-scripts
           node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs
       - name: Verify matched client transcripts and issue receipts against the native CLI
+        if: ${{ !cancelled() && steps.bun.outcome == 'success' }}
         uses: ./.github/actions/verify-released-clients
         with:
           binary: rust/target/debug/formal-ai
+          artifact: native-client-reports

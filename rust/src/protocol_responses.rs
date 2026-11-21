@@ -92,14 +92,33 @@ pub fn response_arguments_for_tool(
     if properties.is_empty() {
         return arguments;
     }
-    let Ok(source) = serde_json::from_str::<Value>(&arguments) else {
+    let Ok(Value::Object(mut source)) = serde_json::from_str::<Value>(&arguments) else {
         return arguments;
     };
-    if !source.is_object() {
-        return arguments;
+    if properties.get("description").is_some_and(|property| {
+        property.get("default").is_none() && property.get("const").is_none()
+    }) && !source.contains_key("description")
+        && crate::agentic_coding::planner::tool_capability(tool_name)
+            == Some(crate::agentic_coding::planner::Capability::Run)
+    {
+        let description = crate::agentic_coding::narration::tool_action_narration(
+            user_prompt,
+            &[crate::agentic_coding::PlannedToolCall {
+                tool: tool_name.to_owned(),
+                arguments: arguments.clone(),
+            }],
+        );
+        source.insert("description".into(), Value::String(description));
     }
-    let projected =
-        project_schema_value(source, schema, definition, user_prompt, workspace, 0).to_string();
+    let projected = project_schema_value(
+        Value::Object(source),
+        schema,
+        definition,
+        user_prompt,
+        workspace,
+        0,
+    )
+    .to_string();
     if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") && projected != arguments {
         crate::diagnostic!("debug";
             "[trace] tool_schema_projection: tool={tool_name} planned={arguments} emitted={projected}"

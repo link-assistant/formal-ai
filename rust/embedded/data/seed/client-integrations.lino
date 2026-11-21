@@ -559,8 +559,8 @@ client_integrations
       surface "cli"
       file_delivery "tool_call"
     ephemeral
-      non_interactive_arg "--prompt"
-      prompt_arg "--prompt"
+      non_interactive_arg "-p"
+      prompt_arg "-p"
       temp_home_env "HOME"
       temp_home_config_path ".grok/config.toml"
       temp_home_toml_set "model.{model}.model={model}"
@@ -573,8 +573,8 @@ client_integrations
       env "GROK_BASE_URL={endpoint_base_url}"
       model_arg "--model"
       model_arg_position "before_args"
-      session_root ".grok"
-      session_file_suffix ".jsonl"
+      session_root ".grok/sessions"
+      session_file_suffix "chat_history.jsonl"
     global
       kind "json"
       path ".grok/user-settings.json"
@@ -622,6 +622,8 @@ client_integrations
       arg "--no-auto-commits"
       model_arg "--model"
       model_arg_position "before_args"
+      session_root ".aider/chats"
+      session_file_suffix ".md"
     global
       kind "shell_env"
       path ".profile"

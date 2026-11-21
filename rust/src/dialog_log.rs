@@ -421,10 +421,29 @@ fn valid_session_identifier(value: &str) -> bool {
             .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-'))
 }
 
+pub(crate) fn scoped_openai_path(path: &str) -> Option<(&str, &str)> {
+    let (identifier, operation) = path
+        .split('?')
+        .next()?
+        .strip_prefix("/api/openai/v1/dialog/")?
+        .split_once('/')?;
+    if !valid_session_identifier(identifier) {
+        return None;
+    }
+    let endpoint = match operation {
+        "chat/completions" => "/api/openai/v1/chat/completions",
+        "models" => "/api/openai/v1/models",
+        _ => return None,
+    };
+    Some((identifier, endpoint))
+}
+
 fn request_session_identifier(headers: &[(&str, &str)], path: &str, body: &str) -> Option<String> {
     explicit_dialog_id(headers)
         .or_else(|| session_header(headers, "x-opencode-session-id"))
         .or_else(|| session_header(headers, "x-opencode-session"))
+        .or_else(|| session_header(headers, "x-grok-session-id"))
+        .or_else(|| scoped_openai_path(path).map(|(identifier, _)| identifier.to_owned()))
         .or_else(|| {
             let identifier = match path.split('?').next()? {
                 "/v1/messages" | "/api/anthropic/v1/messages" => {

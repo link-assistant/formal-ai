@@ -52,9 +52,15 @@ function headerValue(headers, expected) {
   return found ? String(found[1]).trim() : null;
 }
 
+export function scopedOpenaiPath(requestPath) {
+  const match = /^\/api\/openai\/v1\/dialog\/([A-Za-z0-9_-]{1,128})\/(chat\/completions|models)$/u.exec(requestPath?.split('?')[0]);
+  return match ? { identifier: match[1], endpoint: `/api/openai/v1/${match[2]}` } : null;
+}
+
 function requestSessionIdentifier(headers, requestPath, requestBody) {
   const identifier = explicitDialogId(headers) ?? sessionHeader(headers, 'x-opencode-session-id')
-    ?? sessionHeader(headers, 'x-opencode-session');
+    ?? sessionHeader(headers, 'x-opencode-session') ?? sessionHeader(headers, 'x-grok-session-id')
+    ?? scopedOpenaiPath(requestPath)?.identifier ?? null;
   if (identifier !== null) return identifier;
   const endpoint = requestPath?.split('?')[0];
   let session = null;

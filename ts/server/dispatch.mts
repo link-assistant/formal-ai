@@ -6,7 +6,7 @@ import { handleAnthropicMessages } from './anthropic.mjs';
 import { handleChatCompletions } from './openai.mjs';
 import { handleConversationContext, handleConversationLearn } from './conversations.mjs';
 import { handleDebug } from './debug-session.mjs';
-import { recordApiExchangeIfEnabled, withDialogScope } from './dialog-log.mjs';
+import { recordApiExchangeIfEnabled, scopedOpenaiPath, withDialogScope } from './dialog-log.mjs';
 import { handleGeminiGenerateContent, handleGeminiModel, handleGeminiModels, handleVertexModels } from './gemini.mjs';
 import { handleMcp } from './mcp.mjs';
 import { handleMemory, handleMemoryImport, handleMemorySince } from './memory.mjs';
@@ -110,11 +110,13 @@ export async function dispatch(ctx, request, signal) {
   if (request.method === 'POST' && normalized === META_PATH) {
     return dispatchRoute(ctx, request, signal);
   }
-  const authorized = !requiresBearerAuth(request.method, normalized) || authAllows(ctx.bearerToken, request.headers);
+  const scoped = scopedOpenaiPath(normalized);
+  const routed = scoped ? { ...request, path: scoped.endpoint } : request;
+  const authorized = !requiresBearerAuth(request.method, scoped?.endpoint ?? normalized) || authAllows(ctx.bearerToken, request.headers);
   // The planner reads the session id back when it writes a report command
   // (`DialogScope::begin` in `handle_api_request_with_auth`).
   return withDialogScope(request.headers, async () => {
-    const response = await dispatchRoute(ctx, request);
+    const response = await dispatchRoute(ctx, routed);
     if (!ctx.ephemeral) recordApiExchangeIfEnabled(request, response, authorized, ctx.env || process.env, ctx.logger);
     return response;
   }, request);

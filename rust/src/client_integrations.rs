@@ -19,6 +19,7 @@ mod completion;
 mod completion_learning;
 mod global_config;
 mod global_verify;
+mod report_context;
 mod server;
 mod session_files;
 mod tool_args;
@@ -413,10 +414,18 @@ fn run_ephemeral(
     let mut session_home = None;
     let resolved_command = resolve_integration_command(integration);
     let mut command = Command::new(&resolved_command);
-    command.env("FORMAL_AI_REPORT_CLIENT", &integration.id);
-    if matches!(integration.id.as_str(), "agent" | "gemini") {
-        // These clients expose custom provider headers but omit the native
-        // session ID on their custom endpoints.
+    let report_client = match (integration.id.as_str(), context.protocol.as_str()) {
+        ("t3code", "anthropic") => "claude",
+        ("t3code", _) => "codex",
+        (client, _) => client,
+    };
+    command.env("FORMAL_AI_REPORT_CLIENT", report_client);
+    if matches!(
+        integration.id.as_str(),
+        "agent" | "gemini" | "aider" | "grok"
+    ) {
+        // Some custom providers omit the native session ID. Give each
+        // wrapper invocation an explicit, private report scope.
         context.report_dialog_id = crate::engine::stable_id(
             &integration.id,
             &format!("{}:{:?}", std::process::id(), std::time::SystemTime::now()),
@@ -478,18 +487,18 @@ fn run_ephemeral(
     let scoped_home = orchestration_home
         .map(Path::to_path_buf)
         .or_else(|| temporary_home.as_ref().map(|temp| temp.path.clone()));
-    if let Some(home) = scoped_home {
-        fs::create_dir_all(&home)?;
+    if let Some(home) = scoped_home.as_ref() {
+        fs::create_dir_all(home)?;
         session_home = Some(home.clone());
         if !invocation.model_catalog_path.is_empty() {
             let relative_catalog_path = render_template(&invocation.model_catalog_path, &context);
-            let catalog_path = temp_scoped_path(&home, &relative_catalog_path)?;
+            let catalog_path = temp_scoped_path(home, &relative_catalog_path)?;
             context.model_catalog_path = catalog_path.display().to_string();
             write_file(&catalog_path, &codex_model_catalog(&context)?)?;
         }
         if !invocation.temp_home_config_path.is_empty() {
             let relative_config_path = render_template(&invocation.temp_home_config_path, &context);
-            let config_path = temp_scoped_path(&home, &relative_config_path)?;
+            let config_path = temp_scoped_path(home, &relative_config_path)?;
             if let Some(parent) = config_path.parent() {
                 fs::create_dir_all(parent)?;
             }
@@ -505,14 +514,24 @@ fn run_ephemeral(
         } else {
             render_template(&invocation.temp_home_env, &context)
         };
-        command.env(home_env, &home);
+        command.env(home_env, home);
         if integration.id == "codex" {
             command.env("CODEX_HOME", home.join(".codex"));
+        }
+        if integration.id == "grok" {
+            command.env("GROK_HOME", home.join(".grok"));
         }
     }
     if let Some(temp) = temporary_home {
         temp_dirs.push(temp);
     }
+    let aider_history = report_context::configure(
+        &mut command,
+        &integration.id,
+        caller,
+        &context,
+        scoped_home.as_deref(),
+    )?;
 
     let session_root = if invocation.session_root.is_empty() {
         None
@@ -568,6 +587,11 @@ fn run_ephemeral(
             None,
         )
     };
+    if let Some(history) = aider_history
+        && let Err(error) = history.preserve()
+    {
+        crate::diagnostic!("warn"; "Could not append the Aider transcript to its default history: {error}");
+    }
     let session_file = session_root.as_deref().and_then(|root| {
         newest_changed_session_file(root, &invocation.session_file_suffix, &session_before)
     });

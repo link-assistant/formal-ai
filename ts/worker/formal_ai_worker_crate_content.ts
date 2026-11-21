@@ -10,23 +10,14 @@
 // is_error}`, where `content` is a string or an array of `{type, text}` parts.
 const { callbackText: canonicalUnaryText } = crateRequire("callback_values.mjs");
 const { callbackTrim: canonicalUnaryTrim } = crateRequire("callback_values.mjs");
-const { cached, childrenNamed, isDirectory, parseLino, readText } = crateRequire("host.mjs");
+const { childrenNamed, isDirectory, parseLino, readText } = crateRequire("host.mjs");
 const { quotedSegmentSpans } = crateRequire("crate/quoted_segments.mjs");
+const { callerContextVocabulary } = crateRequire("crate/seed_caller_context.mjs");
 /** `MessageContent::plain_text`. */
 function plainText(content) {
   if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return '';
   return content.filter((part) => typeof part?.text === 'string').map(canonicalUnaryText).join('\n');
-}
-function injectedBlocks() {
-  return cached('caller-context-blocks', () => {
-    const root = parseLino(readText('data/seed/caller-context.lino'));
-    const group = childrenNamed(root, 'injected_blocks')[0];
-    return childrenNamed(group, 'block').map(block => ({
-      tag: block.value,
-      prefix: childrenNamed(block, 'prefix')[0]?.value,
-    }));
-  });
 }
 function unquotedMarkerOffsets(text, marker) {
   const quoted = quotedSegmentSpans(text);
@@ -51,16 +42,29 @@ function stripBlock(text, open, close) {
   }
   return request + remaining;
 }
-/** `MessageContent::user_request_text`. */
-function userRequestText(content) {
-  return injectedBlocks()
-    .reduce((text, { tag, prefix }) => {
+/** `strip_caller_context_blocks`. */
+function stripCallerContextBlocks(text, blocks) {
+  const envelope = text.trim();
+  for (const { tag, unwrap } of blocks) {
+    const open = `<${tag}>\n`;
+    const close = `\n</${tag}>`;
+    if (unwrap && envelope.startsWith(open) && envelope.endsWith(close)) {
+      return envelope.slice(open.length, -close.length).trim();
+    }
+  }
+  return blocks
+    .reduce((text, { tag, prefix, unwrap }) => {
+      if (unwrap) return text;
       const open = `<${tag}>`;
       const close = `</${tag}>`;
       if (prefix) text = stripBlock(text, `${prefix}\n${open}`, close);
       return stripBlock(text, open, close);
-    }, plainText(content))
+    }, text)
     .trim();
+}
+/** `MessageContent::user_request_text`. */
+function userRequestText(content) {
+  return stripCallerContextBlocks(plainText(content), callerContextVocabulary().injected_blocks);
 }
 const utf8Length = (text) => new TextEncoder().encode(text).length;
 /** `strip_system_echo`. */
@@ -98,11 +102,16 @@ function systemPromptText(messages) {
 }
 /** `latest_user_request`: the latest user turn, decorations stripped, or null. */
 function latestUserRequest(messages) {
+  return latestUserTurn(messages)?.prompt ?? null;
+}
+/** `latest_user_turn`: include the index for callers that need earlier history. */
+function latestUserTurn(messages, requestText = userRequestText) {
   const system = systemPromptText(messages);
   for (let index = messages.length - 1; index >= 0; index -= 1) {
     const message = messages[index];
     if (message.role.toLowerCase() === 'user') {
-      return stripSystemEcho(userRequestText(message.content), system);
+      const prompt = stripSystemEcho(requestText(message.content), system);
+      if (prompt) return { index, prompt };
     }
   }
   return null;
@@ -177,8 +186,8 @@ function chatMessageToTurn(message) {
   return null;
 }
 return Object.freeze({
-  plainText, stripBlock, userRequestText, stripSystemEcho, rustLines,
-  systemPromptText, latestUserRequest, observedDirectory,
-  clientWorkingDirectory, chatMessageToTurn,
+  plainText, stripCallerContextBlocks, userRequestText, stripSystemEcho,
+  rustLines, systemPromptText, latestUserRequest, latestUserTurn,
+  observedDirectory, clientWorkingDirectory, chatMessageToTurn,
 });
 };
