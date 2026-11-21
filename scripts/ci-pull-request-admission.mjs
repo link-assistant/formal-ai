@@ -1,6 +1,9 @@
 // Fast, conservative PR admission. Production retains its full Rust classifier.
 import assert from 'node:assert/strict';
-import {appendFileSync, existsSync, readFileSync} from 'node:fs';
+import {appendFileSync, existsSync, readFileSync, mkdtempSync, openSync, closeSync, readSync, rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {StringDecoder} from 'node:string_decoder';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
@@ -254,16 +257,45 @@ export function checkVersions(head, base) {
 function git(args) {
   return execFileSync('git', args, {encoding: 'utf8', timeout: 15000, maxBuffer: 4 * 1024 * 1024});
 }
+// Spool Git's complete NUL inventory instead of imposing execFileSync's stdout
+// buffer limit on a valid large change. Decode bounded chunks; no path is dropped.
+function gitPathInventory(args) {
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-admission-inventory-'));
+  let descriptor;
+  try {
+    const file=join(directory,'paths');
+    descriptor=openSync(file,'wx',0o600);
+    execFileSync('git',args,{stdio:['ignore',descriptor,'pipe'],timeout:15000,maxBuffer:4*1024*1024});
+    closeSync(descriptor);descriptor=undefined;descriptor=openSync(file,'r');
+    const buffer=Buffer.alloc(32768),decoder=new StringDecoder('utf8'),paths=[];
+    let pending='',bytes=0,count;
+    while((count=readSync(descriptor,buffer,0,buffer.length,null))>0) {
+      bytes+=count;
+      const parts=(pending+decoder.write(buffer.subarray(0,count))).split('\0');
+      pending=parts.pop();
+      for(const path of parts)if(path)paths.push(path);
+    }
+    pending+=decoder.end();
+    assert.equal(pending,'','complete NUL-terminated Git inventory required');
+    if(process.env.FORMAL_AI_CI_VERBOSE==='true')
+      console.error(JSON.stringify({admissionInventory:{bytes,paths:paths.length}}));
+    return paths;
+  } finally {
+    if(descriptor!==undefined)closeSync(descriptor);
+    rmSync(directory,{recursive:true,force:true});
+  }
+}
 export function changedPaths(event, before, invoke = git) {
+  const inventory=args=>invoke===git?gitPathInventory(args):invoke(args).split('\0').filter(Boolean);
   if (event === 'pull_request') {
     const parents = invoke(['rev-list', '--parents', '-n', '1', 'HEAD']).trim().split(/\s+/u);
     assert(parents.length === 3, 'PR admission requires the checked-out synthetic merge commit');
-    return invoke(['diff', '--no-renames', '--name-only', '-z', parents[1], parents[2]]).split('\0').filter(Boolean);
+    return inventory(['diff', '--no-renames', '--name-only', '-z', parents[1], parents[2]]);
   }
   // Bot dispatch checks the whole branch against the latest default branch.
   const base = event === 'workflow_dispatch' ? 'origin/main' : before;
   assert(base && !/^0+$/u.test(base), 'known comparison base required');
-  return invoke(['diff', '--no-renames', '--name-only', '-z', base, 'HEAD']).split('\0').filter(Boolean);
+  return inventory(['diff', '--no-renames', '--name-only', '-z', base, 'HEAD']);
 }
 
 const SOURCE_READ_LIMIT = 4 * 1024 * 1024;
