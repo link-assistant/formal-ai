@@ -637,3 +637,16 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [ ] Collect all remaining current-head workflow and producer reports, fix
   every actionable origin, run the complete local inventory and pass the
   single push gate. Full issue acceptance remains unfinished; PR stays draft.
+
+## Protocol source ownership and budget regression admission
+
+- [x] Reuse hosted native package/workspace and checksum receipts to correct
+  stale Rust practice statuses, preserving their exact source identities.
+- [x] Admit all seven existing finite child-process budget regressions through
+  the maintained JavaScript CI adapter and pass their focused local execution.
+- [x] Extract unchanged chat message types with public reexports, exact inverse
+  and formatting proofs. Verify existing protocol/projection/currency controls.
+  Twenty groups leave 98 source warnings and zero violations; limits unchanged.
+- [ ] Finish the current-head CI collection, complete the final full local gate
+  replay, and batch every actionable failure before one gated push. Next-head
+  hosted native and newly admitted budget behavior remain unverified.

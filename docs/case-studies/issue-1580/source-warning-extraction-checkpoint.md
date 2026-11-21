@@ -265,3 +265,31 @@ The reproducible reviewer and complete before/after receipts are retained in
 Remaining workflows and the complete local gate inventory still require
 collection before another push. No wider acceptance or independent authorship
 credit is claimed.
+
+## Chat message type ownership and maintained budget admission
+
+The twentieth extraction moves the unchanged chat message, content and requested
+tool-call types into `rust/src/protocol/chat_message.rs`. Public protocol paths
+are preserved by reexports. Exact inverse reconstruction restores every parent
+byte before formatting; syntax tokens, comments, serde attributes and method
+bodies are unchanged. The parent falls from 989 to 776 lines; the child has 221.
+Both existing protocol JavaScript files, governed fixture integrity, source
+projection currency, module/registry/runtime currency, formatting and source
+gates pass. Native behavior still requires the next published head. A fresh
+full tracked/untracked scanner inventory records 98 warnings and no ordinary
+or embedded-data violations under unchanged limits.
+
+The seven finite child-process budget controls now enter the maintained
+issue-1580 JavaScript adapter. All seven pass locally; hosted execution of this
+new admission remains pending. The complete local 141-entry replay preceding
+this extraction passes 88 entries and explicitly skips 53; its exact streams
+remain retained separately. Current production source checks pass after the
+latest original producer archives are normalized and partitioned, with their
+raw identities unchanged. A subsequent full replay is required for this batch.
+
+Rust practice review now cites the sixteen actual native package/workspace
+cases at hosted job 136583632518 and three actual checksum reproductions at
+Layered CI run 44836234464. Reviewed sources match those tested heads exactly.
+The Layered workflow's other failures remain reported, and these cases do not
+verify live release publication or the complete Rust template. No full issue
+completion or independent authorship credit is claimed.
