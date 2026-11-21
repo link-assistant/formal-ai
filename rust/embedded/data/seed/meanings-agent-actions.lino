@@ -39,6 +39,14 @@ meanings
     unit "not applicable"
     example "I’ll file the report in the Formal AI GitHub repository."
     grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-report-open-issue-form
+    defined-by answer
+    role localized_response_template
+    precondition "a chat surface without an exportable session receives a request to report an issue"
+    effect "directs the user to review and submit a report in the Formal AI GitHub repository"
+    unit "not applicable"
+    example "Open the Formal AI issue form to review and submit your report on GitHub."
+    grounding "data/seed/multilingual-responses-agentic.lino"
   practical-help
     defined-by concept
     role procedure
