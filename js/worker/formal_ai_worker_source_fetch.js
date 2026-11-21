@@ -1,4 +1,4 @@
-// Provider-owned source capture retrieval: verified cache/seed, offline policy, and live response status.
+// Provider-owned source capture retrieval: verified cache, offline policy, and live response status.
 async function sourceWalkFetchCapture(url, { online = true, bounded = false } = {}) {
   const cached = sourceWalkCaptureCache.get(url);
   if (cached) {
@@ -6,8 +6,6 @@ async function sourceWalkFetchCapture(url, { online = true, bounded = false } = 
       return { ok: false, url, error: "invalid_capture" };
     return { ...cached, cached: true };
   }
-  const seeded = await sourceWalkSeedCapture(url);
-  if (seeded) return seeded;
   if (!online) return { ok: false, url, failureKind: "offline_cache_miss", error: answerFor("source-capture-offline-cache-miss", "en").replace("{url}", () => String(url)) };
   if (typeof fetch !== "function") return { ok: false, url, error: "fetch_unavailable" };
   try {

@@ -312,17 +312,7 @@ impl<T: SourceTransport> CachedSourceClient<T> {
                     return Ok(capture);
                 }
             }
-            Ok(None) => {
-                if let Some(capture) =
-                    SourceCapture::from_seed_registry(url, crate::seed::SOURCES_REGISTRY_LINO)?
-                {
-                    let age =
-                        (self.now)().saturating_sub(capture.fetched_at.parse::<u64>().unwrap_or(0));
-                    if !online || age <= self.ttl_seconds {
-                        return Ok(capture);
-                    }
-                }
-            }
+            Ok(None) => {}
             Err(error) => return Err(error),
         }
         if !online {

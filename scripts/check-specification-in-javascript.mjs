@@ -20,6 +20,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { WorkerHost } from '../js/server/worker-host.mjs';
+import { installSourceDefinitionCaptures } from '../rust/tests/web/support/source-definition-captures.mjs';
 import { failingCases, specificationCases } from './lib/rust-specification-cases.mjs';
 
 const RECORD = 'data/meta/specification-javascript-gaps.lino';
@@ -99,6 +100,7 @@ async function main(argv) {
   const root = join(dirname(fileURLToPath(import.meta.url)), '..');
   const { total, cases, unsupported } = specificationCases(root);
   const host = new WorkerHost();
+  await installSourceDefinitionCaptures(host);
   const bypassed = censusProcedure(host);
   const failing = await failingCases(host, cases);
   const state = { total, carried: cases.length, passing: cases.length - failing.size, failing };
