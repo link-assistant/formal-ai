@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -37,6 +38,15 @@ def observe(codeql, databases, output, profile="macro-contexts", trace_evaluatio
         if profile not in PROFILES:
             raise ValueError("Unknown macro observation profile")
         query_name, columns = PROFILES[profile]
+        # The action already reports the producer's evaluator capacity. Reuse it
+        # instead of halving hosted parallelism; keep a four-thread upper bound.
+        reported_threads = os.environ.get("CODEQL_THREADS", "2")
+        if not re.fullmatch(r"[1-9][0-9]*", reported_threads):
+            raise ValueError("CODEQL_THREADS must report a positive evaluator thread count")
+        threads = min(int(reported_threads), 4)
+        manifest["executionPolicy"] = {"threads": threads, "maximumThreads": 4,
+                                       "reportedThreads": reported_threads,
+                                       "source": "CODEQL_THREADS" if "CODEQL_THREADS" in os.environ else "default"}
         manifest["profile"] = profile
         database = Path(databases["rust"])
         if not database.is_absolute() or not (database / "codeql-database.yml").is_file():
@@ -89,7 +99,7 @@ def observe(codeql, databases, output, profile="macro-contexts", trace_evaluatio
                           "--output=" + str(output / (profile + ".bqrs")),
                           # Both observations reuse the producer's cached loading stages.
                           # Avoid cache cleanup between these related observations.
-                          "--threads=2", *memory_options, "--max-disk-cache=4096",
+                          "--threads=" + str(threads), *memory_options, "--max-disk-cache=4096",
                           "--keep-full-cache",
                           "--warnings=error", *trace_options, str(installed)])
         diagnostics = [line for line in (output / "query.stderr").read_text().splitlines()

@@ -107,3 +107,21 @@ hashes remain under `../evidence/ci/codeql-producer-27e895c1/`. These observatio
 qualify the actual option repair and profile execution; per-child semantic
 qualification remains open. The earlier cache-eviction explanation is still an
 inference. See the [dated assessment](../../../docs/case-studies/issue-1580/successful-security-observers-checkpoint.md).
+
+## Current evaluator capacity investigation
+
+The `8b0d6f59` included-string observer exceeded its unchanged four-minute
+deadline. Its retained trace contains 14,760 events and a path-resolution
+recursive component lasting about 147 seconds; those predicate times overlap
+and must not be added. The pinned CFG cache stage also references function-call
+information, so filtering the query's macro domain does not bound every library
+relation to those macros. The producer reports `CODEQL_THREADS=4`, while the
+observer previously forced two threads.
+
+The candidate adapter inherits that positive reported count with a maximum of
+four threads and a two-thread fallback outside the action. It records the actual
+selection and rejects malformed values before running CodeQL. The query bytes,
+nine columns, complete payloads, unavailable-expansion rows, warning rejection,
+4 GiB memory policy and disk cap, and step deadline remain unchanged. Fixture
+checks reproduce and repair the argument mismatch; actual hosted performance
+and per-child security semantics remain unverified. No local CodeQL executes.

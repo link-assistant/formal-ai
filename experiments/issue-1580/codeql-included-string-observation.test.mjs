@@ -44,7 +44,7 @@ test('producer cache arguments compose with the action without duplicate boolean
 test('included string adapter preserves complete literal text and rejects incomplete observations', { timeout: 20000 }, () => {
   const adapter = new URL('./codeql-macro-contexts/observe.py', import.meta.url);
   const code = String.raw`
-import importlib.util, json, pathlib, sys, tempfile
+import importlib.util, json, os, pathlib, sys, tempfile
 sys.dont_write_bytecode = True
 spec=importlib.util.spec_from_file_location('probe',sys.argv[1])
 a=importlib.util.module_from_spec(spec)
@@ -78,6 +78,8 @@ elif args[:2]==['query','run']:
     cache=root/'completed-producer-relations'
     if '--keep-full-cache' not in args:
         cache.unlink(missing_ok=True)
+    expected_threads=2 if mode=='success' else (1 if mode=='single-thread-success' else 4)
+    assert '--threads='+str(expected_threads) in args, args
     assert '--max-disk-cache=4096' in args
     assert '--warnings=error' in args
     trace=[value for value in args if value.startswith('--evaluator-log=')]
@@ -113,7 +115,11 @@ else:
 ''')
     executable.chmod(0o755)
     before={p.relative_to(pack):p.read_bytes() for p in pack.rglob('*') if p.is_file()}
-    for mode in ['success','traced-success','empty','wrong-columns','short-row','query-failure','query-warning','unknown-profile']:
+    successes=['success','traced-success','producer-thread-success','single-thread-success','clamped-thread-success']
+    for mode in successes+['empty','wrong-columns','short-row','query-failure','query-warning','unknown-profile','invalid-threads']:
+        os.environ.pop('CODEQL_THREADS',None)
+        if mode!='success':
+            os.environ['CODEQL_THREADS']='invalid' if mode=='invalid-threads' else ('1' if mode=='single-thread-success' else ('8' if mode=='clamped-thread-success' else '4'))
         (root/'mode').write_text(mode)
         (root/'calls.jsonl').write_text('')
         cache=root/'completed-producer-relations'
@@ -123,16 +129,18 @@ else:
             a.observe(executable,{'rust':str(database)},output,
                       'unknown' if mode=='unknown-profile' else 'included-string-payloads',
                       trace_evaluation=mode=='traced-success')
-            assert mode in ['success','traced-success'],mode
+            assert mode in successes,mode
         except (ValueError,RuntimeError):
-            assert mode not in ['success','traced-success'],mode
+            assert mode not in successes,(mode,(output/'query.stderr').read_text())
         assert cache.read_bytes()==b'original producer cache fixture',mode
         manifest=json.loads((output/'manifest.json').read_text())
-        assert manifest['complete']==(mode in ['success','traced-success']),mode
+        assert manifest['complete']==(mode in successes),mode
         assert manifest['semanticCoverageProven'] is False
         assert manifest['independentAuthorshipCredit']==0
         assert before=={p.relative_to(pack):p.read_bytes() for p in pack.rglob('*') if p.is_file()},mode
-        if mode in ['success','traced-success']:
+        if mode in successes:
+            assert manifest['executionPolicy']['threads']==(2 if mode=='success' else (1 if mode=='single-thread-success' else 4))
+            assert manifest['executionPolicy']['maximumThreads']==4
             assert manifest['traceEvaluation']==(mode=='traced-success')
             assert (output/'evaluation.jsonl').exists()==(mode=='traced-success')
             assert manifest['profile']=='included-string-payloads'
@@ -147,7 +155,7 @@ else:
         if mode=='query-warning':
             assert manifest['queryRuntimeDiagnostics']==['WARNING: fixture payload unavailable']
             assert manifest['commands'][-1]['name']=='query'
-        if mode=='unknown-profile':
+        if mode in ['unknown-profile','invalid-threads']:
             assert manifest['commands']==[]
             assert (root/'calls.jsonl').read_text()==''
 `;
