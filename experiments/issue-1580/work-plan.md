@@ -753,3 +753,16 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [x] Preserve protocol and seed public paths with exact inverse extraction proofs; 21 extraction groups leave 97 warnings and zero violations. The final Rust-only seed leaf receives focused verification after the complete replay.
 - [ ] Publish the complete batch once current-head runs are terminal; verify the new query using the actual read-only hosted producer and all new Rust boundaries using focused native CI.
 - [ ] Complete all outstanding original, template/practice, dependency, warning, semantic coverage, live delivery and whole-PR review criteria. Passing local or hosted gates alone does not complete these requirements.
+
+
+## Secretlint 14 current-template adoption
+
+- [x] Reproduce the external-preset dependency failure against a real isolated
+  Secretlint 14 install and with a minimal before/after regression.
+- [x] Use the built-in preset with exact core/engine/profiler identities; retain
+  masking, bounded compressed input and workflow-command boundaries.
+- [x] Pass the focused 12, maintained 37 and profile 18 cases, the actual engine
+  probe, shell syntax, three source gates and whitespace checks. Counts overlap.
+- [ ] Verify this atomic source change in hosted CI after the current run ends.
+- [ ] Complete all broader original issue criteria. No independent authorship
+  credit is assigned to externally supplied scripts or reasoning.

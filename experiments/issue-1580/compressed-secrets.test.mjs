@@ -83,24 +83,31 @@ test('one engine scans actual files and decompressed members sequentially and pr
 test('engine identity and default-off profiling retain masking and rule execution',async t=>{
   const directory=mkdtempSync(join(tmpdir(),'secret-identity-'));t.after(()=>rmSync(directory,{recursive:true,force:true}));
   const bin=join(directory,'bin');mkdirSync(bin);
-  for(const name of ['secretlint','@secretlint/node','@secretlint/profiler','@secretlint/secretlint-rule-preset-recommend']) {
+  for(const name of ['secretlint','@secretlint/node','@secretlint/profiler','@secretlint/core']) {
     const target=join(directory,'node_modules',name);mkdirSync(target,{recursive:true});
-    writeFileSync(join(target,'package.json'),JSON.stringify({name,version:'13.0.5',main:'index.js',type:'module'}));
+    writeFileSync(join(target,'package.json'),JSON.stringify({name,version:'14.0.0',main:'index.js',type:'module'}));
     writeFileSync(join(target,'index.js'),'');
   }
+  const core=join(directory,'node_modules/@secretlint/core');
+  writeFileSync(join(core,'package.json'),JSON.stringify({name:'@secretlint/core',version:'14.0.0',type:'module',exports:{'./builtin':'./builtin.js'}}));
+  writeFileSync(join(core,'builtin.js'),'export const getBuiltinRule=()=>({});');
   const executable=join(directory,'node_modules/secretlint/bin/secretlint.js');mkdirSync(join(executable,'..'),{recursive:true});
   writeFileSync(executable,'#!/usr/bin/env node\n',{mode:0o755});symlinkSync(executable,join(bin,'secretlint'));
   writeFileSync(join(directory,'node_modules/@secretlint/profiler/index.js'),
     'export const secretLintProfiler={isEnabled:true,setEnabled(value){this.isEnabled=value;}};');
   writeFileSync(join(directory,'node_modules/@secretlint/node/index.js'),
     "import {secretLintProfiler} from '@secretlint/profiler';export const createEngine=config=>({config,profiling:secretLintProfiler.isEnabled});");
-  assert(scannerModule('13.0.5',bin).endsWith('/@secretlint/node/index.js'));
-  const scanner=await createScanner('13.0.5',bin);
+  assert(scannerModule('14.0.0',bin).endsWith('/@secretlint/node/index.js'));
+  const scanner=await createScanner('14.0.0',bin);
   assert.equal(scanner.profiling,false);
   assert.deepEqual(scanner.config,{cwd:process.cwd(),formatter:'stylish',color:false,maskSecrets:true});
+  const coreManifest=join(core,'package.json');
+  writeFileSync(coreManifest,JSON.stringify({name:'@secretlint/core',version:'14.0.1',type:'module',exports:{'./builtin':'./builtin.js'}}));
+  assert.throws(()=>scannerModule('14.0.0',bin),/version mismatch: @secretlint\/core/u);
+  writeFileSync(coreManifest,JSON.stringify({name:'@secretlint/core',version:'14.0.0',type:'module',exports:{'./builtin':'./builtin.js'}}));
   const profilerManifest=join(directory,'node_modules/@secretlint/profiler/package.json');
-  writeFileSync(profilerManifest,JSON.stringify({name:'@secretlint/profiler',version:'13.0.4',type:'module'}));
-  await assert.rejects(()=>createScanner('13.0.5',bin),/profiler version mismatch/u);
-  assert.throws(()=>scannerModule('13.0.4',bin),/version mismatch/u);
-  assert.throws(()=>scannerModule('13.0.5',join(directory,'absent')),/unavailable/u);
+  writeFileSync(profilerManifest,JSON.stringify({name:'@secretlint/profiler',version:'14.0.1',type:'module'}));
+  await assert.rejects(()=>createScanner('14.0.0',bin),/profiler version mismatch/u);
+  assert.throws(()=>scannerModule('14.0.1',bin),/version mismatch/u);
+  assert.throws(()=>scannerModule('14.0.0',join(directory,'absent')),/unavailable/u);
 });

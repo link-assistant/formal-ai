@@ -28,8 +28,8 @@ export function scannerModule(version,searchPath=process.env.PATH??'') {
   if(!binary)throw Error('Pinned secretlint executable unavailable');
   const require=createRequire(pathToFileURL(binary));
   const engine=require.resolve('@secretlint/node');
-  const preset=require.resolve('@secretlint/secretlint-rule-preset-recommend');
-  for(const [file,name] of [[binary,'secretlint'],[engine,'@secretlint/node'],[preset,'@secretlint/secretlint-rule-preset-recommend']]) {
+  const builtin=require.resolve('@secretlint/core/builtin');
+  for(const [file,name] of [[binary,'secretlint'],[engine,'@secretlint/node'],[builtin,'@secretlint/core']]) {
     if(packageVersion(file,name)!==version)throw Error('Pinned scanner package version mismatch: '+name);
   }
   return pathToFileURL(engine).href;
@@ -93,7 +93,7 @@ if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
   const token='secret-scan-'+randomUUID();
   console.log('::stop-commands::'+token);
   try {
-    const version=process.env.SECRETLINT_VERSION??'13.0.5';
+    const version=process.env.SECRETLINT_VERSION??'14.0.0';
     const engine=await createScanner(version);
     const result=await checkFiles(filenames(process.stdin),engine);
     console.log(JSON.stringify({secretsScan:result}));

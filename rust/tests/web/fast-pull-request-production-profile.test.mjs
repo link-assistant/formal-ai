@@ -438,9 +438,10 @@ test('secrets scanning retains full history and every current file within separa
   for(const marker of ['git merge-base "$base" HEAD',
     'read_inventory git diff --name-only --diff-filter=ACMRT -z "$merge_base" HEAD',
     'read_inventory git ls-files -z','if ! wait "$producer"; then',
-    'SECRETLINT_VERSION:-13.0.5',
-    '-p "secretlint@${SECRETLINT_VERSION}"','-p "@secretlint/secretlint-rule-preset-recommend@${SECRETLINT_VERSION}"'])
+    'SECRETLINT_VERSION:-14.0.0',
+    '-p "secretlint@${SECRETLINT_VERSION}"'])
     assert.ok(scanner.includes(marker),'full reviewed secret selection/guard lost: '+marker);
+  assert.equal(scanner.includes('-p "@secretlint/secretlint-rule-preset-recommend@'),false,'recommended rules are built into the pinned scanner');
   for(const mutate of [
     value=>value.steps[0].with['fetch-depth']=1,
     value=>value.steps[0].with['sparse-checkout']='/*\n!/some-source/\n',

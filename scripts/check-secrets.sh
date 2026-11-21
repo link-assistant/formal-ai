@@ -101,7 +101,7 @@ done
 # whatever `latest` was at the moment the job ran, so the same commit could pass
 # today and fail tomorrow with no change of ours, and a compromised publish would
 # execute in CI unreviewed. Bump SECRETLINT_VERSION deliberately.
-SECRETLINT_VERSION="${SECRETLINT_VERSION:-13.0.5}"
+SECRETLINT_VERSION="${SECRETLINT_VERSION:-14.0.0}"
 debug "secretlint ${SECRETLINT_VERSION}"
 
 # Feed the exact existing selection through stdin rather than interpolating paths
@@ -110,7 +110,6 @@ export SECRETLINT_VERSION
 printf '%s\0' "${files[@]}" |
   npx --yes \
     -p "secretlint@${SECRETLINT_VERSION}" \
-    -p "@secretlint/secretlint-rule-preset-recommend@${SECRETLINT_VERSION}" \
     node scripts/check-secrets-files.mjs
 
 echo "No secrets found."
