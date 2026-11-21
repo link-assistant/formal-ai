@@ -841,3 +841,13 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [ ] Publish permanent regression links after preceding head becomes terminal.
 - [ ] Finish all 338 Python files, every other full template/practice check
   and all remaining original issue criteria. No complete acceptance claimed.
+
+
+- [x] Complete the current maintained observation entry: 123 passed, zero
+  skipped; verify touched JavaScript gates and direct documentation checker.
+- [x] Preserve and repair five abbreviated archive aliases without changing
+  evidence bytes or the ratchet. The targeted retry restores the 90 ceiling.
+- [x] Run the actual Secretlint 14 engine on all 142 changed files / 128
+  compressed streams before these final validation archives.
+- [ ] Qualify the final retained archives and terminal preceding-head hosted
+  logs before the next single push. Current source-size warnings remain 91.

@@ -51,3 +51,22 @@ the native twin parity wrapper was not run locally.
 Evidence is retained under experiments/issue-1580/evidence/checks/current-template-findings . All raw and archive
 SHA256 values are checked. A full issue conclusion is not implied.
 PR: https://github.com/link-assistant/formal-ai/pull/1581
+
+
+The complete maintained template-observation entry passes all 123 cases,
+without skips, in 81.8 seconds. Four repository gates, the direct JavaScript
+documentation checker and the actual Secretlint 14 engine also pass; the
+abbreviation gate initially rejects five new archive aliases (95 against 90).
+Renaming those aliases to full words restores 90 without changing the ratchet,
+raw evidence, archive bytes or original upstream source paths. Its targeted
+retry passes. All six intended checks now have successful evidence; the
+initial failure is preserved separately. The actual scanner passes all 142
+changed files, including 128 compressed streams, before the final validation
+archives are added.
+
+An independent source-size inventory confirms 91 warnings, zero violations
+and zero embedded-data violations under unchanged limits. The first ad hoc
+inventory command exceeded Node's default child-output buffer; its captured
+ENOBUFS result and a successful 32 MiB bounded-buffer retry are retained.
+These warnings remain unfinished. The final validation evidence is under
+experiments/issue-1580/evidence/checks/current-template-publication-validation/ .
