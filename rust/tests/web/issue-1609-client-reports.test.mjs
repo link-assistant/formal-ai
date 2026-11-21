@@ -57,7 +57,7 @@ function chat(id, headers, guidance) {
 function gemini(name, endpoint, id) {
   const turn = (role, parts) => ({ role, parts });
   return {
-    name, endpoint, id, headers: { 'x-formal-ai-dialog-id': id },
+    name, endpoint, id, nativeHarness: true, headers: { 'x-formal-ai-dialog-id': id },
     request: (messages, tools) => ({
       contents: messages.map(message => 'parts' in message ? message
         : turn(message.role === 'assistant' ? 'model' : 'user', [{ text: message.content }])),
@@ -158,6 +158,17 @@ function checkNativeExport(run, client, logs, command) {
     env.CODEX_HOME = config;
     writeFixture(path.join(config, 'sessions', '2026', '11', '21', `rollout-2026-11-21T14-00-00-${session}.jsonl`),
       ...history.map(text => ({ type: 'response_item', payload: { type: 'message', ...user(text) } })));
+  } else if (client.name === 'Gemini' || client.name === 'Vertex') {
+    tool = 'gemini';
+    nativeId = '79dd7290-ac1c-4c3f-a490-cd47e612eb82';
+    env.GEMINI_CLI_HOME = path.join(config, session);
+    env.FORMAL_AI_REPORT_DIALOG_ID = session;
+    const store = path.join(env.GEMINI_CLI_HOME, '.gemini', 'tmp', 'work', 'chats');
+    writeFixture(path.join(store, 'session-matching.jsonl'), { sessionId: nativeId },
+      { type: 'user', content: [{ text: '<session_context>Gemini environment</session_context>' }] },
+      ...history.map(text => ({ type: 'user', content: [{ text }] })));
+    writeFixture(path.join(store, 'session-other.jsonl'), { sessionId: '00000000-0000-4000-a000-000000000000' },
+      { type: 'user', content: [{ text: 'A different conversation' }] });
   } else {
     tool = 'agent';
     nativeId = 'ses_matching';
@@ -176,7 +187,8 @@ function checkNativeExport(run, client, logs, command) {
     '--log-dir', logs, '--format', 'json'], { encoding: 'utf8', env: { ...env, FORMAL_AI_REPORT_CLIENT: tool } });
   const exported = JSON.parse(encoded);
   assert.equal(exported.metadata.dialog_id, session);
-  assert.equal(exported.metadata.harness_message_count, history.length);
+  const environmentMessages = tool === 'gemini' ? 1 : 0;
+  assert.equal(exported.metadata.harness_message_count, history.length + environmentMessages);
   assert.ok(exported.metadata.server_message_count > 0);
   assert.equal(exported.metadata.harness_error, null);
   assert.equal(exported.metadata.server_error, null);
@@ -206,9 +218,15 @@ for (const [server, binary] of [['JavaScript', undefined], ['native', NATIVE]]) 
     for (const client of clients) {
       await t.test(client.name, async () => {
         const messages = client.guidance?.map(system) ?? [];
-        for (const [greeting, expected] of [['Hello', /^Hi[!,]/u], ['Привет', /^Здравствуйте/u]]) {
+        for (const { language, greeting, expected } of [
+          { language: 'en', greeting: 'Hello', expected: /^Hi[!,]/u },
+          { language: 'ru', greeting: 'Привет', expected: /^Здравствуйте/u },
+          { language: 'hi', greeting: 'नमस्ते', expected: /^नमस्ते/u },
+          { language: 'zh', greeting: '你好', expected: /^你好/u },
+          { language: 'es', greeting: 'Hola', expected: /^¡Hola!/u },
+        ]) {
           const response = await ask(run, client, [...messages, user(greeting)]);
-          assert.match(response.text, expected);
+          assert.match(response.text, expected, language);
         }
         const history = [...messages, user('Hello'), assistant('Hi!'), user('Report')];
         const destination = await ask(run, client, history, true);

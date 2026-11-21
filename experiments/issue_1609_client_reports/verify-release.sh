@@ -21,7 +21,7 @@ unset FORMAL_AI_DIALOG_LOG_DIR FORMAL_AI_LOG_DIR FORMAL_AI_LOG_LEVEL FORMAL_AI_L
 unset GH_TOKEN GITHUB_TOKEN GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN
 export FORMAL_AI_DREAMING=0 FORMAL_AI_ALLOW_NETWORK=0 OPENCODE_DISABLE_AUTOUPDATE=true
 export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 DISABLE_AUTOUPDATER=1 LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1
-for client in claude opencode codex agent; do
+for client in claude opencode codex agent gemini; do
   for language in en ru; do
     home="$WORKDIR/$client-$language"
     mkdir -p "$home"/{data,config,cache,state}
@@ -46,7 +46,7 @@ for client in claude opencode codex agent; do
   done
 done
 
-for client in claude agent codex; do
+for client in claude agent codex gemini; do
   home="$WORKDIR/$client-report"
   mkdir -p "$home"/{bin,data,config,cache,state}
   ln -s "$BIN" "$home/bin/formal-ai"
@@ -74,6 +74,10 @@ for client in claude agent codex; do
           SCENARIO=report-publication SERVER_PORT=19409 PROXY_PORT=19410 \
           ARTIFACT_DIR="$ARTIFACT_DIR/codex-report" RUST_LOG=warn \
           bash "$ROOT/experiments/issue_859_codex_e2e/run.sh"
+        ;;
+      gemini)
+        bash "$ROOT/experiments/issue_1609_client_reports/gemini-report.sh" \
+          "$BIN" "$ARTIFACT_DIR/gemini-report" 19409
         ;;
     esac
   ) > "$ARTIFACT_DIR/$client-report.log" 2>&1

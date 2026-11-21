@@ -414,14 +414,31 @@ fn run_ephemeral(
     let resolved_command = resolve_integration_command(integration);
     let mut command = Command::new(&resolved_command);
     command.env("FORMAL_AI_REPORT_CLIENT", &integration.id);
-    if integration.id == "agent" {
-        // This client sends a native session header only for its hosted
-        // provider. Set a distinct id for each wrapper invocation instead.
+    if matches!(integration.id.as_str(), "agent" | "gemini") {
+        // These clients expose custom provider headers but omit the native
+        // session ID on their custom endpoints.
         context.report_dialog_id = crate::engine::stable_id(
-            "agent",
+            &integration.id,
             &format!("{}:{:?}", std::process::id(), std::time::SystemTime::now()),
         );
         command.env("FORMAL_AI_REPORT_DIALOG_ID", &context.report_dialog_id);
+        if integration.id == "gemini" {
+            let inherited = std::env::var("GEMINI_CLI_CUSTOM_HEADERS").unwrap_or_default();
+            let dialog_header = crate::dialog_log::DIALOG_ID_HEADER;
+            let declaration = format!("{dialog_header}:{}", context.report_dialog_id);
+            let headers = inherited
+                .split(',')
+                .filter(|entry| {
+                    !entry.trim().is_empty()
+                        && !entry
+                            .split_once(':')
+                            .is_some_and(|(key, _)| key.trim().eq_ignore_ascii_case(dialog_header))
+                })
+                .chain(std::iter::once(declaration.as_str()))
+                .collect::<Vec<_>>()
+                .join(",");
+            command.env("GEMINI_CLI_CUSTOM_HEADERS", headers);
+        }
     }
     if let Some(directory) = server.and_then(|server| server.dialog_directory.as_ref()) {
         command.env("FORMAL_AI_DIALOG_LOG_DIR", directory);

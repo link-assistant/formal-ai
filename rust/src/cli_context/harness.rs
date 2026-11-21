@@ -4,7 +4,7 @@ use std::error::Error;
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader};
 use std::path::{Path, PathBuf};
-use std::time::{Duration, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use serde_json::{Value, json};
 
@@ -14,6 +14,7 @@ pub(super) enum Harness {
     Claude(PathBuf),
     Codex(PathBuf),
     Agent(PathBuf),
+    Gemini(PathBuf),
 }
 
 pub(super) fn current() -> Option<Harness> {
@@ -37,13 +38,19 @@ pub(super) fn current() -> Option<Harness> {
                 .or_else(|| home().map(|path| path.join(".codex")))?;
             Some(Harness::Codex(configuration.join("sessions")))
         }
+        "gemini" => {
+            let configuration = std::env::var_os("GEMINI_CLI_HOME")
+                .map(PathBuf::from)
+                .or_else(home)?;
+            Some(Harness::Gemini(configuration.join(".gemini/tmp")))
+        }
         _ => None,
     }
 }
 
 impl Harness {
     pub(super) fn latest(&self) -> Result<String, Box<dyn Error>> {
-        if let Self::Agent(_) = self
+        if matches!(self, Self::Agent(_) | Self::Gemini(_))
             && let Ok(identifier) = std::env::var("FORMAL_AI_REPORT_DIALOG_ID")
             && valid_identifier(&identifier)
         {
@@ -60,6 +67,13 @@ impl Harness {
                 let path = codex_rollout(root, None)?;
                 let identifier = rollout_identifier(&path).ok_or(io::ErrorKind::InvalidData)?;
                 return Ok(identifier.to_owned());
+            }
+            Self::Gemini(root) => {
+                return gemini_sessions(root)
+                    .max_by_key(|path| modified(path).ok())
+                    .ok_or(io::ErrorKind::NotFound)
+                    .and_then(|path| gemini_messages(&path).map(|(id, _)| id))
+                    .map_err(Into::into);
             }
         };
         let identifier = find_session(&root, extension, None)?
@@ -95,6 +109,17 @@ impl Harness {
                 }
                 ("agent", agent_messages(root, identifier)?)
             }
+            Self::Gemini(root) => {
+                if std::env::var("FORMAL_AI_REPORT_DIALOG_ID").as_deref() == Ok(identifier) {
+                    let server = super::load_server_context(identifier, log_directory)?;
+                    return matching_gemini_context(root, &server);
+                }
+                let (_, messages) = gemini_sessions(root)
+                    .filter_map(|path| gemini_messages(&path).ok())
+                    .find(|(id, _)| id == identifier)
+                    .ok_or(io::ErrorKind::NotFound)?;
+                ("gemini", messages)
+            }
         };
         Ok(document(tool, identifier, messages))
     }
@@ -127,57 +152,126 @@ fn user_turns(messages: &[Value]) -> Vec<String> {
         .iter()
         .filter(|message| message["role"] == "user")
         .map(crate::cli_report::message_text)
+        .map(|text| {
+            let trimmed = text.trim();
+            if let Some(context) = trimmed.strip_prefix("<session_context>")
+                && let Some((_, user)) = context.split_once("</session_context>")
+            {
+                return user.trim().to_owned();
+            }
+            trimmed.to_owned()
+        })
         .filter(|text| !text.trim().is_empty())
         .collect()
 }
 
+fn earliest_transcript_write(server: &Value) -> io::Result<SystemTime> {
+    let first_capture = server["metadata"]["first_timestamp_unix_ms"]
+        .as_u64()
+        .ok_or(io::ErrorKind::InvalidData)?;
+    Ok(UNIX_EPOCH + Duration::from_millis(first_capture.saturating_sub(30_000)))
+}
+
+fn modified(path: &Path) -> io::Result<SystemTime> {
+    path.metadata()?.modified()
+}
+
 fn matching_agent_context(root: &Path, server: &Value) -> Result<Value, Box<dyn Error>> {
+    let earliest = earliest_transcript_write(server)?;
+    let directories = root.join("message");
+    let candidates = subdirectories(&directories)
+        .filter(|path| modified(path).is_ok_and(|time| time >= earliest))
+        .filter_map(|path| {
+            let id = path.file_name()?.to_str()?.to_owned();
+            valid_identifier(&id).then_some(id)
+        })
+        .filter_map(|id| {
+            agent_messages(root, &id)
+                .ok()
+                .map(|messages| (id, messages))
+        });
+    matching_context("Agent", "agent", server, candidates)
+}
+
+fn matching_gemini_context(root: &Path, server: &Value) -> Result<Value, Box<dyn Error>> {
+    let earliest = earliest_transcript_write(server)?;
+    let candidates = gemini_sessions(root)
+        .filter(|path| modified(path).is_ok_and(|time| time >= earliest))
+        .filter_map(|path| gemini_messages(&path).ok());
+    matching_context("Gemini", "gemini", server, candidates)
+}
+
+fn matching_context(
+    client: &str,
+    tool: &str,
+    server: &Value,
+    candidates: impl Iterator<Item = (String, Vec<Value>)>,
+) -> Result<Value, Box<dyn Error>> {
     let turns = user_turns(server["messages"].as_array().map_or(&[], Vec::as_slice));
     if turns.is_empty() {
         return Err(io::ErrorKind::NotFound.into());
     }
-    let first_capture = server["metadata"]["first_timestamp_unix_ms"]
-        .as_u64()
-        .ok_or(io::ErrorKind::InvalidData)?;
-    let earliest_write = UNIX_EPOCH + Duration::from_millis(first_capture.saturating_sub(30_000));
-    let directories = root.join("message");
     let mut matching = None;
-    for directory in subdirectories(&directories) {
-        let Some(identifier) = directory.file_name().and_then(|name| name.to_str()) else {
-            continue;
-        };
-        if !valid_identifier(identifier)
-            || !directory
-                .metadata()
-                .and_then(|file| file.modified())
-                .is_ok_and(|time| time >= earliest_write)
+    for (identifier, messages) in candidates {
+        let native_turns = user_turns(&messages);
+        if native_turns.is_empty()
+            || (!native_turns.ends_with(&turns) && !turns.ends_with(&native_turns))
         {
             continue;
         }
-        let Ok(messages) = agent_messages(root, identifier) else {
-            continue;
-        };
-        let native_turns = user_turns(&messages);
-        if !native_turns.ends_with(&turns) && !turns.ends_with(&native_turns) {
-            continue;
-        }
-        if native_turns.is_empty() {
-            continue;
-        }
         if matching.is_some() {
-            return Err(
-                io::Error::other("multiple Agent transcripts match this conversation").into(),
-            );
+            return Err(io::Error::other(format!(
+                "multiple {client} transcripts match this conversation"
+            ))
+            .into());
         }
-        matching = Some(document("agent", identifier, messages));
+        matching = Some(document(tool, &identifier, messages));
     }
-    matching.ok_or_else(|| io::Error::other("no Agent transcript matches this conversation").into())
+    matching.ok_or_else(|| {
+        io::Error::other(format!("no {client} transcript matches this conversation")).into()
+    })
 }
 
 fn subdirectories(root: &Path) -> impl Iterator<Item = PathBuf> {
     entries(root)
         .filter(|entry| entry.file_type().is_ok_and(|kind| kind.is_dir()))
         .map(|entry| entry.path())
+}
+
+fn gemini_sessions(root: &Path) -> impl Iterator<Item = PathBuf> {
+    subdirectories(root)
+        .flat_map(|project| entries(&project.join("chats")))
+        .filter(|entry| entry.file_type().is_ok_and(|kind| kind.is_file()))
+        .map(|entry| entry.path())
+        .filter(|path| {
+            path.extension()
+                .is_some_and(|extension| extension == "jsonl")
+        })
+}
+
+fn gemini_messages(path: &Path) -> io::Result<(String, Vec<Value>)> {
+    let mut lines = BufReader::new(File::open(path)?).lines();
+    let header: Value = serde_json::from_str(&lines.next().transpose()?.unwrap_or_default())
+        .map_err(io::Error::other)?;
+    let identifier = header["sessionId"]
+        .as_str()
+        .filter(|id| valid_identifier(id))
+        .ok_or(io::ErrorKind::InvalidData)?;
+    let mut messages = Vec::new();
+    for line in lines {
+        let line = line?;
+        let Ok(mut entry) = serde_json::from_str::<Value>(&line) else {
+            continue;
+        };
+        let role = match entry["type"].as_str() {
+            Some("user") => "user",
+            Some("gemini") => "assistant",
+            _ => continue,
+        };
+        entry["role"] = Value::String(role.to_owned());
+        messages.push(entry);
+    }
+    Ok((identifier.to_owned(), messages))
 }
 
 fn codex_rollout(root: &Path, identifier: Option<&str>) -> io::Result<PathBuf> {

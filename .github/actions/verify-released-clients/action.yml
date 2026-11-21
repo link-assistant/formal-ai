@@ -13,11 +13,12 @@ runs:
     - uses: actions/setup-node@v7
       with: {node-version: 22}
     - uses: oven-sh/setup-bun@v2
-      with: {bun-version-file: .bun-version}
+      with: {bun-version-file: _protocol/.bun-version}
     - name: Install the pinned clients and test dependencies
       shell: bash
       run: |
-        npm install --prefix "$RUNNER_TEMP/report-clients" --no-audit --no-fund @anthropic-ai/claude-code@2.1.325 @openai/codex@0.171.0 opencode-ai@1.19.5
+        cd "$GITHUB_ACTION_PATH/../../.."
+        npm install --prefix "$RUNNER_TEMP/report-clients" --no-audit --no-fund @anthropic-ai/claude-code@2.1.325 @google/gemini-cli@0.66.0 @openai/codex@0.171.0 opencode-ai@1.19.5
         bun scripts/install-client-registry-recovery.mjs bun add -g --ignore-scripts @link-assistant/agent@0.27.0
         bun install --frozen-lockfile --ignore-scripts
         bun install --cwd experiments/agent_cli_e2e/issue_819_tui --frozen-lockfile
@@ -28,7 +29,7 @@ runs:
       env:
         ARTIFACT_DIR: ${{ runner.temp }}/release-client-reports
         RELEASE_BINARY: ${{ inputs.binary }}
-      run: bash experiments/issue_1609_client_reports/verify-release.sh "$RELEASE_BINARY"
+      run: bash "$GITHUB_ACTION_PATH/../../../experiments/issue_1609_client_reports/verify-release.sh" "$GITHUB_WORKSPACE/$RELEASE_BINARY"
     - name: Retain released-client verification logs
       if: ${{ always() }}
       uses: actions/upload-artifact@v7
