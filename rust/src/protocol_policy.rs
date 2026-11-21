@@ -57,11 +57,7 @@ pub(crate) fn defers_procedural_search(
         return false;
     }
     let (prompt, history) = crate::protocol::chat_prompt_and_history(messages);
-    let deferred = crate::solver_handler_how::claims_procedural_request(&prompt, &history);
-    if deferred && crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
-        crate::diagnostic!("debug"; "[trace] agentic_outcome: procedure owned by symbolic solver");
-    }
-    deferred
+    crate::solver_handler_how::claims_procedural_request(&prompt, &history)
 }
 
 pub fn tool_call_refusal_answer() -> SymbolicAnswer {

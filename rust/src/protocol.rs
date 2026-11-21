@@ -563,7 +563,13 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         crate::agentic_coding::append_contract::project_append_contracts(&messages, &request.tools);
     phase("contract_projection");
     let outcome = plan_chat_step(&messages, &tool_names)
-        .filter(|plan| !crate::protocol_policy::defers_procedural_search(plan, &request.messages))
+        .filter(|plan| {
+            let deferred = crate::protocol_policy::defers_procedural_search(plan, &request.messages);
+            if trace && deferred {
+                crate::diagnostic!("debug"; "[trace] agentic_outcome: procedure owned by symbolic solver");
+            }
+            !deferred
+        })
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
     phase("planning");
     if trace {
