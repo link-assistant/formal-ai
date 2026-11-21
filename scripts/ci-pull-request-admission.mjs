@@ -68,6 +68,7 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'scripts/create-changelog-fragment.rs',
   'scripts/ci-native-hive-durations.lino',
   'scripts/ci-native-reasoning-durations.lino',
+  'scripts/ci-native-coding-durations.lino',
   'scripts/plan-test-shards.mjs',
   'scripts/lib/ci-speed-durations.mjs',
   'scripts/lib/ci-speed-shards.mjs',

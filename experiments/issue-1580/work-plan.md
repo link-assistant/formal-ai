@@ -25,19 +25,21 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `fbac28e5` includes main `f574289f` and has 26 terminal workflows:
-22 success, one skip and three failures. All eight native contract families and
-the registry checks pass. The three failures have two actionable causes:
-bounded Git stdout truncates complete change inventories, and a native coverage
-observer omits a helper already compiled into two test owners. Both causes have
-local repairs with regression evidence; next-head hosted validation is pending.
+Published `8d8f1481` includes main `f574289f`. All 32 workflows are terminal:
+29 succeeded, one skipped, Layered CI and CI/CD Pipeline failed. The retained
+terminal collection verifies 178 archived command streams by raw hash and bytes.
+Pipeline reports a failed native source witness, cancelled coding family and
+the resulting failed status aggregator. These terminal job failures and all
+known Layered failures have local repairs; next-head hosted validation remains
+required before acceptance.
 
-The complete 141-entry JavaScript gate replay passes 88 checks with 53 explicit
-skips and zero failures. All 191 maintained issue observations pass. Readable
-JSON leaf formatting preserves exact non-whitespace tokens and parsed values,
-adds reproducible producer formatting, and removes three size warnings. The
-unchanged-limit source scan retains 60 warnings. No native compilation or new
-native execution is claimed. See the [readable JSON checkpoint](../../docs/case-studies/issue-1580/readable-json-headroom-checkpoint.md).
+All 208 maintained issue observations pass. The complete 141-entry JavaScript
+gate replay has 88 passes, 53 explicit native-only skips and zero failures.
+All 60 focused native-runner controls pass; no native compilation or native
+execution is claimed. Five exact-conservation acceptance extractions reduce the
+unchanged-limit source scan to 55 warnings. The before/fixed cleanup race, restored 221-case specification carry inventory
+and failed complete replay remain retained separately. See the
+[Layered and native checkpoint](../../docs/case-studies/issue-1580/layered-and-native-repair-checkpoint.md).
 
 All eight complete template/practice reviews, remaining source warnings,
 original budget/live criteria, CodeQL per-child semantic qualification, complete

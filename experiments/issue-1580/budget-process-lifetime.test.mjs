@@ -10,7 +10,7 @@ const wrapper = fileURLToPath(new URL('../../scripts/run-with-budget-warning.sh'
 const probe = fileURLToPath(new URL('./probe-budget-process-lifetime.py', import.meta.url));
 for (const [fixture, status] of [
   ['expired-parent-success', 124], ['expired-parent-failure', 124], ['term-resistant', 124], ['delayed-kill', 124],
-  ['short-success', 0], ['short-failure', 7], ['warning-only', 0], ['inspection-unavailable', 125],
+  ['short-success', 0], ['short-failure', 7], ['warning-only', 0], ['inspection-unavailable', 125], ['inspection-unavailable-delayed-kill', 125],
 ]) {
   test(`budget owns the live child after its parent exits: ${fixture}`, {
     skip: process.platform !== 'linux' && 'fixture needs the Linux child-subreaper API', timeout: 12000,

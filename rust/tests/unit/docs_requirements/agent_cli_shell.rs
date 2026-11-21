@@ -76,6 +76,18 @@ fn issue_607_shell_planner_and_serve_opt_in_are_traceable() {
     assert_contains_all(
         "canonical capability owner",
         &router,
+        &[
+            "#[path = \"capability_router/tool_classification.rs\"]",
+            "mod tool_classification;",
+            "pub(super) use tool_classification::{",
+            "tool_for,",
+        ],
+    );
+    let classification =
+        read(root.join("rust/src/agentic_coding/capability_router/tool_classification.rs"));
+    assert_contains_all(
+        "compiled capability classification owner",
+        &classification,
         &["seed::agentic_tool_capabilities()", ".aliases"],
     );
     let loader = read(root.join("rust/src/seed/agentic_tool_capabilities.rs"));

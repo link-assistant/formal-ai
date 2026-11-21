@@ -249,6 +249,16 @@ describe('the measured records', () => {
     assert.deepEqual([...parseJavaScriptFileEvents(lines.slice(0, -1).join('\n')).keys()], ['w/done.test.mjs']);
   });
 
+  test('a missing start observation for the first unfinished file cannot promote a later file to a lower bound', () => {
+    const lines = [
+      '2026-11-21T15:00:00Z [test-file] queued w/unobserved-first.test.mjs',
+      '2026-11-21T15:00:00Z [test-file] queued w/later.test.mjs',
+      '2026-11-21T15:00:01Z [test-file] started w/later.test.mjs',
+      '2026-11-21T15:00:05Z The command was terminated after 360s, its full 360s execution budget.',
+    ];
+    assert.deepEqual([...parseJavaScriptFileEvents(lines.join('\n'))], []);
+  });
+
   test('a fast-cohort import raises shared costs without erasing full-suite measurements', () => {
     const table = 'javascript-test-durations\n  default-seconds 1\n  test "full"\n    seconds 50\n  test "grown"\n    seconds 5\n';
     const observed = new Map([

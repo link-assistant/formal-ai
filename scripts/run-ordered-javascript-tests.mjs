@@ -16,6 +16,12 @@ if (option !== '--concurrency' || !Number.isInteger(concurrency) || concurrency 
 // and inherited Node arguments/environment at the runner's standard defaults.
 const selected = new Map(files.map(file => [resolve(file), relative(process.cwd(), resolve(file))]));
 const reported = new Set();
+// Node may enqueue the initial files synchronously inside run(), before an
+// event listener can attach. Record the supplied queue itself before starting.
+for (const file of selected.values()) {
+  console.error('[test-file] queued ' + file);
+  reported.add('queued:' + file);
+}
 function reportFile(state, event) {
   if (event.nesting !== 0 || typeof event.name !== 'string') return;
   const file = selected.get(resolve(event.name));

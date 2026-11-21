@@ -10,9 +10,14 @@ citations against the actual extracted Rust source. The regression fails before
 the comment correction and passes afterward, with all 16 headroom cases passing.
 The focused citation gate then resolves all 1,318 citations and 15 prose paths.
 The other 140 gate results are retained separately from that corrected replay;
-the original complete attempt remains recorded as a failure. The official
-TypeScript writer and its currency check pass for all 903 module projections;
-the comments require no generated TypeScript delta. Runtime code is unchanged.
+the original complete attempt remains recorded as a failure. Correction on
+2026-11-21: the earlier TypeScript-currency claim was incorrect. That retained
+repair ran scripts/self-translate.mjs, which checks the separate translation
+fixture corpus, rather than scripts/translate-es.mjs, which owns the module
+projections. Layered run 44918894968 exposes the stale capability-router
+comments. The follow-up uses the actual projection writer and retains the
+existing runtime test failing before and passing after regeneration. The
+generated delta contains the five comment citations; runtime code is unchanged.
 
 The complete maintained observation suite passes 186 cases. The concurrency,
 runner-recovery, native cache-binding and deployed release-projection checks

@@ -218,8 +218,8 @@ export function parseJavaScriptFileEvents(log) {
   // 2 printed `✔ rust/tests/web/server-dialog-lino.test.mjs` and no summary),
   // so a bound is taken only from a log whose budget actually killed the run.
   const killed = /was terminated after \d+s, its full \d+s execution budget/u.test(log);
-  const blocking = queued.find((file) => started.has(file) && !files.has(file));
-  if (killed && last !== null && blocking) {
+  const blocking = queued.find((file) => !files.has(file));
+  if (killed && last !== null && blocking && started.has(blocking)) {
     files.set(blocking, { seconds: Math.max(0, (last - started.get(blocking)) / 1000), complete: false });
   }
   return files;

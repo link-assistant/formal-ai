@@ -34,15 +34,16 @@ def observe(wrapper, case="expired-parent-success"):
             'short-failure': ('sleep 0.2', 7),
             'warning-only': ('sleep 4', 0),
             'inspection-unavailable': ('sleep 4', 0),
+            'inspection-unavailable-delayed-kill': ("bash -c 'trap \"\" TERM; exec sleep 4'", 0),
         }
-        if case == 'inspection-unavailable':
+        if case in ('inspection-unavailable', 'inspection-unavailable-delayed-kill'):
             bin_directory = Path(temporary) / 'bin'
             bin_directory.mkdir()
             unavailable = bin_directory / 'ps'
             unavailable.write_text('#!/bin/sh\nexit 9\n')
             unavailable.chmod(0o700)
             environment['PATH'] = str(bin_directory) + os.pathsep + environment['PATH']
-        if case == 'delayed-kill':
+        if case in ('delayed-kill', 'inspection-unavailable-delayed-kill'):
             # Model delayed kernel delivery without CPU pressure or unbounded workers.
             # The signaler and worker both have finite lifetimes and are reaped below.
             delayed_kill = Path(temporary) / 'delayed-kill.bash'

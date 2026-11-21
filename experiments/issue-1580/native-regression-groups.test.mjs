@@ -15,6 +15,7 @@ const groups = {
     'cnl_output', 'cnl_parity', 'unknown_reasoning', 'data_files', 'scheduling_contracts',
     'operational_contracts', 'workflow_contracts'],
   coding: ['coding_contracts'], reasoning: ['reasoning_contracts'], hive: ['reasoning_contracts'],
+  'coding-1': ['coding_contracts'], 'coding-2': ['coding_contracts'],
   'reasoning-1': ['reasoning_contracts'], 'reasoning-2': ['reasoning_contracts'],
   benchmarks: ['reasoning_contracts'], interfaces: ['interface_contracts'],
   'hive-1': ['reasoning_contracts'], 'hive-2': ['reasoning_contracts'], 'hive-3': ['reasoning_contracts'],
@@ -53,7 +54,7 @@ process.exit(Number(process.env.NATIVE_GROUP_STATUS));
     return {result, invocations};
   } finally { rmSync(directory, {recursive: true, force: true}); }
 }
-for (const [group, targets] of Object.entries(groups).filter(([name]) => !name.startsWith('hive-') && !name.startsWith('reasoning-'))) {
+for (const [group, targets] of Object.entries(groups).filter(([name]) => !name.startsWith('hive-') && !name.startsWith('reasoning-') && !name.startsWith('coding-'))) {
   test('native group ' + group + ' selects only its complete contract family', {timeout: 15000}, () => {
     const {result, invocations} = observe([group]);
     assert.equal(result.status, 0, result.stderr);
@@ -85,7 +86,7 @@ test('native workflow gives every expensive family its own bounded independent j
   const workflow = YAML.parse(readFileSync('.github/workflows/native-type-check.yml', 'utf8'));
   const matrix = workflow.jobs['contract-family'];
   assert(matrix);
-  assert.deepEqual(matrix.strategy.matrix.group, Object.keys(groups).filter(group => !['core', 'hive', 'reasoning'].includes(group)));
+  assert.deepEqual(matrix.strategy.matrix.group, Object.keys(groups).filter(group => !['core', 'hive', 'reasoning', 'coding'].includes(group)));
   assert.equal(matrix.strategy['fail-fast'], false);
   assert.equal(matrix.strategy['max-parallel'], 2);
   assert.equal(matrix.needs, undefined, 'a failed core job must not suppress independent families');
@@ -95,7 +96,11 @@ test('native workflow gives every expensive family its own bounded independent j
   assert.deepEqual(matrix.permissions, {contents: 'read'});
   assert.deepEqual(matrix.env, {CARGO_BUILD_JOBS: '2', FORMAL_AI_OFFLINE: '1'});
   assert.equal(matrix['continue-on-error'], undefined);
-  assert.equal(matrix.steps.at(-1).run, 'bash scripts/ci-native-regressions.sh "${{ matrix.group }}"');
+  const execute = matrix.steps.at(-1);
+  assert.equal(execute.run, 'bash scripts/run-with-budget-warning.sh 900 "Native contracts ${{ matrix.group }}" bash scripts/ci-native-regressions.sh "${{ matrix.group }}"');
+  assert.deepEqual(execute.env, {TEST_WARN_RATIO_PERCENT: '75'});
+  assert(900 + 2 * 120 < matrix['timeout-minutes'] * 60,
+    'execution and both bounded checkout attempts must expire before the job clock');
   assert(matrix.steps.some(step => step.uses === 'actions/setup-node@v7' && step.with['node-version'] === 22));
   assert.deepEqual(matrix.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
   const core = workflow.jobs.clippy;
@@ -259,6 +264,8 @@ test('the real JavaScript sparse checkout retains only the native weight evidenc
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-hive-checkout-'));
   const evidence = 'experiments/issue-1580/evidence/ci/native-families-7fce5c19/job-136011692528.stdout.gz';
   const reasoningEvidence = 'experiments/issue-1580/evidence/checks/native-reasoning-budget/job-136423862321.stdout.gz';
+  const codingEvidence = [136874234881, 136890696854].map(job =>
+    'experiments/issue-1580/evidence/checks/native-coding-budget/job-' + job + '.stdout.gz');
   const currentHiveEvidence = [136489959548, 136489959657, 136489959672]
     .map(job => 'experiments/issue-1580/evidence/ci/native-families-1d7ba479/job-' + job + '.stdout.gz');
   const unrelated = 'experiments/issue-1580/evidence/ci/unrelated-historical.log.gz';
@@ -270,7 +277,9 @@ test('the real JavaScript sparse checkout retains only the native weight evidenc
   };
   try {
     run('git', ['init', '--quiet']);
-    for (const path of [evidence, ...currentHiveEvidence, reasoningEvidence, 'scripts/ci-native-hive-durations.lino',
+    for (const path of [evidence, ...currentHiveEvidence, ...codingEvidence, reasoningEvidence,
+      'experiments/issue-1580/evidence/checks/native-coding-budget/identity.json',
+      'scripts/ci-native-coding-durations.lino', 'experiments/issue-1580/derive-native-coding-durations.py', 'scripts/ci-native-hive-durations.lino',
       'scripts/ci-native-reasoning-durations.lino', 'experiments/issue-1580/derive-native-reasoning-durations.py',
       'experiments/issue-1580/derive-native-hive-durations.py']) {
       mkdirSync(dirname(join(directory, path)), {recursive: true});
@@ -283,13 +292,14 @@ test('the real JavaScript sparse checkout retains only the native weight evidenc
     run('git', ['config', 'core.sparseCheckout', 'true']);
     writeFileSync(join(directory, '.git/info/sparse-checkout'), checkouts[0].with['sparse-checkout']);
     run('git', ['read-tree', '-mu', 'HEAD']);
-    for (const path of [evidence, ...currentHiveEvidence]) {
+    for (const path of [evidence, ...currentHiveEvidence, ...codingEvidence]) {
       assert(existsSync(join(directory, path)), 'each real weight derivation input must be checked out: ' + path);
     }
     assert(existsSync(join(directory, reasoningEvidence)), 'the reasoning observation must survive the real checkout');
     assert(!existsSync(join(directory, unrelated)), 'historical archives stay excluded');
     run('python3', ['experiments/issue-1580/derive-native-hive-durations.py', '--check']);
     run('python3', ['experiments/issue-1580/derive-native-reasoning-durations.py', '--check']);
+    run('python3', ['experiments/issue-1580/derive-native-coding-durations.py', '--check']);
   } finally { rmSync(directory, {recursive: true, force: true}); }
 });
 
@@ -418,4 +428,54 @@ test('the lightweight script job executes the original split Rust suites and adm
   for (const [file,count] of [['scripts/assemble-requirements-tests.rs',22], ['scripts/normalize-ordered-lists-tests.rs',17]]) {
     assert.equal([...readFileSync(file, 'utf8').matchAll(/^#\[test\]/gmu)].length,count,file);
   }
+});
+
+const codingNames = [...readFileSync('scripts/ci-native-coding-durations.lino', 'utf8')
+  .matchAll(/^  test "([^"]+)"$/gmu)].map(match => match[1]);
+function executedCodingShard(observed) {
+  assert.equal(observed.result.status, 0, observed.result.stderr);
+  assert.equal(observed.invocations.length, 2);
+  const [list, run] = observed.invocations;
+  assert.deepEqual(list.slice(-5), ['--test', 'coding_contracts', '--', '--list', '--format', 'terse'].slice(-5));
+  assert.equal(list[list.indexOf('--test') + 1], 'coding_contracts');
+  assert.deepEqual(run.slice(0, 9), ['test', '--manifest-path', 'rust/Cargo.toml', '--locked',
+    '--no-fail-fast', '--test', 'coding_contracts', '--', '--exact']);
+  assert.deepEqual(run.slice(-2), ['--test-threads=1', '--nocapture']);
+  const names = run.slice(9, -2); assert(names.length > 0);
+  return names;
+}
+test('coding shards cover all 62 observed names and an unseen compiled case exactly once', {timeout: 15000}, () => {
+  const names = [...codingNames, 'future_coding_module::future_case'];
+  const actual = [1, 2].flatMap(index => executedCodingShard(observe(['coding-' + index], 0, {names})));
+  assert.deepEqual(actual.toSorted(), names.toSorted());
+  assert.equal(new Set(actual).size, actual.length);
+  const weights = parseTestDurations(readFileSync('scripts/ci-native-coding-durations.lino', 'utf8'));
+  const {shards, load} = planShards(names, 2, durationLookup(weights, 60));
+  assert.deepEqual(partitionProblems(names, shards), {missing: [], repeated: [], extra: []});
+  assert(Math.max(...load) < 450, 'retained coding costs leave compile headroom in the existing job');
+});
+test('coding shard selection remains deterministic under reordered compiled names', {timeout: 15000}, () => {
+  for (const index of [1, 2]) assert.deepEqual(
+    executedCodingShard(observe(['coding-' + index], 0, {names: codingNames})),
+    executedCodingShard(observe(['coding-' + index], 0, {names: [...codingNames].reverse()})));
+});
+for (const index of [1, 2]) test('coding shard ' + index + ' propagates listing and execution failures', {timeout: 15000}, () => {
+  const listed = observe(['coding-' + index], 0, {names: codingNames, listStatus: 19});
+  assert.equal(listed.result.status, 19); assert.equal(listed.invocations.length, 1);
+  const executed = observe(['coding-' + index], 17, {names: codingNames});
+  assert.equal(executed.result.status, 17); assert.equal(executed.invocations.length, 2);
+});
+for (const names of [[], [codingNames[0]], [codingNames[0], codingNames[0]],
+  ['unqualified_foreign_case', codingNames[0]], ['invalid name', codingNames[0]]]) {
+  test('coding rejects incomplete or foreign listings: ' + JSON.stringify(names), {timeout: 15000}, () => {
+    const observed = observe(['coding-2'], 0, {names});
+    assert.notEqual(observed.result.status, 0);
+    assert.equal(observed.invocations.length, 1);
+  });
+}
+test('coding weights reproduce complete observations while retaining unfinished-case uncertainty', {timeout: 15000}, () => {
+  const result = spawnSync('python3', ['experiments/issue-1580/derive-native-coding-durations.py', '--check'],
+    {encoding: 'utf8', timeout: 10000, maxBuffer: 65536});
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(admission(['scripts/ci-native-coding-durations.lino'])['native-type-check'], true);
 });

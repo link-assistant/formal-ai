@@ -111,6 +111,16 @@ command_is_running() {
   if ! processes="$(ps -eo pgid=,stat=)"; then
     echo "Cannot inspect the process group for the deadline command." >&2
     signal_command_tree KILL
+    # The failed inspection cannot certify termination. Still allow bounded
+    # delivery time before releasing the caller: even SIGKILL is asynchronous.
+    # kill -0 also sees zombies, so never wait indefinitely for an outside reaper.
+    # This remains a monitoring failure (125), including when the group vanishes.
+    monitor_failure_started=$SECONDS
+    for ((monitor_check = 0; monitor_check < 20; monitor_check++)); do
+      kill -0 "-$command_pid" 2> /dev/null || break
+      [ $((SECONDS - monitor_failure_started)) -lt 2 ] || break
+      sleep 0.1 2> /dev/null || sleep 1
+    done
     exit 125
   fi
   awk -v group="$command_pid" '

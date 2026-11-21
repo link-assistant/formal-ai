@@ -1253,6 +1253,7 @@ jobs:
           "$RUNNER_TEMP/desktop-engine-protocol" "$RELEASE_PROTOCOL_COMMIT" engine
       - name: Check out workflow-owned artifact extraction
         uses: actions/checkout@v7
+        timeout-minutes: 5
         with:
           ref: ${{ github.workflow_sha }}
           path: .formal-ai-artifact-protocol

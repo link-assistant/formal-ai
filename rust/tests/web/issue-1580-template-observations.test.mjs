@@ -39,3 +39,9 @@ import '../../../experiments/issue-1580/runner-acquisition-recovery.test.mjs';
 import '../../../experiments/issue-1580/readable-json-headroom.test.mjs';
 
 import '../../../experiments/issue-1580/untrusted-scanner-logs.test.mjs';
+
+import '../../../experiments/issue-1580/layered-fixture-custody.test.mjs';
+
+import '../../../experiments/issue-1580/hosted-javascript-scheduling.test.mjs';
+
+import '../../../experiments/issue-1580/native-capability-trace.test.mjs';

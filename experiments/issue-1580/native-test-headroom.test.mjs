@@ -188,3 +188,67 @@ test('capability routing retains file-size headroom with all public tool entry p
   }
   assert(source.includes('pub(super) fn is_hosted_research_tool('));
 });
+
+for (const [owner, child, names] of [
+  [
+    "rust/tests/unit/specification/openai_compatibility",
+    "streaming_diagnostics",
+    [
+      "streaming_chat_completion_emits_reasoning_content_delta",
+      "streaming_responses_emit_reasoning_summary_events",
+      "authenticated_routes_accept_bearer_token",
+      "authenticated_routes_reject_missing_bearer_token",
+      "rate_limit_metadata_is_exposed",
+      "responses_api_attaches_trace_link"
+    ]
+  ],
+  [
+    "rust/tests/unit/specification/external_benchmarks",
+    "upstream_records",
+    [
+      "upstream_records_are_parsed_into_gradable_cases",
+      "a_full_slice_runs_as_offset_shards_that_add_up"
+    ]
+  ],
+  [
+    "rust/tests/unit/specification/self_hosting_metric",
+    "release_policy",
+    [
+      "release_pipeline_and_ledger_remain_pinned_to_the_metric"
+    ]
+  ],
+  [
+    "rust/tests/unit/specification/text_manipulation",
+    "framed_operands",
+    [
+      "apostrophes_in_english_prose_do_not_swallow_the_quoted_operands",
+      "apostrophe_delimited_operands_are_recognized_in_every_supported_language",
+      "chained_operations_run_in_the_order_the_request_states_them",
+      "counting_questions_ask_the_seeded_count_of_the_framed_unit",
+      "line_prefix_filter_reads_its_argument_and_composes_with_counts",
+      "counting_a_seeded_character_class_counts_its_members"
+    ]
+  ],
+  [
+    "rust/tests/unit/issue_844_statement_merge",
+    "evidence_wording",
+    [
+      "the_evidence_wording_comes_from_the_seed_for_every_supported_language"
+    ]
+  ]
+]) {
+  test(owner + ' keeps warning-free native acceptance owners and original test names', () => {
+    assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/' + child + '.rs'])),
+      {warnings: [], violations: [], embeddedDataViolations: []});
+    const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
+    const extracted = readFileSync(root + '/' + owner + '/' + child + '.rs', 'utf8');
+    const declaration = owner.endsWith('/openai_compatibility')
+      ? 'mod ' + child + ';'
+      : '#[path = "' + owner.split('/').at(-1) + '/' + child + '.rs"]\nmod ' + child + ';';
+    assert(source.includes(declaration), 'the actual parent resolves the extracted module');
+    for (const name of names) {
+      assert(source.includes('#[test]\nfn ' + name + '() {\n    ' + child + '::' + name + '();\n}'));
+      assert(extracted.includes('pub(super) fn ' + name + '() {'));
+    }
+  });
+}
