@@ -66,7 +66,9 @@ mod tool_resource_scopes;
 
 use std::collections::BTreeMap;
 
-use parser::{LinoNode, escape_value, find_closing_quote, parse_codepoint, unescape_value};
+use parser::{
+    LinoNode, escape_value, find_closing_quote, parse_codepoint, split_pipe_list, unescape_value,
+};
 /// The local seed parser, re-exported for the issue #1182 conformance
 /// harness that compares it against `links_notation` until it is deleted,
 /// with the concise lexeme expansion both parsers read through.

@@ -7,9 +7,7 @@ use crate::agentic_coding::planner::{AgenticPlan, plan_chat_step};
 use crate::dreaming_application::{
     applied_amendment_steps, apply_retained_amendments, solve_with_standing_requirements,
 };
-use crate::engine::{
-    SymbolicAnswer, ThinkingStep, estimate_tokens, render_thinking_steps, stable_id,
-};
+use crate::engine::{SymbolicAnswer, estimate_tokens, render_thinking_steps, stable_id};
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
 use crate::protocol_policy::{
