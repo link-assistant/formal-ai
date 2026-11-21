@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.2] - 2026-11-21
+
+### Added
+
+- Serve deterministic, multilingual concept-link vectors through the OpenAI embeddings API and advertise their fixed dimensions in the model listing.
+
 ## [0.356.1] - 2026-11-21
 
 ### Fixed
