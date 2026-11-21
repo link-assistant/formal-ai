@@ -25,19 +25,18 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `ba01ef99` includes main `f574289f`; 31 of 32 workflows are terminal.
-Layered CI rejects stale governed source hashes; its complete object delta is
-reviewed and repaired locally. Both integrity suites fail before and pass after
-the guarded refresh; the maintained replay now includes them and passes all
-253 tests. All 1,189 test identities and 221 carried programs remain.
-Six abbreviated archive names were corrected with every archive byte unchanged.
-Nine additional conserved acceptance-helper extractions reduce source warnings
-to 46. No native compilation or execution is claimed locally.
+Published `ba01ef99` includes main `f574289f`; all 32 workflows are terminal:
+30 succeeded, one skipped and Layered CI rejected stale governed source hashes.
+All nine native pipeline families passed for that published source. The witness
+failure is repaired locally; all 1,189 identities and 221 carried programs remain.
+The latest local replay passes 282 tests, registry/projection currency, formatting
+and affected JavaScript gates. Complete function, implementation, shell and
+metadata extractions reduce source warnings to 28 under unchanged limits.
+No native compilation or execution of these later local changes is claimed.
 
-The still-running Pipeline must finish and every actionable failure must be
-collected before the next push. The complete template/practice comparison,
-remaining warnings, wider verification and final current-head CI remain open.
-Independent reasoning remains 0/20. PR #1581 remains draft and unmerged.
+The complete template/practice comparison, remaining warnings, wider verification
+and final current-head CI remain open. Independent reasoning remains 0/20.
+PR #1581 remains draft and unmerged.
 
 The entries below are retained historical observations, not current-head claims.
 

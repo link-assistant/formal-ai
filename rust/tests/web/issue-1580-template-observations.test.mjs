@@ -55,3 +55,5 @@ import '../../../experiments/issue-1580/metadata-storage-headroom.test.mjs';
 import './self-hosting-ledger-storage.test.mjs';
 
 import '../../../experiments/issue-1580/desktop-manifest-headroom.test.mjs';
+
+import '../../../experiments/issue-1580/runtime-module-headroom.test.mjs';

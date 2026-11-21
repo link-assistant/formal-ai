@@ -680,7 +680,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::engine::DEFAULT_MODEL","canonicalPath":"formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant",
 "nativeType":"&str","returnType":"string","value":"formal-ai","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1910,"end":1954},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"e32c9fd2c973c17fbb05b26438e7ad1506cf51783812c82114196d58fde48e38"},{"path":
+"rust/src/engine.rs","sha256":"0fab82cbcb88f7d4d08029f110d28bf9b209e3ac6ebef68510741dc6b111417d"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
@@ -688,7 +688,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"formal-ai"
 ,"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1910,"end":1954},
 "sourceWitnesses":[{"path":"rust/src/engine.rs","sha256":
-"e32c9fd2c973c17fbb05b26438e7ad1506cf51783812c82114196d58fde48e38"},{"path":"rust/src/lib.rs","sha256":
+"0fab82cbcb88f7d4d08029f110d28bf9b209e3ac6ebef68510741dc6b111417d"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
@@ -696,7 +696,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","canonicalPath":"formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"0.2.0","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4085,"end":4136},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"e32c9fd2c973c17fbb05b26438e7ad1506cf51783812c82114196d58fde48e38"},{"path":
+"rust/src/engine.rs","sha256":"0fab82cbcb88f7d4d08029f110d28bf9b209e3ac6ebef68510741dc6b111417d"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant KNOWLEDGE-SCHEMA-VERSION (exported) (type string) (value (string 0.2.0)))","maintainedJavaScript":
 "export const KNOWLEDGE_SCHEMA_VERSION = '0.2.0';","maintainedTranslationSha256":
