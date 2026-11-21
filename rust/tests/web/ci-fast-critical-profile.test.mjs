@@ -8,6 +8,25 @@ const read = file => YAML.parse(fs.readFileSync(file, 'utf8'));
 const coverage = read('.github/workflows/coverage.yml');
 const release = read('.github/workflows/release.yml');
 const agent = read('.github/workflows/agent-cli-e2e.yml');
+
+test('automatic and manual releases require the client regression gate on their selected artifact', () => {
+  const { jobs } = read('.github/workflows/release-staged.yml');
+  for (const mode of ['auto', 'manual']) {
+    const verify = `${mode}_verify-package`;
+    const steps = jobs[verify].steps;
+    const transfer = steps.findIndex(step => step.run?.endsWith('import binary'));
+    const suite = steps.findIndex(step => step.uses?.endsWith('/verify-released-clients'));
+    const seal = steps.findIndex(step => step.run?.endsWith('capture package'));
+    assert.ok(transfer >= 0 && transfer < suite && suite < seal);
+    assert.equal(steps[suite].if, undefined);
+    assert.equal(steps[suite]['continue-on-error'], undefined);
+    assert.equal(steps[suite].with.binary, 'prepared-release/binary/formal-ai');
+    for (const job of ['publish-crate', 'publish-verify-images']) {
+      assert.ok(jobs[`${mode}_${job}`].needs.includes(verify));
+    }
+  }
+});
+
 function evaluate(expression, context) {
   const source = expression.trim().replace(/^\$\{\{\s*/u, '').replace(/\s*\}\}$/u, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');

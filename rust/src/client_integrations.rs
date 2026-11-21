@@ -29,7 +29,7 @@ use completion::{AuthoringRun, CompletionInvocation, require_completed, run_to_c
 use global_config::{
     render_json_settings, render_toml_settings, undo_global_config, write_global_config,
 };
-use server::maybe_start_server;
+use server::{ServerGuard, maybe_start_server};
 use session_files::{
     TempConfigDir, newest_changed_session_file, print_session_files, session_file_snapshot,
     user_home_dir,
@@ -167,6 +167,7 @@ struct RenderContext {
     google_auth_type: String,
     model_catalog_path: String,
     working_directory: String,
+    report_dialog_id: String,
     /// The context window and output cap the server serves on `/v1/models`,
     /// for clients whose config states a model's limits. Probed on the first
     /// template that names them, never earlier: a client that states no
@@ -266,7 +267,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
             orchestration: args.orchestration,
             stdin_is_terminal,
         },
-        server.as_ref().map(|server| server.output_log.as_path()),
+        server.as_ref(),
         args.orchestration_home.as_deref(),
         args.orchestration_resume.as_deref(),
     )
@@ -378,6 +379,7 @@ fn render_context(
         model_selector: String::new(),
         api_key_env: integration.api_key_env.clone(),
         api_key,
+        report_dialog_id: String::new(),
         protocol_base_env,
         google_auth_type,
         model_catalog_path: String::new(),
@@ -400,7 +402,7 @@ fn run_ephemeral(
     caller: &CallerArgs,
     context: &RenderContext,
     mut options: InvocationOptions,
-    temporary_server_log: Option<&Path>,
+    server: Option<&ServerGuard>,
     orchestration_home: Option<&Path>,
     orchestration_resume: Option<&str>,
 ) -> Result<(), Box<dyn Error>> {
@@ -411,6 +413,19 @@ fn run_ephemeral(
     let mut session_home = None;
     let resolved_command = resolve_integration_command(integration);
     let mut command = Command::new(&resolved_command);
+    command.env("FORMAL_AI_REPORT_CLIENT", &integration.id);
+    if integration.id == "agent" {
+        // This client sends a native session header only for its hosted
+        // provider. Set a distinct id for each wrapper invocation instead.
+        context.report_dialog_id = crate::engine::stable_id(
+            "agent",
+            &format!("{}:{:?}", std::process::id(), std::time::SystemTime::now()),
+        );
+        command.env("FORMAL_AI_REPORT_DIALOG_ID", &context.report_dialog_id);
+    }
+    if let Some(directory) = server.and_then(|server| server.dialog_directory.as_ref()) {
+        command.env("FORMAL_AI_DIALOG_LOG_DIR", directory);
+    }
     for env in &invocation.env {
         command.env(
             render_template(&env.key, &context),
@@ -474,6 +489,9 @@ fn run_ephemeral(
             render_template(&invocation.temp_home_env, &context)
         };
         command.env(home_env, &home);
+        if integration.id == "codex" {
+            command.env("CODEX_HOME", home.join(".codex"));
+        }
     }
     if let Some(temp) = temporary_home {
         temp_dirs.push(temp);
@@ -540,7 +558,7 @@ fn run_ephemeral(
         .map(PathBuf::from)
         .filter(|path| path.exists())
         .map(|path| fs::canonicalize(&path).unwrap_or(path))
-        .or_else(|| temporary_server_log.map(Path::to_path_buf));
+        .or_else(|| server.map(|server| server.output_log.clone()));
     print_session_files(
         integration,
         session_file.as_deref(),
@@ -638,14 +656,12 @@ fn build_invocation_args(
         );
     }
     let caller_options = caller.options();
-    let mut effective_user_args = Vec::new();
-    if options.orchestration {
-        effective_user_args.extend(overlay_args(
-            &invocation.orchestration_args,
-            caller,
-            context,
-        ));
-    }
+    let defaults = if options.orchestration {
+        &invocation.orchestration_args
+    } else {
+        &invocation.default_arguments
+    };
+    let mut effective_user_args = overlay_args(defaults, caller, context);
     if let Some(session_id) = orchestration_resume {
         effective_user_args.extend(
             invocation
@@ -738,6 +754,7 @@ fn render_template(template: &str, context: &RenderContext) -> String {
         .replace("{protocol_base_env}", &context.protocol_base_env)
         .replace("{google_auth_type}", &context.google_auth_type)
         .replace("{model_catalog_path}", &context.model_catalog_path)
+        .replace("{report_dialog_id}", &context.report_dialog_id)
         .replace("{working_directory}", &context.working_directory);
     if ![CONTEXT_WINDOW_SLOT, MAX_OUTPUT_SLOT]
         .iter()

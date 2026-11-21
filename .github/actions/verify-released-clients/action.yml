@@ -1,0 +1,39 @@
+name: Verify released CLI client greetings and reports
+description: Exercise the selected Formal AI release binary with stock CLI clients.
+inputs:
+  binary:
+    description: Path to the verified release binary
+    required: true
+  artifact:
+    description: Artifact name for the verification logs
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v7
+      with: {node-version: 22}
+    - uses: oven-sh/setup-bun@v2
+      with: {bun-version-file: .bun-version}
+    - name: Install the pinned clients and test dependencies
+      shell: bash
+      run: |
+        npm install --prefix "$RUNNER_TEMP/report-clients" --no-audit --no-fund @anthropic-ai/claude-code@2.1.325 @openai/codex@0.171.0 opencode-ai@1.19.5
+        bun scripts/install-client-registry-recovery.mjs bun add -g --ignore-scripts @link-assistant/agent@0.27.0
+        bun install --frozen-lockfile --ignore-scripts
+        bun install --cwd experiments/agent_cli_e2e/issue_819_tui --frozen-lockfile
+        echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+        echo "$RUNNER_TEMP/report-clients/node_modules/.bin" >> "$GITHUB_PATH"
+    - name: Verify greetings and report receipts
+      shell: bash
+      env:
+        ARTIFACT_DIR: ${{ runner.temp }}/release-client-reports
+        RELEASE_BINARY: ${{ inputs.binary }}
+      run: bash experiments/issue_1609_client_reports/verify-release.sh "$RELEASE_BINARY"
+    - name: Retain released-client verification logs
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.artifact }}
+        path: ${{ runner.temp }}/release-client-reports
+        if-no-files-found: ignore
+        retention-days: 7

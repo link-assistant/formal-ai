@@ -1,10 +1,10 @@
 //! Lifecycle and compatibility checks for wrapper-managed Formal AI servers.
 
 use std::error::Error;
-use std::fs::{self, OpenOptions};
+use std::fs;
 use std::io::{Read as _, Write as _};
 use std::net::TcpStream;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::time::{Duration, Instant};
 
@@ -13,6 +13,7 @@ use serde_json::Value;
 pub(super) struct ServerGuard {
     child: Child,
     pub(super) output_log: PathBuf,
+    pub(super) dialog_directory: Option<PathBuf>,
 }
 
 impl Drop for ServerGuard {
@@ -32,26 +33,34 @@ pub(super) fn maybe_start_server(
         return Ok(None);
     }
     let binary = formal_ai_binary_path()?;
-    let output_log = temporary_server_output_log(port)?;
-    let output = OpenOptions::new()
-        .create(true)
-        .truncate(true)
-        .write(true)
-        .open(&output_log)?;
-    let mut child = Command::new(binary)
-        .args([
-            "serve",
-            "--agent-mode",
-            "--host",
-            &host,
-            "--port",
-            &port.to_string(),
-        ])
+    let capture = crate::dialog_log::verbose_enabled();
+    let dialog_directory = capture.then(crate::dialog_log::retained_directory);
+    let output_log = temporary_server_output_log(port, dialog_directory.as_deref())?;
+    let output = crate::dialog_log::open_private_log(&output_log)?;
+    let mut command = Command::new(binary);
+    command.args([
+        "serve",
+        "--agent-mode",
+        "--host",
+        &host,
+        "--port",
+        &port.to_string(),
+    ]);
+    if let Some(directory) = &dialog_directory {
+        command.env("FORMAL_AI_DIALOG_LOG_DIR", directory);
+    } else {
+        command.env("FORMAL_AI_SILENT", "1");
+    }
+    let mut child = command
         .stdout(Stdio::from(output.try_clone()?))
         .stderr(Stdio::from(output))
         .spawn()?;
     wait_for_server(&address, &mut child)?;
-    Ok(Some(ServerGuard { child, output_log }))
+    Ok(Some(ServerGuard {
+        child,
+        output_log,
+        dialog_directory,
+    }))
 }
 
 /// The context window and output cap the server at `base_url` serves on
@@ -114,8 +123,12 @@ fn verify_server_version(mut stream: TcpStream, address: &str) -> Result<(), Box
     Ok(())
 }
 
-fn temporary_server_output_log(port: u16) -> Result<PathBuf, Box<dyn Error>> {
-    let directory = crate::dialog_log::configured_directory()
+fn temporary_server_output_log(
+    port: u16,
+    dialog_directory: Option<&Path>,
+) -> Result<PathBuf, Box<dyn Error>> {
+    let directory = dialog_directory
+        .map(Path::to_path_buf)
         .unwrap_or_else(|| std::env::temp_dir().join("formal-ai-dialog-logs"));
     fs::create_dir_all(&directory)?;
     let pid = std::process::id();

@@ -20,7 +20,7 @@ import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, planOne } from './plan.mjs';
 import { Progress } from './progress.mjs';
 import { ReportScript, shellQuote } from './report_script.mjs';
-import { StepOutcome, stepOutcome } from './tool_result.mjs';
+import { observedPayload, StepOutcome, stepOutcome } from './tool_result.mjs';
 
 const CONTEXT_SESSION_FLAG = ' --session ';
 const SOURCE_FLAG = ' --source ';
@@ -265,6 +265,21 @@ function commandFor(target, contents, messages, reportIndex, dialog) {
   }
 }
 
+export function reportCommandIntent(command) {
+  const submit = agenticMessage('report-issue-submit-command') + CONTEXT_SESSION_FLAG;
+  const learn = agenticMessage('report_issue_context_learn_command') + CONTEXT_SESSION_FLAG;
+  const exportContext = agenticMessage('report_issue_context_export_command') + CONTEXT_SESSION_FLAG;
+  for (const line of command.split('\n')) {
+    if (line.startsWith(submit)) return 'agentic-action-report-github';
+    if (line.startsWith(learn)) return 'agentic-action-report-learn';
+    if (line.startsWith(exportContext)) {
+      if (line.includes(SOURCE_FLAG + 'harness' + OUTPUT_FLAG)) return 'agentic-action-report-harness';
+      if (line.includes(SOURCE_FLAG + 'server' + OUTPUT_FLAG)) return 'agentic-action-report-server';
+    }
+  }
+  return null;
+}
+
 /** Mirrors `fn export_command`. */
 function exportCommand(dialog, contents, output) {
   const script = new ReportScript();
@@ -329,23 +344,30 @@ function titleTurns(messages, reportIndex) {
 function reportFinished(targets, runOutputs, language) {
   const ordered = executionOrder(targets);
   const failures = [];
+  let issueLink;
+  let githubFailed = false;
+  const prefix = 'https://github.com/' + formalAiRepo() + '/issues/';
   ordered.forEach((target, index) => {
     if (index >= runOutputs.length) return;
-    if (stepOutcome(runOutputs[index]) === StepOutcome.Failed) failures.push([target, trim(runOutputs[index])]);
+    const raw = runOutputs[index];
+    const payload = observedPayload(raw);
+    const failed = stepOutcome(raw) === StepOutcome.Failed || !trim(payload ?? '');
+    if (target === 'github_issue') {
+      if (!failed) issueLink = splitWhitespace(payload).find(token => token.startsWith(prefix) && /^[1-9][0-9]*$/u.test(token.slice(prefix.length)));
+      githubFailed = issueLink === undefined;
+    }
+    if (failed || (target === 'github_issue' && githubFailed)) {
+      failures.push([target, trim(raw) || config('issue-report-no-receipt')]);
+    }
   });
+  const created = issueLink === undefined ? undefined : renderConfig('issue_report_created_with_url', [['url', issueLink]]);
   if (failures.length) {
     const detail = failures.map(([target, output]) => `${targetLabel(target)}: ${output}`).join('\n');
-    return `${config('issue_report_failed')}\n\n\`\`\`text\n${detail}\n\`\`\``;
+    const heading = config(githubFailed ? 'issue_report_failed' : 'issue-report-destinations-failed');
+    return [created, `${heading}\n\n\`\`\`text\n${detail}\n\`\`\``].filter(Boolean).join('\n\n');
   }
+  if (created !== undefined) return created;
   const trimmed = runOutputs.map(trim).filter(canonicalUnaryNonempty).join('\n');
-  if (targets.includes('github_issue')) {
-    const submission = runOutputs[ordered.indexOf('github_issue')] ?? '';
-    const prefix = 'https://github.com/' + formalAiRepo() + '/issues/';
-    const url = splitWhitespace(submission).find(token => token.startsWith(prefix) && /^[1-9][0-9]*$/u.test(token.slice(prefix.length)));
-    if (url !== undefined) return renderConfig('issue_report_created_with_url', [['url', url]]);
-    const failed = config('issue_report_failed');
-    return trimmed === '' ? failed : `${failed}\n\n\`\`\`text\n${trimmed}\n\`\`\``;
-  }
   const exported = localized('agentic_report_exported', language);
   return trimmed === '' ? exported : `${exported}\n\n\`\`\`text\n${trimmed}\n\`\`\``;
 }

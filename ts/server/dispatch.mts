@@ -117,7 +117,7 @@ export async function dispatch(ctx, request, signal) {
     const response = await dispatchRoute(ctx, request);
     if (!ctx.ephemeral) recordApiExchangeIfEnabled(request, response, authorized, ctx.env || process.env, ctx.logger);
     return response;
-  });
+  }, request);
 }
 
 async function dispatchDynamicMeta(ctx, request, signal) {

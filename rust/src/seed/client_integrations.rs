@@ -62,6 +62,7 @@ pub struct ClientIntegrationInvocation {
     pub prepend_args: Vec<String>,
     pub args: Vec<String>,
     pub orchestration_args: Vec<String>,
+    pub default_arguments: Vec<String>,
     pub vendor_orchestration_args: Vec<String>,
     pub orchestration_arg_replacements: Vec<(String, String)>,
     pub no_summarize_args: Vec<String>,
@@ -390,6 +391,7 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
             "prepend_arg" => invocation.prepend_args.push(child.id.clone()),
             "arg" => invocation.args.push(child.id.clone()),
             "orchestration_arg" => invocation.orchestration_args.push(child.id.clone()),
+            "default-argument" => invocation.default_arguments.push(child.id.clone()),
             "vendor_orchestration_arg" => {
                 invocation.vendor_orchestration_args.push(child.id.clone());
             }

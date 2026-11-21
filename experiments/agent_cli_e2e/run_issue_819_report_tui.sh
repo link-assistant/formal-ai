@@ -140,6 +140,7 @@ for action in \
   '--source harness' \
   '--source server' \
   '--source both' \
+  'formal-ai context learn --session' \
   'gh gist create --filename formal-ai-harness-context-' \
   'gh gist create --filename formal-ai-server-context-' \
   'gh gist create --filename context.lino' \
@@ -151,6 +152,9 @@ for provenance in '- **Session**:' '- **Context source**: both' '- **Surface**: 
   grep -Fq -- "$provenance" "$ISSUE_BODY" \
     || fail "the resulting issue body omitted report provenance: $provenance"
 done
+session="$(sed -n 's/^- \*\*Session\*\*: //p' "$ISSUE_BODY")"
+[ -n "$session" ] && grep -Fq "formal-ai context learn --session $session" "$ACTIONS_LOG" \
+  || fail "the learning action did not use the report session"
 grep -Fq '## Reproduction of dialog' "$ISSUE_BODY" \
   || fail "the resulting issue body omitted the exported conversation"
 
@@ -166,11 +170,10 @@ server_files=("$GIST_DIR"/formal-ai-server-context-*.lino)
 
 grep -Fq 'conversation' "${harness_files[0]}" \
   || fail "the harness context did not contain the conversation"
-if ! grep -Fq 'server_logs' "${server_files[0]}"; then
-  grep -Fq 'context_export_failure' "${server_files[0]}" \
-    && grep -Fq 'source server' "${server_files[0]}" \
-    || fail "the server context was neither exported nor given an explicit diagnostic"
-fi
+grep -Fq 'server_logs' "${server_files[0]}" \
+  || fail "the server context did not contain the report conversation"
+grep -Eq 'server_message_count: [1-9][0-9]*$' "$ISSUE_BODY" \
+  || fail "the report contained no messages from the server"
 grep -Fq 'conversation' "$GIST_DIR/context.lino" \
   || fail "the merged context did not contain the conversation"
 

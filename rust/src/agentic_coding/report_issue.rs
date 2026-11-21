@@ -446,6 +446,36 @@ fn learning_command(dialog_id: &str) -> String {
     script.render()
 }
 
+pub(super) fn report_command_intent(command: &str) -> Option<&'static str> {
+    for line in command.lines() {
+        if line
+            .strip_prefix(REPORT_SUBMIT_COMMAND)
+            .is_some_and(|arguments| arguments.starts_with(CONTEXT_SESSION_FLAG))
+        {
+            return Some("agentic-action-report-github");
+        }
+        if line
+            .strip_prefix(CONTEXT_LEARN_COMMAND)
+            .is_some_and(|arguments| arguments.starts_with(CONTEXT_SESSION_FLAG))
+        {
+            return Some("agentic-action-report-learn");
+        }
+        if let Some((source, _)) = line
+            .strip_prefix(CONTEXT_EXPORT_COMMAND)
+            .and_then(|arguments| arguments.strip_prefix(CONTEXT_SESSION_FLAG))
+            .and_then(|arguments| arguments.split_once(SOURCE_FLAG))
+            .and_then(|(_, source)| source.split_once(OUTPUT_FLAG))
+        {
+            match source {
+                "harness" => return Some("agentic-action-report-harness"),
+                "server" => return Some("agentic-action-report-server"),
+                _ => {}
+            }
+        }
+    }
+    None
+}
+
 /// A named local CLI action owns preparation and one bounded GitHub mutation.
 /// Its explicit create-issue name remains visible to the host approval layer.
 fn github_command(
@@ -530,33 +560,54 @@ fn title_turns(messages: &[ChatMessage], report_index: usize) -> Vec<ReportTurn>
 
 /// Narrate what the destinations reported, over every command that ran.
 fn report_finished(targets: &[ReportTarget], run_outputs: &[String], language: &str) -> String {
-    // Issue #1105 (RC7): the reported session answered "Reported to GitHub" with
-    // the server export having failed, because the only evidence this function
-    // read was the issue URL. Every target ran its own command and every one of
-    // those outputs is here, so a failure in any of them is checkable -- and a
-    // report that names one destination while another silently failed is the
-    // false success the issue was filed for.
-    //
-    // `step_outcome` is the same classifier the verification path already uses,
-    // so "failed" means here what it means everywhere else: a non-zero status,
-    // an explicit error field, or output that reads as one.
-    let ordered = execution_order(targets);
-    let failures = ordered
-        .iter()
-        .zip(run_outputs)
-        .filter(|(_, output)| {
-            super::tool_result::step_outcome(output) == super::tool_result::StepOutcome::Failed
-        })
-        .map(|(target, output)| (*target, output.trim()))
-        .collect::<Vec<_>>();
+    let mut failures = Vec::new();
+    let mut created = None;
+    let mut github_failed = false;
+    let prefix = format!("https://github.com/{}/issues/", formal_ai_repo());
+    for (target, raw) in execution_order(targets).into_iter().zip(run_outputs) {
+        let payload = super::tool_result::observed_payload(raw).unwrap_or_default();
+        let failed = payload.trim().is_empty()
+            || super::tool_result::step_outcome(raw) == super::tool_result::StepOutcome::Failed;
+        if target == ReportTarget::GithubIssue {
+            let issue_link = (!failed)
+                .then(|| {
+                    payload.split_whitespace().find(|token| {
+                        token.strip_prefix(&prefix).is_some_and(|number| {
+                            !number.is_empty()
+                                && !number.starts_with('0')
+                                && number.bytes().all(|byte| byte.is_ascii_digit())
+                        })
+                    })
+                })
+                .flatten();
+            created =
+                issue_link.map(|url| render("issue_report_created_with_url", &[("url", url)]));
+            github_failed = created.is_none();
+        }
+        if failed || (target == ReportTarget::GithubIssue && github_failed) {
+            let detail = if raw.trim().is_empty() {
+                config("issue-report-no-receipt")
+            } else {
+                raw.trim().to_owned()
+            };
+            failures.push(format!("{}: {detail}", target_label(target)));
+        }
+    }
     if !failures.is_empty() {
-        let detail = failures
-            .iter()
-            .map(|(target, output)| format!("{}: {output}", target_label(*target)))
-            .collect::<Vec<_>>()
-            .join("\n");
-        let failed = config("issue_report_failed");
-        return format!("{failed}\n\n```text\n{detail}\n```");
+        let heading = config(if github_failed {
+            "issue_report_failed"
+        } else {
+            "issue-report-destinations-failed"
+        });
+        let detail = failures.join("\n");
+        let failure = format!("{heading}\n\n```text\n{detail}\n```");
+        return created.map_or_else(
+            || failure.clone(),
+            |created| format!("{created}\n\n{failure}"),
+        );
+    }
+    if let Some(created) = created {
+        return created;
     }
     let trimmed = run_outputs
         .iter()
@@ -564,32 +615,6 @@ fn report_finished(targets: &[ReportTarget], run_outputs: &[String], language: &
         .filter(|output| !output.is_empty())
         .collect::<Vec<_>>()
         .join("\n");
-    if targets.contains(&ReportTarget::GithubIssue) {
-        // Honesty rule (#839, §5): the URL GitHub printed is the only evidence
-        // that an issue exists. Without it the report failed, whatever else the
-        // exports may have printed.
-        let submission = ordered
-            .iter()
-            .position(|target| *target == ReportTarget::GithubIssue)
-            .and_then(|index| run_outputs.get(index))
-            .map_or("", String::as_str);
-        let prefix = format!("https://github.com/{}/issues/", formal_ai_repo());
-        if let Some(url) = submission.split_whitespace().find(|token| {
-            token.strip_prefix(&prefix).is_some_and(|number| {
-                !number.is_empty()
-                    && !number.starts_with('0')
-                    && number.bytes().all(|byte| byte.is_ascii_digit())
-            })
-        }) {
-            return render("issue_report_created_with_url", &[("url", url)]);
-        }
-        let failed = config("issue_report_failed");
-        return if trimmed.is_empty() {
-            failed
-        } else {
-            format!("{failed}\n\n```text\n{trimmed}\n```")
-        };
-    }
     let exported = localized("agentic_report_exported", language);
     if trimmed.is_empty() {
         exported

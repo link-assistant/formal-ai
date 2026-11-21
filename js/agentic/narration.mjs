@@ -7,6 +7,7 @@ import { programExecution, programLanguageByAlias, programTaskByAlias } from './
 import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { narrationFor } from './local_search.mjs';
+import { reportCommandIntent } from './report_issue.mjs';
 import { commandArgument } from './tool_result.mjs';
 
 const TARGET_SLOT = '{target}';
@@ -24,6 +25,11 @@ export function toolActionNarration(prompt, calls) {
   if (!first) return '';
   const capability = classifyTool(first.tool);
   if (capability === Capability.Run) {
+    const command = commandArgument(first.arguments);
+    if (command !== null) {
+      const report = reportCommandIntent(command);
+      if (report !== null) return localizedResponse(report, language) ?? '';
+    }
     const found = narrationFor(prompt);
     if (found) {
       const template = localizedResponse(found.intent, language);
@@ -31,6 +37,10 @@ export function toolActionNarration(prompt, calls) {
     }
     const intent = programCommandIntent(prompt, first.arguments);
     if (intent !== null) return localizedResponse(intent, language) ?? '';
+    const program = command?.trim().split(/\s/u, 1)[0].split('/').at(-1);
+    if (program && /^[A-Za-z0-9][A-Za-z0-9_.-]{0,47}$/u.test(program)) {
+      return (localizedResponse('agentic-action-run-program-name', language) ?? '').replace(TARGET_SLOT, program);
+    }
   }
   const intent = capability === null ? 'agentic_action_generic' : capabilityIntent(capability);
   const template = localizedResponse(intent, language) ?? '';

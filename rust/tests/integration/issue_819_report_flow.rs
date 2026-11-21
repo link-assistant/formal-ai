@@ -27,6 +27,57 @@ const COMMAND_LEAKS: [&str; 8] = [
     "before continuing",
 ];
 
+#[test]
+fn report_steps_name_each_action_in_every_supported_language() {
+    for (language, harness, server, learn, github) in [
+        (
+            "en",
+            "client’s conversation log",
+            "server log",
+            "learn from this conversation",
+            "GitHub repository",
+        ),
+        (
+            "ru",
+            "журнал диалога из клиента",
+            "серверный журнал",
+            "для обучения",
+            "на GitHub",
+        ),
+        (
+            "hi",
+            "क्लाइंट का बातचीत लॉग",
+            "सर्वर लॉग",
+            "सिखाऊँगा",
+            "GitHub रिपॉज़िटरी",
+        ),
+        (
+            "zh",
+            "客户端的对话日志",
+            "服务器日志",
+            "对话中学习",
+            "GitHub 仓库",
+        ),
+        (
+            "es",
+            "registro de la conversación de este cliente",
+            "registro del servidor",
+            "aprenda de esta conversación",
+            "repositorio de Formal AI en GitHub",
+        ),
+    ] {
+        for (intent, expected) in [
+            ("agentic-action-report-harness", harness),
+            ("agentic-action-report-server", server),
+            ("agentic-action-report-learn", learn),
+            ("agentic-action-report-github", github),
+        ] {
+            let text = formal_ai::seed::localized_response(intent, language).unwrap();
+            assert!(text.contains(expected), "{language} {intent}: {text}");
+        }
+    }
+}
+
 /// The `OpenCode` client advertises a shell tool, a structured question tool and
 /// web search — exactly the trio the reported session had available.
 fn opencode_tools() -> Value {

@@ -1,4 +1,44 @@
 meanings
+  agentic-action-run-program-name
+    defined-by answer
+    role localized_response_template
+    precondition "a shell tool is about to run a program with a displayable name"
+    effect "names the program in the user's language without repeating its arguments"
+    unit "not applicable"
+    example "I’ll run `printf`."
+    grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-action-report-harness
+    defined-by answer
+    role localized_response_template
+    precondition "the selected report action exports the client conversation"
+    effect "describes the client log export before it executes"
+    unit "not applicable"
+    example "I’ll export this client’s conversation log."
+    grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-action-report-server
+    defined-by answer
+    role localized_response_template
+    precondition "the selected report action exports the server conversation"
+    effect "describes the server log export before it executes"
+    unit "not applicable"
+    example "I’ll export Formal AI’s server log for this conversation."
+    grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-action-report-learn
+    defined-by answer
+    role localized_response_template
+    precondition "the report selection asks Formal AI to learn from this conversation"
+    effect "describes the learning action before it executes"
+    unit "not applicable"
+    example "I’ll have Formal AI learn from this conversation."
+    grounding "data/seed/multilingual-responses-agentic.lino"
+  agentic-action-report-github
+    defined-by answer
+    role localized_response_template
+    precondition "the report selection authorizes creating an issue in the configured repository"
+    effect "describes the destination before filing the issue"
+    unit "not applicable"
+    example "I’ll file the report in the Formal AI GitHub repository."
+    grounding "data/seed/multilingual-responses-agentic.lino"
   practical-help
     defined-by concept
     role procedure

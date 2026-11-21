@@ -3,6 +3,8 @@
 import { readRepoFile } from './lino.mjs';
 import { plainText, chatPromptAndHistory } from './chat-request.mjs';
 import { thinkingStep } from './thinking.mjs';
+import { generateChatTitle } from '../agentic/crate/summarization_dialog.mjs';
+import { detect } from '../agentic/crate/language.mjs';
 
 const rules = JSON.parse(readRepoFile('data/meta/request-context.json'));
 const re = pattern => new RegExp(pattern, 'iu');
@@ -12,10 +14,16 @@ const languageOf = value => Object.keys(rules.languages).find(code => rules.lang
 export function formalizeRequest(messages) {
   const { prompt, history } = chatPromptAndHistory(messages);
   const constraints = [];
+  let titleTask = false;
   messages.forEach((message, index) => {
     const role = message.role.toLowerCase();
     if (!['system', 'developer'].includes(role)) return;
-    for (const text of plainText(message.content).split(re(rules.clauseSeparator)).map(text => text.trim()).filter(Boolean)) {
+    const content = plainText(message.content);
+    if (role === 'system' && re(rules.titleTask).test(content)) {
+      titleTask = true;
+      return;
+    }
+    for (const text of content.split(re(rules.clauseSeparator)).map(text => text.trim()).filter(Boolean)) {
       // Style guidance and section introductions do not specify a response schema.
       if (re(rules.responseGuidance).test(text)) continue;
       const add = (kind, value) => constraints.push({ role, index, text, kind, value, status: 'pending' });
@@ -48,9 +56,9 @@ export function formalizeRequest(messages) {
   }
   const active = kind => constraints.find(item => item.kind === kind && item.status !== 'superseded');
   const format = active('format')?.value;
-  const preserveAnswerBody = Boolean(active('labels') || active('length') || (format && format !== rules.plainFormat));
+  const preserveAnswerBody = Boolean(titleTask || active('labels') || active('length') || (format && format !== rules.plainFormat));
   const answerText = format === rules.supportedFormat ? body => JSON.parse(body)[rules.jsonAnswerKey] : body => body;
-  return { prompt, history, constraints, active, preserveAnswerBody, answerText, language: languageOf(active('language')?.value) };
+  return { prompt, history, constraints, active, titleTask, preserveAnswerBody, answerText, language: languageOf(active('language')?.value) };
 }
 
 function subject(text) {
@@ -60,6 +68,13 @@ function subject(text) {
 
 /** Short-circuit only a request with grounded dialogue data or a binary task. */
 export function contextualAnswer(context) {
+  if (context.titleTask && context.prompt.trim()) {
+    const prompt = context.prompt.trim();
+    const language = detect(prompt);
+    const title = generateChatTitle([{ role: 'user', text: prompt }], language) || prompt;
+    const line = title.trim().split(/\r?\n/u, 1)[0];
+    return answer(Array.from(line).slice(0, rules.titleMaxCharacters).join('').trim(), 'conversation_title');
+  }
   const recall = captures('recall', context.prompt);
   if (recall) {
     for (let index = context.history.length - 1; index >= 0; index--) {
