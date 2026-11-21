@@ -92,3 +92,17 @@ for (const [owner, child, names] of [
     }
   });
 }
+
+test('Hive commit expectations retain headroom without moving native test names', () => {
+  const owner = 'rust/tests/unit/issue_1133_hive_mind_three_runs/extended';
+  assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/commit_expectations.rs'])),
+    {warnings: [], violations: [], embeddedDataViolations: []});
+  const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
+  assert.match(source, /^mod commit_expectations;$/mu);
+  const helpers = readFileSync(root + '/' + owner + '/commit_expectations.rs', 'utf8');
+  for (const name of ['commit_phase_prompt', 'expected_owned_recipe_commit', 'assert_named_branch_push']) {
+    assert(helpers.includes('pub(super) fn ' + name + '('));
+    assert(source.includes(name));
+  }
+  assert(!helpers.includes('#[test]'), 'only fixture helpers move out of the original test module');
+});
