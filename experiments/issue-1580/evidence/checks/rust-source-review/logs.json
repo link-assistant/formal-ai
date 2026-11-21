@@ -868,5 +868,90 @@
     "file": "rust-registry-latest-review-07.log.gz",
     "rawSha256": "623b5282dca255aa3ab62ae1c2af01c186ad55f41cd39b8f20c0fb4377953d29",
     "archiveSha256": "c3218c3ec9ab7250f29447553cb193c055795197511f3d82015eafcf1491d543"
+  },
+  {
+    "file": "rust-issue19-ci-review-01.log.gz",
+    "rawSha256": "c62f6da144078df4fec0da3f67a9b8b3905627083540b62676ab0ee65a0fe710",
+    "archiveSha256": "afc7582ff897dc4a52c4e2615789b0025039874abd2643634f98b9e2b2c4fa2f"
+  },
+  {
+    "file": "rust-issue19-ci-review-02.log.gz",
+    "rawSha256": "6008783c72582caf1d3d15ff56c71c8a6c398667046afaf1a77f9f90c6bbf39c",
+    "archiveSha256": "7494e4366336e7e51f9cd4ada3524c6b681e63a8bca24df053f6410ce7cc74f5"
+  },
+  {
+    "file": "rust-issue19-ci-review-03.log.gz",
+    "rawSha256": "6da4676c7813475084bd4dde05d1fb86add7970a809d8a19eb1d4bb9719fc9c0",
+    "archiveSha256": "ac9052e0e20fd43fdfe56fbfc34606ff60173b488a0940e9166c96c3bb724f0c"
+  },
+  {
+    "file": "rust-issue19-ci-review-04.log.gz",
+    "rawSha256": "71b25f6275f563c8a6058829c4bd23c41827d4dba00371f2f6b8adc8e699c015",
+    "archiveSha256": "b881e94f61363cd73a60c2d3ff6a723eca1982238d5a79500742f2df8891e334"
+  },
+  {
+    "file": "rust-issue19-ci-review-05.log.gz",
+    "rawSha256": "ff2e2dd42691041ae591ac1f5948171a4df93fabc4bb61d1db0be0f03901e082",
+    "archiveSha256": "75665e87bd05b34c8917b951b10e25cc2aa71b72e1315b33d2eef91699f67990"
+  },
+  {
+    "file": "rust-issue19-ci-review-06.log.gz",
+    "rawSha256": "a4b974d4c11ad479a827ae9eedfdabbdef3e566adb6d82bc690b8abbf36cbbb5",
+    "archiveSha256": "0aa2d8b36702507448a6db92c1b772f29b0d97097a45ce6ac6657233362d5b35"
+  },
+  {
+    "file": "rust-issue19-ci-review-07.log.gz",
+    "rawSha256": "53100a91f4bd25497873e8d9c08d8a87df67e38e87449b01e8bbd5dbcf05743d",
+    "archiveSha256": "23e118a10fefb0b5bd2c4ecc5016fa80e7af3e180ee50ae27ced01d1f6a39660"
+  },
+  {
+    "file": "rust-issue19-ci-review-08.log.gz",
+    "rawSha256": "4c402bd00349525e08a0381bdae267350222acaf94876b49b75df49d9a5498bb",
+    "archiveSha256": "7b259c0723d0cf3e3e14fcbfcce240f24afd5822c6b64377a8a9980c640a8f96"
+  },
+  {
+    "file": "rust-issue19-ci-review-09.log.gz",
+    "rawSha256": "8c72fbc044028efeb9831011d827adbfe76634857a72607f5c4e01e489da079c",
+    "archiveSha256": "b7db2c82b96cc0a19355d4cc3f7d4c9594d502c53d70a7d1e558a3b47905f1f5"
+  },
+  {
+    "file": "rust-recent-merged-review-01.log.gz",
+    "rawSha256": "b1353f8566ff2f9004788baa5e2a5d50b7eb602ab9eec13db340910072e66263",
+    "archiveSha256": "3b7e38583572e646c6494c0f47cc62e7e8da853b12fd96f849c22ef50f627347"
+  },
+  {
+    "file": "rust-recent-merged-review-02.log.gz",
+    "rawSha256": "c2c652def74e1e4aa96360ff91e2a2fdbfd7c397d0b87c078e0e1149e454413e",
+    "archiveSha256": "2d9c4de5938480b170ebfbce35e6f31264d6eb46211b05093f82d4424b3a5373"
+  },
+  {
+    "file": "rust-recent-merged-review-03.log.gz",
+    "rawSha256": "47c2762e65d918b308f8561ab67bbe269eff02344c255024c9a63b5cbe252d53",
+    "archiveSha256": "fee4620b41434df5db7c21c290dbf2d724a1465c675871600464d53829cc238d"
+  },
+  {
+    "file": "rust-recent-merged-review-04.log.gz",
+    "rawSha256": "16f7ebb0dacf77c4626259117a477e3d773e44205206d3a5aa1135e9784c1384",
+    "archiveSha256": "97a9b47da0f54e8e13c2a6324476afa243f0f6908c4857b2243a81676585bdaa"
+  },
+  {
+    "file": "rust-recent-merged-review-05.log.gz",
+    "rawSha256": "1dc684180bb61d08a38f0ecb2fec13352b8ba321597d766d0d0255e288237c21",
+    "archiveSha256": "3e172efee89cf89c32db9c67659a43cdd13d7f8ac30b9815de3a212f08644cad"
+  },
+  {
+    "file": "rust-recent-merged-review-06.log.gz",
+    "rawSha256": "4878257603947232dcbcb4b231ff0f7d0ac85044fa5e2e4283b7640beadb44af",
+    "archiveSha256": "6b11d7adfbcc99f72166147e9bc5324a9c37c680b0b7d3f507e35882ff375e94"
+  },
+  {
+    "file": "rust-recent-merged-review-07.log.gz",
+    "rawSha256": "23a55ca1ed02225f2b9cdaf64c67c79d78ba02426a17bebe240296387333b519",
+    "archiveSha256": "ce4154695e638f86dc4ab1f4c50d1d9e1015eae0b34d34e4bbb369016bfdc736"
+  },
+  {
+    "file": "rust-recent-merged-review-08.log.gz",
+    "rawSha256": "688f675a2db909e2f6f68f23733344c6d29debe45bc9783c735c00eb9ca4b1c0",
+    "archiveSha256": "e14e6814db217a3d333934d4262fb98840a9be00e7a5eb9c5cd98f5e062a30c6"
   }
 ]

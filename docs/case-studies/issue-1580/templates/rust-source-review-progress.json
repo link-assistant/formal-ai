@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-21T03:09:59.870327+00:00",
+  "observedAt": "2026-11-21T03:36:56.876045+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 353,
-  "fullyReadSourceLines": 51512,
+  "fullyReadFiles": 355,
+  "fullyReadSourceLines": 52823,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -2094,6 +2094,65 @@
       "formalAiPracticeImplementationVerified": false
     },
     {
+      "path": "dev/log/issues/247/pulls/248/recent-merged-prs.json",
+      "lines": 1,
+      "sha256": "de6439df7715b4fd3cd14bc8929ceb9f40146dfaa67f1007b15a477d06b62c03",
+      "readLogs": [
+        "rust-recent-merged-review-01.log.gz",
+        "rust-recent-merged-review-02.log.gz",
+        "rust-recent-merged-review-03.log.gz",
+        "rust-recent-merged-review-04.log.gz",
+        "rust-recent-merged-review-05.log.gz",
+        "rust-recent-merged-review-06.log.gz",
+        "rust-recent-merged-review-07.log.gz",
+        "rust-recent-merged-review-08.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "literalReadLines": 1,
+      "literalReadByteRanges": [
+        [
+          0,
+          9000
+        ],
+        [
+          9000,
+          18000
+        ],
+        [
+          18000,
+          27000
+        ],
+        [
+          27000,
+          36000
+        ],
+        [
+          36000,
+          45000
+        ],
+        [
+          45000,
+          54000
+        ],
+        [
+          54000,
+          63000
+        ],
+        [
+          63000,
+          66338
+        ]
+      ],
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false,
+      "reviewNote": "Eight contiguous escaped UTF-8 byte ranges were displayed completely and reassemble the original 66,338 bytes exactly. Embedded upstream excerpts are explicitly truncated by their historical producer; reading this complete artifact does not imply reading every referenced upstream page or present runtime verification."
+    },
+    {
       "path": "dev/log/issues/247/pulls/248/registry-latest.json",
       "lines": 2346,
       "sha256": "fb1657b446f189c58075b496dd3a1d58da9619c078c6e2435f4ed6dc0b9d5865",
@@ -2611,6 +2670,33 @@
       "literalReadLines": 239,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "docs/case-studies/issue-19/ci-logs/ci-run-20885464993.log.gz",
+      "lines": 1310,
+      "sha256": "d4eaf069fcaf9357a5a53242fb1118140ab2d878055a80d2548b7201db23bf84",
+      "decodedSha256": "125c194c419c0c925caa4ceab1325efad1f0d65ab87c99f823b634f8713d58fb",
+      "readLogs": [
+        "rust-issue19-ci-review-01.log.gz",
+        "rust-issue19-ci-review-02.log.gz",
+        "rust-issue19-ci-review-03.log.gz",
+        "rust-issue19-ci-review-04.log.gz",
+        "rust-issue19-ci-review-05.log.gz",
+        "rust-issue19-ci-review-06.log.gz",
+        "rust-issue19-ci-review-07.log.gz",
+        "rust-issue19-ci-review-08.log.gz",
+        "rust-issue19-ci-review-09.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          1310
+        ]
+      ],
+      "literalReadLines": 1310,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false,
+      "reviewNote": "All nine contiguous escaped-line ranges were displayed completely; their exact UTF-8 concatenation equals the decoded original stream. This historical Agent repository run is not current Rust-template or Formal AI runtime evidence."
     },
     {
       "path": "docs/case-studies/issue-19/pr-114-data/issue-113-details.txt",
@@ -7257,6 +7343,22 @@
       ],
       "assessment": "The complete 2,346-line pinned historical registry snapshot is literally read and reassembled to its original SHA256. Cargo rust_version fields, nullable engine declarations, npm Node minimum patch requirements, Python requirement markers and optional extras, and action release notes are separate compatibility inputs. The historical dependency-review major upgrade explicitly requires an Actions Runner minimum; a CodeQL bundle release tag is not the same artifact as a CodeQL action release. Preserve registry snapshot provenance and check actual resolved consumers, runtime/runner pins, immutable action identities and application versus script dependencies before applying updates. This historical snapshot establishes neither current latest versions nor current package safety, release success or complete template-practice adoption.",
       "status": "literal-source-comparison-and-current-consumer-verification-pending"
+    },
+    {
+      "practice": "Bind release working directories and publication to the tested source identity",
+      "templateEvidence": [
+        "docs/case-studies/issue-19/ci-logs/ci-run-20885464993.log.gz"
+      ],
+      "assessment": "All 1,310 decoded historical lines are literally read and reassembled exactly. This is the Agent repository run at 1347edef98519b56b62c10f340740eecc50b7558, not a present Rust-template run. Its three Bun platform jobs each pass 17 JSON protocol tests, while the release fails at lines 1294\u20131295 with ENOENT opening ./js/package.json after changing package version from 0.7.0 to 0.8.0. The release first checks out the trigger revision, observes remote main advanced to 4f7a0d469c67403139a8017960b8e74ee52d8031, then rebases before versioning. A successful earlier test cannot qualify that changed checkout. Preserve process-owned working directories, explicit package roots, refreshed source qualification before side effects, pinned runtime/runner identities and least permissions. The historical npm audit count and mutable latest Bun/runner selections do not establish current security or compatibility. This source comparison supplies no present package publication or complete practice adoption proof.",
+      "status": "complete-literal-decoded-log-review-current-practice-runtime-open"
+    },
+    {
+      "practice": "Qualify grouped dependency changes against complete validation, including negative controls",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/recent-merged-prs.json"
+      ],
+      "assessment": "The complete pinned eight-PR artifact is literally read. Six dependency PRs cover actions, clap, lino-arguments, serde_json, toml and regex; major/runtime/compiler changes, changed offsets and no_std behavior require relevant compatibility checks rather than interpreting a merged bot PR as current verification. PR 240 describes all-external-Docker-stage dependency coverage, exact populated directory semantics, updater bypass controls and a nested Dockerfile negative case. PR 238 describes whole-PR base-to-merge detection, timeout/error aggregation, safe complete SARIF diagnostics, restore-only PR caches, real source-size boundaries and source-scoped sibling release independence. Preserve these actual behavioral controls, require current exact-head proof before publication, and distinguish package-root discovery from native Cargo requirements. This historical conversation artifact has intentionally truncated quoted upstream pages and supplies no independent present Formal AI practice implementation or publication proof.",
+      "status": "complete-literal-byte-review-current-practice-runtime-open"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
