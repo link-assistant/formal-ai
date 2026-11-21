@@ -650,3 +650,24 @@ The complete checkpoint and immutable receipts are in docs/case-studies/issue-15
 - [ ] Finish the current-head CI collection, complete the final full local gate
   replay, and batch every actionable failure before one gated push. Next-head
   hosted native and newly admitted budget behavior remain unverified.
+
+## Included Rust string expansion observation
+
+- [x] Inspect the pinned public CodeQL MacroCall, LiteralExpr and AstNode APIs.
+  Retain original source identities and complete fetched library text.
+- [x] Add a default-off read-only producer query that returns every source
+  include_str invocation, preserving complete literal text and explicitly
+  reporting unavailable expansions and absent expansion-root control-flow nodes.
+  A missing expansion is an observation, never semantic coverage credit.
+- [x] Keep the existing macro-context profile and security suite intact. Reject
+  unknown profiles, incomplete tables and runtime warnings while preserving
+  command failures and removing temporary bundled-pack query files.
+- [x] Pass two new adapter controls and all 21 maintained security cases.
+  Preserve the initial scratch-script quoting failures and unknown local gate
+  name separately. Four correctly selected source gates pass afterward.
+- [x] Replace stale Rust security execution-pending assessments with the actual
+  successful 126-payload producer and 631 unexpanded-position observations.
+  Fresh authenticated data still has main Actions alerts 130 and 131 open.
+- [ ] Compile and execute the new query in the next read-only hosted producer.
+  Fixtures provide no local query semantics; all macro semantics, credentials,
+  complete template/practice comparison and broader acceptance remain open.

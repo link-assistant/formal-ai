@@ -143,6 +143,18 @@ jobs:
           --codeql "$CODEQL_BINARY" --databases "$CODEQL_DATABASES"
           --output "${{ runner.temp }}/codeql-results/macro-contexts"
 
+      - name: Observe included Rust string payloads
+        if: ${{ github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts }}
+        timeout-minutes: 4
+        env:
+          CODEQL_BINARY: ${{ steps.codeql-init.outputs.codeql-path }}
+          CODEQL_DATABASES: ${{ steps.codeql-analyze.outputs.db-locations }}
+        run: >-
+          python3 experiments/issue-1580/codeql-macro-contexts/observe.py
+          --codeql "$CODEQL_BINARY" --databases "$CODEQL_DATABASES"
+          --profile included-string-payloads
+          --output "${{ runner.temp }}/codeql-results/included-string-payloads"
+
       - name: Reject unresolved CodeQL findings
         if: ${{ !cancelled() }}
         run: node scripts/check-codeql-results.mjs "${{ runner.temp }}/codeql-results"

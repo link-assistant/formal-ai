@@ -6178,14 +6178,16 @@
         "scripts/preflight-credentials.sh",
         "scripts/check-cargo-warnings.sh"
       ],
-      "assessment": "The six complete pinned helper/test sources are read. The template SARIF helper checks every recursively discovered nonsymlink report, findings and extraction notifications. Formal AI currently invokes CodeQL analysis without this explicit result gate. The template probes crates publish authorization without a tarball while stating that ownership still needs real publication; Formal AI records the token as unknown. Both registry preflights open a session but ignore cancellation failures. Cargo own-manifest warnings need a separate check from rustc deny-warnings. Applicable adoption, runtime regressions and hosted proof remain unfinished.",
-      "status": "source-compared-implementation-unverified",
+      "assessment": "All six pinned helper/test sources were read. Formal AI now checks every original recursively discovered SARIF report, invocation diagnostic and unresolved finding; failed optional diagnostics still reach the original report gate. The exact published-head read-only producer run 44836216888 succeeded with zero Rust/Actions findings and no warning/error invocation notifications, with all 126 producer files retained and hash verified. Two main-branch Actions cache-trust alerts remain open at the fresh API observation. The compiled macro query observes 631 unexpanded source calls, so semantic completeness is explicitly unproven. The crates token scope remains unknown; no publication permission is inferred from a public lookup or fixture. Live credential publication, all macro semantics and full template practice acceptance remain unfinished.",
+      "status": "hosted-original-report-gate-verified-semantic-and-credential-qualification-open",
       "formalAiPaths": [
         ".github/workflows/security.yml",
+        "scripts/check-codeql-results.mjs",
         "scripts/preflight-credentials.sh",
+        "rust/tests/web/security-codeql-results.test.mjs",
         "rust/tests/web/release-preflight-checkout.test.mjs"
       ],
-      "verification": null
+      "verification": "experiments/issue-1580/evidence/ci/codeql-producer-3e705675/macro-observation-assessment.json"
     },
     {
       "practice": "Release helper I/O, heading boundaries, package identity and pinned tool dependencies",
@@ -6687,9 +6689,9 @@
         "scripts/check-codeql-results.mjs",
         ".github/workflows/security.yml"
       ],
-      "assessment": "The pinned report helper is adapted locally with invocation diagnostic validation, exact output/archive binding and negative controls. Eight JavaScript groups, eighteen profile checks, ninety-seven workflow-policy checks and Rust formatting pass; full final-source gates and actual hosted native/producer CodeQL execution remain pending. Two existing main Actions alerts remain open and the trust-model heuristic is reported upstream without suppression. Normalized API SARIF lacks producer invocation evidence and earns no clean live-analysis credit.",
-      "status": "local-negative-controls-passed-hosted-and-finding-resolution-pending",
-      "verification": "experiments/issue-1580/evidence/checks/codeql-result-gate/"
+      "assessment": "The adapted gate preserves original report/invocation evidence and has focused malformed-report, diagnostic, findings, path and command-output controls. Hosted read-only run 44836216888 at published head 3e705675 completed with zero Rust/Actions findings and zero warning/error invocation notifications; all 126 producer payload identities were verified. The exact bundled query compiled and evaluated 122553 source macro contexts in 2228 files with a resolved 2607 MiB heap and no runtime diagnostics. All 631 original informational positions correspond to unexpanded contexts; neither that positional identity nor the clean SARIF proves their semantics. Main Actions alerts 130 and 131 remain open in fresh authenticated API data. The new include_str payload/control-flow observation is default-off, restricted to the read-only producer and locally adapter-tested; its actual hosted compilation/evaluation is pending. Complete macro qualification and external trust-model resolution remain open.",
+      "status": "hosted-producer-and-report-gate-verified-semantic-qualification-open",
+      "verification": "experiments/issue-1580/evidence/ci/codeql-producer-3e705675/macro-observation-assessment.json"
     },
     {
       "practice": "Release guards, rename-complete Git inventories and original validated revision custody across every native workflow",
@@ -6721,7 +6723,7 @@
         "docs/issue-237.md",
         "docs/issue-239-plan.md"
       ],
-      "assessment": "All 1,161 numbered lines in eight pinned guides match their immutable blob identities. Preserve explicit prerequisite success checks around always/not-cancelled release predicates; distinguish only HTTP 404 registry absence; keep secrets in publishing environments; validate the whole Git index; bound transport and unacquired-runner retries without calling a retry test execution. Preserve OIDC-first token fallback, exact version-and-digest pins, rename-complete PR inventories, genuine package isolation, and errors/timeouts link reports. CodeQL must aggregate every original report/run/diagnostic; normalized API exports do not establish extraction success. A manual read-only producer verification path is drafted separately and has not run. Source review does not establish counterpart runtime behavior, external trust registration or completion of any template practice.",
+      "assessment": "All 1,161 numbered lines in eight pinned guides match their immutable blob identities. Preserve explicit prerequisite success checks around always/not-cancelled release predicates; distinguish only HTTP 404 registry absence; keep secrets in publishing environments; validate the whole Git index; bound transport and unacquired-runner retries without calling a retry test execution. Preserve OIDC-first token fallback, exact version-and-digest pins, rename-complete PR inventories, genuine package isolation, and errors/timeouts link reports. CodeQL must aggregate every original report/run/diagnostic; normalized API exports do not establish extraction success. A manual read-only producer verification path is drafted separately and has not run. Source review does not establish counterpart runtime behavior, external trust registration or completion of any template practice. The subsequently completed manual read-only producer run 44836216888 is retained in current evidence and supersedes the historical pending-run sentence above; it does not prove external trust registration or every practice.",
       "status": "literal-source-comparison-and-counterpart-runtime-pending"
     },
     {
@@ -7000,13 +7002,13 @@
       "templateEvidence": [
         "dev/log/issues/247/pulls/248/codeql-msrv-upstream.json"
       ],
-      "assessment": "The complete historical CodeQL #22793 report and all comments distinguish a hidden Cargo minimum-version refusal from ordinary extraction success. The reporter explicitly limits --ignore-rust-version to the version guard; it cannot supply compiler features a build script actually needs. The snapshot records the issue closed and two upstream fixes, which supplies no present-runtime proof. Formal AI pins the sysroot/compiler ABI and preserves original SARIF plus an explicit default-off database query. Actual hosted query execution and semantic qualification of all informational macro records remain open; do not copy the historical bypass or infer semantic coverage from source-path extraction.",
+      "assessment": "The complete historical CodeQL #22793 report and all comments distinguish a hidden Cargo minimum-version refusal from ordinary extraction success. The reporter explicitly limits --ignore-rust-version to the version guard; it cannot supply compiler features a build script actually needs. The snapshot records the issue closed and two upstream fixes, which supplies no present-runtime proof. Formal AI pins the sysroot/compiler ABI and preserves original SARIF plus an explicit default-off database query. Actual hosted query execution and semantic qualification of all informational macro records remain open; do not copy the historical bypass or infer semantic coverage from source-path extraction. Current read-only hosted producer run 44836216888 now compiles and executes the exact default-off macro-context query against its completed database: 122553 contexts, 631 original positions all unexpanded, 2607 MiB resolved heap, no query runtime diagnostics. This supersedes earlier execution-pending wording while leaving complete per-macro semantic qualification open.",
       "status": "complete-historical-report-read-current-runtime-qualification-open",
       "formalAiPaths": [
         ".github/workflows/security.yml",
         "experiments/issue-1580/codeql-macro-contexts/observe.py"
       ],
-      "verification": null
+      "verification": "experiments/issue-1580/evidence/ci/codeql-producer-3e705675/macro-observation-assessment.json"
     },
     {
       "practice": "Preserve exact audit dependency graphs and distinguish contradictory reproduction claims",
@@ -7038,14 +7040,14 @@
       "templateEvidence": [
         "dev/log/issues/247/pulls/248/codeql-macros-upstream.json"
       ],
-      "assessment": "Read the complete historical CodeQL #19982 report and all twelve comments, including the correction that the first repository-scale workaround was not yet experimentally verified. The subsequent measured run removes 20,725 standard-library expansion failures but reveals 355 procedural-macro and three OUT_DIR failures. An upstream rust-analyzer fix and a later successful consumer do not prove every distinct cause fixed; the snapshot remains open. The authenticated PNG is verified and visually read: rust-analyzer reports expected Expr in the cw_serde ExecuteMsg case. Formal AI already replaces the obsolete 1.94 sysroot with the exact 1.99 ABI for its newer bundle and retains strict original SARIF/context checks. The new explicit hosted macro observation must still be assessed against original locations; a clean SARIF or complete source inventory is not semantic-macro proof.",
+      "assessment": "Read the complete historical CodeQL #19982 report and all twelve comments, including the correction that the first repository-scale workaround was not yet experimentally verified. The subsequent measured run removes 20,725 standard-library expansion failures but reveals 355 procedural-macro and three OUT_DIR failures. An upstream rust-analyzer fix and a later successful consumer do not prove every distinct cause fixed; the snapshot remains open. The authenticated PNG is verified and visually read: rust-analyzer reports expected Expr in the cw_serde ExecuteMsg case. Formal AI already replaces the obsolete 1.94 sysroot with the exact 1.99 ABI for its newer bundle and retains strict original SARIF/context checks. The new explicit hosted macro observation must still be assessed against original locations; a clean SARIF or complete source inventory is not semantic-macro proof. Current read-only hosted producer run 44836216888 now compiles and executes the exact default-off macro-context query against its completed database: 122553 contexts, 631 original positions all unexpanded, 2607 MiB resolved heap, no query runtime diagnostics. This supersedes earlier execution-pending wording while leaving complete per-macro semantic qualification open.",
       "status": "complete-historical-report-read-exact-producer-semantic-qualification-open",
       "formalAiPaths": [
         ".github/workflows/security.yml",
         "scripts/codeql-rust-projects.py",
         "experiments/issue-1580/codeql-macro-contexts/MacroContexts.ql"
       ],
-      "verification": null
+      "verification": "experiments/issue-1580/evidence/ci/codeql-producer-3e705675/macro-observation-assessment.json"
     },
     {
       "practice": "Bind CI freshness and preview claims to actual dated observations",

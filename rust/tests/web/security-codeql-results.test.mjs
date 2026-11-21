@@ -1,3 +1,4 @@
+import '../../../experiments/issue-1580/codeql-included-string-observation.test.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, chmodSync } from 'node:fs';
