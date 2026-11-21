@@ -15,6 +15,15 @@ test('included string observation retains unavailable expansions and leaves secu
   assert.match(probe.run, /--profile included-string-payloads --trace-evaluation/);
   assert.match(probe.run, /codeql-results\/included-string-payloads/);
   assert.ok(steps.indexOf(probe) > steps.findIndex(step => step.id === 'codeql-analyze'));
+  const analysis = steps.find(step => step.id === 'codeql-analyze');
+  const cacheOptions = analysis.env.CODEQL_ACTION_EXTRA_OPTIONS;
+  assert.match(cacheOptions, /github.job == 'codeql-readonly'/);
+  assert.match(cacheOptions, /matrix.language == 'rust' && inputs.macro-contexts/);
+  const options = JSON.parse(cacheOptions.match(/'(\{"database".*?\})'/u)[1]);
+  assert.deepEqual(options.database['run-queries'], [
+    '--no-expect-discarded-cache', '--keep-full-cache', '--max-disk-cache=4096',
+  ]);
+  assert.match(cacheOptions, /\|\| '\{\}'/u);
   const gate = steps.find(step => step.name === 'Reject unresolved CodeQL findings');
   assert.ok(steps.indexOf(gate) > steps.indexOf(probe));
   assert.equal(gate.if, '${{ !cancelled() }}');
@@ -55,6 +64,10 @@ elif args[:2]==['resolve','ram']:
     assert '--ram=4096' in args and '--off-heap-ram=0' in args
     print('["-J-Xmx2400M"]')
 elif args[:2]==['query','run']:
+    cache=root/'completed-producer-relations'
+    if '--keep-full-cache' not in args:
+        cache.unlink(missing_ok=True)
+    assert '--max-disk-cache=4096' in args
     assert '--warnings=error' in args
     trace=[value for value in args if value.startswith('--evaluator-log=')]
     assert bool(trace)==(mode=='traced-success')
@@ -92,6 +105,8 @@ else:
     for mode in ['success','traced-success','empty','wrong-columns','short-row','query-failure','query-warning','unknown-profile']:
         (root/'mode').write_text(mode)
         (root/'calls.jsonl').write_text('')
+        cache=root/'completed-producer-relations'
+        cache.write_bytes(b'original producer cache fixture')
         output=root/('output-'+mode)
         try:
             a.observe(executable,{'rust':str(database)},output,
@@ -100,6 +115,7 @@ else:
             assert mode in ['success','traced-success'],mode
         except (ValueError,RuntimeError):
             assert mode not in ['success','traced-success'],mode
+        assert cache.read_bytes()==b'original producer cache fixture',mode
         manifest=json.loads((output/'manifest.json').read_text())
         assert manifest['complete']==(mode in ['success','traced-success']),mode
         assert manifest['semanticCoverageProven'] is False

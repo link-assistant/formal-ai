@@ -71,3 +71,19 @@ nodes; this establishes no semantic coverage. The additional default-off
 `included-string-payloads` profile retains complete literal text and explicit
 missing-expansion/CFG state. Its local adapter controls pass; actual hosted
 query compilation/evaluation and semantic qualification remain pending.
+
+The opt-in Rust investigation retains intermediate results from the standard
+analysis and both observers. Run 44848465533 compiled the payload query but
+timed out during whole-database name binding before its control-flow result
+was available. Cache eviction as the cause remains an inference. The standard
+action used `--expect-discarded-cache`, and each observer used a 512 MiB cache
+cap. The investigation now passes
+`--no-expect-discarded-cache --keep-full-cache --max-disk-cache=4096` to the
+action's query evaluation and retains that cache across both observations.
+The four-minute step bounds, memory policy, nine output columns and security
+gate still apply. Hosted execution must qualify this cache-retention repair;
+the fixture regression does not execute CodeQL or establish macro semantics.
+
+Cache option contracts: [query run](https://docs.github.com/en/code-security/reference/code-scanning/codeql/codeql-cli-manual/query-run),
+[producer action](https://github.com/github/codeql-action/blob/1bd86f2fdb4b86187fa4059f16f31a3202acc9ea/src/analyze.ts#L461),
+[action argument order](https://github.com/github/codeql-action/blob/1bd86f2fdb4b86187fa4059f16f31a3202acc9ea/src/codeql.ts#L774).

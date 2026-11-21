@@ -87,7 +87,10 @@ def observe(codeql, databases, output, profile="macro-contexts", trace_evaluatio
             manifest["traceEvaluation"] = trace_evaluation
             run("query", ["query", "run", "--database=" + str(database),
                           "--output=" + str(output / (profile + ".bqrs")),
-                          "--threads=2", *memory_options, "--max-disk-cache=512",
+                          # Both observations reuse the producer's cached loading stages.
+                          # Avoid cache cleanup between these related observations.
+                          "--threads=2", *memory_options, "--max-disk-cache=4096",
+                          "--keep-full-cache",
                           "--warnings=error", *trace_options, str(installed)])
         diagnostics = [line for line in (output / "query.stderr").read_text().splitlines()
                        if re.match(r"^(?:WARNING|WARN|ERROR):", line)]

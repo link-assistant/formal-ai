@@ -519,7 +519,8 @@ elif args[:2]==['resolve','ram']:
             'nonzero-offheap':['-J-Xmx2400M','--off-heap-ram=512']}
     print(json.dumps(values.get(mode,['-J-Xmx2400M'])))
 elif args[:2]==['query','run']:
-    assert '--threads=2' in args and '--ram=4096' in args and '--max-disk-cache=512' in args
+    assert '--threads=2' in args and '--ram=4096' in args and '--max-disk-cache=4096' in args
+    assert '--keep-full-cache' in args, 'the following payload query reuses the same database cache'
     assert '--warnings=error' in args
     assert '--off-heap-ram=0' in args, 'the child evaluator must resolve the same heap-only policy'
     assert not any(a.startswith('-J') for a in args), 'launcher heap flags do not survive child sizing'

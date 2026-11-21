@@ -128,6 +128,14 @@ jobs:
 
       - uses: github/codeql-action/analyze@v4
         id: codeql-analyze
+        env:
+          # The following observations query the same completed Rust dataset.
+          # Retain its stages for the following name-binding and control-flow
+          # observations; hosted execution must qualify their cache reuse.
+          CODEQL_ACTION_EXTRA_OPTIONS: >-
+            ${{ github.job == 'codeql-readonly' && matrix.language == 'rust' && inputs.macro-contexts
+              && '{"database":{"run-queries":["--no-expect-discarded-cache","--keep-full-cache","--max-disk-cache=4096"]}}'
+              || '{}' }}
         with:
           output: ${{ runner.temp }}/codeql-results
           upload: ${{ github.job == 'codeql' && 'always' || 'never' }}
