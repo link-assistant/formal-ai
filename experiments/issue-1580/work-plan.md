@@ -25,18 +25,18 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `ba01ef99` includes main `f574289f`; all 32 workflows are terminal:
-30 succeeded, one skipped and Layered CI rejected stale governed source hashes.
-All nine native pipeline families passed for that published source. The witness
-failure is repaired locally; all 1,189 identities and 221 carried programs remain.
-The latest local replay passes 307 tests, registry/projection currency, formatting
-and affected JavaScript gates. Complete function, implementation, shell and
-metadata extractions reduce source warnings to 10 under unchanged limits.
-No native compilation or execution of these later local changes is claimed.
+Published `9e945eae` includes main `f574289f`. Layered CI records seven
+failures; six source/transport checks are repaired locally with regression
+coverage. All 309 maintained issue cases and five affected JavaScript gates
+pass. The stale WASM worker input receipt still requires actual hosted
+regeneration; an inactive, admission-tested proposal awaits the explicit build
+policy exception. The published Pipeline run is still being collected.
 
-The complete template/practice comparison, remaining warnings, wider verification
-and final current-head CI remain open. Independent reasoning remains 0/20.
-PR #1581 remains draft and unmerged.
+Complete function, implementation, shell and metadata extractions reduce source
+warnings to 10 under unchanged limits. No native compilation or execution of
+these later local changes is claimed. Complete template/practice comparison,
+remaining warnings, wider verification and final current-head CI remain open.
+Independent reasoning remains 0/20. PR #1581 remains draft and unmerged.
 
 The entries below are retained historical observations, not current-head claims.
 

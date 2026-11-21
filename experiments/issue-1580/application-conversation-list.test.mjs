@@ -6,7 +6,7 @@ import { test } from 'node:test';
 
 const app = new URL('../../js/app/application.jsx', import.meta.url);
 const hooks = new URL('../../js/app/application-conversation-hooks.jsx', import.meta.url);
-const before = new URL('./evidence/checks/conversation-list-hook/application-before.jsx.gz', import.meta.url);
+const before = new URL('./fixtures/conversation-list-hook/application-before.jsx.gz', import.meta.url);
 const read = url => readFileSync(url, 'utf8');
 const segments = [
   ['  // Issue #27: on mount', '  const {\n    handleExportMemory'],

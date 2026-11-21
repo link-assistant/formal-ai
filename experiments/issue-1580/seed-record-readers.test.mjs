@@ -18,7 +18,7 @@ function api(loader,records=true){
 }
 const plain=value=>JSON.parse(JSON.stringify(value));
 test('all concept, context and fact fields equal the original reader on real seed documents',()=>{
- const previous=api(gunzipSync(readFileSync(new URL('./evidence/checks/seed-record-readers/previous-loader.js.gz',import.meta.url))).toString());
+ const previous=api(gunzipSync(readFileSync(new URL('./fixtures/seed-record-readers/previous-loader.js.gz',import.meta.url))).toString());
  const current=api(read('js/seed_loader.js'));
  for(const file of ['data/seed/concepts.lino','data/seed/concept-contexts.lino','data/seed/facts.lino','data/seed/fact-captures.lino']){
   const text=read(file),oldRoot=previous.parse(text),newRoot=current.parse(text);

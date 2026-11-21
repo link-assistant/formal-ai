@@ -1348,6 +1348,7 @@ jobs:
           RELEASE_PRODUCER_OUTPUT_KEYS: incomplete
         run: |
           bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/desktop-release-manifest.sh"
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/release-producer-output-receipt.mjs" "$GITHUB_OUTPUT" "$FORMAL_AI_NATIVE_PROTOCOL_DIR/producer-output-workflow.yml" "$FORMAL_AI_NATIVE_PROTOCOL_DIR/protocol-selection.json" producer-output-receipt.json
       - name: Attest canonical producer outputs
         uses: actions/attest@v4
         with:

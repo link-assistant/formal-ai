@@ -1,0 +1,403 @@
+{
+  "records": [
+    {
+      "path": "seed-head-ci-repairs/application-conversation-list.test.mjs.before.gz.gz",
+      "rawBytes": 1966,
+      "rawSha256": "adb123fa3c107ea18c5b17e2c2a75a655abc6989d007ef8fd7848476243d8e9f",
+      "archiveSha256": "a4c33fc5a553353c69b6b258a126232b47b5502ec02bdefde6f536b332ceab0c"
+    },
+    {
+      "path": "seed-head-ci-repairs/desktop-manifest-headroom.test.mjs.before.gz.gz",
+      "rawBytes": 821,
+      "rawSha256": "770899cf1654f0304fc1da5d6d84880c2af17560bcfce2cd871f2f304b380717",
+      "archiveSha256": "5eff55b26c527252c57f29ff72018fa3bac99256a921c3cb747107bba73d87bb"
+    },
+    {
+      "path": "seed-head-ci-repairs/desktop-release-manifest.sh.before.gz.gz",
+      "rawBytes": 1577,
+      "rawSha256": "87e2a0b7c580477b3c6247a2658e6725284e119408bef29239109768d12072f9",
+      "archiveSha256": "d9dd29edac1eabf7ef04d5012c0c63421cbf038503f29af0209e4703ddcced1d"
+    },
+    {
+      "path": "seed-head-ci-repairs/desktop-release.yml.before.gz.gz",
+      "rawBytes": 13803,
+      "rawSha256": "a743a1a4a08d6a74a8c2830a6dbf9ec9836bbcb0f8bc8e4c51de47104eb9d078",
+      "archiveSha256": "e5f71dba604e6e16a356624cbccde1ede4cb6c97ce0ec7d03577858f01a2e7c0"
+    },
+    {
+      "path": "seed-head-ci-repairs/failed.txt.gz",
+      "rawBytes": 883,
+      "rawSha256": "54e1bc327d3016051d87596aeca6101f74e2d047e8efaabe796926afc77c1ada",
+      "archiveSha256": "756f7adcfa376aa1b40bfd78268c2b9f955de992587251d97f57d3b4bf472ec5"
+    },
+    {
+      "path": "seed-head-ci-repairs/issue-1550-procedure-documentation-after.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs/issue-1550-procedure-documentation-after.stdout.gz",
+      "rawBytes": 1386,
+      "rawSha256": "774eaa64f1c124a23c25f8c4c92e23e2dc0402bcd5378fdf49d4c909766d83d5",
+      "archiveSha256": "ab486e9706f54336863a96c2a5fcb00332c050bfe61599402c9770b530424d89"
+    },
+    {
+      "path": "seed-head-ci-repairs/issue-1550-procedure-documentation-before.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs/issue-1550-procedure-documentation-before.stdout.gz",
+      "rawBytes": 2935,
+      "rawSha256": "20db182c4e5c6a6c7150043c7bc178915eca8cf681913587463fc6c9e29534b0",
+      "archiveSha256": "13456e48cc135e5a8f839a73efc0486ec7bafb2c2b8963f823492ba96467448f"
+    },
+    {
+      "path": "seed-head-ci-repairs/issue-1550-procedure-documentation.mjs.before.gz.gz",
+      "rawBytes": 2918,
+      "rawSha256": "6158ecb979a787cbc6050624cc129ab26e928824da4cb4adaad71aebfe1f0f24",
+      "archiveSha256": "58869673366ec79ec6e640eeac7491054b58c19080eb5e38b5b3ba5df03afeb4"
+    },
+    {
+      "path": "seed-head-ci-repairs/issue-1586-structured-output.test.mjs.before.gz.gz",
+      "rawBytes": 3065,
+      "rawSha256": "acedd6de9f86a9a7ec11db7161cc9a8576eb92eef3c864d1ebd7a6944aa026b4",
+      "archiveSha256": "1828c70146df6cda27e1824b73228954c264b25fec1a088dd11ce10d0e5eabf1"
+    },
+    {
+      "path": "seed-head-ci-repairs/packaging-console-retention-after.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs/packaging-console-retention-after.stdout.gz",
+      "rawBytes": 3404,
+      "rawSha256": "eb2dbbc373a876db147b67f3b9c5f1f2673cbbba99efc0767b07ec98d51b3e06",
+      "archiveSha256": "8fd656b68af26c6e54240a629f8b595ed7014a858cd8540178dcd06f4366ada0"
+    },
+    {
+      "path": "seed-head-ci-repairs/packaging-console-retention-before.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs/packaging-console-retention-before.stdout.gz",
+      "rawBytes": 99653,
+      "rawSha256": "ae48f9746b84470b7ff113d5597028c69f70cb917ff3f5e9ee64737ea98372ad",
+      "archiveSha256": "1d808a51535cafdf7a36e00168cd61bcd87e1b19285c7311ceb793d8c1fcad95"
+    },
+    {
+      "path": "seed-head-ci-repairs/packaging-console-retention.test.mjs.before.gz.gz",
+      "rawBytes": 3862,
+      "rawSha256": "1e861968f02176d2fcbf330016bf7be100e245a0f0eef592842cc65d3184f392",
+      "archiveSha256": "216d2159394150193980bba08054428184eb8cf3385b74bd323b1f4b4b090c97"
+    },
+    {
+      "path": "seed-head-ci-repairs/pid.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "5ca07fe22c6f30879df9f090631d887256d2472c6804f88a11d475ec42564531",
+      "archiveSha256": "6bc6e39250095af7f38bbf91216ede74b58a49fc6d6e4784d51fe778bd9e89b7"
+    },
+    {
+      "path": "seed-head-ci-repairs/release-failure-output-receipt-after.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs/release-failure-output-receipt-after.stdout.gz",
+      "rawBytes": 2640,
+      "rawSha256": "a8607f63a69924b88707091d55af805f34509b8288c83c9d38e83bb2f74985a9",
+      "archiveSha256": "e1e285587ff60308e5514571189a1a5ffca71a85b30bc8f3e9ede5d8f0fa925f"
+    },
+    {
+      "path": "seed-head-ci-repairs/release-failure-output-receipt-before.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs/release-failure-output-receipt-before.stdout.gz",
+      "rawBytes": 1086,
+      "rawSha256": "3d7d7c2b9da2cd0d24393b02e592124229910b28e5ad3431a067f12027b5a218",
+      "archiveSha256": "9789b8569f223bfc151454db650a28e48d154bc9657c70d519e03b3de68bc899"
+    },
+    {
+      "path": "seed-head-ci-repairs/relocated-build-stage-controls-after.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs/relocated-build-stage-controls-after.stdout.gz",
+      "rawBytes": 13024,
+      "rawSha256": "14b5d9da7f2d8dcdaf48f8325e937174400818f8238ec7801c06edfe8672939d",
+      "archiveSha256": "f5a84bf8e29f9b44c67e247cc162b031ba53e9aee79ee379579001c07d288526"
+    },
+    {
+      "path": "seed-head-ci-repairs/relocated-build-stage-controls-before.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs/relocated-build-stage-controls-before.stdout.gz",
+      "rawBytes": 13885,
+      "rawSha256": "726dc5a19c769b78a071e872cfefb2c2af3b509026da8d3b655b1e495b337a60",
+      "archiveSha256": "4668762f93320cb68c2437df2f87dc6f6db73e0f7106e1d4c2e7751e02ed9178"
+    },
+    {
+      "path": "seed-head-ci-repairs/seed-record-readers.test.mjs.before.gz.gz",
+      "rawBytes": 913,
+      "rawSha256": "68d655d72989eae5dd01618360b043017d6d2b239e225bd5a94ec2b37c1e049b",
+      "archiveSha256": "502a82d9224859abf7b089d83c8e4cbeaa38bef28bb282a233632056a8698c8f"
+    },
+    {
+      "path": "seed-head-ci-repairs/transport-before.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs/transport-before.stdout.gz",
+      "rawBytes": 2070,
+      "rawSha256": "6d3c061fe2479126054fb3fb7a29eca280aaf03a8b12c346bf30ddb064941806",
+      "archiveSha256": "64fd01a9c2ca5fa6ed9573c9ecd99ce3522b545ed253258158c7e318d3a50b4d"
+    },
+    {
+      "path": "seed-head-ci-repairs/worker.log.gz",
+      "rawBytes": 1436,
+      "rawSha256": "0b70f6141a8b16ea213c0cda893213fce7738dd5d07654c87065aab26a4f2840",
+      "archiveSha256": "e5d7c1b7cdccecc8ec13b287ef2455cb4f18bdbc503506f6f5f54beaeb31559d"
+    },
+    {
+      "path": "seed-head-ci-repair-continuation/ci-source-transport.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repair-continuation/ci-source-transport.stdout.gz",
+      "rawBytes": 1294,
+      "rawSha256": "2b314575643bc69389ac6b049ab8e15fbb6fa0071886b51d4833b1669dc4bc09",
+      "archiveSha256": "b3d560e7681ac561d4fa0f3ee30c92a08bf107979622c1ee9f3180d2360cda4d"
+    },
+    {
+      "path": "seed-head-ci-repair-continuation/failed.txt.gz",
+      "rawBytes": 989,
+      "rawSha256": "89d58726d6cbebd5f8c44c1e812472678741bc3e5cf68a155f6e9a5f13ec2258",
+      "archiveSha256": "f0af81103675b91100318e756b836f9f6b6d2d6627fe9fefa58654d3ea74e3ce"
+    },
+    {
+      "path": "seed-head-ci-repair-continuation/issue-1181-cli-release-assets.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repair-continuation/issue-1181-cli-release-assets.stdout.gz",
+      "rawBytes": 5119,
+      "rawSha256": "87101703f0d0b26f66bc85aa3d3c18226cba46fa79f37170019546114c9c0856",
+      "archiveSha256": "d9d6e45eb561cc7988ff7b985e150bb7ee93e0336a859d8d6c10d3f4d867041b"
+    },
+    {
+      "path": "seed-head-ci-repair-continuation/packaging-console-retention.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repair-continuation/packaging-console-retention.stdout.gz",
+      "rawBytes": 2513,
+      "rawSha256": "679950925a0039020d3173b95296bc1f2f8dc73b30764daac2e692c6148f6d02",
+      "archiveSha256": "5c4781027fef0f7197bdd95142784a73c68906fdef6b82004416c11595acdc53"
+    },
+    {
+      "path": "seed-head-ci-repair-continuation/pid.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "2267c7138c7fcc454451ee0c0806bb5ebda608e95a314ae34d30c3b5e4076f0c",
+      "archiveSha256": "9c25de00a35eab78c27083849bd86d804701e8d421c04726845e4855a4c823fb"
+    },
+    {
+      "path": "seed-head-ci-repair-continuation/worker.log.gz",
+      "rawBytes": 1145,
+      "rawSha256": "e842367ba062d447b97dfee8f30bfb2add71cea5d30dc94c3245ab896099bb0b",
+      "archiveSha256": "aa9c5c0061acbb1ec4cb376aa7c2f5c9c4b6dac66139f1d2136bfd39f933e43f"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/affected-gates.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/affected-gates.stdout.gz",
+      "rawBytes": 186,
+      "rawSha256": "6d764b3bc205d3e7fad4d85ba829d5497b7fcfdfa5e539dcb0c6cafb2283a1b6",
+      "archiveSha256": "f45b2868a5b67c0c5b726432f885ab9217d188a81b33bac7f600b4e80d876791"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/application-conversation-list.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/application-conversation-list.stdout.gz",
+      "rawBytes": 1356,
+      "rawSha256": "0dc3badc6094f41e83431141c74b2649782cee7c2d07d7eb538f91ffb5329370",
+      "archiveSha256": "19495b8bef5e09107b1e0216b8ad1d5b0d942afdbb8a57b0a8785504a97a89e2"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/ci-source-transport.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/ci-source-transport.stdout.gz",
+      "rawBytes": 530,
+      "rawSha256": "44af52aba721976b5190d2317794ecc2a21fe086b36145c36d6cfbec4904f3fc",
+      "archiveSha256": "11990e0a597a579b2e029c05b675a22cac31a3480550ef2d77ed83e7e76ecd10"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/desktop-manifest-headroom.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/desktop-manifest-headroom.stdout.gz",
+      "rawBytes": 492,
+      "rawSha256": "5bc29b78465fbaac81061633b5bc92e17614a659a7c0595c7537e7ee2cd8943d",
+      "archiveSha256": "a7a392530feae41dc94c4fbc86a27980ccc35a9f782058973c5f1b07edf0ad3e"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/issue-entry.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/issue-entry.stdout.gz",
+      "rawBytes": 67649,
+      "rawSha256": "35d7078be095180ad677933a25a5637908b05535f8a9eeb91a6a643d84cc83ea",
+      "archiveSha256": "ff3704b166406c11c09612e8857f5312a72cd9253f161681d608a29e64619d0b"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/outcome.json.gz",
+      "rawBytes": 162,
+      "rawSha256": "b9b53d92f1206b42f640cdde4d1650b62c42d2d1cffa95f548c58441a1280cbf",
+      "archiveSha256": "d13742d26b01730e1099f92e91b33060f73dd31bd13cd95c445640636f5e8a5f"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/pid.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "a90f6f658244cd20f95f4955a5eaeade63648badd59df407dd81821f65892200",
+      "archiveSha256": "ab53d77baed8def6a37dc0451810cf19be0319531b328f401056072008ea3839"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/seed-record-readers.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/seed-record-readers.stdout.gz",
+      "rawBytes": 858,
+      "rawSha256": "aa18a19d8feb5ce369cec55747502705fd301718d8a5d30860e98e1341c27288",
+      "archiveSha256": "9cb1af94e66f0629ff98879826e8e323f453dccd2021602bcfb3d43c8c6a3646"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/whitespace.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/whitespace.stdout.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "seed-head-ci-repairs-final/worker.log.gz",
+      "rawBytes": 316,
+      "rawSha256": "4d8a4de719377f4695071650376f97ef4b12f78b141f9dd9f35412e3714c83aa",
+      "archiveSha256": "2a9145279713619e42977870e31e3fde144a81a3c1931d50b592aef32c19e494"
+    },
+    {
+      "path": "supplied-procedures/repair-seed-head-ci.py.gz",
+      "rawBytes": 8722,
+      "rawSha256": "b3b935f4e1b77fb49169c111028db99666649ff37c8a6cc1c49a6b0ea50379dc",
+      "archiveSha256": "69ab289d31c37142fb4775c1983f4693a97fa6d57ba807cc1e9654054b8a1db6"
+    },
+    {
+      "path": "supplied-procedures/continue-seed-head-ci-repairs.py.gz",
+      "rawBytes": 2642,
+      "rawSha256": "11735d4ede3c85cdf25cbf8588a9bc53dde16b0ba05c4d737e7d8dbd07849ccc",
+      "archiveSha256": "76add28d7364bde34dae8eac3ba6b291e16f29edd1ef691c44650218fdbb6c2c"
+    },
+    {
+      "path": "supplied-procedures/finish-seed-head-ci-repairs.py.gz",
+      "rawBytes": 2067,
+      "rawSha256": "47f3fedae715ae2f46819e03c6fcf462327b2b285cb849a74fee61d0c056df2e",
+      "archiveSha256": "9bae65058c41e832ad3a918e811f6b80bdf7499e42a62b324b06c87402cdeb7c"
+    },
+    {
+      "path": "supplied-procedures/preserve-seed-head-ci-repairs.py.gz",
+      "rawBytes": 6920,
+      "rawSha256": "95dad57a5fd1ab4114edeb3dd9577308a2685c43b1ded82c06f6806e0f5e3218",
+      "archiveSha256": "c485f058919d743b9312827c4330c664b55b83a0b7bfa0019da57d32e6f8a074"
+    },
+    {
+      "path": "investigation/transport-parser-inspection-driver.log.gz",
+      "rawBytes": 3527,
+      "rawSha256": "66cc29682c2a64a3e749b643ffe3d3083dedfea6881cd407c033ba412c970e24",
+      "archiveSha256": "63fe1d0dd177c90e3e25b8e2ea8d9391fb7232bceff9ace04cd33e9e37b11fdc"
+    },
+    {
+      "path": "investigation/transport-parser-return-driver.log.gz",
+      "rawBytes": 21001,
+      "rawSha256": "793b0a4cfe85373da017713b2cbe55741fec2ff7195c769119482916cf7d9ba7",
+      "archiveSha256": "a6689f8cb97a6eac754ebad005c2122192894071437bd075fb1306ef2fa0b1b5"
+    },
+    {
+      "path": "investigation/transport-parser-correct-owner-driver.log.gz",
+      "rawBytes": 896,
+      "rawSha256": "ccac677a4248e98842bd1ccf0b4c19674f9c18b1bead6ee7e1176e4fa8676629",
+      "archiveSha256": "7ccf79452ae2e989069ce0cff55df14fe8f2e231c0d7fa16c548eda583f32d71"
+    },
+    {
+      "path": "investigation/transport-parser-function-driver.log.gz",
+      "rawBytes": 1674,
+      "rawSha256": "54e90b40b9ca2db3635b02170538455246e8314217a593785a3fa6435b6a6901",
+      "archiveSha256": "7705bf69387fbb8ce176a95423774837f053aa4fce81f2985024b1218d342bc5"
+    },
+    {
+      "path": "investigation/seed-head-ci-repairs-self-review-driver.log.gz",
+      "rawBytes": 6744,
+      "rawSha256": "a13104f04eac24e37528bbdf87b4a691e159e1233a806933b0cb8f53a83b957f",
+      "archiveSha256": "caa07e13a6565dd1dbe036dd1714be12c6153f5bd1dcb8ed88197116cd030078"
+    },
+    {
+      "path": "investigation/read-ci-repair-documentation-shape-driver.log.gz",
+      "rawBytes": 1557,
+      "rawSha256": "77cd4c4a69f9fe035c5089b371c099bfe9b1b9f3c3be1d91c255b7b079ee461b",
+      "archiveSha256": "ea1540a791d0a5b231ba76a0d169df5bd53eca932ab540d0c5c67643de0b27d5"
+    },
+    {
+      "path": "investigation/finish-seed-head-ci-repairs-driver.log.gz",
+      "rawBytes": 137,
+      "rawSha256": "0ec6308668c3fc1d160d6a2fa0740284bd7ed96fb3624ea9a655d69e73b0ce44",
+      "archiveSha256": "f047b1d1308af7e4f8c93e8f1e68130271a7abf395e215b8cf019d859a9fe391"
+    }
+  ],
+  "independentAuthorshipCredit": 0,
+  "nativeCompilation": false,
+  "fullIssueComplete": false
+}

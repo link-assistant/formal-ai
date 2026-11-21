@@ -98,7 +98,9 @@ test('workflow uploads packaging consoles even after failure and before smoke te
   for (const required of ['always()', 'actions/upload-artifact@v7', 'packaging-console-${{ matrix.label }}',
     '${{ runner.temp }}/formal-ai-packaging-artifact/', 'retention-days: 30']) assert.ok(upload.includes(required));
   assert.match(workflow, /os: macos-15,\s+ebflag: "--mac",\s+label: "macos-arm64"/);
-  assert.match(workflow, /\[macos-arm64\]="macos-15"/);
+  assert.ok(workflow.includes('bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/desktop-release-manifest.sh"'));
+  const manifest = readFileSync(new URL('../../../scripts/desktop-release-manifest.sh', import.meta.url), 'utf8');
+  assert.match(manifest, /\[macos-arm64\]="macos-15"/);
   // The native producer and CLI use supported runners and keep selected-source identity checks.
   assert.match(workflow, /os: macos-15,\s+target: aarch64-apple-darwin/);
   assert.ok(workflow.includes('required_macos_artifacts=('));

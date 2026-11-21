@@ -136,7 +136,7 @@ function events(text) {
 
 test('OpenAI requests constrain final JSON across endpoint and streaming shapes', { timeout: 120_000 }, async t => {
   const parserContext = { self: {} };
-  for (const script of ['parser-cache-primordials.js', 'seed_loader.js']) {
+  for (const script of ['parser-cache-primordials.js', 'seed-record-readers.js', 'seed_loader.js']) {
     runInNewContext(readFileSync(new URL('../../../js/' + script, import.meta.url), 'utf8'), parserContext);
   }
   installHost({ parseLino: parserContext.self.FormalAiSeed.parse });

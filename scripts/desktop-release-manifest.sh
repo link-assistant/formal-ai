@@ -81,4 +81,3 @@ cat BUILD-PROVENANCE.txt
 # report success for it: a green run here means "all desktop assets
 # shipped", and callers rely on that.
 echo "incomplete=${missing[*]}" >> "$GITHUB_OUTPUT"
-node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/release-producer-output-receipt.mjs" "$GITHUB_OUTPUT" "$FORMAL_AI_NATIVE_PROTOCOL_DIR/producer-output-workflow.yml" "$FORMAL_AI_NATIVE_PROTOCOL_DIR/protocol-selection.json" producer-output-receipt.json

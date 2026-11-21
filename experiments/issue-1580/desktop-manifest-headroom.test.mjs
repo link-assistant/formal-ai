@@ -17,7 +17,7 @@ test('the manifest helper is captured before selected-source import',()=>{
  const manifest=steps.find(step=>step.name==='Build consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt');
  assert(capture>=0&&capture<source);
  assert.match(steps[capture].run,/cp scripts\/desktop-release-manifest\.sh "\$protocol_dir\/"/u);
- assert.equal(manifest.run.trim(),'bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/desktop-release-manifest.sh"');
+ assert.deepEqual(manifest.run.trim().split('\n'),["bash \"$FORMAL_AI_NATIVE_PROTOCOL_DIR/desktop-release-manifest.sh\"","node \"$FORMAL_AI_NATIVE_PROTOCOL_DIR/release-producer-output-receipt.mjs\" \"$GITHUB_OUTPUT\" \"$FORMAL_AI_NATIVE_PROTOCOL_DIR/producer-output-workflow.yml\" \"$FORMAL_AI_NATIVE_PROTOCOL_DIR/protocol-selection.json\" producer-output-receipt.json"]);
  assert.equal(manifest.env.RELEASE_PRODUCER_OUTPUT_STEP,'manifest');
  assert.equal(manifest.env.RELEASE_PRODUCER_OUTPUT_KEYS,'incomplete');
  const evidence=steps.find(step=>step.name==='Validate and prepare exact-byte durable release evidence');
