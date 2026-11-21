@@ -25,26 +25,19 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `8d8f1481` includes main `f574289f`. All 32 workflows are terminal:
-29 succeeded, one skipped, Layered CI and CI/CD Pipeline failed. The retained
-terminal collection verifies 178 archived command streams by raw hash and bytes.
-Pipeline reports a failed native source witness, cancelled coding family and
-the resulting failed status aggregator. These terminal job failures and all
-known Layered failures have local repairs; next-head hosted validation remains
-required before acceptance.
+Published `ba01ef99` includes main `f574289f`; 31 of 32 workflows are terminal.
+Layered CI rejects stale governed source hashes; its complete object delta is
+reviewed and repaired locally. Both integrity suites fail before and pass after
+the guarded refresh; the maintained replay now includes them and passes all
+253 tests. All 1,189 test identities and 221 carried programs remain.
+Six abbreviated archive names were corrected with every archive byte unchanged.
+Nine additional conserved acceptance-helper extractions reduce source warnings
+to 46. No native compilation or execution is claimed locally.
 
-All 208 maintained issue observations pass. The complete 141-entry JavaScript
-gate replay has 88 passes, 53 explicit native-only skips and zero failures.
-All 60 focused native-runner controls pass; no native compilation or native
-execution is claimed. Five exact-conservation acceptance extractions reduce the
-unchanged-limit source scan to 55 warnings. The before/fixed cleanup race, restored 221-case specification carry inventory
-and failed complete replay remain retained separately. See the
-[Layered and native checkpoint](../../docs/case-studies/issue-1580/layered-and-native-repair-checkpoint.md).
-
-All eight complete template/practice reviews, remaining source warnings,
-original budget/live criteria, CodeQL per-child semantic qualification, complete
-PR review and the independent Formal AI reasoning floor remain unfinished.
-Independent reasoning remains 0/20. The PR remains draft and unmerged.
+The still-running Pipeline must finish and every actionable failure must be
+collected before the next push. The complete template/practice comparison,
+remaining warnings, wider verification and final current-head CI remain open.
+Independent reasoning remains 0/20. PR #1581 remains draft and unmerged.
 
 The entries below are retained historical observations, not current-head claims.
 

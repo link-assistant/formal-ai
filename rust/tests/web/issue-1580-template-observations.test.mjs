@@ -45,3 +45,7 @@ import '../../../experiments/issue-1580/layered-fixture-custody.test.mjs';
 import '../../../experiments/issue-1580/hosted-javascript-scheduling.test.mjs';
 
 import '../../../experiments/issue-1580/native-capability-trace.test.mjs';
+
+import './rust-specification-fixture-integrity.test.mjs';
+
+import './rust-specification-unicode-identifiers.test.mjs';
