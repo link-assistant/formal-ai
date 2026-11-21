@@ -21,13 +21,24 @@ test('included string observation retains unavailable expansions and leaves secu
   assert.match(cacheOptions, /matrix.language == 'rust' && inputs.macro-contexts/);
   const options = JSON.parse(cacheOptions.match(/'(\{"database".*?\})'/u)[1]);
   assert.deepEqual(options.database['run-queries'], [
-    '--no-expect-discarded-cache', '--keep-full-cache', '--max-disk-cache=4096',
+    '--keep-full-cache', '--max-disk-cache=4096',
   ]);
   assert.match(cacheOptions, /\|\| '\{\}'/u);
   const gate = steps.find(step => step.name === 'Reject unresolved CodeQL findings');
   assert.ok(steps.indexOf(gate) > steps.indexOf(probe));
   assert.equal(gate.if, '${{ !cancelled() }}');
   assert.equal(workflow.jobs['codeql-readonly'].steps, steps);
+});
+
+test('producer cache arguments compose with the action without duplicate boolean options', () => {
+  const workflow = YAML.parse(readFileSync('.github/workflows/security.yml', 'utf8'));
+  const analysis = workflow.jobs.codeql.steps.find(step => step.id === 'codeql-analyze');
+  const options = JSON.parse(analysis.env.CODEQL_ACTION_EXTRA_OPTIONS.match(/'(\{"database".*?\})'/u)[1]);
+  // The retained action supplies this option before appending extra options.
+  // CodeQL treats its positive and negative spellings as the same option.
+  const arguments_ = ['--expect-discarded-cache', ...options.database['run-queries']];
+  const spellings = arguments_.filter(value => /^--(?:no-)?expect-discarded-cache$/u.test(value));
+  assert.equal(spellings.length, 1, 'CodeQL rejects duplicate positive/negative boolean options');
 });
 
 test('included string adapter preserves complete literal text and rejects incomplete observations', { timeout: 20000 }, () => {
