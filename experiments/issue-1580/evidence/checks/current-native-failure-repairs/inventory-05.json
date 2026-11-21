@@ -1,0 +1,282 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/decode.stdout",
+    "file": "141-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/macro-contexts.bqrs",
+    "file": "142-evidence.gz",
+    "bytes": 3420124,
+    "lines": 193614,
+    "rawSha256": "9e390659774260936915f6c55db0ef2eedb6b9f4a9b6e772599dee4f1c5e0901",
+    "archiveSha256": "67202681ba014380dd12475f0f87cbd9ee472039a31a0f6c63f5becfe77c62cc"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/macro-contexts.json",
+    "file": "143-evidence.gz",
+    "bytes": 38125923,
+    "lines": 122586,
+    "rawSha256": "3717e3e7f4bb1218ea74d73688549b7c23a699c960419a7568bd88b65628abff",
+    "archiveSha256": "30feeadf540bd9cfac05cb7ef5eda99be4b9c93e4b239bc83c537db47cdd526a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/manifest.json",
+    "file": "144-evidence.gz",
+    "bytes": 5279,
+    "lines": 148,
+    "rawSha256": "edcdfc945845eb0d596ba15195bb5b2db01c0082cedbf5b1325d752af69efb4d",
+    "archiveSha256": "a461a3d88c6154ac087fe87ade311a99364db23ab10cd61e09a569bfad2b5603"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/memory.stderr",
+    "file": "145-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/memory.stdout",
+    "file": "146-evidence.gz",
+    "bytes": 20,
+    "lines": 3,
+    "rawSha256": "7c39de9eabbb659c168ef8e55a4a7701845510344af1bec1bfa5c6b443b82659",
+    "archiveSha256": "4bfc680e03f7aead92b6d9b3b99ccd49cb7655b00c9f156591d6fd58a6d280ba"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/qlpack.yml",
+    "file": "147-evidence.gz",
+    "bytes": 383,
+    "lines": 18,
+    "rawSha256": "dc1dbd41e9fd796dd38b45ff9febe378ae6126c1e997700c46460e6c21c59798",
+    "archiveSha256": "2c69fb7df153ca5068b4420c95feedf85e71ff7eeb0e7361db899953b3915c2f"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/query.stderr",
+    "file": "148-evidence.gz",
+    "bytes": 693,
+    "lines": 9,
+    "rawSha256": "336a5a4a8071b766419a92ce4d1fe1dd8afe13bc086b12725ebf744aea64f57b",
+    "archiveSha256": "a5ada2348386ac98c0842d09ff99998ee1f47907f937d822f82b4ce18ff3772a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/query.stdout",
+    "file": "149-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/version.stderr",
+    "file": "150-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/macro-contexts/version.stdout",
+    "file": "151-evidence.gz",
+    "bytes": 1530,
+    "lines": 43,
+    "rawSha256": "947c5c0baee2f14f2b7611b25591a98dc7ca304efb7d5090361aaa40b5e9ec66",
+    "archiveSha256": "34aecc066ab2aec41c0a65e68cebc2fbb193c0ad4d23554cbcb6046e0266ea79"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results/rust.sarif",
+    "file": "152-evidence.gz",
+    "bytes": 3800330,
+    "lines": 1,
+    "rawSha256": "ee7680da0078d021e44bbd05b1e044b871eb34f1f578d1d5f9f14b49bf22852d",
+    "archiveSha256": "7a1d706ec0671a996e72251f013b93dfa6275e5701cd3d10b14f914f02d486df"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/rust-results.zip",
+    "file": "153-evidence.gz",
+    "bytes": 4297787,
+    "lines": 33378,
+    "rawSha256": "6cc503379f231ddde5b4b6386ed2d597676730d184e0a0a9af070975015fc07d",
+    "archiveSha256": "4fcfed9afd3644f9ca525591ac3c665bfab449f60e75e0a39bf8281e6de67dcf"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-8b0-timeout/source-matches.txt",
+    "file": "154-evidence.gz",
+    "bytes": 11066,
+    "lines": 26,
+    "rawSha256": "1184da304087e530f4b4a9ae97743a7fccb953c6399528bc5f7d4d3fac8d0655",
+    "archiveSha256": "d10f9abf485cccff5872d2380b76ca8628d0c091504397565442721f398dc3c9"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-checks/adapter.log",
+    "file": "155-evidence.gz",
+    "bytes": 447,
+    "lines": 11,
+    "rawSha256": "fa962b7f53dbff5dfc8d8fe6d7e1e9f05e2c3704163f1a02bc18350c561d6fd0",
+    "archiveSha256": "e567bb25b0e33fa97d86d64683b134b0d92c5ec14c13bffb77acd163c793e92d"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-checks/commit.log",
+    "file": "156-evidence.gz",
+    "bytes": 133,
+    "lines": 2,
+    "rawSha256": "ef8aeb4353efc2c57e70d3ebc4fb12fc23a371f18e8c4da583b6f9eb7981ba69",
+    "archiveSha256": "e8da96fd00263d62a5289ac80b0ec78ac3794f4d782bee4019430631e3a8adf4"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-checks/gates.log",
+    "file": "157-evidence.gz",
+    "bytes": 124,
+    "lines": 5,
+    "rawSha256": "7eedc25eda3ef9e3ad307822c544c53e144bdb94d87cceafebcbb3991870ac0e",
+    "archiveSha256": "55ab8b982ef855f0102bb7c9e312d6ef38c3367b536081359f537a9b763a4238"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-checks/outcome.json",
+    "file": "158-evidence.gz",
+    "bytes": 1842,
+    "lines": 77,
+    "rawSha256": "8bf13a9bff4fd190ee85e97311626c3ed2cd304575c2fe870be832c50898d830",
+    "archiveSha256": "c5387148bcdd05bd0e065b204c623014d15d598b2f0a50def6740a5dd259e614"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-checks/security.log",
+    "file": "159-evidence.gz",
+    "bytes": 2451,
+    "lines": 30,
+    "rawSha256": "bb3d7b0a1c12e935399d333b2812d3a503ad2dfa3383ec4b2a5a54f92aa1a0e6",
+    "archiveSha256": "ac1885b66c7b3ae6b086264ee028287557cdecb2ddc0c6249c62bae6e38cf746"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-checks/stage.log",
+    "file": "160-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-checks/whitespace.log",
+    "file": "161-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-repair/README.md.before",
+    "file": "162-evidence.gz",
+    "bytes": 7382,
+    "lines": 109,
+    "rawSha256": "ae4e7c2f73da968b799531b14e10093097611bf926aaa2db3ae658a2b3e3c93f",
+    "archiveSha256": "246411e31ac17008b9e5b0768eb0391f8a28fb0bb233c28012a64cb10f2b9fa8"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-repair/after-with-diagnostic.test.log",
+    "file": "163-evidence.gz",
+    "bytes": 446,
+    "lines": 11,
+    "rawSha256": "1f764a4ce9f695df858a1d0ba8ec935aa2c6679d2bc244f1e300e6f45e34f69b",
+    "archiveSha256": "d3d344c589b0128973b31844fe3fa9899efbea3c0a43b3f4443673fd3a7e19ce"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-repair/after.test.log",
+    "file": "164-evidence.gz",
+    "bytes": 446,
+    "lines": 11,
+    "rawSha256": "f2b4c6d05d515622837e9c92c76cbd5d83db867040a3508eaeac5ba9b89be5c0",
+    "archiveSha256": "764ee4df4c331cb317eecad50e7cbd8d12d5664ee53da79bb61a2d7cf077c841"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-repair/before-argument-mismatch-with-diagnostic.test.log",
+    "file": "165-evidence.gz",
+    "bytes": 3956,
+    "lines": 63,
+    "rawSha256": "d8d33ef1147d0d158363832ef9a4f2fdb07c6aea9e199aa361d0bf7af6edf239",
+    "archiveSha256": "0fabf619688b36645723fb5456ab55a29c2da033802bb390b8eb3d56d21d0348"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-repair/before-argument-mismatch.test.log",
+    "file": "166-evidence.gz",
+    "bytes": 3078,
+    "lines": 63,
+    "rawSha256": "e2fc971b1c248c0a1175d92ebfa502a7a40dbed0f9863351abee3bf7ef2451fd",
+    "archiveSha256": "c7192dddf30acccfdb63649b1bc7ed6b69f4085da0add415b154ba8e60251458"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-repair/before.test.log",
+    "file": "167-evidence.gz",
+    "bytes": 1672,
+    "lines": 39,
+    "rawSha256": "5527f7abdb80be0e6fd7138061c9167500f95497316a4309a9f7cbff5006a498",
+    "archiveSha256": "7d4450e3ceef0431267fe8295f02e102232ad5910338e8e8294b82140e3a478e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-repair/codeql-included-string-observation.test.mjs.before",
+    "file": "168-evidence.gz",
+    "bytes": 8845,
+    "lines": 157,
+    "rawSha256": "8be45d46212c5f6ac604b03d76fcfcbfbe5336a93537dd35b5b5008d2c3239dd",
+    "archiveSha256": "510105f45cc9450acdfa0956d27495918b4d8efac157cd9bacc4787f43616f78"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-repair/observe.py.before",
+    "file": "169-evidence.gz",
+    "bytes": 7575,
+    "lines": 122,
+    "rawSha256": "ef977988bd6fd096a10a12bff4a756462c50fd81eba8f9d3d1f83c2f91a93fd3",
+    "archiveSha256": "685064f62a14f02d4ed31a8fd339480bd6158f8f8f60354ccf0510325779d756"
+  },
+  {
+    "source": "/tmp/issue-1580-research/codeql-thread-inheritance-repair/outcome.json",
+    "file": "170-evidence.gz",
+    "bytes": 139,
+    "lines": 7,
+    "rawSha256": "77778351c4d33626743efa7e069a54652f3a207d6033ba047f5cb9111086d76d",
+    "archiveSha256": "fb3a2c405c94e2f0d34b9c04e789c672730c303ad62157169932332f3158972a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/commit-cpp-input-extension.log",
+    "file": "171-evidence.gz",
+    "bytes": 2227,
+    "lines": 20,
+    "rawSha256": "9e2e68bd6b1c3e9a60a9163cf7ce10f4b97a534522bfe968d5605831df2368bd",
+    "archiveSha256": "69e72d273355aaae69f82a926af883a26a8df90e0d008a9b0c7778a0167975f0"
+  },
+  {
+    "source": "/tmp/issue-1580-research/commit-cpp-input-extension.py",
+    "file": "172-evidence.gz",
+    "bytes": 1872,
+    "lines": 29,
+    "rawSha256": "ca67fba7c1ed39cd8ddc77a391f21ff0eed43dbc5e681e7eebbcefeb59748f07",
+    "archiveSha256": "ac193da8056185c5e3da47056c0d22d636d727db30477df214dcd79be2ebea45"
+  },
+  {
+    "source": "/tmp/issue-1580-research/correct-codeql-thread-negative-control.log",
+    "file": "173-evidence.gz",
+    "bytes": 431,
+    "lines": 9,
+    "rawSha256": "92be1da829bf0aab82a918129d4b91468d154a03fbf5a8dc88a0be978c0e4910",
+    "archiveSha256": "bc1bcce1ab39d346da14189557eee508938c8d42183fd206b909d5430b296acf"
+  },
+  {
+    "source": "/tmp/issue-1580-research/correct-codeql-thread-negative-control.py",
+    "file": "174-evidence.gz",
+    "bytes": 1231,
+    "lines": 22,
+    "rawSha256": "dc82bdee92d864cccef3407ea8cdcb35f49d86ef62af0e24c24bbf85dd1f66f3",
+    "archiveSha256": "b3bd08372acd92b6c615c12da07aa32200c69113cbe34e3e64853cfe0a64845a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/cpp-cancel-reader-source.log",
+    "file": "175-evidence.gz",
+    "bytes": 4369,
+    "lines": 117,
+    "rawSha256": "cd0564a619ff30879821c6ca7809458856466ee2e7af4ee163c8e57e3ac58adb",
+    "archiveSha256": "195e63181f6eff6b19304ee4902ded4b3f435a36e0816166a4733154198ac8e3"
+  }
+]

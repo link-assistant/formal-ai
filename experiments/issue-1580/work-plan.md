@@ -25,6 +25,8 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
+Latest checkpoint: [current native failures and gate inputs](../../docs/case-studies/issue-1580/current-native-failure-checkpoint.md). Published `8b0d6f59` has 24 successful workflows, one skip and two failures. All eight native contract families and registry-script checks pass. Process termination and pipeline schema regressions pass locally; the CodeQL thread candidate and failed-fetch native guard still need hosted qualification. Fresh observations identify changed heads in seven templates; earlier comparisons retain their original pins. Full issue acceptance remains unfinished.
+
 Latest checkpoint: [terminal native round and version parser](../../docs/case-studies/issue-1580/native-round-and-version-parser-checkpoint.md). Published `27e895c1` has 25 successful workflows, one skip and the locally repaired source-witness failure. All eight native contract families pass for that published source. New parser regressions pass locally; their hosted qualification remains pending. Receipt extraction reduces the unchanged-limit source warning count to 91. Earlier checkpoints below retain their original scope and timestamps.
 
 Latest local validation: [88 executed gates pass](../../docs/case-studies/issue-1580/source-witness-validation-checkpoint.md), with 53 explicit skips and no local Rust build. Rust literal review is 356/373 files and 57,336 lines. Fresh registry observations retain both Chrono consumers; migration remains unresolved.

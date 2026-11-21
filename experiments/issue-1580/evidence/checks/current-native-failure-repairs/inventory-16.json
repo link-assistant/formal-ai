@@ -1,0 +1,10 @@
+[
+  {
+    "source": "/tmp/issue-1580-research/version-parser-publication/status-before.stdout",
+    "file": "526-evidence.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  }
+]
