@@ -39,8 +39,9 @@ fe24fa189ec99ff6a5aafb2746f384613fc5c7b9ccf979701929c9a86c9ad434  ./verification
 f08cfc2deb02d946ceee9c9cf7b6b8eaa9d41c3418d8b44f1854563f5d3ea731  ./verification/all-gates-round2-final.log
 d10bddbe46b78e1358d2dea08355c391f80fe679fc85f1485b15bfb1102894e0  ./verification/all-gates-round3-final.log
 8de6ad38d890c2f16c1affa235417605200ac16746992c4bd1aa6bbdd8df6670  ./verification/all-gates-round3.log
+f24844ce11b431dee2ce403ebcb6a139c438c0924376ca89ece17dd7893b5bd2  ./verification/all-gates-round4-final.log
 ffd743e964b5e633952a383ab238234673a432e4037b5822e944f298019801e7  ./verification/baseline-docs-method.log
-f3a2f525fdb243566d5c605cbcdecf9a7fb971ae76a671f5c0eff49e45f3338e  ./verification/baseline-encyclopedia-precache.log
+2f8936d85f55cd64e747c1bbb16b800e33cdbce13b27af0cffaed2ce76da6b28  ./verification/baseline-encyclopedia-precache.log
 abbcf099e8d9dd00863a12412bd68caeb452937fc8f80cd8d24aa320f0d1fccd  ./verification/baseline-meaning-detail.log
 17b33a6e59d8036695dc9240e9cb545e0f990f02cb51e6b146b25783337ed33b  ./verification/baseline-native-issue-corpus.log
 f2fe289a6a05564e3cef01ecb5baf3f5698245da3a90b3de5acf72125084b127  ./verification/baseline-practical-help-current-page.log
@@ -66,7 +67,9 @@ dcbb64f011746e1da822304ead5cf6c3838b2d45f5f72b2a7a917f9be5faa448  ./verification
 3a67d22c09512b316a942ad21cdc7fcd7cca44b9b7fe3d3bb75014399bcc6959  ./verification/procedural-runtime-parity-round3-final.log
 5d38ac9a7754c350bc970a0e77883d36681f9354c29ce11d34a3b7ff0bbf4326  ./verification/procedural-runtime-parity-round4.log
 2098a2d20f801f296e046115a60558f4ad3c0499da76ee65310e5182a0cf0847  ./verification/procedural-runtime-parity.log
+540c15e55372b6541b95062d91e1d1583240b9a3352c56f6e2c28ec0a76b6b83  ./verification/round4-documentation-method-post-format.log
 4d6ddfc0e83618b9deaeb0e779e2e927f3b0ee45c61495296bac99078738f13b  ./verification/round4-fast-governance.log
+cfcc1e5653b226d4d9b0089fc4b8b2126d63ee34fcd1a76f33af0b22b921605c  ./verification/round4-readable-code-recheck.log
 432f6792ff29b2dfdf8760e9bdebde0208b5bcbbc1b0b5ed83b9ebb2848e776b  ./verification/runtime-feature-inventory-round2.log
 ba4ac755fbbfc14ee4bb9cb711d71a2dc0d90dae5967d28af22ef18ef78a7275  ./verification/rust-specification-fixture-integrity-round3.log
 581a0dd09faa10075a965062009d0ce472326d894273a046322ccda7ddaa5d24  ./verification/rust-specification-unicode-identifiers-round3.log

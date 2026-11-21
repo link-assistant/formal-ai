@@ -14,10 +14,10 @@ test at rust/tests/web/source-qualified-definition.test.mjs:27:1
 ✖ a fresh worker needs an actual retrievable capture for a previously recorded subject (5653.837755ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected
-  
+
   + undefined
   - 'offline_cache_miss'
-  
+
       at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/source-qualified-definition.test.mjs:29:10)
       at async Test.run (node:internal/test_runner/test:1409:7)
       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
