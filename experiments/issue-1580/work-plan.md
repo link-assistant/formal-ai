@@ -25,14 +25,17 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Latest published head `adeb4ff4` has 25 of 26 normal workflows terminal:
-24 success, one skip, no failures observed; Pipeline remains in progress.
-No push is permitted while a current-head workflow is queued or in progress.
-The previous `e06d1f18` round also has a successful separately dispatched actual
-CodeQL producer. Current local observation additions retain 123 previously
-passing maintained cases plus three new real-Git Python detector cases.
-Full template, source-warning and original issue acceptance remain open.
-See [current Python findings](../../docs/case-studies/issue-1580/python-current-findings-checkpoint.md).
+Latest published head `adeb4ff4` has all 26 normal workflows terminal:
+25 success, one skip and no failed workflow. All eight native families and
+release-registry checks pass. Three retained failure annotations, 91 source
+warnings and publish-token uncertainty remain explicit investigation items.
+The current local maintained entry passes all 126 cases with zero skips;
+five affected gates and the direct documentation checker also pass.
+See [terminal hosted and local evidence](../../docs/case-studies/issue-1580/terminal-template-observation-checkpoint.md).
+The earlier `e06d1f18` has a successful separately dispatched actual CodeQL
+producer. Full template/practice, original source/budget/live and complete PR
+acceptance remain open. Earlier checkpoint entries below retain their dated
+heads and do not describe the latest run.
 
 
 Latest checkpoint: [current native failures and gate inputs](../../docs/case-studies/issue-1580/current-native-failure-checkpoint.md). Published `8b0d6f59` has 24 successful workflows, one skip and two failures. All eight native contract families and registry-script checks pass. Process termination and pipeline schema regressions pass locally; the CodeQL thread candidate and failed-fetch native guard still need hosted qualification. Fresh observations identify changed heads in seven templates; earlier comparisons retain their original pins. Full issue acceptance remains unfinished.

@@ -1,0 +1,378 @@
+{
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-abbreviations.stderr",
+      "file": "local/check-abbreviations.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-abbreviations.stdout",
+      "file": "local/check-abbreviations.stdout.gz",
+      "bytes": 67,
+      "lines": 3,
+      "rawSha256": "d35dcf2ab0d2275b06bdb3337913ceac3809d03c2c4f7c7a4378885fc4c30794",
+      "archiveSha256": "9faf24f41dc0e72c08ed97a596514a4b15be23c0b83d6fa05278945f36c25bc2"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-ci-speed.stderr",
+      "file": "local/check-ci-speed.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-ci-speed.stdout",
+      "file": "local/check-ci-speed.stdout.gz",
+      "bytes": 62,
+      "lines": 3,
+      "rawSha256": "cba0a1228ced1c5dd5a7b9b444d1c25b7946725dd41d1cbe2f120fb89549bdde",
+      "archiveSha256": "6b3cbd2207bf9462a0e65d09b345d96b1b9f6cb906cc94bba051783a57da3e6c"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-file-size.stderr",
+      "file": "local/check-file-size.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-file-size.stdout",
+      "file": "local/check-file-size.stdout.gz",
+      "bytes": 63,
+      "lines": 3,
+      "rawSha256": "f4a170300cb54e1ac7ca56ed7d66551693ccea732df23baafbf8d401b85f41c8",
+      "archiveSha256": "051c92e331bc77eb7b03f8e404c23a91dd697774bc2a8bc4c9d1cd815339c02f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-readable-code.stderr",
+      "file": "local/check-readable-code.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-readable-code.stdout",
+      "file": "local/check-readable-code.stdout.gz",
+      "bytes": 68,
+      "lines": 3,
+      "rawSha256": "3dcbdf378b8e4853153941199349892476630b14d700491e0106cec376357252",
+      "archiveSha256": "ef2b73bf72b4a52ecb2a60163e45bf57bc00b7eb2c477ed2fc4b42f3f3978f3d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-runner-labels.stderr",
+      "file": "local/check-runner-labels.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/check-runner-labels.stdout",
+      "file": "local/check-runner-labels.stdout.gz",
+      "bytes": 67,
+      "lines": 3,
+      "rawSha256": "b2bf292b25daad0ab7bb0f5ca3136c9380d8bc3b9437507a07f7246bd016cfc6",
+      "archiveSha256": "67bc4ccc4d7e71f10f8468783b8343a0496c4304e870e54a982de3534b4e9ede"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/maintained-entry.stderr",
+      "file": "local/maintained-entry.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/maintained-entry.stdout",
+      "file": "local/maintained-entry.stdout.gz",
+      "bytes": 12033,
+      "lines": 134,
+      "rawSha256": "4b5827483c5904233c7473b77131b986240d3dba3eb46ffbd2fb52c1603c559c",
+      "archiveSha256": "c8556c34480738e2257b6f9de897b61135ecea6bb8a29c7aa45002b03c919c49"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/outcome.json",
+      "file": "local/outcome.json.gz",
+      "bytes": 724,
+      "lines": 41,
+      "rawSha256": "dbb67fe038b7ca877a761caeef5007d2482f2ea8faaee4c4d216fa781c54501c",
+      "archiveSha256": "0ea998cc00c4e2a6dd3b7190629eb370a7bf0a1bde3e75dfd316fbc83951bcc5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/partial.json",
+      "file": "local/partial.json.gz",
+      "bytes": 584,
+      "lines": 37,
+      "rawSha256": "6d802f1dc4ab845be95d2624b5052b51c8445b92248530eb2ec2e30bbba92bd1",
+      "archiveSha256": "9e403eed742d361fdddde3c37c2eeb98f1157e522f361f4772dcdeb89a19fd60"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/pid.json",
+      "file": "local/pid.json.gz",
+      "bytes": 17,
+      "lines": 1,
+      "rawSha256": "11de9f75b95119367763f732348955962ba2dc05b4f1461c9c3064eaf7e509c7",
+      "archiveSha256": "85a41aef807482fced216a9a4fb63c4a19bcdbbf88d40f60f03ae10b293f9061"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/tests-as-documentation.stderr",
+      "file": "local/tests-as-documentation.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/tests-as-documentation.stdout",
+      "file": "local/tests-as-documentation.stdout.gz",
+      "bytes": 188,
+      "lines": 5,
+      "rawSha256": "4973e1f972fd34b082dfe0976977b4763aefa73eeaee914466e50078d77340dd",
+      "archiveSha256": "a19d727c1180a45ed67413c45f55f319d250d4222c4702ec0667e84fd5830dcd"
+    },
+    {
+      "source": "/tmp/issue-1580-research/python-javascript-publication-validation/worker.log",
+      "file": "local/worker.log.gz",
+      "bytes": 448,
+      "lines": 7,
+      "rawSha256": "159b45b1fafa14d2a8abe1e1ffed4179e0d255c4c83bbb61b4b98071020e2d58",
+      "archiveSha256": "ebb03115156e09f321273c4c557f3b679ca4c21aaa0ac5ab01b0e29668b076b0"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-scanner-boundary-evidence/summary.json",
+      "file": "terminal/summary.json.gz",
+      "bytes": 414,
+      "lines": 16,
+      "rawSha256": "1f6cae3cdeff112cac161a1876f69b6ba61954598a29fe22ddb0dc62e3ed3da0",
+      "archiveSha256": "eb4144ba9374363a59c50e51f1c33a97875093126fb2534b1837a9d80dfcac8f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-scanner-boundary-evidence/annotations.json",
+      "file": "terminal/annotations.json.gz",
+      "bytes": 24942,
+      "lines": 572,
+      "rawSha256": "e58c0c47f29dfa48005997ff5ef11313568fb27f47b1ec96979819e097b5132c",
+      "archiveSha256": "ae1362d9a7feeba1e3b50eccda528d550ce7e2c4d67b31fa44f3c7d451a3b84b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742299.stderr",
+      "file": "annotations/136779742299.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742299.stdout",
+      "file": "annotations/136779742299.stdout.gz",
+      "bytes": 2,
+      "lines": 1,
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742490.stderr",
+      "file": "annotations/136779742490.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742490.stdout",
+      "file": "annotations/136779742490.stdout.gz",
+      "bytes": 361,
+      "lines": 1,
+      "rawSha256": "48739eea9231b8aa1d3aa2727b7e2cf2479c84af0b8c0ce17a2b14161eb442fe",
+      "archiveSha256": "faff6f84b43bee15f96ca041161d6b8eeb8ef865f718ffd7588dc85fa236d0f5"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742500.stderr",
+      "file": "annotations/136779742500.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742500.stdout",
+      "file": "annotations/136779742500.stdout.gz",
+      "bytes": 642,
+      "lines": 1,
+      "rawSha256": "9aeeb85f6d5b461cf2b91df6e8bbd530bd1455fadbf7cbaf73cc5b3df8add97c",
+      "archiveSha256": "b43c2c80b0156cfedf9bb4817668ccd1bc2363f2a781ec9e1c0bff64e0b13e0e"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742510.stderr",
+      "file": "annotations/136779742510.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742510.stdout",
+      "file": "annotations/136779742510.stdout.gz",
+      "bytes": 365,
+      "lines": 1,
+      "rawSha256": "5bcdcfc90074071c1dcf26126abf5f0cf4add1d72625cf451474dfa4cab23703",
+      "archiveSha256": "5409b2f9f9aca07e4e79ba203f947e8ef3c4255cef02cc426b96f3662627868b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742570.stderr",
+      "file": "annotations/136779742570.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742570.stdout",
+      "file": "annotations/136779742570.stdout.gz",
+      "bytes": 2,
+      "lines": 1,
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742628.stderr",
+      "file": "annotations/136779742628.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/136779742628.stdout",
+      "file": "annotations/136779742628.stdout.gz",
+      "bytes": 642,
+      "lines": 1,
+      "rawSha256": "6aad1bb0fb8a08c0b34bc587247390a0b95a30956b586654d83b1958d82ea9ee",
+      "archiveSha256": "1ebe0ca518c558eb145435c81fde7522ef7344b7f91534d8148a8d0d195d4b87"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/github-annotations.json",
+      "file": "annotations/github-annotations.json.gz",
+      "bytes": 2606,
+      "lines": 58,
+      "rawSha256": "0b31ceeacebb9149dd71722f3f52901fcf6241f63e49ad8b45f460a6bda981c1",
+      "archiveSha256": "7bf71a0e5404c4b08a56621e02d498dc3631fba8411dec96d5b4fd77ddce0204"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/jobs.stderr",
+      "file": "annotations/jobs.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/jobs.stdout",
+      "file": "annotations/jobs.stdout.gz",
+      "bytes": 17520,
+      "lines": 1,
+      "rawSha256": "2cb1d9c4067d4b3b5a7154ccf3f738804906b779961dd44b61d6e53f658b9be5",
+      "archiveSha256": "988c92ec3e16dd76d56b57e5d71fdbee4b70b495eebf4f3fe93dd6aec0ab5656"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/native-result-summary.json",
+      "file": "annotations/native-result-summary.json.gz",
+      "bytes": 4101,
+      "lines": 96,
+      "rawSha256": "d3e9e4c88f8cbebc54e519fefd53826fa75ca7f33b61cfda03530f0bb606cb1b",
+      "archiveSha256": "647e5de1024f776eb4f51fdd19fec4f405995d657f9fec63723c9f270f5ac993"
+    },
+    {
+      "source": "/tmp/issue-1580-research/terminal-annotation-context/workflows-context.txt",
+      "file": "annotations/workflows-context.txt.gz",
+      "bytes": 28795,
+      "lines": 171,
+      "rawSha256": "c4d059eb642e2a88ff2c9bf8e4c37a06281d90e2bf20be6ea0397f3ca7e752ff",
+      "archiveSha256": "76aa0c0202a08b4ca0c2cce3911d8c78b46deb22aa1f90af4ec1b2eec308a4b4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/verify-terminal-scanner-boundary-evidence.py",
+      "file": "helper/verify-terminal-scanner-boundary-evidence.py.gz",
+      "bytes": 3507,
+      "lines": 43,
+      "rawSha256": "6c46f8cc39b410941524321aac32a9271dccc19996a9fcac25cfab385863f65b",
+      "archiveSha256": "54ad81f7378a9dea8c62577e39a5557d6dcd2facb42895e2dd30a68a3472c291"
+    },
+    {
+      "source": "/tmp/issue-1580-research/verify-terminal-scanner-boundary-evidence.log",
+      "file": "helper/verify-terminal-scanner-boundary-evidence.log.gz",
+      "bytes": 527,
+      "lines": 4,
+      "rawSha256": "efb60ba9d6d30102975cd6edc8c46a3da3e833121e91a9c2719bee9c60449f44",
+      "archiveSha256": "97c46ccf2ded89e547bbb281b0a05c222e2829ba0ce58c2b8d4dd7355b6b9094"
+    },
+    {
+      "source": "/tmp/issue-1580-research/review-terminal-annotations.py",
+      "file": "helper/review-terminal-annotations.py.gz",
+      "bytes": 2478,
+      "lines": 36,
+      "rawSha256": "a90937d9da84df05bc2f95b83c33a53e50d001b195b07495daa369348d9f13dd",
+      "archiveSha256": "ee5c608b404a2056143c73d78343bd069f7c8a9cb5fc33888f51ee8664b97fef"
+    },
+    {
+      "source": "/tmp/issue-1580-research/review-terminal-annotations.log",
+      "file": "helper/review-terminal-annotations.log.gz",
+      "bytes": 286,
+      "lines": 5,
+      "rawSha256": "1d3f6d0b4fa1070e70a55b5f64e0efb77b985b6fe19b04952939b27240c0b3d8",
+      "archiveSha256": "21ee5462299501616f92812facff7c270e3caf0cb541abda3a3c178dff2ea33a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/verify-python-javascript-publication.py",
+      "file": "helper/verify-python-javascript-publication.py.gz",
+      "bytes": 1634,
+      "lines": 18,
+      "rawSha256": "0eb47d0770644a544068fdf6499e24b19d8066f18b6889b9f7dc1e94a3b4f1bb",
+      "archiveSha256": "d778b28160b8c892435b8e1c0087dd07cb1c38824e7baebc31c3cfb2cb288fec"
+    },
+    {
+      "source": "/tmp/issue-1580-research/verify-python-javascript-publication.log",
+      "file": "helper/verify-python-javascript-publication.log.gz",
+      "bytes": 155,
+      "lines": 4,
+      "rawSha256": "8948a1136274d6287e47de2ea4ea1fe4ed5347515a75508adb56d674ab967826",
+      "archiveSha256": "cec70cc8ebf2432d22c712414b34fe1a75e65f0af877a302563fe6f5a9be6f63"
+    },
+    {
+      "source": "/tmp/issue-1580-research/seal-terminal-and-local-validation.py",
+      "file": "helper/seal-terminal-and-local-validation.py.gz",
+      "bytes": 7032,
+      "lines": 87,
+      "rawSha256": "26c0bf1220c148e8ea88b103fdca528bd2a4451d0c1309e4097674300b3b4331",
+      "archiveSha256": "32bc4e0c882e0e1b73d10fb73031920d481382d5a1f3fce80918ea4291207a09"
+    },
+    {
+      "source": "/tmp/issue-1580-research/seal-terminal-and-local-validation.log",
+      "file": "helper/seal-terminal-and-local-validation.log.gz",
+      "bytes": 0,
+      "lines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/review-terminal-annotations-retry.log",
+      "file": "helper/review-terminal-annotations-retry.log.gz",
+      "bytes": 286,
+      "lines": 5,
+      "rawSha256": "1d3f6d0b4fa1070e70a55b5f64e0efb77b985b6fe19b04952939b27240c0b3d8",
+      "archiveSha256": "21ee5462299501616f92812facff7c270e3caf0cb541abda3a3c178dff2ea33a"
+    }
+  ],
+  "allHashesVerified": true,
+  "maintainedTestsPassed": 126,
+  "validationChecksPassed": 7,
+  "headQualifiedByHostedCI": "adeb4ff46c4bb162a82aacbeb0c38bbe9aeebd1a",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

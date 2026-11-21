@@ -31,5 +31,5 @@ failure are retained alongside the successful current run.
 Evidence is in `experiments/issue-1580/evidence/checks/php-pipe-and-annotation-readiness/`.
 Every retained compressed stream verifies against its raw and archive hashes.
 These supplied probes receive zero independent Formal AI authorship credit.
-All eight complete template comparisons and full issue acceptance remain open.
+Acceptance across all eight templates and full issue acceptance remain open.
 PR: https://github.com/link-assistant/formal-ai/pull/1581
