@@ -736,7 +736,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1692,"end":175
 "canonicalPath":"formal_ai::history_context::SEED_PATH","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"data/seed/history-formalization.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":
 true,"sourceSpan":{"start":1705,"end":1772},"sourceWitnesses":[{"path":"rust/src/history_context.rs","sha256":
-"5c25bf3d437bcc38706cfa4df26646c387d28b2fb6125490aebd4fb105a1f6d2"},{"path":"rust/src/lib.rs","sha256":
+"fa172c224884ab204307d90a936a6a8cbe446615a34ecc1dbd06c633a73497cc"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant SEED-PATH (exported) (type string) (value (string data/seed/history-formalization.lino)))",
 "maintainedJavaScript":"export const SEED_PATH = 'data/seed/history-formalization.lino';","maintainedTranslationSha256":
@@ -744,7 +744,7 @@ true,"sourceSpan":{"start":1705,"end":1772},"sourceWitnesses":[{"path":"rust/src
 "canonicalPath":"formal_ai::history_context::CURSOR_ROOT","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"repository_history_cursor","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":1834,"end":1892},"sourceWitnesses":[{"path":"rust/src/history_context.rs","sha256":
-"5c25bf3d437bcc38706cfa4df26646c387d28b2fb6125490aebd4fb105a1f6d2"},{"path":"rust/src/lib.rs","sha256":
+"fa172c224884ab204307d90a936a6a8cbe446615a34ecc1dbd06c633a73497cc"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant CURSOR-ROOT (exported) (type string) (value (string repository_history_cursor)))","maintainedJavaScript":
 "export const CURSOR_ROOT = 'repository_history_cursor';","maintainedTranslationSha256":
