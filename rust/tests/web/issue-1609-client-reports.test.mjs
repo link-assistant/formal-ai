@@ -34,11 +34,11 @@ const system = content => ({ role: 'system', content });
 const bashSchema = { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] };
 const commandSchema = { type: 'object', properties: { cmd: { type: 'string' } }, required: ['cmd'] };
 
-function chat(id, headers, guidance) {
+function chat(id, headers, guidance, name = 'bash', schema = bashSchema) {
   return {
     id, headers, guidance, endpoint: '/api/openai/v1/chat/completions',
     request: (messages, tools) => ({
-      messages, tools: tools ? [{ type: 'function', function: { name: 'bash', parameters: bashSchema } }] : [],
+      messages, tools: tools ? [{ type: 'function', function: { name, parameters: schema } }] : [],
     }),
     unpack(body) {
       const { content, tool_calls: calls } = body.choices[0].message;
@@ -47,7 +47,7 @@ function chat(id, headers, guidance) {
         text: content,
         command: call && JSON.parse(call.function.arguments).command,
         reply: output => [{ role: 'assistant', content, tool_calls: calls }, {
-          role: 'tool', name: 'bash', tool_call_id: call.id, content: output,
+          role: 'tool', name, tool_call_id: call.id, content: output,
         }],
       };
     },
@@ -76,6 +76,10 @@ function gemini(name, endpoint, id) {
     },
   };
 }
+
+const QWEN_ID = '100a1cc7-2483-46c2-803c-2ee707ab6c17';
+const qwenChat = chat(QWEN_ID, { 'x-formal-ai-dialog-id': QWEN_ID },
+  ["Respond in the same language as the user's input."], 'run_shell_command');
 
 const clients = [
   {
@@ -122,6 +126,19 @@ const clients = [
   },
   gemini('Gemini', '/api/gemini/v1beta/models/formal-ai:generateContent', 'gemini_issue1609'),
   gemini('Vertex', '/api/vertex/v1/projects/formal-ai/locations/global/publishers/google/models/formal-ai:generateContent', 'vertex_issue1609'),
+  {
+    ...qwenChat, name: 'Qwen Code', nativeHarness: true,
+    request(messages, tools) {
+      return qwenChat.request(messages.map(message => {
+        if (message.role !== 'user' || typeof message.content !== 'string') return message;
+        return user([
+          { type: 'text', text: '<system-reminder>Local environment</system-reminder>' },
+          { type: 'text', text: message.content },
+          { type: 'text', text: 'Current memory catalog (full snapshot; supersedes all earlier memory catalogs):\n<system-reminder>Private profile</system-reminder>' },
+        ]);
+      }), tools);
+    },
+  },
 ];
 
 async function ask(run, client, messages, tools = false) {
@@ -158,6 +175,17 @@ function checkNativeExport(run, client, logs, command) {
     env.CODEX_HOME = config;
     writeFixture(path.join(config, 'sessions', '2026', '11', '21', `rollout-2026-11-21T14-00-00-${session}.jsonl`),
       ...history.map(text => ({ type: 'response_item', payload: { type: 'message', ...user(text) } })));
+  } else if (client.name === 'Qwen Code') {
+    tool = 'qwen';
+    env.HOME = config;
+    env.QWEN_CODE_SESSION_ID = session;
+    const store = path.join(config, '.qwen', 'projects', 'work', 'chats');
+    writeFixture(path.join(store, `${session}.jsonl`), ...history.map(text => ({
+      sessionId: session, type: 'user', message: { role: 'user', parts: [{ text }] },
+    })));
+    writeFixture(path.join(store, 'unrelated.jsonl'), {
+      sessionId: 'unrelated', type: 'user', message: { role: 'user', parts: [{ text: 'A different conversation' }] },
+    });
   } else if (client.name === 'Gemini' || client.name === 'Vertex') {
     tool = 'gemini';
     nativeId = '79dd7290-ac1c-4c3f-a490-cd47e612eb82';
@@ -209,6 +237,7 @@ for (const [server, binary] of [['JavaScript', undefined], ['native', NATIVE]]) 
       FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false',
       FORMAL_AI_ALLOW_NETWORK: 'false',
       FORMAL_AI_DREAMING: 'false',
+      OPENAI_API_KEY: 'formal-ai',
     };
     const run = binary
       ? await startCli(t, { binary, silent: false, args: ['--agent-mode'], lifetime: 55_000, env })

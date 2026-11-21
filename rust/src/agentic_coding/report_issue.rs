@@ -273,8 +273,12 @@ fn option_matcher(
     intent: &'static str,
     multiple: bool,
 ) -> impl Fn(usize, &str) -> bool + use<> {
-    let text = message.content.plain_text();
     let user = message.role.eq_ignore_ascii_case("user");
+    let text = if user {
+        message.content.user_request_text()
+    } else {
+        message.content.plain_text()
+    };
     let answers = if user && multiple {
         text.split(',').map(normalize_prompt).collect::<Vec<_>>()
     } else {

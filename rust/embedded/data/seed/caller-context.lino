@@ -3,6 +3,7 @@ caller_context
     block "system-reminder"
       client "claude"
       client "qwen"
+      prefix "Current memory catalog (full snapshot; supersedes all earlier memory catalogs):"
     block "session_context"
       client "gemini"
     block "environment_context"

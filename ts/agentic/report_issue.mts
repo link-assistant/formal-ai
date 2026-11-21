@@ -182,8 +182,8 @@ function parseContents(choice, language) {
 
 /** Mirrors `fn option_matcher`. */
 function optionMatcher({ message, question }, language, questionIntent, optionsIntent, multiple) {
-  const text = plainText(message.content);
   const user = isUser(message);
+  const text = user ? userRequestText(message.content) : plainText(message.content);
   const answers = (user && multiple ? text.split(',') : [text]).map(normalizePrompt);
   const numbered = user && question.startsWith(localized(questionIntent, language) + '\n1. ');
   return (index, value) => {

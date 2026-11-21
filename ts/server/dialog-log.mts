@@ -151,8 +151,8 @@ function conversationEpoch(scope) {
 }
 
 /** `dialog_id`. */
-function dialogId(directory, headers, requestBody, requestPath) {
-  const declared = requestSessionIdentifier(headers, requestPath, requestBody);
+function dialogId(directory, headers, requestBody, requestPath, requestIdentifier) {
+  const declared = requestIdentifier ?? requestSessionIdentifier(headers, requestPath, requestBody);
   if (declared !== null) return declared;
   const basis = firstUserPrompt(requestBody) ?? requestPath;
   const scope = `${directory}${UNIT_SEPARATOR}${basis}`;
@@ -172,9 +172,9 @@ function writeConversationRecord(directory, record) {
  * `write_dialog_exchange`: append one exchange; returns the trace path.
  * @returns {string}
  */
-export function writeDialogExchange(directory, method, requestPath, headers, requestBody, status, contentType, responseBody) {
+export function writeDialogExchange(directory, method, requestPath, headers, requestBody, status, contentType, responseBody, requestIdentifier) {
   const timestamp = Date.now();
-  const id = dialogId(directory, headers, requestBody, requestPath);
+  const id = dialogId(directory, headers, requestBody, requestPath, requestIdentifier);
   const sequence = requestSequence;
   requestSequence += 1n;
   const requestId = stableId('request', `${timestamp}|${sequence}|${id}|${requestPath}`);
@@ -213,8 +213,11 @@ export function recordApiExchangeIfEnabled(request, response, authorized, env = 
     if (!authorized || logger?.level === 'silent') return;
     const directory = configuredDialogLogDirectory(env);
     if (!directory || String(request.path).split('?')[0].includes('/conversations/')) return;
+    let requestIdentifier = requestSessionIdentifier(request.headers, request.path, request.body);
     {
       const redact=makeRedactor(env,{preserveJsonNumbers:true});
+      // Scrubbing credentials can change a header name such as the dialog ID header.
+      if (redact(requestIdentifier) !== requestIdentifier) requestIdentifier = null;
       const safe=redact({...request,headers:Object.fromEntries(request.headers??[]),body:redactedBody(String(request.body??''),env)});
       request={...safe,headers:Object.entries(safe.headers)};
       response=redact({...response,body:redactedBody(String(response.body??''),env)});
@@ -228,6 +231,7 @@ export function recordApiExchangeIfEnabled(request, response, authorized, env = 
       response.statusCode,
       response.contentType,
       String(response.body ?? ''),
+      requestIdentifier,
     );
     if(logger)logger.log('debug','dialog.appended',{component:'server',path:file});
     else process.stderr.write(`${serverMessage('dialog_log_appended', { path: file })}\n`);

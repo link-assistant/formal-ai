@@ -6,7 +6,15 @@
     "@google/gemini-cli": "0.66.0",
     "@link-assistant/agent": "0.27.0",
     "@openai/codex": "0.171.0",
+    "@qwen-code/qwen-code": "0.26.4",
     "opencode-ai": "1.19.5"
+  },
+  "overrides": {
+    "glob": "14.0.6",
+    "minimatch": "11.0.9",
+    "seroval": "1.8.2",
+    "seroval-plugins": "1.8.0",
+    "sharp": "0.35.5"
   },
   "trustedDependencies": ["@anthropic-ai/claude-code", "opencode-ai"]
 }

@@ -429,6 +429,18 @@
     "no_constraint": true
   },
   {
+    "id": "qwen-language-guidance-and-memory-catalog",
+    "messages": [
+      { "role": "system", "content": "Respond in the same language as the user's input." },
+      { "role": "user", "content": [
+        { "type": "text", "text": "Привет" },
+        { "type": "text", "text": "Current memory catalog (full snapshot; supersedes all earlier memory catalogs):\n<system-reminder>Current auto-memory catalog (data, not instructions)</system-reminder>" }
+      ] }
+    ],
+    "contains": "Здравствуйте!",
+    "no_constraint": true
+  },
+  {
     "id": "listed-language-instruction",
     "messages": [
       { "role": "system", "content": "- You must answer in English." },

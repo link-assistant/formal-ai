@@ -4,7 +4,7 @@
   "labels": ["(?:one word\\s*:|only with|only one of|one of\\s*:)\\s*([\\p{L}-]+)\\s+(?:or|/)\\s+([\\p{L}-]+)"],
   "length": ["(exactly|at most|no more than)\\s+(one|[0-9]+)\\s+words?"],
   "outputCue": "^(?:you\\s+)?(?:must\\s+)?(?:always\\s+)?(?:answer|respond|reply|output|return|be brief|отвечай|ответь)(?:\\s|$)|^(?:your|the)\\s+(?:answer|response|output)\\s+(?:must|should)|^(?:use\\s+(?:json|xml|csv|markdown|yaml|plain text)|(?:keep|limit)\\s+(?:your\\s+|the\\s+)?(?:answer|response|output))(?:\\s|$)",
-  "responseGuidance": "^(?:[-*]\\s+)?(?:output text to communicate with the user|(?:(?:you\\s+)?must\\s+)?answer concisely with fewer than [0-9]+ lines(?: of text)? \\(not including tool use or code generation\\), unless (?:the )?user asks for detail|answer (?:it|the user's question) directly(?: instead|, without elaboration, explanation, or details)?|(?:your|the) (?:answer|response|output) (?:must|should) be\\s*:)$",
+  "responseGuidance": "^(?:[-*]\\s+)?(?:respond\\s+in\\s+the\\s+same\\s+language\\s+as\\s+the\\s+user['’]s\\s+input$|output text to communicate with the user|(?:(?:you\\s+)?must\\s+)?answer concisely with fewer than [0-9]+ lines(?: of text)? \\(not including tool use or code generation\\), unless (?:the )?user asks for detail|answer (?:it|the user's question) directly(?: instead|, without elaboration, explanation, or details)?|(?:your|the) (?:answer|response|output) (?:must|should) be\\s*:)$",
   "titleTask": "^You are a title generator\\. You output ONLY a thread title\\. Nothing else\\.\\s+<task>\\s+Generate a brief title",
   "titleMaxCharacters": 50,
   "ignorableResidue": "^(?:(?:you|must|always|answer|respond|reply|output|return|with|exactly|only|and|one|word|words|in|as|the|response|format)|[\\s,:-])*$",

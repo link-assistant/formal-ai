@@ -11,22 +11,15 @@
 // `parseChatMessage`: `{role, content, tool_calls, tool_call_id, name,
 // is_error}`, where `content` is a string or an array of `{type, text}` parts.
 const { callbackText: canonicalUnaryText } = crateRequire("callback_values.mjs");
-const { callbackValue: canonicalUnaryValue } = crateRequire("callback_values.mjs");
 const { callbackTrim: canonicalUnaryTrim } = crateRequire("callback_values.mjs");
-const { cached, childrenNamed, isDirectory, parseLino, readText } = crateRequire("host.mjs");
+const { childrenNamed, isDirectory, parseLino, readText } = crateRequire("host.mjs");
 const { quotedSegmentSpans } = crateRequire("crate/quoted_segments.mjs");
+const { callerContextVocabulary } = crateRequire("crate/seed_caller_context.mjs");
 /** `MessageContent::plain_text`. */
 function plainText(content) {
   if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return '';
   return content.filter((part) => typeof part?.text === 'string').map(canonicalUnaryText).join('\n');
-}
-function injectedBlocks() {
-  return cached('caller-context-blocks', () => {
-    const root = parseLino(readText('data/seed/caller-context.lino'));
-    const group = childrenNamed(root, 'injected_blocks')[0];
-    return childrenNamed(group, 'block').map(canonicalUnaryValue);
-  });
 }
 function unquotedMarkerOffsets(text, marker) {
   const quoted = quotedSegmentSpans(text);
@@ -51,11 +44,20 @@ function stripBlock(text, open, close) {
   }
   return request + remaining;
 }
+/** `strip_caller_context_blocks`. */
+function stripCallerContextBlocks(text, blocks) {
+  return blocks
+    .reduce((text, { tag, prefix }) => {
+      const open = `<${tag}>`;
+      const close = `</${tag}>`;
+      if (prefix) text = stripBlock(text, `${prefix}\n${open}`, close);
+      return stripBlock(text, open, close);
+    }, text)
+    .trim();
+}
 /** `MessageContent::user_request_text`. */
 function userRequestText(content) {
-  return injectedBlocks()
-    .reduce((text, tag) => stripBlock(text, `<${tag}>`, `</${tag}>`), plainText(content))
-    .trim();
+  return stripCallerContextBlocks(plainText(content), callerContextVocabulary().injected_blocks);
 }
 const utf8Length = (text) => new TextEncoder().encode(text).length;
 /** `strip_system_echo`. */
@@ -173,6 +175,7 @@ function chatMessageToTurn(message) {
 }
 return Object.freeze({
   plainText,
+  stripCallerContextBlocks,
   userRequestText,
   stripSystemEcho,
   rustLines,

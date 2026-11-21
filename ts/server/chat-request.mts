@@ -9,6 +9,7 @@
 // not part of the parity contract.
 
 import { childrenNamed, parseLino, readRepoFile } from './lino.mjs';
+import { stripCallerContextBlocks } from '../agentic/content.mjs';
 import { serverMessage } from './messages.mjs';
 import {parseOutputOptions} from './cnl-output.mjs';
 
@@ -160,32 +161,17 @@ function callerContextBlocks() {
   if (!injectedBlocks) {
     const root = parseLino(readRepoFile('data/seed/caller-context.lino'));
     const group = childrenNamed(root, 'injected_blocks')[0];
-    injectedBlocks = childrenNamed(group, 'block').map((block) => block.value);
+    injectedBlocks = childrenNamed(group, 'block').map(block => ({
+      tag: block.value,
+      prefix: childrenNamed(block, 'prefix')[0]?.value,
+    }));
   }
   return injectedBlocks;
 }
 
-function stripBlock(text, open, close) {
-  let remaining = text;
-  let request = '';
-  for (let start = remaining.indexOf(open); start >= 0; start = remaining.indexOf(open)) {
-    request += remaining.slice(0, start);
-    const afterOpen = remaining.slice(start + open.length);
-    const end = afterOpen.indexOf(close);
-    if (end < 0) {
-      remaining = '';
-      break;
-    }
-    remaining = afterOpen.slice(end + close.length);
-  }
-  return request + remaining;
-}
-
 /** `MessageContent::user_request_text`. */
 export function userRequestText(content) {
-  return callerContextBlocks()
-    .reduce((text, tag) => stripBlock(text, `<${tag}>`, `</${tag}>`), plainText(content))
-    .trim();
+  return stripCallerContextBlocks(plainText(content), callerContextBlocks());
 }
 
 function stripSystemEcho(request, system) {

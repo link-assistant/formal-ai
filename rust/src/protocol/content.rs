@@ -255,7 +255,14 @@ fn strip_caller_context_blocks(text: &str) -> String {
         .injected_blocks
         .iter()
         .fold(text.to_owned(), |text, block| {
-            strip_block(&text, &block.open(), &block.close())
+            let open = block.open();
+            let close = block.close();
+            let text = if let Some(prefix) = &block.prefix {
+                strip_block(&text, &format!("{prefix}\n{open}"), &close)
+            } else {
+                text
+            };
+            strip_block(&text, &open, &close)
         })
         .trim()
         .to_owned()

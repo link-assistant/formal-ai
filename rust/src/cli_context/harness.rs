@@ -15,6 +15,7 @@ pub(super) enum Harness {
     Codex(PathBuf),
     Agent(PathBuf),
     Gemini(PathBuf),
+    Qwen(PathBuf),
 }
 
 pub(super) fn current() -> Option<Harness> {
@@ -44,6 +45,7 @@ pub(super) fn current() -> Option<Harness> {
                 .or_else(home)?;
             Some(Harness::Gemini(configuration.join(".gemini/tmp")))
         }
+        "qwen" => Some(Harness::Qwen(home()?.join(".qwen/projects"))),
         _ => None,
     }
 }
@@ -69,10 +71,26 @@ impl Harness {
                 return Ok(identifier.to_owned());
             }
             Self::Gemini(root) => {
-                return gemini_sessions(root)
+                return chat_sessions(root)
                     .max_by_key(|path| modified(path).ok())
                     .ok_or_else(|| io::Error::from(io::ErrorKind::NotFound))
                     .and_then(|path| gemini_messages(&path).map(|(identifier, _)| identifier));
+            }
+            Self::Qwen(root) => {
+                if let Ok(identifier) = std::env::var("QWEN_CODE_SESSION_ID")
+                    && valid_identifier(&identifier)
+                {
+                    return Ok(identifier);
+                }
+                return chat_sessions(root)
+                    .filter_map(|path| {
+                        let identifier = path.file_stem()?.to_str()?;
+                        valid_identifier(identifier)
+                            .then(|| (modified(&path).ok(), identifier.to_owned()))
+                    })
+                    .max()
+                    .map(|(_, identifier)| identifier)
+                    .ok_or_else(|| io::ErrorKind::NotFound.into());
             }
         };
         let identifier = find_session(&root, extension, None)?
@@ -113,11 +131,20 @@ impl Harness {
                     let server = super::load_server_context(identifier, log_directory)?;
                     return matching_gemini_context(root, &server);
                 }
-                let (_, messages) = gemini_sessions(root)
+                let (_, messages) = chat_sessions(root)
                     .filter_map(|path| gemini_messages(&path).ok())
                     .find(|(candidate, _)| candidate == identifier)
                     .ok_or_else(|| io::Error::from(io::ErrorKind::NotFound))?;
                 ("gemini", messages)
+            }
+            Self::Qwen(root) => {
+                let path = chat_sessions(root)
+                    .filter(|path| {
+                        path.file_stem().and_then(|name| name.to_str()) == Some(identifier)
+                    })
+                    .max_by_key(|path| modified(path).ok())
+                    .ok_or(io::ErrorKind::NotFound)?;
+                ("qwen", qwen_messages(&path, identifier)?)
             }
         };
         Ok(document(tool, identifier, messages))
@@ -194,7 +221,7 @@ fn matching_agent_context(root: &Path, server: &Value) -> Result<Value, Box<dyn 
 
 fn matching_gemini_context(root: &Path, server: &Value) -> Result<Value, Box<dyn Error>> {
     let earliest = earliest_transcript_write(server)?;
-    let candidates = gemini_sessions(root)
+    let candidates = chat_sessions(root)
         .filter(|path| modified(path).is_ok_and(|time| time >= earliest))
         .filter_map(|path| gemini_messages(&path).ok());
     matching_context("Gemini", "gemini", server, candidates)
@@ -220,12 +247,12 @@ fn matching_context(
         }
         if matching.is_some() {
             return Err(
-                transcript_match_error("context_transcript_multiple_matches", client).into(),
+                transcript_match_error("context-transcript-multiple-matches", client).into(),
             );
         }
         matching = Some(document(tool, &identifier, messages));
     }
-    matching.ok_or_else(|| transcript_match_error("context_transcript_no_match", client).into())
+    matching.ok_or_else(|| transcript_match_error("context-transcript-no-match", client).into())
 }
 
 fn transcript_match_error(key: &str, client: &str) -> io::Error {
@@ -238,7 +265,7 @@ fn subdirectories(root: &Path) -> impl Iterator<Item = PathBuf> + use<> {
         .map(|entry| entry.path())
 }
 
-fn gemini_sessions(root: &Path) -> impl Iterator<Item = PathBuf> {
+fn chat_sessions(root: &Path) -> impl Iterator<Item = PathBuf> {
     subdirectories(root)
         .flat_map(|project| entries(&project.join("chats")))
         .filter(|entry| entry.file_type().is_ok_and(|kind| kind.is_file()))
@@ -247,6 +274,26 @@ fn gemini_sessions(root: &Path) -> impl Iterator<Item = PathBuf> {
             path.extension()
                 .is_some_and(|extension| extension == "jsonl")
         })
+}
+
+fn qwen_messages(path: &Path, identifier: &str) -> io::Result<Vec<Value>> {
+    let mut messages = Vec::new();
+    for line in BufReader::new(File::open(path)?).lines() {
+        let Ok(entry) = serde_json::from_str::<Value>(&line?) else {
+            continue;
+        };
+        if entry["sessionId"].as_str() != Some(identifier) {
+            continue;
+        }
+        let role = match entry["type"].as_str() {
+            Some("user") => "user",
+            Some("assistant") => "assistant",
+            Some("tool_result") => "tool",
+            _ => continue,
+        };
+        messages.push(json!({"role": role, "parts": entry["message"]["parts"]}));
+    }
+    Ok(messages)
 }
 
 fn gemini_messages(path: &Path) -> io::Result<(String, Vec<Value>)> {
