@@ -1,8 +1,8 @@
 // Provider-owned source capture retrieval: verified cache, offline policy, and live response status.
-async function sourceWalkFetchCapture(url, { online = true, bounded = false, indexed = false } = {}) {
+async function sourceWalkFetchCapture(url, { online = true, bounded = false, indexed = false, maxAgeSeconds = Infinity } = {}) {
   const key = indexed ? `indexed:${url}` : url;
   const cached = sourceWalkCaptureCache.get(key);
-  if (cached) {
+  if (cached && (!online || sourceWalkNowSeconds() - Number(cached.fetchedAt) <= maxAgeSeconds)) {
     if (cached.url !== url || typeof cached.text !== "string" || cached.sha256 !== await sourceWalkSha256Hex(cached.text))
       return { ok: false, url, error: "invalid_capture" };
     return { ...cached, cached: true };

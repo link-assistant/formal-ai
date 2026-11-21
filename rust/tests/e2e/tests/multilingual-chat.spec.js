@@ -240,33 +240,30 @@ test.describe('multilingual chat surface', () => {
   });
 
   test('Russian currency conversion resolves as a calculation', async ({ page }) => {
-    const last = await sendPrompt(page, 'Посчитай 1000 рублей в долларах');
+    await page.route('https://api.frankfurter.dev/v2/providers/cbr/rate/rub/usd?date=2026-11-17', route =>
+      route.fulfill({
+        path: require.resolve('../../fixtures/currency-quotes/rub-usd.json'),
+        contentType: 'application/json',
+        headers: { 'access-control-allow-origin': '*' },
+      }));
+    const last = await sendPrompt(page, 'Посчитай 1000 рублей в долларах 2026-11-17');
     await expect(last).toHaveClass(/assistant/);
-    await expect(last).toContainText('1000 рублей в долларах = 11.1731843575 USD');
-    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    await expect(last).toContainText('1000 RUB ≈ 12.12 USD');
+    await expect(last).toContainText('Дата курса: 2026-11-17');
   });
 
-  test('exchange-rate basis prompts resolve as calculations across supported languages', async ({ page }) => {
+  test('exchange-rate basis prompts ask for both currencies across supported languages', async ({ page }) => {
     const cases = [
-      {
-        language: 'en',
-        prompt: 'what dollar exchange rate do you use for calculations?',
-      },
-      { language: 'ru', prompt: 'какой курс долора у тебя при расчетах?' },
-      {
-        language: 'hi',
-        prompt: 'गणना में आप डॉलर का कौन सा विनिमय दर उपयोग करते हैं?',
-      },
-      { language: 'zh', prompt: '你计算时使用什么美元汇率?' },
+      ['what dollar exchange rate do you use for calculations?', 'Which two currencies'],
+      ['какой курс долора у тебя при расчетах?', 'Какие две валюты'],
+      ['गणना में आप डॉलर का कौन सा विनिमय दर उपयोग करते हैं?', 'कौन सी दो मुद्राएँ'],
+      ['你计算时使用什么美元汇率?', '哪两种货币'],
     ];
 
-    for (const { language, prompt } of cases) {
+    for (const [prompt, expected] of cases) {
       const last = await sendPrompt(page, prompt);
-      await expect(last, `${language} reply`).toHaveClass(/assistant/);
-      await expect(last, `${language} calculator`).toContainText('link-calculator');
-      await expect(last, `${language} rate`).toContainText('1 USD in RUB = 89.5 RUB');
-      await expect(last, `${language} detail`).toContainText('Exchange rate: 1 USD = 89.5 RUB');
-      await expect(last, `${language} unknown`).not.toContainText(UNKNOWN_ANSWER_MARKER);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(expected);
     }
   });
 

@@ -962,23 +962,23 @@ multilingual_responses
   response response_compound_interest_report_en
     intent compound_interest_report
     language en
-    text "Compound interest calculation\n\nFormula: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% annual)\nn = {periods_per_year} ({frequency})\nt = {years} years\n\nStep 1: periodic rate = r/n = {rate}/{periods_per_year} = {periodic_rate}\nStep 2: number of periods = n*t = {periods_per_year}*{years} = {periods}\nStep 3: A = {principal} * (1 + {periodic_rate})^{periods}\nFinal amount: {final_amount} USD"
+    text "Compound interest calculation\n\nFormula: A = P(1 + r/n)^(n*t)\nP = {principal} {principal_currency}\nr = {rate} ({percent}% annual)\nn = {periods_per_year} ({frequency})\nt = {years} years\n\nStep 1: periodic rate = r/n = {rate}/{periods_per_year} = {periodic_rate}\nStep 2: number of periods = n*t = {periods_per_year}*{years} = {periods}\nStep 3: A = {principal} * (1 + {periodic_rate})^{periods}\nFinal amount: {final_amount} {principal_currency}"
   response response_compound_interest_report_ru
     intent compound_interest_report
     language ru
-    text "Расчёт сложных процентов\n\nФормула: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% годовых)\nn = {periods_per_year} ({frequency})\nt = {years} лет\n\nШаг 1: ставка за период = r/n = {rate}/{periods_per_year} = {periodic_rate}\nШаг 2: число периодов = n*t = {periods_per_year}*{years} = {periods}\nШаг 3: A = {principal} * (1 + {periodic_rate})^{periods}\nИтоговая сумма: {final_amount} USD"
+    text "Расчёт сложных процентов\n\nФормула: A = P(1 + r/n)^(n*t)\nP = {principal} {principal_currency}\nr = {rate} ({percent}% годовых)\nn = {periods_per_year} ({frequency})\nt = {years} лет\n\nШаг 1: ставка за период = r/n = {rate}/{periods_per_year} = {periodic_rate}\nШаг 2: число периодов = n*t = {periods_per_year}*{years} = {periods}\nШаг 3: A = {principal} * (1 + {periodic_rate})^{periods}\nИтоговая сумма: {final_amount} {principal_currency}"
   response response_compound_interest_report_hi
     intent compound_interest_report
     language hi
-    text "चक्रवृद्धि ब्याज की गणना\n\nसूत्र: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% वार्षिक)\nn = {periods_per_year} ({frequency})\nt = {years} वर्ष\n\nचरण 1: आवधिक दर = r/n = {rate}/{periods_per_year} = {periodic_rate}\nचरण 2: अवधियों की संख्या = n*t = {periods_per_year}*{years} = {periods}\nचरण 3: A = {principal} * (1 + {periodic_rate})^{periods}\nअंतिम राशि: {final_amount} USD"
+    text "चक्रवृद्धि ब्याज की गणना\n\nसूत्र: A = P(1 + r/n)^(n*t)\nP = {principal} {principal_currency}\nr = {rate} ({percent}% वार्षिक)\nn = {periods_per_year} ({frequency})\nt = {years} वर्ष\n\nचरण 1: आवधिक दर = r/n = {rate}/{periods_per_year} = {periodic_rate}\nचरण 2: अवधियों की संख्या = n*t = {periods_per_year}*{years} = {periods}\nचरण 3: A = {principal} * (1 + {periodic_rate})^{periods}\nअंतिम राशि: {final_amount} {principal_currency}"
   response response_compound_interest_report_zh
     intent compound_interest_report
     language zh
-    text "复利计算\n\n公式：A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate}（年利率 {percent}%）\nn = {periods_per_year}（{frequency}）\nt = {years} 年\n\n第 1 步：每期利率 = r/n = {rate}/{periods_per_year} = {periodic_rate}\n第 2 步：期数 = n*t = {periods_per_year}*{years} = {periods}\n第 3 步：A = {principal} * (1 + {periodic_rate})^{periods}\n最终金额：{final_amount} USD"
+    text "复利计算\n\n公式：A = P(1 + r/n)^(n*t)\nP = {principal} {principal_currency}\nr = {rate}（年利率 {percent}%）\nn = {periods_per_year}（{frequency}）\nt = {years} 年\n\n第 1 步：每期利率 = r/n = {rate}/{periods_per_year} = {periodic_rate}\n第 2 步：期数 = n*t = {periods_per_year}*{years} = {periods}\n第 3 步：A = {principal} * (1 + {periodic_rate})^{periods}\n最终金额：{final_amount} {principal_currency}"
   response response_compound_interest_report_es
     intent compound_interest_report
     language es
-    text "Cálculo de interés compuesto\n\nFórmula: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% anual)\nn = {periods_per_year} ({frequency})\nt = {years} años\n\nPaso 1: tasa por periodo = r/n = {rate}/{periods_per_year} = {periodic_rate}\nPaso 2: número de periodos = n*t = {periods_per_year}*{years} = {periods}\nPaso 3: A = {principal} * (1 + {periodic_rate})^{periods}\nImporte final: {final_amount} USD"
+    text "Cálculo de interés compuesto\n\nFórmula: A = P(1 + r/n)^(n*t)\nP = {principal} {principal_currency}\nr = {rate} ({percent}% anual)\nn = {periods_per_year} ({frequency})\nt = {years} años\n\nPaso 1: tasa por periodo = r/n = {rate}/{periods_per_year} = {periodic_rate}\nPaso 2: número de periodos = n*t = {periods_per_year}*{years} = {periods}\nPaso 3: A = {principal} * (1 + {periodic_rate})^{periods}\nImporte final: {final_amount} {principal_currency}"
   response response_compound_interest_final_amount_conversion_en
     intent compound_interest_final_amount_conversion
     language en
@@ -1022,63 +1022,43 @@ multilingual_responses
   response response_compound_interest_rate_detail_en
     intent compound_interest_rate_detail
     language en
-    text "Rate detail: Exchange rate: 1 {source} = {rate} {target} (source: default (hardcoded))"
+    text "Rate detail: Exchange rate: 1 {source} = {rate} {target} ({publisher}, {date})"
   response response_compound_interest_rate_detail_ru
     intent compound_interest_rate_detail
     language ru
-    text "Подробности курса: Обменный курс: 1 {source} = {rate} {target} (источник: по умолчанию (зашит в код))"
+    text "Подробности курса: Обменный курс: 1 {source} = {rate} {target} ({publisher}, {date})"
   response response_compound_interest_rate_detail_hi
     intent compound_interest_rate_detail
     language hi
-    text "दर का विवरण: विनिमय दर: 1 {source} = {rate} {target} (स्रोत: default (hardcoded))"
+    text "दर का विवरण: विनिमय दर: 1 {source} = {rate} {target} ({publisher}, {date})"
   response response_compound_interest_rate_detail_zh
     intent compound_interest_rate_detail
     language zh
-    text "汇率详情：汇率：1 {source} = {rate} {target}（来源：默认（硬编码））"
+    text "汇率详情：汇率：1 {source} = {rate} {target}（{publisher}, {date}）"
   response response_compound_interest_rate_detail_es
     intent compound_interest_rate_detail
     language es
-    text "Detalle del tipo: Tipo de cambio: 1 {source} = {rate} {target} (fuente: predeterminada (fijada en el código))"
-  response response_compound_interest_live_rate_note_en
-    intent compound_interest_live_rate_note
-    language en
-    text "Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator."
-  response response_compound_interest_live_rate_note_ru
-    intent compound_interest_live_rate_note
-    language ru
-    text "Актуальность данных из сети здесь независимо не проверяется; используется источник курса валют, доступный через локальный калькулятор."
-  response response_compound_interest_live_rate_note_hi
-    intent compound_interest_live_rate_note
-    language hi
-    text "Live web की ताज़गी यहाँ स्वतंत्र रूप से सत्यापित नहीं है; यह local calculator के ज़रिए उपलब्ध exchange-rate स्रोत का उपयोग करता है।"
-  response response_compound_interest_live_rate_note_zh
-    intent compound_interest_live_rate_note
-    language zh
-    text "此处未独立验证网络数据的时效性；这里使用的是本地计算器可用的汇率来源。"
-  response response_compound_interest_live_rate_note_es
-    intent compound_interest_live_rate_note
-    language es
-    text "Aquí no se verifica de forma independiente la actualidad de los datos de la web; se usa la fuente de tipos de cambio disponible mediante la calculadora local."
+    text "Detalle del tipo: Tipo de cambio: 1 {source} = {rate} {target} ({publisher}, {date})"
   response response_compound_interest_rate_unavailable_en
     intent compound_interest_rate_unavailable
     language en
-    text "I calculated the USD amount, but no {source}->{target} exchange rate is available locally."
+    text "I calculated the {source} amount, but no verified {source}/{target} exchange rate is available for the requested date."
   response response_compound_interest_rate_unavailable_ru
     intent compound_interest_rate_unavailable
     language ru
-    text "Я рассчитал сумму в USD, но локально нет обменного курса {source}->{target}."
+    text "Я рассчитал сумму в {source}, но подтверждённый курс {source}/{target} на запрошенную дату недоступен."
   response response_compound_interest_rate_unavailable_hi
     intent compound_interest_rate_unavailable
     language hi
-    text "मैंने USD राशि की गणना कर ली, लेकिन स्थानीय रूप से {source}->{target} की कोई विनिमय दर उपलब्ध नहीं है।"
+    text "मैंने {source} राशि की गणना कर ली, लेकिन अनुरोधित तारीख के लिए सत्यापित {source}/{target} दर उपलब्ध नहीं है।"
   response response_compound_interest_rate_unavailable_zh
     intent compound_interest_rate_unavailable
     language zh
-    text "我已算出美元金额，但本地没有 {source}->{target} 的汇率。"
+    text "我已算出 {source} 金额，但无法获取所请求日期经核实的 {source}/{target} 汇率。"
   response response_compound_interest_rate_unavailable_es
     intent compound_interest_rate_unavailable
     language es
-    text "Calculé el importe en USD, pero no hay ningún tipo de cambio {source}->{target} disponible localmente."
+    text "Calculé el importe en {source}, pero no hay un tipo de cambio {source}/{target} verificado para la fecha solicitada."
   response response_playwright_script_clarification_en
     intent playwright_script_clarification
     language en

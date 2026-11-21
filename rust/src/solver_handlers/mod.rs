@@ -1,7 +1,7 @@
 //! Specialized free-function handlers extracted from `solver.rs`.
 include!("modules.rs");
 use crate::calculation::{
-    PromptInterpretation, calculation_expression_candidates, evaluate_calculation,
+    PromptInterpretation, calculation_expression_candidates, evaluate_calculation_with_rates,
     interpretation_statements, numeric_calculation_response,
 };
 use crate::engine::{
@@ -125,21 +125,37 @@ pub use {
     web_search_intent::web_search_query_for,
 };
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    if let Some(answer) = calculator_rate::try_calculator_rate_basis(prompt, log) {
+    try_arithmetic_with_online(prompt, log, crate::solver_config::read_network_allowed())
+}
+
+pub(crate) fn try_arithmetic_with_online(
+    prompt: &str,
+    log: &mut EventLog,
+    online: bool,
+) -> Option<SymbolicAnswer> {
+    if let Some(answer) = calculator_rate::try_calculator_rate_basis(prompt, log, online) {
         return Some(answer);
     }
     let candidates = calculation_expression_candidates(prompt);
     let mut first_explicit_error: Option<(String, String, Vec<PromptInterpretation>)> = None;
     for candidate in candidates {
         let expression = candidate.expression;
-        if let Some(answer) = calculator_rate::conversion(prompt, &expression, log) {
+        if let Some(answer) = calculator_rate::conversion(prompt, &expression, log, online) {
             return Some(answer);
         }
         let interpretations = candidate.interpretations;
         let reasoning_steps = candidate.reasoning_steps;
         let result_label = candidate.result_label;
         log.append("calculation:request", expression.clone());
-        match evaluate_calculation(&expression) {
+        match evaluate_calculation_with_rates(&expression, |calculator, currencies| {
+            calculator_rate::supply_expression_quotes(
+                calculator,
+                currencies,
+                &expression,
+                online,
+                log,
+            );
+        }) {
             Ok(evaluation) => {
                 let formatted = evaluation.formatted;
                 log.append("calculation:engine", evaluation.engine.slug());

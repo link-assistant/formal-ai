@@ -13,6 +13,8 @@ import { procedureBooks, procedureBookCaptures } from "./support/procedure-publi
 
 import { recurrenceCases, recurrenceNativeCaptures } from "./support/recurrence-publisher-captures.mjs";
 
+import { currencyCaptures, currencyExamples, localizedUsdToEur, quoteDate } from "./support/currency-publisher-captures.mjs";
+
 const RUSSIAN_REQUEST = "Как хорошо покакать?";
 const CODEX_REQUEST = "Как какать?";
 const RUSSIAN_SLUG = encodeURIComponent("хорошо-покакать");
@@ -208,6 +210,37 @@ test("native Responses uses procedural sources with the client web search tool a
   } catch (error) {
     throw new Error(`native procedural replay exited=${run.closed} signal=${run.signal}\n${run.stderr}`, { cause: error });
   }
+});
+
+test("native HTTP calculates dated currency pairs only from publisher captures", NATIVE_MULTI_TURN_CASE, async (t) => {
+  const { cache, url } = await startNativeProcedureReplay(t, { lifetime: NATIVE_MULTI_TURN_CASE.timeout });
+  async function ask(prompt) {
+    const response = await fetch(`${url}/v1/chat/completions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      signal: t.signal,
+      body: JSON.stringify({ model: "formal-ai", stream: false, messages: [{ role: "user", content: prompt }] }),
+    });
+    assert.ok(response.ok, await response.clone().text());
+    return (await response.json()).choices[0].message;
+  }
+
+  assert.match((await ask(currencyExamples.at(-1)[0])).content, /verified JPY\/CAD exchange rate is unavailable/u);
+  for (const [source, body] of currencyCaptures) storeCapture(cache, source, body);
+  for (const [prompt, result, pair, rate] of [...currencyExamples, ...localizedUsdToEur]) {
+    const answer = await ask(prompt);
+    for (const detail of [result, rate, `/rate/${pair}?date=${quoteDate}`]) {
+      assert.ok(answer.content.includes(detail), `${prompt}\n${answer.content}`);
+    }
+    assert.ok(answer.thinking_steps.some(step => step.detail.includes(result)), JSON.stringify(answer));
+  }
+  const expression = await ask(`Calculate 100 EUR + 100 USD at ${quoteDate}`);
+  const amount = Number(expression.content.match(/= ([0-9.]+) EUR/u)?.[1]);
+  assert.ok(Math.abs(amount - 190.86) < 0.01, expression.content);
+  const identity = await ask("Calculate -1.005 USD in USD");
+  assert.match(identity.content, /-1\.01 USD/u);
+  const compound = await ask(`Invest $1000 at 8% annual interest compounded monthly for 5 years and convert the final amount to EUR on ${quoteDate}.`);
+  assert.match(compound.content, /1489\.85 USD \* 0\.9086 = 1353\.68 EUR/u);
 });
 
 test("native HTTP documentation answers require a matching publisher capture", NATIVE_CASE, async (t) => {

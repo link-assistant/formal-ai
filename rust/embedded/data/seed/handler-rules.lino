@@ -423,9 +423,6 @@ handler-rules
     label-52 "weekly"
     label-365 "daily"
     label-other "times per year"
-    rate_USD_EUR "0.92"
-    rate_USD_RUB "89.5"
-    rate_EUR_USD "1.087"
     rate-expression "1 {source} in {target}"
     final-amount-marker "final amount:"
   table "documentation-method-providers"
@@ -1178,13 +1175,10 @@ handler-rules
     row "november.ru" "ноября"
     row "december.ru" "декабря"
 
-  table currency-reference-quote
-    row "USD" "82.5143"
-    row "EUR" "91.1948"
-    row "RUB" "1"
-  table currency-reference-provenance
-    row "date" "2026-11-17"
-    row "source" "https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026"
+  table currency-quote-provider
+    row "default" "https://api.frankfurter.dev/v2/rate"
+    row "RUB" "https://api.frankfurter.dev/v2/providers/cbr/rate"
+    row "iso-codes" "AED|AFN|ALL|AMD|AOA|ARS|AUD|AWG|AZN|BAM|BBD|BDT|BHD|BIF|BMD|BND|BOB|BOV|BRL|BSD|BTN|BWP|BYN|BZD|CAD|CDF|CHE|CHF|CHW|CLF|CLP|CNY|COP|COU|CRC|CUP|CVE|CZK|DJF|DKK|DOP|DZD|EGP|ERN|ETB|EUR|FJD|FKP|GBP|GEL|GHS|GIP|GMD|GNF|GTQ|GYD|HKD|HNL|HTG|HUF|IDR|ILS|INR|IQD|IRR|ISK|JMD|JOD|JPY|KES|KGS|KHR|KMF|KPW|KRW|KWD|KYD|KZT|LAK|LBP|LKR|LRD|LSL|LYD|MAD|MDL|MGA|MKD|MMK|MNT|MOP|MRU|MUR|MVR|MWK|MXN|MXV|MYR|MZN|NAD|NGN|NIO|NOK|NPR|NZD|OMR|PAB|PEN|PGK|PHP|PKR|PLN|PYG|QAR|RON|RSD|RUB|RWF|SAR|SBD|SCR|SDG|SEK|SGD|SHP|SLE|SOS|SRD|SSP|STN|SVC|SYP|SZL|THB|TJS|TMT|TND|TOP|TRY|TTD|TWD|TZS|UAH|UGX|USD|USN|UYI|UYU|UYW|UZS|VED|VES|VND|VUV|WST|XAD|XAF|XAG|XAU|XBA|XBB|XBC|XBD|XCD|XCG|XDR|XOF|XPD|XPF|XPT|XSU|XUA|YER|ZAR|ZMW|ZWG"
   table calendar-duration-label
     row "month.en.one" "month"
     row "month.en.few" "months"

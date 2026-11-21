@@ -478,12 +478,6 @@ rust/src/solver_handlers/agent_workspace.rs	Execution status: failed in isolated
 rust/src/solver_handlers/agent_workspace.rs	Execution status: {status} in isolated sandbox.\nWorkspace isolation: {} (paths are confined to this workspace; command environment is cleared).\n\nAction log:
 rust/src/solver_handlers/agent_workspace.rs	\nTimed out: true
 rust/src/solver_handlers/agent_workspace.rs	failed to {failed} {}: {}
-rust/src/solver_handlers/calculator_rate.rs	For currency calculations I use link-calculator. For USD/RUB it returns: {calculation_body}.
-rust/src/solver_handlers/calculator_rate.rs	I recognized this as a question about the USD/RUB rate used for calculations, but link-calculator could not evaluate it: {error}.
-rust/src/solver_handlers/calculator_rate.rs	При расчетах валюты я использую link-calculator. Для USD/RUB он возвращает: {calculation_body}.
-rust/src/solver_handlers/calculator_rate.rs	Я распознал вопрос о курсе USD/RUB для расчетов, но link-calculator не смог его вычислить: {error}.
-rust/src/solver_handlers/calculator_rate.rs	मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: {calculation_body}.
-rust/src/solver_handlers/calculator_rate.rs	货币计算时我使用 link-calculator。USD/RUB 返回: {calculation_body}.
 rust/src/solver_handlers/conversation_memory/link_query.rs	This query would {attempted} links, which memory cannot apply: the doublet view is a one-way projection of memory events, so an edited link has no way back to the event it came from. Reads are supported here -- ((($i: $s $t)) (($i: $s $t))) matches every link. To change memory, write to it in natural language, which appends an event the projection is then derived from.
 rust/src/solver_handlers/conversation_memory/link_query.rs	matched {} of {total} links
 rust/src/solver_handlers/conversation_memory/memory_write.rs	Recorded memory: {statement}

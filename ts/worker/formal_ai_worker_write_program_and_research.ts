@@ -982,7 +982,7 @@ const ROLE_CALCULATION_BASIS_REFERENCE = "calculation_basis_reference";
 // conversion / final-amount forms) and data/seed/meanings-calculator.lino (the
 // euro and ruble currency references), read by parseCompoundInterestRequest,
 // parseCompoundsPerYear, parseCompoundYears, targetCurrencyFromText,
-// asksForWebRate, parseFinalAmountConversionRequest and currencyCodeFromWord —
+// parseFinalAmountConversionRequest and currencyCodeFromWord —
 // the JS mirror of the compound_interest.rs recognizers.
 const ROLE_INVESTMENT_CUE = "investment_cue";
 const ROLE_INTEREST_CUE = "interest_cue";
@@ -1262,9 +1262,9 @@ function searchBoundaryBefore(text, verbStart, markers) {
 const NUMERIC_CLAIM_EVIDENCE = Object.freeze({
   stated_number: (prompt) => parseNumericListNumbers(String(prompt).toLowerCase()).length > 0,
   calculation_expression: (prompt) => Boolean(quantityConstraintFor(prompt) || extractArithmeticExpression(prompt)),
-  currency_rate_basis: (prompt) => mentionsUsdRate(normalizePrompt(prompt)) && mentionsRateCalculationBasis(normalizePrompt(prompt)),
+  currency_rate_basis: (prompt) => asksForRateBasis(normalizePrompt(prompt)),
   investment_terms: (prompt, normalized) => parseCompoundInterestRequest(prompt, normalized) !== null,
-  conversion_target_currency: (prompt, normalized) => Boolean(targetCurrencyFromText(normalized)),
+  conversion_target_currency: (prompt) => Boolean(targetCurrencyFromText(prompt)),
   interval_bounds: (prompt, normalized) => numberConstraintIntervalBounds(normalizePrompt(normalized), String(prompt).toLowerCase()) !== null,
   measured_quantity: (prompt) => {
     const span = unitConversionSpan(String(prompt).toLowerCase());

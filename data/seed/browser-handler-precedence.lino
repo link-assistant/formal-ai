@@ -165,8 +165,10 @@ browser-handler-precedence
     argument_prompt
     argument_normalized
     argument_history
+    argument_preferences
   handler tryArithmetic
     argument_prompt
+    argument_preferences
   handler tryStatistics
     argument_prompt
     argument_normalized

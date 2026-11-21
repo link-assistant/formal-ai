@@ -10,7 +10,16 @@ const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 const FULL_PROMPT =
   'If I invest $1000 at 8% annual interest compounded monthly for 5 years, ' +
   'how much will I have? Show the formula, calculate step by step, and then ' +
-  'convert the final amount to EUR using current exchange rates from the web.';
+  'convert the final amount to EUR on 2026-11-17.';
+
+async function mockPublisher(context) {
+  await context.route('https://api.frankfurter.dev/v2/rate/usd/eur?date=2026-11-17', route =>
+    route.fulfill({
+      path: require.resolve('../../fixtures/currency-quotes/usd-eur.json'),
+      contentType: 'application/json',
+      headers: { 'access-control-allow-origin': '*' },
+    }));
+}
 
 function preferences(uiLanguage = 'auto') {
   return (
@@ -23,6 +32,7 @@ function preferences(uiLanguage = 'auto') {
 }
 
 async function resetApp(page, uiLanguage = 'auto') {
+  await mockPublisher(page.context());
   await page.addInitScript((value) => {
     window.localStorage.clear();
     window.localStorage.setItem('formal-ai.preferences.v1', value);
@@ -96,6 +106,7 @@ test.describe('Issue #336 — compound interest with EUR conversion', () => {
   for (const language of ['en', 'ru', 'hi', 'zh']) {
     test(`agent mode works with the ${language} UI language`, async ({ browser, baseURL }) => {
       const context = await browser.newContext();
+      await mockPublisher(context);
       await context.addInitScript((value) => {
         window.localStorage.clear();
         window.localStorage.setItem('formal-ai.preferences.v1', value);

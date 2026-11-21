@@ -284,6 +284,19 @@ pub fn try_contextual_override(
                 runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
             )
         }
+        "arithmetic" => crate::quantity_constraint::try_answer(prompt, log).or_else(|| {
+            crate::solver_handlers::try_arithmetic_with_online(
+                prompt,
+                log,
+                !runtime.solver_config.offline,
+            )
+        }),
+        "compound_interest" => crate::solver_handlers::compound_interest::try_with_online(
+            prompt,
+            normalized,
+            log,
+            !runtime.solver_config.offline,
+        ),
         "proof_request" => {
             try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
         }

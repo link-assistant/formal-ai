@@ -10,6 +10,7 @@ use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
 use crate::seed;
 
+pub(crate) mod currency;
 mod function_phrase;
 mod numeric_response;
 pub use numeric_response::numeric_calculation_response;
@@ -61,14 +62,26 @@ pub struct PromptInterpretation {
 
 fn evaluate_with_link_calculator(
     expression: &str,
+    supply_rates: impl FnOnce(&mut link_calculator::Calculator, &[String]),
 ) -> Result<CalculationEvaluation, ArithmeticError> {
     // A bare `.` (`2. 3`) is rejected by link-calculator itself as a
     // recoverable parse error since 0.18.0 (link-assistant/calculator#168), so
     // it falls through to the local evaluator like any other upstream error.
-    let mut calculator = link_calculator::Calculator::new();
-    let (_expression, value, steps, lino) = calculator
+    // The default parser has an empty rate database. Published currency quotes
+    // are resolved by the solver, so a failed operand can never use sample rates.
+    let mut calculator = link_calculator::Calculator::default();
+    let evaluated = calculator
         .calculate_with_value(expression)
-        .map_err(|error| ArithmeticError::Calculator(error.to_string()))?;
+        .or_else(|error| {
+            let plan = calculator.plan_internal(expression);
+            if plan.currencies.len() < 2 {
+                return Err(error);
+            }
+            supply_rates(&mut calculator, &plan.currencies);
+            calculator.calculate_with_value(expression)
+        });
+    let (_expression, value, steps, lino) =
+        evaluated.map_err(|error| ArithmeticError::Calculator(error.to_string()))?;
     Ok(CalculationEvaluation {
         formatted: value.to_display_string(),
         engine: CalculationEngine::LinkCalculator,
@@ -413,9 +426,16 @@ pub fn reads_as_calculator_expression(expression: &str) -> bool {
 /// `link-calculator` and preserving the in-repo evaluator as a fallback for
 /// syntax the upstream crate does not support yet.
 pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, ArithmeticError> {
+    evaluate_calculation_with_rates(expression, |_, _| {})
+}
+
+pub(crate) fn evaluate_calculation_with_rates(
+    expression: &str,
+    supply_rates: impl FnOnce(&mut link_calculator::Calculator, &[String]),
+) -> Result<CalculationEvaluation, ArithmeticError> {
     let split = split_glued_operator_words(expression);
     let expression = split.as_str();
-    if let Ok(evaluation) = evaluate_with_link_calculator(expression) {
+    if let Ok(evaluation) = evaluate_with_link_calculator(expression, supply_rates) {
         return Ok(evaluation);
     }
     if expression.contains('=')
@@ -817,6 +837,9 @@ fn calculator_domain_signals() -> Vec<String> {
 }
 
 fn has_calculation_signal(expression: &str, explicit: bool) -> bool {
+    if currency::conversion_operands(expression).is_some() {
+        return true;
+    }
     let lower = format!(" {} ", expression.to_lowercase());
     let has_digit = expression.chars().any(|c| c.is_ascii_digit());
     let has_spelled_arithmetic = contains_spelled_arithmetic(expression);

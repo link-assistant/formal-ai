@@ -246,7 +246,7 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
                 || !crate::calculation::calculation_expression_candidates(prompt).is_empty()
         }
         "currency_rate_basis" => {
-            crate::solver_handlers::calculator_rate::asks_for_usd_rate_basis(canonical)
+            crate::solver_handlers::calculator_rate::asks_for_rate_basis(canonical)
         }
         "investment_terms" => {
             crate::solver_handlers::compound_interest::parse_compound_interest_request(
@@ -255,7 +255,7 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
             .is_some()
         }
         "conversion_target_currency" => {
-            crate::solver_handlers::compound_interest::target_currency(normalized, None).is_some()
+            crate::solver_handlers::compound_interest::target_currency(prompt, None).is_some()
         }
         "interval_bounds" => crate::number_constraints::extract_interval_bounds(
             &crate::engine::normalize_prompt(normalized),

@@ -81,7 +81,7 @@ function numericCalculationResponse(prompt, expression, formatted) {
   return completeOperand ? formatted : null;
 }
 
-function tryArithmeticExpression(prompt) {
+function tryArithmeticExpression(prompt, preferences) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
   const expression = extracted.expression;
@@ -92,9 +92,9 @@ function tryArithmeticExpression(prompt) {
     ? extracted.reasoningSteps
     : [];
   const resultLabel = typeof extracted.resultLabel === "string" ? extracted.resultLabel : "";
+  const currency = currencyQuoteRequest(expression);
+  if (currency) return answerCurrencyQuote(currency, detectLanguage(prompt), preferences);
   try {
-    const capturedCurrency = tryCapturedCurrencyConversion(prompt, expression);
-    if (capturedCurrency) return capturedCurrency;
     const isEquation = expression.includes("=");
     let formatted;
     let backend = "js";
@@ -104,12 +104,8 @@ function tryArithmeticExpression(prompt) {
       backend = "wasm";
     } else {
       const percentOfResult = evaluatePercentOfExpression(expression);
-      const currencyConversionResult = evaluateCurrencyConversionExpression(expression);
       const clockDifferenceResult = evaluateClockDifferenceExpression(expression);
-      if (currencyConversionResult !== null) {
-        formatted = currencyConversionResult;
-        backend = "js-currency";
-      } else if (percentOfResult) {
+      if (percentOfResult) {
         formatted = percentOfResult;
         backend = "js-percent-of";
       } else if (clockDifferenceResult !== null) {

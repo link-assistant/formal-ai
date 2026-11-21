@@ -99,6 +99,21 @@ and the implementation made only the first call.
   exercises the formalization tests from an explicitly supplied path.
   [Wikifunctions API](https://www.wikifunctions.org/wiki/Special:ApiHelp/wikilambdaload_zobjects) ·
   [MediaWiki language links](https://www.mediawiki.org/wiki/API:Langlinks)
+- Resolve currency pairs through a dated publisher endpoint and expose the
+  effective rate date. The previous dedicated conversion fixed both the rate
+  day and the ruble denominator, while a separate calculator path used its
+  compiled defaults. Frankfurter exposes provider-scoped CBR quotes for RUB
+  and a reference-rate API for other covered pairs. The direct CBR XML
+  remains useful for checking the source but is less convenient for
+  cross-currency requests from browsers. Six archived pair responses
+  verify derivations, including a JPY/CAD question the previous handler
+  could not recognize. The offline path preserves exact same-currency
+  arithmetic and reports when it lacks a verified quote.
+  [Frankfurter API](https://frankfurter.dev/) ·
+  [CBR endpoints](https://cbr.ru/development/sxml/) ·
+  [ISO 4217 maintenance agency](https://www.six-group.com/en/products-services/financial-information/market-reference-data/data-standards.html?printout=1) ·
+  [Archived source evidence](evidence/currency/) ·
+  [Calculator #266](https://github.com/link-assistant/calculator/issues/266)
 - For captured GitHub issues, delete the production URL-to-document table and
   its 139 Rust mirrors, and give the deterministic test a source reader that
   explicitly uses the benchmark capture. For the CLI, use GitHub's public

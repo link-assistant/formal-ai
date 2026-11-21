@@ -690,27 +690,82 @@ multilingual_responses_quantities
     language es
     text "{result} {unit}. Períodos completos del calendario: {derivation}"
 
-  response response-currency-conversion-captured-en
-    intent currency-conversion-captured
+  response response-currency-conversion-publisher-en
+    intent currency-conversion-publisher
     language en
-    text "{amount} {from} ≈ {result} {to}. Captured historical rate basis: 1 {from} = {fromRate} RUB; 1 {to} = {toRate} RUB. Source: {source}. Rate date: {date}. {derivation}"
+    text "{amount} {from} ≈ {result} {to}. Reference rate: 1 {from} = {rate} {to}. Source: {source}. Rate date: {date}. {derivation}"
 
-  response response-currency-conversion-captured-ru
-    intent currency-conversion-captured
+  response response-currency-quote-pair-needed-en
+    intent currency-quote-pair-needed
+    language en
+    text "Which two currencies should I use for the exchange-rate calculation?"
+
+  response response-currency-quote-unavailable-en
+    intent currency-quote-unavailable
+    language en
+    text "A verified {from}/{to} exchange rate is unavailable for the requested date."
+
+  response response-currency-conversion-publisher-ru
+    intent currency-conversion-publisher
     language ru
-    text "{amount} {from} ≈ {result} {to}. Зафиксированный исторический курс: 1 {from} = {fromRate} RUB; 1 {to} = {toRate} RUB. Источник: {source}. Дата курса: {date}. {derivation}"
+    text "{amount} {from} ≈ {result} {to}. Справочный курс: 1 {from} = {rate} {to}. Источник: {source}. Дата курса: {date}. {derivation}"
 
-  response response-currency-conversion-captured-hi
-    intent currency-conversion-captured
+  response response-currency-quote-pair-needed-ru
+    intent currency-quote-pair-needed
+    language ru
+    text "Какие две валюты использовать для расчёта курса?"
+
+  response response-currency-quote-unavailable-ru
+    intent currency-quote-unavailable
+    language ru
+    text "Подтверждённый курс {from}/{to} на запрошенную дату недоступен."
+
+  response response-currency-conversion-publisher-hi
+    intent currency-conversion-publisher
     language hi
-    text "{amount} {from} ≈ {result} {to}। ऐतिहासिक दर: 1 {from} = {fromRate} RUB; 1 {to} = {toRate} RUB। स्रोत: {source}। दर की तारीख: {date}। {derivation}"
+    text "{amount} {from} ≈ {result} {to}। संदर्भ दर: 1 {from} = {rate} {to}। स्रोत: {source}। दर की तारीख: {date}। {derivation}"
 
-  response response-currency-conversion-captured-zh
-    intent currency-conversion-captured
+  response response-currency-quote-pair-needed-hi
+    intent currency-quote-pair-needed
+    language hi
+    text "विनिमय दर की गणना के लिए कौन सी दो मुद्राएँ इस्तेमाल करूँ?"
+
+  response response-currency-quote-unavailable-hi
+    intent currency-quote-unavailable
+    language hi
+    text "अनुरोधित तारीख के लिए सत्यापित {from}/{to} विनिमय दर उपलब्ध नहीं है।"
+
+  response response-currency-conversion-publisher-zh
+    intent currency-conversion-publisher
     language zh
-    text "{amount} {from} ≈ {result} {to}。已记录的历史汇率：1 {from} = {fromRate} RUB；1 {to} = {toRate} RUB。来源：{source}。汇率日期：{date}。{derivation}"
+    text "{amount} {from} ≈ {result} {to}。参考汇率：1 {from} = {rate} {to}。来源：{source}。汇率日期：{date}。{derivation}"
 
-  response response-currency-conversion-captured-es
-    intent currency-conversion-captured
+  response response-currency-quote-pair-needed-zh
+    intent currency-quote-pair-needed
+    language zh
+    text "要计算哪两种货币之间的汇率？"
+
+  response response-currency-quote-unavailable-zh
+    intent currency-quote-unavailable
+    language zh
+    text "无法获取所请求日期经核实的 {from}/{to} 汇率。"
+
+  response response-currency-conversion-publisher-es
+    intent currency-conversion-publisher
     language es
-    text "{amount} {from} ≈ {result} {to}. Tipo histórico registrado: 1 {from} = {fromRate} RUB; 1 {to} = {toRate} RUB. Fuente: {source}. Fecha: {date}. {derivation}"
+    text "{amount} {from} ≈ {result} {to}. Tipo de referencia: 1 {from} = {rate} {to}. Fuente: {source}. Fecha: {date}. {derivation}"
+
+  response response-currency-quote-pair-needed-es
+    intent currency-quote-pair-needed
+    language es
+    text "¿Qué dos monedas debo usar para calcular el tipo de cambio?"
+
+  response response-currency-quote-unavailable-es
+    intent currency-quote-unavailable
+    language es
+    text "No hay un tipo de cambio {from}/{to} verificado para la fecha solicitada."
+
+  response response-currency-quote-identity-en
+    intent currency-quote-identity
+    language en
+    text "{derivation}"

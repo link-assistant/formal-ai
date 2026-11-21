@@ -448,7 +448,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       ],
     });
   }
-  const calculatorRateBasis = tryCalculatorRateBasis(normalized, language);
+  const calculatorRateBasis = await tryCalculatorRateBasis(prompt, normalized, language, preferences);
   if (calculatorRateBasis) {
     events.push(`handler:${calculatorRateBasis.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCalculatorRateBasis" });
@@ -500,7 +500,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   });
   let recurrenceDiscovery;
   for (const handler of syncHandlers) {
-    const local = handler.run();
+    const local = await handler.run();
     const mayDiscoverRecurrence = handler.name === "tryProgramSynthesis"
       || (handler.name === "tryWriteProgramConcrete" && local?.intent === "write_program");
     const source = mayDiscoverRecurrence && !local?.evidence?.includes("synthesis:ir:type_checked")

@@ -886,15 +886,6 @@ function trySummarizeConversation(prompt, history) {
 // the final-amount marker are the `policy compound_interest` block of
 // data/seed/handler-rules.lino. Mirrors src/solver_handlers/compound_interest.rs.
 // A function, not a const array, so the ROLE_* consts stay out of the TDZ.
-function compoundCurrencies() {
-  return [
-    [ROLE_CURRENCY_EUR_REFERENCE, "EUR"],
-    [ROLE_CURRENCY_USD_REFERENCE, "USD"],
-    [ROLE_CURRENCY_RUB_REFERENCE, "RUB"],
-  ];
-}
-const COMPOUND_PRINCIPAL_CURRENCY = "USD";
-
 function compoundPolicy(key) {
   return handlerRulesPolicy("compound_interest", key) || "";
 }
@@ -905,17 +896,18 @@ function compoundResponse(intent, values = {}) {
   return text;
 }
 
-function tryCompoundInterest(prompt, normalized, history) {
+function tryCompoundInterest(prompt, normalized, history, preferences) {
+  const date = statedCurrencyQuoteDate(prompt);
   const request = parseCompoundInterestRequest(prompt, normalized);
-  if (request) return answerCompoundInterest(request);
+  if (request) return answerCompoundInterest(request, date, preferences);
 
-  const conversion = parseFinalAmountConversionRequest(normalized, history);
-  if (conversion) return answerFinalAmountConversion(conversion);
+  const conversion = parseFinalAmountConversionRequest(prompt, normalized, history);
+  if (conversion) return answerFinalAmountConversion(conversion, date, preferences);
 
   return null;
 }
 
-function answerCompoundInterest(request) {
+async function answerCompoundInterest(request, date, preferences) {
   const annualRate = request.annualRatePercent / 100;
   const periodsPerYear = request.compoundsPerYear;
   const periodicRate = annualRate / periodsPerYear;
@@ -929,6 +921,7 @@ function answerCompoundInterest(request) {
   ];
   let content = compoundResponse("compound_interest_report", {
     principal: formatCompoundNumber(request.principal),
+    principal_currency: request.principalCurrency,
     rate: formatCompoundRate(annualRate),
     percent: formatCompoundNumber(request.annualRatePercent),
     periods_per_year: periodsPerYear,
@@ -940,12 +933,12 @@ function answerCompoundInterest(request) {
   });
 
   if (request.targetCurrency) {
-    content += compoundConversion(
+    content += await compoundConversion(
       evidence,
       finalAmount,
-      COMPOUND_PRINCIPAL_CURRENCY,
+      request.principalCurrency,
       request.targetCurrency,
-      request.asksForWebRate,
+      date, preferences,
     );
   }
 
@@ -957,19 +950,19 @@ function answerCompoundInterest(request) {
   };
 }
 
-function answerFinalAmountConversion(conversion) {
+async function answerFinalAmountConversion(conversion, date, preferences) {
   const evidence = ["calculation:final_amount_conversion"];
   const content =
     compoundResponse("compound_interest_final_amount_conversion", {
       amount: formatCompoundMoney(conversion.amount),
       source: conversion.sourceCurrency,
     }) +
-    compoundConversion(
+    await compoundConversion(
       evidence,
       conversion.amount,
       conversion.sourceCurrency,
       conversion.targetCurrency,
-      conversion.asksForWebRate,
+      date, preferences,
     );
   return {
     intent: "calculation",
@@ -979,44 +972,31 @@ function answerFinalAmountConversion(conversion) {
   };
 }
 
-// The conversion paragraph appended to a report: the seeded default rate,
-// the converted amount, and the rate detail; or the honest no-rate sentence.
-function compoundConversion(evidence, amount, source, target, asksForWebRate) {
-  const rate = compoundDefaultRate(source, target);
-  if (rate === null) {
+async function compoundConversion(evidence, amount, source, target, date, preferences) {
+  const quote = await readCurrencyQuote(source, target, date, preferences);
+  const displayedAmount = formatCompoundMoney(roundCompoundMoney(amount));
+  const converted = quote && convertCurrencyQuote(displayedAmount, quote.rate);
+  if (converted === null) {
     evidence.push(`calculation:currency_conversion:error:${source}->${target}`);
     return `\n\n${compoundResponse("compound_interest_rate_unavailable", { source, target })}`;
   }
-  const displayedAmount = roundCompoundMoney(amount);
-  const converted = displayedAmount * rate;
   evidence.push(
-    `calculation:currency_conversion:${formatCompoundMoney(displayedAmount)} ${source} to ${target} at ${formatCompoundRate(rate)}`,
+    `calculation:currency_conversion:${displayedAmount} ${source} to ${target} at ${quote.rate}`,
+    ...currencyQuoteEvidence(quote).map(({ kind, payload }) => `${kind}:${payload}`),
   );
   const expression = compoundPolicy("rate-expression").split("{source}").join(source).split("{target}").join(target);
   let text = `\n\n${compoundResponse("compound_interest_conversion", {
     source,
     target,
     expression,
-    rate: formatCompoundRate(rate),
-    amount: formatCompoundMoney(displayedAmount),
-    converted: formatCompoundMoney(converted),
+    rate: quote.rate,
+    amount: displayedAmount,
+    converted,
   })}`;
-  text += `\n${compoundResponse("compound_interest_rate_detail", { source, target, rate: formatCompoundRate(rate) })}`;
-  if (asksForWebRate) text += `\n${compoundResponse("compound_interest_live_rate_note")}`;
+  text += `\n${compoundResponse("compound_interest_rate_detail", {
+    source, target, rate: quote.rate, publisher: quote.source, date: quote.date,
+  })}`;
   return text;
-}
-
-// The seeded default rate from `source` to `target`: the direct pair, or the
-// inverse of the reverse pair.
-function compoundDefaultRate(source, target) {
-  const direct = compoundRateNumber(compoundPolicy(`rate_${source}_${target}`));
-  if (direct !== null) return direct;
-  const reverse = compoundRateNumber(compoundPolicy(`rate_${target}_${source}`));
-  return reverse === null || reverse === 0 ? null : 1 / reverse;
-}
-
-function compoundRateNumber(text) {
-  return /^\d+(?:\.\d+)?$/.test(text) ? Number(text) : null;
 }
 
 function parseCompoundInterestRequest(prompt, normalized) {
@@ -1043,16 +1023,16 @@ function parseCompoundInterestRequest(prompt, normalized) {
     return null;
   }
   return {
-    principal,
+    principal: principal.amount,
+    principalCurrency: principal.currency,
     annualRatePercent,
     compoundsPerYear,
     years,
-    targetCurrency: targetCurrencyFromText(normalized, COMPOUND_PRINCIPAL_CURRENCY),
-    asksForWebRate: asksForWebRate(normalized),
+    targetCurrency: targetCurrencyFromText(prompt, principal.currency),
   };
 }
 
-function parseFinalAmountConversionRequest(normalized, history) {
+function parseFinalAmountConversionRequest(prompt, normalized, history) {
   // "convert" and "final amount" are themselves meanings: a conversion action
   // applied to the final-amount reference produced by a prior turn. Mirrors
   // parse_final_amount_conversion_request.
@@ -1064,13 +1044,12 @@ function parseFinalAmountConversionRequest(normalized, history) {
   }
   const prior = priorFinalAmount(history);
   if (!prior) return null;
-  const targetCurrency = targetCurrencyFromText(normalized, prior.currency);
+  const targetCurrency = targetCurrencyFromText(prompt, prior.currency);
   if (!targetCurrency) return null;
   return {
     amount: prior.amount,
     sourceCurrency: prior.currency,
     targetCurrency,
-    asksForWebRate: asksForWebRate(normalized),
   };
 }
 
@@ -1092,25 +1071,18 @@ function parseFinalAmountFromText(text) {
   const lower = String(text || "").toLowerCase();
   const at = marker ? lower.indexOf(marker) : -1;
   if (at < 0) return null;
-  const match = /^[ \t\n\f\r]*([\d.,]*)[ \t\n\f\r]*(\p{L}*)/u.exec(lower.slice(at + marker.length));
+  const match = /^[ \t\n\f\r]*([\d.,]*)[ \t\n\f\r]*(\p{L}*)/u.exec(text.slice(at + marker.length));
   const amount = parseCompoundNumberText(match[1]);
-  const entry = compoundCurrencies().find(([role]) => wordsForRole(role).includes(match[2]));
-  return amount === null || !entry ? null : { amount, currency: entry[1] };
+  const currency = currencyCodeFromWord(match[2]);
+  return amount === null || !currency ? null : { amount, currency };
 }
 
 function parseCompoundCurrencyAmount(prompt) {
-  const text = String(prompt || "");
-  const dollarIndex = text.indexOf("$");
-  if (dollarIndex >= 0) return parseCompoundNumberRight(text, dollarIndex + 1);
-  // The spelled-out US-dollar markers are the English surfaces of
-  // currency_usd_reference, scanned as space-prefixed tokens with the amount
-  // to their left. Mirrors parse_currency_amount.
-  const lower = text.toLowerCase();
-  for (const word of wordsForRoleInLanguages(ROLE_CURRENCY_USD_REFERENCE, ["en"])) {
-    const index = lower.indexOf(` ${word}`);
-    if (index < 0) continue;
-    const amount = parseCompoundNumberLeft(lower, index);
-    if (amount !== null) return amount;
+  for (const { token, code, at } of currencyMentions(prompt)) {
+    const amount = /^\p{L}/u.test(token)
+      ? parseCompoundNumberLeft(prompt, at)
+      : parseCompoundNumberRight(prompt, at + token.length) ?? parseCompoundNumberLeft(prompt, at);
+    if (amount !== null) return { amount, currency: code };
   }
   return null;
 }
@@ -1151,20 +1123,8 @@ function parseCompoundsPerYear(normalized) {
   return /^\d+$/.test(periods) ? Number(periods) : null;
 }
 
-// The currency a conversion request names, skipping `source`: the first
-// currency meaning the prompt mentions as a whole token, in the priority of
-// compoundCurrencies(); the € glyph is a typographic symbol for the euro.
-// Mirrors target_currency.
-function targetCurrencyFromText(normalized, source) {
-  const entry = compoundCurrencies().find(([role, code]) => code !== source && (
-    lexiconMentionsRole(role, normalized) || (code === "EUR" && normalized.includes("€"))));
-  return entry ? entry[1] : "";
-}
-
-function asksForWebRate(normalized) {
-  // "fetch the live/current rate from the web" is the live_rate_freshness_cue
-  // meaning, matched as raw substrings. Mirrors asks_for_web_rate.
-  return lexiconMentionsRoleSubstring(ROLE_LIVE_RATE_FRESHNESS_CUE, normalized);
+function targetCurrencyFromText(prompt, source) {
+  return currencyMentions(prompt).find(({ code }) => code !== source)?.code ?? "";
 }
 
 // Number readers mirroring parse_number_left / parse_number_right: skip ASCII

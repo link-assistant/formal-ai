@@ -8,8 +8,8 @@
 //! Issue #918: the handler holds no vocabulary, prose or rate. The cue words
 //! are the finance and currency meanings of the seed lexicon; the report and
 //! conversion wording are the seeded `compound_interest_*` responses; the
-//! periods per compounding meaning, the frequency labels, the default
-//! exchange rates and the final-amount marker are the `policy compound_interest`
+//! periods per compounding meaning, the frequency labels and the
+//! calculation markers are the `policy compound_interest`
 //! block of `data/seed/handler-rules.lino`. The browser twin
 //! (`tryCompoundInterest` in `js/worker/formal_ai_worker_translation_recall_and_compound_interest.js`) reads the same
 //! records, so both runtimes answer alike.
@@ -18,30 +18,20 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed;
 
+use super::calculator_rate::read_quote;
 use super::finalize_simple;
+use crate::calculation::currency::{currency_code, currency_mentions, stated_quote_date};
 
 const POLICY: &str = "compound_interest";
 
-/// The currency meanings a conversion names, in recognition priority, with
-/// the ISO code each resolves to. The codes are the recognizer's output, not
-/// vocabulary; the surfaces live in the seed lexicon.
-const CURRENCIES: [(&str, &str); 3] = [
-    (seed::ROLE_CURRENCY_EUR_REFERENCE, "EUR"),
-    (seed::ROLE_CURRENCY_USD_REFERENCE, "USD"),
-    (seed::ROLE_CURRENCY_RUB_REFERENCE, "RUB"),
-];
-
-/// The currency every principal is stated in.
-const PRINCIPAL_CURRENCY: &str = "USD";
-
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct CompoundInterestRequest {
     principal: f64,
+    principal_currency: String,
     annual_rate_percent: f64,
     compounds_per_year: u32,
     years: f64,
-    target_currency: Option<&'static str>,
-    asks_for_web_rate: bool,
+    target_currency: Option<String>,
 }
 
 pub fn try_compound_interest(
@@ -49,19 +39,33 @@ pub fn try_compound_interest(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    try_with_online(
+        prompt,
+        normalized,
+        log,
+        crate::solver_config::read_network_allowed(),
+    )
+}
+
+pub(crate) fn try_with_online(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    online: bool,
+) -> Option<SymbolicAnswer> {
     if let Some(request) = parse_compound_interest_request(prompt, normalized) {
-        return Some(answer_compound_interest(prompt, log, request));
+        return Some(answer_compound_interest(prompt, log, request, online));
     }
     if let Some((amount, source_currency, target_currency)) =
-        parse_final_amount_conversion_request(normalized, log)
+        parse_final_amount_conversion_request(prompt, normalized, log)
     {
         return Some(answer_final_amount_conversion(
             prompt,
             log,
             amount,
-            source_currency,
-            target_currency,
-            asks_for_web_rate(normalized),
+            &source_currency,
+            &target_currency,
+            online,
         ));
     }
     None
@@ -79,6 +83,7 @@ fn answer_compound_interest(
     prompt: &str,
     log: &mut EventLog,
     request: CompoundInterestRequest,
+    online: bool,
 ) -> SymbolicAnswer {
     let principal = request.principal;
     let annual_rate = request.annual_rate_percent / 100.0;
@@ -104,6 +109,7 @@ fn answer_compound_interest(
         "compound_interest_report",
         &[
             ("principal", &format_number(principal)),
+            ("principal_currency", &request.principal_currency),
             ("rate", &format_rate(annual_rate)),
             ("percent", &format_number(request.annual_rate_percent)),
             ("periods_per_year", &periods_per_year),
@@ -120,9 +126,10 @@ fn answer_compound_interest(
             log,
             &mut body,
             final_amount,
-            PRINCIPAL_CURRENCY,
-            target_currency,
-            request.asks_for_web_rate,
+            &request.principal_currency,
+            &target_currency,
+            stated_quote_date(prompt),
+            online,
         );
     }
 
@@ -141,9 +148,9 @@ fn answer_final_amount_conversion(
     prompt: &str,
     log: &mut EventLog,
     amount: f64,
-    source_currency: &'static str,
-    target_currency: &'static str,
-    asks_for_web_rate: bool,
+    source_currency: &str,
+    target_currency: &str,
+    online: bool,
 ) -> SymbolicAnswer {
     let mut body = response(
         "compound_interest_final_amount_conversion",
@@ -158,7 +165,8 @@ fn answer_final_amount_conversion(
         amount,
         source_currency,
         target_currency,
-        asks_for_web_rate,
+        stated_quote_date(prompt),
+        online,
     );
     log.append("calculation", body.clone());
     finalize_simple(
@@ -177,9 +185,17 @@ fn append_conversion(
     amount: f64,
     source_currency: &str,
     target_currency: &str,
-    asks_for_web_rate: bool,
+    date: Option<&str>,
+    online: bool,
 ) {
-    let Some(rate) = default_rate(source_currency, target_currency) else {
+    let displayed_amount = format_money(round_money(amount));
+    let Some((quote, converted)) = read_quote(source_currency, target_currency, date, online, log)
+        .and_then(|quote| {
+            quote
+                .convert(&displayed_amount)
+                .map(|result| (quote, result))
+        })
+    else {
         log.append(
             "calculation:currency_conversion:error",
             format!("{source_currency}->{target_currency}"),
@@ -191,14 +207,11 @@ fn append_conversion(
         ));
         return;
     };
-    let displayed_amount = round_money(amount);
-    let converted = displayed_amount * rate;
     log.append(
         "calculation:currency_conversion",
         format!(
-            "{} {source_currency} to {target_currency} at {}",
-            format_money(displayed_amount),
-            format_rate(rate),
+            "{displayed_amount} {source_currency} to {target_currency} at {}",
+            quote.rate,
         ),
     );
     let expression = policy("rate-expression")
@@ -211,9 +224,9 @@ fn append_conversion(
             ("source", source_currency),
             ("target", target_currency),
             ("expression", &expression),
-            ("rate", &format_rate(rate)),
-            ("amount", &format_money(displayed_amount)),
-            ("converted", &format_money(converted)),
+            ("rate", &quote.rate),
+            ("amount", &displayed_amount),
+            ("converted", &converted),
         ],
     ));
     body.push('\n');
@@ -222,27 +235,11 @@ fn append_conversion(
         &[
             ("source", source_currency),
             ("target", target_currency),
-            ("rate", &format_rate(rate)),
+            ("rate", &quote.rate),
+            ("publisher", &quote.source),
+            ("date", &quote.date),
         ],
     ));
-    if asks_for_web_rate {
-        body.push('\n');
-        body.push_str(&response("compound_interest_live_rate_note", &[]));
-    }
-}
-
-/// The seeded default rate from `source` to `target`: the direct pair, or
-/// the inverse of the reverse pair.
-fn default_rate(source: &str, target: &str) -> Option<f64> {
-    let direct = policy(&format!("rate_{source}_{target}"));
-    if let Ok(rate) = direct.parse::<f64>() {
-        return Some(rate);
-    }
-    policy(&format!("rate_{target}_{source}"))
-        .parse::<f64>()
-        .ok()
-        .filter(|rate| *rate != 0.0)
-        .map(|rate| 1.0 / rate)
 }
 
 pub fn parse_compound_interest_request(
@@ -259,24 +256,26 @@ pub fn parse_compound_interest_request(
     {
         return None;
     }
-    let principal = parse_currency_amount(prompt)?;
+    let (principal, principal_currency) = parse_currency_amount(prompt)?;
+    let target_currency = target_currency(prompt, Some(&principal_currency));
     let annual_rate_percent = parse_percent_before_symbol(prompt)?;
     let compounds_per_year = parse_compounds_per_year(normalized)?;
     let years = years_in_prompt(normalized)?;
     Some(CompoundInterestRequest {
         principal,
+        principal_currency,
         annual_rate_percent,
         compounds_per_year,
         years,
-        target_currency: target_currency(normalized, Some(PRINCIPAL_CURRENCY)),
-        asks_for_web_rate: asks_for_web_rate(normalized),
+        target_currency,
     })
 }
 
 fn parse_final_amount_conversion_request(
+    prompt: &str,
     normalized: &str,
     log: &EventLog,
-) -> Option<(f64, &'static str, &'static str)> {
+) -> Option<(f64, String, String)> {
     // "convert" and "final amount" are themselves meanings: a conversion
     // action applied to the final-amount reference produced by a prior turn.
     let lexicon = seed::lexicon();
@@ -286,11 +285,11 @@ fn parse_final_amount_conversion_request(
         return None;
     }
     let (amount, source) = prior_final_amount(log)?;
-    let target = target_currency(normalized, Some(source))?;
+    let target = target_currency(prompt, Some(&source))?;
     Some((amount, source, target))
 }
 
-fn prior_final_amount(log: &EventLog) -> Option<(f64, &'static str)> {
+fn prior_final_amount(log: &EventLog) -> Option<(f64, String)> {
     log.events()
         .iter()
         .rev()
@@ -300,13 +299,13 @@ fn prior_final_amount(log: &EventLog) -> Option<(f64, &'static str)> {
 
 /// The amount and currency an earlier report states after the seeded
 /// final-amount marker.
-fn parse_final_amount_from_text(text: &str) -> Option<(f64, &'static str)> {
+fn parse_final_amount_from_text(text: &str) -> Option<(f64, String)> {
     let marker = policy("final-amount-marker");
     if marker.is_empty() {
         return None;
     }
     let lower = text.to_lowercase();
-    let rest = &lower[lower.find(&marker)? + marker.len()..];
+    let rest = text.get(lower.find(&marker)? + marker.len()..)?;
     let start = rest.len() - rest.trim_start_matches(is_ascii_space).len();
     let digits = rest[start..]
         .find(|ch: char| !is_number_char(ch))
@@ -317,32 +316,18 @@ fn parse_final_amount_from_text(text: &str) -> Option<(f64, &'static str)> {
         .chars()
         .take_while(|ch| ch.is_alphabetic())
         .collect();
-    let lexicon = seed::lexicon();
-    CURRENCIES
-        .iter()
-        .find(|(role, _)| lexicon.words_for_role(role).contains(&word))
-        .map(|(_, code)| (amount, *code))
+    Some((amount, currency_code(&word)?))
 }
 
-fn parse_currency_amount(prompt: &str) -> Option<f64> {
-    if let Some(dollar) = prompt.find('$') {
-        return parse_number_right(prompt, dollar + '$'.len_utf8());
-    }
-    // The `$` glyph is a typographic symbol that stays in code; the spelled-out
-    // US-dollar markers are the English surfaces of currency_usd_reference,
-    // scanned as space-prefixed tokens with the amount to their left.
-    let lower = prompt.to_lowercase();
-    for word in
-        seed::lexicon().words_for_role_in_languages(seed::ROLE_CURRENCY_USD_REFERENCE, &["en"])
-    {
-        let marker = format!(" {word}");
-        if let Some(index) = lower.find(&marker)
-            && let Some(amount) = parse_number_left(&lower, index)
-        {
-            return Some(amount);
-        }
-    }
-    None
+fn parse_currency_amount(prompt: &str) -> Option<(f64, String)> {
+    currency_mentions(prompt).find_map(|(at, token, code)| {
+        let amount = if token.starts_with(char::is_alphabetic) {
+            parse_number_left(prompt, at)
+        } else {
+            parse_number_right(prompt, at + token.len()).or_else(|| parse_number_left(prompt, at))
+        };
+        Some((amount?, code))
+    })
 }
 
 fn parse_percent_before_symbol(prompt: &str) -> Option<f64> {
@@ -383,29 +368,11 @@ fn parse_compounds_per_year(normalized: &str) -> Option<u32> {
         .and_then(|meaning| policy(&format!("periods_{}", meaning.slug)).parse().ok())
 }
 
-/// The currency a conversion request names, skipping `source`: the first
-/// currency meaning the prompt mentions as a whole token, in the priority of
-/// [`CURRENCIES`]. The `€` glyph is a typographic symbol for the euro.
-///
-/// The method dispatch hands handlers the lowercased prompt, punctuation
-/// intact, so the whole-token scan reads its punctuation-free normalization:
-/// "to rubles." names the ruble as the browser's `normalizePrompt` text does.
-pub fn target_currency(normalized: &str, source: Option<&str>) -> Option<&'static str> {
-    let lexicon = seed::lexicon();
-    let tokens = crate::engine::normalize_prompt(normalized);
-    CURRENCIES
-        .iter()
-        .filter(|(_, code)| Some(*code) != source)
-        .find(|(role, code)| {
-            lexicon.mentions_role(role, &tokens) || (*code == "EUR" && normalized.contains('€'))
-        })
-        .map(|(_, code)| *code)
-}
-
-fn asks_for_web_rate(normalized: &str) -> bool {
-    // "fetch a live rate" is a meaning (live_rate_freshness_cue) whose surface
-    // forms are matched as raw substrings.
-    seed::lexicon().mentions_role_raw(seed::ROLE_LIVE_RATE_FRESHNESS_CUE, normalized)
+/// First currency named in the request, excluding the principal currency.
+pub fn target_currency(prompt: &str, source: Option<&str>) -> Option<String> {
+    currency_mentions(prompt)
+        .map(|(_, _, code)| code)
+        .find(|code| Some(code.as_str()) != source)
 }
 
 fn compounding_label(compounds_per_year: u32) -> String {

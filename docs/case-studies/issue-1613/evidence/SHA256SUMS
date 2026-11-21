@@ -1,4 +1,16 @@
 81bacc5c894023659f0cfa1494e0f552f69972f9f1b02c22b097b09a88691275  ./build-claim/formal-ai-build-identity.json
+e67b3297066646c6c7ba9c0644f9d9995fba6d10e7a1eaac400ed286bd4365ce  ./currency/calculator-266.json
+68f59042e78834840d436d218db2f27198c18c8097b3e6dac0ef7188947a0b69  ./currency/cbr-origin.xml.gz
+34779f690022aa052b5824d84f5a3fb58eab4eefa1d6102a5bb007056e8c6851  ./currency/eur-rub.headers
+e1d9dea1526c3a2739afc36773c4d5233dc4d5879f54b8c5d0ffa51d563164b0  ./currency/eur-usd.headers
+2ab4564d3dc3374d0e8cbeb86936ccd27fd7eee273153401ebcb4dd12fe47226  ./currency/frankfurter-cbr-current.json.gz
+3dade9e2f95c5a93996a922b153b3c7d53c399de0364722d6464dc3b10df048e  ./currency/frankfurter-cbr-nov17.json.gz
+41d824393aef61e64f4920c950c112cfdd55f013eb22713f1d65463e324b6161  ./currency/frankfurter-scoped.json.gz
+8c9792d7cccdbca7b41634697b0e55f92d00f756cafc54fb43a9b7ec3e23d6cf  ./currency/iso-4217-list-one.xml.gz
+94b1836f91ae092ce833d740d81c33686cb72d71ae70e8a2e01dbbf3a1c14918  ./currency/jpy-cad.headers
+6d112fc206a4872719f0fd75c562837eaf1fad0d9bfb4289ab9091b3d1e4853f  ./currency/rub-usd.headers
+08502ff3fd198373a4d6b0334e9f612daca4aa30ca9c39bda712c29b0340a5fc  ./currency/usd-eur.headers
+cdb6a44beda7bf642c3f93a788f54bd0352b0fe3c68917b3031594af82fee860  ./currency/usd-rub.headers
 d3b777cfad3414835640cbac99804277ab714835e88f4191173ec5595a917444  ./formal-development/agent.log.gz
 e18696360d12da2e94367055fa3163ccff85d1464cafcc09a03a504d9a910660  ./formal-development/health.json
 6376d999ff125b54ff9ddf67226ca67dfc8b4928bd013a484a2fb27693e03b2c  ./formal-development/request.txt
@@ -53,6 +65,8 @@ f2fe289a6a05564e3cef01ecb5baf3f5698245da3a90b3de5acf72125084b127  ./verification
 831cc20add2b71fb3f67fc21f520a70274c77188eff02895ed01031157c55b98  ./verification/baseline-translation-build-cache.log
 d95b8d8aa2c1c995dd4ebc35dc0736c61722cc4f78ac40322f8be033c50697b1  ./verification/baseline-unnamed-algorithm.log
 9c577446396bba500bc48f4deb62922d3a31dd6c2ababd0816f437a28c3812fa  ./verification/build-script-optional-inputs-round2.log
+9f6bf911e296504dc829f30382b9f66c23e0ac82705d120c23fc8e10a0be4e8f  ./verification/currency-compound-browser.log
+6868d34e19c342e52dfb670cd1d72cf2de7c3e544765e366fed4d12f3ed2ad60  ./verification/currency-conversion-browser.log
 fc5967ddfe69862574597ac6d465a60ea05416b910d4e864f356992ae205449e  ./verification/documentation-method-sources-round4.log
 21064d1e6faaab0e239bdac2d3e47d037fcef02cefd1783f3524e99053e3dbb2  ./verification/documentation-specification-coverage-round4.log
 bc93db8f70162e7d81ca4bace3cf56a714e03cf045105965ce898f1147122edd  ./verification/documentation-tests-as-docs-round4.log

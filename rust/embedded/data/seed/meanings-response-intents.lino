@@ -1461,13 +1461,13 @@ meanings
     example "March 2021 to June 2024 = 39 months = 3 full years"
     grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
 
-  currency-conversion-captured
+  currency-conversion-publisher
     defined-by answer
     role localized-response-template
-    precondition "an explicit conversion has supported source and target currencies and a captured quote"
-    effect "show the cent-rounded amount with the actual rate source and snapshot date"
+    precondition "an explicit conversion specifies two currencies for which a dated publisher quote is available"
+    effect "show the cent-rounded amount with the actual rate source and effective date"
     unit "not applicable"
-    example "1000 RUB / 82.5143 RUB per USD = 12.12 USD"
+    example "converted amount = stated amount multiplied by the published rate"
     grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
 
   currency-reference-quote
