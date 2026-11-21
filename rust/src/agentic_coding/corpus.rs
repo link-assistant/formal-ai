@@ -15,6 +15,7 @@ use std::fmt::Write as _;
 use super::formalize::CANONICAL_FISHERMAN_SYNOPSIS;
 use super::meaning_detail::{self, CONCEPTS};
 use super::planner::CANONICAL_SOURCE_URL;
+use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 
 /// One page in the offline corpus. Fields are owned so pages can be built from the
 /// [`CONCEPTS`] registry at call time (one Wikidata-lexeme page per concept).
@@ -146,12 +147,12 @@ pub fn fetch_cli_source(url: &str) -> Result<String, String> {
                 || !name
                     .bytes()
                     .all(|byte| byte.is_ascii_alphanumeric() || b"-._".contains(&byte))
-        }) || number.parse::<u64>().ok().is_none_or(|number| number == 0)
+        }) || !number.bytes().all(|byte| byte.is_ascii_digit())
+            || number.parse::<u64>().ok().is_none_or(|number| number == 0)
         {
             return Err(missing);
         }
 
-        use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
         let client = CachedSourceClient::new(
             crate::coding::synthesis_runtime::source_cache_root(),
             CurlSourceTransport,

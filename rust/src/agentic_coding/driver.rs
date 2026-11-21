@@ -10,9 +10,10 @@
 //! CI.
 //!
 //! It advertises a tool set, sends a chat request, and whenever the server answers
-//! with `tool_calls` it **executes** each call — `web_search` / `web_fetch`
-//! against the offline [`corpus`], `write_file` / `run_command` against a single
-//! reused, sandboxed [`AgentWorkspace`] — feeds each result back as a `tool`
+//! with `tool_calls` it **executes** each call. Search uses the offline [`corpus`].
+//! Fetch uses the corpus by default and also accepts a caller-supplied transport.
+//! Workspace tools share a single sandboxed [`AgentWorkspace`]. The driver feeds
+//! each result back as a `tool`
 //! message, and loops until the server answers with `finish_reason: "stop"`. The
 //! loop is bounded by a hard turn cap, so unbounded reasoning stays a NON-GOAL and
 //! neural inference is never involved.
@@ -112,10 +113,9 @@ impl DriverOutcome {
 
     /// A stable, replayable JSON record of the whole agentic session — the task,
     /// the tools the CLI advertised, every executed tool call with its arguments
-    /// and result, the turn count, and the final answer. This is the "Agent CLI
-    /// session that solved the task" artifact: it is deterministic (no clock, no
-    /// randomness, no network), so committing it to the repo documents exactly how
-    /// Formal AI drove its own CLI to the solution.
+    /// and result, the turn count, and the final answer. The default corpus
+    /// produces deterministic transcripts. A caller-supplied transport can
+    /// supply fresh captures whose contents are recorded in the tool steps.
     #[must_use]
     pub fn session_json(&self) -> Value {
         json!({
@@ -303,7 +303,7 @@ fn run_agentic_task_in_with_tools(
     }
 }
 
-/// Execute one tool call against the offline corpus or the sandbox workspace and
+/// Execute one tool call with the supplied source transport or sandbox workspace and
 /// return the textual result to feed back to the server, plus whether the call
 /// failed to produce its output at all (refused, unsupported, or lost) — the
 /// transport fact a real Agent CLI flags with `is_error`.
