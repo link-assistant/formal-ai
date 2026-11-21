@@ -1,5 +1,7 @@
 # Issue 1396 · Source-backed answers to practical questions
 
+The [November 21 follow-up](2026-11-21-codex-and-release.md) covers the short Codex question, the reporting failure, and the publication gate.
+
 ## Timeline
 
 | UTC | Event and evidence |

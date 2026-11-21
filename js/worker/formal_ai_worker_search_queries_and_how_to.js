@@ -43,8 +43,27 @@ async function practicalHelpAnswer(goal,language,preferences={}){
 }
 async function tryPracticalHelp(prompt,language,preferences={}){const goal=practicalHelpGoal(prompt);return goal?practicalHelpAnswer(goal,language,preferences):null;}
 async function tryPracticalHelpFollowup(prompt,language,history,preferences={}){
- if(!practicalHelpForms('followups').includes(normalizePrompt(prompt).replace(/[!?！。؟]+$/gu,''))&&!isProceduralElaborationRequest(normalizePrompt(prompt)))return null;
- const prior=lastHistoryTurn(history,'user');const goal=prior?practicalHelpGoal(prior):null;return goal?practicalHelpAnswer(goal,language,preferences):null;
+ const goal=practicalHelpFollowupGoal(normalizePrompt(prompt),lastHistoryTurn(history,'user'));
+ return goal?practicalHelpAnswer(goal,language,preferences):null;
+}
+
+function practicalHelpFollowupGoal(normalized, prior) {
+  if (!prior || (!practicalHelpForms("followups").includes(normalized)
+    && !isProceduralElaborationRequest(normalized))) return null;
+  return practicalHelpGoal(prior);
+}
+
+// Keep implicit client research from replacing the solver's procedure and sources.
+function claimsProceduralRequest(prompt, history) {
+  const normalized = normalizePrompt(prompt);
+  if (extractExplicitWebSearchQuery(prompt) || extractExplicitWebSearchQuery(normalized)) return false;
+  if (practicalHelpGoal(prompt) || extractProceduralHowToTask(normalized)) return true;
+  const prior = lastHistoryTurn(history, "user");
+  if (practicalHelpFollowupGoal(normalized, prior)) return true;
+  if (isProceduralElaborationRequest(normalized) && priorProceduralHowToDialogue(history)) return true;
+  const parts = splitLeadingGreetingCompoundPrompt(prompt);
+  return Boolean(parts && isGreetingPrompt(normalizePrompt(parts.greeting), parts.greeting)
+    && extractProceduralHowToTask(normalizePrompt(parts.remainder)));
 }
 
 function truncateSearchInstructionTail(value) {
@@ -628,6 +647,10 @@ function proceduralFallbackQuery(task) {
   return howPolicy("procedural_how_to", "fallback-query", { task });
 }
 
+function proceduralSourceTask(task) {
+  return handlerRulesTableValue("procedural-source-task-aliases", task) || task;
+}
+
 function proceduralSearchQuery(task) {
   const fallbackQuery = proceduralFallbackQuery(task.task);
   if (!task || task.action !== "install") return fallbackQuery;
@@ -844,7 +867,8 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const query = proceduralFallbackQuery(task.task);
   const searchQuery = proceduralSearchQuery(task);
   const wiki = howToSourceRegistry().find((record) => record.id === "wikihow");
-  const apiUrl = wiki ? (sourceWalkEntryUrl(wiki, task.task, sourceLanguage) || sourceWalkEntryUrl(wiki, task.task)) : "";
+  const sourceTask = proceduralSourceTask(task.task);
+  const apiUrl = wiki ? (sourceWalkEntryUrl(wiki, sourceTask, sourceLanguage) || sourceWalkEntryUrl(wiki, sourceTask)) : "";
   const pageTitle = apiUrl ? new URL(apiUrl).searchParams.get("page") : "";
   const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
   const isInstall = task.action === "install";

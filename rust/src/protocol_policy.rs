@@ -2,6 +2,120 @@ use serde_json::Value;
 
 use crate::associative_package::{PackagePermissionDecision, default_package_store};
 use crate::engine::{SymbolicAnswer, ThinkingStep};
+use crate::protocol::{ChatCompletionRequest, ChatMessage};
+
+/// Keep the advertised tools that are available and whose required identities
+/// can be grounded in this request.
+pub(crate) fn groundable_tool_names(
+    request: &ChatCompletionRequest,
+    names: &[String],
+) -> Vec<String> {
+    let context = request
+        .messages
+        .iter()
+        .map(|message| message.content.plain_text())
+        .collect::<Vec<_>>()
+        .join("\n");
+    let empty = serde_json::Map::new();
+    names
+        .iter()
+        .filter(|name| {
+            find_tool_definition(&request.tools, name).is_none_or(|definition| {
+                available_client_tool(name, definition, &request.messages)
+                    && crate::tool_scope::ungrounded_identity_arguments(
+                        definition, &empty, &context,
+                    )
+                    .is_empty()
+            })
+        })
+        .cloned()
+        .collect()
+}
+
+/// A restricted schema needs affirmative client context. Codex omits it in Default mode.
+fn available_client_tool(name: &str, definition: &Value, messages: &[ChatMessage]) -> bool {
+    use crate::rule_interpreter::handler_table_value;
+    let holder = definition.get("function").unwrap_or(definition);
+    let restriction = handler_table_value("client-tool-unavailable-descriptions", name);
+    let restricted = restriction.is_some_and(|suffix| {
+        holder
+            .get("description")
+            .and_then(Value::as_str)
+            .is_some_and(|text| text.trim_end().ends_with(suffix))
+    });
+    if !restricted {
+        return true;
+    }
+    let context = |key| handler_table_value("client-tool-availability-context", key);
+    let (Some(expected), Some(open), Some(close)) =
+        (context(name), context("open-tag"), context("close-tag"))
+    else {
+        return false;
+    };
+    for message in messages.iter().rev() {
+        if !message.role.eq_ignore_ascii_case("developer") {
+            continue;
+        }
+        let text = message.content.plain_text();
+        if let Some((_, suffix)) = text.rsplit_once(open) {
+            return suffix.split_once(close).is_some_and(|(body, _)| {
+                body.trim().lines().next().map(str::trim_end) == Some(expected)
+            });
+        }
+    }
+    false
+}
+
+pub(crate) fn defers_procedural_search(
+    plan: &crate::agentic_coding::planner::AgenticPlan,
+    messages: &[ChatMessage],
+) -> bool {
+    use crate::agentic_coding::planner::{AgenticPlan, Capability, tool_capability};
+    let AgenticPlan::ToolCalls(calls) = plan else {
+        return false;
+    };
+    if calls.is_empty()
+        || !calls
+            .iter()
+            .all(|call| tool_capability(&call.tool) == Some(Capability::Search))
+    {
+        return false;
+    }
+    let (prompt, history) = crate::protocol::chat_prompt_and_history(messages);
+    claims_procedural_request(&prompt, &history)
+}
+
+fn claims_procedural_request(prompt: &str, history: &[crate::solver::ConversationTurn]) -> bool {
+    use crate::engine::normalize_prompt;
+    use crate::solver::ConversationRole;
+    use crate::solver_handler_how::{
+        is_procedural_elaboration_request, practical_help, procedural_how_to_task,
+    };
+    use crate::solver_handlers::web_search_intent::explicit_web_search_requested;
+
+    let normalized = normalize_prompt(prompt);
+    if explicit_web_search_requested(prompt, &normalized) {
+        return false;
+    }
+    if practical_help::goal(prompt, &normalized).is_some()
+        || procedural_how_to_task(&normalized).is_some()
+    {
+        return true;
+    }
+    let Some(prior) = history
+        .iter()
+        .rev()
+        .find(|turn| turn.role == ConversationRole::User)
+    else {
+        return false;
+    };
+    practical_help::followup_goal(&normalized, &prior.content).is_some()
+        || (is_procedural_elaboration_request(&normalized)
+            && history
+                .iter()
+                .any(|turn| turn.role == ConversationRole::Assistant)
+            && procedural_how_to_task(&normalize_prompt(&prior.content)).is_some())
+}
 
 pub fn tool_call_refusal_answer() -> SymbolicAnswer {
     SymbolicAnswer {

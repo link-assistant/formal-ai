@@ -180,15 +180,8 @@ pub(super) fn followup(
     _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !forms("followups")
-        .iter()
-        .any(|form| form == &normalize_prompt(prompt))
-        && !super::is_procedural_elaboration_request(&normalize_prompt(prompt))
-    {
-        return None;
-    }
     let prior = crate::solver_helpers::last_user_turn(log)?;
-    let goal = goal(prior, &normalize_prompt(prior))?;
+    let goal = followup_goal(&normalize_prompt(prompt), prior)?;
     Some(render(
         prompt,
         &goal,
@@ -196,6 +189,15 @@ pub(super) fn followup(
         "curated-excerpt",
         log,
     ))
+}
+
+pub(crate) fn followup_goal(normalized: &str, prior: &str) -> Option<String> {
+    if !forms("followups").iter().any(|form| form == normalized)
+        && !super::is_procedural_elaboration_request(normalized)
+    {
+        return None;
+    }
+    goal(prior, &normalize_prompt(prior))
 }
 
 #[cfg(test)]

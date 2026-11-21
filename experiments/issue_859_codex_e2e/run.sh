@@ -10,6 +10,8 @@ CODEX_EXTRA_ARGS="${CODEX_EXTRA_ARGS:-}"
 SERVER_PORT="${SERVER_PORT:-8859}"
 PROXY_PORT="${PROXY_PORT:-8860}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
+SCENARIO="${SCENARIO:-all}"
+SERVER="${SERVER:-native}"
 RUN_DIR="$(mktemp -d)"
 WORKSPACE="$RUN_DIR/workspace"
 SERVER_LOG="$RUN_DIR/formal-ai.log"
@@ -17,6 +19,8 @@ PROXY_STDERR="$RUN_DIR/proxy-stderr.log"
 PROXY_LOG="$RUN_DIR/proxy.jsonl"
 CODEX_LOG="$RUN_DIR/codex.log"
 REPORT_LOG="$RUN_DIR/report-issue.log"
+REPORT_RU_LOG="$RUN_DIR/report-issue-ru.log"
+REPORT_SCOPE_LOG="$RUN_DIR/report-issue-scope.log"
 MODEL_CATALOG="$RUN_DIR/formal-ai-model-catalog.json"
 
 codex_cli() {
@@ -28,13 +32,20 @@ codex_cli() {
 }
 
 mkdir -p "$WORKSPACE"
+mkdir -p "$RUN_DIR/codex"
 git -C "$WORKSPACE" init -q
 node "$ROOT/experiments/issue_859_codex_e2e/write-model-catalog.mjs" \
   "$MODEL_CATALOG"
 
+server_command=("$BIN" serve)
+if [ "$SERVER" = js ]; then
+  server_command=(node "$ROOT/js/server/main.mjs")
+fi
 FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_DREAMING=0 \
+  FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR=false \
+  FORMAL_AI_DIALOG_LOG_DIR="$RUN_DIR/dialogs" \
   FORMAL_AI_MEMORY_PATH="$RUN_DIR/memory.lino" \
-  "$BIN" serve --host 127.0.0.1 --port "$SERVER_PORT" \
+  "${server_command[@]}" --host 127.0.0.1 --port "$SERVER_PORT" \
   >"$SERVER_LOG" 2>&1 < /dev/null &
 SERVER_PID=$!
 
@@ -44,9 +55,11 @@ SERVER_PID=$!
 PROXY_PID=$!
 
 cleanup() {
+  kill "$PROXY_PID" "$SERVER_PID" 2>/dev/null || true
+  wait "$PROXY_PID" "$SERVER_PID" 2>/dev/null || true
   if [ -n "$ARTIFACT_DIR" ]; then
     mkdir -p "$ARTIFACT_DIR"
-    for artifact in formal-ai.log proxy-stderr.log proxy.jsonl codex.log report-issue.log report-exit-status.txt; do
+    for artifact in formal-ai.log proxy-stderr.log proxy.jsonl codex.log report-issue.log report-issue-ru.log report-issue-scope.log; do
       if [ -f "$RUN_DIR/$artifact" ]; then
         cp "$RUN_DIR/$artifact" "$ARTIFACT_DIR/$artifact"
       fi
@@ -54,25 +67,27 @@ cleanup() {
     if [ -f "$WORKSPACE/main.rs" ]; then
       cp "$WORKSPACE/main.rs" "$ARTIFACT_DIR/main.rs"
     fi
-    codex_cli --version > "$ARTIFACT_DIR/codex-version.txt"
+    codex_cli --version > "$ARTIFACT_DIR/codex-version.txt" || true
   fi
-  kill "$PROXY_PID" "$SERVER_PID" 2>/dev/null || true
-  wait "$PROXY_PID" "$SERVER_PID" 2>/dev/null || true
   rm -rf "$RUN_DIR"
 }
 trap cleanup EXIT
 
-curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
+curl -fs --retry 30 --retry-delay 1 --retry-connrefused \
   "http://127.0.0.1:$PROXY_PORT/health" > /dev/null
 
 run_codex() {
-  local prompt="$1" output="$2"
-  local extra_args=()
+  local prompt="$1" output="$2" session="${3:-ephemeral}"
+  local extra_args=() persistence=() resume=()
+  case "$session" in
+    ephemeral) persistence=(--ephemeral) ;;
+    resume) resume=(resume --last) ;;
+  esac
   if [ -n "$CODEX_EXTRA_ARGS" ]; then
     read -r -a extra_args <<< "$CODEX_EXTRA_ARGS"
   fi
-  FORMAL_AI_API_KEY="sk-local-demo" codex_cli exec \
-    --ignore-user-config --ephemeral --color never \
+  if ! CODEX_HOME="$RUN_DIR/codex" FORMAL_AI_API_KEY="sk-local-demo" codex_cli exec \
+    --ignore-user-config "${persistence[@]}" --color never \
     -c 'model_providers.formalai.name="formal-ai local server"' \
     -c "model_providers.formalai.base_url=\"http://127.0.0.1:$PROXY_PORT/api/openai/v1\"" \
     -c 'model_providers.formalai.env_key="FORMAL_AI_API_KEY"' \
@@ -81,30 +96,40 @@ run_codex() {
     -c 'model="formal-ai"' \
     -c "model_catalog_json=\"$MODEL_CATALOG\"" \
     --skip-git-repo-check --sandbox "$CODEX_SANDBOX" --cd "$WORKSPACE" \
-    "${extra_args[@]}" \
-    "$prompt" >"$output" 2>&1 < /dev/null
+    "${extra_args[@]}" "${resume[@]}" \
+    "$prompt" >"$output" 2>&1 < /dev/null; then
+    tail -n 40 "$output" >&2
+    return 1
+  fi
 }
 
-run_codex "Give me hello world program in Rust" "$CODEX_LOG"
+verify_report_turn() {
+  local prompt="$1" output="$2" expected="$3"
+  node "$ROOT/experiments/issue_859_codex_e2e/verify-proxy.mjs" report "$PROXY_LOG" "$prompt"
+  if ! grep -Fq "$expected" "$output"; then
+    tail -n 40 "$output" >&2
+    return 1
+  fi
+}
 
-test -f "$WORKSPACE/main.rs"
-grep -Fq 'println!("Hello, world!")' "$WORKSPACE/main.rs"
-grep -Fq 'Let me run a compile this program for you.' "$CODEX_LOG"
-grep -Fq 'Let me run the compiled program for you.' "$CODEX_LOG"
-grep -Fq 'Hello, world!' "$CODEX_LOG"
-node "$ROOT/experiments/issue_859_codex_e2e/verify-proxy.mjs" \
-  code "$PROXY_LOG"
+if [ "$SCENARIO" = all ] || [ "$SCENARIO" = code ]; then
+  run_codex "Give me hello world program in Rust" "$CODEX_LOG"
+  test -f "$WORKSPACE/main.rs"
+  grep -Fq 'println!("Hello, world!")' "$WORKSPACE/main.rs"
+  grep -Fq 'Let me run a compile this program for you.' "$CODEX_LOG"
+  grep -Fq 'Let me run the compiled program for you.' "$CODEX_LOG"
+  grep -Fq 'Hello, world!' "$CODEX_LOG"
+  node "$ROOT/experiments/issue_859_codex_e2e/verify-proxy.mjs" code "$PROXY_LOG"
+  echo "Codex created, compiled, and ran main.rs."
+fi
 
-# Headless Codex cannot answer its own interactive question, so the second run
-# may stop after executing request_user_input. The protocol evidence is the
-# acceptance criterion: Formal AI asks, and never turns the report into search.
-set +e
-run_codex "Report issue" "$REPORT_LOG"
-REPORT_STATUS=$?
-set -e
-printf '%s\n' "$REPORT_STATUS" > "$RUN_DIR/report-exit-status.txt"
+if [ "$SCENARIO" = all ] || [ "$SCENARIO" = report ]; then
+  run_codex "Report issue" "$REPORT_LOG"
+  verify_report_turn "Report issue" "$REPORT_LOG" '3. GitHub issue'
 
-node "$ROOT/experiments/issue_859_codex_e2e/verify-proxy.mjs" \
-  report "$PROXY_LOG"
-
-echo "Codex created, compiled, and ran main.rs; Report issue requested structured input."
+  run_codex "зарепорти баг" "$REPORT_RU_LOG" record
+  verify_report_turn "зарепорти баг" "$REPORT_RU_LOG" '3. Задача GitHub'
+  run_codex "3" "$REPORT_SCOPE_LOG" resume
+  verify_report_turn "3" "$REPORT_SCOPE_LOG" '1. Оба журнала'
+  echo "Codex displayed both localized reporting menus and continued to context selection."
+fi

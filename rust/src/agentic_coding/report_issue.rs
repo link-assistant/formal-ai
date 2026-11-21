@@ -30,6 +30,9 @@ const PRINTF_LINE_FORMAT: &str = " '%s\\n' ";
 const AGENTIC_SURFACE: &str = "agentic-cli";
 /// Session argument that makes the CLI resolve the live harness session.
 const LATEST_SESSION: &str = "latest";
+const LANGUAGES: [&str; 5] = ["en", "ru", "hi", "zh", "es"];
+const TARGET_QUESTION: &str = "agentic_report_target_question";
+const CONTENTS_QUESTION: &str = "agentic_report_contents_question";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum ReportTarget {
@@ -68,10 +71,16 @@ pub(super) fn plan_report_flow(
     }
     let report_prompt = messages[report_index].content.user_request_text();
     let language = language::detect(&report_prompt).slug();
-    let choices = answer_texts(messages, report_index + 1);
-    let targets = choices.iter().find_map(|(index, text)| {
-        let targets = parse_targets(text);
-        (!targets.is_empty()).then_some((targets, *index))
+    let choices = messages
+        .iter()
+        .enumerate()
+        .skip(report_index + 1)
+        .filter(|(_, message)| {
+            message.role.eq_ignore_ascii_case("user") || message.role.eq_ignore_ascii_case("tool")
+        });
+    let targets = choices.clone().find_map(|(index, message)| {
+        let targets = parse_targets(message, &messages[index - 1], language);
+        (!targets.is_empty()).then_some((targets, index))
     });
 
     let Some((targets, target_index)) = targets else {
@@ -79,16 +88,15 @@ pub(super) fn plan_report_flow(
             tool_names,
             language,
             "report_target",
-            "agentic_report_target_question",
+            TARGET_QUESTION,
             "agentic_report_target_options",
             true,
         ));
     };
 
     let explicit_contents = choices
-        .iter()
         .filter(|(index, _)| *index > target_index)
-        .find_map(|(_, text)| parse_contents(text));
+        .find_map(|(index, message)| parse_contents(message, &messages[index - 1], language));
     let selected_harness = targets.contains(&ReportTarget::HarnessLog);
     let selected_server = targets.contains(&ReportTarget::ServerLog);
     let inferred_contents = match (selected_harness, selected_server) {
@@ -103,7 +111,7 @@ pub(super) fn plan_report_flow(
             tool_names,
             language,
             "report_contents",
-            "agentic_report_contents_question",
+            CONTENTS_QUESTION,
             "agentic_report_contents_options",
             false,
         ));
@@ -196,29 +204,25 @@ fn localized_options(intent: &str, language: &str) -> Vec<(String, String)> {
 }
 
 fn is_report_question(text: &str) -> bool {
-    ["en", "ru", "hi", "zh"].into_iter().any(|language| {
-        [
-            "agentic_report_target_question",
-            "agentic_report_contents_question",
-        ]
-        .into_iter()
-        .any(|intent| text.contains(&localized(intent, language)))
+    LANGUAGES.into_iter().any(|language| {
+        [TARGET_QUESTION, CONTENTS_QUESTION]
+            .into_iter()
+            .any(|intent| text.contains(&localized(intent, language)))
     })
 }
 
-fn answer_texts(messages: &[ChatMessage], start: usize) -> Vec<(usize, String)> {
-    messages
-        .iter()
-        .enumerate()
-        .skip(start)
-        .filter(|(_, message)| {
-            message.role.eq_ignore_ascii_case("user") || message.role.eq_ignore_ascii_case("tool")
-        })
-        .map(|(index, message)| (index, message.content.plain_text()))
-        .collect()
-}
-
-fn parse_targets(text: &str) -> Vec<ReportTarget> {
+fn parse_targets(
+    message: &ChatMessage,
+    previous: &ChatMessage,
+    language: &str,
+) -> Vec<ReportTarget> {
+    let matches = option_matcher(
+        message,
+        previous,
+        &localized(TARGET_QUESTION, language),
+        "agentic_report_target_options",
+        true,
+    );
     [
         (ReportTarget::HarnessLog, 0, "harness_log"),
         (ReportTarget::ServerLog, 1, "server_log"),
@@ -227,39 +231,71 @@ fn parse_targets(text: &str) -> Vec<ReportTarget> {
     ]
     .into_iter()
     .filter_map(|(target, option_index, machine_value)| {
-        matches_option(
-            text,
-            "agentic_report_target_options",
-            option_index,
-            machine_value,
-        )
-        .then_some(target)
+        matches(option_index, machine_value).then_some(target)
     })
     .collect()
 }
 
-fn parse_contents(text: &str) -> Option<ReportContents> {
-    if matches_option(text, "agentic_report_contents_options", 0, "both_logs") {
+fn parse_contents(
+    message: &ChatMessage,
+    previous: &ChatMessage,
+    language: &str,
+) -> Option<ReportContents> {
+    let matches = option_matcher(
+        message,
+        previous,
+        &localized(CONTENTS_QUESTION, language),
+        "agentic_report_contents_options",
+        false,
+    );
+    if matches(0, "both_logs") {
         return Some(ReportContents::Both);
     }
-    if matches_option(text, "agentic_report_contents_options", 1, "harness_log") {
+    if matches(1, "harness_log") {
         return Some(ReportContents::Harness);
     }
-    matches_option(text, "agentic_report_contents_options", 2, "server_log")
-        .then_some(ReportContents::Server)
+    matches(2, "server_log").then_some(ReportContents::Server)
 }
 
-fn matches_option(text: &str, intent: &str, option_index: usize, machine_value: &str) -> bool {
-    // Normalization turns `_` into a space, so the machine value must be
-    // normalized too: a raw `contains("formal_ai")` can never match and the
-    // learning target silently vanished from harness answers (#996).
-    let normalized = normalize_prompt(text);
-    normalized.contains(&normalize_prompt(machine_value))
-        || ["en", "ru", "hi", "zh"].into_iter().any(|language| {
-            localized_options(intent, language)
-                .get(option_index)
-                .is_some_and(|(label, _)| normalized.contains(&normalize_prompt(label)))
-        })
+fn option_matcher(
+    message: &ChatMessage,
+    previous: &ChatMessage,
+    question: &str,
+    intent: &'static str,
+    multiple: bool,
+) -> impl Fn(usize, &str) -> bool + use<> {
+    let text = message.content.plain_text();
+    let user = message.role.eq_ignore_ascii_case("user");
+    let answers = if user && multiple {
+        text.split(',').map(normalize_prompt).collect::<Vec<_>>()
+    } else {
+        vec![normalize_prompt(&text)]
+    };
+    let numbered = user
+        && previous.role.eq_ignore_ascii_case("assistant")
+        && previous
+            .content
+            .plain_text()
+            .starts_with(&format!("{question}\n1. "));
+    move |index, value| {
+        let matches = |option: &str| {
+            let option = normalize_prompt(option);
+            answers.iter().any(|answer| {
+                if user {
+                    *answer == option
+                } else {
+                    answer.contains(&option)
+                }
+            })
+        };
+        matches(value)
+            || (numbered && matches(&(index + 1).to_string()))
+            || LANGUAGES.into_iter().any(|language| {
+                localized_options(intent, language)
+                    .get(index)
+                    .is_some_and(|(label, _)| matches(label))
+            })
+    }
 }
 
 /// Whether `task` asks to report/file an issue.

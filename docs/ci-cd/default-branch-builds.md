@@ -31,15 +31,17 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
 - Production builds run on the current default branch, main. Release-tag and
   workflow-completion consumers must independently authorize their source against
   main; a release event is not permission to compile arbitrary feature code.
-- A failed compiler/build job stays red and blocks its dependent publisher. Fix
-  main failures through a follow-up PR. Preserve source, producer, attempt and
-  checksum verification when reusing outputs; never manufacture success receipts.
+- Locked crate packaging, secret scanning and credential preflight admit the
+  automatic and instant staged publisher. The staged binary build and smoke
+  tests still block their dependent publishers on failure. Independent
+  diagnostic failures stay visible in the pipeline status and are fixed through
+  follow-up PRs. Preserve source, producer, attempt and checksum verification
+  when reusing outputs.
 - Build each distinct source/target/feature/profile once where the artifact
-  protocol permits reuse. Cargo package creation uses --no-verify after its
-  required compiler producer; staged crate publication uses --verified-build true
+  protocol permits reuse. The crate archive check uses `--no-verify`. The staged
+  publisher builds the binary independently and uses `--verified-build true`
   after authenticating both binary and package transfers. Standalone publishing
-  retains Cargo verification. These flags skip redundant compilation, not source
-  or archive validation.
+  retains Cargo verification. Source and archive validation still apply.
 - Keep the independent full Docker cold-build job, but select it only with
   FORMAL_AI_COLD_CONTAINER_REBUILD=run on main. Actual image publication still
   requires the native compiler and exercises the produced container. It no longer
