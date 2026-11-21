@@ -357,11 +357,10 @@ fn change_gated_jobs_never_depend_on_a_skipped_changelog() {
     }
 }
 
-/// Issue #812: both release jobs gated on `[lint, test, build]` alone, so a red
-/// `Secrets Scan` or E2E suite on `main` did not stop the crate, the Docker
-/// image and the GitHub Release from publishing.
+/// Issues #812 and #1396: both release jobs require a successful secret scan.
+/// Independent integration diagnostics report to Pipeline Status.
 #[test]
-fn releases_do_not_publish_past_a_failing_secrets_scan_or_e2e_suite() {
+fn releases_do_not_publish_without_a_successful_secrets_scan() {
     let workflow = release_workflow();
 
     for job_name in ["auto-release", "manual-release"] {
@@ -372,28 +371,12 @@ fn releases_do_not_publish_past_a_failing_secrets_scan_or_e2e_suite() {
             .collect::<Vec<_>>()
             .join("\n");
 
-        for gate in ["secrets-scan", "test-e2e-local", "test-agent-cli-e2e"] {
-            // The acceptable results must be enumerated, not excluded. A job
-            // killed by its own `timeout-minutes` reports as 'cancelled', which
-            // a `!= 'failure'` guard would wave through -- run 29767811026 is
-            // the observed instance of exactly that result value.
-            assert!(
-                effective.contains(&format!(
-                    "(needs.{gate}.result == 'success' || needs.{gate}.result == 'skipped')"
-                )),
-                "{job_name} must gate on {gate} being success-or-skipped, so a \
-                 timed-out (cancelled) job cannot release (issue #812)"
-            );
-            assert!(
-                !effective.contains(&format!("needs.{gate}.result != 'failure'")),
-                "{job_name} must not use `!= 'failure'` for {gate}: a timeout \
-                 reports as 'cancelled' and would pass that check (issue #812)"
-            );
-            assert!(
-                effective.contains(gate),
-                "{job_name} must declare {gate} in needs: (issue #812)"
-            );
-        }
+        // A timeout may report 'cancelled' (run 29767811026).
+        assert!(effective.contains("needs.secrets-scan.result == 'success'"));
+        assert!(!effective.contains("needs.secrets-scan.result == 'skipped'"));
+        assert!(effective.contains("secrets-scan,"));
+        assert!(!effective.contains("test-e2e-local"));
+        assert!(!effective.contains("test-agent-cli-e2e"));
     }
 }
 

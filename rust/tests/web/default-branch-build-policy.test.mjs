@@ -19,15 +19,15 @@ const nativeRegressionSource = step => {
   assert.equal(step.run, 'bash scripts/ci-native-regressions.sh core');
   return read('scripts/ci-native-regressions.sh');
 };
-function evaluate(expression, event, ref, variables = {}) {
+function evaluate(expression, event, ref, variables = {}, {results = {}, outputs: changed = {}, releaseMode = 'checks', isCancelled = false} = {}) {
   if(typeof expression!=='string')return expression;
   const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
-  const outputs = new Proxy({}, {get: () => 'true'});
-  const needs = new Proxy({}, {get: () => ({result:'success', outputs})});
-  return new Script(source).runInNewContext({github:{event_name:event,ref,event:{inputs:{release_mode:"checks"},workflow_run:{head_branch:'main'}}},
+  const outputs = new Proxy(changed, {get: (target, key) => target[key] ?? 'true'});
+  const needs = new Proxy(results, {get: (target, key) => ({result:target[key] ?? 'success', outputs})});
+  return new Script(source).runInNewContext({github:{event_name:event,ref,event:{inputs:{release_mode:releaseMode},workflow_run:{head_branch:'main'}}},
     vars:{FORMAL_AI_FULL_PR_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',...variables}, needs,
-    inputs:{},cancelled:()=>false,always:()=>true,fromJSON:JSON.parse}, {timeout:100});
+    inputs:{},cancelled:()=>isCancelled,always:()=>true,fromJSON:JSON.parse}, {timeout:100});
 }
 for (const [label, needs, expectedStatus] of [
   ['successful and skipped dependencies', {lint: {result: 'success'}, test: {result: 'skipped'}}, 0],
@@ -120,6 +120,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'cargo test --manifest-path experiments/issue-1580/release-registry/Cargo.toml --locked --lib --test assemble_requirements --test normalize_ordered_lists --test self_hosting_metric -- --test-threads=1 --nocapture\n' +
     'python3 experiments/issue-1580/release-registry/cli_regressions.py\n']);
   assert(!registry.steps.some(step => /upload-artifact|cache\/save|attest/u.test(step.uses ?? '')));
+  const codexReplay = 'bash experiments/issue_859_codex_e2e/run.sh';
   const gatewayReplay = 'bun install --frozen-lockfile --ignore-scripts\n' +
     "node --test --test-concurrency=1 --test-name-pattern='HTTP credentials' rust/tests/web/dynamic-meta.test.mjs\n";
   const runs = check.steps.map(step => step.run).filter(Boolean);
@@ -137,6 +138,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs',
+    codexReplay,
     gatewayReplay,
     'cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog\n' +
     'rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"\n' +
@@ -160,18 +162,25 @@ test('the focused PR native check limits execution to lint and isolated regressi
     assert.deepEqual(check.steps.find(step => step.run === command).env,
       {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   }
+  const codex = check.steps.find(step => step.run === codexReplay);
+  assert.deepEqual(codex.env, {
+    BIN: '${{ github.workspace }}/rust/target/debug/formal-ai',
+    CODEX_VERSION: '0.147.0', SCENARIO: 'report',
+  });
+  assert.equal(codex['timeout-minutes'], 2);
   assert.deepEqual(check.steps.find(step => step.run === gatewayReplay).env,
     {FORMAL_AI_DYNAMIC_META_NATIVE: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   const checkout = check.steps.find(step => step.uses === 'actions/checkout@v7').with;
   assert.deepEqual(checkout['sparse-checkout'].trim().split('\n'),
     ['/*', '!/dev/log/','/dev/log/issues/1079/pulls/1080/upstream-reports/', '!/experiments/**', '/experiments/**/*.sh',
       '/experiments/dynamic-meta/**', '/experiments/js_dogfood/**',
+      '/experiments/issue_859_codex_e2e/**',
       '/experiments/issue-1580/release-registry/', '/experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
       ...['candidate-output-bindings.json', 'candidate-release-caller.yml', 'original-release-workflow.yml',
         'stage-source-coverage.json'].map(file =>
         '/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/' + file)]);
   for (const step of check.steps.filter(step => step.uses === 'oven-sh/setup-bun@v2' || step.run === gatewayReplay))
-    assert.equal(step.if, "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
+    assert.equal(step.if, step.run === gatewayReplay ? "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' && steps.bun.outcome == 'success' }}" : "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
   assert.deepEqual(check.steps.find(step => step.uses === 'oven-sh/setup-bun@v2').with,
     {'bun-version-file': '.bun-version', 'no-cache': true});
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
@@ -322,6 +331,32 @@ test('recorded Docker cold rebuild is optional and cannot hold the production bu
     assert(publish.needs.includes(mode+'_compile-release'));
     assert.match(publish.steps.find(s=>s.name==='Publish to Crates.io').run,/--verified-build true/u);
   }
+});
+test('main release depends on package and admission checks while broad failures reach pipeline status', () => {
+  const jobs = workflow('release.yml').jobs;
+  const main = 'refs/heads/main';
+  const diagnostics = ['lint', 'test', 'macos-core-tests', 'build-artifacts',
+    'server-parity', 'test-e2e-local', 'test-agent-cli-e2e', 'native-response-observations'];
+  const failed = Object.fromEntries(diagnostics.map(id => [id, 'failure']));
+  assert.deepEqual(jobs.build.needs, ['detect-changes']);
+  assert(!jobs.build.steps.some(step => step.uses?.includes('download-formal-ai-binary')));
+  assert.equal(evaluate(jobs.build.if, 'push', main, {}, {results: failed}), true);
+  assert.equal(Boolean(evaluate(jobs.build.if, 'push', main, {}, {outputs: {'any-code-changed': 'false'}})), false);
+  assert.equal(Boolean(evaluate(jobs.build.if, 'push', main, {}, {results: {'detect-changes': 'failure'}})), false);
+  assert.equal(evaluate(jobs.build.if, 'workflow_dispatch', main, {}, {results: {'detect-changes': 'skipped'}}), true);
+  for (const id of diagnostics) assert(jobs['pipeline-status'].needs.includes(id), id);
+  for (const [id, event] of [['auto-release', 'push'], ['manual-release', 'workflow_dispatch']]) {
+    const job = jobs[id];
+    assert.deepEqual(job.needs, ['build', 'secrets-scan', 'release-preflight']);
+    const admitted = (options, ref = main) => evaluate(job.if, event, ref, {}, {releaseMode: 'instant', ...options});
+    assert.equal(admitted({results: failed}), true, id);
+    assert.equal(admitted({isCancelled: true}), false, id);
+    assert.equal(admitted({}, 'refs/heads/topic'), false, id);
+    for (const gate of job.needs) {
+      for (const status of ['failure', 'skipped']) assert.equal(admitted({results: {[gate]: status}}), false, gate);
+    }
+  }
+  assert.equal(evaluate(jobs['manual-release'].if, 'workflow_dispatch', main), false);
 });
 // Runs 43693412224 and 44679541559 exhausted stale JavaScript shard plans.
 // The same eight full-suite groups retain the deadline on every hosted profile.
@@ -678,15 +713,15 @@ test('independent native replays continue after a regression fails and preserve 
   const job = workflow('native-type-check.yml').jobs.clippy;
   const later = job.steps.filter(step => step.name === 'Verify native unresolved-language source binding'
     || ['actions/setup-node@v7', 'oven-sh/setup-bun@v2'].includes(step.uses) || step.name?.startsWith('Replay '));
-  assert.equal(later.length, 7);
-  const selected = (step, {earlierFailure = true, compile = true, lint = 'success', cancelled = false} = {}) => {
+  assert.equal(later.length, 8);
+  const selected = (step, {earlierFailure = true, compile = true, lint = 'success', bun = 'success', cancelled = false} = {}) => {
     const expression = step.if.slice(3, -2).trim()
       .replaceAll('inputs.compile-inputs-changed', "inputs['compile-inputs-changed']")
       .replaceAll('steps.native-lint', "steps['native-lint']");
     // Actions supplies success() unless an explicit status function is present.
     if (earlierFailure && !/\b(?:always|cancelled|failure|success)\s*\(/u.test(expression)) return false;
     return Boolean(new Script(expression).runInNewContext({
-      inputs: {'compile-inputs-changed': compile}, steps: {'native-lint': {outcome: lint}},
+      inputs: {'compile-inputs-changed': compile}, steps: {'native-lint': {outcome: lint}, bun: {outcome: bun}},
       cancelled: () => cancelled,
     }, {timeout: 100}));
   };
@@ -697,6 +732,9 @@ test('independent native replays continue after a regression fails and preserve 
     assert.equal(selected(step, {compile: false}), false);
     for (const lint of ['failure', 'skipped', 'cancelled'])
       assert.equal(selected(step, {lint}), false);
+  }
+  for (const step of later.filter(step => step.run === 'bash experiments/issue_859_codex_e2e/run.sh' || step.name?.startsWith('Replay dynamic meta'))) {
+    for (const bun of ['failure', 'skipped']) assert.equal(selected(step, {bun}), false);
   }
   assert.equal(job.steps.find(step => step.name === 'Type-check and lint the library and binaries').id, 'native-lint');
   const isolated = job.steps.find(step => step.name === 'Verify isolated native behavior regressions');

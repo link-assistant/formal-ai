@@ -5,6 +5,21 @@ release is ready for main to advance. Keep main stable through publication and
 verify its downstream consumers before merging routine changes. Version
 preparation and a successful compiler invocation are intermediate steps.
 
+## Production admission and diagnostics
+
+On a release-eligible push to main or a selected manual release from main,
+the staged publisher depends on three checks. Build Package validates locked
+crate packaging and size, Secrets Scan checks the change, and Release
+Preflight checks credentials. The staged publisher then validates its prepared
+source, builds and smoke-tests its own binary, and checks source freshness and
+artifact receipts before publishing.
+
+The wider lint, unit, parity and end-to-end matrix still drives Pipeline Status.
+Inspect a red aggregate and the staged publisher separately. The main-only
+publication path can proceed while diagnostics run or after they fail.
+Pull requests keep their focused checks and do not publish. Use a changelog
+fragment to request the release bump.
+
 ## Before merging
 
 1. Identify the exact active main producer, its attempt, tested commit and

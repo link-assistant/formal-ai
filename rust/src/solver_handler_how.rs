@@ -229,7 +229,7 @@ pub(crate) fn try_procedural_how_to_followup_with(
 /// whole-token/phrase for Latin scripts and substring for CJK, exactly as every
 /// other lexicon recogniser, so "specific instructions" matches but "specifics"
 /// does not.
-fn is_procedural_elaboration_request(normalized: &str) -> bool {
+pub(crate) fn is_procedural_elaboration_request(normalized: &str) -> bool {
     seed::lexicon()
         .meanings_with_role(seed::ROLE_PROCEDURAL_ELABORATION)
         .any(|meaning| meaning.evidenced_in(normalized))

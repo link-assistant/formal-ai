@@ -248,7 +248,7 @@ pub fn entry_url_in(record: &SourceRecord, subject: &str, language: &str) -> Opt
     (!url.contains('{')).then_some(url)
 }
 pub(crate) fn wiki_how_title(subject: &str, language: &str) -> String {
-    let words = subject
+    let words = procedural_source_task(subject)
         .split(|character| !is_topic_character(character))
         .filter(|word| !word.is_empty());
     // Preserve localized lowercase slugs without applying that convention to
@@ -259,6 +259,11 @@ pub(crate) fn wiki_how_title(subject: &str, language: &str) -> String {
     } else {
         words.map(capitalize).collect::<Vec<_>>().join("-")
     }
+}
+
+pub(crate) fn procedural_source_task(task: &str) -> &str {
+    crate::rule_interpreter::handler_table_value("procedural-source-task-aliases", task)
+        .unwrap_or(task)
 }
 
 /// Keep the marks used by scripts such as Devanagari inside their words.

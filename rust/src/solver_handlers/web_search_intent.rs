@@ -396,7 +396,7 @@ fn extract_topic_subject(normalized: &str) -> Option<String> {
     None
 }
 
-fn extract_explicit_web_search_query(normalized: &str) -> Option<String> {
+pub(crate) fn extract_explicit_web_search_query(normalized: &str) -> Option<String> {
     let markers = markers();
     for &prefix in &markers.explicit_prefixes {
         if let Some(query) = normalized.strip_prefix(prefix)

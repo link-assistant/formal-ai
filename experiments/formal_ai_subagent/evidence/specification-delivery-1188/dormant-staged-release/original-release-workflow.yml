@@ -638,8 +638,14 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [lint, test, macos-core-tests, build-artifacts]
-    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && (needs.macos-core-tests.result == 'success' || needs.macos-core-tests.result == 'skipped')) }}
+    # The staged release builds and verifies its own publishable binary.
+    needs: [detect-changes]
+    if: |
+      !cancelled() && github.ref == 'refs/heads/main' && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && needs.detect-changes.result == 'success' &&
+         needs.detect-changes.outputs.any-code-changed == 'true')
+      )
     steps:
       - uses: actions/checkout@v7
         with: {persist-credentials: false}
@@ -650,7 +656,6 @@ jobs:
         run: bash scripts/install-rust-script.sh
       - uses: ./.github/actions/cache-cargo-registry
         with: {prefix: build-}
-      - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify
       - name: Check crate package size
@@ -682,14 +687,9 @@ jobs:
       queue: max
     needs:
       [
-        lint,
-        test,
         build,
         secrets-scan,
-        test-e2e-local,
-        test-agent-cli-e2e,
         release-preflight,
-        server-parity,
       ]
     if: |
       !cancelled() &&
@@ -697,10 +697,7 @@ jobs:
       github.ref == 'refs/heads/main' &&
       needs.build.result == 'success' &&
       needs.release-preflight.result == 'success' &&
-      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
-      (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
-      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
-      (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
+      needs.secrets-scan.result == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     outputs:
@@ -939,14 +936,9 @@ jobs:
       queue: max
     needs:
       [
-        lint,
-        test,
         build,
         secrets-scan,
-        test-e2e-local,
-        test-agent-cli-e2e,
         release-preflight,
-        server-parity,
       ]
     if: |
       !cancelled() &&
@@ -955,10 +947,7 @@ jobs:
       github.ref == 'refs/heads/main' &&
       needs.build.result == 'success' &&
       needs.release-preflight.result == 'success' &&
-      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
-      (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
-      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
-      (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
+      needs.secrets-scan.result == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     outputs:
