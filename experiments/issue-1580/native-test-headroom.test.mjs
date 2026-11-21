@@ -114,3 +114,16 @@ test('procedure fixtures retain headroom while assertion bodies remain extractab
   assert.match(source, /^mod fixtures;$/mu);
   for (const name of ['INSTALL_CASES', 'SURFACE_CASES', 'TYPO_CASES']) assert(source.includes('fixtures::' + name));
 });
+
+
+test('documentation requirement helpers retain headroom and the original assertion owners', () => {
+  const owner = 'rust/tests/unit/docs_requirements';
+  assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/text_haystack.rs'])),
+    {warnings: [], violations: [], embeddedDataViolations: []});
+  const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
+  assert.match(source, /^mod text_haystack;$/mu);
+  assert.match(source, /^fn repository_text_avoids_deferred_labels_requested_by_issue_103\(\) \{/mu);
+  const helper = readFileSync(root + '/' + owner + '/text_haystack.rs', 'utf8');
+  assert(helper.includes('.args(["ls-files", "-z"])'));
+  assert(!helper.includes('#[test]'), 'all original documentation assertions remain in the native owner');
+});
