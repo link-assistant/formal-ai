@@ -20,7 +20,7 @@ unset CODEX_HOME OPENAI_API_KEY ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN FORMAL_AI
 unset FORMAL_AI_DIALOG_LOG_DIR FORMAL_AI_LOG_DIR FORMAL_AI_LOG_LEVEL FORMAL_AI_LOG_STDERR FORMAL_AI_SILENT
 unset GH_TOKEN GITHUB_TOKEN GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN
 export FORMAL_AI_DREAMING=0 FORMAL_AI_ALLOW_NETWORK=0 OPENCODE_DISABLE_AUTOUPDATE=true
-export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 DISABLE_AUTOUPDATER=1
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 DISABLE_AUTOUPDATER=1 LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1
 for client in claude opencode codex agent; do
   for language in en ru; do
     home="$WORKDIR/$client-$language"
@@ -46,21 +46,40 @@ for client in claude opencode codex agent; do
   done
 done
 
-# Claude's stream protocol keeps a single stock session through report
-# selection and command execution. Only this test command is approved.
-home="$WORKDIR/claude-report"
-mkdir -p "$home/bin"
-ln -s "$BIN" "$home/bin/formal-ai"
-install -m 755 "$ROOT/experiments/issue_1609_client_reports/fake-gh.sh" "$home/bin/gh"
-(
-  cd "$home"
-  HOME="$home" PATH="$home/bin:$PATH" FORMAL_AI_MEMORY_PATH="$home/memory.lino" \
-    FORMAL_AI_TEST_ISSUE_BODY="$ARTIFACT_DIR/claude-issue-body.md" \
-    node "$ROOT/experiments/issue_1609_client_reports/claude-report.mjs" \
-      "$BIN" with --port 19409 claude
-) > "$ARTIFACT_DIR/claude-report.log" 2>&1
-grep -Eq 'harness_message_count: [1-9][0-9]*$' "$ARTIFACT_DIR/claude-issue-body.md"
-grep -Eq 'server_message_count: [1-9][0-9]*$' "$ARTIFACT_DIR/claude-issue-body.md"
+for client in claude agent codex; do
+  home="$WORKDIR/$client-report"
+  mkdir -p "$home"/{bin,data,config,cache,state}
+  ln -s "$BIN" "$home/bin/formal-ai"
+  install -m 755 "$ROOT/experiments/issue_1609_client_reports/fake-gh.sh" "$home/bin/gh"
+  (
+    cd "$home"
+    export HOME="$home" XDG_DATA_HOME="$home/data" XDG_CONFIG_HOME="$home/config"
+    export XDG_CACHE_HOME="$home/cache" XDG_STATE_HOME="$home/state"
+    export PATH="$home/bin:$PATH" FORMAL_AI_MEMORY_PATH="$home/memory.lino"
+    export FORMAL_AI_TEST_ISSUE_BODY="$ARTIFACT_DIR/$client-issue-body.md"
+    case "$client" in
+      claude)
+        node "$ROOT/experiments/issue_1609_client_reports/stream-report.mjs" \
+          claude "$BIN" with --port 19409 claude
+        ;;
+      agent)
+        # Let the client consume the stream from stdin directly.
+        node "$ROOT/experiments/issue_1609_client_reports/stream-report.mjs" \
+          agent "$BIN" with --interactive --port 19409 agent
+        ;;
+      codex)
+        # New CI containers can deny Bubblewrap network namespace setup. This
+        # fixture runs against loopback and uses the recording gh above.
+        BIN="$BIN" CODEX_BIN="$(command -v codex)" CODEX_SANDBOX=danger-full-access \
+          SCENARIO=report-publication SERVER_PORT=19409 PROXY_PORT=19410 \
+          ARTIFACT_DIR="$ARTIFACT_DIR/codex-report" RUST_LOG=warn \
+          bash "$ROOT/experiments/issue_859_codex_e2e/run.sh"
+        ;;
+    esac
+  ) > "$ARTIFACT_DIR/$client-report.log" 2>&1
+  grep -Eq 'harness_message_count: [1-9][0-9]*$' "$ARTIFACT_DIR/$client-issue-body.md"
+  grep -Eq 'server_message_count: [1-9][0-9]*$' "$ARTIFACT_DIR/$client-issue-body.md"
+done
 
 # Existing PTY replay exercises report selection, every export, and the final
 # URL with stock OpenCode. Only the GitHub publication boundary is replaced.

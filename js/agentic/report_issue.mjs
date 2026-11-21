@@ -60,9 +60,12 @@ export function planReportFlow(messages, toolNames) {
     }
   }
   if (reportIndex < 0) return null;
-  const acknowledged = messages.slice(reportIndex + 1).some((message) =>
+  // Responses and Gemini can deliver narration and the associated call as
+  // consecutive assistant messages in the same turn.
+  const acknowledged = messages.slice(reportIndex + 1).some((message, offset) =>
     message.role.toLowerCase() === 'assistant'
     && !(message.tool_calls || []).length
+    && !(messages[reportIndex + offset + 2]?.tool_calls || []).length
     && trim(plainText(message.content)) !== ''
     && !isReportQuestion(plainText(message.content)));
   if (acknowledged) return null;
@@ -351,7 +354,8 @@ function reportFinished(targets, runOutputs, language) {
     if (index >= runOutputs.length) return;
     const raw = runOutputs[index];
     const payload = observedPayload(raw);
-    const failed = stepOutcome(raw) === StepOutcome.Failed || !trim(payload ?? '');
+    const failed = !trim(payload ?? '') || stepOutcome(raw) === StepOutcome.Failed
+      || stepOutcome(payload) === StepOutcome.Failed;
     if (target === 'github_issue') {
       if (!failed) issueLink = splitWhitespace(payload).find(token => token.startsWith(prefix) && /^[1-9][0-9]*$/u.test(token.slice(prefix.length)));
       githubFailed = issueLink === undefined;

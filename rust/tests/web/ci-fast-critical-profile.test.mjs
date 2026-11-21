@@ -27,6 +27,16 @@ test('automatic and manual releases require the client regression gate on their 
   }
 });
 
+test('browser greeting and report smoke tests gate Pages artifact upload', () => {
+  const { steps } = read('.github/workflows/pages-artifact.yml').jobs.build;
+  const verify = steps.findIndex(step => step.run?.includes('playwright.pages.smoke.config.js'));
+  const stamp = steps.findIndex(step => step.run?.includes('stamp-pages-artifact.sh'));
+  const upload = steps.findIndex(step => step.uses?.startsWith('actions/upload-pages-artifact@'));
+  assert.ok(stamp >= 0 && stamp < verify && verify < upload);
+  assert.equal(steps[verify].if, undefined);
+  assert.equal(steps[verify]['continue-on-error'], undefined);
+});
+
 function evaluate(expression, context) {
   const source = expression.trim().replace(/^\$\{\{\s*/u, '').replace(/\s*\}\}$/u, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');

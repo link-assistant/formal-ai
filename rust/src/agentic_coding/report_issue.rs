@@ -61,12 +61,21 @@ pub(super) fn plan_report_flow(
     })?;
     // A completed report remains in long-running agentic histories. Do not let
     // it hijack later unrelated requests after the assistant acknowledged it.
-    if messages[report_index + 1..].iter().any(|message| {
-        message.role.eq_ignore_ascii_case("assistant")
-            && message.tool_calls.is_empty()
-            && !message.content.plain_text().trim().is_empty()
-            && !is_report_question(&message.content.plain_text())
-    }) {
+    // Responses and Gemini can put narration and its call in separate messages.
+    if messages
+        .iter()
+        .enumerate()
+        .skip(report_index + 1)
+        .any(|(index, message)| {
+            message.role.eq_ignore_ascii_case("assistant")
+                && message.tool_calls.is_empty()
+                && messages
+                    .get(index + 1)
+                    .is_none_or(|next| next.tool_calls.is_empty())
+                && !message.content.plain_text().trim().is_empty()
+                && !is_report_question(&message.content.plain_text())
+        })
+    {
         return None;
     }
     let report_prompt = messages[report_index].content.user_request_text();
@@ -567,7 +576,9 @@ fn report_finished(targets: &[ReportTarget], run_outputs: &[String], language: &
     for (target, raw) in execution_order(targets).into_iter().zip(run_outputs) {
         let payload = super::tool_result::observed_payload(raw).unwrap_or_default();
         let failed = payload.trim().is_empty()
-            || super::tool_result::step_outcome(raw) == super::tool_result::StepOutcome::Failed;
+            || super::tool_result::step_outcome(raw) == super::tool_result::StepOutcome::Failed
+            || super::tool_result::step_outcome(&payload)
+                == super::tool_result::StepOutcome::Failed;
         if target == ReportTarget::GithubIssue {
             let issue_link = (!failed)
                 .then(|| {

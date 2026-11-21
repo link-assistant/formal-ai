@@ -21,6 +21,7 @@ CODEX_LOG="$RUN_DIR/codex.log"
 REPORT_LOG="$RUN_DIR/report-issue.log"
 REPORT_RU_LOG="$RUN_DIR/report-issue-ru.log"
 REPORT_SCOPE_LOG="$RUN_DIR/report-issue-scope.log"
+REPORT_RECEIPT_LOG="$RUN_DIR/report-issue-receipt.log"
 MODEL_CATALOG="$RUN_DIR/formal-ai-model-catalog.json"
 
 codex_cli() {
@@ -59,7 +60,7 @@ cleanup() {
   wait "$PROXY_PID" "$SERVER_PID" 2>/dev/null || true
   if [ -n "$ARTIFACT_DIR" ]; then
     mkdir -p "$ARTIFACT_DIR"
-    for artifact in formal-ai.log proxy-stderr.log proxy.jsonl codex.log report-issue.log report-issue-ru.log report-issue-scope.log; do
+    for artifact in formal-ai.log proxy-stderr.log proxy.jsonl codex.log report-issue.log report-issue-ru.log report-issue-scope.log report-issue-receipt.log; do
       if [ -f "$RUN_DIR/$artifact" ]; then
         cp "$RUN_DIR/$artifact" "$ARTIFACT_DIR/$artifact"
       fi
@@ -86,7 +87,8 @@ run_codex() {
   if [ -n "$CODEX_EXTRA_ARGS" ]; then
     read -r -a extra_args <<< "$CODEX_EXTRA_ARGS"
   fi
-  if ! CODEX_HOME="$RUN_DIR/codex" FORMAL_AI_API_KEY="sk-local-demo" codex_cli exec \
+  if ! CODEX_HOME="$RUN_DIR/codex" FORMAL_AI_API_KEY="sk-local-demo" \
+    FORMAL_AI_REPORT_CLIENT=codex FORMAL_AI_DIALOG_LOG_DIR="$RUN_DIR/dialogs" codex_cli exec \
     --ignore-user-config "${persistence[@]}" --color never \
     -c 'model_providers.formalai.name="formal-ai local server"' \
     -c "model_providers.formalai.base_url=\"http://127.0.0.1:$PROXY_PORT/api/openai/v1\"" \
@@ -132,4 +134,14 @@ if [ "$SCENARIO" = all ] || [ "$SCENARIO" = report ]; then
   run_codex "3" "$REPORT_SCOPE_LOG" resume
   verify_report_turn "3" "$REPORT_SCOPE_LOG" '1. Оба журнала'
   echo "Codex displayed both localized reporting menus and continued to context selection."
+fi
+
+if [ "$SCENARIO" = report-publication ]; then
+  run_codex "Report issue" "$REPORT_LOG" record
+  verify_report_turn "Report issue" "$REPORT_LOG" '3. GitHub issue'
+  run_codex "3" "$REPORT_SCOPE_LOG" resume
+  verify_report_turn "3" "$REPORT_SCOPE_LOG" '1. Both logs'
+  run_codex "1" "$REPORT_RECEIPT_LOG" resume
+  grep -Fq 'Filed the issue on GitHub: https://github.com/link-assistant/formal-ai/issues/9999' "$REPORT_RECEIPT_LOG"
+  echo "Codex completed issue publication through the recording GitHub fixture."
 fi

@@ -6,6 +6,7 @@ import { classifyTool } from './capability_router.mjs';
 import { programExecution, programLanguageByAlias, programTaskByAlias } from './crate/coding_catalog.mjs';
 import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
+import { shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
 import { narrationFor } from './local_search.mjs';
 import { reportCommandIntent } from './report_issue.mjs';
 import { commandArgument } from './tool_result.mjs';
@@ -37,14 +38,30 @@ export function toolActionNarration(prompt, calls) {
     }
     const intent = programCommandIntent(prompt, first.arguments);
     if (intent !== null) return localizedResponse(intent, language) ?? '';
-    const program = command?.trim().split(/\s/u, 1)[0].split('/').at(-1);
-    if (program && /^[A-Za-z0-9][A-Za-z0-9_.-]{0,47}$/u.test(program)) {
-      return (localizedResponse('agentic-action-run-program-name', language) ?? '').replace(TARGET_SLOT, program);
+    if (command !== null) {
+      const name = shellActionName(command);
+      if (name !== null) {
+        return (localizedResponse('agentic-action-run-program-name', language) ?? '').replace(TARGET_SLOT, name);
+      }
     }
   }
   const intent = capability === null ? 'agentic_action_generic' : capabilityIntent(capability);
   const template = localizedResponse(intent, language) ?? '';
   return template.split(TARGET_SLOT).join(toolActionTarget(first.arguments));
+}
+
+/** Show a known subcommand when available and keep operands out of narration. */
+function shellActionName(command) {
+  const [executable, ...operands] = command.trim().split(/\s+/u, 3);
+  const program = executable.split('/').at(-1);
+  if (!/^[A-Za-z0-9][A-Za-z0-9_.-]{0,47}$/u.test(program)) return null;
+  const words = [program, ...operands];
+  const known = shellIntentVocabulary().intents;
+  for (let count = words.length; count > 1; count--) {
+    const action = words.slice(0, count).join(' ');
+    if (known.some(intent => intent.command === action)) return action;
+  }
+  return program;
 }
 
 /** Mirrors `const fn capability_intent` in rust/src/agentic_coding/narration.rs. */

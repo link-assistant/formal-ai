@@ -54,9 +54,32 @@ function chat(id, headers, guidance) {
   };
 }
 
+function gemini(name, endpoint, id) {
+  const turn = (role, parts) => ({ role, parts });
+  return {
+    name, endpoint, id, headers: { 'x-formal-ai-dialog-id': id },
+    request: (messages, tools) => ({
+      contents: messages.map(message => 'parts' in message ? message
+        : turn(message.role === 'assistant' ? 'model' : 'user', [{ text: message.content }])),
+      tools: tools ? [{ functionDeclarations: [{ name: 'run_shell_command', parameters: bashSchema }] }] : [],
+    }),
+    unpack(body) {
+      const { parts } = body.candidates[0].content;
+      const call = parts.find(part => part.functionCall)?.functionCall;
+      return {
+        text: parts.flatMap(part => part.text ?? []).join('\n'),
+        command: call?.args.command,
+        reply: output => [turn('model', parts), turn('user', [{
+          functionResponse: { id: call.id, name: call.name, response: { output } },
+        }])],
+      };
+    },
+  };
+}
+
 const clients = [
   {
-    name: 'Claude Code', id: 'f19dae24-d36f-48c9-b17b-da2db2ccd240', endpoint: '/api/anthropic/v1/messages',
+    name: 'Claude Code', nativeHarness: true, id: 'f19dae24-d36f-48c9-b17b-da2db2ccd240', endpoint: '/api/anthropic/v1/messages',
     request(messages, tools) {
       return {
         system: CLAUDE_SYSTEM.map(text => ({ type: 'text', text })), messages, max_tokens: 1024,
@@ -78,11 +101,11 @@ const clients = [
     ...chat('ses_issue1609', { 'x-opencode-session-id': 'ses_issue1609' }, OPENCODE_SYSTEM),
   },
   {
-    name: 'Link Assistant Agent',
+    name: 'Link Assistant Agent', nativeHarness: true,
     ...chat('agent_issue1609', { 'x-formal-ai-dialog-id': 'agent_issue1609' }, []),
   },
   {
-    name: 'Codex', id: '34c14b94-e8cc-4c32-a792-12a162fcd9fe', endpoint: '/api/openai/v1/responses',
+    name: 'Codex', nativeHarness: true, id: '34c14b94-e8cc-4c32-a792-12a162fcd9fe', endpoint: '/api/openai/v1/responses',
     headers: { 'x-codex-turn-metadata': JSON.stringify({ thread_id: '34c14b94-e8cc-4c32-a792-12a162fcd9fe' }) },
     request: (input, tools) => ({
       input, tools: tools ? [{ type: 'function', name: 'exec_command', parameters: commandSchema }] : [],
@@ -92,10 +115,13 @@ const clients = [
       return {
         text: body.output.flatMap(item => item.content ?? []).filter(part => part.type === 'output_text').map(part => part.text).join('\n'),
         command: call && JSON.parse(call.arguments).cmd,
-        reply: output => [call, { type: 'function_call_output', call_id: call.call_id, output }],
+        reply: output => [assistant(body.output[0].content.map(part => part.text).join('\n')),
+          call, { type: 'function_call_output', call_id: call.call_id, output }],
       };
     },
   },
+  gemini('Gemini', '/api/gemini/v1beta/models/formal-ai:generateContent', 'gemini_issue1609'),
+  gemini('Vertex', '/api/vertex/v1/projects/formal-ai/locations/global/publishers/google/models/formal-ai:generateContent', 'vertex_issue1609'),
 ];
 
 async function ask(run, client, messages, tools = false) {
@@ -196,7 +222,7 @@ for (const [server, binary] of [['JavaScript', undefined], ['native', NATIVE]]) 
         assert.ok(submission.command.includes(`--session '${client.id}' --source both `), submission.command);
         assert.match(submission.text, /file the report in the Formal AI GitHub repository/u);
         for (const [receipt, expected] of [
-          [ISSUE_URL, /https:\/\/github\.com\/link-assistant\/formal-ai\/issues\/9999/u],
+          [ISSUE_URL, /^Filed the issue on GitHub: https:\/\/github\.com\/link-assistant\/formal-ai\/issues\/9999/u],
           [`Exit Code: 1\n${ISSUE_URL}`, /couldn't file the issue/u],
         ]) {
           const final = await ask(run, client, [...history, ...submission.reply(receipt)], true);
@@ -206,9 +232,16 @@ for (const [server, binary] of [['JavaScript', undefined], ['native', NATIVE]]) 
         const log = path.join(logs, `${client.id}.conversation.lino`);
         assert.ok(existsSync(log), log);
         assert.match(readFileSync(log, 'utf8'), /Report/u);
-        if (binary && client.name !== 'OpenCode') checkNativeExport(run, client, logs, binary);
+        if (binary && client.nativeHarness) checkNativeExport(run, client, logs, binary);
       });
     }
+    await t.test('ordinary shell explanations describe the selected subcommand', async () => {
+      for (const action of ['git status', 'git log']) {
+        const plan = await ask(run, clients[1], [user(`Run ${action}`)], true);
+        assert.equal(plan.command, action);
+        assert.equal(plan.text, `I’ll run \`${action}\`.`);
+      }
+    });
     await t.test('OpenCode title requests stay plain and bounded', async () => {
       for (const greeting of ['Hello', 'Привет']) {
         const { text } = await ask(run, clients[1], [
