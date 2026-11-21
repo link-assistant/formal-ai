@@ -419,34 +419,34 @@ true,"cases":[{"input":"off","variant":"Off"},{"input":"propose","variant":"Prop
 "formal_ai::service_accessibility::ServiceStatus","variant":"Reachable","returnType":
 "enum:formal_ai::service_accessibility::ServiceStatus","nativeSourceQualified":true,"sourceSpan":{"start":3207,"end":
 3437},"sourceWitnesses":[{"path":"rust/src/service_accessibility.rs","sha256":
-"73c8f538c1d2cd1bfabc630a4000dd823344c4396a6a5b46f4d3cfcd24e36bc2"},{"path":"rust/src/lib.rs","sha256":
+"1c89d26b41d13efc8b10d8aa0cc5d18a4c66fe682f8f53fbbad1c5b21fd4a7a3"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}]},{"path":
 "formal_ai::service_accessibility::ServiceStatus::Unreachable","kind":"nativeEnumVariant","enumPath":
 "formal_ai::service_accessibility::ServiceStatus","variant":"Unreachable","returnType":
 "enum:formal_ai::service_accessibility::ServiceStatus","nativeSourceQualified":true,"sourceSpan":{"start":3207,"end":
 3437},"sourceWitnesses":[{"path":"rust/src/service_accessibility.rs","sha256":
-"73c8f538c1d2cd1bfabc630a4000dd823344c4396a6a5b46f4d3cfcd24e36bc2"},{"path":"rust/src/lib.rs","sha256":
+"1c89d26b41d13efc8b10d8aa0cc5d18a4c66fe682f8f53fbbad1c5b21fd4a7a3"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}]},{"path":
 "formal_ai::service_accessibility::ServiceStatus::is_reachable","kind":"nativeEnumScalarMatch","enumPath":
 "formal_ai::service_accessibility::ServiceStatus","signature":["enum:formal_ai::service_accessibility::ServiceStatus"],
 "name":"is_reachable","nativeType":"bool","returnType":"boolean","cases":[{"variant":"Reachable","value":true},{
 "variant":"Unreachable","value":false}],"nativeSourceQualified":true,"sourceSpan":{"start":3439,"end":4240},
 "sourceWitnesses":[{"path":"rust/src/service_accessibility.rs","sha256":
-"73c8f538c1d2cd1bfabc630a4000dd823344c4396a6a5b46f4d3cfcd24e36bc2"},{"path":"rust/src/lib.rs","sha256":
+"1c89d26b41d13efc8b10d8aa0cc5d18a4c66fe682f8f53fbbad1c5b21fd4a7a3"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}]},{"path":
 "formal_ai::service_accessibility::ServiceStatus::slug","name":"slug","kind":"nativeEnumStringMatch","signature":[
 "enum:formal_ai::service_accessibility::ServiceStatus"],"returnType":"string","cases":[{"variant":"Reachable","value":
 "reachable"},{"variant":"Unreachable","value":"unreachable"}],"enumPath":
 "formal_ai::service_accessibility::ServiceStatus","nativeSourceQualified":true,"nativeOptionQualified":true,"sourceSpan"
 :{"start":3439,"end":4240},"sourceWitnesses":[{"path":"rust/src/service_accessibility.rs","sha256":
-"73c8f538c1d2cd1bfabc630a4000dd823344c4396a6a5b46f4d3cfcd24e36bc2"},{"path":"rust/src/lib.rs","sha256":
+"1c89d26b41d13efc8b10d8aa0cc5d18a4c66fe682f8f53fbbad1c5b21fd4a7a3"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}]},{"path":
 "formal_ai::service_accessibility::ServiceStatus::from_slug","name":"from_slug","kind":"nativeOptionStringParse",
 "signature":["string"],"returnType":"option:enum:formal_ai::service_accessibility::ServiceStatus","normalized":false,
 "cases":[{"input":"reachable","variant":"Reachable"},{"input":"unreachable","variant":"Unreachable"}],"enumPath":
 "formal_ai::service_accessibility::ServiceStatus","nativeSourceQualified":true,"nativeOptionQualified":true,"sourceSpan"
 :{"start":3439,"end":4240},"sourceWitnesses":[{"path":"rust/src/service_accessibility.rs","sha256":
-"73c8f538c1d2cd1bfabc630a4000dd823344c4396a6a5b46f4d3cfcd24e36bc2"},{"path":"rust/src/lib.rs","sha256":
+"1c89d26b41d13efc8b10d8aa0cc5d18a4c66fe682f8f53fbbad1c5b21fd4a7a3"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}]},{"path":"formal_ai::skill_ledger::SkillMode::slug"
 ,"name":"slug","kind":"nativeEnumStringMatch","signature":["enum:formal_ai::skill_ledger::SkillMode"],"returnType":
 "string","cases":[{"variant":"Off","value":"off"},{"variant":"Accumulate","value":"accumulate"}],"enumPath":
@@ -536,6 +536,14 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1309,"end":137
 "(constant STUCK-RECOVERY-LIMIT-VARIABLE (exported) (type string) (value (string FORMAL_AI_STUCK_RECOVERY_SECONDS)))",
 "maintainedJavaScript":"export const STUCK_RECOVERY_LIMIT_VARIABLE = 'FORMAL_AI_STUCK_RECOVERY_SECONDS';",
 "maintainedTranslationSha256":"5958a97551e10aea3bad54fe6bf597a6b36913a2a76e55f034ab755612663a5d"},{"path":
+"formal_ai::cnl_output::CNL_POLICY_PATH","canonicalPath":"formal_ai::cnl_output::CNL_POLICY_PATH","kind":
+"nativeConstant","nativeType":"&str","returnType":"string","value":"data/seed/cnl-output.lino","nativeSourceQualified":
+true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":998,"end":1060},"sourceWitnesses":[{"path":
+"rust/src/cnl_output.rs","sha256":"2c23edb55ea310ae0a08297968a0860fce5d79080cda33ff2ddae5b39119b832"},{"path":
+"rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
+"(constant CNL-POLICY-PATH (exported) (type string) (value (string data/seed/cnl-output.lino)))","maintainedJavaScript":
+"export const CNL_POLICY_PATH = 'data/seed/cnl-output.lino';","maintainedTranslationSha256":
+"4d922055a8721135374a834765e65337e0eed60adb7d52095c67d7818f3bfa77"},{"path":
 "formal_ai::context_capacity::AVG_UTF8_BYTES_PER_CHAR_ENV","canonicalPath":
 "formal_ai::context_capacity::AVG_UTF8_BYTES_PER_CHAR_ENV","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true
@@ -565,7 +573,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "canonicalPath":"formal_ai::derivation::NOT_RECORDED","kind":"nativeConstant","nativeType":"&str","returnType":"string",
 "value":"not recorded","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1838,
 "end":1884},"sourceWitnesses":[{"path":"rust/src/derivation.rs","sha256":
-"34170498973dbe74e81792267d65162c26e740500bc124c1474a0c9efd8c3218"},{"path":"rust/src/lib.rs","sha256":
+"91154f2c406211970bec3fe315ea268408a0218d28d8c6b4f9c0566e9133e92a"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant NOT-RECORDED (exported) (type string) (value (string not%20recorded)))","maintainedJavaScript":
 "export const NOT_RECORDED = 'not recorded';","maintainedTranslationSha256":
@@ -573,7 +581,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 ,"canonicalPath":"formal_ai::derivation::SEARCH_REQUEST_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"web_search:request","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
 "start":1946,"end":2005},"sourceWitnesses":[{"path":"rust/src/derivation.rs","sha256":
-"34170498973dbe74e81792267d65162c26e740500bc124c1474a0c9efd8c3218"},{"path":"rust/src/lib.rs","sha256":
+"91154f2c406211970bec3fe315ea268408a0218d28d8c6b4f9c0566e9133e92a"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant SEARCH-REQUEST-KIND (exported) (type string) (value (string web_search%3Arequest)))","maintainedJavaScript":
 "export const SEARCH_REQUEST_KIND = 'web_search:request';","maintainedTranslationSha256":
@@ -581,7 +589,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "canonicalPath":"formal_ai::derivation::SOURCE_HTTP_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"source:http","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start"
 :2182,"end":2231},"sourceWitnesses":[{"path":"rust/src/derivation.rs","sha256":
-"34170498973dbe74e81792267d65162c26e740500bc124c1474a0c9efd8c3218"},{"path":"rust/src/lib.rs","sha256":
+"91154f2c406211970bec3fe315ea268408a0218d28d8c6b4f9c0566e9133e92a"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant SOURCE-HTTP-KIND (exported) (type string) (value (string source%3Ahttp)))","maintainedJavaScript":
 "export const SOURCE_HTTP_KIND = 'source:http';","maintainedTranslationSha256":
@@ -589,7 +597,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::derivation::FORMALIZE_FRAGMENT_KIND","canonicalPath":"formal_ai::derivation::FORMALIZE_FRAGMENT_KIND","kind"
 :"nativeConstant","nativeType":"&str","returnType":"string","value":"formalize:fragment","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":2322,"end":2385},"sourceWitnesses":[{"path":
-"rust/src/derivation.rs","sha256":"34170498973dbe74e81792267d65162c26e740500bc124c1474a0c9efd8c3218"},{"path":
+"rust/src/derivation.rs","sha256":"91154f2c406211970bec3fe315ea268408a0218d28d8c6b4f9c0566e9133e92a"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant FORMALIZE-FRAGMENT-KIND (exported) (type string) (value (string formalize%3Afragment)))",
 "maintainedJavaScript":"export const FORMALIZE_FRAGMENT_KIND = 'formalize:fragment';","maintainedTranslationSha256":
@@ -597,7 +605,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 ,"canonicalPath":"formal_ai::derivation::DECOMPOSE_PART_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"decompose:part","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
 "start":2493,"end":2548},"sourceWitnesses":[{"path":"rust/src/derivation.rs","sha256":
-"34170498973dbe74e81792267d65162c26e740500bc124c1474a0c9efd8c3218"},{"path":"rust/src/lib.rs","sha256":
+"91154f2c406211970bec3fe315ea268408a0218d28d8c6b4f9c0566e9133e92a"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant DECOMPOSE-PART-KIND (exported) (type string) (value (string decompose%3Apart)))","maintainedJavaScript":
 "export const DECOMPOSE_PART_KIND = 'decompose:part';","maintainedTranslationSha256":
@@ -605,7 +613,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 ,"canonicalPath":"formal_ai::derivation::RECOMPOSE_BIND_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"recompose:bind","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
 "start":2694,"end":2749},"sourceWitnesses":[{"path":"rust/src/derivation.rs","sha256":
-"34170498973dbe74e81792267d65162c26e740500bc124c1474a0c9efd8c3218"},{"path":"rust/src/lib.rs","sha256":
+"91154f2c406211970bec3fe315ea268408a0218d28d8c6b4f9c0566e9133e92a"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant RECOMPOSE-BIND-KIND (exported) (type string) (value (string recompose%3Abind)))","maintainedJavaScript":
 "export const RECOMPOSE_BIND_KIND = 'recompose:bind';","maintainedTranslationSha256":
@@ -613,7 +621,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "canonicalPath":"formal_ai::derivation::RENDER_EMIT_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"render:emit","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start"
 :2852,"end":2901},"sourceWitnesses":[{"path":"rust/src/derivation.rs","sha256":
-"34170498973dbe74e81792267d65162c26e740500bc124c1474a0c9efd8c3218"},{"path":"rust/src/lib.rs","sha256":
+"91154f2c406211970bec3fe315ea268408a0218d28d8c6b4f9c0566e9133e92a"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant RENDER-EMIT-KIND (exported) (type string) (value (string render%3Aemit)))","maintainedJavaScript":
 "export const RENDER_EMIT_KIND = 'render:emit';","maintainedTranslationSha256":
@@ -621,7 +629,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "canonicalPath":"formal_ai::derivation::VERIFICATION_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"verify:evidence","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
 "start":3036,"end":3090},"sourceWitnesses":[{"path":"rust/src/derivation.rs","sha256":
-"34170498973dbe74e81792267d65162c26e740500bc124c1474a0c9efd8c3218"},{"path":"rust/src/lib.rs","sha256":
+"91154f2c406211970bec3fe315ea268408a0218d28d8c6b4f9c0566e9133e92a"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant VERIFICATION-KIND (exported) (type string) (value (string verify%3Aevidence)))","maintainedJavaScript":
 "export const VERIFICATION_KIND = 'verify:evidence';","maintainedTranslationSha256":
@@ -629,7 +637,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "canonicalPath":"formal_ai::derivation::DERIVATIONS_DIR","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"data/cache/derivations","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":4581,"end":4640},"sourceWitnesses":[{"path":"rust/src/derivation.rs","sha256":
-"34170498973dbe74e81792267d65162c26e740500bc124c1474a0c9efd8c3218"},{"path":"rust/src/lib.rs","sha256":
+"91154f2c406211970bec3fe315ea268408a0218d28d8c6b4f9c0566e9133e92a"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant DERIVATIONS-DIR (exported) (type string) (value (string data/cache/derivations)))","maintainedJavaScript":
 "export const DERIVATIONS_DIR = 'data/cache/derivations';","maintainedTranslationSha256":
@@ -637,8 +645,8 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::dialog_conversation::CONVERSATION_LOG_SUFFIX","canonicalPath":
 "formal_ai::dialog_conversation::CONVERSATION_LOG_SUFFIX","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":".conversation.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
-"start":1079,"end":1142},"sourceWitnesses":[{"path":"rust/src/dialog_conversation.rs","sha256":
-"30b09a12cb21b8da4f9b4c70e9c7e2181f1c26281388416ce62db856b6f23aee"},{"path":"rust/src/lib.rs","sha256":
+"start":1058,"end":1121},"sourceWitnesses":[{"path":"rust/src/dialog_conversation.rs","sha256":
+"9f79db1066832481dad224b5b7c0434a5ec372c19138d1c94d3bf9a9626ae7e9"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant CONVERSATION-LOG-SUFFIX (exported) (type string) (value (string .conversation.lino)))","maintainedJavaScript"
 :"export const CONVERSATION_LOG_SUFFIX = '.conversation.lino';","maintainedTranslationSha256":
@@ -671,24 +679,24 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "maintainedTranslationSha256":"ae279e637c82f5402fe4e320fbe139657fb00cd4a92bf537583688bfda01121e"},{"path":
 "formal_ai::engine::DEFAULT_MODEL","canonicalPath":"formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant",
 "nativeType":"&str","returnType":"string","value":"formal-ai","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1910,"end":1954},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"e32c9fd2c973c17fbb05b26438e7ad1506cf51783812c82114196d58fde48e38"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1833,"end":1877},"sourceWitnesses":[{"path":
+"rust/src/engine.rs","sha256":"fc7ade25084696e476fcc2625a0c1c3d3e30e3240a5383541eb63fbdd3b180bc"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
 "ae51fd1ade1b46003293eb348681e0a20e349a9afc0507e08151337e73e0a818"},{"path":"formal_ai::DEFAULT_MODEL","canonicalPath":
 "formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"formal-ai"
-,"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1910,"end":1954},
+,"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1833,"end":1877},
 "sourceWitnesses":[{"path":"rust/src/engine.rs","sha256":
-"e32c9fd2c973c17fbb05b26438e7ad1506cf51783812c82114196d58fde48e38"},{"path":"rust/src/lib.rs","sha256":
+"fc7ade25084696e476fcc2625a0c1c3d3e30e3240a5383541eb63fbdd3b180bc"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
 "ae51fd1ade1b46003293eb348681e0a20e349a9afc0507e08151337e73e0a818"},{"path":
 "formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","canonicalPath":"formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"0.2.0","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4085,"end":4136},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"e32c9fd2c973c17fbb05b26438e7ad1506cf51783812c82114196d58fde48e38"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4008,"end":4059},"sourceWitnesses":[{"path":
+"rust/src/engine.rs","sha256":"fc7ade25084696e476fcc2625a0c1c3d3e30e3240a5383541eb63fbdd3b180bc"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant KNOWLEDGE-SCHEMA-VERSION (exported) (type string) (value (string 0.2.0)))","maintainedJavaScript":
 "export const KNOWLEDGE_SCHEMA_VERSION = '0.2.0';","maintainedTranslationSha256":
@@ -885,8 +893,8 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1491,"end":155
 "f3a4ae2781bed15bcb7b97a2887c7a8066dcdd503902d95f540236b5ba803a9e"},{"path":"formal_ai::memory_sync::LEARNED_CHUNK_KIND"
 ,"canonicalPath":"formal_ai::memory_sync::LEARNED_CHUNK_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"meta_learned_chunk","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
-"start":9549,"end":9607},"sourceWitnesses":[{"path":"rust/src/memory_sync.rs","sha256":
-"de0713e04847b94b059941ffbf81ee9124393d70349eb4abe4caceb6bfc5f385"},{"path":"rust/src/lib.rs","sha256":
+"start":9676,"end":9734},"sourceWitnesses":[{"path":"rust/src/memory_sync.rs","sha256":
+"fea4b05d13c7a51be37ae814ee965e671fc68244abfbccd9a18c40491da75408"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant LEARNED-CHUNK-KIND (exported) (type string) (value (string meta_learned_chunk)))","maintainedJavaScript":
 "export const LEARNED_CHUNK_KIND = 'meta_learned_chunk';","maintainedTranslationSha256":
@@ -1013,7 +1021,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":948,"end":1009
 "formal_ai::service_accessibility::SERVICE_ACCESSIBILITY_FILE","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"service-accessibility.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":2158,"end":2232},"sourceWitnesses":[{"path":"rust/src/service_accessibility.rs","sha256":
-"73c8f538c1d2cd1bfabc630a4000dd823344c4396a6a5b46f4d3cfcd24e36bc2"},{"path":"rust/src/lib.rs","sha256":
+"1c89d26b41d13efc8b10d8aa0cc5d18a4c66fe682f8f53fbbad1c5b21fd4a7a3"},{"path":"rust/src/lib.rs","sha256":
 "1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant SERVICE-ACCESSIBILITY-FILE (exported) (type string) (value (string service-accessibility.lino)))",
 "maintainedJavaScript":"export const SERVICE_ACCESSIBILITY_FILE = 'service-accessibility.lino';",
