@@ -12,6 +12,7 @@ use crate::seed;
 
 pub(crate) mod currency;
 mod function_phrase;
+mod link_calculator_adapter;
 mod numeric_response;
 pub use numeric_response::numeric_calculation_response;
 
@@ -58,36 +59,6 @@ pub struct CalculationCandidate {
 pub struct PromptInterpretation {
     pub original: String,
     pub corrected: String,
-}
-
-fn evaluate_with_link_calculator(
-    expression: &str,
-    supply_rates: impl FnOnce(&mut link_calculator::Calculator, &[String]),
-) -> Result<CalculationEvaluation, ArithmeticError> {
-    // A bare `.` (`2. 3`) is rejected by link-calculator itself as a
-    // recoverable parse error since 0.18.0 (link-assistant/calculator#168), so
-    // it falls through to the local evaluator like any other upstream error.
-    // The default parser has an empty rate database. Published currency quotes
-    // are resolved by the solver, so a failed operand can never use sample rates.
-    let mut calculator = link_calculator::Calculator::default();
-    let evaluated = calculator
-        .calculate_with_value(expression)
-        .or_else(|error| {
-            let plan = calculator.plan_internal(expression);
-            if plan.currencies.len() < 2 {
-                return Err(error);
-            }
-            supply_rates(&mut calculator, &plan.currencies);
-            calculator.calculate_with_value(expression)
-        });
-    let (_expression, value, steps, lino) =
-        evaluated.map_err(|error| ArithmeticError::Calculator(error.to_string()))?;
-    Ok(CalculationEvaluation {
-        formatted: value.to_display_string(),
-        engine: CalculationEngine::LinkCalculator,
-        lino: Some(lino),
-        steps,
-    })
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -435,7 +406,7 @@ pub(crate) fn evaluate_calculation_with_rates(
 ) -> Result<CalculationEvaluation, ArithmeticError> {
     let split = split_glued_operator_words(expression);
     let expression = split.as_str();
-    if let Ok(evaluation) = evaluate_with_link_calculator(expression, supply_rates) {
+    if let Ok(evaluation) = link_calculator_adapter::evaluate(expression, supply_rates) {
         return Ok(evaluation);
     }
     if expression.contains('=')

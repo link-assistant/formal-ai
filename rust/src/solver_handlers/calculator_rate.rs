@@ -13,7 +13,7 @@ use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 use super::calendar::{CalendarDate, current_utc_date};
 use super::finalize_simple;
 
-const MAX_QUOTE_AGE_DAYS: i64 = 7;
+const MAXIMUM_QUOTE_AGE_DAYS: i64 = 7;
 
 pub fn asks_for_rate_basis(normalized: &str) -> bool {
     let lexicon = seed::lexicon();
@@ -148,7 +148,7 @@ pub(super) fn read_quote(
             let (numerator, _) = decimal(&rate, 12)?;
             (quote.base == from
                 && quote.quote == to
-                && (0..=MAX_QUOTE_AGE_DAYS).contains(&age)
+                && (0..=MAXIMUM_QUOTE_AGE_DAYS).contains(&age)
                 && numerator > 0)
                 .then_some((quote, rate))
         })
@@ -178,11 +178,11 @@ pub(super) fn supply_expression_quotes(
     online: bool,
     log: &mut EventLog,
 ) {
-    const MAX_CURRENCIES_PER_EXPRESSION: usize = 4;
+    const MAXIMUM_CURRENCIES_PER_EXPRESSION: usize = 4;
     let [base, targets @ ..] = currencies else {
         return;
     };
-    if currencies.len() > MAX_CURRENCIES_PER_EXPRESSION {
+    if currencies.len() > MAXIMUM_CURRENCIES_PER_EXPRESSION {
         return;
     }
     let date = stated_quote_date(expression);
