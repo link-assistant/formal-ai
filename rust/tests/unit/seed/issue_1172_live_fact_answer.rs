@@ -70,7 +70,7 @@ fn online(label: &str) -> CachedSourceClient<FixtureTransport> {
 
 /// The question is formalized from seed data: the relation's surface, the
 /// interrogative opener and the function words are removed, the subject is
-/// what remains. A non-property relation and a CJK prompt are left alone.
+/// what remains, including internal words and CJK names.
 #[test]
 fn unseeded_question_is_formalized_from_seed_cues() {
     assert_eq!(
@@ -89,7 +89,24 @@ fn unseeded_question_is_formalized_from_seed_cues() {
     );
     // `physical_constant` is grounded in an item, not a property.
     assert_eq!(live_fact_question("What is the speed of light?"), None);
-    assert_eq!(live_fact_question("澳大利亚的首都是什么？"), None);
+    for (prompt, expected) in [
+        ("澳大利亚的首都是什么？", "澳大利亚"),
+        (
+            "¿Cuál es la capital de Trinidad y Tobago?",
+            "trinidad y tobago",
+        ),
+        (
+            "What's the capital city of Trinidad and Tobago?",
+            "trinidad and tobago",
+        ),
+        ("Australia's capital?", "australia"),
+    ] {
+        assert_eq!(
+            live_fact_question(prompt).expect(prompt).subject_term,
+            expected,
+            "{prompt}"
+        );
+    }
 }
 
 /// R3: the unseeded capital is answered from its Wikidata claim through the

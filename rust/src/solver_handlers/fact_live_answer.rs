@@ -38,7 +38,7 @@ use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTranspo
 /// The longest subject term sent to the item search, in words.
 ///
 /// A longer remainder is a sentence, not an entity name.
-const MAX_SUBJECT_WORDS: usize = 4;
+const MAX_SUBJECT_WORDS: usize = 12;
 /// Environment override for the capture cache, shared with web search.
 const LIVE_FACT_CACHE_DIR_ENV: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
 /// The intent of a live Wikidata resolution, as the browser names it.
@@ -62,66 +62,52 @@ fn is_property_id(id: &str) -> bool {
         .is_some_and(|digits| !digits.is_empty() && digits.chars().all(|c| c.is_ascii_digit()))
 }
 
-/// The seed's function words and interrogative openers, normalized.
-fn question_stop_words() -> Vec<String> {
-    let mut stop = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
-    stop.extend(role_surfaces(seed::ROLE_INTERROGATIVE_OPENER));
-    stop
+/// Remove grammatical cues at the edges while retaining words within a name.
+fn trim_subject<'a>(mut text: &'a str, stops: &[String]) -> &'a str {
+    text = text.trim();
+    while let Some(rest) = stops.iter().find_map(|surface| {
+        let cjk = contains_cjk(surface);
+        text.strip_prefix(surface.as_str())
+            .filter(|tail| cjk || tail.is_empty() || tail.starts_with(' '))
+            .or_else(|| {
+                text.strip_suffix(surface.as_str())
+                    .filter(|head| cjk || head.is_empty() || head.ends_with(' '))
+            })
+    }) {
+        text = rest.trim();
+    }
+    text
 }
 
-/// Remove every run of `tokens` equal to the words of `surface`.
-fn remove_sequence(tokens: &mut Vec<String>, surface: &str) {
-    let parts: Vec<&str> = surface.split_whitespace().collect();
-    if parts.is_empty() {
-        return;
-    }
-    let mut index = 0;
-    while index + parts.len() <= tokens.len() {
-        if tokens[index..index + parts.len()]
-            .iter()
-            .zip(&parts)
-            .all(|(token, expected)| token == expected)
-        {
-            tokens.drain(index..index + parts.len());
-        } else {
-            index += 1;
-        }
-    }
+fn bounded_subject(text: &str) -> Option<String> {
+    (!text.is_empty() && text.split_whitespace().count() <= MAX_SUBJECT_WORDS)
+        .then(|| text.to_owned())
 }
 
-/// The content words of `text` without `removed` surfaces and stop words.
-///
-/// `None` when nothing, or a whole sentence, is left.
-fn content_words(text: &str, removed: &[String]) -> Option<String> {
-    let mut tokens: Vec<String> = normalize_prompt(text)
-        .split_whitespace()
-        .map(str::to_owned)
-        .collect();
-    for surface in removed {
-        remove_sequence(&mut tokens, surface);
-    }
-    let stop = question_stop_words();
-    tokens.retain(|token| !stop.iter().any(|word| word == token));
-    (!tokens.is_empty() && tokens.len() <= MAX_SUBJECT_WORDS).then(|| tokens.join(" "))
-}
-
-/// Formalize a fact question for the live path (issue #1172 R3).
-///
-/// The asked relation and the subject term are both read from seed data. CJK
-/// prompts have no word boundaries to strip the relation at, so they are left
-/// alone.
+/// Formalize a fact question from its relation and one subject clause.
 #[must_use]
 pub fn live_fact_question(prompt: &str) -> Option<LiveFactQuestion> {
     let normalized = normalize_prompt(prompt);
-    if normalized.is_empty() || contains_cjk(&normalized) {
-        return None;
-    }
     let relation = question_relation(&normalized)?;
     if !is_property_id(&relation.wikidata) {
         return None;
     }
-    let surfaces: Vec<String> = relation.words().map(normalize_prompt).collect();
-    let subject_term = content_words(relation_clause(prompt, Some(relation)), &surfaces)?;
+    let clause = normalize_prompt(relation_clause(prompt, Some(relation)));
+    let (at, surface) = relation
+        .words()
+        .map(normalize_prompt)
+        .filter_map(|surface| locate(&clause, &surface).map(|at| (at, surface)))
+        .max_by_key(|(_, surface)| surface.len())?;
+    let mut stops = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
+    stops.extend(role_surfaces(seed::ROLE_INTERROGATIVE_OPENER));
+    stops.extend(role_surfaces("fact_subject_connector"));
+    let left = trim_subject(&clause[..at], &stops);
+    let right = trim_subject(&clause[at + surface.len()..], &stops);
+    let subject_term = match (left, right) {
+        ("", right) => bounded_subject(right),
+        (left, "") => bounded_subject(left),
+        _ => None,
+    }?;
     Some(LiveFactQuestion {
         relation: relation.slug.clone(),
         subject_term,
@@ -199,7 +185,7 @@ pub fn try_fact_live_answer<T: SourceTransport>(
 /// The concept an explanation request asks about (issue #1172 R8).
 ///
 /// The prompt must open with a `capability_act_explain` surface; the concept
-/// is what remains once that surface and the stop words are removed.
+/// is the subject phrase following that surface.
 #[must_use]
 pub fn explanation_concept(prompt: &str) -> Option<String> {
     let normalized = normalize_prompt(prompt);
@@ -210,7 +196,7 @@ pub fn explanation_concept(prompt: &str) -> Option<String> {
         .into_iter()
         .find(|cue| locate(&normalized, cue) == Some(0))?;
     let rest = normalized.strip_prefix(cue.as_str())?;
-    content_words(rest, &[])
+    bounded_subject(rest.trim())
 }
 
 /// Answer an explanation request from retrieved pages (issue #1172 R8).

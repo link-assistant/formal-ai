@@ -29,7 +29,7 @@ meanings
     grounded-in P36
     defined-by knowledge_relation
     role fact_relation
-    lexeme en capital
+    lexeme en capital "capital city"
     lexeme ru столица столицы столицей
     lexeme hi राजधानी
     lexeme zh 首都
@@ -108,6 +108,13 @@ meanings
     lexeme es "velocidad de la luz" "cuál es" "qué tan rápido"
   fact_comparison_request
     defined-by compare
+  fact_subject_connector
+    defined-by knowledge_subject
+    role fact_subject_connector
+    lexeme en "s"
+    lexeme ru "какая" "какое" "каков" "какова"
+    lexeme zh "是什么" "是什麼"
+    lexeme es "es" "son" "la" "las" "el" "los" "de" "del" "cuál" "cuáles"
     defined-by knowledge_relation
     role fact_comparison_cue
     lexeme en "compare" "comparison of" "difference between" "differences between"

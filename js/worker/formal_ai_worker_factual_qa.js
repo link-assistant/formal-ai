@@ -583,7 +583,7 @@ function promptTextStatementAnswer(slots, quote, [question, units], language) {
 // interrogative openers and the function words are removed from the
 // relation's clause; what remains is the subject term), and the answer is the
 // seeded fact_live_answer template citing the claim's reference URL.
-const FACT_LIVE_MAX_SUBJECT_WORDS = 4;
+const FACT_LIVE_MAX_SUBJECT_WORDS = 12;
 let FACT_LIVE_PROPERTIES = null;
 
 /**
@@ -604,42 +604,47 @@ function factRelationProperty(slug) {
   return FACT_LIVE_PROPERTIES.get(slug) || "";
 }
 
-/**
- * The content words of `text` without `removed` surfaces and stop words, or
- * null when nothing (or a whole sentence) is left.
- * @param {string} text
- * @param {Array<string>} removed
- * @returns {string|null}
- */
-function factLiveContentWords(text, removed) {
-  let tokens = normalizePrompt(text).split(" ").filter(Boolean);
-  for (const surface of removed) {
-    const parts = surface.split(" ").filter(Boolean);
-    if (parts.length === 0) continue;
-    for (let index = 0; index + parts.length <= tokens.length; ) {
-      if (parts.every((part, offset) => tokens[index + offset] === part)) tokens.splice(index, parts.length);
-      else index += 1;
+function factTrimSubject(text, stops) {
+  let subject = text.trim();
+  for (;;) {
+    let rest;
+    for (const surface of stops) {
+      const cjk = containsCjk(surface);
+      if (subject === surface) return "";
+      if (subject.startsWith(surface) && (cjk || subject[surface.length] === " ")) {
+        rest = subject.slice(surface.length);
+        break;
+      }
+      if (subject.endsWith(surface) && (cjk || subject[subject.length - surface.length - 1] === " ")) {
+        rest = subject.slice(0, -surface.length);
+        break;
+      }
     }
+    if (rest === undefined) return subject;
+    subject = rest.trim();
   }
-  const stop = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD).concat(factualQaSurfaces(FACTUAL_QA_ROLE_INTERROGATIVE));
-  tokens = tokens.filter((token) => !stop.includes(token));
-  return tokens.length > 0 && tokens.length <= FACT_LIVE_MAX_SUBJECT_WORDS ? tokens.join(" ") : null;
 }
 
-/**
- * Formalize a fact question for the live path: the relation (whose
- * grounded-in must be a Wikidata property) and the subject term.
- * @param {string} prompt
- * @returns {{relation: string, subjectTerm: string}|null}
- */
+function factBoundedSubject(subject) {
+  return subject && subject.split(/\s+/u).length <= FACT_LIVE_MAX_SUBJECT_WORDS ? subject : null;
+}
+
+/** Formalize a fact question from its relation and one subject clause. */
 function factLiveQuestion(prompt) {
   const normalized = normalizePrompt(prompt);
-  if (!normalized || containsCjk(normalized)) return null;
-  const mentions = (text, meaning) => meaning.words.some((word) => surfacePresent(text, normalizePrompt(word)));
+  const mentions = (text, meaning) => meaning.words.some((word) => factualQaLocate(text, normalizePrompt(word)) >= 0);
   const relation = meaningsWithRole("fact_relation").find((meaning) => mentions(normalized, meaning));
-  if (!relation || !/^P\d+$/.test(factRelationProperty(relation.slug))) return null;
-  const clause = String(prompt).split(/[,;:()—!?，；：。？]/).find((part) => mentions(normalizePrompt(part), relation));
-  const subjectTerm = factLiveContentWords(clause === undefined ? prompt : clause, relation.words.map(normalizePrompt));
+  if (!relation || !/^P[0-9]+$/.test(factRelationProperty(relation.slug))) return null;
+  const clause = String(prompt).split(/[,;:()—!?，；：。？]/u).map(normalizePrompt).find((part) => mentions(part, relation)) ?? normalized;
+  const surface = relation.words.map(normalizePrompt).sort((left, right) => right.length - left.length)
+    .find((word) => factualQaLocate(clause, word) >= 0);
+  if (!surface) return null;
+  const at = factualQaLocate(clause, surface);
+  const stops = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD)
+    .concat(factualQaSurfaces(FACTUAL_QA_ROLE_INTERROGATIVE), factualQaSurfaces("fact_subject_connector"));
+  const left = factTrimSubject(clause.slice(0, at), stops);
+  const right = factTrimSubject(clause.slice(at + surface.length), stops);
+  const subjectTerm = !(left && right) && factBoundedSubject(left || right);
   return subjectTerm ? { relation: relation.slug, subjectTerm } : null;
 }
 
@@ -653,7 +658,7 @@ function factClaimReference(claim, property) {
   for (const reference of (claim && claim.references) || []) {
     const snak = ((reference.snaks || {})[property] || [])[0];
     const value = snak && snak.datavalue && snak.datavalue.value;
-    if (typeof value === "string" && value) return value;
+    if (typeof value === "string" && /^https?:\/\//i.test(value)) return value;
   }
   return "";
 }
@@ -704,7 +709,7 @@ function explanationConcept(prompt) {
   const normalized = normalizePrompt(prompt);
   if (!normalized || containsCjk(normalized)) return null;
   const cue = factualQaSurfaces(EXPLANATION_ROLE_CUE).find((surface) => factualQaLocate(normalized, surface) === 0);
-  return cue ? factLiveContentWords(normalized.slice(cue.length), []) : null;
+  return cue ? factBoundedSubject(normalized.slice(cue.length).trim()) : null;
 }
 
 /**

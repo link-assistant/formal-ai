@@ -204,7 +204,7 @@ pub fn fact_store_resolves(prompt: &str) -> bool {
 /// exactly as the former pattern table did. Matching is raw substring (not a
 /// whitespace-token test) because several relations carry multi-word phrases
 /// ("how many people", "official language", "who wrote", "speed of light", …).
-/// The slugs match the JS worker's `FACT_RELATIONS` table so the two stacks
+/// Both runtimes read the same grounded meanings, so they
 /// emit identical `fact_query:relation:*` evidence and route to the same
 /// Wikidata property (e.g. P36 for `capital`).
 fn detect_relation(normalized: &str) -> Option<&'static str> {

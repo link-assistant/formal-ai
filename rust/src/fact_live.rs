@@ -2,8 +2,10 @@
 //!
 //! When no seeded fact record's subject matches, the question's relation and
 //! subject are answered from Wikidata itself: the subject term is searched
-//! through the registry's `item_search_api`, the subject's `Special:EntityData`
-//! snapshot (the registry's `api`) is read for the relation's property -- the
+//! through the registry's `item_search_api`. Exact labels and aliases are
+//! candidates, and the requested property must have a usable claim on just
+//! one candidate. Each candidate's `Special:EntityData` snapshot (the
+//! registry's `api`) is read for the relation's property, the
 //! `grounded-in` property of the relation's `fact_relation` meaning in
 //! `data/seed/meanings-facts.lino` -- and an entity value is labelled from its
 //! own snapshot. The statement keeps the reference URL the claim cites (the
@@ -62,14 +64,41 @@ fn json(bytes: &[u8]) -> Value {
     serde_json::from_slice(bytes).unwrap_or(Value::Null)
 }
 
-fn first_search_hit(bytes: &[u8]) -> Option<String> {
-    json(bytes)
-        .get("search")?
-        .as_array()?
-        .first()?
-        .get("id")?
-        .as_str()
-        .map(str::to_owned)
+fn item_id(value: &str) -> bool {
+    value.strip_prefix('Q').is_some_and(|digits| {
+        !digits.is_empty() && digits.bytes().all(|byte| byte.is_ascii_digit())
+    })
+}
+
+fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
+    let query = crate::engine::normalize_prompt(term);
+    let document = json(bytes);
+    let Some(hits) = document.get("search").and_then(Value::as_array) else {
+        return Vec::new();
+    };
+    let matches = hits.iter().take(5).filter_map(|hit| {
+        let id = hit.get("id")?.as_str().filter(|id| item_id(id))?;
+        let candidates = [
+            hit.get("label"),
+            hit.pointer("/match/text"),
+            hit.pointer("/display/label/value"),
+        ];
+        let aliases = hit.get("aliases").and_then(Value::as_array);
+        candidates
+            .into_iter()
+            .flatten()
+            .chain(aliases.into_iter().flatten())
+            .filter_map(Value::as_str)
+            .any(|candidate| crate::engine::normalize_prompt(candidate) == query)
+            .then_some(id)
+    });
+    let mut unique = Vec::<String>::new();
+    for id in matches {
+        if !unique.iter().any(|candidate| candidate == id) {
+            unique.push(id.to_owned());
+        }
+    }
+    unique
 }
 
 fn entity<'a>(document: &'a Value, qid: &str) -> Option<&'a Value> {
@@ -87,19 +116,81 @@ fn label(entity: &Value, language: &str, fallback: &str) -> Option<String> {
 }
 
 fn first_claim<'a>(entity: &'a Value, property: &str) -> Option<&'a Value> {
-    entity.get("claims")?.get(property)?.as_array()?.first()
+    let claims = entity.get("claims")?.get(property)?.as_array()?;
+    ["preferred", "normal"].into_iter().find_map(|rank| {
+        claims.iter().find(|claim| {
+            claim
+                .get("rank")
+                .and_then(Value::as_str)
+                .unwrap_or("normal")
+                == rank
+                && claim
+                    .pointer("/mainsnak/snaktype")
+                    .and_then(Value::as_str)
+                    .unwrap_or("value")
+                    == "value"
+                && claim_value(claim).is_some()
+        })
+    })
 }
 
 /// The claim's value: an item id, a quantity amount, or a literal string.
 fn claim_value(claim: &Value) -> Option<(Option<String>, String)> {
     let value = claim.get("mainsnak")?.get("datavalue")?.get("value")?;
-    if let Some(id) = value.get("id").and_then(Value::as_str) {
+    if let Some(id) = value
+        .get("id")
+        .and_then(Value::as_str)
+        .filter(|id| item_id(id))
+    {
         return Some((Some(id.to_owned()), String::new()));
     }
     if let Some(amount) = value.get("amount").and_then(Value::as_str) {
-        return Some((None, amount.trim_start_matches('+').to_owned()));
+        let unsigned = amount.strip_prefix(['+', '-']).unwrap_or(amount);
+        let decimal = unsigned.split_once('.');
+        let (integer, fraction) = decimal.unwrap_or((unsigned, "0"));
+        let digits =
+            |text: &str| !text.is_empty() && text.bytes().all(|byte| byte.is_ascii_digit());
+        return (digits(integer) && digits(fraction))
+            .then(|| (None, amount.trim_start_matches('+').to_owned()));
     }
-    value.as_str().map(|text| (None, text.to_owned()))
+    if let Some(date) = fact_date(value) {
+        return Some((None, date));
+    }
+    value
+        .as_str()
+        .filter(|text| !text.trim().is_empty())
+        .map(|text| (None, text.to_owned()))
+}
+
+/// Render a Gregorian date at the precision declared by Wikidata.
+fn fact_date(value: &Value) -> Option<String> {
+    let precision = value.get("precision")?.as_u64()?;
+    if precision < 9 || !value.get("calendarmodel")?.as_str()?.ends_with("/Q1985727") {
+        return None;
+    }
+    let (date, _) = value.get("time")?.as_str()?.split_once('T')?;
+    let (sign, unsigned) = date.split_at_checked(1)?;
+    if !matches!(sign, "+" | "-") {
+        return None;
+    }
+    let mut fields = unsigned.split('-');
+    let (year, month, day) = (fields.next()?, fields.next()?, fields.next()?);
+    if fields.next().is_some()
+        || year.len() < 4
+        || month.len() != 2
+        || day.len() != 2
+        || ![year, month, day]
+            .into_iter()
+            .all(|field| field.bytes().all(|byte| byte.is_ascii_digit()))
+    {
+        return None;
+    }
+    let sign = if sign == "-" { sign } else { "" };
+    Some(match precision {
+        9 => format!("{sign}{year}"),
+        10 => format!("{sign}{year}-{month}"),
+        _ => format!("{sign}{year}-{month}-{day}"),
+    })
 }
 
 /// The first reference URL the claim cites through `property`.
@@ -117,6 +208,7 @@ fn claim_reference(claim: &Value, property: &str) -> Option<String> {
                 .get("datavalue")?
                 .get("value")?
                 .as_str()
+                .filter(|value| value.starts_with("https://") || value.starts_with("http://"))
                 .map(str::to_owned)
         })
 }
@@ -164,25 +256,32 @@ pub fn resolve_fact_live<T: SourceTransport>(
             &crate::seed::percent_encode(language),
         );
     let search = client.fetch(&search_url)?;
-    let Some(subject_qid) = first_search_hit(search.bytes()) else {
+    let candidates = matching_search_hits(search.bytes(), subject_term);
+    let mut captures = vec![search];
+    let mut statement = None;
+    for qid in candidates {
+        let capture = client.fetch(&source.api_url(&[("id", qid.as_str())]))?;
+        let document = json(capture.bytes());
+        let Some(subject) = entity(&document, &qid) else {
+            return Ok(None);
+        };
+        if let Some(claim) = first_claim(subject, &property)
+            && let Some((value_qid, literal)) = claim_value(claim)
+        {
+            if statement.is_some() {
+                return Ok(None);
+            }
+            let subject_label =
+                label(subject, language, &fallback).unwrap_or_else(|| subject_term.to_owned());
+            let reference_url = claim_reference(claim, &registry_field("reference_url_property"))
+                .unwrap_or_else(|| capture.source_url().to_owned());
+            statement = Some((qid, subject_label, reference_url, value_qid, literal));
+        }
+        captures.push(capture);
+    }
+    let Some((subject_qid, subject_label, reference_url, value_qid, literal)) = statement else {
         return Ok(None);
     };
-    let subject = client.fetch(&source.api_url(&[("id", subject_qid.as_str())]))?;
-    let subject_document = json(subject.bytes());
-    let Some(subject_entity) = entity(&subject_document, &subject_qid) else {
-        return Ok(None);
-    };
-    let Some(claim) = first_claim(subject_entity, &property) else {
-        return Ok(None);
-    };
-    let Some((value_qid, literal)) = claim_value(claim) else {
-        return Ok(None);
-    };
-    let subject_label =
-        label(subject_entity, language, &fallback).unwrap_or_else(|| subject_term.to_owned());
-    let reference_url = claim_reference(claim, &registry_field("reference_url_property"))
-        .unwrap_or_else(|| subject.source_url().to_owned());
-    let mut captures = vec![search, subject];
     let value = match &value_qid {
         Some(qid) => {
             let value_capture = client.fetch(&source.api_url(&[("id", qid.as_str())]))?;
