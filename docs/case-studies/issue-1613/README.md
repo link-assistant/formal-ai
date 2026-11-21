@@ -90,6 +90,21 @@ and the implementation made only the first call.
   compiled into that binary. Changing the source of the bytes works on both
   binary distribution paths.
   [GitHub get-an-issue API](https://docs.github.com/en/rest/issues/issues#get-an-issue)
+- For translation replay, remove compile-time enumeration of the optional
+  API-cache directory. The same test can supply saved HTTP responses to an
+  explicit transport, and the production cache can fill as it retrieves
+  sources. Running the standalone build script with a legacy fixture tree
+  still generated the owned-source manifest and left out the replay bundle.
+  [Build regression](evidence/verification/build-script-optional-inputs-round2.log) ·
+  [Build-script probe](evidence/verification/translation-build-probe.log)
+- For the three encyclopedia responses, preserve the original bytes, capture
+  times, and digests in the test source cache. The production clients retrieve
+  or replay their own cached copies. The browser baseline returned a capture
+  from a fresh offline worker without a transport. The new replay first
+  observes the offline miss, acquires the capture via a supplied transport,
+  and then verifies the worker's cache hit.
+  [Baseline replay](evidence/verification/baseline-encyclopedia-precache.log) ·
+  [Browser verification](evidence/verification/source-qualified-definition.log)
 - For the draft image race, gate the run on the exact digest or wait for the
   selected tag within a bounded retry window. Preserve the checkout/image
   identity proof. The report includes manually checking the exact manifest
@@ -103,7 +118,7 @@ and the implementation made only the first call.
 | Requirement from the issue | Evidence and current coverage |
 | --- | --- |
 | Explain and remove the reported hardcoding | Reproduced the exact bypass, removed both aliases, and added original-task and held-out replays. |
-| Generalize how-to across runtimes | Both runtimes use localized discovery, matching, and bounded article reads. The browser replay covers direct, archive, capture component, missing evidence, unrelated results, negative titles, and opt-out cases. The cross-runtime test supplies the same proof to Node Responses and Rust Chat and Responses fixtures. Native runtime execution and behavior outside the supported discovery contract require their own verification. |
+| Generalize how-to across runtimes | Both runtimes use localized discovery, matching, and bounded article reads. The browser replay covers direct, archive, capture component, missing evidence, unrelated results, negative titles, and opt-out cases. The first native PR run passed all four localized Chat and Responses replays. Tasks outside the supported publisher contract still need broader verification. |
 | Keep canned input and expected output in tests | The two replay topics and their expected articles are explicit in test code. The benchmark issue test injects its recorded input. Additional production solution tables remain in the [repository audit](repository-audit.md). |
 | Use recoverable snapshots only to speed tests. Exclude pre-cache from lightweight distributions | The crate mirror no longer includes the 139 issue bodies. The previous native release returned the stored body with an empty cache, which the [baseline test](evidence/verification/baseline-native-issue-corpus.log) rejects. CI can replay the same command first with an empty cache and then with a supplied capture. Remaining embedded and web-distributed captures are listed in the [repository audit](repository-audit.md). |
 | Align the vision and conflicting guidance | [VISION](../../../VISION.md) and the [natural language design](../../design/no-hardcoded-natural-language.md) distinguish vocabulary, rendering templates, live discovery, and fixed test inputs. |
@@ -111,6 +126,30 @@ and the implementation made only the first call.
 | Add diagnostic output when root cause cannot be established | The existing pull error, capture manifests, and original-task requests identify the causes. The source-walk trace records failed requests and whether recovered steps came from a live or archived capture. |
 | Report reproducible upstream issues with workarounds and fixes | The reproducible Hive Mind failure is in [#4122](https://github.com/link-assistant/hive-mind/issues/4122). The [publisher probes](evidence/wikihow/status.txt) from this environment returned an HTTP 500 with no body. That observation alone did not isolate a publisher bug. Previous issue #1396 records a successful parse and an archive rate limit from separate probes. |
 | Complete all changes in one PR | #1614 is the single implementation branch. The issue's [sub-issue listing](evidence/github/issues-1613-sub_issues.json) is empty. The [vision audit](repository-audit.md) covers related broader work. |
+
+Two additional cases showed topic substitution. An unnamed algorithm request
+selected a Python sorting answer, and an unknown grammatical-number request
+selected tomato lexemes. An unnamed operation now gets a clarification, and
+general research receives the requested word when the document recipe has no
+matching concept. The [algorithm baseline](evidence/verification/baseline-unnamed-algorithm.log)
+and the [meaning baseline](evidence/verification/baseline-meaning-detail.log)
+reproduce those choices.
+
+The first Layered CI run at `fdf49eb07` found a test reading the deleted Rust
+mirror of issue #698 and a stale runtime inventory. The test now reads the
+benchmark capture explicitly and the inventory was regenerated from the
+current source. Both suites passed locally after these updates.
+[Layered CI run](https://github.com/link-assistant/formal-ai/actions/runs/44943549869) ·
+[Issue replay](evidence/verification/main-only-planner-twins-round2.log) ·
+[Runtime inventory](evidence/verification/runtime-feature-inventory-round2.log)
+
+The first native run passed the four procedure replays, including the
+short prompt and the Responses route. The issue regression received the
+cache-miss message with the expected API endpoint. Its assertion used the word
+`offline`, which the rendered message omits. The assertion now compares the
+actual message and still requires the supplied issue body on the next call.
+[Native CI run](https://github.com/link-assistant/formal-ai/actions/runs/44943550052) ·
+[Full workflow log](evidence/workflows/pipeline-44943550052.log.gz)
 
 ## Evidence archive
 
