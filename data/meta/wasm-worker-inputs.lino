@@ -9,14 +9,16 @@
 # failure with unchanged inputs names the toolchain that moved.
 wasm-worker-inputs
   worker js/formal_ai_worker.wasm
-  bytes 311773
-  sha256 ff9363091b22a40329d8fd65e210901536d873b607c0caa3a2920febed27743d
+  bytes 311765
+  sha256 754cfedad4bc0c6a8811cae8b1ca201e25308b1a49acab3261a1eeea9b844ba1
   compiler "rustc 1.100.0 (0ef1bc386 2026-11-09)"
   compiler-commit 0ef1bc386059596dada8fb65b50425aab2ea637a
+input js/wasm-worker/src/dialogue_rendering.rs
+  sha256 32b939667514b94012fee761da62dbb101eb5cabd6a619c403e08a7620f55588
 input js/wasm-worker/src/formal_statement_worker.rs
   sha256 88f1e2a0ed0868f076c088116b8310e2f0fa0f7aa02b9b65d543e7ff74ac847b
 input js/wasm-worker/src/lib.rs
-  sha256 11028ba2dc3aa44d2e8446d4b211038b6f2316cf8fa457c20e3da8f41994da84
+  sha256 7ac36d7f5dca7b21de915d2ec41c9c0a05da3643e5a5ab8e8a39abcc4073ff88
 input js/wasm-worker/src/memory_query_worker.rs
   sha256 196267d6186d51d83e4270bca0f4b267071fd5a64ad5056775ef2797dca4c363
 input js/wasm-worker/src/proof_translation_worker.rs

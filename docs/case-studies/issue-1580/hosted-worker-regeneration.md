@@ -38,3 +38,7 @@ All four focused JavaScript cases and the 331-case maintained entry pass locally
 These are admission and manifest regressions, not evidence of hosted compilation.
 
 Pull request: https://github.com/link-assistant/formal-ai/pull/1581.
+
+## Verified hosted result
+
+[Run 44962282997](https://github.com/link-assistant/formal-ai/actions/runs/44962282997) compiled exact source `de79e6ece67142fe8c6012059e6eb2bc0300e7bd` with `rustc 1.100.0`. The complete selected-source verifier validates the source tree, all 27 ordinary input files, protocol, compiler arguments and producer identity. The downloaded three-file archive matches the Actions SHA-256 digest. Its 25-input compiler manifest and 311,765-byte worker pass the unchanged currency check after application. No local Rust compiler ran. Full branch CI and the broader issue criteria remain separate.
