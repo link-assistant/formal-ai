@@ -1,0 +1,418 @@
+{
+  "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+  "commit": "5f1e7a96acbf7a93b567195443cf6e5158fbbf1f3",
+  "scope": "The twelve current changed files only. Literal review and consecutive byte-identity history comparison are distinguished. Other current and historical files retain their earlier incomplete ledgers.",
+  "completeChangedFileComparison": true,
+  "completeCurrentSourceComparison": false,
+  "completeTemplateAcceptance": false,
+  "files": [
+    {
+      "path": ".github/workflows/desktop-release.yml",
+      "gitBlob": "9a253a572b004d4f23d3eb830d72bbd04fa8a7fe",
+      "sha256": "485733fdda4d5a5aa770afd4e9867dad2a7f6ef47b40e0c9eac0a3728863ca74",
+      "bytes": 10825,
+      "lines": 270,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        38
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml"
+      ],
+      "decision": "Both checksum implementations exclude current, stale and consolidated checksum metadata; fragments are produced and uploaded separately. The exact upstream JavaScript fixture checks both hashers on fresh and reused directories. This is not evidence of a Formal AI desktop publication or every artifact path."
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "1228b2be27e153a77632cc73ae440be4fe348221",
+      "sha256": "e0c18c1e8544dcef98615bda72db1e3ecdef3791b13105814585a2b54f70aa11",
+      "bytes": 66566,
+      "lines": 1603,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "formalAiComparison": [
+        ".github/workflows/release.yml",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Read every job, permission, needs edge, release writer and Pages branch. JavaScript-first admission and exact tested revision checks are applicable. The template also builds Rust and Docker on PRs; that conflicts with Formal AI PR resource policy and must not be copied. Pages opt-in, visible setup errors, serialized writers and fresh publication consumers still need complete Formal AI equivalence and live verification."
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "gitBlob": "ede61474b42578a8cf5d3c26344ea73237495de6",
+      "sha256": "6b6646121e46350a4ad1db24b20e3b46ce5d3628984065f4bd14cc5f5a75bc0c",
+      "bytes": 6837,
+      "lines": 204,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        44
+      ],
+      "formalAiComparison": [
+        ".github/workflows/security.yml"
+      ],
+      "decision": "Enumerates every tracked Cargo.lock with NUL-safe paths, validates locked metadata, denies audit warnings and continues gathering reports after a failure. The current mocked fixture verifies root, spaced/newline nested, missing and untracked lockfiles. Standard CodeQL SARIF and dependency review remain distinct controls. Actual audits and every Formal AI policy equivalence are not established by the mocks."
+    },
+    {
+      "path": "CHANGELOG.md",
+      "gitBlob": "4e19f08138dbee18db6fc4ecaf1456c0c664aafc",
+      "sha256": "a949686ae2e35f8585570cce11ce601d2d545ba4df68b24d34f998f316dae019",
+      "bytes": 194087,
+      "lines": 3603,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": false,
+      "readPages": [
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55
+      ],
+      "formalAiComparison": [
+        "changelog.d"
+      ],
+      "decision": "Read lines 1-1414 and every additional block. The remaining repeated history was compared as consecutive byte-identical blocks against already read ranges, retaining ranges and hashes. This is complete content comparison, not a claim to have literally reread all 3603 lines. Template release history is not a Formal AI release trigger."
+    },
+    {
+      "path": "Cargo.lock",
+      "gitBlob": "16c8ab1d45f3483592797bc33fd44c368ee09de3",
+      "sha256": "15cb0036b9d18eb87a2033e967f5ed23a2c89b2a0641d746bf0c22a85d218af0",
+      "bytes": 12062,
+      "lines": 462,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        56,
+        57
+      ],
+      "formalAiComparison": [
+        "rust/Cargo.lock"
+      ],
+      "decision": "Read all 462 lines including versions, registry checksums and dependency edges. The upstream root lock is not transplanted into Formal AI. Complete dependency and advisory migration remains open."
+    },
+    {
+      "path": "Cargo.toml",
+      "gitBlob": "78a00987cae501ddd07576e8afdc436bd5a7a83b",
+      "sha256": "f92605aef788b96698359555aa96ffcb1844417b2db4ae943da914527dd30ed6",
+      "bytes": 1708,
+      "lines": 69,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        58
+      ],
+      "formalAiComparison": [
+        "rust/Cargo.toml"
+      ],
+      "decision": "Read package 0.22.6, edition 2024, MSRV 1.85, package inclusion, lint and dependency settings. Package versions belong to each repository release writer. Compatibility and complete dependency adoption require separate evidence."
+    },
+    {
+      "path": "README.md",
+      "gitBlob": "6c0299ec43ee4593c4c7787e6bf9366fa150e7c9",
+      "sha256": "53929867193fc7d56354f4dac721d8363bf69c8220718e1d217d09fe55a82dd3",
+      "bytes": 20592,
+      "lines": 429,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        59,
+        60
+      ],
+      "formalAiComparison": [
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Read all setup, release, timeout, tool and contribution instructions. A statement that matrix tests are capped at ten minutes disagrees with the current thirty-minute job and fifteen-minute internal test budget; do not adopt it as an executable guarantee. No live publication or actual runtime identity credit follows from documentation."
+    },
+    {
+      "path": "experiments/issue-247-regressions.py",
+      "gitBlob": "78fbc22d69ecc56e8a2b71970e95596fea09fae2",
+      "sha256": "88fb555f4c89ea22f2a76180b5c391c9e863a690e1dddb1f1361b543e63e912f",
+      "bytes": 3445,
+      "lines": 68,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        61
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "decision": "Read the real Cargo locked-metadata and production compilation guard regressions. They were not executed locally because they compile Rust. Their source inspection does not receive passing-test credit."
+    },
+    {
+      "path": "experiments/issue-252-workflows.test.mjs",
+      "gitBlob": "f5e7d86a5a3badf6ac645fe9663a1a9c16b755a6",
+      "sha256": "a08cf1d2dd54f8758f5d3b31ba35dcfc11b2cf2c487cfed09fcd8b3295e9da5e",
+      "bytes": 7127,
+      "lines": 142,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        62
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "decision": "Executed the exact current upstream fixture: all five cases pass using installed yaml 2.9.1 and the three Git-blob-verified workflows. Cargo/audit tools are mocked. The checks cover Pages conditions/errors, tracked lock enumeration and both checksum tools; no hosted deployment or real Cargo audit is claimed."
+    },
+    {
+      "path": "scripts/create-changelog-fragment.rs",
+      "gitBlob": "822c11845ad445673369e8965905d1da896eb924",
+      "sha256": "a5307db6db3e928ffbe5f169ab02195364421421a7cc62065ae8aca45dc7d657",
+      "bytes": 8315,
+      "lines": 267,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        63
+      ],
+      "formalAiComparison": [
+        "scripts/create-changelog-fragment.rs",
+        "scripts/collect-changelog.rs"
+      ],
+      "decision": "Read exclusive create_new reservation, safe stop-command token, missing parent, existing fragment, concurrent creator and Unix symlink tests. No Rust script compilation was run locally. Formal AI writer failure-path equivalence remains open."
+    },
+    {
+      "path": "scripts/test-scripts.sh",
+      "gitBlob": "a6e0d59bd1757d1339ae9d86a8b650b1deffa5df",
+      "sha256": "3ccdfbb62d7e5e2c47e905ad915615b546de666debbd9ff973f93f9a97c8876d",
+      "bytes": 2341,
+      "lines": 80,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        64
+      ],
+      "formalAiComparison": [
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Read complete runner: it accumulates Rust-script failures and still executes bounded Python and Node regression files. Failure collection is applicable; the complete upstream runner was not executed locally."
+    },
+    {
+      "path": "tests/unit/ci-cd/workflow_security.rs",
+      "gitBlob": "6b4df6797c33af6cf2d4b2ed0249c4ca1a3819f2",
+      "sha256": "585d4cceac4479d7d4416b9e853082b850e5619c9995cecd2abadd871cf54f48",
+      "bytes": 13862,
+      "lines": 349,
+      "completeContentComparison": true,
+      "completeLiteralSourceRead": true,
+      "readPages": [
+        65
+      ],
+      "formalAiComparison": [
+        "rust/tests/web/default-branch-build-policy.test.mjs",
+        ".github/workflows/security.yml"
+      ],
+      "decision": "Read security permissions, pinned tools, workflow expression contexts, archive failure propagation, link checks and main writer queue policy tests. Source inspection alone is not native test execution. Event-specific Formal AI adoption remains unfinished."
+    }
+  ],
+  "historyComparison": {
+    "path": "CHANGELOG.md",
+    "sha256": "a949686ae2e35f8585570cce11ce601d2d545ba4df68b24d34f998f316dae019",
+    "lines": 3603,
+    "alreadyReadThrough": 1414,
+    "reviewMethod": "Every remaining line is printed or matched byte-for-byte as a consecutive block of at least 40 lines against a previously read range; no line-only bag comparison.",
+    "records": [
+      {
+        "kind": "exact-reviewed-block",
+        "first": 1415,
+        "last": 1533,
+        "reviewedFirst": 539,
+        "reviewedLast": 657,
+        "sha256": "e727b032944f54526e0d651c35477702306b2a1d956c7ac755c75eba187a16d9"
+      },
+      {
+        "kind": "additional-content",
+        "first": 1534,
+        "last": 1534
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 1535,
+        "last": 1734,
+        "reviewedFirst": 455,
+        "reviewedLast": 654,
+        "sha256": "68d961d314131a4f1019448b54a6c54f62385255bc7d29b806d1ee9dd2261397"
+      },
+      {
+        "kind": "additional-content",
+        "first": 1735,
+        "last": 1735
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 1736,
+        "last": 1932,
+        "reviewedFirst": 455,
+        "reviewedLast": 651,
+        "sha256": "9b131583d3544e2065974ca9bbed3b1bfdceaf0f0c163ab2dbe785575c2cc635"
+      },
+      {
+        "kind": "additional-content",
+        "first": 1933,
+        "last": 1933
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 1934,
+        "last": 2127,
+        "reviewedFirst": 455,
+        "reviewedLast": 648,
+        "sha256": "a8bc941a0542d2b946ece0121bc0543c951ec82d95ab6b91a1bf5ecb90167c77"
+      },
+      {
+        "kind": "additional-content",
+        "first": 2128,
+        "last": 2128
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 2129,
+        "last": 2316,
+        "reviewedFirst": 455,
+        "reviewedLast": 642,
+        "sha256": "d5e97ae61d12b559f737a002576ee2c89ac982a3e8fcdf7b67b4abe96b7a2f76"
+      },
+      {
+        "kind": "additional-content",
+        "first": 2317,
+        "last": 2317
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 2318,
+        "last": 2502,
+        "reviewedFirst": 455,
+        "reviewedLast": 639,
+        "sha256": "9dfdc2d98309059d44092d6f841a3f3a53b72858e57cc36ec42142b8b8e10127"
+      },
+      {
+        "kind": "additional-content",
+        "first": 2503,
+        "last": 2503
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 2504,
+        "last": 2682,
+        "reviewedFirst": 455,
+        "reviewedLast": 633,
+        "sha256": "544026bff872eb50ff49b823c631303e1f090eede88b7cf7c49df8e47b02b2e5"
+      },
+      {
+        "kind": "additional-content",
+        "first": 2683,
+        "last": 2683
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 2684,
+        "last": 2856,
+        "reviewedFirst": 455,
+        "reviewedLast": 627,
+        "sha256": "73dfbd8434675312850af9f11951301a3a4518194085184e5df12a3287da0da9"
+      },
+      {
+        "kind": "additional-content",
+        "first": 2857,
+        "last": 2857
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 2858,
+        "last": 3026,
+        "reviewedFirst": 455,
+        "reviewedLast": 623,
+        "sha256": "9612e5c2af81dd228b65ea83a13e2b771a1f236e8d39a0ebaf13f506fe25c0d0"
+      },
+      {
+        "kind": "additional-content",
+        "first": 3027,
+        "last": 3027
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 3028,
+        "last": 3167,
+        "reviewedFirst": 455,
+        "reviewedLast": 594,
+        "sha256": "97c72970badce89642fa94a0b1b5628e2e806402b5f1df3d68da49cd01aa99ca"
+      },
+      {
+        "kind": "additional-content",
+        "first": 3168,
+        "last": 3190
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 3191,
+        "last": 3330,
+        "reviewedFirst": 455,
+        "reviewedLast": 594,
+        "sha256": "97c72970badce89642fa94a0b1b5628e2e806402b5f1df3d68da49cd01aa99ca"
+      },
+      {
+        "kind": "additional-content",
+        "first": 3331,
+        "last": 3342
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 3343,
+        "last": 3459,
+        "reviewedFirst": 455,
+        "reviewedLast": 571,
+        "sha256": "3e004dd1fa93ad8539b4e4a19ca4b8bb8ca999d44a5d3afc2db2ce0e573197a0"
+      },
+      {
+        "kind": "additional-content",
+        "first": 3460,
+        "last": 3473
+      },
+      {
+        "kind": "exact-reviewed-block",
+        "first": 3474,
+        "last": 3590,
+        "reviewedFirst": 455,
+        "reviewedLast": 571,
+        "sha256": "3e004dd1fa93ad8539b4e4a19ca4b8bb8ca999d44a5d3afc2db2ce0e573197a0"
+      },
+      {
+        "kind": "additional-content",
+        "first": 3591,
+        "last": 3603
+      }
+    ],
+    "completeTemplateAcceptance": false
+  },
+  "verification": {
+    "actualUpstreamJavaScriptTestsPassed": 5,
+    "yamlVersion": "2.9.1",
+    "verifiedGitSourceFiles": 4,
+    "nativeBuildExecuted": false,
+    "fullScriptRunnerExecuted": false,
+    "hostedPublicationVerified": false
+  },
+  "relatedWork": {
+    "pullRequests": [
+      255,
+      253,
+      248
+    ],
+    "allConversationInlineAndReviewCommentsRead": true,
+    "timeoutIssue": 41
+  },
+  "independentAuthorshipCredit": 0
+}

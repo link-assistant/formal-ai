@@ -1,0 +1,251 @@
+{
+  "records": [
+    {
+      "source": "/tmp/issue-1580-research/check-f156-publication-gate.log",
+      "file": "01.gz",
+      "bytes": 1160,
+      "rawSha256": "224eba4192f1d8935ab9f154e7bb8c32915ab21de6542148de35113c31946725",
+      "archiveSha256": "12917c764ca14cbacd08331c90cd53a3d247b700e2e59249e3dc416a9365511f"
+    },
+    {
+      "source": "/tmp/issue-1580-research/check-f156-publication-gate.py",
+      "file": "02.gz",
+      "bytes": 2109,
+      "rawSha256": "d1a3b12dea80aeb0fe22a6ce437b8daeb21de911a6df1b8155675cbddf4380fd",
+      "archiveSha256": "e7f6da07fa82cfef968755dc90dc63387f95299bf6d3b53e5a7f8921afc1bb29"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/ancestor.stderr",
+      "file": "03.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/ancestor.stdout",
+      "file": "04.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/branch.stderr",
+      "file": "05.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/branch.stdout",
+      "file": "06.gz",
+      "bytes": 24,
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/check-abbreviations.stderr",
+      "file": "07.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/check-abbreviations.stdout",
+      "file": "08.gz",
+      "bytes": 67,
+      "rawSha256": "ff266c76de879f66fba4d7cab90f3b2414032643f582d74d11e1a92800f26862",
+      "archiveSha256": "36a54d9bcb0618ad024d8e49ec3ba86d608b20c3e446631342812b76213f9ed9"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/check-file-size.stderr",
+      "file": "09.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/check-file-size.stdout",
+      "file": "10.gz",
+      "bytes": 64,
+      "rawSha256": "29b11e40591c2794d580ac6518a12fddfacb3a57c44cddd0817c11b4a8f30bb2",
+      "archiveSha256": "270bb2090dee5aedff09ecce82552308a2c19c7b6d8fc27548eda8aed1814081"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/check-readable-code.stderr",
+      "file": "11.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/check-readable-code.stdout",
+      "file": "12.gz",
+      "bytes": 68,
+      "rawSha256": "3b8bdd5cde22c0a97295103a47d7b5f9f2e240d0c0bc939c4767bca1f7880a60",
+      "archiveSha256": "5003ab951721dc484b699e8b3a3add3f0a7c22d51225a2d261f8ac86e707306d"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/conversation.stderr",
+      "file": "13.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/conversation.stdout",
+      "file": "14.gz",
+      "bytes": 36069,
+      "rawSha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
+      "archiveSha256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/in_progress.stderr",
+      "file": "15.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/in_progress.stdout",
+      "file": "16.gz",
+      "bytes": 3,
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/inline.stderr",
+      "file": "17.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/inline.stdout",
+      "file": "18.gz",
+      "bytes": 2,
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/issue-comments.stderr",
+      "file": "19.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/issue-comments.stdout",
+      "file": "20.gz",
+      "bytes": 4475,
+      "rawSha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "archiveSha256": "d996d3a37147a526df1fca7610ca1d0edf5638875e5648b8a511c0606aab8d25"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/latest-runs.stderr",
+      "file": "21.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/latest-runs.stdout",
+      "file": "22.gz",
+      "bytes": 692,
+      "rawSha256": "22e1b3fca51ff74c6cf47e76a054197a260c5d41eb513aff7b46700669d46877",
+      "archiveSha256": "6a6b88a41ae16900a44a8c82bc4ec45855a89c8717fc3b6510a7e06b7f0693eb"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/outcome.json",
+      "file": "23.gz",
+      "bytes": 387,
+      "rawSha256": "de6e8b72bc825a994bbf584cd44f0ef2914fb44c219c96a79af4b535fbc710c3",
+      "archiveSha256": "a35fe11eb10c1f86958268fe918e46c47fea58af9a232b0386fcbe2761f743af"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/pr-before.json",
+      "file": "24.gz",
+      "bytes": 23093,
+      "rawSha256": "c985ea5afaada583a0bcec39dd484d7c40af8e49bc7922232e32e3034d22f056",
+      "archiveSha256": "59044f351d680b14da48b68236bd987ffb535d0cdeec67b0610af57f0247e64a"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/pr-before.stderr",
+      "file": "25.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/pr-diff.stderr",
+      "file": "26.gz",
+      "bytes": 287,
+      "rawSha256": "06dda70ebfef8b578f4e212792b89631413563da7dfaa7598b90c00adb13cfe5",
+      "archiveSha256": "3064591bc8bc81382ccf3efad6a3d49e9ad0bc111959202d619054be8452903b"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/pr-diff.stdout",
+      "file": "27.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/queued.stderr",
+      "file": "28.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/queued.stdout",
+      "file": "29.gz",
+      "bytes": 3,
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "archiveSha256": "029ac1ef2bb96aa9fa0166f8f60604b79b92f7fb5cd41a374f80171306cf1b52"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/reviews.stderr",
+      "file": "30.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/reviews.stdout",
+      "file": "31.gz",
+      "bytes": 2,
+      "rawSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "archiveSha256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/whitespace.stderr",
+      "file": "32.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/f156-publication-gate/whitespace.stdout",
+      "file": "33.gz",
+      "bytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "/tmp/issue-1580-research/finish-f156-publication-gate.log",
+      "file": "34.gz",
+      "bytes": 491,
+      "rawSha256": "f13cf3028e86877820f6d2383d9d728161596b9736b99937c474f3f92821e026",
+      "archiveSha256": "7b42f2e807b4cc71977e3a45a2e03eabb61d0a25eb62b7e252b443b9588495d4"
+    },
+    {
+      "source": "/tmp/issue-1580-research/finish-f156-publication-gate.py",
+      "file": "35.gz",
+      "bytes": 1992,
+      "rawSha256": "2348400d232da59a4f43d811448ea3a9524f8d2fd8397f9491db0410a727216e",
+      "archiveSha256": "5c7d011fdc4a5f5a7ae76aff882deebdd625e19aca4f64666494c2700517e78d"
+    }
+  ],
+  "fullPrDiffReviewComplete": false,
+  "independentAuthorshipCredit": 0
+}

@@ -25,17 +25,15 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Latest observed published head `f156be6e` has 26 terminal workflows: 23 success,
-one skip and two failures; the Pipeline still has running and queued native
-families. Layered CI fails on stale generated TypeScript; local regeneration
-passes its currency gate. The included-string observer still times out with four
-threads; its 21,050-event trace is preserved. The bounded producer-memory candidate
-passes local adapter and strict-security checks, with a failing prior-adapter
-control. Actual hosted performance remains unqualified. Current Go regression
-and full 113-test template suite pass locally; Go issue 23 and C++ issue 39 are
-linked in PR #1581. Fresh Go comparison and eight C#/six C++ changed-file reviews
-retain exact identities; remaining full-tree comparisons and overall acceptance
-stay unfinished. Do not push while current-head Pipeline jobs remain active.
+Latest observed published head `f156be6e` has all 27 terminal workflows: 24 success,
+one skip and two failures. Pipeline, all eight native families and registry scripts
+pass. The generated TypeScript drift and included-string timeout have local
+repairs; hosted performance of the bounded memory candidate remains unverified.
+Current Go (all 39 blobs), C++ (six changed files), C# (eight changed files) and
+Rust (twelve changed files) have pinned comparison ledgers and narrow executable
+checks. The original full-template and issue acceptance criteria remain open.
+See [terminal native qualification and memory candidate](../../docs/case-studies/issue-1580/f156-terminal-and-memory-checkpoint.md).
+No push is permitted while a current-head workflow is queued or in progress.
 
 
 Latest checkpoint: [current native failures and gate inputs](../../docs/case-studies/issue-1580/current-native-failure-checkpoint.md). Published `8b0d6f59` has 24 successful workflows, one skip and two failures. All eight native contract families and registry-script checks pass. Process termination and pipeline schema regressions pass locally; the CodeQL thread candidate and failed-fetch native guard still need hosted qualification. Fresh observations identify changed heads in seven templates; earlier comparisons retain their original pins. Full issue acceptance remains unfinished.
