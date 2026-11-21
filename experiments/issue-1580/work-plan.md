@@ -32,7 +32,7 @@ The merged source passed all 88 executed local gates (53 explicit skips),
 TypeScript generation/runtime, gateway/server checks and 133 maintained cases.
 
 Local commits extract nine Rust test/helper groups without changing their
-bodies or scanner limits: 78 warnings remain. Coverage connects the original
+bodies or scanner limits: 77 warnings remain after contributor-guide extraction. Coverage connects the original
 planner, budget and image owners to the existing core/coding targets. Actual
 Git sparse rules select their nine real fixtures in both core checkout attempts.
 Twelve focused headroom/path cases pass. The preceding batch passed 50
@@ -884,3 +884,5 @@ The unchanged size gate also warns on both 1417-line code-task twins. The new fo
 - Hive expectation helpers remove another warning with all 30 original native test names unchanged: 78 warnings remain. Twelve focused cases pass; hosted native execution is still pending. See [Hive expectation headroom](../../docs/case-studies/issue-1580/hive-expectation-headroom-checkpoint.md).
 
 - Confirmed and reported Rust runner annotation pagination false negatives at positions 30 and 100: upstream issue #257. Six candidate cases, 151 maintained cases and three touched gates pass. Upstream production adoption remains unfinished. See [runner annotation checkpoint](../../docs/case-studies/issue-1580/rust-runner-annotation-pages-checkpoint.md).
+
+- Contributor guide extraction conserves all moved instructions and legacy anchors, removing its warning: 77 remain under unchanged limits. The focused before/after regression, existing push-gate cases and three affected gates pass. See [contributor guide checkpoint](../../docs/case-studies/issue-1580/contributing-headroom-checkpoint.md).
