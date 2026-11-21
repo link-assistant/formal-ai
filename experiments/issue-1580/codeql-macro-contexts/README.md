@@ -125,3 +125,31 @@ nine columns, complete payloads, unavailable-expansion rows, warning rejection,
 4 GiB memory policy and disk cap, and step deadline remain unchanged. Fixture
 checks reproduce and repair the argument mismatch; actual hosted performance
 and per-child security semantics remain unverified. No local CodeQL executes.
+
+
+The four-thread candidate did not qualify on published `f156be6e`:
+[Security run 44872977660](https://github.com/link-assistant/formal-ai/actions/runs/44872977660)
+still exceeds the four-minute included-string deadline. The original security
+queries pass; this does not make the failed observation complete. The retained
+21,050-event trace has no completed-query event. Its overlapping path-resolution
+component lasts about 96.3 seconds, with a 60,764,515-row relation; CFG construction
+is still running at termination. The trace SHA256 is
+`60755d43781fb0029f84dff27446e44fad2d4ebb7a3a1b085e092e2ac18e5e20`.
+
+The next candidate reuses the completed producer's positive `CODEQL_RAM` setting
+for the included-string profile, capped at 8192 MiB. Without that setting it
+retains the 4096 MiB fallback; invalid values or reported capacity below that
+minimum fail before executing CodeQL. The macro-context profile keeps its
+4096 MiB policy. Both the resolver and evaluator receive the same selected
+policy and zero off-heap allocation; the manifest retains the selection and
+resolved heap. This bounds additional memory for the large whole-database
+relations. A garbage-collection explanation remains an inference, and this
+candidate's actual performance remains unqualified until hosted execution.
+
+The local command-policy regression fails against the prior adapter and passes
+with the candidate. It covers a reported 14570 MiB capped to 8192, a 6144 MiB
+report, default fallback, malformed and insufficient reports, preserved payloads,
+and existing failure paths. These fake-CLI checks do not allocate the requested
+heap or execute QL. Query bytes, all nine columns, unavailable-expansion rows,
+strict security/warning gates, disk cap and four-minute deadline are unchanged.
+No local CodeQL or Rust build was performed. Per-child semantics remain open.

@@ -47,6 +47,16 @@ def observe(codeql, databases, output, profile="macro-contexts", trace_evaluatio
         manifest["executionPolicy"] = {"threads": threads, "maximumThreads": 4,
                                        "reportedThreads": reported_threads,
                                        "source": "CODEQL_THREADS" if "CODEQL_THREADS" in os.environ else "default"}
+        # CFG/name-binding observation materializes whole-database relations.
+        # The completed hosted producer reports its available policy; cap this
+        # sequential observer at 8 GiB instead of forcing its 4 GiB fallback.
+        reported_memory = os.environ.get("CODEQL_RAM", "4096") if profile == "included-string-payloads" else "4096"
+        if not re.fullmatch(r"[1-9][0-9]*", reported_memory) or int(reported_memory) < 4096:
+            raise ValueError("CODEQL_RAM must report at least 4096 MiB for the included-string observer")
+        memory_mib = min(int(reported_memory), 8192)
+        manifest["executionPolicy"].update({"memoryMiB": memory_mib, "maximumMemoryMiB": 8192,
+                                            "reportedMemoryMiB": reported_memory,
+                                            "memorySource": "CODEQL_RAM" if profile == "included-string-payloads" and "CODEQL_RAM" in os.environ else "default"})
         manifest["profile"] = profile
         database = Path(databases["rust"])
         if not database.is_absolute() or not (database / "codeql-database.yml").is_file():
@@ -71,7 +81,7 @@ def observe(codeql, databases, output, profile="macro-contexts", trace_evaluatio
         run("version", ["version", "--format=json"])
         # query run sizes a child evaluator again; a launcher -J heap is not inherited.
         # Resolve the same real dataset policy first, preserving its authoritative output.
-        memory_options = ["--ram=4096", "--off-heap-ram=0"]
+        memory_options = ["--ram=" + str(memory_mib), "--off-heap-ram=0"]
         dataset = database / "db-rust"
         if not dataset.is_dir():
             raise ValueError("Missing completed Rust dataset for memory resolution")
@@ -82,9 +92,9 @@ def observe(codeql, databases, output, profile="macro-contexts", trace_evaluatio
         heaps = [re.fullmatch(r"-J=?-Xmx([1-9][0-9]*)([mMgG])", value) for value in resolved]
         heaps = [match for match in heaps if match]
         heap_mib = int(heaps[0][1]) * (1024 if heaps[0][2].lower() == "g" else 1) if len(heaps) == 1 else 0
-        manifest["resolvedMemory"] = {"totalMiB": 4096, "offHeapMiB": 0,
+        manifest["resolvedMemory"] = {"totalMiB": memory_mib, "offHeapMiB": 0,
                                       "heapMiB": heap_mib, "arguments": resolved}
-        if not 2048 <= heap_mib <= 4096 or any(value.startswith("--off-heap-ram=") and
+        if not 2048 <= heap_mib <= memory_mib or any(value.startswith("--off-heap-ram=") and
                                              value != "--off-heap-ram=0" for value in resolved):
             raise ValueError("CodeQL resolved heap cannot cache loading stages inside the requested policy")
         # Inherit the producer's exact bundled dependencies without downloading

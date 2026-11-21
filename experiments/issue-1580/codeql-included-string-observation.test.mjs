@@ -72,14 +72,17 @@ with (root/'calls.jsonl').open('a') as stream:
 if args[0]=='version':
     print('{"version":"fixture-only"}')
 elif args[:2]==['resolve','ram']:
-    assert '--ram=4096' in args and '--off-heap-ram=0' in args
-    print('["-J-Xmx2400M"]')
+    memory=8192 if mode=='producer-memory-success' else (6144 if mode=='bounded-memory-success' else 4096)
+    assert '--ram='+str(memory) in args and '--off-heap-ram=0' in args,args
+    print(json.dumps(['-J-Xmx'+str(4800 if memory==8192 else (3600 if memory==6144 else 2400))+'M']))
 elif args[:2]==['query','run']:
     cache=root/'completed-producer-relations'
     if '--keep-full-cache' not in args:
         cache.unlink(missing_ok=True)
     expected_threads=2 if mode=='success' else (1 if mode=='single-thread-success' else 4)
     assert '--threads='+str(expected_threads) in args, args
+    memory=8192 if mode=='producer-memory-success' else (6144 if mode=='bounded-memory-success' else 4096)
+    assert '--ram='+str(memory) in args and '--off-heap-ram=0' in args,args
     assert '--max-disk-cache=4096' in args
     assert '--warnings=error' in args
     trace=[value for value in args if value.startswith('--evaluator-log=')]
@@ -115,9 +118,12 @@ else:
 ''')
     executable.chmod(0o755)
     before={p.relative_to(pack):p.read_bytes() for p in pack.rglob('*') if p.is_file()}
-    successes=['success','traced-success','producer-thread-success','single-thread-success','clamped-thread-success']
-    for mode in successes+['empty','wrong-columns','short-row','query-failure','query-warning','unknown-profile','invalid-threads']:
+    successes=['producer-memory-success','bounded-memory-success','success','traced-success','producer-thread-success','single-thread-success','clamped-thread-success']
+    for mode in successes+['empty','wrong-columns','short-row','query-failure','query-warning','unknown-profile','invalid-threads','invalid-memory','insufficient-memory']:
         os.environ.pop('CODEQL_THREADS',None)
+        os.environ.pop('CODEQL_RAM',None)
+        memory_modes={'producer-memory-success':'14570','bounded-memory-success':'6144','invalid-memory':'unknown','insufficient-memory':'2048'}
+        if mode in memory_modes:os.environ['CODEQL_RAM']=memory_modes[mode]
         if mode!='success':
             os.environ['CODEQL_THREADS']='invalid' if mode=='invalid-threads' else ('1' if mode=='single-thread-success' else ('8' if mode=='clamped-thread-success' else '4'))
         (root/'mode').write_text(mode)
@@ -130,8 +136,9 @@ else:
                       'unknown' if mode=='unknown-profile' else 'included-string-payloads',
                       trace_evaluation=mode=='traced-success')
             assert mode in successes,mode
-        except (ValueError,RuntimeError):
-            assert mode not in successes,(mode,(output/'query.stderr').read_text())
+        except (ValueError,RuntimeError) as error:
+            diagnostics={p.name:p.read_text() for p in output.glob("*.stderr")}
+            assert mode not in successes,(mode,str(error),diagnostics)
         assert cache.read_bytes()==b'original producer cache fixture',mode
         manifest=json.loads((output/'manifest.json').read_text())
         assert manifest['complete']==(mode in successes),mode
@@ -141,6 +148,10 @@ else:
         if mode in successes:
             assert manifest['executionPolicy']['threads']==(2 if mode=='success' else (1 if mode=='single-thread-success' else 4))
             assert manifest['executionPolicy']['maximumThreads']==4
+            expected_memory=8192 if mode=='producer-memory-success' else (6144 if mode=='bounded-memory-success' else 4096)
+            assert manifest['resolvedMemory']['totalMiB']==expected_memory
+            assert manifest['executionPolicy']['maximumMemoryMiB']==8192
+            assert manifest['executionPolicy']['memorySource']==('CODEQL_RAM' if mode in memory_modes else 'default')
             assert manifest['traceEvaluation']==(mode=='traced-success')
             assert (output/'evaluation.jsonl').exists()==(mode=='traced-success')
             assert manifest['profile']=='included-string-payloads'
@@ -155,7 +166,7 @@ else:
         if mode=='query-warning':
             assert manifest['queryRuntimeDiagnostics']==['WARNING: fixture payload unavailable']
             assert manifest['commands'][-1]['name']=='query'
-        if mode in ['unknown-profile','invalid-threads']:
+        if mode in ['unknown-profile','invalid-threads','invalid-memory','insufficient-memory']:
             assert manifest['commands']==[]
             assert (root/'calls.jsonl').read_text()==''
 `;
