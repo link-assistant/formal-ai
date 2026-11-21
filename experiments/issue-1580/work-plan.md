@@ -25,6 +25,8 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
+Latest local validation: [88 executed gates pass](../../docs/case-studies/issue-1580/source-witness-validation-checkpoint.md), with 53 explicit skips and no local Rust build. Rust literal review is 356/373 files and 57,336 lines. Fresh registry observations retain both Chrono consumers; migration remains unresolved.
+
 Successful current-head security observers: [hosted assessment](../../docs/case-studies/issue-1580/successful-security-observers-checkpoint.md). Both original SARIF reports and both opt-in profiles complete; 631 unexpanded positions and per-child semantics remain explicit. The maintained scanner retains 92 warnings and zero violations.
 
 New local repair: [generated source witness checkpoint](../../docs/case-studies/issue-1580/generated-native-registry-repair-checkpoint.md). The current published head is `27e895c1`; its final Pipeline results are still being collected before the next push. The fully collected prior-head account follows.

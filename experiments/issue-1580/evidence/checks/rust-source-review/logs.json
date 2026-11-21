@@ -953,5 +953,55 @@
     "file": "rust-recent-merged-review-08.log.gz",
     "rawSha256": "688f675a2db909e2f6f68f23733344c6d29debe45bc9783c735c00eb9ca4b1c0",
     "archiveSha256": "e14e6814db217a3d333934d4262fb98840a9be00e7a5eb9c5cd98f5e062a30c6"
+  },
+  {
+    "file": "rust-npm-release-review-01.log.gz",
+    "rawSha256": "9e2adfd71dd6d395421e9a5765ae2c4510a80ec0f3b7c20c9e521ccce73bddeb",
+    "archiveSha256": "0d964d3f4c6eae9ba1b315cc6715fb6a81f3a72f9174bcef9a9695fb49974cd6"
+  },
+  {
+    "file": "rust-npm-release-review-02.log.gz",
+    "rawSha256": "37b9d40cb4e3afed15dd0db5932d4a56e1b7e3129f44f8976c0da2471a5108db",
+    "archiveSha256": "02c37e1157d44224dda2d95ca8e1350ed502a645bf2d3c065decadbeff087638"
+  },
+  {
+    "file": "rust-npm-release-review-03.log.gz",
+    "rawSha256": "f50a8ab1c7f4a2cd357672574d65c97607530d332f3e7689458a729291722fcd",
+    "archiveSha256": "e03a810cd09b037a9c1b7d366ff2b9baff77159dfce9a48fdf8d80994625f5b1"
+  },
+  {
+    "file": "rust-npm-release-review-04.log.gz",
+    "rawSha256": "78d0608f9cf31ee38d6cd060c33f22c2c6fa2ff2bffef5e584a88ea75a6da1a2",
+    "archiveSha256": "b9004d91250549ac498e36caa7927806a15b2c21b5ff83649e51fab93a1422e6"
+  },
+  {
+    "file": "rust-npm-release-review-05.log.gz",
+    "rawSha256": "36e86ee119dbd93202d369ca3daabdf55931559d116ddef58e86731a8bbd5770",
+    "archiveSha256": "736c5a121b2272f689a21159757fa9c37c884e499680f3aadd39acc81aaa8909"
+  },
+  {
+    "file": "rust-npm-release-review-06.log.gz",
+    "rawSha256": "5abb94799fedd0832be9283c76668426fa3a2f30d3ef4c5324700860e5e77fb7",
+    "archiveSha256": "a4ba3e535768779ba044cddd731bfa9fa4b1693e25e76343c18de2f2f21bf733"
+  },
+  {
+    "file": "rust-npm-release-review-07.log.gz",
+    "rawSha256": "62b30b7210a372bcefef1ca8bf549a6bce93afc59e5fa7bdf8f85dbe3716afdd",
+    "archiveSha256": "bf6080a5dc3d8d2fe868d8e93061bdff8ac7bdb485e696bb49e8786968232fba"
+  },
+  {
+    "file": "rust-npm-release-review-08.log.gz",
+    "rawSha256": "fb8ef64b48e086d2438b41a4d6d7ebc8df76395a548e4066d327178ccac53b0f",
+    "archiveSha256": "d3c7fa7b6ccd9bb218467d185db38dca6781612a76df9a8f4c4e3f47bf63e450"
+  },
+  {
+    "file": "rust-npm-release-review-09.log.gz",
+    "rawSha256": "9866dbef1574be6288ffe0e88a600d1486a78772a01508ac7e45cd1156965b30",
+    "archiveSha256": "2db97dc1730fa34b21a61edad2c3687624ae7bf8b6fb7c4fb28b0a280952b883"
+  },
+  {
+    "file": "rust-npm-release-review-10.log.gz",
+    "rawSha256": "669c278252624a43d8be4e26290389f05dd331cc2171a37959a9f3da431c296b",
+    "archiveSha256": "cb031e68539d9f8e2bac50f35e7ebc11e8ee92da5ca29ebbc0baaeafee3b6ce2"
   }
 ]

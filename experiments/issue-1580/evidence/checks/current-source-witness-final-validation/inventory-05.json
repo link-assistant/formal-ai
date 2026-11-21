@@ -1,0 +1,114 @@
+[
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/formal_ai_subagent/sandboxes/gates/check-abbreviations.log",
+    "file": "132-check-abbreviations.log.gz",
+    "bytes": 423,
+    "lines": 5,
+    "rawSha256": "4fbb5b7254099b4357aad5545a2ed7fb3351391f5de936615334b6beef5396fd",
+    "archiveSha256": "67624127727d2cbcb27943f9623845b25523fecf7b474ae8a6c53d66dc1a9cd2"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T04-02-34.397Z.json",
+    "file": "133-2026-11-21T04-02-34.397Z.json.gz",
+    "bytes": 1558,
+    "lines": 11,
+    "rawSha256": "6cc26be71f1dc0440bc644c27fe1bc509594ca386756d24e6cdf4ac08e2bd56f",
+    "archiveSha256": "4b5817bb8050077a6ff00c01a88837a473a7722fd10f72a743e9810f66eabffa"
+  },
+  {
+    "source": "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/commands/2026-11-21T04-03-29.035Z.json",
+    "file": "134-2026-11-21T04-03-29.035Z.json.gz",
+    "bytes": 644,
+    "lines": 11,
+    "rawSha256": "e1f3860059a45e6206cbfd0da0765eddafbd7d9e7789c1c04f78427386f94d3e",
+    "archiveSha256": "f1830181de0679f38335acaf7bbf1ea7a241e320eb742478bcd0ca192f646ee0"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-current-witness-validation.log",
+    "file": "135-check-and-commit-current-witness-validation.log.gz",
+    "bytes": 577,
+    "lines": 12,
+    "rawSha256": "53cb73a2bfabe6d989a9a1f8db7d8fd664b460904cef0a502a078a51aef0c282",
+    "archiveSha256": "f40317253051fa805b943f4e9644fc69fb14baca199e8428a48f1320368ca5ef"
+  },
+  {
+    "source": "/tmp/issue-1580-research/check-and-commit-current-witness-validation.py",
+    "file": "136-check-and-commit-current-witness-validation.py.gz",
+    "bytes": 1877,
+    "lines": 32,
+    "rawSha256": "b92e9e35ca62381b2559ddf7b0d5e660656b4d830fc8fdd6a57cc7468ce561a2",
+    "archiveSha256": "a27f52b41d532ed4cd308dcb9adb8adf0609ae1f9f8e6bccb15bfa3ec451d96a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-witness-abbreviation-findings.log",
+    "file": "137-current-witness-abbreviation-findings.log.gz",
+    "bytes": 4070,
+    "lines": 91,
+    "rawSha256": "d2d807d4697efd885ced73a0691841fe09e80c94f51327a7905436afd0ba4b5e",
+    "archiveSha256": "b2d300ac850bc2fd91f5c0e68cfa79125d5bb3022d16f933e607aaba222854f8"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-witness-validation-checks/check-abbreviations.stderr",
+    "file": "138-check-abbreviations.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-witness-validation-checks/check-abbreviations.stdout",
+    "file": "139-check-abbreviations.stdout.gz",
+    "bytes": 156,
+    "lines": 3,
+    "rawSha256": "b6dcc2c54bd6ed60d1cec6456e99fadaf0247bf245c2e459e4da45db7e8209a8",
+    "archiveSha256": "16027952d0c8ebc4128e8aade5ab0d5750b2828fd0440ea841f507b6c997de19"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-witness-validation-checks/check-file-size.stderr",
+    "file": "140-check-file-size.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-witness-validation-checks/check-file-size.stdout",
+    "file": "141-check-file-size.stdout.gz",
+    "bytes": 63,
+    "lines": 3,
+    "rawSha256": "45166100a08b495da00bbeb79fc5901891e8f613c01e58f1e0a4b96cc69fb839",
+    "archiveSha256": "8c9bcd50651b4f74df609c25285589ef5563d5d8df52e8f0f4d62ea78b7ac68a"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-witness-validation-checks/check-readable-code.stderr",
+    "file": "142-check-readable-code.stderr.gz",
+    "bytes": 0,
+    "lines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+  },
+  {
+    "source": "/tmp/issue-1580-research/current-witness-validation-checks/check-readable-code.stdout",
+    "file": "143-check-readable-code.stdout.gz",
+    "bytes": 68,
+    "lines": 3,
+    "rawSha256": "f2e9fa82add05a2ef2bba4204feab97a242ca1edc334c6f44bb3653d112cc39d",
+    "archiveSha256": "5eedd0bed64f0c1854a773bd24647155158b0b9b02f127eeb6e4148ffa16b13e"
+  },
+  {
+    "source": "/tmp/issue-1580-research/list-current-witness-abbreviation-findings.log",
+    "file": "144-list-current-witness-abbreviation-findings.log.gz",
+    "bytes": 188,
+    "lines": 3,
+    "rawSha256": "09fa90c625fb6c6c1d8d420de18cab36adf14c1bc0f19da2be3162fa0c4da66a",
+    "archiveSha256": "4bde931565d75d000ad45d86941b1027ddf505b785b3dd84438fcfe21f9d4ab5"
+  },
+  {
+    "source": "/tmp/issue-1580-research/repair-current-witness-archive-filenames.py",
+    "file": "145-repair-current-witness-archive-filenames.py.gz",
+    "bytes": 4088,
+    "lines": 75,
+    "rawSha256": "4bc85b4707ad2c8cd7b80ee4c77d4952280d7cc3d1b97200bb2581f8fec68c2d",
+    "archiveSha256": "dca13ac63b2f9be87d0131d27e60861631360e8effb7b8fadaad76bb12e15427"
+  }
+]

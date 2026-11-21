@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-11-21T03:36:56.876045+00:00",
+  "observedAt": "2026-11-21T03:55:10.454448+00:00",
   "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
   "sourceCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
   "treeBlobs": 373,
-  "fullyReadFiles": 355,
-  "fullyReadSourceLines": 52823,
+  "fullyReadFiles": 356,
+  "fullyReadSourceLines": 57336,
   "allEightWorkflowsFullyRead": true,
   "all373BlobIdentitiesVerifiedBy": "experiments/issue-1580/evidence/checks/rust-template-first-gate/pinned-file-identities.json",
   "files": [
@@ -1871,6 +1871,33 @@
       "literalReadLines": 1,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false
+    },
+    {
+      "path": "dev/log/issues/247/pulls/248/npm-release.json",
+      "lines": 4513,
+      "sha256": "0724fc531c6c699f492a67b2d43d26ce33a41a2d6a8a1b075bd7120e24316202",
+      "readLogs": [
+        "rust-npm-release-review-01.log.gz",
+        "rust-npm-release-review-02.log.gz",
+        "rust-npm-release-review-03.log.gz",
+        "rust-npm-release-review-04.log.gz",
+        "rust-npm-release-review-05.log.gz",
+        "rust-npm-release-review-06.log.gz",
+        "rust-npm-release-review-07.log.gz",
+        "rust-npm-release-review-08.log.gz",
+        "rust-npm-release-review-09.log.gz",
+        "rust-npm-release-review-10.log.gz"
+      ],
+      "literalReadRanges": [
+        [
+          1,
+          4513
+        ]
+      ],
+      "literalReadLines": 4513,
+      "literalSourceFullyRead": true,
+      "formalAiPracticeImplementationVerified": false,
+      "reviewNote": "All 4,513 numbered source lines were displayed completely across ten contiguous ranges and reassembled byte-for-byte against the pinned original. Most of the artifact is contributor metadata; registry engines, integrity/signatures, dependencies and bundled payload metadata are read without claiming a live registry observation or installation."
     },
     {
       "path": "dev/log/issues/247/pulls/248/pages-bundle-evidence.txt",
@@ -7359,6 +7386,15 @@
       ],
       "assessment": "The complete pinned eight-PR artifact is literally read. Six dependency PRs cover actions, clap, lino-arguments, serde_json, toml and regex; major/runtime/compiler changes, changed offsets and no_std behavior require relevant compatibility checks rather than interpreting a merged bot PR as current verification. PR 240 describes all-external-Docker-stage dependency coverage, exact populated directory semantics, updater bypass controls and a nested Dockerfile negative case. PR 238 describes whole-PR base-to-merge detection, timeout/error aggregation, safe complete SARIF diagnostics, restore-only PR caches, real source-size boundaries and source-scoped sibling release independence. Preserve these actual behavioral controls, require current exact-head proof before publication, and distinguish package-root discovery from native Cargo requirements. This historical conversation artifact has intentionally truncated quoted upstream pages and supplies no independent present Formal AI practice implementation or publication proof.",
       "status": "complete-literal-byte-review-current-practice-runtime-open"
+    },
+    {
+      "practice": "Check package-manager engine compatibility and exact registry artifact identity before a major-tool upgrade",
+      "templateEvidence": [
+        "dev/log/issues/247/pulls/248/npm-release.json:1-500",
+        "dev/log/issues/247/pulls/248/npm-release.json:4341-4513"
+      ],
+      "assessment": "The complete pinned npm 12.2.2 metadata supplies explicit Node engines, registry tarball identity, integrity/signatures, unpacked size, bundled dependencies and publication git identity. Its engines exclude older Node patch releases even within Node 22 and Node 24. For Formal AI dependency-latest and release workflows, a major npm update must be qualified against the selected Node version and actual registry package; a historical metadata artifact, contributor count, latest tag or successful source-only scan cannot establish that compatibility or publication. Preserve exact producer identities and observed failure status. No npm installation or current publication verification is claimed by this literal comparison.",
+      "status": "complete-literal-source-review-current-tool-compatibility-open"
     }
   ],
   "readLogManifest": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json",
