@@ -108,15 +108,7 @@ jobs:
         run: node scripts/build-selected-wasm.mjs verify "$GITHUB_WORKSPACE" js "$WASM_RECEIPT_SHA256"
       - name: Verify browser greetings and issue reporting on the Pages artifact
         timeout-minutes: 5
-        run: |
-          npm ci --prefix rust/tests/e2e --no-audit --no-fund
-          python3 -m http.server 3456 --bind 127.0.0.1 --directory js > "$RUNNER_TEMP/pages-smoke-server.log" 2>&1 &
-          server=$!
-          trap 'kill "$server"' EXIT
-          curl -fsS --retry 5 --retry-connrefused http://127.0.0.1:3456/app/ >/dev/null
-          cd rust/tests/e2e
-          npx playwright install chromium
-          PAGES_URL=http://127.0.0.1:3456/ npx playwright test --config=playwright.pages.smoke.config.js
+        run: bash scripts/verify-browser-artifact.sh js
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:

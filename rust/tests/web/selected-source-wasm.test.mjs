@@ -59,6 +59,22 @@ test('a packaged copy retains the independently pinned receipt and output bytes'
   assert.throws(()=>verifySelectedWasm(f.root,packaged,result.receiptSha256,{requireNative:false}));
 });
 
+test('Pages and desktop release jobs verify greetings and reporting before delivering browser assets', () => {
+  const workflow = name => readFileSync(new URL(`../../../.github/workflows/${name}.yml`, import.meta.url), 'utf8');
+  const ordered = (body, ...steps) => {
+    let previous = -1;
+    for (const step of steps) {
+      const index = body.indexOf(step);
+      assert.ok(index > previous, step);
+      previous = index;
+    }
+  };
+  ordered(workflow('pages-artifact'), 'verify-browser-artifact.sh js', 'actions/upload-pages-artifact@');
+  ordered(workflow('desktop-release'), 'verify-browser-artifact.sh" js', 'name: native-release-source\n');
+  ordered(workflow('desktop-release'), 'verify-browser-artifact.sh" --vsix', 'name: Upload .vsix to release');
+  ordered(workflow('publish-vscode'), '--vsix "${packages[0]}"', 'name: formal-ai-vscode\n');
+});
+
 test('receipt changes cannot be blessed by an unchanged independent digest',t=>{
   const f=fixture(t),result=buildSelectedWasm(f.root,f),path=join(f.root,'js/formal_ai_worker.receipt.json');
   const forged={...result.record,nativeCompilationEvidence:true};writeFileSync(path,JSON.stringify(forged));
