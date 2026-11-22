@@ -108,6 +108,11 @@ pub(super) fn recipe_step(
         }
     }
 
+    let supporting_paths: Vec<&str> = recipe
+        .supporting_files
+        .iter()
+        .map(|file| file.path.as_str())
+        .collect();
     let next_file = || {
         if progress.files_written == 0 {
             Some((&recipe.path, &recipe.source))
@@ -138,7 +143,9 @@ pub(super) fn recipe_step(
                         .iter()
                         .map(|file| (&file.path, &file.source)),
                 )
-                .all(|(path, source)| recipe_file_matches(&observation, path, source));
+                .all(|(path, source)| {
+                    recipe_file_matches(&observation, path, source, &supporting_paths)
+                });
             let observed =
                 super::super::tool_result::failure_message(&failure.reported, true, false);
             let reported = observed
@@ -238,7 +245,9 @@ pub(super) fn recipe_step(
             return Some(one_call(
                 run_tool,
                 json!({
-                    "command": super::super::recipe_resume::recipe_source_command(path)
+                    "command": if progress.files_written == 1 && supporting_paths.len() > 1 {
+                        super::super::recipe_resume::recipe_sources_command(&supporting_paths)
+                    } else { super::super::recipe_resume::recipe_source_command(path) }
                 })
                 .to_string(),
             ));

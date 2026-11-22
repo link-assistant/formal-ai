@@ -1,8 +1,12 @@
+import {mkdtempSync,writeFileSync,readFileSync,readdirSync,symlinkSync,rmSync} from 'node:fs';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {spawnSync} from 'node:child_process';
 import test,{before} from 'node:test';
 import assert from 'node:assert/strict';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
-import {recipeSourceCommand,recipeSourceMatches,recipeSourceUpdateCommand} from '../../../js/agentic/recipe_resume.mjs';
+import {recipeSourceCommand,recipeSourceMatches,recipeSourceUpdateCommand,recipeSourcesCommand,recipeSourcesResult,recipeSourcePreimage} from '../../../js/agentic/recipe_resume.mjs';
 import {recipeProgressAfterLatestUser} from '../../../js/agentic/command_reroute.mjs';
 import {Progress} from '../../../js/agentic/progress.mjs';
 import {reportedExitCode} from '../../../js/agentic/tool_result.mjs';
@@ -66,4 +70,70 @@ test('stdout-only atomic update receipt requires a new byte probe before any art
  update[0].tool_calls[0].id='source-update';update[1].tool_call_id='source-update';messages.push(...update);
  const result=progress(messages);assert.equal(result.failure,null);
  assert.equal(result.source_checked.has(recipe.path),false);assert.equal(result.files_written,0);
+});
+
+test('supporting source batches bind all owners and retain independent mutation epochs',()=>{
+ const supporting=[{path:'test/verify.sh',source:'#!/bin/sh\ntrue\n'},{path:'ci/check.yml',source:'name: held-out\n'}];
+ const paths=supporting.map(file=>file.path),batch={schema:'workspace-sources-v1',success:true,complete:true,
+  observations:supporting.map(file=>({...absent,path:file.path}))};
+ const r={...recipe,supporting_files:supporting};
+ function append(messages,tool,args,content){const id='batch-'+messages.length;messages.push(
+  {role:'assistant',content:'',tool_calls:[{id,type:'function',function:{name:tool,arguments:JSON.stringify(args)}}]},
+  {role:'tool',tool_call_id:id,name:tool,content:JSON.stringify(content)});}
+ function transcript(value=batch){const messages=[{role:'user',content:request}];
+  append(messages,'Write',{path:recipe.path,content:recipe.source},{success:true});
+  append(messages,'Bash',{command:recipeSourcesCommand(paths)},value);return messages;}
+ const state=messages=>recipeProgressAfterLatestUser(messages,'Write',r,r.commands,true);
+ const messages=transcript();assert.equal(state(messages).failure,null);
+ assert.deepEqual([...state(messages).source_checked],paths);
+ assert.equal(state(messages).files_written,1);
+ append(messages,'Write',{path:paths[0],content:supporting[0].source},{success:true});
+ assert.equal(state(messages).source_invalidated,false);
+ assert.equal(recipeSourcePreimage(Progress.scan(messages),paths[1],paths).absent,true);
+ append(messages,'Edit',{path:paths[1],old_string:'old',new_string:'foreign'},{success:true});
+ assert.equal(recipeSourcePreimage(Progress.scan(messages),paths[1],paths),null);
+ assert.equal(state(messages).source_invalidated,true);
+ const identical={...batch,observations:supporting.map(file=>({schema:'workspace-source-v1',path:file.path,success:true,complete:true,absent:false,source:file.source}))};
+ assert.equal(state(transcript(identical)).files_written,3);
+ assert.equal(state(transcript(identical)).source_invalidated,false);
+ const mixed=structuredClone(identical);mixed.observations[0]=batch.observations[0];
+ const remaining=transcript(mixed);assert.equal(state(remaining).files_written,1);
+ append(remaining,'Write',{path:paths[0],content:supporting[0].source},{success:true});
+ assert.equal(state(remaining).files_written,3);
+ for(const change of [
+  value=>value.observations.pop(),value=>value.observations.push(value.observations[0]),
+  value=>value.observations.reverse(),value=>value.observations[1].path='foreign.yml',
+  value=>value.observations[1]=value.observations[0],value=>value.observations[1].complete=false,
+  value=>value.observations[1].truncated=true,value=>value.observations[1].timed_out=true,
+  value=>value.observations[1].signal='SIGTERM',value=>value.observations[1].exit_code=1,
+  value=>value.complete=false,value=>value.success=false,
+ ]){const invalid=structuredClone(batch);change(invalid);
+  assert.equal(recipeSourcesResult(JSON.stringify(invalid),paths),null);
+  assert.notEqual(state(transcript(invalid)).failure,null);}
+ assert.equal(recipeSourcesResult(JSON.stringify(batch),[paths[0],paths[0]]),null);
+ const duplicate=transcript();duplicate.push({...duplicate.at(-1)});
+  assert.deepEqual([...state(duplicate).source_checked],[]);
+  assert.equal(state(duplicate).source_preimages.size,0);
+  assert.equal(state(duplicate).source_invalidated,true);
+  for(const path of paths) assert.equal(recipeSourcePreimage(Progress.scan(duplicate),path,paths),null);
+});
+
+test('the actual bounded batch probe reads existing and absent owners without modifying files',()=>{
+ const root=mkdtempSync(join(tmpdir(),'recipe-source-batch-'));
+ try{
+  const text='English Русский हिन्दी 中文\n';writeFileSync(join(root,'held-out.txt'),text);
+  const paths=['held-out.txt','missing.txt'];
+  const execute=values=>spawnSync('sh',['-c',recipeSourcesCommand(values)],{cwd:root,encoding:'utf8',timeout:5000,maxBuffer:1024*1024});
+  const observed=execute(paths);assert.equal(observed.status,0,observed.stderr);
+  const values=recipeSourcesResult(observed.stdout,paths);
+  assert.equal(values[0].source,text);assert.match(values[0].sha256,/^[a-f0-9]{64}$/u);
+  assert.equal(values[0].identity.length,5);assert.equal(values[1].absent,true);
+  assert.equal(readFileSync(join(root,'held-out.txt'),'utf8'),text);
+  assert.deepEqual(readdirSync(root),['held-out.txt']);
+  assert.notEqual(execute(['held-out.txt','held-out.txt']).status,0);
+  assert.notEqual(execute([]).status,0);
+  assert.notEqual(execute(['../foreign']).status,0);
+  symlinkSync('held-out.txt',join(root,'symbolic.txt'));
+  assert.notEqual(execute(['held-out.txt','symbolic.txt']).status,0);
+ }finally{rmSync(root,{recursive:true,force:true});}
 });

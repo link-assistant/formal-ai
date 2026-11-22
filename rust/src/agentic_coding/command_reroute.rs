@@ -59,7 +59,12 @@ pub(super) fn plan_owned_recipe_recovery(
 mod recipe_execution;
 use recipe_execution::recipe_step;
 
-fn recipe_file_matches(observation: &super::progress::Progress, path: &str, source: &str) -> bool {
+fn recipe_file_matches(
+    observation: &super::progress::Progress,
+    path: &str,
+    source: &str,
+    supporting_paths: &[&str],
+) -> bool {
     if let Some(index) = observation.latest_source_mutation_index(path)
         && let Some(attempt) = observation.research_attempts().get(index)
         && attempt.succeeded
@@ -97,7 +102,11 @@ fn recipe_file_matches(observation: &super::progress::Progress, path: &str, sour
             return true;
         }
     }
-    super::recipe_resume::recipe_source_matches(observation, path, source)
+    if super::recipe_resume::recipe_source_matches(observation, path, source) {
+        return true;
+    }
+    super::recipe_resume::recipe_source_preimage(observation, path, supporting_paths)
+        .is_some_and(|before| !before.absent && before.source.as_deref() == Some(source))
 }
 
 fn recipe_workflow(recipe: &ExecutionRecipe, objective: &str) -> Option<String> {
@@ -287,6 +296,13 @@ impl RecipeProgress {
                         .map(|file| (file.path.as_str(), file.source.as_str())),
                 )
                 .collect();
+        let supporting_paths: Vec<&str> = recipe
+            .supporting_files
+            .iter()
+            .map(|file| file.path.as_str())
+            .collect();
+        let batch_command = (supporting_paths.len() > 1)
+            .then(|| super::recipe_resume::recipe_sources_command(&supporting_paths));
         let mut observed_ids = std::collections::BTreeSet::new();
         for (index, message) in messages.iter().enumerate().skip(start) {
             if message.role != "tool" {
@@ -340,6 +356,13 @@ impl RecipeProgress {
                                     .is_some_and(|(_, retry)| retry == expected)
                         })
                 });
+            let matches_batch = resume
+                && progress.files_written == 1
+                && capability == Some(Capability::Run)
+                && batch_command.as_ref().is_some_and(|expected| {
+                    super::tool_result::command_argument(&call.function.arguments).as_ref()
+                        == Some(expected)
+                });
             let probe_path = files.get(progress.files_written).filter(|(path, _)| {
                 resume
                     && capability == Some(Capability::Run)
@@ -360,10 +383,54 @@ impl RecipeProgress {
                     super::tool_result::command_argument(&call.function.arguments).as_deref()
                         == Some(expected)
                 });
-            if !matches_write && !matches_run && probe_path.is_none() && !matches_update {
+            if !matches_write
+                && !matches_run
+                && probe_path.is_none()
+                && !matches_update
+                && !matches_batch
+            {
                 continue;
             }
             let output = message.content.plain_text();
+            if matches_batch {
+                let observed = super::progress::Progress::scan(&messages[start..=index]);
+                let results = batch_command
+                    .as_deref()
+                    .and_then(|command| {
+                        super::recipe_resume::recipe_source_receipt(&observed, command)
+                    })
+                    .and_then(|receipt| {
+                        super::recipe_resume::recipe_sources_result(receipt, &supporting_paths)
+                    });
+                if let Some(results) = results {
+                    progress.failure = None;
+                    for (path, before) in supporting_paths.iter().zip(results) {
+                        progress.source_checked.insert((*path).to_owned());
+                        progress.source_preimages.insert((*path).to_owned(), before);
+                    }
+                    while let Some((path, source)) = files.get(progress.files_written) {
+                        if !super::recipe_resume::recipe_source_preimage(
+                            &observed,
+                            path,
+                            &supporting_paths,
+                        )
+                        .is_some_and(|before| {
+                            !before.absent && before.source.as_deref() == Some(*source)
+                        }) {
+                            break;
+                        }
+                        progress.files_written += 1;
+                    }
+                } else {
+                    progress.failure_index = Some(index);
+                    progress.failure = Some(StepFailure {
+                        reported: output,
+                        exit_code: None,
+                        from_run: false,
+                    });
+                }
+                continue;
+            }
             if matches_update {
                 let (path, _) = files[progress.files_written];
                 let observation = super::progress::Progress::scan(&messages[start..=index]);
@@ -441,6 +508,20 @@ impl RecipeProgress {
             match capability {
                 _ if matches_write => {
                     progress.files_written += 1;
+                    let observed = super::progress::Progress::scan(&messages[start..=index]);
+                    while let Some((path, source)) = files.get(progress.files_written) {
+                        if !super::recipe_resume::recipe_source_preimage(
+                            &observed,
+                            path,
+                            &supporting_paths,
+                        )
+                        .is_some_and(|before| {
+                            !before.absent && before.source.as_deref() == Some(*source)
+                        }) {
+                            break;
+                        }
+                        progress.files_written += 1;
+                    }
                 }
                 Some(Capability::Run) => {
                     progress.commands_done += 1;
@@ -456,20 +537,27 @@ impl RecipeProgress {
         }
         if resume {
             let observation = super::progress::Progress::scan(messages);
-            if let Some((path, _)) = files.get(progress.files_written)
-                && progress.source_checked.contains(*path)
-                && super::recipe_resume::recipe_source_receipt(
+            // A contradictory callback invalidates every owner from its shared receipt.
+            // Completed writes retain their own exact mutation evidence below.
+            let pending = files.get(progress.files_written).map(|(path, _)| *path);
+            for path in progress.source_checked.clone() {
+                if super::recipe_resume::recipe_source_preimage(
                     &observation,
-                    &super::recipe_resume::recipe_source_command(path),
+                    &path,
+                    &supporting_paths,
                 )
-                .is_none()
-            {
-                progress.source_checked.remove(*path);
-                progress.source_preimages.remove(*path);
-                progress.source_invalidated = true;
+                .is_some()
+                {
+                    continue;
+                }
+                progress.source_checked.remove(&path);
+                progress.source_preimages.remove(&path);
+                if pending == Some(path.as_str()) {
+                    progress.source_invalidated = true;
+                }
             }
             for (index, (path, source)) in files.iter().take(progress.files_written).enumerate() {
-                if !recipe_file_matches(&observation, path, source) {
+                if !recipe_file_matches(&observation, path, source, &supporting_paths) {
                     progress.files_written = index;
                     progress.source_checked.remove(*path);
                     progress.source_invalidated = true;

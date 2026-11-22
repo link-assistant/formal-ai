@@ -123,7 +123,7 @@ function nativeFixtureProbe(language,args){
 }
 
 test('the original Scala compiler failure is correlated with its verifier after physical source probes',{timeout:65000},()=>{
-  const run=nativeFixtureProbe('Scala',['--steps=9']);
+  const run=nativeFixtureProbe('Scala',['--steps=8']);
   const final=run.steps.at(-1).plan;
   assert.equal(final.kind,'final');
   const failure=run.messages.find(message=>message.role==='tool'&&message.content==='/bin/sh: 1: scalac: not found\n');

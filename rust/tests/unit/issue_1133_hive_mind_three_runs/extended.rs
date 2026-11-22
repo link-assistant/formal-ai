@@ -306,8 +306,8 @@ fn a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified
             "bash" => "/bin/sh: 1: scalac: not found\n".to_owned(),
             _ => String::new(),
         },
-        // Three source probes, three writes, issue read, verifier and final answer.
-        9,
+        // Source probes, all owned writes, issue read, verifier and final answer.
+        8,
     );
     let answer = answer.expect("the run must end in a final answer");
     assert!(
