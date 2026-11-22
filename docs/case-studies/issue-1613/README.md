@@ -356,6 +356,15 @@ requirements. All four passed when rerun after the corrections.
 [Full gate run](evidence/verification/round9-full-gates.log) ·
 [Focused rechecks](evidence/verification/round9-gate-rechecks.log)
 
+The same cold replay demonstrated that light speed and painting attribution
+still came from bundled prose. These records now use the exact publisher
+subject and claim. A dimensional Wikidata quantity resolves its unit from
+the unit item and retains its capture digest. Russian painting attribution
+tries the painting relation if the exact subject has no book authorship
+claim. The source captures stay in the test transport and the case archive.
+[Before](evidence/verification/round10-fact-offline-baseline.log) ·
+[Publisher replay](evidence/verification/round10-final-live-fact-parity.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,

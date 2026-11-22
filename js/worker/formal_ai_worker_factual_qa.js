@@ -618,21 +618,31 @@ function factBoundedSubject(subject) {
 
 /** Formalize a fact question from its relation and one subject clause. */
 function factLiveQuestion(prompt) {
+  return factLiveQuestions(prompt)[0] ?? null;
+}
+
+function factLiveQuestions(prompt) {
   const normalized = normalizePrompt(prompt);
   const mentions = (text, meaning) => meaning.words.some((word) => factualQaLocate(text, normalizePrompt(word)) >= 0);
-  const relation = meaningsWithRole("fact_relation").find((meaning) => mentions(normalized, meaning));
-  if (!relation || !/^P[0-9]+$/.test(factRelationProperty(relation.slug))) return null;
-  const clause = String(prompt).split(/[,;:()—!?，；：。？]/u).map(normalizePrompt).find((part) => mentions(part, relation)) ?? normalized;
-  const surface = relation.words.map(normalizePrompt).sort((left, right) => right.length - left.length)
-    .find((word) => factualQaLocate(clause, word) >= 0);
-  if (!surface) return null;
-  const at = factualQaLocate(clause, surface);
+  const clauses = String(prompt).split(/[,;:()—!?，；：。？]/u).map(normalizePrompt);
   const stops = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD)
-    .concat(factualQaSurfaces(FACTUAL_QA_ROLE_INTERROGATIVE), factualQaSurfaces("fact_subject_connector"));
-  const left = factTrimSubject(clause.slice(0, at), stops);
-  const right = factTrimSubject(clause.slice(at + surface.length), stops);
-  const subjectTerm = !(left && right) && factBoundedSubject(left || right);
-  return subjectTerm ? { relation: relation.slug, subjectTerm } : null;
+    .concat(factualQaSurfaces(FACTUAL_QA_ROLE_INTERROGATIVE), factualQaSurfaces("fact_subject_connector"))
+    .sort((left, right) => right.length - left.length);
+  const questions = [];
+  for (const relation of meaningsWithRole("fact_relation")) {
+    if (!/^P[0-9]+$/.test(factRelationProperty(relation.slug)) || !mentions(normalized, relation)) continue;
+    const clause = clauses.find((part) => mentions(part, relation)) ?? normalized;
+    const surface = relation.words.map(normalizePrompt).sort((left, right) => right.length - left.length)
+      .find((word) => factualQaLocate(clause, word) >= 0);
+    if (!surface) continue;
+    const at = factualQaLocate(clause, surface);
+    const left = factTrimSubject(clause.slice(0, at), stops);
+    const right = factTrimSubject(clause.slice(at + surface.length), stops);
+    const subjectTerm = !(left && right) && factBoundedSubject(left || right);
+    if (subjectTerm) questions.push({ relation: relation.slug, subjectTerm, length: surface.length });
+  }
+  return questions.sort((left, right) => right.length - left.length)
+    .map(({ relation, subjectTerm }) => ({ relation, subjectTerm }));
 }
 
 /**

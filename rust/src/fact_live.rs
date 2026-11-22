@@ -106,17 +106,31 @@ fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
 
 // In Russian a feminine singular noun at the head of a name can take an
 // accusative ending in the question. Search the original name first.
-fn nominative_subject(term: &str, language: &str) -> Option<String> {
+fn nominative_subjects(term: &str, language: &str) -> Vec<String> {
     if language != "ru" {
-        return None;
+        return Vec::new();
     }
-    let head = term.split_whitespace().next()?;
-    let stem = head.strip_suffix('у').or_else(|| head.strip_suffix('ю'))?;
-    if stem.chars().count() < 2 || !stem.chars().all(|ch| matches!(ch, 'а'..='я' | 'ё')) {
-        return None;
+    let nominate = |word: &str| {
+        let stem = word.strip_suffix(['у', 'ю'])?;
+        (stem.chars().count() >= 2 && stem.chars().all(|ch| matches!(ch, 'а'..='я' | 'ё')))
+            .then(|| format!("{stem}{}", if word.ends_with('у') { 'а' } else { 'я' }))
+    };
+    let Some(head) = term.split_whitespace().next() else {
+        return Vec::new();
+    };
+    let mut alternatives = Vec::new();
+    if let Some(nominative) = nominate(head) {
+        alternatives.push(format!("{nominative}{}", &term[head.len()..]));
     }
-    let ending = if head.ends_with('у') { 'а' } else { 'я' };
-    Some(format!("{stem}{ending}{}", &term[head.len()..]))
+    let full = term
+        .split_whitespace()
+        .map(|word| nominate(word).unwrap_or_else(|| word.to_owned()))
+        .collect::<Vec<_>>()
+        .join(" ");
+    if full != term && !alternatives.contains(&full) {
+        alternatives.push(full);
+    }
+    alternatives
 }
 
 fn entity<'a>(document: &'a Value, qid: &str) -> Option<&'a Value> {
@@ -168,8 +182,16 @@ fn claim_value(claim: &Value) -> Option<(Option<String>, String)> {
         let (integer, fraction) = decimal.unwrap_or((unsigned, "0"));
         let digits =
             |text: &str| !text.is_empty() && text.bytes().all(|byte| byte.is_ascii_digit());
-        return (digits(integer) && digits(fraction))
-            .then(|| (None, amount.trim_start_matches('+').to_owned()));
+        if !digits(integer) || !digits(fraction) {
+            return None;
+        }
+        let unit = match value.get("unit") {
+            Some(unit) if unit.as_str()? != "1" => {
+                Some(unit_identifier(unit.as_str()?)?.to_owned())
+            }
+            Some(_) | None => None,
+        };
+        return Some((unit, amount.trim_start_matches('+').to_owned()));
     }
     if let Some(date) = fact_date(value) {
         return Some((None, date));
@@ -178,6 +200,13 @@ fn claim_value(claim: &Value) -> Option<(Option<String>, String)> {
         .as_str()
         .filter(|text| !text.trim().is_empty())
         .map(|text| (None, text.to_owned()))
+}
+
+fn unit_identifier(unit: &str) -> Option<&str> {
+    let (_, tail) = unit.split_once("://")?;
+    let id = tail.strip_prefix("www.wikidata.org/entity/")?;
+    (is_item_identifier(id) && (unit.starts_with("https://") || unit.starts_with("http://")))
+        .then_some(id)
 }
 
 /// Render a Gregorian date at the precision declared by Wikidata.
@@ -305,9 +334,10 @@ pub fn resolve_facts_live<T: SourceTransport>(
     let original = search(subject_term)?;
     let mut candidates = matching_search_hits(original.bytes(), subject_term);
     let mut captures = vec![original];
-    if candidates.is_empty()
-        && let Some(term) = nominative_subject(subject_term, language)
-    {
+    for term in nominative_subjects(subject_term, language) {
+        if !candidates.is_empty() {
+            break;
+        }
         let capture = search(&term)?;
         candidates = matching_search_hits(capture.bytes(), &term);
         captures.push(capture);
@@ -360,7 +390,11 @@ pub fn resolve_facts_live<T: SourceTransport>(
                     continue;
                 };
                 evidence.push(value_capture);
-                value_label
+                if literal.is_empty() {
+                    value_label
+                } else {
+                    format!("{literal} {value_label}")
+                }
             }
             None => literal,
         };

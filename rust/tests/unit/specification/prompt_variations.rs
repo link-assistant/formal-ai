@@ -658,10 +658,10 @@ const ENGLISH_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
     ("Which city is Japan's capital?", Some("Q17")),
     ("What is the capital of Russia?", Some("Q159")),
     ("Which city is Russia's capital?", Some("Q159")),
-    ("Who painted the Mona Lisa?", None),
-    ("Who is the painter of the Mona Lisa?", None),
-    ("What is the speed of light?", None),
-    ("How fast is the speed of light?", None),
+    ("Who painted the Mona Lisa?", Some("Q12418")),
+    ("Who is the painter of the Mona Lisa?", Some("Q12418")),
+    ("What is the speed of light?", Some("Q2111")),
+    ("How fast is the speed of light?", Some("Q2111")),
 ];
 
 const RUSSIAN_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
@@ -671,8 +671,8 @@ const RUSSIAN_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
     ("Какова столица Японии?", Some("Q17")),
     ("Какова столица России?", Some("Q159")),
     ("столица россии", Some("Q159")),
-    ("Кто написал Мону Лизу?", None),
-    ("Чему равна скорость света?", None),
+    ("Кто написал Мону Лизу?", Some("Q12418")),
+    ("Чему равна скорость света?", Some("Q2111")),
 ];
 
 const HINDI_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
@@ -680,8 +680,8 @@ const HINDI_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
     ("एफिल टॉवर कब बनी?", None),
     ("जापान की राजधानी क्या है?", Some("Q17")),
     ("रूस की राजधानी क्या है?", Some("Q159")),
-    ("मोना लिसा किसने बनाई?", None),
-    ("प्रकाश की गति कितनी है?", None),
+    ("मोना लिसा किसने बनाई?", Some("Q12418")),
+    ("प्रकाश की गति कितनी है?", Some("Q2111")),
 ];
 
 const CHINESE_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
@@ -689,8 +689,8 @@ const CHINESE_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
     ("埃菲尔铁塔建于何时?", None),
     ("日本的首都是什么?", Some("Q17")),
     ("俄罗斯的首都是什么?", Some("Q159")),
-    ("蒙娜丽莎是谁画的?", None),
-    ("光速是多少?", None),
+    ("蒙娜丽莎是谁画的?", Some("Q12418")),
+    ("光速是多少?", Some("Q2111")),
 ];
 
 #[test]

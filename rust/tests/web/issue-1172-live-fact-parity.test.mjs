@@ -10,6 +10,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+import { wikidataFixture } from "./support/fact-fixtures.mjs";
 
 const REFERENCE_URL = "https://www.example.gov.au/about/capital";
 const AUSTRALIA = {
@@ -88,7 +89,10 @@ test("the question is formalized from seed cues, as the native twin", async () =
     relation: "population",
     subjectTerm: "new zealand",
   });
-  assert.equal(await call(`factLiveQuestion(${literal("What is the speed of light?")})`), null);
+  assert.deepEqual(await call(`factLiveQuestion(${literal("What is the speed of light?")})`), {
+    relation: "physical_constant",
+    subjectTerm: "speed of light",
+  });
   assert.deepEqual(await call(`factLiveQuestion(${literal("澳大利亚的首都是什么？")})`), {
     relation: "capital",
     subjectTerm: "澳大利亚",
@@ -114,6 +118,45 @@ test("R3: a claim citing no reference points at the subject snapshot", async () 
     answer.content,
     "Wikidata states that the population of Australia is 27122411. Source: https://www.wikidata.org/wiki/Special:EntityData/Q408.json",
   );
+});
+
+test("quantities and painting attribution require the subject, property and labeled value from the publisher", async () => {
+  const fresh = createWorkerContext();
+  const sourceFetch = fresh.fetch;
+  const requests = [];
+  const subjects = new Map([
+    ["speed of light", "Q2111"], ["mona lisa", "Q12418"], ["мона лиза", "Q12418"],
+  ]);
+  fresh.fetch = async (url, options) => {
+    const target = new URL(String(url), "http://localhost");
+    if (target.hostname !== "www.wikidata.org") return sourceFetch(url, options);
+    requests.push(target.href);
+    const term = target.searchParams.get("search");
+    const subject = subjects.get(term?.toLowerCase());
+    const body = term && !subject ? { search: [] } : wikidataFixture(target, subject, "live-entities");
+    return { ok: Boolean(body), status: body ? 200 : 404, text: async () => JSON.stringify(body) };
+  };
+  await evaluate(fresh, "loadSeed()");
+  const ask = async (prompt, preferences = {}) => plain(await fresh.solve(prompt, [], preferences));
+  const speed = "What is the speed of light?";
+  const painter = "Who painted the Mona Lisa?";
+  for (const prompt of [speed, painter]) {
+    const cold = await ask(prompt, { offline: true });
+    assert.notEqual(cold.intent, "fact_query", prompt);
+    assert.doesNotMatch(cold.content, /299792458|Leonardo da Vinci/u, prompt);
+  }
+  assert.deepEqual(requests, []);
+  const quantity = await ask(speed);
+  assert.equal(quantity.intent, "fact_query");
+  assert.match(quantity.content, /299792458 (metre|meter) per second/u);
+  assert.ok(quantity.evidence.some((link) => /Q182429.*sha256=[0-9a-f]{64}/u.test(link)), quantity.evidence.join("\n"));
+  const attributed = await ask(painter);
+  assert.equal(attributed.intent, "fact_query");
+  assert.match(attributed.content, /Leonardo da Vinci/u);
+  const russian = await ask("Кто написал Мону Лизу?");
+  assert.equal(russian.intent, "fact_query", JSON.stringify(requests));
+  assert.match(russian.content, /Леонардо да Винчи/u);
+  assert.ok(russian.evidence.includes("fact_query:relation:painter_of_painting"));
 });
 
 test("R3: an authorship answer reads through the relation's own seeded phrasing", async () => {

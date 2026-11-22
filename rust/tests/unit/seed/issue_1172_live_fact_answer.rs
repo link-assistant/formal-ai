@@ -127,8 +127,13 @@ fn unseeded_question_is_formalized_from_seed_cues() {
             subject_term: "new zealand".to_owned(),
         })
     );
-    // `physical_constant` is grounded in an item, not a property.
-    assert_eq!(live_fact_question("What is the speed of light?"), None);
+    assert_eq!(
+        live_fact_question("What is the speed of light?"),
+        Some(LiveFactQuestion {
+            relation: "physical_constant".to_owned(),
+            subject_term: "speed of light".to_owned(),
+        })
+    );
     for (prompt, expected) in [
         ("澳大利亚的首都是什么？", "澳大利亚"),
         (

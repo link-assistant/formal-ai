@@ -32,15 +32,16 @@ impl SourceTransport for CapitalTransport<'_> {
                 "unhandled fixture URL: {url}"
             )));
         }
-        std::fs::read(
-            concat!(
-                env!("CARGO_MANIFEST_DIR"),
-                "/tests/fixtures/fact-claims/entities/"
-            )
-            .to_owned()
-                + name,
-        )
-        .map_err(|error| FetchError::Transport(error.to_string()))
+        let root =
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/fact-claims");
+        std::fs::read(root.join("entities").join(name))
+            .or_else(|error| {
+                if error.kind() == std::io::ErrorKind::NotFound {
+                    return std::fs::read(root.join("live-entities").join(name));
+                }
+                Err(error)
+            })
+            .map_err(|error| FetchError::Transport(error.to_string()))
     }
 }
 
@@ -65,6 +66,26 @@ pub(super) fn fact_answer(prompt: &str, subject: &str) -> SymbolicAnswer {
         &client,
     )
     .unwrap_or_else(|| panic!("unanswered fact: {prompt}"))
+}
+
+#[test]
+fn publisher_quantity_units_and_painting_attribution_are_resolved() {
+    let speed = fact_answer("What is the speed of light?", "Q2111");
+    assert!(speed.answer.contains("299792458 metre per second"));
+    assert!(
+        speed
+            .evidence_links
+            .iter()
+            .any(|link| link.contains("Q182429"))
+    );
+    let painter = fact_answer("Кто написал Мону Лизу?", "Q12418");
+    assert!(painter.answer.contains("Леонардо да Винчи"));
+    assert!(
+        painter
+            .evidence_links
+            .iter()
+            .any(|link| link == "wikidata:Q762")
+    );
 }
 //
 // (country_label, expected_subject_qid, expected_value_qid, expected_answer, prompts)

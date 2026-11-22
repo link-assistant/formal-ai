@@ -81,10 +81,10 @@ test("#1172 R2: an unseeded subject is never answered from another record", asyn
   }
 });
 
-test("#1172 R2: Q-id-less records keep the word-boundary alias hint as the last resort", async () => {
+test("#1172 R2: the subject gate cannot return the retired painting attribution", async () => {
   const answer = await solve("Who painted the Mona Lisa?");
-  assert.equal(answer.intent, "fact_lookup");
-  assert.ok(answer.evidence.includes("fact_lookup:subject_gate:surface_hint"), JSON.stringify(answer.evidence));
+  assert.notEqual(answer.intent, "fact_lookup");
+  assert.doesNotMatch(String(answer.content), /Leonardo da Vinci/u);
 });
 
 // ---- R6: seeded comparisons ----------------------------------------------

@@ -83,33 +83,42 @@ meanings
     grounded-in P170
     defined-by knowledge_relation
     role fact_relation
-    lexeme en "who painted" painted painter artist
-    lexeme ru "кто написал" написал художник
-    lexeme hi "किसने बनाई" चित्रकार कलाकार
-    lexeme zh 谁画的 画家
-    lexeme es "quién pintó" pintó pintor pintora artista
+    lexeme en painter "who painted" "painter of" painted artist
+    lexeme ru художник "кто написал" написал
+    lexeme hi चित्रकार "किसने बनाई" कलाकार
+    lexeme zh 画家 是谁画的 谁画的
+    lexeme es pintor "quién pintó" pintó pintora artista
   built_year
     grounded-in P571
     defined-by knowledge_relation
     role fact_relation
-    lexeme en built construction
-    lexeme ru когда построена построили
-    lexeme hi बनी बनाई
-    lexeme zh 建于 建造 建成
-    lexeme es construido construida construcción fundado fundada
+    lexeme en inception built "construction of" construction
+    lexeme ru "начало строительства" когда построена построили
+    lexeme hi "निर्माण की शुरुआत" बनी बनाई
+    lexeme zh 始建日期 建于 建造 建成
+    lexeme es fundación construido construida construcción fundado fundada
   physical_constant
-    grounded-in Q173227
+    grounded-in P1181
     defined-by knowledge_relation
     role fact_relation
-    lexeme en "speed of light" "what is" "how fast"
-    lexeme ru "скорость света" какова "чему равна"
-    lexeme hi "प्रकाश की गति" कितनी
-    lexeme zh 光速 是多少
-    lexeme es "velocidad de la luz" "cuál es" "qué tan rápido"
+    lexeme en "numeric value" "what is" "how fast" "what is the value of"
+    lexeme ru "численное значение" какова "чему равна" "чему равен"
+    lexeme hi "संख्यात्मक मान" कितनी कितना
+    lexeme zh 数值 是多少 多快
+    lexeme es "valor numérico" "cuál es" "qué tan rápido"
+  inventor
+    grounded-in P61
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en inventor "who created" "who made" "who invented" "created by"
+    lexeme ru изобретатель "кто создал" "кто изобрёл"
+    lexeme hi आविष्कारक "किसने बनाया" "किसने आविष्कार किया"
+    lexeme zh 发明者 谁创建了 谁发明了 谁创造了
+    lexeme es inventor "quién creó" "quién inventó" inventora
   fact_subject_connector
     defined-by knowledge_subject
     role fact_subject_connector
-    lexeme en "s" "which city" "what city"
+    lexeme en "s" "which city" "what city" "what year" "year did" start
     lexeme ru "какая" "какое" "каков" "какова"
     lexeme hi "क्या है" "कौन सा"
     lexeme zh "是什么" "是什麼"

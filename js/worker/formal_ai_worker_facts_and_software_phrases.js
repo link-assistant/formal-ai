@@ -561,7 +561,10 @@ function wikidataValue(value) {
   if (typeof value === "string" && value.trim()) return { label: value };
   if (/^Q[0-9]+$/.test(value?.id)) return { qid: value.id };
   if (/^[+-]?[0-9]+(?:\.[0-9]+)?$/.test(value?.amount)) {
-    return { label: value.amount.replace(/^\+/, "") };
+    const label = value.amount.replace(/^\+/, "");
+    if (!value.unit || value.unit === "1") return { label };
+    const unit = /^https?:\/\/www\.wikidata\.org\/entity\/(Q[0-9]+)$/u.exec(value.unit);
+    return unit ? { label, qid: unit[1] } : null;
   }
   const time = /^([+-][0-9]{4,})-([0-9]{2})-([0-9]{2})T/.exec(value?.time || "");
   if (time && value.precision >= 9 && value.calendarmodel?.endsWith("/Q1985727")) {
@@ -583,11 +586,17 @@ async function wikidataFactCandidates(subjectTerm, language, preferences, forceF
   const captures = [];
   if (log) log.push(`fact_query:wbsearchentities:request:${subjectTerm}`);
   let hits = await wikidataSearchEntities(subjectTerm, language, options, captures);
-  // A feminine singular head noun may use the accusative in the question.
+  // A feminine singular noun may use the accusative in the question.
   if (!hits.length && language === "ru") {
-    const term = subjectTerm.replace(/^([а-яё]{2,})([ую])(?=\s|$)/iu,
+    const nominate = (word) => word.replace(/^([а-яё]{2,})([ую])$/iu,
       (_, stem, ending) => stem + (ending.toLowerCase() === "у" ? "а" : "я"));
-    if (term !== subjectTerm) hits = await wikidataSearchEntities(term, language, options, captures);
+    const [head, ...tail] = subjectTerm.split(/\s+/u);
+    const terms = new Set([[nominate(head), ...tail].join(" "), [head, ...tail].map(nominate).join(" ")]);
+    terms.delete(subjectTerm);
+    for (const term of terms) {
+      hits = await wikidataSearchEntities(term, language, options, captures);
+      if (hits.length) break;
+    }
   }
   if (!hits.length && log) log.push("fact_query:wbsearchentities:no_match");
   const candidates = [];
@@ -622,7 +631,8 @@ async function realizeWikidataFact(query, { subject, entity, claim }, { options,
   if (valueQid) {
     if (log) log.push(`fact_query:label_resolve:request:${valueQid}`);
     const valueEntity = await wikidataFactEntity(valueQid, query.language, false, options, captures);
-    valueLabel = factEntityLabel(valueEntity, query.language);
+    const label = factEntityLabel(valueEntity, query.language);
+    valueLabel = label ? [value.label, label].filter(Boolean).join(" ") : "";
     if (log) log.push(valueLabel ? `fact_query:label_resolve:${valueLabel}` : "fact_query:label_resolve:miss");
   } else if (log) {
     log.push(`fact_query:literal:${valueLabel}`);
@@ -687,7 +697,16 @@ async function tryFactQuery(prompt, normalized, preferences) {
   }
 
   // Stage 2: Wikidata resolution.
-  const resolved = await resolveFactQueryViaWikidata(query, trace, preferences);
+  let resolved = await resolveFactQueryViaWikidata(query, trace, preferences);
+  if (!resolved) {
+    const subject = normalizePrompt(query.subjectTerm);
+    const alternatives = factLiveQuestions(prompt).filter((candidate) =>
+      candidate.relation !== query.relation && candidate.subjectTerm === subject);
+    for (const { relation } of alternatives) {
+      resolved = await resolveFactQueryViaWikidata({ ...query, relation }, trace, preferences);
+      if (resolved) break;
+    }
+  }
   if (!resolved) {
     trace.push("fact_query:wikidata:no_match");
     return null;
@@ -713,6 +732,7 @@ async function tryFactQuery(prompt, normalized, preferences) {
 }
 
 async function tryWikipediaLookup(prompt, language, preferences) {
+  if (preferences?.offline === true || preferences?.allowNetwork === false || preferences?.externalServiceMediawikiFamily === false) return null;
   const query = extractConceptQuery(prompt);
   if (!query) return null;
   // Avoid hitting the network for terms that already resolved in CONCEPTS;
@@ -797,6 +817,7 @@ async function tryWikipediaLookup(prompt, language, preferences) {
 }
 
 async function tryWikipediaArticleQuestion(prompt, language, preferences) {
+  if (preferences?.offline === true || preferences?.allowNetwork === false || preferences?.externalServiceMediawikiFamily === false) return null;
   const term = extractWikipediaArticleQuestionTerm(prompt);
   if (!term) return null;
   const query = refineWikipediaArticleQuestionLookup(term, language);

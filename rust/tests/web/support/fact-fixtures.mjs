@@ -13,7 +13,7 @@ export async function loadHistoricalFactFixtures(worker) {
   evaluate(worker, "FACTS = FACTS.concat(derivedCaptureFacts(factFixtureRaw));");
 }
 
-export function wikidataFixture(url, subject) {
+export function wikidataFixture(url, subject, directory = "entities") {
   const target = new URL(url);
   if (target.hostname !== "www.wikidata.org") return null;
   if (target.searchParams.get("action") === "wbsearchentities") {
@@ -22,5 +22,5 @@ export function wikidataFixture(url, subject) {
   }
   const entity = target.searchParams.get("ids") || target.pathname.split("/").at(-1)?.split(".")[0];
   if (!/^Q[0-9]+$/u.test(entity)) return null;
-  return JSON.parse(readFileSync(new URL(`../../fixtures/fact-claims/entities/${entity}.json`, import.meta.url), "utf8"));
+  return JSON.parse(readFileSync(new URL(`../../fixtures/fact-claims/${directory}/${entity}.json`, import.meta.url), "utf8"));
 }

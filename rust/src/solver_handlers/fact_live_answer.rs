@@ -23,9 +23,7 @@
 //! instead of guessing. The browser twin of R3 is `resolveFactQueryViaWikidata`
 //! with `factLiveAnswer` (`js/worker/formal_ai_worker_factual_qa.js`).
 
-use super::factual_qa::{
-    locate, question_relation, relation_clause, relation_label, render_template, role_surfaces,
-};
+use super::factual_qa::{locate, relation_clause, relation_label, render_template, role_surfaces};
 use super::finalize_simple;
 use crate::coding::contains_cjk;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
@@ -98,31 +96,58 @@ fn bounded_subject(text: &str) -> Option<String> {
 /// Formalize a fact question from its relation and one subject clause.
 #[must_use]
 pub fn live_fact_question(prompt: &str) -> Option<LiveFactQuestion> {
+    live_fact_questions(prompt).into_iter().next()
+}
+
+fn live_fact_questions(prompt: &str) -> Vec<LiveFactQuestion> {
     let normalized = normalize_prompt(prompt);
-    let relation = question_relation(&normalized)?;
-    if !is_property_id(&relation.wikidata) {
-        return None;
-    }
-    let clause = normalize_prompt(relation_clause(prompt, Some(relation)));
+    let mut stops = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
+    stops.extend(role_surfaces(seed::ROLE_INTERROGATIVE_OPENER));
+    stops.extend(role_surfaces("fact_subject_connector"));
+    stops.sort_by_key(|word| std::cmp::Reverse(word.len()));
+    let mut candidates: Vec<_> = seed::lexicon()
+        .meanings_with_role(seed::ROLE_FACT_RELATION)
+        .filter(|relation| is_property_id(&relation.wikidata))
+        .filter_map(|relation| extract_live_fact_question(prompt, &normalized, relation, &stops))
+        .collect();
+    candidates.sort_by_key(|(_, length)| std::cmp::Reverse(*length));
+    candidates
+        .into_iter()
+        .map(|(question, _)| question)
+        .collect()
+}
+
+fn extract_live_fact_question(
+    prompt: &str,
+    normalized: &str,
+    relation: &seed::Meaning,
+    stops: &[String],
+) -> Option<(LiveFactQuestion, usize)> {
+    let raw = relation_clause(prompt, Some(relation));
+    let clause = if raw == prompt {
+        std::borrow::Cow::Borrowed(normalized)
+    } else {
+        std::borrow::Cow::Owned(normalize_prompt(raw))
+    };
     let (at, surface) = relation
         .words()
         .map(normalize_prompt)
         .filter_map(|surface| locate(&clause, &surface).map(|at| (at, surface)))
         .max_by_key(|(_, surface)| surface.len())?;
-    let mut stops = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
-    stops.extend(role_surfaces(seed::ROLE_INTERROGATIVE_OPENER));
-    stops.extend(role_surfaces("fact_subject_connector"));
-    let left = trim_subject(&clause[..at], &stops);
-    let right = trim_subject(&clause[at + surface.len()..], &stops);
+    let left = trim_subject(&clause[..at], stops);
+    let right = trim_subject(&clause[at + surface.len()..], stops);
     let subject_term = match (left, right) {
         ("", right) => bounded_subject(right),
         (left, "") => bounded_subject(left),
         _ => None,
     }?;
-    Some(LiveFactQuestion {
-        relation: relation.slug.clone(),
-        subject_term,
-    })
+    Some((
+        LiveFactQuestion {
+            relation: relation.slug.clone(),
+            subject_term,
+        },
+        surface.len(),
+    ))
 }
 
 /// Answer an unseeded fact question from Wikidata (issue #1172 R3).
@@ -134,8 +159,25 @@ pub fn try_fact_live_answer<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
-    let question = live_fact_question(prompt)?;
     let language = detect_language(prompt).slug();
+    let mut questions = live_fact_questions(prompt).into_iter();
+    let first = questions.next()?;
+    answer_live_fact_question(prompt, &first, language, log, client).or_else(|| {
+        questions
+            .filter(|question| question.subject_term == first.subject_term)
+            .find_map(|question| {
+                answer_live_fact_question(prompt, &question, language, log, client)
+            })
+    })
+}
+
+fn answer_live_fact_question<T: SourceTransport>(
+    prompt: &str,
+    question: &LiveFactQuestion,
+    language: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
     record_fact_question(log, prompt, &question.relation, &question.subject_term);
     log.append("fact_live:relation", question.relation.as_str());
     log.append("fact_live:subject", question.subject_term.as_str());
@@ -143,7 +185,7 @@ pub fn try_fact_live_answer<T: SourceTransport>(
         match resolve_fact_live(client, &question.relation, &question.subject_term, language) {
             Ok(Some(statement)) => statement,
             Ok(None) => {
-                log.append("fact_live:no_match", question.subject_term);
+                log.append("fact_live:no_match", question.subject_term.as_str());
                 return None;
             }
             Err(error) => {
