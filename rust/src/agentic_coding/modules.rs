@@ -166,6 +166,7 @@ pub use dreaming_audit::{DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK, is_dreaming_a
 pub use driver::{
     CORE_RECIPE_TOOLS, DRIVER_TOOLS, DriverOutcome, DriverToolStep, run_agentic_task,
     run_agentic_task_in, run_agentic_task_with_source_fetch, run_agentic_task_with_tools,
+    run_agentic_task_with_tools_and_source_fetch,
 };
 pub use execution_learning::{
     EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK, is_execution_learning_task,
@@ -174,8 +175,8 @@ pub use explain::{EXPLAIN_PATH, EXPLAIN_TASK, is_explain_task};
 pub use external_benchmark_learning::EXTERNAL_BENCHMARK_LEARNING_PATH;
 pub(crate) use file_read::supplied_file_answer;
 pub use formalize::{
-    CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, FormalizationSummary, FormalizedKnowledgeBase,
-    PRIMITIVE_KINDS, coverage_line, formalize_text_to_links,
+    FISHERMAN_DOC_ID, FormalizationSummary, FormalizedKnowledgeBase, PRIMITIVE_KINDS,
+    coverage_line, formalize_text_to_links,
 };
 pub use google_trends_catalog::{
     GOOGLE_TRENDS_CATALOG_PATH, GOOGLE_TRENDS_CATALOG_TASK, is_google_trends_catalog_task,
@@ -210,12 +211,8 @@ pub use link_edit_rules::{
     LinkEditError, LinkEditReport, LinkEditRule, RuleDocument, RuleShape, apply_link_edit,
     insert_members_via_links, parse_rule_document, rule_shapes,
 };
-pub use meaning_detail::{
-    MEANING_DETAIL_TASK, POTATO_DETAIL_TASK, concept_for_task, enrich_block, is_meaning_detail_task,
-};
-pub use planner::{
-    AgenticPlan, CANONICAL_SOURCE_URL, KB_PATH, PlannedToolCall, SEARCH_QUERY, plan_chat_step,
-};
+pub use meaning_detail::{concept_for_task, enrich_block, is_meaning_detail_task};
+pub use planner::{AgenticPlan, KB_PATH, PlannedToolCall, plan_chat_step, publication_url};
 pub use procedure::{COMPILED_PROCEDURE_PATH, compile_task as compile_procedure_task};
 pub use progress::owned_creation_readback_command;
 pub use question_catalog::{

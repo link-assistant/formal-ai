@@ -283,17 +283,12 @@ small state machine:
 web_search → web_fetch → write_file(formalize) → run_command(verify) → final
 ```
 
-Each step is taken only if the conversation has no prior result for that
-capability **and** the CLI advertised a tool providing it, so the planner adapts
-to whatever subset of tools a given CLI exposes. Tool *errors* are observed: a
-fetch result that looks like an error is not trusted as source text, and the
-formalizer falls back to the canonical synopsis so the loop still completes with
-a stable, all-nine-primitive knowledge base. The fallback has a cost the
-completion report now states: the answer then describes the canonical tale
-rather than the requested task, and since issue #1138 B4 the report counts the
-needs the formalizer raised against the needs it grounded, so the fallback
-cannot pass as coverage.
-
+The planner uses the capabilities the CLI advertises and records which calls
+already returned. Caller-supplied text can be formalized directly. A registered
+publication requires a tool result for its publisher URL. The planner checks
+the returned title and extracts the declared article body. If the result is
+missing or invalid, the planner reports the source gap before writing a
+knowledge base.
 ### The eight steps
 
 Each step is one `meta_step` record in the recipe; instantiate them in order to
@@ -302,18 +297,16 @@ make the Formal AI solve a new task in agentic mode:
 1. **Recognise the agentic task** by role from the seeded lexicon
    (`ROLE_AGENT_ACTION_FORMALIZE_VERB`) — a non-match yields `None`, so agentic
    coding stays strictly opt-in and ordinary chat is untouched.
-2. **Derive the plan from the task's own unresolved needs.** The source text is the
-   one the task quotes or names; the search query is built from the surfaces
-   `ConceptGraph::unresolved()` reports, not from a pinned literal. `KB_PATH`
-   remains a named constant because it is an output path, not a knowledge claim;
-   `SEARCH_QUERY` and `CANONICAL_SOURCE_URL` remain only as the regression
-   fixture's source for the canonical tale.
+2. **Derive the plan from the request.** Bind quoted caller text or resolve a
+   publication by its registered title and publisher request. For caller
+   text, a discovery query can use an unresolved surface. `KB_PATH` names
+   the output artifact.
 3. **Classify advertised tools into capabilities** (`Search`/`Fetch`/`Write`/
    `Run`) by substring, mirroring agentic-CLI naming so any CLI's tool set maps.
 4. **Plan each step as a pure function of history** — the state machine above,
    in `plan_chat_step`.
-5. **Understand tool errors and fall back deterministically** so a failed fetch
-   never derails the loop.
+5. **Check source evidence** before formalizing a publication. A failed fetch
+   ends with an evidence gap.
 6. **Wire the planner into the OpenAI-compatible server behind two gates**:
    `agent_mode` (the real guard — every tool is refused unless explicitly opted
    in) and the per-tool permission gate, then turn the plan into a completion
@@ -321,9 +314,9 @@ make the Formal AI solve a new task in agentic mode:
 7. **Grant the client-executed tool capabilities** through the permission-only
    `pkg_agentic_coding` associative package, so a permitted agent can drive the
    full loop while granting it by default enables no hidden autonomous action.
-8. **Execute the loop with an offline driver and corpus**, bounded by a hard
-   `MAX_TURNS` cap, and expose it through the `agent` CLI subcommand, the
-   `issue_468_agentic_loop` example, and the integration tests.
+8. **Execute the loop with the registered source client** and a hard
+   `MAX_TURNS` cap. The `agent` CLI subcommand and `issue_468_agentic_loop`
+   example use the driver. Tests supply recorded source responses explicitly.
 
 ### What the recipe records
 
@@ -393,8 +386,7 @@ The pass composes six grounded steps
 In the agentic loop the pass runs whenever the nine-primitive formalizer raised
 needs; the written knowledge base then carries the concept-graph block, and a
 need no captured source answers is reported unsatisfiable rather than covered.
-The canonical tale raises no needs, so its knowledge base stays byte-identical
-with the shallow pass.
+When a text raises no needs, the written knowledge base is the shallow pass.
 
 ```sh
 # Verify the deep-formalization recipe still matches the live source:

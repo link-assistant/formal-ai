@@ -12,12 +12,14 @@
 //! carried on a `user` message, an OpenAI `function_call_output` item) so the loop
 //! actually advances rather than restarting.
 
-use formal_ai::agentic_coding::{CANONICAL_SOURCE_URL, SEARCH_QUERY};
 use formal_ai::{
     AnthropicContentBlock, AnthropicMessagesRequest, ResponsesRequest, SolverConfig,
     UniversalSolver, anthropic_message_sse, create_anthropic_message_with_solver,
     create_response_with_solver,
 };
+
+const SEARCH_QUERY: &str = "Сказка о рыбаке и рыбке (Пушкин)";
+const CANONICAL_SOURCE_URL: &str = "https://ru.wikisource.org/w/api.php?action=parse&page=%D0%A1%D0%BA%D0%B0%D0%B7%D0%BA%D0%B0+%D0%BE+%D1%80%D1%8B%D0%B1%D0%B0%D0%BA%D0%B5+%D0%B8+%D1%80%D1%8B%D0%B1%D0%BA%D0%B5+%28%D0%9F%D1%83%D1%88%D0%BA%D0%B8%D0%BD%29&prop=text&formatversion=2&format=json";
 
 /// A solver with agent mode enabled — the real guard for any tool execution.
 fn agent_solver() -> UniversalSolver {

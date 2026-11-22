@@ -69,7 +69,7 @@ use super::{change_request, code_artifact};
 use crate::protocol::ChatMessage;
 use crate::skill_compiler::looks_like_skill_description;
 
-pub use super::formalization_recipe::{CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY};
+pub use super::formalization_recipe::{KB_PATH, publication_url};
 
 /// The next deterministic step the server takes in an agentic coding loop.
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -113,9 +113,8 @@ impl DriverOutcome {
 
     /// A stable, replayable JSON record of the whole agentic session — the task,
     /// the tools the CLI advertised, every executed tool call with its arguments
-    /// and result, the turn count, and the final answer. The default corpus
-    /// produces deterministic transcripts. A caller-supplied transport can
-    /// supply fresh captures whose contents are recorded in the tool steps.
+    /// and result, the turn count, and the final answer. Publisher captures and explicitly
+    /// supplied test inputs are recorded in the tool steps.
     #[must_use]
     pub fn session_json(&self) -> Value {
         json!({
@@ -157,7 +156,7 @@ pub fn run_agentic_task_with_tools(
         task,
         &AgentWorkspaceConfig::default(),
         tool_names,
-        &corpus::web_fetch_result,
+        &corpus::fetch_cli_source,
     )
 }
 
@@ -180,6 +179,17 @@ pub fn run_agentic_task_with_source_fetch(
     )
 }
 
+/// Replay a caller's tool list with an explicit source transport.
+/// # Errors
+/// Returns an error when tools are invalid or the workspace cannot start.
+pub fn run_agentic_task_with_tools_and_source_fetch(
+    task: &str,
+    tools: &[&str],
+    fetch_source: impl Fn(&str) -> Result<String, String>,
+) -> Result<DriverOutcome, AgentError> {
+    run_agentic_task_in_with_tools(task, &AgentWorkspaceConfig::default(), tools, &fetch_source)
+}
+
 /// Drive the agentic loop for `task` using the given workspace `config`.
 ///
 /// # Errors
@@ -189,7 +199,7 @@ pub fn run_agentic_task_in(
     task: &str,
     config: &AgentWorkspaceConfig,
 ) -> Result<DriverOutcome, AgentError> {
-    run_agentic_task_in_with_tools(task, config, &DRIVER_TOOLS, &corpus::web_fetch_result)
+    run_agentic_task_in_with_tools(task, config, &DRIVER_TOOLS, &corpus::fetch_cli_source)
 }
 
 fn run_agentic_task_in_with_tools(

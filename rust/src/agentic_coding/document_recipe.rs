@@ -120,18 +120,27 @@ pub(super) fn plan_meaning_detail_step(
     if let Some(tool) = fetch_tool
         && !progress.done(Capability::Fetch)
     {
-        return Some(plan_one(tool, fetch_arguments(concept.source_url)));
+        return Some(plan_one(tool, fetch_arguments(&concept.source_url)));
     }
 
-    // Re-derive the enriched block from the fetched lexeme facts (or the canonical
-    // fallback when the fetch errored), exactly as the formalization recipe does.
-    let block = meaning_detail::enrich_block(concept, progress.fetched_text.as_deref());
+    let block = progress
+        .fetched_pages
+        .iter()
+        .rev()
+        .find(|(url, _)| url == &concept.source_url)
+        .and_then(|(_, fetched)| meaning_detail::enrich_block(concept, fetched));
+    let Some(block) = block else {
+        return Some(AgenticPlan::Final(crate::seed::agentic_message(
+            "meaning_detail_source_unavailable",
+            &[("source", &concept.source_url)],
+        )));
+    };
 
     // Step 3: write the enriched meaning block.
     if let Some(tool) = write_tool
         && !progress.done(Capability::Write)
     {
-        return Some(plan_one(tool, write_arguments(concept.kb_path, &block)));
+        return Some(plan_one(tool, write_arguments(&concept.kb_path, &block)));
     }
     // Step 4: verify by reading the enriched block back (mirrors the formalization
     // recipe; `cat` is the allowlisted read the sandbox workspace supports).

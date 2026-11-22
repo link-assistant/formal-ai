@@ -180,18 +180,22 @@ agentic_messages
     text "command completed. Output:"
   message prerequisite_recovery_not_found_marker
     text "command not found"
-  message formalization_recipe_search_query
-    text "Пушкин Сказка о рыбаке и рыбке полный текст"
+  message formalization_recipe_source_unavailable
+    text "I could not verify the requested text at {source}."
+  message formalization_recipe_source_required
+    text "Please provide the text to formalize."
   message formalization_recipe_fisherman_subject
     text "«Сказка о рыбаке и рыбке»"
   message formalization_recipe_source_subject
     text "the source text ({doc_id})"
-  message meaning_detail_tomato_search_query
-    text "Wikidata lexemes tomato помидор томат grammatical number forms"
-  message meaning_detail_potato_search_query
-    text "Wikidata lexemes potato картофель картошка grammatical number forms"
   message meaning_detail_keywords
-    text "grammatical number|more detailed|singular or plural|part of speech|detailed meaning|detailed word"
+    text "grammatical number|more detailed|singular or plural|singular/plural|grammatical forms|part of speech|detailed meaning|detailed word"
+  message meaning-detail-source-title
+    text "Wikidata lexemes for {name} ({entity})"
+  message meaning-detail-search-query
+    text "Wikidata lexemes {name} grammatical number forms {lexemes}"
+  message meaning_detail_source_unavailable
+    text "I could not verify the required grammatical forms at {source}."
   message meaning_detail_defined_by_line
     text "    defined-by entity"
   message meaning_detail_source_lexeme_line
@@ -209,15 +213,15 @@ agentic_messages
   message meaning_detail_surface_line
     text "    surface {id}-{suffix} # wikidata {name} {number} surface{comment_text}"
   message meaning_detail_final_answer
-    text "Made the {name} meaning more detailed: every surface now pins its part of speech and grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface recovered from the source is added.\n\nEnriched meaning block ({path}):\n\n{block}"
+    text "Made the {name} meaning more detailed using grammatical forms from Wikidata. Enriched meaning block ({path}):\n\n{block}"
   message diagram_formalize_title
     text "Formalize a text into a knowledge base"
   message diagram_formalize_route
-    text "formaliz / knowledge base / fisherman"
+    text "formalize a text / knowledge base"
   message diagram_formalize_step_0
     text "find the source text"
   message diagram_formalize_step_1
-    text "read it; a tool error falls back to the canonical synopsis"
+    text "read and verify the publisher text or report a source gap"
   message diagram_formalize_step_2
     text "formalize prose into Links Notation"
   message diagram_formalize_step_3
@@ -229,9 +233,9 @@ agentic_messages
   message diagram_meaning_step_0
     text "find the concept's Wikidata lexemes"
   message diagram_meaning_step_1
-    text "read the forms; recover the missing plural"
+    text "verify the lexemes and read their grammatical forms"
   message diagram_meaning_step_2
-    text "re-derive the grounded block, byte-for-byte the seed"
+    text "derive the meaning block from the verified forms"
   message diagram_meaning_step_3
     text "cat the block to verify"
   message diagram_diagram_title

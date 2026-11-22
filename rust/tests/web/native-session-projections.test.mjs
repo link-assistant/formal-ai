@@ -16,7 +16,12 @@ const input={path,sha256:digest(bytes),task:value.task,tools:value.tools_adverti
 function scratch(run) {const directory=mkdtempSync(join(tmpdir(),'native-projection-controls-'));try{mkdirSync(join(directory,'docs/case-studies/issue-42'),{recursive:true});writeFileSync(join(directory,path),bytes);return run(directory);}finally{rmSync(directory,{recursive:true,force:true});}}
 test('maintained producer inventory is finite and complete',()=>{
   const producer=readFileSync(new URL('../../../rust/examples/regenerate_agent_cli_sessions.rs',import.meta.url));
-  assert.equal(projectionRegistry(producer.toString()).length,13);
+  const paths = projectionRegistry(producer.toString());
+  assert.equal(paths.length, 7);
+  assert.ok(!paths.some(path => /issue-(498|499)\//u.test(path)));
+  assert.deepEqual(paths.filter(path => path.includes('issue-538/')), [
+    'docs/case-studies/issue-538/agent-cli-session-self-ast.json',
+  ]);
 });
 test('registry rejects incomplete unsafe and duplicated source selection',()=>{
   assert.throws(()=>projectionRegistry(source.replace('; 1]','; 2]')));

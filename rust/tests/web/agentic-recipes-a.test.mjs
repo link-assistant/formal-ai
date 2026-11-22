@@ -20,11 +20,11 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost, censusDocuments, censusSourceClosureComplete } from '../../../js/agentic/node-host.mjs';
 import { parseChatMessage } from '../../../js/server/chat-request.mjs';
 import {
-  FISHERMAN_DOC_ID, PRIMITIVE_KINDS, canonicalFishermanSynopsis, coversAllNine, formalizeTextToLinks, totalRecords,
+  FISHERMAN_DOC_ID, PRIMITIVE_KINDS, coversAllNine, formalizeTextToLinks, totalRecords,
 } from '../../../js/agentic/formalize.mjs';
 import { Lexicon, tokenize } from '../../../js/agentic/lexicon.mjs';
 import {
-  CANONICAL_SOURCE_URL, KB_PATH, isFormalizationTask, planFormalizationStep, searchQuery,
+  KB_PATH, isFormalizationTask, planFormalizationStep, publicationText, publicationUrl,
 } from '../../../js/agentic/formalization_recipe.mjs';
 import * as meaningDetail from '../../../js/agentic/meaning_detail.mjs';
 import * as diagram from '../../../js/agentic/diagram.mjs';
@@ -50,6 +50,13 @@ import { offlineRegistryLookup } from '../../../js/agentic/crate/concept_lookup.
 
 const ROOT = new URL('../../../', import.meta.url);
 const repo = (path) => readFileSync(new URL(path, ROOT), 'utf8');
+const publisherFixture = (name) => repo(`rust/tests/fixtures/publisher-agentic/${name}`);
+const canonicalFishermanSynopsis = () => publisherFixture('fisherman-synopsis.txt');
+const SEARCH_QUERY = 'Сказка о рыбаке и рыбке (Пушкин)';
+const publicationFixture = (text) => JSON.stringify({
+  parse: { title: SEARCH_QUERY, text: `<div class="poem">${text}</div>` },
+});
+
 
 const user = (content) => parseChatMessage({ role: 'user', content });
 const callMessage = (id, tool, args) => parseChatMessage({
@@ -199,24 +206,21 @@ describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_f
     assert.ok(!isFormalizationTask('What is the capital of France?'));
   });
 
-  it('the acceptance walk: search query, then the canonical fetch, then the final report', () => {
+  it('discovers the publication and requires a verified fetch', () => {
     const task = 'Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.';
     const messages = [user(task)];
     const search = single(planFormalizationStep(task, messages, ['web_search']));
     assert.equal(search.tool, 'web_search');
-    assert.equal(search.arguments, '{"query":"Пушкин Сказка о рыбаке и рыбке полный текст"}');
-    assert.equal(searchQuery(), 'Пушкин Сказка о рыбаке и рыбке полный текст');
+    assert.equal(JSON.parse(search.arguments).query, SEARCH_QUERY);
 
     answerCall(messages, search, '1. ru.wikisource.org — full text');
     const fetch = single(planFormalizationStep(task, messages, ['web_search', 'web_fetch']));
     assert.equal(fetch.tool, 'web_fetch');
-    assert.equal(fetch.arguments, `{"format":"text","url":"${CANONICAL_SOURCE_URL}"}`);
-
+    const work = Lexicon.standard().workForTitle('Сказка о рыбаке и рыбке');
+    assert.deepEqual(JSON.parse(fetch.arguments), { format: 'text', url: publicationUrl(work) });
     const answer = final(planFormalizationStep(task, messages, ['web_search']));
-    assert.ok(answer.startsWith('Formalized «Сказка о рыбаке и рыбке» into a Links Notation knowledge base: 37 records realising 9 of'), answer);
-    assert.ok(answer.includes('9 of 9 protocol primitives'), answer);
-    assert.ok(answer.includes('knowledge_base'));
-    assert.ok(answer.includes(KB_PATH));
+    assert.ok(answer.includes('could not verify the requested text'), answer);
+    assert.ok(!answer.includes('knowledge_base'));
   });
 
   it('planner_walks_the_full_search_fetch_write_run_recipe', () => {
@@ -226,8 +230,8 @@ describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_f
     answerCall(messages, call, '1. ru.wikisource.org');
     call = single(formalizeStep(messages, TOOLS));
     assert.equal(call.tool, 'web_fetch');
-    assert.ok(call.arguments.includes(CANONICAL_SOURCE_URL));
-    answerCall(messages, call, canonicalFishermanSynopsis());
+    assert.equal(JSON.parse(call.arguments).url, publicationUrl(Lexicon.standard().workForTitle('Сказка о рыбаке и рыбке')));
+    answerCall(messages, call, publicationFixture(canonicalFishermanSynopsis()));
     call = single(formalizeStep(messages, TOOLS));
     assert.equal(call.tool, 'write_file');
     assert.ok(call.arguments.includes(KB_PATH));
@@ -243,12 +247,12 @@ describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_f
   });
 
   it('planner_skips_capabilities_no_advertised_tool_provides / completes without tools', () => {
-    const messages = [user('formalize the fisherman tale')];
+    const messages = [user('Formalize «The cat sat on the mat» into Links Notation.')];
     const call = single(formalizeStep(messages, ['write_file']));
     assert.equal(call.tool, 'write_file');
     answerCall(messages, call, 'ok');
     final(formalizeStep(messages, ['write_file']));
-    assert.ok(final(formalizeStep([user('formalize the fisherman tale')], [])).includes('knowledge_base'));
+    assert.ok(final(formalizeStep([user('formalize the fisherman tale')], [])).includes('could not verify the requested text'));
   });
 
   it('planner_formalizes_the_fetched_text_when_fetch_succeeds', () => {
@@ -256,7 +260,7 @@ describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_f
     const messages = [user('formalize the fisherman tale')];
     const fetch = single(formalizeStep(messages, tools));
     assert.equal(fetch.tool, 'web_fetch');
-    answerCall(messages, fetch, 'Старик поймал золотую рыбку.');
+    answerCall(messages, fetch, publicationFixture('Старик поймал золотую рыбку.'));
     const write = single(formalizeStep(messages, tools));
     assert.equal(write.tool, 'write_file');
     const content = JSON.parse(write.arguments).content;
@@ -265,12 +269,25 @@ describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_f
     assert.ok(content.includes('state unsatisfiable'), content);
   });
 
-  it('planner_falls_back_to_the_synopsis_when_fetch_errors', () => {
+  it('ends with a source gap when the fetch fails or returns a different publication', () => {
+    const tools = ['web_fetch', 'write_file'];
+    for (const body of ['Error: 404 Not Found', publicationFixture('A different poem.').replace(SEARCH_QUERY, 'Different title')]) {
+      const messages = [user('formalize the fisherman tale')];
+      answerCall(messages, single(formalizeStep(messages, tools)), body);
+      assert.match(final(formalizeStep(messages, tools)), /could not verify the requested text/u);
+    }
+  });
+
+  it('extracts the original poem from the recorded Wikisource response', () => {
+    const work = Lexicon.standard().workForTitle('Сказка о рыбаке и рыбке');
+    const text = publicationText(work, publisherFixture('fisherman.json'));
+    assert.match(text, /^Жил старик со своею старухой/u);
+    assert.doesNotMatch(text, /римскою папой/u);
     const tools = ['web_fetch', 'write_file'];
     const messages = [user('formalize the fisherman tale')];
-    answerCall(messages, single(formalizeStep(messages, tools)), 'Error: 404 Not Found');
+    answerCall(messages, single(formalizeStep(messages, tools)), publisherFixture('fisherman.json'));
     const write = single(formalizeStep(messages, tools));
-    assert.equal(JSON.parse(write.arguments).content, formalizeTextToLinks(canonicalFishermanSynopsis(), '').links_notation);
+    assert.match(JSON.parse(write.arguments).content, /Жил старик со своею старухой/u);
   });
 
   it('issue 956: a quoted custom source is formalized itself', () => {
@@ -296,7 +313,7 @@ describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_f
       'Formalize «СКАЗКА  О РЫБАКЕ И РЫБКЕ» into a Links Notation knowledge base.',
       'Formalize “Сказка о рыбаке и рыбке” into a knowledge base with label «Reference».',
     ]) {
-      assert.ok(final(planFormalizationStep(prompt, [user(prompt)], [])).includes('tale:fisherman-and-fish'));
+      assert.equal(single(planFormalizationStep(prompt, [user(prompt)], ['web_fetch'])).tool, 'web_fetch');
     }
     const ordered = 'Formalize “First source clause.” into a knowledge base with label «Secondary label».';
     const knowledge = JSON.parse(single(planFormalizationStep(ordered, [user(ordered)], ['write'])).arguments).content;
@@ -333,30 +350,49 @@ describe('meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)',
     assert.doesNotMatch(query, /tomato|томат|помидор/iu);
   });
 
-  it('enriched blocks match the seed byte for byte, fetched or not', () => {
-    const tomato = meaningDetail.enrichBlock(meaningDetail.TOMATO, null);
-    assert.equal(tomato, block('tomato', 'cucumber'));
-    assert.equal((tomato.match(/part_of_speech noun/g) || []).length, 9);
-    assert.ok(tomato.includes('feature Q146786 # wikidata grammatical feature plural'));
-    assert.equal(meaningDetail.enrichBlock(meaningDetail.TOMATO, meaningDetail.sourceBundle(meaningDetail.TOMATO)), tomato);
-    assert.equal(meaningDetail.enrichBlock(meaningDetail.TOMATO, 'Error: 404'), tomato);
-    assert.equal(meaningDetail.enrichBlock(meaningDetail.POTATO, null), block('potato', 'carrot'));
+  it('enriches registered blocks only from complete publisher forms for the requested sense', () => {
+    const tomato = meaningDetail.conceptForTask(TASKS.meaning);
+    const potato = meaningDetail.conceptForTask(TASKS.potato);
+    const apple = meaningDetail.conceptForTask('Find grammatical forms for apple.');
+    assert.equal(meaningDetail.enrichBlock(tomato, publisherFixture('tomato.json')), block('tomato', 'cucumber'));
+    assert.equal(meaningDetail.enrichBlock(potato, publisherFixture('potato.json')), block('potato', 'carrot'));
+    assert.match(meaningDetail.enrichBlock(apple, publisherFixture('apple.json')), /feature Q146786/u);
+    assert.equal(meaningDetail.enrichBlock(tomato, null), null);
+    assert.equal(meaningDetail.enrichBlock(tomato, 'Error: 404'), null);
+    assert.equal(meaningDetail.enrichBlock(tomato, publisherFixture('potato.json')), null);
+    const missingSense = JSON.parse(publisherFixture('tomato.json'));
+    missingSense.entities.L7993.senses = [];
+    assert.equal(meaningDetail.enrichBlock(tomato, JSON.stringify(missingSense)), null);
   });
 
-  for (const [file, task] of [['agent-cli-session.json', TASKS.meaning], ['agent-cli-session-potato.json', TASKS.potato]]) {
-    it(`replays the committed ${file} step for step`, async (t) => {
-      const { importDocumentRecipe } = await documentRecipeModule();
-      if (!importDocumentRecipe) return t.skip('document_recipe.mjs siblings not ported yet');
+  for (const [name, file, task, next] of [
+    ['tomato', 'agent-cli-session.json', TASKS.meaning, 'cucumber'],
+    ['potato', 'agent-cli-session-potato.json', TASKS.potato, 'carrot'],
+  ]) {
+    it(`binds the archived ${name} task to an explicitly supplied Wikidata response`, async () => {
+      const { planMeaningDetailStep } = await import('../../../js/agentic/document_recipe.mjs');
       const session = JSON.parse(repo(`docs/case-studies/issue-538/${file}`));
       assert.equal(session.task, task);
       const messages = [user(task)];
-      for (const step of session.steps) {
-        const call = single(await importDocumentRecipe.planMeaningDetailStep(task, messages, session.tools_advertised));
-        assert.equal(call.tool, step.tool);
-        assert.deepEqual(JSON.parse(call.arguments), step.arguments);
-        answerCall(messages, call, step.result);
-      }
-      assert.equal(final(await importDocumentRecipe.planMeaningDetailStep(task, messages, session.tools_advertised)), session.final_answer);
+      const plan = () => planMeaningDetailStep(task, messages, session.tools_advertised);
+      const search = single(await plan());
+      assert.equal(search.tool, 'web_search');
+      answerCall(messages, search, '');
+      const fetch = single(await plan());
+      assert.equal(fetch.tool, 'web_fetch');
+      assert.match(JSON.parse(fetch.arguments).url, /^https:\/\/www\.wikidata\.org\/w\/api\.php\?/u);
+      const cold = [...messages];
+      answerCall(cold, fetch, 'Error: 404');
+      assert.match(final(await planMeaningDetailStep(task, cold, session.tools_advertised)), /could not verify/u);
+      answerCall(messages, fetch, publisherFixture(`${name}.json`));
+      const write = single(await plan());
+      assert.equal(write.tool, 'write_file');
+      assert.equal(JSON.parse(write.arguments).content, block(name, next));
+      answerCall(messages, write, 'wrote');
+      const verify = single(await plan());
+      assert.equal(verify.tool, 'run_command');
+      answerCall(messages, verify, block(name, next));
+      assert.match(final(await plan()), /Wikidata/u);
     });
   }
 });
@@ -385,19 +421,27 @@ describe('diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)', () => 
     assert.equal((committed.match(/```mermaid/g) || []).length, 5);
   });
 
-  it('replays the committed diagram Agent CLI session', async (t) => {
+  it('preserves the tool sequence of the historical diagram session', async (t) => {
     const { importDocumentRecipe } = await documentRecipeModule();
     if (!importDocumentRecipe) return t.skip('document_recipe.mjs siblings not ported yet');
     const session = JSON.parse(repo('docs/case-studies/issue-538/agent-cli-session-diagram.json'));
     const messages = [user(session.task)];
+    const document = diagram.renderDocument();
     for (const step of session.steps) {
       const call = single(await importDocumentRecipe.planDiagramStep(messages, session.tools_advertised));
       assert.equal(call.tool, step.tool);
       assert.ok(session.tools_advertised.includes(call.tool));
-      assert.deepEqual(JSON.parse(call.arguments), step.arguments);
-      answerCall(messages, call, step.result);
+      const args = JSON.parse(call.arguments);
+      if (call.tool === 'write_file') {
+        assert.deepEqual(args, { ...step.arguments, content: document });
+      } else {
+        assert.deepEqual(args, step.arguments);
+      }
+      answerCall(messages, call, call.tool === 'run_command' ? document : step.result);
     }
-    assert.equal(final(await importDocumentRecipe.planDiagramStep(messages, session.tools_advertised)), session.final_answer);
+    const answer = final(await importDocumentRecipe.planDiagramStep(messages, session.tools_advertised));
+    assert.equal(answer, diagram.finalAnswer(document));
+    assert.match(answer, /report a source gap/u);
   });
 });
 

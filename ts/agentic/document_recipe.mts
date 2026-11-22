@@ -73,12 +73,14 @@ export function planMeaningDetailStep(task, messages, toolNames) {
   const runTool = toolFor(toolNames, Capability.Run);
   const progress = Progress.scan(messages);
   if (searchTool !== null && !progress.done(Capability.Search)) {
-    return planOne(searchTool, jsonText({ query: meaningDetail.searchQuery(concept) }));
+    return planOne(searchTool, jsonText({ query: concept.search_query }));
   }
   if (fetchTool !== null && !progress.done(Capability.Fetch)) {
     return planOne(fetchTool, fetchArguments(concept.source_url));
   }
-  const block = meaningDetail.enrichBlock(concept, progress.fetched_text);
+  const evidence = progress.fetched_pages.findLast(([url]) => url === concept.source_url);
+  const block = meaningDetail.enrichBlock(concept, evidence?.[1]);
+  if (block === null) return finalAnswer(agenticMessage('meaning_detail_source_unavailable', { source: concept.source_url }));
   if (writeTool !== null && !progress.done(Capability.Write)) {
     return planOne(writeTool, writeArguments(concept.kb_path, block));
   }

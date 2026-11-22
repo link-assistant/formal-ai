@@ -1,5 +1,9 @@
 # Issue 468 Case Study
 
+The original examples below used a synopsis fixture. Current builds acquire
+the published work and report an evidence gap if its text is unavailable.
+The [issue #1613 case study](../issue-1613/README.md#wikisource-and-wikidata-evidence-in-agentic-recipes) records that transition.
+
 > **Status:** Agentic-coding loop shipped in PR #469 — the Formal AI server solves
 > the issue's example task in agentic mode, across all three OpenAI-shaped surfaces.
 > **Type:** Documentation + enhancement (new `src/agentic_coding/` capability + case study).
@@ -130,7 +134,7 @@ external texts; they should summarize and cite sources"*), both research files
 quote only short definitional phrases and link every claim to its source. The
 Tale text itself is public-domain (Pushkin, 1833) and is referenced, not
 bulk-copied; the formalizer's canonical input is a plain-prose synopsis in the
-project's own wording ([`data/agentic-coding/fisherman-synopsis.txt`](../../../data/agentic-coding/fisherman-synopsis.txt)), **not** Pushkin's verse.
+project's own wording ([the test synopsis](../../../rust/tests/fixtures/publisher-agentic/fisherman-synopsis.txt)), **not** Pushkin's verse.
 
 ---
 
