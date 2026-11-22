@@ -48,13 +48,33 @@ if [[ ! -f "$config" ]]; then
   exit 1
 fi
 
-# Complete the inventory before any Cargo command. Process substitution hides
-# failed Git observations, including an error after partial lockfile output.
-tracked_locks="$(git ls-files -- 'Cargo.lock' '*/Cargo.lock')" || {
+# Complete the NUL-delimited inventory before any Cargo command. A temporary
+# file preserves exact Git paths and the producer status without loading the
+# complete inventory into shell memory or losing errors in process substitution.
+lock_inventory="$(mktemp)"
+trap 'rm -f -- "$lock_inventory"' EXIT
+git ls-files -z -- 'Cargo.lock' '*/Cargo.lock' > "$lock_inventory" || {
   status=$?
   echo "::error::Unable to enumerate Cargo lockfiles (git ls-files exited $status)." >&2
   exit "$status"
 }
+primary_tracked=0
+each=''
+while IFS= read -r -d '' each; do
+  if [[ -z "$each" ]]; then
+    echo "::error::invalid Cargo lockfile inventory: empty path record." >&2
+    exit 1
+  fi
+  if [[ "$each" == "$lock" ]]; then primary_tracked=1; fi
+done < "$lock_inventory"
+if [[ -n "$each" ]]; then
+  echo "::error::invalid Cargo lockfile inventory: missing NUL terminator." >&2
+  exit 1
+fi
+if [[ "$primary_tracked" -ne 1 ]]; then
+  echo "::error::$lock is not in the committed lockfile inventory." >&2
+  exit 1
+fi
 
 # The ignored advisory IDs, one per line: everything quoted inside the
 # `ignore = [...]` array, which may be written on one line or across several.
@@ -153,8 +173,14 @@ fi
 # move the exit status on their own (issue #1079, defect D2). A yanked crate in
 # particular carries no advisory ID, so it cannot be silenced by an `ignore`
 # entry at all: the only way past this line is to change the lockfile.
-echo "Auditing $lock"
-cargo audit --file "$lock" --deny warnings
+audit_status=0
+if [[ ! -f "$lock" ]]; then
+  echo "::error::$lock is committed but not checked out, so its dependencies would go unaudited."
+  audit_status=1
+else
+  echo "Auditing $lock"
+  cargo audit --file "$lock" --deny warnings || audit_status=$?
+fi
 
 # Issue #1571: the audit read only rust/Cargo.lock, so the committed lockfile
 # of a standalone experiment crate kept rustls 0.23.43 (four advisories), the
@@ -166,13 +192,21 @@ cargo audit --file "$lock" --deny warnings
 # meta-language 0.58.1), so a vulnerability, an unsound crate or a yanked
 # release fails here, and an `unmaintained` notice with no fixed release is
 # reported but does not fail.
-while IFS= read -r each; do
-  [[ -n "$each" && "$each" != "$lock" ]] || continue
+while IFS= read -r -d '' each; do
+  [[ "$each" != "$lock" ]] || continue
   if [[ ! -f "$each" ]]; then
-    echo "::error::$each is committed but not checked out, so its dependencies would go unaudited."
+    annotation_path=${each//%/%25}
+    annotation_path=${annotation_path//$'\r'/%0D}
+    annotation_path=${annotation_path//$'\n'/%0A}
+    echo "::error::$annotation_path is committed but not checked out, so its dependencies would go unaudited."
     echo "  Add it to the security workflow's sparse checkout."
-    exit 1
+    if [[ "$audit_status" -eq 0 ]]; then audit_status=1; fi
+    continue
   fi
   echo "Auditing $each"
-  cargo audit --file "$each" --deny unsound --deny yanked
-done <<< "$tracked_locks"
+  cargo audit --file "$each" --deny unsound --deny yanked || {
+    observed_status=$?
+    if [[ "$audit_status" -eq 0 ]]; then audit_status=$observed_status; fi
+  }
+done < "$lock_inventory"
+exit "$audit_status"

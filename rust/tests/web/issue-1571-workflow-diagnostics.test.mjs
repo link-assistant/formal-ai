@@ -94,10 +94,10 @@ test('every runtime package in the desktop and VS Code locks accepts the Node 24
 // while the Cargo audit read only rust/Cargo.lock and stayed green. Which
 // lockfiles the job checks out is pinned in fast-pull-request-production-profile.
 test('the Cargo audit discovers every committed Cargo.lock and holds unshipped ones to vulnerabilities, unsound and yanked',()=>{
- const locks=execFileSync('git',['ls-files','--','Cargo.lock','*/Cargo.lock'],{cwd:root,encoding:'utf8'}).trim().split('\n');
+ const locks=execFileSync('git',['ls-files','-z','--','Cargo.lock','*/Cargo.lock'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean);
  assert.ok(locks.includes('rust/Cargo.lock')&&locks.length>1,locks.join(', '));
  const script=readFileSync(new URL('scripts/check-rust-dependencies.sh',root),'utf8');
- assert.match(script,/git ls-files -- 'Cargo\.lock' '\*\/Cargo\.lock'/u);
+ assert.match(script,/git ls-files -z -- 'Cargo\.lock' '\*\/Cargo\.lock'/u);
  assert.match(script,/cargo audit --file "\$each" --deny unsound --deny yanked/u);
- assert.match(script,/::error::\$each is committed but not checked out/u);
+ assert.match(script,/::error::\$annotation_path is committed but not checked out/u);
 });

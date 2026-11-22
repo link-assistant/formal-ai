@@ -180,7 +180,7 @@
       "gzipSHA256": "c7f80d85892305fc3f2243d3360cccc8dc942419b5956bff9ed9bca6f5f888a9"
     },
     {
-      "file": "pr.diff.stderr.gz",
+      "file": "pull-request.diff.stderr.gz",
       "bytes": 287,
       "sha256": "06dda70ebfef8b578f4e212792b89631413563da7dfaa7598b90c00adb13cfe5",
       "gzipSHA256": "3064591bc8bc81382ccf3efad6a3d49e9ad0bc111959202d619054be8452903b"
@@ -198,19 +198,19 @@
       "gzipSHA256": "d996d3a37147a526df1fca7610ca1d0edf5638875e5648b8a511c0606aab8d25"
     },
     {
-      "file": "pr-conversation.json.gz",
+      "file": "pull-request-conversation.json.gz",
       "bytes": 36069,
       "sha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
       "gzipSHA256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30"
     },
     {
-      "file": "pr-inline.json.gz",
+      "file": "pull-request-inline.json.gz",
       "bytes": 2,
       "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "gzipSHA256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
     },
     {
-      "file": "pr-reviews.json.gz",
+      "file": "pull-request-reviews.json.gz",
       "bytes": 2,
       "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "gzipSHA256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"

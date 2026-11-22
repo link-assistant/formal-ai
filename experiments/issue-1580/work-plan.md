@@ -1170,3 +1170,11 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Refresh the complete issue and all three PR feedback channels; no new acceptance feedback. Current main `82e506f5447cd6c0b96095993107d6d028a890f5` is included. Correct one nonexistent supplemental test invocation and pass all 63 maintained native admission controls, preserving both outputs.
 - [ ] Publish the complete batch only after empty branch queues and a clean source preflight. Collect all next-head hosted logs, failures and annotations; verify actual shard times, dependency locking, native cases, client cleanup and recipe isolation.
 - [ ] Complete every wider original acceptance criterion and applicable template practice, original full-suite budget and production evidence, serving/publication authority, GPU/version-epoch behavior and genuine authorship. Keep PR #1581 draft and unmerged while these remain unfinished.
+
+
+## Cargo audit inventory comparison, 2026-11-22
+
+- [x] Compare the current Rust template's security audit lines 51–74: adopt exact NUL paths and continue collecting findings, preserving Formal AI's existing proof and independent-lock policies.
+- [x] Reproduce eight of nine finite Git-index cases before repair; pass all ten afterward plus 41 related cases. No local Rust build, package install or live advisory fetch.
+- [x] Fix four evidence filenames created after the prior final gate. Keep their bytes and hashes and the abbreviation ratchet unchanged; retain the failure.
+- [x] Pass final shell lint, size, abbreviation, required-documentation and changelog JavaScript gates after all source and evidence paths exist. Commit the atomic wrapper repair locally; current-head hosted collection still precedes any push.

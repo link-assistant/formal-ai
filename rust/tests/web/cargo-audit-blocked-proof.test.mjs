@@ -32,7 +32,8 @@ else process.exit(99);
 `,{mode:0o755});
     writeFileSync(join(directory,'bin/git'),`#!${process.execPath}\n`+String.raw`
 if(process.argv[2]!=='ls-files')process.exit(99);
-process.stdout.write(process.env.GIT_INVENTORY_OUTPUT??'rust/Cargo.lock\n');
+const paths=process.env.GIT_INVENTORY_OUTPUT??'rust/Cargo.lock\n';
+process.stdout.write(process.argv.includes('-z')?paths.replaceAll('\n','\0'):paths);
 process.exit(Number(process.env.GIT_INVENTORY_STATUS??0));
 `,{mode:0o755});
     const invoke=({text=config,...env}={})=>{
