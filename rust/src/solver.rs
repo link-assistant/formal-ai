@@ -401,6 +401,7 @@ impl UniversalSolver {
                 return answer;
             }
 
+            // Bind caller-supplied data before decomposition or source lookup.
             if let Some(answer) = crate::solver_handlers::prompt_data::try_prompt_data(prompt, log)
             {
                 return answer;
