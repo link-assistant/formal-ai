@@ -130,3 +130,29 @@ test('complete 754 hosted costs retain the failed file and both budget warnings 
     assert(Math.max(...workers) <= identity.warningSeconds, '754 measured shard ' + (index + 1) + ': ' + Math.max(...workers));
   }
 });
+
+test('complete a558 hosted costs preserve all failed observations and fit the unchanged warning threshold', () => {
+  const fixture = new URL('./fixtures/hosted-javascript-a558f834/', import.meta.url);
+  const identity = JSON.parse(readFileSync(new URL('identity.json', fixture), 'utf8'));
+  const observations = readFileSync(new URL('durations.jsonl', fixture), 'utf8').trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(identity.runConclusion, 'failure');
+  assert.equal(identity.executionProof, false);
+  assert.equal(identity.warnings.length, 1);
+  assert.equal(identity.budgetSeconds, 360);
+  assert.equal(identity.warningSeconds, 270);
+  assert.equal(observations.length, identity.completeObservations);
+  assert.equal(new Set(observations.map(row => row.file)).size, observations.length);
+  assert(observations.every(row => row.complete));
+  assert.deepEqual(observations.filter(row => row.result === 'failed').map(row => row.file).sort(), identity.failedObservations.slice().sort());
+  assert.equal(identity.failedObservations.length, 3);
+  const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
+  const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
+  const {shards} = planShards(files, 8, durationLookup(parseTestDurations(recorded), Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
+  const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
+  for (const [index, shard] of shards.entries()) {
+    const workers = Array(identity.modeledWorkers).fill(0);
+    for (const file of shard) workers[workers.indexOf(Math.min(...workers))] += costs(file);
+    assert(Math.max(...workers) + identity.runnerOverheadAllowanceSeconds <= identity.warningSeconds, 'a558 measured shard plus runner overhead ' + (index + 1) + ': ' + Math.max(...workers));
+  }
+});
