@@ -261,3 +261,23 @@ ceiling ended the operation. The working tree edits were manual, and the
 attempts contribute zero autonomous-authorship credit.
 [Browser attempt](evidence/formal-development/browser-fetch-authorship/agent.log.gz) ·
 [Rust attempt](evidence/formal-development/native-fetch-module-authorship/agent.log.gz)
+
+A narrower session asked the Agent CLI to add a Spanish roleplay trigger to
+the seed file. Formal AI read the eleven-line file and returned its contents
+without issuing an edit. The CLI exited successfully and the sandbox diff
+was empty. The attempt contributes zero autonomous-authorship credit.
+[Request](evidence/formal-development/roleplay-trigger-authorship/request.txt) ·
+[Tool trace](evidence/formal-development/roleplay-trigger-authorship/server-memory.lino.gz) ·
+[Outcome](evidence/formal-development/roleplay-trigger-authorship/outcome.txt)
+
+The merge from `main` combines the early Docker startup diagnostic with the
+isolated, offline launch used by the cold-cache check. The governed witness
+contains the same Cargo manifest digest as `main`. Comparing it with the
+pre-merge branch shows one more executable specification case, from the
+repository lookup regressions, and updated source digests for the lookup and
+roleplay specifications. The 34 governed witness tests, seven Docker source
+tests, and 23 workflow build-policy tests passed.
+[Witness comparison](evidence/verification/round27-governed-merge-delta.json) ·
+[Governed tests](evidence/verification/round27-governed-merged-test.log) ·
+[Docker tests](evidence/verification/round27-container-merged-test.log) ·
+[Build policy tests](evidence/verification/round27-build-policy-merged-test.log)
