@@ -140,6 +140,9 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   const contradiction = tryRequirementContradiction(prompt, language, history, numericPreference(preferences.temperature, 0.7, 0, 1));
   if (contradiction) return finalize(events.concat(["handler:requirement_contradiction"]), steps, toolCalls, contradiction, formalizationContext);
 
+  const promptData = tryPromptData(prompt, forcedResponseLanguage);
+  if (promptData) return finalize(events.concat([`handler:${promptData.intent}`]), steps, toolCalls, promptData, formalizationContext);
+
   const compound = await FormalAiSeed.solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solve);
   if (compound) return finalize(["composition:compound_response"], [], compound.toolCalls, compound, formalizationContext);
 

@@ -37,10 +37,11 @@ llm_task_classes
     name "Question answering over a given document"
     llm_strength "Strong extractive spans from provided context"
     benchmark "SQuAD 2.0" benchmark_url "https://rajpurkar.github.io/SQuAD-explorer/"
-    formal_version "Index the given text into statements and answer from the matching statement with its span"
+    formal_version "Parse supplied key-value records and tables as subject, field and value links, then quote the row that answers the question"
+    structured-output "Answer and source spans from the caller’s records"
     status "0.347.0: canned search paragraph instead of reading the given text"
     tracking_issue 1172
-    evidence "rust/tests/unit/issue_1101_documentation_question_parity.rs"
+    evidence "rust/tests/web/issue-1593-prompt-data.test.mjs"
   class summarization
     name "Summarization"
     llm_strength "Abstractive compression in the style of news leads"
@@ -87,20 +88,20 @@ llm_task_classes
     name "Classification and sentiment"
     llm_strength "Accurate label prediction for common facets"
     benchmark "SST-2" benchmark_url "https://github.com/stanfordnlp/sentiment-treebank"
-    formal_version "Formalize the statement, score it against the labeled seed facets, and answer with the matched label and margin"
-    structured-output "Validated enum from a grounded label or supported sentiment"
+    formal_version "Score evidence in the supplied text against the caller’s labels, with an explicit fallback when the evidence is insufficient"
+    structured-output "One caller label or a supported unknown result, with a literal evidence span for a supported classification"
     status "0.347.0: canned search paragraph, no answer"
-    tracking_issue 1173
-    evidence "rust/tests/unit/issue_1173_fallback_executes_search.rs"
+    tracking_issue 1593
+    evidence "rust/tests/web/issue-1593-prompt-data.test.mjs"
   class extraction
     name "Extraction to JSON"
     llm_strength "Span marking into requested schemas"
     benchmark "CoNLL-2003" benchmark_url "https://aclanthology.org/W03-0419/"
-    formal_version "Parse the text, mark spans against the schema's entity meanings, and emit the JSON with the span trace"
-    structured-output "Validated object from supplied fields or supported text relations"
+    formal_version "Match the requested fields to key-value spans in the supplied text and quote the matching lines"
+    structured-output "Requested fields and their source spans, with gaps for missing or conflicting values"
     status "0.347.0: canned search paragraph, no answer"
-    tracking_issue 1173
-    evidence "rust/tests/unit/issue_1173_fallback_executes_search.rs"
+    tracking_issue 1593
+    evidence "rust/tests/web/issue-1593-prompt-data.test.mjs"
   class math_word
     name "Math word problems"
     llm_strength "Chain-of-thought arithmetic over stated quantities"
@@ -293,3 +294,12 @@ llm_task_classes
     status "not yet probed; the document-QA route is the nearest ancestor"
     tracking_issue 1171
     evidence "https://github.com/link-assistant/formal-ai/issues/1171"
+  class language_identification
+    name "Language identification"
+    llm_strength "Identify the language of short or mixed-script text"
+    benchmark "WiLI-2018" benchmark_url "https://zenodo.org/records/841984"
+    formal_version "Match the supplied text against registered scripts and verify local dictionary membership"
+    structured-output "Registered language name with dictionary matches and the supplied evidence span"
+    status "Added in issue 1593"
+    tracking_issue 1593
+    evidence "rust/tests/web/issue-1593-prompt-data.test.mjs"
