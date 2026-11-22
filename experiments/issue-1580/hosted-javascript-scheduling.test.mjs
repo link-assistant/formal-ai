@@ -1,5 +1,6 @@
 // Replay retained hosted costs without executing the functional suite.
 import test from 'node:test';
+import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
 import {durationLookup, partitionProblems, planShards} from '../../scripts/lib/ci-speed-shards.mjs';
@@ -180,5 +181,34 @@ test('complete bbc hosted costs retain the warning and fit the fixed runner-over
     const workers = Array(identity.modeledWorkers).fill(0);
     for (const file of shard) workers[workers.indexOf(Math.min(...workers))] += costs(file);
     assert(Math.max(...workers) + identity.runnerOverheadAllowanceSeconds <= identity.warningSeconds, 'bbc measured shard plus runner overhead ' + (index + 1) + ': ' + Math.max(...workers));
+  }
+});
+
+
+test('complete 79a hosted costs preserve both warnings and the fixed runner allowance', () => {
+  const fixture = new URL('./fixtures/hosted-javascript-79a024bf/', import.meta.url);
+  const identity = JSON.parse(readFileSync(new URL('identity.json', fixture), 'utf8'));
+  const raw = readFileSync(new URL('durations.jsonl', fixture), 'utf8');
+  const observations = raw.trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(identity.runConclusion, 'success');
+  assert.equal(identity.executionProof, false);
+  assert.equal(identity.schedulingFactor, 1.4);
+  assert.deepEqual(identity.warnings.map(row => row.seconds), [302, 283]);
+  assert.equal(identity.warningSeconds, 270);
+  assert.equal(identity.budgetSeconds, 360);
+  assert.equal(identity.runnerOverheadAllowanceSeconds, 30);
+  assert.equal(createHash('sha256').update(raw).digest('hex'), identity.durationsSha256);
+  assert.equal(observations.length, identity.completeObservations);
+  assert.equal(new Set(observations.map(row => row.file)).size, observations.length);
+  assert(observations.every(row => row.complete && identity.jobs.some(job => job.job === row.job)));
+  const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
+  const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
+  const {shards} = planShards(files, 8, durationLookup(parseTestDurations(recorded), Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
+  const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
+  for (const [index, shard] of shards.entries()) {
+    const workers = Array(identity.modeledWorkers).fill(0);
+    for (const file of shard) workers[workers.indexOf(Math.min(...workers))] += costs(file);
+    assert(Math.max(...workers) + identity.runnerOverheadAllowanceSeconds <= identity.warningSeconds, '79a measured shard plus runner overhead ' + (index + 1) + ': ' + Math.max(...workers));
   }
 });
