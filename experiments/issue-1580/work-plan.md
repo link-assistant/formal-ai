@@ -1149,3 +1149,13 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
   execution of this plan is pending. Neither 270/360-second boundary changes.
 - Supplied implementation credit remains zero. The Agent assertion, native GPU
   dependency warnings, and broader acceptance criteria remain unfinished.
+
+## Recipe fixture and complete 754 terminal checkpoint
+
+- [x] Complete all 33 hosted workflow collections, retain 163 checks and 29 annotations, and distinguish actual failures, negative controls, printed branches and remaining warnings. Windows transport and ten native contract groups passed.
+- [x] Reproduce the recipe fixture's unisolated server environment, install the maintained empty offline cache, and pass all six full-file cases plus the strengthened focused environment assertion. Preserve failed attempts and default-off tracing.
+- [x] Reproduce the independent workflow provenance-comment epoch limitation without changing byte-exact source ownership. This production limitation remains unfinished and is not established as the hosted assertion root.
+- [x] Report and retain the current Rust template fence-closure source in upstream issue 263. Source-derived evidence has no upstream Rust execution or autonomous authorship credit.
+- [ ] Run the complete local JavaScript inventory, inspect its failures, refresh main and all review channels, and publish only the complete failure-repair batch after branch queue checks.
+- [ ] Verify the changed fixture, all local fixes and actual shard wall times on the new hosted head. Resolve the two genuine Cargo dependency warnings without suppressing diagnostics or claiming GPU support.
+- [ ] Finish every original acceptance criterion, template practice, complete aggregate review, strict production/budget evidence and genuine authorship requirement before readiness.

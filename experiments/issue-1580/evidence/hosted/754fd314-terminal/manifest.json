@@ -1,0 +1,1129 @@
+{
+  "schema": "formal-ai-issue-1580-complete-hosted-round-v1",
+  "sourceHead": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+  "allRunsTerminal": true,
+  "collectionComplete": true,
+  "conclusions": {
+    "success": 30,
+    "failure": 2,
+    "skipped": 1
+  },
+  "checks": 163,
+  "annotations": 29,
+  "scannerDiagnostics": 46,
+  "literalCompleteWorkflowReviewClaim": false,
+  "scannerLimit": "46 candidate lines do not include two Cargo warnings rendered as literal escaped ANSI in the gh run logs; both are manually recorded from direct API logs. Test failure assertion context is separately reviewed.",
+  "autonomousAuthorshipCredit": 0,
+  "findings": [
+    {
+      "runId": 44992281354,
+      "lines": [
+        6085,
+        6086,
+        6088
+      ],
+      "cause": "name-only diff triggered rename similarity and fetched an unavailable promisor blob",
+      "localFix": "3b6271fc558df1033dc3bf38e71b700dc516bd51",
+      "hostedReplayPending": true
+    },
+    {
+      "runId": 44992281354,
+      "lines": [
+        10951,
+        10952,
+        10953
+      ],
+      "cause": "Codex client functional assertion passed; surviving descendants raced temporary-home rm",
+      "localFix": "6dd2bd0ba",
+      "hostedReplayPending": true
+    },
+    {
+      "runId": 44992280972,
+      "lines": [
+        18123,
+        19685,
+        19699
+      ],
+      "cause": "historical Agent recipe final assertion failed; server source-cache isolation defect demonstrated locally; exact hosted transition not proved",
+      "localFix": "recipe fixture offline cache installation and retained diagnostics",
+      "hostedReplayPending": true
+    },
+    {
+      "runId": 44992280972,
+      "lines": [
+        6333,
+        22108
+      ],
+      "cause": "270 second shard headroom warnings",
+      "localFix": "c52824d8f raise-only costs from all 913 terminal file events",
+      "hostedReplayPending": true
+    },
+    {
+      "runId": 44992281354,
+      "jobId": 137115847267,
+      "directApiLog": "rust-compile.api-log.gz",
+      "lines": [
+        1302,
+        1309
+      ],
+      "cause": "Cargo unused_dependencies for pollster and wgpu; genuine optional dependencies with no maintained native implementation",
+      "fixed": false,
+      "decision": "Do not silence or claim GPU behavior. Optional feature and dependency contract need a validated implementation or deliberate compatible manifest migration."
+    },
+    {
+      "runId": 44992281354,
+      "lines": [
+        1749
+      ],
+      "cause": "crates.io publication authority has no non-mutating token verification",
+      "fixed": false,
+      "decision": "Preserve unknown outcome; do not publish a package as a credential test."
+    }
+  ],
+  "negativeControls": [
+    {
+      "runId": 44992280972,
+      "lines": [
+        5725,
+        6414,
+        6425,
+        14046,
+        15876
+      ],
+      "classification": "deliberate missing tag, worker bootstrap, detached HEAD and untracked owner controls; corresponding assertions pass"
+    },
+    {
+      "runId": 44992281354,
+      "lines": [
+        10400,
+        10401
+      ],
+      "classification": "missing-root and invalid-UTF8 negative file inventory tests; corresponding assertions pass"
+    }
+  ],
+  "classifiedAnnotations": [
+    {
+      "checkId": 137124380648,
+      "checkName": "Pipeline Status",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 153,
+        "start_column": null,
+        "end_line": 153,
+        "end_column": null,
+        "annotation_level": "failure",
+        "title": "",
+        "message": "Process completed with exit code 1.",
+        "raw_details": ""
+      },
+      "classification": "actionable failure; see causal findings, including aggregate propagation"
+    },
+    {
+      "checkId": 137124380648,
+      "checkName": "Pipeline Status",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 152,
+        "start_column": null,
+        "end_line": 152,
+        "end_column": null,
+        "annotation_level": "failure",
+        "title": "",
+        "message": "Pipeline failed. Failing jobs: native-type-check, changelog",
+        "raw_details": ""
+      },
+      "classification": "actionable failure; see causal findings, including aggregate propagation"
+    },
+    {
+      "checkId": 137115847267,
+      "checkName": "Native type and lint check / Rust compile inputs changed",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 49,
+        "start_column": null,
+        "end_line": 49,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "sccache stats - clippy",
+        "message": "100% - 1415 hits, 0 misses, 0 errors",
+        "raw_details": ""
+      },
+      "classification": "compiler cache observation; no functional execution claim"
+    },
+    {
+      "checkId": 137115847267,
+      "checkName": "Native type and lint check / Rust compile inputs changed",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 24,
+        "start_column": null,
+        "end_line": 24,
+        "end_column": null,
+        "annotation_level": "failure",
+        "title": "",
+        "message": "Process completed with exit code 1.",
+        "raw_details": ""
+      },
+      "classification": "actionable failure; see causal findings, including aggregate propagation"
+    },
+    {
+      "checkId": 137115847209,
+      "checkName": "Native type and lint check / Compile focused native contracts once",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 47,
+        "start_column": null,
+        "end_line": 47,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "sccache stats - contract-build",
+        "message": "100% - 613 hits, 0 misses, 0 errors",
+        "raw_details": ""
+      },
+      "classification": "compiler cache observation; no functional execution claim"
+    },
+    {
+      "checkId": 137115847126,
+      "checkName": "Changelog Fragment Check",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 29,
+        "start_column": null,
+        "end_line": 29,
+        "end_column": null,
+        "annotation_level": "failure",
+        "title": "",
+        "message": "Process completed with exit code 1.",
+        "raw_details": ""
+      },
+      "classification": "actionable failure; see causal findings, including aggregate propagation"
+    },
+    {
+      "checkId": 137115795861,
+      "checkName": "js tier (node --check over js, suite group 4)",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 1317,
+        "start_column": null,
+        "end_line": 1317,
+        "end_column": null,
+        "annotation_level": "warning",
+        "title": "JavaScript suites shard 4/8 is approaching its timeout",
+        "message": "The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step.",
+        "raw_details": ""
+      },
+      "classification": "actionable JavaScript scheduling warning; raise-only complete-run costs imported in c52824d8f; hosted replay pending"
+    },
+    {
+      "checkId": 137115795857,
+      "checkName": "js tier (node --check over js, suite group 6)",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 1751,
+        "start_column": null,
+        "end_line": 1751,
+        "end_column": null,
+        "annotation_level": "failure",
+        "title": "",
+        "message": "Process completed with exit code 1.",
+        "raw_details": ""
+      },
+      "classification": "actionable failure; see causal findings, including aggregate propagation"
+    },
+    {
+      "checkId": 137115795829,
+      "checkName": "js tier (node --check over js, suite group 2)",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 1090,
+        "start_column": null,
+        "end_line": 1090,
+        "end_column": null,
+        "annotation_level": "warning",
+        "title": "JavaScript suites shard 2/8 is approaching its timeout",
+        "message": "The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step.",
+        "raw_details": ""
+      },
+      "classification": "actionable JavaScript scheduling warning; raise-only complete-run costs imported in c52824d8f; hosted replay pending"
+    },
+    {
+      "checkId": 137115739527,
+      "checkName": "Release Preflight",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 28,
+        "start_column": null,
+        "end_line": 28,
+        "end_column": null,
+        "annotation_level": "warning",
+        "title": "",
+        "message": "UNKNOWN: crates.io publish token -- token present; crates.io offers no token-accepting read endpoint (GET /api/v1/me is cookie-only), so only `cargo publish` can prove it",
+        "raw_details": ""
+      },
+      "classification": "external publication authority remains unknown; warning retained, not a pass"
+    },
+    {
+      "checkId": 137115737999,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737839,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737614,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737485,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737460,
+      "checkName": "Immutable BuildKit bootstrap and registry fallback",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 12,
+        "start_column": null,
+        "end_line": 12,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Expected canonical pull outage recovered; actual mirror image and daemon verification follows.",
+        "raw_details": ""
+      },
+      "classification": "deliberate negative control; job succeeded"
+    },
+    {
+      "checkId": 137115737460,
+      "checkName": "Immutable BuildKit bootstrap and registry fallback",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 162,
+        "start_column": null,
+        "end_line": 162,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Expected fallback control: Error response from daemon: canonical registry unavailable in deliberate fallback control",
+        "raw_details": ""
+      },
+      "classification": "deliberate negative control; job succeeded"
+    },
+    {
+      "checkId": 137115737457,
+      "checkName": "Artifact transport (macos-15)",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 1,
+        "start_column": null,
+        "end_line": 1,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.",
+        "raw_details": ""
+      },
+      "classification": "hosted runner capacity advisory; job succeeded"
+    },
+    {
+      "checkId": 137115737443,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737396,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737377,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737359,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737312,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737199,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737177,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737159,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115737011,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115736998,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115736732,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    },
+    {
+      "checkId": 137115736723,
+      "checkName": "pr-check-profile / profile",
+      "annotation": {
+        "path": ".github",
+        "blob_href": "https://github.com/link-assistant/formal-ai/blob/754fd314fd3c08152b19f9f5c51a87ea23fa6940/.github",
+        "start_line": 6,
+        "start_column": null,
+        "end_line": 6,
+        "end_column": null,
+        "annotation_level": "notice",
+        "title": "",
+        "message": "Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Production builds run only on main; heavy qualifications can be requested there.",
+        "raw_details": ""
+      },
+      "classification": "explicit PR-scope notice; does not qualify production work"
+    }
+  ],
+  "runs": [
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992280964,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:05Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992280964",
+        "workflowName": "container-images"
+      },
+      "path": "44992280964.log.gz",
+      "bytes": 4581,
+      "sha256": "ecfce413334eafd7494ffaecec85c0e9f35c3bf35e7d20ede3d1a1994a973a23",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281064,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:05Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281064",
+        "workflowName": "Verify full readable source content"
+      },
+      "path": "44992281064.log.gz",
+      "bytes": 4581,
+      "sha256": "175ef91ee23991876f00c89d049084c8cb79b2f1dbfe3d43964e1d2963aa564e",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281068,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:05Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281068",
+        "workflowName": "Self-development status"
+      },
+      "path": "44992281068.log.gz",
+      "bytes": 4581,
+      "sha256": "bf2928224d5b2d05d265fe532d14902105b1750be8eac57e728422240d575087",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281012,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:06Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281012",
+        "workflowName": "Native provenance interoperability and performance"
+      },
+      "path": "44992281012.log.gz",
+      "bytes": 4581,
+      "sha256": "b086f30a90efd0c8243d7950856d4d5e03c90dd3958f12c55351dbe3ba09dfba",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281119,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:08Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281119",
+        "workflowName": "Regenerate native session projections"
+      },
+      "path": "44992281119.log.gz",
+      "bytes": 4581,
+      "sha256": "dfe04922c7f29c749d10e3462536b5aebd2e8839557abba2eda360dd047d883f",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992280966,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:08Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992280966",
+        "workflowName": "Self-hosting evidence"
+      },
+      "path": "44992280966.log.gz",
+      "bytes": 4581,
+      "sha256": "387b313c82cdb05166b0c9cd827ff27a3d905606ac18b80e66f66101895ea160",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992280953,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:07Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992280953",
+        "workflowName": "Question necessity ratchet"
+      },
+      "path": "44992280953.log.gz",
+      "bytes": 4581,
+      "sha256": "06732ae75d4e83318fa6335121d503c212cf16cad6a8ced9084f8f03bf095396",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992280992,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:07Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992280992",
+        "workflowName": "Stock Rust Install"
+      },
+      "path": "44992280992.log.gz",
+      "bytes": 4581,
+      "sha256": "00d6613b8e3da8e4563aae45e8e0c1c703a353898dff9621da2701077717c591",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "skipped",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281092,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:00Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281092",
+        "workflowName": "Issue 1028 Agent CLI binary-tree ladder"
+      },
+      "path": "44992281092.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281103,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:17Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281103",
+        "workflowName": "Broken Link Checker"
+      },
+      "path": "44992281103.log.gz",
+      "bytes": 43649,
+      "sha256": "4454356ab47dd80b6182d20bb2207ad73faa374b7e074cfabeac7f35e73b7c42",
+      "lines": 352
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992280948,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:19Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992280948",
+        "workflowName": "Publish VS Code extension"
+      },
+      "path": "44992280948.log.gz",
+      "bytes": 25726,
+      "sha256": "437df36fae231dbe9b13005e5a5a04d1dcd908d7238ca793861d76b4a2a2acec",
+      "lines": 229
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992280970,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:10Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992280970",
+        "workflowName": "Desktop Release"
+      },
+      "path": "44992280970.log.gz",
+      "bytes": 24119,
+      "sha256": "f3401bcdcf9733f899b56b3cf76dbd433dd2a818cf1b9841c3f61a0c9b3e63c7",
+      "lines": 197
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281077,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:10Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281077",
+        "workflowName": "Publish source networks"
+      },
+      "path": "44992281077.log.gz",
+      "bytes": 25367,
+      "sha256": "55838412f6b10738f95e560c775b157e01ecc2a6ce16609970268c6c7aed95e4",
+      "lines": 226
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281145,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:14Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281145",
+        "workflowName": "Publish browser engine"
+      },
+      "path": "44992281145.log.gz",
+      "bytes": 25487,
+      "sha256": "82f737569211fb087524270462afe1f55771b455fef5b908a4dee5b403c82a6f",
+      "lines": 226
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281206,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:12Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281206",
+        "workflowName": "Proactive failure report Agent CLI E2E"
+      },
+      "path": "44992281206.log.gz",
+      "bytes": 4580,
+      "sha256": "dc8548557bc8e63ea81629e04f001daad84883a8236b239c256be17898fb8f95",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281127,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:22Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281127",
+        "workflowName": "Task Ladder"
+      },
+      "path": "44992281127.log.gz",
+      "bytes": 4581,
+      "sha256": "dd42d6835057f85a7793bc2957dd77e1071b68f756ced94e88e5902fb18b9edc",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281125,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:24Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281125",
+        "workflowName": "Write-Effect Ladder"
+      },
+      "path": "44992281125.log.gz",
+      "bytes": 4581,
+      "sha256": "ce081e476ab8e36681f149ad0d187e95512cb619a84c33086bdce84cbc7c04ea",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281129,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:24Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281129",
+        "workflowName": "Documentation policy"
+      },
+      "path": "44992281129.log.gz",
+      "bytes": 54379,
+      "sha256": "0f569744014331663fd01ead5d0a91e08e644962edb8d8cd9c0ba764b11a0964",
+      "lines": 446
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992280976,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:24Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992280976",
+        "workflowName": "Guarded staged release authority refusal"
+      },
+      "path": "44992280976.log.gz",
+      "bytes": 75668,
+      "sha256": "602e77886b83c079b9c94a13bee5c48c92a6926a5c84ba285fd76a3dbdc21178",
+      "lines": 507
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281216,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:27Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281216",
+        "workflowName": "External Benchmarks"
+      },
+      "path": "44992281216.log.gz",
+      "bytes": 4581,
+      "sha256": "eeb9881f4d2b3466c1759a5687fa6fdf0c9049f21f7a0521a09b0e5802477a76",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281284,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:29Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281284",
+        "workflowName": "Benchmark Corpus Gate"
+      },
+      "path": "44992281284.log.gz",
+      "bytes": 4588,
+      "sha256": "731aa94d620b8dbb8ad51f5543c510dcc28fbf4529a4f079083fd5e0755d770d",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281102,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:29Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281102",
+        "workflowName": "Security"
+      },
+      "path": "44992281102.log.gz",
+      "bytes": 92949,
+      "sha256": "9783c6e6f3d2f685fd87057778cb2ef9d149458ede41bcebf00a5f42819e08cb",
+      "lines": 798
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281172,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:29Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281172",
+        "workflowName": "Coverage"
+      },
+      "path": "44992281172.log.gz",
+      "bytes": 235058,
+      "sha256": "01da4aeb39fda86dd0d8d22788fff714b3996ce514b4bc0dc658462358050965",
+      "lines": 1591
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281035,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:21Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281035",
+        "workflowName": "Summarization Ratchet"
+      },
+      "path": "44992281035.log.gz",
+      "bytes": 4587,
+      "sha256": "9c2be7948c88a1070863d1665d401779afd1cd91e6955c2fdf76fa32a00bbcb8",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281160,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:40Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281160",
+        "workflowName": "Workflows"
+      },
+      "path": "44992281160.log.gz",
+      "bytes": 507498,
+      "sha256": "4235bb138792bcf585d5fd340593b319151ab72a7b989f4d85f744bdee6837b0",
+      "lines": 3247
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281115,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:27Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281115",
+        "workflowName": "Coding Ladder"
+      },
+      "path": "44992281115.log.gz",
+      "bytes": 9633,
+      "sha256": "205ed255770aa7fa7dee760cad680736644278ed511b3ca03eca400a933c92e4",
+      "lines": 79
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281278,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:07:30Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281278",
+        "workflowName": "Agentic CLI Matrix"
+      },
+      "path": "44992281278.log.gz",
+      "bytes": 4581,
+      "sha256": "3ba1cf97afb0f0727f18f5f8d321a0898bc285643471e975d3f600196decdd7f",
+      "lines": 38
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281033,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:08:12Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281033",
+        "workflowName": "Source scanner qualification and debt inventory"
+      },
+      "path": "44992281033.log.gz",
+      "bytes": 52101,
+      "sha256": "1e4401cd7abae35d8a5834e7ea0db20553830fa2955f7654372218cf68df343b",
+      "lines": 433
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281110,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:08:08Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281110",
+        "workflowName": "Resolve provenance native dependencies"
+      },
+      "path": "44992281110.log.gz",
+      "bytes": 77283,
+      "sha256": "a6151dae29d1a32d76a226cf02fe24f51a386403e162927c39442ac4a771c01a",
+      "lines": 519
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281168,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:08:02Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281168",
+        "workflowName": "Observe read-only GitHub authorization profiles"
+      },
+      "path": "44992281168.log.gz",
+      "bytes": 108231,
+      "sha256": "8ce961e74d99fe64e4253e68fa23cea4a3f6b3f67ab1c48eae34db11559c2dc4",
+      "lines": 697
+    },
+    {
+      "run": {
+        "conclusion": "success",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281187,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:08:09Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281187",
+        "workflowName": "Web UI boundary"
+      },
+      "path": "44992281187.log.gz",
+      "bytes": 31938,
+      "sha256": "0771b15401bf34997a57b0fe38e986b18b7c2a03d567d19a574b12aef3ee0e9b",
+      "lines": 284
+    },
+    {
+      "run": {
+        "conclusion": "failure",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992280972,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:14:00Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992280972",
+        "workflowName": "Layered CI"
+      },
+      "path": "44992280972.log.gz",
+      "bytes": 4777314,
+      "sha256": "c8868029a1b8a57cc1a58817b38187d3ba20e205e8d07a0cc42902d399252dce",
+      "lines": 25494
+    },
+    {
+      "run": {
+        "conclusion": "failure",
+        "createdAt": "2026-11-22T06:06:58Z",
+        "databaseId": 44992281354,
+        "headSha": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+        "status": "completed",
+        "updatedAt": "2026-11-22T06:45:06Z",
+        "url": "https://github.com/link-assistant/formal-ai/actions/runs/44992281354",
+        "workflowName": "CI/CD Pipeline"
+      },
+      "path": "44992281354.log.gz",
+      "bytes": 2981877,
+      "sha256": "688764895aad8d225d7f6768522a821d3e53e935830077559188bf13cd20d975",
+      "lines": 20075
+    }
+  ]
+}
