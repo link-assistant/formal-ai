@@ -8,7 +8,7 @@ import { recordFor, toLino, answerDerivationId } from './crate/derivation.mjs';
 // install the same shape from the worker's own globals.
 
 import { boundedCommandSync } from '../server/bounded-command.mjs';
-import { lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { closeSync, fstatSync, lstatSync, openSync, readSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import {readNetworkAllowed} from '../server/read-access.mjs';
 import { REPO_ROOT, parseLino, readRepoFile } from '../server/lino.mjs';
@@ -30,7 +30,7 @@ import { validateRepairProgram } from '../server/repair-program-syntax.mjs';
 import { createNodeSourceSessionHost } from '../server/node-source-session-host.mjs';
 import { sourceQualifiedSeedOwners } from '../../scripts/generate-seed-registry.mjs';
 import { currentDialogId } from '../server/dialog-log.mjs';
-import { BenchmarkGateReport, learnRulesFromUnknownTraces, unknownTraceFromEventLog } from '../server/self-improvement.mjs';
+import { BenchmarkGateReport, learnRulesFromUnknownTraces, learningRunLinksNotation, unknownTraceFromEventLog, unknownTraceLinksNotation } from '../server/self-improvement.mjs';
 function stat(path) {
   try {
     return statSync(path);
@@ -56,6 +56,33 @@ function listRepoDirectory(relative) {
     name,
     isDirectory: Boolean(stat(path.join(directory, name))?.isDirectory())
   }));
+}
+
+/** Read bounded review records from paths selected by the operator at startup. */
+function reviewDocumentReader() {
+  const accepted = process.env.FORMAL_AI_ACCEPTED_CHANGES;
+  const approved = process.env.FORMAL_AI_APPROVED_LESSONS;
+  return kind => {
+    const file = kind === 'accepted_changes' ? accepted : approved;
+    if (file === undefined) return null;
+    if (!stat(file)?.isFile()) throw Error('ReviewDocumentUnavailable');
+    const descriptor = openSync(file, 'r');
+    try {
+      const limit = 1024 * 1024;
+      if (fstatSync(descriptor).size > limit) throw Error('InvalidReviewDocument');
+      const bytes = Buffer.allocUnsafe(limit + 1);
+      let filled = 0;
+      while (filled < bytes.length) {
+        const count = readSync(descriptor, bytes, filled, bytes.length - filled);
+        if (count === 0) break;
+        filled += count;
+      }
+      if (filled > limit) throw Error('InvalidReviewDocument');
+      return new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes.subarray(0, filled));
+    } finally {
+      closeSync(descriptor);
+    }
+  };
 }
 
 /** Separate generator provenance: failed or stale source never supplies seed owners. */
@@ -309,6 +336,8 @@ export async function installNodeHost(worker, options = {}) {
       return location && readOnly ? { ...location, io: { readText: location.io.readText } } : location;
     },
     listDirectory: listRepoDirectory,
+    isOwnedRustSource: module => censusRegularPath(REPO_ROOT, 'rust/' + module, 'file'),
+    readReviewDocument: reviewDocumentReader(),
     censusDocuments,
     censusSourceClosureComplete,
     sourceDocument,
@@ -316,6 +345,10 @@ export async function installNodeHost(worker, options = {}) {
     sourceUnaryConsolidationCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/consolidate-stateless-unary-request.mjs')],
     generatedSeedOwnerDeclarations,
     sourceFetch: (options) => nodeSourceFetch(readOnly, options),
+    reviewRepairTrace: (trace) => {
+      const run = learnRulesFromUnknownTraces([trace], BenchmarkGateReport.absentForIssue362());
+      return { run, traceLinks: unknownTraceLinksNotation(trace), learningLinks: learningRunLinksNotation(run) };
+    },
     reviewUnknownAnswers: (answers) => {
       const traces = answers.map(({ prompt, intent, events }) => unknownTraceFromEventLog(prompt, intent, events)).filter(Boolean);
       return learnRulesFromUnknownTraces(traces, BenchmarkGateReport.absentForIssue362());
