@@ -53,8 +53,8 @@ pub(super) fn requested_write_program_parameters(
     // Issue #1173 R1173-3: a request that names no catalogued task but text to
     // print names the operand task (`print_text`), unless the minimal-script
     // route answers it. The JavaScript twin is `requestedWriteProgramParameters`.
-    let minimal_script = crate::solver_helpers::is_write_script_request(raw, normalized)
-        && crate::engine::hello_world_program_by_alias(normalized).is_some();
+    let minimal_script =
+        crate::coding::operand_program::print_script_request(raw, normalized).is_some();
     if !(parameters.contains_key("task") || minimal_script)
         && let Some(task) = crate::coding::operand_program::operand_task(raw)
     {
@@ -98,8 +98,10 @@ pub(super) fn write_program_parameters(normalized: &str) -> Option<BTreeMap<Stri
     }
     let task = crate::coding::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
-    let mentions_program_request =
-        crate::seed::lexicon().mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized);
+    let mentions_program_request = lexicon
+        .mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized)
+        || (lexicon.mentions_role(crate::seed::ROLE_SCRIPT_AUTHORING_VERB, normalized)
+            && lexicon.mentions_role(crate::seed::ROLE_SCRIPT_OR_CODE_ARTIFACT, normalized));
     let asks_for_known_language_program = language
         .as_deref()
         .is_some_and(|language| mentions_program_request && known_write_program_language(language));

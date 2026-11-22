@@ -7,50 +7,6 @@ use lino_objects_codec::format::parse_indented;
 
 mod seed_and_memory;
 
-const PYTHON_SCRIPT_ANSWER: &str = r#"Here is a minimal Python script:
-
-```python
-print("Hello, world!")
-```
-
-Execution status: not probed in this environment.
-Check command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`
-Run command: `python3 main.py`
-Output, not observed in this environment:
-```text
-Hello, world!
-```"#;
-
-const RUST_SCRIPT_ANSWER: &str = r#"Here is a minimal Rust script:
-
-```rust
-fn main() {
-    println!("Hello, world!");
-}
-```
-
-Execution status: not probed in this environment.
-Check command: `rustc main.rs -o main`
-Run command: `./main`
-Output, not observed in this environment:
-```text
-Hello, world!
-```"#;
-
-const JAVASCRIPT_SCRIPT_ANSWER: &str = r#"Here is a minimal JavaScript script:
-
-```javascript
-console.log("Hello, world!");
-```
-
-Execution status: not probed in this environment.
-Check command: `node --check main.js`
-Run command: `node main.js`
-Output, not observed in this environment:
-```text
-Hello, world!
-```"#;
-
 const OWLBEAR_PROJECT_PLAN: &str = r#"Implementation plan pending approval for a extension targeting Owlbear.
 
 Formalized meaning:
@@ -446,39 +402,25 @@ fn hello_world_prompt_supports_multiple_programming_languages() {
 }
 
 #[test]
-fn write_script_prompt_returns_code_block() {
-    // Regression test for issue #35: "Напиши скрипт на питоне" was returning
-    // intent: unknown instead of routing to a code answer.
+fn script_requests_without_a_task_ask_for_operands() {
     let cases = [
         (
             "Напиши скрипт на питоне",
-            "write_script_python",
-            "```python",
-            PYTHON_SCRIPT_ANSWER,
+            "Что должна делать программа на языке python?",
         ),
         (
             "Write a script in Python",
-            "write_script_python",
-            "```python",
-            PYTHON_SCRIPT_ANSWER,
+            "What should the python program do?",
         ),
-        (
-            "Write a script in Rust",
-            "write_script_rust",
-            "```rust",
-            RUST_SCRIPT_ANSWER,
-        ),
+        ("Write a script in Rust", "What should the rust program do?"),
+        ("Write a Bash script", "What should the bash program do?"),
         (
             "Write me some code in JavaScript",
-            "write_script_javascript",
-            "```javascript",
-            JAVASCRIPT_SCRIPT_ANSWER,
+            "What should the javascript program do?",
         ),
         (
             "написать скрипт на javascript",
-            "write_script_javascript",
-            "```javascript",
-            JAVASCRIPT_SCRIPT_ANSWER,
+            "Что должна делать программа на языке javascript?",
         ),
     ];
 
@@ -486,24 +428,16 @@ fn write_script_prompt_returns_code_block() {
         offline: true,
         ..SolverConfig::default()
     });
-    for (prompt, intent, code_fence, expected_answer) in cases {
+    for (prompt, question) in cases {
         let response = solver.solve(prompt);
-
-        assert_eq!(response.answer, expected_answer, "prompt: {prompt:?}");
+        assert_eq!(response.intent, "write_program_skill_gap", "{prompt}");
         assert_eq!(
-            response.intent, intent,
-            "prompt: {prompt:?} — answer was: {}",
+            response.answer.starts_with(question),
+            true,
+            "{prompt}: {}",
             response.answer
         );
-        assert!(
-            response.answer.contains(code_fence),
-            "prompt: {prompt:?} — expected {code_fence} in answer: {}",
-            response.answer
-        );
-        assert_ne!(
-            response.intent, "unknown",
-            "prompt: {prompt:?} — got unknown intent"
-        );
+        assert_eq!(response.answer.contains("```"), false, "{prompt}");
     }
 }
 

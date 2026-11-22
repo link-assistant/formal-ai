@@ -664,8 +664,6 @@ pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
 /// ([`ROLE_HELLO_WORLD_REFERENCE`]), so those keep their richer formalization
 /// instead of collapsing into a bare script.
 ///
-/// Defers again — see [`names_no_task_beyond_the_minimal_script`] — when the
-/// prompt names a task the minimal script cannot render.
 ///
 /// [`ROLE_SCRIPT_AUTHORING_VERB`]: crate::seed::ROLE_SCRIPT_AUTHORING_VERB
 /// [`ROLE_SCRIPT_OR_CODE_ARTIFACT`]: crate::seed::ROLE_SCRIPT_OR_CODE_ARTIFACT
@@ -694,8 +692,7 @@ pub fn is_write_script_request(prompt: &str, _normalized: &str) -> bool {
 /// Return true when the minimal-script route can render everything the prompt
 /// names, and false when the prompt names a task it cannot.
 ///
-/// The route renders exactly one thing: the hello-world template for the
-/// language it recognizes. `handler:write_script` is hoisted to the front of
+/// The route renders a script that prints the caller's literal. `handler:write_script` is hoisted to the front of
 /// method selection by the bare tokens "script"/"code" in
 /// `data/meta/cue-lexicon.lino`, which without this check lets that one template
 /// answer any request merely ending in "give me the code" — jumping over the
@@ -718,13 +715,7 @@ fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bo
     if crate::meta_reasoner::request::names_file_noun(prompt, detect_language(prompt).slug()) {
         return false;
     }
-    let Some(program) = crate::engine::hello_world_program_by_alias(normalized) else {
-        // No catalogued language: the route declines on its own grounds.
-        return true;
-    };
-    if crate::coding::program_task_by_alias(normalized)
-        .is_some_and(|task| task.slug != program.task.slug)
-    {
+    if crate::coding::program_task_by_alias(normalized).is_some() {
         return false;
     }
     crate::solver_handlers::numeric_list::solve_numeric_list(prompt).is_none()

@@ -136,26 +136,6 @@ pub struct ProgramTask {
     pub slug: &'static str,
     pub label: &'static str,
     pub output: &'static str,
-    /// Standard input the task is defined against, or `""` when the program
-    /// reads none.
-    ///
-    /// Issue #863 asked for *copy stdin to stdout*, and a task whose whole
-    /// subject is standard input has no verifiable output until its input is
-    /// fixed: `output` alone would claim a result the reader cannot reproduce.
-    /// The fixture therefore belongs to the task, next to the output it
-    /// produces, rather than to whichever harness happens to run it — which is
-    /// what lets [`ProgramSpec::run_command_line`] and the issue-330
-    /// verification harness feed the same bytes without agreeing on anything
-    /// but the catalog.
-    pub input: &'static str,
-}
-
-impl ProgramTask {
-    #[must_use]
-    pub fn output_for_language(&self, language: &ProgramLanguage) -> String {
-        list_files_sample_output(self.slug, &language.save_as)
-            .unwrap_or_else(|| self.output.to_owned())
-    }
 }
 
 /// A program the catalog compiles in: a row of the `templates_*` tables.
@@ -172,7 +152,6 @@ pub struct ProgramTemplate {
     pub task_slug: &'static str,
     pub language_slug: &'static str,
     pub code: Cow<'static, str>,
-    pub(crate) composed: bool,
 }
 
 impl From<&CompiledTemplate> for ProgramTemplate {
@@ -181,7 +160,6 @@ impl From<&CompiledTemplate> for ProgramTemplate {
             task_slug: compiled.task_slug,
             language_slug: compiled.language_slug,
             code: Cow::Borrowed(compiled.code),
-            composed: false,
         }
     }
 }
@@ -220,63 +198,9 @@ impl ProgramSpec<'_> {
     }
 
     #[must_use]
-    pub fn expected_output(self) -> String {
-        self.task.output_for_language(self.language)
+    pub fn run_command_line(&self) -> &str {
+        &self.language.execution.run_command
     }
-
-    /// The stdin fixture this task is defined against, if it reads any.
-    #[must_use]
-    pub fn stdin_fixture(self) -> Option<&'static str> {
-        (!self.task.input.is_empty()).then_some(self.task.input)
-    }
-
-    /// The run command as a reader must actually type it.
-    ///
-    /// A program that reads standard input is not run by naming it alone: with
-    /// no redirection it waits for a terminal that, in an answer, nobody is
-    /// typing into. The fixture is therefore piped in on the command line
-    /// rather than left to a file the answer would also have to describe, so
-    /// the command is copy-pasteable and carries the input it was verified
-    /// against (issue #863).
-    #[must_use]
-    pub fn run_command_line(self) -> String {
-        let run_command = &self.language.execution.run_command;
-        self.stdin_fixture().map_or_else(
-            || run_command.to_string(),
-            |input| format!("printf '{}' | {run_command}", shell_escaped(input)),
-        )
-    }
-}
-
-/// `input` with the characters a single-quoted `printf` format cannot carry
-/// written as the escapes `printf` expands back into them.
-fn shell_escaped(input: &str) -> String {
-    let mut escaped = String::with_capacity(input.len());
-    for character in input.chars() {
-        match character {
-            '\n' => escaped.push_str("\\n"),
-            '\t' => escaped.push_str("\\t"),
-            '\\' => escaped.push_str("\\\\"),
-            '%' => escaped.push_str("%%"),
-            '\'' => escaped.push_str("'\\''"),
-            other => escaped.push(other),
-        }
-    }
-    escaped
-}
-
-fn list_files_sample_output(task_slug: &str, save_as: &str) -> Option<String> {
-    let reverse = match task_slug {
-        "list_files" | "list_files_arg" => false,
-        "list_files_reverse_sort" | "list_files_arg_reverse_sort" => true,
-        _ => return None,
-    };
-    let mut files = ["README.md", "data.txt", save_as];
-    files.sort_unstable();
-    if reverse {
-        files.reverse();
-    }
-    Some(files.join("\n"))
 }
 
 /// How a catalogued program is checked and run.

@@ -534,7 +534,7 @@ pub fn documented_catalog_programs_with_client<T: SourceTransport>(
                 rediscovered: rediscover_documented_program_with_client(
                     language.slug,
                     task.slug,
-                    &task.output_for_language(language),
+                    task.output,
                     RunContract {
                         save_as: &language.save_as,
                         commands: &catalog_run_commands(language),

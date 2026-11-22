@@ -8,11 +8,9 @@
 // Three rules live here, each read from seed data rather than written as a
 // phrase list:
 //   - every catalog task is installed, with its label, its templates, its
-//     output and the input it was verified against, from
+//     any expected output fixed by the task, from
 //     data/seed/hello-world-programs.lino (R1021-6/R1021-7, and the full
 //     task x language set of the Rust catalog, R921-8);
-//   - a task that reads standard input pipes that input into the run command a
-//     reader is told to type (`ProgramTemplate::run_command_line`);
 //   - a request that names code as its artefact and nothing else is a
 //     write_program request with no parameters, whatever the asking verb
 //     (R1021-31, `names_code_and_nothing_else`).
@@ -22,7 +20,7 @@ const PROGRAM_PRINT_RENDERERS = new Map();
 
 /**
  * Install the catalog's tasks and programs from the seed: each task's label,
- * expected output and stdin fixture, and the program of every pair the seed
+ * optional expected output, and the program of every pair the seed
  * stores one for, in the seed's (the Rust table's) order. The seed bundle is
  * the one the Rust catalog tests hold equal to the compiled tables
  * (rust/tests/source/source_tests/coding/catalog/mod/lino_parity.rs), so the
@@ -46,7 +44,7 @@ function installSeedProgramTasks(raw) {
     const slug = childValue(record, "task");
     if (!record.name.startsWith("task_") || !slug) continue;
     const label = childValue(record, "label") || wordsForMeaning(`program_task_${slug}`)[0] || slug.split("_").join(" ");
-    WRITE_PROGRAM_TASKS[slug] = { label: label, output: childValue(record, "output") || "", input: childValue(record, "input") || "",
+    WRITE_PROGRAM_TASKS[slug] = { label: label, output: childValue(record, "output") || null,
       procedure: childValue(record, "procedure") || "", operation: childValue(record, "operation") || "" };
     installed.push(slug);
   }
@@ -58,33 +56,6 @@ function installSeedProgramTasks(raw) {
     WRITE_PROGRAM_TEMPLATES[slug][childValue(record, "language")] = code;
   }
   return installed;
-}
-
-/**
- * `input` with the characters a single-quoted `printf` format cannot carry
- * written as the escapes `printf` expands back into them. Mirrors
- * `shell_escaped` in rust/src/coding/catalog/types.rs.
- * @param {string} input
- * @returns {string}
- */
-function programShellEscaped(input) {
-  const escapes = { "\n": "\\n", "\t": "\\t", "\\": "\\\\", "%": "%%", "'": "'\\''" };
-  return Array.from(String(input)).map((character) => escapes[character] || character).join("");
-}
-
-/**
- * The run command as a reader must actually type it: a task that reads
- * standard input has the fixture it was verified against piped in, so the
- * command is copy-pasteable instead of waiting on a terminal. Mirrors
- * `ProgramTemplate::run_command_line`.
- * @param {string|null} task
- * @param {string} runCommand
- * @returns {string}
- */
-function programRunCommandLine(task, runCommand) {
-  const taskInfo = task && typeof WRITE_PROGRAM_TASKS === "object" ? WRITE_PROGRAM_TASKS[task] : null;
-  const input = taskInfo && taskInfo.input ? taskInfo.input : "";
-  return input ? `printf '${programShellEscaped(input)}' | ${runCommand}` : runCommand;
 }
 
 /**
@@ -172,13 +143,6 @@ function programTaskInstruction(prompt) {
   if (!quoted || quoted.start !== 0 || programOperandAfter(after.trim()) !== operand) return prompt;
   const start = end + suffix.length - after.length;
   return prompt.slice(0, start) + " ".repeat(quoted.end) + prompt.slice(start + quoted.end);
-}
-
-/** A seeded print instruction claims an operand even when parsing refuses it. Mirrors program_task_print_claim. */
-function programTaskPrintClaim(prompt) {
-  if (typeof prompt !== "string") return false;
-  const print = findMeaning("print_stdout");
-  return Boolean(print) && prompt.split(/\s+/u).some(word => meaningEvidencedIn(print, programBareWord(word)));
 }
 
 function programTaskOperand(prompt) {

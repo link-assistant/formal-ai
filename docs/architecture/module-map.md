@@ -48,7 +48,7 @@ new module fails CI until this map documents it.
 | `structured_tracing` | `tracing` events enter the same redacting typed-Lino sink as native diagnostics. | §2 |
 | `telemetry` | Consent-gated anonymous Sentry diagnostics (issue #861). | §2 |
 | `translation` | Translation pipeline. | §2 |
-| `triz_solver` | User-facing TRIZ/contradiction solver (issue #901). | §2 |
+| `triz_solver` | Derive a TRIZ worksheet from the two demands in the caller's prompt. | §2 |
 | `version_resolution` | Resolve the third-party versions generated code pins, at generation time. | §2 |
 | `agentic_coding` | Agentic-coding capability for the Formal AI server (issue #468). | §3 |
 | `associative_package` | Reusable associative packages, handlers, triggers, and permissions. | §3 |

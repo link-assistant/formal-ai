@@ -149,7 +149,6 @@ fn catalog_templates() -> &'static [ProgramTemplate] {
                     task_slug: task.slug,
                     language_slug: language.slug,
                     code: Cow::Owned(code),
-                    composed: true,
                 })
             }));
         }

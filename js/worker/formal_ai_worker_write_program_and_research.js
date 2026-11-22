@@ -282,25 +282,21 @@ async function tryWriteProgram(prompt, history, responseLanguage, composition, p
   }
   const languageInfo = writeProgramLanguageInfo(task, language, documented);
   const taskInfo = WRITE_PROGRAM_TASKS[task];
-  const expectedOutput = documented?.recipe?.verified_output ?? suppliedOutput ?? writeProgramExpectedOutput(task, languageInfo, taskInfo);
-  // The sandbox can only execute self-contained JavaScript; a snippet that pulls
-  // in Node APIs (e.g. the list-files `require("fs")`) cannot run here (#312).
-  const ranInSandbox =
-    !documented?.recipe && language === "javascript" && !/\brequire\s*\(|\bimport\b/.test(template);
+  const expectedOutput = documented?.recipe?.verified_output ?? suppliedOutput ?? taskInfo.output;
   const lines = [];
   lines.push(i18n.intro(languageInfo.name, taskInfo.label));
   lines.push("");
   lines.push("```" + languageInfo.fence);
   lines.push(template);
   lines.push("```", "");
-  const executionLines = writeProgramExecutionLines(language, task, template, expectedOutput, i18n, responseLanguage, documented);
+  const { lines: executionLines, ranInSandbox } = writeProgramExecutionLines(language, template, expectedOutput, i18n, responseLanguage, documented);
   lines.push(...executionLines);
   // Issue #330 (R9): teach a novice — append a plain-language explanation of how
   // the code works, then step-by-step instructions for testing it. Follow-up
   // edits (when the dialog already showed code) drop the verbose setup steps.
   const priorCode = historyHasPriorCode(history);
   lines.push("", programExplanationSection(task, responseLanguage, expectedOutput),
-    "", programTestInstructions(languageInfo, responseLanguage, priorCode, task));
+    "", programTestInstructions(languageInfo, responseLanguage, priorCode, task, expectedOutput));
   const content = lines.join("\n");
   return {
     intent: "write_program",
@@ -308,8 +304,7 @@ async function tryWriteProgram(prompt, history, responseLanguage, composition, p
     // R1013: the sandbox block and the facts a native host reports instead (js/server/program-report.mjs).
     programExecution: { language, task, responseLanguage, checkCommand: languageInfo.checkCommand || null,
       rediscoveredFrom: documented?.recipe?.rediscovery_source,
-      composed: !documented?.recipe && (suppliedOutput !== null || taskInfo.operation === "print_literal"),
-      runCommand: programRunCommandLine(task, languageInfo.runCommand), output: expectedOutput,
+      runCommand: languageInfo.runCommand, output: expectedOutput,
       block: executionLines.join("\n") },
     confidence: 0.9,
     evidence: [

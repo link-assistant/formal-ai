@@ -180,10 +180,7 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
     && (extractPythonFunctionName(prompt) !== "" || claimEvidenceContentBeyond(prompt, [
       "coding_request_verb", "coding_request_object", ROLE_PROGRAM_SYNTHESIS_SUBJECT, "program_language_alias",
     ])),
-  script_language: (prompt) => {
-    const language = programLanguageFromPrompt(normalizeProgramPrompt(prompt));
-    return Boolean(language && (writeProgramTemplate("hello_world", language) || documentationSources(language, "hello_world").length));
-  },
+  script_language: (prompt, normalized) => writeScriptLanguage(prompt, normalized) !== null,
   program_task: (prompt) => writeProgramParameters(prompt) != null,
   document_format: (prompt) => documentPlanFormat(String(prompt || "").toLowerCase()) !== null,
   install_steps: (prompt, normalized) => claimEvidenceInstallSteps(prompt, normalized),

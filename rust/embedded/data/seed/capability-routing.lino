@@ -554,7 +554,7 @@ capability_routing
     handler write_script
     browser_handler tryWriteScript
     admits_on script_language
-    because "issue 1175 R3: a minimal script is written only in a catalogued language the request names"
+    because "issue 1175 R3: a print script binds the language and the literal that the caller names"
   claim
     handler document_generation_plan
     browser_handler tryDocumentGenerationPlan

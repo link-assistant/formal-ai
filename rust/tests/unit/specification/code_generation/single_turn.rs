@@ -121,25 +121,15 @@ fn python_hello_world_seed_runs() {
 }
 
 #[test]
-fn python_list_files_reverse_sort_sample_output_matches_saved_file_name() {
+fn python_list_files_reverse_sort_has_no_assumed_directory_contents() {
     let response = answer(
         "Write me a Python program that lists files in the current directory in reverse-sorted order",
     );
 
     assert_write_program_parameters(&response, "python", "list_files_reverse_sort");
     assert!(response.answer.contains("```python"));
-    assert!(
-        response
-            .answer
-            .contains("```text\nmain.py\ndata.txt\nREADME.md\n```"),
-        "Python reverse file-list output should match the documented sample directory, got: {}",
-        response.answer
-    );
-    assert!(
-        !response.answer.contains("Cargo.toml"),
-        "Python sample output should not mention Rust project files, got: {}",
-        response.answer
-    );
+    assert_eq!(response.answer.contains("reverse=True"), true);
+    assert_eq!(response.answer.contains("```text"), false);
 }
 
 #[test]
@@ -514,15 +504,19 @@ fn russian_program_request_with_unknown_task_is_not_unknown() {
     // backtick-quoted parameter (stable across languages) rather than the
     // English word "language".
     assert!(
-        response.answer.contains("`python`"),
+        response
+            .answer
+            .contains("Что должна делать программа на языке python?"),
         "skill-gap answer should name the extracted python parameter, got: {}",
         response.answer
     );
     // Issue #699 batch 3: it names the routes that missed instead of the
     // `write_program(language, task)` signature and the template catalogue.
     assert!(
-        response.answer.contains("coding_oracle"),
-        "skill-gap answer should name the synthesis routes it tried, got: {}",
+        response
+            .answer
+            .contains("входные данные и нужный результат"),
+        "clarification should ask for inputs and desired output: {}",
         response.answer
     );
 }

@@ -708,6 +708,42 @@ fingerprints. The archived job logs locate the failures at lines 1257–1291,
 [Pipeline](evidence/workflows/pipeline-round17-44990051689.log.gz) ·
 [Layered CI](evidence/workflows/layered-round17-44990051323.log.gz)
 
+### Script requests and execution inputs
+
+A language-only script request previously acquired the Hello World exercise
+as its missing task. The file-listing and stdin-copy answers declared stdout
+chosen by the catalog. The Node server could then replace the worker's report
+with an installed toolchain observation that applied to a different program.
+The baseline captures these paths on a fresh worker. An explicit print
+request now binds the supplied text and the language named in the instruction.
+A request that names only a language asks what the program should do.
+[Cold baseline](evidence/verification/round22-program-baseline.log) ·
+[Program replay](evidence/verification/round22-program-replay.log)
+
+Listing takes its path from the working directory or the caller's argument.
+Copy takes its bytes from standard input. The expected-output block is absent
+until there is a concrete input and output to check. The browser can report a
+sandbox run when it completed. Native and Node answers identify unchecked code
+as unprobed. The regression creates a directory with known entries and invokes
+the generated program on that directory. Another regression pipes a byte stream
+including a null byte and checks it without decoding or normalization.
+[Behavior replay](evidence/verification/round22-issue-1021-behaviour-range.log) ·
+[Script operands](evidence/verification/round22-script-print-operand.log) ·
+[Server execution report](evidence/verification/round22-server-evidence-links.log)
+
+The reviewed procedure reader also used the repository fixture path as its
+fallback. Both native and Node now resolve it under the selected application
+cache root. An explicit `FORMAL_AI_PROCEDURE_CACHE` still selects a file. The
+browser starts without a reviewed file. A cache row describing one example
+cannot replace a file or stream operation whose exact input is still unknown.
+[Procedure cache replay](evidence/verification/round22-issue-1165-server-procedure-cache.log)
+
+The Layered CI replay on the previous head compared the new TRIZ summary to an
+old generated architecture map. The generator refreshed the map and the twin
+compares its output byte for byte with the committed document.
+[Hosted log, lines 4486–4528](evidence/workflows/job-round21-layered-137140947544.log.gz) ·
+[Local replay](evidence/verification/round22-module-map-twin.log)
+
 ## Computer-use plans and observed HTTP responses
 
 The prior planner selected a recorded operation sequence from the prompt.

@@ -53,7 +53,9 @@ pub fn class_evidence_holds(
         "table_reference" => handlers::names_query_table(prompt),
         "filesystem_object" => handlers::names_filesystem_object(prompt, normalized),
         "function_spec" => names_function_spec(prompt),
-        "script_language" => crate::engine::hello_world_program_by_alias(normalized).is_some(),
+        "script_language" => {
+            crate::coding::operand_program::print_script_request(prompt, normalized).is_some()
+        }
         "document_format" => handlers::names_document_format(normalized),
         "install_steps" => handlers::carries_install_steps(prompt, normalized),
         "call_expression" => names_call_expression(prompt),

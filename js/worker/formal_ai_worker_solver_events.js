@@ -275,6 +275,7 @@ function solverProcedureCacheEvents(prompt, language, task, documented) {
     const fields = `rediscovery_source=${recipe.rediscovery_source} content_id=${recipe.content_id}`;
     return [solverEvent("procedure_cache", `outcome=${outcome} language=${language} task=${task} ${fields}`)];
   }
+  if (WRITE_PROGRAM_TASKS[task]?.output == null) return [];
   const template = writeProgramTemplate(task, language);
   if (!template || writeProgramTemplateForPrompt(prompt, task, language, template) !== template) return [];
   const missing = solverMissResearchMissing().join(",") + (rejected ? ` documentation_rejected=${rejected}` : "");

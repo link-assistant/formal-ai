@@ -156,55 +156,37 @@ coding_catalog
   task hello_world
     label "hello world"
     output "Hello, world!"
-    input ""
   task count_to_three
     label "count to three"
     output "1\n2\n3"
-    input ""
   task list_files
     label "list files in the current directory"
-    output "Cargo.toml\nREADME.md\nmain.rs"
-    input ""
   task list_files_arg
     label "list files in the directory given as a path argument"
-    output "Cargo.toml\nREADME.md\nmain.rs"
-    input ""
   task list_files_reverse_sort
     label "list files in the current directory in reverse-sorted order"
-    output "main.rs\nREADME.md\nCargo.toml"
-    input ""
   task list_files_arg_reverse_sort
     label "list files from a path argument in reverse-sorted order"
-    output "main.rs\nREADME.md\nCargo.toml"
-    input ""
   task fizzbuzz
     label "FizzBuzz"
     output "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz"
-    input ""
   task factorial
     label "factorial of 5"
     output "120"
-    input ""
   task reverse_string
     label "string reversal"
     output "olleh"
-    input ""
   task sum_to_ten
     label "sum from 1 to 10"
     output "55"
-    input ""
   task fibonacci
     label "recursive Fibonacci"
     output "55"
-    input ""
   task copy_stdin_to_stdout
     label "copy standard input to standard output"
-    output "hello\nworld"
-    input "hello\nworld\n"
   task print_text
     label "print text"
     output "{operand}"
-    input ""
   template "count_to_three:rust"
     task_slug count_to_three
     language_slug rust

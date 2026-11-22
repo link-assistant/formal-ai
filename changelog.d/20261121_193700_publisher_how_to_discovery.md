@@ -9,3 +9,5 @@ bump: patch
 - Build Google Trends catalogs and learning reports from the regional publisher feed. Preserve the capture source and digest in review artifacts and keep historical feeds in explicit replays.
 - Build associative learning reports from caller-supplied observations.
 - Run computer-use plans from explicit operations or a supplied teaching corpus. Verify HTTP responses against the authorized origin and keep recorded tasks and responses in test fixtures.
+- Build contradiction worksheets from the demands in the request and keep reference contradictions in explicit tests.
+- Bind print operands and standard input at request or execution time. Report a program run only when a local execution or publication check was observed.

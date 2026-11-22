@@ -117,18 +117,6 @@ pub fn program_instruction_view(prompt: &str) -> String {
     )
 }
 
-/// A seeded print instruction claims an operand even when parsing refuses it.
-#[must_use]
-pub fn program_task_print_claim(prompt: &str) -> bool {
-    crate::seed::lexicon()
-        .meaning("print_stdout")
-        .is_some_and(|print| {
-            prompt
-                .split_whitespace()
-                .any(|word| print.evidenced_in(&bare_word(word)))
-        })
-}
-
 #[must_use]
 pub fn program_task_operand(prompt: &str) -> Option<String> {
     let lexicon = crate::seed::lexicon();
@@ -350,12 +338,7 @@ impl ProgramReply {
                 language,
                 prior_code,
             } => crate::engine::write_program_answer_with_output(
-                spec,
-                language,
-                prior_code,
-                output,
-                source,
-                spec.template.composed,
+                spec, language, prior_code, output, source,
             ),
             Self::Script => format!(
                 "{}\n\n```{}\n{}\n```\n\n{}",
@@ -368,11 +351,10 @@ impl ProgramReply {
                 spec.template.code,
                 crate::engine::execution_report(
                     spec.language,
-                    &spec.run_command_line(),
+                    spec.run_command_line(),
                     output,
                     Language::English,
                     source,
-                    spec.template.composed,
                 ),
             ),
         }
@@ -399,9 +381,9 @@ pub(crate) fn try_write_documented_program(
         Some(_) => program_task_operand(prompt)?,
         None if task.slug == "hello_world" => {
             crate::code_editing::inline_hello_world_replacement(prompt)
-                .unwrap_or_else(|| task.output_for_language(row))
+                .unwrap_or_else(|| task.output.to_owned())
         }
-        None => task.output_for_language(row),
+        None => task.output.to_owned(),
     };
     let commands = catalog_run_commands(row);
     let documented = documentation_access.and_then(|offline| {
@@ -436,7 +418,6 @@ pub(crate) fn try_write_documented_program(
             task_slug: task.slug,
             language_slug: row.slug,
             code: Cow::Owned(code),
-            composed: true,
         };
         let spec = ProgramSpec {
             language: row,
@@ -482,7 +463,6 @@ pub(crate) fn try_write_documented_program(
         task_slug: task.slug,
         language_slug: row.slug,
         code: Cow::Owned(documented.recipe.entry.clone()),
-        composed: false,
     };
     let language = crate::coding::bound_language(row, &documented.contract);
     let spec = ProgramSpec {
@@ -564,42 +544,26 @@ pub(crate) fn write_script_program(
     log: &mut EventLog,
     offline: bool,
 ) -> Option<SymbolicAnswer> {
+    let (task, language) = print_script_request(prompt, normalized)?;
+    try_write_documented_program(
+        prompt,
+        task.slug,
+        language,
+        ProgramReply::Script,
+        Some(offline),
+        log,
+    )
+}
+
+pub(crate) fn print_script_request(
+    prompt: &str,
+    normalized: &str,
+) -> Option<(&'static ProgramTask, &'static str)> {
+    let task = operand_task(prompt)?;
     if !crate::solver_helpers::is_write_script_request(prompt, normalized) {
         return None;
     }
-    let language = crate::coding::program_language_by_alias(normalized)?;
-    let operand = operand_task(prompt);
-    if (operand.is_some() || !program_task_print_claim(prompt))
-        && let Some(answer) = try_write_documented_program(
-            prompt,
-            operand.map_or("hello_world", |task| task.slug),
-            language.slug,
-            ProgramReply::Script,
-            Some(offline),
-            log,
-        )
-    {
-        return Some(answer);
-    }
-    if program_task_print_claim(prompt) {
-        return None;
-    }
-    let program = crate::engine::hello_world_program_by_alias(normalized)?;
-    let body = ProgramReply::Script.render(program, &program.expected_output(), None);
-    let intent = ProgramReply::Script.intent(program.language.slug);
-    log.append(
-        "execution_status",
-        crate::coding::ExecutionStatus::NotProbed.label().to_owned(),
-    );
-    Some(crate::solver_handlers::finalize_simple(
-        prompt,
-        log,
-        &intent,
-        &format!(
-            "response:write_program:hello_world:{}",
-            program.language.slug
-        ),
-        &body,
-        1.0,
-    ))
+    let instructions = crate::engine::normalize_prompt(&program_instruction_view(prompt));
+    let language = crate::coding::program_language_by_alias(&instructions)?;
+    Some((task, language.slug))
 }

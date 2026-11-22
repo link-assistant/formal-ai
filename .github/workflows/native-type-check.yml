@@ -98,6 +98,10 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-901-triz-parity.test.mjs
+      - name: Replay operand-bound programs against the native CLI
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 --test-name-pattern='native program replies' rust/tests/web/script-print-operand.test.mjs
       - uses: oven-sh/setup-bun@v2
         id: bun
         if: ${{ !cancelled() && (success() || steps.report-http.outcome == 'failure') }}

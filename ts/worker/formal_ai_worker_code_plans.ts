@@ -51,14 +51,14 @@ function tryExecutionFailure(prompt) {
 // ---------------------------------------------------------------------------
 
 /**
- * The catalogued language whose minimal script the request asks for, or null
- * when the route cannot render everything the prompt names. Mirrors
- * `is_write_script_request` and `names_no_task_beyond_the_minimal_script`.
+ * Bind a print script to its explicit operand and implementation language.
+ * Mirrors `print_script_request`.
  * @param {string} prompt raw prompt
  * @param {string} normalized normalized prompt
  * @returns {string|null} the language slug
  */
 function writeScriptLanguage(prompt, normalized) {
+  if (programTaskOperand(prompt) === null) return null;
   prompt = programTaskInstruction(prompt);
   normalized = normalizePrompt(prompt);
   if (lexiconMentionsRole("program_genus", normalized) || lexiconMentionsRole("hello_world_reference", normalized)) return null;
@@ -67,15 +67,13 @@ function writeScriptLanguage(prompt, normalized) {
   if (metaNamesFileNoun(prompt, detectLanguage(prompt))) return null; // a script over files is derived, not templated
   const program = normalizeProgramPrompt(prompt);
   const language = programLanguageFromPrompt(program);
-  if (!language || (!writeProgramTemplate("hello_world", language) && !documentationSources(language, "hello_world").length)) return null;
-  const task = programTaskFromPrompt(program);
-  if (task && task !== "hello_world") return null;
+  if (!language) return null;
+  if (programTaskFromPrompt(program)) return null;
   return tryNumericList(prompt, []) ? null : language;
 }
 
 /**
- * Browser binding for the `write_script` precedence row: the hello-world
- * template of the one catalogued language the request names.
+ * Browser binding for the `write_script` precedence row.
  * @param {string} prompt raw prompt
  * @param {string} responseLanguage reply language
  * @returns {Promise<object|null>} the worker answer, or null
@@ -84,28 +82,23 @@ async function tryWriteScript(prompt, responseLanguage, preferences) {
   const language = writeScriptLanguage(prompt, normalizePrompt(prompt));
   if (!language) return null;
   const operand = programTaskOperand(prompt);
-  if (operand === null && programTaskPrintClaim(prompt)) return null;
-  const task = operand === null ? "hello_world" : operandProgramTask(prompt);
-  const documented = await (operand === null
-    ? discoverDocumentedProgram(task, language, undefined, preferences)
-    : operandProgram(task, language, operand, preferences));
-  const template = documented?.recipe?.entry ?? (operand === null
-    ? writeProgramTemplate(task, language)
-    : literalOutputProgram(language, operand));
+  const task = operandProgramTask(prompt);
+  const documented = await operandProgram(task, language, operand, preferences);
+  const template = documented?.recipe?.entry ?? literalOutputProgram(language, operand);
   if (template === null) return null;
   const languageInfo = writeProgramLanguageInfo(task, language, documented);
   const taskInfo = WRITE_PROGRAM_TASKS[task];
   const i18n = writeProgramStrings(responseLanguage);
-  const output = operand === null ? writeProgramExpectedOutput(task, languageInfo, taskInfo) : operand;
-  const execution = writeProgramExecutionLines(language, task, template, output, i18n, responseLanguage, documented);
+  const output = operand;
+  const { lines: execution } = writeProgramExecutionLines(language, template, output, i18n, responseLanguage, documented);
   return {
     intent: `write_script_${language}`,
     content: [i18n.intro(languageInfo.name, taskInfo.label), "", "```" + languageInfo.fence, template, "```", "", ...execution].join("\n"),
     confidence: 1.0,
     evidence: [`response:write_program:${task}:${language}`, `program_parameter:language:${language}`],
-    programExecution: { language, task, responseLanguage, output, composed: true,
+    programExecution: { language, task, responseLanguage, output,
       rediscoveredFrom: documented?.recipe?.rediscovery_source,
-      runCommand: programRunCommandLine(task, languageInfo.runCommand),
+      runCommand: languageInfo.runCommand,
       checkCommand: languageInfo.checkCommand || null, block: execution.join("\n") },
   };
 }

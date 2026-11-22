@@ -12,6 +12,7 @@ import { lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSyn
 import path from 'node:path';
 import {readNetworkAllowed} from '../server/read-access.mjs';
 import { REPO_ROOT, parseLino, readRepoFile } from '../server/lino.mjs';
+import { procedureCacheLocation } from '../server/procedure-cache.mjs';
 import { runtimeCachePaths } from '../server/runtime-cache.mjs';
 import { symbolicFromWorker } from '../server/solve.mjs';
 import * as webTreeSitter from '../vendor/tree-sitter/web-tree-sitter.mjs';
@@ -283,7 +284,7 @@ export async function installNodeHost(worker, options = {}) {
     },
     solve: async (prompt, history) => {
       const result = await worker.solve(prompt, history, { readOnly }),
-        symbolic = symbolicFromWorker(result, history, undefined, { readOnly });
+        symbolic = symbolicFromWorker(result, history, { readOnly });
       const capture = activeDriveCapture();
       if (capture && 'engineObservation' in capture && typeof capture.engineObservation === 'function') {
         const events = Array.isArray(symbolic.solver_events) ? symbolic.solver_events : [];
@@ -303,6 +304,10 @@ export async function installNodeHost(worker, options = {}) {
     isDirectory: path => Boolean(stat(path)?.isDirectory()),
     isFile: path => Boolean(stat(path)?.isFile()),
     currentDirectory: () => process.cwd(),
+    procedureCacheLocation: () => {
+      const location = procedureCacheLocation();
+      return location && readOnly ? { ...location, io: { readText: location.io.readText } } : location;
+    },
     listDirectory: listRepoDirectory,
     censusDocuments,
     censusSourceClosureComplete,

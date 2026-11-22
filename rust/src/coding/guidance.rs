@@ -90,19 +90,22 @@ pub fn program_test_instructions(
     spec: ProgramSpec<'_>,
     language: Language,
     prior_code_response: bool,
+    expected_output: &str,
 ) -> String {
     let execution = &spec.language.execution;
     let save_as: &str = &spec.language.save_as;
-    // Issue #863: a task defined against standard input is not run by naming
-    // the command alone — without the pipe the reader gets a program waiting on
-    // a terminal, not the expected output. `run_command_line` carries the
-    // fixture the task was verified against, and is the plain run command for
-    // every task that reads no input.
-    let run_command = spec.run_command_line();
-
-    let values = [("save_as", save_as), ("run_command", run_command.as_str())];
+    let values = [
+        ("save_as", save_as),
+        ("run_command", spec.run_command_line()),
+    ];
+    let reads_stdin = spec.task.slug == "copy_stdin_to_stdout";
     if prior_code_response {
-        return guidance("prior_code_note", language, &values);
+        let note = guidance("prior_code_note", language, &values);
+        return if reads_stdin {
+            format!("{note} {}", guidance("step-supply-stdin", language, &[]))
+        } else {
+            note
+        };
     }
 
     let heading = guidance("how_to_test_heading", language, &[]);
@@ -119,7 +122,11 @@ pub fn program_test_instructions(
         ));
     }
     steps.push(guidance("step_run", language, &values));
-    steps.push(guidance("step_compare", language, &[]));
+    if reads_stdin {
+        steps.push(guidance("step-supply-stdin", language, &[]));
+    } else if !expected_output.is_empty() {
+        steps.push(guidance("step_compare", language, &[]));
+    }
 
     let numbered = steps
         .iter()

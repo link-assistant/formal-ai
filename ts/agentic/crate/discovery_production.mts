@@ -20,17 +20,15 @@
 // `{ readText(path), writeText(path, text) }`. Without an `io`, reads go
 // through the host's `readText` (a missing file is an empty cache, as in
 // Rust) and writes only refresh `cache.file_text`, the exact bytes Rust's
-// `ProcedureCache::write` would put on disk. `default_cache_path` is the
-// repository-relative `DEFAULT_CACHE_FILE`: the host already resolves paths
-// against the repository root, and a browser host has no environment for the
-// `FORMAL_AI_PROCEDURE_CACHE` override.
+// `ProcedureCache::write` would put on disk. The installed Node host supplies
+// the reviewed runtime cache location and IO. A browser host starts empty.
 //
 // The JavaScript root has no twin of `research_coding_skill_gap`
 // (rust/src/coding_research_learning.rs), so `cachedOrResearch` takes the
 // research round as an injected function. Rust's solver reads the cache
 // through `cached_write_program` in its `WriteProgram` branch; on the
 // JavaScript server js/server/procedure-cache.mjs reads the same cache file
-// (the `FORMAL_AI_PROCEDURE_CACHE` override, else `DEFAULT_CACHE_FILE`) after
+// (the `FORMAL_AI_PROCEDURE_CACHE` override, else the runtime cache root) after
 // every worker solve and calls `cachedWriteProgram`, so a verified row answers
 // there as it does natively. The browser worker reads no file: its catalog arm
 // logs the native miss (js/worker/formal_ai_worker_solver_events.js appends
@@ -38,7 +36,7 @@
 // request, reading the same `miss_route` rows as `missResearchMissing`), which
 // is what the committed, row-less cache produces.
 
-import { cached, readText as hostReadText, realm } from '../host.mjs';
+import { cached, hasHost, host, readText as hostReadText, realm } from '../host.mjs';
 import { pushLinoField } from './links_format.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
 
@@ -229,9 +227,10 @@ export function loadAt(path, io = {}) {
   return cache;
 }
 
-/** Mirrors `ProcedureCache::load`. @param {object} io */
-export function load(io = {}) {
-  return loadAt(defaultCachePath(), io);
+/** Mirrors `ProcedureCache::load`. An absent host cache starts empty. */
+export function load(io) {
+  const location = hasHost() ? host().procedureCacheLocation?.() : null;
+  return location ? loadAt(location.path, io ?? location.io) : loadAt('', { readText: () => null });
 }
 
 /** Mirrors `ProcedureCache::recipes`. */
@@ -391,9 +390,9 @@ export function gapField(gap, field) {
   return '';
 }
 
-/** Mirrors `fn default_cache_path` (repository-relative; see the module note). */
-export function defaultCachePath() {
-  return DEFAULT_CACHE_FILE;
+/** Basename of the reviewed cache. The installed host selects the cache directory. */
+export function procedureCacheFilename() {
+  return 'coding-procedure-cache.lino';
 }
 
 /** Mirrors `fn quote`: the parser's backslash dialect. @param {string} value */

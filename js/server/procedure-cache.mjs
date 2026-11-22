@@ -3,7 +3,7 @@
 // R1165-10), on the JavaScript server's solve path.
 //
 // Rust loads `ProcedureCache::load()` (the `FORMAL_AI_PROCEDURE_CACHE`
-// override, else `data/cache/coding-procedure-cache.lino`) on every catalog
+// override, else the application cache root) on every catalog
 // `write_program` solve and asks `cached_write_program` for a verified row.
 // A sourced example reuses the separately verified publisher response. The
 // reviewed execution cache is consulted only for locally generated programs.
@@ -11,25 +11,43 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-import { cachedWriteProgram, defaultCachePath, loadAt } from '../agentic/crate/discovery_production.mjs';
+import { cachedWriteProgram, loadAt, procedureCacheFilename } from '../agentic/crate/discovery_production.mjs';
 import { hasHost } from '../agentic/host.mjs';
 import { installNodeHost } from '../agentic/node-host.mjs';
-import { REPO_ROOT } from './lino.mjs';
+import { runtimeCachePaths } from './runtime-cache.mjs';
 
 const WRITE_PROGRAM_INTENT = 'write_program';
 const CACHE_EVENT = 'procedure_cache';
 const CACHE_ENV = 'FORMAL_AI_PROCEDURE_CACHE';
 const PARAMETER_PREFIX = 'program_parameter:';
 
-/** Mirrors `fn default_cache_path`: the environment override, else the repository file. */
+/** Mirrors `fn default_cache_path`: the environment override, else the runtime cache root. */
 export function procedureCachePath() {
   const explicit = String(process.env[CACHE_ENV] ?? '').trim();
-  return explicit ? path.resolve(explicit) : path.join(REPO_ROOT, defaultCachePath());
+  if (explicit) return path.resolve(explicit);
+  try {
+    return path.join(runtimeCachePaths().runtimeRoot, procedureCacheFilename());
+  } catch {
+    return null;
+  }
+}
+
+/** Cache capabilities shared by the server solver and the agentic Node host. */
+export function procedureCacheLocation() {
+  const filename = procedureCachePath();
+  return filename ? {
+    path: filename,
+    io: {
+      readText: (file) => readFileSync(file, 'utf8'),
+      writeText: (file, text) => writeFileSync(file, text),
+    },
+  } : null;
 }
 
 /** Mirrors `ProcedureCache::load`: a missing file loads as an empty cache. */
 export function loadProcedureCache() {
-  return loadAt(procedureCachePath(), { readText: (file) => readFileSync(file, 'utf8'), writeText: (file, text) => writeFileSync(file, text) });
+  const location = procedureCacheLocation();
+  return location ? loadAt(location.path, location.io) : loadAt('', { readText: () => null });
 }
 
 /** The `program_parameter:<name>:<value>` evidence the catalog answer carries. */

@@ -70,8 +70,7 @@ function catalog() {
       tasks: childrenNamed(root, 'task').map((node) => ({
         slug: node.value,
         label: childValue(node, 'label'),
-        output: childValue(node, 'output'),
-        input: childValue(node, 'input'),
+        output: optional(node, 'output'),
       })),
       templates: childrenNamed(root, 'template').map((node) => {
         const task = childValue(node, 'task_slug');

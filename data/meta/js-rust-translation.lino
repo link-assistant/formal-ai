@@ -197,7 +197,7 @@ refusal "null" 193
 refusal "arrow function" 144
 refusal "type: unknown name (a sibling item or an import)" 124
 refusal "function value …" 113
-refusal "object without a $ tag" 104
+refusal "object without a $ tag" 103
 refusal "new expression" 100
 refusal "regular expression" 69
 refusal "method call .find()" 64
@@ -208,8 +208,8 @@ refusal "method call .some()" 51
 refusal "method call .slice()" 48
 refusal "Array.from" 47
 refusal "method call .push()" 38
+refusal "optional chaining" 35
 refusal "method call .indexOf()" 34
-refusal "optional chaining" 34
 refusal "field access" 32
 refusal "nullish coalescing" 32
 refusal "method call .replace()" 28

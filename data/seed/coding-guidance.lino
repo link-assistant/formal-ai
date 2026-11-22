@@ -155,6 +155,14 @@ coding_guidance_step_run
   hi "प्रोग्राम चलाएँ: `{run_command}`।"
   zh "运行程序：`{run_command}`。"
   es "Ejecútalo: `{run_command}`."
+coding-guidance-step-supply-stdin
+  record_type "coding_guidance"
+  id "step-supply-stdin"
+  en "Pipe your data into the command or redirect standard input from a file. Check that standard output contains the same data."
+  ru "Передайте свои данные команде по конвейеру или перенаправьте стандартный ввод из файла. Проверьте, что стандартный вывод содержит те же данные."
+  hi "अपना डेटा पाइप से दें या फ़ाइल से मानक इनपुट रीडायरेक्ट करें। जाँचें कि मानक आउटपुट में वही डेटा है।"
+  zh "通过管道传入你的数据，或将文件重定向到标准输入。检查标准输出是否包含相同的数据。"
+  es "Pasa tus datos por una tubería o redirige la entrada estándar desde un archivo. Comprueba que la salida estándar contiene los mismos datos."
 coding_guidance_step_compare
   record_type "coding_guidance"
   id "step_compare"

@@ -727,12 +727,7 @@ impl UniversalSolver {
                 if log.first_of("rule_synthesis_candidate").is_none() {
                     crate::coding::record_algorithm_construction(log);
                 }
-                let status = if spec.template.composed {
-                    crate::coding::ExecutionStatus::NotProbed
-                } else {
-                    log.append("execution_environment", spec.language.environment());
-                    spec.language.execution_status()
-                };
+                let status = crate::coding::ExecutionStatus::NotProbed;
                 log.append("execution_status", status.label().to_owned());
                 log.append("program_parameter:language", spec.language.slug.to_owned());
                 log.append("program_parameter:task", spec.task.slug.to_owned());
@@ -756,7 +751,7 @@ impl UniversalSolver {
             // (language, task) pair replaces the catalog template in the
             // answer and in the execution recipe the work-item executor runs.
             let cached_program = match &rule {
-                SelectedRule::WriteProgram(spec) => {
+                SelectedRule::WriteProgram(spec) if !spec.task.output.is_empty() => {
                     let cache = crate::discovery_production::ProcedureCache::load();
                     let rendered = crate::code_editing::apply_inline_hello_world_source_replacement(
                         prompt,

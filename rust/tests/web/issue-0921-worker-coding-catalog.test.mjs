@@ -53,9 +53,10 @@ const seedPrograms = () => {
 test('R921-8: the worker installs the Rust catalog tasks from the seed, in Rust table order', () => {
   const installed = worker('WRITE_PROGRAM_TASKS');
   assert.deepEqual(
-    Object.entries(installed).map(([slug, task]) => ({ slug, label: task.label, output: task.output, input: task.input })),
-    programTasks().map((task) => ({ slug: task.slug, label: task.label, output: task.output, input: task.input })),
+    Object.entries(installed).map(([slug, { label, output }]) => ({ slug, label, output })),
+    programTasks(),
   );
+  assert.equal(Object.values(installed).some((task) => Object.hasOwn(task, 'input')), false);
 });
 
 // The seed bundle's `write_program` row names the languages it stores programs
@@ -148,10 +149,10 @@ test('R921-8: english Scala and Kotlin requests answer every catalog task with t
       assert.equal(parameters(result), `write_program(language=${language}, task=${task})`, prompt(name));
       const program = workerTemplate(task, language);
       assert.ok(result.content.includes(`\`\`\`${language}\n${program}\n\`\`\``), result.content);
-      // A listing task shows a sample directory named after the language's file
-      // (issue #440); every other task shows the catalog's verified output.
       const output = worker('WRITE_PROGRAM_TASKS')[task].output;
-      if (!task.startsWith('list_files')) {
+      if (output == null) {
+        assert.equal(result.content.includes('```text'), false, result.content);
+      } else {
         assert.ok(result.content.includes(`Expected output after verification:\n\`\`\`text\n${output}\n\`\`\``), result.content);
       }
     }

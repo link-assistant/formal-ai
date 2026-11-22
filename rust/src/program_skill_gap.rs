@@ -68,7 +68,8 @@ impl Shape {
     #[must_use]
     const fn answer_intent(self) -> &'static str {
         match self {
-            Self::SkillGap | Self::TaskUnspecified => "write_program_skill_gap",
+            Self::SkillGap => "write_program_skill_gap",
+            Self::TaskUnspecified => "describe-program-task",
             Self::LanguageUnspecified => "write_program_language_unspecified",
             Self::RequestUnspecified => "write_program_request_unspecified",
         }

@@ -92,23 +92,16 @@ test("the Responses evidence projects the worker's native log", async () => {
 });
 
 const RUST_REPORT_RU = [
-  "Статус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».",
+  "Статус выполнения: не проверялось в этой среде.",
   "Check command: `rustc main.rs -o main`",
   "Run command: `./main`",
-  "Вывод:",
-  "```text",
-  "README.md",
-  "data.txt",
-  "main.rs",
-  "```",
-  "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
 ].join("\n");
 
-test("execution_report renders the recorded toolchain run", () => {
-  const program = { language: "rust", checkCommand: "rustc main.rs -o main", runCommand: "./main", output: "README.md\ndata.txt\nmain.rs" };
+test("execution_report shows the run contract without inferring output from a toolchain probe", () => {
+  const program = { language: "rust", checkCommand: "rustc main.rs -o main", runCommand: "./main", output: null };
   assert.equal(executionReport(program, "ru"), RUST_REPORT_RU);
-  assert.match(executionReport({ ...program, language: "go", checkCommand: null, runCommand: "go run main.go" }, "en"),
-    /^Execution status: compiled and ran in issue-8 local verification harness \(isolated sandbox\)\.\nRun command: `go run main\.go`\nOutput:\n/);
+  assert.equal(executionReport({ ...program, language: "go", checkCommand: null, runCommand: "go run main.go" }, "en"),
+    "Execution status: not probed in this environment.\nRun command: `go run main.go`");
   assert.equal(nativeProgramAnswer("a\nBLOCK\nb", { ...program, block: "BLOCK", responseLanguage: "ru" }), `a\n${RUST_REPORT_RU}\nb`);
   assert.equal(nativeProgramAnswer("unchanged", undefined), "unchanged");
 });
@@ -150,8 +143,7 @@ test("a follow-up program edit carries the native execution report", async () =>
   const line = corpus.split("\n").find((entry) => entry.includes("Сделай сортировку результатов")).trim();
   const { messages } = JSON.parse(line.replace(/^body '/, "").replace(/'$/, ""));
   const answer = await solveSymbolic({ worker: host }, messages.at(-1).content, messages.slice(0, -1));
-  const report = RUST_REPORT_RU.replace("README.md\ndata.txt\nmain.rs", "main.rs\ndata.txt\nREADME.md");
-  assert.ok(answer.answer.includes(`\`\`\`\n\n${report}\n\nКак это работает:\n`), answer.answer);
+  assert.ok(answer.answer.includes(`\`\`\`\n\n${RUST_REPORT_RU}\n\nКак это работает:\n`), answer.answer);
   assert.ok(!answer.answer.includes("браузерная песочница"));
 });
 

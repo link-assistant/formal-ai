@@ -6,8 +6,8 @@
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::coding::{
-    PROGRAM_LANGUAGES, ProgramSpec, WRITE_PROGRAM_INTENT, program_language_by_alias, program_spec,
-    program_template_count, supported_program_languages, supported_program_tasks,
+    PROGRAM_LANGUAGES, ProgramSpec, WRITE_PROGRAM_INTENT, program_spec, program_template_count,
+    supported_program_languages, supported_program_tasks,
 };
 
 use std::sync::OnceLock;
@@ -654,7 +654,6 @@ pub(crate) fn language_aware_answer_for(
                     prior_code_response,
                     &output,
                     None,
-                    true,
                 )
             } else {
                 write_program_answer(*spec, language, prior_code_response)
@@ -678,12 +677,6 @@ pub(crate) fn language_aware_answer_for(
 
 pub(crate) fn response_link_for_intent(rule: &SelectedRule, _intent: &str) -> String {
     rule.response_link()
-}
-
-/// Match a default hello-world program from the catalog by language alias.
-pub(crate) fn hello_world_program_by_alias(normalized: &str) -> Option<ProgramSpec<'static>> {
-    let language = program_language_by_alias(normalized)?;
-    program_spec("hello_world", language.slug)
 }
 
 pub(crate) fn normalize_prompt(prompt: &str) -> String {

@@ -1,6 +1,6 @@
 // Issue #1165 R1165-10: the JavaScript server's solve path reads the procedure
 // cache file the native `WriteProgram` branch of rust/src/solver.rs reads
-// (`FORMAL_AI_PROCEDURE_CACHE`, else data/cache/coding-procedure-cache.lino)
+// (`FORMAL_AI_PROCEDURE_CACHE`, else the runtime cache root)
 // and calls `cachedWriteProgram` (js/server/procedure-cache.mjs). A verified
 // row answers an unmodified catalog request with the cached entry and logs
 // `procedure_cache outcome=hit ... content_id=0x...`; the committed, row-less
@@ -16,7 +16,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { after, before, test } from 'node:test';
 
-import { contentAddress, loadAt, rediscoverableRecipe, store } from '../../../js/agentic/crate/discovery_production.mjs';
+import { contentAddress, defaultCachePath, load, loadAt, rediscoverableRecipe, store } from '../../../js/agentic/crate/discovery_production.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { REPO_ROOT } from '../../../js/server/lino.mjs';
 import { loadProcedureCache, procedureCachePath } from '../../../js/server/procedure-cache.mjs';
@@ -24,6 +24,7 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { codingDocumentationReplay } from './support/coding-documentation-replay.mjs';
 
 const ENV = 'FORMAL_AI_PROCEDURE_CACHE';
+const CACHE_ROOT = 'FORMAL_AI_CACHE_DIR';
 // A pair the documentation captures do not cover (Python counting to three:
 // its output is not one printed literal), so an unmodified request with no
 // cache row is the research miss (every catalog Hello World is rediscovered
@@ -35,16 +36,20 @@ const TEMPLATE = 'for number in range(1, 4):\n    print(number)';
 let host;
 let directory;
 const previous = process.env[ENV];
+const previousRoot = process.env[CACHE_ROOT];
 
 before(async () => {
   host = new WorkerHost();
   await installNodeHost(host);
   directory = mkdtempSync(path.join(tmpdir(), 'formal-ai-procedure-cache-'));
+  process.env[CACHE_ROOT] = directory;
 });
 
 after(() => {
   if (previous === undefined) delete process.env[ENV];
   else process.env[ENV] = previous;
+  if (previousRoot === undefined) delete process.env[CACHE_ROOT];
+  else process.env[CACHE_ROOT] = previousRoot;
   rmSync(directory, { recursive: true, force: true });
 });
 
@@ -76,17 +81,18 @@ const helloRow = () => rediscoverableRecipe({
 
 const cacheEvents = (result) => (result.solverEvents || []).filter((event) => event.kind === 'procedure_cache');
 
-test('the cache path mirrors default_cache_path: the override, else the repository file', () => {
+test('the cache path mirrors default_cache_path: the override, else the runtime cache root', () => {
   delete process.env[ENV];
-  assert.equal(procedureCachePath(), path.join(REPO_ROOT, 'data/cache/coding-procedure-cache.lino'));
+  assert.equal(procedureCachePath(), path.join(directory, 'coding-procedure-cache.lino'));
   process.env[ENV] = '  ';
-  assert.equal(procedureCachePath(), path.join(REPO_ROOT, 'data/cache/coding-procedure-cache.lino'));
+  assert.equal(procedureCachePath(), path.join(directory, 'coding-procedure-cache.lino'));
   process.env[ENV] = path.join(directory, 'elsewhere.lino');
   assert.equal(procedureCachePath(), path.join(directory, 'elsewhere.lino'));
+  assert.equal(defaultCachePath(), procedureCachePath());
   assert.deepEqual(loadProcedureCache().recipes, [], 'a missing file loads as an empty cache');
 });
 
-test('the committed cache has no rows, so an unmodified request stays the native miss', async () => {
+test('a cold cache has no rows and reports a miss', async () => {
   delete process.env[ENV];
   assert.deepEqual(loadProcedureCache().recipes, []);
   const result = await host.solve(PROMPT, []);
@@ -98,6 +104,7 @@ test('the committed cache has no rows, so an unmodified request stays the native
 
 test('a verified row answers the unmodified request with the cached entry and logs the hit', async () => {
   process.env[ENV] = writeCache('hit.lino', [pythonRow()]);
+  assert.equal(load().recipes[0].entry, ENTRY);
   const result = await host.solve(PROMPT, []);
   const contentId = `0x${contentAddress(ENTRY).toString(16).padStart(16, '0')}`;
   assert.deepEqual(cacheEvents(result), [
@@ -107,6 +114,15 @@ test('a verified row answers the unmodified request with the cached entry and lo
   assert.ok(!result.content.includes(TEMPLATE));
   const kinds = result.solverEvents.map((event) => event.kind);
   assert.equal(kinds.indexOf('procedure_cache'), kinds.indexOf('legacy_intent') + 1);
+});
+
+test('a reviewed result for one stdin input cannot replace the stream operation', async () => {
+  process.env[ENV] = writeCache('one-stream.lino', [{ ...pythonRow(), task: 'copy_stdin_to_stdout' }]);
+  const result = await host.solve('Write a Python program that copies stdin to stdout', []);
+  assert.equal(result.intent, 'write_program');
+  assert.equal(result.programExecution.output, null);
+  assert.deepEqual(cacheEvents(result), []);
+  assert.ok(!result.content.includes(ENTRY));
 });
 
 test('a row for another pair leaves this request a miss', async () => {
@@ -156,7 +172,8 @@ test('R1165-1: a sourced answer reuses the capture without populating the execut
 
 test('the committed cache is never written by a solve', async () => {
   delete process.env[ENV];
-  const committed = readFileSync(procedureCachePath(), 'utf8');
+  const fixture = path.join(REPO_ROOT, 'data/cache/coding-procedure-cache.lino');
+  const committed = readFileSync(fixture, 'utf8');
   await host.solve('Write a hello world program in Go', []);
-  assert.equal(readFileSync(procedureCachePath(), 'utf8'), committed);
+  assert.equal(readFileSync(fixture, 'utf8'), committed);
 });
