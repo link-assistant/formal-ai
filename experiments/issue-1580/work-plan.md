@@ -548,3 +548,14 @@ Evidence and limits: [main integration checkpoint](../../docs/case-studies/issue
 - [ ] Run all local JavaScript gates after the merge commit, fix all actionable failures, then collect hosted checks for the published commit.
 
 Evidence: [structured-output integration](../../docs/case-studies/issue-1580/main-aa93fe9c-integration.md).
+
+
+## Generated inventories after integrating main
+
+- [x] Retain the full 5d68b749 gate run: 85 passing, 54 CI-only skips, four failures from two distinct causes.
+- [x] Regenerate the two Rust seed inventories from the unchanged canonical registry; preserve the one reachable complete bundle function.
+- [x] Record the exact 15-line upstream worker growth in its single budget shard, with source identity and rationale.
+- [x] Pass the existing canonical generators, both seed-headroom controls and all 34 complete-baseline identifier controls.
+- [ ] Pass all local JavaScript gates on the committed repair, then verify the exact published head in CI.
+
+Evidence: [generated inventory repair](../../docs/case-studies/issue-1580/generated-inventory-merge-repair.md).
