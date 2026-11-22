@@ -571,3 +571,6 @@ Evidence: [generated inventory repair](../../docs/case-studies/issue-1580/genera
 - [ ] Complete the remaining original runtime, template practice, publication, cache and independent-authorship acceptance; keep the PR draft and unmerged.
 
 Evidence: [reduced embeddings main integration](../../docs/case-studies/issue-1580/main-664e03-integration.md).
+
+
+The complete local gate run at `41bd3c382df1cafac80124425ef7b1b7057528b0` passes all 89 JavaScript gates, with 54 explicit CI-only skips and no failures. The tree is clean before and after, and no local Rust build is performed. The exact-source archive is round-trip verified at `evidence/checks/main-664e03-full-local-gates/manifest.json`. Combined-head hosted execution and all wider acceptance remain unfinished.
