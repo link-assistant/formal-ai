@@ -99,6 +99,17 @@ test("the question is formalized from seed cues, as the native twin", async () =
   });
 });
 
+test("specific relations outrank question openers and preserve complete subject names", async () => {
+  for (const [prompt, relation, subjectTerm] of [
+    ["¿Cuál es la capital de Trinidad y Tobago?", "capital", "trinidad y tobago"],
+    ["What's the capital city of Trinidad and Tobago?", "capital", "trinidad and tobago"],
+    ["Australia's capital?", "capital", "australia"],
+    ["What is the speed of light?", "physical_constant", "speed of light"],
+  ]) {
+    assert.deepEqual(await call(`factLiveQuestion(${literal(prompt)})`), { relation, subjectTerm }, prompt);
+  }
+});
+
 test("R3: a live capital answer cites the claim's reference URL", async () => {
   const prompt = "What is the capital of Australia?";
   const answer = await call(`tryFactQuery(${literal(prompt)}, normalizePrompt(${literal(prompt)}), {})`);

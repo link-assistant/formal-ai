@@ -147,7 +147,10 @@ fn extract_live_fact_question(
             relation: relation.slug.clone(),
             subject_term,
         },
-        surface.len(),
+        // Compare surface characters, as the worker does, rather than UTF-8
+        // bytes: an accented question opener must not outrank a relation only
+        // because its encoding occupies extra bytes.
+        surface.chars().count(),
     ))
 }
 

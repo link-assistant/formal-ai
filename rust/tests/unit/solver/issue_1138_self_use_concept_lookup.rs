@@ -365,9 +365,24 @@ fn an_honest_refusal_names_every_source_it_consulted() {
                 "the exact stable answer opener documents the named gap"
             );
         }
-        let Some(trail) = answer.split("attempts=").nth(1) else {
-            continue;
-        };
+        for (source, status) in [
+            ("github", "unbound_template"),
+            ("wikidata", "unbound_template"),
+            ("wiktionary", "offline_cache_miss"),
+            ("wordnet", "unbound_template"),
+            ("wikipedia", "offline_cache_miss"),
+            ("stackexchange", "offline_cache_miss"),
+        ] {
+            assert!(
+                answer.contains(&format!("source={source};status={status}")),
+                "{} must retain the actual {source} outcome: {answer}",
+                case.language
+            );
+        }
+        let trail = answer
+            .split("attempts=")
+            .nth(1)
+            .expect("a refusal must retain its research trail");
         if trail.trim().is_empty() {
             offenders.push(format!(
                 "{}: refusal carries a research trail whose `attempts=` names nothing",

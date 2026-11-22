@@ -80,6 +80,10 @@ fn answer_live_fact_question<T: SourceTransport>(
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
     record_fact_question(log, prompt, &question.relation, &question.subject_term);
+    log.append_search_request(
+        "wikidata",
+        format!("{}:{}", question.relation, question.subject_term),
+    );
     log.append("fact_live:relation", question.relation.as_str());
     log.append("fact_live:subject", question.subject_term.as_str());
     let statement =
