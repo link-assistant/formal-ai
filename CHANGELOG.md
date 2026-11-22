@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.9] - 2026-11-22
+
+### Fixed
+
+- Accept draft-07 and 2019-09 schema declarations and common annotations, including `format`, in OpenAI structured output. Refusals for unsupported constraints identify the keyword and its JSON Pointer.
+
 ## [0.356.8] - 2026-11-22
 
 ### Fixed
