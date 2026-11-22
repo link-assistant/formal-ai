@@ -1,0 +1,48 @@
+{
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "head": "9451c81b5e14f118301f2e571f4a651fb8da79d0",
+  "completeDiffsRead": 96,
+  "parts": [
+    {
+      "file": "files-00.json",
+      "records": 16,
+      "sha256": "f6ddcde6067b61ed757cece06c0292482915172821f73fd0c7b03b4be8fbdd82"
+    },
+    {
+      "file": "files-01.json",
+      "records": 16,
+      "sha256": "0bca09a8dfe764027efa38e19c8ef0141dee5566182b234ef201664d4db04cd3"
+    },
+    {
+      "file": "files-02.json",
+      "records": 16,
+      "sha256": "ad171306ff7068065fe56159b54a85928c6a794371a628cfc2ad33f12c9c0e19"
+    },
+    {
+      "file": "files-03.json",
+      "records": 16,
+      "sha256": "dbd96039e5ea99d646962181b36c0fcab698796a211f2bf4569d4ab9c625c73e"
+    },
+    {
+      "file": "files-04.json",
+      "records": 16,
+      "sha256": "4d804be3355fe7d3e0281d3bcd29e1c2fa4106f8a455a7e952901fbbdb9c046d"
+    },
+    {
+      "file": "files-05.json",
+      "records": 16,
+      "sha256": "36fa39d29c38fa30f47a38c82099d97d5fbaa8e611a90500a2f054d22739e13c"
+    }
+  ],
+  "scope": "Every complete indexed diff was read; this is a bounded continuation, not complete aggregate review.",
+  "notes": [
+    "Truncated combined output for 186, 189, 190 and 191 was reread separately before inclusion.",
+    "Partition extraction retains custody, permission and operation checks. JSON leaf compaction retains number tokens and duplicate-key syntax. Ordered meaning record splits have an exact inverse.",
+    "Retry sleeps and requests consume the same budget. Zizmor retries only advisory transport failure, not findings.",
+    "Provider failure lines must match the full standalone form; quoted error text is preserved. Rejected candidate IR remains observable without emission or oracle bypass.",
+    "Semantic qualification of unreviewed canonical sources remains required."
+  ],
+  "wholePullRequestReviewed": false,
+  "allPriorFeaturesProvenPreserved": false,
+  "independentAuthorshipCredit": 0
+}
