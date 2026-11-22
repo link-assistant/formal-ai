@@ -20,6 +20,13 @@ const AUSTRALIA = {
 };
 const CANBERRA = { entities: { Q3114: { id: "Q3114", labels: { en: { language: "en", value: "Canberra" } } } } };
 
+const CANADA = { entities: { Q16: {
+  id: "Q16",
+  labels: { en: { value: "Canada" } },
+  claims: { P36: [{ rank: "preferred", mainsnak: { snaktype: "value", datavalue: { value: { id: "Q1930" } } } }] },
+} } };
+const OTTAWA = { entities: { Q1930: { id: "Q1930", labels: { en: { value: "Ottawa" } } } } };
+
 const worker = createWorkerContext();
 const seeded = evaluate(worker, "loadSeed()");
 const seedFetch = worker.fetch;
@@ -30,8 +37,10 @@ worker.fetch = (url, init) => {
   wikidataRequests.push(text);
   let body = null;
   if (text.includes("wbsearchentities")) {
-    if (text.includes("search=Australia")) {
+    if (/search=australia(?:&|$)/iu.test(text)) {
       body = { search: [{ id: "Q123", label: "Australia Day" }, { id: "Q408", label: "Australia" }] };
+    } else if (/search=canada(?:&|$)/iu.test(text)) {
+      body = { search: [{ id: "Q16", label: "Canada" }] };
     } else if (text.includes("search=Springfield")) {
       body = { search: [{ id: "Q123", label: "Springfield" }, { id: "Q408", label: "Springfield" }] };
     } else if (text.includes("search=Canterbury")) {
@@ -41,6 +50,8 @@ worker.fetch = (url, init) => {
     }
   }
   else if (text.includes("ids=Q408")) body = AUSTRALIA;
+  else if (text.includes("ids=Q16")) body = CANADA;
+  else if (text.includes("ids=Q1930")) body = OTTAWA;
   else if (text.includes("ids=Q345")) body = { entities: { Q345: { id: "Q345", claims: {} } } };
   else if (text.includes("ids=Q123")) body = { entities: { Q123: { ...AUSTRALIA.entities.Q408, id: "Q123", labels: {} } } };
   else if (text.includes("ids=Q3114")) body = CANBERRA;
@@ -133,5 +144,18 @@ test("fact formalization preserves the words within names across languages", asy
     ["Australia's capital?", "australia"],
   ]) {
     assert.deepEqual(await call(`factLiveQuestion(${JSON.stringify(prompt)})`), { relation: "capital", subjectTerm: subject });
+  }
+});
+
+test("a full worker turn compares verified claims and discloses a missing subject", async () => {
+  for (const [prompt, intent, expected] of [
+    ["Compare Australia and Canada.", "fact_comparison", /Canberra for Australia, Ottawa for Canada/u],
+    ["Compare Australia and Atlantis.", "fact_comparison_gap", /no verified facts for atlantis to compare with Australia/iu],
+  ]) {
+    const result = await call(`solve(${JSON.stringify(prompt)}, [], {}, {}, [], {})`);
+    assert.equal(result.intent, intent, JSON.stringify(result));
+    assert.match(result.content, expected);
+    assert(result.evidence.some((entry) => /^source:http:.* sha256=[a-f0-9]{64}$/.test(entry)));
+    assert(!result.evidence.some((entry) => entry.includes("fact_capital_q")));
   }
 });

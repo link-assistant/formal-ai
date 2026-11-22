@@ -240,37 +240,6 @@ function factComparisonPlan(normalized) {
 }
 
 /**
- * The seeded facts of one subject, grouped by relation (first record wins).
- * @param {string} qid
- * @param {string} language
- * @returns {Map<string, {value: string, label: string, record: object}>}
- */
-function factRelationsFor(qid, language) {
-  const relations = new Map();
-  for (const record of Array.isArray(FACTS) ? FACTS : []) {
-    if (record.subjectQid !== qid || !record.relation || relations.has(record.relation)) continue;
-    const localized = localizedFactFor(record, language) || {};
-    relations.set(record.relation, {
-      value: localized.valueLabel || record.valueLabel || "",
-      label: localized.subjectLabel || record.subjectLabel || "",
-      record,
-    });
-  }
-  return relations;
-}
-
-/**
- * The display label of a resolved subject.
- * @param {Map<string, object>} facts
- * @param {{surface: string}} subject
- * @returns {string}
- */
-function factSubjectDisplay(facts, subject) {
-  const first = facts.values().next().value;
-  return (first && first.label) || subject.surface;
-}
-
-/**
  * "Compare X and Y" over two seeded subjects: aligned rows and differences.
  * @param {string} prompt
  * @param {string} normalized
@@ -282,11 +251,15 @@ function tryFactComparison(prompt, normalized) {
   const language = detectLanguage(prompt);
   const leftFacts = factRelationsFor(plan.left.qid, language);
   const rightFacts = factRelationsFor(plan.right.qid, language);
+  return renderFactComparison(language, plan, leftFacts, rightFacts, []);
+}
+
+function renderFactComparison(language, plan, leftFacts, rightFacts, sources) {
   if (leftFacts.size === 0 || rightFacts.size === 0) return null;
   const left = factSubjectDisplay(leftFacts, plan.left);
   const right = factSubjectDisplay(rightFacts, plan.right);
   const missing = factualQaRender("fact_comparison_missing_value", language, {});
-  const evidence = [`fact_comparison:left:${plan.left.qid}`, `fact_comparison:right:${plan.right.qid}`];
+  const evidence = [...sources, `fact_comparison:left:${plan.left.qid}`, `fact_comparison:right:${plan.right.qid}`];
   const rows = [];
   const differences = [];
   for (const relation of new Set([...leftFacts.keys(), ...rightFacts.keys()])) {
@@ -325,11 +298,14 @@ function tryFactComparisonGap(prompt, normalized) {
   if (!plan || (plan.left && plan.right) || (!plan.left && !plan.right)) return null;
   const subject = plan.left || plan.right;
   const missingNormalized = plan.left ? plan.sides.right : plan.sides.left;
+  const language = detectLanguage(prompt);
+  return renderFactComparisonGap(prompt, language, subject, missingNormalized, factRelationsFor(subject.qid, language), []);
+}
+
+function renderFactComparisonGap(prompt, language, subject, missingNormalized, facts, sources) {
   // Name the missing side as the user spelled it when the prompt carries it verbatim.
   const at = String(prompt).toLowerCase().indexOf(missingNormalized);
   const missingSide = at >= 0 ? String(prompt).slice(at, at + missingNormalized.length) : missingNormalized;
-  const language = detectLanguage(prompt);
-  const facts = factRelationsFor(subject.qid, language);
   if (facts.size === 0) return null;
   const known = factSubjectDisplay(facts, subject);
   const rows = [...facts.keys()].map((relation) => factualQaRender("fact_comparison_known_row", language, {
@@ -339,8 +315,13 @@ function tryFactComparisonGap(prompt, normalized) {
     intent: "fact_comparison_gap",
     content: factualQaRender("fact_comparison_gap", language, { known, missing: missingSide, rows: rows.join("\n") }),
     confidence: 0.6,
-    evidence: [`fact_comparison:known:${subject.qid}`, `fact_comparison:missing:${missingSide}`, `language:${language}`, "response:fact_comparison_gap"],
+    evidence: [...sources, `fact_comparison:known:${subject.qid}`, `fact_comparison:missing:${missingSide}`, `language:${language}`, "response:fact_comparison_gap"],
   };
+}
+
+function factComparisonSubjects(normalized) {
+  const sides = factComparisonSides(normalized);
+  return sides && sides.left !== sides.right && [sides.left, sides.right].every(factBoundedSubject) ? sides : null;
 }
 
 /**
@@ -442,6 +423,12 @@ function promptTextCovered(sentence, units) {
 function tryPromptTextQuestion(prompt, normalized) {
   const passage = promptTextPassage(prompt);
   if (!passage) return null;
+  const suppliedPage = pageSplitSuppliedPage(prompt);
+  const codeExampleQuery = findMeaning("code_example_decomposition_request");
+  if (suppliedPage && (
+    pageFormalizationRules().pageQueries.some(([, template]) => pageMatchTemplate(template, suppliedPage.query) !== null) ||
+    (codeExampleQuery && meaningEvidencedIn(codeExampleQuery, normalizePrompt(suppliedPage.query)))
+  )) return null;
   const lead = normalizePrompt(String(prompt).slice(0, passage.start));
   const question = String(prompt).slice(passage.end).replace(/^[\s.,;:!?。，；：！？)\]—-]+/u, "").trim();
   if (!question) return null;

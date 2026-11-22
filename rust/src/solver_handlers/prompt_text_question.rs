@@ -241,6 +241,9 @@ fn covered<'a>(sentence: &str, units: &'a [String]) -> Vec<&'a str> {
 /// passage's own sentences — never from a source, never over the network.
 pub fn try_prompt_text_question(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let passage = longest_passage(prompt)?;
+    if super::page_query_text::page_query_text_claims(prompt) {
+        return None;
+    }
     let lead = normalize_prompt(&prompt[..passage.start]);
     let question = prompt[passage.end..]
         .trim_start_matches(|character: char| {

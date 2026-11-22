@@ -197,7 +197,7 @@ fn anthropic_extended_thinking_leads_with_concrete_thinking_block() {
         "model": "claude-sonnet-4-5",
         "max_tokens": 1024,
         "thinking": {"type": "enabled", "budget_tokens": 1024},
-        "messages": [{"role": "user", "content": "What is the capital of France?"}]
+        "messages": [{"role": "user", "content": "What is 731 plus 83?"}]
     }))
     .unwrap();
 
@@ -219,7 +219,7 @@ fn anthropic_extended_thinking_leads_with_concrete_thinking_block() {
                 "thinking must open with the concrete impulse step, got: {thinking}"
             );
             assert!(
-                thinking.contains("The capital of France is Paris."),
+                thinking.contains("814"),
                 "thinking must surface the concrete composed answer, got: {thinking}"
             );
             assert!(!signature.is_empty(), "thinking block needs a signature");
@@ -229,7 +229,7 @@ fn anthropic_extended_thinking_leads_with_concrete_thinking_block() {
     match &message.content[1] {
         AnthropicContentBlock::Text { text } => {
             assert!(
-                text.contains("Paris"),
+                text.contains("814"),
                 "the answer text block should carry the answer, got: {text}"
             );
         }
@@ -245,7 +245,7 @@ fn anthropic_extended_thinking_streams_thinking_then_signature_delta() {
         "model": "claude-sonnet-4-5",
         "stream": true,
         "thinking": {"type": "enabled", "budget_tokens": 1024},
-        "messages": [{"role": "user", "content": "What is the capital of France?"}]
+        "messages": [{"role": "user", "content": "What is 731 plus 83?"}]
     }))
     .unwrap();
 
@@ -265,7 +265,7 @@ fn anthropic_extended_thinking_streams_thinking_then_signature_delta() {
         "thinking must stream a signature_delta"
     );
     assert!(
-        sse.contains("The capital of France is Paris."),
+        sse.contains("814"),
         "streamed thinking should carry the concrete reasoning"
     );
 }

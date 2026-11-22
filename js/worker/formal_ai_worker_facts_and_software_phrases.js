@@ -196,8 +196,7 @@ function parseFactQuestion(prompt, normalized) {
 }
 
 // In-memory cache. Keyed by `relation:subject_normalized:language`. The TTL
-// matches the user-requested 1 week. Pre-warmed from FACTS at init() so the
-// offline test matrix sees the same starting cache the Rust solver does.
+// matches the user-requested 1 week. It starts empty.
 const FACT_QUERY_CACHE = new Map();
 const FACT_QUERY_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -237,56 +236,78 @@ function factCachePut(relation, subjectTerm, language, value) {
   return entry;
 }
 
-// Pre-warm the runtime cache from the seed `facts.lino`. Each seed record can
-// optionally declare `relation`, `subjectQid`, `valueQid`, plus per-language
-// `subjectLabel`/`valueLabel`/`valueText` overrides — those are the structured
-// cache anchors. The legacy fields (`summary`, `subjectAliases`,
-// `questionKeywords`) remain in place for the `tryFactLookup` substring path.
-function warmFactCacheFromSeed() {
-  if (!Array.isArray(FACTS)) return;
-  const languages = ["en", "ru", "hi", "zh"];
-  for (const record of FACTS) {
-    if (!record || !record.relation || !record.subjectAliases) continue;
-    const localizedMap = new Map();
-    if (Array.isArray(record.localized)) {
-      for (const loc of record.localized) {
-        if (loc && loc.language) localizedMap.set(loc.language, loc);
-      }
-    }
-    for (const lang of languages) {
-      const loc = localizedMap.get(lang) || localizedMap.get("en") || {};
-      const summary =
-        (loc && loc.summary) || record.summary || "";
-      const source = (loc && loc.source) || record.source || "";
-      const sourceKind =
-        (loc && loc.sourceKind) || record.sourceKind || "wikipedia";
-      const valueLabel = (loc && loc.valueLabel) || record.valueLabel || "";
-      const subjectLabel =
-        (loc && loc.subjectLabel) || record.subjectLabel || "";
-      // The aliases for the subject language drive cache key lookup. For each
-      // alias (already lowercased by seed_loader.js), pre-seed a cache entry.
-      const aliases = Array.isArray(record.subjectAliases)
-        ? record.subjectAliases
-        : [];
-      for (const alias of aliases) {
-        if (!alias) continue;
-        factCachePut(record.relation, alias, lang, {
-          relation: record.relation,
-          subjectTerm: alias,
-          subjectLabel: subjectLabel || alias,
-          subjectQid: record.subjectQid || "",
-          valueLabel,
-          valueQid: record.valueQid || "",
-          summary,
-          source,
-          sourceKind,
-          language: lang,
-          fromSeed: true,
-          ttlMs: FACT_QUERY_TTL_MS,
-        });
-      }
-    }
+/**
+ * The seeded facts of one subject, grouped by relation (first record wins).
+ * @param {string} qid
+ * @param {string} language
+ * @returns {Map<string, {value: string, label: string, record: object}>}
+ */
+function factRelationsFor(qid, language) {
+  const relations = new Map();
+  for (const record of Array.isArray(FACTS) ? FACTS : []) {
+    if (record.subjectQid !== qid || !record.relation || relations.has(record.relation)) continue;
+    const localized = localizedFactFor(record, language) || {};
+    relations.set(record.relation, {
+      value: localized.valueLabel || record.valueLabel || "",
+      label: localized.subjectLabel || record.subjectLabel || "",
+      record,
+    });
   }
+  return relations;
+}
+
+/**
+ * The display label of a resolved subject.
+ * @param {Map<string, object>} facts
+ * @param {{surface: string}} subject
+ * @returns {string}
+ */
+function factSubjectDisplay(facts, subject) {
+  const first = facts.values().next().value;
+  return (first && first.label) || subject.surface;
+}
+
+async function tryLiveFactComparison(prompt, normalized, preferences) {
+  const sides = factComparisonSubjects(normalized);
+  if (!sides || preferences?.externalServiceMediawikiFamily === false) return null;
+  const language = detectLanguage(prompt);
+  const bindings = meaningsWithRole("fact_relation")
+    .map(({ slug }) => [slug, factRelationProperty(slug)])
+    .filter(([, property]) => /^P[0-9]+$/.test(property));
+  async function resolve(term) {
+    const source = await wikidataFactCandidates(term, language, preferences, false);
+    if (!source) return null;
+    const candidates = source.candidates.map(({ subject, entity }) => ({
+      subject,
+      entity,
+      claims: bindings.map(([relation, property]) => [relation, wikidataFactClaim(entity, property)])
+        .filter(([, claim]) => claim),
+    })).filter(({ claims }) => claims.length);
+    if (candidates.length !== 1) return null;
+    const [{ subject, entity, claims }] = candidates;
+    const facts = new Map();
+    const references = new Set();
+    for (const [relation, claim] of claims) {
+      const fact = await realizeWikidataFact({ relation, subjectTerm: term, language }, { subject, entity, claim }, source);
+      if (fact) {
+        facts.set(relation, { label: fact.subjectLabel, value: fact.valueLabel });
+        if (fact.source) references.add(`source:${humanizeUrl(fact.source)}`);
+      }
+    }
+    if (!facts.size) return null;
+    for (const { url, sha256 } of source.captures) references.add(`source:http:${url} sha256=${sha256}`);
+    return { subject, facts, references };
+  }
+  const left = await resolve(sides.left);
+  const right = await resolve(sides.right);
+  if (left && right) {
+    if (left.subject.qid === right.subject.qid) return null;
+    return renderFactComparison(language, { left: left.subject, right: right.subject }, left.facts, right.facts,
+      [...new Set([...left.references, ...right.references])]);
+  }
+  const known = left || right;
+  return known ? renderFactComparisonGap(prompt, language, known.subject, left ? sides.right : sides.left,
+    known.facts, [...known.references]) : null;
 }
 
 async function factCaptureJson(url, options, captures) {
@@ -552,40 +573,48 @@ function wikidataValue(value) {
   return null;
 }
 
-async function resolveFactQueryViaWikidata(query, log, preferences) {
-  const property = factRelationProperty(query.relation);
-  if (!/^P[0-9]+$/.test(property)) return null;
+async function wikidataFactCandidates(subjectTerm, language, preferences, forceFresh, log) {
+  if (preferences?.externalServiceMediawikiFamily === false) return null;
   const options = {
     online: preferences?.offline !== true && preferences?.allowNetwork !== false,
     bounded: true,
-    maxAgeSeconds: query.forceFresh ? -1 : FACT_QUERY_TTL_MS / 1000,
+    maxAgeSeconds: forceFresh ? -1 : FACT_QUERY_TTL_MS / 1000,
   };
   const captures = [];
-  // Stage 1: subject resolution via wbsearchentities.
-  if (log) log.push(`fact_query:wbsearchentities:request:${query.subjectTerm}`);
-  const candidates = await wikidataSearchEntities(query.subjectTerm, query.language, options, captures);
-  if (!candidates.length) {
-    if (log) log.push("fact_query:wbsearchentities:no_match");
-    return null;
+  if (log) log.push(`fact_query:wbsearchentities:request:${subjectTerm}`);
+  let hits = await wikidataSearchEntities(subjectTerm, language, options, captures);
+  // A feminine singular head noun may use the accusative in the question.
+  if (!hits.length && language === "ru") {
+    const term = subjectTerm.replace(/^([а-яё]{2,})([ую])(?=\s|$)/iu,
+      (_, stem, ending) => stem + (ending.toLowerCase() === "у" ? "а" : "я"));
+    if (term !== subjectTerm) hits = await wikidataSearchEntities(term, language, options, captures);
   }
-  let matching = null;
-  for (const candidate of candidates) {
-    const entity = await wikidataFactEntity(candidate.qid, query.language, true, options, captures);
+  if (!hits.length && log) log.push("fact_query:wbsearchentities:no_match");
+  const candidates = [];
+  for (const subject of hits) {
+    const entity = await wikidataFactEntity(subject.qid, language, true, options, captures);
     if (!entity) return null;
-    const claim = wikidataFactClaim(entity, property);
-    if (claim) {
-      if (matching) {
-        if (log) log.push("fact_query:wbgetentities:ambiguous_subject");
-        return null;
-      }
-      matching = { subject: candidate, entity, claim };
-    }
+    candidates.push({ subject, entity });
   }
-  if (!matching) {
-    if (log) log.push("fact_query:wbgetentities:no_claim");
+  return { candidates, captures, options };
+}
+
+async function resolveFactQueryViaWikidata(query, log, preferences) {
+  const property = factRelationProperty(query.relation);
+  if (!/^P[0-9]+$/.test(property)) return null;
+  const source = await wikidataFactCandidates(query.subjectTerm, query.language, preferences, query.forceFresh, log);
+  if (!source?.candidates.length) return null;
+  const matching = source.candidates
+    .map((candidate) => ({ ...candidate, claim: wikidataFactClaim(candidate.entity, property) }))
+    .filter((candidate) => candidate.claim);
+  if (matching.length !== 1) {
+    if (log) log.push(matching.length ? "fact_query:wbgetentities:ambiguous_subject" : "fact_query:wbgetentities:no_claim");
     return null;
   }
-  const { subject, entity, claim } = matching;
+  return realizeWikidataFact(query, matching[0], source, log);
+}
+
+async function realizeWikidataFact(query, { subject, entity, claim }, { options, captures }, log) {
   if (log) log.push(`fact_query:wbsearchentities:resolved:${subject.qid}`);
   const value = wikidataValue(claim.mainsnak.datavalue.value);
   const valueQid = value.qid || "";

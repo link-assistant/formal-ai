@@ -92,11 +92,11 @@ meanings
     grounded-in P571
     defined-by knowledge_relation
     role fact_relation
-    lexeme en when built construction
+    lexeme en built construction
     lexeme ru когда построена построили
-    lexeme hi बनी बनाई कब
-    lexeme zh 何时 建于 建造
-    lexeme es cuándo construido construida construcción
+    lexeme hi बनी बनाई
+    lexeme zh 建于 建造 建成
+    lexeme es construido construida construcción fundado fundada
   physical_constant
     grounded-in Q173227
     defined-by knowledge_relation
@@ -106,15 +106,16 @@ meanings
     lexeme hi "प्रकाश की गति" कितनी
     lexeme zh 光速 是多少
     lexeme es "velocidad de la luz" "cuál es" "qué tan rápido"
-  fact_comparison_request
-    defined-by compare
   fact_subject_connector
     defined-by knowledge_subject
     role fact_subject_connector
-    lexeme en "s"
+    lexeme en "s" "which city" "what city"
     lexeme ru "какая" "какое" "каков" "какова"
+    lexeme hi "क्या है" "कौन सा"
     lexeme zh "是什么" "是什麼"
     lexeme es "es" "son" "la" "las" "el" "los" "de" "del" "cuál" "cuáles"
+  fact_comparison_request
+    defined-by compare
     defined-by knowledge_relation
     role fact_comparison_cue
     lexeme en "compare" "comparison of" "difference between" "differences between"

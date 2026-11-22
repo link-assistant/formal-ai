@@ -34,8 +34,6 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/derivation-schema.lino",
   "seed/entity-names.lino",
   "seed/environments.lino",
-  "seed/fact-captures.lino",
-  "seed/fact-realization.lino",
   "seed/facts.lino",
   "seed/feature-capabilities.lino",
   "seed/formal-language-projections.lino",

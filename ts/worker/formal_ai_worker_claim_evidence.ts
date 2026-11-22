@@ -225,6 +225,6 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   assistant_subject: (prompt, normalized) => claimEvidenceAddressesAssistant(normalized) || !claimEvidenceNamesOtherSubject(prompt),
   memory_query_statement: (prompt) => claimEvidenceMemoryQueryStatement(prompt),
   fact_subject: (prompt, normalized) => Boolean(gatedFactRecord(normalized, prompt) || explanationConcept(prompt)
-    || tryPromptTextQuestion(prompt, normalized) || tryFactComparison(prompt, normalized)),
+    || tryPromptTextQuestion(prompt, normalized) || factLiveQuestion(prompt) || factComparisonSubjects(normalized)),
   learnable_source: (prompt) => matchLearningDirective(String(prompt || "").toLowerCase()) !== null,
 });

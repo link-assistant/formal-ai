@@ -417,6 +417,8 @@ roles
     kind meaning
   fact_relation
     kind predicate
+  fact_subject_connector
+    kind meaning
   feature_action_arithmetic
     kind meaning
   feature_action_planning

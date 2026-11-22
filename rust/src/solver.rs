@@ -415,8 +415,10 @@ impl UniversalSolver {
 
             log.append("search:local", prompt.to_owned());
 
-            // Bind process operands together before decomposing the clauses.
-            if let Some(answer) = crate::coding::program_contract::answer(prompt, log) {
+            // Process operands and quoted passages must stay with their questions.
+            if let Some(answer) = crate::coding::program_contract::answer(prompt, log)
+                .or_else(|| crate::solver_handlers::try_prompt_text_question(prompt, log))
+            {
                 return answer;
             }
 
@@ -964,7 +966,7 @@ impl UniversalSolver {
             },
             draft_of(&*answer),
             &mut solve_sub_task,
-            &crate::meta_executor::RunOptions::default(),
+            &crate::solver_helpers::meta_procedure_options(answer),
         ) else {
             return;
         };

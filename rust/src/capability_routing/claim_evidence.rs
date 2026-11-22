@@ -177,7 +177,7 @@ fn names_fact_subject(prompt: &str, normalized: &str) -> bool {
         || handlers::live_fact_question(prompt).is_some()
         || handlers::explanation_concept(prompt).is_some()
         || handlers::try_prompt_text_question(prompt, &mut EventLog::new()).is_some()
-        || handlers::try_fact_comparison(prompt, &mut EventLog::new()).is_some()
+        || handlers::fact_comparison_subjects(normalized).is_some()
 }
 
 /// Whether the request carries text to translate.

@@ -1,10 +1,6 @@
 // Fact questions resolved through the fact cache, Wikidata and Wiktionary, and
 // the software artifact and object-phrase scanner.
 // Loaded by ../formal_ai_worker.js.
-function relationConfig(relation) {
-  return FACT_RELATIONS.find((entry) => entry.relation === relation) || null;
-}
-
 // Markers that flag the user wants a fresh (uncached) result. Detected in all
 // four supported languages plus a couple of common English phrasings.
 const FORCE_FRESH_MARKERS = [
@@ -195,12 +191,12 @@ function parseFactQuestion(prompt, normalized) {
       };
     }
   }
-  return null;
+  const generic = factLiveQuestion(prompt);
+  return generic ? { ...generic, language: detectLanguage(prompt), forceFresh: shouldForceFresh(normalized, prompt) } : null;
 }
 
 // In-memory cache. Keyed by `relation:subject_normalized:language`. The TTL
-// matches the user-requested 1 week. Pre-warmed from FACTS at init() so the
-// offline test matrix sees the same starting cache the Rust solver does.
+// matches the user-requested 1 week. It starts empty.
 const FACT_QUERY_CACHE = new Map();
 const FACT_QUERY_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -240,93 +236,110 @@ function factCachePut(relation, subjectTerm, language, value) {
   return entry;
 }
 
-// Pre-warm the runtime cache from the seed `facts.lino`. Each seed record can
-// optionally declare `relation`, `subjectQid`, `valueQid`, plus per-language
-// `subjectLabel`/`valueLabel`/`valueText` overrides — those are the structured
-// cache anchors. The legacy fields (`summary`, `subjectAliases`,
-// `questionKeywords`) remain in place for the `tryFactLookup` substring path.
-function warmFactCacheFromSeed() {
-  if (!Array.isArray(FACTS)) return;
-  const languages = ["en", "ru", "hi", "zh"];
-  for (const record of FACTS) {
-    if (!record || !record.relation || !record.subjectAliases) continue;
-    const localizedMap = new Map();
-    if (Array.isArray(record.localized)) {
-      for (const loc of record.localized) {
-        if (loc && loc.language) localizedMap.set(loc.language, loc);
+/**
+ * The seeded facts of one subject, grouped by relation (first record wins).
+ * @param {string} qid
+ * @param {string} language
+ * @returns {Map<string, {value: string, label: string, record: object}>}
+ */
+function factRelationsFor(qid, language) {
+  const relations = new Map();
+  for (const record of Array.isArray(FACTS) ? FACTS : []) {
+    if (record.subjectQid !== qid || !record.relation || relations.has(record.relation)) continue;
+    const localized = localizedFactFor(record, language) || {};
+    relations.set(record.relation, {
+      value: localized.valueLabel || record.valueLabel || "",
+      label: localized.subjectLabel || record.subjectLabel || "",
+      record,
+    });
+  }
+  return relations;
+}
+
+/**
+ * The display label of a resolved subject.
+ * @param {Map<string, object>} facts
+ * @param {{surface: string}} subject
+ * @returns {string}
+ */
+function factSubjectDisplay(facts, subject) {
+  const first = facts.values().next().value;
+  return (first && first.label) || subject.surface;
+}
+
+async function tryLiveFactComparison(prompt, normalized, preferences) {
+  const sides = factComparisonSubjects(normalized);
+  if (!sides || preferences?.externalServiceMediawikiFamily === false) return null;
+  const language = detectLanguage(prompt);
+  const bindings = meaningsWithRole("fact_relation")
+    .map(({ slug }) => [slug, factRelationProperty(slug)])
+    .filter(([, property]) => /^P[0-9]+$/.test(property));
+  async function resolve(term) {
+    const source = await wikidataFactCandidates(term, language, preferences, false);
+    if (!source) return null;
+    const candidates = source.candidates.map(({ subject, entity }) => ({
+      subject,
+      entity,
+      claims: bindings.map(([relation, property]) => [relation, wikidataFactClaim(entity, property)])
+        .filter(([, claim]) => claim),
+    })).filter(({ claims }) => claims.length);
+    if (candidates.length !== 1) return null;
+    const [{ subject, entity, claims }] = candidates;
+    const facts = new Map();
+    const references = new Set();
+    for (const [relation, claim] of claims) {
+      const fact = await realizeWikidataFact({ relation, subjectTerm: term, language }, { subject, entity, claim }, source);
+      if (fact) {
+        facts.set(relation, { label: fact.subjectLabel, value: fact.valueLabel });
+        if (fact.source) references.add(`source:${humanizeUrl(fact.source)}`);
       }
     }
-    for (const lang of languages) {
-      const loc = localizedMap.get(lang) || localizedMap.get("en") || {};
-      const summary =
-        (loc && loc.summary) || record.summary || "";
-      const source = (loc && loc.source) || record.source || "";
-      const sourceKind =
-        (loc && loc.sourceKind) || record.sourceKind || "wikipedia";
-      const valueLabel = (loc && loc.valueLabel) || record.valueLabel || "";
-      const subjectLabel =
-        (loc && loc.subjectLabel) || record.subjectLabel || "";
-      // The aliases for the subject language drive cache key lookup. For each
-      // alias (already lowercased by seed_loader.js), pre-seed a cache entry.
-      const aliases = Array.isArray(record.subjectAliases)
-        ? record.subjectAliases
-        : [];
-      for (const alias of aliases) {
-        if (!alias) continue;
-        factCachePut(record.relation, alias, lang, {
-          relation: record.relation,
-          subjectTerm: alias,
-          subjectLabel: subjectLabel || alias,
-          subjectQid: record.subjectQid || "",
-          valueLabel,
-          valueQid: record.valueQid || "",
-          summary,
-          source,
-          sourceKind,
-          language: lang,
-          fromSeed: true,
-          ttlMs: FACT_QUERY_TTL_MS,
-        });
-      }
-    }
+    if (!facts.size) return null;
+    for (const { url, sha256 } of source.captures) references.add(`source:http:${url} sha256=${sha256}`);
+    return { subject, facts, references };
+  }
+  const left = await resolve(sides.left);
+  const right = await resolve(sides.right);
+  if (left && right) {
+    if (left.subject.qid === right.subject.qid) return null;
+    return renderFactComparison(language, { left: left.subject, right: right.subject }, left.facts, right.facts,
+      [...new Set([...left.references, ...right.references])]);
+  }
+  const known = left || right;
+  return known ? renderFactComparisonGap(prompt, language, known.subject, left ? sides.right : sides.left,
+    known.facts, [...known.references]) : null;
+}
+
+async function factCaptureJson(url, options, captures) {
+  const capture = await sourceWalkFetchCapture(url, options);
+  if (!capture.ok) return null;
+  try {
+    const parsed = JSON.parse(capture.text);
+    captures.push({ url: capture.url, sha256: capture.sha256 });
+    return parsed;
+  } catch (_error) {
+    return null;
   }
 }
 
-async function wikidataSearchEntity(term, language) {
-  if (typeof fetch !== "function") return null;
-  // Wikidata supports per-language search; English fallback ensures broad
-  // recall even for non-Latin scripts.
-  const ordered = [language, "en"].filter(
-    (value, index, array) => value && array.indexOf(value) === index,
-  );
-  for (const lang of ordered) {
+async function wikidataSearchEntities(term, language, options, captures) {
+  const languages = new Set([language, "en"]);
+  for (const lang of languages) {
+    if (!lang) continue;
     const url = `${WIKIDATA_API}?action=wbsearchentities&format=json&origin=*&type=item&limit=5&language=${encodeURIComponent(
       lang,
     )}&search=${encodeURIComponent(term)}`;
-    try {
-      const response = await fetch(url, {
-        headers: {
-          accept: "application/json",
-          "api-user-agent":
-            "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
-        },
-      });
-      if (!response || !response.ok) continue;
-      const data = await response.json();
-      if (data && Array.isArray(data.search) && data.search.length > 0) {
-        const hit = data.search[0];
-        return {
-          qid: hit.id,
-          label: hit.label || term,
-          description: hit.description || "",
-          language: lang,
-        };
+    const data = await factCaptureJson(url, options, captures);
+    if (!Array.isArray(data?.search)) continue;
+    const matches = new Map();
+    for (const hit of data.search.slice(0, 5)) {
+      if (/^Q[0-9]+$/.test(hit?.id) && wikidataHitMatchesTerm(hit, term)) {
+        matches.set(hit.id, { qid: hit.id, label: hit.label || term });
       }
-    } catch (_error) {
-      // Try the next language.
     }
+    if (matches.size) return [...matches.values()];
   }
-  return null;
+  return [];
 }
 
 function wikidataConceptUrl(hit) {
@@ -503,63 +516,29 @@ async function tryTermKnowledgeFallback(term, language, rejectedSummary) {
   return null;
 }
 
-async function wikidataFetchEntityClaim(qid, property, language) {
-  if (typeof fetch !== "function") return null;
+async function wikidataFactEntity(qid, language, includeClaims, options, captures) {
+  if (!/^Q[0-9]+$/.test(qid)) return null;
+  const fields = includeClaims ? "claims%7Clabels%7Csitelinks" : "labels%7Csitelinks";
   const url = `${WIKIDATA_API}?action=wbgetentities&format=json&origin=*&ids=${encodeURIComponent(
     qid,
-  )}&props=claims%7Clabels%7Csitelinks&languages=${encodeURIComponent(
-    language,
-  )}%7Cen`;
-  try {
-    const response = await fetch(url, {
-      headers: {
-        accept: "application/json",
-        "api-user-agent":
-          "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
-      },
-    });
-    if (!response || !response.ok) return null;
-    const data = await response.json();
-    if (!data || !data.entities) return null;
-    const entity = data.entities[qid];
-    if (!entity) return null;
-    const claims = (entity.claims || {})[property] || [];
-    const subjectLabel =
-      (entity.labels && (entity.labels[language] || entity.labels.en) || {})
-        .value || "";
-    const sitelinks = entity.sitelinks || {};
-    return { claims, subjectLabel, sitelinks };
-  } catch (_error) {
-    return null;
-  }
+  )}&props=${fields}&languages=${encodeURIComponent(language)}%7Cen`;
+  const data = await factCaptureJson(url, options, captures);
+  return data?.entities?.[qid] || null;
 }
 
-async function wikidataResolveLabel(qid, language) {
-  if (typeof fetch !== "function") return null;
-  const url = `${WIKIDATA_API}?action=wbgetentities&format=json&origin=*&ids=${encodeURIComponent(
-    qid,
-  )}&props=labels%7Csitelinks&languages=${encodeURIComponent(language)}%7Cen`;
-  try {
-    const response = await fetch(url, {
-      headers: {
-        accept: "application/json",
-        "api-user-agent":
-          "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
-      },
-    });
-    if (!response || !response.ok) return null;
-    const data = await response.json();
-    if (!data || !data.entities) return null;
-    const entity = data.entities[qid];
-    if (!entity) return null;
-    const label =
-      (entity.labels && (entity.labels[language] || entity.labels.en) || {})
-        .value || "";
-    const sitelinks = entity.sitelinks || {};
-    return { label, sitelinks };
-  } catch (_error) {
-    return null;
+function factEntityLabel(entity, language) {
+  return (entity?.labels?.[language] || entity?.labels?.en)?.value || "";
+}
+
+function wikidataFactClaim(entity, property) {
+  const claims = entity?.claims?.[property];
+  if (!Array.isArray(claims)) return null;
+  for (const rank of ["preferred", "normal"]) {
+    const claim = claims.find((candidate) => (candidate.rank || "normal") === rank &&
+      (candidate.mainsnak?.snaktype || "value") === "value" && wikidataValue(candidate.mainsnak?.datavalue?.value));
+    if (claim) return claim;
   }
+  return null;
 }
 
 function factQueryEvidence(record, language) {
@@ -571,98 +550,95 @@ function factQueryEvidence(record, language) {
   if (record.subjectQid) evidence.push(`wikidata:${record.subjectQid}`);
   if (record.valueQid) evidence.push(`wikidata:${record.valueQid}`);
   if (record.source) evidence.push(`source:${humanizeUrl(record.source)}`);
+  for (const capture of record.captures || []) evidence.push(`source:http:${capture.url} sha256=${capture.sha256}`);
   if (record.fromSeed) evidence.push("fact_query:cache:seed");
   else if (record.fromCache) evidence.push("fact_query:cache:hit");
   else evidence.push("fact_query:cache:miss");
   return evidence;
 }
 
-async function resolveFactQueryViaWikidata(query, log) {
-  // Stage 1: subject resolution via wbsearchentities.
-  if (log) log.push(`fact_query:wbsearchentities:request:${query.subjectTerm}`);
-  const subject = await wikidataSearchEntity(query.subjectTerm, query.language);
-  if (!subject) {
-    if (log) log.push("fact_query:wbsearchentities:miss");
+function wikidataValue(value) {
+  if (typeof value === "string" && value.trim()) return { label: value };
+  if (/^Q[0-9]+$/.test(value?.id)) return { qid: value.id };
+  if (/^[+-]?[0-9]+(?:\.[0-9]+)?$/.test(value?.amount)) {
+    return { label: value.amount.replace(/^\+/, "") };
+  }
+  const time = /^([+-][0-9]{4,})-([0-9]{2})-([0-9]{2})T/.exec(value?.time || "");
+  if (time && value.precision >= 9 && value.calendarmodel?.endsWith("/Q1985727")) {
+    const [, signedYear, month, day] = time;
+    const year = signedYear.replace(/^\+/, "");
+    const fields = [year, month, day];
+    return { label: fields.slice(0, Math.min(value.precision - 8, fields.length)).join("-") };
+  }
+  return null;
+}
+
+async function wikidataFactCandidates(subjectTerm, language, preferences, forceFresh, log) {
+  if (preferences?.externalServiceMediawikiFamily === false) return null;
+  const options = {
+    online: preferences?.offline !== true && preferences?.allowNetwork !== false,
+    bounded: true,
+    maxAgeSeconds: forceFresh ? -1 : FACT_QUERY_TTL_MS / 1000,
+  };
+  const captures = [];
+  if (log) log.push(`fact_query:wbsearchentities:request:${subjectTerm}`);
+  let hits = await wikidataSearchEntities(subjectTerm, language, options, captures);
+  // A feminine singular head noun may use the accusative in the question.
+  if (!hits.length && language === "ru") {
+    const term = subjectTerm.replace(/^([а-яё]{2,})([ую])(?=\s|$)/iu,
+      (_, stem, ending) => stem + (ending.toLowerCase() === "у" ? "а" : "я"));
+    if (term !== subjectTerm) hits = await wikidataSearchEntities(term, language, options, captures);
+  }
+  if (!hits.length && log) log.push("fact_query:wbsearchentities:no_match");
+  const candidates = [];
+  for (const subject of hits) {
+    const entity = await wikidataFactEntity(subject.qid, language, true, options, captures);
+    if (!entity) return null;
+    candidates.push({ subject, entity });
+  }
+  return { candidates, captures, options };
+}
+
+async function resolveFactQueryViaWikidata(query, log, preferences) {
+  const property = factRelationProperty(query.relation);
+  if (!/^P[0-9]+$/.test(property)) return null;
+  const source = await wikidataFactCandidates(query.subjectTerm, query.language, preferences, query.forceFresh, log);
+  if (!source?.candidates.length) return null;
+  const matching = source.candidates
+    .map((candidate) => ({ ...candidate, claim: wikidataFactClaim(candidate.entity, property) }))
+    .filter((candidate) => candidate.claim);
+  if (matching.length !== 1) {
+    if (log) log.push(matching.length ? "fact_query:wbgetentities:ambiguous_subject" : "fact_query:wbgetentities:no_claim");
     return null;
   }
+  return realizeWikidataFact(query, matching[0], source, log);
+}
+
+async function realizeWikidataFact(query, { subject, entity, claim }, { options, captures }, log) {
   if (log) log.push(`fact_query:wbsearchentities:resolved:${subject.qid}`);
-
-  const config = relationConfig(query.relation);
-  if (!config) return null;
-
-  // Stage 2: claim fetch via wbgetentities.
-  if (log) log.push(`fact_query:wbgetentities:request:${config.property}`);
-  const claimData = await wikidataFetchEntityClaim(
-    subject.qid,
-    config.property,
-    query.language,
-  );
-  if (!claimData || !claimData.claims || claimData.claims.length === 0) {
-    if (log) log.push("fact_query:wbgetentities:no_claim");
-    return null;
-  }
-  const claim = claimData.claims[0];
-  const mainsnak = claim && claim.mainsnak;
-  if (!mainsnak || !mainsnak.datavalue) {
-    if (log) log.push("fact_query:wbgetentities:no_datavalue");
-    return null;
-  }
-
-  // Stage 3: value resolution.
-  let valueLabel = "";
-  let valueQid = "";
-  if (config.valueType === "entity") {
-    const value = mainsnak.datavalue.value || {};
-    valueQid = value.id || "";
-    if (!valueQid) {
-      if (log) log.push("fact_query:wbgetentities:value_not_entity");
-      return null;
-    }
+  const value = wikidataValue(claim.mainsnak.datavalue.value);
+  const valueQid = value.qid || "";
+  let valueLabel = value.label;
+  if (valueQid) {
     if (log) log.push(`fact_query:label_resolve:request:${valueQid}`);
-    const labelResult = await wikidataResolveLabel(valueQid, query.language);
-    if (!labelResult || !labelResult.label) {
-      if (log) log.push("fact_query:label_resolve:miss");
-      return null;
-    }
-    valueLabel = labelResult.label;
-    if (log) log.push(`fact_query:label_resolve:${valueLabel}`);
-    // Issue #1172 R3: the answer cites the claim's own reference URL (else
-    // the subject snapshot) through the seeded fact_live_answer template.
-    const subjectLabel = claimData.subjectLabel || subject.label;
-    return {
-      relation: query.relation,
-      subjectTerm: query.subjectTerm,
-      subjectLabel,
-      subjectQid: subject.qid,
-      valueLabel,
-      valueQid,
-      ...factLiveSummary(query, subject.qid, subjectLabel, claim, valueLabel),
-      sourceKind: "wikidata",
-      language: query.language,
-      fromCache: false,
-      fromSeed: false,
-    };
+    const valueEntity = await wikidataFactEntity(valueQid, query.language, false, options, captures);
+    valueLabel = factEntityLabel(valueEntity, query.language);
+    if (log) log.push(valueLabel ? `fact_query:label_resolve:${valueLabel}` : "fact_query:label_resolve:miss");
+  } else if (log) {
+    log.push(`fact_query:literal:${valueLabel}`);
   }
-
-  // Quantity values (population, area) are not Q-IDs.
-  const value = mainsnak.datavalue.value || {};
-  const rawAmount = String(value.amount || "").replace(/^\+/, "");
-  if (!rawAmount) {
-    if (log) log.push("fact_query:wbgetentities:value_empty");
-    return null;
-  }
-  valueLabel = rawAmount;
-  if (log) log.push(`fact_query:quantity:${valueLabel}`);
-  const subjectLabel = claimData.subjectLabel || subject.label;
+  if (!valueLabel) return null;
+  const subjectLabel = factEntityLabel(entity, query.language) || subject.label;
   return {
     relation: query.relation,
     subjectTerm: query.subjectTerm,
     subjectLabel,
     subjectQid: subject.qid,
     valueLabel,
-    valueQid: "",
+    valueQid,
     ...factLiveSummary(query, subject.qid, subjectLabel, claim, valueLabel),
     sourceKind: "wikidata",
+    captures,
     language: query.language,
     fromCache: false,
     fromSeed: false,
@@ -671,7 +647,7 @@ async function resolveFactQueryViaWikidata(query, log) {
 
 async function tryFactQuery(prompt, normalized, preferences) {
   const query = parseFactQuestion(prompt, normalized);
-  if (!query) return null;
+  if (!query || preferences?.externalServiceMediawikiFamily === false) return null;
 
   // Trace events: every step of the reasoning pipeline is recorded so the
   // browser memory log shows the structured query, the cache decision, and
@@ -711,7 +687,7 @@ async function tryFactQuery(prompt, normalized, preferences) {
   }
 
   // Stage 2: Wikidata resolution.
-  const resolved = await resolveFactQueryViaWikidata(query, trace);
+  const resolved = await resolveFactQueryViaWikidata(query, trace, preferences);
   if (!resolved) {
     trace.push("fact_query:wikidata:no_match");
     return null;

@@ -140,6 +140,10 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   const contradiction = tryRequirementContradiction(prompt, language, history, numericPreference(preferences.temperature, 0.7, 0, 1));
   if (contradiction) return finalize(events.concat(["handler:requirement_contradiction"]), steps, toolCalls, contradiction, formalizationContext);
 
+  // A supplied passage owns its question before independent-question splitting.
+  const passageAnswer = tryPromptTextQuestion(prompt, normalized);
+  if (passageAnswer) return finalizeInlineHandler(events, steps, toolCalls, passageAnswer, "tryPromptTextQuestion", formalizationContext);
+
   const compound = await FormalAiSeed.solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solve);
   if (compound) return finalize(["composition:compound_response"], [], compound.toolCalls, compound, formalizationContext);
 
@@ -574,14 +578,10 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, documentationMethod, formalizationContext);
   }
-  // Real-time fact reasoning: parse structured (relation, subject) queries, hit
-  // the 1-week TTL cache, fall back to Wikidata/Wikipedia for any country or
-  // entity. Cache warmed from `data/seed/facts.lino` so the test matrix and
-  // offline browsers still answer instantly. The legacy substring-based
-  // `tryFactLookup` remains as a fallback for non-relation seed facts
-  // (e.g. who painted the Mona Lisa) until those are migrated to relations.
+  // Resolve structured facts from the verified runtime cache or publisher.
   steps.push({ step: "invoke_tool", detail: "fact_query" });
-  const factQuery = await tryFactQuery(prompt, normalized, preferences);
+  const factQuery = await tryFactQuery(prompt, normalized, preferences) ||
+    await tryLiveFactComparison(prompt, normalized, preferences);
   if (factQuery) {
     events.push(`handler:${factQuery.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactQuery" });
@@ -1129,10 +1129,7 @@ async function loadSeed() {
         CONCEPT_CONTEXTS = seed.conceptContexts;
       }
       if (Array.isArray(seed && seed.facts) && seed.facts.length > 0) {
-        // Issue #1172 R9: the written records, then those derived from the
-        // committed Wikidata captures (formal_ai_worker_fact_derivation.js).
-        FACTS = seed.facts.concat(derivedCaptureFacts(SEED_RAW));
-        warmFactCacheFromSeed();
+        FACTS = seed.facts;
       }
       if (Array.isArray(seed && seed.projects) && seed.projects.length > 0) {
         PROJECTS = seed.projects;

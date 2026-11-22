@@ -154,6 +154,6 @@ function metaAttachLearned(answer) {
   return operation ? { ...answer, memoryOperation: operation } : answer;
 }
 
-// Issue #1550: every answer goes through the recursive procedure (crate/meta_executor.mjs).
 const metaRunProcedure = async (prompt, answer, subTask) => (await crateModule("crate/meta_executor.mjs")
-  .solveAnswer({ text: prompt, language: detectLanguage(prompt) }, answer, subTask)).answer;
+  .solveAnswer({ text: prompt, language: detectLanguage(prompt) }, answer, subTask,
+    answer?.evidence?.includes("prompt_text:network:none") ? { bounds: { depth: 0 } } : undefined)).answer;

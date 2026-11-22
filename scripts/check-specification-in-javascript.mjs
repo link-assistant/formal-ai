@@ -20,6 +20,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { WorkerHost } from '../js/server/worker-host.mjs';
+import { wikidataFixture } from '../rust/tests/web/support/fact-fixtures.mjs';
 import { installSourceDefinitionCaptures } from '../rust/tests/web/support/source-definition-captures.mjs';
 import { failingCases, specificationCases } from './lib/rust-specification-cases.mjs';
 
@@ -99,7 +100,22 @@ export function censusProcedure(host) {
 async function main(argv) {
   const root = join(dirname(fileURLToPath(import.meta.url)), '..');
   const { total, cases, unsupported } = specificationCases(root);
-  const host = new WorkerHost();
+  const host = new WorkerHost({}, {
+    networkFetch(url) {
+      const target = new URL(url);
+      if (target.hostname !== 'www.wikidata.org') return Response.error();
+      if (target.searchParams.get('action') === 'wbsearchentities' &&
+          target.searchParams.get('search')?.toLowerCase() !== 'россии') {
+        return Response.json({ search: [] });
+      }
+      if (target.searchParams.get('action') === 'wbgetentities' &&
+          !['Q159', 'Q649'].includes(target.searchParams.get('ids'))) {
+        return Response.error();
+      }
+      const body = wikidataFixture(url, 'Q159');
+      return body ? Response.json(body) : Response.error();
+    },
+  });
   await installSourceDefinitionCaptures(host);
   const bypassed = censusProcedure(host);
   const failing = await failingCases(host, cases);

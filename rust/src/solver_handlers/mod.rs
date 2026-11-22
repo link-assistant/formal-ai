@@ -1,4 +1,3 @@
-//! Specialized free-function handlers extracted from `solver.rs`.
 include!("modules.rs");
 use crate::calculation::{
     PromptInterpretation, calculation_expression_candidates, evaluate_calculation_with_rates,
@@ -53,6 +52,7 @@ pub use fact_live_answer::{
     LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
     try_fact_lookup_with_client, try_fact_lookup_with_offline,
 };
+pub(crate) use factual_qa::fact_comparison_subjects;
 pub use factual_qa::{
     ResolvedSubject, SubjectGate, fact_subject_gate, gated_fact_record, resolve_fact_subject,
     try_fact_comparison,

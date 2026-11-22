@@ -11,6 +11,7 @@ import path from "node:path";
 import { test } from "node:test";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+import { loadHistoricalFactFixtures, wikidataFixture } from "./support/fact-fixtures.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const external = [];
@@ -32,7 +33,7 @@ const worker = createWorkerContext({
     return { ok: false, status: 404, text: async () => "" };
   },
 });
-const ready = evaluate(worker, "loadSeed()");
+const ready = loadHistoricalFactFixtures(worker);
 
 async function solve(prompt) {
   await ready;
@@ -229,9 +230,16 @@ test("#1172 R7: a quoted phrase inside an instruction is not a text to read", as
 
 test("#1172 R12: the worker matches the shared parity case the native solver pins", async () => {
   const cases = JSON.parse(readFileSync(path.join(REPO_ROOT, "data/parity/cross-runtime-synthesis.json"), "utf8"));
-  const parity = cases.find((entry) => entry.id === "e1172_seeded_capital_subject_gate");
+  const parity = cases.find((entry) => entry.id === "e1172_publisher_capital_subject_gate");
   assert.ok(parity, "the parity corpus carries the #1172 case");
-  const answer = await solve(parity.prompt);
+  const live = createWorkerContext();
+  const originalFetch = live.fetch;
+  live.fetch = async (url, options) => {
+    if (!String(url).startsWith("https://www.wikidata.org/")) return originalFetch(url, options);
+    const body = wikidataFixture(url, "Q159");
+    return { ok: body !== null, status: body ? 200 : 404, text: async () => JSON.stringify(body) };
+  };
+  const answer = plain(await live.solve(parity.prompt, [], {}, {}, [], {}));
   assert.equal(answer.intent, parity.expectedIntent, JSON.stringify(answer));
   for (const fragment of parity.expectedAnswerFragments) assert.ok(answer.content.includes(fragment), fragment);
   for (const fragment of parity.forbiddenAnswerFragments) assert.ok(!answer.content.includes(fragment), fragment);

@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 342
   workaround_items 38
   inferred_signatures 3
-  carried_items 2655
+  carried_items 2651
   translated_modules 114
   fully_translated_modules 1
   refused_modules 49
@@ -59,7 +59,7 @@ module js/agentic/crate/engine_stable_identifier.mjs translated 2 workaround 0 i
 module js/agentic/crate/es_tokenizer.mjs translated 6 workaround 0 inferred 0 carried 13
 module js/agentic/crate/event_log.mjs translated 3 workaround 0 inferred 0 carried 10
 module js/agentic/crate/execution_evidence.mjs translated 0 workaround 0 inferred 0 carried 11
-module js/agentic/crate/fact_derivation.mjs translated 3 workaround 0 inferred 0 carried 22
+module js/agentic/crate/fact_derivation.mjs translated 3 workaround 0 inferred 0 carried 19
 module js/agentic/crate/failure_reporting.mjs translated 0 workaround 0 inferred 0 carried 4
 module js/agentic/crate/formalization_concept_links.mjs translated 0 workaround 0 inferred 0 carried 10
 module js/agentic/crate/formalization_concepts.mjs translated 0 workaround 0 inferred 0 carried 21
@@ -151,7 +151,7 @@ module js/agentic/crate/skill_procedure.mjs translated 10 workaround 0 inferred 
 module js/agentic/crate/skill_procedure_artifact.mjs translated 1 workaround 1 inferred 0 carried 18
 module js/agentic/crate/solver_event_projection.mjs translated 8 workaround 0 inferred 0 carried 8
 module js/agentic/crate/solver_formalization.mjs translated 4 workaround 0 inferred 0 carried 21
-module js/agentic/crate/solver_handlers_benchmark_prompts.mjs translated 1 workaround 0 inferred 0 carried 11
+module js/agentic/crate/solver_handlers_benchmark_prompts.mjs translated 1 workaround 0 inferred 0 carried 10
 module js/agentic/crate/solver_handlers_task_decomposition.mjs translated 7 workaround 0 inferred 0 carried 13
 module js/agentic/crate/solver_handlers_web_search.mjs translated 1 workaround 0 inferred 0 carried 75
 module js/agentic/crate/solver_search.mjs translated 1 workaround 0 inferred 0 carried 5
@@ -189,10 +189,10 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 7
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
-refusal "import of names its module does not translate" 358
-refusal "JSDoc type {…}" 220
+refusal "import of names its module does not translate" 356
+refusal "JSDoc type {…}" 219
 refusal "import from '…'" 217
-refusal "null" 194
+refusal "null" 193
 refusal "arrow function" 144
 refusal "type: unknown name (a sibling item or an import)" 125
 refusal "function value …" 113

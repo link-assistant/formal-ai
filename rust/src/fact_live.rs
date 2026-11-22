@@ -64,7 +64,7 @@ fn json(bytes: &[u8]) -> Value {
     serde_json::from_slice(bytes).unwrap_or(Value::Null)
 }
 
-fn item_id(value: &str) -> bool {
+fn is_item_identifier(value: &str) -> bool {
     value.strip_prefix('Q').is_some_and(|digits| {
         !digits.is_empty() && digits.bytes().all(|byte| byte.is_ascii_digit())
     })
@@ -77,7 +77,10 @@ fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
         return Vec::new();
     };
     let matches = hits.iter().take(5).filter_map(|hit| {
-        let id = hit.get("id")?.as_str().filter(|id| item_id(id))?;
+        let identifier = hit
+            .get("id")?
+            .as_str()
+            .filter(|value| is_item_identifier(value))?;
         let candidates = [
             hit.get("label"),
             hit.pointer("/match/text"),
@@ -90,7 +93,7 @@ fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
             .chain(aliases.into_iter().flatten())
             .filter_map(Value::as_str)
             .any(|candidate| crate::engine::normalize_prompt(candidate) == query)
-            .then_some(id)
+            .then_some(identifier)
     });
     let mut unique = Vec::<String>::new();
     for id in matches {
@@ -99,6 +102,21 @@ fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
         }
     }
     unique
+}
+
+// In Russian a feminine singular noun at the head of a name can take an
+// accusative ending in the question. Search the original name first.
+fn nominative_subject(term: &str, language: &str) -> Option<String> {
+    if language != "ru" {
+        return None;
+    }
+    let head = term.split_whitespace().next()?;
+    let stem = head.strip_suffix('у').or_else(|| head.strip_suffix('ю'))?;
+    if stem.chars().count() < 2 || !stem.chars().all(|ch| matches!(ch, 'а'..='я' | 'ё')) {
+        return None;
+    }
+    let ending = if head.ends_with('у') { 'а' } else { 'я' };
+    Some(format!("{stem}{ending}{}", &term[head.len()..]))
 }
 
 fn entity<'a>(document: &'a Value, qid: &str) -> Option<&'a Value> {
@@ -140,7 +158,7 @@ fn claim_value(claim: &Value) -> Option<(Option<String>, String)> {
     if let Some(id) = value
         .get("id")
         .and_then(Value::as_str)
-        .filter(|id| item_id(id))
+        .filter(|value| is_item_identifier(value))
     {
         return Some((Some(id.to_owned()), String::new()));
     }
@@ -208,7 +226,11 @@ fn claim_reference(claim: &Value, property: &str) -> Option<String> {
                 .get("datavalue")?
                 .get("value")?
                 .as_str()
-                .filter(|value| value.starts_with("https://") || value.starts_with("http://"))
+                .filter(|value| {
+                    value.split_once("://").is_some_and(|(scheme, rest)| {
+                        matches!(scheme, "https" | "http") && !rest.is_empty()
+                    })
+                })
                 .map(str::to_owned)
         })
 }
@@ -228,17 +250,42 @@ pub fn resolve_fact_live<T: SourceTransport>(
     subject_term: &str,
     language: &str,
 ) -> Result<Option<LiveFactStatement>, FetchError> {
-    let property = crate::seed::lexicon()
-        .meaning(relation)
-        .map(|meaning| meaning.wikidata.clone())
-        .unwrap_or_default();
+    Ok(
+        resolve_facts_live(client, &[relation], subject_term, language)?
+            .into_iter()
+            .next(),
+    )
+}
+
+/// Resolve grounded properties of one named item with shared publisher reads.
+///
+/// # Errors
+/// Returns a mandatory candidate capture's `FetchError` on a transport failure.
+pub fn resolve_facts_live<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    relations: &[&str],
+    subject_term: &str,
+    language: &str,
+) -> Result<Vec<LiveFactStatement>, FetchError> {
+    let bindings: Vec<_> = relations
+        .iter()
+        .filter_map(|relation| {
+            let property = crate::seed::lexicon().meaning(relation)?.wikidata.as_str();
+            property
+                .strip_prefix('P')
+                .filter(|digits| {
+                    !digits.is_empty() && digits.bytes().all(|byte| byte.is_ascii_digit())
+                })
+                .map(|_| (*relation, property))
+        })
+        .collect();
     let search_template = registry_field("item_search_api");
     let Some(source) = crate::seed::source_record(WIKIDATA_SOURCE) else {
-        return Ok(None);
+        return Ok(Vec::new());
     };
     let subject_term = subject_term.trim();
-    if property.is_empty() || search_template.is_empty() || subject_term.is_empty() {
-        return Ok(None);
+    if bindings.is_empty() || search_template.is_empty() || subject_term.is_empty() {
+        return Ok(Vec::new());
     }
     let fallback = source.api_language.first().cloned().unwrap_or_default();
     let language = if language.is_empty() {
@@ -246,64 +293,87 @@ pub fn resolve_fact_live<T: SourceTransport>(
     } else {
         language
     };
-    let search_url = search_template
-        .replace(
-            concat!("{", "query}"),
-            &crate::seed::percent_encode(subject_term),
-        )
-        .replace(
-            concat!("{", "language}"),
-            &crate::seed::percent_encode(language),
-        );
-    let search = client.fetch(&search_url)?;
-    let candidates = matching_search_hits(search.bytes(), subject_term);
-    let mut captures = vec![search];
-    let mut statement = None;
+    let search = |term: &str| {
+        let url = search_template
+            .replace(concat!("{", "query}"), &crate::seed::percent_encode(term))
+            .replace(
+                concat!("{", "language}"),
+                &crate::seed::percent_encode(language),
+            );
+        client.fetch(&url)
+    };
+    let original = search(subject_term)?;
+    let mut candidates = matching_search_hits(original.bytes(), subject_term);
+    let mut captures = vec![original];
+    if candidates.is_empty()
+        && let Some(term) = nominative_subject(subject_term, language)
+    {
+        let capture = search(&term)?;
+        candidates = matching_search_hits(capture.bytes(), &term);
+        captures.push(capture);
+    }
+    let mut matching = None;
+    let reference_property = registry_field("reference_url_property");
     for qid in candidates {
         let capture = client.fetch(&source.api_url(&[("id", qid.as_str())]))?;
         let document = json(capture.bytes());
         let Some(subject) = entity(&document, &qid) else {
-            return Ok(None);
+            return Ok(Vec::new());
         };
-        if let Some(claim) = first_claim(subject, &property)
-            && let Some((value_qid, literal)) = claim_value(claim)
-        {
-            if statement.is_some() {
-                return Ok(None);
+        let claims = bindings
+            .iter()
+            .filter_map(|(relation, property)| {
+                let claim = first_claim(subject, property)?;
+                let (value_qid, literal) = claim_value(claim)?;
+                let reference_url = claim_reference(claim, &reference_property)
+                    .unwrap_or_else(|| capture.source_url().to_owned());
+                Some((*relation, *property, value_qid, literal, reference_url))
+            })
+            .collect::<Vec<_>>();
+        if !claims.is_empty() {
+            if matching.is_some() {
+                return Ok(Vec::new());
             }
             let subject_label =
                 label(subject, language, &fallback).unwrap_or_else(|| subject_term.to_owned());
-            let reference_url = claim_reference(claim, &registry_field("reference_url_property"))
-                .unwrap_or_else(|| capture.source_url().to_owned());
-            statement = Some((qid, subject_label, reference_url, value_qid, literal));
+            matching = Some((qid, subject_label, claims));
         }
         captures.push(capture);
     }
-    let Some((subject_qid, subject_label, reference_url, value_qid, literal)) = statement else {
-        return Ok(None);
+    let Some((subject_qid, subject_label, claims)) = matching else {
+        return Ok(Vec::new());
     };
-    let value = match &value_qid {
-        Some(qid) => {
-            let value_capture = client.fetch(&source.api_url(&[("id", qid.as_str())]))?;
-            let value_document = json(value_capture.bytes());
-            let value_label = entity(&value_document, qid)
-                .and_then(|value_entity| label(value_entity, language, &fallback));
-            captures.push(value_capture);
-            let Some(value_label) = value_label else {
-                return Ok(None);
-            };
-            value_label
-        }
-        None => literal,
-    };
-    Ok(Some(LiveFactStatement {
-        relation: relation.to_owned(),
-        property,
-        subject_qid,
-        subject_label,
-        value_qid,
-        value,
-        reference_url,
-        captures,
-    }))
+    let mut results = Vec::new();
+    for (relation, property, value_qid, literal, reference_url) in claims {
+        let mut evidence = captures.clone();
+        let value = match &value_qid {
+            Some(qid) => {
+                let value_capture = match client.fetch(&source.api_url(&[("id", qid.as_str())])) {
+                    Ok(capture) => capture,
+                    Err(error) if bindings.len() == 1 => return Err(error),
+                    Err(_) => continue,
+                };
+                let value_document = json(value_capture.bytes());
+                let Some(value_label) = entity(&value_document, qid)
+                    .and_then(|value_entity| label(value_entity, language, &fallback))
+                else {
+                    continue;
+                };
+                evidence.push(value_capture);
+                value_label
+            }
+            None => literal,
+        };
+        results.push(LiveFactStatement {
+            relation: relation.to_owned(),
+            property: property.to_owned(),
+            subject_qid: subject_qid.clone(),
+            subject_label: subject_label.clone(),
+            value_qid,
+            value,
+            reference_url,
+            captures: evidence,
+        });
+    }
+    Ok(results)
 }

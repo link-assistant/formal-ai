@@ -240,37 +240,6 @@ function factComparisonPlan(normalized) {
 }
 
 /**
- * The seeded facts of one subject, grouped by relation (first record wins).
- * @param {string} qid
- * @param {string} language
- * @returns {Map<string, {value: string, label: string, record: object}>}
- */
-function factRelationsFor(qid, language) {
-  const relations = new Map();
-  for (const record of Array.isArray(FACTS) ? FACTS : []) {
-    if (record.subjectQid !== qid || !record.relation || relations.has(record.relation)) continue;
-    const localized = localizedFactFor(record, language) || {};
-    relations.set(record.relation, {
-      value: localized.valueLabel || record.valueLabel || "",
-      label: localized.subjectLabel || record.subjectLabel || "",
-      record,
-    });
-  }
-  return relations;
-}
-
-/**
- * The display label of a resolved subject.
- * @param {Map<string, object>} facts
- * @param {{surface: string}} subject
- * @returns {string}
- */
-function factSubjectDisplay(facts, subject) {
-  const first = facts.values().next().value;
-  return (first && first.label) || subject.surface;
-}
-
-/**
  * "Compare X and Y" over two seeded subjects: aligned rows and differences.
  * @param {string} prompt
  * @param {string} normalized
@@ -282,11 +251,15 @@ function tryFactComparison(prompt, normalized) {
   const language = detectLanguage(prompt);
   const leftFacts = factRelationsFor(plan.left.qid, language);
   const rightFacts = factRelationsFor(plan.right.qid, language);
+  return renderFactComparison(language, plan, leftFacts, rightFacts, []);
+}
+
+function renderFactComparison(language, plan, leftFacts, rightFacts, sources) {
   if (leftFacts.size === 0 || rightFacts.size === 0) return null;
   const left = factSubjectDisplay(leftFacts, plan.left);
   const right = factSubjectDisplay(rightFacts, plan.right);
   const missing = factualQaRender("fact_comparison_missing_value", language, {});
-  const evidence = [`fact_comparison:left:${plan.left.qid}`, `fact_comparison:right:${plan.right.qid}`];
+  const evidence = [...sources, `fact_comparison:left:${plan.left.qid}`, `fact_comparison:right:${plan.right.qid}`];
   const rows = [];
   const differences = [];
   for (const relation of new Set([...leftFacts.keys(), ...rightFacts.keys()])) {
@@ -325,11 +298,14 @@ function tryFactComparisonGap(prompt, normalized) {
   if (!plan || (plan.left && plan.right) || (!plan.left && !plan.right)) return null;
   const subject = plan.left || plan.right;
   const missingNormalized = plan.left ? plan.sides.right : plan.sides.left;
+  const language = detectLanguage(prompt);
+  return renderFactComparisonGap(prompt, language, subject, missingNormalized, factRelationsFor(subject.qid, language), []);
+}
+
+function renderFactComparisonGap(prompt, language, subject, missingNormalized, facts, sources) {
   // Name the missing side as the user spelled it when the prompt carries it verbatim.
   const at = String(prompt).toLowerCase().indexOf(missingNormalized);
   const missingSide = at >= 0 ? String(prompt).slice(at, at + missingNormalized.length) : missingNormalized;
-  const language = detectLanguage(prompt);
-  const facts = factRelationsFor(subject.qid, language);
   if (facts.size === 0) return null;
   const known = factSubjectDisplay(facts, subject);
   const rows = [...facts.keys()].map((relation) => factualQaRender("fact_comparison_known_row", language, {
@@ -339,8 +315,13 @@ function tryFactComparisonGap(prompt, normalized) {
     intent: "fact_comparison_gap",
     content: factualQaRender("fact_comparison_gap", language, { known, missing: missingSide, rows: rows.join("\n") }),
     confidence: 0.6,
-    evidence: [`fact_comparison:known:${subject.qid}`, `fact_comparison:missing:${missingSide}`, `language:${language}`, "response:fact_comparison_gap"],
+    evidence: [...sources, `fact_comparison:known:${subject.qid}`, `fact_comparison:missing:${missingSide}`, `language:${language}`, "response:fact_comparison_gap"],
   };
+}
+
+function factComparisonSubjects(normalized) {
+  const sides = factComparisonSides(normalized);
+  return sides && sides.left !== sides.right && [sides.left, sides.right].every(factBoundedSubject) ? sides : null;
 }
 
 /**
@@ -442,6 +423,12 @@ function promptTextCovered(sentence, units) {
 function tryPromptTextQuestion(prompt, normalized) {
   const passage = promptTextPassage(prompt);
   if (!passage) return null;
+  const suppliedPage = pageSplitSuppliedPage(prompt);
+  const codeExampleQuery = findMeaning("code_example_decomposition_request");
+  if (suppliedPage && (
+    pageFormalizationRules().pageQueries.some(([, template]) => pageMatchTemplate(template, suppliedPage.query) !== null) ||
+    (codeExampleQuery && meaningEvidencedIn(codeExampleQuery, normalizePrompt(suppliedPage.query)))
+  )) return null;
   const lead = normalizePrompt(String(prompt).slice(0, passage.start));
   const question = String(prompt).slice(passage.end).replace(/^[\s.,;:!?。，；：！？)\]—-]+/u, "").trim();
   if (!question) return null;
@@ -583,7 +570,7 @@ function promptTextStatementAnswer(slots, quote, [question, units], language) {
 // interrogative openers and the function words are removed from the
 // relation's clause; what remains is the subject term), and the answer is the
 // seeded fact_live_answer template citing the claim's reference URL.
-const FACT_LIVE_MAX_SUBJECT_WORDS = 4;
+const FACT_LIVE_MAX_SUBJECT_WORDS = 12;
 let FACT_LIVE_PROPERTIES = null;
 
 /**
@@ -604,42 +591,47 @@ function factRelationProperty(slug) {
   return FACT_LIVE_PROPERTIES.get(slug) || "";
 }
 
-/**
- * The content words of `text` without `removed` surfaces and stop words, or
- * null when nothing (or a whole sentence) is left.
- * @param {string} text
- * @param {Array<string>} removed
- * @returns {string|null}
- */
-function factLiveContentWords(text, removed) {
-  let tokens = normalizePrompt(text).split(" ").filter(Boolean);
-  for (const surface of removed) {
-    const parts = surface.split(" ").filter(Boolean);
-    if (parts.length === 0) continue;
-    for (let index = 0; index + parts.length <= tokens.length; ) {
-      if (parts.every((part, offset) => tokens[index + offset] === part)) tokens.splice(index, parts.length);
-      else index += 1;
+function factTrimSubject(text, stops) {
+  let subject = text.trim();
+  for (;;) {
+    let rest;
+    for (const surface of stops) {
+      const cjk = containsCjk(surface);
+      if (subject === surface) return "";
+      if (subject.startsWith(surface) && (cjk || subject[surface.length] === " ")) {
+        rest = subject.slice(surface.length);
+        break;
+      }
+      if (subject.endsWith(surface) && (cjk || subject[subject.length - surface.length - 1] === " ")) {
+        rest = subject.slice(0, -surface.length);
+        break;
+      }
     }
+    if (rest === undefined) return subject;
+    subject = rest.trim();
   }
-  const stop = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD).concat(factualQaSurfaces(FACTUAL_QA_ROLE_INTERROGATIVE));
-  tokens = tokens.filter((token) => !stop.includes(token));
-  return tokens.length > 0 && tokens.length <= FACT_LIVE_MAX_SUBJECT_WORDS ? tokens.join(" ") : null;
 }
 
-/**
- * Formalize a fact question for the live path: the relation (whose
- * grounded-in must be a Wikidata property) and the subject term.
- * @param {string} prompt
- * @returns {{relation: string, subjectTerm: string}|null}
- */
+function factBoundedSubject(subject) {
+  return subject && subject.split(/\s+/u).length <= FACT_LIVE_MAX_SUBJECT_WORDS ? subject : null;
+}
+
+/** Formalize a fact question from its relation and one subject clause. */
 function factLiveQuestion(prompt) {
   const normalized = normalizePrompt(prompt);
-  if (!normalized || containsCjk(normalized)) return null;
-  const mentions = (text, meaning) => meaning.words.some((word) => surfacePresent(text, normalizePrompt(word)));
+  const mentions = (text, meaning) => meaning.words.some((word) => factualQaLocate(text, normalizePrompt(word)) >= 0);
   const relation = meaningsWithRole("fact_relation").find((meaning) => mentions(normalized, meaning));
-  if (!relation || !/^P\d+$/.test(factRelationProperty(relation.slug))) return null;
-  const clause = String(prompt).split(/[,;:()—!?，；：。？]/).find((part) => mentions(normalizePrompt(part), relation));
-  const subjectTerm = factLiveContentWords(clause === undefined ? prompt : clause, relation.words.map(normalizePrompt));
+  if (!relation || !/^P[0-9]+$/.test(factRelationProperty(relation.slug))) return null;
+  const clause = String(prompt).split(/[,;:()—!?，；：。？]/u).map(normalizePrompt).find((part) => mentions(part, relation)) ?? normalized;
+  const surface = relation.words.map(normalizePrompt).sort((left, right) => right.length - left.length)
+    .find((word) => factualQaLocate(clause, word) >= 0);
+  if (!surface) return null;
+  const at = factualQaLocate(clause, surface);
+  const stops = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD)
+    .concat(factualQaSurfaces(FACTUAL_QA_ROLE_INTERROGATIVE), factualQaSurfaces("fact_subject_connector"));
+  const left = factTrimSubject(clause.slice(0, at), stops);
+  const right = factTrimSubject(clause.slice(at + surface.length), stops);
+  const subjectTerm = !(left && right) && factBoundedSubject(left || right);
   return subjectTerm ? { relation: relation.slug, subjectTerm } : null;
 }
 
@@ -653,7 +645,7 @@ function factClaimReference(claim, property) {
   for (const reference of (claim && claim.references) || []) {
     const snak = ((reference.snaks || {})[property] || [])[0];
     const value = snak && snak.datavalue && snak.datavalue.value;
-    if (typeof value === "string" && value) return value;
+    if (typeof value === "string" && /^https?:\/\//i.test(value)) return value;
   }
   return "";
 }
@@ -704,7 +696,7 @@ function explanationConcept(prompt) {
   const normalized = normalizePrompt(prompt);
   if (!normalized || containsCjk(normalized)) return null;
   const cue = factualQaSurfaces(EXPLANATION_ROLE_CUE).find((surface) => factualQaLocate(normalized, surface) === 0);
-  return cue ? factLiveContentWords(normalized.slice(cue.length), []) : null;
+  return cue ? factBoundedSubject(normalized.slice(cue.length).trim()) : null;
 }
 
 /**

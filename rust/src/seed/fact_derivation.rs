@@ -1,19 +1,10 @@
 //! Fact records derived from committed Wikidata captures (issue #1172 R9).
 //!
-//! A record is a subject entity of `data/seed/fact-captures.lino` whose first
-//! claim's property grounds a `fact_relation` meaning that
-//! `data/seed/fact-realization.lino` realizes, and whose value item is captured
-//! too. The value is that claim's item; labels and sources come from the two
-//! captures; the sentence is the relation's template with each slot filled by
-//! the entity's preferred surface in the form the slot names (the English
-//! article, a Russian case). The records have the shape of the written ones,
-//! so every consumer of [`super::facts`] reads both alike. Mirrored by
-//! `js/worker/formal_ai_worker_fact_derivation.js` (browser worker) and
-//! `js/agentic/crate/fact_derivation.mjs` (agentic port).
+//! Derive each record from supplied subject and value captures, a property
+//! binding, and an explicit realization grammar. Used to replay historical
+//! capture fixtures without installing them.
+//!
 
-use std::sync::OnceLock;
-
-use super::embedded::{FACT_CAPTURES_LINO, FACT_REALIZATION_LINO};
 use super::facts::{FactRecord, LocalizedFact};
 use super::parser::{LinoNode, parse_lino, split_pipe_list};
 
@@ -499,15 +490,6 @@ fn is_acronym(word: &str) -> bool {
     letters.len() > 1 && letters.iter().all(|character| character.is_uppercase())
 }
 
-fn build_derived_facts() -> Vec<FactRecord> {
-    let lexicon = super::lexicon();
-    derive_facts_from_texts(FACT_CAPTURES_LINO, FACT_REALIZATION_LINO, |slug| {
-        lexicon
-            .meaning(slug)
-            .map_or_else(String::new, |meaning| meaning.wikidata.clone())
-    })
-}
-
 /// Derive ordered fact records from explicit raw texts and relation bindings.
 /// A resolver runs once per relation; its last nonempty property binding wins.
 #[must_use]
@@ -559,12 +541,4 @@ pub fn derive_facts_from_texts(
             Some(rules.record(relation, subject, value))
         })
         .collect()
-}
-
-/// The fact records the committed captures and the realization rules derive,
-/// in capture order. Parsed once per process.
-#[must_use]
-pub fn derived_facts() -> &'static [FactRecord] {
-    static RECORDS: OnceLock<Vec<FactRecord>> = OnceLock::new();
-    RECORDS.get_or_init(build_derived_facts).as_slice()
 }

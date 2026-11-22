@@ -243,9 +243,7 @@ pub fn try_fact_lookup(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if let Some(answer) = super::prompt_text_question::try_prompt_text_question(prompt, log)
-        .or_else(|| super::factual_qa::try_fact_comparison(prompt, log))
-    {
+    if let Some(answer) = super::prompt_text_question::try_prompt_text_question(prompt, log) {
         return Some(answer);
     }
     let (record, gate) = super::factual_qa::gated_fact_record(prompt, normalized)?;
@@ -263,9 +261,7 @@ pub fn try_fact_lookup(
         let parsed_relation = detect_relation(normalized).unwrap_or(record.relation.as_str());
         let parsed_subject =
             detect_subject_alias(record, normalized).unwrap_or(record.subject_label.as_str());
-        log.append("fact_query:request", prompt.to_owned());
-        log.append("fact_query:relation", parsed_relation.to_owned());
-        log.append("fact_query:subject", parsed_subject.to_owned());
+        super::fact_live_answer::record_fact_question(log, prompt, parsed_relation, parsed_subject);
         // Treat the seed entry as a pre-warmed cache hit, mirroring the JS
         // worker's `fact_query:cache:hit:seed` event.
         log.append("fact_query:cache:hit", "seed".to_owned());

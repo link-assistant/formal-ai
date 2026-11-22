@@ -731,33 +731,44 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
-  test('Russian capital-of-Russia prompt returns the seeded fact answer', async ({ page }) => {
+  async function mockWikidata(page, subject) {
+    const { wikidataFixture } = await import('../../web/support/fact-fixtures.mjs');
+    await page.route('https://www.wikidata.org/**', async (route) => {
+      const body = wikidataFixture(route.request().url(), subject);
+      await route.fulfill({
+        status: body ? 200 : 404,
+        headers: { 'access-control-allow-origin': '*' },
+        json: body,
+      });
+    });
+  }
+
+  test('Russian capital-of-Russia prompt answers from a Wikidata capture', async ({ page }) => {
+    await mockWikidata(page, 'Q159');
     const last = await sendPrompt(page, 'столица россии');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('Москва');
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
-  // Issue #127: the fact-query reasoning pipeline pre-warms the cache from
-  // `data/seed/facts.lino` records that carry a `relation` field. The seeded
-  // matrix covers Russia, Japan, France, Germany, China, India, USA, UK, and
-  // Brazil — every country resolves offline in every supported language.
+  // Issue #127: prompts in four languages resolve against explicit publisher fixtures.
   const FACT_QUERY_CASES = [
-    { prompt: 'What is the capital of France?', expected: 'Paris' },
-    { prompt: 'What is the capital of Germany?', expected: 'Berlin' },
-    { prompt: 'What is the capital of China?', expected: 'Beijing' },
-    { prompt: 'What is the capital of India?', expected: 'New Delhi' },
-    { prompt: 'What is the capital of the United States?', expected: 'Washington' },
-    { prompt: 'What is the capital of the UK?', expected: 'London' },
-    { prompt: 'What is the capital of Brazil?', expected: 'Bras' },
-    { prompt: 'Столица Германии', expected: 'Берлин' },
-    { prompt: 'Столица Франции', expected: 'Париж' },
-    { prompt: '中国的首都是什么?', expected: '北京' },
-    { prompt: 'भारत की राजधानी क्या है?', expected: 'दिल्ली' },
+    { subject: 'Q142', prompt: 'What is the capital of France?', expected: 'Paris' },
+    { subject: 'Q183', prompt: 'What is the capital of Germany?', expected: 'Berlin' },
+    { subject: 'Q148', prompt: 'What is the capital of China?', expected: 'Beijing' },
+    { subject: 'Q668', prompt: 'What is the capital of India?', expected: 'New Delhi' },
+    { subject: 'Q30', prompt: 'What is the capital of the United States?', expected: 'Washington' },
+    { subject: 'Q145', prompt: 'What is the capital of the UK?', expected: 'London' },
+    { subject: 'Q155', prompt: 'What is the capital of Brazil?', expected: 'Bras' },
+    { subject: 'Q183', prompt: 'Столица Германии', expected: 'Берлин' },
+    { subject: 'Q142', prompt: 'Столица Франции', expected: 'Париж' },
+    { subject: 'Q148', prompt: '中国的首都是什么?', expected: '北京' },
+    { subject: 'Q668', prompt: 'भारत की राजधानी क्या है?', expected: 'दिल्ली' },
   ];
 
-  for (const { prompt, expected } of FACT_QUERY_CASES) {
+  for (const { subject, prompt, expected } of FACT_QUERY_CASES) {
     test(`fact-query pipeline resolves: ${prompt}`, async ({ page }) => {
+      await mockWikidata(page, subject);
       const last = await sendPrompt(page, prompt);
       await expect(last).toHaveClass(/assistant/);
       await expect(last).toContainText(expected);

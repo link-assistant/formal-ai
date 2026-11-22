@@ -56,6 +56,17 @@ pub struct LiveFactQuestion {
     pub subject_term: String,
 }
 
+pub(super) fn record_fact_question(
+    log: &mut EventLog,
+    prompt: &str,
+    relation: &str,
+    subject: &str,
+) {
+    log.append("fact_query:request", prompt);
+    log.append("fact_query:relation", relation);
+    log.append("fact_query:subject", subject);
+}
+
 /// Whether `id` is a Wikidata property id (`P` followed by digits).
 fn is_property_id(id: &str) -> bool {
     id.strip_prefix('P')
@@ -125,6 +136,7 @@ pub fn try_fact_live_answer<T: SourceTransport>(
 ) -> Option<SymbolicAnswer> {
     let question = live_fact_question(prompt)?;
     let language = detect_language(prompt).slug();
+    record_fact_question(log, prompt, &question.relation, &question.subject_term);
     log.append("fact_live:relation", question.relation.as_str());
     log.append("fact_live:subject", question.subject_term.as_str());
     let statement =
@@ -269,7 +281,9 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
     if let Some(answer) = super::try_fact_lookup(prompt, normalized, log) {
         return Some(answer);
     }
-    if let Some(answer) = try_fact_live_answer(prompt, log, client) {
+    if let Some(answer) = super::factual_qa::try_live_fact_comparison(prompt, log, client)
+        .or_else(|| try_fact_live_answer(prompt, log, client))
+    {
         return Some(answer);
     }
     explanation_fallback(prompt, log, client)
@@ -298,7 +312,7 @@ fn explanation_fallback<T: SourceTransport>(
 /// The `fact_lookup` row over the process capture cache.
 ///
 /// Transport is enabled only when the runtime opted into live fetches
-/// (`offline` false); offline, committed captures still replay and a miss
+/// (`offline` false); offline, verified runtime captures still replay and a miss
 /// falls through.
 pub fn try_fact_lookup_with_offline(
     prompt: &str,
@@ -306,7 +320,10 @@ pub fn try_fact_lookup_with_offline(
     log: &mut EventLog,
     offline: bool,
 ) -> Option<SymbolicAnswer> {
-    let cache_dir = std::env::var(LIVE_FACT_CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
-    let client = CachedSourceClient::new(&cache_dir, CurlSourceTransport).with_online(!offline);
-    try_fact_lookup_with_client(prompt, normalized, log, &client)
+    try_fact_lookup_with_client(prompt, normalized, log, &capture_client(offline))
+}
+
+pub(super) fn capture_client(offline: bool) -> CachedSourceClient<CurlSourceTransport> {
+    let directory = std::env::var(LIVE_FACT_CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
+    CachedSourceClient::new(&directory, CurlSourceTransport).with_online(!offline)
 }

@@ -53,7 +53,12 @@ worker.fetch = (url, init) => {
   if (!text.includes("wikidata.org")) return seedFetch(url, init);
   let body = null;
   if (text.includes("wbsearchentities") && text.includes("search=Australia")) body = { search: [{ id: "Q408", label: "Australia" }] };
-  else if (text.includes("wbsearchentities") && /search=(War|%D0%92%D0%BE%D0%B9|%E0%A4%AF|%E6%88%98)/.test(text)) body = { search: [{ id: "Q161531", label: "War and Peace" }] };
+  else if (text.includes("wbsearchentities") &&
+    Object.values(WAR_AND_PEACE.entities.Q161531.labels)
+      .some(({ value }) => value === new URL(text).searchParams.get("search"))) {
+    const label = new URL(text).searchParams.get("search");
+    body = { search: [{ id: "Q161531", label }] };
+  }
   else if (text.includes("wbsearchentities")) body = { search: [] };
   else if (text.includes("ids=Q408")) body = AUSTRALIA;
   else if (text.includes("ids=Q3114")) body = CANBERRA;
@@ -84,7 +89,10 @@ test("the question is formalized from seed cues, as the native twin", async () =
     subjectTerm: "new zealand",
   });
   assert.equal(await call(`factLiveQuestion(${literal("What is the speed of light?")})`), null);
-  assert.equal(await call(`factLiveQuestion(${literal("澳大利亚的首都是什么？")})`), null);
+  assert.deepEqual(await call(`factLiveQuestion(${literal("澳大利亚的首都是什么？")})`), {
+    relation: "capital",
+    subjectTerm: "澳大利亚",
+  });
 });
 
 test("R3: a live capital answer cites the claim's reference URL", async () => {

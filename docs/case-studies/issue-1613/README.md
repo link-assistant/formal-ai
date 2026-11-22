@@ -275,6 +275,48 @@ status and stderr when a request fails.
 [Fifth pipeline log](evidence/workflows/pipeline-44955707612.log.gz) ·
 [Fifth Layered CI log](evidence/workflows/layered-44955707231.log.gz)
 
+## Publisher facts and offline replays
+
+The browser previously loaded the checked-in entity responses into its
+runtime cache at startup. The native seed loader turned the same responses
+into installed answers. A country question in an otherwise fresh runtime
+could therefore succeed without acquiring publisher evidence. Retrieval now
+binds the requested subject and property, checks exact labels and aliases,
+then verifies the selected claim and value. The browser and native tests
+attach the historic captures explicitly. An empty cache with networking
+disabled gives no publisher fact.
+[Subject and source replays](evidence/verification/publisher-fact-subject-gate.log) ·
+[Language and cache matrix](evidence/verification/publisher-fact-matrix.log)
+
+A live search for Portugal returned a country, a surname, a national football
+team, a constituency, and a language. The country was the only matching
+candidate with a capital statement. It carried a preferred claim for Lisbon
+and a normal claim for Coimbra with an end date in 1255. This is a case where
+checking the exact subject and respecting the publisher's rank both matter.
+The archived responses include the search, all five candidates, and Lisbon's
+value entity. The retained HTTP metadata omits session cookies.
+[Captured requests and digests](evidence/facts/) ·
+[Wikidata statement ranking](https://www.wikidata.org/wiki/Help:Ranking)
+
+The neighboring authorship replay exposed an inflected Russian book title.
+Wikidata search returned no hits for the accusative form. The nominative
+form returned several items with the same title, and the book was the only
+one of those items with an author claim. Both solvers try the original form
+first and can search a feminine head noun in its nominative form as a
+fallback. The selected publisher item still has to carry the requested
+claim.
+[Russian publisher captures](evidence/facts/) ·
+[Browser replay](evidence/verification/publisher-fact-live-parity.log)
+
+The pipeline at `727ecf47f` stopped during native compilation because the
+scoped how-to resolver still used a cache directory local to its caller.
+The resolver now receives that directory explicitly. The Layered workflow on
+the same commit reported a stale calculation signature list and two outdated
+assertions for the procedure census. The new return path has a recorded
+browser probe and the inventory now includes it.
+[Pipeline log](evidence/workflows/pipeline-44962926030.log.gz) ·
+[Layered CI log](evidence/workflows/layered-44962925794.log.gz)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,

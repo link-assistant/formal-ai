@@ -19,6 +19,21 @@ use crate::intent_formalization::{IntentKind, formalize_intent};
 use crate::language::detect as detect_language;
 use crate::solver::{BlueprintComposition, ExecutionSurface, SolverConfig};
 
+/// A supplied passage answers its question without independent sub-solves.
+pub fn meta_procedure_options(
+    answer: &crate::engine::SymbolicAnswer,
+) -> crate::meta_executor::RunOptions {
+    let mut options = crate::meta_executor::RunOptions::default();
+    if answer
+        .evidence_links
+        .iter()
+        .any(|link| link == "prompt_text:network:none")
+    {
+        options.bounds.depth = Some(0);
+    }
+    options
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecomposedSubImpulse {
     pub id: String,

@@ -69,11 +69,8 @@ pub const DRAFT_STRATEGIES_LINO: &str =
     include_str!("../../embedded/data/seed/draft-strategies.lino");
 pub const ENTITY_NAMES_LINO: &str = include_str!("../../embedded/data/seed/entity-names.lino");
 pub const ENVIRONMENTS_LINO: &str = include_str!("../../embedded/data/seed/environments.lino");
-pub const FACT_CAPTURES_LINO: &str = include_str!("../../embedded/data/seed/fact-captures.lino");
 pub const FACT_CHECK_SOURCES_LINO: &str =
     include_str!("../../embedded/data/seed/fact-check-sources.lino");
-pub const FACT_REALIZATION_LINO: &str =
-    include_str!("../../embedded/data/seed/fact-realization.lino");
 pub const FACTS_LINO: &str = include_str!("../../embedded/data/seed/facts.lino");
 pub const FEATURE_CAPABILITIES_LINO: &str =
     include_str!("../../embedded/data/seed/feature-capabilities.lino");
@@ -507,9 +504,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/draft-strategies.lino", DRAFT_STRATEGIES_LINO),
         ("data/seed/entity-names.lino", ENTITY_NAMES_LINO),
         ("data/seed/environments.lino", ENVIRONMENTS_LINO),
-        ("data/seed/fact-captures.lino", FACT_CAPTURES_LINO),
         ("data/seed/fact-check-sources.lino", FACT_CHECK_SOURCES_LINO),
-        ("data/seed/fact-realization.lino", FACT_REALIZATION_LINO),
         ("data/seed/facts.lino", FACTS_LINO),
         ("data/seed/feature-capabilities.lino", FEATURE_CAPABILITIES_LINO),
         ("data/seed/formal-language-projections.lino", FORMAL_LANGUAGE_PROJECTIONS_LINO),

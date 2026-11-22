@@ -641,51 +641,56 @@ fn records_information_prompts_route_to_web_search() {
 // Promoted project lookup tests live in
 // `project_lookups.rs` so this file stays under the 1000-line cap.
 
-// Fact-lookup matrix: 5-10 input variations per fact across every supported
-// language. Each prompt must route to `fact_lookup`, surface a Wikidata
-// Q-id evidence link, and return the localized summary from the seed.
-const ENGLISH_FACTUAL_PROMPTS: &[&str] = &[
-    "Who wrote The Lord of the Rings?",
-    "Who is the author of The Lord of the Rings?",
-    "When was the Eiffel Tower built?",
-    "What year did construction of the Eiffel Tower start?",
-    "What is the capital of Japan?",
-    "Which city is Japan's capital?",
-    "What is the capital of Russia?",
-    "Which city is Russia's capital?",
-    "Who painted the Mona Lisa?",
-    "Who is the painter of the Mona Lisa?",
-    "What is the speed of light?",
-    "How fast is the speed of light?",
+// Fact-lookup matrix across each supported language. Publisher cases pass
+// explicit test captures. Historical unbound records use the normal solver.
+const ENGLISH_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
+    ("Who wrote The Lord of the Rings?", Some("Q15228")),
+    (
+        "Who is the author of The Lord of the Rings?",
+        Some("Q15228"),
+    ),
+    ("When was the Eiffel Tower built?", None),
+    (
+        "What year did construction of the Eiffel Tower start?",
+        None,
+    ),
+    ("What is the capital of Japan?", Some("Q17")),
+    ("Which city is Japan's capital?", Some("Q17")),
+    ("What is the capital of Russia?", Some("Q159")),
+    ("Which city is Russia's capital?", Some("Q159")),
+    ("Who painted the Mona Lisa?", None),
+    ("Who is the painter of the Mona Lisa?", None),
+    ("What is the speed of light?", None),
+    ("How fast is the speed of light?", None),
 ];
 
-const RUSSIAN_FACTUAL_PROMPTS: &[&str] = &[
-    "Кто написал Властелин колец?",
-    "Кто автор Властелина колец?",
-    "Когда построили Эйфелеву башню?",
-    "Какова столица Японии?",
-    "Какова столица России?",
-    "столица россии",
-    "Кто написал Мону Лизу?",
-    "Чему равна скорость света?",
+const RUSSIAN_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
+    ("Кто написал Властелин колец?", Some("Q15228")),
+    ("Кто автор Властелина колец?", Some("Q15228")),
+    ("Когда построили Эйфелеву башню?", None),
+    ("Какова столица Японии?", Some("Q17")),
+    ("Какова столица России?", Some("Q159")),
+    ("столица россии", Some("Q159")),
+    ("Кто написал Мону Лизу?", None),
+    ("Чему равна скорость света?", None),
 ];
 
-const HINDI_FACTUAL_PROMPTS: &[&str] = &[
-    "द लॉर्ड ऑफ द रिंग्स किसने लिखी?",
-    "एफिल टॉवर कब बनी?",
-    "जापान की राजधानी क्या है?",
-    "रूस की राजधानी क्या है?",
-    "मोना लिसा किसने बनाई?",
-    "प्रकाश की गति कितनी है?",
+const HINDI_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
+    ("द लॉर्ड ऑफ द रिंग्स किसने लिखी?", Some("Q15228")),
+    ("एफिल टॉवर कब बनी?", None),
+    ("जापान की राजधानी क्या है?", Some("Q17")),
+    ("रूस की राजधानी क्या है?", Some("Q159")),
+    ("मोना लिसा किसने बनाई?", None),
+    ("प्रकाश की गति कितनी है?", None),
 ];
 
-const CHINESE_FACTUAL_PROMPTS: &[&str] = &[
-    "魔戒是谁写的?",
-    "埃菲尔铁塔建于何时?",
-    "日本的首都是什么?",
-    "俄罗斯的首都是什么?",
-    "蒙娜丽莎是谁画的?",
-    "光速是多少?",
+const CHINESE_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
+    ("魔戒是谁写的?", Some("Q15228")),
+    ("埃菲尔铁塔建于何时?", None),
+    ("日本的首都是什么?", Some("Q17")),
+    ("俄罗斯的首都是什么?", Some("Q159")),
+    ("蒙娜丽莎是谁画的?", None),
+    ("光速是多少?", None),
 ];
 
 #[test]
@@ -696,11 +701,17 @@ fn factual_qna_matrix_records_wikidata_anchor() {
         HINDI_FACTUAL_PROMPTS,
         CHINESE_FACTUAL_PROMPTS,
     ] {
-        for prompt in prompts {
-            let response = answer(prompt);
+        for (prompt, subject) in prompts {
+            let (response, intent) = match subject {
+                Some(subject) => (
+                    super::prompt_variations_facts::fact_answer(prompt, subject),
+                    "fact_query",
+                ),
+                None => (answer(prompt), "fact_lookup"),
+            };
             assert_eq!(
-                response.intent, "fact_lookup",
-                "prompt {prompt:?} should route to fact_lookup, got {}",
+                response.intent, intent,
+                "prompt {prompt:?} should route to {intent}, got {}",
                 response.intent,
             );
             assert!(
@@ -723,38 +734,16 @@ fn factual_qna_matrix_records_per_language_evidence() {
         (HINDI_FACTUAL_PROMPTS, "language:hi"),
         (CHINESE_FACTUAL_PROMPTS, "language:zh"),
     ] {
-        assert_language_for_each(prompts, tag);
+        for (prompt, subject) in prompts {
+            let response = subject.map_or_else(
+                || answer(prompt),
+                |qid| super::prompt_variations_facts::fact_answer(prompt, qid),
+            );
+            assert!(
+                response.evidence_links.iter().any(|link| link == tag),
+                "{prompt}: {:?}",
+                response.evidence_links
+            );
+        }
     }
-}
-
-#[test]
-fn russian_capital_russia_prompt_returns_moscow() {
-    let response = answer("столица россии");
-    assert_eq!(
-        response.intent, "fact_lookup",
-        "reported prompt should route to fact_lookup, got {} with answer {}",
-        response.intent, response.answer,
-    );
-    assert_eq!(response.answer, "Столица России — Москва.");
-    assert!(
-        response.answer.contains("Москва"),
-        "reported prompt should answer in Russian with Moscow, got {}",
-        response.answer,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "wikidata:Q159"),
-        "reported prompt should record the Russia Wikidata anchor, got links: {:?}",
-        response.evidence_links,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "wikidata:Q649"),
-        "reported prompt should record the Moscow Wikidata anchor, got links: {:?}",
-        response.evidence_links,
-    );
 }
