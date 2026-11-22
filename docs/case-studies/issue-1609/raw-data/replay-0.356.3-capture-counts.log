@@ -1,0 +1,9 @@
+gemini
+    harness_message_count 9
+    server_message_count 16
+qwen
+    harness_message_count 8
+    server_message_count 45
+codex
+    harness_message_count 7
+    server_message_count 7

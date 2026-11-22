@@ -12,6 +12,13 @@ import YAML from 'yaml';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
 const workflow = name => YAML.parse(read('.github/workflows/' + name));
+test('Codex report fixture from main run 44953310700 disables background marketplace activity', () => {
+  const script = read('experiments/issue_1609_client_reports/verify-release.sh');
+  const report = script.match(/^\s*codex\)\n([\s\S]*?)^\s*;;/mu)?.[1];
+  assert.match(report, /CODEX_EXTRA_ARGS='--disable plugins'/u);
+  assert.match(report, /SCENARIO=report-publication/u);
+});
+
 function evaluate(expression, event, ref, variables = {}, {results = {}, outputs: changed = {}, releaseMode = 'checks', isCancelled = false} = {}) {
   const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
@@ -95,7 +102,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const checkout = check.steps.find(step => step.uses === 'actions/checkout@v7').with;
   assert.deepEqual(checkout['sparse-checkout'].trim().split('\n'),
     ['/*', '!/dev/log/', '!/experiments/*', '/experiments/dynamic-meta/',
-      '/experiments/issue_859_codex_e2e/', '/experiments/js_dogfood/']);
+      '/experiments/issue_859_codex_e2e/', '/experiments/issue_1609_client_reports/', '/experiments/js_dogfood/']);
   assert.deepEqual(check.steps.find(step => step.uses === 'oven-sh/setup-bun@v2').with,
     {'bun-version-file': '.bun-version', 'no-cache': true});
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
