@@ -156,6 +156,14 @@ executable, with the JavaScript-only worker assertion skipped by design.
 [Cargo test profile](../../../rust/Cargo.toml),
 [native verification workflow](../../../.github/workflows/native-type-check.yml).
 
+The next pull request run's dependency audit flagged `url` 2.5.8. The
+application and the standalone parser experiment now resolve the patched
+2.5.9 release and its required `form_urlencoded` 1.2.3 dependency.
+A local replay with the CI audit tool reported the advisory on the previous
+lockfile. The repository audit then passed on the updated lockfiles.
+[Hosted audit](https://github.com/link-assistant/formal-ai/actions/runs/45010582620/job/137171807186),
+[RustSec advisory](https://github.com/rustsec/advisory-db/blob/main/crates/url/RUSTSEC-2026-0592.md).
+
 ## Self-use attribution
 
 A read-only attempt asked the Agent CLI against the local JavaScript Formal AI
