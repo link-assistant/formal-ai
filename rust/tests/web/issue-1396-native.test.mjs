@@ -62,7 +62,7 @@ async function startNativeRecurrenceReplay(t) {
   });
   t.after(() => {
     const stages = run.stderr.split("\n")
-      .filter(line => /publisher_recurrence_|general_synthesis_/u.test(line));
+      .filter(line => /field stage \(string (?:publisher_recurrence_|general_synthesis_|synthesis_)/u.test(line));
     t.diagnostic(stages.length ? stages.join("\n") : "No native synthesis stages were logged");
   });
   await run.ready();
@@ -299,6 +299,67 @@ test("native HTTP documentation answers require a matching publisher capture", N
   }
   const file = await ask("Explain the file Series.diff in this workspace.");
   assert.match(file, /`read_file` capability/u);
+});
+
+test("native HTTP release timelines require publisher captures for registered and new film series", NATIVE_MULTI_TURN_CASE, async (t) => {
+  const { cache, url } = await startNativeProcedureReplay(t, { lifetime: NATIVE_MULTI_TURN_CASE.timeout });
+  const fixture = name => readFileSync(new URL(`../fixtures/release-timeline/${name}.json`, import.meta.url), "utf8");
+  const seed = readFileSync(new URL("../../../data/seed/release-timelines.lino", import.meta.url), "utf8");
+  const query = seed.match(/^  query "([^"]+)"$/mu)[1];
+  function storeTimeline(name, subject, language) {
+    const endpoint = new URL("https://query-main.wikidata.org/sparql");
+    endpoint.searchParams.set("query", query.replaceAll("{subject}", subject).replace("{language}", language));
+    endpoint.searchParams.set("format", "json");
+    storeCapture(cache, endpoint.href, fixture(name));
+  }
+  async function ask(prompt, history = []) {
+    const response = await fetch(`${url}/v1/chat/completions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      signal: t.signal,
+      body: JSON.stringify({
+        model: "formal-ai", stream: false, messages: [...history, { role: "user", content: prompt }],
+      }),
+    });
+    assert.ok(response.ok, await response.clone().text());
+    return (await response.json()).choices[0].message.content;
+  }
+  const spiderMan = "Перечисли фильмы про Человека-паука в порядке выхода";
+  const harryPotter = "List Harry Potter films in release order";
+  assert.doesNotMatch(await ask(spiderMan), /Тоби Магуайр|Человек-паук \(2002\)/u);
+  storeTimeline("spider-man.ru", "Q2307877", "ru");
+  storeTimeline("harry-potter.en", "Q216930", "en");
+  storeCapture(cache,
+    "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&type=item&search=harry%20potter%20film%20series&language=en&uselang=en&limit=5",
+    fixture("harry-potter-search.en"));
+  const history = [
+    { role: "user", content: "На php не получится написать?" },
+    { role: "assistant", content: "Вот минимальная программа Hello World на языке PHP." },
+  ];
+  const registered = await ask(spiderMan, history);
+  assert.match(registered, /Человек-паук \(2002\).*Человек-паук 2 \(2004\)/u);
+  assert.match(registered, /Wikidata Query Service/u);
+  const discovered = await ask(harryPotter);
+  assert.match(discovered, /Philosopher's Stone \(2001\).*Deathly Hallows – Part 2 \(2011\)/u);
+  assert.match(discovered, /Wikidata Query Service/u);
+});
+
+test("native HTTP reads registered airline baggage policy from the checked section", NATIVE_CASE, async (t) => {
+  const { cache, url } = await startNativeProcedureReplay(t);
+  const policy = "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html";
+  const excerpt = "Infants are entitled to one collapsible stroller/carrycot/infant car seat.";
+  storeCapture(cache, policy, `<h1>Checked Baggage</h1><h2>Domestic flights</h2><ul><li>${excerpt}</li></ul>`);
+  const response = await fetch(`${url}/v1/chat/completions`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    signal: t.signal,
+    body: JSON.stringify({ model: "formal-ai", stream: false, messages: [{
+      role: "user", content: "Does Air India allow a free stroller for an infant?",
+    }] }),
+  });
+  assert.ok(response.ok, await response.clone().text());
+  const answer = (await response.json()).choices[0].message.content;
+  assert.ok(answer.includes(excerpt) && answer.includes(policy), answer);
 });
 
 test("native Agent CLI requires a retrieved capture for a known benchmark issue", NATIVE_CASE, async (t) => {

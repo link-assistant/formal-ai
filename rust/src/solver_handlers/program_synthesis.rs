@@ -5,6 +5,7 @@ use std::fmt::Write as _;
 use crate::coding::synthesis_runtime::{
     attach_execution_recipe, discover_and_compose, discover_recurrence_and_compose,
     live_fetch_enabled, procedure_ledger, render_answer, research_trail_line, response_language,
+    trace_synthesis_stage,
 };
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, recognise};
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
@@ -66,17 +67,6 @@ fn publisher_recurrence_specification(prompt: &str, route: Option<&str>) -> Opti
     }
     recognise(prompt)
         .filter(|spec| spec.artifact_shape == ArtifactShape::Function && spec.language == "python")
-}
-
-fn trace_synthesis_stage(stage: &'static str) {
-    if crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
-        crate::dialog_log::structured_log::event(
-            "trace",
-            module_path!(),
-            || stage.to_owned(),
-            || serde_json::json!({"stage":stage}),
-        );
-    }
 }
 
 fn synthesize(

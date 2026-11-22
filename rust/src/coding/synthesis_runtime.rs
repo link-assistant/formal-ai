@@ -262,8 +262,11 @@ pub fn discover_and_compose(
     live: bool,
 ) -> (ConceptMap, composition::CompositionOutcome) {
     let mut catalog = discovery_catalog(spec, log, live);
+    trace_synthesis_stage("synthesis_catalog_ready");
     let mut concepts = discover_over_registry(spec, &catalog, log, live);
-    let mut outcome = composition::compose(spec, &concepts);
+    trace_synthesis_stage("synthesis_concepts_ready");
+    let mut outcome = composition::compose_for_verification(spec, &concepts);
+    trace_synthesis_stage("synthesis_initial_composition_finished");
     if outcome.selected.is_none() {
         let cache_dir = source_cache_root();
         let client = CachedSourceClient::new(&cache_dir, CurlSourceTransport).with_online(live);
@@ -314,6 +317,7 @@ pub fn discover_and_compose(
         }
     }
     if outcome.selected.is_none() {
+        trace_synthesis_stage("synthesis_sequence_discovery_started");
         let (extended, programs) = extend_with_sequence_programs(catalog, spec, log, live);
         catalog = extended;
         if !programs.is_empty() {
@@ -325,10 +329,21 @@ pub fn discover_and_compose(
         }
         if outcome.selected.is_none() && !catalog.source_candidates.is_empty() {
             concepts = discover_over_registry(spec, &catalog, log, live);
-            outcome = composition::compose(spec, &concepts);
+            outcome = composition::compose_for_verification(spec, &concepts);
         }
     }
     (concepts, outcome)
+}
+
+pub(crate) fn trace_synthesis_stage(stage: &'static str) {
+    if crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
+        crate::dialog_log::structured_log::event(
+            "trace",
+            module_path!(),
+            || stage.to_owned(),
+            || serde_json::json!({"stage":stage}),
+        );
+    }
 }
 
 /// Try publisher recurrences before a catalog template claims a callable request.

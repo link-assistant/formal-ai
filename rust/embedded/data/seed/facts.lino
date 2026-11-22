@@ -5,7 +5,7 @@ fact_spider_man_films_release_order
   subject_aliases ("spider man films" "spider man movies" "spider man film series" "spider-man films" "spider-man movies" "films about spider man" "movies about spider man" "человек паук фильмы" "человек-паук фильмы" "человека паука фильмы" "человека-паука фильмы" "фильмы про человека паука" "фильмы про человека-паука" "фильмы о человеке пауке" "фильмы о человеке-пауке" "фильмы человека паука" "фильмы человека-паука" "кино про человека паука" "кино про человека-паука")
   question_keywords ("release order" "order of release" "released order" "theatrical release order" "screen release order" "list" "перечисли" "перечислить" "назови" "порядке выхода" "порядок выхода" "порядку выхода" "в порядке выхода" "по порядку выхода" "выхода на экран")
   release_timeline spider_man_title_role_films
-  source "https://query.wikidata.org/sparql"
+  source "https://query-main.wikidata.org/sparql"
   source_kind wikidata
 fact_air_india_infant_stroller_allowance
   intent fact_lookup

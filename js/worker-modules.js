@@ -155,6 +155,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_recurrence.js",
   "worker/formal_ai_worker_recurrence_discovery.js",
   "worker/formal_ai_worker_recurrence_objects.js",
+  "worker/formal_ai_worker_release_timeline.js",
   "worker/formal_ai_worker_requirement_contradiction.js",
   "worker/formal_ai_worker_requirement_extraction.js",
   "worker/formal_ai_worker_search_queries_and_how_to.js",

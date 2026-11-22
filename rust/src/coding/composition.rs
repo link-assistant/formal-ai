@@ -124,6 +124,27 @@ pub fn compose(spec: &CodingTaskSpec, concepts: &ConceptMap) -> CompositionOutco
     compose_with_ir(spec, concepts, &catalog, programs)
 }
 
+/// Searches typed callable candidates once the runtime can verify them. Source
+/// acquisition can add examples and retry this same composition step.
+pub(super) fn compose_for_verification(
+    spec: &CodingTaskSpec,
+    concepts: &ConceptMap,
+) -> CompositionOutcome {
+    if spec.language == "python"
+        && spec.artifact_shape == ArtifactShape::Function
+        && spec.examples.is_empty()
+        && !concepts.needs.iter().any(|need| {
+            need.candidates
+                .iter()
+                .any(|candidate| !candidate.source_tests.is_empty())
+        })
+        && derived_examples(spec, concepts).is_empty()
+    {
+        return compose_with_ir(spec, concepts, &FragmentCatalog::bootstrap(), []);
+    }
+    compose(spec, concepts)
+}
+
 /// Compose ordinary retrieved parts together with already-elaborated IR.
 ///
 /// Procedure retrieval calls this entry point so its ordered steps enter the

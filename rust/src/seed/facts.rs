@@ -68,8 +68,8 @@ pub struct FactRecord {
     /// Terms the extracted statement must all contain.
     pub publisher_terms: Vec<String>,
     /// Slug of a `data/seed/release-timelines.lino` timeline that answers this
-    /// fact. When set, the answer is *computed* from the checked-in snapshot at
-    /// question time instead of being read from `summary`, so a list of dated
+    /// fact. The answer is computed from a verified publisher capture at
+    /// question time, so a list of dated
     /// works stays ordered and keeps announced titles apart (issue #892).
     pub release_timeline: String,
     pub localized: Vec<LocalizedFact>,

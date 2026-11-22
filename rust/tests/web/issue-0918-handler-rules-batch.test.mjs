@@ -7,6 +7,7 @@
 // asserts against the native engine.
 
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
@@ -267,15 +268,97 @@ test("a roleplay frame renders the seeded persona and topic", async () => {
 const SPIDER_EN = "Released title-role Spider-Man films in release order: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023); 11. Spider-Man: Brand New Day (2026). Announced but not yet released: Spider-Man: Beyond the Spider-Verse (2027-06-18). Source: Wikidata Query Service, snapshot taken 2026-08-04.";
 const SPIDER_RU = "Вышедшие фильмы, где Человек-паук — главный герой в порядке выхода: 1. Человек-паук (2002); 2. Человек-паук 2 (2004); 3. Человек-паук 3: Враг в отражении (2007); 4. Новый Человек-паук (2012); 5. Новый Человек-паук. Высокое напряжение (2014); 6. Человек-паук: Возвращение домой (2017); 7. Человек-паук: Через вселенные (2018); 8. Человек-паук: Вдали от дома (2019); 9. Человек-паук: Нет пути домой (2021); 10. Человек-паук: Паутина вселенных (2023); 11. Человек-паук: Новый день (2026). Анонсированы, но ещё не вышли: Человек-паук: За пределами вселенных (2027-06-18). Источник: Wikidata Query Service, снимок данных от 2026-08-04.";
 
-test("a release-timeline fact renders the snapshot against the day it is asked", async () => {
+const timelineFixture = name =>
+  readFileSync(new URL(`../fixtures/release-timeline/${name}`, import.meta.url), "utf8");
+
+test("the historical timeline renders the test snapshot in both languages", async () => {
   await ready;
-  assert.equal(plain(evaluate(worker, 'renderReleaseTimeline("spider_man_title_role_films", "en", "2026-08-04")')).text, SPIDER_EN);
-  assert.equal(plain(evaluate(worker, 'renderReleaseTimeline("spider_man_title_role_films", "ru", "2026-08-04")')).text, SPIDER_RU);
-  const response = await solve("List Spider-Man films in release order.");
-  assert.equal(response.intent, "fact_lookup");
-  const today = new Date().toISOString().slice(0, 10);
-  assert.equal(response.content,
-    plain(evaluate(worker, `renderReleaseTimeline("spider_man_title_role_films", "en", "${today}")`)).text);
+  const fixture = timelineFixture("spider-man-replay.lino");
+  const render = language => evaluate(worker, `(() => {
+    const registry = parseReleaseTimelineRegistry(${JSON.stringify(fixture)});
+    return renderReleaseTimeline(registry.timelines[0], ${JSON.stringify(language)}, "2026-08-04", registry);
+  })()`);
+  assert.equal(render("en").text, SPIDER_EN);
+  assert.equal(render("ru").text, SPIDER_RU);
+  assert.equal(evaluate(worker, "releaseTimelineRegistry().timelines[0].entries.length"), 0);
+});
+
+async function timelineWorker({ reject = false, ambiguous = false } = {}) {
+  const isolated = createWorkerContext();
+  await evaluate(isolated, "loadSeed()");
+  const loadSeedResource = isolated.fetch;
+  const requests = [];
+  isolated.fetch = async (url, init) => {
+    const source = new URL(String(url), "https://local.test");
+    let body;
+    if (source.hostname === "query-main.wikidata.org") {
+      const query = source.searchParams.get("query");
+      requests.push(source.href);
+      const subject = query?.match(/BIND\(wd:(Q[0-9]+)/u)?.[1];
+      const language = query?.match(/LANG\(\?localized\) = '([a-z]+)'/u)?.[1];
+      const series = { Q2307877: "spider-man", Q216930: "harry-potter" }[subject];
+      assert.ok(series && language, query);
+      body = timelineFixture(`${series}.${language}.json`);
+      if (reject) body = body.replaceAll(subject, "Q42");
+    } else if (source.hostname === "www.wikidata.org" &&
+        source.searchParams.get("search") === "harry potter film series") {
+      requests.push(source.href);
+      body = timelineFixture("harry-potter-search.en.json");
+      if (ambiguous) {
+        const parsed = JSON.parse(body);
+        parsed.search.push({ ...parsed.search[0], id: "Q42" });
+        body = JSON.stringify(parsed);
+      }
+    }
+    if (body) return { ok: true, status: 200, url: source.href, text: async () => body };
+    if (source.hostname !== "local.test") return { ok: false, status: 404 };
+    return loadSeedResource(url, init);
+  };
+  return { requests, solve: (prompt, options = {}) => isolated.solve(prompt, [], options) };
+}
+
+test("release requests acquire verified series data and reuse the runtime cache offline", async () => {
+  const { requests, solve } = await timelineWorker();
+  const spiderMan = "List Spider-Man films in release order.";
+  const harryPotter = "List Harry Potter films in release order.";
+  const cold = await solve(spiderMan, { offline: true });
+  assert.doesNotMatch(cold.content, /Spider-Man \(2002\)/u);
+  const denied = await solve(harryPotter, { externalServiceWikidata: false });
+  assert.doesNotMatch(denied.content, /Philosopher's Stone \(2001\)/u);
+  assert.equal(requests.length, 0);
+
+  const registered = await solve(spiderMan);
+  assert.equal(registered.intent, "fact_lookup");
+  assert.match(registered.content, /1\. Spider-Man \(2002\); 2\. Spider-Man 2 \(2004\)/u);
+  assert.ok(registered.evidence.includes("wikidata:Q2307877"));
+  assert.ok(registered.evidence.some(link => link.startsWith("release_timeline:sha256:")));
+  assert.ok(registered.evidence.includes(`source:${requests[0]}`));
+
+  const russian = await solve("Перечисли фильмы про человека-паука в порядке выхода на экран?");
+  assert.equal(russian.intent, "fact_lookup");
+  assert.match(russian.content, /1\. Человек-паук \(2002\); 2\. Человек-паук 2 \(2004\)/u);
+
+  const heldOut = await solve(harryPotter);
+  assert.equal(heldOut.intent, "fact_lookup");
+  assert.match(heldOut.content, /Released Harry Potter films in release order/u);
+  assert.match(heldOut.content, /1\. Harry Potter and the Philosopher's Stone \(2001\)/u);
+  assert.match(heldOut.content, /8\. Harry Potter and the Deathly Hallows – Part 2 \(2011\)/u);
+  assert.ok(heldOut.evidence.includes("wikidata:Q216930"));
+  assert.ok(heldOut.evidence.some(link => link.startsWith(`source:http:${requests[2]}`)));
+  assert.equal((await solve(spiderMan, { offline: true })).content, registered.content);
+  assert.equal((await solve(harryPotter, { offline: true })).content, heldOut.content);
+  assert.equal(requests.length, 4);
+});
+
+test("release requests reject mismatched rows and ambiguous series matches", async () => {
+  const mismatched = await timelineWorker({ reject: true });
+  const spiderMan = await mismatched.solve("List Spider-Man films in release order.");
+  assert.doesNotMatch(spiderMan.content, /Spider-Man \(2002\)/u);
+  assert.equal(mismatched.requests.length, 1);
+  const multiple = await timelineWorker({ ambiguous: true });
+  const harryPotter = await multiple.solve("List Harry Potter films in release order.");
+  assert.doesNotMatch(harryPotter.content, /Philosopher's Stone \(2001\)/u);
+  assert.equal(multiple.requests.length, 1);
 });
 
 test("the concept-query reader takes its vocabulary from the seed cue records", async () => {

@@ -317,6 +317,14 @@ impl<T: SourceTransport> CachedSourceClient<T> {
     }
 
     pub fn fetch(&self, url: &str) -> Result<SourceCapture, FetchError> {
+        self.fetch_with_ttl_seconds(url, self.ttl_seconds)
+    }
+
+    pub(crate) fn fetch_with_ttl_seconds(
+        &self,
+        url: &str,
+        ttl_seconds: u64,
+    ) -> Result<SourceCapture, FetchError> {
         validate_url(url)?;
         let online = self.online && !crate::solver_config::ephemeral_enabled();
         let (cache_root, metadata_path) = self.paths(url);
@@ -324,7 +332,7 @@ impl<T: SourceTransport> CachedSourceClient<T> {
             Ok(Some(mut capture)) => {
                 let fetched_at = capture.fetched_at.parse::<u64>().unwrap_or(0);
                 let age = (self.now)().saturating_sub(fetched_at);
-                if !online || age <= self.ttl_seconds {
+                if !online || age <= ttl_seconds {
                     capture.cached = true;
                     return Ok(capture);
                 }

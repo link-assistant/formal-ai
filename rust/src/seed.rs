@@ -144,8 +144,8 @@ pub use proof_library::{
 };
 pub use proof_programs::{ProofLanguageTemplates, ProofProgramTemplates, proof_program_templates};
 pub use release_timelines::{
-    ReleaseTimeline, ReleaseTimelineEntry, ReleaseTimelinePhrasing, ReleaseTimelines,
-    parse_release_timelines, release_timelines,
+    OpenReleaseSeries, ReleaseSeriesRequest, ReleaseTimeline, ReleaseTimelineEntry,
+    ReleaseTimelinePhrasing, ReleaseTimelines, parse_release_timelines, release_timelines,
 };
 // `roles` re-exports its own submodules with globs; mirror that here so the
 // per-role constant list does not have to be restated (and keeps this file

@@ -612,7 +612,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, factQuery, formalizationContext);
   }
-  const legacyFact = await tryPublisherPolicy(prompt, normalized, preferences, events) || tryFactLookup(prompt, normalized);
+  const legacyFact = await tryReleaseTimeline(prompt, normalized, preferences, events) || await tryPublisherPolicy(prompt, normalized, preferences, events) || tryFactLookup(prompt, normalized);
   if (legacyFact) {
     events.push(`handler:${legacyFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactLookup" });

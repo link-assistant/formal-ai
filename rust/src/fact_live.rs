@@ -248,7 +248,12 @@ fn is_item_identifier(value: &str) -> bool {
     })
 }
 
-fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
+pub(crate) struct ItemSearchMatch {
+    pub identifier: String,
+    pub label: String,
+}
+
+fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<ItemSearchMatch> {
     let query = subject_search_key(term);
     let document = json(bytes);
     let Some(hits) = document.get("search").and_then(Value::as_array) else {
@@ -271,15 +276,57 @@ fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
             .chain(aliases.into_iter().flatten())
             .filter_map(Value::as_str)
             .any(|candidate| subject_search_key(candidate) == query)
-            .then_some(identifier)
+            .then(|| ItemSearchMatch {
+                identifier: identifier.to_owned(),
+                label: hit
+                    .get("label")
+                    .and_then(Value::as_str)
+                    .unwrap_or(term)
+                    .to_owned(),
+            })
     });
-    let mut unique = Vec::<String>::new();
-    for id in matches {
-        if !unique.iter().any(|candidate| candidate == id) {
-            unique.push(id.to_owned());
+    let mut unique = Vec::<ItemSearchMatch>::new();
+    for matched in matches {
+        if !unique
+            .iter()
+            .any(|candidate| candidate.identifier == matched.identifier)
+        {
+            unique.push(matched);
         }
     }
     unique
+}
+
+pub(crate) fn search_item_candidates<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    subject_term: &str,
+    language: &str,
+) -> Result<(Vec<ItemSearchMatch>, Vec<SourceCapture>), FetchError> {
+    let search_template = registry_field("item_search_api");
+    if search_template.is_empty() || subject_term.is_empty() {
+        return Ok((Vec::new(), Vec::new()));
+    }
+    let search = |term: &str| {
+        let url = search_template
+            .replace(concat!("{", "query}"), &crate::seed::percent_encode(term))
+            .replace(
+                concat!("{", "language}"),
+                &crate::seed::percent_encode(language),
+            );
+        client.fetch(&url)
+    };
+    let original = search(subject_term)?;
+    let mut candidates = matching_search_hits(original.bytes(), subject_term);
+    let mut captures = vec![original];
+    for term in alternative_subject_spellings(subject_term, language) {
+        if !candidates.is_empty() {
+            break;
+        }
+        let capture = search(&term)?;
+        candidates = matching_search_hits(capture.bytes(), &term);
+        captures.push(capture);
+    }
+    Ok((candidates, captures))
 }
 
 fn subject_search_key(term: &str) -> String {
@@ -548,12 +595,11 @@ pub fn resolve_facts_live<T: SourceTransport>(
             is_property_id(property).then_some((*relation, property, year_only))
         })
         .collect();
-    let search_template = registry_field("item_search_api");
     let Some(source) = crate::seed::source_record(WIKIDATA_SOURCE) else {
         return Ok(Vec::new());
     };
     let subject_term = subject_term.trim();
-    if bindings.is_empty() || search_template.is_empty() || subject_term.is_empty() {
+    if bindings.is_empty() || subject_term.is_empty() {
         return Ok(Vec::new());
     }
     let fallback = source.api_language.first().cloned().unwrap_or_default();
@@ -562,29 +608,13 @@ pub fn resolve_facts_live<T: SourceTransport>(
     } else {
         language
     };
-    let search = |term: &str| {
-        let url = search_template
-            .replace(concat!("{", "query}"), &crate::seed::percent_encode(term))
-            .replace(
-                concat!("{", "language}"),
-                &crate::seed::percent_encode(language),
-            );
-        client.fetch(&url)
-    };
-    let original = search(subject_term)?;
-    let mut candidates = matching_search_hits(original.bytes(), subject_term);
-    let mut captures = vec![original];
-    for term in alternative_subject_spellings(subject_term, language) {
-        if !candidates.is_empty() {
-            break;
-        }
-        let capture = search(&term)?;
-        candidates = matching_search_hits(capture.bytes(), &term);
-        captures.push(capture);
-    }
+    let (candidates, mut captures) = search_item_candidates(client, subject_term, language)?;
     let mut matching = None;
     let reference_property = registry_field("reference_url_property");
-    for qid in candidates {
+    for ItemSearchMatch {
+        identifier: qid, ..
+    } in candidates
+    {
         let capture = client.fetch(&source.api_url(&[("id", qid.as_str())]))?;
         let document = json(capture.bytes());
         let Some(subject) = entity(&document, &qid) else {

@@ -225,7 +225,7 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
         return Some(answer);
     }
     if let Some(answer) = super::project_origin::try_project_origin(prompt, log, client)
-        .or_else(|| publisher_policy_answer(prompt, normalized, log, client))
+        .or_else(|| publisher_fact_answer(prompt, normalized, log, client))
         .or_else(|| super::factual_qa::try_live_fact_comparison(prompt, log, client))
         .or_else(|| try_fact_live_answer(prompt, log, client))
     {
@@ -234,13 +234,51 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
     explanation_fallback(prompt, log, client)
 }
 
-fn publisher_policy_answer<T: SourceTransport>(
+fn publisher_fact_answer<T: SourceTransport>(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
-    let (record, gate) = super::factual_qa::gated_fact_record(prompt, normalized)?;
+    let language = detect_language(prompt).slug();
+    let today = crate::external_benchmarks::today_utc();
+    let rendered =
+        if let Some((record, gate)) = super::factual_qa::gated_fact_record(prompt, normalized) {
+            if record.release_timeline.is_empty() {
+                return publisher_policy_answer(prompt, record, gate, log, client);
+            }
+            let rendered = crate::release_timeline::try_release_timeline(
+                &record.release_timeline,
+                language,
+                &today,
+                log,
+                client,
+            )?;
+            record_publisher_fact(record, gate, log);
+            rendered
+        } else {
+            crate::release_timeline::try_open_release_timeline(
+                normalized, language, &today, log, client,
+            )?
+        };
+    log.append("fact_lookup:request", prompt);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "fact_lookup",
+        "response:fact_lookup",
+        &rendered.text,
+        0.9,
+    ))
+}
+
+fn publisher_policy_answer<T: SourceTransport>(
+    prompt: &str,
+    record: &seed::FactRecord,
+    gate: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
     if record.publisher_heading.is_empty() || record.source_kind != "official-docs" {
         return None;
     }
@@ -273,11 +311,7 @@ fn publisher_policy_answer<T: SourceTransport>(
     }
     capture.record(log);
     log.append("source", source);
-    log.append("fact_lookup:hit", record.slug.clone());
-    log.append("fact_lookup:subject_gate", gate);
-    for identifier in &record.wikidata {
-        log.append("wikidata", identifier.as_str());
-    }
+    record_publisher_fact(record, gate, log);
     Some(finalize_simple(
         prompt,
         log,
@@ -286,6 +320,14 @@ fn publisher_policy_answer<T: SourceTransport>(
         &body,
         0.85,
     ))
+}
+
+fn record_publisher_fact(record: &seed::FactRecord, gate: &str, log: &mut EventLog) {
+    log.append("fact_lookup:hit", record.slug.clone());
+    log.append("fact_lookup:subject_gate", gate);
+    for identifier in &record.wikidata {
+        log.append("wikidata", identifier.as_str());
+    }
 }
 
 /// The R8 step of the row.

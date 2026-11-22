@@ -78,7 +78,7 @@ debug_stage_sources
   event "fact_lookup:hit"
     step lookup_fact
     rust "rust/src/solver_handlers/benchmark_prompts.rs" "try_fact_lookup"
-    rust "rust/src/solver_handlers/fact_live_answer.rs" "publisher_policy_answer"
+    rust "rust/src/solver_handlers/fact_live_answer.rs" "record_publisher_fact"
   event "fact_query:relation"
     step lookup_fact
     rust "rust/src/fact_live.rs" "record_fact_question"
@@ -156,7 +156,7 @@ debug_stage_sources
     js "js/worker/formal_ai_worker_solver_events.js" "solverWriteProgramEvents"
   event "release_timeline:hit"
     step lookup_fact
-    rust "rust/src/solver_handlers/benchmark_prompts.rs" "render_release_timeline"
+    rust "rust/src/release_timeline.rs" "fetch_timeline"
   event "response"
     step deformalize
     rust "rust/src/cnl_output/controlled.rs" "controlled_solve"

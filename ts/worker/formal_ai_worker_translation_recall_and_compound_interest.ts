@@ -463,16 +463,11 @@ function localizedFactFor(record, language) {
 // Issue #1172: a record answers only through the subject gate (gatedFactRecord, formal_ai_worker_factual_qa.js): its subject Q-id must equal the formalized question's; word-boundary alias matching is the last-resort hint for Q-id-less records.
 function tryFactLookup(prompt, normalized) {
   const gated = gatedFactRecord(normalized, prompt);
-  if (!gated || gated.record.publisherHeading) return null;
+  if (!gated || gated.record.publisherHeading || gated.record.releaseTimeline) return null;
   const record = gated.record;
   const language = detectLanguage(prompt);
   const localized = localizedFactFor(record, language);
-  // A record backed by a release timeline has no frozen answer: the snapshot
-  // is rendered against today (Rust `render_release_timeline`, issue #892).
-  const timeline = record.releaseTimeline
-    ? renderReleaseTimeline(record.releaseTimeline, language, new Date().toISOString().slice(0, 10))
-    : null;
-  const summary = (timeline && timeline.text) || (localized && localized.summary) || record.summary;
+  const summary = (localized && localized.summary) || record.summary;
   const source = (localized && localized.source) || record.source;
   const evidence = [
     `fact_lookup:hit:${record.slug}`,
@@ -481,7 +476,6 @@ function tryFactLookup(prompt, normalized) {
     ...((record.wikidata || []).map((qid) => `wikidata:${qid}`)),
   ];
   if (source) evidence.push(`source:${humanizeUrl(source)}`);
-  if (timeline) evidence.push(`release_timeline:${record.releaseTimeline}`);
   return {
     intent: "fact_lookup",
     content: summary,

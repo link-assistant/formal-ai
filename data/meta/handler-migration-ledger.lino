@@ -193,7 +193,7 @@ handler-migration-ledger
     status migrated
     data "data/seed/facts.lino|data/seed/release-timelines.lino|data/seed/meanings-facts.lino"
     primitive "rust/src/solver_handlers/factual_qa.rs"
-    justification "issue #918 (R914-6): the row is a dispatcher over the promoted factual interpreters (prompt-text question, fact comparison, the subject-gated record of factual_qa.rs) and the generic release-timeline renderer; the records, their localized summaries and the timeline phrasing are seed data and the dispatcher names no word. The browser twin already read the same records but rendered a release-timeline record as an empty answer; it now has the renderer (renderReleaseTimeline in js/worker/formal_ai_worker_factual_qa.js) over the same seed, registered for the web. Pinned in both runtimes, and natively by rust/tests/unit/specification/release_order_snapshot.rs and the issue 1172 suites."
+    justification "Issue #918 (R914-6): the row dispatches prompt-text questions, fact comparison, subject-gated facts and release timelines. For issue #1613, the native and worker timeline resolvers share the registry of query scope, request frames and localized wording. Film rows come from the Wikidata Query Service through the source capture client. Tests explicitly replay the historical snapshot and publisher replies for registered and previously unknown film series."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler coreference
     status migrated
