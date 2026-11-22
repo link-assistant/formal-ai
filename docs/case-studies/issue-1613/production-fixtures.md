@@ -215,6 +215,13 @@ full change remains unverified.
 [Tool and digest trace](evidence/formal-development/browser-cache-exclusion/server-memory.lino.gz) ·
 [Regression results](evidence/verification/round27-browser-exclusion.log)
 
+The strict contribution checker credits the browser distribution commit.
+The published promotion-fixture commit used a directory of compressed
+evidence and omitted the model trailer. A follow-up commit retracts that
+metric claim while preserving its recorded session and independent replay.
+[Browser model and session](evidence/formal-development/browser-cache-exclusion/session.txt) ·
+[Strict contribution check](evidence/verification/round27-contribution-verified.log)
+
 Hosted head `5237db3db` reported three actionable failures. Native type
 checking found a caller of the removed `pick_topic` method. Both runtimes now
 use the summary subject extractor when checking the claim operand. Layered

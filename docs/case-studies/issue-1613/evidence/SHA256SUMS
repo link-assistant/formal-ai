@@ -78,6 +78,7 @@ c77c9b1b9e120df178c016592b64688e213a68d7852de0fb0559df01bdbef29f  ./formal-devel
 3a964be81a2f5bf1de299dc0c4bc07906bf1004a4709fcdee5d5574a0fb881c5  ./formal-development/browser-cache-exclusion/outcome.txt
 ce631e2fa2f2da346c456fa2118503fc692ca47b25d251882af9976811785a18  ./formal-development/browser-cache-exclusion/request.txt
 f36edfe57c5377bfa24f50c911879a7119bdbc2644b93c86d0152ab032d19911  ./formal-development/browser-cache-exclusion/server-memory.lino.gz
+48e1573a729ee08a0eeec695d94e721feb70b885bac955f5a23be254696c360f  ./formal-development/browser-cache-exclusion/session.txt
 a4cf49ef28cb83551fb68152c5a4520087945c9095f7df5b629d432e26639e6a  ./formal-development/browser-cache-exclusion/source.txt
 8056838d30429d7dff5aab40c0cbae02afaa75c7016b6cc9cd586563d31bea17  ./formal-development/browser-fetch-authorship/agent-version.txt
 140c24c9359aa7be1d879c146e8816048bef54b51a58d07e34c8affb4cf419ca  ./formal-development/browser-fetch-authorship/agent.log.gz
@@ -362,6 +363,7 @@ aac970fdd99deb2831f60e97fc1108022bcada7e96e0cf03df6207411bd1fdab  ./verification
 55326b66e85739debb7d55095e17ad4fe5d9d7ed33f08aa989390e2debf71e37  ./verification/round27-build-policy-merged-test.log
 79f45ff061dabffe8f06d4049fb0970db0013dca3ecab72dbf6e250aa038ce65  ./verification/round27-cargo-audit.log
 efcbefffa83fff75a7a996a081073995de8ba49fabfe5b82c6cfddb42b3b0b6f  ./verification/round27-container-merged-test.log
+50d47a71d351dc5895da8407d97d0e12b23070bd4250d2c76a92574d577ee58c  ./verification/round27-contribution-verified.log
 753e21db48d4869a02db3ee38fe03e0408f75e74816496795301f5db9cb806d4  ./verification/round27-coreference-baseline.log.gz
 b0da09c6916578d1c373e89690337b28d797838df57c04f0ee30a4d34542d808  ./verification/round27-coreference-final.log
 0331ce8c83746aeb8a9749ec3ca6a78953ce2445e7e6895f540f6cb2c9491641  ./verification/round27-governed-merge-delta.json
