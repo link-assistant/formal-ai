@@ -187,6 +187,7 @@ fn numbered(items: &[String], count: usize) -> String {
 pub fn fact_store_resolves(prompt: &str) -> bool {
     let normalized = crate::engine::normalize_prompt(prompt);
     super::factual_qa::gated_fact_record(prompt, &normalized).is_some()
+        || super::project_origin::names_project_origin(prompt)
 }
 
 /// Detect which knowledge-base relation a prompt asks about.

@@ -224,7 +224,8 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
     if let Some(answer) = super::try_fact_lookup(prompt, normalized, log) {
         return Some(answer);
     }
-    if let Some(answer) = super::factual_qa::try_live_fact_comparison(prompt, log, client)
+    if let Some(answer) = super::project_origin::try_project_origin(prompt, log, client)
+        .or_else(|| super::factual_qa::try_live_fact_comparison(prompt, log, client))
         .or_else(|| try_fact_live_answer(prompt, log, client))
     {
         return Some(answer);

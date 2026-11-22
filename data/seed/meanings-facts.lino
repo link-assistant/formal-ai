@@ -138,7 +138,7 @@ meanings
     defined-by knowledge_relation
     role fact_relation
     lexeme en inventor "who created" "who made" "who invented" "created by"
-    lexeme ru изобретатель "кто создал" "кто изобрёл"
+    lexeme ru изобретатель "кто создал" "кто изобрёл" "создал"
     lexeme hi आविष्कारक "किसने बनाया" "किसने आविष्कार किया"
     lexeme zh 发明者 谁创建了 谁发明了 谁创造了 谁创建 谁发明 谁创造
     lexeme es inventor "quién creó" "quién inventó" inventora

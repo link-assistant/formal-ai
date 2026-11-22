@@ -53,6 +53,8 @@ project_link_assistant_formal_ai
   name formal-ai
   display_name formal-ai
   url "https://github.com/link-assistant/formal-ai"
+  assistant-project true
+  origin-declaration "https://github.com/link-assistant/formal-ai/issues/157#issuecomment-4526577668"
   language Rust
   category symbolic-ai
   aliases ("formal-ai" "formal ai" "the formal ai")

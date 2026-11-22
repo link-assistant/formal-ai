@@ -840,6 +840,8 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         name: findChildValue(item, "name"),
         displayName: findChildValue(item, "display_name"),
         url: findChildValue(item, "url"),
+        assistantProject: findChildValue(item, "assistant-project") === "true",
+        originDeclaration: findChildValue(item, "origin-declaration"),
         language: findChildValue(item, "language"),
         category: findChildValue(item, "category"),
         aliases: splitList(findChildValue(item, "aliases")).map(normalizeProjectAlias),

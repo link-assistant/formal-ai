@@ -146,6 +146,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   // A supplied passage owns its question before independent-question splitting.
   const passageAnswer = tryPromptTextQuestion(prompt, normalized);
   if (passageAnswer) return finalizeInlineHandler(events, steps, toolCalls, passageAnswer, "tryPromptTextQuestion", formalizationContext);
+  const passageSummary = trySummarizationText(prompt);
+  if (passageSummary) return finalizeInlineHandler(events, steps, toolCalls, passageSummary, "trySummarizationText", formalizationContext);
 
   const compound = await FormalAiSeed.solveIndependentQuestions(prompt, history, preferences, userContext, memory, options, solve);
   if (compound) return finalize(["composition:compound_response"], [], compound.toolCalls, compound, formalizationContext);
@@ -548,6 +550,12 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   // Issue #1085: an opinion opener ("what do you think about …") is the
   // opinion_question (and clarification) row natively, which identity must not
   // claim; the rows answer from the synchronous table below, as Rust dispatches.
+  const projectOrigin = await tryProjectOrigin(prompt, preferences, events);
+  if (projectOrigin) {
+    events.push(`handler:${projectOrigin.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProjectOrigin" });
+    return finalize(events, steps, toolCalls, projectOrigin, formalizationContext);
+  }
   if (isIdentityPrompt(normalized, prompt) && !tryOpinionQuestion(prompt, normalized) && !tryClarification(prompt, normalized)) {
     events.push("rule:identity");
     steps.push({ step: "match_rule", detail: "identity" });

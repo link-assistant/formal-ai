@@ -20,7 +20,7 @@
 //! JavaScript root's `js/agentic/crate/dependency_summarization.mjs`.
 
 use super::finalize_simple;
-use super::text_rewrite::free_text_payload;
+use super::text_rewrite::{command_head, free_text_payload};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::summarization::dependency::summarize_free_text;
@@ -35,13 +35,11 @@ const ROLE_TEXT_SUMMARIZATION_ACTION: &str = "text_summarization_action";
 /// Returns `None` when there is no payload or no shorter summary.
 pub fn handle_summarization_request(
     prompt: &str,
-    normalized: &str,
+    _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    // The role is read on the punctuation-folded prompt, as the browser twin
-    // reads it, so a colon glued to the verb ("Summarize: …") does not hide it
-    // (issue #1175 p275).
-    let folded = crate::engine::normalize_prompt(normalized);
+    // Words from the supplied passage cannot introduce a new request.
+    let folded = crate::engine::normalize_prompt(command_head(prompt));
     if !crate::seed::lexicon().mentions_role(ROLE_TEXT_SUMMARIZATION_ACTION, &folded) {
         return None;
     }

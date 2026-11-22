@@ -28,27 +28,3 @@ fact_air_india_infant_stroller_allowance
     summary "可以。Air India 允许每名婴儿免费携带一件可完全折叠的婴儿推车、手提睡篮或婴儿汽车座椅，且不计入托运行李限额。婴儿推车不能带上客舱。"
     source "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html"
     source_kind official-docs
-fact_formal_ai_creator
-  intent fact_lookup
-  category identity
-  subject_aliases ("formal-ai" "formal ai" "formalai" "you" "yourself" "ты" "тебя" "тебе" "вы" "вас" "себя" "तुम" "तुम्हें" "आप" "आपको" "खुद" "你" "您" "自己")
-  question_keywords ("who created" "who made" "created you" "made you" "creator" "кто создал" "кто тебя создал" "создал" "создатель" "किसने बनाया" "किसने बनाय" "बनाया" "निर्माता" "谁创建" "谁创造" "创建了你" "创造了你" "创建者" "创造者")
-  summary "Formal AI was created by github.com/konard using github.com/link-assistant/hive-mind."
-  source "https://github.com/link-assistant/formal-ai"
-  source_kind github
-  localized en
-    summary "Formal AI was created by github.com/konard using github.com/link-assistant/hive-mind."
-    source "https://github.com/link-assistant/formal-ai"
-    source_kind github
-  localized ru
-    summary "Formal AI был создан пользователем github.com/konard с использованием github.com/link-assistant/hive-mind."
-    source "https://github.com/link-assistant/formal-ai"
-    source_kind github
-  localized hi
-    summary "Formal AI को github.com/konard ने github.com/link-assistant/hive-mind का उपयोग करके बनाया था।"
-    source "https://github.com/link-assistant/formal-ai"
-    source_kind github
-  localized zh
-    summary "Formal AI 由 github.com/konard 使用 github.com/link-assistant/hive-mind 创建。"
-    source "https://github.com/link-assistant/formal-ai"
-    source_kind github

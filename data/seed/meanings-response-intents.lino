@@ -1478,3 +1478,19 @@ meanings
     unit "not applicable"
     example "45 месяцев; 3 года; 1 month"
     grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
+  project-origin-author
+    defined-by inventor
+    role localized_response_template
+    precondition "a verified publisher declaration identifies a project creator"
+    effect "state the creator"
+    unit "not applicable"
+    example "a project creator named by their publisher account"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  project-origin-author-and-tool
+    defined-by inventor
+    role localized_response_template
+    precondition "a verified publisher declaration identifies a project creator and the tool used"
+    effect "state the creator and any documented tool repository"
+    unit "not applicable"
+    example "a project creator and an identified tool repository"
+    grounding "data/seed/multilingual-responses-entities.lino"

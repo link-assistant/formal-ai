@@ -42,6 +42,7 @@ mod procedure_rules;
 mod product_search;
 mod program_blueprint;
 mod program_synthesis;
+mod project_origin;
 pub(crate) mod prompt_data;
 mod prompt_text_question;
 mod regex_synthesis;

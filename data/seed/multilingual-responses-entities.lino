@@ -519,3 +519,43 @@ multilingual_responses
     intent explanation_research_row
     language es
     text "- {statement} (fuente: {url}, sha256 {sha256})"
+  response response-project-origin-author-en
+    intent project-origin-author
+    language en
+    text "{subject} was created by {author}."
+  response response-project-origin-author-ru
+    intent project-origin-author
+    language ru
+    text "{subject} был создан пользователем {author}."
+  response response-project-origin-author-hi
+    intent project-origin-author
+    language hi
+    text "{subject} को {author} ने बनाया था।"
+  response response-project-origin-author-zh
+    intent project-origin-author
+    language zh
+    text "{subject} 由 {author} 创建。"
+  response response-project-origin-author-es
+    intent project-origin-author
+    language es
+    text "{author} creó {subject}."
+  response response-project-origin-author-and-tool-en
+    intent project-origin-author-and-tool
+    language en
+    text "{subject} was created by {author} using {tool}."
+  response response-project-origin-author-and-tool-ru
+    intent project-origin-author-and-tool
+    language ru
+    text "{subject} был создан пользователем {author} с использованием {tool}."
+  response response-project-origin-author-and-tool-hi
+    intent project-origin-author-and-tool
+    language hi
+    text "{subject} को {author} ने {tool} का उपयोग करके बनाया था।"
+  response response-project-origin-author-and-tool-zh
+    intent project-origin-author-and-tool
+    language zh
+    text "{subject} 由 {author} 使用 {tool} 创建。"
+  response response-project-origin-author-and-tool-es
+    intent project-origin-author-and-tool
+    language es
+    text "{author} creó {subject} con {tool}."

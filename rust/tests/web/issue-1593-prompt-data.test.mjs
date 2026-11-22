@@ -36,6 +36,10 @@ const expected = {
     ru: [null, 'Подскажите, пожалуйста, сколько лет вы работаете в продажах?', 'https://ru.wiktionary.org/wiki/работать', 'https://ru.wiktionary.org/wiki/пожалуйста'],
   },
 };
+const decisionSummary = {
+  en: ['I have decided to decline: the commute takes an hour and a half and the salary is lower than in my current job.'],
+  ru: ['Я подумал и решил отказаться: дорога до офиса занимает полтора часа, а зарплата ниже, чем на текущем месте.'],
+};
 const cannedSearch = /No captured provider response|no source[- ]grounded (?:statement|claim)|no captured source|ни одного подтвержд[её]нного источником|не получено ни одного|web_search/i;
 const otherLanguages = [
   ['Identify the language: Hola, buenos días. ¿Cómo estás?', ['Spanish', 'Dictionary matches: hola']],
@@ -103,6 +107,12 @@ test('worker answers from prompt data and records literal spans with no tools', 
       if (id === 'records') assert.ok(result.evidence.some((item) => item.startsWith('prompt_data:link:')));
     }
   }
+  for (const [language, evidence] of Object.entries(decisionSummary)) {
+    const result = await solve(fixture('decision', language));
+    assertAnswer(result.content, evidence, `decision/${language}`);
+    assert.equal(result.intent, 'summarization_free_text');
+    assert.equal(result.toolCalls.length, 0);
+  }
   for (const [prompt, evidence] of additionalExamples) {
     const result = await solve(prompt);
     assertAnswer(result.content, evidence, prompt);
@@ -127,6 +137,8 @@ test('OpenAI completions answer the issue prompts in default and agent modes', {
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ model: 'formal-ai', messages: [{ role: 'user', content: prompt }] }),
           signal: AbortSignal.timeout(10000),
+        }).catch(cause => {
+          throw new Error(`Completion failed for ${label} in ${agentMode ? 'agent' : 'default'} mode`, { cause });
         });
         const body = await response.json();
         assert.equal(response.status, 200, JSON.stringify(body));
@@ -148,7 +160,13 @@ test('OpenAI completions answer the issue prompts in default and agent modes', {
           assertAnswer(await complete(prompt, prompt), evidence, prompt);
         });
       }
-      for (const id of ['decision', 'sales', 'redaction', 'mobile', 'yaml']) {
+      for (const [language, evidence] of Object.entries(decisionSummary)) {
+        const label = `decision/${language}`;
+        await subtest.test(label, async () => {
+          assertAnswer(await complete(fixture('decision', language), label), evidence, label);
+        });
+      }
+      for (const id of ['sales', 'redaction', 'mobile', 'yaml']) {
         for (const language of ['en', 'ru']) {
           const label = `${id}/${language}`;
           await subtest.test(label, async () => {

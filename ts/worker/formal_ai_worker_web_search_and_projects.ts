@@ -472,6 +472,73 @@ function projectByAlias(term) {
   return PROJECTS.find((project) => projectMatchesAlias(project, normalizedTerm)) || null;
 }
 
+// Publisher-backed project creator claims. Rust twin: solver_handlers/project_origin.rs.
+function originProject(prompt) {
+  const question = factLiveQuestions(prompt).find(({ relation }) => relation === "inventor");
+  if (!question) return null;
+  const { subjectTerm } = question;
+  const selfReferences = factualQaSurfaces("assistant_self_reference");
+  const project = selfReferences.includes(subjectTerm)
+    ? PROJECTS.find((entry) => entry.assistantProject)
+    : projectByAlias(subjectTerm);
+  return project?.originDeclaration ? project : null;
+}
+
+function originCreatorStatement(project, data) {
+  if (!["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"].includes(data.author_association)) return null;
+  const author = data.user?.login;
+  if (!/^[a-z0-9-]{1,100}$/i.test(author ?? "")) return null;
+  const statement = typeof data.body === "string" ? data.body.trim() : "";
+  const match = /^(.+?) was created by github\.com\/([A-Za-z0-9-]{1,100})(?: using (github\.com\/[A-Za-z0-9-]{1,100}\/[A-Za-z0-9_.-]{1,100}))?\.$/.exec(statement);
+  if (!match) return null;
+  const [, subject, assertedAuthor, tool = ""] = match;
+  if (!projectMatchesAlias(project, normalizeProjectTerm(subject)) ||
+      assertedAuthor.toLowerCase() !== author.toLowerCase()) return null;
+  return { subject, author: `github.com/${author}`, tool };
+}
+
+async function tryProjectOrigin(prompt, preferences, trace) {
+  if (!externalServiceEnabled(preferences, "externalServiceGithub")) return null;
+  const project = originProject(prompt);
+  if (!project) return null;
+  const source = project.originDeclaration;
+  const tail = source.startsWith(project.url) ? source.slice(project.url.length) : "";
+  const match = /^\/issues\/(\d+)#issuecomment-(\d+)$/.exec(tail);
+  if (!match) return null;
+  const [, issue, comment] = match;
+  const prefix = githubApiRepositoryUrl({ owner: project.org, name: project.name });
+  const url = `${prefix}/issues/comments/${comment}`;
+  trace.push(`project_origin:request:${url}`);
+  const captures = [];
+  const data = await factCaptureJson(url, {
+    online: preferences?.offline !== true && preferences?.allowNetwork !== false,
+    bounded: true,
+  }, captures);
+  if (!data) {
+    trace.push("project_origin:unavailable");
+    return null;
+  }
+  if (String(data.id) !== comment || data.html_url !== source || data.issue_url !== `${prefix}/issues/${issue}`) {
+    trace.push("project_origin:rejected:publisher_identity");
+    return null;
+  }
+  const slots = originCreatorStatement(project, data);
+  if (!slots) {
+    trace.push("project_origin:rejected:creator_statement");
+    return null;
+  }
+  const template = slots.tool ? "project-origin-author-and-tool" : "project-origin-author";
+  const content = factualQaRender(template, detectLanguage(prompt), slots);
+  if (!content) return null;
+  return {
+    intent: "fact_lookup", content, confidence: 0.88,
+    evidence: [
+      `response:${template}`, `source:${source}`,
+      ...captures.map((capture) => `source:http:${capture.url} sha256=${capture.sha256}`),
+    ],
+  };
+}
+
 function isPromotedProject(project) {
   return PROMOTED_PROJECT_ORGS.some(
     (org) => String(project && project.org).toLowerCase() === org,

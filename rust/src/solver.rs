@@ -417,6 +417,9 @@ impl UniversalSolver {
             // Process operands and quoted passages must stay with their questions.
             if let Some(answer) = crate::coding::program_contract::answer(prompt, log)
                 .or_else(|| crate::solver_handlers::try_prompt_text_question(prompt, log))
+                .or_else(|| {
+                    crate::solver_handlers::handle_summarization_request(prompt, prompt, log)
+                })
             {
                 return answer;
             }

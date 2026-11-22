@@ -267,3 +267,68 @@ test("unnamed seed records retain wrapper and bare-record behavior", async () =>
   assert.deepEqual(await call('pageSeedRecords("wrapper\\n  record first\\n  record second").map(row => row.value)'), ["first", "second"]);
   assert.deepEqual(await call('pageSeedRecords("record first\\nrecord second").map(row => row.value)'), ["first", "second"]);
 });
+
+test("project origin comes from an authorized declaration and an empty offline worker has no copy", async () => {
+  const api = "https://api.github.com/repos/link-assistant/formal-ai/issues/comments/4526577668";
+  const source = "https://github.com/link-assistant/formal-ai/issues/157#issuecomment-4526577668";
+  const declaration = {
+    id: 4526577668,
+    html_url: source,
+    issue_url: "https://api.github.com/repos/link-assistant/formal-ai/issues/157",
+    author_association: "CONTRIBUTOR",
+    user: { login: "konard" },
+    body: "Formal AI was created by github.com/konard using github.com/link-assistant/hive-mind.",
+  };
+  const secondSource = "https://github.com/acme/example/issues/2#issuecomment-21";
+  const secondApi = "https://api.github.com/repos/acme/example/issues/comments/21";
+  const secondDeclaration = {
+    id: 21,
+    html_url: secondSource,
+    issue_url: "https://api.github.com/repos/acme/example/issues/2",
+    author_association: "OWNER",
+    user: { login: "example-author" },
+    body: "Example Widget was created by github.com/example-author.",
+  };
+  const fresh = createWorkerContext();
+  await evaluate(fresh, "loadSeed()");
+  evaluate(fresh, `PROJECTS.push(${literal({
+    org: "acme", name: "example", displayName: "Example Widget", aliases: ["example widget"],
+    url: "https://github.com/acme/example", originDeclaration: secondSource,
+  })})`);
+  const seedFetch = fresh.fetch;
+  let requests = 0;
+  fresh.fetch = async (url, init) => {
+    const body = String(url) === api ? declaration : String(url) === secondApi ? secondDeclaration : null;
+    if (body) {
+      requests++;
+      return { ok: true, status: 200, text: async () => JSON.stringify(body) };
+    }
+    if (String(url).startsWith("https://")) return { ok: false, status: 404 };
+    return seedFetch(url, init);
+  };
+  const ask = async (prompt, preferences = {}) => plain(await fresh.solve(prompt, [], preferences));
+  const cold = await ask("Who created you?", { offline: true });
+  assert.ok(!cold.content.includes("github.com/konard"), cold.content);
+  const denied = await ask("Who created you?", { externalServiceGithub: false });
+  assert.ok(!denied.content.includes("github.com/konard"), denied.content);
+  assert.equal(requests, 0);
+  for (const prompt of ["Who created you?", "Кто тебя создал?", "तुम्हें किसने बनाया?", "谁创建了你？"]) {
+    const response = await ask(prompt);
+    assert.equal(response.intent, "fact_lookup", JSON.stringify(response));
+    assert.match(response.content, /github\.com\/konard/);
+    assert.match(response.content, /github\.com\/link-assistant\/hive-mind/);
+    assert.ok(response.evidence.includes(`source:${source}`));
+    assert.ok(response.evidence.some((link) => link.startsWith(`source:http:${api} sha256=`)));
+  }
+  assert.equal(requests, 1);
+  assert.equal((await ask("Who created you?", { offline: true })).intent, "fact_lookup");
+  const other = await ask("Who created Example Widget?");
+  assert.equal(other.content, "Example Widget was created by github.com/example-author.");
+  assert.equal(requests, 2);
+  assert.equal(await evaluate(fresh, `originCreatorStatement(PROJECTS.at(-1), ${literal({
+    ...secondDeclaration, author_association: "NONE",
+  })})`), null);
+  assert.equal(await evaluate(fresh, `originCreatorStatement(PROJECTS.at(-1), ${literal({
+    ...secondDeclaration, body: "Another Widget was created by github.com/example-author.",
+  })})`), null);
+});

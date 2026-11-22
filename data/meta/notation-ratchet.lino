@@ -41,10 +41,10 @@ notation-ratchet
     abbreviated-names 196
     duplicated-blocks 9
     repeated-fields 74
-    characters 2021220
+    characters 2010688
   scope data/seed
-    underscore-names 9238
+    underscore-names 9233
     abbreviated-names 240
     duplicated-blocks 26
-    repeated-fields 173
-    characters 3645918
+    repeated-fields 171
+    characters 3645779

@@ -74,16 +74,17 @@ test("#1172 R9: no written record states a fact the captures derive", async () =
     [
       "fact_spider_man_films_release_order",
       "fact_air_india_infant_stroller_allowance",
-      "fact_formal_ai_creator",
     ],
   );
   assert.deepEqual(written.filter((record) => record.subjectQid).map((record) => record.slug), []);
-  // The worker's fact store: the written records (the two fact_comparison_*
-  // entries are meanings-facts.lino meanings the loader also visits), then the
-  // derived ones in capture order.
+  // The worker loads written records, relation meanings, then derived fixtures.
   const facts = await call("FACTS.map((record) => record.slug)");
-  assert.deepEqual(facts.slice(3, 6), ["fact_subject_connector", "fact_comparison_request", "fact_comparison_joiner"]);
-  assert.deepEqual(facts.slice(6), [
+  const writtenSlugs = written.map((record) => record.slug);
+  assert.deepEqual(facts, [
+    ...writtenSlugs,
+    "fact_subject_connector",
+    "fact_comparison_request",
+    "fact_comparison_joiner",
     "fact_capital_q17",
     "fact_capital_q159",
     "fact_capital_q142",
