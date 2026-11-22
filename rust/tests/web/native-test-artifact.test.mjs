@@ -143,7 +143,7 @@ test('shared native and renderer downloads replace the deprecated extractor with
  assert.equal(transport.with['skip-decompress'],true);
  assert.equal(transport.with['digest-mismatch'],'error');
  assert.equal(transport.with['merge-multiple'],false);
- assert.equal(transport.env.NODE_OPTIONS,'--throw-deprecation');
+ assert.equal(transport.env.NODE_OPTIONS,'--throw-deprecation --require="${{ github.action_path }}/retry-observations.cjs"');
  const extraction=adapter.runs.steps.find(step=>step.id==='extract');
  assert.equal(extraction['working-directory'],'${{ github.workspace }}');
  assert.equal(extraction.env.ALLOW_EMPTY_SELECTION,"${{ inputs.name == '' && inputs.artifact-ids == '' }}");
@@ -211,4 +211,11 @@ test('raw artifact retries recover lookup failures without extracting partial or
  const result=spawnSync(process.execPath,['--test','--test-reporter=tap','--test-concurrency=1',fileURLToPath(new URL('../../../experiments/issue-1580/artifact-download-retry.test.mjs',import.meta.url))],{encoding:'utf8',maxBuffer:256*1024,env});
  assert.equal(result.status,0,result.stdout+result.stderr);
  assert.match(result.stdout,/(?:tests 11|# tests 11)/u);
+});
+
+
+test('artifact retry annotations preserve terminal errors and reject partial ID selection', {timeout:30000},()=>{
+ const env={...process.env};delete env.NODE_TEST_CONTEXT;delete env.NODE_OPTIONS;
+ const result=spawnSync(process.execPath,['--test','--test-reporter=tap','--test-concurrency=1',fileURLToPath(new URL('../../../experiments/issue-1580/artifact-download-annotations.test.mjs',import.meta.url))],{encoding:'utf8',maxBuffer:256*1024,env});
+ assert.equal(result.status,0,result.stdout+result.stderr);assert.match(result.stdout,/# tests 8/u);
 });

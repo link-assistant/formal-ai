@@ -1,0 +1,74 @@
+{
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "currentLocalHead": "6fcc22a525086e5d406b0695a50ea53542b2b14e",
+  "records": [
+    {
+      "index": 412,
+      "path": "scripts/codeql-rust-projects.py",
+      "reviewedDiffSha256": "dd6a6d6c6aa61b55b79084daad1f64ca574833c86b03171a7c63bfb0114a1dfc",
+      "reviewedDiffLines": 307,
+      "currentDiffSha256": "dd6a6d6c6aa61b55b79084daad1f64ca574833c86b03171a7c63bfb0114a1dfc",
+      "currentDiffExactlyReviewed": true,
+      "completeDiffRead": true,
+      "notes": "Read all 301 added lines in three complete chunks: dependency aliases, optional activation, build-script/proc-macro collection, graph offsets, source-root harmonization and separately targeted worker context. Context receipts do not establish missing macro/include_str semantic extraction; current producer limits remain open.",
+      "allRuntimeOrExternalCriteriaQualified": false
+    },
+    {
+      "index": 418,
+      "path": "scripts/desktop-release-manifest.sh",
+      "reviewedDiffSha256": "72098077bfdb3e13f405c58aaa5d7ac65517203ad9ffb66b6919c62408e22119",
+      "reviewedDiffLines": 89,
+      "currentDiffSha256": "72098077bfdb3e13f405c58aaa5d7ac65517203ad9ffb66b6919c62408e22119",
+      "currentDiffExactlyReviewed": true,
+      "completeDiffRead": true,
+      "notes": "Read complete 83-line desktop provenance writer. Actual builder fragments drive the built/missing lists, source/compiler receipts remain explicit, and signing summary is appended. The caller owns incomplete failure enforcement; live release execution is not inferred.",
+      "allRuntimeOrExternalCriteriaQualified": false
+    },
+    {
+      "index": 428,
+      "path": "scripts/generate-staged-release.mjs",
+      "reviewedDiffSha256": "0064b44c01e85b4d6d22f1609409a0619c39045237ff61b359a9bbc0dd7444f4",
+      "reviewedDiffLines": 76,
+      "currentDiffSha256": "0064b44c01e85b4d6d22f1609409a0619c39045237ff61b359a9bbc0dd7444f4",
+      "currentDiffExactlyReviewed": true,
+      "completeDiffRead": true,
+      "notes": "Read complete generator diff: retained Git-object source binding, strict original operation partition, verified artifact adapter imports and Pages dependency predicates. Explicit source hashes, output identity and operation assertions remain; dormant generation is distinct from production execution.",
+      "allRuntimeOrExternalCriteriaQualified": false
+    },
+    {
+      "index": 434,
+      "path": "scripts/github-output.rs",
+      "reviewedDiffSha256": "9affbed7c2750136e3fde72118f47702456ae3325d7973a0bc7d9b459a84a71f",
+      "reviewedDiffLines": 163,
+      "currentDiffSha256": "9affbed7c2750136e3fde72118f47702456ae3325d7973a0bc7d9b459a84a71f",
+      "currentDiffExactlyReviewed": true,
+      "completeDiffRead": true,
+      "notes": "Read complete 157-line shared output writer and physical failure tests: absent path is local-only, configured paths fail visibly including empty/non-UTF8 names, append/create is fallible, and failed child exits before success. Single-line keys/values are the documented caller contract.",
+      "allRuntimeOrExternalCriteriaQualified": false
+    },
+    {
+      "index": 442,
+      "path": "scripts/lib/compressed-secrets.mjs",
+      "reviewedDiffSha256": "4cf0280867437c6611427eccb4b3b51fb2956cb50db4cc1e6df6f5256c50e994",
+      "reviewedDiffLines": 163,
+      "currentDiffSha256": "4cf0280867437c6611427eccb4b3b51fb2956cb50db4cc1e6df6f5256c50e994",
+      "currentDiffExactlyReviewed": true,
+      "completeDiffRead": true,
+      "notes": "Read complete 157-line compressed-secret reader: bounded aggregate inflation/nesting, tar checksum/terminator/size and entry-count validation, metadata scanning, PAX/long names and unsupported-format failure. No extraction paths are written; canonical upstream attribution retained.",
+      "allRuntimeOrExternalCriteriaQualified": false
+    },
+    {
+      "index": 462,
+      "path": "scripts/run-with-budget-warning.sh",
+      "reviewedDiffSha256": "d7a8e7df3269f684d51b3bdcf31c40abd4bfa288e9bef83a2f242641c104302f",
+      "reviewedDiffLines": 104,
+      "currentDiffSha256": "d7a8e7df3269f684d51b3bdcf31c40abd4bfa288e9bef83a2f242641c104302f",
+      "currentDiffExactlyReviewed": true,
+      "completeDiffRead": true,
+      "notes": "Read complete budget-monitor diff: root and live process-group observations, bounded monitoring failure, full positive elapsed interval, TERM grace and bounded KILL acknowledgement. Warning/budget thresholds remain visible; process-group behavior still depends on platform observations covered separately.",
+      "allRuntimeOrExternalCriteriaQualified": false
+    }
+  ],
+  "wholePullRequestReviewed": false,
+  "fullIssueComplete": false
+}

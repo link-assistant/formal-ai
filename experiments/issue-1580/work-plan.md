@@ -1085,3 +1085,15 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Collect all 33 terminal current-head workflows, 163 checks and 29 annotations; all ten native groups pass, and the three actionable failing workflows have local repairs. Preserve fresh dependency-publication blockers separately.
 - [ ] Publish the complete locally verified batch only after a fresh queue/source preflight, then qualify its actual hosted results.
 - [ ] Verify the resulting published head and finish the remaining original acceptance criteria before readiness.
+
+
+## Complete e938 round and observation repairs
+
+- [x] Collect every complete log, check and annotation for all 34 terminal workflows; all ten focused native groups pass. Preserve the one recovered artifact error, two warnings and 21 notices without treating green conclusions as sufficient acceptance.
+- [x] Read fourteen complete original-to-current native fixture diffs and their extracted assertion owners. Keep changed-contract review separate from byte-identical replay, compiler fixtures and original full-suite budget claims.
+- [x] Draft same-process bounded artifact lookup annotations and fatal partial-ID selection, with before/after process regressions and unchanged strict digest/extraction controls.
+- [x] Import 913 complete JavaScript observations in raise-only mode; preserve every old weight, fallback, shard count and warning/execution threshold.
+- [x] Complete eight process regressions, eleven transport controls, the maintained artifact entry, 26 timing cases and all 142 local inventory entries (89 passes, 53 hosted-only exclusions). Retain both rejected timing assertions.
+- [ ] Publish one batch after the final branch queue and source preflight.
+- [ ] Verify both new I/O native fixtures and all current-head CI; measure the new JavaScript wall times and inspect every annotation before final qualification.
+- [ ] Finish every applicable template practice, whole-PR review, original full-suite budget/delivery evidence and external acceptance criteria. Supplied patches and commands still receive zero independent authorship credit; issue 1580 remains unfinished.

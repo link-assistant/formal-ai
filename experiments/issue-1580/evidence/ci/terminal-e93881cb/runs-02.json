@@ -1,0 +1,138 @@
+[
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982576005,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:22Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982576005",
+      "workflowName": "Summarization Ratchet"
+    },
+    "file": "44982576005.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "fbb27acf4b89797436047abed79027659763151acefcc6dc71541669acdcb54f",
+    "archiveSha256": "da9b0fce5a59457cf456e1c710602435c97f48e70c93d34c169cc57c8fb0fc35"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575880,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:03Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575880",
+      "workflowName": "Proactive failure report Agent CLI E2E"
+    },
+    "file": "44982575880.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "1a7b5bf4f9496e8f4555cb0438312fb355c969c7284ec30cb48daa99e770b747",
+    "archiveSha256": "add69f5b45ae09470d0456ea24fdd8e34a99044e36faf93a6c848643e35039ce"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575900,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:25Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575900",
+      "workflowName": "Coding Ladder"
+    },
+    "file": "44982575900.log.gz",
+    "rawBytes": 9635,
+    "rawLines": 79,
+    "rawSha256": "4e2d1bb188808a6acfa2acd6a0267014a11714f674e88bf2fb1dc75336ac3261",
+    "archiveSha256": "722a421762751d920dc3e4e496c36e3cc26c265793016f057838f99fcf0532a6"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575966,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:20Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575966",
+      "workflowName": "Agentic CLI Matrix"
+    },
+    "file": "44982575966.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "4be873440fd3eaf649bf7f1609648dabc43ed6ae4626284429e3a51ed0709f36",
+    "archiveSha256": "5b5bec3112de7ab1c05dac43a0af6ecc5e1f025d342b7c40cf95d53371c469f4"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575980,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:25Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575980",
+      "workflowName": "Regenerate native session projections"
+    },
+    "file": "44982575980.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "fd8d829c4d637b6f8f0f1581a92982815f5b1eb0f8c69843d63394e7a00092b3",
+    "archiveSha256": "e0ff5b734419ba505f3d2f443893c3c9acdf644be50e6da27fe6b7dff051569e"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575934,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:23Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575934",
+      "workflowName": "Self-hosting evidence"
+    },
+    "file": "44982575934.log.gz",
+    "rawBytes": 4588,
+    "rawLines": 38,
+    "rawSha256": "dda8085220f2631f3cab22d9a8d4eef6fdec2369bb7c9859cb1719531750bffb",
+    "archiveSha256": "cdf2865ad8a569586cec1487978a777066961b6e44b0bb6c727909c724744180"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575957,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:13Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575957",
+      "workflowName": "Verify full readable source content"
+    },
+    "file": "44982575957.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "9a61e9a55ccb411cee4d7aedc0897f6e1a8bbf9262e2f1e347b6318e25eb1ce4",
+    "archiveSha256": "6d856e337551e7a0325175152fe0981cb1d947f63cbc98d30c36b6c1893565f0"
+  },
+  {
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T03:52:37Z",
+      "databaseId": 44982575913,
+      "headSha": "e93881cb64a78a19253088c19f09a1f1b816229c",
+      "status": "completed",
+      "updatedAt": "2026-11-22T03:53:12Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44982575913",
+      "workflowName": "Question necessity ratchet"
+    },
+    "file": "44982575913.log.gz",
+    "rawBytes": 4581,
+    "rawLines": 38,
+    "rawSha256": "a9d3f0fe24f3609940ed2ff1f1eb23ef3fc92b0a099b53b5ea2d0ce7839e9432",
+    "archiveSha256": "6788c9eb02e80a53d9a51240c7b642be5b4f48d2aa0945b2c78e61470de6768a"
+  }
+]

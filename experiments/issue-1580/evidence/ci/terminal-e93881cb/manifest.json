@@ -1,0 +1,71 @@
+{
+  "head": "e93881cb64a78a19253088c19f09a1f1b816229c",
+  "allRunsTerminal": true,
+  "collectionComplete": true,
+  "checkCount": 168,
+  "annotationCount": 24,
+  "diagnosticCount": 42,
+  "literalCompleteWorkflowReviewClaim": false,
+  "runCount": 34,
+  "conclusions": {
+    "success": 33,
+    "skipped": 1
+  },
+  "archiveIndexParts": [
+    {
+      "file": "runs-00.json",
+      "sha256": "e9997fa7eee7fba9c7513317e2f53ba8349b3d76e972bec12cec10f55d9499ce",
+      "records": 8
+    },
+    {
+      "file": "runs-01.json",
+      "sha256": "2434984036eff43a9854747e520ed05f942cd4636e5e8f7ea917cf441d13cb3e",
+      "records": 8
+    },
+    {
+      "file": "runs-02.json",
+      "sha256": "4c93da56616a5c553b4e6e8cccfd1ec1f4e221301a624bf6e24370cc09ae3cb2",
+      "records": 8
+    },
+    {
+      "file": "runs-03.json",
+      "sha256": "37d46a941c90b48e5026d104a57e719f23f7cb16f5345d21ef69cfcc7b27925e",
+      "records": 8
+    },
+    {
+      "file": "runs-04.json",
+      "sha256": "7bb5384557483fde17382e20be2dfbd5009c4ef26ee931c187f4f1eae13150eb",
+      "records": 2
+    }
+  ],
+  "annotationLevels": {
+    "notice": 21,
+    "warning": 2,
+    "failure": 1
+  },
+  "actionableObservations": [
+    {
+      "run": 44982575871,
+      "line": 1297,
+      "kind": "error annotation despite recovered named artifact lookup",
+      "repair": "retry-observations.cjs; final failures, unrelated errors and strict digests remain fatal; partial requested IDs now fail"
+    },
+    {
+      "run": 44982575709,
+      "line": 16053,
+      "kind": "291-second JavaScript shard crosses 270-second warning threshold",
+      "repair": "raise-only import of 913 complete measurements; 44 weights raised, no old weights or fallback reduced; new hosted wall measurement pending"
+    },
+    {
+      "run": 44982575990,
+      "line": 196,
+      "kind": "crates.io publish-token observation UNKNOWN",
+      "repair": null,
+      "stillOpen": true
+    }
+  ],
+  "scopeNoticesAreExecutionCredit": false,
+  "allNewRepairsHostedVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

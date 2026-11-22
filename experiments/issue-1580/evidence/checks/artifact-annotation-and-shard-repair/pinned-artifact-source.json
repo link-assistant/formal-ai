@@ -1,0 +1,15 @@
+{
+  "url": "https://registry.npmjs.org/@actions/artifact/-/artifact-6.3.1.tgz",
+  "integrity": "sha512-DBXgdB9T4yj2KSe0tFg+MTi9T5se+16bdrFQh+3Y6Nq1lZ3gYQk1BjHoTof+7Zf36bEAlfVMf+8ifRKeyGJugQ==",
+  "sha256": "3917e287b36403f9fe7cda27a56e84f83be2ad5a8602d8d9e0bdc713645d1a91",
+  "bytes": 55990,
+  "pinnedAction": "9000827ccba6bdab643e8b6fd33ac0654aef8333",
+  "artifactVersion": "6.3.1",
+  "actionPackageLockApi": "https://api.github.com/repos/actions/download-artifact/contents/package-lock.json?ref=9000827ccba6bdab643e8b6fd33ac0654aef8333",
+  "lookupSource": "package/lib/internal/find/get-artifact.js",
+  "lookupSourceSha256": "7a3a53a99710476766694222a4b911289604068a73af12fa43b0b70715f53d5d",
+  "bothLookupMessagesComparedToGuard": true,
+  "faqSuffixSha256": "58eff53ccd87330fce5e5a112dda765741bedf0238865f37816c9ffc18ef591b",
+  "noTrailingNewline": true,
+  "remoteServiceExecutionClaimed": false
+}

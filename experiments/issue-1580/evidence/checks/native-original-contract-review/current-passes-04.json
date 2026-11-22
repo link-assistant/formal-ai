@@ -1,0 +1,162 @@
+[
+  {
+    "originalTest": "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family",
+            "line": 70220,
+            "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-22T04:22:04.0791381Z test issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt",
+            "line": 70268,
+            "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-22T04:25:23.8981751Z test with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "network_download_retry::no_remote_download_is_left_out_of_that_rule",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "network_download_retry::no_remote_download_is_left_out_of_that_rule",
+            "line": 61730,
+            "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T04:01:19.7114892Z test network_download_retry::no_remote_download_is_left_out_of_that_rule ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content",
+            "line": 67804,
+            "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-22T04:27:24.1498985Z test issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1138_retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline",
+            "line": 64580,
+            "text": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-22T04:18:02.2583431Z test retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback",
+    "historicalStrictReplayQualified": true,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback",
+            "line": 70205,
+            "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-22T04:18:55.8507155Z test formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language",
+            "line": 67022,
+            "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-22T04:26:30.9221421Z test issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  },
+  {
+    "originalTest": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language",
+    "historicalStrictReplayQualified": false,
+    "currentNamedCasesAllPassed": true,
+    "cases": [
+      {
+        "expected": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language",
+        "method": "exact previously source-bound execution name",
+        "matches": [
+          {
+            "name": "issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language",
+            "line": 67812,
+            "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-22T04:30:57.7850234Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language ... ok"
+          }
+        ],
+        "uniqueMatch": true
+      }
+    ],
+    "semanticQualificationFromNamesAlone": false
+  }
+]

@@ -80,7 +80,7 @@ test('each bounded attempt retains the pinned raw transport, strict digest and o
     assert.equal(transport.uses,'actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333');
     assert.deepEqual(transport.with,transports[0].with);
     assert.equal(transport.with['digest-mismatch'],'error');assert.equal(transport.with['skip-decompress'],true);
-    assert.equal(transport.with['merge-multiple'],false);assert.equal(transport.env.NODE_OPTIONS,'--throw-deprecation');
+    assert.equal(transport.with['merge-multiple'],false);assert.equal(transport.env.NODE_OPTIONS,'--throw-deprecation --require="${{ github.action_path }}/retry-observations.cjs"');
     for(const name of ['name','artifact-ids','pattern','github-token','repository','run-id'])assert.equal(transport.with[name],'${{ inputs.'+name+' }}');
   }
   assert.equal(transports[0]['continue-on-error'],true);assert.equal(transports[1]['continue-on-error'],true);

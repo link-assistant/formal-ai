@@ -21,3 +21,10 @@ Evidence: `experiments/issue-1580/evidence/checks/native-original-contract-revie
 The further aggregate review and 94 exact copy/archive proofs have their own
 bounded manifests. Exact copy equality does not qualify an unreviewed canonical
 source's behavior. Whole-PR review and issue 1580 remain unfinished.
+
+All 53 tracked current case names now have e938 published pass signals. The
+benchmark prints its report between the name and `ok`; both physical lines and
+their job context are retained. The ambiguous unknown-reasoning leaf is bound to
+its actual focused module registration. These current pass signals do not change
+the 31 unchanged versus 22 changed-contract distinction or close the three
+original full-suite budget failures. See `current-passes.json` and its parts.
