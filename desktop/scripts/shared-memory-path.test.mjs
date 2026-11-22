@@ -55,8 +55,8 @@ test("all desktop Docker services share one memory mount and container path", ()
     definitions.agent.buildRunArgs(),
   ];
   for (const args of argumentSets) {
-    assert.ok(args.includes("/home/alice/.formal-ai:/root/.formal-ai"));
-    assert.ok(args.includes("FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino"));
+    assert.ok(args.includes("/home/alice/.formal-ai:/home/box/.formal-ai"));
+    assert.ok(args.includes("FORMAL_AI_MEMORY_PATH=/home/box/.formal-ai/memory.lino"));
   }
   assert.ok(argumentSets[0].includes("formal-ai-telegram-docker:/var/lib/docker"));
   assert.ok(argumentSets[1].includes("formal-ai-server-docker:/var/lib/docker"));

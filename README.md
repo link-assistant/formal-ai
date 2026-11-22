@@ -775,8 +775,8 @@ TELEGRAM_BOT_TOKEN=123:abc docker compose up
 
 docker run --rm --privileged \
   -e TELEGRAM_BOT_TOKEN=123:abc \
-  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
-  -v "$HOME/.formal-ai:/root/.formal-ai" \
+  -e FORMAL_AI_MEMORY_PATH=/home/box/.formal-ai/memory.lino \
+  -v "$HOME/.formal-ai:/home/box/.formal-ai" \
   -v formal-ai-telegram-docker:/var/lib/docker \
   ghcr.io/link-assistant/formal-ai:latest
 
@@ -821,6 +821,7 @@ agentic mode and the idle **Agent CLI environment**, under opt-in Compose
 profiles so `docker compose up` keeps starting only the Telegram bot:
 
 ```bash
+install -d -m 0700 "$HOME/.formal-ai"
 TELEGRAM_BOT_TOKEN=123:abc docker compose up -d   # Telegram bot only (default)
 docker compose --profile server up -d             # OpenAI-compatible server on 127.0.0.1:8080
 docker compose --profile agent up -d              # agent + agent-commander environment
@@ -829,7 +830,7 @@ docker compose --profile all up -d                # all services
 
 All three containers (`formal-ai-telegram`, `formal-ai-server`, and
 `formal-ai-agent`) are the **exact same ones the desktop app manages with one
-click**. They bind the host's `~/.formal-ai` directory to `/root/.formal-ai`,
+click**. They bind the host's `~/.formal-ai` directory to `/home/box/.formal-ai`,
 so Telegram, API, Agent CLI, desktop, and host CLI writes converge on the same
 `memory.lino`; their inner-Docker volumes remain separate. See
 [One-click services and agent environment](docs/desktop/service-control.md) for

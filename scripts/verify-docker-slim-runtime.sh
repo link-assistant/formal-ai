@@ -15,10 +15,15 @@ port="${VERIFY_PORT:-18080}"
 FORMAL_AI_ALLOW_NETWORK=0 FORMAL_AI_DREAMING=0 \
   formal-ai serve --agent-mode --host 127.0.0.1 --port "$port" &
 serve_pid=$!
-trap 'kill "$serve_pid" 2>/dev/null || true' EXIT
+trap 'kill "$serve_pid" 2>/dev/null || true; wait "$serve_pid" 2>/dev/null || true' EXIT
 
 ready=false
 for _ in $(seq 1 30); do
+  if ! kill -0 "$serve_pid" 2>/dev/null; then
+    status=0
+    wait "$serve_pid" || status=$?
+    fail "serve exited with status $status before /health (memory path: ${FORMAL_AI_MEMORY_PATH:-default})"
+  fi
   if curl -fsS "http://127.0.0.1:$port/health" >/dev/null 2>&1; then
     ready=true
     break
