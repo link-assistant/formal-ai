@@ -1,0 +1,1408 @@
+{
+  "pinnedHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "pages": [
+    {
+      "page": 238,
+      "parts": 9,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "96.5/9"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "100.1/8"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "96.5/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "96.6/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "96.7/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "96.8/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "96.9/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "97"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "98"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "99"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "100.1/8"
+        ]
+      ],
+      "file": "page-238.log.gz",
+      "archiveSha256": "7d430e3531dd09d1e1b3b425f231e7a007ea2e2e2e6c63943ef1404d38d3ce74",
+      "rawSha256": "0698d57519ab28326ba4533c8e897f086ab440153b1e1757b49677b772fa27fd",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 239,
+      "parts": 9,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "100.2/8"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "102"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "100.2/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "100.3/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "100.4/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "100.5/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "100.6/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "100.7/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "100.8/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "101"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "102"
+        ]
+      ],
+      "file": "page-239.log.gz",
+      "archiveSha256": "a448b4c350f5365174b9e56dd5fc50ba898f1ec77a2e542e0801dd73aad3e79e",
+      "rawSha256": "957dd9b605f97b5f8f31ba38fe8294627c7c185633fea1bf1b6191a4ead14074",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 240,
+      "parts": 7,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "103"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "104.6/9"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "103"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "104.1/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "104.2/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "104.3/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "104.4/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "104.5/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "104.6/9"
+        ]
+      ],
+      "file": "page-240.log.gz",
+      "archiveSha256": "ccd99b145549bb54c1f845833031c46ba8eb93268c8d017175f09771e10adedd",
+      "rawSha256": "d02a31e67d93e05265bfa89d05f7081e3b6b47eeba1ede5aa1d3ff1d4b81439b",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 241,
+      "parts": 9,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "104.7/9"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "108.3/7"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "104.7/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "104.8/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "104.9/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "105"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "106"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "107"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "108.1/7"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "108.2/7"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "108.3/7"
+        ]
+      ],
+      "file": "page-241.log.gz",
+      "archiveSha256": "f4fdff6ffd64412fa3a6cc21a3a372ffda04d171d9e95dab553a73aedea5e2d0",
+      "rawSha256": "e1455a3b6f5d51e472bfab3c40011c2e37447f76677a96d8491a622f054d26a9",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 242,
+      "parts": 9,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "108.4/7"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "112.2/8"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "108.4/7"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "108.5/7"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "108.6/7"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "108.7/7"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "109"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "110"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "111"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "112.1/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "112.2/8"
+        ]
+      ],
+      "file": "page-242.log.gz",
+      "archiveSha256": "fd6e816cd69e7d447d2df51246afa7d6f29befacb6e6709279ad87b75adcd5eb",
+      "rawSha256": "3bc93f62a5fda87012d81785f76e0f67c17faebca1a153bb641a2ec3d0f52968",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 243,
+      "parts": 10,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "112.3/8"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "116.1/9"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "112.3/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "112.4/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "112.5/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "112.6/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "112.7/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "112.8/8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "113"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "114"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "115"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "116.1/9"
+        ]
+      ],
+      "file": "page-243.log.gz",
+      "archiveSha256": "2baf89f67de39e14045dd55c6e9ea34cb86ac9e9b905a0c2f61b2cac965676e4",
+      "rawSha256": "6764e2ccd2f138df9c131fe134a6f96b2502e94456c84eae63a8d63a02c8c9cf",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 244,
+      "parts": 6,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "116.2/9"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "116.7/9"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "116.2/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "116.3/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "116.4/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "116.5/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "116.6/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "116.7/9"
+        ]
+      ],
+      "file": "page-244.log.gz",
+      "archiveSha256": "fe6b5e448bdf1fd3c61f3d245a40e31d8271987fe01b4783ac977894ffdf9081",
+      "rawSha256": "c372de314fa0ead777685f7585c9728efb9e0d36bb55923e6ec2784079fcc74f",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 245,
+      "parts": 13,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "116.8/9"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "123"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "116.8/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "116.9/9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "117"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "118"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "119"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "120.1/5"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "120.2/5"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "120.3/5"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "120.4/5"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "120.5/5"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "121"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "122"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "123"
+        ]
+      ],
+      "file": "page-245.log.gz",
+      "archiveSha256": "56efcfe1e3ddaa1351198f10040c815523b2721b7b4f8d8739cc02c9ccb9cc73",
+      "rawSha256": "dad3309ecd3db3a35018589b5253cf363e390eec811689a53e0f5da10314f7ce",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 246,
+      "parts": 28,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "124"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "151"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "124"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "125"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "126"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "127"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "128"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "129"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "130"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "131"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "132"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "133"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "134"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "135"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "136"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "137"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "138"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "139"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "140"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "141"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "142"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "143"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "144"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "145"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "146"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "147"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "148"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "149"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "150"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "151"
+        ]
+      ],
+      "file": "page-246.log.gz",
+      "archiveSha256": "28dc506442569d9dcbbed49bf6cb93041e04cbd7d163421e4dd3562e38ae4682",
+      "rawSha256": "9d786a7bc2b16dc47a1c43ab9ce8253844b5ec3191d12600f23717e40a8279eb",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 247,
+      "parts": 9,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "152"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "156.5/6"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "152"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "153"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "154"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "155"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "156.1/6"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "156.2/6"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "156.3/6"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "156.4/6"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "156.5/6"
+        ]
+      ],
+      "file": "page-247.log.gz",
+      "archiveSha256": "34e40f8a3577bf8405ce281410d1958a8e3aea4eb2aa0b6f0c9d9b7beb4dcc76",
+      "rawSha256": "966e842bac4a58a8755c441125e60d3eb0db5ba73f306032c59e660b9efaca5d",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 248,
+      "parts": 12,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "156.6/6"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "164.1/4"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "156.6/6"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "157"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "158"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "159"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "160.1/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "160.2/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "160.3/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "160.4/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "161"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "162"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "163"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "164.1/4"
+        ]
+      ],
+      "file": "page-248.log.gz",
+      "archiveSha256": "25fd51325dc82ce242299740ed73be5e3e8ad780de7c19bebeb5017351dcdb72",
+      "rawSha256": "63c1e02d91fa132ab5ff9b38c5ecd439607d0d16bc3cc4275c6b8c94dac73775",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 249,
+      "parts": 13,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "164.2/4"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "171"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "164.2/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "164.3/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "164.4/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "165"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "166"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "167"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "168.1/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "168.2/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "168.3/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "168.4/4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "169"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "170"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "171"
+        ]
+      ],
+      "file": "page-249.log.gz",
+      "archiveSha256": "716512e1ab0b1447a6c0cf601da0d35bc3dd79c3432aa8bb26b56ae27e62ec39",
+      "rawSha256": "8f1c42757cb24a3bf637f52b9e88cf75d28075de9f40cb6718c1e6803901cc77",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 250,
+      "parts": 24,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "172"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "191"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "172"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "173"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "174"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "175"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "176.1/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "176.2/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "177"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "178"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "179"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "180"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "181"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "182"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "183"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "184.1/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "184.2/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "185"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "186"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "187"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "188.1/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "188.2/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "188.3/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "189"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "190"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "191"
+        ]
+      ],
+      "file": "page-250.log.gz",
+      "archiveSha256": "df264a659d7ec325d33f85db77955e09f585b64e30237a883ce68f666b44cdbe",
+      "rawSha256": "541b6e81349e3090082fa66ca66d44601e3fc29bee97085ad3256ee8dec49fe0",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 251,
+      "parts": 15,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "192.1/3"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "200.3/3"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "192.1/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "192.2/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "192.3/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "193"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "194"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "195"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "196.1/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "196.2/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "196.3/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "197"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "198"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "199"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "200.1/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "200.2/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "200.3/3"
+        ]
+      ],
+      "file": "page-251.log.gz",
+      "archiveSha256": "d3b5bfc06050dc3ae22527cafb3a31222abef7c02c834dc9a0dafee35d79c28c",
+      "rawSha256": "5b52c2528dae068389b0db2a48791251c91d7c3fe28b91a697a907922945c733",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 252,
+      "parts": 25,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "201"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "223"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "201"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "202"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "203"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "204.1/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "204.2/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "204.3/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "205"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "206"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "207"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "208"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "209"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "210"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "211"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "212"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "213"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "214"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "215"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "216"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "217"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "218"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "219"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "220"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "221"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "222"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "223"
+        ]
+      ],
+      "file": "page-252.log.gz",
+      "archiveSha256": "7eed905c9ad8b5545032fed70a139bf929ce3b59b2c6a5bedbf86c9d2e4b3488",
+      "rawSha256": "37b52f628481dc4d043c59c5420a6516eb99170f668b47195e5986eb0d2cf761",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 253,
+      "parts": 19,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "224"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "240.1/3"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "224"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "225"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "226"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "227"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "228"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "229"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "230"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "231"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "232"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "233"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "234"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "235"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "236.1/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "236.2/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "236.3/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "237"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "238"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "239"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "240.1/3"
+        ]
+      ],
+      "file": "page-253.log.gz",
+      "archiveSha256": "a79410019e9cc62f334a8d42b92df4b52107ffe22205ff372188da42aec7b006",
+      "rawSha256": "b78c6528d1bec7af1f8ee8b0bf93ff3ada97ccf927e005c1def587dc791e1a9a",
+      "completeLiteralOutputRead": true
+    },
+    {
+      "page": 254,
+      "parts": 57,
+      "first": [
+        "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+        "240.2/3"
+      ],
+      "last": [
+        "dev/log/issues/24/pulls/25/transitive-inventory.log",
+        "4"
+      ],
+      "sourceParts": [
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "240.2/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "240.3/3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "241"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "242"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "243"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "244"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "245"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "246"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "247"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "248"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "249"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "250"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "251"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "252.1/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "252.2/2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "253"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+          "254"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "1"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "5"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "6"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "7"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "10"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "11"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "12"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "13"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "14"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "15"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "16"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "17"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "18"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "19"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-apply.log",
+          "20"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/spotless-upstream-report.txt",
+          "1"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "1"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "4"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "5"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "6"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "7"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "8"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "9"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "10"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "11"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "12"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "13"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "14"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/toolchains.log",
+          "15"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/transitive-inventory.log",
+          "1"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/transitive-inventory.log",
+          "2"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/transitive-inventory.log",
+          "3"
+        ],
+        [
+          "dev/log/issues/24/pulls/25/transitive-inventory.log",
+          "4"
+        ]
+      ],
+      "file": "page-254.log.gz",
+      "archiveSha256": "b14bef7fb1821c75d138876c71c4b0306b47b0657adaeb8c5f293ba42c27438b",
+      "rawSha256": "893c78ce03edf7a3bb97c5fb74a013f1c0fea26257660736f2ad15ba46405b0a",
+      "completeLiteralOutputRead": true
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}
