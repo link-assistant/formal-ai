@@ -1,0 +1,1095 @@
+{
+  "headSha": "6a49eff070c4875d1f22eb584d08023629aab21b",
+  "createdAt": "2026-11-22T08:10:18Z",
+  "updatedAt": "2026-11-22T09:17:39Z",
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "databaseId": 137144976267,
+      "name": "Auto Release / auto prepare-source",
+      "startedAt": "2026-11-22T08:15:32Z",
+      "completedAt": "2026-11-22T08:19:54Z",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137144976267",
+      "steps": [
+        {
+          "completedAt": "2026-11-22T08:15:34Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-22T08:15:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:16:20Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-22T08:15:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:17:03Z",
+          "conclusion": "success",
+          "name": "Check out immutable trusted workflow protocol",
+          "number": 3,
+          "startedAt": "2026-11-22T08:16:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:17:05Z",
+          "conclusion": "success",
+          "name": "Set up immutable protocol dependencies",
+          "number": 4,
+          "startedAt": "2026-11-22T08:17:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:17:06Z",
+          "conclusion": "success",
+          "name": "Install immutable locked protocol dependencies",
+          "number": 5,
+          "startedAt": "2026-11-22T08:17:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:17:07Z",
+          "conclusion": "success",
+          "name": "Setup Rust",
+          "number": 6,
+          "startedAt": "2026-11-22T08:17:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:17:37Z",
+          "conclusion": "success",
+          "name": "Install rust-script",
+          "number": 7,
+          "startedAt": "2026-11-22T08:17:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:17:37Z",
+          "conclusion": "success",
+          "name": "Configure git",
+          "number": 8,
+          "startedAt": "2026-11-22T08:17:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:17:44Z",
+          "conclusion": "success",
+          "name": "Determine bump type from changelog fragments",
+          "number": 9,
+          "startedAt": "2026-11-22T08:17:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:18:08Z",
+          "conclusion": "success",
+          "name": "Check if version already released or no fragments",
+          "number": 10,
+          "startedAt": "2026-11-22T08:17:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:00Z",
+          "conclusion": "success",
+          "name": "Collect changelog and bump version",
+          "number": 11,
+          "startedAt": "2026-11-22T08:18:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:00Z",
+          "conclusion": "success",
+          "name": "Get current version",
+          "number": 12,
+          "startedAt": "2026-11-22T08:19:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:00Z",
+          "conclusion": "success",
+          "name": "Recheck prepared release state",
+          "number": 13,
+          "startedAt": "2026-11-22T08:19:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:01Z",
+          "conclusion": "success",
+          "name": "Record actual selected source and compiler baseline",
+          "number": 14,
+          "startedAt": "2026-11-22T08:19:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:09Z",
+          "conclusion": "success",
+          "name": "Seal actual tagged main source artifact",
+          "number": 15,
+          "startedAt": "2026-11-22T08:19:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:50Z",
+          "conclusion": "success",
+          "name": "Upload immutable source artifact",
+          "number": 16,
+          "startedAt": "2026-11-22T08:19:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:50Z",
+          "conclusion": "success",
+          "name": "Post Set up immutable protocol dependencies",
+          "number": 30,
+          "startedAt": "2026-11-22T08:19:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:50Z",
+          "conclusion": "success",
+          "name": "Post Check out immutable trusted workflow protocol",
+          "number": 31,
+          "startedAt": "2026-11-22T08:19:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:51Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 32,
+          "startedAt": "2026-11-22T08:19:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:19:51Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 33,
+          "startedAt": "2026-11-22T08:19:51Z",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "databaseId": 137144977885,
+      "name": "Auto Release / manual prepare-source",
+      "startedAt": "2026-11-22T08:14:30Z",
+      "completedAt": "2026-11-22T08:14:29Z",
+      "conclusion": "skipped",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137144977885",
+      "steps": []
+    },
+    {
+      "databaseId": 137144977891,
+      "name": "Auto Release / manual compile-release",
+      "startedAt": "2026-11-22T08:14:30Z",
+      "completedAt": "2026-11-22T08:14:29Z",
+      "conclusion": "skipped",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137144977891",
+      "steps": []
+    },
+    {
+      "databaseId": 137144978201,
+      "name": "Auto Release / manual verify-package",
+      "startedAt": "2026-11-22T08:14:30Z",
+      "completedAt": "2026-11-22T08:14:29Z",
+      "conclusion": "skipped",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137144978201",
+      "steps": []
+    },
+    {
+      "databaseId": 137144978777,
+      "name": "Auto Release / manual publish-crate",
+      "startedAt": "2026-11-22T08:14:30Z",
+      "completedAt": "2026-11-22T08:14:29Z",
+      "conclusion": "skipped",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137144978777",
+      "steps": []
+    },
+    {
+      "databaseId": 137144979457,
+      "name": "Auto Release / manual registry-availability",
+      "startedAt": "2026-11-22T08:14:30Z",
+      "completedAt": "2026-11-22T08:14:29Z",
+      "conclusion": "skipped",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137144979457",
+      "steps": []
+    },
+    {
+      "databaseId": 137144979873,
+      "name": "Auto Release / manual published-crate-smoke",
+      "startedAt": "2026-11-22T08:14:30Z",
+      "completedAt": "2026-11-22T08:14:30Z",
+      "conclusion": "skipped",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137144979873",
+      "steps": []
+    },
+    {
+      "databaseId": 137144979984,
+      "name": "Auto Release / manual publish-verify-images",
+      "startedAt": "2026-11-22T08:14:30Z",
+      "completedAt": "2026-11-22T08:14:30Z",
+      "conclusion": "skipped",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137144979984",
+      "steps": []
+    },
+    {
+      "databaseId": 137144980203,
+      "name": "Auto Release / manual create-release",
+      "startedAt": "2026-11-22T08:14:30Z",
+      "completedAt": "2026-11-22T08:14:30Z",
+      "conclusion": "skipped",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137144980203",
+      "steps": []
+    },
+    {
+      "databaseId": 137146283648,
+      "name": "Auto Release / auto compile-release",
+      "startedAt": "2026-11-22T08:23:54Z",
+      "completedAt": "2026-11-22T08:31:44Z",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137146283648",
+      "steps": [
+        {
+          "completedAt": "2026-11-22T08:23:56Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-22T08:23:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:24:31Z",
+          "conclusion": "success",
+          "name": "Check out exact independently selected source",
+          "number": 2,
+          "startedAt": "2026-11-22T08:23:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:24:40Z",
+          "conclusion": "success",
+          "name": "Install exact selected Rust compiler",
+          "number": 3,
+          "startedAt": "2026-11-22T08:24:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:25:07Z",
+          "conclusion": "success",
+          "name": "Install original rust-script runtime",
+          "number": 4,
+          "startedAt": "2026-11-22T08:24:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:25:33Z",
+          "conclusion": "success",
+          "name": "Check out immutable trusted workflow protocol",
+          "number": 5,
+          "startedAt": "2026-11-22T08:25:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:25:54Z",
+          "conclusion": "success",
+          "name": "Download immutable selected source artifact",
+          "number": 6,
+          "startedAt": "2026-11-22T08:25:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:26:01Z",
+          "conclusion": "success",
+          "name": "Verify independent source compiler protocol and main tag authority",
+          "number": 7,
+          "startedAt": "2026-11-22T08:25:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:31:33Z",
+          "conclusion": "success",
+          "name": "Build release",
+          "number": 8,
+          "startedAt": "2026-11-22T08:26:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:31:36Z",
+          "conclusion": "success",
+          "name": "Seal successful physical binary transfer",
+          "number": 9,
+          "startedAt": "2026-11-22T08:31:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:31:41Z",
+          "conclusion": "success",
+          "name": "Upload immutable binary artifact",
+          "number": 10,
+          "startedAt": "2026-11-22T08:31:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:31:41Z",
+          "conclusion": "success",
+          "name": "Post Check out immutable trusted workflow protocol",
+          "number": 19,
+          "startedAt": "2026-11-22T08:31:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:31:41Z",
+          "conclusion": "success",
+          "name": "Post Check out exact independently selected source",
+          "number": 20,
+          "startedAt": "2026-11-22T08:31:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:31:42Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "startedAt": "2026-11-22T08:31:41Z",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "databaseId": 137149097233,
+      "name": "Auto Release / auto verify-package",
+      "startedAt": "2026-11-22T08:31:45Z",
+      "completedAt": "2026-11-22T08:41:51Z",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137149097233",
+      "steps": [
+        {
+          "completedAt": "2026-11-22T08:31:48Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-22T08:31:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:32:26Z",
+          "conclusion": "success",
+          "name": "Check out exact independently selected source",
+          "number": 2,
+          "startedAt": "2026-11-22T08:31:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:32:34Z",
+          "conclusion": "success",
+          "name": "Install exact selected Rust compiler",
+          "number": 3,
+          "startedAt": "2026-11-22T08:32:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:33:00Z",
+          "conclusion": "success",
+          "name": "Install original rust-script runtime",
+          "number": 4,
+          "startedAt": "2026-11-22T08:32:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:33:26Z",
+          "conclusion": "success",
+          "name": "Check out immutable trusted workflow protocol",
+          "number": 5,
+          "startedAt": "2026-11-22T08:33:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:33:39Z",
+          "conclusion": "success",
+          "name": "Download immutable selected source artifact",
+          "number": 6,
+          "startedAt": "2026-11-22T08:33:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:33:48Z",
+          "conclusion": "success",
+          "name": "Verify independent source compiler protocol and main tag authority",
+          "number": 7,
+          "startedAt": "2026-11-22T08:33:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:33:50Z",
+          "conclusion": "success",
+          "name": "Download immutable binary artifact",
+          "number": 8,
+          "startedAt": "2026-11-22T08:33:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:33:54Z",
+          "conclusion": "success",
+          "name": "Validate physical binary producer transfer",
+          "number": 9,
+          "startedAt": "2026-11-22T08:33:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:39:27Z",
+          "conclusion": "success",
+          "name": "Verify greetings and issue reporting on the selected binary",
+          "number": 10,
+          "startedAt": "2026-11-22T08:33:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:39:33Z",
+          "conclusion": "success",
+          "name": "Verify packaged crate archive",
+          "number": 11,
+          "startedAt": "2026-11-22T08:39:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:41:48Z",
+          "conclusion": "success",
+          "name": "Seal successful physical package transfer",
+          "number": 12,
+          "startedAt": "2026-11-22T08:39:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:41:49Z",
+          "conclusion": "success",
+          "name": "Upload immutable package artifact",
+          "number": 13,
+          "startedAt": "2026-11-22T08:41:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:41:49Z",
+          "conclusion": "success",
+          "name": "Post Verify greetings and issue reporting on the selected binary",
+          "number": 24,
+          "startedAt": "2026-11-22T08:41:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:41:49Z",
+          "conclusion": "success",
+          "name": "Post Check out immutable trusted workflow protocol",
+          "number": 25,
+          "startedAt": "2026-11-22T08:41:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:41:49Z",
+          "conclusion": "success",
+          "name": "Post Check out exact independently selected source",
+          "number": 26,
+          "startedAt": "2026-11-22T08:41:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:41:49Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 27,
+          "startedAt": "2026-11-22T08:41:49Z",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "databaseId": 137151473894,
+      "name": "Auto Release / auto publish-crate",
+      "startedAt": "2026-11-22T08:41:53Z",
+      "completedAt": "2026-11-22T08:46:35Z",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137151473894",
+      "steps": [
+        {
+          "completedAt": "2026-11-22T08:41:56Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-22T08:41:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:42:34Z",
+          "conclusion": "success",
+          "name": "Check out exact independently selected source",
+          "number": 2,
+          "startedAt": "2026-11-22T08:41:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:42:42Z",
+          "conclusion": "success",
+          "name": "Install exact selected Rust compiler",
+          "number": 3,
+          "startedAt": "2026-11-22T08:42:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:43:08Z",
+          "conclusion": "success",
+          "name": "Install original rust-script runtime",
+          "number": 4,
+          "startedAt": "2026-11-22T08:42:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:43:33Z",
+          "conclusion": "success",
+          "name": "Check out immutable trusted workflow protocol",
+          "number": 5,
+          "startedAt": "2026-11-22T08:43:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:43:46Z",
+          "conclusion": "success",
+          "name": "Download immutable selected source artifact",
+          "number": 6,
+          "startedAt": "2026-11-22T08:43:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:43:59Z",
+          "conclusion": "success",
+          "name": "Verify independent source compiler protocol and main tag authority",
+          "number": 7,
+          "startedAt": "2026-11-22T08:43:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:44:01Z",
+          "conclusion": "success",
+          "name": "Download immutable binary artifact",
+          "number": 8,
+          "startedAt": "2026-11-22T08:43:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:44:04Z",
+          "conclusion": "success",
+          "name": "Validate physical binary producer transfer",
+          "number": 9,
+          "startedAt": "2026-11-22T08:44:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:44:04Z",
+          "conclusion": "success",
+          "name": "Download immutable package artifact",
+          "number": 10,
+          "startedAt": "2026-11-22T08:44:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:46:19Z",
+          "conclusion": "success",
+          "name": "Validate physical package producer transfer",
+          "number": 11,
+          "startedAt": "2026-11-22T08:44:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:46:33Z",
+          "conclusion": "success",
+          "name": "Publish to Crates.io",
+          "number": 12,
+          "startedAt": "2026-11-22T08:46:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:46:33Z",
+          "conclusion": "success",
+          "name": "Post Check out immutable trusted workflow protocol",
+          "number": 23,
+          "startedAt": "2026-11-22T08:46:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:46:34Z",
+          "conclusion": "success",
+          "name": "Post Check out exact independently selected source",
+          "number": 24,
+          "startedAt": "2026-11-22T08:46:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:46:34Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 25,
+          "startedAt": "2026-11-22T08:46:34Z",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "databaseId": 137152577501,
+      "name": "Auto Release / auto registry-availability",
+      "startedAt": "2026-11-22T08:46:38Z",
+      "completedAt": "2026-11-22T08:55:40Z",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137152577501",
+      "steps": [
+        {
+          "completedAt": "2026-11-22T08:46:41Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-22T08:46:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:47:27Z",
+          "conclusion": "success",
+          "name": "Check out exact independently selected source",
+          "number": 2,
+          "startedAt": "2026-11-22T08:46:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:47:35Z",
+          "conclusion": "success",
+          "name": "Install exact selected Rust compiler",
+          "number": 3,
+          "startedAt": "2026-11-22T08:47:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:48:03Z",
+          "conclusion": "success",
+          "name": "Install original rust-script runtime",
+          "number": 4,
+          "startedAt": "2026-11-22T08:47:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:48:29Z",
+          "conclusion": "success",
+          "name": "Check out immutable trusted workflow protocol",
+          "number": 5,
+          "startedAt": "2026-11-22T08:48:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:50:13Z",
+          "conclusion": "success",
+          "name": "Download immutable selected source artifact",
+          "number": 6,
+          "startedAt": "2026-11-22T08:48:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:50:25Z",
+          "conclusion": "success",
+          "name": "Verify independent source compiler protocol and main tag authority",
+          "number": 7,
+          "startedAt": "2026-11-22T08:50:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:50:28Z",
+          "conclusion": "success",
+          "name": "Download immutable package artifact",
+          "number": 8,
+          "startedAt": "2026-11-22T08:50:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:52:44Z",
+          "conclusion": "success",
+          "name": "Validate physical package producer transfer",
+          "number": 9,
+          "startedAt": "2026-11-22T08:50:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:53:17Z",
+          "conclusion": "success",
+          "name": "Wait for Crate availability on Crates.io",
+          "number": 10,
+          "startedAt": "2026-11-22T08:52:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:55:36Z",
+          "conclusion": "success",
+          "name": "Audit real registry crate against verified package contents",
+          "number": 11,
+          "startedAt": "2026-11-22T08:53:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:55:36Z",
+          "conclusion": "success",
+          "name": "Post Check out immutable trusted workflow protocol",
+          "number": 21,
+          "startedAt": "2026-11-22T08:55:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:55:37Z",
+          "conclusion": "success",
+          "name": "Post Check out exact independently selected source",
+          "number": 22,
+          "startedAt": "2026-11-22T08:55:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:55:37Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 23,
+          "startedAt": "2026-11-22T08:55:37Z",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "databaseId": 137154721640,
+      "name": "Auto Release / auto published-crate-smoke",
+      "startedAt": "2026-11-22T08:55:42Z",
+      "completedAt": "2026-11-22T09:04:36Z",
+      "conclusion": "success",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137154721640",
+      "steps": [
+        {
+          "completedAt": "2026-11-22T08:55:45Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-22T08:55:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:56:27Z",
+          "conclusion": "success",
+          "name": "Check out exact independently selected source",
+          "number": 2,
+          "startedAt": "2026-11-22T08:55:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:56:36Z",
+          "conclusion": "success",
+          "name": "Install exact selected Rust compiler",
+          "number": 3,
+          "startedAt": "2026-11-22T08:56:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:57:04Z",
+          "conclusion": "success",
+          "name": "Install original rust-script runtime",
+          "number": 4,
+          "startedAt": "2026-11-22T08:56:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:57:35Z",
+          "conclusion": "success",
+          "name": "Check out immutable trusted workflow protocol",
+          "number": 5,
+          "startedAt": "2026-11-22T08:57:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:58:11Z",
+          "conclusion": "success",
+          "name": "Download immutable selected source artifact",
+          "number": 6,
+          "startedAt": "2026-11-22T08:57:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T08:58:19Z",
+          "conclusion": "success",
+          "name": "Verify independent source compiler protocol and main tag authority",
+          "number": 7,
+          "startedAt": "2026-11-22T08:58:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:04:32Z",
+          "conclusion": "success",
+          "name": "Smoke test the published crate",
+          "number": 8,
+          "startedAt": "2026-11-22T08:58:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:04:33Z",
+          "conclusion": "success",
+          "name": "Post Check out immutable trusted workflow protocol",
+          "number": 15,
+          "startedAt": "2026-11-22T09:04:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:04:33Z",
+          "conclusion": "success",
+          "name": "Post Check out exact independently selected source",
+          "number": 16,
+          "startedAt": "2026-11-22T09:04:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:04:33Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 17,
+          "startedAt": "2026-11-22T09:04:33Z",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "databaseId": 137156873419,
+      "name": "Auto Release / auto publish-verify-images",
+      "startedAt": "2026-11-22T09:04:38Z",
+      "completedAt": "2026-11-22T09:17:30Z",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137156873419",
+      "steps": [
+        {
+          "completedAt": "2026-11-22T09:04:42Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-22T09:04:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:05:25Z",
+          "conclusion": "success",
+          "name": "Check out exact independently selected source",
+          "number": 2,
+          "startedAt": "2026-11-22T09:04:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:05:34Z",
+          "conclusion": "success",
+          "name": "Install exact selected Rust compiler",
+          "number": 3,
+          "startedAt": "2026-11-22T09:05:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:06:02Z",
+          "conclusion": "success",
+          "name": "Install original rust-script runtime",
+          "number": 4,
+          "startedAt": "2026-11-22T09:05:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:06:31Z",
+          "conclusion": "success",
+          "name": "Check out immutable trusted workflow protocol",
+          "number": 5,
+          "startedAt": "2026-11-22T09:06:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:07:33Z",
+          "conclusion": "success",
+          "name": "Download immutable selected source artifact",
+          "number": 6,
+          "startedAt": "2026-11-22T09:06:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:07:46Z",
+          "conclusion": "success",
+          "name": "Verify independent source compiler protocol and main tag authority",
+          "number": 7,
+          "startedAt": "2026-11-22T09:07:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:07:51Z",
+          "conclusion": "success",
+          "name": "Download immutable binary artifact",
+          "number": 8,
+          "startedAt": "2026-11-22T09:07:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:07:55Z",
+          "conclusion": "success",
+          "name": "Validate physical binary producer transfer",
+          "number": 9,
+          "startedAt": "2026-11-22T09:07:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:10:02Z",
+          "conclusion": "success",
+          "name": "Free up runner disk space",
+          "number": 10,
+          "startedAt": "2026-11-22T09:07:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:10:03Z",
+          "conclusion": "success",
+          "name": "Log in to GitHub Container Registry",
+          "number": 11,
+          "startedAt": "2026-11-22T09:10:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:10:10Z",
+          "conclusion": "success",
+          "name": "Set up Docker Buildx",
+          "number": 12,
+          "startedAt": "2026-11-22T09:10:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:10:10Z",
+          "conclusion": "success",
+          "name": "Expose actual BuildKit cache runtime",
+          "number": 13,
+          "startedAt": "2026-11-22T09:10:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:19Z",
+          "conclusion": "failure",
+          "name": "Publish Docker image to GHCR",
+          "number": 14,
+          "startedAt": "2026-11-22T09:10:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:19Z",
+          "conclusion": "skipped",
+          "name": "Publish and verify the slim GHCR sidecar",
+          "number": 15,
+          "startedAt": "2026-11-22T09:17:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:19Z",
+          "conclusion": "skipped",
+          "name": "Verify the published GHCR image is anonymously pullable",
+          "number": 16,
+          "startedAt": "2026-11-22T09:17:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:19Z",
+          "conclusion": "skipped",
+          "name": "Verify anonymous access to the immutable published manifest",
+          "number": 17,
+          "startedAt": "2026-11-22T09:17:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:19Z",
+          "conclusion": "skipped",
+          "name": "Configure Docker Hub publishing",
+          "number": 18,
+          "startedAt": "2026-11-22T09:17:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:19Z",
+          "conclusion": "skipped",
+          "name": "Log in to Docker Hub",
+          "number": 19,
+          "startedAt": "2026-11-22T09:17:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:19Z",
+          "conclusion": "skipped",
+          "name": "Publish Docker image to Docker Hub",
+          "number": 20,
+          "startedAt": "2026-11-22T09:17:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:19Z",
+          "conclusion": "skipped",
+          "name": "Seal successful physical images transfer",
+          "number": 21,
+          "startedAt": "2026-11-22T09:17:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:19Z",
+          "conclusion": "skipped",
+          "name": "Upload immutable images artifact",
+          "number": 22,
+          "startedAt": "2026-11-22T09:17:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:26Z",
+          "conclusion": "success",
+          "name": "Post Set up Docker Buildx",
+          "number": 41,
+          "startedAt": "2026-11-22T09:17:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:27Z",
+          "conclusion": "success",
+          "name": "Post Log in to GitHub Container Registry",
+          "number": 42,
+          "startedAt": "2026-11-22T09:17:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:27Z",
+          "conclusion": "success",
+          "name": "Post Check out immutable trusted workflow protocol",
+          "number": 43,
+          "startedAt": "2026-11-22T09:17:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:27Z",
+          "conclusion": "success",
+          "name": "Post Check out exact independently selected source",
+          "number": 44,
+          "startedAt": "2026-11-22T09:17:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-22T09:17:27Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 45,
+          "startedAt": "2026-11-22T09:17:27Z",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "databaseId": 137160140629,
+      "name": "Auto Release / auto create-release",
+      "startedAt": "2026-11-22T09:17:31Z",
+      "completedAt": "2026-11-22T09:17:30Z",
+      "conclusion": "skipped",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/45001543202/job/137160140629",
+      "steps": []
+    }
+  ]
+}
