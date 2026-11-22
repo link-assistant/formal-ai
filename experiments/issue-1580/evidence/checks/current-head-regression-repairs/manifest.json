@@ -1,0 +1,208 @@
+{
+  "headUnderHostedTest": "de79e6ece67142fe8c6012059e6eb2bc0300e7bd",
+  "files": [
+    {
+      "path": "137024105582-hosted-job-api.log.gz",
+      "sha256": "8b6407b2fdbca54bf3d53fb93e79a3560dbe59567fa5044cfee4bed1b5b6e467",
+      "bytes": 99
+    },
+    {
+      "path": "137024105582-hosted-job-raw.log.gz",
+      "sha256": "7286eb03447d10b1dc9473ce2bbcd6c879163b80f233ad7f2269b21be989a8b4",
+      "bytes": 233287
+    },
+    {
+      "path": "137024105582-hosted-job-readable.log.gz",
+      "sha256": "af758726d2bb69881a8afdc1113e09ac5a80e869e28dda30115b08b3b13611dc",
+      "bytes": 215852
+    },
+    {
+      "path": "137024105582-hosted-job.log.gz",
+      "sha256": "4b2d4e08ac8831500eed5f4acaf329bb5329ce136bc24863e5d8eb7b7da44b2c",
+      "bytes": 81
+    },
+    {
+      "path": "137025595890-hosted-job-raw.log.gz",
+      "sha256": "bf09f370967da3a1ceef559a5e19f21fe92eb1f1263cf312435caa419e014801",
+      "bytes": 76283
+    },
+    {
+      "path": "137025595890-hosted-job-readable.log.gz",
+      "sha256": "f2333dd37e6cc00ba543bc2b45ee433952eebf00c2153b00532a0e5c977f32e9",
+      "bytes": 75436
+    },
+    {
+      "path": "all-local-gates.log.gz",
+      "sha256": "f62892a714128b517b97bd0ea8d2986a05734a1f70465327952ad8016b91dc85",
+      "bytes": 7310
+    },
+    {
+      "path": "canonical-concise-outcome.json.gz",
+      "sha256": "0202ae6778271e70f5c9aeaef7a127c13bbed4667bbad42a57ca032d12c791da",
+      "bytes": 393
+    },
+    {
+      "path": "canonical-metadata-write.log.gz",
+      "sha256": "066dbc2e2d2d37b4f66f8179bc2c013c825c7006343cf5808f9dec31dfd0d12d",
+      "bytes": 76
+    },
+    {
+      "path": "canonical-mirror-write.log.gz",
+      "sha256": "8a847919fb762e445bd9694d7d33a4c9eb07fc1d99cefb0a7be5bd9cc7850eb7",
+      "bytes": 83
+    },
+    {
+      "path": "check-file-size-after.log.gz",
+      "sha256": "53e483a275b4f73b87403d02a6fe1362731a5fddf535cf0a6df41153df10966c",
+      "bytes": 63
+    },
+    {
+      "path": "check-minimal-core-boundary-after.log.gz",
+      "sha256": "217bdcd28e84fd9dd9bfc491054e98f864bc55b91f34357ce042b748acdb696c",
+      "bytes": 75
+    },
+    {
+      "path": "check-minimal-core-boundary-failure.log.gz",
+      "sha256": "477ed9429f40d93ee2d739044ca812a2d6b9d1de092d1dd0c67b101df688177a",
+      "bytes": 395
+    },
+    {
+      "path": "check-notation-after.log.gz",
+      "sha256": "9990369aa71028b4ba23f551bcbc1febc65b67103214a386a5eca6bfe1c61988",
+      "bytes": 63
+    },
+    {
+      "path": "check-notation-failure.log.gz",
+      "sha256": "94e1ab5c10dfcb9729f226dd28d047dfd8688808a28aa48bd6eb667bf316c60e",
+      "bytes": 2211
+    },
+    {
+      "path": "check-readable-code-after.log.gz",
+      "sha256": "0bda263ce9bdb8fcdad5a9703be7666d90823987f9b08d703c95170b01ec309c",
+      "bytes": 68
+    },
+    {
+      "path": "check-worker-crate-modules-after.log.gz",
+      "sha256": "0669f4f5784552fd844911b58d3132ebc5a955f1ca1fef224a4694a69be5a626",
+      "bytes": 74
+    },
+    {
+      "path": "check-worker-crate-modules-failure.log.gz",
+      "sha256": "90719b60720ad67d785f11e850844cc09dcd1d3de24f6101775ae03f166f3994",
+      "bytes": 198
+    },
+    {
+      "path": "check_js_rust_translation-after.log.gz",
+      "sha256": "dedc6d646391485adbfff9af58fa5cb6c5b6fdefc11295e79d999cf8fb4091a6",
+      "bytes": 73
+    },
+    {
+      "path": "check_js_rust_translation-failure.log.gz",
+      "sha256": "3439b48086a165fe51ab1c48ea892c8c716ecd576b62f3a2db8f55c5c7695cd6",
+      "bytes": 233
+    },
+    {
+      "path": "clean-environment-outcome.json.gz",
+      "sha256": "f5a10ae8e94375895e162f9c7bedb2f687031f96663e8bcd7af7c7e3a8841637",
+      "bytes": 420
+    },
+    {
+      "path": "client-canonical-after.log.gz",
+      "sha256": "8d9f14ea6bb681e43c12031c70f16da9a680869b4ee469b748a517cdbfd6c387",
+      "bytes": 307
+    },
+    {
+      "path": "client-canonical-before-exit.json.gz",
+      "sha256": "e153f5bd2ee7416d77570b30ba1de5bb9196c55f8d145e34df9dab12190ffe43",
+      "bytes": 16
+    },
+    {
+      "path": "client-canonical-before.log.gz",
+      "sha256": "74943457e8d416625c1f34b461dbe61a8dcd440a0d6b56be3c15cc85f9ec10aa",
+      "bytes": 3252
+    },
+    {
+      "path": "concise-lexeme-owners.log.gz",
+      "sha256": "b6a1673afa9979d0d8bca9fef6567f6638f190182d0b45de044614a7517a1446",
+      "bytes": 241
+    },
+    {
+      "path": "concise-lexeme-write.log.gz",
+      "sha256": "9de56e02338a53138fa86f074895671ca8b1de12170c744ac676a2c1d9483148",
+      "bytes": 153
+    },
+    {
+      "path": "derived-metadata-outcome.json.gz",
+      "sha256": "f29c85ff40c8481d715e26f096e92e98fdb8a9c5b259db9970aeac050c01155a",
+      "bytes": 189
+    },
+    {
+      "path": "fast-production-profile-clean-environment.log.gz",
+      "sha256": "3c68c670cf82a2b35cbe55a900711a0697b83e876ceee9d5e4f95cc99cca8ff2",
+      "bytes": 2338
+    },
+    {
+      "path": "fast-pull-request-production-profile-after.log.gz",
+      "sha256": "666b10c7f3d1293e7ba7ae742b2037fa2f69ee077664b256f2541939bdd5792c",
+      "bytes": 99
+    },
+    {
+      "path": "final-gates-outcome.json.gz",
+      "sha256": "4b8d39b12cf1fa3870a9345cdee60b3cf07692bbc7c322ad063637235b4f7985",
+      "bytes": 765
+    },
+    {
+      "path": "headroom-concise-after.log.gz",
+      "sha256": "91eb13d83ae7e8c75d07e03b95bc6068882a45f62799cd723774b5af52d1c217",
+      "bytes": 428
+    },
+    {
+      "path": "native-claude-expectation-rustfmt.log.gz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "notation-measure-write.log.gz",
+      "sha256": "9b911881d06e16ebac4265fdb9aa418cfc361ade8face1d50ba2c76de99e0451",
+      "bytes": 1858
+    },
+    {
+      "path": "outcome.json.gz",
+      "sha256": "95f7350757a5b63baf788e43398b6f6e856b392ed42bc3f881953260f5a39723",
+      "bytes": 1823
+    },
+    {
+      "path": "staged-authority-clean-environment.log.gz",
+      "sha256": "b3fe49b8f40c5e90f3635d04579300da225919f469d090f89376983442aca3a9",
+      "bytes": 1069
+    },
+    {
+      "path": "staged-operation-view-clean-environment.log.gz",
+      "sha256": "0865193d03e072a56953944c724cdeaf9b7f02fa09bacd0aa654d07ede7c6d03",
+      "bytes": 1382
+    },
+    {
+      "path": "translation-write-first-attempt.log.gz",
+      "sha256": "6918953c8a50b01011c7e14467aafe44346043b1530ac6daf42dcf4b64c07d4f",
+      "bytes": 355
+    },
+    {
+      "path": "translation-write.log.gz",
+      "sha256": "14f74c8e36b752ec2e6ceaa1411520f46d0af5919582420ae3c3936e3b941164",
+      "bytes": 554
+    },
+    {
+      "path": "worker-currency-final.log.gz",
+      "sha256": "0b79857a90289b1a9e9116c9bfa1cbfdd9698da7cc844c95cd25d2f0352d3dc3",
+      "bytes": 117
+    },
+    {
+      "path": "worker-module-write.log.gz",
+      "sha256": "9b9ec9d31ef46fc68255839fa904f613f1c3530e29f9ddc8f00e9dbf49a16878",
+      "bytes": 36
+    }
+  ],
+  "authorshipCredit": 0,
+  "fullIssueComplete": false,
+  "interpretation": "Preserve initial full-inventory failures, harness-environment failures, the bounded translation timeout, failed canonical-parser regression, corrected targeted checks and raw hosted native logs separately. A direct test filename is required for the production-profile suite; its nonexistent local-gate name is a retained invocation error, not a production failure. Native execution awaits hosted CI."
+}

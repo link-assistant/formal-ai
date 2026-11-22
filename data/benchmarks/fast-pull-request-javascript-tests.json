@@ -261,6 +261,11 @@
     "rust/tests/web/hive-work-item-consumer.test.mjs",
     "rust/tests/web/issue-1168-source-cache.test.mjs",
     "rust/tests/web/solver-event-origin.test.mjs",
-    "rust/tests/web/server-debug-session.test.mjs"
+    "rust/tests/web/server-debug-session.test.mjs",
+    "rust/tests/web/seed-and-workflow-headroom.test.mjs",
+    "rust/tests/web/client-integrations-canonical-notation.test.mjs",
+    "rust/tests/web/rml-export-install-policy.test.mjs",
+    "rust/tests/web/full-provenance-archived-cli.test.mjs",
+    "rust/tests/web/full-provenance-refusals-cli.test.mjs"
   ]
 }

@@ -443,7 +443,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npm ci --prefix .rml/js --no-audit --no-fund
+          # The exporter runs source directly; browser bundler install scripts are unnecessary.
+          npm ci --prefix .rml/js --ignore-scripts --no-audit --no-fund
           rml_script="$(realpath .rml/js/src/rml-links.mjs)"
           printf '#!/bin/sh\nexec node "%s" "$@"\n' "$rml_script" > "$RUNNER_TEMP/rml"
           chmod +x "$RUNNER_TEMP/rml"

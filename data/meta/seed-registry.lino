@@ -401,6 +401,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-occupations
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-ontology
     bundle true
     lexicon meaning
@@ -613,6 +617,10 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-composition
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-concept-lookup
     bundle true
     lexicon response
@@ -704,6 +712,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-quantities
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-quantity-constraint
     bundle true
     lexicon response
     web true

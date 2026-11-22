@@ -997,3 +997,25 @@ Earlier checkpoints retain their original pins and outcomes.
 Details and exact captured results: `docs/case-studies/issue-1580/main-warning-merge.md`.
 
 - [x] Integrate main `9669945ad320dc8a96ebb5a88cfe05dbafb2f030`, preserve embeddings behavior and test independent native replay admission; retain full local checks and unresolved hosted worker currency.
+
+- [x] Complete the pinned 338-file Python applicability map with verified blob identities, explicit literal/structured/generated comparison methods and actual Formal AI references. Applicable practice execution and final-source hosted checks remain separate.
+
+- [x] Reproduce all five current size warnings; partition only complete seed records through maintained registry/mirror writers and regenerate layout-only staged YAML with full parsed equality (52 operations, 104 bindings).
+- [x] Reproduce current-head Layered CI schema and sparse-checkout failures; preserve command narration, refuse unmade enum choices and verify the complete sparse checkout. Focused checks and rustfmt pass; archive exact before/after evidence.
+- [ ] Finish the current full local gate run and all current-head hosted workflows; collect all terminal failures and annotations before the next push.
+
+- [x] Complete the 141-gate local inventory: retain all four genuine stale projection/notation failures and pass each unchanged gate after maintained regeneration. File-size/readability checks report no warnings. Preserve unrelated harness and command-selection failures separately.
+- [x] Reproduce native Qwen seed syntax failure with the actual canonical JavaScript parser, preserve the complete provider JSON and correlation header, and pass both focused cases. Align four complete native Claude expected argument vectors with the existing explicit default permission mode; native reruns remain hosted.
+- [ ] Finish the exact published-head hosted round, inspect all failures/annotations, and publish the complete batch only after the branch queue is terminal.
+
+### 2026-11-22: complete de79e6ec failure collection and warning repairs
+
+- [x] Collect all 34 terminal workflows and all 174 terminal check records/annotations; retain the complete raw streams with byte hashes. The two failures are Layered CI and Pipeline, not four successful native Hive contract groups.
+- [x] Reproduce and fix the real BuildKit annotation boundary inside the Node action process; preserve every unrelated error and failed exit outcome. Keep the production composite and real daemon/image checks intact.
+- [x] Verify the pinned RML source exporter and suppress unnecessary install lifecycle execution; the offline actual-install regression fails before and passes after the policy change.
+- [x] Identify the indivisible 316.415-second provenance file as the scheduling limit; preserve every original setup/assertion block across three independent cases. Updated measured weights and explicitly inherited parent bounds preserve eight shards and unchanged warning/command budgets. New scenario durations remain unobserved.
+- [x] Complete all 141 local gate entries, repair both genuine draft failures without increasing a ceiling, and rerun the affected gates. Correct the Rust formatting command to edition 2024 with child-module traversal disabled; no local compilation.
+- [ ] Push the complete batch after fresh main/queue checks, then inspect all current-head hosted results and new scenario durations.
+- [ ] Complete all remaining template/practice comparisons, original strict acceptance, full-PR review and genuine authorship requirements. Supplied edits, scripts and conclusions continue to earn zero autonomous credit.
+
+Evidence: `evidence/ci/de79e6ec-terminal-round/`. Pull request: https://github.com/link-assistant/formal-ai/pull/1581.

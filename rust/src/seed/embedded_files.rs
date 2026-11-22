@@ -138,6 +138,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-number-constraints.lino", MEANINGS_NUMBER_CONSTRAINTS_LINO),
         ("data/seed/meanings-number-words.lino", MEANINGS_NUMBER_WORDS_LINO),
         ("data/seed/meanings-object-shapes.lino", MEANINGS_OBJECT_SHAPES_LINO),
+        ("data/seed/meanings-occupations.lino", MEANINGS_OCCUPATIONS_LINO),
         ("data/seed/meanings-ontology.lino", MEANINGS_ONTOLOGY_LINO),
         ("data/seed/meanings-playwright.lino", MEANINGS_PLAYWRIGHT_LINO),
         ("data/seed/meanings-policy.lino", MEANINGS_POLICY_LINO),
@@ -234,6 +235,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MULTILINGUAL_RESPONSES_CODE_TASKS_LINO,
         ),
         (
+            "data/seed/multilingual-responses-composition.lino",
+            MULTILINGUAL_RESPONSES_COMPOSITION_LINO,
+        ),
+        (
             "data/seed/multilingual-responses-concept-lookup.lino",
             MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,
         ),
@@ -300,6 +305,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-quantities.lino",
             MULTILINGUAL_RESPONSES_QUANTITIES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-quantity-constraint.lino",
+            MULTILINGUAL_RESPONSES_QUANTITY_CONSTRAINT_LINO,
         ),
         ("data/seed/multilingual-responses-repair.lino", MULTILINGUAL_RESPONSES_REPAIR_LINO),
         (

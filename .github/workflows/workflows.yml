@@ -46,12 +46,12 @@ on:
         type: string
   push:
     branches: [main]
-    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'experiments/issue-1580/buildkit-expected-outage.cjs', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
-    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'experiments/issue-1580/buildkit-expected-outage.cjs', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
 permissions:
@@ -300,6 +300,7 @@ jobs:
           sparse-checkout: |
             /.github/actions/setup-buildx-resilient/
             /experiments/issue-1580/buildkit-bootstrap-probe.py
+            /experiments/issue-1580/buildkit-expected-outage.cjs
           sparse-checkout-cone-mode: false
       - name: Prepare bootstrap identity evidence
         timeout-minutes: 1
@@ -324,31 +325,22 @@ jobs:
         env:
           PROBE_DIRECTORY: ${{ runner.temp }}/buildkit-bootstrap
         run: python3 experiments/issue-1580/buildkit-bootstrap-probe.py install-fault "$PROBE_DIRECTORY"
-      - name: Contain annotations from the deliberate negative control
-        id: expected-outage-annotations
-        timeout-minutes: 1
-        shell: bash
-        run: |
-          set -euo pipefail
-          token="$(python3 -c 'import uuid; print(uuid.uuid4())')"
-          printf 'token=%s\n' "$token" >> "$GITHUB_OUTPUT"
-          printf '::stop-commands::%s\n' "$token"
       - name: Initialize an actual daemon through the mirror fallback
         id: fallback
         timeout-minutes: 4
         uses: ./.github/actions/setup-buildx-resilient
+        env:
+          NODE_OPTIONS: --require=${{ github.workspace }}/experiments/issue-1580/buildkit-expected-outage.cjs
         with:
           cleanup: 'false'
-      - name: Resume annotations after the expected outage
-        if: always() && steps.expected-outage-annotations.outcome == 'success'
+      - name: Check the fallback control outcome
+        if: always()
         timeout-minutes: 1
         shell: bash
         env:
-          TOKEN: ${{ steps.expected-outage-annotations.outputs.token }}
           OUTCOME: ${{ steps.fallback.outcome }}
         run: |
           set -euo pipefail
-          printf '::%s::\n' "$TOKEN"
           if [ "$OUTCOME" != success ]; then
             echo '::error::BuildKit fallback control failed; inspect the retained Docker observations.'
             exit 1

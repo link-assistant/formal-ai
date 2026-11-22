@@ -29,13 +29,11 @@ are explicitly labeled estimates of 169 seconds, derived from the historical
 672.933-second aggregate; they are not new hosted duration observations.
 All 62 runner/admission regressions pass; rustfmt passes without a Rust build.
 
-The deliberate canonical BuildKit pull failure emitted a failure annotation
-even though the real mirror recovered. Stop command parsing only around that
-negative-control action, using a fresh random token. Always resume commands;
-non-success outcomes then emit a real error and remain fatal. Actual mirror
-image and daemon verification follows with ordinary annotations enabled.
-All 11 controls pass, including failure, cancellation, skip and empty outcomes.
-The production setup action and its failure behavior are unchanged.
+The first BuildKit annotation repair incorrectly assumed that a command guard
+could cross workflow-step boundaries. Its 11 local controls passed, but the next
+hosted run retained the failure annotation. The same-process correction and
+its new negative control are described below; that hosted observation supersedes
+the earlier local inference. The production setup action remains unchanged.
 
 The two SQLite consumers now explicitly select Node 24.22.3 instead of Node 22
 or the runner's ambient executable. Its upstream SQLite module no longer calls
@@ -66,3 +64,68 @@ Supplied procedures and conclusions receive zero autonomous credit.
 
 Evidence: `experiments/issue-1580/evidence/checks/terminal-warning-repairs/`.
 Pull request: https://github.com/link-assistant/formal-ai/pull/1581.
+
+## Final seed warnings and same-head hosted regressions
+
+The current file-size gate still reported five warnings: the translation meaning and agentic response seeds, their package mirrors, and the generated staged-release workflow. The new focused regression fails on all five original owners. Warehouse occupations, source-backed composition templates and quantity-comparison templates now have registered owners below the unchanged limits. The maintained registry and package-mirror writers generate every consumer; tests preserve every original meaning field through the maintained concise-lexeme conversion, reconstruct the complete response source bytes, and use actual lexicon/response lookup for every moved record. The final three regression checks pass.
+
+The staged-release generator emits artifact-download inputs as YAML flow mappings. The generated workflow decreases from 1,412 to 1,360 lines. Full parsed YAML is exactly equal before and after, including every job, condition, input and shell command; all 52 operations and 104 cross-stage bindings remain present. The retained reproduction script performs this comparison before writing the maintained projection.
+
+Hosted Layered CI on `de79e6ec` failed at log lines 4454–4484 (VS Code sparse-checkout order), 16075–16118 (shell description expectations and enum population), and 22540–22561 (the known stale worker). The full 25,377-line hosted log is preserved separately. The checkout test now compares every directory without imposing an irrelevant order, and its real sparse Git exercise passes. The description test retains main's selected-command narration behavior. Native, JavaScript and TypeScript projection now leave an unmade description enum choice absent while preserving explicit values/defaults. Focused results: 23 projection tests, nine native-release workflow tests, 13 JavaScript client tests and three headroom tests pass; the native client test remains an explicit hosted-only exclusion. The touched native source passes rustfmt. Worker compilation has an independently verified hosted receipt; no local Rust compilation was used.
+
+These local results do not certify the still-running full hosted round or the remaining issue-wide applicability/authorship criteria.
+
+The current native job also rejected the Qwen provider setting in `client-integrations.lino` at line 524: C-style escaped double quotes are not valid canonical Links Notation. A single-quoted notation value carries the unchanged JSON payload. The new two-case regression reproduces the canonical-parser failure before the fix, then checks canonical parsing, complete provider JSON, the correlation header and package-mirror equality after it. The existing native all-data parse regression will verify the same source in hosted CI.
+
+The same-head native interface shard then exposed three stale argument expectations (hosted log lines 822–979). Main’s managed Claude configuration explicitly adds `--permission-mode default` before caller arguments. Four complete expected vectors now include those two arguments, covering interactive/non-interactive execution, argument/piped prompts and repeated caller flags. Production permission behavior is preserved; native execution remains a hosted check. Both changed test files pass rustfmt without compilation.
+
+
+## Complete-log warnings from de79e6ec
+
+The terminal CI/CD run 44962289753 passed all four Hive contract shards.
+Its two native failures were the canonical Qwen seed quotation and stale
+Claude argv expectations described above. The complete Layered CI logs also
+revealed warnings outside failed checks, so the batch includes these repairs:
+
+- RML's pinned source exporter imports the canonical notation parser and its
+  source Lean exporter; esbuild is a browser-build development dependency.
+  The install now explicitly ignores lifecycle scripts. A real offline npm
+  fixture runs the actual workflow install and launcher, demonstrating that
+  the old install executes its sentinel and the new install leaves it absent.
+  The maintained real `rml export lean` check remains enabled in hosted CI.
+- A stop-command in a separate shell step did not affect annotations emitted
+  by the subsequent setup-buildx Node action. The negative-control preload now
+  changes only its exact deliberate outage command to a notice inside that
+  same process. Its exit code and every unrelated error remain unchanged;
+  fallback failure, daemon identity and image digest are independently fatal.
+  Twelve focused controls pass; hosted annotations still require verification.
+- Observed JavaScript shard durations included a 316.415-second provenance
+  file, with 309.297 seconds in its primary test. Reweighting alone could not
+  fit that indivisible file under the unchanged 270-second warning point.
+  Installed-source proof, archived-source proof and negative controls now run
+  as three independent suites using the same fixture builder. A source-bound
+  regression preserves every original setup and assertion block and the other
+  tests byte-for-byte. New suites inherit the full measured parent cost as
+  explicitly labelled conservative scheduling estimates. Their individual
+  durations are Unknown until hosted execution. The replay asserts headroom
+  for unchanged measured suites and keeps all split scenarios in separate
+  first worker waves; it does not claim measured headroom for new suites.
+
+All original execution budgets, warning ratios, independent trust pins,
+provenance refusal cases and eight JavaScript shards remain in force.
+These supplied repairs earn zero autonomous-authorship credit. The broader
+template practice and authorship acceptance criteria remain open.
+
+The complete `de79e6ec` round is terminal: 31 successful workflows, one skipped
+workflow and two failures. All 34 original streams and all 174 terminal check
+records/annotations are archived under `evidence/ci/de79e6ec-terminal-round/`.
+Both actual native failures and all three JavaScript failure classes are
+repaired locally. The complete local inventory executed 88 JavaScript gates
+and explicitly excluded 53 hosted-only gates; the two draft failures were
+repaired and rerun under unchanged policies. Rust formatting uses edition 2024
+and checks only the changed files. No local Rust build was performed.
+
+Fresh hosted execution still must verify the native expectations, source parsing,
+BuildKit annotation boundary and the duration of each new provenance scenario.
+The unavailable crates.io credential observation, remaining template practice
+acceptance, complete PR review and genuine authorship floor remain unfinished.

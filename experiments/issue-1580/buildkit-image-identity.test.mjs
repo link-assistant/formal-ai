@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {mkdtempSync, readFileSync, writeFileSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
+import {join, resolve} from 'node:path';
 import test from 'node:test';
 import YAML from 'yaml';
 import {boundedCommand} from '../../js/server/bounded-command.mjs';
@@ -128,32 +128,45 @@ test('hosted outage injector delegates every unrelated Docker command unchanged'
   assert.equal(result.cleanup_complete,true);assert.match(result.stdout.toString(),/rejects only the exact canonical pull/u);
 });
 
-test('deliberate outage annotations are contained and unexpected setup failures remain fatal', async t => {
+test('the negative control changes only its known annotation inside the actual Node action process', async () => {
+  const expected = 'Error response from daemon: canonical registry unavailable in deliberate fallback control';
+  const original = '::error::' + expected + '\n';
+  const unrelated = '::error::Unexpected mirror or Docker failure\n';
+  const preload = resolve('experiments/issue-1580/buildkit-expected-outage.cjs');
+  for (const guarded of [false, true]) {
+    const script = 'process.stdout.write(' + JSON.stringify(original) + ');'
+      + 'process.stdout.write(' + JSON.stringify(unrelated) + ');process.exitCode=1;';
+    const result = await boundedCommand(process.execPath, [...(guarded ? ['--require', preload] : []), '-e', script], {
+      timeout: 10000, maxBuffer: 128 * 1024, env: {...process.env, NODE_OPTIONS: ''},
+    });
+    assert.equal(result.error, undefined, result.stderr?.toString());
+    assert.equal(result.status, 1, 'the real failed setup outcome must be preserved');
+    assert.equal(result.cleanup_complete, true);
+    const expectedOutput = guarded ? '::notice::Expected fallback control: ' + expected + '\n' : original;
+    assert.equal(result.stdout.toString(), expectedOutput + unrelated);
+  }
+});
+
+test('the fixture scopes annotation handling to fallback Node actions and rejects every unexpected outcome', async t => {
   const job = YAML.parse(readFileSync('.github/workflows/workflows.yml', 'utf8')).jobs['buildkit-bootstrap'];
-  const start = job.steps.find(step => step.id === 'expected-outage-annotations');
-  const finish = job.steps.find(step => step.name === 'Resume annotations after the expected outage');
-  assert(start && finish, 'a deliberate failed action must not leave a failure annotation on a passing check');
-  assert.equal(start['timeout-minutes'], 1);
-  assert.equal(finish.if, "always() && steps.expected-outage-annotations.outcome == 'success'");
+  assert(!job.steps.some(step => step.run?.includes('::stop-commands::')), 'command state cannot cross an action step boundary');
+  const fallback = job.steps.find(step => step.id === 'fallback');
+  assert.equal(fallback.env.NODE_OPTIONS, '--require=${{ github.workspace }}/experiments/issue-1580/buildkit-expected-outage.cjs');
+  assert.equal(job.steps.find(step => step.id === 'initial').env?.NODE_OPTIONS, undefined);
+  assert.equal(fallback['continue-on-error'], undefined);
+  const finish = job.steps.find(step => step.name === 'Check the fallback control outcome');
+  assert.equal(finish.if, 'always()');
   assert.equal(finish.env.OUTCOME, '${{ steps.fallback.outcome }}');
-  const before = job.steps.indexOf(start), after = job.steps.indexOf(finish);
-  assert.equal(after - before, 2, 'only the deliberate negative-control action is inside the command boundary');
-  assert.equal(job.steps[before + 1].id, 'fallback');
-  assert.equal(job.steps[before + 1]['continue-on-error'], undefined);
-  const stopped = await shell(t, start, {});
-  assert.equal(stopped.status, 0);
-  assert.match(stopped.outputs.token, /^[a-f0-9-]{36}$/u);
-  assert.equal(stopped.stdout, '::stop-commands::' + stopped.outputs.token + '\n');
   for (const outcome of ['success', 'failure', 'cancelled', 'skipped', '']) {
-    const resumed = await shell(t, finish, {TOKEN: stopped.outputs.token, OUTCOME: outcome});
-    assert(resumed.stdout.startsWith('::' + stopped.outputs.token + '::\n'));
+    const checked = await shell(t, finish, {OUTCOME: outcome});
     if (outcome === 'success') {
-      assert.equal(resumed.status, 0);
-      assert.match(resumed.stdout, /::notice::Expected canonical pull outage/u);
+      assert.equal(checked.status, 0);
+      assert.match(checked.stdout, /::notice::Expected canonical pull outage/u);
     } else {
-      assert.notEqual(resumed.status, 0, 'unexpected outcomes stay fatal after annotations resume');
-      assert.match(resumed.stdout, /::error::BuildKit fallback control failed/u);
+      assert.notEqual(checked.status, 0);
+      assert.match(checked.stdout, /::error::BuildKit fallback control failed/u);
     }
   }
-  assert(after < job.steps.findIndex(step => step.run?.startsWith('python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify ') && step.run.includes(' mirror ')), 'real image and daemon verification runs with normal annotations');
+  assert(job.steps[0].with['sparse-checkout'].split('\n').includes('/experiments/issue-1580/buildkit-expected-outage.cjs'));
+  assert(job.steps.indexOf(finish) < job.steps.findIndex(step => step.run?.startsWith('python3 experiments/issue-1580/buildkit-bootstrap-probe.py verify ') && step.run.includes(' mirror ')));
 });

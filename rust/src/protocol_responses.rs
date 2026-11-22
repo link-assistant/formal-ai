@@ -96,7 +96,9 @@ pub fn response_arguments_for_tool(
         return arguments;
     };
     if properties.get("description").is_some_and(|property| {
-        property.get("default").is_none() && property.get("const").is_none()
+        property.get("default").is_none()
+            && property.get("const").is_none()
+            && property.get("enum").is_none()
     }) && !source.contains_key("description")
         && crate::agentic_coding::planner::tool_capability(tool_name)
             == Some(crate::agentic_coding::planner::Capability::Run)

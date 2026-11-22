@@ -216,6 +216,8 @@ pub const MEANINGS_NUMBER_WORDS_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-number-words.lino");
 pub const MEANINGS_OBJECT_SHAPES_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-object-shapes.lino");
+pub const MEANINGS_OCCUPATIONS_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-occupations.lino");
 pub const MEANINGS_ONTOLOGY_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-ontology.lino");
 pub const MEANINGS_PLAYWRIGHT_LINO: &str =
@@ -326,6 +328,8 @@ pub const MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-client-config.lino");
 pub const MULTILINGUAL_RESPONSES_CODE_TASKS_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-code-tasks.lino");
+pub const MULTILINGUAL_RESPONSES_COMPOSITION_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-composition.lino");
 pub const MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-concept-lookup.lino");
 pub const MULTILINGUAL_RESPONSES_CONVERSATION_RECALL_LINO: &str =
@@ -374,6 +378,8 @@ pub const MULTILINGUAL_RESPONSES_PRODUCT_SEARCH_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-product-search.lino");
 pub const MULTILINGUAL_RESPONSES_QUANTITIES_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-quantities.lino");
+pub const MULTILINGUAL_RESPONSES_QUANTITY_CONSTRAINT_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-quantity-constraint.lino");
 pub const MULTILINGUAL_RESPONSES_REPAIR_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-repair.lino");
 pub const MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO: &str =
@@ -497,6 +503,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_CAPABILITIES_LINO,
     MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO,
     MULTILINGUAL_RESPONSES_CODE_TASKS_LINO,
+    MULTILINGUAL_RESPONSES_COMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,
     MULTILINGUAL_RESPONSES_CONVERSATION_RECALL_LINO,
     MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO,
@@ -521,6 +528,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
     MULTILINGUAL_RESPONSES_PRODUCT_SEARCH_LINO,
     MULTILINGUAL_RESPONSES_QUANTITIES_LINO,
+    MULTILINGUAL_RESPONSES_QUANTITY_CONSTRAINT_LINO,
     MULTILINGUAL_RESPONSES_REPAIR_LINO,
     MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
@@ -594,6 +602,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_NUMBER_CONSTRAINTS_LINO,
     MEANINGS_NUMBER_WORDS_LINO,
     MEANINGS_OBJECT_SHAPES_LINO,
+    MEANINGS_OCCUPATIONS_LINO,
     MEANINGS_ONTOLOGY_LINO,
     MEANINGS_PLAYWRIGHT_LINO,
     MEANINGS_POLICY_LINO,
