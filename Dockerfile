@@ -78,7 +78,7 @@ FROM konard/box-dind:2.10.2
 LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai"
 
 ENV HOME=/home/box \
-    FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
+    FORMAL_AI_MEMORY_PATH=/home/box/.formal-ai/memory.lino \
     FORMAL_AI_IMAGE_VARIANT=dind \
     FORMAL_AI_START_ISOLATION=docker \
     FORMAL_AI_START_RUNNER="$ --isolated docker --auto-remove-docker-container --" \
@@ -132,9 +132,11 @@ COPY scripts/verify-docker-runtime.sh /usr/local/bin/verify-formal-ai-dind
 COPY scripts/verify-docker-slim-runtime.sh /usr/local/bin/verify-formal-ai-slim
 RUN chmod 0755 /usr/local/bin/formal-ai /usr/local/bin/verify-formal-ai-dind /usr/local/bin/verify-formal-ai-slim && \
     formal-ai --version
+# The DinD entrypoint runs commands as box. New volumes inherit this ownership.
+RUN install -d -m 0700 -o box -g box /home/box/.formal-ai
 
 EXPOSE 8080
-VOLUME ["/var/lib/docker", "/root/.formal-ai"]
+VOLUME ["/var/lib/docker", "/home/box/.formal-ai"]
 SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["/usr/local/bin/dind-entrypoint.sh"]
 CMD ["formal-ai", "telegram", "--mode", "polling"]

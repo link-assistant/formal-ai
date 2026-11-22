@@ -49,7 +49,17 @@ fn with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt() {
         ("gemini", vec!["-m", "formal-ai", "--verbose", "-p", "hi"]),
         (
             "claude",
-            vec!["--model", "formal-ai", "--verbose", "--print", "hi"],
+            vec![
+                "--allowedTools",
+                "Read,Glob,Grep,WebFetch,WebSearch",
+                "--model",
+                "formal-ai",
+                "--permission-mode",
+                "default",
+                "--verbose",
+                "--print",
+                "hi",
+            ],
         ),
         (
             "qwen",
@@ -243,8 +253,12 @@ fn with_formal_ai_forwards_caller_delimited_and_repeated_unknown_flags() {
                 "research the part",
             ],
             vec![
+                "--allowedTools",
+                "Read,Glob,Grep,WebFetch,WebSearch",
                 "--model",
                 "formal-ai",
+                "--permission-mode",
+                "default",
                 "--mcp-config",
                 "/tmp/formal-ai-mcp.json",
                 "--strict-mcp-config",

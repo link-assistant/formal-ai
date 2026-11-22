@@ -36,6 +36,26 @@ test('both image variants ship and run the greeting and issue form smoke', () =>
   'FORMAL_AI_OFFLINE=1', 'FORMAL_AI_MEMORY_PATH="$smoke_home/memory.lino"',
   'FORMAL_AI_SOURCE_CACHE_DIR="$smoke_home/sources"']) assert(smoke.includes(required));
 });
+test('DinD memory path from main run 45001543202 is writable by the box runtime user', () => {
+ const directory = '/home/box/.formal-ai';
+ const settings = `FORMAL_AI_MEMORY_PATH=${directory}/memory.lino`;
+ const volume = `VOLUME ["/var/lib/docker", "${directory}"]`;
+ const ownership = `RUN install -d -m 0700 -o box -g box ${directory}`;
+ assert(source.includes(settings), 'the full image must keep its default memory under the runtime home');
+ assert(slimSource.includes(settings), 'both variants must use the same memory file');
+ assert(source.includes(volume), 'Docker must persist the new default directory');
+ const createDirectory = source.indexOf(ownership);
+ assert(createDirectory > source.lastIndexOf('USER root') && createDirectory < source.indexOf(volume),
+  'the root build stage must set permissions before Docker initializes a fresh volume');
+
+ const compose = readFileSync(new URL('../../../compose.yaml', import.meta.url), 'utf8');
+ const desktop = readFileSync(new URL('../../../desktop/lib/shared-memory.cjs', import.meta.url), 'utf8');
+ assert.deepEqual([...compose.matchAll(/FORMAL_AI_MEMORY_PATH: (.+)/g)].map(match => match[1]),
+  Array(3).fill(`${directory}/memory.lino`));
+ assert.deepEqual([...compose.matchAll(/\$\{HOME\}\/\.formal-ai:(.+)/g)].map(match => match[1]),
+  Array(3).fill(directory));
+ assert.equal(desktop.match(/const CONTAINER_MEMORY_DIRECTORY = "(.+)"/)?.[1], directory);
+});
 test('Node18 regression is rejected in both images',()=>{
  for(const [text,slim] of [[source,false],[slimSource,true]])assert.throws(()=>contract(text.replace('node:26.12.0-bookworm-slim','node:18.19.1-bookworm-slim'),slim));
 });

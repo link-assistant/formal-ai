@@ -91,7 +91,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1',
     coldRuntimeSmoke, ...nativeReplays, codexReplay, gatewayReplay, clientReportReplay]);
   assert.deepEqual(check.steps.find(step => step.name === 'Verify calendar, currency, forced OpenAI function, CNL and T3 Code behavior').env,
-    {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
+    {CARGO_BUILD_JOBS: '2'}, 'the CLI replays inherit the optimized Cargo test profile');
   for (const command of [...nativeReplays, clientReportReplay]) {
     assert.deepEqual(check.steps.find(step => step.run === command).env,
       {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});

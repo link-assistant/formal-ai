@@ -31,6 +31,11 @@ serve_pid=$!
 
 ready=false
 for _ in $(seq 1 30); do
+  if ! kill -0 "$serve_pid" 2>/dev/null; then
+    status=0
+    wait "$serve_pid" || status=$?
+    fail "serve exited with status $status before /health (memory path: $smoke_home/memory.lino)"
+  fi
   if curl -fsS "http://127.0.0.1:$port/health" >/dev/null 2>&1; then
     ready=true
     break
