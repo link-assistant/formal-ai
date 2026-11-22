@@ -1,12 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync, readdirSync} from 'node:fs';
+import {readFileSync, readdirSync, mkdtempSync, writeFileSync, unlinkSync, mkdirSync, rmSync} from 'node:fs';
 import YAML from 'yaml';
 import {checkDocumentationPolicy, filteredWorkflow, lightweightWorkflows, contextReportingWorkflows} from '../../../scripts/documentation-only-ci-policy.mjs';
 import {applicableWorkflows} from '../../../scripts/lib/hive-delivery-admission.mjs';
 import {documentationOnlyPullRequest} from '../../../scripts/lib/documentation-paths.mjs';
 import {Script} from 'node:vm';
-import {posix} from 'node:path';
+import {posix, join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {documentationProblems, requirements as requiredDocumentation} from '../../../scripts/check-required-documentation.mjs';
+import {spawnSync} from 'node:child_process';
 const workflows = readdirSync('.github/workflows').filter(name => name.endsWith('.yml')).map(name => ({path: '.github/workflows/' + name, document: YAML.parse(readFileSync('.github/workflows/' + name, 'utf8'))}));
 test('heavy triggers are filtered while required PR context reporters remain admitted', () => {
   assert.ok(checkDocumentationPolicy() > 10);
@@ -70,7 +73,7 @@ test('read-only documentation checkout retains no push credentials', () => {
 
 test('documentation acquisition is bounded without narrowing policy inputs or changing its checks', () => {
   const job=workflows.find(workflow=>workflow.path.endsWith('/documentation-policy.yml')).document.jobs['documentation-policy'];
-  const expectedInputs="/.github/workflows/\n/scripts/documentation-only-ci-policy.mjs\n/scripts/lib/documentation-paths.mjs\n/scripts/lib/hive-delivery-admission.mjs\n/scripts/documentation-policy-dependencies/\n/rust/tests/web/documentation-only-ci-policy.test.mjs\n/package.json\n";
+  const expectedInputs="/.github/workflows/\n/scripts/documentation-only-ci-policy.mjs\n/scripts/lib/documentation-paths.mjs\n/scripts/lib/hive-delivery-admission.mjs\n/scripts/documentation-policy-dependencies/\n/rust/tests/web/documentation-only-ci-policy.test.mjs\n/package.json\n/scripts/check-required-documentation.mjs\n/data/meta/required-documentation.json\n/README.md\n/CONTRIBUTING.md\n/CHANGELOG.md\n";
   function check(value){
     assert.equal(value['timeout-minutes'],3);
     const checkouts=value.steps.filter(step=>step.uses?.startsWith('actions/checkout@'));
@@ -84,7 +87,8 @@ test('documentation acquisition is bounded without narrowing policy inputs or ch
     assert.deepEqual(value.steps.slice(1),[
       {uses:'actions/setup-node@v7',with:{'node-version':'22'}},
       {run:'npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies'},
-      {run:'mkdir -p node_modules\nln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml\nnode --test rust/tests/web/documentation-only-ci-policy.test.mjs\n'}
+      {run:'mkdir -p node_modules\nln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml\nnode --test rust/tests/web/documentation-only-ci-policy.test.mjs\n'},
+      {run:'node scripts/check-required-documentation.mjs'}
     ]);
   }
   check(job);
@@ -130,6 +134,7 @@ test('documentation sparse inputs cover the static policy closure and locked par
   }
   assert.deepEqual([...visited].sort(),[
     'rust/tests/web/documentation-only-ci-policy.test.mjs',
+    'scripts/check-required-documentation.mjs',
     'scripts/documentation-only-ci-policy.mjs',
     'scripts/lib/documentation-paths.mjs',
     'scripts/lib/hive-delivery-admission.mjs'
@@ -138,6 +143,7 @@ test('documentation sparse inputs cover the static policy closure and locked par
   assert.ok(patterns.includes('/.github/workflows/'),'complete workflow census required');
   for(const file of ['package.json','scripts/documentation-policy-dependencies/package.json',
     'scripts/documentation-policy-dependencies/package-lock.json'])assert.ok(covered(file),file);
+  for (const file of ['data/meta/required-documentation.json', ...Object.keys(requiredDocumentation)]) assert.ok(covered(file), file);
   const dependency=JSON.parse(readFileSync('scripts/documentation-policy-dependencies/package.json','utf8'));
   const lock=JSON.parse(readFileSync('scripts/documentation-policy-dependencies/package-lock.json','utf8'));
   assert.deepEqual(Object.keys(dependency.dependencies),['yaml']);
@@ -207,4 +213,47 @@ test('context reporter exemption preserves push filtering and does not apply to 
   assert.equal(reporter.on.pull_request, null);
   const other = YAML.parse(filteredWorkflow(source, {file: 'another-heavy-workflow.yml'}));
   assert.ok(other.on.pull_request['paths-ignore'].includes('docs/**'));
+});
+
+test('required public documentation is present with the declared level-two sections', () => {
+  assert.deepEqual(documentationProblems(), []);
+});
+
+test('missing files and headings cannot be replaced by prose, code examples or deeper headings', () => {
+  const root = mkdtempSync(join(tmpdir(), 'required-documentation-'));
+  const contract = {'README.md': ['Install', 'Quick Start'], 'CONTRIBUTING.md': ['Development Setup'], 'CHANGELOG.md': []};
+  try {
+    writeFileSync(join(root, 'README.md'), '# Guide\n## Install\n## Quick Start\n');
+    writeFileSync(join(root, 'CONTRIBUTING.md'), '## Development Setup\n');
+    writeFileSync(join(root, 'CHANGELOG.md'), '# Changelog\n');
+    assert.deepEqual(documentationProblems(root, contract), []);
+    for (const file of Object.keys(contract)) {
+      const target = join(root, file), original = readFileSync(target);
+      unlinkSync(target);
+      assert.deepEqual(documentationProblems(root, contract), [file + ': cannot read required documentation (ENOENT)']);
+      writeFileSync(target, original);
+    }
+    for (const replacement of [
+      'Quick Start is described here', '### Quick Start', '## Quick Starting',
+      '```markdown\n## Quick Start\n```', '~~~\n## Quick Start\n~~~',
+      '````markdown\n```\n## Quick Start\n```\n````',
+      '```markdown\n~~~\n## Quick Start\n~~~\n```',
+      '    ## Quick Start',
+    ]) {
+      writeFileSync(join(root, 'README.md'), '## Install\n' + replacement + '\n');
+      assert.deepEqual(documentationProblems(root, contract), ['README.md: missing required heading "## Quick Start"'], replacement);
+    }
+    writeFileSync(join(root, 'README.md'), '## Install\r\n  ## Quick Start ###\r\n');
+    assert.deepEqual(documentationProblems(root, contract), []);
+    unlinkSync(join(root, 'CHANGELOG.md'));mkdirSync(join(root, 'CHANGELOG.md'));
+    assert.match(documentationProblems(root, contract)[0], /^CHANGELOG\.md: cannot read required documentation/u);
+  } finally { rmSync(root, {recursive:true, force:true}); }
+});
+
+test('required documentation uses one contract for listing and execution', () => {
+  const run = spawnSync(process.execPath, ['scripts/check-required-documentation.mjs', '--list'], {encoding:'utf8', timeout:5000});
+  assert.equal(run.status, 0, run.stderr);
+  assert.deepEqual(JSON.parse(run.stdout), requiredDocumentation);
+  const invalid = spawnSync(process.execPath, ['scripts/check-required-documentation.mjs', '--unknown'], {encoding:'utf8', timeout:5000});
+  assert.equal(invalid.status, 2);
 });

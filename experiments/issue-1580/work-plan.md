@@ -1063,3 +1063,10 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Reproduce the environment-command routing gap, improve the shared generic classifier, regenerate its package mirror and execute the unchanged original request. All three regression controls pass; supplied authorship credit remains zero.
 - [x] Read the complete 53 changed workflow/configuration diffs, repair the newly discovered audit-source trigger omission and prove the added assertion fails before and all six controls pass afterward. Preserve exact source/diff hashes and an explicit incomplete aggregate-review boundary.
 - [ ] Qualify this source with all fresh hosted checks and finish the original strict/practice acceptance, complete aggregate review and genuine independent-authorship floor. Keep the PR draft and unmerged until verified.
+
+
+### 2026-11-22: reconcile required-documentation practice
+
+- [x] Inspect the pinned template documentation checker and current workflow; confirm current checks do not enforce required public files and headings.
+- [x] Add one shared documentation requirement contract, 35 passing documentation observations, actual missing-document before/after controls and local/hosted admission. Full next-batch inventory and hosted execution remain pending.
+- [ ] Continue original eight-step verifier-failure reconciliation without increasing the budget or discarding source ownership.

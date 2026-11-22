@@ -182,3 +182,20 @@ JavaScript schedule. Original strict/practice acceptance, genuine independent
 authorship and complete aggregate review remain unfinished. The PR stays draft
 and unmerged. The independent reasoning target remains 0/20 and is distinct
 from the CONTRIBUTING.md 20% real authored-leaf requirement.
+
+
+## Required public documentation practice (next batch)
+
+The pinned Rust template checks required public files and level-two headings;
+the current documentation workflow checked workflow-admission policy only. A
+finite workspace without README.md, CONTRIBUTING.md or CHANGELOG.md passes that
+actual policy checker. The new shared documentation contract correctly reports
+all three missing files. It also rejects headings present only in prose, code
+fences, deeper headings or longer section names. Both listing and enforcement
+consume the same contract. All 35 documentation-policy/regression observations
+pass locally; the existing lightweight job retains its acquisition bounds,
+read-only checkout and parser closure while adding the documents and checker.
+The new local gate passes. Hosted qualification and the full next-batch gate
+inventory remain pending; this does not complete the wider practice inventory.
+The [original observations and procedures](../../../experiments/issue-1580/evidence/checks/required-documentation/manifest.json)
+retain exact bytes and hashes. Supplied authorship credit remains zero.

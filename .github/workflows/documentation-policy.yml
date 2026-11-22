@@ -41,6 +41,11 @@ jobs:
             /scripts/documentation-policy-dependencies/
             /rust/tests/web/documentation-only-ci-policy.test.mjs
             /package.json
+            /scripts/check-required-documentation.mjs
+            /data/meta/required-documentation.json
+            /README.md
+            /CONTRIBUTING.md
+            /CHANGELOG.md
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v7
         with:
@@ -51,3 +56,4 @@ jobs:
           mkdir -p node_modules
           ln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml
           node --test rust/tests/web/documentation-only-ci-policy.test.mjs
+      - run: node scripts/check-required-documentation.mjs

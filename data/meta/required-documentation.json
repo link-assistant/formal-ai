@@ -1,0 +1,5 @@
+{
+  "README.md": ["Install", "Quick Start", "Development"],
+  "CONTRIBUTING.md": ["Development Setup", "Pull Request Process", "Changelog Management"],
+  "CHANGELOG.md": []
+}
