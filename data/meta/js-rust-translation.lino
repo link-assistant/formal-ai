@@ -14,36 +14,36 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
-  modules 163
-  translated_items 342
-  workaround_items 38
+  modules 164
+  translated_items 346
+  workaround_items 37
   inferred_signatures 3
-  carried_items 2655
-  translated_modules 114
+  carried_items 2660
+  translated_modules 115
   fully_translated_modules 1
   refused_modules 49
 workaround array-push items 2
 workaround callback-loops items 1
-workaround import-pruning items 13
+workaround import-pruning items 12
 workaround string-methods items 25
 module js/agentic/crate/algorithm_discovery.mjs translated 6 workaround 1 inferred 0 carried 39
 module js/agentic/crate/associative_persistence.mjs translated 1 workaround 0 inferred 0 carried 7
 module js/agentic/crate/calculation.mjs translated 0 workaround 0 inferred 0 carried 2
 module js/agentic/crate/capability_routing.mjs translated 7 workaround 0 inferred 0 carried 66
-module js/agentic/crate/change_request.mjs translated 1 workaround 1 inferred 0 carried 15
+module js/agentic/crate/change_request.mjs translated 1 workaround 1 inferred 0 carried 14
 module js/agentic/crate/client_contract_learning.mjs translated 0 workaround 1 inferred 0 carried 15
 module js/agentic/crate/cnl_grammar.mjs translated 3 workaround 0 inferred 0 carried 33
 module js/agentic/crate/cnl_output.mjs translated 2 workaround 1 inferred 0 carried 31
-module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 27
+module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 26
 module js/agentic/crate/coding_cjk.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 32
 module js/agentic/crate/command_output_contract.mjs translated 0 workaround 0 inferred 0 carried 2
-module js/agentic/crate/computer_use.mjs translated 2 workaround 0 inferred 0 carried 14
-module js/agentic/crate/computer_use_induction.mjs translated 4 workaround 0 inferred 0 carried 22
+module js/agentic/crate/computer_use.mjs translated 3 workaround 0 inferred 0 carried 18
+module js/agentic/crate/computer_use_induction.mjs translated 4 workaround 0 inferred 0 carried 20
 module js/agentic/crate/computer_use_lexicon.mjs translated 5 workaround 0 inferred 0 carried 14
 module js/agentic/crate/computer_use_planner.mjs translated 2 workaround 0 inferred 0 carried 10
 module js/agentic/crate/computer_use_seed.mjs translated 2 workaround 0 inferred 0 carried 27
-module js/agentic/crate/computer_use_synthesis.mjs translated 2 workaround 3 inferred 0 carried 13
+module js/agentic/crate/computer_use_synthesis.mjs translated 3 workaround 2 inferred 0 carried 12
 module js/agentic/crate/concept_lookup.mjs translated 1 workaround 0 inferred 0 carried 12
 module js/agentic/crate/concepts_lookup.mjs translated 0 workaround 0 inferred 0 carried 3
 module js/agentic/crate/concise_dependency_restatement.mjs translated 0 workaround 0 inferred 0 carried 6
@@ -59,7 +59,7 @@ module js/agentic/crate/engine_stable_identifier.mjs translated 2 workaround 0 i
 module js/agentic/crate/es_tokenizer.mjs translated 6 workaround 0 inferred 0 carried 13
 module js/agentic/crate/event_log.mjs translated 3 workaround 0 inferred 0 carried 10
 module js/agentic/crate/execution_evidence.mjs translated 0 workaround 0 inferred 0 carried 11
-module js/agentic/crate/fact_derivation.mjs translated 3 workaround 0 inferred 0 carried 22
+module js/agentic/crate/fact_derivation.mjs translated 3 workaround 0 inferred 0 carried 19
 module js/agentic/crate/failure_reporting.mjs translated 0 workaround 0 inferred 0 carried 4
 module js/agentic/crate/formalization_concept_links.mjs translated 0 workaround 0 inferred 0 carried 10
 module js/agentic/crate/formalization_concepts.mjs translated 0 workaround 0 inferred 0 carried 21
@@ -67,6 +67,7 @@ module js/agentic/crate/formalization_grammar.mjs translated 1 workaround 0 infe
 module js/agentic/crate/formalization_needs.mjs translated 1 workaround 0 inferred 0 carried 10
 module js/agentic/crate/formalization_segment.mjs translated 1 workaround 0 inferred 0 carried 18
 module js/agentic/crate/formalization_structures.mjs translated 0 workaround 0 inferred 0 carried 10
+module js/agentic/crate/google_trends_feed.mjs translated 2 workaround 0 inferred 0 carried 8
 module js/agentic/crate/history_context.mjs translated 5 workaround 0 inferred 0 carried 18
 module js/agentic/crate/history_github.mjs translated 1 workaround 0 inferred 0 carried 17
 module js/agentic/crate/history_lineage.mjs translated 3 workaround 0 inferred 0 carried 8
@@ -143,7 +144,7 @@ module js/agentic/crate/seed_shell_intents.mjs translated 2 workaround 0 inferre
 module js/agentic/crate/seed_terminal_commands.mjs translated 0 workaround 0 inferred 0 carried 6
 module js/agentic/crate/selection_heuristics_triz.mjs translated 5 workaround 0 inferred 1 carried 21
 module js/agentic/crate/self_ast_census.mjs translated 3 workaround 0 inferred 0 carried 14
-module js/agentic/crate/self_explanation.mjs translated 0 workaround 0 inferred 0 carried 8
+module js/agentic/crate/self_explanation.mjs translated 0 workaround 0 inferred 0 carried 10
 module js/agentic/crate/self_source_links.mjs translated 3 workaround 1 inferred 0 carried 16
 module js/agentic/crate/sequences.mjs translated 1 workaround 0 inferred 0 carried 8
 module js/agentic/crate/skill_compiler.mjs translated 2 workaround 0 inferred 0 carried 12
@@ -151,7 +152,7 @@ module js/agentic/crate/skill_procedure.mjs translated 10 workaround 0 inferred 
 module js/agentic/crate/skill_procedure_artifact.mjs translated 1 workaround 1 inferred 0 carried 18
 module js/agentic/crate/solver_event_projection.mjs translated 8 workaround 0 inferred 0 carried 8
 module js/agentic/crate/solver_formalization.mjs translated 4 workaround 0 inferred 0 carried 21
-module js/agentic/crate/solver_handlers_benchmark_prompts.mjs translated 1 workaround 0 inferred 0 carried 11
+module js/agentic/crate/solver_handlers_benchmark_prompts.mjs translated 1 workaround 0 inferred 0 carried 10
 module js/agentic/crate/solver_handlers_task_decomposition.mjs translated 7 workaround 0 inferred 0 carried 13
 module js/agentic/crate/solver_handlers_web_search.mjs translated 1 workaround 0 inferred 0 carried 75
 module js/agentic/crate/solver_search.mjs translated 1 workaround 0 inferred 0 carried 5
@@ -189,45 +190,45 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 7
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
-refusal "import of names its module does not translate" 358
-refusal "JSDoc type {…}" 220
+refusal "import of names its module does not translate" 360
+refusal "JSDoc type {…}" 218
 refusal "import from '…'" 217
-refusal "null" 194
-refusal "arrow function" 144
-refusal "type: unknown name (a sibling item or an import)" 125
+refusal "null" 195
+refusal "arrow function" 142
+refusal "type: unknown name (a sibling item or an import)" 124
 refusal "function value …" 113
-refusal "object without a $ tag" 104
-refusal "new expression" 97
-refusal "regular expression" 68
-refusal "method call .find()" 65
-refusal "method call .map()" 61
-refusal "method call .filter()" 60
-refusal "method call .split()" 60
-refusal "method call .some()" 51
+refusal "object without a $ tag" 102
+refusal "new expression" 100
+refusal "regular expression" 69
+refusal "method call .find()" 64
+refusal "method call .split()" 63
+refusal "method call .filter()" 61
+refusal "method call .map()" 60
+refusal "method call .some()" 52
 refusal "method call .slice()" 48
 refusal "Array.from" 47
 refusal "method call .push()" 38
+refusal "optional chaining" 35
 refusal "method call .indexOf()" 34
-refusal "field access" 33
-refusal "optional chaining" 33
-refusal "nullish coalescing" 32
+refusal "field access" 32
+refusal "nullish coalescing" 31
 refusal "method call .replace()" 28
 refusal "export …" 23
-refusal "syntax: malformed number" 21
+refusal "syntax: malformed number" 22
 refusal "method call .every()" 19
 refusal "try statement" 19
 refusal "case test" 18
 refusal "undefined" 18
 refusal "syntax: @param needs a type and a name" 16
+refusal "typeof operator" 16
 refusal "method call .flatMap()" 15
-refusal "typeof operator" 15
 refusal "method call .join()" 13
 refusal "for with const" 12
+refusal "namespace property …" 12
 refusal "method call .codePointAt()" 11
-refusal "namespace property …" 11
 refusal "object spread" 11
+refusal "array destructuring" 10
 refusal "method call .reduce()" 10
-refusal "array destructuring" 9
 refusal "assignment" 9
 refusal "destructured parameter" 9
 refusal "syntax: unterminated string literal" 9
@@ -275,7 +276,6 @@ refusal "function statement" 1
 refusal "in operator" 1
 refusal "label …" 1
 refusal "method call .attempt()" 1
-refusal "method call .codingOracleKnowsLanguage()" 1
 refusal "method call .createDirAll()" 1
 refusal "method call .dirname()" 1
 refusal "method call .handlerRulesDocument()" 1
@@ -300,7 +300,6 @@ refusal "syntax: unsupported template escape \r" 1
 refusal "syntax: unsupported template escape \u" 1
 refusal "top-level statement" 1
 refusal "type: function value ASSUMED_TRUE_PRIOR: functions and namespaces are only portable when a function is called" 1
-refusal "type: function value CANONICAL_TARGET_MODULE: functions and namespaces are only portable when a function is called" 1
 refusal "type: function value DEFAULT_SPLIT_DEPTH_BOUND: functions and namespaces are only portable when a function is called" 1
 refusal "type: function value DERIVATIONS_DIR: functions and namespaces are only portable when a function is called" 1
 refusal "type: function value HAN: functions and namespaces are only portable when a function is called" 1

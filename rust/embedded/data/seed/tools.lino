@@ -446,21 +446,20 @@ tools_registry
       note "在隔离工作区运行一个结构化白名单操作；拒绝任意 shell 语法。"
   tool tool_http_fetch_primitive
     name http.fetch
-    note "Fetch a structured GET response and persist cache provenance; deterministic benchmarks use recorded fixture URLs."
+    note "Fetch a GET response from a permitted origin and verify the stored response bytes."
     mode agent
     inputs ("url" "save_as" "plan_id" "step_id" "precondition" "postcondition")
     outputs ("status" "body" "headers" "sha256" "cache_path" "provenance")
     isolation permissioned-network
     permission "tool:computer:http.fetch"
     localized ru
-      name http.fetch
-      note "Получает структурированный GET-ответ и сохраняет происхождение кэша; benchmark использует записанные fixture URL."
+      note "Получает GET-ответ с разрешённого источника и проверяет сохранённые байты."
     localized hi
-      name http.fetch
-      note "structured GET response लाता और cache provenance रखता है; benchmark recorded fixture URL उपयोग करता है।"
+      note "अनुमत origin से GET response लेता है और सहेजे गए bytes की जाँच करता है।"
     localized zh
-      name http.fetch
-      note "获取结构化 GET 响应并保存缓存来源；基准使用已记录的 fixture URL。"
+      note "从允许的源获取 GET 响应并验证保存的字节。"
+    localized es
+      note "Obtiene una respuesta GET de un origen autorizado y verifica los bytes guardados."
   tool tool_http_post_primitive
     name http.post
     note "Submit a structured POST request after explicit confirmation and persist response provenance."

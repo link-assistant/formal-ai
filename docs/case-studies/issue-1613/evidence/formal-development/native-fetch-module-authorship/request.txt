@@ -1,0 +1,1 @@
+Delete line 26 from rust/src/solver_handlers/modules.rs.

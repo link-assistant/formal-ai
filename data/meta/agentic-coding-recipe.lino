@@ -2,8 +2,8 @@ agentic_coding_meta_recipe
   record_type "meta_recipe"
   topic "agentic_coding"
   title "Agentic-coding task loop"
-  summary "Machine-readable recipe for the deterministic agentic-coding loop (issue #468): how our Formal AI solves a task in agentic mode by emitting tool_calls, executing them, understanding tool errors, and looping to a finished Links Notation knowledge base — with no neural inference and no live network. The recipe is grounded: tests/unit/specification/agentic_meta_algorithm.rs asserts the real source still matches every constant, tool, capability, stage, function, primitive, bound, and exposure surface listed here, so this file always describes how the live agentic loop was produced."
-  generalization "To make the Formal AI solve a new task in agentic mode, instantiate the eight ordered steps below: recognise the task class from the latest user turn by its seeded formalize verb, derive the plan from the task's own unresolved needs rather than a pinned search, classify whatever tools the agentic CLI advertised into capabilities by substring (so any CLI works), plan each step as a pure function of conversation history (the search → fetch → write → run → final state machine), observe tool errors and fall back deterministically, wire the planner into the OpenAI-compatible server behind the agent-mode and permission gates, grant the client-executed tool capabilities through an associative package, and execute the loop with an offline driver and corpus bounded by a hard turn cap — then pin it all with a CLI subcommand, an example, and integration tests."
+  summary "Machine-readable recipe for the deterministic agentic-coding loop (issue #468): how our Formal AI solves a task in agentic mode by emitting tool_calls, executing them, understanding tool errors, and looping to a finished Links Notation knowledge base using symbolic inference and publisher evidence. The recipe is grounded: tests/unit/specification/agentic_meta_algorithm.rs asserts the real source still matches every constant, tool, capability, stage, function, primitive, bound, and exposure surface listed here, so this file always describes how the live agentic loop was produced."
+  generalization "To make the Formal AI solve a new task in agentic mode, instantiate the eight ordered steps below: recognise the task class from the latest user turn by its seeded formalize verb, derive the plan from the task's own unresolved needs rather than a pinned search, classify whatever tools the agentic CLI advertised into capabilities by substring (so any CLI works), plan each step as a pure function of conversation history (the search → fetch → write → run → final state machine), report missing or invalid publisher evidence, wire the planner into the OpenAI-compatible server behind the agent-mode and permission gates, grant the client-executed tool capabilities through an associative package, and execute the loop with the CLI and registered source client bounded by a hard turn cap — then pin it all with a CLI subcommand, an example, and integration tests."
 step_recognise_task
   record_type "meta_step"
   order "1"
@@ -16,7 +16,7 @@ step_derive_plan
   order "2"
   id "derive_plan"
   title "Derive the plan from the task's own unresolved needs"
-  detail "The source text is the one the task quotes or names, discovered by requested_formalization_source; the search query is built from the first surface concept_lookup::unknown_surfaces reports for that source, so retrieval chases what the task actually lacks. KB_PATH stays a named constant because it is an output path, not a knowledge claim; SEARCH_QUERY and CANONICAL_SOURCE_URL remain only as the regression fixture's source for the canonical tale (issue #1138 plan 04 L12)."
+  detail "Bind quoted caller text or identify a registered publication by title and publisher URL. For caller text, build a discovery query from a surface concept_lookup::unknown_surfaces reports. KB_PATH names the output artifact."
   seed_file "src/agentic_coding/formalization_recipe.rs"
 step_classify_tools
   record_type "meta_step"
@@ -36,8 +36,8 @@ step_understand_errors
   record_type "meta_step"
   order "5"
   id "understand_errors"
-  title "Understand tool errors and fall back deterministically"
-  detail "A fetch result that looks_like_error (error / failed / not found / 404) is not trusted as source text; the formalizer then falls back to the canonical synopsis so the loop still completes with a stable, all-nine-primitive knowledge base. This is the issue's `understand errors from tools` requirement."
+  title "Check source evidence before formalizing"
+  detail "A publication needs a completed result for its publisher URL with the correct title and a usable article body. If that evidence is absent or invalid, return the source gap before creating an artifact."
   seed_file "src/agentic_coding/formalization_recipe.rs"
 step_wire_server
   record_type "meta_step"
@@ -57,8 +57,8 @@ step_execute_loop
   record_type "meta_step"
   order "8"
   id "execute_loop"
-  title "Execute the loop with an offline driver and corpus, then expose it"
-  detail "run_agentic_task / run_agentic_task_in play an external agentic CLI: they advertise DRIVER_TOOLS, execute each emitted tool call (web_search/web_fetch against the offline corpus, write_file/run_command in a sandboxed AgentWorkspace), feed results back, and loop until finish_reason stop — bounded by MAX_TURNS. Expose it through a CLI subcommand, an example, and integration tests."
+  title "Execute the loop with the CLI and registered source client, then expose it"
+  detail "run_agentic_task / run_agentic_task_in play an external agentic CLI: they advertise DRIVER_TOOLS, execute each emitted tool call (web_search against source declarations, web_fetch through the bounded source client, write_file/run_command in a sandboxed AgentWorkspace), feed results back, and loop until finish_reason stop — bounded by MAX_TURNS. The CLI subcommand and example use the driver; tests supply published captures explicitly."
   seed_file "src/agentic_coding/driver.rs"
 constant_kb_path
   record_type "meta_constant"

@@ -179,7 +179,19 @@ pub(super) struct CalendarDate {
 }
 
 impl CalendarDate {
-    fn iso(self) -> String {
+    pub(super) fn from_iso(date: &str) -> Option<Self> {
+        let mut parts = date.split('-');
+        let year = parts.next()?.parse::<i64>().ok()?;
+        let month = parts.next()?.parse::<i64>().ok()?;
+        let day = parts.next()?.parse::<i64>().ok()?;
+        if !(1..=9999).contains(&year) || !(1..=12).contains(&month) || !(1..=31).contains(&day) {
+            return None;
+        }
+        let parsed = date_from_unix_days(month::days_from_civil(year, month, day));
+        (parsed.iso() == date).then_some(parsed)
+    }
+
+    pub(super) fn iso(self) -> String {
         format!("{:04}-{:02}-{:02}", self.year, self.month, self.day)
     }
 }

@@ -1,0 +1,27 @@
+✔ the committed module list is exactly the worker mirror directory (1893.890857ms)
+✔ worker modules are named after their subject, never numbered (1.893045ms)
+✔ the worker modules load in any order (6388.72358ms)
+✔ every coding handler executes the shared meta-algorithm (10570.76175ms)
+✔ cold workers discover and verify recurrences through publisher transports (3854.865227ms)
+✔ prompt normalization collapses whitespace and case (80.681137ms)
+✔ language detection recognises each supported script (1882.104936ms)
+✔ arithmetic is answered from the calculation handler (141.274263ms)
+✔ greetings are answered in the language they were written in (142.37341ms)
+✔ identity questions answer from the seeded agent info (165.506442ms)
+✔ an unknown prompt says so instead of inventing an answer (162.483273ms)
+✔ every answer carries a full impulse → formalize → deformalize trace (308.537207ms)
+✔ the formalization records the subject, verb and object it derived (52.605791ms)
+✔ at temperature 0 the same prompt always projects the same answer (360.501256ms)
+✔ above temperature 0 a repeated greeting stays a greeting (3201.070772ms)
+✔ the worker exposes its handlers through a single dispatch step (60.977441ms)
+✔ the seed corpus is hydrated from the shipped .lino files (37.059135ms)
+✔ the web-search component falls back when its bundle is unavailable (69.802833ms)
+✔ issue 989 dialog controls and associative-memory inspection preempt generic routes (2252.247898ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32597.869543

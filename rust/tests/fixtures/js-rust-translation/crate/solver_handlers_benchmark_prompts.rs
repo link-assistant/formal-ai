@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5acd3f70b43a3d2fab1f8a7af562553a0f08ebdc49232ba08be6b862265fb9ce bytes=2819
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=62ceabfc9dda8c36f98842f121dc0cf5f6211863356670a74f60b41ec804d679 bytes=2363
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=6
+// formal-ai:workarounds import-pruning items=0 carried=5
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -13,10 +13,6 @@ use crate::rust_str::lower as canonical_unary_lower;
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
-
-// formal-ai:workaround import-pruning carried JavaScript import_statement
-// formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate

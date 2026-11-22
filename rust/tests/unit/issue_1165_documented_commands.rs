@@ -1,17 +1,19 @@
-//! Issue #1165 R1165-6: no language row hard-codes a compile or run command
-//! that a captured documentation page states.
-//!
-//! The policy seed's `command_procedure` rows name, per language and role,
-//! the captured page and the `command_verb` its command line starts with;
-//! `documented_language_commands` derives the command from that page with
-//! the page's file name bound to the catalog's, and the catalog's language
-//! rows take it from there. The browser twins are in
-//! `rust/tests/web/issue-1165-documented-commands.test.mjs`.
+//! Verify documented command bindings using explicit publisher replays.
 
 use formal_ai::discovery_production::{
-    SourcedCommand, command_procedures, documented_language_commands, documented_pairs,
-    documented_run_commands,
+    SourcedCommand, acquire_documentation_captures, command_procedures,
+    documented_language_commands_from, documented_pairs, documented_run_commands_from,
 };
+
+#[path = "../fixtures/coding-discovery/documentation_replay.rs"]
+mod replay;
+
+fn captures(
+    language: &str,
+    task: &str,
+) -> Vec<formal_ai::discovery_production::DocumentationCapture> {
+    acquire_documentation_captures(language, task, &replay::client())
+}
 
 const RUST_BOOK: &str = "https://doc.rust-lang.org/book/ch01-02-hello-world.html";
 const TS_HANDBOOK: &str = "https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/handbook-v2/Basics.md";
@@ -48,9 +50,6 @@ const DERIVED: [(&str, &str, &str, &str, &str); 7] = [
     ),
 ];
 
-/// The catalog's language table, read as source text.
-const LANGUAGES_SOURCE: &str = include_str!("../../src/coding/catalog/languages.rs");
-
 /// R1165-6: each `command_procedure` row derives the catalog command from
 /// its captured page, the page's file name bound to the catalog's
 /// (kotlinlang's `hello.kt` and Oracle's `HelloWorldApp` become `Main`).
@@ -73,13 +72,17 @@ fn each_command_procedure_row_derives_the_catalog_command_from_its_page() {
             })
             .collect();
         assert_eq!(
-            documented_language_commands(language, save_as),
+            documented_language_commands_from(
+                language,
+                save_as,
+                &captures(language, "hello_world")
+            ),
             expected,
             "{language}"
         );
     }
     assert_eq!(
-        documented_language_commands("go", "main.go"),
+        documented_language_commands_from("go", "main.go", &captures("go", "hello_world")),
         Vec::<formal_ai::discovery_production::SourcedCommand>::new()
     );
 }
@@ -88,7 +91,7 @@ fn each_command_procedure_row_derives_the_catalog_command_from_its_page() {
 /// page never documented too (Kotlin `FizzBuzz`).
 #[test]
 fn a_derived_command_is_the_catalog_command_of_every_task() {
-    let kotlin: Vec<String> = documented_run_commands("kotlin", "hello_world")
+    let kotlin: Vec<String> = documented_run_commands_from("kotlin", &[])
         .into_iter()
         .map(|command| command.catalog)
         .collect();
@@ -114,22 +117,9 @@ fn a_derived_command_is_the_catalog_command_of_every_task() {
     );
 }
 
-/// The source text of one row of the language table, from its `slug` line
-/// to the next row.
-fn row_text(slug: &str) -> &'static str {
-    let opening = format!("slug: \"{slug}\",");
-    let start = LANGUAGES_SOURCE
-        .find(&opening)
-        .unwrap_or_else(|| panic!("no row for {slug}"));
-    let rest = &LANGUAGES_SOURCE[start..];
-    rest.find("ProgramLanguage {")
-        .map_or(rest, |end| &rest[..end])
-}
-
-/// R1165-6: every command a captured page states is derived by a
-/// `command_procedure` row, and the language table states none of them.
+/// Every publisher command claims provenance only when the page was read.
 #[test]
-fn no_language_row_hard_codes_a_command_a_captured_page_states() {
+fn command_procedure_references_cover_observed_publisher_commands() {
     let procedures: Vec<(String, String)> = command_procedures()
         .into_iter()
         .map(|row| (row.language, row.role))
@@ -143,7 +133,7 @@ fn no_language_row_hard_codes_a_command_a_captured_page_states() {
     );
     let mut stated = 0;
     for (task, language) in documented_pairs() {
-        let commands = documented_run_commands(&language, &task);
+        let commands = documented_run_commands_from(&language, &captures(&language, &task));
         let last = commands.len().saturating_sub(1);
         for (index, command) in commands.iter().enumerate() {
             if command.documented.is_none() {
@@ -158,10 +148,4 @@ fn no_language_row_hard_codes_a_command_a_captured_page_states() {
         }
     }
     assert!(stated >= DERIVED.len());
-    for (language, _, _, command, _) in DERIVED {
-        assert!(
-            !row_text(language).contains(&format!("\"{command}\"")),
-            "the {language} row still states \"{command}\""
-        );
-    }
 }

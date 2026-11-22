@@ -169,6 +169,6 @@ function tryQuantityConstraint(prompt) {
 }
 
 
-function tryArithmetic(prompt) {
-  return tryQuantityConstraint(prompt) || tryArithmeticExpression(prompt);
+function tryArithmetic(prompt, preferences) {
+  return tryQuantityConstraint(prompt) || tryArithmeticExpression(prompt, preferences);
 }

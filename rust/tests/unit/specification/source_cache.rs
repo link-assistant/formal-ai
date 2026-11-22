@@ -7,8 +7,20 @@
 
 use formal_ai::{FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
 
+const DEFINITION_CAPTURES: &str = concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/tests/fixtures/source-qualified-definition"
+);
+
 fn answer(prompt: &str) -> SymbolicAnswer {
-    FormalAiEngine.answer(prompt)
+    let client =
+        formal_ai::CachedSourceClient::new(DEFINITION_CAPTURES, formal_ai::CurlSourceTransport);
+    formal_ai::try_word_definition_with_client(
+        prompt,
+        &mut formal_ai::event_log::EventLog::new(),
+        &client,
+    )
+    .unwrap_or_else(|| FormalAiEngine.answer(prompt))
 }
 
 fn answer_with_config(prompt: &str, config: SolverConfig) -> SymbolicAnswer {
@@ -162,11 +174,8 @@ fn offline_mode_disables_external_lookups() {
 // the actual requested subject to the genuine captured disambiguation body.
 #[test]
 fn source_qualified_definition_replays_all_meanings_with_actual_provenance() {
-    let client = formal_ai::CachedSourceClient::new(
-        std::env::temp_dir().join("formal-ai-source-qualified-definition-offline"),
-        formal_ai::CurlSourceTransport,
-    )
-    .with_online(false);
+    let client =
+        formal_ai::CachedSourceClient::new(DEFINITION_CAPTURES, formal_ai::CurlSourceTransport);
     let mut log = formal_ai::event_log::EventLog::new();
     let response = formal_ai::try_word_definition_with_client(
         "Cite a definition of associative memory from Wikipedia",

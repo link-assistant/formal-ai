@@ -18,18 +18,12 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("nested_context_runtime_and_parity_fixtures_pass"),
     path: CONTEXT_HIERARCHY_LEARNING_PATH,
     task: CONTEXT_HIERARCHY_LEARNING_TASK,
-    memory: include_str!("../../../embedded/data/meta/issue-702-context-hierarchy-learning.lino"),
     subject: "nested-context observations and hierarchy amendments",
 };
 
 #[must_use]
 pub fn is_context_hierarchy_learning_task(prompt: &str) -> bool {
     REPORT.matches(prompt)
-}
-
-#[must_use]
-pub fn render_document() -> String {
-    REPORT.render_document()
 }
 
 #[must_use]

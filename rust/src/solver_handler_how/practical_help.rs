@@ -1,7 +1,11 @@
 //! Data-owned need/goal matching and provenance-gated practical guidance.
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::source_fetch::{CachedSourceClient, SourceTransport};
+use crate::source_fetch::{
+    CachedSourceClient, CurlSourceTransport, SourceCapture, SourceTransport,
+};
+use crate::web_formalize::{PageBlock, formalize_page_with_context};
+
 fn policy(key: &str) -> String {
     crate::rule_interpreter::handler_policy("practical-help", key).unwrap_or_default()
 }
@@ -76,9 +80,14 @@ pub fn goal(prompt: &str, _normalized: &str) -> Option<String> {
         })
         .cloned()
 }
-fn trusted(goal: &str) -> bool {
-    url::Url::parse(&policy(&format!("{goal}-source"))).is_ok_and(|url| {
+const MAXIMUM_CAPTURE_BYTES: usize = 2 * 1024 * 1024;
+const MAXIMUM_GUIDANCE_CHARACTERS: usize = 480;
+
+fn source_is_trusted(source: &str) -> bool {
+    url::Url::parse(source).is_ok_and(|url| {
         url.scheme() == "https"
+            && url.username().is_empty()
+            && url.password().is_none()
             && url.host_str().is_some_and(|host| {
                 values("trusted-hosts")
                     .iter()
@@ -86,56 +95,60 @@ fn trusted(goal: &str) -> bool {
             })
     })
 }
-fn render(
-    prompt: &str,
-    goal: &str,
-    evidence: &str,
-    mode: &str,
-    log: &mut EventLog,
-) -> SymbolicAnswer {
-    let source = policy(&format!("{goal}-source"));
-    let proof = policy(&format!("{goal}-proof"));
-    let supported = trusted(goal)
-        && !proof.is_empty()
-        && evidence.len() <= 2_097_152
-        && normalize_prompt(&crate::how_to_guide::extract::strip_html(evidence))
-            .contains(&normalize_prompt(&proof));
-    let key = policy(&format!(
-        "{goal}-{}",
-        if supported { "response" } else { "unavailable" }
-    ));
-    let text = crate::seed::render_localized_once(
-        &key,
-        crate::language::detect(prompt).slug(),
-        &[("source", &source)],
-    );
-    log.append("practical_help:goal", goal.to_owned());
-    log.append(
-        "practical_help:source_mode",
-        if supported { mode } else { "unavailable" }.to_owned(),
-    );
-    if supported {
-        log.append("practical_help:source", source);
-    }
-    crate::solver_handlers::finalize_simple(
-        prompt,
-        log,
-        "procedural_how_to",
-        "response:practical_help",
-        &text,
-        if supported { 0.8 } else { 0.0 },
+
+fn source_guidance(capture: &SourceCapture, goal: &str) -> Option<String> {
+    section_excerpt(
+        capture.bytes(),
+        &policy(&format!("{goal}-heading")),
+        &forms(&format!("{goal}-excerpt-terms")),
     )
 }
+
+pub(crate) fn section_excerpt(bytes: &[u8], heading: &str, terms: &[String]) -> Option<String> {
+    let heading = normalize_prompt(heading);
+    let cues: Vec<_> = terms.iter().map(|term| normalize_prompt(term)).collect();
+    if heading.is_empty()
+        || cues.is_empty()
+        || cues.iter().any(String::is_empty)
+        || bytes.len() > MAXIMUM_CAPTURE_BYTES
+        || std::str::from_utf8(bytes).is_err()
+    {
+        return None;
+    }
+    let (_, blocks) = formalize_page_with_context(bytes, Some("text/html"), None);
+    let mut blocks = blocks.into_iter().map(|(_, block)| block);
+    let level = blocks.find_map(|block| match block {
+        PageBlock::Heading { level, text } if normalize_prompt(&text) == heading => Some(level),
+        _ => None,
+    })?;
+    blocks
+        .take_while(
+            |block| !matches!(block, PageBlock::Heading { level: next, .. } if *next <= level),
+        )
+        .find_map(|block| match block {
+            PageBlock::Paragraph { text, .. } | PageBlock::ListItem { text } => {
+                let excerpt = text.split_whitespace().collect::<Vec<_>>().join(" ");
+                if excerpt.is_empty() || excerpt.chars().count() > MAXIMUM_GUIDANCE_CHARACTERS {
+                    return None;
+                }
+                let normalized = normalize_prompt(&excerpt);
+                cues.iter()
+                    .all(|word| whole(&normalized, word))
+                    .then_some(excerpt)
+            }
+            _ => None,
+        })
+}
+
 pub(super) fn cached(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let goal = goal(prompt, normalized)?;
-    Some(render(
-        prompt,
-        &goal,
-        &policy(&format!("{goal}-cached-proof")),
-        "curated-excerpt",
-        log,
-    ))
+    let client = CachedSourceClient::new(
+        crate::coding::synthesis_runtime::source_cache_root(),
+        CurlSourceTransport,
+    );
+    Some(from_source(prompt, &goal, log, &client))
 }
+
 pub fn with_client<T: SourceTransport>(
     prompt: &str,
     normalized: &str,
@@ -143,52 +156,66 @@ pub fn with_client<T: SourceTransport>(
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
     let goal = goal(prompt, normalized)?;
-    let cached = policy(&format!("{goal}-cached-proof"));
-    if !cached.is_empty() {
-        return Some(render(prompt, &goal, &cached, "curated-excerpt", log));
-    }
     Some(from_source(prompt, &goal, log, client))
 }
+
 fn from_source<T: SourceTransport>(
     prompt: &str,
     goal: &str,
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> SymbolicAnswer {
-    let evidence = if trusted(goal) {
-        client
-            .fetch(&policy(&format!("{goal}-source")))
-            .ok()
-            .and_then(|capture| {
-                (capture.bytes().len() <= 2_097_152)
-                    .then(|| String::from_utf8(capture.bytes().to_vec()).ok())
-                    .flatten()
-            })
+    let source = policy(&format!("{goal}-source"));
+    let capture = if source_is_trusted(&source) {
+        match client.fetch(&source) {
+            Ok(capture) => Some(capture),
+            Err(error) => {
+                log.append("practical_help:source_failure", error.to_string());
+                None
+            }
+        }
     } else {
+        log.append("practical_help:source_failure", "untrusted_source");
         None
     };
-    render(
+    let language = crate::language::detect(prompt).slug();
+    log.append("practical_help:goal", goal.to_owned());
+    let (answer, mode) = match capture {
+        Some(capture) => {
+            if let Some(excerpt) = source_guidance(&capture, goal) {
+                capture.record(log);
+                log.append("practical_help:source", source.clone());
+                let text = crate::seed::render_localized_once(
+                    "practical-help-source-guidance",
+                    language,
+                    &[("source", &source), ("excerpt", &excerpt)],
+                );
+                let mode = if capture.cached() {
+                    "cached-source"
+                } else {
+                    "fetched-source"
+                };
+                (text, mode)
+            } else {
+                log.append("practical_help:source_failure", "no_matching_excerpt");
+                (unavailable_response(goal, language), "unavailable")
+            }
+        }
+        None => (unavailable_response(goal, language), "unavailable"),
+    };
+    log.append("practical_help:source_mode", mode);
+    crate::solver_handlers::finalize_simple(
         prompt,
-        goal,
-        evidence.as_deref().unwrap_or(""),
-        "fetched-source",
         log,
+        "procedural_how_to",
+        "response:practical_help",
+        &answer,
+        if mode == "unavailable" { 0.0 } else { 0.8 },
     )
 }
-pub(super) fn followup(
-    prompt: &str,
-    _normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let prior = crate::solver_helpers::last_user_turn(log)?;
-    let goal = followup_goal(&normalize_prompt(prompt), prior)?;
-    Some(render(
-        prompt,
-        &goal,
-        &policy(&format!("{goal}-cached-proof")),
-        "curated-excerpt",
-        log,
-    ))
+
+fn unavailable_response(goal: &str, language: &str) -> String {
+    crate::seed::render_localized_once(&policy(&format!("{goal}-unavailable")), language, &[])
 }
 
 pub(crate) fn followup_goal(normalized: &str, prior: &str) -> Option<String> {

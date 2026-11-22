@@ -1,0 +1,7 @@
+Probe time 2026-11-21T19:52:48Z
+MediaWiki query какать
+HTTP 500, bytes 0
+MediaWiki query покакать
+HTTP 500, bytes 0
+MediaWiki query хорошо покакать
+HTTP 500, bytes 0

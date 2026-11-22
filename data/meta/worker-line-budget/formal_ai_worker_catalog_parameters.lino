@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_catalog_parameters.js"
+  ceiling 167
+  rationale "Binds request operands and derives expected output for the portable catalog. The Rust catalog implements the same operations for native runs, and hosted tests compare generated programs with the operands and actual output."

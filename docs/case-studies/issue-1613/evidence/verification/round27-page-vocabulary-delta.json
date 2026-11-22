@@ -1,0 +1,70 @@
+{
+  "base": {
+    "sentences": 25,
+    "covered": 3,
+    "statements": 67,
+    "factual": 62,
+    "survived": 61,
+    "terms": 423,
+    "unknown": 195
+  },
+  "head": {
+    "sentences": 25,
+    "covered": 3,
+    "statements": 67,
+    "factual": 62,
+    "survived": 62,
+    "terms": 423,
+    "unknown": 195
+  },
+  "changed": [
+    {
+      "base": {
+        "text": "starting in 1959 with the flyby of Luna 1 (sent by the Soviet Union)",
+        "notation": "(statement (terms (requirement_directive number:1959 unknown:flyby name:luna number:1 unknown:sent name:soviet union)) (typed_meaning '[[\"schema\",\"dialogue-meaning/v1\"],[\"question\",null],[\"answer\",[[\"kind\",\"quantity\"],[\"polarity\",null],[\"locations\",[]]]],[\"quantities\",[[[\"value\",\"1959\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]],[[\"value\",\"1\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]]]]]'))",
+        "rendered": "use 1959 flyby Luna 1 sent Soviet Union",
+        "reparsed": "(statement (terms (requirement_directive number:1959 unknown:flyby name:luna number:1 unknown:sent name:soviet union)) (typed_meaning '[[\"schema\",\"dialogue-meaning/v1\"],[\"question\",null],[\"answer\",[[\"kind\",\"quantity\"],[\"polarity\",null],[\"locations\",[]]]],[\"quantities\",[[[\"value\",\"1959\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]],[[\"value\",\"1\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]]]]]'))",
+        "survived": true
+      },
+      "head": {
+        "text": "starting in 1959 with the flyby of Luna 1 (sent by the Soviet Union)",
+        "notation": "(statement (terms (start number:1959 unknown:flyby name:luna number:1 unknown:sent name:soviet union)) (typed_meaning '[[\"schema\",\"dialogue-meaning/v1\"],[\"question\",null],[\"answer\",[[\"kind\",\"quantity\"],[\"polarity\",null],[\"locations\",[]]]],[\"quantities\",[[[\"value\",\"1959\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]],[[\"value\",\"1\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]]]]]'))",
+        "rendered": "start 1959 flyby Luna 1 sent Soviet Union",
+        "reparsed": "(statement (terms (start number:1959 unknown:flyby name:luna number:1 unknown:sent name:soviet union)) (typed_meaning '[[\"schema\",\"dialogue-meaning/v1\"],[\"question\",null],[\"answer\",[[\"kind\",\"quantity\"],[\"polarity\",null],[\"locations\",[]]]],[\"quantities\",[[[\"value\",\"1959\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]],[[\"value\",\"1\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]]]]]'))",
+        "survived": true
+      }
+    },
+    {
+      "base": {
+        "text": "and the intentional impact of Luna 2",
+        "notation": "(statement (terms (requirement_directive unknown:intentional unknown:impact name:luna number:2)) (typed_meaning '[[\"schema\",\"dialogue-meaning/v1\"],[\"question\",null],[\"answer\",[[\"kind\",\"quantity\"],[\"polarity\",null],[\"locations\",[]]]],[\"quantities\",[[[\"value\",\"2\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]]]]]'))",
+        "rendered": "use intentional impact Luna 2",
+        "reparsed": "(statement (terms (requirement_directive unknown:intentional unknown:impact name:luna number:2)) (typed_meaning '[[\"schema\",\"dialogue-meaning/v1\"],[\"question\",null],[\"answer\",[[\"kind\",\"quantity\"],[\"polarity\",null],[\"locations\",[]]]],[\"quantities\",[[[\"value\",\"2\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]]]]]'))",
+        "survived": true
+      },
+      "head": {
+        "text": "and the intentional impact of Luna 2",
+        "notation": "(statement (terms (start unknown:intentional unknown:impact name:luna number:2)) (typed_meaning '[[\"schema\",\"dialogue-meaning/v1\"],[\"question\",null],[\"answer\",[[\"kind\",\"quantity\"],[\"polarity\",null],[\"locations\",[]]]],[\"quantities\",[[[\"value\",\"2\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]]]]]'))",
+        "rendered": "start intentional impact Luna 2",
+        "reparsed": "(statement (terms (start unknown:intentional unknown:impact name:luna number:2)) (typed_meaning '[[\"schema\",\"dialogue-meaning/v1\"],[\"question\",null],[\"answer\",[[\"kind\",\"quantity\"],[\"polarity\",null],[\"locations\",[]]]],[\"quantities\",[[[\"value\",\"2\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]]]]]'))",
+        "survived": true
+      }
+    },
+    {
+      "base": {
+        "text": "six Apollo missions had landed twelve people on the Moon and stayed up to three days.",
+        "notation": "(six name:apollo unknown:mission observable_task_action unknown:twelve unknown:people moon unknown:stay range_inclusive three day)",
+        "rendered": "six Apollo missions apply twelve people Moon stayed count to three day",
+        "reparsed": "(six name:apollo unknown:mission observable_task_action unknown:twelve unknown:people moon unknown:stay program_task_count_to_three day)",
+        "survived": false
+      },
+      "head": {
+        "text": "six Apollo missions had landed twelve people on the Moon and stayed up to three days.",
+        "notation": "(six name:apollo unknown:mission observable_task_action unknown:twelve unknown:people moon unknown:stay range_inclusive three day)",
+        "rendered": "six Apollo missions apply twelve people Moon stayed count to three day",
+        "reparsed": "(six name:apollo unknown:mission observable_task_action unknown:twelve unknown:people moon unknown:stay range_inclusive three day)",
+        "survived": true
+      }
+    }
+  ]
+}

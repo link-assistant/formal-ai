@@ -47,13 +47,15 @@ pub fn class_evidence_holds(
         "composition_topic" => {
             !handlers::topic_words(normalized, crate::language::detect(prompt).slug()).is_empty()
         }
-        "advice_topic" => handlers::names_advice_topic(normalized),
-        "cached_destination" => handlers::names_cached_destination(normalized),
+        "advice_observations" => handlers::has_advice_evidence(prompt),
+        "destination_observations" => handlers::has_planning_evidence(prompt),
         "pattern_constraints" => handlers::names_pattern_constraints(prompt),
         "table_reference" => handlers::names_query_table(prompt),
         "filesystem_object" => handlers::names_filesystem_object(prompt, normalized),
         "function_spec" => names_function_spec(prompt),
-        "script_language" => crate::engine::hello_world_program_by_alias(normalized).is_some(),
+        "script_language" => {
+            crate::coding::operand_program::print_script_request(prompt, normalized).is_some()
+        }
         "document_format" => handlers::names_document_format(normalized),
         "install_steps" => handlers::carries_install_steps(prompt, normalized),
         "call_expression" => names_call_expression(prompt),
@@ -98,31 +100,22 @@ pub fn class_evidence_holds(
             .split_once(':')
             .is_some_and(|(_, rest)| !rest.trim().is_empty()),
         "summary_topic" => crate::seed::summary_topic_seeds()
-            .pick_topic(normalized)
+            .subject(normalized)
             .is_some(),
-        "brainstorm_category" => {
-            crate::seed::brainstorm_seeds()
-                .categories
-                .iter()
-                .any(|category| {
-                    category
-                        .detection_keywords
-                        .iter()
-                        .any(|keyword| !keyword.is_empty() && normalized.contains(keyword.as_str()))
-                })
-        }
-        "persona_or_topic" => {
-            let seeds = crate::seed::persona_seeds();
-            seeds.pick_persona(normalized).is_some() || seeds.pick_topic(normalized).is_some()
-        }
+        "brainstorm_topic" => crate::seed::brainstorm_seeds()
+            .topic(normalized)
+            .is_some_and(|topic| {
+                !handlers::topic_words(topic, crate::language::detect(prompt).slug()).is_empty()
+            }),
+        "roleplay_facts" => handlers::roleplay_has_facts(prompt),
         "document_operand" => handlers::names_document_operand(prompt),
         "translation_text" => names_translation_text(prompt),
-        "triz_precedent" => {
-            !crate::triz_solver::relevant_tasks(prompt, &crate::triz_solver::triz_benchmark_tasks())
-                .is_empty()
+        "triz_demands" => crate::triz_solver::triz_demands(prompt).is_some(),
+        "algorithm_operation" => {
+            let vocabulary = crate::seed::operation_vocabulary();
+            let text = crate::engine::normalize_prompt(normalized);
+            vocabulary.matches("sort", &text) || vocabulary.matches("reverse_sort", &text)
         }
-        "algorithm_operation" => crate::seed::operation_vocabulary()
-            .matches("sort", &crate::engine::normalize_prompt(normalized)),
         "source_reference" => {
             super::first_url(prompt).is_some() || super::first_path(prompt).is_some()
         }
@@ -170,14 +163,19 @@ fn continues_procedure(dialogue: &EventLog) -> bool {
 /// Whether a fact question names the subject one of its arms resolves.
 ///
 /// A question over supplied text, a comparison of seeded subjects, the
-/// subject the gate admits, the relation and subject of a live question, or
-/// the concept an explanation researches.
+/// subject the gate admits, a publisher series, a live relation and subject,
+/// or the concept an explanation researches.
 fn names_fact_subject(prompt: &str, normalized: &str) -> bool {
     handlers::gated_fact_record(prompt, normalized).is_some()
-        || handlers::live_fact_question(prompt).is_some()
+        || crate::release_timeline::open_series_subject(
+            &crate::engine::normalize_prompt(normalized),
+            crate::detect_language(prompt).slug(),
+        )
+        .is_some()
+        || crate::fact_live::live_fact_question(prompt).is_some()
         || handlers::explanation_concept(prompt).is_some()
         || handlers::try_prompt_text_question(prompt, &mut EventLog::new()).is_some()
-        || handlers::try_fact_comparison(prompt, &mut EventLog::new()).is_some()
+        || handlers::fact_comparison_subjects(normalized).is_some()
 }
 
 /// Whether the request carries text to translate.

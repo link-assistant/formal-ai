@@ -42,7 +42,6 @@ use super::intent_router;
 use super::learning_report;
 use super::ledger;
 use super::local_search;
-use super::meaning_detail;
 use super::mutating_action;
 use super::note_composition;
 use super::procedure;
@@ -70,7 +69,7 @@ use super::{change_request, code_artifact};
 use crate::protocol::ChatMessage;
 use crate::skill_compiler::looks_like_skill_description;
 
-pub use super::formalization_recipe::{CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY};
+pub use super::formalization_recipe::{KB_PATH, publication_url};
 
 /// The next deterministic step the server takes in an agentic coding loop.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -273,6 +272,10 @@ fn plan_chat_step_routes(
     // boundary serves the whole router rather than one recipe.
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
+    if let Some(plan) = super::document_recipe::plan_structured_repair(&task, messages, tool_names)
+    {
+        return Some(plan);
+    }
     // A bare continuation cue with nothing to resume is still the cue here,
     // and the `agentic_continuation` conversation handler answers it; the
     // words of the cue are never a request (issue #1095).
@@ -290,8 +293,7 @@ fn plan_chat_step_routes(
     {
         return None;
     }
-    // Issue #707: seed-defined computer-use plans own their exact multilingual
-    // prompts before broad write/search routing. Each emitted primitive carries
+    // Explicit computer-use plans precede broad write/search routing. Each primitive carries
     // explicit pre/postconditions and is executed by the advertising client.
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its
@@ -317,6 +319,11 @@ fn plan_chat_step_routes(
                 messages, tool_names, &plan, result,
             ));
         }
+    }
+    if task.lines().any(|line| line.trim_end() == "```lino")
+        && let Some(report) = learning_report::route(&task)
+    {
+        return Some(report.plan_step(&task, messages, tool_names));
     }
     // Bind a program's semantic operands before treating its source path as a
     // destination for a report about the rest of the request.
@@ -364,14 +371,9 @@ fn plan_chat_step_routes(
 /// peels a named destination off a request and re-plans the remainder, and that
 /// is only ever the right reading when the destination is not already some
 /// other route's whole answer. A registered recipe *is* named by its artifact —
-/// `learning_report::route` matches a prompt precisely by finding its own
-/// `path` in it — so peeling that path off leaves a residual that no longer
-/// reaches the recipe, and the request is answered by whatever the remainder
-/// happens to look like instead.
-///
-/// Splitting the tail out lets the peeling ask the question directly: plan the
-/// *whole* request through the routes below and see whether one of them writes
-/// the file. Nothing here re-enters the peeling, so asking cannot recurse.
+/// peeling its `path` off prevents that route from recognizing the remainder.
+/// These routes can test what the whole request writes without re-entering
+/// the delivery peeling.
 pub(super) fn plan_settled_routes(
     task: &str,
     messages: &[ChatMessage],
@@ -540,7 +542,7 @@ pub(super) fn plan_settled_routes(
     // learning comes before self-healing because both accept auto-learning terms;
     // the requested artifact scope distinguishes their recipes.
     if let Some(report) = learning_report::route(task) {
-        return Some(report.plan_step(messages, tool_names));
+        return Some(report.plan_step(task, messages, tool_names));
     }
     // Workspace mutations are grounded in client-owned file bytes. This route
     // follows the explicit learning recipes so their requested artifacts cannot
@@ -581,7 +583,7 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     if self_heal::is_self_heal_task(task) {
-        return Some(plan_self_heal_step(messages, tool_names));
+        return Some(plan_self_heal_step(task, messages, tool_names));
     }
     if dreaming_audit::is_dreaming_audit_task(task) {
         return Some(plan_dreaming_audit_step(messages, tool_names));
@@ -614,7 +616,7 @@ pub(super) fn plan_settled_routes(
     // Checked alongside the other self-referential recipes and before formalization,
     // since its request legitimately names "Links Notation" as the output format.
     if change_request::is_change_request_task(task) {
-        return Some(plan_change_request_step(messages, tool_names));
+        return Some(plan_change_request_step(task, messages, tool_names));
     }
     // The general repair-classification recipe: given an arbitrary failure trace, decide
     // whether the repair is a solver method, a data record, or a test, and compose the
@@ -624,7 +626,7 @@ pub(super) fn plan_settled_routes(
     // keywords are disjoint from the self-healing recipe's ("repair case"/"repair loop"),
     // so ordering only guards a request that somehow names both.
     if repair_strategy::is_repair_strategy_task(task) {
-        return Some(plan_repair_strategy_step(messages, tool_names));
+        return Some(plan_repair_strategy_step(task, messages, tool_names));
     }
     // Rebuild-and-reattach recipe: once a change is accepted, recompile Formal AI and
     // reattach the improved WebAssembly worker to the UI (issue #558's `R558-06`).
@@ -634,7 +636,7 @@ pub(super) fn plan_settled_routes(
     // source-links recipe's "recompile", so ordering only guards a request that somehow
     // names both.
     if rebuild_plan::is_rebuild_task(task) {
-        return Some(plan_rebuild_step(messages, tool_names));
+        return Some(plan_rebuild_step(task, messages, tool_names));
     }
     // The learning-frontier recipe (issues #498 + #558): route the trending prompts the
     // engine cannot yet resolve through the human-gated self-improvement loop. Checked
@@ -643,10 +645,10 @@ pub(super) fn plan_settled_routes(
     // disjoint from the catalog recipe's (prompt/answer/catalog/test), so ordering only
     // guards a request that somehow names both.
     if google_trends_learning::is_google_trends_learning_task(task) {
-        return Some(plan_google_trends_learning_step(messages, tool_names));
+        return Some(plan_google_trends_learning_step(task, messages, tool_names));
     }
     if google_trends_catalog::is_google_trends_catalog_task(task) {
-        return Some(plan_google_trends_catalog_step(messages, tool_names));
+        return Some(plan_google_trends_catalog_step(task, messages, tool_names));
     }
     // The question-catalog recipe (issue #527): enumerate every possible question
     // smallest-first, classify each grammatically and logically, and answer the
@@ -758,8 +760,8 @@ pub(super) fn plan_settled_routes(
             task, messages, tool_names,
         ));
     }
-    if meaning_detail::is_meaning_detail_task(task) {
-        return Some(plan_meaning_detail_step(task, messages, tool_names));
+    if let Some(plan) = plan_meaning_detail_step(task, messages, tool_names) {
+        return Some(plan);
     }
     if diagram::is_diagram_task(task) {
         return Some(plan_diagram_step(messages, tool_names));
@@ -971,9 +973,7 @@ pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
 /// Arguments for a write step that satisfy whichever key the advertised write
 /// tool expects. Agentic CLIs disagree on the parameter name — the in-repo driver
 /// reads `path`, the `@link-assistant/agent` CLI's `write` tool wants `filePath`,
-/// others use `file_path`. All are emitted; a schema-validating CLI keeps the one
-/// it declared and strips the rest, so the same plan drives any of them without a
-/// per-CLI special case.
+/// others use `file_path`. Schema validation keeps only the declared key.
 pub(super) fn write_arguments(path: &str, content: &str) -> String {
     json!({
         "path": path,

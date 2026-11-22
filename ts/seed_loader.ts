@@ -786,16 +786,15 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         questionKeywords: splitList(findChildValue(item, "question_keywords")).map(toLower),
         summary: findChildValue(item, "summary"),
         releaseTimeline: findChildValue(item, "release_timeline"),
+        publisherHeading: findChildValue(item, "publisher-heading"),
+        publisherTerms: splitList(findChildValue(item, "publisher-terms")),
         source: findChildValue(item, "source"),
         sourceKind: findChildValue(item, "source_kind"),
         localized: localized,
       });
     };
-    if (root.name && root.name.indexOf("fact_") === 0) {
-      visit(root);
-    } else {
-      root.children.forEach(visit);
-    }
+    var entries = root.name?.startsWith("fact_") ? [root] : root.children;
+    entries.forEach(visit);
     return facts;
   }
   // Mirrors ProjectStatement::parse: a complete decimal u8, including zero.
@@ -840,6 +839,8 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         name: findChildValue(item, "name"),
         displayName: findChildValue(item, "display_name"),
         url: findChildValue(item, "url"),
+        assistantProject: findChildValue(item, "assistant-project") === "true",
+        originDeclaration: findChildValue(item, "origin-declaration"),
         language: findChildValue(item, "language"),
         category: findChildValue(item, "category"),
         aliases: splitList(findChildValue(item, "aliases")).map(normalizeProjectAlias),
@@ -858,27 +859,27 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
     return projects;
   }
   function extractBrainstormSeeds(root) {
-    var seeds = { triggers: [], categories: [], defaultCount: 0, countCardinal: "" };
+    var seeds = { triggers: [], topicPrefixes: [], categories: [], defaultCount: 0, countCardinal: "" };
     if (!root || !Array.isArray(root.children)) return seeds;
     var section = root.name === "brainstorm_seeds" ? root : findChildren(root, "brainstorm_seeds")[0];
     if (!section) return seeds;
     seeds.triggers = splitList(findChildValue(section, "trigger")).map(toLower);
+    seeds.topicPrefixes = splitList(findChildValue(section, "topic_prefix")).map(function (prefix) { return prefix.trim() + " "; });
     seeds.defaultCount = Number(findChildValue(section, "default_count")) || 0;
     seeds.countCardinal = findChildValue(section, "count_cardinal") || "";
     var categories = findChildren(section, "category");
     for (var i = 0; i < categories.length; i += 1) {
       var category = categories[i];
-      var items = findChildren(category, "item")
+      var operations = findChildren(category, "operation")
         .map(function (item) {
           return item.id || "";
         })
         .filter(Boolean);
-      if (!items.length) continue;
       seeds.categories.push({
         slug: category.id,
         intent: findChildValue(category, "intent"),
         detectionKeywords: splitList(findChildValue(category, "detection_keywords")).map(toLower),
-        items: items,
+        operations: operations,
       });
     }
     return seeds;
@@ -886,19 +887,12 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
   function extractPersonas(root) {
     var seeds = {
       triggers: [],
-      defaultPersona: "",
-      bodyTemplate: "",
-      fallbackBody: "",
       personas: [],
-      topics: [],
     };
     if (!root || !Array.isArray(root.children)) return seeds;
     var section = root.name === "personas" ? root : findChildren(root, "personas")[0];
     if (!section) return seeds;
     seeds.triggers = splitList(findChildValue(section, "trigger")).map(toLower);
-    seeds.defaultPersona = findChildValue(section, "default_persona");
-    seeds.bodyTemplate = findChildValue(section, "body_template");
-    seeds.fallbackBody = findChildValue(section, "fallback_body");
     var personaEntries = findChildren(section, "persona");
     for (var i = 0; i < personaEntries.length; i += 1) {
       var persona = personaEntries[i];
@@ -906,15 +900,6 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         displayName: persona.id,
         aliases: splitList(findChildValue(persona, "aliases")).map(toLower),
         wikidata: findChildValue(persona, "wikidata"),
-      });
-    }
-    var topicEntries = findChildren(section, "topic");
-    for (var j = 0; j < topicEntries.length; j += 1) {
-      var topic = topicEntries[j];
-      seeds.topics.push({
-        slug: topic.id,
-        detectionKeywords: splitList(findChildValue(topic, "detection_keywords")).map(toLower),
-        body: findChildValue(topic, "body"),
       });
     }
     return seeds;

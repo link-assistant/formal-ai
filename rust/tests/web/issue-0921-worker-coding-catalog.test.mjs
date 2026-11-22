@@ -19,7 +19,10 @@
 // the Hive Mind production matrix dispatched.
 
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { before, test } from 'node:test';
 
 import { programLanguages, programTasks, programTemplates } from '../../../js/agentic/crate/coding_catalog.mjs';
@@ -29,8 +32,12 @@ import { WorkerHost, evaluate } from '../../../js/server/worker-host.mjs';
 
 let host;
 let context;
+const bind = (prompt, task, language) => {
+  const template = workerTemplate(task, language);
+  return worker(`bindCatalogProgram(${[prompt, task, language, template].map((item) => JSON.stringify(item)).join(',')})`);
+};
 before(async () => {
-  host = new WorkerHost();
+  host = new WorkerHost({}, { networkFetch: async () => new Response(null, { status: 503 }) });
   context = await host.boot();
   await installNodeHost(new WorkerHost());
 });
@@ -53,9 +60,10 @@ const seedPrograms = () => {
 test('R921-8: the worker installs the Rust catalog tasks from the seed, in Rust table order', () => {
   const installed = worker('WRITE_PROGRAM_TASKS');
   assert.deepEqual(
-    Object.entries(installed).map(([slug, task]) => ({ slug, label: task.label, output: task.output, input: task.input })),
-    programTasks().map((task) => ({ slug: task.slug, label: task.label, output: task.output, input: task.input })),
+    Object.entries(installed).map(([slug, { label, output }]) => ({ slug, label, output })),
+    programTasks(),
   );
+  assert.equal(Object.values(installed).some((task) => Object.hasOwn(task, 'input')), false);
 });
 
 // The seed bundle's `write_program` row names the languages it stores programs
@@ -79,7 +87,7 @@ test('R921-8: the worker language rows equal the Rust catalog rows the seed stor
     programLanguages().filter((row) => seeded.includes(row.slug)).map((row) => [row.slug, row.name, row.code_fence,
       row.save_as, row.execution.check_command, row.execution.run_command, row.framework_of]),
   );
-  assert.deepEqual(programLanguages().map((row) => row.slug).filter((slug) => !seeded.includes(slug)), ['swift', 'r']);
+  assert.deepEqual(programLanguages().map((row) => row.slug), seeded);
 });
 
 test('R921-8: every task x language pair has a worker program exactly when the Rust catalog has one', () => {
@@ -101,7 +109,9 @@ test('R921-8: every task x language pair has a worker program exactly when the R
     }
   }
   assert.equal(compared, programTemplates().length);
-  assert.equal(compared, 151);
+  const syntax = (parseLino(readFileSync(new URL('../../../data/seed/hello-world-programs.lino', import.meta.url), 'utf8')).children || [])
+    .find((row) => row.name === 'write_program').children.filter((row) => row.name === 'print_renderer');
+  assert.equal(compared, stored.size + syntax.length);
 });
 
 test('R921-8: the worker stores no program for a pair the seed retires to the documentation route', () => {
@@ -110,8 +120,8 @@ test('R921-8: the worker stores no program for a pair the seed retires to the do
   const pairs = Object.entries(tables).flatMap(([task, languages]) =>
     Object.keys(languages).map((language) => `${task}:${language}`));
   assert.deepEqual(pairs.sort(), [...stored.keys()].sort());
-  assert.equal(tables.hello_world.scala, undefined);
-  assert.equal(tables.hello_world.kotlin, undefined);
+  assert.equal(tables.hello_world?.scala, undefined);
+  assert.equal(tables.hello_world?.kotlin, undefined);
 });
 
 const SCALA_KOTLIN = [['Scala', 'scala'], ['Kotlin', 'kotlin']];
@@ -123,7 +133,7 @@ const ENGLISH_PROMPTS = [
   ['list_files_arg', (name) => `Write me a ${name} program that lists files with a path argument`],
   ['list_files_reverse_sort', (name) => `Write me a ${name} program that lists files sorted in reverse order`],
   ['list_files_arg_reverse_sort', (name) => `Write me a ${name} program that lists files with a path argument sorted descending`],
-  ['fizzbuzz', (name) => `Write me a FizzBuzz program in ${name}`],
+  ['fizzbuzz', (name) => `Write me a FizzBuzz program in ${name} from 1 through 15`],
   ['factorial', (name) => `Write me a ${name} program for the factorial of 5`],
   ['reverse_string', (name) => `Write me a ${name} program to reverse the string hello`],
   ['sum_to_ten', (name) => `Write me a ${name} program for the sum from 1 to 10`],
@@ -144,12 +154,13 @@ test('R921-8: english Scala and Kotlin requests answer every catalog task with t
       const result = await host.solve(prompt(name), []);
       assert.equal(result.intent, 'write_program', prompt(name));
       assert.equal(parameters(result), `write_program(language=${language}, task=${task})`, prompt(name));
-      const program = workerTemplate(task, language);
+      const bound = bind(prompt(name), task, language);
+      const program = bound?.code ?? workerTemplate(task, language);
       assert.ok(result.content.includes(`\`\`\`${language}\n${program}\n\`\`\``), result.content);
-      // A listing task shows a sample directory named after the language's file
-      // (issue #440); every other task shows the catalog's verified output.
-      const output = worker('WRITE_PROGRAM_TASKS')[task].output;
-      if (!task.startsWith('list_files')) {
+      const output = bound ? bound.output : worker('WRITE_PROGRAM_TASKS')[task].output;
+      if (output == null) {
+        assert.equal(result.content.includes('```text'), false, result.content);
+      } else {
         assert.ok(result.content.includes(`Expected output after verification:\n\`\`\`text\n${output}\n\`\`\``), result.content);
       }
     }
@@ -159,7 +170,7 @@ test('R921-8: english Scala and Kotlin requests answer every catalog task with t
 });
 
 test('R921-8: the Scala FizzBuzz answer is the catalog answer with an honest not-run status', async () => {
-  const result = await host.solve('Write me a FizzBuzz program in Scala', []);
+  const result = await host.solve('Write me a FizzBuzz program in Scala from 1 through 15', []);
   assert.equal(result.content.split('\n')[0], 'Here is a minimal Scala FizzBuzz program:');
   assert.equal(result.programExecution.block, 'Execution status: not run - the browser sandbox cannot invoke a scala toolchain.\n\nCopy the snippet into a scala environment to verify.\n\nExpected output after verification:\n```text\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n```');
   assert.deepEqual(
@@ -171,15 +182,15 @@ test('R921-8: the Scala FizzBuzz answer is the catalog answer with an honest not
 // The Russian, Hindi and Chinese prompts of task_catalog.rs, and the same
 // shapes asked for Scala and Kotlin.
 const MULTILINGUAL = [
-  ['russian', 'Напиши факториал 5 на питоне', 'python', 'factorial', 'Вот минимальная программа на языке Python (factorial of 5):'],
-  ['russian', 'Напиши факториал 5 на Scala', 'scala', 'factorial', 'Вот минимальная программа на языке Scala (factorial of 5):'],
-  ['russian', 'Напиши программу FizzBuzz на Kotlin', 'kotlin', 'fizzbuzz', 'Вот минимальная программа на языке Kotlin (FizzBuzz):'],
-  ['hindi', 'Rust में स्ट्रिंग को उलटें', 'rust', 'reverse_string', 'यहाँ Rust में एक न्यूनतम प्रोग्राम है (string reversal):'],
-  ['hindi', 'Kotlin में स्ट्रिंग को उलटें', 'kotlin', 'reverse_string', 'यहाँ Kotlin में एक न्यूनतम प्रोग्राम है (string reversal):'],
-  ['hindi', 'Scala में फ़िज़बज़ प्रोग्राम लिखें', 'scala', 'fizzbuzz', 'यहाँ Scala में एक न्यूनतम प्रोग्राम है (FizzBuzz):'],
-  ['chinese', '用 Go 写 1到10的和 的程序', 'go', 'sum_to_ten', '这是一个最小的 Go 程序（sum from 1 to 10）：'],
-  ['chinese', '用 Kotlin 写 1到10的和 的程序', 'kotlin', 'sum_to_ten', '这是一个最小的 Kotlin 程序（sum from 1 to 10）：'],
-  ['chinese', '用 Scala 写 菲茨巴兹 的程序', 'scala', 'fizzbuzz', '这是一个最小的 Scala 程序（FizzBuzz）：'],
+  ['russian', 'Напиши факториал 5 на питоне', 'python', 'factorial', 'Вот минимальная программа на языке Python (factorial):'],
+  ['russian', 'Напиши факториал 5 на Scala', 'scala', 'factorial', 'Вот минимальная программа на языке Scala (factorial):'],
+  ['russian', 'Напиши программу FizzBuzz от 1 до 15 на Kotlin', 'kotlin', 'fizzbuzz', 'Вот минимальная программа на языке Kotlin (FizzBuzz):'],
+  ['hindi', 'Rust में प्रोग्राम लिखें जो स्ट्रिंग को उलटें «नमस्ते»', 'rust', 'reverse_string', 'यहाँ Rust में एक न्यूनतम प्रोग्राम है (string reversal):'],
+  ['hindi', 'Kotlin में प्रोग्राम लिखें जो स्ट्रिंग को उलटें «नमस्ते»', 'kotlin', 'reverse_string', 'यहाँ Kotlin में एक न्यूनतम प्रोग्राम है (string reversal):'],
+  ['hindi', 'Scala में 1 से 15 तक फ़िज़बज़ प्रोग्राम लिखें', 'scala', 'fizzbuzz', 'यहाँ Scala में एक न्यूनतम प्रोग्राम है (FizzBuzz):'],
+  ['chinese', '用 Go 写 1到10的和 的程序', 'go', 'sum_to_ten', '这是一个最小的 Go 程序（sum an integer range）：'],
+  ['chinese', '用 Kotlin 写 1到10的和 的程序', 'kotlin', 'sum_to_ten', '这是一个最小的 Kotlin 程序（sum an integer range）：'],
+  ['chinese', '用 Scala 写 1到15的菲茨巴兹 程序', 'scala', 'fizzbuzz', '这是一个最小的 Scala 程序（FizzBuzz）：'],
 ];
 
 test('R921-8: russian, hindi and chinese requests answer catalog tasks in Scala and Kotlin', async () => {
@@ -188,7 +199,7 @@ test('R921-8: russian, hindi and chinese requests answer catalog tasks in Scala 
     assert.equal(result.intent, 'write_program', prompt);
     assert.equal(parameters(result), `write_program(language=${language}, task=${task})`, prompt);
     assert.equal(result.content.split('\n')[0], heading, prompt);
-    assert.ok(result.content.includes(workerTemplate(task, language)), result.content);
+    assert.ok(result.content.includes(bind(prompt, task, language)?.code ?? workerTemplate(task, language)), result.content);
   }
 });
 
@@ -198,8 +209,8 @@ test('R921-8: russian, hindi and chinese requests answer catalog tasks in Scala 
 // operator the arithmetic promotion reads, and a recursive Fibonacci request
 // is promoted to program synthesis. The prompts are task_catalog.rs's.
 const PROMOTED = [
-  ['Write me a C++ program for the factorial of 5', 'cpp', 'factorial', 'Here is a minimal C++ factorial of 5 program:'],
-  ['Write me a C++ program for the sum from 1 to 10', 'cpp', 'sum_to_ten', 'Here is a minimal C++ sum from 1 to 10 program:'],
+  ['Write me a C++ program for the factorial of 5', 'cpp', 'factorial', 'Here is a minimal C++ factorial program:'],
+  ['Write me a C++ program for the sum from 1 to 10', 'cpp', 'sum_to_ten', 'Here is a minimal C++ sum an integer range program:'],
   ['Write a Python function that calculates the Fibonacci sequence recursively.', 'python', 'fibonacci',
     'Here is a minimal Python recursive Fibonacci program:'],
 ];
@@ -210,6 +221,158 @@ test('R921-8: a concrete catalog request is not claimed by a promoted handler', 
     assert.equal(result.intent, 'write_program', prompt);
     assert.equal(parameters(result), `write_program(language=${language}, task=${task})`, prompt);
     assert.equal(result.content.split('\n')[0], heading, prompt);
-    assert.ok(result.content.includes(workerTemplate(task, language)), result.content);
+    assert.ok(result.content.includes(bind(prompt, task, language)?.code ?? workerTemplate(task, language)), result.content);
   }
+});
+
+test('issue #1613: each bound operation executes with two different caller inputs', async () => {
+  const cases = [
+    ['counts from -3 to 2', '-3\n-2\n-1\n0\n1\n2'],
+    ['counts to seven', '1\n2\n3\n4\n5\n6\n7'],
+    ['implements FizzBuzz from -2 to 3', '-2\n-1\nFizzBuzz\n1\n2\nFizz'],
+    ['implements FizzBuzz from 13 to 17', '13\n14\nFizzBuzz\n16\n17'],
+    ['calculates the factorial of 0', '1'],
+    ['calculates the factorial of seven', '5040'],
+    ['reverses a string by reversing the string «cat 🧩»', '🧩 tac'],
+    ['will reverse the string «{{n}} \\ €»', '€ \\ }}n{{'],
+    ['calculates the sum from -9 to -7', '-24'],
+    ['calculates the sum from 12 to 15', '54'],
+    ['calculates the 13th Fibonacci number', '233'],
+    ['calculates the 77th Fibonacci number', '5527939700884757'],
+  ];
+  for (const [language, executable, args] of [['JavaScript', process.execPath, ['-e']], ['Python', 'python3', ['-I', '-c']]]) {
+    for (const [specification, output] of cases) {
+      const prompt = `Write a ${language} program that ${specification}`;
+      const result = await host.solve(prompt, []);
+      assert.equal(result.intent, 'write_program', prompt);
+      assert.equal(result.programExecution?.output, output, result.content);
+      const source = result.content.match(/```(?:javascript|python)\n([\s\S]*?)\n```/u)?.[1];
+      assert.ok(source, result.content);
+      const execution = spawnSync(executable, [...args, source], { encoding: 'utf8', timeout: 5000, maxBuffer: 64 * 1024 });
+      assert.equal(execution.status, 0, execution.stderr ?? execution.error?.message);
+      assert.equal(execution.stdout, output + '\n', prompt);
+    }
+  }
+});
+
+test('issue #1613: incomplete or out-of-range inputs leave no runnable recipe', async () => {
+  for (const [operation, question] of [
+    ['will count to a number', 'Which integer range'],
+    ['will count from 7', 'Which integer range'],
+    ['implements FizzBuzz', 'Which integer range'],
+    ['calculates the factorial of -7', 'Which integer'],
+    ['calculates the factorial of 7.5', 'Which integer'],
+    ['calculates the sum from 19 to 12', 'Which integer range'],
+    ['calculates the sum of 5 and 8', 'Which integer range'],
+    ['will reverse a string', 'Which text'],
+    ['calculates the 78th Fibonacci number', 'Which Fibonacci index'],
+  ]) {
+    const result = await host.solve(`Write a Python program that ${operation}`, []);
+    assert.equal(result.intent, 'write_program', operation);
+    assert.ok(result.content.startsWith(question), result.content);
+    assert.equal(result.programExecution, undefined);
+    assert.ok(!result.content.includes('```'));
+  }
+  const plain = await host.solve('What is the factorial of 7?', []);
+  assert.notEqual(plain.intent, 'write_program');
+});
+
+async function blueprint(prompt, language) {
+  const result = await host.solve(prompt);
+  assert.equal(result.intent, 'write_program', result.content);
+  const code = result.content.match(new RegExp('```' + language + '\\n([\\s\\S]*?)\\n```', 'u'))?.[1];
+  assert.ok(code, result.content);
+  return { code, answer: result.content };
+}
+
+function scenarioRunner(t, code) {
+  const directory = mkdtempSync(join(tmpdir(), 'formal-ai-scenario-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  return {
+    write(name, fields) {
+      writeFileSync(join(directory, name), JSON.stringify(fields));
+    },
+    read(name) {
+      return readFileSync(join(directory, name), 'utf8');
+    },
+    run(...args) {
+      const execution = spawnSync('python3', ['-I', '-c', code, ...args], {
+        cwd: directory, encoding: 'utf8', timeout: 5000, maxBuffer: 64 * 1024,
+      });
+      assert.equal(execution.status, 0, execution.stderr ?? execution.error?.message);
+      return execution.stdout;
+    },
+  };
+}
+
+test('issue #1613: a budget blueprint reports caller assumptions and changing sourced city costs', async (t) => {
+  const { code } = await blueprint('Write a Python budget calculator for the 50/30/20 budget rule; compare average rent and living costs in cities, project savings at an annual return, and export a Markdown report with sources.', 'python');
+  const runner = scenarioRunner(t, code);
+  assert.match(runner.run('--help'), /monthly_contribution/u);
+  const scenario = { monthly_income: 3000, monthly_contribution: 600, annual_return: 0.08, years: 10, savings_goal: 100000 };
+  const city = { city: 'Moscow', average_rent: 800, living_cost_ex_rent: 450, source: 'https://example.test/moscow-fixture' };
+  runner.write('scenario.json', { ...scenario, cities: [city] });
+  const base = runner.run('scenario.json', 'report.md');
+  assert.match(base, /Future value after 10 years at 8.00% annual return: \$109,768/u);
+  assert.match(base, /\| Moscow \| \$800 \| \$1,750 \|/u);
+  assert.match(base, /https:\/\/example\.test\/moscow-fixture/u);
+  runner.write('scenario.json', {
+    ...scenario, annual_return: 0, years: 2, monthly_contribution: 75,
+    cities: [{ ...city, city: 'Oslo', average_rent: 1200, source: 'https://example.test/oslo-fixture' }],
+  });
+  const changed = runner.run('scenario.json', 'report.md');
+  assert.match(changed, /Future value after 2 years at 0.00% annual return: \$1,800/u);
+  assert.match(changed, /\| Oslo \| \$1,200 \| \$1,350 \|/u);
+  assert.doesNotMatch(changed, /Moscow/u);
+  assert.equal(changed, runner.read('report.md') + '\n');
+});
+
+test('issue #1613: a travel blueprint ranks supplied visa and cost observations and flags a changed budget', async (t) => {
+  const { code } = await blueprint('Research visa requirements and average flight costs. Write a Python Smart TravelPlanner class to flag budgets and generate a sample itinerary in Markdown.', 'python');
+  const runner = scenarioRunner(t, code);
+  assert.match(runner.run('--help'), /visa_free/u);
+  const destination = { visa_free: true, visa_note: 'Test-only visa assertion', average_flight_cost: 500, daily_cost: 70, source: 'https://example.test/test-visa', budget: 2000 };
+  runner.write('travel.json', {
+    days: 7,
+    destinations: [{ ...destination, country: 'Japan', visa_free: false, average_flight_cost: 400 }, { ...destination, country: 'Serbia' }],
+  });
+  const base = runner.run('travel.json');
+  assert.match(base, /7-day trip/u);
+  assert.match(base, /\| 1 \| Serbia \| visa-free \| \$990 \| \$2,000 \|/u);
+  assert.match(base, /\| 2 \| Japan \| visa check required \| \$890 \|/u);
+  runner.write('travel.json', { days: 3, destinations: [{ ...destination, country: 'Iceland', budget: 600 }] });
+  const changed = runner.run('travel.json');
+  assert.match(changed, /3-day trip/u);
+  assert.match(changed, /Iceland .*\$710.*Budget warning: \$600 is below \$710/u);
+  assert.doesNotMatch(changed, /Japan|Serbia/u);
+});
+
+test('issue #1613: a portfolio blueprint values explicit holdings from caller-selected observations', async (t) => {
+  const { code } = await blueprint('Write a Python crypto portfolio tracker with current prices, holdings, total value, 24h change, weight distribution, alert logic, an API mock endpoint and a Markdown dashboard.', 'python');
+  const runner = scenarioRunner(t, code);
+  assert.match(runner.run('--help'), /change_24h_pct/u);
+  runner.write('holdings.json', { BTC: 2.5, TON: 1000 });
+  runner.write('prices.json', { BTC: { price_usd: 70000, change_24h_pct: -3 }, TON: { price_usd: 5, change_24h_pct: -6 } });
+  const base = runner.run('holdings.json', 'prices.json', '5');
+  assert.match(base, /Total value:\*\* \$180,000\.00/u);
+  assert.match(base, /Notify: TON dropped -6.00%/u);
+  assert.doesNotMatch(base, /Notify: BTC/u);
+  runner.write('holdings.json', { HELDOUT: 4 });
+  runner.write('updated.json', { HELDOUT: { price_usd: 8, change_24h_pct: -2 } });
+  const changed = runner.run('holdings.json', 'updated.json', '3');
+  assert.match(changed, /Total value:\*\* \$32\.00/u);
+  assert.match(changed, /HELDOUT .*100.00%/u);
+  assert.match(changed, /No asset dropped more than 3%/u);
+  assert.match(changed, /Price source: updated\.json/u);
+  assert.doesNotMatch(changed, /BTC|TON/u);
+});
+
+test('issue #1613: source metrics compare actual files without rendering a predetermined verdict', async () => {
+  const { code, answer } = await blueprint('Write a Rust program that parses its own source code as text, counts functions, loops, conditionals and comments, reports a complexity score as JSON and compares its generated code with the reasoning text.', 'rust');
+  assert.match(code, /include_str!/u);
+  assert.match(code, /std::fs::read_to_string\(path\)/u);
+  assert.match(code, /analyze_rust_text\(&reasoning\)/u);
+  assert.match(code, /source\.complexity_score [<>] reasoning\.complexity_score/u);
+  assert.match(answer, /cargo run -- <response-prose\.txt>/u);
+  assert.doesNotMatch(answer, /RESPONSE_REASONING|Reasoning text metrics: functions=/u);
 });

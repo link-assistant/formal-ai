@@ -185,16 +185,18 @@ fn meta_constants_are_declared_in_named_source() {
             constant.require("source_file")
         );
     }
-    // The two demoted constants must still be declared: they are the
-    // regression fixture's source for the canonical tale, the last-resort
-    // fallback of the plan, and no longer its first move.
     let recipe = read("rust/src/agentic_coding/formalization_recipe.rs");
-    for demoted in ["SEARCH_QUERY", "CANONICAL_SOURCE_URL"] {
+    for legacy in [
+        "SEARCH_QUERY",
+        "CANONICAL_SOURCE_URL",
+        "CANONICAL_FISHERMAN_SYNOPSIS",
+    ] {
         assert!(
-            recipe.contains(&format!("pub const {demoted}: &str")),
-            "{demoted} stays declared as the canonical tale's last-resort fallback"
+            !recipe.contains(legacy),
+            "{legacy} belongs in an explicit fixture"
         );
     }
+    assert!(recipe.contains("publication_text(work, body)"));
 }
 
 #[test]

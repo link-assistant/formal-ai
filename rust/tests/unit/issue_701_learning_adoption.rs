@@ -4,14 +4,17 @@
 //! (#701-1), the recorded capability delta (#701-2), the closed Google Trends
 //! gap (#701-3), and the durability of every failure to adopt (#701-6).
 
-use formal_ai::learning_cycle::{
-    GOOGLE_TRENDS_FRONTIER, GOOGLE_TRENDS_FRONTIER_RECORD, LEARNED_REQUEST_OPENERS_SEED_FILE,
-};
+use super::issue_498_google_trends::captured_feed;
+use formal_ai::learning_cycle::{GOOGLE_TRENDS_FRONTIER, LEARNED_REQUEST_OPENERS_SEED_FILE};
 use formal_ai::promotion::{parse_promotion_proposals, render_promotion_proposals};
 use formal_ai::{
     google_trends_adoption_ledger, google_trends_learning_cycle, parse_frontier_record,
 };
 use lino_objects_codec::format::parse_indented;
+
+const GOOGLE_TRENDS_FRONTIER_RECORD: &str = include_str!(
+    "../../../docs/case-studies/issue-701/replay/learning-frontier-google-trends.lino"
+);
 
 /// Every language the engine supports; the issue requires the delta in all of
 /// them, not just English.
@@ -19,8 +22,11 @@ const SUPPORTED_LANGUAGES: [&str; 4] = ["en", "ru", "hi", "zh"];
 
 #[test]
 fn committed_adoption_ledger_matches_a_fresh_run() {
-    let committed = include_str!("../../../data/meta/learning-adoption-ledger.lino");
-    let legacy_pairs = google_trends_adoption_ledger().links_notation();
+    let committed =
+        include_str!("../../../docs/case-studies/issue-701/replay/learning-adoption-ledger.lino");
+    let legacy_pairs =
+        google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed())
+            .links_notation();
     assert!(
         committed.starts_with(&format!("{legacy_pairs}\n")),
         "the 60 existing issue-701 pairs must stay byte-identical; generalized effects append after them",
@@ -35,7 +41,7 @@ fn the_adoption_ledger_records_a_real_capability_delta_in_every_language() {
     // Issue #701 requirement 2 and its acceptance criterion: at least 20
     // before/after pairs, spanning at least 3 topics and all 4 languages, each
     // one unknown before and answered after.
-    let ledger = google_trends_adoption_ledger();
+    let ledger = google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed());
     let adopted = ledger.adopted();
     assert!(
         adopted.len() >= 20,
@@ -73,7 +79,7 @@ fn the_trends_corpus_unknown_rate_is_ratcheted_to_zero() {
     // Issue #701 requirement 3: drive the #498/#499 frontier through the loop
     // until the trends prompts answer (target 80/80). The ratchet may fall,
     // never rise — a regression that reintroduces an unknown fails here.
-    let ledger = google_trends_adoption_ledger();
+    let ledger = google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed());
     assert_eq!(
         ledger.corpus_prompts, 80,
         "10 topics x 4 languages x 2 variations"
@@ -95,7 +101,7 @@ fn the_trends_corpus_unknown_rate_is_ratcheted_to_zero() {
 fn the_learning_cycle_emits_promotion_proposals_in_the_issue_656_shape() {
     // Issue #701 requirement 1 and acceptance criterion 1: the cycle produces at
     // least one valid promotion proposal, with tests, that #656 consumes.
-    let run = google_trends_learning_cycle();
+    let run = google_trends_learning_cycle(GOOGLE_TRENDS_FRONTIER_RECORD);
     assert_eq!(run.frontier, GOOGLE_TRENDS_FRONTIER);
     assert!(
         !run.proposals.is_empty(),
@@ -130,8 +136,8 @@ fn the_cycle_is_deterministic_and_reproducible_offline() {
     // Acceptance criterion 1: deterministic and reproducible from cached data.
     // The frozen frontier record is the cache; two runs over it must agree, and
     // the run must never depend on the live catalog.
-    let first = google_trends_learning_cycle();
-    let second = google_trends_learning_cycle();
+    let first = google_trends_learning_cycle(GOOGLE_TRENDS_FRONTIER_RECORD);
+    let second = google_trends_learning_cycle(GOOGLE_TRENDS_FRONTIER_RECORD);
     assert_eq!(first.links_notation(), second.links_notation());
     assert_eq!(
         render_promotion_proposals(&first.proposals),
@@ -165,7 +171,7 @@ fn every_failure_to_adopt_is_preserved_as_a_durable_record() {
     // Issue #701 requirement 6 / R425: nothing is silently dropped. Whatever the
     // cycle does not adopt appears as a blocked class with a named reason, and
     // whatever the ledger does not adopt stays as an unadopted pair.
-    let run = google_trends_learning_cycle();
+    let run = google_trends_learning_cycle(GOOGLE_TRENDS_FRONTIER_RECORD);
     let record = run.links_notation();
     let rejected_after_validation = run
         .blocked
@@ -185,7 +191,7 @@ fn every_failure_to_adopt_is_preserved_as_a_durable_record() {
         assert!(record.contains(&blocked.reason));
     }
 
-    let ledger = google_trends_adoption_ledger();
+    let ledger = google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed());
     assert_eq!(
         ledger.adopted().len() + ledger.unadopted().len(),
         ledger.pairs.len(),
@@ -207,6 +213,9 @@ fn every_idle_dreaming_run_leaves_a_proposal_only_learning_cycle_record() {
         .save_to_file(&memory_path)
         .expect("write fixture");
 
+    let frontier_path = memory_path.with_extension("learning-frontier.lino");
+    std::fs::write(&frontier_path, GOOGLE_TRENDS_FRONTIER_RECORD)
+        .expect("write the caller-supplied frontier");
     formal_ai::run_core_dreaming_once(&memory_path).expect("one idle dreaming run");
 
     let record_path = formal_ai::dreaming_runtime::learning_cycle_record_path(&memory_path);
@@ -220,18 +229,24 @@ fn every_idle_dreaming_run_leaves_a_proposal_only_learning_cycle_record() {
     // reviews exactly what the scheduled loop proposed.
     assert_eq!(
         record,
-        format!("{}\n", google_trends_learning_cycle().links_notation()),
+        format!(
+            "{}\n",
+            google_trends_learning_cycle(GOOGLE_TRENDS_FRONTIER_RECORD).links_notation()
+        ),
     );
     let proposals = parse_promotion_proposals(&record)
         .expect("the idle record is directly readable by the promotion protocol");
     assert_eq!(
         proposals.len(),
-        google_trends_learning_cycle().proposals.len(),
+        google_trends_learning_cycle(GOOGLE_TRENDS_FRONTIER_RECORD)
+            .proposals
+            .len(),
         "the idle artifact must carry every proposal into the next improve run"
     );
 
     let _ = std::fs::remove_file(&memory_path);
     let _ = std::fs::remove_file(&record_path);
+    let _ = std::fs::remove_file(&frontier_path);
 }
 
 #[test]

@@ -44,6 +44,7 @@ impl From<io::Error> for ComputerUseError {
 pub struct ComputerUsePolicy {
     pub agent_mode: bool,
     grants: BTreeSet<String>,
+    http_origin: Option<url::Url>,
 }
 
 impl ComputerUsePolicy {
@@ -52,6 +53,7 @@ impl ComputerUsePolicy {
         Self {
             agent_mode: false,
             grants: BTreeSet::new(),
+            http_origin: None,
         }
     }
 
@@ -63,6 +65,7 @@ impl ComputerUsePolicy {
                 .into_iter()
                 .map(ComputerUsePrimitive::permission_key)
                 .collect(),
+            http_origin: super::http::configured_origin(),
         }
     }
 
@@ -71,7 +74,15 @@ impl ComputerUsePolicy {
         Self {
             agent_mode,
             grants: grants.into_iter().collect(),
+            http_origin: super::http::configured_origin(),
         }
+    }
+
+    /// Apply an operator-provided origin to a single session.
+    #[must_use]
+    pub fn with_http_origin(mut self, origin: url::Url) -> Self {
+        self.http_origin = Some(origin);
+        self
     }
 
     #[must_use]
@@ -250,9 +261,7 @@ impl ComputerUseSession {
             }
             ComputerUsePrimitive::HttpFetch | ComputerUsePrimitive::HttpPost => {
                 let url = arg(arguments, "url")?;
-                if !url.starts_with("fixture://") {
-                    return Err(format!("network_fixture_not_permitted:{url}"));
-                }
+                super::http::target(self.policy.http_origin.as_ref(), url)?;
                 vec![arg(arguments, "save_as")?]
             }
             ComputerUsePrimitive::DomQuery | ComputerUsePrimitive::DomExtract => {
@@ -303,8 +312,8 @@ impl ComputerUseSession {
                 self.move_file(arg(arguments, "from")?, arg(arguments, "to")?)
             }
             ComputerUsePrimitive::ShellRun => self.run_allowlisted(arguments),
-            ComputerUsePrimitive::HttpFetch => self.http_fetch(arguments),
-            ComputerUsePrimitive::HttpPost => self.http_post(arguments),
+            ComputerUsePrimitive::HttpFetch => self.http_request(arguments, false),
+            ComputerUsePrimitive::HttpPost => self.http_request(arguments, true),
             ComputerUsePrimitive::DomQuery => self.dom_query(arguments),
             ComputerUsePrimitive::DomExtract => self.dom_extract(arguments),
             ComputerUsePrimitive::ArchivePack => self.archive_pack(arguments),
@@ -499,31 +508,15 @@ impl ComputerUseSession {
         }))
     }
 
-    fn http_fetch(&self, arguments: &Value) -> Result<Value, String> {
+    fn http_request(&self, arguments: &Value, post: bool) -> Result<Value, String> {
         let url = arg(arguments, "url")?;
         let save_as = arg(arguments, "save_as")?;
-        let body = fixture(url).ok_or_else(|| format!("fixture_not_found:{url}"))?;
-        self.write_bytes(save_as, body.as_bytes())?;
-        Ok(http_output("GET", url, 200, body, save_as))
-    }
-
-    fn http_post(&self, arguments: &Value) -> Result<Value, String> {
-        let url = arg(arguments, "url")?;
-        let save_as = arg(arguments, "save_as")?;
-        let request_body = arg(arguments, "body")?;
-        if url != "fixture://submit" {
-            return Err(format!("fixture_not_found:{url}"));
-        }
-        let (status, body) = if request_body == "token=fixture-token" {
-            (
-                200,
-                include_str!("../../embedded/data/fixtures/computer-use/submission.json").trim(),
-            )
-        } else {
-            (400, r#"{"accepted":false,"error":"invalid token"}"#)
-        };
-        self.write_bytes(save_as, body.as_bytes())?;
-        Ok(http_output("POST", url, status, body, save_as))
+        let body = post.then(|| arg(arguments, "body")).transpose()?;
+        let target = super::http::target(self.policy.http_origin.as_ref(), url)?;
+        let output = super::http::request(&target, body, url, save_as)?;
+        let response = arg_or_empty(&output, "body");
+        self.write_bytes(save_as, response.as_bytes())?;
+        Ok(output)
     }
 
     fn dom_query(&self, arguments: &Value) -> Result<Value, String> {
@@ -762,56 +755,6 @@ fn string_array<'a>(arguments: &'a Value, key: &str) -> Result<Vec<&'a str>, Str
 
 fn digest(bytes: &[u8]) -> String {
     crate::source_fetch::sha256_hex(bytes)
-}
-
-fn fixture(url: &str) -> Option<&'static str> {
-    match url {
-        "fixture://orders.json" => {
-            Some(include_str!("../../embedded/data/fixtures/computer-use/orders.json").trim())
-        }
-        "fixture://status.html" => {
-            Some(include_str!("../../embedded/data/fixtures/computer-use/status.html").trim())
-        }
-        "fixture://form.html" => {
-            Some(include_str!("../../embedded/data/fixtures/computer-use/form.html").trim())
-        }
-        "fixture://inventory.csv" => {
-            Some(include_str!("../../embedded/data/fixtures/computer-use/inventory.csv").trim())
-        }
-        _ => None,
-    }
-}
-
-fn http_output(method: &str, url: &str, status: u16, body: &str, cache_path: &str) -> Value {
-    let sha256 = digest(body.as_bytes());
-    json!({
-        "method":method,
-        "url":url,
-        "status":status,
-        "body":body,
-        "headers":{"content-type":content_type(url)},
-        "sha256":sha256,
-        "cache_path":cache_path,
-        "cached":true,
-        "provenance":{
-            "method":method,
-            "url":url,
-            "status":status,
-            "sha256":sha256,
-            "cache_path":cache_path
-        }
-    })
-}
-
-fn content_type(url: &str) -> &'static str {
-    let extension = Path::new(url).extension();
-    if extension.is_some_and(|value| value.eq_ignore_ascii_case("html")) {
-        "text/html"
-    } else if extension.is_some_and(|value| value.eq_ignore_ascii_case("csv")) {
-        "text/csv"
-    } else {
-        "application/json"
-    }
 }
 
 fn filter_csv(content: &str, column: &str, expected: &str) -> Result<String, String> {

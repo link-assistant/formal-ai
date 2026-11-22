@@ -1,0 +1,1 @@
+Edit data/seed/personas.lino. Add "interpreta a" to the trigger list so Spanish roleplay requests can also use that leading phrase.

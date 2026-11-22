@@ -1,0 +1,2 @@
+agent_exit=0
+c56cfbcb98f2edb5e5276cded292410becda7ae6add2316ac3250401a276ed12  promotion-contract.lino

@@ -1,0 +1,20 @@
+✔ the original print-script request prints its requested operand (4335.517441ms)
+✔ literal whitespace, Unicode and quotes survive the actual emitter (7053.080982ms)
+✔ a code-shaped literal remains output data (2077.528368ms)
+✔ only the complete seeded termination clause follows an owned literal (7.064152ms)
+✔ described values and multiline literal operands remain unresolved (3.513862ms)
+✔ a script with no task asks for one in the requested language (587.280167ms)
+✔ a quoted language name is printed by the requested implementation (1951.768105ms)
+✔ a non-string operand request cannot invoke caller coercion (1.876599ms)
+✔ documented escaping preserves raw backslashes and active quotes (8347.179182ms)
+✔ unowned nominal suffix symbols remain unresolved (5.943071ms)
+✔ an explicit refused print request cannot fall back to a greeting (26182.276364ms)
+﹣ native program replies bind caller operands and report unobserved execution (0.442706ms) # SKIP
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 51239.325519

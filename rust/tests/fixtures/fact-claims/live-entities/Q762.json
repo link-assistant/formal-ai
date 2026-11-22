@@ -1,0 +1,25 @@
+{
+  "entities": {
+    "Q762": {
+      "id": "Q762",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Леонардо да Винчи"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लिओनार्दो दा विंची"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "列奥纳多·达·芬奇"
+        },
+        "en": {
+          "language": "en",
+          "value": "Leonardo da Vinci"
+        }
+      }
+    }
+  }
+}

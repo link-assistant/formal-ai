@@ -1,52 +1,42 @@
-# Response templates for the TRIZ/contradiction solver (issue #901).
-#
-# The answer teaches the resolution shapes as data — the families come from
-# data/seed/triz-principles.lino (twelve general paradox-resolution
-# families plus the forty inventive principles), the precedents are the
-# top-20 benchmark tasks, and the link note explains that a contradiction
-# is a link whose 0-1 value is chosen from the requirement's own clauses
-# (computed in basis points by the selection heuristic, no default 50 %).
-# Placeholders in braces are filled by the handler in
-# rust/src/triz_solver.rs.
-
+# Localized TRIZ worksheet and missing-demand templates.
 multilingual_responses
-  response response_triz_resolution_en
+  response response_triz_resolution_map_en
     intent triz_resolution_map
     language en
-    text "A contradiction is a link with a value, not a wall. Ways through:\n{families}\nPrecedent from the benchmark corpus:\n{precedents}\n{link_note}"
-  response response_triz_resolution_ru
-    intent triz_resolution_map
-    language ru
-    text "Противоречие — это связь со значением, а не стена. Пути решения:\n{families}\nПрецеденты из эталонного набора задач:\n{precedents}\n{link_note}"
-  response response_triz_resolution_hi
-    intent triz_resolution_map
-    language hi
-    text "अंतर्विरोध एक मूल्य वाला लिंक है, दीवार नहीं। रास्ते:\n{families}\nबेंचमार्क संग्रह से उदाहरण:\n{precedents}\n{link_note}"
-  response response_triz_resolution_zh
-    intent triz_resolution_map
-    language zh
-    text "矛盾是一个带值的链接，而不是一堵墙。出路：\n{families}\n基准任务集的先例：\n{precedents}\n{link_note}"
-  response response_triz_resolution_es
-    intent triz_resolution_map
-    language es
-    text "Una contradicción es un enlace con valor, no un muro. Salidas:\n{families}\nPrecedentes del corpus de referencia:\n{precedents}\n{link_note}"
-  response response_triz_link_note_en
-    intent triz_link_note
+    text "Conflicting demands: {left} / {right}. Specify when and where each demand applies, what can change, and how success is measured. Then test these resolution methods against both demands:\n{families}\nWhen the requirements say what to favor, use their clauses to choose a position on the range."
+  response response_triz_resolution_missing_demands_en
+    intent triz_resolution_missing_demands
     language en
-    text "A contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows."
-  response response_triz_link_note_ru
-    intent triz_link_note
+    text "State the two conflicting demands and the conditions under which each must hold."
+  response response_triz_resolution_map_ru
+    intent triz_resolution_map
     language ru
-    text "Противоречие — это связь, значение которой (0–1) выбирается по собственным условиям требования: в эвристике выбора это базисные пункты, без значения 50 % по умолчанию. Скажите, какую сторону поддерживают требования, и точка на шкале определится из этого."
-  response response_triz_link_note_hi
-    intent triz_link_note
+    text "Конфликтующие требования: {left} / {right}. Укажите, когда и где действует каждое требование, что можно изменить и как измерить успех. Затем проверьте эти методы для обоих требований:\n{families}\nЕсли условия задают приоритет, выберите по ним точку на шкале."
+  response response_triz_resolution_missing_demands_ru
+    intent triz_resolution_missing_demands
+    language ru
+    text "Назовите два конфликтующих требования и условия, при которых каждое должно выполняться."
+  response response_triz_resolution_map_hi
+    intent triz_resolution_map
     language hi
-    text "विरोधाभास एक link है जिसका मान (0-1) आवश्यकता की अपनी शर्तों से चुना जाता है — selection heuristic में basis points, बिना किसी default 50 % के। बताइए कि आवश्यकताएँ किस पक्ष के अनुकूल हैं, और सीमा पर बिंदु उसी से तय होगा।"
-  response response_triz_link_note_zh
-    intent triz_link_note
+    text "परस्पर विरोधी माँगें: {left} / {right}। बताएँ कि हर माँग कब और कहाँ लागू होती है, क्या बदला जा सकता है और सफलता कैसे मापी जाएगी। फिर इन तरीकों को दोनों माँगों पर परखें:\n{families}\nअगर शर्तें किसी पक्ष को प्राथमिकता देती हैं, तो उनके आधार पर सीमा में उपयुक्त बिंदु चुनें।"
+  response response_triz_resolution_missing_demands_hi
+    intent triz_resolution_missing_demands
+    language hi
+    text "दोनों विरोधी माँगें और वे परिस्थितियाँ बताएँ जिनमें हर माँग पूरी होनी चाहिए।"
+  response response_triz_resolution_map_zh
+    intent triz_resolution_map
     language zh
-    text "矛盾是一条链接，其值（0-1）由需求自身的条款选定——在选择启发式中以基点表示，没有默认的 50 %。说明需求偏向哪一方，范围上的取值点就随之确定。"
-  response response_triz_link_note_es
-    intent triz_link_note
+    text "冲突的要求：{left} / {right}。说明各项要求在何时何地适用、哪些条件可以改变，以及如何衡量结果。然后针对两项要求检验以下方法：\n{families}\n若需求条款明确了优先级，就据此选择区间内的取值。"
+  response response_triz_resolution_missing_demands_zh
+    intent triz_resolution_missing_demands
+    language zh
+    text "请说明两项相互冲突的要求以及各自必须满足的条件。"
+  response response_triz_resolution_map_es
+    intent triz_resolution_map
     language es
-    text "Una contradicción es un enlace cuyo valor (0-1) se elige a partir de las propias cláusulas del requisito: puntos básicos en la heurística de selección, sin un 50 % por defecto. Di qué lado favorecen los requisitos y el punto del rango se deduce de ello."
+    text "Requisitos en conflicto: {left} / {right}. Indica cuándo y dónde se aplica cada requisito, qué puede cambiar y cómo se mide el éxito. Luego comprueba estos métodos frente a ambos requisitos:\n{families}\nSi las condiciones indican una prioridad, úsalas para elegir un punto en el intervalo."
+  response response_triz_resolution_missing_demands_es
+    intent triz_resolution_missing_demands
+    language es
+    text "Indica los dos requisitos en conflicto y las condiciones en que debe cumplirse cada uno."

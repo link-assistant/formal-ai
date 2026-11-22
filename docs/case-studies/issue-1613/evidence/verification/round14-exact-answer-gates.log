@@ -1,0 +1,4 @@
+PASS check-tests-as-docs 6.7s
+PASS check-tests-as-documentation-javascript-twin 6.4s
+
+2/2 passed or skipped; failed: none

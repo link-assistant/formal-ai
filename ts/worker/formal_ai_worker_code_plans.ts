@@ -17,11 +17,11 @@
 
 /**
  * Browser binding for the `algorithm` precedence row: a sorting or algorithm
- * request gets the seeded reviewable snippet of the language the
+ * request composes a reviewable function in the language the
  * `algorithm_language` table finds, through the shared rule interpreter over
  * the lowercased prompt, as the native dispatcher runs it.
  * @param {string} prompt raw prompt
- * @returns {object|null} the worker answer, or null
+ * @returns {Promise<object|null>} the worker answer, or null
  */
 function tryAlgorithm(prompt) {
   // Rust's `web_search` row runs before `algorithm`; here it is an async-phase
@@ -40,7 +40,7 @@ function tryAlgorithm(prompt) {
  * records the action log). The seed rules run through the shared rule
  * interpreter over the lowercased prompt, as the native dispatcher runs them.
  * @param {string} prompt raw prompt
- * @returns {object|null} the worker answer, or null
+ * @returns {Promise<object|null>} the worker answer, or null
  */
 function tryExecutionFailure(prompt) {
   return runHandlerRuleSet("execution_failure", prompt, prompt.toLowerCase(), []);
@@ -51,14 +51,14 @@ function tryExecutionFailure(prompt) {
 // ---------------------------------------------------------------------------
 
 /**
- * The catalogued language whose minimal script the request asks for, or null
- * when the route cannot render everything the prompt names. Mirrors
- * `is_write_script_request` and `names_no_task_beyond_the_minimal_script`.
+ * Bind a print script to its explicit operand and implementation language.
+ * Mirrors `print_script_request`.
  * @param {string} prompt raw prompt
  * @param {string} normalized normalized prompt
  * @returns {string|null} the language slug
  */
 function writeScriptLanguage(prompt, normalized) {
+  if (programTaskOperand(prompt) === null) return null;
   prompt = programTaskInstruction(prompt);
   normalized = normalizePrompt(prompt);
   if (lexiconMentionsRole("program_genus", normalized) || lexiconMentionsRole("hello_world_reference", normalized)) return null;
@@ -67,41 +67,38 @@ function writeScriptLanguage(prompt, normalized) {
   if (metaNamesFileNoun(prompt, detectLanguage(prompt))) return null; // a script over files is derived, not templated
   const program = normalizeProgramPrompt(prompt);
   const language = programLanguageFromPrompt(program);
-  if (!language || !writeProgramTemplate("hello_world", language)) return null;
-  const task = programTaskFromPrompt(program);
-  if (task && task !== "hello_world") return null;
+  if (!language) return null;
+  if (programTaskFromPrompt(program)) return null;
   return tryNumericList(prompt, []) ? null : language;
 }
 
 /**
- * Browser binding for the `write_script` precedence row: the hello-world
- * template of the one catalogued language the request names.
+ * Browser binding for the `write_script` precedence row.
  * @param {string} prompt raw prompt
  * @param {string} responseLanguage reply language
- * @returns {object|null} the worker answer, or null
+ * @returns {Promise<object|null>} the worker answer, or null
  */
-function tryWriteScript(prompt, responseLanguage) {
+async function tryWriteScript(prompt, responseLanguage, preferences) {
   const language = writeScriptLanguage(prompt, normalizePrompt(prompt));
   if (!language) return null;
   const operand = programTaskOperand(prompt);
-  if (operand === null && programTaskPrintClaim(prompt)) return null;
-  const task = operand === null ? "hello_world" : operandProgramTask(prompt);
-  const documented = operand === null ? null : operandProgram(task, language, operand);
-  if (operand !== null && !documented?.recipe) return null;
-  const template = documented ? documented.recipe.entry : writeProgramTemplate(task, language);
+  const task = operandProgramTask(prompt);
+  const documented = await operandProgram(task, language, operand, preferences);
+  const template = documented?.recipe?.entry ?? literalOutputProgram(language, operand);
+  if (template === null) return null;
   const languageInfo = writeProgramLanguageInfo(task, language, documented);
   const taskInfo = WRITE_PROGRAM_TASKS[task];
   const i18n = writeProgramStrings(responseLanguage);
-  const output = operand === null ? writeProgramExpectedOutput(task, languageInfo, taskInfo) : operand;
-  const execution = writeProgramExecutionLines(language, task, template, output, i18n, responseLanguage);
+  const output = operand;
+  const { lines: execution } = writeProgramExecutionLines(language, template, output, i18n, responseLanguage, documented);
   return {
     intent: `write_script_${language}`,
     content: [i18n.intro(languageInfo.name, taskInfo.label), "", "```" + languageInfo.fence, template, "```", "", ...execution].join("\n"),
     confidence: 1.0,
     evidence: [`response:write_program:${task}:${language}`, `program_parameter:language:${language}`],
     programExecution: { language, task, responseLanguage, output,
-      rediscoveredFrom: documented ? documented.recipe.rediscovery_source : documentationRediscoveredPage(task, language),
-      runCommand: programRunCommandLine(task, languageInfo.runCommand),
+      rediscoveredFrom: documented?.recipe?.rediscovery_source,
+      runCommand: languageInfo.runCommand,
       checkCommand: languageInfo.checkCommand || null, block: execution.join("\n") },
   };
 }
@@ -149,7 +146,7 @@ function documentPlanRender(language, label) {
  * authoring action and name a document.
  * @param {string} prompt raw prompt
  * @param {string} normalized normalized prompt
- * @returns {object|null} the worker answer, or null
+ * @returns {Promise<object|null>} the worker answer, or null
  */
 function handleDocumentGenerationPlan(prompt, normalized) {
   const lowercased = normalized.toLowerCase();
@@ -167,7 +164,7 @@ function handleDocumentGenerationPlan(prompt, normalized) {
 /**
  * Browser binding for the `document_generation_plan` precedence row.
  * @param {string} prompt raw prompt
- * @returns {object|null} the worker answer, or null
+ * @returns {Promise<object|null>} the worker answer, or null
  */
 function tryDocumentGenerationPlan(prompt) {
   return handleDocumentGenerationPlan(prompt, prompt.toLowerCase());
@@ -183,7 +180,7 @@ function tryDocumentGenerationPlan(prompt) {
  * through the shared rule interpreter over the lowercased prompt, the subject
  * the native dispatcher hands every rule.
  * @param {string} prompt raw prompt
- * @returns {object|null} the worker answer, or null
+ * @returns {Promise<object|null>} the worker answer, or null
  */
 function trySourceConflict(prompt) {
   return runHandlerRuleSet("source_conflict", prompt, prompt.toLowerCase(), []);
@@ -199,7 +196,7 @@ function trySourceConflict(prompt) {
  * the lowercased prompt, which keeps the backticks its `run \`` cue needs —
  * the same subject the native dispatcher hands the rule.
  * @param {string} prompt raw prompt
- * @returns {object|null} the worker answer, or null
+ * @returns {Promise<object|null>} the worker answer, or null
  */
 function tryShellRefusal(prompt) {
   return runHandlerRuleSet("shell_refusal", prompt, prompt.toLowerCase(), []);

@@ -55,14 +55,14 @@ generic `project_lookup` path. When associative project promotion is enabled
 off keeps the same prompt on the generic GitHub/GitLab/Bitbucket lookup path.
 The pipeline has three pieces:
 
-1. **Curated registry.** `data/seed/projects.lino` records the canonical
-   repository, primary language, weighted statements, English/Russian
-   localisations, topic label, and aliases for each project. The seed file is
+1. **Repository identities.** `data/seed/projects.lino` records the canonical
+   repository, language hint, display names, topic label, and aliases for each
+   project. The seed file is
    embedded at compile time and parsed once per process via
    `rust/src/seed/projects.rs::projects_registry()`.
 2. **Formalize → summarize → deformalize pipeline.** `rust/src/summarization/mod.rs`
    exposes a deterministic three-stage pipeline. `formalize` (or
-   `Statement::from_seed`) turns free-form prose or curated statements into a
+   `Statement::from_seed`) turns free-form prose or structured statements into a
    homogeneous `Vec<Statement>` with a `StatementKind` (identity, purpose,
    language, stars, feature, use_case, install, example, misc) and a numeric
    weight. `summarize` then applies a `SummarizationConfig` whose
@@ -76,11 +76,13 @@ The pipeline has three pieces:
    still lets `concept_lookup` answer seed concepts such as Links Notation
    first. Immediately after a concept miss, `project_lookup` handles promoted
    project aliases such as Hive Mind or link-cli, explicit GitHub/GitLab/
-   Bitbucket repository URLs, and the promotion-off fallback. Promoted answers
-   log `project:promoted`, `summarization:mode`, `summarization:language`, the
-   repository URL, and the web-search providers consulted alongside the local
-   answer so the trace explains both *what* was matched and *how* the text was
-   compressed.
+   Bitbucket repository URLs, and the promotion-off fallback. For a promoted
+   repository, the handler reads the publisher's metadata through the capture
+   client and verifies the repository identity. If the response supplies
+   a description, the handler logs its capture and any summarization. An
+   unavailable description leaves a visible gap. Named repository summaries
+   share the same source and capture policy. The browser can also show
+   separately acquired web-search results.
 
 The compression knobs are configurable from one struct (`SummarizationConfig`)
 so callers can dial topic labels, chat titles, project descriptions, or
@@ -169,13 +171,10 @@ The same pipeline also drives four additional surfaces:
   in `Standard` mode, and logs `summarization:mode`,
   `summarization:language`, and `chat_title` evidence alongside the
   per-turn list.
-- **HTTP fetch for curated GitHub URLs.** When `try_http_fetch` recognises
-  a `github.com/<org>/<name>` URL whose `<org>/<name>` matches the curated
-  registry (`match_curated_github_url`), the handler runs `describe_project`
-  in `Standard` mode and embeds the result in the response. The trace
-  records `http_fetch:curated_project`, `summarization:mode`, and
-  `summarization:language` so the path from URL → curated record → summary
-  is fully visible.
+- **Explicit HTTP fetch.** The handler requests the selected URL, including
+  issue and file paths inside a registered repository. It reports the
+  observed response or a fetch error. Offline requests use verified cached
+  data when available and report a cache miss otherwise.
 
 The shared `DEFAULT_MAX_STATEMENTS = 30` constant in `rust/src/summarization/mod.rs`
 documents the default cap on retained statements; any caller can raise or

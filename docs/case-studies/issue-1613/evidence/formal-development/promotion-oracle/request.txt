@@ -1,0 +1,1 @@
+Inspect data/benchmarks/coding-modification-suite.lino. Compose a Links Notation document in promotion-contract.lino with root promotion_contract containing runner, minimum_pass_count, and pass_rate_basis_points.

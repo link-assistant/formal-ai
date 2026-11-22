@@ -35,10 +35,18 @@ SUITE="$ROOT/data/benchmarks/computer-use-generalization.lino"
 EVIDENCE_DIR="${EVIDENCE_DIR:-$ROOT/docs/case-studies/issue-707/agent-cli-evidence/generalization}"
 WORKDIR="$(mktemp -d)"
 SERVER_PID=""
+PUBLISHER_PID=""
+
+# shellcheck source=experiments/agent_cli_e2e/issue_707_fixture.sh
+source "$ROOT/experiments/agent_cli_e2e/issue_707_fixture.sh"
 
 cleanup() {
   if [[ -n "$SERVER_PID" ]]; then
     kill "$SERVER_PID" 2>/dev/null || true
+  fi
+  if [[ -n "$PUBLISHER_PID" ]]; then
+    kill "$PUBLISHER_PID" 2>/dev/null || true
+    wait "$PUBLISHER_PID" 2>/dev/null || true
   fi
   rm -rf -- "$WORKDIR"
 }
@@ -60,12 +68,14 @@ command -v node >/dev/null
   exit 2
 }
 
+setup_issue_707_fixture || fail "fixture publisher did not start"
+
 mapfile -t CASE_IDS < <(sed -n 's/^  case //p' "$SUITE")
 mapfile -t CASE_PROMPTS < <(sed -n 's/^    prompt en "\(.*\)"$/\1/p' "$SUITE")
 [[ "${#CASE_IDS[@]}" -ge 12 ]] || fail "expected at least twelve held-out cases"
 [[ "${#CASE_IDS[@]}" -eq "${#CASE_PROMPTS[@]}" ]] || fail "every case needs an English prompt"
 
-mkdir -p "$EVIDENCE_DIR"
+mkdir -p "$EVIDENCE_DIR" "$WORKDIR/prompts"
 
 # The reference: synthesize and execute each held-out prompt locally, and record
 # the plan the verifier will hold the external client to.
@@ -74,24 +84,34 @@ echo "== deriving synthesized reference plans =="
 for index in "${!CASE_IDS[@]}"; do
   case_id="${CASE_IDS[$index]}"
   prompt="${CASE_PROMPTS[$index]}"
-  "$BIN" computer-use --agent-mode --confirm-effects --prompt "$prompt" \
+  "$BIN" --silent computer-use --agent-mode --confirm-effects --from "$COMPUTER_USE_CORPUS" --prompt "$prompt" \
     >"$WORKDIR/$case_id.local.json" 2>"$WORKDIR/$case_id.local.err" \
     || fail "local synthesis failed for $case_id"
+  "$BIN" --silent computer-use --from "$COMPUTER_USE_CORPUS" --plan --prompt "$prompt" \
+    >"$WORKDIR/prompts/$case_id.txt" || fail "explicit plan could not be derived for $case_id"
   node -e '
     const fs = require("node:fs");
-    const [file, caseId, prompt] = process.argv.slice(1);
+    const { createHash } = require("node:crypto");
+    const [file, caseId, prompt, explicitPath] = process.argv.slice(1);
     const outcome = JSON.parse(fs.readFileSync(file, "utf8")).outcome;
-    if (!outcome.verified) throw new Error(`${caseId} did not verify locally`);
+    if (!outcome.verified) throw new Error(caseId + " did not verify locally");
     if (!outcome.plan.id.startsWith("synthesized-")) {
-      throw new Error(`${caseId} was recalled, not synthesized: ${outcome.plan.id}`);
+      throw new Error(caseId + " was recalled, not synthesized: " + outcome.plan.id);
     }
+    const explicit = fs.readFileSync(explicitPath, "utf8").trimEnd().split("\n").at(-2);
+    const steps = JSON.parse(explicit).map((step) => step.primitive);
+    if (JSON.stringify(steps) !== JSON.stringify(outcome.plan.steps.map((step) => step.primitive))) {
+      throw new Error(caseId + " explicit plan differs from local synthesis");
+    }
+    const digest = createHash("sha256").update(explicit).digest("hex");
     process.stdout.write(JSON.stringify({
       case_id: caseId,
       prompt,
-      plan_id: outcome.plan.id,
-      steps: outcome.plan.steps.map((step) => step.primitive),
+      plan_id: "computer-use-" + digest.slice(0, 24),
+      learned_plan_id: outcome.plan.id,
+      steps,
     }) + "\n");
-  ' "$WORKDIR/$case_id.local.json" "$case_id" "$prompt" >>"$WORKDIR/expected.jsonl" \
+  ' "$WORKDIR/$case_id.local.json" "$case_id" "$prompt" "$WORKDIR/prompts/$case_id.txt" >>"$WORKDIR/expected.jsonl" \
     || fail "local reference rejected for $case_id"
 done
 cp "$WORKDIR/expected.jsonl" "$EVIDENCE_DIR/expected.jsonl"
@@ -143,7 +163,7 @@ EOF
 
   for index in "${!CASE_IDS[@]}"; do
     case_id="${CASE_IDS[$index]}"
-    prompt="${CASE_PROMPTS[$index]}"
+    prompt="$(<"$WORKDIR/prompts/$case_id.txt")"
     log="$EVIDENCE_DIR/$phase/$case_id.jsonl"
     remaining=$((LOOP_DEADLINE_SECONDS - SECONDS))
     if [[ "$remaining" -le 0 ]]; then

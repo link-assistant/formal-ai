@@ -5,8 +5,7 @@
 // network by the associative-memory adapter's four retention signals, keep the
 // evidence links, and hand a human a proposal - under a different identity.
 // A `LearningReport` is a plain object `{head, issue, promotion_gate, path,
-// task, memory, subject}` (the last three are getters reading the messages
-// and data files); the report modules export one as `REPORT` and this module
+// task, subject}`. The report modules export one as `REPORT` and this module
 // renders, routes and plans it.
 
 import * as associativeLearning from './associative_learning.mjs';
@@ -16,6 +15,7 @@ import { AssociativeMemory, sortedQualifiers } from './crate/associative_persist
 import { parseLinksNotation } from './crate/memory.mjs';
 import { rustLines } from './content.mjs';
 import { planDocumentRecipe } from './document_recipe.mjs';
+import { finalAnswer as finalPlan } from './plan.mjs';
 import * as executionLearning from './execution_learning.mjs';
 import * as externalBenchmarkLearning from './external_benchmark_learning.mjs';
 import * as contextHierarchyLearning from './learning_report/context_hierarchy_learning.mjs';
@@ -57,7 +57,8 @@ export function reports() {
  * @returns {object|null}
  */
 export function route(task) {
-  return reports().find((report) => matches(report, task)) ?? null;
+  const request = task.split('\n```', 1)[0];
+  return reports().find((report) => matches(report, request)) ?? null;
 }
 
 /**
@@ -69,25 +70,25 @@ export function matches(report, prompt) {
   return prompt.toLowerCase().includes(report.path);
 }
 
-/** Mirrors `LearningReport::render_document`: render from the report's own memory. */
-export function renderDocument(report) {
-  return renderDocumentFrom(report, report.memory);
-}
-
 /** Mirrors `LearningReport::render_document_from`. */
 export function renderDocumentFrom(report, memoryDocument) {
-  return render(report, memoryDocument);
+  return render(report, parseLinksNotation(memoryDocument));
 }
 
 /**
  * Mirrors `LearningReport::plan_step`: the write-then-verify steps that
- * produce the report (the planner's `report.plan_step(messages, tool_names)`).
+ * produce the report from the caller's memory document.
  * @param {object} report
+ * @param {string} task
  * @param {Array<object>} messages
  * @param {Array<string>} toolNames
  */
-export function planReportStep(report, messages, toolNames) {
-  const document = renderDocument(report);
+export function planReportStep(report, task, messages, toolNames) {
+  const events = suppliedMemory(task);
+  if (events.length === 0) {
+    return finalPlan(agenticMessage('learning-report-memory-required', { path: report.path }));
+  }
+  const document = render(report, events);
   return planDocumentRecipe(messages, toolNames, {
     path: report.path,
     verify_command: `cat ${report.path}`,
@@ -110,9 +111,18 @@ function field(indent, name, value) {
   return `${' '.repeat(indent)}${name} ${formatLinoValueVerbatim(value)}\n`;
 }
 
+/** Mirrors `fn supplied_memory` in rust/src/agentic_coding/learning_report.rs. */
+function suppliedMemory(task) {
+  const lines = rustLines(task);
+  const open = lines.findIndex((line) => line.trimEnd() === '```lino');
+  if (open < 0) return [];
+  const close = lines.findIndex((line, index) => index > open && line.trimEnd() === '```');
+  return close < 0 ? [] : parseLinksNotation(lines.slice(open + 1, close).join('\n'));
+}
+
 /** Mirrors `fn render` in rust/src/agentic_coding/learning_report.rs. */
-function render(report, memoryDocument) {
-  const memory = AssociativeMemory.fromMemoryEvents(parseLinksNotation(memoryDocument));
+function render(report, events) {
+  const memory = AssociativeMemory.fromMemoryEvents(events);
   const seed = memory.retentionRanking()[0] ?? '';
   const recalled = memory.recallRelated(seed, 2);
   const ranking = memory.retentionRanking();

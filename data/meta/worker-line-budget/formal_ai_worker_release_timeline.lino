@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_release_timeline.js"
+  ceiling 253
+  rationale "Film timeline queries validate a scoped publisher result before formatting supported release dates and announced titles. The parser also serves historical captures supplied by tests."

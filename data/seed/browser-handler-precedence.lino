@@ -51,8 +51,6 @@ browser-handler-precedence
     argument_prompt
     argument_normalized
     argument_history
-  handler tryLearnFromSource
-    argument_prompt
   handler tryResearchComparisonTable
     argument_prompt
     argument_normalized
@@ -165,8 +163,10 @@ browser-handler-precedence
     argument_prompt
     argument_normalized
     argument_history
+    argument_preferences
   handler tryArithmetic
     argument_prompt
+    argument_preferences
   handler tryStatistics
     argument_prompt
     argument_normalized
@@ -202,6 +202,7 @@ browser-handler-precedence
   handler tryWriteScript
     argument_prompt
     argument_responseLanguage
+    argument_preferences
   handler tryDocumentGenerationPlan
     argument_prompt
   handler trySoftwareProjectRequest

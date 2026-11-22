@@ -84,11 +84,10 @@ export function solverEvidenceLinks(result, history = []) {
  * Recast a worker answer as a `SymbolicAnswer`.
  * @param {object} result the worker's `solve` value
  * @param {Array<{role: string, content: string}>} [history] the turns it was solved after
- * @param {(intent: string) => string|null} [seedReport] the seed's English report text
  * @returns {SymbolicAnswer}
  */
-export function symbolicFromWorker(result, history = [], seedReport = undefined, { readOnly = false } = {}) {
-  const answer = nativeProgramAnswer(String(result?.content ?? ''), result?.programExecution, seedReport);
+export function symbolicFromWorker(result, history = [], { readOnly = false } = {}) {
+  const answer = nativeProgramAnswer(String(result?.content ?? ''), result?.programExecution);
   if (!readOnly) noteLearned(result?.memoryOperation);
   const log = solverLogFromWorker(result, history);
   return {
@@ -112,12 +111,6 @@ export function symbolicFromWorker(result, history = [], seedReport = undefined,
     // reroute turns into an execution recipe (`attachExecutionRecipe`).
     synthesized_program: result?.synthesizedProgram ?? undefined,
   };
-}
-
-/** The seed's English report text (`seed::report_text`), through the worker's readers. */
-async function seedReportReader(ctx) {
-  const seed = await ctx.worker.seedReaders();
-  return (intent) => seed.responseFor(intent, 'en');
 }
 
 /**
@@ -161,7 +154,7 @@ async function solveBegun(ctx, prompt, history, options) {
   }
   // Issue #1184 R1184-9: every native solve ends in `finalize_answer`, which
   // links, appends and persists the answer's derivation record.
-  const symbolic = symbolicFromWorker(result, history, await seedReportReader(ctx), { readOnly: ctx.ephemeral });
+  const symbolic = symbolicFromWorker(result, history, { readOnly: ctx.ephemeral });
   // Issue #667 (R383): a held turn is neither persisted nor answered until it is released.
   if (ctx.debugSession) await ensureNodeHost(ctx);
   await gateTurn(ctx, symbolic.thinking_steps);

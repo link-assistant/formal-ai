@@ -1,85 +1,84 @@
 import { nonNullObject as isObject } from '../logging/object-values.js';
-// The issue-#538 meaning-detail recipe's data and derivation
-// (rust/src/agentic_coding/meaning_detail.rs): re-derive a concept's enriched
-// meaning block (part of speech + grammatical number per surface, grounded in
-// Wikidata lexeme forms) from fetched lexeme JSON, or from the cached lexemes
-// under data/cache/wikidata/lexeme/ when the fetch failed.
+// Derive meaning details from a complete Wikidata publisher response.
 
-import { cached, readText } from './host.mjs';
+import { cached, childrenNamed, parseLino, readText } from './host.mjs';
 import { agenticMessage } from './messages.mjs';
-import { jsonText } from './plan.mjs';
 import { byteOrder, trimEnd } from './crate/rust_str.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
+import { surfacePresent } from './crate/seed_meanings.mjs';
 
 const SINGULAR_FEATURE = 'Q110786';
 const PLURAL_FEATURE = 'Q146786';
 const NUMBER_FEATURES = [SINGULAR_FEATURE, PLURAL_FEATURE];
-const LEXEME_DIR = 'data/cache/wikidata/lexeme';
+const SOURCE_ENDPOINT = 'https://www.wikidata.org/w/api.php?action=wbgetentities&ids=';
+const MEANINGS = 'data/seed/meanings-translation.lino';
 
-const source = (id) => ({ id, path: `${LEXEME_DIR}/${id}.json` });
+const field = (node, name) => childrenNamed(node, name)[0]?.value ?? '';
+const validLanguageCode = (code) => /^[a-z0-9-]{1,20}$/u.test(code);
+const wikidataItem = (id) => typeof id === 'string' && /^Q[0-9]{1,18}$/u.test(id);
+const validLexeme = (id) => /^L[0-9]{1,18}$/u.test(id);
 
-/** Mirrors `const TOMATO` (its search query wording lives in agentic-messages.lino). */
-export const TOMATO = Object.freeze({
-  name: 'tomato',
-  grounded_in: 'Q23501',
-  search_query_key: 'meaning_detail_tomato_search_query',
-  source_url: 'https://raw.githubusercontent.com/link-assistant/formal-ai/issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L170542.json',
-  kb_path: 'meanings-tomato-detail.lino',
-  sources: [source('L7993'), source('L3526'), source('L170542')],
-  extras: [{ language: 'hi', text: 'टमाटर' }, { language: 'zh', text: '番茄' }, { language: 'zh', text: '西红柿' }],
-  keywords: ['помидор', 'томат', 'tomato'],
-});
-
-/** Mirrors `const POTATO`. */
-export const POTATO = Object.freeze({
-  name: 'potato',
-  grounded_in: 'Q10998',
-  search_query_key: 'meaning_detail_potato_search_query',
-  source_url: 'https://raw.githubusercontent.com/link-assistant/formal-ai/issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L3784.json',
-  kb_path: 'meanings-potato-detail.lino',
-  sources: [source('L3784')],
-  extras: [
-    { language: 'ru', text: 'картофель' }, { language: 'ru', text: 'картошка' }, { language: 'hi', text: 'आलू' },
-    { language: 'zh', text: '土豆' }, { language: 'zh', text: '马铃薯' },
-  ],
-  keywords: ['potato', 'картофель', 'картошка', 'आलू', '土豆', '马铃薯'],
-});
-
-/** Mirrors `const CONCEPTS`. */
-export const CONCEPTS = Object.freeze([TOMATO, POTATO]);
-
-/** A concept's `search_query` (Rust field), read from agentic-messages.lino. */
-export function searchQuery(concept) {
-  return agenticMessage(concept.search_query_key);
+function safeSurface(value) {
+  const text = typeof value === 'string' ? value.trim() : '';
+  return text && new TextEncoder().encode(text).length <= 300 && !/[#"\p{Cc}]/u.test(text) ? text : null;
 }
 
-/** Mirrors `const DETAIL_KEYWORDS` (a `|`-separated list in agentic-messages.lino). */
-const detailKeywords = () => cached('meaning-detail-keywords', () => agenticMessage('meaning_detail_keywords').split('|'));
+function parseConcept(node) {
+  const name = node.name;
+  const grounded_in = field(node, 'grounded-in');
+  if (!wikidataItem(grounded_in) || !/^[a-z_-]+$/u.test(name)) return null;
+  const entries = childrenNamed(node, 'source-lexeme').filter((child) => validLexeme(child.id));
+  const sources = entries.map((child) => child.id);
+  const required_senses = entries.filter((child) => field(child, 'sense')).map((child) => child.id);
+  if (!sources.length || sources.length > 20) return null;
+  const extras = [];
+  for (const lexeme of childrenNamed(node, 'lexeme').filter((child) => validLanguageCode(child.id))) {
+    for (const surface of childrenNamed(lexeme, 'surface')) {
+      const text = safeSurface(field(surface, 'text'));
+      if (text !== null) extras.push({ language: lexeme.id, text });
+    }
+  }
+  const keywords = [name];
+  for (const surface of childrenNamed(node, 'surface')) {
+    const text = safeSurface(field(surface, 'text'));
+    if (text !== null) keywords.push(text.toLowerCase());
+  }
+  keywords.push(...extras.map((extra) => extra.text.toLowerCase()));
+  return {
+    name, grounded_in, sources, required_senses, extras, keywords,
+    search_query: agenticMessage('meaning-detail-search-query', { name, lexemes: sources.join(' ') }),
+    source_url: `${SOURCE_ENDPOINT}${sources.join('%7C')}&format=json&origin=*`,
+    kb_path: `meanings-${name}-detail.lino`,
+  };
+}
 
-/**
- * Mirrors `fn concept_for_task` in rust/src/agentic_coding/meaning_detail.rs.
- * @param {string} prompt
- */
+export function concepts() {
+  return cached('meaning-detail-concepts', () => {
+    const root = parseLino(readText(MEANINGS));
+    const containers = root.name === 'meanings' ? [root] : childrenNamed(root, 'meanings');
+    return containers.flatMap((container) => container.children).map(parseConcept).filter((concept) => concept !== null);
+  });
+}
+
+/** Resolve one registered meaning for a grammatical-detail request. */
 export function conceptForTask(prompt) {
-  const lower = prompt.toLowerCase();
-  return CONCEPTS.find((concept) => concept.keywords.some((keyword) => lower.includes(keyword.toLowerCase()))) ?? null;
+  if (!isMeaningDetailTask(prompt)) return null;
+  const lower = normalizePrompt(prompt);
+  const candidates = concepts().filter((concept) => concept.keywords.some((keyword) => surfacePresent(lower, normalizePrompt(keyword))));
+  return candidates.length === 1 ? candidates[0] : null;
 }
 
-/**
- * Mirrors `fn is_meaning_detail_task` in rust/src/agentic_coding/meaning_detail.rs.
- * @param {string} prompt
- */
 export function isMeaningDetailTask(prompt) {
   const lower = prompt.toLowerCase();
-  return detailKeywords().some((keyword) => lower.includes(keyword)) || conceptForTask(prompt) !== null;
+  const markers = cached('meaning-detail-keywords', () => agenticMessage('meaning_detail_keywords').split('|').filter(Boolean));
+  return markers.some((keyword) => lower.includes(keyword));
 }
 
-
-const str = (value) => (typeof value === 'string' ? value : null);
 /** serde_json `Map` iteration order (a `BTreeMap`: keys sorted). */
 const sortedKeys = (object) => Object.keys(object).sort(byteOrder);
 
 /** Mirrors `fn parse_entities`: `Map<id, RawLexeme>` in sorted key order. */
-function parseEntities(text) {
+function parseEntities(text, groundedIn) {
   const map = new Map();
   let doc;
   try {
@@ -90,47 +89,48 @@ function parseEntities(text) {
   const entities = isObject(doc) ? doc.entities : undefined;
   if (!isObject(entities)) return map;
   for (const id of sortedKeys(entities)) {
-    const raw = parseLexemeEntity(entities[id]);
+    const raw = parseLexemeEntity(id, entities[id], groundedIn);
     if (raw !== null) map.set(id, raw);
   }
   return map;
 }
 
 /** Mirrors `fn parse_lexeme_entity`. */
-function parseLexemeEntity(entity) {
-  if (!isObject(entity)) return null;
-  const languageItem = str(entity.language);
-  const category = str(entity.lexicalCategory);
-  if (languageItem === null || category === null || !isObject(entity.lemmas)) return null;
-  const lemmaKeys = sortedKeys(entity.lemmas);
-  if (!lemmaKeys.length) return null;
-  const languageCode = lemmaKeys[0];
-  const lemmaValue = entity.lemmas[languageCode];
-  const lemma = (isObject(lemmaValue) ? str(lemmaValue.value) : null) ?? '';
-  const senses = Array.isArray(entity.senses) ? entity.senses : null;
-  const sense = senses && senses.length && isObject(senses[0]) ? str(senses[0].id) : null;
+function parseLexemeEntity(id, entity, groundedIn) {
+  if (!isObject(entity) || entity.id !== id || entity.type !== 'lexeme') return null;
+  const languageItem = entity.language;
+  const category = entity.lexicalCategory;
+  if (!wikidataItem(languageItem) || category !== 'Q1084' || !isObject(entity.lemmas)) return null;
+  const languageCode = sortedKeys(entity.lemmas)[0];
+  if (!languageCode || !validLanguageCode(languageCode)) return null;
+  const lemma = safeSurface(entity.lemmas[languageCode]?.value);
+  if (lemma === null) return null;
+  const senses = Array.isArray(entity.senses) ? entity.senses : [];
+  const sense = senses.find((entry) => matchesSubidentifier(id, entry?.id, 'S') &&
+    Array.isArray(entry.claims?.P5137) && entry.claims.P5137.some((claim) => claim?.rank !== 'deprecated' &&
+      claim?.mainsnak?.datavalue?.value?.id === groundedIn))?.id ?? null;
   const forms = [];
   if (Array.isArray(entity.forms)) {
     for (const form of entity.forms) {
-      const raw = parseForm(form);
+      const raw = parseForm(form, id, languageCode);
       if (raw !== null) forms.push(raw);
     }
   }
   return { language_item: languageItem, language_code: languageCode, lemma, category, sense, forms };
 }
 
+function matchesSubidentifier(lexeme, identifier, kind) {
+  const prefix = `${lexeme}-${kind}`;
+  return typeof identifier === 'string' && identifier.startsWith(prefix) && /^[0-9]+$/u.test(identifier.slice(prefix.length));
+}
+
 /** Mirrors `fn parse_form`. */
-function parseForm(form) {
-  if (!isObject(form)) return null;
-  const id = str(form.id);
-  if (id === null || !isObject(form.representations)) return null;
-  const keys = sortedKeys(form.representations);
-  if (!keys.length) return null;
-  const first = form.representations[keys[0]];
-  const text = isObject(first) ? str(first.value) : null;
+function parseForm(form, lexeme, language) {
+  if (!matchesSubidentifier(lexeme, form?.id, 'F')) return null;
+  const text = safeSurface(form.representations?.[language]?.value);
   if (text === null) return null;
   const features = Array.isArray(form.grammaticalFeatures) ? form.grammaticalFeatures.filter((item) => typeof item === 'string') : [];
-  return { id, text, features };
+  return { id: form.id, text, features };
 }
 
 const hasFeature = (form, feature) => form.features.includes(feature);
@@ -170,67 +170,19 @@ function deriveSource(id, raw) {
   return { id, language: raw.language_code, language_item: raw.language_item, category: raw.category, sense: raw.sense, forms };
 }
 
-/** The embedded lexeme JSON of one source (Rust `SourceRef::json`). */
-function sourceJson(sourceRef) {
-  return cached(`meaning-detail-lexeme:${sourceRef.id}`, () => readText(sourceRef.path));
-}
-
-/** Mirrors `fn embedded_entities`. */
-function embeddedEntities(concept) {
-  const map = new Map();
-  for (const sourceRef of concept.sources) {
-    for (const [id, raw] of parseEntities(sourceJson(sourceRef))) map.set(id, raw);
-  }
-  return map;
-}
-
-/**
- * Mirrors `fn concept_lexemes`: the fetched lexemes when every source is
- * present in them, else the embedded ones.
- * @param {object} concept
- * @param {string|null} fetched
- */
+/** Derive grammatical forms from the complete requested Wikidata batch. */
 export function conceptLexemes(concept, fetched) {
-  let entities = null;
-  if (fetched !== null && fetched !== undefined) {
-    const parsed = parseEntities(fetched);
-    if (concept.sources.every((sourceRef) => parsed.has(sourceRef.id))) entities = parsed;
+  if (typeof fetched !== 'string' || new TextEncoder().encode(fetched).length > 1048576) return null;
+  const entities = parseEntities(fetched, concept.grounded_in);
+  const sources = [];
+  for (const id of concept.sources) {
+    if (!entities.has(id)) return null;
+    const source = deriveSource(id, entities.get(id));
+    if (source.forms.length !== NUMBER_FEATURES.length ||
+        (source.sense === null && concept.required_senses.includes(id))) return null;
+    sources.push(source);
   }
-  if (entities === null) entities = embeddedEntities(concept);
-  const sources = concept.sources.filter((sourceRef) => entities.has(sourceRef.id))
-    .map((sourceRef) => deriveSource(sourceRef.id, entities.get(sourceRef.id)));
-  const extras = concept.extras.map((extra) => ({ language: extra.language, text: extra.text }));
-  return { sources, extras };
-}
-
-/** Mirrors `fn lexeme_core`. */
-function lexemeCore(entity) {
-  const field = (key) => (isObject(entity) && entity[key] !== undefined ? entity[key] : null);
-  const forms = Array.isArray(entity?.forms) ? entity.forms.map((form) => ({
-    id: form?.id ?? null,
-    representations: form?.representations ?? null,
-    grammaticalFeatures: form?.grammaticalFeatures ?? null,
-  })) : [];
-  const senses = Array.isArray(entity?.senses) ? entity.senses.map((sense) => ({ id: sense?.id ?? null })) : [];
-  return {
-    id: field('id'), lemmas: field('lemmas'), language: field('language'), lexicalCategory: field('lexicalCategory'), forms, senses,
-  };
-}
-
-/** Mirrors `fn source_bundle`: the minimal Wikidata-shaped bundle a fetch returns. */
-export function sourceBundle(concept) {
-  const entities = {};
-  for (const sourceRef of concept.sources) {
-    let doc;
-    try {
-      doc = JSON.parse(sourceJson(sourceRef));
-    } catch {
-      continue;
-    }
-    if (!isObject(doc) || !isObject(doc.entities)) continue;
-    for (const id of sortedKeys(doc.entities)) entities[id] = lexemeCore(doc.entities[id]);
-  }
-  return jsonText({ entities });
+  return { sources, extras: concept.extras };
 }
 
 /** Mirrors `fn language_name`. */
@@ -291,7 +243,8 @@ export function renderBlock(concept, lexemes) {
 
 /** Mirrors `fn enrich_block`. @param {object} concept @param {string|null} fetched */
 export function enrichBlock(concept, fetched) {
-  return renderBlock(concept, conceptLexemes(concept, fetched));
+  const lexemes = conceptLexemes(concept, fetched);
+  return lexemes === null ? null : renderBlock(concept, lexemes);
 }
 
 /** Mirrors `fn final_answer_for`. */

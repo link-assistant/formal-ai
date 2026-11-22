@@ -96,78 +96,76 @@ function sortedInsert(entries, key, value) {
 
 /** Mirrors `fn parse_seed` (cached like the Rust `OnceLock`). */
 function parsed() {
-  return cached('computer-use-seed', () => {
-    const seed = {
-      tasks: [],
-      completions: new Map(),
-      missing: new Map(),
-      verification_failures: new Map(),
-      preconditions: new Map(),
-      postconditions: new Map(),
-      gap_cues: [],
-      gap_responses: new Map(),
-    };
-    let currentTask = null;
-    let currentGap = null;
-    const localizedInto = (map, rest) => {
+  return cached('computer-use-seed', () => parseSeed(readText(TASKS_PATH)));
+}
+
+function parseSeed(document) {
+  const seed = {
+    tasks: [],
+    completions: new Map(),
+    missing: new Map(),
+    verification_failures: new Map(),
+    preconditions: new Map(),
+    postconditions: new Map(),
+    gap_responses: new Map(),
+  };
+  let currentTask = null;
+  let currentGap = null;
+  const localizedInto = (map, rest) => {
+    const pair = parseLocalized(rest);
+    if (pair) map.set(pair[0], pair[1]);
+  };
+  const templateInto = (map, rest) => {
+    const pair = parsePrimitiveTemplate(rest);
+    if (pair) map.set(pair[0], pair[1]);
+  };
+  for (const line of rustLines(document)) {
+    let rest;
+    if ((rest = stripPrefix(line, '  completion ')) !== null) {
+      localizedInto(seed.completions, rest);
+    } else if ((rest = stripPrefix(line, '  missing ')) !== null) {
+      localizedInto(seed.missing, rest);
+    } else if ((rest = stripPrefix(line, '  verification_failed ')) !== null) {
+      localizedInto(seed.verification_failures, rest);
+    } else if ((rest = stripPrefix(line, '  precondition ')) !== null) {
+      templateInto(seed.preconditions, rest);
+    } else if ((rest = stripPrefix(line, '  postcondition ')) !== null) {
+      templateInto(seed.postconditions, rest);
+    } else if ((rest = stripPrefix(line, '  task ')) !== null) {
+      if (currentTask) seed.tasks.push(currentTask);
+      currentGap = null;
+      currentTask = { id: trim(rest), prompts: [], steps: [] };
+    } else if ((rest = stripPrefix(line, '  capability_gap ')) !== null) {
+      if (currentTask) seed.tasks.push(currentTask);
+      currentTask = null;
+      currentGap = trim(rest);
+    } else if ((rest = stripPrefix(line, '    prompt ')) !== null) {
+      if (!currentTask) continue;
       const pair = parseLocalized(rest);
-      if (pair) map.set(pair[0], pair[1]);
-    };
-    const templateInto = (map, rest) => {
-      const pair = parsePrimitiveTemplate(rest);
-      if (pair) map.set(pair[0], pair[1]);
-    };
-    for (const line of rustLines(readText(TASKS_PATH))) {
-      let rest;
-      if ((rest = stripPrefix(line, '  completion ')) !== null) {
-        localizedInto(seed.completions, rest);
-      } else if ((rest = stripPrefix(line, '  missing ')) !== null) {
-        localizedInto(seed.missing, rest);
-      } else if ((rest = stripPrefix(line, '  verification_failed ')) !== null) {
-        localizedInto(seed.verification_failures, rest);
-      } else if ((rest = stripPrefix(line, '  precondition ')) !== null) {
-        templateInto(seed.preconditions, rest);
-      } else if ((rest = stripPrefix(line, '  postcondition ')) !== null) {
-        templateInto(seed.postconditions, rest);
-      } else if ((rest = stripPrefix(line, '  task ')) !== null) {
-        if (currentTask) seed.tasks.push(currentTask);
-        currentGap = null;
-        currentTask = { id: trim(rest), prompts: [], steps: [] };
-      } else if ((rest = stripPrefix(line, '  capability_gap ')) !== null) {
-        if (currentTask) seed.tasks.push(currentTask);
-        currentTask = null;
-        currentGap = trim(rest);
-      } else if ((rest = stripPrefix(line, '    prompt ')) !== null) {
-        if (!currentTask) continue;
-        const pair = parseLocalized(rest);
-        if (pair) sortedInsert(currentTask.prompts, pair[0], pair[1]);
-      } else if ((rest = stripPrefix(line, '    step ')) !== null) {
-        if (!currentTask) continue;
-        const split = splitOnceSpace(trim(rest));
-        if (!split) continue;
-        const primitive = computerPrimitiveFromToolName(split[0]);
-        const args = parseStepArguments(split[1]);
-        if (primitive === null || args === undefined) continue;
-        const number = String(currentTask.steps.length + 1).padStart(2, '0');
-        currentTask.steps.push({
-          id: `${currentTask.id}-${number}`,
-          primitive,
-          arguments: args,
-          precondition: renderTemplate(primitiveTemplate(seed.preconditions, primitive),
-            [['permission', `tool:computer:${primitive}`]]),
-          postcondition: primitiveTemplate(seed.postconditions, primitive),
-        });
-      } else if ((rest = stripPrefix(line, '    cue ')) !== null) {
-        const pair = parseLocalized(rest);
-        if (currentGap !== null && pair) seed.gap_cues.push([currentGap, pair[0], pair[1]]);
-      } else if ((rest = stripPrefix(line, '    response ')) !== null) {
-        const pair = parseLocalized(rest);
-        if (currentGap !== null && pair) seed.gap_responses.set(gapKey(currentGap, pair[0]), pair[1]);
-      }
+      if (pair) sortedInsert(currentTask.prompts, pair[0], pair[1]);
+    } else if ((rest = stripPrefix(line, '    step ')) !== null) {
+      if (!currentTask) continue;
+      const split = splitOnceSpace(trim(rest));
+      if (!split) continue;
+      const primitive = computerPrimitiveFromToolName(split[0]);
+      const args = parseStepArguments(split[1]);
+      if (primitive === null || args === undefined) continue;
+      const number = String(currentTask.steps.length + 1).padStart(2, '0');
+      const [precondition, postcondition] = stepConditions(primitive);
+      currentTask.steps.push({
+        id: `${currentTask.id}-${number}`,
+        primitive,
+        arguments: args,
+        precondition,
+        postcondition,
+      });
+    } else if ((rest = stripPrefix(line, '    response ')) !== null) {
+      const pair = parseLocalized(rest);
+      if (currentGap !== null && pair) seed.gap_responses.set(gapKey(currentGap, pair[0]), pair[1]);
     }
-    if (currentTask) seed.tasks.push(currentTask);
-    return seed;
-  });
+  }
+  if (currentTask) seed.tasks.push(currentTask);
+  return seed;
 }
 
 const gapKey = (capability, locale) => JSON.stringify([capability, locale]);
@@ -181,14 +179,14 @@ export function cloneStep(step) {
  * Mirrors `fn benchmark_tasks`: `{id, prompts: [[locale, prompt]] (sorted by
  * locale), steps}` records in seed order.
  */
-export function benchmarkTasks() {
-  return parsed().tasks;
+export function parseBenchmarkTasks(document) {
+  return parseSeed(document).tasks;
 }
 
 /** Mirrors `fn plan_for_prompt`: the recorded plan for a verbatim benchmark prompt, or null. */
-export function planForPrompt(prompt) {
+export function planForPrompt(tasks, prompt) {
   const normalized = normalize(prompt);
-  for (const task of benchmarkTasks()) {
+  for (const task of tasks) {
     for (const [locale, candidate] of task.prompts) {
       if (normalize(candidate) === normalized) {
         return { id: task.id, locale, prompt: candidate, steps: task.steps.map(cloneStep) };
@@ -196,16 +194,6 @@ export function planForPrompt(prompt) {
     }
   }
   return null;
-}
-
-/** Mirrors `fn capability_gap_for_prompt`. */
-export function capabilityGapForPrompt(prompt) {
-  const normalized = normalize(prompt);
-  const seed = parsed();
-  const cue = seed.gap_cues.find(([, , text]) => normalize(text) === normalized);
-  if (!cue) return null;
-  const response = seed.gap_responses.get(gapKey(cue[0], cue[1]));
-  return response === undefined ? null : { capability: cue[0], locale: cue[1], response };
 }
 
 /** Mirrors `fn completion_message`. */

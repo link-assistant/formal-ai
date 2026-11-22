@@ -53,6 +53,10 @@ pub struct DocumentedProgram {
     pub deviation: Option<String>,
     /// The name the page gives its language, when the capture records one.
     pub language_name: String,
+    /// URL, digest and retrieval time of the page that supplied the example.
+    pub source_trace: String,
+    /// Whether the page was read from a verified runtime capture.
+    pub cached: bool,
 }
 
 /// The stem of the file a program is saved as (`Main` for `src/Main.java`).
@@ -282,68 +286,6 @@ pub fn documentation_deviation(language: &str, call: &str, program: &str) -> Opt
     (!breaks).then(|| String::from("trailing_newline=absent"))
 }
 
-/// How the program a documented pair answers with was verified.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ProgramVerification {
-    /// A recorded run compiled and executed this exact program.
-    Recorded {
-        /// Where the run happened.
-        environment: String,
-    },
-    /// Rediscovered from the page and checked by decomposition; nothing ran it.
-    Decomposition {
-        /// The page the program was rediscovered from.
-        page: String,
-    },
-}
-
-impl ProgramVerification {
-    /// The page a program checked only by decomposition was rediscovered from.
-    #[must_use]
-    pub const fn rediscovered_page(&self) -> Option<&str> {
-        match self {
-            Self::Decomposition { page } => Some(page.as_str()),
-            Self::Recorded { .. } => None,
-        }
-    }
-}
-
-/// How a documented program was verified (issue #1165).
-///
-/// A run the policy seed's `recorded_verification` records for the
-/// program's language, task and `content_id` is cited; any other program is
-/// reported as rediscovered from its page and checked by decomposition. The
-/// JavaScript twin is `documentationVerification`.
-#[must_use]
-pub fn program_verification(program: &DocumentedProgram) -> ProgramVerification {
-    let policy = parse_lino(POLICY);
-    let content_id = format!("0x{:016x}", program.recipe.content_id);
-    policy
-        .children
-        .first()
-        .and_then(|root| {
-            root.children
-                .iter()
-                .find(|node| node.name == "recorded_verification")
-        })
-        .filter(|record| {
-            record.children.iter().any(|row| {
-                row.name == "program"
-                    && row.find_child_value("language") == program.recipe.language
-                    && row.find_child_value("task") == program.recipe.task
-                    && row.find_child_value("content_id") == content_id
-            })
-        })
-        .map_or_else(
-            || ProgramVerification::Decomposition {
-                page: program.recipe.rediscovery_source.clone(),
-            },
-            |record| ProgramVerification::Recorded {
-                environment: record.find_child_value("environment").to_owned(),
-            },
-        )
-}
-
 /// The derivation a documented pair adds after its `procedure_cache` event,
 /// as `(kind, payload)`.
 ///
@@ -374,19 +316,21 @@ pub fn documentation_events(
             )
         })
         .collect();
+    if !program.source_trace.is_empty() {
+        events.push(("source:http", program.source_trace.clone()));
+    }
+    if program.cached {
+        events.push(("cache_hit", program.recipe.rediscovery_source.clone()));
+    }
     let content_id = format!("0x{:016x}", program.recipe.content_id);
-    let (verification, source) = match program_verification(program) {
-        ProgramVerification::Recorded { environment } => ("recorded", environment),
-        ProgramVerification::Decomposition { page } => ("decomposition", page),
-    };
     events.push((
         "program_verification",
         crate::event_log::render_fields(&[
             ("language", language),
             ("task", task),
             ("content_id", content_id.as_str()),
-            ("verification", verification),
-            ("source", source.as_str()),
+            ("verification", "decomposition"),
+            ("source", program.recipe.rediscovery_source.as_str()),
         ]),
     ));
     if let Some(deviation) = &program.deviation {
@@ -408,9 +352,17 @@ pub fn documentation_events(
 /// binds it. The JavaScript twin is `codingOracleDocumentedSnippet`.
 #[must_use]
 pub fn documented_oracle_program(task: &str, language: &str) -> Option<DocumentedProgram> {
+    documented_oracle_program_with_offline(task, language, true)
+}
+
+pub(crate) fn documented_oracle_program_with_offline(
+    task: &str,
+    language: &str,
+    offline: bool,
+) -> Option<DocumentedProgram> {
     let slug = language.trim().to_ascii_lowercase();
     let expected = crate::coding::program_task_by_slug(task)?.output;
-    rediscover_documented_program(
+    resolve_documented_program(
         &slug,
         task,
         expected,
@@ -418,6 +370,7 @@ pub fn documented_oracle_program(task: &str, language: &str) -> Option<Documente
             save_as: "",
             commands: &[],
         },
+        offline,
     )
     .ok()
 }
@@ -504,7 +457,20 @@ fn bind_documented_name(word: &str, from: &str, to: &str) -> String {
 /// `js/worker/formal_ai_worker_documented_commands.js`.
 #[must_use]
 pub fn documented_language_commands(language: &str, save_as: &str) -> Vec<SourcedCommand> {
-    let captures = all_documentation_captures();
+    documented_language_commands_from(
+        language,
+        save_as,
+        &acquire_documentation_captures(language, "hello_world", &documentation_client(true)),
+    )
+}
+
+/// Match command procedure references against an explicitly acquired set of pages.
+#[must_use]
+pub fn documented_language_commands_from(
+    language: &str,
+    save_as: &str,
+    captures: &[DocumentationCapture],
+) -> Vec<SourcedCommand> {
     let stated: Vec<(&'static str, String, String)> = command_procedures()
         .into_iter()
         .filter(|row| row.language == language)

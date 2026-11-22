@@ -47,6 +47,7 @@ jobs:
             /*
             !/dev/log/
             !/experiments/*
+            /experiments/agent_cli_e2e/run_issue_707.sh
             /experiments/dynamic-meta/
             /experiments/issue_859_codex_e2e/
             /experiments/issue_1609_client_reports/
@@ -67,8 +68,16 @@ jobs:
         # The CLI replays below use this binary. Keep Cargo's optimized test
         # profile so the prompt-data requests finish within their deadlines.
         run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity --test t3code_launch -- --test-threads=1
+      - name: Verify explicit computer-use plans and HTTP receipts
+        env:
+          CARGO_BUILD_JOBS: '2'
+        run: cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1
       - uses: actions/setup-node@v7
         with: {node-version: 22}
+      - name: Exercise the cold runtime smoke against the native CLI
+        run: |
+          export PATH="$GITHUB_WORKSPACE/rust/target/debug:$PATH"
+          bash scripts/verify-docker-slim-runtime.sh
       - name: Replay the forced function requests against the native CLI
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
@@ -90,6 +99,14 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs
+      - name: Replay prompt-local contradiction worksheets against the native CLI
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 rust/tests/web/issue-901-triz-parity.test.mjs
+      - name: Replay operand-bound programs against the native CLI
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 --test-name-pattern='native program replies' rust/tests/web/script-print-operand.test.mjs
       - uses: oven-sh/setup-bun@v2
         id: bun
         if: ${{ !cancelled() && (success() || steps.report-http.outcome == 'failure') }}

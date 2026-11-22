@@ -1,0 +1,4 @@
+{"stream":"stdout","sequence":1,"content":"Formal AI draft: attempting — #1613 was just opened by konard\n"}
+{"stream":"stdout","sequence":2,"content":"::notice title=Formal AI draft decision::run\nshould_run=true\ndecision_code=run\ndecision_reason=#1613 was just opened by konard\nissue_number=1613\n"}
+{"stream":"stderr","sequence":3,"content":"Error response from daemon: manifest for konard/hive-mind:2.45.1 not found: manifest unknown: manifest unknown\n"}
+{"stream":"stdout","sequence":4,"content":"::error title=Formal AI draft failed::[DRAFT_IMAGE_UNAVAILABLE] Could not pull konard/hive-mind:2.45.1 after 1 attempt: Error response from daemon: manifest for konard/hive-mind:2.45.1 not found: manifest unknown: manifest unknown\n"}

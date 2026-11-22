@@ -1,0 +1,4 @@
+HTTP/2 200
+access-control-allow-origin: *
+content-type: text/html; charset=utf-8
+date: Sat, 21 Nov 2026 22:33:51 GMT

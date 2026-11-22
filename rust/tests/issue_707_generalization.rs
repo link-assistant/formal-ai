@@ -12,8 +12,12 @@ use std::fs;
 use std::path::PathBuf;
 
 use formal_ai::computer_use::{
-    capability_gap_for_request, plan_for_prompt, plan_request, run_verified_plan, synthesize,
+    ComputerUsePolicy, capability_gap_for_request, execute_verified_plan, induce,
+    parse_benchmark_tasks, plan_for_prompt, plan_request, synthesize_with,
 };
+
+#[path = "fixtures/computer-use/support.rs"]
+mod fixtures;
 
 fn root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -89,10 +93,11 @@ fn the_suite_holds_at_least_the_ratcheted_number_of_four_language_cases() {
 
 #[test]
 fn every_held_out_prompt_is_absent_from_the_recorded_corpus() {
+    let tasks = parse_benchmark_tasks(fixtures::CORPUS);
     for case in suite() {
         for (locale, prompt) in &case.prompts {
             assert!(
-                plan_for_prompt(prompt).is_none(),
+                plan_for_prompt(&tasks, prompt).is_none(),
                 "{} [{locale}] is recorded, so it proves nothing about generalization",
                 case.id
             );
@@ -102,9 +107,10 @@ fn every_held_out_prompt_is_absent_from_the_recorded_corpus() {
 
 #[test]
 fn every_held_out_request_synthesizes_the_expected_resource_and_operations() {
+    let schemas = induce(&parse_benchmark_tasks(fixtures::CORPUS));
     for case in suite() {
         for (locale, prompt) in &case.prompts {
-            let synthesis = synthesize(prompt)
+            let synthesis = synthesize_with(prompt, &schemas)
                 .unwrap_or_else(|| panic!("{} [{locale}] produced no plan: {prompt}", case.id));
             assert_eq!(synthesis.resource, case.resource, "{} [{locale}]", case.id);
             assert_eq!(
@@ -118,12 +124,13 @@ fn every_held_out_request_synthesizes_the_expected_resource_and_operations() {
 
 #[test]
 fn the_four_languages_of_a_case_agree_on_one_plan() {
+    let schemas = induce(&parse_benchmark_tasks(fixtures::CORPUS));
     for case in suite() {
         let identities = case
             .prompts
             .iter()
             .map(|(_, prompt)| {
-                let plan = plan_request(prompt).expect("plan");
+                let plan = synthesize_with(prompt, &schemas).expect("plan").plan;
                 (plan.id, plan.steps)
             })
             .collect::<Vec<_>>();
@@ -137,17 +144,28 @@ fn the_four_languages_of_a_case_agree_on_one_plan() {
 
 #[test]
 fn every_synthesized_plan_executes_with_every_step_verified() {
+    let publisher = fixtures::Publisher::start();
+    let schemas = induce(&parse_benchmark_tasks(&publisher.corpus()));
+    let policy = ComputerUsePolicy::agent_mode_all()
+        .with_http_origin(publisher.origin.parse().expect("fixture publisher origin"));
     let mut workspaces = BTreeSet::new();
     for case in suite() {
         for (locale, prompt) in &case.prompts {
-            let outcome = run_verified_plan(prompt)
+            let plan = synthesize_with(prompt, &schemas)
+                .expect("supplied corpus plan")
+                .plan;
+            let outcome = execute_verified_plan(plan, policy.clone())
                 .unwrap_or_else(|error| panic!("{} [{locale}]: {error:?}", case.id));
             assert!(
                 outcome.plan.id.starts_with("synthesized-"),
                 "{} [{locale}] fell back to a recorded plan",
                 case.id
             );
-            assert!(outcome.verified, "{} [{locale}]", case.id);
+            assert!(
+                outcome.verified,
+                "{} [{locale}]: {:?}",
+                case.id, outcome.steps
+            );
             assert!(
                 outcome.steps.len() >= 3,
                 "{} [{locale}] has no materialisation, body, and verification",

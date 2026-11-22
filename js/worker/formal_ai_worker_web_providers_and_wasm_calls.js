@@ -159,15 +159,15 @@ function directExternalLinkAnswer(url, framePolicy, leadingLine) {
   return lines.join("\n");
 }
 
-async function tryFetch(prompt) {
-  const formalized = await tryPageFormalization(prompt); // R1188-U18: "formalize <url>"
+async function tryFetch(prompt, preferences) {
+  const online = preferences?.offline !== true && preferences?.allowNetwork !== false;
+  const formalized = await tryPageFormalization(prompt, online); // R1188-U18: "formalize <url>"
   if (formalized) return formalized;
   const normalized = normalizePrompt(prompt);
   const url = extractHttpFetchUrl(prompt, normalized);
   if (!url) return null;
-  const curated = tryCuratedProjectFetch(prompt, url);
-  if (curated) return curated;
   const evidence = [`http_fetch:request:${url}`];
+  if (!online) return offlineHttpFetch(url, detectLanguage(prompt), evidence);
   if (typeof fetch !== "function") {
     return {
       intent: "http_fetch",

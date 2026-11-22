@@ -1,0 +1,42 @@
+✔ Сложи 14 месяцев, 2 года и 7 месяцев. Ответ в месяцах. (1816.869875ms)
+✔ How many full years are between March 2021 and June 2024? (582.472052ms)
+✔ Сколько полных лет прошло с марта 2021 года по июнь 2024 года? (140.142141ms)
+✔ What date is 10 days after December 25, 2026? (135.275904ms)
+✔ Какая дата будет через 10 дней после 25 декабря 2026 года? (126.520935ms)
+✔ Add 14 months, 2 years and 7 months. Answer in months. (589.083393ms)
+✔ Sum 12 months and 1 year in years. (545.231064ms)
+✔ Сложи 1 год и 2 месяца. Ответ в месяцах. (529.880313ms)
+✔ Add 1 year and 6 months in years. (553.067239ms)
+✔ How many full months are between March 2021 and June 2024? (492.650005ms)
+✔ Сколько полных месяцев прошло с марта 2021 года по июнь 2024 года? (108.243575ms)
+✔ How many full years are between 2021-06-20 and 2024-06-19? (357.838928ms)
+✔ How many full years are between 2021-06-20 and 2024-06-20? (351.837354ms)
+✔ How many full months are between 2024-01-31 and 2024-02-29? (279.508953ms)
+✔ How many full months are between 2024-01-31 and 2024-03-01? (310.286778ms)
+✔ How many full years are between 2024-02-29 and 2025-02-28? (363.209785ms)
+✔ How many full months are between June 2024 and March 2021? (418.244411ms)
+✔ Сколько полных месяцев прошло с 15 марта 2021 года по 14 июня 2024 года? (142.47994ms)
+✔ Add 2 years of experience and 7 months in months. (686.858635ms)
+✔ Add 2 days and 1 month in months. (581.397818ms)
+✔ How many full months are between February 30, 2024 and March 2024? (496.146245ms)
+✔ How many full years are between March 2021 and 2024-06-20? (537.693135ms)
+✔ How many full years are between March 2021 and June 2024 and May 2025? (994.691226ms)
+✔ Write a poem about full years between March 2021 and June 2024. (343.410247ms)
+✔ Add 20 months and 1 month. Answer in months. (492.212339ms)
+✔ Add 20 years and 1 year. Answer in years. (722.561564ms)
+✔ जोड़ो 14 महीने और 2 वर्ष और 7 महीने. में महीने. (644.13427ms)
+✔ 相加 14 个月 和 2 年 和 7 个月. 以 个月. (154.65661ms)
+✔ Suma 14 meses y 2 años y 7 meses. En meses. (101.899294ms)
+✔ fresh-home API exposes the answer and an actual derivation for every requirement (13537.691734ms)
+✔ English, Russian, Hindi, Chinese and Spanish duration responses retain their language (2063.611423ms)
+✔ dated publisher captures support known and held-out pairs (3182.153472ms)
+✔ same-currency rounding does not need a publisher (325.913033ms)
+✔ a missing or invalid publisher quote does not yield a conversion (2230.256192ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38764.586505

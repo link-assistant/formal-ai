@@ -501,12 +501,8 @@ fn a_genuinely_fetched_non_artifact_work_item_preserves_verified_history_and_sta
 }
 
 #[test]
-fn offline_fetch_status_is_owned_by_registry_membership_and_preserves_wrapper_bytes() {
-    use formal_ai::agentic_coding::{CANONICAL_SOURCE_URL, corpus};
-    assert_eq!(
-        corpus::web_fetch_result(CANONICAL_SOURCE_URL),
-        Ok(corpus::web_fetch(CANONICAL_SOURCE_URL))
-    );
+fn fetch_wrapper_preserves_the_unregistered_source_error() {
+    use formal_ai::agentic_coding::corpus;
     let url = "https://example.com/missing";
     assert_eq!(corpus::web_fetch_result(url), Err(corpus::web_fetch(url)));
 }

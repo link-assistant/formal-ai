@@ -71,9 +71,9 @@ pub fn try_program_blueprint(
             "not run — standard-library source analysis blueprint",
             "answer renderer did not compile generated Cargo program in place",
         ),
-        BlueprintExecution::ReviewDataAssumptions => (
-            "not run — assumptions require review",
-            "offline sandbox did not execute reviewed report blueprint",
+        BlueprintExecution::RequiresScenarioInput => (
+            "not run — scenario input required",
+            "offline sandbox did not execute the program without caller data",
         ),
         BlueprintExecution::ExternalLibrariesAndNetwork => (
             "not run — requires external libraries and network access",

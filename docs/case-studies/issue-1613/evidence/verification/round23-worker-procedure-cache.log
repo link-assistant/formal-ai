@@ -1,0 +1,18 @@
+✔ the worker and the agentic root read the same miss_route gap (5817.767642ms)
+✔ a caller-supplied range produces no task-wide procedure-cache event (1466.527944ms)
+✔ a request that customised the template logs no procedure_cache event (3837.043672ms)
+✔ a non-program answer logs no procedure_cache event (160.562399ms)
+✔ R1165-1: a pair with documentation captures answers from the program rediscovered from them (1160.635006ms)
+✔ R1165-6: the documented run contract binds the program name and records each command source (174.350043ms)
+✔ R1165-1: program_verification identifies the publisher and the structural check (119.320732ms)
+✔ R1165-4: Swift and Lua use their acquired publisher documentation (136.525435ms)
+✔ cold offline output composition binds held-out text without publisher bytes (9518.99653ms)
+✔ R1165-1: a customised request reuses the rediscovered procedure with its own literal (399.864179ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23881.156881

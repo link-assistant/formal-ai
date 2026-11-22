@@ -1,0 +1,11 @@
+✔ R1175-4: the corpus is well formed and large enough (2098.938219ms)
+✔ R1175-4: every lane meets the coverage budget or is exempt with a reason (5.017645ms)
+✔ R1175-4: the browser worker routes every probe; misroutes only ratchet down (77217.946712ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80356.328049

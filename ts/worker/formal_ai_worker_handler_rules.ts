@@ -256,6 +256,10 @@ function handlerRulesParseValue(node) {
     case "transform": // R1188-U20: a named text transform of the free-text payload (Rust ValueSource::Transform)
       if (node.args.length < 3) throw new Error("handler-rules:transform_without_name");
       return { name, source, text: "", key: node.args[2] };
+    case "list_code":
+      if (node.args.length < 3) throw new Error("handler-rules:list_code_without_language");
+      if (node.args[3] !== undefined && node.args[3] !== "test") throw new Error("handler-rules:unknown_list_code_form");
+      return { name, source, text: node.args[3], key: node.args[2] };
     case "response": // #918: the seeded response whose intent the template names, in the prompt language
       if (node.args.length < 3) throw new Error("handler-rules:response_without_intent");
       return { name, source, text: "", key: node.args[2] };

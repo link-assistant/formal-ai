@@ -1,0 +1,6 @@
+GET https://www.wikidata.org/w/api.php?action=wbgetentities&ids=L3784&format=json&origin=*
+HTTP/2 200
+date: Sun, 22 Nov 2026 03:54:09 GMT
+access-control-allow-origin: *
+content-type: application/json; charset=utf-8
+x-request-id: 9935fa57-c7f4-4983-b7f3-b55eabec5776

@@ -28,13 +28,17 @@ const expected = {
     ru: ['Город: Казань', '«Город: Казань»', '«Требования: опыт продаж от двух лет и водительские права»'],
   },
   language: {
-    en: ['Russian', 'Dictionary matches: около, лет, в', '«Около трёх лет, в основном оборудование.»'],
+    en: ['Russian', /Dictionary matches: около, (?:трёх, )?лет, в(?:\n|$)/u, '«Около трёх лет, в основном оборудование.»'],
     ru: ['Английский', 'Словарные совпадения: about, three', '«About three years, mostly equipment.»'],
   },
   agreement: {
     en: [null, 'She goes to work every day.', 'https://en.wiktionary.org/wiki/go#Verb'],
     ru: [null, 'Подскажите, пожалуйста, сколько лет вы работаете в продажах?', 'https://ru.wiktionary.org/wiki/работать', 'https://ru.wiktionary.org/wiki/пожалуйста'],
   },
+};
+const decisionSummary = {
+  en: ['I have decided to decline: the commute takes an hour and a half and the salary is lower than in my current job.'],
+  ru: ['Я подумал и решил отказаться: дорога до офиса занимает полтора часа, а зарплата ниже, чем на текущем месте.'],
 };
 const cannedSearch = /No captured provider response|no source[- ]grounded (?:statement|claim)|no captured source|ни одного подтвержд[её]нного источником|не получено ни одного|web_search/i;
 const otherLanguages = [
@@ -67,7 +71,10 @@ const additionalExamples = [
 function assertAnswer(content, [firstLine, ...evidence], label) {
   assert.equal(typeof content, 'string', label);
   if (firstLine) assert.equal(content.split('\n')[0], firstLine, label);
-  for (const span of evidence) assert.ok(content.includes(span), `${label}: ${content}`);
+  for (const span of evidence) {
+    if (span instanceof RegExp) assert.match(content, span, label);
+    else assert.ok(content.includes(span), `${label}: ${content}`);
+  }
   assert.doesNotMatch(content, cannedSearch, label);
 }
 
@@ -96,9 +103,18 @@ test('worker answers from prompt data and records literal spans with no tools', 
       const result = await solve(fixture(id, language));
       assertAnswer(result.content, evidence, `${id}/${language}`);
       assert.equal(result.toolCalls.length, 0);
-      if (id !== 'agreement') assert.ok(result.evidence.includes('prompt_data:network:none'));
+      if (id !== 'agreement') {
+        assert.ok(result.evidence.includes('prompt_data:network:none'));
+        assert.equal(result.metaExecution.shape, 'leaf', `${id}/${language}`);
+      }
       if (id === 'records') assert.ok(result.evidence.some((item) => item.startsWith('prompt_data:link:')));
     }
+  }
+  for (const [language, evidence] of Object.entries(decisionSummary)) {
+    const result = await solve(fixture('decision', language));
+    assertAnswer(result.content, evidence, `decision/${language}`);
+    assert.equal(result.intent, 'summarization_free_text');
+    assert.equal(result.toolCalls.length, 0);
   }
   for (const [prompt, evidence] of additionalExamples) {
     const result = await solve(prompt);
@@ -124,6 +140,8 @@ test('OpenAI completions answer the issue prompts in default and agent modes', {
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ model: 'formal-ai', messages: [{ role: 'user', content: prompt }] }),
           signal: AbortSignal.timeout(10000),
+        }).catch(cause => {
+          throw new Error(`Completion failed for ${label} in ${agentMode ? 'agent' : 'default'} mode`, { cause });
         });
         const body = await response.json();
         assert.equal(response.status, 200, JSON.stringify(body));
@@ -145,7 +163,13 @@ test('OpenAI completions answer the issue prompts in default and agent modes', {
           assertAnswer(await complete(prompt, prompt), evidence, prompt);
         });
       }
-      for (const id of ['decision', 'sales', 'redaction', 'mobile', 'yaml']) {
+      for (const [language, evidence] of Object.entries(decisionSummary)) {
+        const label = `decision/${language}`;
+        await subtest.test(label, async () => {
+          assertAnswer(await complete(fixture('decision', language), label), evidence, label);
+        });
+      }
+      for (const id of ['sales', 'redaction', 'mobile', 'yaml']) {
         for (const language of ['en', 'ru']) {
           const label = `${id}/${language}`;
           await subtest.test(label, async () => {

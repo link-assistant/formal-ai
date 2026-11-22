@@ -12,7 +12,9 @@ import test from "node:test";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
 
-const worker = createWorkerContext();
+import { currencyCaptures, currencyFetch, quoteDate } from "./support/currency-publisher-captures.mjs";
+
+const worker = createWorkerContext({}, { networkFetch: currencyFetch });
 const ready = evaluate(worker, "loadSeed()");
 const defaultFetch = worker.fetch;
 
@@ -74,16 +76,15 @@ test("a memory request no seeded family covers names its gap", async () => {
   assert.equal(response.content, GAP_EN);
 });
 
-// Issue #918 (R914-6): the compound_interest twins read one policy block and
-// one set of seeded responses. Two deliberate parity fixes: the native row
-// took its rate from the calculator while the worker took a table of its own
-// (both now read the seeded default rates), and the worker appended a
-// USD -> USD "conversion" whenever a principal was spelled in dollars (a
-// conversion now skips its source currency, and the native row gains the
-// ruble target the worker already had).
 const COMPOUND_REPORT = "Compound interest calculation\n\nFormula: A = P(1 + r/n)^(n*t)\nP = 1000 USD\nr = 0.08 (8% annual)\nn = 12 (monthly)\nt = 5 years\n\nStep 1: periodic rate = r/n = 0.08/12 = 0.006666666666667\nStep 2: number of periods = n*t = 12*5 = 60\nStep 3: A = 1000 * (1 + 0.006666666666667)^60\nFinal amount: 1489.85 USD";
-const COMPOUND_EUR = "\n\nConversion: USD -> EUR\n1 USD in EUR = 0.92 EUR\n1489.85 USD * 0.92 = 1370.66 EUR\nRate detail: Exchange rate: 1 USD = 0.92 EUR (source: default (hardcoded))\nLive web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.";
-const COMPOUND_RUB = "\n\nConversion: USD -> RUB\n1 USD in RUB = 89.5 RUB\n1489.85 USD * 89.5 = 133341.57 RUB\nRate detail: Exchange rate: 1 USD = 89.5 RUB (source: default (hardcoded))";
+const COMPOUND_EUR = compoundExpected("EUR", "0.9086", "1353.68");
+const COMPOUND_RUB = compoundExpected("RUB", "82.5143", "122933.93");
+
+function compoundExpected(target, rate, converted) {
+  const source = [...currencyCaptures.keys()].find(url => url.includes(`/usd/${target.toLowerCase()}?`));
+  return `\n\nConversion: USD -> ${target}\n1 USD in ${target} = ${rate} ${target}\n1489.85 USD * ${rate} = ${converted} ${target}\nRate detail: Exchange rate: 1 USD = ${rate} ${target} (${source}, ${quoteDate})`;
+}
+
 const COMPOUND_PROMPT = "Invest $1000 at 8% annual interest compounded monthly for 5 years";
 
 async function solveWith(prompt, history) {
@@ -91,10 +92,10 @@ async function solveWith(prompt, history) {
   return worker.solve(prompt, history, {}, {}, [], {});
 }
 
-test("a compound-interest report converts at the seeded euro and ruble rates", async () => {
+test("a compound-interest report converts at the publisher euro and ruble rates", async () => {
   for (const [prompt, expected] of [
-    [`${COMPOUND_PROMPT} and convert the final amount to EUR using current exchange rates from the web.`, COMPOUND_REPORT + COMPOUND_EUR],
-    [`${COMPOUND_PROMPT} and convert the final amount to rubles.`, COMPOUND_REPORT + COMPOUND_RUB],
+    [`${COMPOUND_PROMPT} and convert the final amount to EUR on ${quoteDate}.`, COMPOUND_REPORT + COMPOUND_EUR],
+    [`${COMPOUND_PROMPT} and convert the final amount to rubles on ${quoteDate}.`, COMPOUND_REPORT + COMPOUND_RUB],
   ]) {
     const response = await solveWith(prompt, []);
     assert.equal(response.intent, "calculation", prompt);
@@ -112,9 +113,15 @@ test("a follow-up converts the earlier final amount", async () => {
     { role: "user", content: COMPOUND_PROMPT },
     { role: "assistant", content: COMPOUND_REPORT },
   ];
-  const response = await solveWith("Convert the final amount to rubles", history);
+  const response = await solveWith(`Convert the final amount to rubles on ${quoteDate}`, history);
   assert.equal(response.intent, "calculation");
   assert.equal(response.content, `Final amount conversion\nSource amount: 1489.85 USD${COMPOUND_RUB}`);
+});
+
+test("compound interest accepts another ISO principal without a network quote", async () => {
+  const response = await solveWith("Invest 1000 CAD at 8% annual interest compounded monthly for 5 years", []);
+  assert.equal(response.intent, "calculation");
+  assert.match(response.content, /Final amount: 1489\.85 CAD/u);
 });
 
 // Issue #918 (R914-6): the playwright_script prelude row renders the seeded

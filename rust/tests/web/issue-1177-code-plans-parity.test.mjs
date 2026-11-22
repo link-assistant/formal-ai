@@ -12,6 +12,7 @@
 
 import assert from "node:assert/strict";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 
 import { createWorkerContext, evaluate } from "./support/browser-runtime.mjs";
 
@@ -27,7 +28,7 @@ test("a sorting-algorithm request gets the reviewable snippet with its execution
   assert.equal(answer.intent, "algorithm_sort_rust");
   assert.equal(
     answer.content,
-    "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.",
+    "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.",
   );
   assert.ok(answer.evidence.includes("execution_status:unavailable"));
 });
@@ -35,7 +36,23 @@ test("a sorting-algorithm request gets the reviewable snippet with its execution
 test("the sorting snippet carries a test when one is requested", () => {
   const answer = worker.runHandlerRuleSet("algorithm", "x", "write a sorting algorithm in python with tests", []);
   assert.equal(answer.intent, "algorithm_sort_python");
-  assert.ok(answer.content.includes("Tests:\n```python\ndef test_sort_ascending():"), answer.content);
+  assert.ok(answer.content.includes("Tests:\n```python\ndef test_sort():"), answer.content);
+});
+
+test("composes sorting functions and executable tests for each requested order", async () => {
+  for (const direction of ["ascending", "descending"]) {
+    const prompt = `Write a sorting algorithm in JavaScript in ${direction} order. Include a test with -6, +08, 8, 01.5.`;
+    const answer = await solve(prompt);
+    assert.equal(answer.intent, "algorithm_sort_javascript");
+    const blocks = [...answer.content.matchAll(/```javascript\n([\s\S]*?)\n```/gu)].map((match) => match[1]);
+    assert.equal(blocks.length, 2);
+    const [source, check] = blocks;
+    assert.match(check, /sort\(\[-6\.0, 8\.0, 8\.0, 1\.5\]\)/u);
+    const actual = runInNewContext(`${source}\n${check}\nJSON.stringify(sort([15, -2, 0, 15]))`);
+    const expected = direction === "ascending" ? [-2, 0, 15, 15] : [15, 15, 0, -2];
+    assert.deepEqual(JSON.parse(actual), expected);
+    assert.match(answer.content, /Execution status: unavailable/u);
+  }
 });
 
 test("execution failures are reported with the full trace", async () => {

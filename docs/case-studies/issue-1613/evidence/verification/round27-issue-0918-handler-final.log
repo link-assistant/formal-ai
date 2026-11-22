@@ -1,0 +1,11 @@
+✔ every handler source under the recursive walk has a ledger entry (28.286136ms)
+✔ every entry records migrate, promote or delete with a reason (0.81502ms)
+✔ a migrate entry names its data target and a promote entry its core component (0.754377ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 196.953005

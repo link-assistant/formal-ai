@@ -1,0 +1,66 @@
+// Regional publisher feed parsing shared by the CLI and the browser worker.
+
+import { findChildValue, parseRoot } from './seed_parser.mjs';
+
+export const GOOGLE_TRENDS_SOURCE = 'google_trends_rss';
+const TOP_LIMIT = 10;
+const XML_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
+export const compactFeedText = (value) => String(value ?? '').trim().replace(/\s+/gu, ' ');
+
+function blocks(xml, tag) {
+  const pattern = new RegExp('<' + tag + '>([\\s\\S]*?)</' + tag + '>', 'gu');
+  return Array.from(xml.matchAll(pattern), (match) => match[1]);
+}
+
+function text(xml, tag) {
+  const raw = blocks(xml, tag)[0]?.trim() ?? '';
+  if (raw.startsWith('<![CDATA[') && raw.endsWith(']]>')) return compactFeedText(raw.slice(9, -3));
+  return compactFeedText(raw.replace(/&(amp|lt|gt|quot|apos);/gu, (_, name) => XML_ENTITIES[name]));
+}
+
+/** Mirrors `parse_google_trends_rss`. */
+export function parseGoogleTrendsRss(xml) {
+  const feed = /<rss(?:\s[^>]*)?>([\s\S]*?)<\/rss>/u.exec(xml)?.[1];
+  const channel = feed && blocks(feed, 'channel')[0];
+  if (!channel) return [];
+  const topics = [];
+  for (const item of blocks(channel, 'item')) {
+    const query = text(item, 'title');
+    if (!query || query.length > 256) continue;
+    const news = blocks(item, 'ht:news_item').map((entry) => ({
+      title: text(entry, 'ht:news_item_title'),
+      source: text(entry, 'ht:news_item_source'),
+      url: text(entry, 'ht:news_item_url'),
+    })).find(({ title }) => title);
+    topics.push({
+      rank: topics.length + 1,
+      query,
+      traffic: text(item, 'ht:approx_traffic'),
+      published: text(item, 'pubDate'),
+      news,
+    });
+    if (topics.length === TOP_LIMIT) break;
+  }
+  return topics;
+}
+
+/** Mirrors `requested_geo`. */
+export function requestedGeo(task) {
+  const words = task.split(/[\s?&#]+/u).filter(Boolean);
+  const argument = words.findIndex((word) => /^geo(?:=|$)/iu.test(word));
+  const geo = argument < 0 ? 'US' : words[argument].length === 3
+    ? words[argument + 1] ?? '' : words[argument].slice(4);
+  return /^[A-Za-z]{2}$/u.test(geo) ? geo.toUpperCase() : null;
+}
+
+/** Mirrors `load_prompt_templates`. */
+export function loadPromptTemplates(document) {
+  return parseRoot(document).children
+    .filter((row) => findChildValue(row, 'record_type') === 'google_trend_prompt_template')
+    .map((row) => ({
+      language: findChildValue(row, 'language'),
+      variation: findChildValue(row, 'variation'),
+      template: findChildValue(row, 'text'),
+    }))
+    .filter(({ language, variation, template }) => language && variation && template.includes('{query}'));
+}

@@ -123,11 +123,15 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 "tryCreativeWritingRequest",
                 vec!["composition_topic"]
             ),
-            ("advice_request", "tryAdviceRequest", vec!["advice_topic"]),
+            (
+                "advice_request",
+                "tryAdviceRequest",
+                vec!["advice_observations"]
+            ),
             (
                 "planning_request",
                 "tryPlanningRequest",
-                vec!["cached_destination"]
+                vec!["destination_observations"]
             ),
             (
                 "regex_synthesis",
@@ -340,20 +344,16 @@ fn the_claim_rows_are_read_from_the_capability_table() {
             (
                 "brainstorming",
                 "tryBrainstormingRequest",
-                vec!["brainstorm_category"]
+                vec!["brainstorm_topic"]
             ),
-            ("roleplay", "tryRoleplayRequest", vec!["persona_or_topic"]),
+            ("roleplay", "tryRoleplayRequest", vec!["roleplay_facts"]),
             (
                 "document_originality_check",
                 "tryDocumentOriginalityCheck",
                 vec!["document_operand"]
             ),
             ("translation", "tryTranslation", vec!["translation_text"]),
-            (
-                "triz_resolution",
-                "tryTrizResolution",
-                vec!["triz_precedent"]
-            ),
+            ("triz_resolution", "tryTrizResolution", vec!["triz_demands"]),
             ("algorithm", "tryAlgorithm", vec!["algorithm_operation"]),
             (
                 "source_refresh",
@@ -380,7 +380,7 @@ fn the_claim_rows_are_read_from_the_capability_table() {
             ("fact_lookup", "", vec!["fact_subject"]),
             (
                 "docs_method_explanation",
-                "tryDocsMethodExplanation",
+                "tryDocumentationMethodExplanation",
                 vec!["documented_method"]
             ),
             ("kupi_slona", "tryKupiSlona", vec!["idiom_utterance"]),
@@ -534,6 +534,7 @@ fn a_surface_word_alone_is_not_admitted() {
         ),
         ("unit_conversion", "Convert this recipe to metric units"),
         ("calendar_reasoning", "Explain how a calendar works."),
+        ("fact_lookup", "List films in release order."),
     ] {
         assert!(
             !claim_admitted(handler, prompt, &prompt.to_lowercase()),
@@ -618,6 +619,7 @@ fn the_structural_evidence_admits() {
         ("calendar_reasoning", "What day comes after Monday?"),
         ("calendar_reasoning", "What day is today?"),
         ("calendar_reasoning", "What day of the week was 2024-02-29?"),
+        ("fact_lookup", "List Harry Potter films in release order."),
         (
             "calendar_reasoning",
             "What month is 2 months after January?",

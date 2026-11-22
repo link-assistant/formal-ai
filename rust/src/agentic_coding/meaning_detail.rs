@@ -1,45 +1,12 @@
-//! Second agentic recipe — driving Formal AI to *make its own meanings more
-//! detailed* (issue #538).
+//! Enrich registered noun meanings from the publisher's Wikidata lexeme forms.
 //!
-//! Issue #468 proved the agentic loop can formalize a text into Links Notation.
-//! Issue #538 asks the harder, self-referential question the maintainer set as
-//! the project's direction: can the **same** loop — Formal AI driven through its
-//! own agentic CLI against its OpenAI-compatible server — *edit its own seed
-//! knowledge* to make a meaning more detailed? Concretely, the tomato meaning
-//! listed the Russian surfaces `помидор`, `помидоры`, `томат` without recording
-//! which is singular or plural, and `помидор` had a plural while its synonym
-//! `томат` did not.
-//!
-//! This module is the deterministic meta-algorithm for that task. It is **not**
-//! hard-coded to one concept, and — crucially — it does **not** hard-code the
-//! *answer* either. A small [`Concept`] registry ([`CONCEPTS`]) names, per concept,
-//! only its **inputs**: the real Wikidata lexemes that ground it (the actual cached
-//! JSON documents under `data/cache/wikidata/lexeme/`) and the non-grounded extra
-//! surfaces the meaning already carried. Everything the issue asks for — which
-//! surface is singular, which is plural, and the previously missing plural form —
-//! is *derived* from those real Wikidata forms by a single general algorithm
-//! ([`concept_lexemes`] → `derive_source`). Add a concept by adding its inputs to
-//! [`CONCEPTS`]; there are no per-concept code branches and no per-concept answer
-//! strings.
-//!
-//! [`concept_for_task`] routes a natural-language request to the right concept,
-//! which is the maintainer's generality requirement — *"each time you should use
-//! different natural language requests, so we test that solutions are never
-//! hardcoded, but truly general"*: `tomato` and `potato` are enriched by the very
-//! same code, driven by two differently worded requests.
-//!
-//! Given the Wikidata lexeme JSON fetched by the loop (`web_fetch`, served from the
-//! real cache), the recipe re-derives the enriched meaning block — every surface
-//! pinned to its part of speech and grammatical number, grounded in its real
-//! Wikidata form, and with any previously missing plural surface (e.g. tomato's
-//! `томаты`, form `L170542-F7`, or potato's `potatoes`, form `L3784-F2`) recovered
-//! from the source. The block it writes is byte-for-byte the enriched seed block,
-//! so the loop *reproduces the exact data change* the issue asked for rather than a
-//! hand-authored approximation. Neural inference stays a NON-GOAL: the recipe is a
-//! pure function of the real fetched lexeme facts.
+//! The registry describes grounding and acquisition inputs. The recipe accepts
+//! a complete publisher batch for the requested lexeme identifiers, matches
+//! each sense to the declared concept, and derives the grammatical surfaces.
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
+use std::sync::OnceLock;
 
 use serde_json::Value;
 
@@ -53,206 +20,137 @@ const PLURAL_FEATURE: &str = "Q146786";
 /// plural form with its singular counterpart — see [`case_key`].
 const NUMBER_FEATURES: [&str; 2] = [SINGULAR_FEATURE, PLURAL_FEATURE];
 
-/// A real Wikidata lexeme source for a concept.
-///
-/// It pairs the lexeme's L-id with the **actual cached Wikidata JSON document**
-/// (`data/cache/wikidata/lexeme/<id>.json`), embedded via [`include_str!`]. This is
-/// the recipe's *input*, not its answer: the singular/plural detail is derived from
-/// the `forms` and `grammaticalFeatures` inside this document.
-#[derive(Debug, Clone, Copy)]
-pub struct SourceRef {
-    /// The Wikidata lexeme id, e.g. `L7993`.
-    pub id: &'static str,
-    /// The real cached Wikidata lexeme JSON for `id`.
-    pub json: &'static str,
-}
+const SOURCE_ENDPOINT: &str = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=";
+const MEANINGS: &str = include_str!("../../embedded/data/seed/meanings-translation.lino");
 
-/// A non-grounded extra surface a meaning already carried (Hindi/Chinese/…).
-///
-/// These are kept for multilingual parity — inputs the meaning already had, not
-/// derived answers — so the enrichment leaves them untouched.
-#[derive(Debug, Clone, Copy)]
-pub struct ExtraRef {
-    /// The language code (`hi`/`zh`/`ru`).
-    pub language: &'static str,
-    /// The surface spelling.
-    pub text: &'static str,
-}
-
-/// A concept the meaning-detail recipe knows how to enrich.
-///
-/// Everything the planner, corpus, and driver need for one concept lives here, and
-/// all of it is *input*: routing/grounding metadata, the real Wikidata source
-/// lexemes ([`SourceRef`]), and the non-grounded extra surfaces ([`ExtraRef`]).
-/// Adding a concept is a matter of adding one [`Concept`] to [`CONCEPTS`] — no code
-/// branches per concept and no hand-written answer.
-#[derive(Debug, Clone, Copy)]
+/// A lexical entry with a grounded Wikidata concept and declared source lexemes.
+#[derive(Debug)]
 pub struct Concept {
-    /// The meaning-block lemma head as it appears in the seed (`tomato`/`potato`).
-    pub name: &'static str,
-    /// The Wikidata item the meaning is grounded in (`Q23501`/`Q10998`).
-    pub grounded_in: &'static str,
-    /// The web-search query the planner issues for this concept.
-    pub search_query: &'static str,
-    /// The source URL the planner fetches (the offline corpus resolves it).
-    pub source_url: &'static str,
-    /// The workspace path the planner writes the enriched block to.
-    pub kb_path: &'static str,
-    /// The real Wikidata lexemes that ground this concept, in render order.
-    pub sources: &'static [SourceRef],
-    /// The non-grounded extra surfaces the meaning already carried, in order.
-    pub extras: &'static [ExtraRef],
-    /// Lowercased keywords that route a request to this concept.
-    pub keywords: &'static [&'static str],
+    /// Stable name of the meaning in the lexicon.
+    pub name: String,
+    /// Wikidata item that identifies the meaning to match.
+    pub grounded_in: String,
+    /// Search query for the source lexemes.
+    pub search_query: String,
+    /// Publisher API request for the complete source list.
+    pub source_url: String,
+    /// Workspace path of the generated meaning block.
+    pub kb_path: String,
+    /// Wikidata lexemes declared by the meaning, in render order.
+    pub sources: Vec<String>,
+    required_senses: Vec<String>,
+    extras: Vec<ExtraSurface>,
+    keywords: Vec<String>,
 }
 
-/// The canonical issue-#538 task string (tomato). The wording carries the
-/// keywords [`is_meaning_detail_task`] recognises.
-pub const MEANING_DETAIL_TASK: &str = "Make the tomato meaning more detailed: pin every surface's \
-                                       part of speech and grammatical number, ground it in Wikidata, \
-                                       and add the missing plural to томат.";
-
-/// A *differently worded* request for the second concept (potato).
-///
-/// Using distinct natural language for each concept is the maintainer's generality
-/// check: the recipe must not depend on the exact phrasing of the tomato task.
-pub const POTATO_DETAIL_TASK: &str = "Please make the potato word and meaning richer — record the \
-                                      singular/plural of each surface, add the missing plural form \
-                                      potatoes, and keep it grounded in Wikidata.";
-
-/// The tomato concept.
-///
-/// Its inputs are three *real* Wikidata lexemes — English `tomato` (L7993), Russian
-/// `помидор` (L3526), Russian `томат` (L170542) — plus the Hindi/Chinese surfaces
-/// the meaning already carried. The singular/plural detail (including `томат`'s
-/// previously missing plural `томаты`) is derived from those documents, never
-/// written by hand.
-pub const TOMATO: Concept = Concept {
-    name: "tomato",
-    grounded_in: "Q23501",
-    search_query: "Wikidata lexemes tomato помидор томат grammatical number forms",
-    // The canonical Wikidata lexeme URL for `томат` is
-    // `https://www.wikidata.org/wiki/Lexeme:L170542`, but the live agent CLI
-    // fetches the URL exactly as we advertise it — and CI/sandboxed environments
-    // that block `wikidata.org` egress can't reach that. So we point at the
-    // *same* underlying JSON we already ship in `data/cache/wikidata/lexeme/`,
-    // served over `raw.githubusercontent.com` (reachable from anywhere with
-    // outbound HTTPS to GitHub). It is byte-for-byte the cached Wikidata JSON —
-    // the same document `include_str!` embeds below — so the offline corpus and
-    // the live fetch return the same bytes, and the deterministic pipeline
-    // works whether the CLI or the in-repo driver is running.
-    source_url: "https://raw.githubusercontent.com/link-assistant/formal-ai/issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L170542.json",
-    kb_path: "meanings-tomato-detail.lino",
-    sources: &[
-        SourceRef {
-            id: "L7993",
-            json: include_str!("../../embedded/data/cache/wikidata/lexeme/L7993.json"),
-        },
-        SourceRef {
-            id: "L3526",
-            json: include_str!("../../embedded/data/cache/wikidata/lexeme/L3526.json"),
-        },
-        SourceRef {
-            id: "L170542",
-            json: include_str!("../../embedded/data/cache/wikidata/lexeme/L170542.json"),
-        },
-    ],
-    extras: &[
-        ExtraRef {
-            language: "hi",
-            text: "टमाटर",
-        },
-        ExtraRef {
-            language: "zh",
-            text: "番茄",
-        },
-        ExtraRef {
-            language: "zh",
-            text: "西红柿",
-        },
-    ],
-    keywords: &["помидор", "томат", "tomato"],
-};
-
-/// The potato concept — proof the recipe is general, not tomato-specific.
-///
-/// Its one grounded source is the *real* English lexeme `potato` (L3784); the recipe
-/// recovers its missing plural `potatoes` (form `L3784-F2`) from the same document.
-pub const POTATO: Concept = Concept {
-    name: "potato",
-    grounded_in: "Q10998",
-    search_query: "Wikidata lexemes potato картофель картошка grammatical number forms",
-    // Same rationale as `TOMATO.source_url`: fetch the cached JSON from
-    // `raw.githubusercontent.com` so the live agent CLI's `webfetch` succeeds
-    // in sandboxed CI (which blocks `wikidata.org`). The bytes are identical to
-    // the `L3784.json` file embedded below.
-    source_url: "https://raw.githubusercontent.com/link-assistant/formal-ai/issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L3784.json",
-    kb_path: "meanings-potato-detail.lino",
-    sources: &[SourceRef {
-        id: "L3784",
-        json: include_str!("../../embedded/data/cache/wikidata/lexeme/L3784.json"),
-    }],
-    extras: &[
-        ExtraRef {
-            language: "ru",
-            text: "картофель",
-        },
-        ExtraRef {
-            language: "ru",
-            text: "картошка",
-        },
-        ExtraRef {
-            language: "hi",
-            text: "आलू",
-        },
-        ExtraRef {
-            language: "zh",
-            text: "土豆",
-        },
-        ExtraRef {
-            language: "zh",
-            text: "马铃薯",
-        },
-    ],
-    keywords: &["potato", "картофель", "картошка", "आलू", "土豆", "马铃薯"],
-};
-
-/// Every concept the meaning-detail recipe can enrich, in routing/ranking order.
-pub const CONCEPTS: &[&Concept] = &[&TOMATO, &POTATO];
-
-/// Generic keywords that mark a user turn as the issue-#538 meaning-detail task,
-/// independent of which concept it targets.
-const DETAIL_KEYWORDS: [&str; 6] = [
-    "grammatical number",
-    "more detailed",
-    "singular or plural",
-    "part of speech",
-    "detailed meaning",
-    "detailed word",
-];
-
-/// The concept a request targets, if any — the first registered concept whose
-/// keywords appear in `prompt`.
+/// Meaning records with enough metadata to acquire their source forms.
 #[must_use]
-pub fn concept_for_task(prompt: &str) -> Option<&'static Concept> {
-    let lower = prompt.to_lowercase();
-    CONCEPTS.iter().copied().find(|concept| {
-        concept
-            .keywords
+pub fn concepts() -> &'static [Concept] {
+    static CONCEPTS: OnceLock<Vec<Concept>> = OnceLock::new();
+    CONCEPTS.get_or_init(|| {
+        crate::seed::parse_lino(MEANINGS)
+            .children
             .iter()
-            .any(|keyword| lower.contains(&keyword.to_lowercase()))
+            .filter(|container| container.name == "meanings")
+            .flat_map(|container| container.children.iter())
+            .filter_map(parse_concept)
+            .collect()
     })
 }
 
-/// Whether `prompt` asks to make a meaning more detailed (issue #538): either it
-/// uses a generic detail keyword, or it names a concept the recipe knows.
+fn parse_concept(node: &crate::seed::parser::LinoNode) -> Option<Concept> {
+    let name = &node.name;
+    let grounded_in = node.find_child_value("grounded-in");
+    if !entity_id(grounded_in, 'Q')
+        || name.is_empty()
+        || !name
+            .bytes()
+            .all(|byte| byte.is_ascii_lowercase() || b"-_".contains(&byte))
+    {
+        return None;
+    }
+    let entries: Vec<_> = node
+        .children
+        .iter()
+        .filter(|child| child.name == "source-lexeme" && entity_id(&child.id, 'L'))
+        .collect();
+    let sources: Vec<_> = entries.iter().map(|entry| entry.id.clone()).collect();
+    let required_senses = entries
+        .iter()
+        .filter(|entry| !entry.find_child_value("sense").is_empty())
+        .map(|entry| entry.id.clone())
+        .collect();
+    if sources.is_empty() || sources.len() > 20 {
+        return None;
+    }
+    let mut extras = Vec::new();
+    for lexeme in node
+        .children
+        .iter()
+        .filter(|child| child.name == "lexeme" && is_language_code(&child.id))
+    {
+        extras.extend(
+            lexeme
+                .children
+                .iter()
+                .filter(|surface| surface.name == "surface")
+                .filter_map(|surface| safe_surface(surface.find_child_value("text")))
+                .map(|text| ExtraSurface {
+                    language: lexeme.id.clone(),
+                    text: text.to_owned(),
+                }),
+        );
+    }
+    let mut keywords = vec![name.clone()];
+    keywords.extend(
+        node.children
+            .iter()
+            .filter(|child| child.name == "surface")
+            .filter_map(|surface| safe_surface(surface.find_child_value("text")))
+            .map(str::to_lowercase),
+    );
+    keywords.extend(extras.iter().map(|extra| extra.text.to_lowercase()));
+    let lexeme_parameters = sources.join("%7C");
+    Some(Concept {
+        name: name.clone(),
+        grounded_in: grounded_in.to_owned(),
+        search_query: crate::seed::agentic_message(
+            "meaning-detail-search-query",
+            &[("name", name), ("lexemes", &sources.join(" "))],
+        ),
+        source_url: format!("{SOURCE_ENDPOINT}{lexeme_parameters}&format=json&origin=*"),
+        kb_path: format!("meanings-{name}-detail.lino"),
+        sources,
+        required_senses,
+        extras,
+        keywords,
+    })
+}
+
+/// Resolve a request that identifies one registered meaning and asks for its forms.
+#[must_use]
+pub fn concept_for_task(prompt: &str) -> Option<&'static Concept> {
+    if !is_meaning_detail_task(prompt) {
+        return None;
+    }
+    let lower = crate::engine::normalize_prompt(prompt);
+    let mut candidates = concepts().iter().filter(|concept| {
+        concept.keywords.iter().any(|keyword| {
+            crate::seed::surface_present(&lower, &crate::engine::normalize_prompt(keyword))
+        })
+    });
+    let matched = candidates.next()?;
+    candidates.next().is_none().then_some(matched)
+}
+
+/// Whether the request calls for grammatical detail about a meaning.
 #[must_use]
 pub fn is_meaning_detail_task(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
-    DETAIL_KEYWORDS
-        .iter()
+    crate::seed::agentic_message("meaning_detail_keywords", &[])
+        .split('|')
+        .filter(|keyword| !keyword.is_empty())
         .any(|keyword| lower.contains(keyword))
-        || concept_for_task(prompt).is_some()
 }
 
 /// One inflected form of a source lexeme, as recovered from Wikidata.
@@ -305,7 +203,7 @@ pub struct ConceptLexemes {
 
 /// A raw lexeme parsed from a real Wikidata JSON document — only the fields the
 /// enrichment reads (`language`, `lexicalCategory`, the lemma language code, the
-/// first sense id, and every form with its grammatical features).
+/// sense linked to the concept, and every form with its grammatical features).
 #[derive(Debug, Clone)]
 struct RawLexeme {
     language_item: String,
@@ -328,10 +226,8 @@ struct RawForm {
 }
 
 /// Parse the `entities` map of a real Wikidata lexeme JSON document into raw
-/// lexemes, keyed by lexeme id. Accepts a single-lexeme document, a merged bundle
-/// of several, or the trimmed lexeme-core the corpus serves — all share the same
-/// field names. Returns an empty map if the text is not Wikidata lexeme JSON.
-fn parse_entities(text: &str) -> BTreeMap<String, RawLexeme> {
+/// lexemes, keyed by lexeme id. Returns an empty map for other response formats.
+fn parse_entities(text: &str, grounded_in: &str) -> BTreeMap<String, RawLexeme> {
     let mut map = BTreeMap::new();
     let Ok(doc) = serde_json::from_str::<Value>(text) else {
         return map;
@@ -340,7 +236,7 @@ fn parse_entities(text: &str) -> BTreeMap<String, RawLexeme> {
         return map;
     };
     for (id, entity) in entities {
-        if let Some(raw) = parse_lexeme_entity(entity) {
+        if let Some(raw) = parse_lexeme_entity(id, entity, grounded_in) {
             map.insert(id.clone(), raw);
         }
     }
@@ -349,30 +245,46 @@ fn parse_entities(text: &str) -> BTreeMap<String, RawLexeme> {
 
 /// Parse one Wikidata lexeme entity into a [`RawLexeme`], or [`None`] if it lacks
 /// the fields the enrichment requires.
-fn parse_lexeme_entity(entity: &Value) -> Option<RawLexeme> {
+fn parse_lexeme_entity(id: &str, entity: &Value, grounded_in: &str) -> Option<RawLexeme> {
+    if entity.get("id")?.as_str()? != id || entity.get("type")?.as_str()? != "lexeme" {
+        return None;
+    }
     let language_item = entity.get("language")?.as_str()?.to_owned();
     let category = entity.get("lexicalCategory")?.as_str()?.to_owned();
+    if !entity_id(&language_item, 'Q') || category != "Q1084" {
+        return None;
+    }
     // The lemma map is keyed by the lexeme's language code (`en`/`ru`); its value is
     // the citation form (nominative singular).
     let lemmas = entity.get("lemmas")?.as_object()?;
     let (language_code, lemma_value) = lemmas.iter().next()?;
+    if !is_language_code(language_code) {
+        return None;
+    }
     let language_code = language_code.clone();
-    let lemma = lemma_value
-        .get("value")
-        .and_then(Value::as_str)
-        .unwrap_or_default()
-        .to_owned();
+    let lemma = safe_surface(lemma_value.get("value")?.as_str()?)?.to_owned();
     let sense = entity
         .get("senses")
         .and_then(Value::as_array)
-        .and_then(|senses| senses.first())
-        .and_then(|sense| sense.get("id"))
-        .and_then(Value::as_str)
-        .map(str::to_owned);
+        .and_then(|senses| {
+            senses.iter().find_map(|sense| {
+                let identifier = sense.get("id")?.as_str()?;
+                let statements = sense.pointer("/claims/P5137")?.as_array()?;
+                (subidentifier(id, identifier, 'S')
+                    && statements.iter().any(|claim| {
+                        claim.get("rank").and_then(Value::as_str) != Some("deprecated")
+                            && claim
+                                .pointer("/mainsnak/datavalue/value/id")
+                                .and_then(Value::as_str)
+                                == Some(grounded_in)
+                    }))
+                .then(|| identifier.to_owned())
+            })
+        });
     let mut forms = Vec::new();
     if let Some(array) = entity.get("forms").and_then(Value::as_array) {
         for form in array {
-            if let Some(raw) = parse_form(form) {
+            if let Some(raw) = parse_form(form, id, &language_code) {
                 forms.push(raw);
             }
         }
@@ -387,16 +299,51 @@ fn parse_lexeme_entity(entity: &Value) -> Option<RawLexeme> {
     })
 }
 
+fn safe_surface(text: &str) -> Option<&str> {
+    let text = text.trim();
+    (!text.is_empty()
+        && text.len() <= 300
+        && text
+            .chars()
+            .all(|character| !character.is_control() && !matches!(character, '#' | '"')))
+    .then_some(text)
+}
+
+fn entity_id(id: &str, prefix: char) -> bool {
+    id.strip_prefix(prefix).is_some_and(|digits| {
+        !digits.is_empty() && digits.len() <= 18 && digits.bytes().all(|byte| byte.is_ascii_digit())
+    })
+}
+
+fn is_language_code(code: &str) -> bool {
+    !code.is_empty()
+        && code.len() <= 20
+        && code
+            .bytes()
+            .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'-')
+}
+
+fn subidentifier(lexeme: &str, qualified: &str, kind: char) -> bool {
+    qualified
+        .strip_prefix(lexeme)
+        .and_then(|suffix| suffix.strip_prefix('-')?.strip_prefix(kind))
+        .is_some_and(|number| {
+            !number.is_empty() && number.bytes().all(|byte| byte.is_ascii_digit())
+        })
+}
+
 /// Parse one Wikidata form into a [`RawForm`], or [`None`] if malformed.
-fn parse_form(form: &Value) -> Option<RawForm> {
+fn parse_form(form: &Value, lexeme: &str, language: &str) -> Option<RawForm> {
     let id = form.get("id")?.as_str()?.to_owned();
+    if !subidentifier(lexeme, &id, 'F') {
+        return None;
+    }
     let text = form
         .get("representations")?
-        .as_object()?
-        .values()
-        .next()?
+        .get(language)?
         .get("value")?
-        .as_str()?
+        .as_str()
+        .and_then(safe_surface)?
         .to_owned();
     let features = form
         .get("grammaticalFeatures")
@@ -507,130 +454,27 @@ fn derive_source(id: &str, raw: &RawLexeme) -> SourceLexeme {
     }
 }
 
-/// The concept's grounding lexemes, parsed from real Wikidata JSON.
-///
-/// It parses `fetched` when that text covers every source, else the concept's
-/// embedded cache. Both paths read the *same* real documents, so the derived block
-/// is identical whether the fetch "succeeds" or falls back — the determinism the
-/// planner relies on.
+/// Derive grammatical forms from a complete response for the requested lexemes.
 #[must_use]
-pub fn concept_lexemes(concept: &Concept, fetched: Option<&str>) -> ConceptLexemes {
-    let entities = fetched
-        .map(parse_entities)
-        .filter(|map| {
-            concept
-                .sources
-                .iter()
-                .all(|source| map.contains_key(source.id))
-        })
-        .unwrap_or_else(|| embedded_entities(concept));
+pub fn concept_lexemes(concept: &Concept, fetched: &str) -> Option<ConceptLexemes> {
+    if fetched.len() > 1_048_576 {
+        return None;
+    }
+    let entities = parse_entities(fetched, &concept.grounded_in);
     let sources = concept
         .sources
         .iter()
-        .filter_map(|source| {
-            entities
-                .get(source.id)
-                .map(|raw| derive_source(source.id, raw))
+        .map(|identifier| {
+            let derived = derive_source(identifier, entities.get(identifier)?);
+            let sense_verified =
+                derived.sense.is_some() || !concept.required_senses.contains(identifier);
+            (derived.forms.len() == NUMBER_FEATURES.len() && sense_verified).then_some(derived)
         })
-        .collect();
-    let extras = concept
-        .extras
-        .iter()
-        .map(|extra| ExtraSurface {
-            language: extra.language.to_owned(),
-            text: extra.text.to_owned(),
-        })
-        .collect();
-    ConceptLexemes { sources, extras }
-}
-
-/// Parse the concept's embedded real Wikidata cache into raw lexemes.
-fn embedded_entities(concept: &Concept) -> BTreeMap<String, RawLexeme> {
-    let mut map = BTreeMap::new();
-    for source in concept.sources {
-        map.extend(parse_entities(source.json));
-    }
-    map
-}
-
-/// Trim a full Wikidata lexeme entity to the linguistic core the enrichment reads:
-/// `id`, `lemmas`, `language`, `lexicalCategory`, `forms` (each kept as `id`,
-/// `representations`, `grammaticalFeatures`), and `senses` (each kept as `id`).
-/// This is exactly the subset a `Special:EntityData?props=forms|…` request returns.
-fn lexeme_core(entity: &Value) -> Value {
-    let field = |key: &str| entity.get(key).cloned().unwrap_or(Value::Null);
-    let forms = entity
-        .get("forms")
-        .and_then(Value::as_array)
-        .map_or_else(Vec::new, |array| {
-            array
-                .iter()
-                .map(|form| {
-                    let mut object = serde_json::Map::new();
-                    object.insert(
-                        "id".to_owned(),
-                        form.get("id").cloned().unwrap_or(Value::Null),
-                    );
-                    object.insert(
-                        "representations".to_owned(),
-                        form.get("representations").cloned().unwrap_or(Value::Null),
-                    );
-                    object.insert(
-                        "grammaticalFeatures".to_owned(),
-                        form.get("grammaticalFeatures")
-                            .cloned()
-                            .unwrap_or(Value::Null),
-                    );
-                    Value::Object(object)
-                })
-                .collect()
-        });
-    let senses = entity
-        .get("senses")
-        .and_then(Value::as_array)
-        .map_or_else(Vec::new, |array| {
-            array
-                .iter()
-                .map(|sense| {
-                    let mut object = serde_json::Map::new();
-                    object.insert(
-                        "id".to_owned(),
-                        sense.get("id").cloned().unwrap_or(Value::Null),
-                    );
-                    Value::Object(object)
-                })
-                .collect()
-        });
-    let mut object = serde_json::Map::new();
-    object.insert("id".to_owned(), field("id"));
-    object.insert("lemmas".to_owned(), field("lemmas"));
-    object.insert("language".to_owned(), field("language"));
-    object.insert("lexicalCategory".to_owned(), field("lexicalCategory"));
-    object.insert("forms".to_owned(), Value::Array(forms));
-    object.insert("senses".to_owned(), Value::Array(senses));
-    Value::Object(object)
-}
-
-/// The real Wikidata JSON the corpus serves for a concept's `web_fetch`.
-///
-/// It merges the concept's source lexemes into one `{"entities": …}` document,
-/// trimmed to the lexeme core (`lexeme_core`). This is genuine Wikidata data — the
-/// same fields `parse_entities` reads back — not a bespoke fixture, so the loop
-/// fetches real lexemes and derives the enrichment from them.
-#[must_use]
-pub fn source_bundle(concept: &Concept) -> String {
-    let mut entities = serde_json::Map::new();
-    for source in concept.sources {
-        if let Ok(Value::Object(doc)) = serde_json::from_str::<Value>(source.json)
-            && let Some(Value::Object(map)) = doc.get("entities") {
-                for (id, entity) in map {
-                    entities.insert(id.clone(), lexeme_core(entity));
-                }
-            }
-    }
-    let mut root = serde_json::Map::new();
-    root.insert("entities".to_owned(), Value::Object(entities));
-    serde_json::to_string(&Value::Object(root)).unwrap_or_default()
+        .collect::<Option<_>>()?;
+    Some(ConceptLexemes {
+        sources,
+        extras: concept.extras.clone(),
+    })
 }
 
 /// Human-readable Wikidata language name for the surface comments.
@@ -646,10 +490,8 @@ fn language_name(code: &str) -> &'static str {
 
 /// Render the enriched meaning block for `concept` in Links Notation.
 ///
-/// The output is byte-for-byte the enriched seed block for that concept
-/// (`data/seed/meanings-translation.lino`), so the agentic loop reproduces the
-/// exact issue-#538 data change. Russian comments include the lemma spelling (as
-/// the seed authors them); other languages name the language only.
+/// Source identifiers and grammatical features come from the publisher capture.
+/// Existing surfaces without a publisher identifier remain intact.
 #[must_use]
 pub fn render_block(concept: &Concept, lexemes: &ConceptLexemes) -> String {
     let mut out = String::new();
@@ -737,24 +579,22 @@ pub fn render_block(concept: &Concept, lexemes: &ConceptLexemes) -> String {
     out
 }
 
-/// Build the enriched block for `concept` from the fetched lexeme data (or the
-/// embedded cache), ready to write to the concept's `kb_path`.
+/// Build the enriched block for `concept` from explicitly retrieved lexeme data.
 #[must_use]
-pub fn enrich_block(concept: &Concept, fetched: Option<&str>) -> String {
-    render_block(concept, &concept_lexemes(concept, fetched))
+pub fn enrich_block(concept: &Concept, fetched: &str) -> Option<String> {
+    Some(render_block(concept, &concept_lexemes(concept, fetched)?))
 }
 
 /// The self-contained final answer for `concept`: a natural-language summary plus
 /// the enriched block inline.
 #[must_use]
 pub fn final_answer_for(concept: &Concept, block: &str) -> String {
-    format!(
-        "Made the {name} meaning more detailed: every surface now pins its part of speech and \
-         grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface \
-         recovered from the source is added.\n\n\
-         Enriched meaning block ({path}):\n\n{block}",
-        name = concept.name,
-        path = concept.kb_path,
-        block = block.trim_end(),
+    crate::seed::agentic_message(
+        "meaning_detail_final_answer",
+        &[
+            ("name", &concept.name),
+            ("path", &concept.kb_path),
+            ("block", block.trim_end()),
+        ],
     )
 }

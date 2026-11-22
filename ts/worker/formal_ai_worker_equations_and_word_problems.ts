@@ -1083,12 +1083,9 @@ function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
     calculatorDomainSignals().some((signal) => ` ${workingLower} `.includes(signal));
   const hasDigit = /[0-9]/.test(working);
   if (!hasDigit && !hasSpelled) return null;
-  if (!hasSymbolic && !hasWord && hasLetter) return null;
   const extracted = { expression: working, interpretations, reasoningSteps, resultLabel };
-  if (hasPercentOf) return extracted;
-  if (evaluateCurrencyConversionExpression(working) !== null) {
-    return extracted;
-  }
+  if (hasPercentOf || currencyQuoteRequest(working)) return extracted;
+  if (!hasSymbolic && !hasWord && hasLetter) return null;
   if (working.includes(":") && evaluateClockDifferenceExpression(working) === null) {
     return null;
   }

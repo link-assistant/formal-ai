@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=f62e0b9b1bb1501903e77e00b9d628fcec5b6c7b465e4aa1b4769969e38fe712 bytes=10042
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=fce92640ec41a9be7fc8b997f05266c54e45d8715f77a3e3fc4846459a797061 bytes=9158
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds string-methods items=2
 
@@ -355,10 +355,9 @@ pub const CATALOG_FILE: &str = "data/meta/agentic-coding-catalog.lino";
 // | const SEED_PROGRAMS_FILE = 'data/seed/hello-world-programs.lino';
 pub const SEED_PROGRAMS_FILE: &str = "data/seed/hello-world-programs.lino";
 
-// meta-language:translated JavaScript lexical_declaration items=1 sha256=293c3e9fd21d62eac0ed57435ea0b0cc46d986f75cfe6cdee83bf4aa01afe535
-// | /** The `program_source` of a template row whose program is rediscovered, not stored. */
-// | const DOCUMENTATION_ROUTE = 'documentation_route';
-pub const DOCUMENTATION_ROUTE: &str = "documentation_route";
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=191f28e34ae54dab3b6764d917ae5ef4055f9d39b086255f7be1c2e6bcf06c57
+// | const PRINT_OPERATION = 'print_literal';
+pub const PRINT_OPERATION: &str = "print_literal";
 
 // meta-language:translated JavaScript export_statement items=1 sha256=c684025424e484efe864cc05d26eb4bde0ff3d0a95cd8edbc5c52e0862fe5351
 // | /** Mirrors `const WRITE_PROGRAM_INTENT`. */
@@ -371,11 +370,7 @@ pub const WRITE_PROGRAM_INTENT: &str = "write_program";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow function | call of a sibling function | call of an imported function | field access | method call .get() | method call .set() | new Map | null | nullish coalescing | object without a $ tag | optional chaining
-
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal optional chaining
-// formal-ai:blockers assignment of a field or element | call of an imported function | field access | nullish coalescing | optional chaining
+// formal-ai:blockers arrow function | call of a sibling function | call of an imported function | field access | method call .get() | method call .set() | new Map | null | nullish coalescing | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
@@ -390,8 +385,8 @@ pub const WRITE_PROGRAM_INTENT: &str = "write_program";
 // formal-ai:blockers call of a sibling function | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal field access
-// formal-ai:blockers call of a sibling function | field access
+// formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .flatMap() | arrow function | call of a sibling function | call of an imported function | destructuring | field access | method call .filter() | method call .flatMap() | object without a $ tag | optional chaining | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()

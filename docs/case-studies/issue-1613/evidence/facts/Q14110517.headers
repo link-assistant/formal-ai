@@ -1,0 +1,20 @@
+HTTP/2 200
+date: Sun, 22 Nov 2026 00:13:47 GMT
+server: mw-api-ext.eqiad.main-67cf6f4c8d-h2mg6
+x-content-type-options: nosniff
+content-security-policy: default-src 'self'; script-src 'none'; object-src 'none'
+x-frame-options: DENY
+content-disposition: inline; filename=api-result.json
+cache-control: private, must-revalidate, max-age=0
+content-type: application/json; charset=utf-8
+age: 0
+accept-ranges: bytes
+x-cache: cp6013 miss, cp6014 pass
+x-cache-status: pass
+strict-transport-security: max-age=106384710; includeSubDomains; preload
+report-to: { "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0" }] }
+nel: { "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction": 0.0}
+vary: Accept-Encoding,X-Subdomain,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization,User-Agent
+x-request-id: a7676d54-57f7-4c3e-82f4-84fd2bb922a7
+x-analytics:
+server-timing: cache;desc="pass", host;desc="cp6014",co_id;desc="2084466518"

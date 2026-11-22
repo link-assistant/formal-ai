@@ -23,35 +23,12 @@
 //! Neural inference stays a NON-GOAL — the requirement, test, and patch plan are
 //! deterministic functions of the request and its grounded target.
 
-use std::sync::OnceLock;
+use crate::change_request::ChangeRequest;
+use serde::Deserialize;
 
-use crate::change_request::{canonical_change_request, ChangeRequest};
+use super::repair_input::{data, owned_source};
 
-/// The workspace path the planner writes the generated pull-request document to.
 pub const CHANGE_PATH: &str = "requested-change.lino";
-
-/// The canonical reviewable change request, computed once per process.
-///
-/// Building it grounds the target module against the owned manifest; the recipe
-/// touches it several times per run (planner write step, verify step, final answer)
-/// and a server may serve it repeatedly, so memoising keeps the loop responsive
-/// without changing its deterministic result.
-fn cached_change_request() -> &'static ChangeRequest {
-    static REQUEST: OnceLock<ChangeRequest> = OnceLock::new();
-    REQUEST.get_or_init(canonical_change_request)
-}
-
-/// A *differently worded* request for the self-change recipe.
-///
-/// The router recognises the intent from the words, not a hardcoded string.
-/// Deliberately avoids the self-healing keywords ("repair loop", "auto learning"), the
-/// ledger keywords ("promote", "ledger"), the explain keywords ("how … works"), and
-/// the source-links keywords ("recompile", whole-source-to-links) so the recipes never
-/// collide: this recipe is the *user-initiated change* to Formal AI itself.
-pub const CHANGE_TASK: &str =
-    "I want to change Formal AI itself: please add a new capability to the system, and \
-     route my request through the same human-gated review loop that produces a \
-     requirement, a test, and a patch plan I can review as a pull request.";
 
 /// Keywords that mark a user turn as the self-change recipe.
 ///
@@ -92,30 +69,33 @@ pub fn is_change_request_task(prompt: &str) -> bool {
     targets_the_system && asks_to_change
 }
 
-/// Render the reviewable pull-request document (Links Notation) for the canonical
-/// change request. Deterministic and ends with exactly one trailing newline.
-///
-/// The output is what the Agent CLI writes to [`CHANGE_PATH`]. It is asserted *live*
-/// (never committed byte-for-byte) in the issue-#558 tests, because the target
-/// module's manifest content id changes with every source edit — committing it would
-/// force a regenerate on every unrelated PR.
-#[must_use]
-pub fn render_document() -> String {
-    format!("{}\n", cached_change_request().links_notation().trim_end())
+#[derive(Deserialize)]
+struct ChangeInput {
+    request: String,
+    target_module: String,
 }
 
-/// The canonical change request backing the recipe. Exposed so tests can assert the
-/// proposal grounds its target without rebuilding it.
+/// Ground the requested change in the runtime's owned source.
 #[must_use]
-pub fn change_request() -> ChangeRequest {
-    cached_change_request().clone()
+pub fn request_from_task(task: &str) -> Option<ChangeRequest> {
+    let input = data::<ChangeInput>(task)?;
+    if input.request.trim().is_empty() {
+        return None;
+    }
+    owned_source(&input.target_module)?;
+    Some(ChangeRequest::for_module(
+        &input.request,
+        &input.target_module,
+    ))
 }
 
-/// The self-contained final answer: a natural-language summary plus the generated
-/// reviewable pull-request document inline.
 #[must_use]
-pub fn final_answer(document: &str) -> String {
-    let request = cached_change_request();
+pub fn render_document(request: &ChangeRequest) -> String {
+    format!("{}\n", request.links_notation().trim_end())
+}
+
+#[must_use]
+pub fn final_answer(request: &ChangeRequest, document: &str) -> String {
     format!(
         "Turned your change request into a reviewable pull request: it derives the requirement \
          \"{requirement}\", proposes the test `{test}`, and a {steps}-step patch plan against the \

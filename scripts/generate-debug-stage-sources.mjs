@@ -33,7 +33,7 @@ const RUNTIMES = [
     keyword: 'fn',
     trees: [{ path: 'rust/src', extension: '.rs' }],
     // Every protocol turn is solved here (`solve_with_history`).
-    entries: [{ path: 'rust/src/solver.rs', symbol: 'solve_with_history_probability_store_and_intent_cache' }],
+    entries: [{ path: 'rust/src/solver.rs', symbol: 'solve_inner' }],
     sites: [/\.append\(\s*("[^"\\]*"|[A-Z][A-Z0-9_]*)\s*,/g],
     constant: /^\s*(?:pub(?:\([a-z]+\))?\s+)?const ([A-Z][A-Z0-9_]*): &str = ("[^"\\]*");/,
   },

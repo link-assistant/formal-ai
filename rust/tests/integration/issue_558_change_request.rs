@@ -1,3 +1,7 @@
+#[path = "../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::CHANGE_TASK;
+
 use std::time::Duration;
 
 use crate::http_server::{
@@ -19,10 +23,18 @@ fn agent_mode_routes_change_request_to_a_reviewable_write() {
     let _server = spawn_formal_ai_server_agent_mode(port);
 
     for prompt in [
-        formal_ai::agentic_coding::change_request::CHANGE_TASK,
+        CHANGE_TASK,
         "Please change Formal AI itself: add a new capability to the system and review it as a pull request.",
         "I want to modify Formal AI — add a feature and route it through the human-gated review loop.",
     ] {
+        let request = repair_fixture::canonical_change_request();
+        let prompt = repair_fixture::task_with_json(
+            prompt,
+            serde_json::json!({
+                "request": request.request,
+                "target_module": request.target_module,
+            }),
+        );
         let response = http_post_json_with_read_timeout(
             port,
             "/api/openai/v1/chat/completions",
@@ -85,7 +97,7 @@ fn agent_mode_routes_change_request_to_a_reviewable_write() {
         let content = arguments["content"].as_str().unwrap();
         assert_eq!(
             content,
-            formal_ai::agentic_coding::change_request::render_document(),
+            formal_ai::agentic_coding::change_request::render_document(&request),
             "{prompt}"
         );
         assert!(content.contains("change_request"), "{prompt}");

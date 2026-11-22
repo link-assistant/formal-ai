@@ -33,11 +33,12 @@
 //! browser twin is `tryPromptTextQuestion` in
 //! `js/worker/formal_ai_worker_factual_qa.js`.
 
-use super::factual_qa::{locate, render_template, role_surfaces};
+use super::factual_qa::render_template;
 use super::finalize_simple;
 use crate::coding::contains_cjk;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
+use crate::fact_live::{locate, role_surfaces};
 use crate::language::detect as detect_language;
 use crate::seed;
 
@@ -241,6 +242,9 @@ fn covered<'a>(sentence: &str, units: &'a [String]) -> Vec<&'a str> {
 /// passage's own sentences — never from a source, never over the network.
 pub fn try_prompt_text_question(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let passage = longest_passage(prompt)?;
+    if super::page_query_text::page_query_text_claims(prompt) {
+        return None;
+    }
     let lead = normalize_prompt(&prompt[..passage.start]);
     let question = prompt[passage.end..]
         .trim_start_matches(|character: char| {

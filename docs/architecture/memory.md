@@ -203,15 +203,14 @@ Pipeline stages:
    a Wikidata property (`P36`, `P1082`, `P38`, `P37`, `P30`, `P2046`,
    `P35`, `P6`). Multilingual regexes recognize the question in en/ru/hi/zh.
 2. **Cache check.** A 1-week TTL in-memory store is keyed by
-   `<relation>|<subjectTerm>|<language>`. `data/seed/facts.lino` entries
-   that carry a `relation` field pre-warm the cache at worker startup via
-   `warmFactCacheFromSeed`, so every seeded country resolves offline. The
-   user can opt out of the cache with force-fresh markers in any supported
+   `<relation>|<subjectTerm>|<language>`. The store starts empty and receives
+   verified results as questions are answered. The user can opt out of the
+   cache with force-fresh markers in any supported
    language (`refresh`, `не из кэша`, `ताज़ा`, `刷新`, …).
-3. **Wikidata resolution.** On cache miss the worker calls
-   `wbsearchentities` to map the subject term to a Q-ID, then
-   `wbgetentities` to read the relation's property claim and its label /
-   sitelink in the user's language.
+3. **Wikidata resolution.** On a miss, item search selects exact labels or
+   aliases. The worker reads each candidate's requested property and accepts
+   one subject with a usable ranked statement. It resolves the value's label
+   and retains the publisher references and verified capture identities.
 4. **Cache store.** The resolved triple `(subject_qid, value_qid, summary,
    source_url)` is written back to the cache with the original
    `fetched_at` timestamp.

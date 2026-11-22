@@ -138,10 +138,10 @@ data, a third recipe (`src/agentic_coding/diagram.rs`) makes the *same* Agent CL
 rendered from the planner's own recipe table (not hand-drawn), so they cannot
 drift from the code; the Agent CLI writes
 [`docs/diagrams/agentic-recipes.md`](../../diagrams/agentic-recipes.md) from a
-differently-worded request, and both the document and its
-[session JSON](agent-cli-session-diagram.json) are reproduced byte-for-byte under
-test. This is strong generality evidence: the loop authored a different *kind* of
-artifact from a different *kind* of request.
+differently worded request. The test compares the generated document byte for
+byte and checks that the current run preserves the tools in the historical
+[session JSON](agent-cli-session-diagram.json). The current diagram describes
+publisher verification before writing a knowledge base.
 
 ## Self-inspection: the meta algorithm stores its own CST/AST (R13)
 

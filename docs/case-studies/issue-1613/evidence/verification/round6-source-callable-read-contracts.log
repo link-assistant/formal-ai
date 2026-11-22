@@ -1,0 +1,15 @@
+✔ actual committed body reads its source formal slot despite anonymous task spelling (3.99046ms)
+✔ literal contents and declaration-only names do not read an input (2.161355ms)
+✔ repeated body reads are distinct positional inputs, never declaration counts (1.292207ms)
+✔ explicit signature binds AST parameters and recursive callable before actual execution (288.022724ms)
+✔ explicit incompatible arity, duplicates and unresolved parameters reject honestly (1.619174ms)
+✔ actual source requests retain declared identity and reject unsupported signatures (242.830797ms)
+✔ an assertion names the callable without turning its literal argument into a formal name (1.85785ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3860.763046

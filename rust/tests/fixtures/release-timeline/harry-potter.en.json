@@ -1,0 +1,160 @@
+{
+  "head" : {
+    "vars" : [ "subject", "film", "firstRelease", "title", "localTitle" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q216930"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q102438"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2001-11-04T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Harry Potter and the Philosopher's Stone"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q216930"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q102244"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2002-11-03T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Harry Potter and the Chamber of Secrets"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q216930"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q102448"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2004-05-31T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Harry Potter and the Prisoner of Azkaban"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q216930"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q102225"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2005-11-06T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Harry Potter and the Goblet of Fire"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q216930"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q102235"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2007-06-28T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Harry Potter and the Order of the Phoenix"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q216930"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q161687"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2009-07-06T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Harry Potter and the Half-Blood Prince"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q216930"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q161678"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2010-11-11T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Harry Potter and the Deathly Hallows – Part 1"
+      }
+    }, {
+      "subject" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q216930"
+      },
+      "film" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q232009"
+      },
+      "firstRelease" : {
+        "datatype" : "http://www.w3.org/2001/XMLSchema#dateTime",
+        "type" : "literal",
+        "value" : "2011-07-13T00:00:00Z"
+      },
+      "title" : {
+        "xml:lang" : "mul",
+        "type" : "literal",
+        "value" : "Harry Potter and the Deathly Hallows – Part 2"
+      }
+    } ]
+  }
+}

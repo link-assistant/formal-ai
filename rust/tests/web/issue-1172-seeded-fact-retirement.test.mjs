@@ -3,9 +3,9 @@
 //
 // The ten retired records (the capitals of Japan, Russia, France, Germany,
 // China, India, the USA, the UK and Brazil, and the author of The Lord of the
-// Rings) are now subject captures in data/cache/wikidata/fact-claims, projected
-// into data/seed/fact-captures.lino by scripts/ground-fact-captures.py, and
-// realized by data/seed/fact-realization.lino: the value is the subject's
+// Rings) are now subject captures in rust/tests/fixtures/fact-claims/entities, projected
+// into rust/tests/fixtures/fact-claims/fact-captures.lino by scripts/ground-fact-captures.py, and
+// realized by rust/tests/fixtures/fact-claims/fact-realization.lino: the value is the subject's
 // truthy claim for the property the relation is grounded in, the labels and
 // sources are the captures' labels and sitelinks, and each sentence is the
 // relation's template with Russian case forms, the English article and the
@@ -22,12 +22,13 @@ import { test } from "node:test";
 import { installNodeHost } from "../../../js/agentic/node-host.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+import { factFixtureRaw, loadHistoricalFactFixtures } from "./support/fact-fixtures.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
-const FACT_CLAIMS = path.join(REPO_ROOT, "data", "cache", "wikidata", "fact-claims");
+const FACT_CLAIMS = path.join(REPO_ROOT, "rust", "tests", "fixtures", "fact-claims", "entities");
 
 const worker = createWorkerContext();
-const ready = evaluate(worker, "loadSeed()");
+const ready = loadHistoricalFactFixtures(worker);
 
 async function call(expression) {
   await ready;
@@ -35,7 +36,7 @@ async function call(expression) {
 }
 
 async function derived() {
-  return call("derivedCaptureFacts(SEED_RAW)");
+  return call("derivedCaptureFacts(factFixtureRaw)");
 }
 
 /** The answers the retired facts.lino records gave, per subject and language. */
@@ -73,20 +74,17 @@ test("#1172 R9: no written record states a fact the captures derive", async () =
     [
       "fact_spider_man_films_release_order",
       "fact_air_india_infant_stroller_allowance",
-      "fact_formal_ai_creator",
-      "fact_rust_creator",
-      "fact_eiffel_tower_built",
-      "fact_speed_of_light",
-      "fact_mona_lisa_painter",
     ],
   );
   assert.deepEqual(written.filter((record) => record.subjectQid).map((record) => record.slug), []);
-  // The worker's fact store: the written records (the two fact_comparison_*
-  // entries are meanings-facts.lino meanings the loader also visits), then the
-  // derived ones in capture order.
+  // The worker loads written records, relation meanings, then derived fixtures.
   const facts = await call("FACTS.map((record) => record.slug)");
-  assert.deepEqual(facts.slice(7, 9), ["fact_comparison_request", "fact_comparison_joiner"]);
-  assert.deepEqual(facts.slice(9), [
+  const writtenSlugs = written.map((record) => record.slug);
+  assert.deepEqual(facts, [
+    ...writtenSlugs,
+    "fact_subject_connector",
+    "fact_comparison_request",
+    "fact_comparison_joiner",
     "fact_capital_q17",
     "fact_capital_q159",
     "fact_capital_q142",
@@ -158,7 +156,7 @@ test("#1172 R9: the localized labels and sources come from the captures", async 
 });
 
 test("#1172 R9: Russian case forms and the English article are rules, not stored strings", async () => {
-  const rules = "factRealizationRules(factSeedRoot(seedRawText(SEED_RAW, FACT_REALIZATION_FILE), \"fact_realization\"))";
+  const rules = "factRealizationRules(factSeedRoot(seedRawText(factFixtureRaw, FACT_REALIZATION_FILE), \"fact_realization\"))";
   const forms = await call(`(() => { const rules = ${rules}; return [
     factInflect(rules, "Япония", "ru", "genitive"),
     factInflect(rules, "Китай", "ru", "genitive"),
@@ -194,13 +192,13 @@ test("#1172 R9: every surface the retired records resolved still resolves its su
   // How many of each subject's surfaces are recorded rather than generated
   // from its captured labels and the morphology.
   const recorded = await call(
-    "(() => { const rules = factRealizationRules(factSeedRoot(seedRawText(SEED_RAW, FACT_REALIZATION_FILE), \"fact_realization\")); return Object.fromEntries([...rules.surfaces].map(([qid, list]) => [qid, list.length])); })()",
+    "(() => { const rules = factRealizationRules(factSeedRoot(seedRawText(factFixtureRaw, FACT_REALIZATION_FILE), \"fact_realization\")); return Object.fromEntries([...rules.surfaces].map(([qid, list]) => [qid, list.length])); })()",
   );
   assert.deepEqual(recorded, { Q17: 2, Q159: 5, Q142: 3, Q183: 2, Q148: 3, Q668: 2, Q30: 14, Q145: 13, Q155: 4, Q15228: 2 });
 });
 
 test("#1172 R9: a preferred label marked as a Wikidata alias is one of the entity's captured aliases", async () => {
-  const realization = readFileSync(path.join(REPO_ROOT, "data", "seed", "fact-realization.lino"), "utf8");
+  const realization = readFileSync(path.join(FACT_CLAIMS, "..", "fact-realization.lino"), "utf8");
   const origins = { wikidata_alias: [], recorded: [] };
   for (const block of realization.split(/\n(?=  preferred_label )/u).slice(1)) {
     const qid = block.match(/^  preferred_label (Q\d+)/u)[1];
@@ -223,7 +221,7 @@ test("#1172 R9: a preferred label marked as a Wikidata alias is one of the entit
 test("#1172 R9: the seed projection is exactly what the committed captures encode", () => {
   const quote = (items) => `(${items.map((item) => JSON.stringify(item)).join(" ")})`;
   const byteOrder = (left, right) => (Buffer.from(left[0]) < Buffer.from(right[0]) ? -1 : Buffer.from(left[0]) > Buffer.from(right[0]) ? 1 : 0);
-  const projection = readFileSync(path.join(REPO_ROOT, "data", "seed", "fact-captures.lino"), "utf8");
+  const projection = readFileSync(path.join(FACT_CLAIMS, "..", "fact-captures.lino"), "utf8");
   const entities = [...projection.matchAll(/^  entity (Q\d+)$/gmu)].map((match) => match[1]);
   assert.deepEqual(
     entities.slice().sort(),
@@ -260,18 +258,21 @@ test("#1172 R9: the derived records answer in every language they realize", asyn
   }
 });
 
-test("#1172 R9: the agentic port derives the same records and resolves the retired subjects", async () => {
+test("#1172 R9: both runtimes derive the same explicit fixtures", async () => {
   await installNodeHost(new WorkerHost());
-  const { derivedFacts } = await import("../../../js/agentic/crate/fact_derivation.mjs");
-  const { factStoreResolves } = await import("../../../js/agentic/crate/solver_handlers_benchmark_prompts.mjs");
-  assert.deepEqual(JSON.parse(JSON.stringify(derivedFacts())), await derived());
-  assert.deepEqual(
-    [
-      "What is the capital of Japan?",
-      "Столица Германии?",
-      "Who wrote The Lord of the Rings?",
-      "What is the capital of Australia?",
-    ].map((prompt) => factStoreResolves(prompt)),
-    [true, true, true, false],
+  const { deriveFactsFromTexts } = await import("../../../js/agentic/crate/fact_derivation.mjs");
+  const { meaning } = await import("../../../js/agentic/crate/seed_meanings.mjs");
+  const output = deriveFactsFromTexts(
+    factFixtureRaw["fact-captures.lino"], factFixtureRaw["fact-realization.lino"],
+    (slug) => meaning(slug)?.wikidata ?? "",
   );
+  assert.deepEqual(JSON.parse(JSON.stringify(output)), await derived());
+});
+
+test("a fresh offline worker has no historical fact captures", async () => {
+  const offline = createWorkerContext();
+  await evaluate(offline, "loadSeed()");
+  assert.deepEqual(plain(evaluate(offline, "derivedCaptureFacts(SEED_RAW)")), []);
+  const answer = await offline.solve("What is the capital of Japan?", [], {}, {}, [], { offline: true });
+  assert.doesNotMatch(String(answer.content), /Tokyo/u);
 });

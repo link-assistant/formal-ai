@@ -26,4 +26,4 @@ requirement_status_ledger_shard
     automated_test "rust/tests/unit/specification/prompt_variations_facts.rs"
   requirement
     id "R180"
-    automated_test "rust/tests/e2e/tests/multilingual-issue-27.spec.js"
+    automated_test "rust/tests/e2e/tests/multilingual-chat.spec.js"

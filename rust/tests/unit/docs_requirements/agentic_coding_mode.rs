@@ -112,7 +112,7 @@ fn issue_468_agentic_coding_case_study_is_traceable() {
         &formalize_example,
         &[
             "formalize_text_to_links",
-            "CANONICAL_FISHERMAN_SYNOPSIS",
+            "read_to_string",
             "covers_all_nine()",
             "total_records()",
         ],

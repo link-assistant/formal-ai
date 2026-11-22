@@ -7,6 +7,7 @@ AGENT="${AGENT:-agent}"
 PORT="${PORT:-8793}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-822/recursive-self-coding}"
 TASK='Promote the approved lesson into your learning ledger and record the approved learning record'
+export FORMAL_AI_APPROVED_LESSONS="$ROOT/rust/tests/fixtures/issue-558/approved-lessons.lino"
 
 command -v "$AGENT" >/dev/null
 [[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai" >&2; exit 2; }
@@ -39,7 +40,7 @@ config="$(printf '{"provider":{"formalai":{"name":"Formal AI","npm":"@ai-sdk/ope
 "$ROOT/scripts/classify-agent-cli-stderr.sh" "$OUT/agent-stderr.log"
 grep '^{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
 rm "$OUT/agent-stream.raw.log" "$OUT/agent-stderr.log"
-cmp "$work/learning-ledger.lino" "$ROOT/data/meta/learning-ledger.lino"
+cmp "$work/learning-ledger.lino" "$ROOT/rust/tests/fixtures/issue-558/learning-ledger.lino"
 cp "$work/learning-ledger.lino" "$OUT/agent-authored-learning-ledger.lino"
 "$BIN" agent --task "$TASK" --session-json "$OUT/session.json" >/dev/null
 echo "recursive self-coding leaf passed"

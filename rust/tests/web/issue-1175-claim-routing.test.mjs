@@ -46,8 +46,8 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "format_conversion", browserHandler: "tryFormatConversion", admitsOn: ["structured_document"], refusalEvents: ["format_conversion:refusal"] },
     { handler: "brainstorm_composition", browserHandler: "tryBrainstormComposition", admitsOn: ["composition_topic"], refusalEvents: ["brainstorming:refusal"] },
     { handler: "creative_writing", browserHandler: "tryCreativeWritingRequest", admitsOn: ["composition_topic"], refusalEvents: ["creative_writing:refusal"] },
-    { handler: "advice_request", browserHandler: "tryAdviceRequest", admitsOn: ["advice_topic"], refusalEvents: ["advice:refusal"] },
-    { handler: "planning_request", browserHandler: "tryPlanningRequest", admitsOn: ["cached_destination"], refusalEvents: ["planning:refusal"] },
+    { handler: "advice_request", browserHandler: "tryAdviceRequest", admitsOn: ["advice_observations"], refusalEvents: ["advice:refusal"] },
+    { handler: "planning_request", browserHandler: "tryPlanningRequest", admitsOn: ["destination_observations"], refusalEvents: ["planning:refusal"] },
     { handler: "regex_synthesis", browserHandler: "tryRegexSynthesis", admitsOn: ["pattern_constraints"], refusalEvents: ["regex_synthesis:refusal"] },
     { handler: "sql_synthesis", browserHandler: "trySqlSynthesis", admitsOn: ["table_reference"], refusalEvents: ["sql_synthesis:refusal"] },
     { handler: "shell_command_compose", browserHandler: "tryShellCommandCompose", admitsOn: ["filesystem_object"], refusalEvents: ["shell_command_compose:refusal"] },
@@ -95,11 +95,11 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "historical", browserHandler: "tryHistorical", admitsOn: ["dialogue_turn","name_assignment","recall_query_term"], refusalEvents: ["conversation_recall:refusal"] },
     { handler: "conversation_memory", browserHandler: "", admitsOn: ["dialogue_turn","name_assignment","recall_query_term","supplied_payload"], refusalEvents: ["conversation_recall:refusal"] },
     { handler: "summarization", browserHandler: "", admitsOn: ["summary_topic"], refusalEvents: ["summarization:refusal"] },
-    { handler: "brainstorming", browserHandler: "tryBrainstormingRequest", admitsOn: ["brainstorm_category"], refusalEvents: ["brainstorming:refusal"] },
-    { handler: "roleplay", browserHandler: "tryRoleplayRequest", admitsOn: ["persona_or_topic"], refusalEvents: ["roleplay:refusal"] },
+    { handler: "brainstorming", browserHandler: "tryBrainstormingRequest", admitsOn: ["brainstorm_topic"], refusalEvents: ["brainstorming:refusal"] },
+    { handler: "roleplay", browserHandler: "tryRoleplayRequest", admitsOn: ["roleplay_facts"], refusalEvents: ["roleplay:refusal"] },
     { handler: "document_originality_check", browserHandler: "tryDocumentOriginalityCheck", admitsOn: ["document_operand"], refusalEvents: ["document_originality_check:refusal"] },
     { handler: "translation", browserHandler: "tryTranslation", admitsOn: ["translation_text"], refusalEvents: ["translation:refusal"] },
-    { handler: "triz_resolution", browserHandler: "tryTrizResolution", admitsOn: ["triz_precedent"], refusalEvents: ["triz_resolution:refusal"] },
+    { handler: "triz_resolution", browserHandler: "tryTrizResolution", admitsOn: ["triz_demands"], refusalEvents: ["triz_resolution:refusal"] },
     { handler: "algorithm", browserHandler: "tryAlgorithm", admitsOn: ["algorithm_operation"], refusalEvents: ["algorithm:refusal"] },
     { handler: "source_refresh", browserHandler: "trySourceRefresh", admitsOn: ["source_reference"], refusalEvents: ["source_refresh:refusal"] },
     { handler: "proof_request", browserHandler: "tryProofRequest", admitsOn: ["stated_claim"], refusalEvents: ["proof_request:refusal"] },
@@ -108,7 +108,7 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "network_query", browserHandler: "tryNetworkSnapshot", admitsOn: ["assistant_subject"], refusalEvents: [] },
     { handler: "exact_memory_query", browserHandler: "tryExactMemoryQuery", admitsOn: ["memory_query_statement"], refusalEvents: [] },
     { handler: "fact_lookup", browserHandler: "", admitsOn: ["fact_subject"], refusalEvents: [] },
-    { handler: "docs_method_explanation", browserHandler: "tryDocsMethodExplanation", admitsOn: ["documented_method"], refusalEvents: [] },
+    { handler: "docs_method_explanation", browserHandler: "tryDocumentationMethodExplanation", admitsOn: ["documented_method"], refusalEvents: [] },
     { handler: "kupi_slona", browserHandler: "tryKupiSlona", admitsOn: ["idiom_utterance"], refusalEvents: [] },
     { handler: "source_conflict", browserHandler: "trySourceConflict", admitsOn: ["attributed_alternatives"], refusalEvents: ["source_conflict:refusal"] },
     { handler: "github_repository_traffic", browserHandler: "tryGithubRepositoryTraffic", admitsOn: ["named_repository"], refusalEvents: ["github_repository_traffic:refusal"] },
@@ -269,7 +269,7 @@ test("R1175-3 class c: a composer without its specification is admitted to its r
   for (const [handler, bare, specified] of [
     ["tryRegexSynthesis", "Write a regex", "Write a regular expression that matches five digits"],
     ["trySqlSynthesis", "Write a SQL query", "Write a SQL query that selects every row of the users table"],
-    ["tryPlanningRequest", "Plan a trip somewhere nice", "Make a 3-day itinerary for a first visit to Rome."],
+    ["tryPlanningRequest", "Plan a trip somewhere nice", `Plan a trip.\n\`\`\`json\n{"planning":{"destination":"Somewhere","places":[{"name":"Town Hall","district":"Centre","category":"museum","hours":"10:00-16:00","visit_minutes":60,"source_url":"https://example.org/hours"}]}}\n\`\`\``],
   ]) {
     assert.equal(await admission(handler, bare), "refusal", bare);
     assert.equal(await admission(handler, specified), "full", specified);
@@ -402,11 +402,11 @@ test("R1175-3 last five rows: the documented method is read from the prompt", as
   for (const prompt of ["how does pandas DataFrame.join work?", "как работает pandas DataFrame.join?",
     "pandas DataFrame.join कैसे काम करता है?", "pandas DataFrame.join 如何工作？"]) {
     assert.equal((await operands("documented_method", prompt))[0], "pandas.DataFrame.join", prompt);
-    assert.equal(await admission("tryDocsMethodExplanation", prompt), "full", prompt);
+    assert.equal(await admission("tryDocumentationMethodExplanation", prompt), "full", prompt);
   }
-  for (const prompt of ["Explain pandas DataFrame.merge", "объясни pandas DataFrame.merge",
-    "pandas DataFrame.merge कैसे काम करता है?", "pandas DataFrame.merge 如何工作？"]) {
-    assert.equal(await admission("tryDocsMethodExplanation", prompt), "denied", prompt);
+  for (const prompt of ["Explain unknown DataFrame.merge", "объясни pandas DataFrame",
+    "DataFrame.merge कैसे काम करता है?", "pandas DataFrame 如何工作？"]) {
+    assert.equal(await admission("tryDocumentationMethodExplanation", prompt), "denied", prompt);
   }
 });
 

@@ -1,17 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createWorkerContext,evaluate,plain} from './support/browser-runtime.mjs';
+import { factFixtureRaw } from './support/fact-fixtures.mjs';
 const helperNames=["factSeedRoot","factChildren","factChildText","factList","factCapturedEntities","factRealizationRules","factSurface","factDefinite","factAcronym","factInflect","factForm","factRealize","factSourceUrl","factLabelSurfaces"];
 for(const reverse of [false,true])test('canonical helper identities and raw mutations survive '+(reverse?'reverse':'normal')+' module ordering',async()=>{
  const worker=createWorkerContext({}, {reorderModules:reverse?modules=>modules.reverse():null});
  // Reading an alias before seed loading instantiates no cached fact result.
  assert.equal(evaluate(worker,'factSeedRoot'),evaluate(worker,"crateModule('crate/fact_derivation.mjs').factSeedRoot"));
  await evaluate(worker,'loadSeed()');
+ worker.factFixtureRaw = factFixtureRaw;
  for(const name of helperNames)assert.equal(evaluate(worker,name),evaluate(worker,"crateModule('crate/fact_derivation.mjs')."+name),name);
- const records=plain(evaluate(worker,'derivedCaptureFacts(SEED_RAW)'));
+ const records=plain(evaluate(worker,'derivedCaptureFacts(factFixtureRaw)'));
  assert(records.length>0);
  const differential=plain(evaluate(worker,`(()=>{
-  const raw={...SEED_RAW};
+  const raw={...factFixtureRaw};
   const direct=()=>crateModule('crate/fact_derivation.mjs').deriveFactsFromTexts(
    seedRawText(raw,FACT_CAPTURES_FILE),seedRawText(raw,FACT_REALIZATION_FILE),factRelationProperty);
   const baseline=derivedCaptureFacts(raw);
@@ -20,13 +22,13 @@ for(const reverse of [false,true])test('canonical helper identities and raw muta
   raw[captures]='';
   const absent=derivedCaptureFacts(raw);
   const absentDirect=direct();
-  raw[captures]=SEED_RAW[captures].replaceAll('P36','P999999999');
+  raw[captures]=factFixtureRaw[captures].replaceAll('P36','P999999999');
   const changed=derivedCaptureFacts(raw);
   const changedDirect=direct();
-  raw[captures]=SEED_RAW[captures];raw[realization]='';
+  raw[captures]=factFixtureRaw[captures];raw[realization]='';
   const noRules=derivedCaptureFacts(raw);
   return {baseline,absent,absentDirect,changed,changedDirect,noRules,
-   restored:derivedCaptureFacts(SEED_RAW)};
+   restored:derivedCaptureFacts(factFixtureRaw)};
  })()`));
  assert.deepEqual(differential.baseline,records);
  assert.deepEqual(differential.absent,[]);

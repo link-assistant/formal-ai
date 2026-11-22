@@ -1,0 +1,15 @@
+✔ the runtime seed exposes resolution families without benchmark cases (483.085375ms)
+✔ a Russian contradiction produces a localized worksheet (2345.842937ms)
+✔ unseen demands produce their own worksheet without recalled cases (980.329185ms)
+✔ all twenty benchmark cases are explicit parser inputs (6.002759ms)
+✔ missing or repeated demands produce a routed request for details (241.131877ms)
+✔ ordinary prompts decline (0.64865ms)
+﹣ the native public gateway derives the same demands and asks when they are missing (0.321751ms) # SKIP
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 7497.111462

@@ -15,9 +15,9 @@ test('R125: rust/examples/try_arithmetic.rs exists and is non-empty', () => {
   assert.ok(statSync(path).size > 0, 'rust/examples/try_arithmetic.rs is empty');
 });
 
-test('R125: data/seed/demo-dialogs.lino has calculator dialog entries for all four languages', () => {
-  const dialogs = readFileSync(join(REPO_ROOT, 'data/seed/demo-dialogs.lino'), 'utf8');
-  // The seed must carry at least four calculator dialogs, one per supported
+test('R125: rust/tests/fixtures/issue-1/demo-dialogs.lino has calculator dialog entries for all four languages', () => {
+  const dialogs = readFileSync(join(REPO_ROOT, 'rust/tests/fixtures/issue-1/demo-dialogs.lino'), 'utf8');
+  // The fixture contains at least four calculator dialogs, one per supported
   // language, all routed to the calculation intent.
   const calculationIntentMatches = [...dialogs.matchAll(/expected_intent\s+calculation/g)];
   assert.ok(
@@ -35,11 +35,11 @@ test('R125: data/seed/demo-dialogs.lino has calculator dialog entries for all fo
   }
 });
 
-test('R125: the browser worker answers every seeded calculator dialog as a calculation', async () => {
+test('R125: the browser worker answers each calculator fixture as a calculation', async () => {
   const { createWorkerContext, evaluate, plain } = await import('./support/browser-runtime.mjs');
   const worker = createWorkerContext();
   await evaluate(worker, 'loadSeed()');
-  const dialogs = readFileSync(join(REPO_ROOT, 'data/seed/demo-dialogs.lino'), 'utf8');
+  const dialogs = readFileSync(join(REPO_ROOT, 'rust/tests/fixtures/issue-1/demo-dialogs.lino'), 'utf8');
   const requests = [...dialogs.matchAll(/^dialog_calculator_[a-z]+\n {2}greeting [^\n]+\n {2}request "([^"]+)"/gmu)].map((match) => match[1]);
   assert.equal(requests.length, 4, 'one calculator dialog per supported language');
   const results = {};

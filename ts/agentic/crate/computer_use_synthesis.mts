@@ -8,7 +8,7 @@
 // operations, resource}`.
 
 import { detect } from './language.mjs';
-import { FETCH_OPERATION, learned } from './computer_use_induction.mjs';
+import { FETCH_OPERATION } from './computer_use_induction.mjs';
 import { capabilityGapCue, instructionSurface, normalize, operationCues, resourceCue } from './computer_use_lexicon.mjs';
 import { capabilityGapResponse, cloneStep, stepConditions } from './computer_use_seed.mjs';
 import { changesState, inputSchema } from './computer_use.mjs';
@@ -24,11 +24,6 @@ export function capabilityGapForRequest(prompt) {
   const capability = capabilityGapCue(normalize(instructionSurface(prompt)));
   if (capability === null) return null;
   return capabilityGapResponse(capability, locale);
-}
-
-/** Mirrors `fn synthesize`: a plan from the learned schemas, or null. */
-export function synthesize(prompt) {
-  return synthesizeWith(prompt, learned());
 }
 
 /** Mirrors `fn synthesize_with`. */

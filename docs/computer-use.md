@@ -1,48 +1,53 @@
 # Verified computer use without vision
 
-Formal AI turns natural-language computer-use requests into deterministic plans
-over twelve named primitives:
+Formal AI validates and executes computer-use plans over twelve named primitives.
 
 `fs.read`, `fs.write`, `fs.list`, `fs.move`, `shell.run`, `http.fetch`,
 `http.post`, `dom.query`, `dom.extract`, `archive.pack`, `archive.unpack`, and
 `process.status`.
 
 The planner is intentionally non-visual. It operates on files, structured JSON
-and HTML, and recorded HTTP fixtures. A request that needs pixels, a rendered
-page, or a GUI-only application returns the named `gui_rendering`
-`capability_gap`; it does not claim that a visual action happened.
+and HTML, and authorized HTTP responses. A request that needs pixels, a rendered
+page, or a GUI-only application returns the named `gui_rendering` capability gap.
 
 ## Native CLI
 
-Both agent mode and effect confirmation are explicit:
+Supply an ordered JSON array of primitive names and their arguments in a fenced
+`computer-use` block. Agent mode grants the primitive permissions, and effect
+confirmation authorizes the run.
+
+````bash
+formal-ai computer-use --agent-mode --confirm-effects --prompt "$(cat <<'PLAN'
+Write the supplied note, then verify the saved file.
+```computer-use
+[
+  {"primitive":"fs.write","arguments":{"path":"note.txt","content":"Review Thursday","confirmed":true}},
+  {"primitive":"fs.read","arguments":{"path":"note.txt"}}
+]
+```
+PLAN
+)"
+````
+
+The JSON result contains the isolated workspace, the plan, and each scheduled
+primitive's arguments, output, and three events. The events record the
+precondition, effect, and postcondition. A failed step halts the plan.
+`--replay` repeats all effects in a fresh workspace and compares the observed
+outputs. Use it only for operations that may safely be repeated.
+
+## Learn from a supplied corpus
+
+Pass a Links Notation teaching file through `--from`. Formal AI uses this file
+when planning a named operation or learning how to compose multiple steps.
+`--plan` prints a validated request for an external tool client without
+executing the plan.
 
 ```bash
-formal-ai computer-use \
-  --prompt "Filter active customers into a report" \
-  --agent-mode \
-  --confirm-effects \
-  --replay
+formal-ai computer-use --learn --from teaching-corpus.lino
 ```
 
-The JSON result contains the isolated workspace, the plan, each primitive's
-arguments and output, and three events for every step: `precondition`, `effect`,
-and `postcondition`. `--replay` executes the same plan in a fresh workspace and
-independently compares the verified outputs. Omitting either permission flag
-fails before a workspace effect.
-
-The complete multilingual prompt set is in
-[`data/seed/computer-use-tasks.lino`](../data/seed/computer-use-tasks.lino).
-The tasks cover file transforms, structured GET/POST and extraction, report
-generation, directory operations, archives, and isolated process status.
-
-## Learning the plans instead of recalling them
-
-Those tasks are *examples*, not an answer table. Formal AI induces a schema per
-operation from them and then synthesizes plans for requests it has never seen.
-
-```bash
-formal-ai computer-use --learn
-```
+The multilingual [replay corpus](../rust/tests/fixtures/computer-use/tasks.lino)
+is an explicit input to the test harnesses.
 
 The output is Links Notation: one schema per operation cue with the primitive,
 the fields all its examples agree on (constants) and those they differ on
@@ -90,10 +95,11 @@ Start the server with computer-use tools enabled:
 formal-ai serve --host 127.0.0.1 --port 8080 --agent-mode
 ```
 
-The MCP endpoint at `http://127.0.0.1:8080/mcp` advertises
-`formal_ai_<primitive>` tools alongside `formal_ai_chat`. Each primitive schema
-requires a plan id, step id, precondition, and postcondition. Without
-`--agent-mode`, calls return a structured policy refusal.
+The MCP endpoint at `http://127.0.0.1:8080/mcp` advertises the twelve tools and
+`formal_ai_chat`. Clients such as Link Assistant Agent prefix the tool names
+with `formal_ai_`. Use the same fenced plan syntax in a chat request. The
+planner supplies the plan id, step id, precondition, and postcondition for
+each call. Tool execution requires agent mode.
 
 Set `FORMAL_AI_COMPUTER_USE_AUDIT_PATH` to an operator-owned JSONL path to
 persist one complete step record per MCP call:
@@ -137,10 +143,15 @@ resolve beneath a fresh per-plan temporary workspace. `shell.run` accepts only
 the structured `count_lines`, `filter_csv`, and `unique_csv` operations; it does
 not pass user text to a shell. Desktop computer-use paths are separately
 confined beneath the application's user-data `computer-use/<plan_id>` directory;
-they never resolve against the repository workspace used by the older desktop
-file tools. Native benchmark HTTP accepts only committed `fixture://` resources,
-while the permission-gated desktop executor can use HTTP(S). GET and POST
-outputs record method, URL, status, cache path, and SHA-256 provenance.
+they resolve beneath the desktop application's own data directory.
+
+Set `FORMAL_AI_COMPUTER_USE_HTTP_ORIGIN` to the authorized HTTP(S) origin for the
+native CLI and the native or Node MCP server. Each request must use that origin,
+and the existing operator network deny settings still apply. GET and confirmed
+POST record the observed method, URL, status, media type, cache path, and
+SHA-256. The transport uses curl, accepts a UTF-8 response within 1 MiB, and
+requires a successful HTTP status. The replay harnesses configure a loopback
+publisher.
 
 The deterministic archive format is `formal-ai-archive-v1`. It is designed for
 verified task replay, not as a general replacement for ZIP or tar.
