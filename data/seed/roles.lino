@@ -1067,6 +1067,8 @@ roles
     kind meaning
   software_step_granularity
     kind meaning
+  source
+    kind meaning
   source-authoring-grammar
     kind meaning
   source-callable-composition
