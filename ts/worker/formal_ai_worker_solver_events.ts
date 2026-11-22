@@ -200,6 +200,11 @@ function promotedHandlerOrder(registry, prompt) {
   const concrete = (record) => record.contextBinding === "writeProgram" && record.resultIntent === "write_program";
   if (requested && requested.task && requested.language && writeProgramTemplate(requested.task, requested.language) !== null
     && tryPageQueryText(prompt) === null) return [...registry.filter(concrete), ...registry.filter((record) => !concrete(record))];
+  // Like the native solver, resolve a recognized program before the prose
+  // intent suggested by its output format or subject matter.
+  const blueprint = (record) => record.name === "tryProgramBlueprintFromPrompt";
+  if (requested?.language && selectBlueprint(normalizeProgramPrompt(prompt), requested.language)
+    && tryPageQueryText(prompt) === null) return [...registry.filter(blueprint), ...registry.filter((record) => !blueprint(record))];
   const bindings = typeof WORKER_HANDLER_REGISTRY === "object" ? WORKER_HANDLER_REGISTRY.workerHandlers : {};
   const names = [...new Set(solverPromotedHandlers(prompt).map((slug) => bindings[slug]).filter(Boolean))];
   const hoisted = names.flatMap((name) => registry.filter((record) => record.name === name)).map((record) => ({ ...record, hoisted: true }));

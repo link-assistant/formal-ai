@@ -19,8 +19,10 @@
 // the Hive Mind production matrix dispatched.
 
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { before, test } from 'node:test';
 
 import { programLanguages, programTasks, programTemplates } from '../../../js/agentic/crate/coding_catalog.mjs';
@@ -273,4 +275,104 @@ test('issue #1613: incomplete or out-of-range inputs leave no runnable recipe', 
   }
   const plain = await host.solve('What is the factorial of 7?', []);
   assert.notEqual(plain.intent, 'write_program');
+});
+
+async function blueprint(prompt, language) {
+  const result = await host.solve(prompt);
+  assert.equal(result.intent, 'write_program', result.content);
+  const code = result.content.match(new RegExp('```' + language + '\\n([\\s\\S]*?)\\n```', 'u'))?.[1];
+  assert.ok(code, result.content);
+  return { code, answer: result.content };
+}
+
+function scenarioRunner(t, code) {
+  const directory = mkdtempSync(join(tmpdir(), 'formal-ai-scenario-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  return {
+    write(name, fields) {
+      writeFileSync(join(directory, name), JSON.stringify(fields));
+    },
+    read(name) {
+      return readFileSync(join(directory, name), 'utf8');
+    },
+    run(...args) {
+      const execution = spawnSync('python3', ['-I', '-c', code, ...args], {
+        cwd: directory, encoding: 'utf8', timeout: 5000, maxBuffer: 64 * 1024,
+      });
+      assert.equal(execution.status, 0, execution.stderr ?? execution.error?.message);
+      return execution.stdout;
+    },
+  };
+}
+
+test('issue #1613: a budget blueprint reports caller assumptions and changing sourced city costs', async (t) => {
+  const { code } = await blueprint('Write a Python budget calculator for the 50/30/20 budget rule; compare average rent and living costs in cities, project savings at an annual return, and export a Markdown report with sources.', 'python');
+  const runner = scenarioRunner(t, code);
+  assert.match(runner.run('--help'), /monthly_contribution/u);
+  const scenario = { monthly_income: 3000, monthly_contribution: 600, annual_return: 0.08, years: 10, savings_goal: 100000 };
+  const city = { city: 'Moscow', average_rent: 800, living_cost_ex_rent: 450, source: 'https://example.test/moscow-fixture' };
+  runner.write('scenario.json', { ...scenario, cities: [city] });
+  const base = runner.run('scenario.json', 'report.md');
+  assert.match(base, /Future value after 10 years at 8.00% annual return: \$109,768/u);
+  assert.match(base, /\| Moscow \| \$800 \| \$1,750 \|/u);
+  assert.match(base, /https:\/\/example\.test\/moscow-fixture/u);
+  runner.write('scenario.json', {
+    ...scenario, annual_return: 0, years: 2, monthly_contribution: 75,
+    cities: [{ ...city, city: 'Oslo', average_rent: 1200, source: 'https://example.test/oslo-fixture' }],
+  });
+  const changed = runner.run('scenario.json', 'report.md');
+  assert.match(changed, /Future value after 2 years at 0.00% annual return: \$1,800/u);
+  assert.match(changed, /\| Oslo \| \$1,200 \| \$1,350 \|/u);
+  assert.doesNotMatch(changed, /Moscow/u);
+  assert.equal(changed, runner.read('report.md') + '\n');
+});
+
+test('issue #1613: a travel blueprint ranks supplied visa and cost observations and flags a changed budget', async (t) => {
+  const { code } = await blueprint('Research visa requirements and average flight costs. Write a Python Smart TravelPlanner class to flag budgets and generate a sample itinerary in Markdown.', 'python');
+  const runner = scenarioRunner(t, code);
+  assert.match(runner.run('--help'), /visa_free/u);
+  const destination = { visa_free: true, visa_note: 'Test-only visa assertion', average_flight_cost: 500, daily_cost: 70, source: 'https://example.test/test-visa', budget: 2000 };
+  runner.write('travel.json', {
+    days: 7,
+    destinations: [{ ...destination, country: 'Japan', visa_free: false, average_flight_cost: 400 }, { ...destination, country: 'Serbia' }],
+  });
+  const base = runner.run('travel.json');
+  assert.match(base, /7-day trip/u);
+  assert.match(base, /\| 1 \| Serbia \| visa-free \| \$990 \| \$2,000 \|/u);
+  assert.match(base, /\| 2 \| Japan \| visa check required \| \$890 \|/u);
+  runner.write('travel.json', { days: 3, destinations: [{ ...destination, country: 'Iceland', budget: 600 }] });
+  const changed = runner.run('travel.json');
+  assert.match(changed, /3-day trip/u);
+  assert.match(changed, /Iceland .*\$710.*Budget warning: \$600 is below \$710/u);
+  assert.doesNotMatch(changed, /Japan|Serbia/u);
+});
+
+test('issue #1613: a portfolio blueprint values explicit holdings from caller-selected observations', async (t) => {
+  const { code } = await blueprint('Write a Python crypto portfolio tracker with current prices, holdings, total value, 24h change, weight distribution, alert logic, an API mock endpoint and a Markdown dashboard.', 'python');
+  const runner = scenarioRunner(t, code);
+  assert.match(runner.run('--help'), /change_24h_pct/u);
+  runner.write('holdings.json', { BTC: 2.5, TON: 1000 });
+  runner.write('prices.json', { BTC: { price_usd: 70000, change_24h_pct: -3 }, TON: { price_usd: 5, change_24h_pct: -6 } });
+  const base = runner.run('holdings.json', 'prices.json', '5');
+  assert.match(base, /Total value:\*\* \$180,000\.00/u);
+  assert.match(base, /Notify: TON dropped -6.00%/u);
+  assert.doesNotMatch(base, /Notify: BTC/u);
+  runner.write('holdings.json', { HELDOUT: 4 });
+  runner.write('updated.json', { HELDOUT: { price_usd: 8, change_24h_pct: -2 } });
+  const changed = runner.run('holdings.json', 'updated.json', '3');
+  assert.match(changed, /Total value:\*\* \$32\.00/u);
+  assert.match(changed, /HELDOUT .*100.00%/u);
+  assert.match(changed, /No asset dropped more than 3%/u);
+  assert.match(changed, /Price source: updated\.json/u);
+  assert.doesNotMatch(changed, /BTC|TON/u);
+});
+
+test('issue #1613: source metrics compare actual files without rendering a predetermined verdict', async () => {
+  const { code, answer } = await blueprint('Write a Rust program that parses its own source code as text, counts functions, loops, conditionals and comments, reports a complexity score as JSON and compares its generated code with the reasoning text.', 'rust');
+  assert.match(code, /include_str!/u);
+  assert.match(code, /std::fs::read_to_string\(path\)/u);
+  assert.match(code, /analyze_rust_text\(&reasoning\)/u);
+  assert.match(code, /source\.complexity_score [<>] reasoning\.complexity_score/u);
+  assert.match(answer, /cargo run -- <response-prose\.txt>/u);
+  assert.doesNotMatch(answer, /RESPONSE_REASONING|Reasoning text metrics: functions=/u);
 });
