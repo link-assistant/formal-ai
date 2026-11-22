@@ -96,7 +96,10 @@ test('worker answers from prompt data and records literal spans with no tools', 
       const result = await solve(fixture(id, language));
       assertAnswer(result.content, evidence, `${id}/${language}`);
       assert.equal(result.toolCalls.length, 0);
-      if (id !== 'agreement') assert.ok(result.evidence.includes('prompt_data:network:none'));
+      if (id !== 'agreement') {
+        assert.ok(result.evidence.includes('prompt_data:network:none'));
+        assert.equal(result.metaExecution.shape, 'leaf', `${id}/${language}`);
+      }
       if (id === 'records') assert.ok(result.evidence.some((item) => item.startsWith('prompt_data:link:')));
     }
   }

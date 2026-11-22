@@ -19,16 +19,17 @@ use crate::intent_formalization::{IntentKind, formalize_intent};
 use crate::language::{Language, detect as detect_language, set_forced_language};
 use crate::solver::{BlueprintComposition, ExecutionSurface, SolverConfig};
 
-/// A supplied passage answers its question without independent sub-solves.
+/// Keep caller-supplied data and its instructions in one work unit.
 pub fn meta_procedure_options(
     answer: &crate::engine::SymbolicAnswer,
 ) -> crate::meta_executor::RunOptions {
     let mut options = crate::meta_executor::RunOptions::default();
-    if answer
-        .evidence_links
-        .iter()
-        .any(|link| link == "prompt_text:network:none")
-    {
+    if answer.evidence_links.iter().any(|link| {
+        matches!(
+            link.as_str(),
+            "prompt_text:network:none" | "prompt_data:network:none"
+        )
+    }) {
         options.bounds.depth = Some(0);
     }
     options

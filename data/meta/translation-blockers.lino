@@ -20,8 +20,8 @@ translation_blockers
   blockers_per_item 4 223
   blockers_per_item 5 218
   blockers_per_item 6 153
-  blockers_per_item 7 121
-  blockers_per_item 8 90
+  blockers_per_item 7 120
+  blockers_per_item 8 91
   blockers_per_item 9 96
   blockers_per_item 10 66
   blockers_per_item 11 51
@@ -67,7 +67,7 @@ construct "sibling value" items 236 only 17
 construct "arrow callback of .filter()" items 222 only 0
 construct "method call .join()" items 206 only 0
 construct "import from outside the module directory" items 205 only 205
-construct "method call .some()" items 195 only 0
+construct "method call .some()" items 196 only 0
 construct "arrow callback of .some()" items 189 only 0
 construct "undefined" items 184 only 0
 construct "arrow callback of .find()" items 174 only 0
