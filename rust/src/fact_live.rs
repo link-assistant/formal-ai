@@ -19,14 +19,190 @@
 
 use serde_json::Value;
 
-use crate::seed::parser::parse_lino;
-use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
+use crate::coding::contains_cjk;
+use crate::engine::normalize_prompt;
+use crate::event_log::EventLog;
+use crate::seed::{self, FactRecord, Meaning, parser::parse_lino};
+use crate::source_fetch::{
+    CachedSourceClient, CurlSourceTransport, FetchError, SourceCapture, SourceTransport,
+};
 
 /// The registry seed, mirrored into the embedded bundle; read for the
 /// Wikidata row's fields the typed `SourceRecord` does not carry.
 const REGISTRY_TEXT: &str = include_str!("../embedded/data/seed/sources-registry.lino");
 /// The registry row this resolver reads.
 const WIKIDATA_SOURCE: &str = "wikidata";
+
+/// The longest subject term sent to the item search, in words.
+///
+/// A longer remainder is a sentence, not an entity name.
+const MAX_SUBJECT_WORDS: usize = 12;
+/// Environment override for the capture cache, shared with web search.
+const LIVE_FACT_CACHE_DIR_ENV: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
+/// Punctuation that ends a clause, and with it a subject slot.
+const CLAUSE_BOUNDARIES: [char; 13] = [
+    ',', ';', ':', '(', ')', '—', '!', '?', '，', '；', '：', '。', '？',
+];
+
+/// A fact question formalized for the live path.
+///
+/// It names the relation slug and the subject term to search for.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LiveFactQuestion {
+    pub relation: String,
+    pub subject_term: String,
+}
+
+pub(crate) fn record_fact_question(
+    log: &mut EventLog,
+    prompt: &str,
+    relation: &str,
+    subject: &str,
+) {
+    log.append("fact_query:request", prompt);
+    log.append("fact_query:relation", relation);
+    log.append("fact_query:subject", subject);
+}
+
+/// Whether `id` is a Wikidata property id (`P` followed by digits).
+fn is_property_id(id: &str) -> bool {
+    id.strip_prefix('P')
+        .is_some_and(|digits| !digits.is_empty() && digits.chars().all(|c| c.is_ascii_digit()))
+}
+
+/// Remove grammatical cues at the edges while retaining words within a name.
+fn trim_subject<'a>(mut text: &'a str, stops: &[String]) -> &'a str {
+    text = text.trim();
+    while let Some(rest) = stops.iter().find_map(|surface| {
+        let cjk = contains_cjk(surface);
+        text.strip_prefix(surface.as_str())
+            .filter(|tail| cjk || tail.is_empty() || tail.starts_with(' '))
+            .or_else(|| {
+                text.strip_suffix(surface.as_str())
+                    .filter(|head| cjk || head.is_empty() || head.ends_with(' '))
+            })
+    }) {
+        text = rest.trim();
+    }
+    text
+}
+
+pub(crate) fn bounded_subject(text: &str) -> Option<String> {
+    (!text.is_empty() && text.split_whitespace().count() <= MAX_SUBJECT_WORDS)
+        .then(|| text.to_owned())
+}
+
+/// Formalize a fact question from its relation and one subject clause.
+#[must_use]
+pub fn live_fact_question(prompt: &str) -> Option<LiveFactQuestion> {
+    live_fact_questions(prompt).into_iter().next()
+}
+
+pub(crate) fn live_fact_questions(prompt: &str) -> Vec<LiveFactQuestion> {
+    let normalized = normalize_prompt(prompt);
+    let mut stops = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
+    stops.extend(role_surfaces(seed::ROLE_INTERROGATIVE_OPENER));
+    stops.extend(role_surfaces("fact_subject_connector"));
+    stops.sort_by_key(|word| std::cmp::Reverse(word.len()));
+    let mut candidates: Vec<_> = seed::lexicon()
+        .meanings_with_role(seed::ROLE_FACT_RELATION)
+        .filter(|relation| is_property_id(&relation.wikidata))
+        .filter_map(|relation| extract_live_fact_question(prompt, &normalized, relation, &stops))
+        .collect();
+    candidates.sort_by_key(|(_, length)| std::cmp::Reverse(*length));
+    candidates
+        .into_iter()
+        .map(|(question, _)| question)
+        .collect()
+}
+
+fn extract_live_fact_question(
+    prompt: &str,
+    normalized: &str,
+    relation: &seed::Meaning,
+    stops: &[String],
+) -> Option<(LiveFactQuestion, usize)> {
+    let raw = relation_clause(prompt, Some(relation));
+    let clause = if raw == prompt {
+        std::borrow::Cow::Borrowed(normalized)
+    } else {
+        std::borrow::Cow::Owned(normalize_prompt(raw))
+    };
+    let (at, surface) = relation
+        .words()
+        .map(normalize_prompt)
+        .filter_map(|surface| locate(&clause, &surface).map(|at| (at, surface)))
+        .max_by_key(|(_, surface)| surface.len())?;
+    let left = trim_subject(&clause[..at], stops);
+    let right = trim_subject(&clause[at + surface.len()..], stops);
+    let subject_term = match (left, right) {
+        ("", right) => bounded_subject(right),
+        (left, "") => bounded_subject(left),
+        _ => None,
+    }?;
+    Some((
+        LiveFactQuestion {
+            relation: relation.slug.clone(),
+            subject_term,
+        },
+        surface.len(),
+    ))
+}
+
+/// The clause of `text` that carries the relation (the whole text when no
+/// clause does), so "the capital of Canada, not the USA" keeps "Canada".
+pub(crate) fn relation_clause<'a>(text: &'a str, relation: Option<&Meaning>) -> &'a str {
+    let Some(relation) = relation else {
+        return text;
+    };
+    text.split(CLAUSE_BOUNDARIES)
+        .find(|clause| {
+            let clause = normalize_prompt(clause);
+            relation
+                .words()
+                .any(|word| FactRecord::contains_word_sequence(&clause, word))
+        })
+        .unwrap_or(text)
+}
+
+/// The normalized surfaces of every meaning carrying `role`, longest first.
+pub(crate) fn role_surfaces(role: &str) -> Vec<String> {
+    let mut surfaces: Vec<String> = Vec::new();
+    for meaning in seed::lexicon().meanings_with_role(role) {
+        for word in meaning.words() {
+            let surface = if contains_cjk(word) {
+                word.to_lowercase()
+                    .chars()
+                    .filter(|character| *character != '…' && !character.is_whitespace())
+                    .collect()
+            } else {
+                normalize_prompt(word)
+            };
+            if !surface.is_empty() && !surfaces.contains(&surface) {
+                surfaces.push(surface);
+            }
+        }
+    }
+    surfaces.sort_by_key(|surface| std::cmp::Reverse(surface.chars().count()));
+    surfaces
+}
+
+/// Where `surface` starts in `text` as a whole word (CJK: as a substring).
+pub(crate) fn locate(text: &str, surface: &str) -> Option<usize> {
+    if surface.is_empty() {
+        return None;
+    }
+    if contains_cjk(surface) {
+        return text.find(surface);
+    }
+    format!(" {text} ").find(&format!(" {surface} "))
+}
+
+/// Build a publisher client using the process capture cache.
+pub(crate) fn capture_client(offline: bool) -> CachedSourceClient<CurlSourceTransport> {
+    let directory = std::env::var(LIVE_FACT_CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
+    CachedSourceClient::new(&directory, CurlSourceTransport).with_online(!offline)
+}
 
 /// One statement read live from Wikidata, with its provenance.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -141,7 +317,8 @@ fn label(entity: &Value, language: &str, fallback: &str) -> Option<String> {
     let labels = entity.get("labels")?;
     labels
         .get(language)
-        .or_else(|| labels.get(fallback))?
+        .or_else(|| labels.get(fallback))
+        .or_else(|| labels.get("mul"))?
         .get("value")?
         .as_str()
         .map(str::to_owned)
@@ -203,10 +380,9 @@ fn claim_value(claim: &Value) -> Option<(Option<String>, String)> {
 }
 
 fn unit_identifier(unit: &str) -> Option<&str> {
-    let (_, tail) = unit.split_once("://")?;
-    let id = tail.strip_prefix("www.wikidata.org/entity/")?;
-    (is_item_identifier(id) && (unit.starts_with("https://") || unit.starts_with("http://")))
-        .then_some(id)
+    let (scheme, tail) = unit.split_once("://")?;
+    let identifier = tail.strip_prefix("www.wikidata.org/entity/")?;
+    (matches!(scheme, "https" | "http") && is_item_identifier(identifier)).then_some(identifier)
 }
 
 /// Render a Gregorian date at the precision declared by Wikidata.

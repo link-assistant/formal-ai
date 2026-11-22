@@ -240,6 +240,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     // through the capture client, which needs the runtime's offline flag. The
     // regular `fact_lookup` row stays the seeded-only variant.
     "fact_lookup",
+    "coreference",
 ];
 
 /// Method names that run before the regular handler table.
@@ -369,6 +370,14 @@ pub fn try_contextual_override(
             normalized,
             log,
             runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+        ),
+        "coreference" => crate::solver_handlers::try_coreference_with_client(
+            prompt,
+            normalized,
+            log,
+            &crate::fact_live::capture_client(
+                runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+            ),
         ),
         _ => return ContextualOutcome::NotHandled,
     };

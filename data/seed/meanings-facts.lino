@@ -97,6 +97,22 @@ meanings
     lexeme hi "निर्माण की शुरुआत" बनी बनाई
     lexeme zh 始建日期 建于 建造 建成
     lexeme es fundación construido construida construcción fundado fundada
+  inception
+    grounded-in P571
+    defined-by time
+    lexeme en inception
+    lexeme ru возникновение
+    lexeme hi आरंभ
+    lexeme zh 起始时间
+    lexeme es fundación
+  start
+    defined-by inception
+    defined-by time
+    lexeme en start
+    lexeme ru начать начало
+    lexeme hi आरंभ
+    lexeme zh 开始
+    lexeme es empezar inicio
   physical_constant
     grounded-in P1181
     defined-by knowledge_relation
@@ -113,7 +129,7 @@ meanings
     lexeme en inventor "who created" "who made" "who invented" "created by"
     lexeme ru изобретатель "кто создал" "кто изобрёл"
     lexeme hi आविष्कारक "किसने बनाया" "किसने आविष्कार किया"
-    lexeme zh 发明者 谁创建了 谁发明了 谁创造了
+    lexeme zh 发明者 谁创建了 谁发明了 谁创造了 谁创建 谁发明 谁创造
     lexeme es inventor "quién creó" "quién inventó" inventora
   fact_subject_connector
     defined-by knowledge_subject

@@ -558,7 +558,9 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       evidence: ["rule:identity", `language:${language}`],
     }, formalizationContext);
   }
-  const coreferenceFact = claimRouteRun("tryCoreferenceFactLookup", prompt, normalized, history, () => tryCoreferenceFactLookup(prompt, normalized, history));
+  const coreferenceFact = await claimRouteRun("tryCoreferenceFactLookup", prompt, normalized, history, async () =>
+    tryCoreferenceFactLookup(prompt, normalized, history) ||
+    tryCoreferenceLiveFact(prompt, normalized, history, preferences, formalizationContext));
   if (coreferenceFact) {
     events.push(`handler:${coreferenceFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryCoreferenceFactLookup" });
@@ -892,7 +894,11 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
     steps: withThinkingLevels(steps),
     toolCalls, derivationId: stableBehaviorRuleId("answer", answer.content), // #1184 R1: SymbolicAnswer::derivation_id
   };
-  if (formalizationContext && formalizationContext.initial) recordSolverEventLog(result, formalizationContext.initial.raw, answer); // R1013
+  if (formalizationContext?.initial) {
+    const preceding = formalizationContext.solverEvents;
+    const traced = preceding ? { ...answer, solverEvents: [...preceding, ...(answer.solverEvents || [])] } : answer;
+    recordSolverEventLog(result, formalizationContext.initial.raw, traced); // R1013
+  }
   if (formalizationContext && formalizationContext.meta) {
     result.derivation = formalizationContext.meta.derivationLino;
   }

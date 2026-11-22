@@ -5,16 +5,14 @@ use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::external_benchmarks::today_utc;
+use crate::fact_live::{live_fact_question, record_fact_question};
 use crate::language::detect as detect_language;
 use crate::release_timeline;
 use crate::seed::{
     self, Antecedent, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds,
     Pronoun, SummaryTopic, SummaryTopicSeeds,
 };
-use crate::world_model::Context;
-use crate::world_model_context::{
-    ContextHierarchy, ExternalLookup, InheritancePolicy, ReferenceResolution,
-};
+use crate::world_model_dialog::resolve_coreference_antecedent;
 
 fn summary_topic_seed_data() -> &'static SummaryTopicSeeds {
     static CELL: OnceLock<SummaryTopicSeeds> = OnceLock::new();
@@ -261,7 +259,7 @@ pub fn try_fact_lookup(
         let parsed_relation = detect_relation(normalized).unwrap_or(record.relation.as_str());
         let parsed_subject =
             detect_subject_alias(record, normalized).unwrap_or(record.subject_label.as_str());
-        super::fact_live_answer::record_fact_question(log, prompt, parsed_relation, parsed_subject);
+        record_fact_question(log, prompt, parsed_relation, parsed_subject);
         // Treat the seed entry as a pre-warmed cache hit, mirroring the JS
         // worker's `fact_query:cache:hit:seed` event.
         log.append("fact_query:cache:hit", "seed".to_owned());
@@ -340,6 +338,27 @@ pub fn try_coreference_request(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    try_coreference_with(prompt, normalized, log, |_, _, _| None)
+}
+
+/// Resolve a conversation reference against a caller-supplied fact source.
+pub fn try_coreference_with_client<T: crate::source_fetch::SourceTransport>(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    client: &crate::source_fetch::CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
+    try_coreference_with(prompt, normalized, log, |original, rewritten, log| {
+        super::fact_live_answer::try_rewritten_fact_answer(original, rewritten, log, client)
+    })
+}
+
+fn try_coreference_with(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    resolve_fact: impl FnOnce(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>,
+) -> Option<SymbolicAnswer> {
     let seeds = coreference_seed_data();
     let pronoun = seeds.matching_pronoun(&crate::engine::normalize_prompt(
         super::text_rewrite::command_head(prompt),
@@ -361,6 +380,11 @@ pub fn try_coreference_request(
         if let Some(answer) = try_fact_lookup(prompt, &rewritten, log) {
             return Some(answer);
         }
+        if let Some(question) = live_fact_question(&rewritten)
+            && question.relation != "physical_constant"
+        {
+            return resolve_fact(prompt, &rewritten, log);
+        }
     }
 
     Some(finalize_simple(
@@ -371,60 +395,6 @@ pub fn try_coreference_request(
         &antecedent.body,
         0.85,
     ))
-}
-
-/// Resolve the nearest relevant user subject through the same nested-context
-/// substrate used by dialogue/task/repository scopes.
-///
-/// Every prior turn is a real context (assistant turns intentionally contribute
-/// no subject), and the current impulse inherits the most recent turn. An
-/// unrelated user message therefore does not erase a still-visible antecedent,
-/// while a nearer recognized subject shadows an older one.
-fn resolve_coreference_antecedent<'a>(
-    seeds: &'a CoreferenceSeeds,
-    log: &EventLog,
-) -> Option<(&'a Antecedent, ReferenceResolution)> {
-    const REFERENCE: &str = "coreference_subject";
-    let mut hierarchy = ContextHierarchy::new();
-    hierarchy.insert(Context::new("conversation")).ok()?;
-
-    let mut parent_id = String::from("conversation");
-    let mut turn_index = 0_usize;
-    for event in log
-        .events()
-        .iter()
-        .filter(|event| event.kind.starts_with("prior_turn:"))
-    {
-        turn_index += 1;
-        let context_id = format!("conversation:turn:{turn_index}");
-        let mut context = Context::new(&context_id);
-        if event.kind == "prior_turn:user"
-            && let Some(antecedent) = seeds.pick_antecedent(&event.payload.to_lowercase())
-        {
-            context.assert_link(REFERENCE, &antecedent.display_name);
-        }
-        hierarchy
-            .nest(context, &parent_id, InheritancePolicy::Full)
-            .ok()?;
-        parent_id = context_id;
-    }
-
-    hierarchy
-        .nest(
-            Context::new("conversation:current"),
-            &parent_id,
-            InheritancePolicy::Full,
-        )
-        .ok()?;
-    let resolution = hierarchy
-        .resolve("conversation:current", REFERENCE, ExternalLookup::Denied)
-        .ok()?;
-    let display_name = &resolution.links.first()?.to;
-    let antecedent = seeds
-        .antecedents
-        .iter()
-        .find(|antecedent| antecedent.display_name == *display_name)?;
-    Some((antecedent, resolution))
 }
 
 /// Whether an earlier user turn names an antecedent a pronoun resolves to.

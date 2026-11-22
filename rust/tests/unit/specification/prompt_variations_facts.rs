@@ -12,12 +12,12 @@ use formal_ai::{live_fact_question, try_fact_lookup_with_client};
 
 // Replay publisher entities through an explicitly supplied test transport.
 // The search response binds each exercised spelling to its fixture item.
-struct CapitalTransport<'a> {
-    subject: &'a str,
-    term: &'a str,
+pub(super) struct FactTransport<'a> {
+    pub(super) subject: &'a str,
+    pub(super) term: &'a str,
 }
 
-impl SourceTransport for CapitalTransport<'_> {
+impl SourceTransport for FactTransport<'_> {
     fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
         if url.contains("action=wbsearchentities") {
             return Ok(serde_json::json!({
@@ -53,7 +53,7 @@ pub(super) fn fact_answer(prompt: &str, subject: &str) -> SymbolicAnswer {
             std::process::id(),
             formal_ai::sha256_hex(prompt.as_bytes())
         )),
-        CapitalTransport {
+        FactTransport {
             subject,
             term: &question.subject_term,
         },
@@ -71,7 +71,10 @@ pub(super) fn fact_answer(prompt: &str, subject: &str) -> SymbolicAnswer {
 #[test]
 fn publisher_quantity_units_and_painting_attribution_are_resolved() {
     let speed = fact_answer("What is the speed of light?", "Q2111");
-    assert!(speed.answer.contains("299792458 metre per second"));
+    assert_eq!(
+        speed.answer,
+        "Wikidata states that the numeric value of speed of light in vacuum is 299792458 metre per second. Source: https://www.finlex.fi/fi/lainsaadanto/saadoskokoelma/2020/431"
+    );
     assert!(
         speed
             .evidence_links
@@ -79,7 +82,10 @@ fn publisher_quantity_units_and_painting_attribution_are_resolved() {
             .any(|link| link.contains("Q182429"))
     );
     let painter = fact_answer("Кто написал Мону Лизу?", "Q12418");
-    assert!(painter.answer.contains("Леонардо да Винчи"));
+    assert_eq!(
+        painter.answer,
+        "По данным Викиданных, художник для Мона Лиза: Леонардо да Винчи. Источник: https://rkd.nl/explore/images/302327"
+    );
     assert!(
         painter
             .evidence_links

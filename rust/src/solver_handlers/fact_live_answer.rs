@@ -23,132 +23,24 @@
 //! instead of guessing. The browser twin of R3 is `resolveFactQueryViaWikidata`
 //! with `factLiveAnswer` (`js/worker/formal_ai_worker_factual_qa.js`).
 
-use super::factual_qa::{locate, relation_clause, relation_label, render_template, role_surfaces};
+use super::factual_qa::{relation_label, render_template};
 use super::finalize_simple;
 use crate::coding::contains_cjk;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::fact_live::resolve_fact_live;
+use crate::fact_live::{
+    LiveFactQuestion, bounded_subject, capture_client, live_fact_questions, record_fact_question,
+    resolve_fact_live, role_surfaces,
+};
 use crate::language::detect as detect_language;
 use crate::seed;
-use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
+use crate::source_fetch::{CachedSourceClient, SourceTransport};
 
-/// The longest subject term sent to the item search, in words.
-///
-/// A longer remainder is a sentence, not an entity name.
-const MAX_SUBJECT_WORDS: usize = 12;
-/// Environment override for the capture cache, shared with web search.
-const LIVE_FACT_CACHE_DIR_ENV: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
 /// The intent of a live Wikidata resolution, as the browser names it.
 const LIVE_FACT_INTENT: &str = "fact_query";
 /// The intent of an explanation composed from retrieved pages.
 #[cfg(feature = "meta-language")]
 const EXPLANATION_INTENT: &str = "explanation_research";
-
-/// A fact question formalized for the live path.
-///
-/// It names the relation slug and the subject term to search for.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct LiveFactQuestion {
-    pub relation: String,
-    pub subject_term: String,
-}
-
-pub(super) fn record_fact_question(
-    log: &mut EventLog,
-    prompt: &str,
-    relation: &str,
-    subject: &str,
-) {
-    log.append("fact_query:request", prompt);
-    log.append("fact_query:relation", relation);
-    log.append("fact_query:subject", subject);
-}
-
-/// Whether `id` is a Wikidata property id (`P` followed by digits).
-fn is_property_id(id: &str) -> bool {
-    id.strip_prefix('P')
-        .is_some_and(|digits| !digits.is_empty() && digits.chars().all(|c| c.is_ascii_digit()))
-}
-
-/// Remove grammatical cues at the edges while retaining words within a name.
-fn trim_subject<'a>(mut text: &'a str, stops: &[String]) -> &'a str {
-    text = text.trim();
-    while let Some(rest) = stops.iter().find_map(|surface| {
-        let cjk = contains_cjk(surface);
-        text.strip_prefix(surface.as_str())
-            .filter(|tail| cjk || tail.is_empty() || tail.starts_with(' '))
-            .or_else(|| {
-                text.strip_suffix(surface.as_str())
-                    .filter(|head| cjk || head.is_empty() || head.ends_with(' '))
-            })
-    }) {
-        text = rest.trim();
-    }
-    text
-}
-
-fn bounded_subject(text: &str) -> Option<String> {
-    (!text.is_empty() && text.split_whitespace().count() <= MAX_SUBJECT_WORDS)
-        .then(|| text.to_owned())
-}
-
-/// Formalize a fact question from its relation and one subject clause.
-#[must_use]
-pub fn live_fact_question(prompt: &str) -> Option<LiveFactQuestion> {
-    live_fact_questions(prompt).into_iter().next()
-}
-
-fn live_fact_questions(prompt: &str) -> Vec<LiveFactQuestion> {
-    let normalized = normalize_prompt(prompt);
-    let mut stops = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
-    stops.extend(role_surfaces(seed::ROLE_INTERROGATIVE_OPENER));
-    stops.extend(role_surfaces("fact_subject_connector"));
-    stops.sort_by_key(|word| std::cmp::Reverse(word.len()));
-    let mut candidates: Vec<_> = seed::lexicon()
-        .meanings_with_role(seed::ROLE_FACT_RELATION)
-        .filter(|relation| is_property_id(&relation.wikidata))
-        .filter_map(|relation| extract_live_fact_question(prompt, &normalized, relation, &stops))
-        .collect();
-    candidates.sort_by_key(|(_, length)| std::cmp::Reverse(*length));
-    candidates
-        .into_iter()
-        .map(|(question, _)| question)
-        .collect()
-}
-
-fn extract_live_fact_question(
-    prompt: &str,
-    normalized: &str,
-    relation: &seed::Meaning,
-    stops: &[String],
-) -> Option<(LiveFactQuestion, usize)> {
-    let raw = relation_clause(prompt, Some(relation));
-    let clause = if raw == prompt {
-        std::borrow::Cow::Borrowed(normalized)
-    } else {
-        std::borrow::Cow::Owned(normalize_prompt(raw))
-    };
-    let (at, surface) = relation
-        .words()
-        .map(normalize_prompt)
-        .filter_map(|surface| locate(&clause, &surface).map(|at| (at, surface)))
-        .max_by_key(|(_, surface)| surface.len())?;
-    let left = trim_subject(&clause[..at], stops);
-    let right = trim_subject(&clause[at + surface.len()..], stops);
-    let subject_term = match (left, right) {
-        ("", right) => bounded_subject(right),
-        (left, "") => bounded_subject(left),
-        _ => None,
-    }?;
-    Some((
-        LiveFactQuestion {
-            relation: relation.slug.clone(),
-            subject_term,
-        },
-        surface.len(),
-    ))
-}
 
 /// Answer an unseeded fact question from Wikidata (issue #1172 R3).
 ///
@@ -159,8 +51,17 @@ pub fn try_fact_live_answer<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
+    try_rewritten_fact_answer(prompt, prompt, log, client)
+}
+
+pub(super) fn try_rewritten_fact_answer<T: SourceTransport>(
+    prompt: &str,
+    rewritten: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt).slug();
-    let mut questions = live_fact_questions(prompt).into_iter();
+    let mut questions = live_fact_questions(rewritten).into_iter();
     let first = questions.next()?;
     answer_live_fact_question(prompt, &first, language, log, client).or_else(|| {
         questions
@@ -363,9 +264,4 @@ pub fn try_fact_lookup_with_offline(
     offline: bool,
 ) -> Option<SymbolicAnswer> {
     try_fact_lookup_with_client(prompt, normalized, log, &capture_client(offline))
-}
-
-pub(super) fn capture_client(offline: bool) -> CachedSourceClient<CurlSourceTransport> {
-    let directory = std::env::var(LIVE_FACT_CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
-    CachedSourceClient::new(&directory, CurlSourceTransport).with_online(!offline)
 }

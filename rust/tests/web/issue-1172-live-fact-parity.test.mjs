@@ -120,12 +120,13 @@ test("R3: a claim citing no reference points at the subject snapshot", async () 
   );
 });
 
-test("quantities and painting attribution require the subject, property and labeled value from the publisher", async () => {
+test("facts require the subject, property and labeled value from the publisher", async () => {
   const fresh = createWorkerContext();
   const sourceFetch = fresh.fetch;
   const requests = [];
   const subjects = new Map([
     ["speed of light", "Q2111"], ["mona lisa", "Q12418"], ["мона лиза", "Q12418"],
+    ["rust", "Q575650"],
   ]);
   fresh.fetch = async (url, options) => {
     const target = new URL(String(url), "http://localhost");
@@ -157,6 +158,20 @@ test("quantities and painting attribution require the subject, property and labe
   assert.equal(russian.intent, "fact_query", JSON.stringify(requests));
   assert.match(russian.content, /Леонардо да Винчи/u);
   assert.ok(russian.evidence.includes("fact_query:relation:painter_of_painting"));
+  const history = [{ role: "user", content: "What is Rust?" }];
+  const followup = "Who created it?";
+  const cold = plain(await fresh.solve(followup, history, { offline: true }));
+  assert.doesNotMatch(cold.content, /Graydon Hoare/u);
+  const creator = plain(await fresh.solve(followup, history, {}));
+  assert.equal(creator.intent, "fact_query", JSON.stringify(requests));
+  assert.match(creator.content, /Graydon Hoare/u);
+  assert.ok(creator.evidence.includes("coreference:resolved:it=Rust"));
+  assert.ok(creator.evidence.includes("wikidata:Q28937563"));
+  for (const prompt of ["Who created Rust?", "Кто создал Rust?", "Rust किसने बनाया?", "谁创建 Rust?"]) {
+    const direct = await ask(prompt);
+    assert.equal(direct.intent, "fact_query", prompt);
+    assert.ok(direct.evidence.includes("wikidata:Q28937563"), prompt);
+  }
 });
 
 test("R3: an authorship answer reads through the relation's own seeded phrasing", async () => {

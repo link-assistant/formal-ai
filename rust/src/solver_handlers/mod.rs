@@ -20,8 +20,8 @@ pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
     fact_store_resolves, names_coreference_antecedent, resolves_coreference_request,
-    try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
-    try_summarization_request,
+    try_brainstorming_request, try_coreference_request, try_coreference_with_client,
+    try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
 pub use calendar::try_calendar_reasoning;
 pub use calendar_create::{
@@ -49,8 +49,8 @@ pub use fact_checking::try_fact_checking;
 #[cfg(feature = "meta-language")]
 pub use fact_live_answer::try_explanation_research;
 pub use fact_live_answer::{
-    LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
-    try_fact_lookup_with_client, try_fact_lookup_with_offline,
+    explanation_concept, try_fact_live_answer, try_fact_lookup_with_client,
+    try_fact_lookup_with_offline,
 };
 pub(crate) use factual_qa::fact_comparison_subjects;
 pub use factual_qa::{

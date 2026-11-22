@@ -19,6 +19,11 @@ seed-metadata-gaps
     record "fact_comparison_request"
   gap seed-metadata-gap-a5cf70fadc35fc3c
     record "fact_subject_connector"
+  gap seed-metadata-gap-499e486974541880
+    record "inception"
+    missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-038ab086e628b860
+    record "inventor"
   gap seed-metadata-gap-c075bf64987c3b0c
     record "knowledge_relation"
   gap seed-metadata-gap-4f30b950ed6d8cb0
@@ -35,3 +40,6 @@ seed-metadata-gaps
     record "population"
   gap seed-metadata-gap-357613103778719c
     record "prompt_text_question_cue"
+  gap seed-metadata-gap-9429d8cead2e4c5b
+    record "start"
+    missing "role,precondition,effect,unit,example"

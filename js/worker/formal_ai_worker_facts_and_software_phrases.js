@@ -527,7 +527,7 @@ async function wikidataFactEntity(qid, language, includeClaims, options, capture
 }
 
 function factEntityLabel(entity, language) {
-  return (entity?.labels?.[language] || entity?.labels?.en)?.value || "";
+  return (entity?.labels?.[language] || entity?.labels?.en || entity?.labels?.mul)?.value || "";
 }
 
 function wikidataFactClaim(entity, property) {

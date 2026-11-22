@@ -33,11 +33,12 @@
 //! browser twin is `tryPromptTextQuestion` in
 //! `js/worker/formal_ai_worker_factual_qa.js`.
 
-use super::factual_qa::{locate, render_template, role_surfaces};
+use super::factual_qa::render_template;
 use super::finalize_simple;
 use crate::coding::contains_cjk;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
+use crate::fact_live::{locate, role_surfaces};
 use crate::language::detect as detect_language;
 use crate::seed;
 

@@ -7,10 +7,11 @@
 use std::sync::OnceLock;
 
 use super::finalize_simple;
-use crate::coding::contains_cjk;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::fact_live::resolve_facts_live;
+use crate::fact_live::{
+    capture_client, locate, relation_clause, resolve_facts_live, role_surfaces,
+};
 use crate::language::detect as detect_language;
 use crate::seed::{self, FactRecord, Meaning};
 use crate::source_fetch::{CachedSourceClient, SourceTransport};
@@ -22,11 +23,6 @@ const ROLE_FACT_COMPARISON_CUE: &str = "fact_comparison_cue";
 const ROLE_FACT_COMPARISON_JOINER: &str = "fact_comparison_joiner";
 /// The prefix a formalization anchor id carries for a Wikidata item.
 const WIKIDATA_ANCHOR_PREFIX: &str = "wikidata:";
-/// Punctuation that ends a clause, and with it a subject slot.
-const CLAUSE_BOUNDARIES: [char; 13] = [
-    ',', ';', ':', '(', ')', '—', '!', '?', '，', '；', '：', '。', '？',
-];
-
 /// A subject slot resolved to one Q-id, with the label that resolved it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ResolvedSubject {
@@ -123,22 +119,6 @@ pub(super) fn question_relation(normalized: &str) -> Option<&'static Meaning> {
         })
 }
 
-/// The clause of `text` that carries the relation (the whole text when no
-/// clause does), so "the capital of Canada, not the USA" keeps "Canada".
-pub(super) fn relation_clause<'a>(text: &'a str, relation: Option<&Meaning>) -> &'a str {
-    let Some(relation) = relation else {
-        return text;
-    };
-    text.split(CLAUSE_BOUNDARIES)
-        .find(|clause| {
-            let clause = normalize_prompt(clause);
-            relation
-                .words()
-                .any(|word| FactRecord::contains_word_sequence(&clause, word))
-        })
-        .unwrap_or(text)
-}
-
 /// The formalized question: the asked relation and the subject's Q-id.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SubjectGate {
@@ -215,39 +195,6 @@ pub(super) fn render_template(intent: &str, language: &str, values: &[(&str, &st
     rendered
 }
 
-/// The normalized surfaces of every meaning carrying `role`, longest first.
-pub(super) fn role_surfaces(role: &str) -> Vec<String> {
-    let mut surfaces: Vec<String> = Vec::new();
-    for meaning in seed::lexicon().meanings_with_role(role) {
-        for word in meaning.words() {
-            let surface = if contains_cjk(word) {
-                word.to_lowercase()
-                    .chars()
-                    .filter(|character| *character != '…' && !character.is_whitespace())
-                    .collect()
-            } else {
-                normalize_prompt(word)
-            };
-            if !surface.is_empty() && !surfaces.contains(&surface) {
-                surfaces.push(surface);
-            }
-        }
-    }
-    surfaces.sort_by_key(|surface| std::cmp::Reverse(surface.chars().count()));
-    surfaces
-}
-
-/// Where `surface` starts in `text` as a whole word (CJK: as a substring).
-pub(super) fn locate(text: &str, surface: &str) -> Option<usize> {
-    if surface.is_empty() {
-        return None;
-    }
-    if contains_cjk(surface) {
-        return text.find(surface);
-    }
-    format!(" {text} ").find(&format!(" {surface} "))
-}
-
 /// The two sides of a comparison: the prompt minus its cue, split at the
 /// first joiner.
 fn comparison_sides(normalized: &str) -> Option<(String, String)> {
@@ -304,7 +251,7 @@ pub(super) fn relation_label(relation: &str, language: &str) -> String {
 
 /// Compare the verified claims already in the runtime cache.
 pub fn try_fact_comparison(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    try_live_fact_comparison(prompt, log, &super::fact_live_answer::capture_client(true))
+    try_live_fact_comparison(prompt, log, &capture_client(true))
 }
 
 /// Read two bounded subject names from a comparison request.

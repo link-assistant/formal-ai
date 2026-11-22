@@ -535,10 +535,11 @@ pub use solver_handlers::{
 // Issue #1172 R3/R8: the live Wikidata answer and the researched explanation
 // of the `fact_lookup` row, public so the unit suite drives them through a
 // fixture transport.
+pub use fact_live::{LiveFactQuestion, live_fact_question};
 #[cfg(feature = "meta-language")]
 pub use solver_handlers::try_explanation_research;
 pub use solver_handlers::{
-    LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
+    explanation_concept, try_coreference_with_client, try_fact_live_answer,
     try_fact_lookup_with_client, try_fact_lookup_with_offline,
 };
 // Issue #1172 R1172-5: the concept_lookup row's dictionary step, public so the
