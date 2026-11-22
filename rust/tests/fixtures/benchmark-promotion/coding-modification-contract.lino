@@ -1,0 +1,9 @@
+promotion_contract
+  source_observation
+    path "data/benchmarks/coding-modification-suite.lino"
+    sha256 "c4d6a6e0f2f057bbede59b722efbf4882336e18d3713fc08fbe99a2dbc494f7a"
+    root "coding_modification_suite_issue_362"
+  derived_formalization
+    minimum_pass_count "4"
+    pass_rate_basis_points "10000"
+    runner "cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture"
