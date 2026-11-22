@@ -66,3 +66,7 @@ mod generate_seed_registry;
 #[allow(dead_code, clippy::duplicate_mod)]
 #[path = "../../../scripts/check-file-size.rs"]
 pub mod check_file_size;
+
+// Exercise the same changelog parser used before publishing a GitHub release.
+#[path = "ci-cd/changelog_parsing.rs"]
+mod changelog_parsing;

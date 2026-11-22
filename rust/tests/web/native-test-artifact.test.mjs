@@ -219,3 +219,17 @@ test('artifact retry annotations preserve terminal errors and reject partial ID 
  const result=spawnSync(process.execPath,['--test','--test-reporter=tap','--test-concurrency=1',fileURLToPath(new URL('../../../experiments/issue-1580/artifact-download-annotations.test.mjs',import.meta.url))],{encoding:'utf8',maxBuffer:256*1024,env});
  assert.equal(result.status,0,result.stdout+result.stderr);assert.match(result.stdout,/# tests 8/u);
 });
+
+test('release-note contracts exercise the production parser in the focused native target',()=>{
+ const root=new URL('../../../',import.meta.url);
+ const producer=readFileSync(new URL('scripts/create-github-release.rs',root),'utf8');
+ const original=readFileSync(new URL('rust/tests/unit/ci-cd/changelog_parsing.rs',root),'utf8');
+ const focused=readFileSync(new URL('rust/tests/unit/workflow_contracts.rs',root),'utf8');
+ assert.match(producer,/#\[path = "release-changelog[.]rs"\]\nmod release_changelog;/u);
+ assert.match(producer,/release_changelog::for_version\(Path::new\("[.]"\), &normalized_version\)\s*[.]unwrap_or_else\(/u);
+ assert.match(producer,/eprintln!\("Error: \{error\}"\);\s*exit\(1\);/u);
+ assert.match(original,/#\[path = "[.][.][/][.][.][/][.][.][/][.][.][/]scripts[/]release-changelog[.]rs"\]/u);
+ assert.match(original,/release_changelog::section\(content, version\)/u);
+ assert.doesNotMatch(original,/Regex::new/u);
+ assert.match(focused,/#\[path = "ci-cd[/]changelog_parsing[.]rs"\]\nmod changelog_parsing;/u);
+});

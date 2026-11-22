@@ -1,0 +1,79 @@
+{
+  "status": "completed",
+  "conclusion": "failure",
+  "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+  "jobs": [
+    {
+      "databaseId": 137103198123,
+      "name": "Detect tier changes",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-22T05:09:48Z",
+      "completedAt": "2026-11-22T05:10:04Z"
+    },
+    {
+      "databaseId": 137103328276,
+      "name": "js tier (node --check over js, suite group 2)",
+      "status": "completed",
+      "conclusion": "failure",
+      "startedAt": "2026-11-22T05:10:08Z",
+      "completedAt": "2026-11-22T05:16:01Z"
+    },
+    {
+      "databaseId": 137103328309,
+      "name": "js tier (node --check over js, suite group 3)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-22T05:10:19Z",
+      "completedAt": "2026-11-22T05:14:04Z"
+    },
+    {
+      "databaseId": 137103328323,
+      "name": "js tier (node --check over js, suite group 6)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-22T05:10:27Z",
+      "completedAt": "2026-11-22T05:16:46Z"
+    },
+    {
+      "databaseId": 137103328324,
+      "name": "js tier (node --check over js, suite group 5)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-22T05:10:12Z",
+      "completedAt": "2026-11-22T05:14:38Z"
+    },
+    {
+      "databaseId": 137103328346,
+      "name": "js tier (node --check over js, suite group 7)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-22T05:10:12Z",
+      "completedAt": "2026-11-22T05:14:53Z"
+    },
+    {
+      "databaseId": 137103328348,
+      "name": "js tier (node --check over js, suite group 8)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-22T05:10:11Z",
+      "completedAt": "2026-11-22T05:14:43Z"
+    },
+    {
+      "databaseId": 137103328371,
+      "name": "js tier (node --check over js, suite group 1)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-22T05:10:12Z",
+      "completedAt": "2026-11-22T05:16:25Z"
+    },
+    {
+      "databaseId": 137103328452,
+      "name": "js tier (node --check over js, suite group 4)",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-22T05:10:16Z",
+      "completedAt": "2026-11-22T05:14:17Z"
+    }
+  ]
+}
