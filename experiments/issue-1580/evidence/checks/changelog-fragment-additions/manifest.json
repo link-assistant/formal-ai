@@ -80,14 +80,14 @@
     },
     {
       "source": "upstream-pr-191.json",
-      "file": "upstream-pr-191.json.gz",
+      "file": "upstream-pull-request-191.json.gz",
       "bytes": 6186,
       "sha256": "104d700cc4dbb0b0b1d2a9cc0712febfbdbc2d656c501a4341aac47fd67f7805",
       "gzipSHA256": "a4e88ad6a39609188310d34a95b5563446ae0045c12ad2f90d16a33087c69c4b"
     },
     {
       "source": "upstream-pr-238.json",
-      "file": "upstream-pr-238.json.gz",
+      "file": "upstream-pull-request-238.json.gz",
       "bytes": 10094,
       "sha256": "ed0ebae957e31ce614f445798d1af29215ac3c59f57fb8135c7fb05645af2f9e",
       "gzipSHA256": "ad45df1f2a18d733715d9f741b9d5290d0a159ca4562cb2fec84ab14db72f720"
