@@ -9,8 +9,11 @@ pub(super) fn recipe_step(
 ) -> Option<AgenticPlan> {
     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
     let mut requested = requested_recipe(&request, symbolic_answer.execution_recipe.as_ref()?);
+    let workflow_versions = std::cell::OnceCell::new();
     if super::super::ci_workflow::requested_in(objective) {
-        super::super::ci_workflow::attach(&mut requested, objective);
+        super::super::ci_workflow::attach_with(&mut requested, objective, || {
+            workflow_versions.get_or_init(crate::version_resolution::VersionSet::for_generation)
+        });
     }
     let recipe = &requested;
     let write_tool = tool_for(tool_names, Capability::Write).or_else(|| {
@@ -48,7 +51,7 @@ pub(super) fn recipe_step(
         .as_ref()
         .filter(|target| git_commit::is_pull_request_target(target))
         .filter(|_| super::super::ci_workflow::requested_in(objective))
-        .and_then(|_| recipe_workflow(recipe, objective));
+        .and_then(|_| recipe_workflow(recipe, objective, &workflow_versions));
     let commit_step = |target: &CommitTarget| git_commit::recipe_commit_command(recipe, target);
     // Only the recipe's own commands count as recipe steps. A shell result
     // from before the recipe -- the `gh issue view` that read the work item --

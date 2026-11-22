@@ -27,7 +27,8 @@ import { Progress, qualifiedToolAttempt, qualifiedCommandAttempt, writeMatches }
 import { recipeSourceCommand, recipeSourceResult, recipeSourceMatches, recipeSourceReceipt, recipeSourcesCommand, recipeSourcesResult, recipeSourcePreimage, recipeSourceUpdateCommand, recipeSourceUpdateResult, planRecipeCiFallback
     , recipeDeliveryReference, recipeSourceRefusal } from './recipe_resume.mjs';
 import { validateProgram } from './host.mjs';
-import { requestedIn as requestedCiWorkflow, attach as attachCiWorkflow } from './ci_workflow.mjs';
+import { requestedIn as requestedCiWorkflow, attachWith as attachCiWorkflow } from './ci_workflow.mjs';
+import { forGeneration } from './crate/version_resolution.mjs';
 import { MAX_REPAIR_RUNGS, failedStep, repairStep, stopNote } from './repair_loop.mjs';
 import { feedbackNeedsChanges, pullRequestFeedbackFilter } from './restart_feedback.mjs';
 import { commandArgument, failureMessage, reportedExitCode as toolReportedExitCode, shellStep } from './tool_result.mjs';
@@ -56,7 +57,9 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
   const attached = attachExecutionRecipe(symbolicAnswer ?? {}, symbolicAnswer?.synthesized_program).execution_recipe;
   if (!attached) return null;
   const recipe = requestedRecipe(latestUserRequest(messages) ?? '', attached);
-  if (requestedCiWorkflow(objective)) attachCiWorkflow(recipe, objective);
+  let workflowVersions;
+  const versions = () => workflowVersions ??= forGeneration();
+  if (requestedCiWorkflow(objective)) attachCiWorkflow(recipe, objective, versions);
   const writeTool = toolFor(toolNames, Capability.Write) ?? toolNames.find(name => isWorkspaceCreationTool(name));
   if (!writeTool) return null;
   const runTool = toolFor(toolNames, Capability.Run);
@@ -73,7 +76,7 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
   };
   const resume = commit !== null && isPullRequestTarget(commit);
   const repositoryCi = resume && requestedCiWorkflow(objective);
-  const workflow = repositoryCi ? recipeWorkflow(recipe, objective) : null;
+  const workflow = repositoryCi ? recipeWorkflow(recipe, objective, versions) : null;
   const expectedCommands = [...recipe.commands];
   if (commit && workflow === null) expectedCommands.push(recipeCommitCommand(recipe, commit));
   if (commit && workflow === null) expectedCommands.push(...prCompletionCommands(recipe, commit, requirementsTarget?.reference ?? commit.reference));
@@ -179,12 +182,12 @@ function recipeFileMatches(observation, file, supportingPaths = []) {
   const preimage = recipeSourcePreimage(observation, file.path, supportingPaths);
   return preimage?.absent === false && preimage.source === file.source;
 }
-function recipeWorkflow(recipe, objective) {
+function recipeWorkflow(recipe, objective, versions) {
   const expected = {
     ...recipe,
     supporting_files: []
   };
-  attachCiWorkflow(expected, objective);
+  attachCiWorkflow(expected, objective, versions);
   const workflow = expected.supporting_files[0];
   if (!workflow || !recipe.supporting_files.some(file => file.path === workflow.path && file.source === workflow.source)) return null;
   return /^name: ([^\r\n]+)$/mu.exec(workflow.source)?.[1] ?? null;

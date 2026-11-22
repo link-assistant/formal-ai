@@ -28,6 +28,24 @@ pub(super) fn requested_in(objective: &str) -> bool {
 /// Add the workflow to `recipe` as a supporting file, once.
 #[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn attach(recipe: &mut ExecutionRecipe, objective: &str) {
+    attach_using(recipe, objective, render);
+}
+
+/// Attach with the caller's one generation snapshot, including its provenance.
+pub(super) fn attach_with<'a>(
+    recipe: &mut ExecutionRecipe,
+    objective: &str,
+    versions: impl FnOnce() -> &'a crate::version_resolution::VersionSet,
+) {
+    attach_using(recipe, objective, |recipe| render_with(recipe, versions()));
+}
+
+#[allow(clippy::literal_string_with_formatting_args)]
+fn attach_using(
+    recipe: &mut ExecutionRecipe,
+    objective: &str,
+    render_workflow: impl FnOnce(&ExecutionRecipe) -> String,
+) {
     let name: String = std::path::Path::new(&recipe.path)
         .file_stem()
         .and_then(|value| value.to_str())
@@ -63,7 +81,7 @@ pub(super) fn attach(recipe: &mut ExecutionRecipe, objective: &str) {
     if recipe.supporting_files.iter().any(|file| file.path == path) {
         return;
     }
-    let source = render(recipe);
+    let source = render_workflow(recipe);
     recipe
         .supporting_files
         .push(ExecutionRecipeFile { path, source });
@@ -79,9 +97,10 @@ pub(super) fn suggested_workflow_path(objective: &str) -> Option<String> {
         "workflow-name-binding-patterns",
         super::git_commit::valid_workflow_file_name,
     ) {
-        super::git_commit::RequestTargetBinding::Bound(file) => Some(
-            super::work_item_steps::fill("workflow-path-file", &[("{file}", &file)]),
-        ),
+        super::git_commit::RequestTargetBinding::Bound(file) => Some(super::work_item_steps::fill(
+            "workflow-path-file",
+            &[("{file}", &file)],
+        )),
         _ => None,
     }
 }

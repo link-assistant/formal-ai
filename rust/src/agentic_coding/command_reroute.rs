@@ -109,10 +109,16 @@ fn recipe_file_matches(
         .is_some_and(|before| !before.absent && before.source.as_deref() == Some(source))
 }
 
-fn recipe_workflow(recipe: &ExecutionRecipe, objective: &str) -> Option<String> {
+fn recipe_workflow(
+    recipe: &ExecutionRecipe,
+    objective: &str,
+    versions: &std::cell::OnceCell<crate::version_resolution::VersionSet>,
+) -> Option<String> {
     let mut expected = recipe.clone();
     expected.supporting_files.clear();
-    super::ci_workflow::attach(&mut expected, objective);
+    super::ci_workflow::attach_with(&mut expected, objective, || {
+        versions.get_or_init(crate::version_resolution::VersionSet::for_generation)
+    });
     let workflow = expected.supporting_files.first()?;
     if !recipe
         .supporting_files

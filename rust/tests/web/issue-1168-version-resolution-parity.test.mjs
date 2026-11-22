@@ -14,6 +14,13 @@ import {offlineSourceCache} from '../../../experiments/issue-1162/offline-source
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { sha256Hex } from '../../../js/agentic/crate/source_fetch.mjs';
+import {host, installHost} from '../../../js/agentic/host.mjs';
+import {attach as attachWorkflow} from '../../../js/agentic/ci_workflow.mjs';
+import {planSymbolicCommandReroute} from '../../../js/agentic/command_reroute.mjs';
+import {recipeSourceCommand, recipeSourcesCommand} from '../../../js/agentic/recipe_resume.mjs';
+import {programContractAnswer} from '../../../js/agentic/crate/coding_program_contract.mjs';
+import {parseLinoRoot, findChildValue} from '../../../js/agentic/write_lino.mjs';
+import {readText} from '../../../js/agentic/host.mjs';
 import {
   baselineVersionSet,
   fillWorkflowVersions,
@@ -148,4 +155,59 @@ test('for_generation_walks_live_then_cache_then_baseline', () => {
   assert.equal(replayed.scala.tag, '3.10.0');
   assert.deepEqual(forGeneration(offlineFetch(new Map())), { ...baselineVersionSet(), captures: [] });
   assert.deepEqual(forGeneration(), baselineVersionSet());
+});
+
+
+test('recipe attachment and CI fallback use the same version capture when the transport becomes cached', {timeout: 30_000}, () => {
+  const originalHost = host();
+  const cache = new Map();
+  const live = onlineFetch(cache);
+  const cached = offlineFetch(cache);
+  const objective = 'Implement a Scala program that prints \"Hello, World!\". Add a GitHub Actions workflow to run Main.scala.\nIssue to solve: https://github.com/fixture/project/issues/1\nYour prepared Pull Request: https://github.com/fixture/project/pull/2';
+  const canonical = programContractAnswer(objective);
+  assert.ok(canonical?.execution_recipe, 'the canonical source and verification wrapper must be recognized');
+  const base = canonical.execution_recipe;
+  const source = base.source;
+  const answer = {execution_recipe:base};
+  const verification = parseLinoRoot(readText('data/meta/process-verification.lino')).children[0];
+  const failure = findChildValue(verification, 'isolated-failure').replace('{index}', '0');
+  const messages = [{role:'user',content:objective}];
+  let sequence = 0;
+  function observe(name, args, content) {
+    const id = 'generation-control-' + (++sequence);
+    messages.push({role:'assistant',content:'',tool_calls:[{id,type:'function',function:{name,arguments:JSON.stringify(args)}}]},
+      {role:'tool',tool_call_id:id,name,content});
+  }
+  try {
+    installHost({...originalHost,sourceFetch:()=>live});
+    const prepared = structuredClone(base);
+    attachWorkflow(prepared, objective);
+    const paths = prepared.supporting_files.map(file => file.path);
+    observe('bash', {command:recipeSourceCommand(base.path)}, JSON.stringify({schema:'workspace-source-v1',path:base.path,source,success:true,complete:true,absent:false}));
+    observe('bash', {command:recipeSourcesCommand(paths)}, JSON.stringify({schema:'workspace-sources-v1',success:true,complete:true,
+      observations:paths.map(path => ({schema:'workspace-source-v1',path,success:true,complete:true,absent:true,error_code:'ENOENT'}))}));
+    for (const file of [{path:base.path,source},...prepared.supporting_files]) observe('write', {file_path:file.path,content:file.source}, '');
+    observe('bash', {command:base.commands[0]}, JSON.stringify({exit_code:127,stdout:'',stderr:failure,complete:true}));
+    let generations = 0;
+    function run(changing) {
+      generations = 0;
+      installHost({...originalHost,sourceFetch:() => (++generations > 1 && changing) ? cached : live});
+      return planSymbolicCommandReroute(messages, ['bash','write'], structuredClone(answer), objective);
+    }
+    const stable = run(false);
+    assert.equal(stable.kind, 'tool_calls', JSON.stringify(stable));
+    const changed = run(true);
+    assert.deepEqual(changed, stable, 'a second provenance observation must not disable the owned CI fallback');
+    assert.equal(generations, 1, 'one planner invocation owns one version selection');
+    assert.equal(JSON.parse(changed.calls[0].arguments).command,
+      'git status --porcelain --untracked-files=all # __formal_ai_recipe_ci_fallback_status');
+    // A later call still makes its own selection. This repair must not turn a
+    // request-text cache into authority for previously generated workflow bytes.
+    installHost({...originalHost,sourceFetch:()=>cached});
+    const later = planSymbolicCommandReroute(messages, ['bash','write'], structuredClone(answer), objective);
+    assert.equal(later.kind, 'final');
+    assert.equal(later.result.origin, 'recipe-source-epoch-invalidated');
+  } finally {
+    installHost(originalHost);
+  }
 });

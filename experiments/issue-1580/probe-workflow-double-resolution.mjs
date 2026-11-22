@@ -66,8 +66,8 @@ try {
   const stable=run(false);
   const replayed=run(true);
   console.log(JSON.stringify({stable,replayed,pinsUnchanged:true,fixtureCaptureCount:fetches.length,capturedSources:[...new Set(fetches.map(item=>item.url))],independentAuthorshipCredit:0,hostedRootCause:'unverified; controlled production-planner reproduction'},null,2));
-  assert.equal(stable.generations,2);
-  assert.equal(replayed.generations,2);
+  assert.equal(stable.generations,1);
+  assert.equal(replayed.generations,1);
   assert.deepEqual(stable.plan,{kind:'tool_calls',calls:[{tool:'bash',arguments:JSON.stringify({command:recipe.commands[0]})}]});
   assert.equal(replayed.plan.kind,'final');
   assert.equal(replayed.plan.result.origin,'recipe-source-epoch-invalidated');
