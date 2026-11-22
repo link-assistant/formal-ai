@@ -60,23 +60,25 @@ same data from the stored derivation.
 
 `POST /v1/embeddings` and `POST /api/openai/v1/embeddings` embed a string or a
 batch of strings. Both model listings advertise `formal-ai-embeddings` with
-`dimensions: 4096`. The endpoint also accepts the `formal-ai` model ID and
-its configured aliases.
+`dimensions: 4096` as the default and `supported_dimensions` with
+`min: 1` and `max: 4096`. The endpoint also accepts the `formal-ai` model ID
+and its configured aliases.
 
 ```bash
 curl -s http://127.0.0.1:8080/v1/embeddings \
   -H 'content-type: application/json' \
-  -d '{"model":"formal-ai","input":["warehouse supervisor","forklift operator"]}' \
+  -d '{"model":"formal-ai","input":["warehouse supervisor","forklift operator"],"dimensions":256}' \
   | jq '{model, usage, dimensions: [.data[].embedding | length]}'
 ```
 
 The response is an OpenAI-style list with an `embedding` and zero-based
-`index` for each input in request order. Each vector has 4096 coordinates.
+`index` for each input in request order. Set `dimensions` to any integer from
+1 to 4096 to match your vector store.
 The default `encoding_format` is `float`, which returns a JSON array of
 numbers. Use `base64` for the same values encoded as little-endian float32.
-Omit `dimensions` or send `4096`. Each batch accepts up to 128 nonblank text
-inputs with up to 8192 Unicode characters each. Usage reports the sum of
-input characters as both `prompt_tokens` and `total_tokens`.
+Each batch accepts up to 128 nonblank text inputs with up to 8192 Unicode
+characters each. Usage reports the sum of input characters as both
+`prompt_tokens` and `total_tokens`.
 
 Coordinates come from the seeded multilingual meaning lexicon. A Wikidata
 identifier, when present, or the lexicon meaning ID identifies a concept.
@@ -87,14 +89,28 @@ at each position. A coordinate is 1 when a matching surface links to that
 concept and 0 otherwise. A surface with several meanings activates all of
 its linked concepts. Repeating a match leaves its weight at 1.
 
-Cosine similarity measures exact concept overlap. For example, `storekeeper`
-and `кладовщик` activate the same coordinate. Neural embeddings can
-generalize to paraphrases, while this model's matches are limited to the
-links in the lexicon. Text without a match yields a zero vector, for which
-cosine similarity is undefined. Identical text gives identical coordinates
-across restarts with the same seed. Conversation memory has no effect.
-Re-embed stored documents when the seeded vocabulary changes so indexed
-vectors and queries use the same coordinates.
+At 4096 dimensions, cosine similarity measures exact concept overlap. For
+example, `storekeeper` and `кладовщик` activate the same coordinate. The
+lexicon also links occupations such as `sales manager` and
+`менеджер по продажам`, and recognizes `B2B` as a separate qualifier.
+
+For a smaller vector, the server sums the fixed pseudorandom sign rows for
+the active concepts and normalizes to unit length before rounding to
+float32. Each sign depends on the original concept coordinate and output
+coordinate, with the same fixed seed in both servers. If the sum cancels
+entirely, the server uses the row for the lowest active coordinate. Projected
+cosine similarity approximates concept overlap and loses precision as the
+dimension decreases.
+
+If any input has no matching concepts, the request returns HTTP 400 with
+`error.code` set to `no_concepts` and `error.input_index` set to the
+zero-based position of the first unmatched input. Single inputs use index 0.
+The error applies to the whole batch in both encodings.
+
+Identical text gives identical coordinates across restarts with the same
+seed and dimensions. Conversation memory has no effect. Re-embed stored
+documents when changing dimensions or updating the seeded vocabulary so
+indexed vectors and queries use the same coordinates.
 
 ## UTF-8 usage
 

@@ -53,6 +53,7 @@ self.FORMAL_AI_CRATE_MEANING_SEEDS = Object.freeze([
   "meanings-number-constraints",
   "meanings-number-words",
   "meanings-object-shapes",
+  "meanings-occupations",
   "meanings-ontology",
   "meanings-playwright",
   "meanings-policy",

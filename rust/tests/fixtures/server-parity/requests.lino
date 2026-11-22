@@ -111,6 +111,16 @@ server_parity_requests
     method POST
     path '/api/openai/v1/embeddings'
     body '{"model":"formal-ai-embeddings","input":"tomato","encoding_format":"base64"}'
+  request embeddings_reduced
+    route embeddings
+    method POST
+    path '/v1/embeddings'
+    body '{"model":"formal-ai","input":["warehouse supervisor","менеджер по продажам B2B"],"dimensions":256}'
+  request embeddings_no_concepts
+    route embeddings
+    method POST
+    path '/api/openai/v1/embeddings'
+    body '{"model":"formal-ai","input":["warehouse supervisor","zzqx"],"dimensions":256}'
   request embeddings_invalid_input
     route embeddings
     method POST
