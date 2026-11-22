@@ -6,8 +6,8 @@
 //! the system's own internals into auditable data: [`crate::self_source_links`]
 //! content-addresses every owned source file, [`crate::self_healing`] captures a
 //! failure as a `RepairCase`, and [`crate::learning_ledger`] records an approved
-//! lesson. This module composes those into a single *explanation* that answers "how
-//! does Formal AI work?" by citing the **real** artifacts each claim rests on.
+//! lesson. This module answers "how does Formal AI work?" with documentation
+//! extracted from the cited source modules and supporting data and test paths.
 //!
 //! The grounding is enforced, not decorative: every [`CitationKind::Source`]
 //! citation resolves its `content_id` from the compile-time owned manifest
@@ -28,7 +28,9 @@
 use std::fmt::Write as _;
 
 use crate::engine::stable_id;
-use crate::self_source_links::{owned_file_count, owned_manifest, owned_manifest_content_id};
+use crate::self_source_links::{
+    owned_file_count, owned_manifest, owned_manifest_content_id, owned_source_files,
+};
 
 /// Which layer of the repository a [`Citation`] points at.
 ///
@@ -138,6 +140,21 @@ impl ExplanationSection {
             citations,
         }
     }
+
+    fn from_module(topic: &str, source_path: &str, mut citations: Vec<Citation>) -> Self {
+        citations.insert(0, Citation::source(source_path));
+        let source = owned_source_files()
+            .iter()
+            .find_map(|&(path, text)| (path == source_path).then_some(text))
+            .expect("source citation identifies an owned module");
+        let statement = source
+            .lines()
+            .map_while(|line| line.strip_prefix("//!"))
+            .map(|line| line.strip_prefix(' ').unwrap_or(line))
+            .collect::<Vec<_>>()
+            .join("\n");
+        Self::new(topic, statement.trim(), citations)
+    }
 }
 
 /// A grounded answer to "how does Formal AI work?".
@@ -154,68 +171,47 @@ pub struct SystemExplanation {
 impl SystemExplanation {
     /// The canonical grounded explanation of how Formal AI works.
     ///
-    /// Each section cites *real* artifacts: source files resolved through the owned
-    /// manifest (so the `content_id`s are genuine), the generated data artifacts they
-    /// emit, and the tests that lock the behaviour. Because [`Citation::source`]
-    /// panics on an unknown path, this function is also a build-time assertion that
-    /// every cited module still exists.
+    /// Each section extracts the leading module documentation from its primary
+    /// source and cites its content id. Supporting source, data, and test citations
+    /// point to the related repository artifacts.
     #[must_use]
     pub fn canonical() -> Self {
         let sections = vec![
-            ExplanationSection::new(
+            ExplanationSection::from_module(
                 "deterministic_meta_algorithm",
-                "Formal AI answers agentic requests with a deterministic planner state machine: a \
-                 keyword-routed recipe walk (write, verify, final answer), never neural inference, \
-                 so every step is a reproducible function of its inputs.",
-                vec![
-                    Citation::source("src/agentic_coding/planner.rs"),
-                    Citation::source("src/agentic_coding/mod.rs"),
-                ],
+                "src/agentic_coding/planner.rs",
+                vec![Citation::source("src/agentic_coding/mod.rs")],
             ),
-            ExplanationSection::new(
+            ExplanationSection::from_module(
                 "source_to_links_round_trip",
-                "The entire owned source tree is embedded as content-addressed data and projected \
-                 through the single CST/AST engine (tree-sitter); every owned module round-trips \
-                 source to links and back byte-for-byte, so the system's own code is present in its \
-                 data as links.",
+                "src/self_source_links.rs",
                 vec![
-                    Citation::source("src/self_source_links.rs"),
                     Citation::source("src/agentic_coding/self_ast.rs"),
                     Citation::test("rust/tests/unit/agentic-coding/issue_558_source_links.rs"),
                 ],
             ),
-            ExplanationSection::new(
+            ExplanationSection::from_module(
                 "self_healing_loop",
-                "When Formal AI cannot answer, it does not simply fail: it captures the failure as a \
-                 structured RepairCase (unknown trace, a verified source-to-links mapping, and a \
-                 benchmark gate) that never advances past awaiting human review.",
+                "src/self_healing.rs",
                 vec![
-                    Citation::source("src/self_healing.rs"),
                     Citation::data("data/meta/agentic-messages.lino"),
                     Citation::test("rust/tests/unit/agentic-coding/issue_558_self_healing.rs"),
                 ],
             ),
-            ExplanationSection::new(
+            ExplanationSection::from_module(
                 "human_gated_promotion_ledger",
-                "An approved lesson is promoted into a durable learning ledger only when the \
-                 benchmark gate is green and a human approves; a repeated failure is then answered \
-                 from the ledger instead of being re-derived, which is the concrete payoff of auto \
-                 learning.",
+                "src/learning_ledger.rs",
                 vec![
-                    Citation::source("src/learning_ledger.rs"),
                     Citation::test("rust/tests/fixtures/issue-558/learning-ledger.lino"),
                     Citation::test("rust/tests/unit/agentic-coding/issue_558_learning_ledger.rs"),
                 ],
             ),
-            ExplanationSection::new(
+            ExplanationSection::from_module(
                 "agentic_interface",
-                "Every capability is reachable over the OpenAI-compatible agentic interface used by \
-                 external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic \
-                 planner and proven over the wire by server integration tests.",
-                vec![
-                    Citation::source("src/agentic_coding/driver.rs"),
-                    Citation::test("rust/tests/integration/issue_558_learning_ledger.rs"),
-                ],
+                "src/agentic_coding/driver.rs",
+                vec![Citation::test(
+                    "rust/tests/integration/issue_558_learning_ledger.rs",
+                )],
             ),
         ];
         Self { sections }
@@ -267,8 +263,7 @@ impl SystemExplanation {
     /// the whole-system self-explanation. Ends trimmed of trailing whitespace.
     ///
     /// The header ties the explanation to the source-to-links graph via
-    /// [`owned_manifest_content_id`] (one id for the entire source tree), so the
-    /// answer is explicitly anchored to the same data the round-trip proves lossless.
+    /// [`owned_manifest_content_id`] (one id for the entire owned source tree).
     #[must_use]
     pub fn links_notation(&self) -> String {
         let mut out = String::from("system_explanation\n");

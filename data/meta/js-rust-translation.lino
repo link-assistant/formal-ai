@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 346
   workaround_items 37
   inferred_signatures 3
-  carried_items 2658
+  carried_items 2660
   translated_modules 115
   fully_translated_modules 1
   refused_modules 49
@@ -144,7 +144,7 @@ module js/agentic/crate/seed_shell_intents.mjs translated 2 workaround 0 inferre
 module js/agentic/crate/seed_terminal_commands.mjs translated 0 workaround 0 inferred 0 carried 6
 module js/agentic/crate/selection_heuristics_triz.mjs translated 5 workaround 0 inferred 1 carried 21
 module js/agentic/crate/self_ast_census.mjs translated 3 workaround 0 inferred 0 carried 14
-module js/agentic/crate/self_explanation.mjs translated 0 workaround 0 inferred 0 carried 8
+module js/agentic/crate/self_explanation.mjs translated 0 workaround 0 inferred 0 carried 10
 module js/agentic/crate/self_source_links.mjs translated 3 workaround 1 inferred 0 carried 16
 module js/agentic/crate/sequences.mjs translated 1 workaround 0 inferred 0 carried 8
 module js/agentic/crate/skill_compiler.mjs translated 2 workaround 0 inferred 0 carried 12
@@ -190,14 +190,14 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 7
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
-refusal "import of names its module does not translate" 359
+refusal "import of names its module does not translate" 360
 refusal "JSDoc type {…}" 218
-refusal "import from '…'" 216
+refusal "import from '…'" 217
 refusal "null" 195
 refusal "arrow function" 142
 refusal "type: unknown name (a sibling item or an import)" 124
 refusal "function value …" 113
-refusal "object without a $ tag" 103
+refusal "object without a $ tag" 102
 refusal "new expression" 100
 refusal "regular expression" 69
 refusal "method call .find()" 64
@@ -227,8 +227,8 @@ refusal "for with const" 12
 refusal "namespace property …" 12
 refusal "method call .codePointAt()" 11
 refusal "object spread" 11
+refusal "array destructuring" 10
 refusal "method call .reduce()" 10
-refusal "array destructuring" 9
 refusal "assignment" 9
 refusal "destructured parameter" 9
 refusal "syntax: unterminated string literal" 9

@@ -16,3 +16,4 @@ bump: patch
 - Honor the browser's network opt-out during every procedural source lookup and recovery.
 - Derive budget, itinerary, portfolio, and source-metric programs from their inputs. Compose advice, travel plans, and rhymed verse from supplied cited observations.
 - Resolve summary subjects through the shared knowledge registries. Keep demonstration dialogues and benchmark cases in explicit replays.
+- Derive the system self-explanation from its cited source modules so revisions to the source are reflected in the answer.

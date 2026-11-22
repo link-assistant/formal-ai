@@ -288,3 +288,19 @@ tests, and 23 workflow build-policy tests passed.
 [Governed tests](evidence/verification/round27-governed-merged-test.log) ·
 [Docker tests](evidence/verification/round27-container-merged-test.log) ·
 [Build policy tests](evidence/verification/round27-build-policy-merged-test.log)
+
+## System self-explanation
+
+The agentic recipe attached fresh citation IDs to five fixed paragraphs. One
+said that the system's code was present in its Links diagnostics. The cited
+module instead describes a navigation representation that cannot reconstruct
+the source files. The replay substitutes one owned module in the host and asks
+the normal planner for the self-explanation. On the old code the citation ID
+changes and the old paragraph persists. The native and JavaScript recipes now
+derive each section from the leading module documentation of its primary
+source citation. The replay verifies the new excerpt, citation ID, and
+unchanged document structure. The native test checks each excerpt against its
+primary cited source. The historical Agent CLI capture remains an explicit
+test fixture.
+[Baseline](evidence/verification/round27-self-explanation-baseline.log.gz) ·
+[Updated replay](evidence/verification/round27-self-explanation-green.log)

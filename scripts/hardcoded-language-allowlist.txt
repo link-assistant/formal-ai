@@ -40,7 +40,7 @@ rust/src/agentic_coding/evidence_record.rs	Recorded the findings in `{}`.
 rust/src/agentic_coding/evidence_record.rs	The findings could not be recorded in `{}`: the write step failed.
 rust/src/agentic_coding/execution_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino.
 rust/src/agentic_coding/explain.rs	Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.
-rust/src/agentic_coding/explain.rs	Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations, every claim points at a real artifact — source files content-addressed through the owned manifest, the data artifacts they generate, and the tests that lock the behaviour — rather than prose docs. The answer is a deterministic function of the embedded source, so it cannot cite anything the repository does not ship.\n\nGenerated document ({EXPLAIN_PATH}):\n\n{document}
+rust/src/agentic_coding/explain.rs	Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations. Each section draws from its cited module's documentation. Source citations identify the exact module content, and supporting citations give repository paths.\n\nGenerated document ({EXPLAIN_PATH}):\n\n{document}
 rust/src/agentic_coding/file_read.rs	I can read `{path}` when the client advertises a file read tool or a shell tool.
 rust/src/agentic_coding/file_read.rs	I can read the selected file after listing when the client advertises a read or shell tool.
 rust/src/agentic_coding/file_read.rs	I can resolve that file selection when the client advertises a shell tool for listing files.
@@ -380,12 +380,7 @@ rust/src/rule_synthesis.rs	rustc --edition=2024 {primary} -o substitution_progra
 rust/src/rule_synthesis.rs	write_program task={} language={}
 rust/src/seed.rs	formal_ai_seed_bundle\n
 rust/src/seed/meanings/parse.rs	{} defined by {}
-rust/src/self_explanation.rs	An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning.
-rust/src/self_explanation.rs	Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests.
 rust/src/self_explanation.rs	Explained how Formal AI works across {sections} grounded topics with {citations} citations into its own source ({files} owned files), generated data, and tests.
-rust/src/self_explanation.rs	Formal AI answers agentic requests with a deterministic planner state machine: a keyword-routed recipe walk (write, verify, final answer), never neural inference, so every step is a reproducible function of its inputs.
-rust/src/self_explanation.rs	The entire owned source tree is embedded as content-addressed data and projected through the single CST/AST engine (tree-sitter); every owned module round-trips source to links and back byte-for-byte, so the system's own code is present in its data as links.
-rust/src/self_explanation.rs	When Formal AI cannot answer, it does not simply fail: it captures the failure as a structured RepairCase (unknown trace, a verified source-to-links mapping, and a benchmark gate) that never advances past awaiting human review.
 rust/src/self_healing.rs	  source_round_trip\n
 rust/src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); a lesson was learned but the benchmark gate blocks adoption.
 rust/src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); no lesson could be synthesised — recorded for triage.

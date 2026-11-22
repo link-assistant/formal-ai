@@ -680,14 +680,32 @@ describe('issue #558 owned manifest, self-explanation and source links (rust/tes
     assert.throws(() => sourceCitation('src/this_module_does_not_exist.rs'), /self_explanation_unowned_source/);
   });
 
-  it('the explanation document matches the committed Agent CLI evidence modulo the live ids', () => {
-    // Preserve the captured Rust document and resolve recorded citation changes.
-    // Live source ids are compared separately against the current manifest.
+  it('derives the self-explanation from the same source as its citation', async () => {
+    const original = host();
+    const module = 'src/self_source_links.rs';
+    const observation = 'The temporary source model carries only filenames.';
+    const source = `//! ${observation}\n\nfn main() {}\n`;
+    installHost({ ...original, readText: (path) => path === `rust/${module}` ? source : original.readText(path) });
+    try {
+      const plan = await planChatStep([user(TASKS.explain)], ['write_file', 'run_command']);
+      const { content } = JSON.parse(single(plan).arguments);
+      assert.ok(content.includes(`statement "${observation}"`));
+      assert.ok(content.includes(`path "${module}"\n          content_id "${fastStableId('source_module', source)}"`));
+      assert.ok(!content.includes('round-trips source to links and back byte-for-byte'));
+    } finally {
+      installHost(original);
+    }
+  });
+
+  it('the live explanation preserves the outline and citations of the Agent CLI evidence', () => {
+    // Compare document shape with the historical evidence. The statements and
+    // ids are verified independently against the current source.
     const renamed = new Map(resolveRenameChains(loadRenameMap().renames).map(({ from, to }) => [from, to]));
     const live = (text) => text
       .replace('path "data/meta/self-healing-case.lino"', 'path "data/meta/agentic-messages.lino"')
       .replace('kind data\n          path "data/meta/learning-ledger.lino"', 'kind test\n          path "rust/tests/fixtures/issue-558/learning-ledger.lino"')
       .replace(/ (content_id|source_file_count|source_manifest_content_id) .*/g, ' $1 X')
+      .replace(/^      statement .*/gm, '      statement X')
       .replace(/path "([^"]+)"/g, (whole, citation) => {
         const rooted = citation.startsWith('tests/') ? `rust/${citation}` : citation;
         const current = renamed.get(rooted) ?? rooted;

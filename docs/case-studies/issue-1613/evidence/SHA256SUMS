@@ -379,6 +379,8 @@ d807ae67b93881fa712efbc3482d2ec4b69c3c6ae3b08210aaa07717ee99d5f2  ./verification
 30992d99dfb039632a1b028673d51f772b21c38dc247ae48f76ffe3e45b4b095  ./verification/round27-roleplay-baseline.log.gz
 8dd48d137693765daf3f834dae7f455b3cc7f907e1d582a07a2a436c5925a0ca  ./verification/round27-roleplay-claim-final.log
 bbcbcc46439fb3315abb0d9a38a6cc50c37db004d5eba6e57494ef368ecb16e5  ./verification/round27-roleplay-final.log
+d38f8cacd36b5d76ec8766e07baa139012d86b6757e15be7c1e08d457f523815  ./verification/round27-self-explanation-baseline.log.gz
+cca957afdf19e4854e267c5adef9f650ee342ba5c9ec25ab4b1663eb8b1cc687  ./verification/round27-self-explanation-green.log
 92537e053d2e2c51f1ca13923484d0301d6a08553724fd728bbc7ed10f0b9ef5  ./verification/round27-specification-parity-worker-final.log
 db01a94b4b0e3da61be057bb1a7e1f5649cd809e88ee531778803633f1380bc1  ./verification/round27-specification-worker.log
 f3818de30bc88b079834f1931ec1aaed0a29b377461fd9446989778e5e28ca55  ./verification/round27-translate-es-check.log

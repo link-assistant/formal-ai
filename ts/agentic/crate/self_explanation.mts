@@ -3,11 +3,12 @@
 // An exact port: every source citation resolves its `content_id` from the
 // owned manifest (js/agentic/crate/self_source_links.mjs, the twin of build.rs
 // `OWNED_SOURCE_FILES`), and the header carries the manifest's content id. The
-// section statements and the question live in data/meta/agentic-messages.lino
-// (`self_explanation_*`).
+// section statements come from the leading documentation of the cited modules.
 
+import { rustLines } from '../content.mjs';
 import { agenticMessage } from '../messages.mjs';
-import { fastStableId, ownedFileCount, ownedManifest, ownedManifestContentId, quote } from './self_source_links.mjs';
+import { fastStableId, ownedFileCount, ownedManifest, ownedManifestContentId, ownedSourceFiles, quote } from './self_source_links.mjs';
+import { trim } from './rust_str.mjs';
 
 /**
  * Mirrors `Citation::source`: a source citation grounded against the owned
@@ -30,9 +31,16 @@ export function testCitation(path) {
   return { kind: 'test', path, content_id: null };
 }
 
-/** Mirrors `ExplanationSection::new`; the statement is the `self_explanation_<topic>` message. */
-function section(topic, citations) {
-  return { topic, statement: agenticMessage(`self_explanation_${topic}`), citations };
+/** Mirrors `ExplanationSection::from_module`. */
+function section(topic, sourcePath, supportingCitations) {
+  const citation = sourceCitation(sourcePath);
+  const [, source] = ownedSourceFiles().find(([path]) => path === sourcePath);
+  const documentation = [];
+  for (const line of rustLines(source)) {
+    if (!line.startsWith('//!')) break;
+    documentation.push(line.slice(line.startsWith('//! ') ? 4 : 3));
+  }
+  return { topic, statement: trim(documentation.join('\n')), citations: [citation, ...supportingCitations] };
 }
 
 /** Mirrors `struct SystemExplanation` in rust/src/self_explanation.rs. */
@@ -45,27 +53,22 @@ export class SystemExplanation {
   /** Mirrors `SystemExplanation::canonical`. */
   static canonical() {
     return new SystemExplanation([
-      section('deterministic_meta_algorithm', [
-        sourceCitation('src/agentic_coding/planner.rs'),
+      section('deterministic_meta_algorithm', 'src/agentic_coding/planner.rs', [
         sourceCitation('src/agentic_coding/mod.rs'),
       ]),
-      section('source_to_links_round_trip', [
-        sourceCitation('src/self_source_links.rs'),
+      section('source_to_links_round_trip', 'src/self_source_links.rs', [
         sourceCitation('src/agentic_coding/self_ast.rs'),
         testCitation('rust/tests/unit/agentic-coding/issue_558_source_links.rs'),
       ]),
-      section('self_healing_loop', [
-        sourceCitation('src/self_healing.rs'),
+      section('self_healing_loop', 'src/self_healing.rs', [
         dataCitation('data/meta/agentic-messages.lino'),
         testCitation('rust/tests/unit/agentic-coding/issue_558_self_healing.rs'),
       ]),
-      section('human_gated_promotion_ledger', [
-        sourceCitation('src/learning_ledger.rs'),
+      section('human_gated_promotion_ledger', 'src/learning_ledger.rs', [
         testCitation('rust/tests/fixtures/issue-558/learning-ledger.lino'),
         testCitation('rust/tests/unit/agentic-coding/issue_558_learning_ledger.rs'),
       ]),
-      section('agentic_interface', [
-        sourceCitation('src/agentic_coding/driver.rs'),
+      section('agentic_interface', 'src/agentic_coding/driver.rs', [
         testCitation('rust/tests/integration/issue_558_learning_ledger.rs'),
       ]),
     ]);

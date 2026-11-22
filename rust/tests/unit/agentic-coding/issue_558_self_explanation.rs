@@ -21,7 +21,7 @@ use formal_ai::agentic_coding::{
 };
 use formal_ai::{
     ChatMessage, Citation, CitationKind, SystemExplanation, ToolCall, canonical_explanation,
-    owned_manifest,
+    owned_manifest, owned_source_files,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -100,14 +100,16 @@ fn every_data_and_test_citation_exists_on_disk() {
 fn the_explanation_covers_all_three_artifact_kinds() {
     let explanation = canonical_explanation();
     assert!(explanation.section_count() >= 3, "several grounded topics");
-    // Every section must be backed by at least one real citation.
+    // Each statement starts with documentation from its primary source citation.
     for section in &explanation.sections {
-        assert!(
-            !section.citations.is_empty(),
-            "topic {} has no citation",
-            section.topic
-        );
-        assert_ne!(section.statement.trim(), "");
+        let citation = section.citations.first().expect("primary citation");
+        assert_eq!(citation.kind, CitationKind::Source);
+        let (_, source) = owned_source_files()
+            .iter()
+            .find(|(path, _)| *path == citation.path)
+            .expect("cited source");
+        let opening = source.lines().next().unwrap().strip_prefix("//! ").unwrap();
+        assert!(section.statement.starts_with(opening), "{}", section.topic);
     }
     // Source, data, and test are all represented — the issue asks for all three.
     assert_ne!(
