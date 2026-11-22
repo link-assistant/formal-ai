@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 3,
+  "collectedAt": "2026-11-22T08:40:05.423Z",
+  "issueNumber": 1617,
+  "prNumber": "1623",
+  "branchName": "issue-1617-32ffdd855e1d",
+  "tool": "agent",
+  "sessionId": "ses_dfd97b6d5ffe88FdN3vK9zvsGw",
+  "rawCommand": "/home/box/.nvm/versions/node/v26.13.1/bin/node /home/box/.bun/bin/solve https://github.com/link-assistant/formal-ai/issues/1617 --tool agent --model formal-ai --attach-logs --development-log --verbose --attribution formal-ai --no-auto-restart-until-mergeable --no-auto-restart-on-uncommitted-changes --log-dir /home/box/logs",
+  "developmentLogDirectory": "./dev/log/issues/1617/pulls/1623",
+  "caseStudyDirectory": "./docs/case-studies/issue-1617",
+  "artifacts": {
+    "solveLog": "./dev/log/issues/1617/pulls/1623/sessions/ses_dfd97b6d5ffe88FdN3vK9zvsGw/solve.log",
+    "solveLogRange": {
+      "startByte": 0,
+      "endByte": 727209
+    },
+    "sessionFiles": []
+  }
+}
