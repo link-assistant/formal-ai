@@ -273,8 +273,24 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
         ),
         (
             "claude",
-            vec!["--model", "formal-ai"],
-            vec!["--model", "formal-ai", "--print", "hi"],
+            vec![
+                "--allowedTools",
+                "Read,Glob,Grep,WebFetch,WebSearch",
+                "--model",
+                "formal-ai",
+                "--permission-mode",
+                "default",
+            ],
+            vec![
+                "--allowedTools",
+                "Read,Glob,Grep,WebFetch,WebSearch",
+                "--model",
+                "formal-ai",
+                "--permission-mode",
+                "default",
+                "--print",
+                "hi",
+            ],
         ),
         (
             "qwen",
