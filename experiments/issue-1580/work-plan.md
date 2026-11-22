@@ -585,3 +585,6 @@ The complete local gate run at `41bd3c382df1cafac80124425ef7b1b7057528b0` passes
 - [ ] Complete all remaining original runtime, template, delivery, cache, aggregate-review and genuine authorship acceptance; retain draft/unmerged state.
 
 Evidence: [structured-schema main integration](../../docs/case-studies/issue-1580/main-510417-integration.md).
+
+
+The complete local gate run at `bfc2e11749e48e65f65c37d9850fa847cfc1950a` passes all 89 JavaScript gates, with 54 explicit CI-only skips and no failures. The tree is clean before and after, and no local Rust build is performed. The exact-source archive is round-trip verified at `evidence/checks/main-510417-full-local-gates/manifest.json`. Combined-head hosted execution and all wider acceptance remain unfinished.
