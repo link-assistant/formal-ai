@@ -12,6 +12,10 @@
 agentic_messages
   message structured-output-schema-unsupported
     text "The requested JSON output schema is invalid or uses unsupported constraints."
+  message structured-output-schema-unsupported-keyword
+    text "unsupported keyword {keyword} at {pointer}"
+  message structured-output-schema-invalid-keyword
+    text "invalid value for keyword {keyword} at {pointer}"
   message structured-output-underivable
     text "Could not derive a valid JSON object for the requested schema."
   message structured-output-experience-qualifier

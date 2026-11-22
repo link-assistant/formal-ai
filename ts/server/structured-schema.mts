@@ -1,70 +1,112 @@
 // Response schemas treat required as presence, including for null and empty strings.
 import { jsonText } from '../agentic/plan.mjs';
 import { isMap } from './protocol-values.mjs';
+import { anchoredPattern } from './structured-pattern.mjs';
 
 const TYPES = ['object', 'array', 'string', 'number', 'integer', 'boolean', 'null'];
-const ANNOTATIONS = ['title', 'description', 'default', 'examples', 'const'];
+const ANNOTATIONS = [
+  'title', 'description', 'default', 'examples', '$id', '$comment', 'deprecated',
+  'readOnly', 'writeOnly', 'contentMediaType', 'contentEncoding', 'format',
+];
+const DIALECTS = ['draft-07/schema', 'draft/2019-09/schema', 'draft/2020-12/schema'];
 const COUNTS = ['minLength', 'maxLength', 'minItems', 'maxItems', 'minProperties', 'maxProperties'];
 const LIMITS = ['minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum'];
 const COMBINATIONS = ['anyOf', 'allOf', 'oneOf'];
 const MAXIMUM_DEPTH = 32;
 
-export function schemaReference(root, reference) {
-  if (reference === '#') return root;
-  if (typeof reference !== 'string' || !reference.startsWith('#/')) return undefined;
+function referencePointer(reference) {
+  if (typeof reference !== 'string' || !reference.startsWith('#')) return undefined;
   try {
-    return decodeURIComponent(reference.slice(2)).split('/').reduce((node, part) => {
-      const key = part.replaceAll('~1', '/').replaceAll('~0', '~');
-      return node && Object.hasOwn(node, key) ? node[key] : undefined;
-    }, root);
+    const pointer = decodeURIComponent(reference.slice(1));
+    return pointer === '' || pointer.startsWith('/') ? pointer : undefined;
   } catch {
     return undefined;
   }
 }
 
+function atPointer(root, pointer) {
+  if (pointer === '') return root;
+  return pointer.slice(1).split('/').reduce((node, part) => {
+    const key = part.replaceAll('~1', '/').replaceAll('~0', '~');
+    return node && typeof node === 'object' && Object.hasOwn(node, key) ? node[key] : undefined;
+  }, root);
+}
+
+export function schemaReference(root, reference) {
+  const pointer = referencePointer(reference);
+  return pointer === undefined ? undefined : atPointer(root, pointer);
+}
+
+function supportedDialect(value) {
+  if (typeof value !== 'string') return false;
+  const dialect = value.replace(/^https?:\/\/json-schema\.org\//u, '');
+  return dialect !== value && DIALECTS.includes(dialect.endsWith('#') ? dialect.slice(0, -1) : dialect);
+}
+
+function childPointer(pointer, key) {
+  return `${pointer}/${String(key).replaceAll('~', '~0').replaceAll('/', '~1')}`;
+}
+
 function safePattern(pattern) {
-  // Restrict untrusted expressions to simple ASCII classes and at most one quantifier.
-  if (typeof pattern !== 'string' || pattern.length > 128
-      || /[^ -~]|[.()|{}\\]|\[\^|&&|--|~~/u.test(pattern)
-      || (pattern.match(/[+*?]/gu) ?? []).length > 1) return null;
+  if (typeof pattern !== 'string' || pattern.length > 128 || /[^ -~]|\[\^|&&|--|~~/u.test(pattern)) return null;
+  if (/[.()|{}\\]/u.test(pattern) || (pattern.match(/[+*?]/gu) ?? []).length > 1) {
+    return anchoredPattern(pattern);
+  }
   try { return new RegExp(pattern, 'u'); } catch { return null; }
 }
 
-export function supportedSchema(root) {
+export function schemaIssue(root) {
   const visited = new WeakSet();
-  function visit(schema, depth) {
-    if (depth > MAXIMUM_DEPTH) return false;
-    if (typeof schema === 'boolean') return true;
-    if (!isMap(schema)) return false;
-    if (visited.has(schema)) return true;
+  function visit(schema, pointer, depth, keyword) {
+    const locationDepth = (pointer.match(/\//gu) ?? []).length;
+    if (depth > MAXIMUM_DEPTH || locationDepth > MAXIMUM_DEPTH) return { keyword, pointer };
+    if (typeof schema === 'boolean') return null;
+    if (!isMap(schema)) return { keyword, pointer };
+    if (visited.has(schema)) return null;
     visited.add(schema);
-    const nested = value => visit(value, depth + 1);
-    return Object.entries(schema).every(([key, value]) => {
-      if (ANNOTATIONS.includes(key)) return true;
-      if (COUNTS.includes(key)) return Number.isSafeInteger(value) && value >= 0;
-      if (LIMITS.includes(key)) return Number.isFinite(value);
-      if (COMBINATIONS.includes(key)) return Array.isArray(value) && value.length > 0 && value.every(nested);
-      switch (key) {
-        case '$schema': return value === 'https://json-schema.org/draft/2020-12/schema';
-        case '$ref': return nested(schemaReference(root, value));
-        case '$defs':
-        case 'definitions':
-        case 'properties': return isMap(value) && Object.values(value).every(nested);
-        case 'additionalProperties':
-        case 'items':
-        case 'not': return nested(value);
-        case 'required': return Array.isArray(value) && value.every(item => typeof item === 'string');
-        case 'enum': return Array.isArray(value) && value.length > 0;
-        case 'type': {
-          const types = Array.isArray(value) ? value : [value];
-          return types.length > 0 && types.every(kind => TYPES.includes(kind));
+    for (const [key, value] of Object.entries(schema)) {
+      if (ANNOTATIONS.includes(key)) continue;
+      const fieldDepth = locationDepth + 1;
+      if (fieldDepth > MAXIMUM_DEPTH) return { keyword: key, pointer };
+      const fieldPointer = childPointer(pointer, key);
+      const nested = (part, at) => visit(part, at, depth + 1, key);
+      let valid;
+      if (key === '$ref') {
+        const targetPointer = referencePointer(value);
+        const target = targetPointer === undefined ? undefined : atPointer(root, targetPointer);
+        if (target === undefined) return { keyword: key, pointer };
+        const issue = nested(target, targetPointer);
+        if (issue) return issue;
+      } else if (['$defs', 'definitions', 'properties'].includes(key) || COMBINATIONS.includes(key)) {
+        const isCombination = COMBINATIONS.includes(key);
+        if (isCombination ? !Array.isArray(value) || value.length === 0 : !isMap(value)) {
+          return { keyword: key, pointer };
         }
-        case 'pattern': return safePattern(value) !== null;
-        default: return false;
+        for (const [name, part] of Object.entries(value)) {
+          const issue = nested(part, childPointer(fieldPointer, name));
+          if (issue) return issue;
+        }
+      } else if (['additionalProperties', 'items', 'not'].includes(key)) {
+        const issue = nested(value, fieldPointer);
+        if (issue) return issue;
+      } else {
+        if (key === '$schema') valid = supportedDialect(value);
+        else if (COUNTS.includes(key)) valid = Number.isSafeInteger(value) && value >= 0;
+        else if (LIMITS.includes(key)) valid = typeof value === 'number';
+        else if (key === 'required') valid = Array.isArray(value) && value.every(item => typeof item === 'string');
+        else if (key === 'enum') valid = Array.isArray(value) && value.length > 0;
+        else if (key === 'type') {
+          const types = Array.isArray(value) ? value : [value];
+          valid = types.length > 0 && types.every(kind => TYPES.includes(kind));
+        } else if (key === 'pattern') valid = safePattern(value) !== null;
+        else if (key === 'const') valid = true;
+        else return { keyword: key, pointer, unsupported: true };
+        if (!valid || !portableValue(value, fieldDepth)) return { keyword: key, pointer };
       }
-    });
+    }
+    return null;
   }
-  return isMap(root) && visit(root, 0);
+  return isMap(root) ? visit(root, '', 0, 'schema') : { keyword: 'schema', pointer: '' };
 }
 
 export function validOutput(value, schema, root = schema) {

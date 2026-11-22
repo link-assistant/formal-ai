@@ -46,6 +46,7 @@ fn arithmetic_pattern(key: &str) -> Regex {
 struct Obligation<'a> {
     pub format: &'a Value,
     schema: Option<&'a Value>,
+    schema_issue: Option<schema::SchemaIssue<'a>>,
 }
 
 pub(super) fn requested(format: Option<&Value>) -> bool {
@@ -71,11 +72,15 @@ impl<'a> Obligation<'a> {
                         specification.get("strict").is_none_or(Value::is_boolean)
                     })
                     .and_then(|specification| specification.get("schema"))
-                    .filter(|schema| schema::portable(schema, 0) && schema::supported(schema))
             }
             _ => None,
         };
-        Some(Self { format, schema })
+        let schema_issue = schema.and_then(|candidate| schema::check(candidate).err());
+        Some(Self {
+            format,
+            schema: schema.filter(|_| schema_issue.is_none()),
+            schema_issue,
+        })
     }
 
     pub fn project(&self, source: &str, answer: &str, refusal: Option<String>) -> Projection {
@@ -93,7 +98,12 @@ impl<'a> Obligation<'a> {
                 } else {
                     "structured-output-schema-unsupported"
                 };
-                crate::seed::agentic_message(key, &[])
+                let message = crate::seed::agentic_message(key, &[]);
+                if let Some(issue) = &self.schema_issue {
+                    format!("{message} {}", issue.message())
+                } else {
+                    message
+                }
             })
         });
         let content = value.as_ref().map_or_else(String::new, Value::to_string);

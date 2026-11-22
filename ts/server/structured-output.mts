@@ -9,7 +9,7 @@ import { ensureNodeHost } from './node-host-install.mjs';
 import { stableId } from './ids.mjs';
 import { isMap } from './protocol-values.mjs';
 import { thinkingStep } from './thinking.mjs';
-import { portableValue, schemaReference, supportedSchema, validOutput } from './structured-schema.mjs';
+import { portableValue, schemaIssue, schemaReference, validOutput } from './structured-schema.mjs';
 
 const JSON_OBJECT = { type: 'object' };
 const UNKNOWN = 'unknown';
@@ -22,10 +22,11 @@ export function outputObligation(format, chat) {
   if (!structuredOutputRequested(format)) return null;
   if (format.type === 'json_object') return { format, schema: JSON_OBJECT };
   const specification = chat ? format.json_schema : format;
-  const schema = format.type === 'json_schema' && isMap(specification)
-    && (!Object.hasOwn(specification, 'strict') || typeof specification.strict === 'boolean')
-    && portableValue(specification.schema) && supportedSchema(specification.schema) ? specification.schema : null;
-  return { format, schema };
+  if (format.type !== 'json_schema' || !isMap(specification)
+      || (Object.hasOwn(specification, 'strict') && typeof specification.strict !== 'boolean')
+      || !Object.hasOwn(specification, 'schema')) return { format, schema: null };
+  const issue = schemaIssue(specification.schema);
+  return { format, schema: issue ? null : specification.schema, issue };
 }
 
 function parsed(text) {
@@ -129,11 +130,15 @@ export async function structuredAnswerFromSource(ctx, format, chat, source) {
 }
 
 export async function projectStructuredOutput(ctx, obligation, source, answer, refusal) {
-  const { schema } = obligation;
+  const { schema, issue } = obligation;
   const value = !refusal && schema ? await derive(ctx, schema, source, answer, parsed(source)) : undefined;
   if (!refusal && value === undefined) {
     await ensureNodeHost(ctx);
     refusal = agenticMessage(schema ? 'structured-output-underivable' : 'structured-output-schema-unsupported');
+    if (issue) {
+      const key = issue.unsupported ? 'structured-output-schema-unsupported-keyword' : 'structured-output-schema-invalid-keyword';
+      refusal += ' ' + agenticMessage(key, { keyword: JSON.stringify(issue.keyword), pointer: issue.pointer || '""' });
+    }
   }
   const content = refusal ? '' : jsonText(value);
   const detail = jsonText({ format: obligation.format, ...(refusal ? { refusal } : { value }) });
