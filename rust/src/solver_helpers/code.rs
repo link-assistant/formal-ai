@@ -8,28 +8,30 @@
 //! path resolving unchanged.
 
 use super::{extract_backticked, extract_fenced_block, extract_quoted_phrase};
+use crate::engine::SelectedRule;
 use crate::language::{Language, detect as detect_language};
 use crate::proof_program::FormalProof;
+
+pub(crate) fn catalog_operand_is_unbound(rule: &SelectedRule, has_bound_program: bool) -> bool {
+    !has_bound_program
+        && matches!(rule, SelectedRule::WriteProgram(spec)
+            if crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug).is_some())
+}
 
 pub(crate) fn enforce_answer_questions(
     body: &str,
     log: &mut crate::event_log::EventLog,
-    rule: &crate::engine::SelectedRule,
+    rule: &SelectedRule,
     has_bound_program: bool,
 ) -> String {
-    use crate::engine::SelectedRule;
-    let requires_input = match rule {
-        SelectedRule::WriteProgram(spec) => {
-            !has_bound_program
-                && crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
-                    .is_some()
-        }
-        SelectedRule::UnsupportedWriteProgram {
-            task: None,
-            language: Some(_),
-        } => true,
-        _ => false,
-    };
+    let requires_input = catalog_operand_is_unbound(rule, has_bound_program)
+        || matches!(
+            rule,
+            SelectedRule::UnsupportedWriteProgram {
+                task: None,
+                language: Some(_),
+            }
+        );
     if requires_input {
         crate::question_necessity::enforce_requirement_questions(body, log)
     } else {

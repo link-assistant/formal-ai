@@ -164,7 +164,12 @@ test("cold workers discover and verify recurrences through publisher transports"
   } });
   const query = recurrenceCases[0].prompt;
   const missing = await retrieved.solve(query, [], { offline: true });
+  assert.match(missing.content, /no verified source statement was captured/iu);
   assert.doesNotMatch(missing.content, /def factorial\(n\)/u);
+  assert.doesNotMatch(missing.content, /\?/u);
+  const program = await retrieved.solve("Write a Python program that calculates the factorial", [], { offline: true });
+  assert.match(program.content, /^Which integer from 0 to 18/u);
+  assert.doesNotMatch(program.content, /```|Execution status/u);
   assert.deepEqual(requests, []);
 
   for (const { language, prompt, name } of recurrenceCases) {

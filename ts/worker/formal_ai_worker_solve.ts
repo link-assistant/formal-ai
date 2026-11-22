@@ -514,7 +514,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       || (handler.name === "tryWriteProgramConcrete" && local?.intent === "write_program");
     const source = mayDiscoverRecurrence && !local?.evidence?.includes("synthesis:ir:type_checked")
       ? await (recurrenceDiscovery ??= discoverSourceRecurrence(prompt, normalized, preferences)) : null;
-    const hit = source || local;
+    const hit = source || sourceRecurrenceGapForCatalog(prompt, normalized, responseLanguage, local) || local;
     if (hit) {
       events.push(`handler:${hit.intent}`);
       steps.push({ step: "dispatch_handler", detail: handler.name });

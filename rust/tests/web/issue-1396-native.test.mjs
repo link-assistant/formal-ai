@@ -90,6 +90,10 @@ test("native offline chat needs a publisher capture to synthesize a recurrence",
   const answer = await ask(prompt);
   assert.match(answer, /no verified source statement was captured/iu);
   assert.ok(!answer.includes(`def ${name}(`), answer);
+  assert.doesNotMatch(answer, /\?/u);
+  const program = await ask("Write a Python program that calculates the factorial");
+  assert.match(program, /^Which integer from 0 to 18/u);
+  assert.doesNotMatch(program, /```|Execution status/u);
 });
 
 for (const { language, name, prompt } of recurrenceCases) {

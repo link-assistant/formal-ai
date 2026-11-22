@@ -569,8 +569,7 @@ impl UniversalSolver {
             }
 
             // A concrete program request outranks concept lookup (#312).
-            // A supplied page's code remains the subject of a page query
-            // (#1163 R10, #1164 R1164-11). Policy guards still apply.
+            // Page queries keep the supplied page as their subject (#1163, #1164).
             let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_))
                 && !crate::solver_handlers::page_query_text::page_query_text_claims(prompt);
             if !is_concrete_write_program
@@ -718,13 +717,18 @@ impl UniversalSolver {
             {
                 return answer;
             }
-
+            // A callable's runtime parameter needs no concrete catalog operand.
             let catalog_program = match &rule {
                 SelectedRule::WriteProgram(spec) => {
                     crate::coding::catalog_parameters::bind_catalog_program(*spec, prompt)
                 }
                 _ => None,
             };
+            if crate::solver_helpers::catalog_operand_is_unbound(&rule, catalog_program.is_some())
+                && let Some(gap) = crate::program_skill_gap::publisher_recurrence_gap(prompt, log)
+            {
+                return gap;
+            }
             let intent = language_aware_intent_for(&rule, language);
             log.append("intent", intent.clone());
 
@@ -743,11 +747,7 @@ impl UniversalSolver {
                 log.append("program_parameter:task", spec.task.slug.to_owned());
                 log.append("program_parameters", spec.parameter_summary());
                 log.append("legacy_intent", spec.legacy_intent());
-                // R1166-4: a program request that formalizes into work
-                // obligations (output, naming or badge clauses, or the CI
-                // workflow the work-item executor attaches) reports every one
-                // this executor cannot discharge, as the program-contract
-                // executor does.
+                // R1166-4: report each work obligation this executor cannot discharge.
                 if crate::intent_formalization::request_carries_work_obligations(prompt)
                     || crate::intent_formalization::request_demands(
                         prompt,

@@ -160,7 +160,7 @@ function catalogParameterGap(parameterGuidance, responseLanguage, language, task
     intent: "write_program",
     content: codingGuidance(parameterGuidance, responseLanguage),
     confidence: 0.9,
-    evidence: [`program_parameter:language:${language}`, `program_parameter:task:${task}`],
+    evidence: [`program_parameter:language:${language}`, `program_parameter:task:${task}`, "program_parameter:operand_unbound"],
     steps: diagnostics.steps,
     trace: diagnostics.trace,
   };

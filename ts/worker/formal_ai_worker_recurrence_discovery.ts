@@ -74,9 +74,22 @@ async function recurrenceSearchMatches(api, phrase, language, preferences) {
   return candidates(english, translated.label, translated.bridge);
 }
 
+function isSourceRecurrenceRequest(prompt, normalized) {
+  return looksLikePythonFunctionSynthesis(prompt, normalized) && browserSynthesisLanguage(normalized) === "python";
+}
+
+function sourceRecurrenceGapForCatalog(prompt, normalized, language, local) {
+  if (!local?.evidence?.includes("program_parameter:operand_unbound") || !isSourceRecurrenceRequest(prompt, normalized)) return null;
+  return {
+    ...local,
+    intent: "write_program_skill_gap",
+    content: answerFor("compose_no_verified_capture", language),
+    evidence: [...local.evidence, "synthesis:publisher_recurrence_unverified", "response:write_program:skill_gap"],
+  };
+}
+
 async function discoverSourceRecurrence(prompt, normalized, preferences) {
-  if (!looksLikePythonFunctionSynthesis(prompt, normalized)
-      || browserSynthesisLanguage(normalized) !== "python") return null;
+  if (!isSourceRecurrenceRequest(prompt, normalized)) return null;
   const record = sourceWalkRegistry().find(item => item.id === "wikifunctions");
   if (!record?.api || !record.fetchApi || !sourceWalkServiceAllowed(preferences, record)) return null;
   const phrases = recurrenceSearchPhrases(prompt, normalized);
