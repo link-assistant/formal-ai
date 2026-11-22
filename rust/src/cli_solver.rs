@@ -1,6 +1,6 @@
 use crate::cli_thinking::print_thinking_trace;
 use crate::{DefinitionFusionMode, OutputFormat};
-use formal_ai::agentic_coding::run_agentic_task;
+use formal_ai::agentic_coding::{corpus::fetch_cli_source, run_agentic_task_with_source_fetch};
 use formal_ai::{
     ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, ResponsesRequest,
     SolverConfig, UniversalSolver, create_chat_completion_with_solver, create_response_with_solver,
@@ -12,7 +12,7 @@ pub(super) fn run_agent(
     transcript: bool,
     session_json: Option<&std::path::Path>,
 ) -> Result<(), Box<dyn Error>> {
-    let outcome = run_agentic_task(task)?;
+    let outcome = run_agentic_task_with_source_fetch(task, fetch_cli_source)?;
     if transcript {
         print!("{}", outcome.transcript());
         println!();

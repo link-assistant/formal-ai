@@ -43,7 +43,7 @@ use crate::solver_handlers::{
     try_software_project_request, try_summarization_request, try_task_decomposition_with_depth,
     try_text_manipulation, try_text_manipulation_with_history, try_translation, try_url_navigate,
     try_verifiable_task, try_web_search, try_web_search_with_offline, try_world_state,
-    try_write_script,
+    try_write_script, try_write_script_with_offline,
 };
 use crate::triz_solver::handle_triz;
 
@@ -238,6 +238,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     "fact_checking",
     "world_state",
     "web_search",
+    "docs_method_explanation",
     // Issue #991: the procedural handler must execute the bounded multi-source
     // synthesis, which needs the runtime's offline flag to decide whether the
     // capture client may go to the network. It stays a *contextual* override of
@@ -245,11 +246,13 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     // discovery-plan handler remains the fallback when the evidence is thin.
     "procedural_how_to",
     "procedural_how_to_followup",
+    "summarization",
     // Issue #1172 R3/R8: a fact question no seeded record answers is asked
     // of Wikidata, and an explanation is composed from retrieved pages, both
     // through the capture client, which needs the runtime's offline flag. The
     // regular `fact_lookup` row stays the seeded-only variant.
     "fact_lookup",
+    "coreference",
 ];
 
 /// Method names that run before the regular handler table.
@@ -287,6 +290,26 @@ pub fn try_contextual_override(
             log,
             runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
+        "docs_method_explanation" => {
+            crate::solver_handlers::documentation_method::try_with_offline(
+                prompt,
+                log,
+                runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+            )
+        }
+        "arithmetic" => crate::quantity_constraint::try_answer(prompt, log).or_else(|| {
+            crate::solver_handlers::try_arithmetic_with_online(
+                prompt,
+                log,
+                !runtime.solver_config.offline,
+            )
+        }),
+        "compound_interest" => crate::solver_handlers::compound_interest::try_with_online(
+            prompt,
+            normalized,
+            log,
+            !runtime.solver_config.offline,
+        ),
         "proof_request" => {
             try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
         }
@@ -301,7 +324,13 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            !runtime.solver_config.offline,
+            !runtime.solver_config.offline && crate::solver_config::read_network_allowed(),
+        ),
+        "write_script" => try_write_script_with_offline(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         "shell_command_transform" => {
             try_shell_command_transform_with_history(prompt, normalized, log, history)
@@ -335,6 +364,11 @@ pub fn try_contextual_override(
             log,
             runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
+        "summarization" => crate::solver_handlers::try_summarization_request_with_offline(
+            prompt,
+            log,
+            runtime.solver_config.offline,
+        ),
         // Issue #1172 R1172-5: a definition request the seeded concepts do
         // not cover is answered from the registry's dictionary sources. A
         // seeded concept, or no dictionary sense, leaves the row to the plain
@@ -359,6 +393,14 @@ pub fn try_contextual_override(
             normalized,
             log,
             runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+        ),
+        "coreference" => crate::solver_handlers::try_coreference_with_client(
+            prompt,
+            normalized,
+            log,
+            &crate::fact_live::capture_client(
+                runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+            ),
         ),
         _ => return ContextualOutcome::NotHandled,
     };

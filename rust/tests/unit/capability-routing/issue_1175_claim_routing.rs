@@ -89,6 +89,7 @@ fn a_surface_word_alone_is_not_admitted() {
         ),
         ("unit_conversion", "Convert this recipe to metric units"),
         ("calendar_reasoning", "Explain how a calendar works."),
+        ("fact_lookup", "List films in release order."),
     ] {
         assert!(
             !claim_admitted(handler, prompt, &prompt.to_lowercase()),
@@ -173,6 +174,7 @@ fn the_structural_evidence_admits() {
         ("calendar_reasoning", "What day comes after Monday?"),
         ("calendar_reasoning", "What day is today?"),
         ("calendar_reasoning", "What day of the week was 2024-02-29?"),
+        ("fact_lookup", "List Harry Potter films in release order."),
         (
             "calendar_reasoning",
             "What month is 2 months after January?",

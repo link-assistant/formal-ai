@@ -57,8 +57,8 @@ fn documented_answer(id: &str) -> &'static str {
             "The values are 4, 8, 15, 16, 23, 42 (n = 6).\nmean: 18 (108 / 6 = 18)\nmedian: \
                  15.5 ((15 + 16) / 2 = 15.5)"
         }
-        "e1172_seeded_capital_subject_gate" => {
-            "The capital of the United States is Washington, D.C."
+        "e1172_publisher_capital_subject_gate" => {
+            "Wikidata states that the capital of Russia is Moscow. Source: https://www.wikidata.org/wiki/Special:EntityData/Q159.json"
         }
         "e1163_supplied_page_command_query" => "kotlinc hello.kt -include-runtime -d hello.jar",
         "e1164_supplied_page_code_example_parts" => {
@@ -76,7 +76,11 @@ fn shared_cross_runtime_synthesis_fixture_matches_rust_solver() {
     let solver = synthesis_solver();
 
     for case in cases {
-        let response = solver.solve(&case.prompt);
+        let response = if case.id == "e1172_publisher_capital_subject_gate" {
+            super::prompt_variations_facts::fact_answer(&case.prompt, "Q159")
+        } else {
+            solver.solve(&case.prompt)
+        };
         // `None` documents a case whose full answer varies by host: the
         // formalization answer states whether `lean`/`coqc` sit in PATH, so
         // its fixed parts are pinned by the fixture's fragments instead.

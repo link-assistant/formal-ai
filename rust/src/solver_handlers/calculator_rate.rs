@@ -1,260 +1,265 @@
-//! Calculator-backed answers about rates used for currency calculations.
+//! Dated publisher quotes shared by currency conversion and finance handlers.
 
-use crate::calculation::{CalculationEvaluation, evaluate_calculation};
+use crate::calculation::currency::{
+    conversion_operands, currency_mentions, decimal, stated_quote_date,
+};
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::rule_interpreter::handler_table_value;
 use crate::seed;
+use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 
+use super::calendar::{CalendarDate, current_utc_date};
 use super::finalize_simple;
 
-const USD_RUB_RATE_EXPRESSION: &str = "1 USD in RUB";
+const MAXIMUM_QUOTE_AGE_DAYS: i64 = 7;
 
-pub fn try_calculator_rate_basis(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    let normalized = normalize_prompt(prompt);
-    if !asks_for_usd_rate_basis(&normalized) {
-        return None;
-    }
-
-    log.append("calculation:request", USD_RUB_RATE_EXPRESSION.to_owned());
-    match evaluate_calculation(USD_RUB_RATE_EXPRESSION) {
-        Ok(evaluation) => Some(rate_basis_answer(prompt, log, &evaluation)),
-        Err(error) => {
-            let language = detect_language(prompt).slug();
-            let error = error.to_string();
-            log.append("calculation:error", error.clone());
-            let body = match language {
-                "ru" => format!(
-                    "Я распознал вопрос о курсе USD/RUB для расчетов, но link-calculator не смог его вычислить: {error}."
-                ),
-                _ => format!(
-                    "I recognized this as a question about the USD/RUB rate used for calculations, but link-calculator could not evaluate it: {error}."
-                ),
-            };
-            Some(finalize_simple(
-                prompt,
-                log,
-                "calculation_error",
-                "response:calculation_error",
-                &body,
-                0.3,
-            ))
-        }
-    }
-}
-
-fn rate_basis_answer(
-    prompt: &str,
-    log: &mut EventLog,
-    evaluation: &CalculationEvaluation,
-) -> SymbolicAnswer {
-    log.append("calculation:engine", evaluation.engine.slug());
-    if let Some(lino) = &evaluation.lino {
-        log.append("calculation:lino", lino.clone());
-    }
-    if !evaluation.steps.is_empty() {
-        log.append("calculation:steps", evaluation.steps.len().to_string());
-    }
-    log.append("calculation:rate_basis", "USD/RUB".to_owned());
-
-    let calculation_body = format!("{USD_RUB_RATE_EXPRESSION} = {}", evaluation.formatted);
-    let language = detect_language(prompt).slug();
-    let mut body = match language {
-        "ru" => format!(
-            "При расчетах валюты я использую link-calculator. Для USD/RUB он возвращает: {calculation_body}."
-        ),
-        "hi" => format!(
-            "मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: {calculation_body}."
-        ),
-        "zh" => format!("货币计算时我使用 link-calculator。USD/RUB 返回: {calculation_body}."),
-        _ => format!(
-            "For currency calculations I use link-calculator. For USD/RUB it returns: {calculation_body}."
-        ),
-    };
-    if let Some(rate_step) = rate_source_step(evaluation) {
-        let details = match language {
-            "ru" => "Детали курса от калькулятора",
-            "hi" => "कैलकुलेटर दर विवरण",
-            "zh" => "计算器汇率详情",
-            _ => "Calculator rate details",
-        };
-        body.push_str("\n\n");
-        body.push_str(details);
-        body.push_str(": ");
-        body.push_str(rate_step);
-    }
-    log.append("calculation", body.clone());
-    finalize_simple(
-        prompt,
-        log,
-        "calculation",
-        "response:calculation",
-        &body,
-        1.0,
-    )
-}
-
-fn rate_source_step(evaluation: &CalculationEvaluation) -> Option<&str> {
-    evaluation
-        .steps
-        .iter()
-        .map(String::as_str)
-        .find(|step| step.contains("Exchange rate:") || step.contains("exchange rate:"))
-}
-
-/// Does the prompt ask which exchange rate the assistant uses for currency
-/// calculations? Recognition is data-driven: the three concepts each live in
-/// `data/seed/meanings-calculator.lino` and are queried by semantic *role*, not
-/// by a hardcoded per-language word list.
-///
-/// The prompt must reference all three concepts at once — an
-/// [`exchange_rate`](seed::ROLE_EXCHANGE_RATE_REFERENCE) between currencies, the
-/// [`us_dollar`](seed::ROLE_CURRENCY_USD_REFERENCE) currency, and a
-/// [`calculation_basis`](seed::ROLE_CALCULATION_BASIS_REFERENCE) phrase asking
-/// what the assistant uses. Each role's surface forms are inflectable stems and
-/// fixed phrases, so they are matched as raw substrings via
-/// [`Lexicon::mentions_role_raw`](seed::Lexicon::mentions_role_raw), byte-for-byte
-/// reproducing the original three `contains` disjunctions while keeping every
-/// surface word in the seed rather than in code.
-pub fn asks_for_usd_rate_basis(normalized: &str) -> bool {
+pub fn asks_for_rate_basis(normalized: &str) -> bool {
     let lexicon = seed::lexicon();
     lexicon.mentions_role_raw(seed::ROLE_EXCHANGE_RATE_REFERENCE, normalized)
-        && lexicon.mentions_role_raw(seed::ROLE_CURRENCY_USD_REFERENCE, normalized)
         && lexicon.mentions_role_raw(seed::ROLE_CALCULATION_BASIS_REFERENCE, normalized)
 }
 
-// Captured quote conversion, mirrored by the JavaScript currency quote reader.
-// The source table supplies RUB per currency; exact integer ratios round once
-// to cents, half away from zero. No binary floating point or network dependency.
-fn quote_decimal(text: &str) -> Option<(i128, i128)> {
-    let text = text.replace(',', ".");
-    let negative = text.starts_with('-');
-    let unsigned = text
-        .strip_prefix('+')
-        .or_else(|| text.strip_prefix('-'))
-        .unwrap_or(&text);
-    let (whole, fraction) = unsigned.split_once('.').unwrap_or((unsigned, ""));
-    if whole.is_empty()
-        || whole.len() > 12
-        || fraction.len() > 6
-        || !whole.bytes().all(|c| c.is_ascii_digit())
-        || !fraction.bytes().all(|c| c.is_ascii_digit())
-    {
+pub(super) fn try_calculator_rate_basis(
+    prompt: &str,
+    log: &mut EventLog,
+    online: bool,
+) -> Option<SymbolicAnswer> {
+    if !asks_for_rate_basis(&normalize_prompt(prompt)) {
         return None;
     }
-    let mantissa = format!("{whole}{fraction}").parse::<i128>().ok()?;
-    Some((
-        if negative { -mantissa } else { mantissa },
-        10_i128.checked_pow(fraction.len().try_into().ok()?)?,
-    ))
+    let mut currencies = currency_mentions(prompt).map(|(_, _, code)| code);
+    let pair = currencies.next().and_then(|from| {
+        let to = currencies.find(|candidate| candidate != &from)?;
+        Some((from, to))
+    });
+    let Some((from, to)) = pair else {
+        let body = seed::render_response(
+            "currency-quote-pair-needed",
+            detect_language(prompt).slug(),
+            &[],
+        )?;
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "clarification",
+            "response:clarification",
+            &body,
+            0.8,
+        ));
+    };
+    answer_quote(
+        prompt,
+        "1",
+        &from,
+        &to,
+        stated_quote_date(prompt),
+        online,
+        log,
+    )
 }
 
-fn quote_currency(word: &str) -> Option<&'static str> {
-    let word = word.to_lowercase();
-    for (role, code) in [
-        (seed::ROLE_CURRENCY_USD_REFERENCE, "USD"),
-        (seed::ROLE_CURRENCY_EUR_REFERENCE, "EUR"),
-        (seed::ROLE_CURRENCY_RUB_REFERENCE, "RUB"),
-    ] {
-        if seed::lexicon().words_for_role(role).iter().any(|surface| {
-            let cyrillic = surface
-                .chars()
-                .next()
-                .is_some_and(|c| ('\u{0400}'..='\u{04ff}').contains(&c));
-            if cyrillic {
-                word.starts_with(surface.as_str())
-            } else {
-                word == *surface
-            }
-        }) {
-            return Some(code);
-        }
+pub(super) struct CurrencyQuote {
+    pub rate: String,
+    pub date: String,
+    pub source: String,
+}
+
+impl CurrencyQuote {
+    pub(super) fn convert(&self, amount: &str) -> Option<String> {
+        let (amount, amount_divisor) = decimal(amount, 6)?;
+        let (rate, rate_divisor) = decimal(&self.rate, 12)?;
+        let numerator = amount.checked_mul(rate)?.checked_mul(100)?;
+        let denominator = amount_divisor.checked_mul(rate_divisor)?;
+        let absolute = numerator.checked_abs()?;
+        let cents =
+            absolute / denominator + i128::from(absolute % denominator >= (denominator + 1) / 2);
+        let sign = if numerator < 0 && cents != 0 { "-" } else { "" };
+        Some(format!("{sign}{}.{:02}", cents / 100, cents % 100))
     }
-    None
+}
+
+#[derive(serde::Deserialize)]
+struct PublisherQuote {
+    base: String,
+    quote: String,
+    date: String,
+    rate: serde_json::Number,
+}
+
+pub(super) fn read_quote(
+    from: &str,
+    to: &str,
+    stated_date: Option<&str>,
+    online: bool,
+    log: &mut EventLog,
+) -> Option<CurrencyQuote> {
+    let today = current_utc_date()?;
+    let requested = match stated_date {
+        Some(date) => CalendarDate::from_iso(date)?,
+        None => today,
+    };
+    if requested.days_since_unix_epoch > today.days_since_unix_epoch {
+        return None;
+    }
+    if from == to {
+        return Some(CurrencyQuote {
+            rate: "1".to_owned(),
+            date: String::new(),
+            source: String::new(),
+        });
+    }
+    let provider = handler_table_value("currency-quote-provider", from)
+        .or_else(|| handler_table_value("currency-quote-provider", to))
+        .or_else(|| handler_table_value("currency-quote-provider", "default"))?;
+    let url = format!(
+        "{provider}/{}/{}?date={}",
+        from.to_ascii_lowercase(),
+        to.to_ascii_lowercase(),
+        requested.iso()
+    );
+    log.append("currency:request", url.clone());
+    let client = CachedSourceClient::new(
+        crate::coding::synthesis_runtime::source_cache_root(),
+        CurlSourceTransport,
+    )
+    .with_ttl_seconds(3_600)
+    .with_online(online && crate::solver_config::read_network_allowed());
+    let capture = match client.fetch(&url) {
+        Ok(capture) => capture,
+        Err(error) => {
+            log.append("currency:source_error", error.to_string());
+            return None;
+        }
+    };
+    let (quote, rate) = serde_json::from_slice::<PublisherQuote>(capture.bytes())
+        .ok()
+        .and_then(|quote| {
+            let effective = CalendarDate::from_iso(&quote.date)?;
+            let age = requested.days_since_unix_epoch - effective.days_since_unix_epoch;
+            // Use fixed notation when the JSON parser displays a small decimal in scientific notation.
+            let mut rate = quote.rate.to_string();
+            if rate.contains(['e', 'E']) {
+                rate = format!("{:.12}", quote.rate.as_f64()?)
+                    .trim_end_matches('0')
+                    .to_owned();
+            }
+            let (numerator, _) = decimal(&rate, 12)?;
+            (quote.base == from
+                && quote.quote == to
+                && (0..=MAXIMUM_QUOTE_AGE_DAYS).contains(&age)
+                && numerator > 0)
+                .then_some((quote, rate))
+        })
+        .or_else(|| {
+            log.append(
+                "currency:source_error",
+                "publisher quote failed pair, date or rate validation",
+            );
+            None
+        })?;
+    capture.record(log);
+    log.append("currency:source", url.clone());
+    log.append("currency:date", quote.date.clone());
+    Some(CurrencyQuote {
+        rate,
+        date: quote.date,
+        source: url,
+    })
+}
+
+/// Install verified quotes into the expression evaluator only when its parsed
+/// currency arithmetic cannot run with an empty rate database.
+pub(super) fn supply_expression_quotes(
+    calculator: &mut link_calculator::Calculator,
+    currencies: &[String],
+    expression: &str,
+    online: bool,
+    log: &mut EventLog,
+) {
+    const MAXIMUM_CURRENCIES_PER_EXPRESSION: usize = 4;
+    let [base, targets @ ..] = currencies else {
+        return;
+    };
+    if currencies.len() > MAXIMUM_CURRENCIES_PER_EXPRESSION {
+        return;
+    }
+    let date = stated_quote_date(expression);
+    for target in targets {
+        let Some(quote) = read_quote(base, target, date, online, log) else {
+            continue;
+        };
+        let rates = format!(r#"{{"{target}":{}}}"#, quote.rate);
+        calculator.update_rates_from_api(base, date.unwrap_or(&quote.date), &rates);
+    }
 }
 
 pub(super) fn conversion(
     prompt: &str,
     expression: &str,
     log: &mut EventLog,
+    online: bool,
 ) -> Option<SymbolicAnswer> {
-    use crate::rule_interpreter::handler_table_value;
-    let mut expression = expression.trim();
-    let lowered = expression.to_lowercase();
-    for cue in seed::lexicon().words_for_role("quantity_conversion_cue") {
-        if lowered
-            .strip_prefix(cue.as_str())
-            .is_some_and(|tail| tail.starts_with(char::is_whitespace))
-        {
-            expression = expression[cue.len()..].trim_start();
-            break;
-        }
-    }
-    let tokens: Vec<&str> = expression.split_whitespace().collect();
-    if tokens.len() < 4 {
-        return None;
-    }
-    let connector = tokens[2..tokens.len() - 1].join(" ").to_lowercase();
-    if !crate::rule_interpreter::handler_table_rows("currency-conversion-connector")
-        .iter()
-        .any(|(_, word)| word == &connector)
-    {
-        return None;
-    }
-    let from = quote_currency(tokens[1])?;
-    let to = quote_currency(tokens[tokens.len() - 1])?;
-    let from_rate = handler_table_value("currency-reference-quote", from)?;
-    let to_rate = handler_table_value("currency-reference-quote", to)?;
-    let (amount, amount_divisor) = quote_decimal(tokens[0])?;
-    let (source_rate, source_divisor) = quote_decimal(from_rate)?;
-    let (target_rate, target_divisor) = quote_decimal(to_rate)?;
-    if source_rate <= 0 || target_rate <= 0 {
-        return None;
-    }
-    let numerator = amount
-        .checked_mul(source_rate)?
-        .checked_mul(target_divisor)?
-        .checked_mul(100)?;
-    let denominator = amount_divisor
-        .checked_mul(source_divisor)?
-        .checked_mul(target_rate)?;
-    let absolute = numerator.checked_abs()?;
-    let cents =
-        absolute / denominator + i128::from(absolute % denominator >= (denominator + 1) / 2);
-    let result = format!(
-        "{}{}.{:02}",
-        if numerator < 0 && cents != 0 { "-" } else { "" },
-        cents / 100,
-        cents % 100
-    );
-    let amount_text = tokens[0].replace(',', ".");
-    let date = handler_table_value("currency-reference-provenance", "date")?;
-    let source = handler_table_value("currency-reference-provenance", "source")?;
-    let derivation = format!("{amount_text} × {from_rate} / {to_rate} ≈ {result} {to}");
+    let request = conversion_operands(expression)?;
+    answer_quote(
+        prompt,
+        &request.amount,
+        &request.from,
+        &request.to,
+        request.date,
+        online,
+        log,
+    )
+}
+
+fn answer_quote(
+    prompt: &str,
+    amount: &str,
+    from: &str,
+    to: &str,
+    date: Option<&str>,
+    online: bool,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt).slug();
-    let mut body = seed::localized_response("currency-conversion-captured", language)?.to_owned();
-    for (key, value) in [
-        ("amount", amount_text.as_str()),
-        ("from", from),
-        ("to", to),
-        ("fromRate", from_rate),
-        ("toRate", to_rate),
-        ("result", result.as_str()),
-        ("date", date),
-        ("source", source),
-        ("derivation", derivation.as_str()),
-    ] {
-        body = body.replace(&format!("{{{key}}}"), value);
-    }
-    log.append(
-        "currency:rate_basis",
-        format!("{from}:{from_rate}RUB;{to}:{to_rate}RUB"),
-    );
-    log.append("currency:source", source);
-    log.append("currency:date", date);
+    let pair = [("from", from), ("to", to)];
+    let Some((quote, result)) = read_quote(from, to, date, online, log)
+        .and_then(|quote| quote.convert(amount).map(|result| (quote, result)))
+    else {
+        let body = seed::render_response("currency-quote-unavailable", language, &pair)?;
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "calculation_error",
+            "response:calculation_error",
+            &body,
+            0.3,
+        ));
+    };
+    let derivation = format!("{amount} × {} ≈ {result} {to}", quote.rate);
+    let body = if from == to {
+        derivation.clone()
+    } else {
+        seed::render_response(
+            "currency-conversion-publisher",
+            language,
+            &[
+                ("amount", amount),
+                ("from", from),
+                ("to", to),
+                ("rate", &quote.rate),
+                ("result", &result),
+                ("date", &quote.date),
+                ("source", &quote.source),
+                ("derivation", &derivation),
+            ],
+        )?
+    };
+    log.append("currency:rate_basis", format!("{from}:{}{to}", quote.rate));
     log.append("currency:derivation", derivation);
     log.append("currency:result", format!("{result} {to}"));
-    log.append("calculation:engine", "captured-currency");
+    log.append("calculation:engine", "evidenced-currency");
     log.append("calculation", body.clone());
     Some(finalize_simple(
         prompt,

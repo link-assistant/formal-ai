@@ -18,14 +18,14 @@
 //! request somewhere unrelated would be a regression, not an adoption, and is
 //! kept here as an unadopted record rather than dropped (R425).
 //!
-//! Both halves are pure functions of committed data, so the ledger pins
-//! byte-for-byte as `data/meta/language-adoption-ledger.lino`.
+//! Replaying the report checked into the repository produces
+//! `data/meta/language-adoption-ledger.lino`.
 
 use std::collections::BTreeSet;
 use std::fmt::Write as _;
 
 use crate::engine::{FormalAiEngine, normalize_prompt};
-use crate::learning_cycle::{FrontierItem, parse_frontier_record, recorded_frontier};
+use crate::learning_cycle::{FrontierItem, parse_frontier_record};
 use crate::solver_handlers::web_search_query_for;
 
 /// The intent the unknown path reports.
@@ -183,12 +183,10 @@ fn pair_for(item: &FrontierItem) -> LanguageAdoptionPair {
     }
 }
 
-/// The adoption ledger over the frozen language-gap frontier.
+/// The adoption ledger over a supplied language-gap report.
 #[must_use]
-pub fn language_adoption_ledger() -> LanguageAdoptionLedger {
-    let items = recorded_frontier(LANGUAGE_GAP_FRONTIER)
-        .map(|frontier| parse_frontier_record(frontier.document))
-        .unwrap_or_default();
+pub fn language_adoption_ledger(document: &str) -> LanguageAdoptionLedger {
+    let items = parse_frontier_record(document);
     LanguageAdoptionLedger {
         frontier: String::from(LANGUAGE_GAP_FRONTIER),
         pairs: items.iter().map(pair_for).collect(),

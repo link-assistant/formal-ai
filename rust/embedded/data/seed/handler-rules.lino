@@ -91,15 +91,12 @@ handler-rules
         evidence documented_method
       value method operand documented_method
       value project operand documented_method 1
-      value docs_url operand documented_method 2
       log "docs_method:request" $prompt
       log "docs_method:project" $project
       log "docs_method:method" $method
-      log "docs_method:source_kind" official-docs
-      log "docs_method:source" $docs_url
       respond docs_method_explanation
       link "response:docs_method_explanation"
-      confidence 0.92
+      confidence 0
   handler capabilities
     rule capabilities-more-after-search
       when
@@ -375,12 +372,13 @@ handler-rules
   handler algorithm
     rule algorithm_sort_with_tests
       when
-        operation sort of cleaned
+        any
+          operation sort of cleaned
+          operation reverse_sort of cleaned
         substring test
       value language table algorithm_language of normalized
-      value snippet table algorithm_snippet key language
-      value code response "algorithm_sort_code_{snippet}"
-      value tests response "algorithm_sort_tests_{snippet}"
+      value code list_code language
+      value tests list_code language test
       log "execution_status" "unavailable"
       log "execution_environment" "no compile/run sandbox configured for this generated snippet"
       respond algorithm_sort_with_tests
@@ -389,42 +387,23 @@ handler-rules
       confidence 1.0
     rule algorithm_sort
       when
-        operation sort of cleaned
+        any
+          operation sort of cleaned
+          operation reverse_sort of cleaned
       value language table algorithm_language of normalized
-      value snippet table algorithm_snippet key language
-      value code response "algorithm_sort_code_{snippet}"
+      value code list_code language
       log "execution_status" "unavailable"
       log "execution_environment" "no compile/run sandbox configured for this generated snippet"
       respond algorithm_sort
-      intent "algorithm_sort_{language}"
-      link "response:algorithm"
-      confidence 1.0
-    rule algorithm-unnamed-with-tests
-      when
-        substring algorithm
-        substring test
-      value language table algorithm_language of normalized
-      value snippet table algorithm_snippet key language
-      value code response "algorithm_sort_code_{snippet}"
-      value tests response "algorithm_sort_tests_{snippet}"
-      log "algorithm:refusal" "no operation named"
-      log "execution_status" "unavailable"
-      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
-      respond algorithm_sort_with_tests
       intent "algorithm_sort_{language}"
       link "response:algorithm"
       confidence 1.0
     rule algorithm-unnamed
       when
-        substring algorithm
-      value language table algorithm_language of normalized
-      value snippet table algorithm_snippet key language
-      value code response "algorithm_sort_code_{snippet}"
+        operation algorithm_request of cleaned
       log "algorithm:refusal" "no operation named"
-      log "execution_status" "unavailable"
-      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
-      respond algorithm_sort
-      intent "algorithm_sort_{language}"
+      respond algorithm-operation-required
+      intent algorithm-operation-required
       link "response:algorithm"
       confidence 1.0
   policy response_language_followup
@@ -441,24 +420,26 @@ handler-rules
     label-52 "weekly"
     label-365 "daily"
     label-other "times per year"
-    rate_USD_EUR "0.92"
-    rate_USD_RUB "89.5"
-    rate_EUR_USD "1.087"
     rate-expression "1 {source} in {target}"
     final-amount-marker "final amount:"
-  policy docs_method_explanation
-    page "pandas.DataFrame.join"
-    class-alias df
-    docs_url "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html"
+  table "documentation-method-providers"
+    row pandas "https://pandas.pydata.org/docs/|reference/api"
+    row numpy "https://numpy.org/doc/stable/|reference/generated"
+  table "pandas-documentation-type-aliases"
+    row df DataFrame
   policy playwright_script
     docs_url "https://playwright.dev/docs/writing-tests"
   policy procedural_how_to
     infinitive-endings-ru "ть ться тись ти чь чься"
+    aspect-prefix-ru "по"
+    negation-ru "не"
+    negation-en "no not without"
+    nominal-title-actions-en "make prepare cook bake"
+    ordered-section-labels "procedure|instructions|steps|method"
     fallback-query "how to {task}"
     install-query "{target} install official documentation"
-  table "procedural-source-task-aliases"
-    row "какать" "хорошо покакать"
-    row "покакать" "хорошо покакать"
+  table "procedure-nominal-title-namespaces"
+    row "wikibooks" "102|Cookbook"
   table "client-tool-unavailable-descriptions"
     row "request_user_input" "This tool is only available in Plan mode."
   table "client-tool-availability-context"
@@ -483,11 +464,6 @@ handler-rules
     row golang go
     row java java
     row ruby ruby
-    default python
-  table algorithm_snippet
-    row rust rust
-    row javascript javascript
-    row typescript typescript
     default python
   table document_software_artifact
     row "app" "software"
@@ -1131,10 +1107,8 @@ handler-rules
     goals toilet
     trusted-hosts "www.nhs.uk"
     toilet-source "https://www.nhs.uk/conditions/constipation/"
-    toilet-proof "Do not delay if you feel the urge to poo."
-    toilet-cached-proof "Do not delay if you feel the urge to poo."
-    toilet-cache-date "2026-10-26"
-    toilet-response practical-help-toilet
+    toilet-heading "Improve your toilet routine"
+    toilet-excerpt-terms urge
     toilet-unavailable practical-help-toilet-unavailable
   table practical-help
     row "leads" "i need to"
@@ -1222,13 +1196,10 @@ handler-rules
     row "november.ru" "ноября"
     row "december.ru" "декабря"
 
-  table currency-reference-quote
-    row "USD" "82.5143"
-    row "EUR" "91.1948"
-    row "RUB" "1"
-  table currency-reference-provenance
-    row "date" "2026-11-17"
-    row "source" "https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026"
+  table currency-quote-provider
+    row "default" "https://api.frankfurter.dev/v2/rate"
+    row "RUB" "https://api.frankfurter.dev/v2/providers/cbr/rate"
+    row "iso-codes" "AED|AFN|ALL|AMD|AOA|ARS|AUD|AWG|AZN|BAM|BBD|BDT|BHD|BIF|BMD|BND|BOB|BOV|BRL|BSD|BTN|BWP|BYN|BZD|CAD|CDF|CHE|CHF|CHW|CLF|CLP|CNY|COP|COU|CRC|CUP|CVE|CZK|DJF|DKK|DOP|DZD|EGP|ERN|ETB|EUR|FJD|FKP|GBP|GEL|GHS|GIP|GMD|GNF|GTQ|GYD|HKD|HNL|HTG|HUF|IDR|ILS|INR|IQD|IRR|ISK|JMD|JOD|JPY|KES|KGS|KHR|KMF|KPW|KRW|KWD|KYD|KZT|LAK|LBP|LKR|LRD|LSL|LYD|MAD|MDL|MGA|MKD|MMK|MNT|MOP|MRU|MUR|MVR|MWK|MXN|MXV|MYR|MZN|NAD|NGN|NIO|NOK|NPR|NZD|OMR|PAB|PEN|PGK|PHP|PKR|PLN|PYG|QAR|RON|RSD|RUB|RWF|SAR|SBD|SCR|SDG|SEK|SGD|SHP|SLE|SOS|SRD|SSP|STN|SVC|SYP|SZL|THB|TJS|TMT|TND|TOP|TRY|TTD|TWD|TZS|UAH|UGX|USD|USN|UYI|UYU|UYW|UZS|VED|VES|VND|VUV|WST|XAD|XAF|XAG|XAU|XBA|XBB|XBC|XBD|XCD|XCG|XDR|XOF|XPD|XPF|XPT|XSU|XUA|YER|ZAR|ZMW|ZWG"
   table calendar-duration-label
     row "month.en.one" "month"
     row "month.en.few" "months"

@@ -2,6 +2,9 @@ use formal_ai::agentic_coding::{
     CODE_REWRITE_LEARNING_PATH, CODE_REWRITE_LEARNING_TASK, code_rewrite_learning, run_agentic_task,
 };
 
+const REPORT_MEMORY: &str =
+    include_str!("../../../../data/meta/issue-715-code-rewrite-learning.lino");
+
 #[test]
 fn code_rewrite_learning_is_derived_and_review_gated() {
     let baseline = include_str!("../../../../data/meta/issue-715-code-rewrite-learning.lino");
@@ -21,7 +24,10 @@ fn code_rewrite_learning_is_derived_and_review_gated() {
 
 #[test]
 fn formal_ai_executes_code_rewrite_learning_through_agent_cli() {
-    let outcome = run_agentic_task(CODE_REWRITE_LEARNING_TASK).expect("agent workspace");
+    let outcome = run_agentic_task(&format!(
+        "{CODE_REWRITE_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("agent workspace");
 
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.turns, 3);
@@ -32,7 +38,7 @@ fn formal_ai_executes_code_rewrite_learning_through_agent_cli() {
     assert_eq!(arguments["path"], CODE_REWRITE_LEARNING_PATH);
     assert_eq!(
         arguments["content"],
-        code_rewrite_learning::render_document()
+        code_rewrite_learning::render_document_from(REPORT_MEMORY)
     );
     assert_eq!(outcome.steps[1].tool, "run_command");
     assert!(outcome.final_answer.contains("human-review-gated report"));

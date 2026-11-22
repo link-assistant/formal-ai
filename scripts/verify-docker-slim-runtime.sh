@@ -11,18 +11,30 @@ command -v curl >/dev/null || fail "curl is required for the health check"
 command -v node >/dev/null || fail "node is required for response validation"
 formal-ai --version || fail "formal-ai --version did not answer"
 
+smoke_home="$(mktemp -d)"
+cleanup() {
+  if [ -n "${serve_pid:-}" ]; then
+    kill "$serve_pid" 2>/dev/null || true
+    wait "$serve_pid" 2>/dev/null || true
+  fi
+  rm -rf "$smoke_home"
+}
+trap cleanup EXIT
+cd "$smoke_home"
+
 port="${VERIFY_PORT:-18080}"
-FORMAL_AI_ALLOW_NETWORK=0 FORMAL_AI_DREAMING=0 \
+FORMAL_AI_OFFLINE=1 FORMAL_AI_DREAMING=0 \
+  FORMAL_AI_MEMORY_PATH="$smoke_home/memory.lino" \
+  FORMAL_AI_SOURCE_CACHE_DIR="$smoke_home/sources" \
   formal-ai serve --agent-mode --host 127.0.0.1 --port "$port" &
 serve_pid=$!
-trap 'kill "$serve_pid" 2>/dev/null || true; wait "$serve_pid" 2>/dev/null || true' EXIT
 
 ready=false
 for _ in $(seq 1 30); do
   if ! kill -0 "$serve_pid" 2>/dev/null; then
     status=0
     wait "$serve_pid" || status=$?
-    fail "serve exited with status $status before /health (memory path: ${FORMAL_AI_MEMORY_PATH:-default})"
+    fail "serve exited with status $status before /health (memory path: $smoke_home/memory.lino)"
   fi
   if curl -fsS "http://127.0.0.1:$port/health" >/dev/null 2>&1; then
     ready=true
@@ -61,6 +73,23 @@ for (const [prompt, expected] of [
   assert.match(mcp.result.content[0].text, expected, `MCP ${prompt}`);
   assert.match(telegram.text, expected, `Telegram ${prompt}`);
 }
+
+async function chat(content) {
+  const result = await request('/v1/chat/completions', {
+    model: 'formal-ai', messages: [{role: 'user', content}],
+  });
+  return result.choices[0].message.content;
+}
+for (const [prompt, terms, borrowedAnswer] of [
+  ['How to buy extra baggage on IndiGo?', /baggage.*indigo/iu, /\b(?:15|20|30)\s*kg\b/iu],
+  ['How to install Raku on Alpine Linux?', /raku.*alpine/iu, /^1\. /mu],
+]) {
+  const answer = await chat(prompt);
+  assert.match(answer, terms);
+  assert.doesNotMatch(answer, borrowedAnswer);
+}
+const capital = await chat('What is the capital of Portugal?');
+assert.doesNotMatch(capital, /\bLisbon\b/iu);
 NODE
 
 curl --fail --silent --show-error --max-time 30 \
@@ -90,4 +119,4 @@ curl --fail --silent --show-error --max-time 30 \
     }
   '
 
-echo "verify-formal-ai-slim: CLI, health, chat, agent routing, greetings and issue forms passed on $port"
+echo "verify-formal-ai-slim: CLI, health, cold source policy, chat, agent routing, greetings and issue forms passed on $port"

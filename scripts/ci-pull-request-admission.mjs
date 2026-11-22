@@ -13,7 +13,7 @@ export const isDocumentation = isDocumentationPath;
 // Issue #1191: PR #1497 passed every PR check, then main failed with E0308 in
 // rust/src, because no PR job compiles Rust. Clippy on the library and
 // binaries reads rust/ (src, build.rs, manifests, the embedded mirror),
-// build.rs reads data/seed/api-cache, Cargo reads .cargo/, the toolchain files
+// Cargo reads .cargo/, the toolchain files
 // and clippy.toml, and the job runs scripts/ci-clippy-profile.sh. The prefixes
 // below are proven NOT to be inputs, so a path outside them (unknown included)
 // selects the native check: missing it costs a broken main.
@@ -175,6 +175,8 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'rust/tests/unit/issue_498_google_trends.rs',
   'rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs',
   'rust/examples/dump_google_trends_catalog.rs',
+  'experiments/issue-1580/stage-source-capture.mjs',
+  'docs/case-studies/issue-498/raw-data/google-trends-us-rss.xml',
   'docs/case-studies/issue-498/agent-cli-session-google-trends.json',
   'rust/tests/unit/specification/reasoning_loop.rs',
   'rust/tests/unit/specification/benchmarks.rs',
@@ -232,8 +234,7 @@ export function nativeCompileInput(path) {
   if (isDocumentation(path) || NON_NATIVE_FILES.has(path)) return false;
   // The isolated data-file target parses all LiNo and cached source JSON.
   if (path.startsWith('data/')) return path.endsWith('.lino')
-    || (path.startsWith('data/cache/') && path.endsWith('.json'))
-    || path.startsWith('data/seed/api-cache/');
+    || (path.startsWith('data/cache/') && path.endsWith('.json'));
   // The native workflow contracts discover every workflow and traverse local calls.
   if (path.startsWith('.github/workflows/')) return true;
   return !NON_NATIVE_PREFIXES.some(prefix => path.startsWith(prefix));

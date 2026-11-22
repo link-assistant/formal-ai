@@ -66,7 +66,8 @@ describe('R24: the dataset script writes Links Notation under data/', () => {
 
   test('every file the script writes is a committed .lino file', () => {
     const written = [...script.matchAll(/data_dir\.join\("([^"]+\.lino)"\)/g)].map(([, path]) => `data/${path}`);
-    assert.deepEqual(written, ['data/source-index.lino', 'data/seed/greetings.lino', 'data/seed/hello-world-programs.lino', 'data/seed/demo-dialogs.lino']);
+    assert.deepEqual(written, ['data/source-index.lino', 'data/seed/greetings.lino', 'data/seed/hello-world-programs.lino']);
     for (const path of written) assert.ok(read(path).trim().length > 0, path);
+    assert.ok(read('rust/tests/fixtures/issue-1/demo-dialogs.lino').includes('dialog_rust'));
   });
 });

@@ -10,14 +10,22 @@
 //! `data/meta/repair-strategies.lino` is byte-for-byte what the recipe renders, and the
 //! recipe is reachable through the agentic interface as the tenth recipe.
 
+#[path = "../../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::CHANGE_TASK;
+use repair_fixture::LEDGER_TASK;
+use repair_fixture::REPAIR_STRATEGY_TASK;
+use repair_fixture::SELF_HEAL_TASK;
+use repair_fixture::{
+    canonical_data_record_failure, canonical_solver_method_failure, canonical_strategies,
+    canonical_test_failure, task_with_json, trace_value,
+};
+
 use formal_ai::agentic_coding::{
-    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK,
-    is_repair_strategy_task, plan_chat_step, repair_strategy as recipe, run_agentic_task,
+    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, REPAIR_STRATEGY_PATH, is_repair_strategy_task,
+    plan_chat_step, repair_strategy as recipe, run_agentic_task,
 };
-use formal_ai::repair_strategy::{
-    RepairStrategy, RepairTarget, canonical_data_record_failure, canonical_solver_method_failure,
-    canonical_strategies, canonical_test_failure,
-};
+use formal_ai::repair_strategy::{RepairStrategy, RepairTarget};
 use formal_ai::{ChatMessage, ToolCall};
 use lino_objects_codec::format::parse_indented;
 
@@ -119,10 +127,10 @@ fn committed_repair_strategies_document_is_generated_by_the_recipe() {
     // so it can never drift, and it is byte-for-byte what the Agent CLI writes. Unlike
     // the source-links/change-request documents it depends only on self-contained
     // canonical traces, so it is safe to pin.
-    let committed = include_str!("../../../../data/meta/repair-strategies.lino");
+    let committed = include_str!("../../fixtures/issue-558/repair-strategies.lino");
     assert_eq!(
         committed,
-        recipe::render_document(),
+        recipe::render_document(&canonical_strategies()),
         "the committed repair-strategies document is stale — regenerate it with `cargo run --example dump_repair_strategies`"
     );
     parse_indented(committed).expect("the committed document should parse as Links Notation");
@@ -145,15 +153,9 @@ fn recognises_the_repair_task_without_colliding_with_the_sibling_recipes() {
     // Unrelated and sibling requests do not route here.
     assert!(!is_repair_strategy_task("what files are in this folder?"));
     assert!(!is_repair_strategy_task("change this line to uppercase"));
-    assert!(!is_repair_strategy_task(
-        formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
-    ));
-    assert!(!is_repair_strategy_task(
-        formal_ai::agentic_coding::CHANGE_TASK
-    ));
-    assert!(!is_repair_strategy_task(
-        formal_ai::agentic_coding::LEDGER_TASK
-    ));
+    assert!(!is_repair_strategy_task(SELF_HEAL_TASK));
+    assert!(!is_repair_strategy_task(CHANGE_TASK));
+    assert!(!is_repair_strategy_task(LEDGER_TASK));
     // The repair task itself must not trip the sibling routers (in particular the
     // self-healing recipe, whose keywords must stay disjoint).
     assert!(!formal_ai::agentic_coding::is_self_heal_task(
@@ -179,7 +181,7 @@ fn recognises_the_repair_task_without_colliding_with_the_sibling_recipes() {
 #[test]
 fn planner_walks_the_repair_strategy_recipe() {
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(REPAIR_STRATEGY_TASK)];
+    let mut messages = vec![ChatMessage::user(repair_task(REPAIR_STRATEGY_TASK))];
 
     // Step 1: write the generated repair-strategies document (no web step — it is a pure
     // function of the self-contained canonical traces).
@@ -187,14 +189,21 @@ fn planner_walks_the_repair_strategy_recipe() {
     assert_eq!(call.tool, "write_file");
     assert!(call.arguments.contains(REPAIR_STRATEGY_PATH));
     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
-    assert_eq!(written["content"], recipe::render_document());
+    assert_eq!(
+        written["content"],
+        recipe::render_document(&canonical_strategies())
+    );
     answer_tool_call(&mut messages, &call, "wrote repair-strategies.lino");
 
     // Step 2: verify by reading the document back.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "run_command");
     assert!(call.arguments.contains(REPAIR_STRATEGY_PATH));
-    answer_tool_call(&mut messages, &call, &recipe::render_document());
+    answer_tool_call(
+        &mut messages,
+        &call,
+        &recipe::render_document(&canonical_strategies()),
+    );
 
     // Step 3: the recipe is exhausted — the final answer carries the strategies.
     match plan_chat_step(&messages, &tools) {
@@ -211,7 +220,7 @@ fn driver_drives_the_repair_strategy_recipe_to_a_write() {
     // End-to-end through the in-repo Agent CLI driver: the loop finishes and writes
     // exactly the generated repair-strategies document.
     assert!(DRIVER_TOOLS.contains(&"write_file"));
-    let outcome = run_agentic_task(REPAIR_STRATEGY_TASK).expect("workspace");
+    let outcome = run_agentic_task(&repair_task(REPAIR_STRATEGY_TASK)).expect("workspace");
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
     let write = outcome
         .steps
@@ -219,7 +228,19 @@ fn driver_drives_the_repair_strategy_recipe_to_a_write() {
         .find(|step| step.tool == "write_file")
         .expect("a write step");
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
-    assert_eq!(written["content"], recipe::render_document());
+    assert_eq!(
+        written["content"],
+        recipe::render_document(&canonical_strategies())
+    );
     assert_eq!(written["path"], REPAIR_STRATEGY_PATH);
     assert!(outcome.final_answer.contains(REPAIR_STRATEGY_PATH));
+}
+
+fn repair_task(cue: &str) -> String {
+    task_with_json(
+        cue,
+        serde_json::json!({
+            "traces": [trace_value(canonical_solver_method_failure()), trace_value(canonical_data_record_failure()), trace_value(canonical_test_failure())]
+        }),
+    )
 }

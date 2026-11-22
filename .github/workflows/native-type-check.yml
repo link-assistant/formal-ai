@@ -69,6 +69,7 @@ jobs:
             /experiments/js_dogfood/**
             /experiments/issue_859_codex_e2e/**
             /experiments/issue_1609_client_reports/**
+            /experiments/issue-1580/stage-source-capture.mjs
             /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
@@ -101,6 +102,7 @@ jobs:
             /experiments/js_dogfood/**
             /experiments/issue_859_codex_e2e/**
             /experiments/issue_1609_client_reports/**
+            /experiments/issue-1580/stage-source-capture.mjs
             /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
@@ -160,6 +162,16 @@ jobs:
           cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?
           cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?
           exit "$regression_status"
+      - name: Verify explicit computer-use plans and HTTP receipts
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        env:
+          CARGO_BUILD_JOBS: '2'
+        run: cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1
+      - name: Exercise the cold runtime smoke against the native CLI
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        run: |
+          export PATH="$GITHUB_WORKSPACE/rust/target/debug:$PATH"
+          bash scripts/verify-docker-slim-runtime.sh
       - name: Replay the forced function requests against the native CLI
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
@@ -186,6 +198,16 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs
+      - name: Replay prompt-local contradiction worksheets against the native CLI
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 rust/tests/web/issue-901-triz-parity.test.mjs
+      - name: Replay operand-bound programs against the native CLI
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 --test-name-pattern='native program replies' rust/tests/web/script-print-operand.test.mjs
       # Reuse the bounded installer retry and exact-version check (issue #1569).
       - uses: ./.github/actions/setup-bun-verified
         id: bun
@@ -217,11 +239,12 @@ jobs:
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
           CARGO_BUILD_JOBS: '2'
-          CARGO_PROFILE_DEV_OPT_LEVEL: '0'
           FORMAL_AI_OFFLINE: '1'
           CATALOG_OUTPUT: ${{ runner.temp }}/google-trends-fixtures
+          FORMAL_AI_SOURCE_CACHE_DIR: ${{ runner.temp }}/google-trends-source-replay
         run: |
-          cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog
+          node experiments/issue-1580/stage-source-capture.mjs "$FORMAL_AI_SOURCE_CACHE_DIR" docs/case-studies/issue-498/raw-data/google-trends-us-rss.xml "https://trends.google.com/trending/rss?geo=US"
+          cargo build --manifest-path rust/Cargo.toml --locked --profile test --example dump_google_trends_catalog
           rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"
           {
             git rev-parse HEAD 'HEAD^{tree}'
@@ -232,7 +255,7 @@ jobs:
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         uses: actions/upload-artifact@v7
         with:
-          name: google-trends-native-fixtures
+          name: google-trends-native-fixtures-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
           path: ${{ runner.temp }}/google-trends-fixtures
           if-no-files-found: error
           retention-days: 7

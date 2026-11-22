@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { recurrenceFixture } from "./support/recurrence-publisher-captures.mjs";
 import test from 'node:test';
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
 
@@ -8,7 +9,10 @@ await evaluate(worker, 'loadSeed()');
 const invoke = (name, ...arguments_) => plain(evaluate(worker, name + '(' + arguments_.map(argument => JSON.stringify(argument)).join(',') + ')'));
 const bindCallableReadCoverage = (...arguments_) => invoke('bindCallableReadCoverage', ...arguments_);
 const readFormalParameterPositions = (...arguments_) => invoke('readFormalParameterPositions', ...arguments_);
-const record = plain(evaluate(worker, 'recurrenceSourceRecords().find(record => codingChildValue(record, "identifier") === "factorial")'));
+const replay = recurrenceFixture("recurrence-replay.lino");
+const root = invoke('parseLinoTree', replay).children.find(node => node.name === 'recurrence_source_cache');
+const record = root.children.find(node => node.children.some(child => child.name === 'identifier' && child.value === 'factorial'));
+const tryReplay = prompt => invoke('trySourceRecurrenceSynthesis', prompt, record);
 const expression = record.children.find(node => node.name === 'expression').children[0];
 const contract = { name: record.children.find(node => node.name === 'identifier').value, parameters: [record.children.find(node => node.name === 'parameter').value], expression };
 const literal = value => ({ name: 'literal', value, children: [] });
@@ -51,20 +55,20 @@ test('explicit incompatible arity, duplicates and unresolved parameters reject h
 });
 
 test('actual source requests retain declared identity and reject unsupported signatures', () => {
-  const result = invoke('trySourceRecurrenceSynthesis', 'Write a Python function discovered_function(input) that returns the factorial of input');
+  const result = tryReplay('Write a Python function discovered_function(input) that returns the factorial of input');
   assert.equal(result.intent, 'write_program');
   assert.ok(result.content.includes('def discovered_function(input):'));
   assert.ok(result.content.includes('input * discovered_function(input - 1)'));
   assert.ok(result.evidence.includes('synthesis:callable_binding_origin:declared'));
-  const annotated = invoke('trySourceRecurrenceSynthesis', 'def chosen(x: int) -> int:\n    """Return the factorial of x."""');
+  const annotated = tryReplay('def chosen(x: int) -> int:\n    """Return the factorial of x."""');
   assert.ok(annotated.content.includes('def chosen(x: int) -> int:'));
   for (const signature of ['chosen(x, y)', 'chosen(*x)', 'chosen(x=3)', 'chosen(x, /)', 'chosen(chosen)']) {
-    assert.equal(invoke('trySourceRecurrenceSynthesis', 'def ' + signature + ':\n    """Return the factorial of x."""'), null, signature);
+    assert.equal(tryReplay('def ' + signature + ':\n    """Return the factorial of x."""'), null, signature);
   }
 });
 
 test('an assertion names the callable without turning its literal argument into a formal name', () => {
-  const result = invoke('trySourceRecurrenceSynthesis', 'Return the factorial.\nassert chosen(3) == 6');
+  const result = tryReplay('Return the factorial.\nassert chosen(3) == 6');
   assert.ok(result.content.includes('def chosen(n):'));
   assert.ok(result.content.includes('n * chosen(n - 1)'));
   assert.ok(result.evidence.includes('synthesis:callable_binding_origin:observed'));

@@ -130,9 +130,26 @@ pub(super) fn is_pattern_token(token: &str) -> bool {
 
 /// How many distinct tokens of `prompt` read as workspace paths.
 pub(super) fn path_token_count(prompt: &str, normalized: &str) -> usize {
-    prompt
+    let paths: Vec<_> = prompt
         .split_whitespace()
         .filter(|token| is_path(token, normalized))
+        .collect();
+    if paths.is_empty() || has_workspace_scope(normalized) {
+        return paths.len();
+    }
+    let operands = crate::solver_handlers::documentation_method::operands(prompt);
+    let [selector, _] = operands.as_slice() else {
+        return paths.len();
+    };
+    // Only the dotted token bound to the publisher's documentation selector
+    // loses its path reading. Explicit filesystem scope and other paths remain.
+    let relative = selector.split_once('.').map(|(_, relative)| relative);
+    paths
+        .into_iter()
+        .filter(|path| {
+            let path = path.trim_matches([',', ';', '"', '\'', '`', ':', '?', '!']);
+            !path.contains('.') || (path != selector.as_str() && Some(path) != relative)
+        })
         .count()
 }
 

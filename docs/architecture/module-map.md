@@ -48,7 +48,7 @@ new module fails CI until this map documents it.
 | `structured_tracing` | `tracing` events enter the same redacting typed-Lino sink as native diagnostics. | §2 |
 | `telemetry` | Consent-gated anonymous Sentry diagnostics (issue #861). | §2 |
 | `translation` | Translation pipeline. | §2 |
-| `triz_solver` | User-facing TRIZ/contradiction solver (issue #901). | §2 |
+| `triz_solver` | Derive a TRIZ worksheet from the two demands in the caller's prompt. | §2 |
 | `version_resolution` | Resolve the third-party versions generated code pins, at generation time. | §2 |
 | `agentic_coding` | Agentic-coding capability for the Formal AI server (issue #468). | §3 |
 | `associative_package` | Reusable associative packages, handlers, triggers, and permissions. | §3 |
@@ -63,7 +63,7 @@ new module fails CI until this map documents it.
 | `draft_portfolio` | Deterministic parallel candidate-solution portfolios (issue #704). | §3 |
 | `execution_box` | Where code actually runs, and the honest report of what happened (#930, #937). | §3 |
 | `formalization` | Deep formalization: segmentation, need emission, concept grounding,. | §3 |
-| `google_trends_catalog` | Google Trends snapshot conversion and multilingual prompt cataloging. | §3 |
+| `google_trends_catalog` | Google Trends feed retrieval and multilingual prompt cataloging. | §3 |
 | `google_trends_learning` | Wire the Google Trends catalog's *unanswered* prompts into the human-gated. | §3 |
 | `how_to_guide` | Bounded multi-source synthesis of a "how to X" guide. | §3 |
 | `intent_formalization` | Links-Notation intent formalization and cache. | §3 |
@@ -116,7 +116,7 @@ new module fails CI until this map documents it.
 | `family_method` | Seed-declared generic handler-family interpreter (issue #1138 B9). | §5 |
 | `formal_system` | Named formal-system scope for relative statement probabilities. | §5 |
 | `grammar_kinds` | The tree-sitter kind inventory of the committed corpora (issue #1138,. | §5 |
-| `knowledge` | External knowledge oracles, treated as cached APIs (issue #412). | §5 |
+| `knowledge` | Public knowledge-source identifiers, cache size policy and coding discovery. | §5 |
 | `meta_construction` | Issue #559: the upward construction pass and the `recursion_mode` knob. | §5 |
 | `meta_executor` | Issue #1550 — the recursive procedure every answer goes through, in both. | §5 |
 | `meta_frame` | Issue #559 Phase 1A: an explicit, link-serializable problem frame. | §5 |

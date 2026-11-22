@@ -268,6 +268,37 @@ function numericListProgramSource(program) {
   return codingExpand(composer, scaffold, 0);
 }
 
+// Use the script's operation idioms with a function parameter as the list.
+// Keep test data separate so the callable accepts any list of its input type.
+function renderListCallable(slug, prompt, normalized, test) {
+  const canonical = detectNumericListOperation(normalized);
+  if (!canonical || numericListFamily(canonical) !== "list_transformation") return null;
+  const catalog = codingIdiomCatalog();
+  if (!catalog) return null;
+  const chain = codingLanguageChain(catalog, slug);
+  const scaffold = codingScaffold(chain, test ? "list_function_test" : "list_function");
+  if (scaffold === null) return null;
+  const items = parseNumericListNumbers(prompt);
+  for (const item of items) {
+    item.text = item.text.replace(/^\+/u, "").replace(/^(-?)0+(?=\d)/u, "$1");
+  }
+  if (test && !items.length) {
+    const values = Array.from({ length: 3 }, (_, value) => value);
+    if (canonical !== "reverse_sort") values.reverse();
+    items.push(...values.map((value) => ({ text: String(value), kind: "number", value })));
+  }
+  const isFloat = items.some((item) => item.text.includes("."));
+  const program = numericListBuildProgram(slug, items, canonical, isFloat);
+  const composer = codingComposer(program, chain);
+  composer.bindings.set("list", "values");
+  if (test) {
+    const expected = computeNumericList(canonical, items, isFloat)
+      .map((text) => ({ text, kind: "number" }));
+    composer.bindings.set("expected", numericListLiterals(expected, program.valueType).join(", "));
+  }
+  return codingExpand(composer, scaffold, 0);
+}
+
 // Issue #395: universal numeric-list coding algorithm. "<operation> these
 // numbers in <language>, give me the code and the result" produces generated
 // code plus the deterministically-computed result. Mirrors try_numeric_list /
@@ -332,6 +363,8 @@ function tryNumericList(prompt, history) {
 
   const canonical = detectNumericListOperation(normalized);
   if (!canonical) return null;
+  if ((canonical === "sort" || canonical === "reverse_sort")
+    && operationMatchesSlug("algorithm_request", normalized)) return tryAlgorithm(prompt);
 
   // Issue #412: a bare follow-up names no language and may not say "code" —
   // recover both from the active coding context before applying the gates.
@@ -471,8 +504,6 @@ function numericListStatedResult(prompt, normalized, canonical) {
 function tryProgramSynthesis(prompt, normalized) {
   const canonical = canonicalizedPrompt(normalized);
   if (!looksLikePythonFunctionSynthesis(prompt, canonical)) return null;
-  const recurrence = trySourceRecurrenceSynthesis(prompt);
-  if (recurrence) return recurrence;
   const functionName = extractPythonFunctionName(prompt);
   if (!functionName) return null;
   const structures = discoveredCodingStructures(canonical);

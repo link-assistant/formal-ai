@@ -417,6 +417,8 @@ roles
     kind meaning
   fact_relation
     kind predicate
+  fact_subject_connector
+    kind meaning
   feature_action_arithmetic
     kind meaning
   feature_action_planning
@@ -721,6 +723,8 @@ roles
     kind meaning
   nondeterministic_marker
     kind predicate
+  noun
+    kind meaning
   null
     kind meaning
   number_constraint_entity
@@ -1064,6 +1068,8 @@ roles
   software_sentence_end_character
     kind meaning
   software_step_granularity
+    kind meaning
+  source
     kind meaning
   source-authoring-grammar
     kind meaning

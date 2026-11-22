@@ -48,7 +48,7 @@ pub(super) fn strip_tags(fragment: &str) -> String {
 /// spaces included), and only trailing whitespace goes. The blank lines that
 /// open and close the block are the page's markup, not the program, and so
 /// is the indentation every line shares; both are removed.
-pub(super) fn strip_tags_keep_lines(fragment: &str) -> String {
+pub(crate) fn strip_tags_keep_lines(fragment: &str) -> String {
     let text = remove_tags(fragment);
     let lines: Vec<&str> = text.lines().map(str::trim_end).collect();
     let (Some(first), Some(last)) = (

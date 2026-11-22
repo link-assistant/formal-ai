@@ -12,10 +12,17 @@
 //!   * *future release* — a work dated after the asking day is reported as
 //!     announced, and starts counting as released once that day arrives.
 
+use formal_ai::release_timeline;
 use formal_ai::seed::{parse_release_timelines, release_timelines};
-use formal_ai::{UniversalSolver, release_timeline};
 
 /// A two-film timeline: one long released, one announced for 2030.
+fn replay_registry() -> formal_ai::seed::ReleaseTimelines {
+    parse_release_timelines(include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/fixtures/release-timeline/spider-man-replay.lino"
+    )))
+}
+
 const FIXTURE: &str = r#"release_timelines
   phrasing en
     released-heading "Released {subject} in release order:"
@@ -160,8 +167,9 @@ fn an_undated_work_is_never_reported_as_released() {
 }
 
 #[test]
-fn the_seeded_spider_man_timeline_is_grounded_and_ordered() {
-    let timeline = release_timelines()
+fn the_historical_spider_man_fixture_is_grounded_and_ordered() {
+    let registry = replay_registry();
+    let timeline = registry
         .timeline("spider_man_title_role_films")
         .expect("the Spider-Man timeline should be registered");
 
@@ -192,8 +200,9 @@ fn the_seeded_spider_man_timeline_is_grounded_and_ordered() {
     }
 
     // The films the issue lists, in the order the answer must keep.
-    let rendered = release_timeline::render("spider_man_title_role_films", "en", "2026-08-04")
-        .expect("the Spider-Man timeline should render");
+    let rendered =
+        release_timeline::render_from(&registry, "spider_man_title_role_films", "en", "2026-08-04")
+            .expect("the Spider-Man timeline should render");
     let ordered: Vec<&str> = rendered
         .released
         .iter()
@@ -224,7 +233,7 @@ fn the_seeded_spider_man_timeline_is_grounded_and_ordered() {
 /// registry declares, and each language's wording must be its own.
 #[test]
 fn every_registered_language_gets_its_own_release_timeline_wording() {
-    let registry = release_timelines();
+    let registry = replay_registry();
     let timeline = registry
         .timeline("spider_man_title_role_films")
         .expect("the Spider-Man timeline should be registered");
@@ -258,9 +267,13 @@ fn every_registered_language_gets_its_own_release_timeline_wording() {
         );
         headings.push((language, phrasing.released_heading.as_str()));
 
-        let rendered =
-            release_timeline::render("spider_man_title_role_films", language, "2026-08-04")
-                .expect("every registered language should render");
+        let rendered = release_timeline::render_from(
+            &registry,
+            "spider_man_title_role_films",
+            language,
+            "2026-08-04",
+        )
+        .expect("every registered language should render");
         assert!(
             rendered.text.starts_with(
                 phrasing
@@ -299,11 +312,12 @@ fn every_registered_language_gets_its_own_release_timeline_wording() {
 /// SPARQL answer, every title from the entity cache, and the recorded digest is
 /// recomputed from the snapshot bytes.
 #[test]
-fn the_seeded_timeline_is_a_transcription_of_the_checked_in_cache() {
+fn the_historical_fixture_preserves_the_recorded_publisher_data() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    let timeline = release_timelines()
+    let registry = replay_registry();
+    let timeline = registry
         .timeline("spider_man_title_role_films")
         .expect("the Spider-Man timeline should be registered");
 
@@ -356,7 +370,7 @@ fn the_seeded_timeline_is_a_transcription_of_the_checked_in_cache() {
             .map(|entry| (entry.qid.clone(), entry.release_date.clone()))
             .collect::<Vec<_>>(),
         expected,
-        "the seeded entries should be exactly the films and dates the snapshot returned"
+        "the fixture entries should be exactly the films and dates the snapshot returned"
     );
 
     for entry in &timeline.entries {
@@ -380,41 +394,19 @@ fn the_seeded_timeline_is_a_transcription_of_the_checked_in_cache() {
 }
 
 #[test]
-fn spider_man_answers_come_from_the_snapshot_not_from_a_sentence() {
-    let solver = UniversalSolver::default();
-    let response = solver.solve("List Spider-Man films in release order.");
-
-    let timeline = release_timelines()
+fn the_installed_registry_has_publisher_settings_without_captured_works() {
+    let registry = release_timelines();
+    let timeline = registry
         .timeline("spider_man_title_role_films")
-        .expect("the Spider-Man timeline should be registered");
-    for expected in [
-        "release_timeline:spider_man_title_role_films".to_owned(),
-        format!("release_timeline:snapshot:{}", timeline.retrieved_at),
-        format!("release_timeline:sha256:{}", timeline.sha256),
-        format!("source:{}", timeline.source_url),
-    ] {
-        assert!(
-            response.evidence_links.contains(&expected),
-            "the answer should record {expected:?}, got {:?}",
-            response.evidence_links
-        );
-    }
-    assert!(
-        response
-            .thinking_steps
-            .iter()
-            .any(|step| step.source_event == "release_timeline:hit"),
-        "the answer should show the timeline lookup in its reasoning, got {:?}",
-        response.thinking_steps
+        .expect("the Spider-Man series scope should be registered");
+    assert_eq!(
+        timeline.source_url,
+        "https://query-main.wikidata.org/sparql"
     );
-    assert!(
-        response.answer.contains("Wikidata Query Service"),
-        "the answer should name its source, got: {}",
-        response.answer
-    );
-    // Whatever today is, the rendered snapshot is what the solver replies with.
-    let today = formal_ai::external_benchmarks::today_utc();
-    let expected = release_timeline::render("spider_man_title_role_films", "en", &today)
-        .expect("the Spider-Man timeline should render");
-    assert_eq!(response.answer, expected.text);
+    assert!(timeline.entries.is_empty());
+    assert!(timeline.sha256.is_empty());
+    assert!(timeline.retrieved_at.is_empty());
+    assert!(registry.query.contains("{subject}"));
+    assert!(registry.query.contains("{language}"));
+    assert!(release_timeline::render_from(registry, &timeline.slug, "en", "2026-08-04").is_none());
 }

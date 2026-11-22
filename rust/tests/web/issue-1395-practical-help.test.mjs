@@ -1,30 +1,40 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import {createHash} from 'node:crypto';
+import {readFileSync} from 'node:fs';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 const forbiddenWasm={instantiate(){throw Error('LocalWasmExecutionForbidden');},compile(){throw Error('LocalWasmExecutionForbidden');}};
-const worker=()=>new WorkerHost({WebAssembly:forbiddenWasm});
-const cases=[
- {language:'en',prompt:'I really need to poop, what should I do?',expected:'Use a toilet as soon as you can rather than holding it. If you cannot go or have pain, tell me what is happening. [NHS guidance](https://www.nhs.uk/conditions/constipation/)'},
- {language:'ru',prompt:'Хочу какать, что делать?',expected:'Идите в туалет при первой возможности, не терпите. Если не получается сходить или есть боль, уточните, что происходит. [Рекомендации NHS](https://www.nhs.uk/conditions/constipation/)'},
- {language:'hi',prompt:'मुझे शौच करना है',expected:'जितनी जल्दी हो सके शौचालय जाएँ, रोककर न रखें। यदि शौच नहीं हो रहा है या दर्द है, तो बताएँ कि क्या हो रहा है। [NHS की सलाह](https://www.nhs.uk/conditions/constipation/)'},
- {language:'zh',prompt:'我快要大便了，怎么办？',expected:'尽快去厕所，不要憋着。如果排不出来或疼痛，请说明具体情况。[NHS 指引](https://www.nhs.uk/conditions/constipation/)'},
- {language:'es',prompt:'Necesito ir al baño, ¿qué debo hacer?',expected:'Ve al baño en cuanto puedas y no te aguantes. Si no puedes evacuar o tienes dolor, explica qué ocurre. [Consejos del NHS](https://www.nhs.uk/conditions/constipation/)'}
-];
-const source='https://www.nhs.uk/conditions/constipation/';
-for(const {language,prompt,expected} of cases)test('real solver gives source-backed practical guidance in '+language,async()=>{
- const host=worker(),result=await host.solve(prompt,[],{forcedResponseLanguage:language});
- assert.equal(result.intent,'procedural_how_to');assert.equal(result.content,expected);assert(result.content.includes(source));
- assert(!/reciprocal rank|source_count|teach|unknown|зауч|Tió|Cheese/iu.test(result.content));
+const source = 'https://www.nhs.uk/conditions/constipation/';
+const document = readFileSync(new URL('../fixtures/practical-help/toilet.html', import.meta.url), 'utf8');
+const guidance = 'Do not delay if you feel the urge to poo.';
+const worker = (networkFetch = null) => new WorkerHost({WebAssembly: forbiddenWasm}, {networkFetch});
+const sourcedWorker = () => worker(async url => {
+  assert.equal(url, source);
+  return new Response(document);
 });
-test('Spanish detection, follow-up and unavailable guidance use the same strategy',async()=>{
- const host=worker(),example=cases.find(row=>row.language==='es');
- const initial=await host.solve(example.prompt);assert.equal(initial.content,example.expected);
- const history=[{role:'user',content:example.prompt},{role:'assistant',content:initial.content}];
- const followup=await host.solve('¡Ayúdame!',history);assert.equal(followup.content,example.expected);
- await host.boot();host.context.fetch=async()=>new Response('unrelated text');
- const unavailable=await host.run('tryPracticalHelp(__prompt,"es",{practicalHelpCache:false})',{__prompt:example.prompt});
- assert.equal(unavailable.confidence,0);assert.equal(unavailable.content,'Suena urgente. ¿Quieres ayuda para encontrar un baño o no puedes evacuar?');
+const cases = [
+  {language: 'en', prompt: 'I really need to poop, what should I do?', label: 'Source guidance'},
+  {language: 'ru', prompt: 'Хочу какать, что делать?', label: 'Рекомендации источника'},
+  {language: 'hi', prompt: 'मुझे शौच करना है', label: 'स्रोत के निर्देश'},
+  {language: 'zh', prompt: '我快要大便了，怎么办？', label: '来源指引'},
+  {language: 'es', prompt: 'Necesito ir al baño, ¿qué debo hacer?', label: 'Consejos de la fuente'},
+];
+for (const {language, prompt, label} of cases) test('real solver gives source-backed practical guidance in ' + language, async () => {
+  const result = await sourcedWorker().solve(prompt, [], {forcedResponseLanguage: language});
+  assert.equal(result.intent, 'procedural_how_to');
+  assert.ok(result.content.includes(`[${label}](${source})`), result.content);
+  assert.ok(result.content.includes(guidance), result.content);
+  assert.ok(!/reciprocal rank|source_count|teach|unknown|зауч|Tió|Cheese/iu.test(result.content));
+});
+test('Spanish detection and follow-up preserve the captured guidance', async () => {
+  const host = sourcedWorker();
+  const example = cases.find(row => row.language === 'es');
+  const initial = await host.solve(example.prompt);
+  assert.ok(initial.content.includes(example.label), initial.content);
+  const history = [{role: 'user', content: example.prompt}, {role: 'assistant', content: initial.content}];
+  const followup = await host.solve('¡Ayúdame!', history);
+  assert.equal(followup.content, initial.content);
 });
 const unavailableCases=[
  {
@@ -54,14 +64,14 @@ const unavailableCases=[
  }
 ];
 for(const {language,prompt,expected} of unavailableCases)test('unavailable guidance asks for the user choice in '+language,async()=>{
- const host=worker();await host.boot();host.context.fetch=async()=>new Response('Unrelated festival text');
- const result=await host.run('solve(__prompt, [], {greetingVariations:false, practicalHelpCache:false}, {}, [], {forcedResponseLanguage:__language})',{__prompt:prompt,__language:language});
+ const host=worker();await host.boot();host.context.fetch=async()=>assert.fail('offline practical help reached the transport');
+ const result=await host.run('solve(__prompt, [], {greetingVariations:false, offline:true}, {}, [], {forcedResponseLanguage:__language})',{__prompt:prompt,__language:language});
  assert.equal(result.intent,'procedural_how_to');assert.equal(result.confidence,0);assert.equal(result.content,expected);
 });
 test('the urgent report and a short follow-up preserve the actual goal',async()=>{
- const host=worker();const urgent=await host.solve('Сейчас обкакаюсь! Помоги!');assert(urgent.content.includes('Идите в туалет'),urgent.content);
+ const host=sourcedWorker();const urgent=await host.solve('Сейчас обкакаюсь! Помоги!');assert(urgent.content.includes(guidance),urgent.content);
  const followup=await host.solve('Помоги!',[{role:'user',content:'Хочу какать, что делать?'},{role:'assistant',content:'Уточните, что происходит.'}]);
- assert(followup.content.includes('Идите в туалет'),followup.content);
+ assert(followup.content.includes(guidance),followup.content);
 });
 test('negations, quotations and unrelated requests do not become personal needs',async()=>{
  const host=worker();
@@ -72,18 +82,79 @@ test('negations, quotations and unrelated requests do not become personal needs'
 });
 async function cold(host,fetch,extra={}){
  await host.boot();Object.assign(host.context,{fetch,...extra});
- return host.run('tryPracticalHelp("I need to poop","en",{practicalHelpCache:false})');
+ return host.run('tryPracticalHelp("I need to poop","en")');
 }
-test('an empty cache discovers the registered source and labels fetched evidence honestly',async()=>{
- const host=worker();await host.boot();const proof=await host.run('practicalHelpPolicy("toilet-proof")');let calls=0;
- const result=await cold(host,async(url,options)=>{calls++;assert.equal(url,source);assert(options.signal);return new Response('<p>'+proof+'</p>');});
- assert.equal(calls,1);assert(result.content.includes(source));assert(result.evidence.includes('practical_help:source_mode:fetched-source'));
- const cached=await host.run('tryPracticalHelp("I need to poop","en")');assert(cached.evidence.includes('practical_help:source_mode:curated-excerpt'));assert.equal(calls,1);
+test('an empty cache requires retrieval and records verified provenance for reuse', async () => {
+  const host = worker();
+  await host.boot();
+  host.context.fetch = async () => assert.fail('offline practical help reached the transport');
+  const missed = await host.run('tryPracticalHelp("I need to poop", "en", {offline: true})');
+  assert.equal(missed.confidence, 0);
+  assert.ok(!missed.content.includes(source));
+
+  let calls = 0;
+  const result = await cold(host, async (url, options) => {
+    calls++;
+    assert.equal(url, source);
+    assert.ok(options.signal);
+    return new Response(document);
+  });
+  const digest = createHash('sha256').update(document).digest('hex');
+  assert.equal(calls, 1);
+  assert.ok(result.content.includes(source));
+  assert.ok(result.evidence.includes('practical_help:source_mode:fetched-source'));
+  assert.ok(result.solverEvents.some(event => event.kind === 'source:http'
+    && event.payload.includes(`sha256=${digest} cached=false`)));
+
+  const cached = await host.run('tryPracticalHelp("I need to poop", "en", {offline: true})');
+  assert.ok(cached.evidence.includes('practical_help:source_mode:cached-source'));
+  assert.ok(cached.solverEvents.some(event => event.kind === 'source:http'
+    && event.payload.includes(`sha256=${digest} cached=true`)));
+  assert.equal(cached.content, result.content);
+  assert.equal(calls, 1);
 });
-test('failed, irrelevant and oversized sources produce a useful question rather than unsupported advice',async()=>{
- for(const fetch of [async()=>{throw Error('offline');},async()=>new Response('Unrelated festival text'),async()=>new Response('x'.repeat(2097153)),async()=>new Response('雪'.repeat(800000)),async()=>new Response('',{status:503})]){
-  const result=await cold(worker(),fetch);assert.equal(result.confidence,0);assert(result.evidence.includes('practical_help:source_mode:unavailable'));assert(!result.content.includes(source));assert(result.content.includes('?'),result.content);
- }
+
+test('an available capture component can supply the same source when a browser cannot read it directly', async () => {
+  const host = worker();
+  let requests = 0;
+  const result = await cold(host, async () => { throw new TypeError('Failed to fetch'); }, {
+    FormalAIWebSearchComponent: {
+      package: 'test-capture',
+      async fetchUrl(url) {
+        assert.equal(url, source);
+        requests++;
+        return new Response(document);
+      },
+    },
+  });
+  const digest = createHash('sha256').update(document).digest('hex');
+  assert.ok(result.content.includes(guidance), result.content);
+  assert.ok(result.solverEvents.some(event => event.kind === 'source:http'
+    && event.payload.includes(`${source} fetched_at=`) && event.payload.includes(`sha256=${digest}`)));
+  const cached = await host.run('tryPracticalHelp("I need to poop", "en", {offline: true})');
+  assert.ok(cached.evidence.includes('practical_help:source_mode:cached-source'));
+  assert.equal(cached.content, result.content);
+  assert.equal(requests, 1);
+});
+
+test('failed, irrelevant, oversized and invalid UTF-8 sources elicit a clarification', async () => {
+  const transports = [
+    async () => { throw new Error('offline'); },
+    async () => new Response('Unrelated festival text'),
+    async () => new Response(`<!-- <h3>Improve your toilet routine</h3><p>${guidance}</p> --><h3>Unrelated section</h3><p>${guidance}</p>`),
+    async () => new Response(`<h3>Improve your toilet routine</h3><p>Regular times are helpful.</p><h3>Another section</h3><p>${guidance}</p>`),
+    async () => new Response('x'.repeat(2097153)),
+    async () => new Response('雪'.repeat(800000)),
+    async () => new Response('', { status: 503 }),
+    async () => new Response(Buffer.concat([Buffer.from(document), Buffer.from([0xff])])),
+  ];
+  for (const fetch of transports) {
+    const result = await cold(worker(), fetch);
+    assert.equal(result.confidence, 0);
+    assert.ok(result.evidence.includes('practical_help:source_mode:unavailable'));
+    assert.ok(!result.content.includes(source));
+    assert.ok(result.content.includes('?'), result.content);
+  }
 });
 test('both fetch and body-read stalls have a deadline even when transport ignores abort',async()=>{
  for(const fetch of [()=>new Promise(()=>{}),async()=>({ok:true,body:{getReader:()=>({read:()=>new Promise(()=>{}),cancel:()=>Promise.resolve()})}})]){
@@ -93,14 +164,47 @@ test('both fetch and body-read stalls have a deadline even when transport ignore
 });
 test('zero-byte stream chunks have a finite read budget and are cancelled',async()=>{
  let reads=0,cancelled=0;const result=await cold(worker(),async()=>({ok:true,body:{getReader:()=>({read:async()=>{reads++;return{done:false,value:new Uint8Array()};},cancel:async()=>{cancelled++;}})}}));
- assert.equal(reads,1024);assert.equal(cancelled,1);assert.equal(result.confidence,0);
+ assert.equal(reads,17);assert.equal(cancelled,1);assert.equal(result.confidence,0);
 });
-test('the same strategy handles a new data-defined goal without a prompt-specific code branch',async()=>{
- const host=worker();await host.boot();await host.run('globalThis.originalPracticalPolicy=practicalHelpPolicy;MULTILINGUAL_ANSWERS["practical-help-test-rest"]={en:"Take a rest. [{source}]({source})"};practicalHelpPolicy=key=>Object.hasOwn(__profile,key)?__profile[key]:originalPracticalPolicy(key);true',{__profile:{goals:'rest',leads:'i need to','rest-forms':'rest','rest-source':source,'rest-proof':'A verified rest instruction.','rest-cached-proof':'A verified rest instruction.','rest-response':'practical-help-test-rest','rest-unavailable':'practical-help-toilet-unavailable'}});
- const result=await host.run('tryPracticalHelp("I need to rest","en")');assert(result.evidence.includes('practical_help:goal:rest'));assert.equal(result.confidence,0.8);assert(result.content.startsWith('Take a rest.'));
+test('the same strategy handles a new data-defined goal without a prompt-specific code branch', async () => {
+  const excerpt = 'Plan a short rest before returning to the task.';
+  const host = worker(async () => new Response(`<h3>Taking breaks</h3><p>${excerpt}</p>`));
+  await host.run(`globalThis.originalPracticalPolicy = practicalHelpPolicy;
+    practicalHelpPolicy = key => Object.hasOwn(__profile, key) ? __profile[key] : originalPracticalPolicy(key);
+    true;`, {
+    __profile: {
+      goals: 'rest', leads: 'i need to', 'rest-forms': 'rest', 'rest-source': source,
+      'rest-heading': 'Taking breaks', 'rest-excerpt-terms': 'rest',
+      'rest-unavailable': 'practical-help-toilet-unavailable',
+    },
+  });
+  const result = await host.run('tryPracticalHelp("I need to rest", "en")');
+  assert.ok(result.evidence.includes('practical_help:goal:rest'));
+  assert.equal(result.confidence, 0.8);
+  assert.ok(result.content.includes(excerpt), result.content);
 });
 
 test('an empty matcher operand terminates within the same finite contract as Rust',async()=>{
  const host=worker(),context=await host.boot();
  assert.equal(vm.runInContext('practicalHelpContains("letters", "")',context,{timeout:1000}),false);
+});
+
+test('each practical answer quotes the guidance retrieved from the matching section', async () => {
+  for (const advice of [
+    'When you feel the urge, allow yourself time to use a toilet.',
+    'Use the closest available toilet when the urge returns.',
+  ]) {
+    const host = worker();
+    await host.boot();
+    let requests = 0;
+    host.context.fetch = async url => {
+      assert.equal(url, source);
+      requests++;
+      return new Response(`<main><h3>Improve your toilet routine</h3><p>${advice}</p></main>`);
+    };
+    const result = await host.solve('I need to poop');
+    assert.equal(requests, 1);
+    assert.ok(result.content.includes(advice), result.content);
+    assert.ok(result.content.includes(source), result.content);
+  }
 });

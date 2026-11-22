@@ -1,0 +1,31 @@
+✔ maintained producer inventory is finite and complete (3.359306ms)
+✔ registry rejects incomplete unsafe and duplicated source selection (2.728519ms)
+✔ actual byte membership and pinned task/tools stay coupled (3.212542ms)
+✔ refuses turn-cap (3.001309ms)
+✔ refuses task-forgery (3.348787ms)
+✔ refuses tool-widening (2.899748ms)
+✔ refuses extra-member (1.943476ms)
+✔ refuses symlink (1.954155ms)
+✔ pure profile validates data consistency without native or authority credit (3.57647ms)
+✔ profile refuses caller-forged copied profile (1.384312ms)
+✔ archive refuses source-identity (2.000812ms)
+✔ archive refuses failed-producer (1.323869ms)
+✔ archive refuses semantic-credit (1.033067ms)
+✔ archive refuses generated-hash (1.351893ms)
+✔ archive refuses pinned-input (2.216273ms)
+✔ archive refuses missing duplicate and foreign members (5.10423ms)
+✔ CI producer refuses local invocation before any cargo or rustc execution (96.111987ms)
+✔ source-derived complete shape refuses missing driver server turns and malformed steps (9.276332ms)
+✔ schema derives types and literal values from source and refuses unsupported source (1.173378ms)
+✔ producer identity refuses zero run and attempt IDs (2.670411ms)
+✔ archive refuses missing or excessive process budgets (2.950714ms)
+✔ unsupported dispatch PR selectors refuse instead of compiling the dispatch branch (1.402687ms)
+✔ selector refusal precedes output creation and every native producer command (88.625774ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 394.116832

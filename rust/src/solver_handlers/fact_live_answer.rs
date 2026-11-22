@@ -23,110 +23,24 @@
 //! instead of guessing. The browser twin of R3 is `resolveFactQueryViaWikidata`
 //! with `factLiveAnswer` (`js/worker/formal_ai_worker_factual_qa.js`).
 
-use super::factual_qa::{
-    locate, question_relation, relation_clause, relation_label, render_template, role_surfaces,
-};
+use super::factual_qa::{relation_label, render_template};
 use super::finalize_simple;
 use crate::coding::contains_cjk;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::fact_live::resolve_fact_live;
+use crate::fact_live::{
+    LiveFactQuestion, bounded_subject, capture_client, live_fact_questions, locate,
+    record_fact_question, resolve_fact_live, role_surfaces,
+};
 use crate::language::detect as detect_language;
 use crate::seed;
-use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
+use crate::source_fetch::{CachedSourceClient, SourceTransport};
 
-/// The longest subject term sent to the item search, in words.
-///
-/// A longer remainder is a sentence, not an entity name.
-const MAX_SUBJECT_WORDS: usize = 4;
-/// Environment override for the capture cache, shared with web search.
-const LIVE_FACT_CACHE_DIR_ENV: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
 /// The intent of a live Wikidata resolution, as the browser names it.
 const LIVE_FACT_INTENT: &str = "fact_query";
 /// The intent of an explanation composed from retrieved pages.
 #[cfg(feature = "meta-language")]
 const EXPLANATION_INTENT: &str = "explanation_research";
-
-/// A fact question formalized for the live path.
-///
-/// It names the relation slug and the subject term to search for.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct LiveFactQuestion {
-    pub relation: String,
-    pub subject_term: String,
-}
-
-/// Whether `id` is a Wikidata property id (`P` followed by digits).
-fn is_property_id(id: &str) -> bool {
-    id.strip_prefix('P')
-        .is_some_and(|digits| !digits.is_empty() && digits.chars().all(|c| c.is_ascii_digit()))
-}
-
-/// The seed's function words and interrogative openers, normalized.
-fn question_stop_words() -> Vec<String> {
-    let mut stop = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
-    stop.extend(role_surfaces(seed::ROLE_INTERROGATIVE_OPENER));
-    stop
-}
-
-/// Remove every run of `tokens` equal to the words of `surface`.
-fn remove_sequence(tokens: &mut Vec<String>, surface: &str) {
-    let parts: Vec<&str> = surface.split_whitespace().collect();
-    if parts.is_empty() {
-        return;
-    }
-    let mut index = 0;
-    while index + parts.len() <= tokens.len() {
-        if tokens[index..index + parts.len()]
-            .iter()
-            .zip(&parts)
-            .all(|(token, expected)| token == expected)
-        {
-            tokens.drain(index..index + parts.len());
-        } else {
-            index += 1;
-        }
-    }
-}
-
-/// The content words of `text` without `removed` surfaces and stop words.
-///
-/// `None` when nothing, or a whole sentence, is left.
-fn content_words(text: &str, removed: &[String]) -> Option<String> {
-    let mut tokens: Vec<String> = normalize_prompt(text)
-        .split_whitespace()
-        .map(str::to_owned)
-        .collect();
-    for surface in removed {
-        remove_sequence(&mut tokens, surface);
-    }
-    let stop = question_stop_words();
-    tokens.retain(|token| !stop.iter().any(|word| word == token));
-    (!tokens.is_empty() && tokens.len() <= MAX_SUBJECT_WORDS).then(|| tokens.join(" "))
-}
-
-/// Formalize a fact question for the live path (issue #1172 R3).
-///
-/// The asked relation and the subject term are both read from seed data. CJK
-/// prompts have no word boundaries to strip the relation at, so they are left
-/// alone.
-#[must_use]
-pub fn live_fact_question(prompt: &str) -> Option<LiveFactQuestion> {
-    let normalized = normalize_prompt(prompt);
-    if normalized.is_empty() || contains_cjk(&normalized) {
-        return None;
-    }
-    let relation = question_relation(&normalized)?;
-    if !is_property_id(&relation.wikidata) {
-        return None;
-    }
-    let surfaces: Vec<String> = relation.words().map(normalize_prompt).collect();
-    let subject_term = content_words(relation_clause(prompt, Some(relation)), &surfaces)?;
-    Some(LiveFactQuestion {
-        relation: relation.slug.clone(),
-        subject_term,
-    })
-}
 
 /// Answer an unseeded fact question from Wikidata (issue #1172 R3).
 ///
@@ -137,19 +51,42 @@ pub fn try_fact_live_answer<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
-    let question = live_fact_question(prompt)?;
-    log.append_search_request(
-        "wikidata",
-        format!("{}:{}", question.relation, question.subject_term),
-    );
+    try_rewritten_fact_answer(prompt, prompt, log, client)
+}
+
+pub(super) fn try_rewritten_fact_answer<T: SourceTransport>(
+    prompt: &str,
+    rewritten: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt).slug();
+    let mut questions = live_fact_questions(rewritten).into_iter();
+    let first = questions.next()?;
+    answer_live_fact_question(prompt, &first, language, log, client).or_else(|| {
+        questions
+            .filter(|question| question.subject_term == first.subject_term)
+            .find_map(|question| {
+                answer_live_fact_question(prompt, &question, language, log, client)
+            })
+    })
+}
+
+fn answer_live_fact_question<T: SourceTransport>(
+    prompt: &str,
+    question: &LiveFactQuestion,
+    language: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
+    record_fact_question(log, prompt, &question.relation, &question.subject_term);
     log.append("fact_live:relation", question.relation.as_str());
     log.append("fact_live:subject", question.subject_term.as_str());
     let statement =
         match resolve_fact_live(client, &question.relation, &question.subject_term, language) {
             Ok(Some(statement)) => statement,
             Ok(None) => {
-                log.append("fact_live:no_match", question.subject_term);
+                log.append("fact_live:no_match", question.subject_term.as_str());
                 return None;
             }
             Err(error) => {
@@ -203,7 +140,7 @@ pub fn try_fact_live_answer<T: SourceTransport>(
 /// The concept an explanation request asks about (issue #1172 R8).
 ///
 /// The prompt must open with a `capability_act_explain` surface; the concept
-/// is what remains once that surface and the stop words are removed.
+/// is the subject phrase following that surface.
 #[must_use]
 pub fn explanation_concept(prompt: &str) -> Option<String> {
     let normalized = normalize_prompt(prompt);
@@ -214,7 +151,7 @@ pub fn explanation_concept(prompt: &str) -> Option<String> {
         .into_iter()
         .find(|cue| locate(&normalized, cue) == Some(0))?;
     let rest = normalized.strip_prefix(cue.as_str())?;
-    content_words(rest, &[])
+    bounded_subject(rest.trim())
 }
 
 /// Answer an explanation request from retrieved pages (issue #1172 R8).
@@ -288,13 +225,124 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
     if super::resolves_coreference_request(prompt, log) {
         return None;
     }
-    super::try_fact_lookup(prompt, normalized, log)
+    if let Some(answer) = super::try_fact_lookup(prompt, normalized, log) {
+        return Some(answer);
+    }
+    if let Some(answer) = super::project_origin::try_project_origin(prompt, log, client)
+        .or_else(|| publisher_fact_answer(prompt, normalized, log, client))
+        .or_else(|| super::factual_qa::try_live_fact_comparison(prompt, log, client))
         .or_else(|| try_fact_live_answer(prompt, log, client))
-        .or_else(|| explanation_fallback(prompt, log, client))
+    {
+        return Some(answer);
+    }
+    explanation_fallback(prompt, log, client)
 }
 
+fn publisher_fact_answer<T: SourceTransport>(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
+    let language = detect_language(prompt).slug();
+    let today = crate::external_benchmarks::today_utc();
+    let rendered =
+        if let Some((record, gate)) = super::factual_qa::gated_fact_record(prompt, normalized) {
+            if record.release_timeline.is_empty() {
+                return publisher_policy_answer(prompt, record, &gate, log, client);
+            }
+            let rendered = crate::release_timeline::try_release_timeline(
+                &record.release_timeline,
+                language,
+                &today,
+                log,
+                client,
+            )?;
+            record_publisher_fact(record, &gate, log);
+            rendered
+        } else {
+            crate::release_timeline::try_open_release_timeline(
+                normalized, language, &today, log, client,
+            )?
+        };
+    log.append("fact_lookup:request", prompt);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "fact_lookup",
+        "response:fact_lookup",
+        &rendered.text,
+        0.9,
+    ))
+}
+
+fn publisher_policy_answer<T: SourceTransport>(
+    prompt: &str,
+    record: &seed::FactRecord,
+    gate: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
+    if record.publisher_heading.is_empty() || record.source_kind != "official-docs" {
+        return None;
+    }
+    let language = detect_language(prompt).slug();
+    let source = record.source_for(language);
+    let url = url::Url::parse(source).ok()?;
+    if url.scheme() != "https" || !url.username().is_empty() || url.password().is_some() {
+        return None;
+    }
+    log.append("publisher_policy:request", source);
+    let capture = match client.fetch(source) {
+        Ok(capture) => capture,
+        Err(error) => {
+            log.append("publisher_policy:unavailable", error.to_string());
+            return None;
+        }
+    };
+    let Some(excerpt) = crate::solver_handler_how::practical_help::section_excerpt(
+        capture.bytes(),
+        &record.publisher_heading,
+        &record.publisher_terms,
+    ) else {
+        log.append("publisher_policy:rejected", "no_matching_excerpt");
+        return None;
+    };
+    let key = "publisher-policy-excerpt";
+    let body = render_template(key, language, &[("source", source), ("excerpt", &excerpt)]);
+    if body.is_empty() {
+        return None;
+    }
+    capture.record(log);
+    log.append("source", source);
+    record_publisher_fact(record, gate, log);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "fact_lookup",
+        &format!("response:{key}"),
+        &body,
+        0.85,
+    ))
+}
+
+fn record_publisher_fact(record: &seed::FactRecord, gate: &str, log: &mut EventLog) {
+    log.append("fact_lookup:hit", record.slug.clone());
+    log.append("fact_lookup:subject_gate", gate);
+    for identifier in &record.wikidata {
+        log.append("wikidata", identifier.as_str());
+    }
+}
+
+/// The R8 step of the row.
 #[cfg(feature = "meta-language")]
-use self::try_explanation_research as explanation_fallback;
+fn explanation_fallback<T: SourceTransport>(
+    prompt: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
+    try_explanation_research(prompt, log, client)
+}
 
 /// Without the page formalizer there is no retrieve-and-formalize path.
 #[cfg(not(feature = "meta-language"))]
@@ -309,7 +357,7 @@ fn explanation_fallback<T: SourceTransport>(
 /// The `fact_lookup` row over the process capture cache.
 ///
 /// Transport is enabled only when the runtime opted into live fetches
-/// (`offline` false); offline, committed captures still replay and a miss
+/// (`offline` false); offline, verified runtime captures still replay and a miss
 /// falls through.
 pub fn try_fact_lookup_with_offline(
     prompt: &str,
@@ -317,7 +365,5 @@ pub fn try_fact_lookup_with_offline(
     log: &mut EventLog,
     offline: bool,
 ) -> Option<SymbolicAnswer> {
-    let cache_dir = std::env::var(LIVE_FACT_CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
-    let client = CachedSourceClient::new(&cache_dir, CurlSourceTransport).with_online(!offline);
-    try_fact_lookup_with_client(prompt, normalized, log, &client)
+    try_fact_lookup_with_client(prompt, normalized, log, &capture_client(offline))
 }

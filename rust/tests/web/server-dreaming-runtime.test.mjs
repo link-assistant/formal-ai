@@ -115,7 +115,7 @@ test('a missing log is never created, yet the run leaves its ledger and learning
   assert.deepEqual(fs.readdirSync(path.dirname(missing)).sort(), [
     'memory.anticipation.lino', 'memory.anticipation.lino.lock', 'memory.learning-cycle.lino', 'memory.learning-cycle.lino.lock',
   ]);
-  assert.equal(fs.readFileSync(learningCycleRecordPath(missing), 'utf8'), `${learningCycleLinksNotation(googleTrendsLearningCycle())}\n`);
+  assert.equal(fs.readFileSync(learningCycleRecordPath(missing), 'utf8'), `${learningCycleLinksNotation(googleTrendsLearningCycle(''))}\n`);
 
   const future = tempMemory('future');
   const text = 'demo_memory\n  schema_version "99"\n  event "future"\n    content "untouched"\n';

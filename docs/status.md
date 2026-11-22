@@ -18,10 +18,10 @@ This document is a deterministic projection of committed ledgers.
 
 | Verdict | Count |
 | --- | ---: |
-| `implemented` | 1356 |
+| `implemented` | 1355 |
 | `not-delivered` | 37 |
 | `partial` | 128 |
-| `superseded` | 6 |
+| `superseded` | 7 |
 | `withdrawn` | 2 |
 
 ## Latest external benchmark rows
@@ -40,7 +40,7 @@ This document is a deterministic projection of committed ledgers.
 
 ## Latest self-hosting release
 
-- `tag`: `v0.356.5`
+- `tag`: `v0.356.6`
 - `percentage_basis_points`: `0`
 - `trailing_percentage_basis_points`: `0`
 - `target_percentage_basis_points`: `389`
@@ -50,11 +50,11 @@ This document is a deterministic projection of committed ledgers.
 | Input | Lines |
 | --- | ---: |
 | `data/benchmarks/external-results.lino` | 969 |
-| `data/meta/self-hosting-ledger.lino` | 248 |
-| `data/meta/debt-ratchet.lino` | 64 |
-| `data/meta/core-boundary-ledger.lino` | 572 |
+| `data/meta/self-hosting-ledger.lino` | 258 |
+| `data/meta/debt-ratchet.lino` | 65 |
+| `data/meta/core-boundary-ledger.lino` | 595 |
 | `data/meta/handler-migration-ledger.lino` | 502 |
 | `data/meta/ladder-ratchet.lino` | 21 |
 | `data/meta/requirement-status-ledger.lino` | 175 |
 | `data/seed/languages.lino` | 113 |
-| `data/meta/worker-line-budget/*.lino` | 180 files |
+| `data/meta/worker-line-budget/*.lino` | 189 files |

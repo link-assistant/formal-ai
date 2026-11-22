@@ -36,6 +36,11 @@ pub(super) fn plan_chat_step_routes(
     // boundary serves the whole router rather than one recipe.
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
+    if let Some(plan) =
+        super::super::document_recipe::plan_structured_repair(&task, messages, tool_names)
+    {
+        return Some(plan);
+    }
     // A bare continuation cue with nothing to resume is still the cue here,
     // and the `agentic_continuation` conversation handler answers it; the
     // words of the cue are never a request (issue #1095).
@@ -53,8 +58,7 @@ pub(super) fn plan_chat_step_routes(
     {
         return None;
     }
-    // Issue #707: seed-defined computer-use plans own their exact multilingual
-    // prompts before broad write/search routing. Each emitted primitive carries
+    // Explicit computer-use plans precede broad write/search routing. Each primitive carries
     // explicit pre/postconditions and is executed by the advertising client.
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its
@@ -81,19 +85,24 @@ pub(super) fn plan_chat_step_routes(
             ));
         }
     }
+    if task.lines().any(|line| line.trim_end() == "```lino")
+        && let Some(report) = learning_report::route(&task)
+    {
+        return Some(report.plan_step(&task, messages, tool_names));
+    }
     // Bind a program's semantic operands before treating its source path as a
     // destination for a report about the rest of the request.
     if let Some(mut answer) =
         crate::coding::program_contract::answer(&task, &mut crate::event_log::EventLog::default())
     {
         if let Some(recipe) = answer.execution_recipe.as_mut()
-            && super::super::ci_workflow::requested_in(&task)
+            && super::ci_workflow::requested_in(&task)
         {
-            super::super::ci_workflow::attach(recipe, &task);
+            super::ci_workflow::attach(recipe, &task);
         }
-        if let Some(plan) = super::super::command_reroute::plan_symbolic_command_reroute(
-            messages, tool_names, &answer,
-        ) {
+        if let Some(plan) =
+            super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
+        {
             return Some(plan);
         }
     }

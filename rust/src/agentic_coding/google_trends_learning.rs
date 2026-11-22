@@ -1,20 +1,10 @@
-//! Agentic recipe for issues #498 + #558: route the Google Trends learning
-//! frontier through the human-gated self-improvement loop.
-//!
-//! The catalog recipe ([`super::google_trends_catalog`]) turns trending searches
-//! into reviewable multilingual prompts. This recipe closes the loop: it asks
-//! Formal AI which of those prompts it *cannot yet resolve* and feeds that frontier
-//! into the same proposal-only, human-gated learner the rest of the system uses
-//! ([`crate::self_improvement`]). Trending searches are open-domain questions, not
-//! program-plan modifiers, so the learner honestly adopts nothing — the value is the
-//! auditable frontier and the proof the gap flows into the gated loop rather than off
-//! a cliff. The rendered document is a pure function of the committed catalog, so it
-//! pins byte-for-byte.
+//! Agentic recipe for routing a captured feed through human-gated learning.
 
-use crate::google_trends_learning::trending_learning_report;
+use crate::google_trends_catalog::feed_for_task;
+use crate::google_trends_learning::trending_learning_report_from_feed;
+use crate::seed::{agentic_message, parser::parse_lino};
 
-/// The workspace path the planner writes, mirrored by the committed artifact under
-/// `data/meta/`.
+/// The workspace path the planner writes.
 pub const GOOGLE_TRENDS_LEARNING_PATH: &str = "google-trends-learning.lino";
 
 /// A differently worded task for the Google Trends learning-frontier recipe.
@@ -70,30 +60,41 @@ fn is_learn_from_source_directive(lowercased: &str) -> bool {
         .is_some_and(|source| source.capability == LEARNING_CAPABILITY)
 }
 
-/// Render the deterministic Google Trends learning-frontier report.
+/// Render a report for the requested publisher feed.
+pub(super) fn document_for_task(task: &str) -> Option<String> {
+    let feed = feed_for_task(task)?;
+    let report = trending_learning_report_from_feed(&feed);
+    Some(format!("{}\n", report.links_notation()))
+}
+
+/// Render the default regional report, or an empty document if the feed is unavailable.
 #[must_use]
 pub fn render_document() -> String {
-    format!("{}\n", trending_learning_report().links_notation())
+    document_for_task("").unwrap_or_default()
 }
 
 /// The self-contained final answer for the agentic loop.
 #[must_use]
 pub fn final_answer(document: &str) -> String {
-    let report = trending_learning_report();
-    format!(
-        "Routed the Google Trends learning frontier through the human-gated self-improvement \
-         loop: of {total} trending prompts, the engine already resolves {handled} and leaves \
-         {frontier} on the learning frontier. Every frontier trace was handed to the issue-#558 \
-         learner, which — because trending searches are open-domain questions, not program-plan \
-         modifiers — proposed {proposals} rules and adopted {adopted}: nothing changes without \
-         human review. The report is a pure function of the committed catalog.\n\nGenerated \
-         document ({GOOGLE_TRENDS_LEARNING_PATH}):\n\n{document}",
-        total = report.total_prompts,
-        handled = report.handled_by_engine,
-        frontier = report.frontier_count(),
-        proposals = report.run.proposals.len(),
-        adopted = report.adopted_count(),
-        document = document.trim_end(),
+    let parsed = parse_lino(document);
+    let Some(report) = parsed.children.first() else {
+        return agentic_message("google_trends_source_unavailable", &[]);
+    };
+    agentic_message(
+        "google_trends_learning_final_answer",
+        &[
+            ("total", report.find_child_value("total_prompts")),
+            ("handled", report.find_child_value("handled_by_engine")),
+            ("frontier", report.find_child_value("learning_frontier")),
+            (
+                "proposals",
+                report.find_child_value("learning_run_proposals"),
+            ),
+            ("adopted", report.find_child_value("learning_run_adopted")),
+            ("source_url", report.find_child_value("source_url")),
+            ("path", GOOGLE_TRENDS_LEARNING_PATH),
+            ("document", document.trim_end()),
+        ],
     )
 }
 

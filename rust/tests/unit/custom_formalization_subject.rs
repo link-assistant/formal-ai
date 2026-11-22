@@ -75,18 +75,23 @@ fn custom_quoted_task_is_honored_in_every_language() {
     }
 }
 
-/// The canonical task quotes the tale's *title*; a quoted title still selects
-/// the full canonical tale rather than formalizing the five-word name.
+/// A quoted registered title identifies the publisher request.
 #[test]
-fn quoted_canonical_title_still_selects_the_full_tale() {
+fn quoted_registered_title_requests_the_publisher_text() {
     let messages = vec![ChatMessage::user(
         "Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.",
     )];
-    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &[]) else {
-        panic!("expected a final answer");
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["web_fetch"]) else {
+        panic!("expected a publisher fetch");
     };
-    assert!(answer.contains("«Сказка о рыбаке и рыбке»"), "{answer}");
-    assert!(answer.contains("tale:fisherman-and-fish"), "{answer}");
+    assert_eq!(calls[0].tool, "web_fetch");
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    let url = url::Url::parse(arguments["url"].as_str().unwrap()).unwrap();
+    assert_eq!(url.host_str(), Some("ru.wikisource.org"));
+    assert!(
+        url.query_pairs()
+            .any(|(key, title)| key == "page" && title == "Сказка о рыбаке и рыбке (Пушкин)")
+    );
 }
 
 fn inline_knowledge_base(prompt: &str) -> String {
@@ -165,9 +170,10 @@ fn known_title_identity_survives_case_and_spacing_without_domain_word_guessing()
         "Formalize “Сказка о рыбаке и рыбке” into a knowledge base with label «Reference».",
     ] {
         let messages = vec![ChatMessage::user(prompt)];
-        let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &[]) else {
-            panic!("expected the explicitly referenced known work");
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["web_fetch"]) else {
+            panic!("expected a fetch for the explicitly referenced known work");
         };
-        assert!(answer.contains("tale:fisherman-and-fish"), "{answer}");
+        assert_eq!(calls[0].tool, "web_fetch");
+        assert!(calls[0].arguments.contains("ru.wikisource.org/w/api.php"));
     }
 }

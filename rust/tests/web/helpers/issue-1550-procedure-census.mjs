@@ -1,7 +1,7 @@
 // Issue #1550 (acceptance criterion c): the census of the answer paths.
 //
 // One recursive procedure produces every answer: the native entry
-// `UniversalSolver::solve_with_history_probability_store_and_intent_cache`
+// `UniversalSolver::solve_inner`
 // (rust/src/solver.rs) runs the handler cascade inside one drafting closure
 // whose value is the direct-derivation draft; `controlled_solve` (issue #1584)
 // calls it for the turn's prompt and the canonical reading of a task
@@ -16,7 +16,7 @@ import { specificationCases } from '../../../../scripts/lib/rust-specification-c
 
 export const RUST_ENTRY = 'rust/src/solver.rs';
 export const JS_ENTRY = 'js/worker/formal_ai_worker_solve.js';
-const RUST_FN = 'fn solve_with_history_probability_store_and_intent_cache(';
+const RUST_FN = 'fn solve_inner(';
 const CLOSURE_OPEN = 'let mut solve_core = |prompt: &str, log: &mut EventLog| -> SymbolicAnswer {';
 const CLOSURE_CLOSE = '};\n        let crate::cnl_output::ControlledSolve {';
 const RUST_EXIT = /\breturn\b|\?\s*;/gu;

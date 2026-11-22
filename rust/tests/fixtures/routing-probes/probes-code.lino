@@ -341,17 +341,17 @@ routing_probes
   probe p223
     lane program_synthesis
     language en
-    intent write_program
+    intent write_program_skill_gap
     prompt "Write a Python function that returns the factorial of n"
   probe p224
     lane program_synthesis
     language hi
-    intent write_program
+    intent write_program_skill_gap
     prompt "Python में एक फ़ंक्शन लिखो जो n का फ़ैक्टोरियल लौटाए"
   probe p225
     lane program_synthesis
     language ru
-    intent write_program
+    intent write_program_skill_gap
     prompt "Напиши функцию на Python, которая возвращает факториал n"
   probe p231
     lane regex_synthesis

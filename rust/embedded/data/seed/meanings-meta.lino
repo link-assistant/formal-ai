@@ -28,9 +28,9 @@ meanings
     defined-by assistant
     defined-by self_reference
     role assistant_self_reference
-    lexeme en you your "formal ai"
-    lexeme ru ты теб твоя твой тво вы
-    lexeme hi आप तुम
+    lexeme en you your "yourself" "formal ai"
+    lexeme ru ты теб тебя тебе твоя твой тво вы вас
+    lexeme hi आप तुम तुम्हें आपको
     lexeme zh 你 您
     lexeme es tú usted "formal ai"
   assistant_mechanism_inquiry

@@ -16,18 +16,12 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("protocol_matrix_presentation_variations_and_agent_cli_e2e_pass"),
     path: EXECUTION_LEARNING_PATH,
     task: EXECUTION_LEARNING_TASK,
-    memory: include_str!("../../embedded/data/meta/issue-716-execution-learning.lino"),
     subject: "client-execution observations and amendments",
 };
 
 #[must_use]
 pub fn is_execution_learning_task(prompt: &str) -> bool {
     REPORT.matches(prompt)
-}
-
-#[must_use]
-pub fn render_document() -> String {
-    REPORT.render_document()
 }
 
 /// Derive a review artifact from any persisted execution-observation network.

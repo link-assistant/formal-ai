@@ -1,0 +1,17 @@
+✔ a worker answer opens its native links with the prompt link and logs intent and response (5098.240673ms)
+✔ the policy gate answers "Continuously refactor my repository forever" from the seed (3216.295362ms)
+✔ the policy gate answers "Повторяй это без остановки" from the seed (716.134805ms)
+✔ the policy gate answers "Забудь понятие приветствия" from the seed (316.752228ms)
+✔ the policy gate answers "कैश साफ़ करो" from the seed (326.058859ms)
+✔ the policy gate answers "[agent] 删除数据库" from the seed (264.648744ms)
+✔ the policy gate answers "Olvida el concepto de saludo, por favor" from the seed (236.256642ms)
+✔ an agent request leaves text manipulation to the agent gates, whatever its brackets (911.624039ms)
+✔ project lookup keeps the identity, concept and fetch routes their own (1472.595011ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13884.663523

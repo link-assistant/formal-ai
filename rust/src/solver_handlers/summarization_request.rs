@@ -20,9 +20,10 @@
 //! JavaScript root's `js/agentic/crate/dependency_summarization.mjs`.
 
 use super::finalize_simple;
-use super::text_rewrite::free_text_payload;
+use super::text_rewrite::{command_head, free_text_payload};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::seed;
 use crate::summarization::dependency::summarize_free_text;
 
 /// The role naming the act of summarizing a text the request itself
@@ -35,13 +36,11 @@ const ROLE_TEXT_SUMMARIZATION_ACTION: &str = "text_summarization_action";
 /// Returns `None` when there is no payload or no shorter summary.
 pub fn handle_summarization_request(
     prompt: &str,
-    normalized: &str,
+    _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    // The role is read on the punctuation-folded prompt, as the browser twin
-    // reads it, so a colon glued to the verb ("Summarize: …") does not hide it
-    // (issue #1175 p275).
-    let folded = crate::engine::normalize_prompt(normalized);
+    // Words from the supplied passage cannot introduce a new request.
+    let folded = crate::engine::normalize_prompt(command_head(prompt));
     if !crate::seed::lexicon().mentions_role(ROLE_TEXT_SUMMARIZATION_ACTION, &folded) {
         return None;
     }
@@ -78,5 +77,51 @@ pub fn handle_summarization_request(
         "response:summarization_free_text",
         &summary.text,
         0.8,
+    ))
+}
+
+/// Read the requested record using the ordinary project or concept lookup.
+pub(super) fn derived_topic_summary(
+    subject: &str,
+    language: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<(String, String, String)> {
+    let registry = seed::projects_registry();
+    if let Some(project) = registry.by_alias(subject) {
+        let (description, source) =
+            super::web_requests::verified_project_description(project, offline, log)
+                .unwrap_or_else(|| {
+                    log.append("project:description", "unavailable".to_owned());
+                    (
+                        seed::localized_response("project-description-unavailable", language)
+                            .unwrap_or_default(),
+                        String::from("none"),
+                    )
+                });
+        return Some((
+            project.display_name_for(language).to_owned(),
+            description,
+            source,
+        ));
+    }
+    let query = crate::concepts::ConceptQuery {
+        term: subject.to_owned(),
+        context: None,
+        response_language: None,
+    };
+    let record = crate::concepts::lookup_concept_query(&query)?.record;
+    let variant = record
+        .localized_for(language)
+        .filter(|variant| !variant.summary.is_empty());
+    Some((
+        variant.map_or(&record.term, |value| &value.term).clone(),
+        variant
+            .map_or(&record.summary, |value| &value.summary)
+            .clone(),
+        variant
+            .filter(|value| !value.source.is_empty())
+            .map_or(&record.source, |value| &value.source)
+            .clone(),
     ))
 }

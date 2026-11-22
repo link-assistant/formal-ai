@@ -525,3 +525,16 @@ The published b838 native script job passes all 25 compiled CLI methods; three n
 
 
 Native artifact rerun draft is locally verified: unique run/attempt/SHA uploads, immutable producer artifact ID, original producer attempt and strict pre-download selection preserve source/compiler/physical-input/executable receipts. Both complete neighboring JavaScript files and six touched gates pass; original mismatched-attempt failures are retained. Actual hosted full-rerun and failed-job-rerun paths remain unqualified. See `native-artifact-reruns.md`; all original issue criteria remain active.
+
+
+## Main ffd50eb4 integration, current local checkpoint
+
+- [x] Collect all 31 terminal b838 workflows and retain full failed logs.
+- [x] Resolve all 51 incoming conflicts, preserving both source decompositions and main's new runtime checks.
+- [x] Reconcile seven removed seed records and thirteen stale allowlist rows without raising their ceilings.
+- [x] Review the complete supported witness objects, regenerate canonical projections and verify current physical hashes.
+- [x] Pass focused capture, native-policy, calendar/currency, identifier, fixture and shared-lexeme controls without local Rust compilation.
+- [ ] Finish the full post-merge JavaScript gate inventory; preserve every failure and repair the complete batch before pushing.
+- [ ] Refresh final-head remote CI and every remaining original acceptance criterion; keep draft/unmerged until verified.
+
+Evidence and limits: [main integration checkpoint](../../docs/case-studies/issue-1580/main-ffd50eb4-integration.md).

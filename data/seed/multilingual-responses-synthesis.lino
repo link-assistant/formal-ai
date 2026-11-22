@@ -719,3 +719,23 @@ multilingual_responses
     intent coding_rosetta_workspace_unavailable
     language es
     text "Estado de ejecución: no disponible; no se pudo crear el espacio aislado."
+  response response-describe-program-task-en
+    intent describe-program-task
+    language en
+    text "What should the {language} program do? Describe the inputs it should take and the result you want."
+  response response-describe-program-task-ru
+    intent describe-program-task
+    language ru
+    text "Что должна делать программа на языке {language}? Опишите её входные данные и нужный результат."
+  response response-describe-program-task-hi
+    intent describe-program-task
+    language hi
+    text "{language} प्रोग्राम को क्या करना चाहिए? बताइए कि उसे कौन सा इनपुट लेना है और आपको क्या नतीजा चाहिए।"
+  response response-describe-program-task-zh
+    intent describe-program-task
+    language zh
+    text "这个 {language} 程序应该做什么？请描述它需要接收的输入和你想得到的结果。"
+  response response-describe-program-task-es
+    intent describe-program-task
+    language es
+    text "¿Qué debe hacer el programa en {language}? Describe los datos que recibirá y el resultado que quieres."

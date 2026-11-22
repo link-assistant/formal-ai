@@ -2,27 +2,21 @@
 //! recorded frontier item, plus the corpus-level unknown-rate ratchet.
 //!
 //! ```sh
-//! cargo run --release --example issue_701_adoption_ledger
-//! cargo run --release --example issue_701_adoption_ledger -- --write
+//! cargo run --release --example issue_701_adoption_ledger -- FRONTIER.lino FEED.xml
 //! ```
 
 use formal_ai::google_trends_adoption_ledger;
 
 fn main() {
-    let ledger = google_trends_adoption_ledger();
-    let rendered = ledger.links_notation();
-    if std::env::args().any(|argument| argument == "--write") {
-        let path = "data/meta/learning-adoption-ledger.lino";
-        let committed = std::fs::read_to_string(path).expect("read committed adoption ledger");
-        let suffix = committed
-            .find("  behavior_delta_schema\n")
-            .map(|start| &committed[start..])
-            .expect("preserve the generalized behavior-delta suffix");
-        std::fs::write(path, format!("{rendered}\n{suffix}"))
-            .expect("write regenerated adoption ledger");
-    } else {
-        println!("{rendered}");
-    }
+    let mut paths = std::env::args_os().skip(1);
+    let frontier =
+        std::fs::read_to_string(paths.next().expect("provide the frontier document path"))
+            .expect("read frontier");
+    let rss = std::fs::read_to_string(paths.next().expect("provide the RSS capture path"))
+        .expect("read feed");
+    let feed = formal_ai::parse_google_trends_rss(&rss, "US", "en").expect("parse feed");
+    let ledger = google_trends_adoption_ledger(&frontier, &feed);
+    println!("{}", ledger.links_notation());
     eprintln!(
         "pairs={} adopted={} topics={} languages={} unknown_before={} unknown_after={}",
         ledger.pairs.len(),

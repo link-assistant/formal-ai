@@ -1084,7 +1084,7 @@ dependencies = [
 
 [[package]]
 name = "formal-ai"
-version = "0.356.5"
+version = "0.356.6"
 dependencies = [
  "async-trait",
  "base64 0.23.1",

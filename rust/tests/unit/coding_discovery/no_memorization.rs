@@ -699,40 +699,12 @@ fn formalization_grammar_and_runtime_memorize_no_probe_clause() {
     );
 }
 
-/// Verbatim Hello World program literals still stored under `data/` (issue
-/// #1165 R8). Each is the output literal of one per-language Hello World
-/// template in `data/seed/hello-world-programs.lino`, the seed bundle the
-/// Rust catalog tests hold equal to the catalog tables. The JavaScript
-/// catalog (`data/meta/agentic-coding-catalog.lino`) used to carry a second
-/// copy of every program; it now names its templates and reads their text
-/// from that bundle, so each program is stored once. The ceiling only goes
-/// down: a verified procedure that reproduces a language's program replaces
-/// its stored template, and the ceiling drops with it until it reaches zero.
-/// It fell from 14 to 11 when the Rust, Go and Kotlin rows moved to the
-/// documentation route (R1165-4): their programs are rediscovered from the
-/// documentation captures at answer time and no longer stored. It fell from
-/// 11 to 4 when the Python, JavaScript, TypeScript, C, C++, C# and Ruby rows
-/// followed them, and from 4 to 1 when Java and Scala bound their documented
-/// class and object names into the run contract and PHP's page example was
-/// answered with its missing trailing newline recorded as a deviation. The
-/// one left is Laravel: the Laravel docs show no Hello World command (their
-/// routing page returns `Hello World` as an HTTP response body, not the
-/// standard output the catalog's `php artisan hello:world` contract checks)
-/// and the catalog carries no Laravel grammar.
-const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 1;
+/// Publisher examples are loaded by explicit replay tests. Hold runtime data
+/// and other authored tables at zero verbatim Hello World output literals.
+const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 0;
 
-/// Data captured from a source, each with the Hello World literals it may
-/// hold: source data, not programs. A path ending in `/` names a directory.
-///
-/// The documentation captures seed (R1165-1) holds the code blocks the page
-/// formalizer reads from byte-for-byte captures of documentation pages, each
-/// pinned by SHA-256 and re-derived from the capture by
-/// `documentation_captures_are_the_formalized_fixtures`, so a Hello World it
-/// holds is what a real page shows, not an authored answer. Its ceiling rose
-/// from 7 to 19 with the eight captures of 2026-10-08 (Python wiki, MDN, the
-/// TypeScript handbook, Microsoft's C, C++ and C# pages, ruby-lang.org and
-/// the Swift book), to 22 with Oracle's Java tutorial and php.net's first
-/// page, and to 23 with lua.org's Programming in Lua.
+/// Independent ceilings for captured source data under data/. A path ending
+/// in a slash names a directory.
 ///
 /// The requirement-extraction corpus (PR #1188 R1188-U20) holds issue bodies
 /// as their authors wrote them; the 5 are code the issues quote (issues 408,
@@ -745,8 +717,7 @@ const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 1;
 ///
 /// Each is counted on its own ratchet so the source data stays visible and
 /// cannot grow without a new capture.
-const SOURCE_CAPTURES: [(&str, usize); 3] = [
-    ("data/seed/coding-documentation-captures.lino", 23),
+const SOURCE_CAPTURES: [(&str, usize); 2] = [
     ("data/benchmarks/issue-requirements/", 5),
     (
         "data/benchmarks/fixtures/issue-1558/agent-cli-request.json",
@@ -873,8 +844,8 @@ fn data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet() {
             }
         }
     }
-    assert!(
-        total <= HELLO_WORLD_PROGRAM_LITERALS_MAX,
+    assert_eq!(
+        total, HELLO_WORLD_PROGRAM_LITERALS_MAX,
         "data/ stores {total} verbatim Hello World program literals, above the ratchet of \
          {HELLO_WORLD_PROGRAM_LITERALS_MAX}: {offenders:?}"
     );

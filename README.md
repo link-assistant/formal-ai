@@ -115,12 +115,12 @@ them, and the call chain from each runtime's entry are:
 
 | Runtime | Entry chain (each function calls the next) | Recursive executor |
 | --- | --- | --- |
-| Rust | `solve_with_history_probability_store_and_intent_cache` → `run_meta_procedure` → `solve_answer` → `solve_turn` → `InProcessExecutor` → `execute_procedure` | `solve_recursively` |
+| Rust | `solve_inner` → `run_meta_procedure` → `solve_answer` → `solve_turn` → `InProcessExecutor` → `execute_procedure` | `solve_recursively` |
 | JavaScript | `solve` → `metaRunProcedure` → `solveAnswer` → `solveTurn` → `inProcessExecutor` → `executeProcedure` | `solveRecursively` |
 <!-- meta-procedure:end -->
 
 The procedure runs once per turn in both runtimes: the handler cascade inside
-`solve_with_history_probability_store_and_intent_cache` (and the worker's
+`solve_inner` (and the worker's
 `solveImpl`) is the direct-derivation method whose draft the procedure records;
 no turn returns before or after it, and the census test
 `rust/tests/web/issue-1550-procedure-census.test.mjs` fails when a new early
@@ -1256,5 +1256,5 @@ rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-as
 See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
 
 <!-- status:begin self-hosting -->
-Latest ledger row: `v0.356.5`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.
+Latest ledger row: `v0.356.6`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.
 <!-- status:end self-hosting -->

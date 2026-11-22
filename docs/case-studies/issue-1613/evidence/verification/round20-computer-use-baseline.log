@@ -1,0 +1,16 @@
+{
+  "prompt": "Filter active customers into a report",
+  "suppliedData": null,
+  "installedPlan": "active_customers",
+  "firstStep": {
+    "id": "active_customers-01",
+    "primitive": "fs.write",
+    "arguments": {
+      "path": "input/customers.csv",
+      "content": "name,status\nAda,active\nLin,inactive\nMei,active\n",
+      "confirmed": true
+    },
+    "precondition": "agent mode active; tool:computer:fs.write granted; all paths are confined to workspace",
+    "postcondition": "output file bytes match the reported sha256"
+  }
+}

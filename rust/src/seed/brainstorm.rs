@@ -1,11 +1,4 @@
-//! Brainstorm-seed records loaded from `data/seed/brainstorm-seeds.lino`.
-//!
-//! Each `brainstorm_seeds.category` entry encodes one topic the agent can
-//! brainstorm about (e.g. `names` for a code-review tool, `project_ideas`).
-//! Per-category `detection_keywords` decide which prompt routes to which
-//! category, and the seed's `item` lines provide the canonical pool of
-//! answers — so adding a new brainstorm topic (or extending an existing
-//! one) does not require touching Rust code.
+//! Request cues and topic transformations loaded from the brainstorm seed.
 
 use super::BRAINSTORM_SEEDS_LINO;
 use super::parser::{parse_lino, split_pipe_list};
@@ -14,13 +7,13 @@ use super::parser::{parse_lino, split_pipe_list};
 ///
 /// Carries the slug (used as the trace label), intent (used as the resolved
 /// `SymbolicAnswer.intent`), detection keywords that decide which prompt
-/// routes here, and the pool of canonical items the response is drawn from.
+/// routes here, and any operations applied to the caller’s topic.
 #[derive(Debug, Clone, Default)]
 pub struct BrainstormCategory {
     pub slug: String,
     pub intent: String,
     pub detection_keywords: Vec<String>,
-    pub items: Vec<String>,
+    pub operations: Vec<String>,
 }
 
 /// Top-level brainstorm-seed bundle.
@@ -32,6 +25,7 @@ pub struct BrainstormCategory {
 #[derive(Debug, Clone, Default)]
 pub struct BrainstormSeeds {
     pub triggers: Vec<String>,
+    pub topic_prefixes: Vec<String>,
     pub categories: Vec<BrainstormCategory>,
     pub default_count: usize,
     pub count_cardinal: String,
@@ -45,6 +39,32 @@ impl BrainstormSeeds {
         self.triggers
             .iter()
             .any(|trigger| !trigger.is_empty() && normalized.contains(trigger.as_str()))
+    }
+
+    /// Read the topic after the most specific matching request cue.
+    #[must_use]
+    pub fn topic<'a>(&self, normalized: &'a str) -> Option<&'a str> {
+        let trigger = self
+            .triggers
+            .iter()
+            .filter(|trigger| !trigger.is_empty() && normalized.contains(trigger.as_str()))
+            .max_by_key(|trigger| trigger.chars().count())?;
+        let (_, suffix) = normalized.split_once(trigger.as_str())?;
+        let suffix = suffix.trim();
+        let suffix = suffix.split_once(' ').map_or(suffix, |(word, rest)| {
+            if word.bytes().all(|byte| byte.is_ascii_digit()) {
+                rest.trim_start()
+            } else {
+                suffix
+            }
+        });
+        let topic = self
+            .topic_prefixes
+            .iter()
+            .find_map(|prefix| suffix.strip_prefix(prefix.as_str()))
+            .unwrap_or(suffix)
+            .trim();
+        topic.chars().any(char::is_alphabetic).then_some(topic)
     }
 
     /// Pick the first category whose detection keywords match the prompt.
@@ -77,6 +97,16 @@ pub fn brainstorm_seeds() -> BrainstormSeeds {
         .into_iter()
         .map(|t| t.to_lowercase())
         .collect();
+    if let Some(prefixes) = root
+        .children
+        .iter()
+        .find(|child| child.name == "topic_prefix")
+    {
+        seeds.topic_prefixes = split_pipe_list(&prefixes.id)
+            .into_iter()
+            .map(|prefix| format!("{} ", prefix.trim()))
+            .collect();
+    }
     seeds.default_count = root
         .find_child_value("default_count")
         .parse()
@@ -92,21 +122,18 @@ pub fn brainstorm_seeds() -> BrainstormSeeds {
             .into_iter()
             .map(|k| k.to_lowercase())
             .collect();
-        let items: Vec<String> = entry
+        let operations: Vec<String> = entry
             .children
             .iter()
-            .filter(|c| c.name == "item")
+            .filter(|c| c.name == "operation")
             .map(|c| c.id.clone())
             .filter(|s| !s.is_empty())
             .collect();
-        if items.is_empty() {
-            continue;
-        }
         seeds.categories.push(BrainstormCategory {
             slug,
             intent: entry.find_child_value("intent").to_string(),
             detection_keywords,
-            items,
+            operations,
         });
     }
     seeds

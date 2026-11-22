@@ -728,12 +728,12 @@ const DEPENDENCY_SUMMARIZATION_MODULE = "crate/dependency_summarization.mjs";
  * sentences (`summarizeFreeText`). The trace names the candidates kept or
  * dropped and the duplicates removed.
  * @param {string} prompt
- * @param {string} normalized
  * @returns {object|null}
  */
-function trySummarizationText(prompt, normalized) {
+function trySummarizationText(prompt) {
   const text = String(prompt || "");
-  if (!lexiconMentionsRole(ROLE_TEXT_SUMMARIZATION_ACTION, String(normalized || ""))) return null;
+  const head = normalizePrompt(textTransformCommandHead(text));
+  if (!lexiconMentionsRole(ROLE_TEXT_SUMMARIZATION_ACTION, head)) return null;
   const payload = textTransformFreeTextPayload(text);
   if (payload === null) return null;
   const { summarizeFreeText } = crateModule(DEPENDENCY_SUMMARIZATION_MODULE);

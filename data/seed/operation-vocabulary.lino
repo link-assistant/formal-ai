@@ -754,6 +754,17 @@ operation_vocabulary
       phrase 取消排序顺序
       combo 取消+排序
       combo 撤销+排序
+  operation algorithm_request
+    language en
+      phrase algorithm
+    language ru
+      phrase алгоритм
+    language hi
+      phrase एल्गोरिदम
+    language zh
+      phrase 算法
+    language es
+      phrase algoritmo
   operation function
     language en
       phrase function

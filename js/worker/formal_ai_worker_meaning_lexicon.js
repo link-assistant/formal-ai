@@ -2,12 +2,10 @@
 // language detection, units, memory surfaces and the links-notation pattern
 // matcher.
 // Loaded by ../formal_ai_worker.js.
-// Issue #1165 R1165-4: a language the documentation route rediscovers a
-// program for is answered from the captured page before any cached snapshot
-// (mirrors `documented_oracle_snippet` in Rust).
-function codingOracleDocumentedSnippet(taskSlug, language) {
+// Compatibility response for a checked publisher example outside the local
+// language catalog. Mirrors `documented_oracle_snippet` in Rust.
+function codingOracleDocumentedSnippet(taskSlug, language, documented) {
   const slug = String(language || "").trim().toLowerCase();
-  const documented = slug && taskSlug ? documentedProgram(taskSlug, slug) : null;
   if (!documented || !documented.recipe) return null;
   return {
     taskSlug: taskSlug,
@@ -20,10 +18,9 @@ function codingOracleDocumentedSnippet(taskSlug, language) {
   };
 }
 
-function codingOracleAnswer(taskSlug, language) {
-  const snippet = codingOracleDocumentedSnippet(taskSlug, language) || codingOracleLookup(taskSlug, language);
+function codingOracleAnswer(taskSlug, language, documented) {
+  const snippet = codingOracleDocumentedSnippet(taskSlug, language, documented);
   if (!snippet) return null;
-  const sourceMeta = KNOWLEDGE_SOURCES[snippet.source];
   const content =
     `Here is a minimal ${snippet.languageLabel} program (${snippet.taskSlug.replace(/_/g, " ")}):\n\n` +
     "```" +
@@ -33,7 +30,7 @@ function codingOracleAnswer(taskSlug, language) {
     "```text\n" +
     `${snippet.expectedOutput}\n` +
     "```" +
-    `\nSource: ${sourceMeta.displayName} (${snippet.sourceUrl}), cached locally as a popular example.`;
+    `\nSource: Documentation capture (${snippet.sourceUrl}).`;
   return {
     intent: `write_program_oracle_${snippet.taskSlug}_${snippet.languageSlug}`,
     content,
@@ -42,8 +39,8 @@ function codingOracleAnswer(taskSlug, language) {
       `response:write_program:${snippet.taskSlug}:${snippet.languageSlug}:${snippet.source}`,
       `knowledge_source:${snippet.source}`,
       `knowledge_source_url:${snippet.sourceUrl}`,
-      "execution_status:not run (cached external snippet)",
-      "execution_environment:no compile/run sandbox configured for cached external snippets",
+      "execution_status:not run (external example)",
+      ...(documented?.sha256 ? [`source:http:${snippet.sourceUrl} sha256=${documented.sha256}`] : []),
       `program_parameter:language:${snippet.languageSlug}`,
       `program_parameter:task:${snippet.taskSlug}`,
     ],
@@ -132,7 +129,7 @@ const ROLE_IMPLEMENTATION_LANGUAGE_NOUN = "implementation_language_noun";
 // ROLE_STATEMENT_FUNCTION_WORD as read by src/implementation_language.rs.
 const ROLE_STATEMENT_FUNCTION_WORD = "statement_function_word";
 
-// Does the catalogue or the cached coding oracle know this slug? Mirrors
+// Does the catalogue or the documentation registry know this slug? Mirrors
 // `implementation_language::is_known` in Rust.
 function knownImplementationLanguage(slug) {
   return Boolean(WRITE_PROGRAM_LANGUAGES[slug]) || codingOracleKnowsLanguage(slug);

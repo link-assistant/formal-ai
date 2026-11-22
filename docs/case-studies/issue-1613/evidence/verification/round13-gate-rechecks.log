@@ -1,0 +1,12 @@
+PASS check-abbreviations 2.6s
+
+1/1 passed or skipped; failed: none
+PASS check-tests-as-docs 6.1s
+
+1/1 passed or skipped; failed: none
+PASS check-tests-as-documentation-javascript-twin 6.5s
+
+1/1 passed or skipped; failed: none
+PASS check-debug-stage-sources 0.9s
+
+1/1 passed or skipped; failed: none

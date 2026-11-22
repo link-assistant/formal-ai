@@ -1,0 +1,15 @@
+✔ R175: the cache keeps an answer for one week under a per-language key (480.031951ms)
+✔ R175/R178: a miss resolves live and is stored; the repeat is served from the cache (462.261876ms)
+✔ R176: a fresh marker bypasses the cache and resolves again (10.931519ms)
+✔ R176: the fresh marker is recognised in every supported language (1.558848ms)
+✔ fact search honors offline and source settings and refuses ambiguous labels (31.06357ms)
+✔ fact formalization preserves the words within names across languages (16.049886ms)
+✔ a full worker turn compares verified claims and discloses a missing subject (2317.879794ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6293.531863

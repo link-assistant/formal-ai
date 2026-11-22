@@ -1,0 +1,2 @@
+regenerated: ts/server/worker-script-prerequisites.mts, ts/worker-script-prerequisites.ts, ts/worker/formal_ai_worker_coreference.ts, ts/worker/formal_ai_worker_fact_derivation.ts, ts/worker/formal_ai_worker_facts_and_software_phrases.ts, ts/worker/formal_ai_worker_factual_qa.ts, ts/worker/formal_ai_worker_meta_composite.ts, ts/worker/formal_ai_worker_solve.ts, ts/worker/formal_ai_worker_write_program_and_research.ts
+ts/ matches js/ (742 files)

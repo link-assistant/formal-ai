@@ -1,0 +1,35 @@
+✔ english and russian conversation topics answer unchanged (1994.652696ms)
+✔ hindi and chinese openers capture their slot from the seed rule (1.530294ms)
+✔ the topic claim is the rule and an empty slot is no topic (1.155174ms)
+✔ a source conflict names its attributed alternatives and refuses without them (923.598558ms)
+✔ a source refresh answers unchanged and an unnamed one takes the refusal lane (151.071597ms)
+✔ an execution failure answers unchanged in chat and agent mode (126.083606ms)
+✔ an incompatible unit pair answers unchanged from the seeded wording (322.774538ms)
+✔ the buy-an-elephant idiom answers through its seed rule in the prompt language (184.325726ms)
+✔ a research comparison table renders the seeded procedure, never a memorized fact (620.691329ms)
+✔ a research result follow-up reads its status and wording from the seed (240.840605ms)
+✔ the network query rules answer the snapshot, the introspection and the user filter (311.422342ms)
+✔ the shell loop rewrite answers unchanged in english, russian, hindi and chinese (634.782663ms)
+✔ the screen session rewrite answers unchanged in english, russian, hindi and chinese (2.952848ms)
+✔ a terse language switch replays the prior answer under the seeded limit (206.247177ms)
+✔ the seeded brainstorm list reads its count policy from the seed (155.882081ms)
+✔ a roleplay frame renders the seeded persona and topic (941.709711ms)
+✔ a release-timeline fact renders the snapshot against the day it is asked (196.608347ms)
+✔ the concept-query reader takes its vocabulary from the seed cue records (164.48692ms)
+✔ a topic summary is the seeded record, run after web search as the native row is (771.26183ms)
+✔ the algorithm rule set answers unchanged in english, russian, hindi and chinese (3321.052936ms)
+✔ the document plan renders the seeded plan in english, russian, hindi and chinese (83.029406ms)
+✔ the weekday relations render the seeded names and sentences unchanged (1119.824522ms)
+✔ the current day renders the seeded sentence in every prompt language (754.983397ms)
+✔ an event confirmation renders the seeded sentence and the seeded title cues (515.046056ms)
+✔ text replacements read their cues and operand order from the seed tables (1298.681306ms)
+✔ an originality check reads its markers, queries and heading from the seed (3879.951111ms)
+✔ a software-project follow-up renders the seeded sentences in both approval states (5128.652737ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27179.702222

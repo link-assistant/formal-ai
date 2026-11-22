@@ -1,0 +1,40 @@
+✔ the corpus carries agent-mode requests (1882.001355ms)
+✔ agent mode: agent_shell_show_current_directory (4851.183394ms)
+✔ agent mode: agent_shell_show_environment (798.743727ms)
+✔ agent mode: agent_shell_copy_file (4238.951839ms)
+✔ agent mode: agent_shell_git_changes (607.32245ms)
+✔ agent mode: agent_shell_search_todo (203.17014ms)
+✔ agent mode: agent_shell_delete_en (833.121077ms)
+✔ agent mode: agent_shell_delete_ru (1159.611463ms)
+✔ agent mode: agent_shell_delete_hi (651.247629ms)
+✔ agent mode: agent_shell_delete_zh (688.291142ms)
+✔ agent mode: agent_shell_opencode_quotes (98.776377ms)
+✔ agent mode: agent_shell_delete_step_two (659.622019ms)
+✔ agent mode: agent_shell_pwd_done (1876.687695ms)
+✔ agent mode: agent_responses_cmd_date (131.979757ms)
+✔ agent mode: agent_responses_cmd_echo (88.441711ms)
+✔ agent mode: agent_responses_cmd_sort (86.556394ms)
+✔ agent mode: agent_responses_cmd_bash_c (719.925206ms)
+✔ agent mode: agent_responses_cmd_powershell (3441.30981ms)
+✔ agent mode: agent_responses_shell_cmd (102.181036ms)
+✔ agent mode: agent_responses_bash_command (63.97773ms)
+✔ agent mode: agent_responses_formalize (327.547017ms)
+✔ agent mode: agent_responses_formalize_fetch (306.275371ms)
+✔ agent mode: agent_responses_formalize_final (239.225701ms)
+✔ agent mode: agent_messages_formalize (281.951221ms)
+✔ agent mode: agent_messages_shell (1785.779886ms)
+✔ agent mode: agent_gemini_shell (1860.137306ms)
+✔ agent mode: agent_tool_choice_without_tools (18.892809ms)
+✔ agent mode: agent_non_agentic_task (789.515175ms)
+✔ agent mode: agent_no_tools_chat (118.370683ms)
+✔ agent mode: agent_opencode_read (5314.015071ms)
+✔ agent mode: agent_opencode_search (1696.190808ms)
+✔ agent mode: agent_opencode_repeated (1792.565705ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38887.69599

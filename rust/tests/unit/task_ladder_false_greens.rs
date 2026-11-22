@@ -139,7 +139,9 @@ fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
     assert!(self_heal_stream.contains("ses_0321e6e65ffefzct0vPr3Uc0ip"));
     assert!(self_heal_stream.contains("formal-ai"));
     assert_eq!(
-        repair_case_without_source_counts(&root.join("data/meta/self-healing-case.lino")),
+        repair_case_without_source_counts(
+            &root.join("rust/tests/fixtures/issue-558/self-healing-case.lino")
+        ),
         repair_case_without_source_counts(&root.join(
             "docs/case-studies/issue-905/self-hosting-fixture-refresh/self-healing-case.lino",
         )),

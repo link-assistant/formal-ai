@@ -149,6 +149,14 @@ function handlerRulesResolveValues(rule, context) {
         text = transformed;
         break;
       }
+      case "list_code": {
+        const language = resolved.find((entry) => entry.name === value.key);
+        if (!language) return null;
+        const code = renderListCallable(language.value, context.prompt, context.subjects.cleaned, value.text === "test");
+        if (code === null) return null;
+        text = code;
+        break;
+      }
       case "response": { // Rust `seed::localized_response` under the templated intent
         const intent = handlerRulesSubstitute(value.key, resolved);
         let found = handlerRulesResponseFor(intent, context.language);

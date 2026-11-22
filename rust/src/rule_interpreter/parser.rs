@@ -354,6 +354,18 @@ fn parse_value(node: &Node) -> Result<(String, ValueSource), String> {
                 .cloned()
                 .ok_or_else(|| node.error("response_without_intent"))?,
         ),
+        "list_code" => ValueSource::ListCode {
+            language: node
+                .args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("list_code_without_language"))?,
+            test: match node.args.get(3).map(String::as_str) {
+                None => false,
+                Some("test") => true,
+                _ => return Err(node.error("unknown_list_code_form")),
+            },
+        },
         "transform" => ValueSource::Transform(
             node.args
                 .get(2)

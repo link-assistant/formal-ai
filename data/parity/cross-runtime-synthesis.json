@@ -147,13 +147,13 @@
     "browserExpectedEvidencePrefixes": ["response:formalization"]
   },
   {
-    "id": "e1172_seeded_capital_subject_gate",
-    "prompt": "What is the capital of the USA?",
-    "expectedIntent": "fact_lookup",
-    "expectedAnswerFragments": ["The capital of the United States is Washington, D.C."],
-    "forbiddenAnswerFragments": ["Canberra"],
-    "expectedEvidencePrefixes": ["fact_lookup:hit:", "fact_lookup:subject_gate:", "wikidata:"],
-    "expectedTraceFragments": ["fact_lookup"]
+    "id": "e1172_publisher_capital_subject_gate",
+    "prompt": "What is the capital of the Russian Federation?",
+    "expectedIntent": "fact_query",
+    "expectedAnswerFragments": ["capital of Russia is Moscow"],
+    "forbiddenAnswerFragments": ["Washington", "Canberra"],
+    "expectedEvidencePrefixes": ["wikidata:Q159", "wikidata:Q649", "source:http:"],
+    "expectedTraceFragments": ["fact_query"]
   },
   {
     "id": "e1163_supplied_page_command_query",

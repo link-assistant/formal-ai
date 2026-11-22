@@ -1,0 +1,1 @@
+Write a small Python script named cold-package-fixture-check.py. It should read file paths from standard input and report which belong to a tests/fixtures directory. Keep the report deterministic. Run it with an example using one fixture and one ordinary source path.

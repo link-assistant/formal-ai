@@ -1,0 +1,9 @@
+benchmark_promotion_gates
+  gate issue_362_multilingual_coding_modification
+    runner "cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture"
+    minimum_pass_count "4"
+    pass_rate_basis_points "10000"
+  gate issue_304_industry_permissive_slice
+    runner "cargo test --manifest-path rust/Cargo.toml --test unit issue_304_benchmark_suite_reports_pass_fail_counts -- --nocapture"
+    minimum_pass_count "13"
+    pass_rate_basis_points "0"

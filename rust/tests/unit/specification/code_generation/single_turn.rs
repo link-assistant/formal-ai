@@ -3,22 +3,33 @@
 //! evidence, and the parameterized `write_program` templates (issue #386 split).
 
 use super::{POPULAR_LANGUAGES, answer, assert_write_program_parameters};
+use formal_ai::{SolverConfig, SymbolicAnswer, UniversalSolver};
+
+fn offline_answer(prompt: &str) -> SymbolicAnswer {
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve(prompt)
+}
 
 #[test]
-fn rust_hello_world_seed_compiles_and_runs() {
-    let response = answer("Write me hello world program in Rust");
+fn rust_hello_world_composes_a_stdout_program() {
+    let response = offline_answer("Write me hello world program in Rust");
     assert_write_program_parameters(&response, "rust", "hello_world");
     assert!(
         response
             .links_notation
             .contains("legacy_intent hello_world_rust")
     );
-    assert!(response.answer.contains("```rust"));
-    assert!(response.answer.contains("fn main()"));
+    assert_eq!(
+        response.answer.split("```").nth(1),
+        Some("rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n")
+    );
     assert!(
         response
             .answer
-            .contains("Execution status: compiled and ran")
+            .contains("Execution status: not probed in this environment.")
     );
     assert!(response.answer.contains("Check command: `rustc"));
     assert!(response.answer.contains("Run command: `./main`"));
@@ -53,7 +64,7 @@ fn hello_world_inline_replacement_accepts_diverse_prompt_surfaces() {
             language: "Python",
             slug: "python",
             prompt: "Write hello world in Python, but print “Bye Python” instead",
-            code_fragment: "print('Bye Python')",
+            code_fragment: "print(\"Bye Python\")",
             output_fragment: "```text\nBye Python\n```",
         },
         Case {
@@ -73,7 +84,7 @@ fn hello_world_inline_replacement_accepts_diverse_prompt_surfaces() {
     ];
 
     for case in cases {
-        let response = answer(case.prompt);
+        let response = offline_answer(case.prompt);
         assert_write_program_parameters(&response, case.slug, "hello_world");
         assert!(
             response.answer.contains(case.code_fragment),
@@ -97,39 +108,28 @@ fn hello_world_inline_replacement_accepts_diverse_prompt_surfaces() {
 
 #[test]
 fn python_hello_world_seed_runs() {
-    let response = answer("Write hello world in Python");
+    let response = offline_answer("Write hello world in Python");
     assert_write_program_parameters(&response, "python", "hello_world");
     assert!(response.answer.contains("```python"));
-    assert!(response.answer.contains("print('Hello, world!')"));
-    // Issue #1165: the program is the Python wiki's, which no recorded run
-    // executed, so its status names the page instead of the harness run.
-    assert!(response.answer.contains(
-        "Execution status: not run; this program was rediscovered from \
-         https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples"
-    ));
+    assert!(response.answer.contains("print(\"Hello, world!\")"));
+    assert!(
+        response
+            .answer
+            .contains("Execution status: not probed in this environment.")
+    );
     assert!(response.answer.contains("python3"));
 }
 
 #[test]
-fn python_list_files_reverse_sort_sample_output_matches_saved_file_name() {
+fn python_list_files_reverse_sort_has_no_assumed_directory_contents() {
     let response = answer(
         "Write me a Python program that lists files in the current directory in reverse-sorted order",
     );
 
     assert_write_program_parameters(&response, "python", "list_files_reverse_sort");
     assert!(response.answer.contains("```python"));
-    assert!(
-        response
-            .answer
-            .contains("```text\nmain.py\ndata.txt\nREADME.md\n```"),
-        "Python reverse file-list output should match the documented sample directory, got: {}",
-        response.answer
-    );
-    assert!(
-        !response.answer.contains("Cargo.toml"),
-        "Python sample output should not mention Rust project files, got: {}",
-        response.answer
-    );
+    assert_eq!(response.answer.contains("reverse=True"), true);
+    assert_eq!(response.answer.contains("```text"), false);
 }
 
 #[test]
@@ -143,45 +143,51 @@ fn javascript_hello_world_seed_runs() {
 
 #[test]
 fn go_hello_world_seed_runs() {
-    let response = answer("hello world in Go");
+    let response = offline_answer("hello world in Go");
     assert_write_program_parameters(&response, "go", "hello_world");
     assert!(response.answer.contains("```go"));
     assert!(response.answer.contains("fmt.Println"));
     assert!(
         response
             .answer
-            .contains("Execution status: compiled and ran")
+            .contains("Execution status: not probed in this environment.")
     );
 }
 
 #[test]
-fn c_hello_world_seed_compiles_and_runs() {
-    let response = answer("hello world in C");
+fn c_hello_world_composes_a_stdout_program() {
+    let response = offline_answer("hello world in C");
     assert_write_program_parameters(&response, "c", "hello_world");
-    assert!(response.answer.contains("```c"));
-    assert!(response.answer.contains("#include <stdio.h>"));
-    // Issue #1165: Microsoft's documented puts example is not the program the
-    // harness ran, so its status names the page it was rediscovered from.
-    assert!(response.answer.contains(
-        "Execution status: not run; this program was rediscovered from \
-         https://raw.githubusercontent.com/MicrosoftDocs/cpp-docs/main/docs/c-runtime-library/reference/puts-putws.md"
-    ));
-}
-
-#[test]
-fn typescript_hello_world_seed_reports_unavailable_execution() {
-    let response = answer("hello world in TypeScript");
-    assert_write_program_parameters(&response, "typescript", "hello_world");
-    assert!(response.answer.contains("```typescript"));
-    assert!(
-        response
-            .answer
-            .contains("Execution status: not run; this program was rediscovered from")
+    assert_eq!(
+        response.answer.split("```").nth(1),
+        Some(
+            "c\n#include <stdio.h>\n\nint main(void) {\n    puts(\"Hello, world!\");\n    return 0;\n}\n"
+        )
     );
     assert!(
         response
             .answer
-            .contains("Expected output after verification")
+            .contains("Execution status: not probed in this environment.")
+    );
+}
+
+#[test]
+fn typescript_hello_world_reports_unobserved_execution() {
+    let response = offline_answer("hello world in TypeScript");
+    assert_write_program_parameters(&response, "typescript", "hello_world");
+    assert_eq!(
+        response.answer.split("```").nth(1),
+        Some("typescript\nconsole.log(\"Hello, world!\");\n")
+    );
+    assert!(
+        response
+            .answer
+            .contains("Execution status: not probed in this environment.")
+    );
+    assert!(
+        response
+            .answer
+            .contains("Output, not observed in this environment:")
     );
 }
 
@@ -283,31 +289,28 @@ fn top_ten_popular_languages_each_use_the_write_program_intent() {
 
 #[test]
 fn code_answers_include_execution_links_in_notation() {
-    let response = answer("Write me hello world program in Rust");
+    let response = offline_answer("Write me hello world program in Rust");
     assert!(
         response
             .links_notation
-            .contains("execution_status compiled and ran"),
-        "Links Notation trace should describe execution status, got: {}",
-        response.links_notation
+            .contains("execution_status not probed in this environment"),
+        "trace must state whether this program ran: {}",
+        response.links_notation,
     );
-    assert!(
-        response.links_notation.contains("execution_environment"),
-        "Links Notation trace should describe execution environment"
-    );
+    assert!(!response.links_notation.contains("execution_environment"));
 }
 
 #[test]
-fn code_answers_declare_isolation_level() {
-    let response = answer("Write me hello world program in Rust");
-    let lower = response.answer.to_lowercase();
+fn generated_code_answers_record_unobserved_execution() {
+    let response = offline_answer("Write me hello world program in Rust");
     assert!(
-        lower.contains("docker")
-            || lower.contains("sandbox")
-            || lower.contains("webvm")
-            || lower.contains("isolated"),
-        "execution evidence should declare an isolation boundary, got: {}",
-        response.answer
+        response
+            .answer
+            .contains("Output, not observed in this environment:")
+    );
+    assert_eq!(
+        response.answer.split("```").nth(3),
+        Some("text\nHello, world!\n")
     );
 }
 
@@ -501,15 +504,19 @@ fn russian_program_request_with_unknown_task_is_not_unknown() {
     // backtick-quoted parameter (stable across languages) rather than the
     // English word "language".
     assert!(
-        response.answer.contains("`python`"),
+        response
+            .answer
+            .contains("Что должна делать программа на языке python?"),
         "skill-gap answer should name the extracted python parameter, got: {}",
         response.answer
     );
     // Issue #699 batch 3: it names the routes that missed instead of the
     // `write_program(language, task)` signature and the template catalogue.
     assert!(
-        response.answer.contains("coding_oracle"),
-        "skill-gap answer should name the synthesis routes it tried, got: {}",
+        response
+            .answer
+            .contains("входные данные и нужный результат"),
+        "clarification should ask for inputs and desired output: {}",
         response.answer
     );
 }

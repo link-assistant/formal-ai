@@ -14,6 +14,7 @@ import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { host as agenticHost } from '../../../js/agentic/host.mjs';
 import { thinkingStepsFromEvents } from '../../../js/server/solver-trace.mjs';
 import { answerDerivationId, fromLino } from '../../../js/agentic/crate/derivation.mjs';
+import { installSourceDefinitionCaptures } from './support/source-definition-captures.mjs';
 const fields = notation => {
   const parsed = parseLino(notation);
   const answer = parsed.name.startsWith('answer_') ? parsed : parsed.children.find(node => node.name.startsWith('answer_'));
@@ -21,7 +22,12 @@ const fields = notation => {
   return new Map(answer.children.slice(0, 6).map(node => [node.name, node.value]));
 };
 let host, root;
-before(async () => { host = new WorkerHost(); await host.boot(); host.context.fetch = () => { throw new Error('verified cache required'); }; root = mkdtempSync(path.join(tmpdir(), 'answer-links-parity-')); });
+before(async () => {
+  host = new WorkerHost();
+  await installSourceDefinitionCaptures(host);
+  host.context.fetch = () => { throw new Error('verified cache required'); };
+  root = mkdtempSync(path.join(tmpdir(), 'answer-links-parity-'));
+});
 after(() => rmSync(root, { recursive: true, force: true }));
 
 test('the six native fields have exact bytes and response-link thinking', () => {

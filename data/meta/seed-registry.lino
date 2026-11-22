@@ -32,8 +32,6 @@ seed_registry
   seed agreement-rules
     bundle true
     web true
-  seed approved-lessons
-    bundle true
   seed brainstorm-seeds
     bundle true
     web true
@@ -108,9 +106,6 @@ seed_registry
   seed creative-composition-rules
     bundle true
     web true
-  seed demo-dialogs
-    bundle true
-    web true
   seed derivation-schema
     bundle true
     web true
@@ -124,14 +119,8 @@ seed_registry
   seed environments
     bundle true
     web true
-  seed fact-captures
-    bundle true
-    web true
   seed fact-check-sources
     bundle true
-  seed fact-realization
-    bundle true
-    web true
   seed facts
     bundle true
     web true
@@ -146,6 +135,8 @@ seed_registry
     web true
   seed formalization-relations
     bundle true
+    web true
+  seed google-trends-prompts
     web true
   seed grammar-projection-rules
     bundle true
@@ -893,9 +884,6 @@ seed_registry
   seed writing-genre-styleguides
     bundle true
     web true
-  unregistered google-trends-*
-    owner "src/google_trends_catalog.rs"
-    reason "The Google Trends catalog embeds its own prompts and snapshot; the capability owns the data rather than the shared bundle."
   unregistered question-generation-lexicon
     owner "src/question_generation.rs"
     reason "Question generation embeds its own lexicon so the words it may use are scoped to the one module that may use them."

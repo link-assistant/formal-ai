@@ -1,0 +1,133 @@
+# Test replay manifest for publisher documentation. Read each raw fixture and verify its digest.
+coding_documentation_captures
+  version "1"
+  capture
+    language "rust"
+    task hello_world
+    rediscovery_query "Rust hello world program"
+    url "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1164/ch01-02-hello-world.html"
+    sha256 "98d3e31d5c41a6572a3536ee16c51a1058b3974e6f22e15ba5fb2a5e964ceb4e"
+  capture
+    language "go"
+    task hello_world
+    rediscovery_query "Go hello world program"
+    url "https://go.dev/doc/tutorial/getting-started"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1164/getting-started.html"
+    sha256 "a7048d2cce6a94ae835c9503d6af5e96f88954a459d831fe03f9a7d82b60ef2c"
+  capture
+    language "kotlin"
+    task hello_world
+    rediscovery_query "how to compile a Kotlin program from the command line"
+    url "https://kotlinlang.org/docs/command-line.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1163/command-line.html"
+    sha256 "0847a47edc7136be89ddb103aed1178c4eb95a0ba03bdfe396f1b207ab806e8e"
+  capture
+    language "kotlin"
+    task hello_world
+    rediscovery_query "Kotlin hello world program"
+    url "https://kotlinlang.org/docs/kotlin-tour-hello-world.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1164/kotlin-tour-hello-world.html"
+    sha256 "916f03525029483ef10ca64b75b7c110c538aadce2c7021dbb6a56e8ef8bd92a"
+  capture
+    language "scala"
+    task hello_world
+    rediscovery_query "Scala hello world program"
+    url "https://docs.scala-lang.org/scala3/book/taste-hello-world.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1163/taste-hello-world.html"
+    sha256 "913485460cbb046dab070e46eca56fc97cc3f1bc43fb57ae931a2f711145ef2b"
+  capture
+    language "python"
+    task hello_world
+    rediscovery_query "Python hello world program"
+    url "https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/python-simple-examples.html"
+    sha256 "4b8ae35a20fe2984aaab039ca3597c9fcdc7be60e66320c533e0dfc2d179d4ba"
+  capture
+    language "javascript"
+    task hello_world
+    rediscovery_query "JavaScript console.log example"
+    url "https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/console/index.md"
+    mime "text/markdown"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/mdn-console.md"
+    sha256 "0b1c5b5d35b4c746e29c69ab7f366401b9bbca5be4d74d1cef532f8b00faffc1"
+  capture
+    language "typescript"
+    task hello_world
+    rediscovery_query "TypeScript hello.ts example"
+    url "https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/handbook-v2/Basics.md"
+    mime "text/markdown"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/typescript-handbook-basics.md"
+    sha256 "c89617a7d260a61a8841f169e1e3c15af3cda5726f3b47218563e9b8870114f1"
+  capture
+    language "c"
+    task hello_world
+    rediscovery_query "C puts example"
+    url "https://raw.githubusercontent.com/MicrosoftDocs/cpp-docs/main/docs/c-runtime-library/reference/puts-putws.md"
+    mime "text/markdown"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/msvc-puts-putws.md"
+    sha256 "b0775b223e8bfe57d85f9050a7985a8cc70979a373cc9e58b6136ce59dfd2eb1"
+  capture
+    language "cpp"
+    task hello_world
+    rediscovery_query "C++ hello world console program"
+    url "https://learn.microsoft.com/en-us/cpp/build/vscpp-step-1-create"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/vscpp-step-1-create.html"
+    sha256 "d7cefcab0b10f65403b5ef98d9849f7da1d26c5c76e077d36e31809a8cfb8684"
+  capture
+    language "csharp"
+    task hello_world
+    rediscovery_query "C# hello world program"
+    url "https://learn.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/tutorials/hello-world"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/csharp-hello-world.html"
+    sha256 "950ff8eac4b8e5fa442e9e0b7daa9718078f3aeecd93c580f62b2994f2e7e673"
+  capture
+    language "ruby"
+    task hello_world
+    rediscovery_query "Ruby hello world program"
+    url "https://www.ruby-lang.org/en/examples/hello_world/"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/ruby-hello-world.html"
+    sha256 "8735672e6aaac76115fcd30b2908975f01fd61b3dbb82c15cddacb369de8677e"
+  capture
+    language "swift"
+    language_name "Swift"
+    task hello_world
+    rediscovery_query "Swift hello world program"
+    url "https://raw.githubusercontent.com/swiftlang/swift-book/main/TSPL.docc/GuidedTour/GuidedTour.md"
+    mime "text/markdown"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1164/GuidedTour.md"
+    sha256 "0becd1b48ee0baab2fd3432c70448f0c5edfa5fd1d36fa242aa08c4191391261"
+  capture
+    language "java"
+    task hello_world
+    rediscovery_query "Java hello world application"
+    url "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/oracle-hello-world-unix.html"
+    sha256 "df36cbcc99836cfadc67f7bbb7c7bedeea27b57f0df0d6c79d85dae81b6e3750"
+  capture
+    language "php"
+    task hello_world
+    rediscovery_query "PHP first page tutorial"
+    url "https://www.php.net/manual/en/tutorial.firstpage.php"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/php-tutorial-firstpage.html"
+    sha256 "83a92271b42f99981742b4750be07d16455d29d1ad9b90287d9533588799b0b6"
+  capture
+    language "lua"
+    language_name "Lua"
+    task hello_world
+    rediscovery_query "Lua hello world program"
+    url "https://www.lua.org/pil/1.html"
+    mime "text/html"
+    fixture "rust/tests/fixtures/coding-discovery/captured/issue-1165/lua-pil-getting-started.html"
+    sha256 "b47452aa65d7fce28b156b447fccfe2a2af8fb54cc12cd9c8975d983aa2d0cce"

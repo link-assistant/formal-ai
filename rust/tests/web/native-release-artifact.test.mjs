@@ -89,9 +89,9 @@ test('altered compiler provenance, extra artifact files and a substituted execut
 
 test('ignored physical build inputs refuse before sealing any native source identity',context=>{
  const f=fixture(context), initial=nativeInputIdentity(f.repo);
- writeFileSync(join(f.repo,'.gitignore'),'rust/src/ignored.rs\ndata/seed/api-cache/\n.cargo/\nrust/.cargo/\n');
+ writeFileSync(join(f.repo,'.gitignore'),'rust/src/ignored.rs\n.cargo/\nrust/.cargo/\n');
  git(f.repo,'add','.gitignore');git(f.repo,'commit','-m','ignore fixture outputs');
- const paths=['rust/src/ignored.rs','data/seed/api-cache/legacy.lino',
+ const paths=['rust/src/ignored.rs',
   '.cargo/config.toml','rust/.cargo/config.toml'];
  for(const path of paths) {
   const parts=path.split('/');parts.pop();
@@ -103,9 +103,9 @@ test('ignored physical build inputs refuse before sealing any native source iden
  }
 });
 
-test('tracked legacy seeds and Cargo configuration bind source identity and refuse dirty bytes',context=>{
+test('tracked Cargo configuration bind source identity and refuse dirty bytes',context=>{
  const f=fixture(context), initial=nativeInputIdentity(f.repo);
- for(const path of ['data/seed/api-cache/legacy.lino','.cargo/config.toml','rust/.cargo/config.toml']) {
+ for(const path of ['.cargo/config.toml','rust/.cargo/config.toml']) {
   const parts=path.split('/');parts.pop();
   mkdirSync(join(f.repo,...parts),{recursive:true});
   writeFileSync(join(f.repo,path),'tracked compiler input\n');

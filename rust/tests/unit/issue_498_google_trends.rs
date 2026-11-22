@@ -1,9 +1,75 @@
 use std::collections::BTreeSet;
 
 use formal_ai::{
-    GOOGLE_TRENDS_TOP_LIMIT, GoogleTrendPromptVariant, google_trends_catalog,
-    parse_google_trends_rss, supported_languages,
+    GOOGLE_TRENDS_TOP_LIMIT, GoogleTrendPromptVariant, GoogleTrendsCatalog,
+    answer_google_trends_catalog, fetch_google_trends_feed, parse_google_trends_rss,
+    supported_languages,
 };
+
+use formal_ai::source_fetch::{CachedSourceClient, FetchError, SourceTransport};
+
+pub(super) const HISTORICAL_FEED: &str =
+    include_str!("../../../docs/case-studies/issue-498/raw-data/google-trends-us-rss.xml");
+const FEED_URL: &str = "https://trends.google.com/trending/rss?geo=US";
+const DE_FEED_URL: &str = "https://trends.google.com/trending/rss?geo=DE";
+const DE_FEED: &str = include_str!("../../../docs/case-studies/issue-1613/evidence/trends/DE.xml");
+
+struct RecordedFeed;
+
+impl SourceTransport for RecordedFeed {
+    fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
+        match url {
+            FEED_URL => Ok(HISTORICAL_FEED.as_bytes().to_vec()),
+            DE_FEED_URL => Ok(DE_FEED.as_bytes().to_vec()),
+            _ => Err(FetchError::OfflineCacheMiss(url.to_owned())),
+        }
+    }
+}
+
+struct ReplayDirectory(std::path::PathBuf);
+
+impl ReplayDirectory {
+    fn new() -> Self {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        static NEXT: AtomicUsize = AtomicUsize::new(0);
+        let path = std::env::temp_dir().join(format!(
+            "formal-ai-trends-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
+        std::fs::create_dir(&path).expect("isolated replay directory");
+        Self(path)
+    }
+}
+
+impl Drop for ReplayDirectory {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.0);
+    }
+}
+
+pub(super) fn captured_feed() -> GoogleTrendsCatalog {
+    let directory = ReplayDirectory::new();
+    fetch_google_trends_feed(
+        &CachedSourceClient::new(&directory.0, RecordedFeed).with_online(true),
+        "US",
+        "en",
+    )
+    .expect("recorded publisher feed")
+}
+
+pub(super) fn with_trends_replay<R>(run: impl FnOnce() -> R) -> R {
+    let directory = ReplayDirectory::new();
+    let client = CachedSourceClient::new(&directory.0, RecordedFeed).with_online(true);
+    client.fetch(FEED_URL).expect("recorded publisher feed");
+    temp_env::with_vars(
+        [
+            ("FORMAL_AI_SOURCE_CACHE_DIR", Some(directory.0.as_os_str())),
+            ("FORMAL_AI_OFFLINE", Some(std::ffi::OsStr::new("1"))),
+        ],
+        run,
+    )
+}
 
 const SAMPLE_RSS: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rss xmlns:ht="https://trends.google.com/trending/rss" version="2.0">
@@ -29,6 +95,27 @@ const SAMPLE_RSS: &str = r#"<?xml version="1.0" encoding="UTF-8" standalone="yes
     </item>
   </channel>
 </rss>"#;
+
+#[test]
+fn the_regional_feed_comes_from_verified_source_bytes() {
+    use formal_ai::google_trends_catalog::requested_geo;
+
+    let directory = ReplayDirectory::new();
+    let offline = CachedSourceClient::new(&directory.0, RecordedFeed).with_online(false);
+    assert!(fetch_google_trends_feed(&offline, "DE", "en").is_none());
+    assert_eq!(requested_geo("Catalog geo  de?").as_deref(), Some("DE"));
+    assert_eq!(requested_geo("Catalog geo=123"), None);
+    assert_eq!(requested_geo("Catalog").as_deref(), Some("US"));
+
+    let online = CachedSourceClient::new(&directory.0, RecordedFeed).with_online(true);
+    let german = fetch_google_trends_feed(&online, "DE", "en").expect("German RSS");
+    let american = fetch_google_trends_feed(&online, "US", "en").expect("American RSS");
+    assert_eq!(german.source_url, DE_FEED_URL);
+    assert_eq!(german.topics[0].query, "juventus turin");
+    assert_ne!(german.topics[0].query, american.topics[0].query);
+    assert_ne!(german.source_sha256, american.source_sha256);
+    assert_eq!(fetch_google_trends_feed(&offline, "DE", "en"), Some(german));
+}
 
 #[test]
 fn google_trends_rss_is_converted_to_ranked_topics() {
@@ -62,7 +149,7 @@ fn prompts_are_generated_from_the_seed_templates() {
     // verbatim in `data/seed/google-trends-prompts.lino`. If someone re-introduced a
     // hardcoded prompt in the converter, this test would fail.
     const PROMPT_SEED: &str = include_str!("../../../data/seed/google-trends-prompts.lino");
-    let catalog = google_trends_catalog();
+    let catalog = answer_google_trends_catalog(captured_feed());
 
     for topic in &catalog.topics {
         assert!(!topic.prompts.is_empty(), "topic {topic:?} has no prompts");
@@ -80,20 +167,22 @@ fn prompts_are_generated_from_the_seed_templates() {
 
 #[test]
 fn checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages() {
-    let catalog = google_trends_catalog();
+    let catalog = answer_google_trends_catalog(captured_feed());
 
-    assert_eq!(
-        catalog.topics[0].answered[0].answer,
-        "No captured provider response is available for `julián andrés quiñones`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews.",
-        "the first generated prompt documents one exact catalog answer"
+    assert!(
+        catalog
+            .source_sha256
+            .as_ref()
+            .is_some_and(|digest| digest.len() == 64)
     );
+    assert_eq!(catalog.topics[0].query, "julián andrés quiñones");
     assert_eq!(
         catalog.topics.len(),
         GOOGLE_TRENDS_TOP_LIMIT,
         "the committed snapshot should keep exactly the top 10 Trends topics",
     );
     assert_eq!(catalog.geo, "US");
-    assert_eq!(catalog.locale, "ru");
+    assert_eq!(catalog.locale, "en");
     assert_eq!(
         catalog.source_url,
         "https://trends.google.com/trending/rss?geo=US"

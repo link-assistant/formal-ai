@@ -639,14 +639,6 @@ meanings
     unit "not applicable"
     example "Lean 4 writes student bare and студент as «студент»"
     grounding "data/seed/formal-targets.lino"
-  advice_topic
-    defined-by concept
-    role action
-    precondition "the request names a topic the cited advice table covers"
-    effect "admits the claim of the advice handler"
-    unit "boolean"
-    example "how should i sleep better"
-    grounding "data/seed/capability-routing.lino"
   assistant_addressee
     defined-by concept
     role action
@@ -654,14 +646,6 @@ meanings
     effect "admits the claim of the no-opinion and physical-action policy"
     unit "boolean"
     example "do you think it will rain"
-    grounding "data/seed/capability-routing.lino"
-  cached_destination
-    defined-by concept
-    role action
-    precondition "the request names a destination whose places are cached"
-    effect "admits the claim of the planning handler"
-    unit "boolean"
-    example "plan a 2-day trip to berlin"
     grounding "data/seed/capability-routing.lino"
   call_expression
     defined-by concept
@@ -742,4 +726,36 @@ meanings
     effect "admits the claim of the program synthesis handler"
     unit "boolean"
     example "def add(a, b)"
+    grounding "data/seed/capability-routing.lino"
+  advice_observations
+    defined-by concept
+    role action
+    precondition "the request supplies cited advice observations"
+    effect "admits the claim of the advice handler"
+    unit "boolean"
+    example "rank supplied recommendations by their cited evidence grade"
+    grounding "data/seed/capability-routing.lino"
+  destination_observations
+    defined-by concept
+    role action
+    precondition "the request supplies cited place observations"
+    effect "admits the claim of the planning handler"
+    unit "boolean"
+    example "plan a trip using supplied opening hours and visit lengths"
+    grounding "data/seed/capability-routing.lino"
+  roleplay_facts
+    defined-by concept
+    role action
+    precondition "the request supplies a role and the facts to explain"
+    effect "admits the claim of the roleplay handler"
+    unit "boolean"
+    example "act as {role}: {facts}"
+    grounding "data/seed/capability-routing.lino"
+  triz_demands
+    defined-by concept
+    role action
+    precondition "the contradiction question supplies two distinct demands"
+    effect "admits the worksheet for those demands"
+    unit "boolean"
+    example "first demand versus second demand"
     grounding "data/seed/capability-routing.lino"

@@ -1,0 +1,24 @@
+✔ the committed translation is for the current JavaScript of every module in scope (--verify) (2428.9746ms)
+✔ the ledger pins one meta-language main commit, and the js-rust job checks out that commit (64.215437ms)
+✔ issue_report.mjs translates whole: both of its items are Rust, none carried (6.591035ms)
+✔ every call of calls.lino returns its recorded result in JavaScript and names a translated Rust function (236.198395ms)
+✔ every translated exported constant holds the value its JavaScript module exports (284.574276ms)
+✔ a projection keeps translated blocks byte for byte and reduces a carried item to its refused construct (2.958098ms)
+✔ a refusal is counted by the construct it names, not by the occurrence (0.989155ms)
+✔ the ratchet: a module never loses a translated item or gains an inferred signature (0.489734ms)
+✔ a parameter without a JSDoc @param type makes an inferred signature (1.035031ms)
+✔ Rust string literals read back to the text they denote (0.392722ms)
+✔ the complete parallel translation check has630s within the unchanged15-minute job and70-percent policy (36.780531ms)
+✔ translation deadline refuses old540-second deadline (27.89734ms)
+✔ translation deadline refuses allowance beyond630seconds (30.772995ms)
+✔ translation deadline refuses job clock widened (11.394145ms)
+✔ translation deadline refuses process-group deadline removed (47.474559ms)
+✔ translation deadline never substitutes retranslation for complete compilation and final snapshots (44.781276ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3493.48414

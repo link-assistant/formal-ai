@@ -16,7 +16,7 @@ use super::{POPULAR_LANGUAGES, answer, assert_write_program_parameters};
 
 #[test]
 fn english_fizzbuzz_in_rust_returns_program() {
-    let response = answer("Write me a FizzBuzz program in Rust");
+    let response = answer("Write me a FizzBuzz program in Rust from 1 through 15");
     assert_write_program_parameters(&response, "rust", "fizzbuzz");
     assert!(response.answer.contains("```rust"));
     assert!(response.answer.contains("% 15 == 0"));
@@ -51,7 +51,7 @@ fn russian_factorial_of_five_in_python_returns_program() {
         response.answer
     );
     assert!(
-        response.answer.contains("факториал 5"),
+        response.answer.contains("120"),
         "Russian explanation should describe the factorial, got: {}",
         response.answer
     );
@@ -60,7 +60,7 @@ fn russian_factorial_of_five_in_python_returns_program() {
 #[test]
 fn hindi_reverse_string_in_rust_returns_program() {
     // Hindi: "reverse the string, write in Rust".
-    let response = answer("Rust में स्ट्रिंग को उलटें");
+    let response = answer("Rust में प्रोग्राम लिखें जो स्ट्रिंग को उलटें «नमस्ते»");
     assert_write_program_parameters(&response, "rust", "reverse_string");
     assert!(response.answer.contains("```rust"));
     assert!(
@@ -100,8 +100,7 @@ fn english_recursive_fibonacci_in_python_returns_program() {
     // Issue #334 step 1: the website demo asked to "Write a Python function
     // that calculates the Fibonacci sequence recursively." Before the catalog
     // gained a Fibonacci task this answered "I didn't understand you". The
-    // recursive template defines `fibonacci`, calls itself, and prints the 10th
-    // term (F(1)=F(2)=1 -> F(10)=55).
+    // recursive template defines `fibonacci` without choosing an index.
     let response =
         answer("Write a Python function that calculates the Fibonacci sequence recursively.");
     assert_write_program_parameters(&response, "python", "fibonacci");
@@ -112,9 +111,10 @@ fn english_recursive_fibonacci_in_python_returns_program() {
         response.answer
     );
     assert!(
-        response.answer.contains("fibonacci(n - 1)")
-            && response.answer.contains("fibonacci(n - 2)"),
-        "Fibonacci template should recurse on n-1 and n-2, got: {}",
+        response
+            .answer
+            .contains("advance(remaining - 1, current, previous + current)"),
+        "Fibonacci template should advance the pair recursively, got: {}",
         response.answer
     );
     assert!(
@@ -122,14 +122,16 @@ fn english_recursive_fibonacci_in_python_returns_program() {
         "Fibonacci answer should explain how it works, got: {}",
         response.answer
     );
-    // The verified deterministic output for the 10th term is surfaced.
-    assert!(response.answer.contains("55"));
+    assert!(!response.answer.contains("print("));
+    assert!(!response.answer.contains("```text"));
 }
 
 #[test]
 fn fizzbuzz_supported_for_every_popular_language() {
     for (language, slug, fence) in POPULAR_LANGUAGES {
-        let response = answer(&format!("Write me a FizzBuzz program in {language}"));
+        let response = answer(&format!(
+            "Write me a FizzBuzz program in {language} from 1 through 15"
+        ));
         assert_write_program_parameters(&response, slug, "fizzbuzz");
         assert!(
             response.answer.contains(fence),

@@ -207,7 +207,7 @@ test('grammar_exists reads the CST seed', () => {
 });
 
 test('knows_language requires a grammar and a procedure', () => {
-  assert.ok(knowsLanguage('kotlin'), 'grammar plus a bootstrap-recorded discovery answers');
+  assert.ok(knowsLanguage('kotlin'), 'grammar plus a registered publisher supports discovery');
   // R1165-4: the documentation route is a procedure too, so Rust (the Rust
   // Book capture) is known; Pascal has a grammar and nothing that found a
   // procedure for it.
@@ -216,13 +216,10 @@ test('knows_language requires a grammar and a procedure', () => {
   assert.equal(knowsLanguage('latin-vulgate'), false, 'no grammar means no amount of caching answers');
 });
 
-test('the bootstrap tier is governed by the policy seed', () => {
-  assert.ok(bootstrapCacheActive(), 'the committed policy keeps the bootstrap active');
-  assert.ok(oracleKnowsLanguage('kotlin'), 'the oracle knows Kotlin while the bootstrap is active');
-  // Issue #1165: the Hello World snapshots the documentation route reproduces
-  // are retired; the Kotlin factorial still answers from Rosetta Code.
-  assert.ok(realm().codingOracleLookup('factorial', 'kotlin'));
-  assert.deepEqual(['kotlin', 'php', 'swift', 'lua'].filter((language) => realm().codingOracleLookup('hello_world', language)), []);
+test('the package carries no bootstrap procedure examples', () => {
+  assert.equal(bootstrapCacheActive(), false);
+  assert.ok(oracleKnowsLanguage('kotlin'), 'Kotlin has a registered publisher');
+  assert.equal(realm().codingOracleLookup, undefined);
 });
 
 test('write_program_reuses_the_cached_procedure_only_for_an_unmodified_request', () => {

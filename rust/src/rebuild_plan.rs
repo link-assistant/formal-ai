@@ -255,26 +255,6 @@ fn pipeline_steps() -> Vec<RebuildStep> {
     ]
 }
 
-/// The canonical rebuild-and-reattach plan: the plan for the canonical accepted change,
-/// used by the agentic recipe, the example, and the tests.
-///
-/// The canonical change is accepted through the same human gate the change request and
-/// learning ledger enforce — a green benchmark gate *and* an explicit approval — so the
-/// rebuild plan can only ever follow an approved change.
-#[must_use]
-pub fn canonical_rebuild_plan() -> RebuildPlan {
-    use crate::change_request::canonical_change_request;
-    use crate::learning_ledger::HumanApproval;
-    use crate::self_improvement::BenchmarkGateReport;
-
-    let request = canonical_change_request();
-    let green = BenchmarkGateReport::issue_362_from_counts(4, 0);
-    let accepted = request
-        .review(&green, &HumanApproval::granted("maintainer"))
-        .expect("the canonical change is green and approved, so it accepts");
-    RebuildPlan::for_accepted_change(&accepted)
-}
-
 fn field(out: &mut String, key: &str, value: &str) {
     let _ = writeln!(out, "  {key} \"{}\"", quote(value));
 }

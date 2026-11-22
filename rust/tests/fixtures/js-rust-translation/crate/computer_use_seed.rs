@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=1c702236d3ea22d0e781e966b9e7004de0190d2f87d8cd727c7045536b9fbcaf bytes=9772
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=350fc8ac3546ed5470e1551191dac3a85d8323cfdde8eb8e9eb223f93fce31aa bytes=8951
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
@@ -76,7 +76,11 @@ pub const TOOLS_PATH: &str = "data/seed/tools.lino";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow function | call of a sibling function | call of an imported function | field access | global call String() | let without a value | method call .padStart() | method call .push() | method call .set() | new Map | null | object without a $ tag | undefined
+// formal-ai:blockers arrow function | call of a sibling function | call of an imported function
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal new expression
+// formal-ai:blockers arrow function | assignment of a field or element | call of a sibling function | call of an imported function | destructuring | field access | global call String() | let without a value | method call .padStart() | method call .push() | method call .set() | new Map | null | object without a $ tag | undefined
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal JSON.stringify
@@ -92,11 +96,7 @@ pub const TOOLS_PATH: &str = "data/seed/tools.lino";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal for with const
-// formal-ai:blockers call of a sibling function | destructuring | field access | method call .map() | null | object without a $ tag | sibling value
-
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal method call .find()
-// formal-ai:blockers arrow callback of .find() | call of a sibling function | field access | method call .find() | method call .get() | null | object without a $ tag | undefined
+// formal-ai:blockers destructuring | field access | method call .map() | null | object without a $ tag | sibling value
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)

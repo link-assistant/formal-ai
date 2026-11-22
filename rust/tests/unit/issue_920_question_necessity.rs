@@ -222,6 +222,19 @@ fn issue_920_question_marks_in_quotes_code_and_urls_are_not_questions() {
             .iter()
             .all(|event| !event.kind.starts_with("question_necessity:"))
     );
+
+    let localized_citation = "汇率。来源：https://example.test/rate?date=2026-11-17。";
+    let mut citation_log = EventLog::new();
+    assert_eq!(
+        enforce_questions(localized_citation, &mut citation_log),
+        localized_citation
+    );
+    assert!(
+        citation_log
+            .events()
+            .iter()
+            .all(|event| !event.kind.starts_with("question_necessity:"))
+    );
 }
 
 #[test]

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_documentation_method.js"
+  ceiling 119
+  rationale "Resolve a documentation reference through the publisher's own Sphinx pages."

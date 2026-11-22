@@ -1,9 +1,8 @@
-# No Hardcoded Natural Language: Meanings ↔ Naturalization
+# Meanings, naturalization, and task-specific answers
 
-This project is a deterministic, symbolic agent. Its behaviour must be a
-projection of *data* — the seed knowledge base — not of natural-language strings
-typed into the engine. This document states the rule, the principle behind it,
-and the CI gates that enforce it so the mistake is not repeated.
+Formal AI reasons over the task, shared language data, and evidence discovered
+for the task. The seed supplies the vocabulary, policies, and connective prose
+that the engine needs to formalize and render its results.
 
 ## The rule
 
@@ -16,11 +15,13 @@ to both directions of every reasoning path:
   (`lexicon().meanings_with_role(ROLE_…)`) or loads a named vocabulary
   (e.g. `seed::terminal_command_vocabulary()`). Code never hardcodes a
   per-language phrase array or branches on a literal user phrasing.
-- **Responses / output.** Every user-facing answer is a template in
-  `data/seed/multilingual-responses.lino`, looked up by intent
+- **Responses / output.** Presentation templates in
+  `data/seed/multilingual-responses.lino` are looked up by intent
   (`seed::response_for(intent, lang)` in Rust, `answerFor(...)` in the JS
-  worker). Code fills placeholders such as `{command}`; it does not embed the
-  surrounding prose.
+  worker). Code derives values such as `{command}` from the request and its
+  sources. Templates supply the surrounding prose. A seed entry that maps a
+  particular task to its solution bypasses reasoning even when that entry is
+  grounded in the lexicon.
 
 - **Web front-end (React).** Every user-facing string rendered by
   `js/app.js` — panel titles, button labels, status words, onboarding copy,
@@ -31,9 +32,10 @@ to both directions of every reasoning path:
   `t(...)` call so it follows the active UI language (en/ru/zh/hi) and fills
   placeholders such as `{command}` or `{granted}/{total}`.
 
-The only natural language that may appear in source files is **documentation**:
-comments, doc-strings, and Markdown. Anything a user can see in a product
-surface comes from the seed (engine surfaces) or the i18n catalog (web UI).
+Product surfaces combine text from seed templates or the web UI catalog with
+the content the engine has derived. Tests can include explicit expected
+answers and reproducible captures from online sources. The lightweight build
+excludes pre-cached source data.
 
 ## The principle: meanings ↔ naturalization
 
@@ -47,11 +49,11 @@ meaning  ──naturalize──▶  natural language   (rendering an answer)
 meaning  ◀──formalize──   natural language   (recognising a prompt)
 ```
 
-This is why a behavioural change is a seed edit plus a lookup, not a new branch
-on a string. It is also why the same prompt is answered identically by the CLI,
-the library, the HTTP server, the Telegram bot, and the website: they all read
-the same seed (the Rust crate via `include_str!`, the browser via the
-`js/seed/` deployment mirror).
+Vocabulary and rendering changes belong in the shared seed. Behaviour changes
+belong in reusable algorithms or policies that are exercised on several
+distinct inputs. The CLI, library, HTTP server, Telegram bot, and website use
+the shared seed. Answer parity also depends on the evidence and capabilities
+available to each surface.
 
 ## Enforcement (CI, not just convention)
 
@@ -137,10 +139,13 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    rust-script scripts/check-hardcoded-language.rs --write
    ```
 
-   The burn-down loop: move a hardcoded answer into a grounded meaning in
-   `data/seed/*.lino`, read it back through `seed::response_for(...)` (never a
-   literal), then re-run `--write` so the migrated rows drop out of the
-   allowlist. PR #692 seeded the allowlist and migrated the duplicated
+   When replacing a literal, put reusable presentation text in a grounded
+   template and derive task-specific values before calling
+   `seed::response_for(...)`. The scanner checks prose in source files.
+   Reviewing whether a seed entry embeds a solution requires checking what
+   controls its lookup and the evidence used to produce the answer.
+   Re-run `--write` after removing the literal from the engine.
+   PR #692 seeded the allowlist and migrated the duplicated
    `rust/src/engine_responses.rs` English fallbacks — which already existed for all
    four languages in `data/seed/multilingual-responses.lino` — to prove the loop.
    The check runs in `.github/workflows/release.yml` and locally with:

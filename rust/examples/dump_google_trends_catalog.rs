@@ -8,6 +8,7 @@ use formal_ai::agentic_coding::{
 
 fn main() {
     let document = google_trends_catalog::render_document();
+    assert!(!document.is_empty(), "Google Trends source unavailable");
     let mut arguments = std::env::args_os().skip(1);
     let Some(output) = arguments.next() else {
         print!("{document}");

@@ -28,8 +28,8 @@ fn lino_seed_tasks_line_lists_every_catalog_task() {
 }
 
 /// The browser worker installs its task table from the seed's `task_<slug>`
-/// rows (issue #921 R921-8), so each row must carry the catalog task's label,
-/// output and stdin fixture exactly; a row with no `input` has none.
+/// rows (issue #921 R921-8), so each row must carry the catalog task's label
+/// and any output fixed by the task.
 #[test]
 fn lino_seed_task_rows_mirror_every_catalog_task() {
     let root = seed_tree();
@@ -41,18 +41,15 @@ fn lino_seed_task_rows_mirror_every_catalog_task() {
             .unwrap_or_else(|| panic!("lino seed has no task_{} row", task.slug));
         assert_eq!(child_value(row, "task"), Some(task.slug));
         assert_eq!(child_value(row, "label"), Some(task.label), "{}", task.slug);
+        let runtime_input =
+            task.slug.starts_with("list_files") || task.slug == "copy_stdin_to_stdout";
         assert_eq!(
             child_value(row, "output"),
-            Some(task.output),
+            (!runtime_input).then_some(task.output),
             "{}",
             task.slug
         );
-        assert_eq!(
-            child_value(row, "input").unwrap_or(""),
-            task.input,
-            "{}",
-            task.slug
-        );
+        assert_eq!(child_value(row, "input"), None, "{}", task.slug);
     }
 }
 

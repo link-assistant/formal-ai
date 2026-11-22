@@ -193,8 +193,10 @@ main().catch((error) => {
 });
 `;
 
-const BLUEPRINT_PYTHON_PERSONAL_BUDGET_REPORT = `from dataclasses import dataclass
-from math import log
+const BLUEPRINT_PYTHON_PERSONAL_BUDGET_REPORT = `import argparse
+import json
+from dataclasses import dataclass
+from math import expm1, isfinite, log1p
 from pathlib import Path
 
 
@@ -204,15 +206,6 @@ class CityCost:
     average_rent: float
     living_cost_ex_rent: float
     source: str
-
-
-CITY_COSTS = [
-    CityCost('Moscow', 950.0, 850.0, 'https://www.numbeo.com/cost-of-living/in/Moscow'),
-    CityCost('Berlin', 1550.0, 1250.0, 'https://www.numbeo.com/cost-of-living/in/Berlin'),
-    CityCost('New York', 3600.0, 1850.0, 'https://www.numbeo.com/cost-of-living/in/New-York'),
-]
-ANNUAL_RETURN = 0.08
-GOAL = 100_000.0
 
 
 def budget_50_30_20(monthly_income):
@@ -226,29 +219,38 @@ def budget_50_30_20(monthly_income):
 def future_value(monthly_contribution, annual_return, years):
     monthly_rate = annual_return / 12
     months = years * 12
-    return monthly_contribution * (((1 + monthly_rate) ** months - 1) / monthly_rate)
+    if monthly_rate == 0:
+        return monthly_contribution * months
+    return monthly_contribution * (expm1(months * log1p(monthly_rate)) / monthly_rate)
 
 
-def years_to_goal(monthly_savings, goal=GOAL, annual_return=ANNUAL_RETURN):
+def years_to_goal(monthly_savings, goal, annual_return):
+    if goal == 0:
+        return 0.0
     if monthly_savings <= 0:
         return None
     monthly_rate = annual_return / 12
-    months = log(1 + goal * monthly_rate / monthly_savings) / log(1 + monthly_rate)
+    if monthly_rate == 0:
+        return goal / monthly_savings / 12
+    growth = goal * monthly_rate / monthly_savings
+    if growth <= -1:
+        return None
+    months = log1p(growth) / log1p(monthly_rate)
     return months / 12
 
 
 def money(value):
-    return f'$\{value:,.0f}'
+    return f'\${value:,.0f}'
 
 
 def years(value):
-    return 'not reachable' if value is None else f'\{value:.1f}'
+    return 'not reachable' if value is None else f'{value:.1f}'
 
 
-def comparison_rows(monthly_income):
+def comparison_rows(monthly_income, cities, savings_goal, annual_return):
     plan = budget_50_30_20(monthly_income)
     rows = []
-    for cost in CITY_COSTS:
+    for cost in cities:
         expenses = cost.average_rent + cost.living_cost_ex_rent
         remaining = monthly_income - expenses
         monthly_savings = max(0.0, min(plan['savings'], remaining))
@@ -257,67 +259,81 @@ def comparison_rows(monthly_income):
             'rent': cost.average_rent,
             'remaining': remaining,
             'monthly_savings': monthly_savings,
-            'years_to_100k': years_to_goal(monthly_savings),
+            'years_to_goal': years_to_goal(monthly_savings, savings_goal, annual_return),
             'source': cost.source,
         })
     return rows
 
 
-def render_markdown(monthly_income):
+def render_markdown(monthly_income, monthly_contribution, annual_return, horizon, savings_goal, cities):
     plan = budget_50_30_20(monthly_income)
-    scenario_savings = 3000.0 * 0.20
-    scenario_future = future_value(scenario_savings, ANNUAL_RETURN, 10)
+    scenario_future = future_value(monthly_contribution, annual_return, horizon)
     lines = [
         '# Budget Calculator Report',
         '',
         '## 50/30/20 Budget',
-        f'- Monthly income: \{money(monthly_income)}',
-        f'- Needs (50%): \{money(plan["needs"])}',
-        f'- Wants (30%): \{money(plan["wants"])}',
-        f'- Savings (20%): \{money(plan["savings"])}',
+        f'- Monthly income: {money(monthly_income)}',
+        f'- Needs (50%): {money(plan["needs"])}',
+        f'- Wants (30%): {money(plan["wants"])}',
+        f'- Savings (20%): {money(plan["savings"])}',
         '',
         '## Investment Scenario',
-        f'- 20% of $3000 monthly: \{money(scenario_savings)}',
-        f'- Future value after 10 years at 8% annual return: \{money(scenario_future)}',
+        f'- Monthly contribution: {money(monthly_contribution)}',
+        f'- Future value after {horizon} years at {annual_return:.2%} annual return: {money(scenario_future)}',
         '',
         '## City Comparison',
-        '| City | Average rent | Remaining budget after expenses | Years to save $100,000 |',
+        f'| City | Average rent | Remaining budget after expenses | Years to save {money(savings_goal)} |',
         '| --- | ---: | ---: | ---: |',
     ]
-    for row in comparison_rows(monthly_income):
+    for row in comparison_rows(monthly_income, cities, savings_goal, annual_return):
         lines.append(
-            f'| \{row["city"]} | \{money(row["rent"])} | '
-            f'\{money(row["remaining"])} | \{years(row["years_to_100k"])} |'
+            f'| {row["city"]} | {money(row["rent"])} | '
+            f'{money(row["remaining"])} | {years(row["years_to_goal"])} |'
         )
     lines.extend(['', '## Sources'])
-    for cost in CITY_COSTS:
-        lines.append(f'- \{cost.city}: \{cost.source}')
+    for cost in cities:
+        lines.append(f'- {cost.city}: {cost.source}')
     lines.append('')
-    lines.append('Review and update the city-cost values after checking the source pages.')
     return '\\n'.join(lines)
 
 
-def read_income():
-    try:
-        raw = input('Monthly income in USD [3000]: ').strip()
-    except EOFError:
-        raw = ''
-    return float(raw or '3000')
-
-
 def main():
-    report = render_markdown(read_income())
-    Path('budget_report.md').write_text(report, encoding='utf-8')
+    parser = argparse.ArgumentParser(
+        description='Read a JSON budget scenario and write a sourced Markdown report.',
+        epilog='Scenario fields: monthly_income, monthly_contribution, annual_return (fraction), years, savings_goal and cities. Each city needs city, average_rent, living_cost_ex_rent and source.',
+    )
+    parser.add_argument('scenario', type=Path)
+    parser.add_argument('output', type=Path)
+    args = parser.parse_args()
+    scenario = json.loads(args.scenario.read_text(encoding='utf-8'))
+    for key in ('monthly_income', 'monthly_contribution', 'years', 'savings_goal'):
+        value = scenario[key]
+        if type(value) not in (int, float) or not isfinite(value) or value < 0:
+            parser.error(f'{key} must be a finite, nonnegative number')
+    cities = [CityCost(**row) for row in scenario['cities']]
+    if not cities or any(not city.source.strip() for city in cities):
+        parser.error('provide city costs with source URLs')
+    annual_return = scenario['annual_return']
+    if type(annual_return) not in (int, float) or not isfinite(annual_return) or annual_return <= -1:
+        parser.error('annual_return must be finite and greater than -1')
+    report = render_markdown(scenario['monthly_income'], scenario['monthly_contribution'],
+                             annual_return, scenario['years'], scenario['savings_goal'], cities)
+    args.output.write_text(report, encoding='utf-8')
     print(report)
-    print('\\nMarkdown report written to budget_report.md')
 
 
 if __name__ == '__main__':
     main()
 `;
 
-const BLUEPRINT_PYTHON_CRYPTO_PORTFOLIO_TRACKER = `from dataclasses import dataclass
+const BLUEPRINT_PYTHON_CRYPTO_PORTFOLIO_TRACKER = `import argparse
+import json
+from dataclasses import dataclass
+from math import isfinite
+from pathlib import Path
 from typing import Mapping
+from urllib.parse import urlsplit
+from urllib.request import urlopen
 
 
 @dataclass(frozen=True)
@@ -327,32 +343,22 @@ class AssetPrice:
     change_24h_pct: float
 
 
-PORTFOLIO = {
-    'BTC': 2.5,
-    'ETH': 15.0,
-    'TON': 1000.0,
-    'USDT': 5000.0,
-}
-
-MOCK_API_RESPONSE = {
-    'BTC': {'price_usd': 64120.25, 'change_24h_pct': -2.4},
-    'ETH': {'price_usd': 3350.80, 'change_24h_pct': 1.2},
-    'TON': {'price_usd': 6.85, 'change_24h_pct': -5.7},
-    'USDT': {'price_usd': 1.00, 'change_24h_pct': 0.0},
-}
-
-
-def fetch_prices(symbols: list[str]) -> dict[str, AssetPrice]:
-    """Mock a public price API response for deterministic offline execution."""
-    prices = {}
-    for symbol in symbols:
-        payload = MOCK_API_RESPONSE[symbol]
-        prices[symbol] = AssetPrice(
-            symbol=symbol,
-            price_usd=payload['price_usd'],
-            change_24h_pct=payload['change_24h_pct'],
-        )
-    return prices
+def fetch_prices(symbols: list[str], source: str) -> dict[str, AssetPrice]:
+    if source.startswith('https://'):
+        endpoint = urlsplit(source)
+        if not endpoint.hostname or endpoint.username or endpoint.password:
+            raise ValueError('provide a public HTTPS endpoint without credentials')
+        maximum_bytes = 1_048_576
+        with urlopen(source, timeout=10) as response:
+            if urlsplit(response.geturl()).scheme != 'https':
+                raise ValueError('the price source redirected outside HTTPS')
+            body = response.read(maximum_bytes + 1)
+        if len(body) > maximum_bytes:
+            raise ValueError('the price response exceeded 1 MiB')
+        payload = json.loads(body)
+    else:
+        payload = json.loads(Path(source).read_text(encoding='utf-8'))
+    return {symbol: AssetPrice(symbol=symbol, **payload[symbol]) for symbol in symbols}
 
 
 def portfolio_rows(
@@ -364,7 +370,7 @@ def portfolio_rows(
     for symbol, amount in holdings.items():
         price = prices[symbol]
         value = amount * price.price_usd
-        portfolio_weight = value / total_value * 100
+        portfolio_weight = value / total_value * 100 if total_value else 0.0
         rows.append({
             'symbol': symbol,
             'amount': amount,
@@ -376,52 +382,71 @@ def portfolio_rows(
     return rows
 
 
-def notify_alerts(rows: list[dict[str, float | str]]) -> list[str]:
+def notify_alerts(rows: list[dict[str, float | str]], alert_threshold: float) -> list[str]:
     return [
         f'Notify: {row["symbol"]} dropped {row["change_24h_pct"]:.2f}% in 24h'
         for row in rows
-        if float(row['change_24h_pct']) < -5.0
+        if float(row['change_24h_pct']) < -alert_threshold
     ]
 
 
 def money(value: float) -> str:
-    return f'$\{value:,.2f}'
+    return f'\${value:,.2f}'
 
 
-def render_dashboard(rows: list[dict[str, float | str]], notices: list[str]) -> str:
+def render_dashboard(
+    rows: list[dict[str, float | str]], notices: list[str], alert_threshold: float,
+) -> str:
     total_value = sum(float(row['value_usd']) for row in rows)
     lines = [
         '# Crypto Portfolio Dashboard',
         '',
-        f'**Total value:** \{money(total_value)}',
+        f'**Total value:** {money(total_value)}',
         '',
         '| Asset | Amount | Price USD | Value USD | 24h change | Portfolio weight |',
         '| --- | ---: | ---: | ---: | ---: | ---: |',
     ]
     for row in rows:
         lines.append(
-            f'| \{row["symbol"]} | \{row["amount"]:,.4g} | \{money(float(row["price_usd"]))} | '
-            f'\{money(float(row["value_usd"]))} | \{row["change_24h_pct"]:.2f}% | '
-            f'\{row["portfolio_weight"]:.2f}% |'
+            f'| {row["symbol"]} | {row["amount"]:,.4g} | {money(float(row["price_usd"]))} | '
+            f'{money(float(row["value_usd"]))} | {row["change_24h_pct"]:.2f}% | '
+            f'{row["portfolio_weight"]:.2f}% |'
         )
     lines.extend(['', '## Alerts'])
-    lines.extend(notices or ['No asset dropped more than 5% in the last 24h.'])
+    lines.extend(notices or [f'No asset dropped more than {alert_threshold:g}% in the last 24h.'])
     return '\\n'.join(lines)
 
 
 def main() -> None:
-    prices = fetch_prices(list(PORTFOLIO))
-    rows = portfolio_rows(PORTFOLIO, prices)
-    notices = notify_alerts(rows)
-    formatted_log = render_dashboard(rows, notices)
-    print(formatted_log)
+    parser = argparse.ArgumentParser(
+        description='Read JSON holdings and prices from a file or public HTTPS endpoint.',
+        epilog='Holdings maps symbols to quantities. Prices maps symbols to price_usd and change_24h_pct. To replay a mock response, pass its JSON file as the prices argument.',
+    )
+    parser.add_argument('holdings', type=Path)
+    parser.add_argument('prices', help='prices JSON file or public HTTPS endpoint')
+    parser.add_argument('alert_threshold', type=float, help='percentage decline that triggers an alert')
+    args = parser.parse_args()
+    if not isfinite(args.alert_threshold) or args.alert_threshold < 0:
+        parser.error('alert_threshold must be a finite, nonnegative percentage')
+    holdings = json.loads(args.holdings.read_text(encoding='utf-8'))
+    if not isinstance(holdings, dict) or not holdings:
+        parser.error('holdings must be a nonempty mapping from symbols to quantities')
+    prices = fetch_prices(list(holdings), args.prices)
+    rows = portfolio_rows(holdings, prices)
+    notices = notify_alerts(rows, args.alert_threshold)
+    dashboard = render_dashboard(rows, notices, args.alert_threshold)
+    print(f'{dashboard}\\n\\nPrice source: {args.prices}')
 
 
 if __name__ == '__main__':
     main()
 `;
 
-const BLUEPRINT_PYTHON_SMART_TRAVEL_PLANNER = `from dataclasses import dataclass
+const BLUEPRINT_PYTHON_SMART_TRAVEL_PLANNER = `import argparse
+import json
+from dataclasses import dataclass
+from math import isfinite
+from pathlib import Path
 
 
 @dataclass(frozen=True)
@@ -434,42 +459,14 @@ class DestinationData:
     source: str
 
 
-DEFAULT_DESTINATIONS = {
-    'Japan': DestinationData(
-        country='Japan',
-        visa_free=False,
-        visa_note='Russian citizens should confirm visa requirements before booking.',
-        average_flight_cost=820.0,
-        daily_cost=160.0,
-        source='https://www.mofa.go.jp/',
-    ),
-    'UAE': DestinationData(
-        country='UAE',
-        visa_free=True,
-        visa_note='Assume visa-free short-stay access; verify current entry rules.',
-        average_flight_cost=420.0,
-        daily_cost=135.0,
-        source='https://u.ae/',
-    ),
-    'Serbia': DestinationData(
-        country='Serbia',
-        visa_free=True,
-        visa_note='Assume visa-free short-stay access; verify current entry rules.',
-        average_flight_cost=380.0,
-        daily_cost=95.0,
-        source='https://www.mfa.gov.rs/',
-    ),
-}
-DEFAULT_DAYS = 7
-
-
 def money(value):
-    return f'$\{value:,.0f}'
+    return f'\${value:,.0f}'
 
 
 class TravelPlanner:
-    def __init__(self, destination_data=None):
-        self.destination_data = destination_data or DEFAULT_DESTINATIONS
+    def __init__(self, destination_data, days):
+        self.destination_data = destination_data
+        self.days = days
         self.destinations = []
 
     def add_destination(self, country: str, budget: float):
@@ -490,7 +487,7 @@ class TravelPlanner:
         )
 
     def estimate_total_cost(self) -> dict:
-        return self._estimate_for_days(DEFAULT_DAYS)
+        return self._estimate_for_days(self.days)
 
     def generate_itinerary(self, days: int) -> str:
         estimates = self._estimate_for_days(days)
@@ -501,17 +498,17 @@ class TravelPlanner:
         lines = [
             '# Smart Travel Planner',
             '',
-            f'Sample output for a {days}-day trip with $2,000 budget',
+            f'Itinerary for a {days}-day trip',
             '',
-            '| Rank | Destination | Visa | Estimated cost | Budget status |',
-            '| ---: | --- | --- | ---: | --- |',
+            '| Rank | Destination | Visa | Estimated cost | Budget | Budget status |',
+            '| ---: | --- | --- | ---: | ---: | --- |',
         ]
         for rank, row in enumerate(ranked, start=1):
             visa = 'visa-free' if row['visa_free'] else 'visa check required'
             warning = row['budget_warning'] or 'Budget warning: none'
             lines.append(
                 f'| {rank} | {row["country"]} | {visa} | '
-                f'{money(row["estimated_total"])} | {warning} |'
+                f'{money(row["estimated_total"])} | {money(row["budget"])} | {warning} |'
             )
         lines.extend(['', '## Notes'])
         for row in ranked:
@@ -527,6 +524,8 @@ class TravelPlanner:
         return self.destinations
 
     def _estimate_for_days(self, days):
+        if type(days) is not int or days < 1:
+            raise ValueError('the trip must have at least one day')
         estimates = {}
         for item in self._selected_destinations():
             data = self.destination_data[item['country']]
@@ -550,23 +549,42 @@ class TravelPlanner:
         return estimates
 
 
-def build_sample_planner():
-    planner = TravelPlanner()
-    for country in ('Japan', 'UAE', 'Serbia'):
-        planner.add_destination(country, 2000.0)
-    return planner
+def main():
+    parser = argparse.ArgumentParser(
+        description='Read a JSON travel scenario and print the ranked itinerary.',
+        epilog='Scenario fields: days and destinations. Each destination needs country, budget, visa_free, visa_note, average_flight_cost, daily_cost and source for the citizenship, origin and dates.',
+    )
+    parser.add_argument('scenario', type=Path)
+    args = parser.parse_args()
+    scenario = json.loads(args.scenario.read_text(encoding='utf-8'))
+    destinations = {}
+    budgets = {}
+    for row in scenario['destinations']:
+        data = dict(row)
+        budget = data.pop('budget')
+        destination = DestinationData(**data)
+        if not destination.source.strip() or destination.country in destinations:
+            parser.error('provide distinct destinations with source URLs')
+        if type(destination.visa_free) is not bool:
+            parser.error('visa_free must be a JSON boolean')
+        values = (budget, destination.average_flight_cost, destination.daily_cost)
+        if any(type(value) not in (int, float) or not isfinite(value) or value < 0 for value in values):
+            parser.error('budget and costs must be finite, nonnegative numbers')
+        destinations[destination.country] = destination
+        budgets[destination.country] = budget
+    planner = TravelPlanner(destinations, scenario['days'])
+    for country, budget in budgets.items():
+        planner.add_destination(country, budget)
+    print(planner.generate_itinerary(planner.days))
 
 
 if __name__ == '__main__':
-    sample = build_sample_planner()
-    print('Sample output for a 7-day trip with $2,000 budget')
-    print(sample.generate_itinerary(7))
+    main()
 `;
 
 const BLUEPRINT_RUST_SELF_SOURCE_METRICS = `use std::fmt::Write as _;
 
 const SOURCE: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", file!()));
-const RESPONSE_REASONING: &str = "The response decomposes the request, provides a source-metrics program, and compares the code with this prose.";
 
 #[derive(Default)]
 struct Metrics {
@@ -578,10 +596,13 @@ struct Metrics {
     complexity_score: usize,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let path = std::env::args_os().nth(1).ok_or("usage: cargo run -- <response-prose.txt>")?;
+    let reasoning = std::fs::read_to_string(path)?;
     let source_metrics = analyze_rust_text(SOURCE);
-    let reasoning_metrics = analyze_rust_text(RESPONSE_REASONING);
+    let reasoning_metrics = analyze_rust_text(&reasoning);
     println!("{}", render_report(&source_metrics, &reasoning_metrics));
+    Ok(())
 }
 
 fn analyze_rust_text(text: &str) -> Metrics {
@@ -685,7 +706,7 @@ fn render_report(source: &Metrics, reasoning: &Metrics) -> String {
         "tie"
     };
     let explanation = if verdict == "generated_code" {
-        "The generated Rust code is more complex because it contains functions, loops, conditionals, and comment syntax; the reasoning text is plain prose."
+        "The generated Rust code has more branches under this scanner."
     } else if verdict == "reasoning_text" {
         "The reasoning text is more complex under this scanner."
     } else {
@@ -772,8 +793,8 @@ const BLUEPRINT_RECIPES = [
       {
         languageSlug: "python",
         libraries: ["Python 3 standard library only"],
-        runCommand: "python budget_report.py",
-        execution: "review_data_assumptions",
+        runCommand: "python budget_report.py <scenario.json> <report.md>",
+        execution: "requires_scenario_input",
         code: BLUEPRINT_PYTHON_PERSONAL_BUDGET_REPORT,
       },
     ],
@@ -794,8 +815,8 @@ const BLUEPRINT_RECIPES = [
       {
         languageSlug: "python",
         libraries: ["Python 3 standard library only"],
-        runCommand: "python travel_planner.py",
-        execution: "review_data_assumptions",
+        runCommand: "python travel_planner.py <scenario.json>",
+        execution: "requires_scenario_input",
         code: BLUEPRINT_PYTHON_SMART_TRAVEL_PLANNER,
       },
     ],
@@ -816,7 +837,7 @@ const BLUEPRINT_RECIPES = [
       {
         languageSlug: "rust",
         libraries: ["Rust standard library only"],
-        runCommand: "cargo run",
+        runCommand: "cargo run -- <response-prose.txt>",
         execution: "local_source_analysis",
         code: BLUEPRINT_RUST_SELF_SOURCE_METRICS,
       },
@@ -837,8 +858,8 @@ const BLUEPRINT_RECIPES = [
       {
         languageSlug: "python",
         libraries: ["Python 3 standard library only"],
-        runCommand: "python crypto_portfolio.py",
-        execution: "review_data_assumptions",
+        runCommand: "python crypto_portfolio.py <holdings.json> <prices-file-or-url> <alert-threshold>",
+        execution: "requires_scenario_input",
         code: BLUEPRINT_PYTHON_CRYPTO_PORTFOLIO_TRACKER,
       },
     ],
@@ -902,8 +923,8 @@ const BLUEPRINT_I18N = {
     executionReport: (runCommand, execution) =>
       execution === "local_source_analysis"
         ? `Execution status: not run — this source-metrics blueprint uses only the Rust standard library, but the answer renderer did not compile it in place. The code is provided for review. Run it yourself from a Cargo project: \`${runCommand}\`.`
-        : execution === "review_data_assumptions"
-        ? `Execution status: not run — this report blueprint was not executed in the offline sandbox, and the embedded data assumptions should be reviewed before use. The code is provided for review. Run it yourself: \`${runCommand}\`.`
+        : execution === "requires_scenario_input"
+        ? `Execution status: not run — this report blueprint was not executed in the offline sandbox, and it requires the scenario inputs described in the program. The code is provided for review. Run it yourself: \`${runCommand}\`.`
         : `Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: \`${runCommand}\`.`,
   },
   ru: {
@@ -914,8 +935,8 @@ const BLUEPRINT_I18N = {
     executionReport: (runCommand, execution) =>
       execution === "local_source_analysis"
         ? `Статус выполнения: не запускалось — этот чертёж анализа исходного кода использует только стандартную библиотеку Rust, но генератор ответа не компилировал его на месте. Код приведён для проверки. Запустить из Cargo-проекта: \`${runCommand}\`.`
-        : execution === "review_data_assumptions"
-        ? `Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а встроенные допущения о данных нужно проверить перед использованием. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`
+        : execution === "requires_scenario_input"
+        ? `Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а для расчёта нужны входные данные, описанные в программе. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`
         : `Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`,
   },
   hi: {
@@ -926,8 +947,8 @@ const BLUEPRINT_I18N = {
     executionReport: (runCommand, execution) =>
       execution === "local_source_analysis"
         ? `निष्पादन स्थिति: नहीं चलाया गया — यह source-metrics blueprint केवल Rust standard library का उपयोग करता है, लेकिन answer renderer ने इसे यहीं compile नहीं किया। कोड समीक्षा के लिए दिया गया है। Cargo project से स्वयं चलाएँ: \`${runCommand}\`।`
-        : execution === "review_data_assumptions"
-        ? `निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और embedded data assumptions को उपयोग से पहले जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`
+        : execution === "requires_scenario_input"
+        ? `निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और गणना के लिए प्रोग्राम में बताए गए इनपुट चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`
         : `निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`,
   },
   zh: {
@@ -938,8 +959,8 @@ const BLUEPRINT_I18N = {
     executionReport: (runCommand, execution) =>
       execution === "local_source_analysis"
         ? `执行状态：未运行 —— 该源码指标蓝图只使用 Rust 标准库，但回答渲染器没有在本地编译它。代码仅供审阅。请在 Cargo 项目中自行运行：\`${runCommand}\`。`
-        : execution === "review_data_assumptions"
-        ? `执行状态：未运行 —— 该报告未在离线沙箱中执行，内置数据假设应先核对再使用。代码仅供审阅。自行运行：\`${runCommand}\`。`
+        : execution === "requires_scenario_input"
+        ? `执行状态：未运行 —— 该报告未在离线沙箱中执行，运行所需的输入数据见程序说明。代码仅供审阅。自行运行：\`${runCommand}\`。`
         : `执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：\`${runCommand}\`。`,
   },
 };
@@ -1037,9 +1058,7 @@ function normalizeBlueprintComposition(value) {
   }
 }
 
-// If `trimmed` (leading whitespace already removed) is a region directive
-// comment, return `{ open, slug }`; otherwise null. Mirrors `region_directive`
-// in `src/coding/blueprint.rs`.
+// Recognize internal capability region markers.
 function blueprintRegionDirective(trimmed, marker) {
   if (!trimmed.startsWith(marker)) return null;
   const rest = trimmed.slice(marker.length).replace(/^\s+/, "");
@@ -1052,12 +1071,7 @@ function blueprintRegionDirective(trimmed, marker) {
   return null;
 }
 
-// Compose the program a blueprint emits from its annotated recipe template.
-// Byte-for-byte mirror of `compose_program` in `src/coding/blueprint.rs`: drop
-// every region directive line, and in the "composed" strategy drop the body of
-// any region whose capability the request did not name and strip whole-line
-// documentation when comments were not requested. The "documented" strategy
-// keeps every region and comment (only the internal directive lines go).
+// Keep requested regions and comments, or all content in documented mode.
 function composeBlueprintProgram(blueprint, strategy) {
   const languageSlug = blueprint.program.languageSlug;
   const marker = blueprintCommentMarker(languageSlug);
@@ -1087,12 +1101,7 @@ function composeBlueprintProgram(blueprint, strategy) {
   return collapseBlueprintBlankRuns(kept);
 }
 
-// Remove the documentation from already region-filtered lines when the request
-// did not ask for comments. Mirrors `strip_comment_lines` in
-// `src/coding/blueprint.rs`: only whole-line comments and a leading Python
-// module docstring are dropped (both non-semantic, so the stripped program
-// stays compilable), and inline trailing comments are left untouched so a
-// `//`/`#` inside a string literal is never sliced.
+// Drop whole-line comments and the leading Python docstring.
 function stripBlueprintCommentLines(lines, languageSlug) {
   const marker = blueprintCommentMarker(languageSlug);
   const kept = [];
@@ -1157,15 +1166,6 @@ function blueprintRecipeSummary(recipe, language) {
   return BLUEPRINT_RECIPE_SUMMARIES[`${recipe.slug}:${language}`] || recipe.label;
 }
 
-function blueprintRecipeAddendum(recipe) {
-  if (recipe.slug !== "self_source_metrics_report") return "";
-  return [
-    "Response self-analysis:",
-    "- Reasoning text metrics: functions=0, loops=0, conditionals=0, comments=0, complexity_score=1.",
-    "- Comparison: the generated Rust code is more complex than the reasoning text because it contains executable parsing, loops, conditionals, helper functions, and JSON rendering logic.",
-  ].join("\n");
-}
-
 // Render the complete localized blueprint answer — decomposition plan, the
 // curated program, its library prerequisites, and the honest execution report.
 // Byte-for-byte mirror of `render` in `src/coding/blueprint.rs`. `composition`
@@ -1198,8 +1198,6 @@ function renderBlueprint(blueprint, language, composition) {
     blueprint.program.runCommand,
     blueprint.program.execution,
   )}`;
-  const addendum = blueprintRecipeAddendum(blueprint.recipe);
-  if (addendum) body += `\n\n${addendum}`;
   return body;
 }
 

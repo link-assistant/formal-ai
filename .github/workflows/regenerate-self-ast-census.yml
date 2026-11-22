@@ -11,8 +11,6 @@ on:
       - '.github/workflows/regenerate-self-ast-census.yml'
       - ".cargo"
       - ".cargo/**"
-      - "data/seed/api-cache"
-      - "data/seed/api-cache/**"
       - "rust/.cargo"
       - "rust/.cargo/**"
       - "rust/Cargo.lock"

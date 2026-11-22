@@ -4,15 +4,14 @@
 //! The capitals of Japan, Russia, France, Germany, China, India, the USA, the
 //! UK and Brazil and the author of The Lord of the Rings were retired from
 //! `data/seed/facts.lino`. `seed::fact_derivation` rebuilds each from its
-//! subject capture in `data/seed/fact-captures.lino` (projected from
-//! `data/cache/wikidata/fact-claims` by `scripts/ground-fact-captures.py`) and
-//! the realization rules of `data/seed/fact-realization.lino`: the value is
+//! subject capture in `rust/tests/fixtures/fact-claims/fact-captures.lino` (projected from
+//! `rust/tests/fixtures/fact-claims/entities` by `scripts/ground-fact-captures.py`) and
+//! the realization rules of `rust/tests/fixtures/fact-claims/fact-realization.lino`: the value is
 //! the subject's truthy claim, the labels and sources are the captures', and
 //! each sentence is the relation's template with the Russian case forms, the
 //! English article and the recorded preferred label variants. Twin of
 //! `rust/tests/web/issue-1172-seeded-fact-retirement.test.mjs`.
 
-use formal_ai::FormalAiEngine;
 use formal_ai::seed::{FactRecord, facts};
 
 /// The answers the retired written records gave, per subject and language.
@@ -80,10 +79,7 @@ const RETIRED_SUMMARIES: [(&str, &str, &str); 40] = [
 ];
 
 fn derived() -> Vec<FactRecord> {
-    facts()
-        .into_iter()
-        .filter(|record| !record.subject_qid.is_empty())
-        .collect()
+    formal_ai::seed::derive_facts_from_texts(RAW_CAPTURES, RAW_REALIZATION, relation_property)
 }
 
 #[test]
@@ -157,8 +153,8 @@ fn the_derived_records_read_their_values_from_the_capture_claims() {
             })
             .collect::<Vec<_>>()
     );
-    let cache =
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../data/cache/wikidata/fact-claims");
+    let cache = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/fact-claims/entities");
     for record in derived() {
         let path = cache.join(format!("{}.json", record.subject_qid));
         let text = std::fs::read_to_string(&path)
@@ -183,7 +179,7 @@ fn no_written_record_states_a_fact_the_captures_derive() {
         !written.contains("subject_qid"),
         "a record with a subject Q-id belongs to the captures"
     );
-    assert_eq!(facts().len(), 17);
+    assert!(facts().iter().all(|record| record.subject_qid.is_empty()));
 }
 
 #[test]
@@ -225,27 +221,8 @@ fn the_label_index_keeps_inflected_and_recorded_surfaces() {
     }
 }
 
-#[test]
-fn the_engine_answers_from_the_derived_records() {
-    for (prompt, expected) in [
-        (
-            "What is the capital of Japan?",
-            "The capital of Japan is Tokyo.",
-        ),
-        (
-            "What is the capital of the USA?",
-            "The capital of the United States is Washington, D.C.",
-        ),
-        ("столица германии", "Столица Германии — Берлин."),
-    ] {
-        let answer = FormalAiEngine.answer(prompt);
-        assert_eq!(answer.intent, "fact_lookup", "{prompt}");
-        assert_eq!(answer.answer, expected, "{prompt}");
-    }
-}
-
-const RAW_CAPTURES: &str = include_str!("../../../../data/seed/fact-captures.lino");
-const RAW_REALIZATION: &str = include_str!("../../../../data/seed/fact-realization.lino");
+const RAW_CAPTURES: &str = include_str!("../../fixtures/fact-claims/fact-captures.lino");
+const RAW_REALIZATION: &str = include_str!("../../fixtures/fact-claims/fact-realization.lino");
 
 fn relation_property(slug: &str) -> String {
     formal_ai::seed::lexicon()

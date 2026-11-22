@@ -18,122 +18,42 @@
 
 use std::fmt::Write as _;
 
-/// One step of a recipe, as the planner's state machine executes it.
-#[derive(Debug, Clone, Copy)]
-struct RecipeStep {
-    /// The tool the planner emits for this step (`web_search`, `write_file`, …).
-    tool: &'static str,
-    /// What the step accomplishes, shown in the diagram node.
-    note: &'static str,
-}
+use super::wording::agentic_message;
 
-/// One agentic recipe the deterministic planner knows how to walk.
-#[derive(Debug, Clone, Copy)]
 struct Recipe {
-    /// Stable key used to build mermaid node ids (must be a valid id fragment).
     key: &'static str,
-    /// Human-readable recipe title.
-    title: &'static str,
-    /// The issue the recipe was built for.
     issue: &'static str,
-    /// The keyword hint the task router (`plan_chat_step`) matches to reach it.
-    route: &'static str,
-    /// The tool steps, in execution order (the terminal "final answer" is implied).
-    steps: &'static [RecipeStep],
+    tools: &'static [&'static str],
 }
 
-/// The recipes documented by the generated diagrams — the issue #468/#538 slice
-/// of `planner::plan_chat_step`. Adding a recipe here changes the generated
-/// diagrams.
-///
-/// This table is a **subset** of what the planner routes: `plan_chat_step` also
-/// dispatches self-heal (#558), dreaming-audit (#540), source-graph, ledger,
-/// explain, change-request, repair-strategy, rebuild, Google-Trends
-/// learning/catalog (#498/#499), question-catalog, and the general capability
-/// router (#680), none of which are drawn here. The `otherwise` edge in Part 1
-/// stands for all of them. Nothing pins this table to the planner's full router
-/// set, so extending the diagrams to the remaining recipes is tracked work —
-/// see issue #667 (step-through debugging view) and the E56-E68 batch.
+impl Recipe {
+    fn wording(&self, field: &str) -> String {
+        agentic_message(&format!("diagram_{}_{field}", self.key), &[])
+    }
+}
+
+/// The diagrams describe the first four recipes from the issue #468/#538
+/// slice of `planner::plan_chat_step`.
 const RECIPES: &[Recipe] = &[
     Recipe {
         key: "formalize",
-        title: "Formalize a text into a knowledge base",
         issue: "#468",
-        route: "formaliz / knowledge base / fisherman",
-        steps: &[
-            RecipeStep {
-                tool: "web_search",
-                note: "find the source text",
-            },
-            RecipeStep {
-                tool: "web_fetch",
-                note: "read it; a tool error falls back to the canonical synopsis",
-            },
-            RecipeStep {
-                tool: "write_file",
-                note: "formalize prose into Links Notation",
-            },
-            RecipeStep {
-                tool: "run_command",
-                note: "cat the file to verify the write landed",
-            },
-        ],
+        tools: &["web_search", "web_fetch", "write_file", "run_command"],
     },
     Recipe {
         key: "meaning",
-        title: "Make a meaning more detailed",
         issue: "#538",
-        route: "more detailed / grammatical number / a known concept",
-        steps: &[
-            RecipeStep {
-                tool: "web_search",
-                note: "find the concept's Wikidata lexemes",
-            },
-            RecipeStep {
-                tool: "web_fetch",
-                note: "read the forms; recover the missing plural",
-            },
-            RecipeStep {
-                tool: "write_file",
-                note: "re-derive the grounded block, byte-for-byte the seed",
-            },
-            RecipeStep {
-                tool: "run_command",
-                note: "cat the block to verify",
-            },
-        ],
+        tools: &["web_search", "web_fetch", "write_file", "run_command"],
     },
     Recipe {
         key: "diagram",
-        title: "Generate these diagrams",
         issue: "#538",
-        route: "mermaid / diagram / visual overview",
-        steps: &[
-            RecipeStep {
-                tool: "write_file",
-                note: "render the mermaid parts from the recipe table",
-            },
-            RecipeStep {
-                tool: "run_command",
-                note: "cat the document to verify",
-            },
-        ],
+        tools: &["write_file", "run_command"],
     },
     Recipe {
         key: "self_ast",
-        title: "Store the CST/AST of the meta algorithm",
         issue: "#538",
-        route: "cst/ast / abstract-syntax / reason about itself",
-        steps: &[
-            RecipeStep {
-                tool: "write_file",
-                note: "parse the planner via meta-language; write the AST node census",
-            },
-            RecipeStep {
-                tool: "run_command",
-                note: "cat the census to verify",
-            },
-        ],
+        tools: &["write_file", "run_command"],
     },
 ];
 
@@ -184,9 +104,9 @@ fn render_overview(out: &mut String) {
         let _ = writeln!(
             out,
             "    router -->|\"{route}\"| {key}[\"{title} ({issue})\"]",
-            route = recipe.route,
+            route = recipe.wording("route"),
             key = recipe.key,
-            title = recipe.title,
+            title = recipe.wording("title"),
             issue = recipe.issue,
         );
     }
@@ -202,7 +122,7 @@ fn render_recipe(out: &mut String, part: usize, recipe: &Recipe) {
     let _ = writeln!(
         out,
         "## Part {part} — Recipe: {title} ({issue})\n",
-        title = recipe.title,
+        title = recipe.wording("title"),
         issue = recipe.issue,
     );
     let _ = writeln!(out, "```mermaid");
@@ -211,16 +131,15 @@ fn render_recipe(out: &mut String, part: usize, recipe: &Recipe) {
     let _ = writeln!(
         out,
         "    {previous}[\"user task<br/>({route})\"]",
-        route = recipe.route
+        route = recipe.wording("route")
     );
-    for (index, step) in recipe.steps.iter().enumerate() {
+    for (index, tool) in recipe.tools.iter().enumerate() {
         let node = format!("{}_{}", recipe.key, index);
         let _ = writeln!(
             out,
             "    {previous} --> {node}[\"{number}. {tool}<br/>{note}\"]",
             number = index + 1,
-            tool = step.tool,
-            note = step.note,
+            note = recipe.wording(&format!("step_{index}")),
         );
         previous = node;
     }

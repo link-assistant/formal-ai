@@ -16,8 +16,6 @@ pub const AGENTIC_TOOL_CAPABILITIES_LINO: &str =
     include_str!("../../embedded/data/seed/agentic-tool-capabilities.lino");
 pub const AGREEMENT_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/agreement-rules.lino");
-pub const APPROVED_LESSONS_LINO: &str =
-    include_str!("../../embedded/data/seed/approved-lessons.lino");
 pub const BRAINSTORM_SEEDS_LINO: &str =
     include_str!("../../embedded/data/seed/brainstorm-seeds.lino");
 pub const CALLER_CONTEXT_LINO: &str = include_str!("../../embedded/data/seed/caller-context.lino");
@@ -60,7 +58,6 @@ pub const CONTRIBUTION_ARTIFACTS_LINO: &str =
 pub const COREFERENCE_LINO: &str = include_str!("../../embedded/data/seed/coreference.lino");
 pub const CREATIVE_COMPOSITION_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/creative-composition-rules.lino");
-pub const DEMO_DIALOGS_LINO: &str = include_str!("../../embedded/data/seed/demo-dialogs.lino");
 pub const DERIVATION_SCHEMA_LINO: &str =
     include_str!("../../embedded/data/seed/derivation-schema.lino");
 pub const DIAGNOSTIC_CODE_SHAPES_LINO: &str =
@@ -69,11 +66,8 @@ pub const DRAFT_STRATEGIES_LINO: &str =
     include_str!("../../embedded/data/seed/draft-strategies.lino");
 pub const ENTITY_NAMES_LINO: &str = include_str!("../../embedded/data/seed/entity-names.lino");
 pub const ENVIRONMENTS_LINO: &str = include_str!("../../embedded/data/seed/environments.lino");
-pub const FACT_CAPTURES_LINO: &str = include_str!("../../embedded/data/seed/fact-captures.lino");
 pub const FACT_CHECK_SOURCES_LINO: &str =
     include_str!("../../embedded/data/seed/fact-check-sources.lino");
-pub const FACT_REALIZATION_LINO: &str =
-    include_str!("../../embedded/data/seed/fact-realization.lino");
 pub const FACTS_LINO: &str = include_str!("../../embedded/data/seed/facts.lino");
 pub const FEATURE_CAPABILITIES_LINO: &str =
     include_str!("../../embedded/data/seed/feature-capabilities.lino");
@@ -486,6 +480,362 @@ pub const WRITING_GENRE_STYLEGUIDES_LINO: &str =
     include_str!("../../embedded/data/seed/writing-genre-styleguides.lino");
 
 include!("embedded_files.rs");
+/// Embedded copy of every Links Notation seed file. Returned in registry
+/// order so callers can render the merged bundle deterministically.
+#[must_use]
+pub fn seed_files() -> Vec<(&'static str, &'static str)> {
+    vec![
+        ("data/seed/agent-info.lino", AGENT_INFO_LINO),
+        ("data/seed/agentic-tool-capabilities.lino", AGENTIC_TOOL_CAPABILITIES_LINO),
+        ("data/seed/agreement-rules.lino", AGREEMENT_RULES_LINO),
+        ("data/seed/brainstorm-seeds.lino", BRAINSTORM_SEEDS_LINO),
+        ("data/seed/caller-context.lino", CALLER_CONTEXT_LINO),
+        ("data/seed/client-completion-contracts.lino", CLIENT_COMPLETION_CONTRACTS_LINO),
+        ("data/seed/client-integrations.lino", CLIENT_INTEGRATIONS_LINO),
+        ("data/seed/cloud-sync-policy.lino", CLOUD_SYNC_POLICY_LINO),
+        ("data/seed/cnl-language-en.lino", CNL_LANGUAGE_EN_LINO),
+        ("data/seed/cnl-language-es.lino", CNL_LANGUAGE_ES_LINO),
+        ("data/seed/cnl-language-hi.lino", CNL_LANGUAGE_HI_LINO),
+        ("data/seed/cnl-language-ru.lino", CNL_LANGUAGE_RU_LINO),
+        ("data/seed/cnl-language-zh.lino", CNL_LANGUAGE_ZH_LINO),
+        ("data/seed/cnl-output.lino", CNL_OUTPUT_LINO),
+        ("data/seed/code-example-parts.lino", CODE_EXAMPLE_PARTS_LINO),
+        ("data/seed/code-node-decomposition.lino", CODE_NODE_DECOMPOSITION_LINO),
+        ("data/seed/code-review-rules.lino", CODE_REVIEW_RULES_LINO),
+        ("data/seed/code-task-cues.lino", CODE_TASK_CUES_LINO),
+        ("data/seed/coding-guidance.lino", CODING_GUIDANCE_LINO),
+        ("data/seed/coding-idioms.lino", CODING_IDIOMS_LINO),
+        ("data/seed/command-outcome.lino", COMMAND_OUTCOME_LINO),
+        ("data/seed/computer-use-tasks.lino", COMPUTER_USE_TASKS_LINO),
+        ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
+        ("data/seed/concepts.lino", CONCEPTS_LINO),
+        ("data/seed/contribution-artifacts.lino", CONTRIBUTION_ARTIFACTS_LINO),
+        ("data/seed/coreference.lino", COREFERENCE_LINO),
+        ("data/seed/creative-composition-rules.lino", CREATIVE_COMPOSITION_RULES_LINO),
+        ("data/seed/derivation-schema.lino", DERIVATION_SCHEMA_LINO),
+        ("data/seed/diagnostic-code-shapes.lino", DIAGNOSTIC_CODE_SHAPES_LINO),
+        ("data/seed/draft-strategies.lino", DRAFT_STRATEGIES_LINO),
+        ("data/seed/entity-names.lino", ENTITY_NAMES_LINO),
+        ("data/seed/environments.lino", ENVIRONMENTS_LINO),
+        ("data/seed/fact-check-sources.lino", FACT_CHECK_SOURCES_LINO),
+        ("data/seed/facts.lino", FACTS_LINO),
+        ("data/seed/feature-capabilities.lino", FEATURE_CAPABILITIES_LINO),
+        ("data/seed/formal-language-projections.lino", FORMAL_LANGUAGE_PROJECTIONS_LINO),
+        ("data/seed/formal-targets.lino", FORMAL_TARGETS_LINO),
+        ("data/seed/formalization-relations.lino", FORMALIZATION_RELATIONS_LINO),
+        ("data/seed/grammar-projection-rules.lino", GRAMMAR_PROJECTION_RULES_LINO),
+        ("data/seed/greetings.lino", GREETINGS_LINO),
+        ("data/seed/handler-family-methods.lino", HANDLER_FAMILY_METHODS_LINO),
+        ("data/seed/handler-precedence.lino", HANDLER_PRECEDENCE_LINO),
+        ("data/seed/handler-promotions.lino", HANDLER_PROMOTIONS_LINO),
+        ("data/seed/handler-rules.lino", HANDLER_RULES_LINO),
+        ("data/seed/hello-world-programs.lino", HELLO_WORLD_PROGRAMS_LINO),
+        ("data/seed/history-formalization.lino", HISTORY_FORMALIZATION_LINO),
+        ("data/seed/identity.lino", IDENTITY_LINO),
+        ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
+        ("data/seed/interface-capabilities.lino", INTERFACE_CAPABILITIES_LINO),
+        ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
+        ("data/seed/language-projection.lino", LANGUAGE_PROJECTION_LINO),
+        ("data/seed/languages.lino", LANGUAGES_LINO),
+        ("data/seed/learned-methods.lino", LEARNED_METHODS_LINO),
+        ("data/seed/learned-program-rules.lino", LEARNED_PROGRAM_RULES_LINO),
+        ("data/seed/learned-request-openers.lino", LEARNED_REQUEST_OPENERS_LINO),
+        ("data/seed/learning-sources.lino", LEARNING_SOURCES_LINO),
+        ("data/seed/legality-patterns.lino", LEGALITY_PATTERNS_LINO),
+        ("data/seed/manual-pages.lino", MANUAL_PAGES_LINO),
+        ("data/seed/market-price-references.lino", MARKET_PRICE_REFERENCES_LINO),
+        ("data/seed/meanings.lino", MEANINGS_LINO),
+        ("data/seed/meanings-acts.lino", MEANINGS_ACTS_LINO),
+        ("data/seed/meanings-agent-actions.lino", MEANINGS_AGENT_ACTIONS_LINO),
+        ("data/seed/meanings-behavior-rules.lino", MEANINGS_BEHAVIOR_RULES_LINO),
+        ("data/seed/meanings-calculator.lino", MEANINGS_CALCULATOR_LINO),
+        ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
+        (
+            "data/seed/meanings-code-structure-explanations.lino",
+            MEANINGS_CODE_STRUCTURE_EXPLANATIONS_LINO,
+        ),
+        ("data/seed/meanings-code-task-templates.lino", MEANINGS_CODE_TASK_TEMPLATES_LINO),
+        ("data/seed/meanings-coding-assertions.lino", MEANINGS_CODING_ASSERTIONS_LINO),
+        ("data/seed/meanings-coding-catalog.lino", MEANINGS_CODING_CATALOG_LINO),
+        ("data/seed/meanings-coding-config.lino", MEANINGS_CODING_CONFIG_LINO),
+        ("data/seed/meanings-coding-request.lino", MEANINGS_CODING_REQUEST_LINO),
+        ("data/seed/meanings-coding-structure.lino", MEANINGS_CODING_STRUCTURE_LINO),
+        ("data/seed/meanings-coding-structure-2.lino", MEANINGS_CODING_STRUCTURE_2_LINO),
+        ("data/seed/meanings-coding-tasks.lino", MEANINGS_CODING_TASKS_LINO),
+        ("data/seed/meanings-computer-use.lino", MEANINGS_COMPUTER_USE_LINO),
+        ("data/seed/meanings-concept-lookup.lino", MEANINGS_CONCEPT_LOOKUP_LINO),
+        ("data/seed/meanings-controlled-output.lino", MEANINGS_CONTROLLED_OUTPUT_LINO),
+        ("data/seed/meanings-conversation.lino", MEANINGS_CONVERSATION_LINO),
+        ("data/seed/meanings-conversation-summary.lino", MEANINGS_CONVERSATION_SUMMARY_LINO),
+        ("data/seed/meanings-creative-tasks.lino", MEANINGS_CREATIVE_TASKS_LINO),
+        ("data/seed/meanings-decomposition.lino", MEANINGS_DECOMPOSITION_LINO),
+        ("data/seed/meanings-decomposition-ladder.lino", MEANINGS_DECOMPOSITION_LADDER_LINO),
+        ("data/seed/meanings-definition-merge.lino", MEANINGS_DEFINITION_MERGE_LINO),
+        ("data/seed/meanings-docs.lino", MEANINGS_DOCS_LINO),
+        ("data/seed/meanings-engine-report-intents.lino", MEANINGS_ENGINE_REPORT_INTENTS_LINO),
+        ("data/seed/meanings-facts.lino", MEANINGS_FACTS_LINO),
+        ("data/seed/meanings-feature-capability.lino", MEANINGS_FEATURE_CAPABILITY_LINO),
+        ("data/seed/meanings-file-edit.lino", MEANINGS_FILE_EDIT_LINO),
+        ("data/seed/meanings-file-write.lino", MEANINGS_FILE_WRITE_LINO),
+        ("data/seed/meanings-finance.lino", MEANINGS_FINANCE_LINO),
+        ("data/seed/meanings-formalization-needs.lino", MEANINGS_FORMALIZATION_NEEDS_LINO),
+        ("data/seed/meanings-formalization-relations.lino", MEANINGS_FORMALIZATION_RELATIONS_LINO),
+        ("data/seed/meanings-formalization-report.lino", MEANINGS_FORMALIZATION_REPORT_LINO),
+        ("data/seed/meanings-how.lino", MEANINGS_HOW_LINO),
+        ("data/seed/meanings-intent.lino", MEANINGS_INTENT_LINO),
+        ("data/seed/meanings-language-projection.lino", MEANINGS_LANGUAGE_PROJECTION_LINO),
+        ("data/seed/meanings-language-protocol.lino", MEANINGS_LANGUAGE_PROTOCOL_LINO),
+        ("data/seed/meanings-lexical-meta.lino", MEANINGS_LEXICAL_META_LINO),
+        (
+            "data/seed/meanings-lexicon-import-actor-to-diamond.lino",
+            MEANINGS_LEXICON_IMPORT_ACTOR_TO_DIAMOND_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-dog-to-lake.lino",
+            MEANINGS_LEXICON_IMPORT_DOG_TO_LAKE_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-lamp-to-rainbow.lino",
+            MEANINGS_LEXICON_IMPORT_LAMP_TO_RAINBOW_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-religion-to-wall.lino",
+            MEANINGS_LEXICON_IMPORT_RELIGION_TO_WALL_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-war-to-wood.lino",
+            MEANINGS_LEXICON_IMPORT_WAR_TO_WOOD_LINO,
+        ),
+        ("data/seed/meanings-links-root.lino", MEANINGS_LINKS_ROOT_LINO),
+        ("data/seed/meanings-local-search.lino", MEANINGS_LOCAL_SEARCH_LINO),
+        ("data/seed/meanings-membership.lino", MEANINGS_MEMBERSHIP_LINO),
+        ("data/seed/meanings-meta.lino", MEANINGS_META_LINO),
+        ("data/seed/meanings-note-composition.lino", MEANINGS_NOTE_COMPOSITION_LINO),
+        ("data/seed/meanings-number-constraints.lino", MEANINGS_NUMBER_CONSTRAINTS_LINO),
+        ("data/seed/meanings-number-words.lino", MEANINGS_NUMBER_WORDS_LINO),
+        ("data/seed/meanings-object-shapes.lino", MEANINGS_OBJECT_SHAPES_LINO),
+        ("data/seed/meanings-ontology.lino", MEANINGS_ONTOLOGY_LINO),
+        ("data/seed/meanings-playwright.lino", MEANINGS_PLAYWRIGHT_LINO),
+        ("data/seed/meanings-policy.lino", MEANINGS_POLICY_LINO),
+        ("data/seed/meanings-program-synthesis.lino", MEANINGS_PROGRAM_SYNTHESIS_LINO),
+        ("data/seed/meanings-proof.lino", MEANINGS_PROOF_LINO),
+        ("data/seed/meanings-repository-workflow.lino", MEANINGS_REPOSITORY_WORKFLOW_LINO),
+        ("data/seed/meanings-requirement-extraction.lino", MEANINGS_REQUIREMENT_EXTRACTION_LINO),
+        ("data/seed/meanings-research-table.lino", MEANINGS_RESEARCH_TABLE_LINO),
+        ("data/seed/meanings-response-intents.lino", MEANINGS_RESPONSE_INTENTS_LINO),
+        (
+            "data/seed/meanings-response-intents-handlers.lino",
+            MEANINGS_RESPONSE_INTENTS_HANDLERS_LINO,
+        ),
+        ("data/seed/meanings-routing-vocabulary.lino", MEANINGS_ROUTING_VOCABULARY_LINO),
+        ("data/seed/meanings-selection-criteria.lino", MEANINGS_SELECTION_CRITERIA_LINO),
+        ("data/seed/meanings-semantic-meta.lino", MEANINGS_SEMANTIC_META_LINO),
+        ("data/seed/meanings-skill-compiler.lino", MEANINGS_SKILL_COMPILER_LINO),
+        ("data/seed/meanings-skill-procedure.lino", MEANINGS_SKILL_PROCEDURE_LINO),
+        ("data/seed/meanings-software-project.lino", MEANINGS_SOFTWARE_PROJECT_LINO),
+        ("data/seed/meanings-software-requirements.lino", MEANINGS_SOFTWARE_REQUIREMENTS_LINO),
+        (
+            "data/seed/meanings-source-authoring-grammar.lino",
+            MEANINGS_SOURCE_AUTHORING_GRAMMAR_LINO,
+        ),
+        ("data/seed/meanings-source-capture.lino", MEANINGS_SOURCE_CAPTURE_LINO),
+        ("data/seed/meanings-source-context-grammar.lino", MEANINGS_SOURCE_CONTEXT_GRAMMAR_LINO),
+        ("data/seed/meanings-statement-merge.lino", MEANINGS_STATEMENT_MERGE_LINO),
+        ("data/seed/meanings-statistics.lino", MEANINGS_STATISTICS_LINO),
+        ("data/seed/meanings-substitution-compiler.lino", MEANINGS_SUBSTITUTION_COMPILER_LINO),
+        ("data/seed/meanings-summarization.lino", MEANINGS_SUMMARIZATION_LINO),
+        ("data/seed/meanings-summary.lino", MEANINGS_SUMMARY_LINO),
+        ("data/seed/meanings-text-transform.lino", MEANINGS_TEXT_TRANSFORM_LINO),
+        ("data/seed/meanings-tool-access.lino", MEANINGS_TOOL_ACCESS_LINO),
+        ("data/seed/meanings-translate-cycle.lino", MEANINGS_TRANSLATE_CYCLE_LINO),
+        ("data/seed/meanings-translation.lino", MEANINGS_TRANSLATION_LINO),
+        ("data/seed/meanings-translation-phrases.lino", MEANINGS_TRANSLATION_PHRASES_LINO),
+        ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),
+        ("data/seed/meanings-verifiable-task.lino", MEANINGS_VERIFIABLE_TASK_LINO),
+        ("data/seed/meanings-web-followup.lino", MEANINGS_WEB_FOLLOWUP_LINO),
+        ("data/seed/meanings-web-navigation.lino", MEANINGS_WEB_NAVIGATION_LINO),
+        ("data/seed/meanings-web-research.lino", MEANINGS_WEB_RESEARCH_LINO),
+        ("data/seed/meanings-web-search.lino", MEANINGS_WEB_SEARCH_LINO),
+        ("data/seed/meanings-web-search-query.lino", MEANINGS_WEB_SEARCH_QUERY_LINO),
+        ("data/seed/meanings-wikidata.lino", MEANINGS_WIKIDATA_LINO),
+        ("data/seed/meanings-writing-systems.lino", MEANINGS_WRITING_SYSTEMS_LINO),
+        ("data/seed/memory-programs.lino", MEMORY_PROGRAMS_LINO),
+        ("data/seed/meta-reasoning.lino", META_REASONING_LINO),
+        ("data/seed/method-execution.lino", METHOD_EXECUTION_LINO),
+        ("data/seed/model-aliases.lino", MODEL_ALIASES_LINO),
+        ("data/seed/multilingual-responses.lino", MULTILINGUAL_RESPONSES_LINO),
+        ("data/seed/multilingual-responses-agentic.lino", MULTILINGUAL_RESPONSES_AGENTIC_LINO),
+        (
+            "data/seed/multilingual-responses-agentic-continuation.lino",
+            MULTILINGUAL_RESPONSES_AGENTIC_CONTINUATION_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-agentic-tools.lino",
+            MULTILINGUAL_RESPONSES_AGENTIC_TOOLS_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-agentic-workspace.lino",
+            MULTILINGUAL_RESPONSES_AGENTIC_WORKSPACE_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-behavior-rules.lino",
+            MULTILINGUAL_RESPONSES_BEHAVIOR_RULES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-capabilities.lino",
+            MULTILINGUAL_RESPONSES_CAPABILITIES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-client-config.lino",
+            MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-code-tasks.lino",
+            MULTILINGUAL_RESPONSES_CODE_TASKS_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-concept-lookup.lino",
+            MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-creative-tasks.lino",
+            MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-decomposition.lino",
+            MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+        ),
+        ("data/seed/multilingual-responses-documents.lino", MULTILINGUAL_RESPONSES_DOCUMENTS_LINO),
+        (
+            "data/seed/multilingual-responses-engine-reports.lino",
+            MULTILINGUAL_RESPONSES_ENGINE_REPORTS_LINO,
+        ),
+        ("data/seed/multilingual-responses-entities.lino", MULTILINGUAL_RESPONSES_ENTITIES_LINO),
+        (
+            "data/seed/multilingual-responses-external-benchmark.lino",
+            MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-formalization.lino",
+            MULTILINGUAL_RESPONSES_FORMALIZATION_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-installation.lino",
+            MULTILINGUAL_RESPONSES_INSTALLATION_LINO,
+        ),
+        ("data/seed/multilingual-responses-issue-710.lino", MULTILINGUAL_RESPONSES_ISSUE_710_LINO),
+        (
+            "data/seed/multilingual-responses-language-protocol.lino",
+            MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
+        ),
+        ("data/seed/multilingual-responses-legality.lino", MULTILINGUAL_RESPONSES_LEGALITY_LINO),
+        (
+            "data/seed/multilingual-responses-local-search.lino",
+            MULTILINGUAL_RESPONSES_LOCAL_SEARCH_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-memory-program.lino",
+            MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-numeric-list.lino",
+            MULTILINGUAL_RESPONSES_NUMERIC_LIST_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-orchestration.lino",
+            MULTILINGUAL_RESPONSES_ORCHESTRATION_LINO,
+        ),
+        ("data/seed/multilingual-responses-parity.lino", MULTILINGUAL_RESPONSES_PARITY_LINO),
+        ("data/seed/multilingual-responses-pattern.lino", MULTILINGUAL_RESPONSES_PATTERN_LINO),
+        ("data/seed/multilingual-responses-policy.lino", MULTILINGUAL_RESPONSES_POLICY_LINO),
+        (
+            "data/seed/multilingual-responses-procedural-how-to.lino",
+            MULTILINGUAL_RESPONSES_PROCEDURAL_HOW_TO_LINO,
+        ),
+        ("data/seed/multilingual-responses-procedure.lino", MULTILINGUAL_RESPONSES_PROCEDURE_LINO),
+        (
+            "data/seed/multilingual-responses-product-search.lino",
+            MULTILINGUAL_RESPONSES_PRODUCT_SEARCH_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-quantities.lino",
+            MULTILINGUAL_RESPONSES_QUANTITIES_LINO,
+        ),
+        ("data/seed/multilingual-responses-repair.lino", MULTILINGUAL_RESPONSES_REPAIR_LINO),
+        (
+            "data/seed/multilingual-responses-substitution-compiler.lino",
+            MULTILINGUAL_RESPONSES_SUBSTITUTION_COMPILER_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-summarization.lino",
+            MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-summarization-quality.lino",
+            MULTILINGUAL_RESPONSES_SUMMARIZATION_QUALITY_LINO,
+        ),
+        ("data/seed/multilingual-responses-symbolic.lino", MULTILINGUAL_RESPONSES_SYMBOLIC_LINO),
+        ("data/seed/multilingual-responses-synthesis.lino", MULTILINGUAL_RESPONSES_SYNTHESIS_LINO),
+        (
+            "data/seed/multilingual-responses-text-transform.lino",
+            MULTILINGUAL_RESPONSES_TEXT_TRANSFORM_LINO,
+        ),
+        ("data/seed/multilingual-responses-thinking.lino", MULTILINGUAL_RESPONSES_THINKING_LINO),
+        (
+            "data/seed/multilingual-responses-thinking-narrative.lino",
+            MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
+        ),
+        ("data/seed/multilingual-responses-translate.lino", MULTILINGUAL_RESPONSES_TRANSLATE_LINO),
+        ("data/seed/multilingual-responses-triz.lino", MULTILINGUAL_RESPONSES_TRIZ_LINO),
+        ("data/seed/multilingual-responses-web.lino", MULTILINGUAL_RESPONSES_WEB_LINO),
+        ("data/seed/numeric-list-operations.lino", NUMERIC_LIST_OPERATIONS_LINO),
+        ("data/seed/obligation-mismatch.lino", OBLIGATION_MISMATCH_LINO),
+        ("data/seed/operation-vocabulary.lino", OPERATION_VOCABULARY_LINO),
+        ("data/seed/page-formalization-rules.lino", PAGE_FORMALIZATION_RULES_LINO),
+        ("data/seed/personas.lino", PERSONAS_LINO),
+        ("data/seed/planner-precedence.lino", PLANNER_PRECEDENCE_LINO),
+        ("data/seed/product-search-cues.lino", PRODUCT_SEARCH_CUES_LINO),
+        ("data/seed/program-cache-policy.lino", PROGRAM_CACHE_POLICY_LINO),
+        ("data/seed/program-cst-grammars.lino", PROGRAM_CST_GRAMMARS_LINO),
+        ("data/seed/program-plan-rules.lino", PROGRAM_PLAN_RULES_LINO),
+        ("data/seed/projects.lino", PROJECTS_LINO),
+        ("data/seed/prompt-data.lino", PROMPT_DATA_LINO),
+        ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
+        ("data/seed/proof-library.lino", PROOF_LIBRARY_LINO),
+        ("data/seed/proof-program-templates.lino", PROOF_PROGRAM_TEMPLATES_LINO),
+        ("data/seed/question-necessity.lino", QUESTION_NECESSITY_LINO),
+        (
+            "data/seed/question-necessity-text-predicates.lino",
+            QUESTION_NECESSITY_TEXT_PREDICATES_LINO,
+        ),
+        ("data/seed/register-lexicon.lino", REGISTER_LEXICON_LINO),
+        ("data/seed/release-timelines.lino", RELEASE_TIMELINES_LINO),
+        ("data/seed/repository-command-allowlist.lino", REPOSITORY_COMMAND_ALLOWLIST_LINO),
+        ("data/seed/research-table-procedure.lino", RESEARCH_TABLE_PROCEDURE_LINO),
+        ("data/seed/self-improvement-loop.lino", SELF_IMPROVEMENT_LOOP_LINO),
+        ("data/seed/sentence-punctuation.lino", SENTENCE_PUNCTUATION_LINO),
+        ("data/seed/setup-publishers.lino", SETUP_PUBLISHERS_LINO),
+        ("data/seed/shell-intents.lino", SHELL_INTENTS_LINO),
+        ("data/seed/si-unit-dimensions.lino", SI_UNIT_DIMENSIONS_LINO),
+        ("data/seed/small-model-catalog.lino", SMALL_MODEL_CATALOG_LINO),
+        ("data/seed/software-project-phrases.lino", SOFTWARE_PROJECT_PHRASES_LINO),
+        ("data/seed/source-trust-weights.lino", SOURCE_TRUST_WEIGHTS_LINO),
+        ("data/seed/sources-registry.lino", SOURCES_REGISTRY_LINO),
+        ("data/seed/statement-audit-exclusions.lino", STATEMENT_AUDIT_EXCLUSIONS_LINO),
+        ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),
+        ("data/seed/telemetry-consent.lino", TELEMETRY_CONSENT_LINO),
+        ("data/seed/terminal-commands.lino", TERMINAL_COMMANDS_LINO),
+        ("data/seed/text-formalization.lino", TEXT_FORMALIZATION_LINO),
+        ("data/seed/tool-resource-scopes.lino", TOOL_RESOURCE_SCOPES_LINO),
+        ("data/seed/toolchains.lino", TOOLCHAINS_LINO),
+        ("data/seed/tools.lino", TOOLS_LINO),
+        ("data/seed/triz-principles.lino", TRIZ_PRINCIPLES_LINO),
+        ("data/seed/wikidata-conversion-to-si.lino", WIKIDATA_CONVERSION_TO_SI_LINO),
+        ("data/seed/workspace-discovery-contracts.lino", WORKSPACE_DISCOVERY_CONTRACTS_LINO),
+        ("data/seed/workspace-discovery-grammar.lino", WORKSPACE_DISCOVERY_GRAMMAR_LINO),
+        ("data/seed/writing-genre-styleguides.lino", WRITING_GENRE_STYLEGUIDES_LINO),
+    ]
+}
 
 /// The registered set of multilingual-response files, walked by
 /// [`super::multilingual_responses`].

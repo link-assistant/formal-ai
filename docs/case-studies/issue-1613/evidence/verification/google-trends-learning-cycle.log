@@ -1,0 +1,13 @@
+✔ a fixture frontier renders the exact learning-cycle record both runtimes commit to (69.494425ms)
+✔ the Google Trends cycle emits promotion proposals in the issue-656 shape (23.232823ms)
+✔ the cycle is deterministic and reproducible offline (12.675843ms)
+✔ the frozen frontier record spans every supported language, all unrouted (3.932668ms)
+✔ every failure to adopt is preserved as a durable record (8.427155ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 758.64259

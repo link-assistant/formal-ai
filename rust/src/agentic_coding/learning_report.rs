@@ -28,7 +28,7 @@
 
 use std::fmt::Write as _;
 
-use super::document_recipe::{plan_document_recipe, DocumentRecipe};
+use super::document_recipe::{DocumentRecipe, plan_document_recipe};
 use super::planner::AgenticPlan;
 use super::{
     associative_learning, code_rewrite_learning, execution_learning, external_benchmark_learning,
@@ -36,7 +36,7 @@ use super::{
 };
 use crate::associative_persistence::AssociativeMemory;
 use crate::links_format::format_lino_value_verbatim;
-use crate::memory::parse_links_notation;
+use crate::memory::{MemoryEvent, parse_links_notation};
 use crate::protocol::ChatMessage;
 
 /// Every auto-learning report, in routing order.
@@ -67,7 +67,13 @@ pub mod self_hosting_learning;
 /// Resolve the report a task asks for, if any.
 #[must_use]
 pub fn route(task: &str) -> Option<&'static LearningReport> {
-    REPORTS.iter().copied().find(|report| report.matches(task))
+    let request = task
+        .split_once("\n```")
+        .map_or(task, |(request, _)| request);
+    REPORTS
+        .iter()
+        .copied()
+        .find(|report| report.matches(request))
 }
 
 /// The identity of one auto-learning report.
@@ -86,27 +92,19 @@ pub struct LearningReport {
     pub path: &'static str,
     /// The task phrasing that routes to this report.
     pub task: &'static str,
-    /// The persisted observation network the report ranks.
-    pub memory: &'static str,
     /// How the final answer names what was ranked, e.g. `workspace-rewrite
     /// observations and amendments`.
     pub subject: &'static str,
 }
 
 impl LearningReport {
-    /// Render this report from its own embedded memory.
-    #[must_use]
-    pub fn render_document(&self) -> String {
-        self.render_document_from(self.memory)
-    }
-
     /// Derive the review artifact from any persisted observation network.
     ///
     /// Taking the memory as an argument is what lets a test rank a fixture
     /// network through the production adapter rather than a stub of it.
     #[must_use]
     pub fn render_document_from(&self, memory_document: &str) -> String {
-        render(self, memory_document)
+        render(self, &parse_links_notation(memory_document))
     }
 
     /// The prompt routes here when it names the artifact it wants.
@@ -116,8 +114,20 @@ impl LearningReport {
     }
 
     /// Plan the write-then-verify steps that produce this report.
-    pub(super) fn plan_step(&self, messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-        let document = self.render_document();
+    pub(super) fn plan_step(
+        &self,
+        task: &str,
+        messages: &[ChatMessage],
+        tool_names: &[&str],
+    ) -> AgenticPlan {
+        let events = supplied_memory(task);
+        if events.is_empty() {
+            return AgenticPlan::Final(crate::seed::agentic_message(
+                "learning-report-memory-required",
+                &[("path", self.path)],
+            ));
+        }
+        let document = render(self, &events);
         let final_answer = self.final_answer(&document);
         plan_document_recipe(
             messages,
@@ -151,15 +161,29 @@ impl LearningReport {
     }
 }
 
+fn supplied_memory(task: &str) -> Vec<MemoryEvent> {
+    let mut block = task.lines().skip_while(|line| line.trim_end() != "```lino");
+    if block.next().is_none() {
+        return Vec::new();
+    }
+    let mut document = String::new();
+    for line in block {
+        if line.trim_end() == "```" {
+            return parse_links_notation(&document);
+        }
+        let _ = writeln!(document, "{line}");
+    }
+    Vec::new()
+}
+
 /// Derive an auditable learning report from a persisted memory document.
 ///
 /// The ranking is computed by the same `AssociativeMemory::from_memory_events`
 /// adapter that dreaming uses, so this exercises parsing, qualifier
 /// preservation, alias/reference normalization, validation, multi-hop recall,
 /// and four-signal retention rather than returning a canned checklist.
-fn render(report: &LearningReport, memory_document: &str) -> String {
-    let events = parse_links_notation(memory_document);
-    let mut memory = AssociativeMemory::from_memory_events(&events);
+fn render(report: &LearningReport, events: &[MemoryEvent]) -> String {
+    let mut memory = AssociativeMemory::from_memory_events(events);
     let seed = memory
         .retention_ranking()
         .first()

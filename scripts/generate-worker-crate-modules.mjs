@@ -44,6 +44,7 @@ export const ENTRY_MODULES = Object.freeze([
   'crate/dependency_summarization.mjs',
   'crate/event_log.mjs',
   'crate/fact_derivation.mjs',
+  'crate/google_trends_feed.mjs',
   'crate/literal_authoring_contract.mjs',
   'crate/literal_content.mjs',
   'crate/meta_executor.mjs',

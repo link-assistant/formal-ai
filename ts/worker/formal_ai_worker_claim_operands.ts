@@ -83,24 +83,35 @@ function claimOperandWithout(text, surfaces) {
     .reduce((rest, surface) => rest.split(surface).join(" "), String(text || "").toLowerCase());
 }
 
-/**
- * The seeded documentation page whose project and method the prompt names,
- * as [page, project, docs url] (Rust `documented_method`).
- */
+/** A symbol, or a method name needing lookup, and its registered publisher. */
 function claimOperandDocumentedMethod(prompt) {
-  const page = handlerRulesPolicy("docs_method_explanation", "page");
-  const docsUrl = handlerRulesPolicy("docs_method_explanation", "docs_url");
-  const alias = String(handlerRulesPolicy("docs_method_explanation", "class-alias") || "").toLowerCase();
-  if (!page || !docsUrl) return [];
-  const segments = page.split(".");
-  const parts = segments.map((segment) => segment.toLowerCase());
-  if (parts.length < 3) return [];
-  const lower = String(prompt || "").toLowerCase();
-  const identifiers = lower.split(/[^a-z0-9_]+/u).filter(Boolean);
-  const named = (word) => identifiers.includes(word);
-  const classNamed = parts.slice(1, -1).some(named) || (alias !== "" && named(alias))
-    || lexiconMentionsRole(ROLE_CODE_METHOD_NOUN, lower);
-  return named(parts[0]) && named(parts[parts.length - 1]) && classNamed ? [page, segments[0], docsUrl] : [];
+  const tokens = (String(prompt || "").match(/[a-z_][a-z0-9_.]*|[\p{L}\p{M}]+/giu) || [])
+    .map(token => token.replace(/\.+$/u, ""));
+  for (const [project] of handlerRulesTables()["documentation-method-providers"]?.rows ?? []) {
+    const projectIndex = tokens.findIndex(token => token.toLowerCase().split(".")[0] === project);
+    if (projectIndex < 0) continue;
+    const token = tokens[projectIndex];
+    if (token.includes(".")) {
+      const symbol = project + token.slice(token.indexOf("."));
+      if (documentationMethodSymbol(symbol, 2)) return [symbol, project];
+      continue;
+    }
+    const partial = tokens[projectIndex + 1] || "";
+    if (documentationMethodSymbol(partial, 2)) {
+      const [first, ...rest] = partial.split(".");
+      const type = handlerRulesTableValue(project + "-documentation-type-aliases", first.toLowerCase()) || first;
+      return [`${project}.${[type, ...rest].join(".")}`, project];
+    }
+    const nouns = claimOperandSurfaces(ROLE_CODE_METHOD_NOUN);
+    const nounAt = tokens.findIndex(word => nouns.some(noun => word.toLowerCase() === noun
+      || (claimOperandUnspaced(noun) && word.includes(noun))));
+    if (nounAt < 0) continue;
+    const neighbors = [tokens[nounAt - 1], tokens[nounAt + 1]];
+    const bare = neighbors.find(word => word && word.toLowerCase() !== project
+      && !word.includes(".") && documentationMethodSymbol(word));
+    if (bare) return [bare, project];
+  }
+  return [];
 }
 
 /** The circular idiom when it is the whole utterance, framed only by frame words (Rust `idiom_utterance`). */

@@ -16,7 +16,6 @@ const reportApi = createLearningReportApi({
   promotion_gate: null,
   path: ASSOCIATIVE_LEARNING_PATH,
   taskMessage: 'learning_report_task_associative_learning',
-  memoryPath: 'data/meta/associative-learning-case.lino',
   subjectMessage: 'learning_report_subject_associative_learning',
 }, 'isAssociativeLearningTask');
 export const REPORT = reportApi.REPORT;
@@ -26,9 +25,6 @@ export const task = reportApi.task;
 
 /** Mirrors `fn is_associative_learning_task` in rust/src/agentic_coding/associative_learning.rs. @param {string} prompt */
 export const isAssociativeLearningTask = reportApi.isTask;
-
-/** Mirrors `fn render_document` in rust/src/agentic_coding/associative_learning.rs. */
-export const renderDocument = reportApi.renderDocument;
 
 /** Mirrors `fn render_document_from` in rust/src/agentic_coding/associative_learning.rs. @param {string} memoryDocument */
 export const renderDocumentFrom = reportApi.renderDocumentFrom;

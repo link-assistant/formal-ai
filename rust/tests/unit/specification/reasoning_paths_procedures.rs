@@ -13,6 +13,9 @@ use fixtures::{documented_connect_procedure, documented_english_procedure};
 
 use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
+#[path = "../../fixtures/documentation-method-fixture.rs"]
+mod docs_fixture;
+
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
 }
@@ -31,11 +34,8 @@ fn has_evidence(response: &SymbolicAnswer, expected: &str) -> bool {
 
 #[test]
 fn pandas_join_method_question_uses_official_docs_summary() {
-    let response = answer("how the join method works in pandas");
-    assert_eq!(
-        response.answer,
-        "pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.\n\nScoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.\n\nSource: [pandas.DataFrame.join](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html) (official pandas docs)."
-    );
+    let response = docs_fixture::documented_method_answer("how does pandas DataFrame.join work?");
+    assert_eq!(response.answer, docs_fixture::expected_join("en"));
     assert_eq!(
         response.intent, "docs_method_explanation",
         "pandas join method question must route to official-docs summary; answer={}",
@@ -75,30 +75,25 @@ fn pandas_join_method_docs_prompt_covers_supported_languages() {
     let cases = [
         DocsMethodCase {
             language: "en",
-            prompt: "how the join method works in pandas",
+            prompt: "how does pandas DataFrame.join work?",
         },
         DocsMethodCase {
             language: "ru",
-            prompt: "объясни как работает метод join в pandas",
+            prompt: "объясни как работает pandas DataFrame.join",
         },
         DocsMethodCase {
             language: "hi",
-            prompt: "समझाओ pandas में join विधि कैसे काम करती है",
+            prompt: "समझाओ pandas DataFrame.join कैसे काम करता है",
         },
         DocsMethodCase {
             language: "zh",
-            prompt: "请解释 pandas 中的 join 方法如何工作 以及它如何使用索引",
+            prompt: "请解释 pandas DataFrame.join 如何工作 以及它如何使用索引",
         },
     ];
 
     for case in cases {
-        let response = answer(case.prompt);
-        if case.language == "en" {
-            assert_eq!(
-                response.answer,
-                "pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.\n\nScoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.\n\nSource: [pandas.DataFrame.join](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html) (official pandas docs)."
-            );
-        }
+        let response = docs_fixture::documented_method_answer(case.prompt);
+        assert_eq!(response.answer, docs_fixture::expected_join(case.language));
         assert_eq!(
             response.intent, "docs_method_explanation",
             "{} pandas join docs prompt must resolve; answer={}",
@@ -109,12 +104,6 @@ fn pandas_join_method_docs_prompt_covers_supported_languages() {
             "answer should remain scoped to pandas.DataFrame.join for {}: {}",
             case.language,
             response.answer,
-        );
-        assert!(
-            has_evidence(&response, &format!("language:{}", case.language)),
-            "missing language evidence for {}: {:?}",
-            case.language,
-            response.evidence_links,
         );
         assert!(
             has_evidence(&response, "docs_method:method:pandas.DataFrame.join"),

@@ -1,0 +1,17 @@
+✔ the cache path mirrors default_cache_path: the override, else the runtime cache root (2791.685283ms)
+✔ a cold cache has no rows and reports a miss (1661.792783ms)
+✔ a verified row answers the unmodified request with the cached entry and logs the hit (88.522541ms)
+✔ a reviewed result for one stdin input cannot replace the stream operation (92.991637ms)
+✔ a row for another pair leaves this request a miss (64.399401ms)
+✔ a row whose content_id drifted is dropped on load, as in Rust (87.694336ms)
+✔ a customised request is never answered from the cache (641.023672ms)
+✔ R1165-1: a sourced answer reuses the capture without populating the execution cache (3554.655696ms)
+✔ the committed cache is never written by a solve (92.252088ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10077.928464

@@ -32,7 +32,7 @@ use crate::solver::ConversationTurn;
 /// One synthesized rule candidate, with everything selection needs to judge it.
 #[derive(Clone)]
 struct RuleDraft {
-    spec: ProgramSpec,
+    spec: ProgramSpec<'static>,
     /// Did the plan actually apply a modifier (the lowering check)?
     lowering_passed: bool,
     /// Did the rendered program match the requested operation (render check)?
@@ -126,7 +126,7 @@ impl RuleLeaf<'_> {
 
 fn artifact_from(
     plan: &ProgramPlan,
-    spec: ProgramSpec,
+    spec: ProgramSpec<'static>,
     language: &str,
     trace: EventLog,
 ) -> DraftArtifact<RuleDraft> {

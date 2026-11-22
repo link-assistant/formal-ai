@@ -22,6 +22,8 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   compares the shared execution, status and cue fixtures, including complete event
   sequences and unverified-draft controls. The synthesis target reuses the twelve
   existing specification tests directly from their maintained source file. The
+  same job also exercises explicit computer-use plans and HTTP receipts, the
+  cold-runtime smoke, contradiction worksheets and operand-bound programs. The
   same job also runs four captured-source language tests and the unchanged
   unsupported-language sibling contract (#1580). The forced-function HTTP suite also replays
   against the native CLI. Issue #1604 also reuses that binary to verify dynamic
@@ -34,7 +36,7 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   Trends fixture projections for replay, with their generation identity. It grants
   no release authorization, saves no cache and publishes no workflow outputs.
   The three expensive contract targets are compiled once by `contract-build` and
-  transported only within the same workflow run to the existing nine family jobs.
+  transported only within the same workflow run to the existing ten family jobs.
   Their consumers verify source, compiler, profile, sparse materialized inputs and
   executable bytes before using the unchanged listing and case-selection runner.
   This focused test artifact has one-day retention and grants no release authority.
@@ -83,7 +85,7 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   cleanup. Retain the corresponding real suites for explicit qualification;
   fixtures do not prove real transport or deployment success.
 - PRs, feature-branch check dispatches and main select the same complete default
-  JavaScript inventory through the same ordered runner. All use eight measured
+  JavaScript inventory through the same ordered runner. All use nine measured
   longest-first shards, the unchanged 360-second execution budget and the 75%
   warning threshold. A failed file does not hide later failures or passing files.
   The explicit fast inventory remains an optional local feedback loop only;

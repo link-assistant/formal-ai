@@ -2,7 +2,9 @@ use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_chan
 use formal_ai::agentic_coding::work_item_report::{
     parses_as_json_object, reported_work_item_record,
 };
-use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
+use formal_ai::agentic_coding::{
+    AgenticPlan, plan_chat_step, run_agentic_task, run_agentic_task_with_source_fetch,
+};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 #[path = "agentic_general_planner/command_capture.rs"]
@@ -264,7 +266,17 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     );
     assert!(report.contains("could not be read"), "{report}");
 
-    let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
+    let issue_url = "https://github.com/link-assistant/formal-ai/issues/698";
+    let body = include_str!("../../../../data/benchmarks/issue-requirements/issue-698.md");
+    assert!(formal_ai::agentic_coding::corpus::web_fetch_result(issue_url).is_err());
+    let outcome = run_agentic_task_with_source_fetch(ISSUE_698_WORK_ITEM, |url| {
+        if url == issue_url {
+            Ok(body.to_owned())
+        } else {
+            formal_ai::agentic_coding::corpus::web_fetch_result(url)
+        }
+    })
+    .expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
     // The driver advertises a shell, but its sandbox refuses gh. The hosted
     // fallback owns the unchanged issue body. Statements inside a fetched issue
@@ -280,14 +292,7 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     );
     let fetched: serde_json::Value =
         serde_json::from_str(&outcome.steps[1].arguments).expect("fetch arguments");
-    assert_eq!(
-        fetched["url"],
-        "https://github.com/link-assistant/formal-ai/issues/698"
-    );
-    let body = formal_ai::agentic_coding::corpus::web_fetch_result(
-        fetched["url"].as_str().expect("the fetched issue URL"),
-    )
-    .expect("the owned offline issue body");
+    assert_eq!(fetched["url"], issue_url);
     assert_eq!(outcome.steps[1].result, body);
     // A fetched issue body never refuses a read on the user's behalf (#1560):
     // the read is planned, and its observed failure is the answer instead of a

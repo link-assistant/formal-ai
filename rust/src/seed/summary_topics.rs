@@ -1,35 +1,7 @@
-//! Summarization-topic records loaded from `data/seed/summary-topics.lino`.
-//!
-//! Each `topic "<Name>"` entry lists multilingual `detection_keywords` and a
-//! typed reference to the canonical concept/project record from which the
-//! summarization handler derives its answer. The seed also encodes:
-//!
-//! - `trigger` — universal phrases that opt prompts into "summarize a topic"
-//!   mode (`summarize`, `summarise`, `резюме`, `概括`, …).
-//! - `reject_substring` — phrases that route to a different handler (e.g.
-//!   "summarize this *conversation*"), preventing this matcher from firing.
-//! - `reject_exact` — full normalized prompts that route elsewhere (the
-//!   single word "summarize" is handled by the conversation summarizer).
-//! - `constraint_marker` / `constraint_label` — substrings that surface a
-//!   structured constraint in the event log (e.g. "one paragraph" →
-//!   `summarization:constraint=one_paragraph`).
-//! - `fallback_response` — a multilingual response intent used when no source
-//!   record matched.
-//!
-//! Adding a new summarization topic in any of the four supported languages
-//! therefore does not require touching Rust code.
+//! Routing cues and topic boundaries for summarization requests.
 
 use super::SUMMARY_TOPICS_LINO;
 use super::parser::{parse_lino, split_pipe_list};
-
-/// One summarization topic and the canonical knowledge record it summarizes.
-#[derive(Debug, Clone, Default)]
-pub struct SummaryTopic {
-    pub display_name: String,
-    pub detection_keywords: Vec<String>,
-    pub source_kind: String,
-    pub source_id: String,
-}
 
 /// Top-level summary-topic bundle.
 #[derive(Debug, Clone, Default)]
@@ -40,7 +12,8 @@ pub struct SummaryTopicSeeds {
     pub constraint_markers: Vec<String>,
     pub constraint_label: String,
     pub fallback_response: String,
-    pub topics: Vec<SummaryTopic>,
+    pub topic_leads: Vec<String>,
+    pub topic_tails: Vec<String>,
 }
 
 impl SummaryTopicSeeds {
@@ -74,15 +47,46 @@ impl SummaryTopicSeeds {
         true
     }
 
-    /// Pick the first topic whose detection keywords match the prompt.
+    /// Extract the named subject without using any registry record as a cue.
     #[must_use]
-    pub fn pick_topic(&self, normalized: &str) -> Option<&SummaryTopic> {
-        self.topics.iter().find(|topic| {
-            topic
-                .detection_keywords
-                .iter()
-                .any(|keyword| !keyword.is_empty() && normalized.contains(keyword.as_str()))
-        })
+    pub fn subject<'a>(&self, lower: &'a str) -> Option<&'a str> {
+        let (position, end) = self
+            .triggers
+            .iter()
+            .filter_map(|cue| {
+                lower
+                    .find(cue)
+                    .map(|position| (position, position + cue.len()))
+            })
+            .max_by_key(|(_, end)| *end)?;
+        let trim = |ch: char| {
+            ch.is_whitespace() || matches!(ch, '?' | '!' | '.' | ':' | '？' | '！' | '。' | '।')
+        };
+        let after = lower[end..].trim_matches(trim);
+        let subject = if after.is_empty() {
+            lower[..position].trim_matches(trim)
+        } else {
+            after
+        };
+        let start = self
+            .topic_leads
+            .iter()
+            .filter_map(|lead| {
+                subject
+                    .rfind(lead.as_str())
+                    .map(|position| position + lead.len())
+            })
+            .max()
+            .unwrap_or(0);
+        let subject = subject[start..].trim_matches(trim);
+        let end = self
+            .topic_tails
+            .iter()
+            .filter_map(|tail| subject.strip_suffix(tail.as_str()).map(str::len))
+            .min()
+            .unwrap_or(subject.len());
+        let subject = subject[..end].trim_matches(trim);
+        (!subject.is_empty()).then_some(subject)
     }
 
     /// Return `Some(label)` when any constraint marker fires in the prompt.
@@ -118,27 +122,8 @@ pub fn summary_topic_seeds() -> SummaryTopicSeeds {
             "constraint_marker" => seeds.constraint_markers.push(child.id.to_lowercase()),
             "constraint_label" => seeds.constraint_label.clone_from(&child.id),
             "fallback_response" => seeds.fallback_response.clone_from(&child.id),
-            "topic" => {
-                if child.id.is_empty() {
-                    continue;
-                }
-                let source_kind = child.find_child_value("source_kind").to_owned();
-                let source_id = child.find_child_value("source_id").to_owned();
-                if source_kind.is_empty() || source_id.is_empty() {
-                    continue;
-                }
-                seeds.topics.push(SummaryTopic {
-                    display_name: child.id.clone(),
-                    detection_keywords: split_pipe_list(
-                        child.find_child_value("detection_keywords"),
-                    )
-                    .into_iter()
-                    .map(|k| k.to_lowercase())
-                    .collect(),
-                    source_kind,
-                    source_id,
-                });
-            }
+            "topic_lead" => seeds.topic_leads.extend(split_pipe_list(&child.id)),
+            "topic_tail" => seeds.topic_tails.extend(split_pipe_list(&child.id)),
             _ => {}
         }
     }

@@ -217,7 +217,7 @@ jobs:
           COMPLETION_EVIDENCE: source-cst
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
-      - name: "Run agent CLI E2E — learn-from-source directive (issue #499, no web step)"
+      - name: "Run agent CLI E2E — learn-from-source directive (issue #499, RSS replay)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8772
@@ -225,6 +225,8 @@ jobs:
           EXPECT_FILE: google-trends-learning.lino
           EXPECT_TEXT: human_gated
           MIN_POSTS: 3
+          SOURCE_CAPTURE_FIXTURE: docs/case-studies/issue-498/raw-data/google-trends-us-rss.xml
+          SOURCE_CAPTURE_URL: https://trends.google.com/trending/rss?geo=US
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — general unpinned change plan (issue #654)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}

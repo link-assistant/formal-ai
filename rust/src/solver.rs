@@ -23,9 +23,8 @@
 
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
-    ExecutionRecipe, SelectedRule, SymbolicAnswer, answer_links_notation,
-    language_aware_answer_for, language_aware_intent_for, normalize_prompt,
-    response_link_for_intent,
+    SelectedRule, SymbolicAnswer, answer_links_notation, language_aware_answer_for,
+    language_aware_intent_for, normalize_prompt, response_link_for_intent,
 };
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::{
@@ -45,8 +44,8 @@ use crate::solver_formalization::{record_formalization, record_formalization_sel
 use crate::solver_handler_oracle::try_unsupported_write_program;
 use crate::solver_handlers::{finalize_simple, try_program_blueprint};
 use crate::solver_helpers::{
-    confidence_for, record_answer_test, record_candidates, record_decomposition, record_selection,
-    record_validation, unresolved_surfaces_present,
+    catalog_execution_recipe, confidence_for, record_answer_test, record_candidates,
+    record_decomposition, record_selection, record_validation, unresolved_surfaces_present,
 };
 use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{UnknownReasoningConfig, answer_unknown_prompt};
@@ -131,6 +130,29 @@ impl UniversalSolver {
         probability_store: &ProbabilityStore,
         intent_cache: &mut IntentFormalizationCache,
     ) -> SymbolicAnswer {
+        self.solve_inner(prompt, history, probability_store, intent_cache, true)
+    }
+
+    pub(crate) fn solve_for_execution(&self, prompt: &str) -> SymbolicAnswer {
+        self.solve_inner(
+            prompt,
+            &[],
+            &ProbabilityStore::new(),
+            &mut IntentFormalizationCache::new(),
+            false,
+        )
+    }
+
+    fn solve_inner(
+        &self,
+        prompt: &str,
+        history: &[ConversationTurn],
+        probability_store: &ProbabilityStore,
+        intent_cache: &mut IntentFormalizationCache,
+        publisher_examples: bool,
+    ) -> SymbolicAnswer {
+        let documentation_access = publisher_examples
+            .then(|| self.config.offline || !crate::solver_config::read_network_allowed());
         // Issue #667 (R383): under a debug session the outermost solve of a
         // connection waits at its first stage before it runs.
         let output_turn = crate::cnl_output::output_turn(
@@ -232,10 +254,7 @@ impl UniversalSolver {
             record_intent_formalization(log, &intent_entry);
             let intent_formalization = intent_entry.formalization;
 
-            // R1012: the general loop runs ahead of the handler table. A
-            // program verified against the request's examples, or one every
-            // word of the request grounds, answers here (`metaReason` at the
-            // top of `solveImpl`, js/worker/formal_ai_worker_solve.js).
+            // R1012: the general loop can answer before the handler table.
             if let Some(answer) = crate::meta_reasoner::try_meta_answer(
                 prompt,
                 language.slug(),
@@ -245,12 +264,8 @@ impl UniversalSolver {
                 return answer;
             }
 
-            // Issue #661 (R384): before any contextual handler runs (a language
-            // directive would otherwise be replayed by the response-language
-            // follow-up), check whether this newly formalized requirement
-            // contradicts a retained one. A clash — same subject, opposite polarity
-            // — is surfaced as a warning naming both statements, their weights, and
-            // a resolution that reuses the append-only retraction protocol.
+            // #661: check for contradictions before contextual language replay.
+            // The warning binds both requirements to the append-only retraction protocol.
             if let Some(answer) = crate::requirement_contradiction::detect_and_report(
                 prompt,
                 language,
@@ -281,8 +296,22 @@ impl UniversalSolver {
 
             log.append("search:local", prompt.to_owned());
 
-            // Bind process operands together before decomposing the clauses.
-            if let Some(answer) = crate::coding::program_contract::answer(prompt, log) {
+            // Process operands and quoted passages must stay with their questions.
+            if let Some(answer) = crate::coding::program_contract::answer(prompt, log)
+                .or_else(|| crate::solver_handlers::try_prompt_text_question(prompt, log))
+                .or_else(|| {
+                    crate::solver_handlers::handle_summarization_request(prompt, prompt, log)
+                })
+                .or_else(|| {
+                    crate::solver_handlers::try_bound_publisher_recurrence(
+                        prompt,
+                        intent_formalization.route.as_deref(),
+                        self.config,
+                        language,
+                        log,
+                    )
+                })
+            {
                 return answer;
             }
 
@@ -354,51 +383,36 @@ impl UniversalSolver {
                 }
             }
 
-            // Issue #340: a `write_program` request can name a supported language but
-            // a composite task the verified catalog has no single template for
-            // (HTTP GET -> parse JSON -> compute mean/median -> output). Rather than
-            // dead-ending on `write_program_unsupported`, decompose the request into
-            // capabilities and, when they match a curated blueprint recipe, return a
-            // real, idiomatic program with an honest "not run" execution report. The
-            // verified catalog stays untouched, so its "compiled and ran" guarantee
-            // is preserved.
-            // Issue #340 + #412: rescue an `UnsupportedWriteProgram` request via the
-            // composite blueprint, then the cached coding oracle (uncatalogued
-            // languages), so "write a hello world program in Kotlin" returns code.
+            // A coding gap can still resolve from a bound procedure or composition.
             if let SelectedRule::UnsupportedWriteProgram {
                 task,
                 language: program_language,
             } = &rule
             {
-                // Issue #1173 R1173-3: a task whose output is the request's
-                // operand composes its program from the procedure its seed row
-                // names, before any other rescue.
-                if let Some(answer) = crate::coding::operand_program::try_write_operand_program(
-                    prompt,
-                    task.as_deref(),
-                    program_language.as_deref(),
-                    language,
-                    log,
-                ) {
+                if let (Some(task), Some(target)) = (task.as_deref(), program_language.as_deref())
+                    && let Some(answer) =
+                        crate::coding::operand_program::try_write_documented_program(
+                            prompt,
+                            task,
+                            target,
+                            crate::coding::operand_program::ProgramReply::Program {
+                                language,
+                                prior_code: coding_guidance::history_has_prior_code(history),
+                            },
+                            documentation_access,
+                            log,
+                        )
+                {
                     return answer;
                 }
                 if let Some(answer) = try_unsupported_write_program(
                     prompt,
-                    task.as_deref(),
                     program_language.as_deref(),
                     self.config.blueprint_composition,
                     log,
                 ) {
                     return answer;
                 }
-                // Issue #699 batch 3: every synthesis route missed. Name the gap in
-                // the evidence trail — the same `skill_gap` event the procedure
-                // compiler emits — so the miss is actionable instead of being
-                // rendered as a recitation of the templates we happen to hold.
-                //
-                // Issue #906: a request that named no implementation language never
-                // reached a route, so it is logged under its own event rather than
-                // as a gap in what we can synthesize.
                 let shape =
                     crate::program_skill_gap::shape(task.as_deref(), program_language.as_deref());
                 log.append(
@@ -414,17 +428,8 @@ impl UniversalSolver {
                 return answer;
             }
 
-            // Issue #312: a concrete write_program request (recognized task and
-            // language with a matching template) must take precedence over the
-            // specialized handlers. Otherwise concept_lookup answers the language
-            // name ("Rust") as an encyclopedia definition instead of returning the
-            // requested program. Policy guards still run for these prompts below.
-            //
-            // A page query over a page the prompt supplies (issues #1163 R10,
-            // #1164 R1164-11) is a question about that page: the page's own
-            // code example ("prints Hello, world! in Rust") names a task and a
-            // language, but it is the object of the query, not a request to
-            // write it, so the dispatch keeps it as the browser worker does.
+            // A concrete program request outranks concept lookup (#312).
+            // Page queries keep the supplied page as their subject (#1163, #1164).
             let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_))
                 && !crate::solver_handlers::page_query_text::page_query_text_claims(prompt);
             if !is_concrete_write_program
@@ -557,6 +562,33 @@ impl UniversalSolver {
                 );
             }
 
+            if let SelectedRule::WriteProgram(spec) = &rule
+                && let Some(answer) = crate::coding::operand_program::try_write_documented_program(
+                    prompt,
+                    spec.task.slug,
+                    spec.language.slug,
+                    crate::coding::operand_program::ProgramReply::Program {
+                        language,
+                        prior_code: coding_guidance::history_has_prior_code(history),
+                    },
+                    documentation_access,
+                    log,
+                )
+            {
+                return answer;
+            }
+            // A callable's runtime parameter needs no concrete catalog operand.
+            let catalog_program = match &rule {
+                SelectedRule::WriteProgram(spec) => {
+                    crate::coding::catalog_parameters::bind_catalog_program(*spec, prompt)
+                }
+                _ => None,
+            };
+            if crate::solver_helpers::catalog_operand_is_unbound(&rule, catalog_program.is_some())
+                && let Some(gap) = crate::program_skill_gap::publisher_recurrence_gap(prompt, log)
+            {
+                return gap;
+            }
             let intent = language_aware_intent_for(&rule, language);
             log.append("intent", intent.clone());
 
@@ -564,28 +596,18 @@ impl UniversalSolver {
                 if log.first_of("rule_synthesis_candidate").is_none() {
                     crate::coding::record_algorithm_construction(log);
                 }
-                // Issue #1165: a documentation-sourced program no recorded run
-                // verified is not run; its environment is the page it came from.
-                let (status, environment) = crate::engine::rediscovered_page(*spec).map_or_else(
-                    || {
-                        (
-                            spec.language.execution_status().label(),
-                            spec.language.environment(),
-                        )
-                    },
-                    |page| (crate::coding::ExecutionStatus::Unavailable.label(), page),
-                );
-                log.append("execution_status", status.to_owned());
-                log.append("execution_environment", environment);
+                if catalog_program.is_some()
+                    || crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
+                        .is_none()
+                {
+                    let status = crate::coding::ExecutionStatus::NotProbed;
+                    log.append("execution_status", status.label().to_owned());
+                }
                 log.append("program_parameter:language", spec.language.slug.to_owned());
                 log.append("program_parameter:task", spec.task.slug.to_owned());
                 log.append("program_parameters", spec.parameter_summary());
                 log.append("legacy_intent", spec.legacy_intent());
-                // R1166-4: a program request that formalizes into work
-                // obligations (output, naming or badge clauses, or the CI
-                // workflow the work-item executor attaches) reports every one
-                // this executor cannot discharge, as the program-contract
-                // executor does.
+                // R1166-4: report each work obligation this executor cannot discharge.
                 if crate::intent_formalization::request_carries_work_obligations(prompt)
                     || crate::intent_formalization::request_demands(
                         prompt,
@@ -599,7 +621,7 @@ impl UniversalSolver {
             // (language, task) pair replaces the catalog template in the
             // answer and in the execution recipe the work-item executor runs.
             let cached_program = match &rule {
-                SelectedRule::WriteProgram(spec) => {
+                SelectedRule::WriteProgram(spec) if !spec.task.output.is_empty() => {
                     let cache = crate::discovery_production::ProcedureCache::load();
                     let rendered = crate::code_editing::apply_inline_hello_world_source_replacement(
                         prompt,
@@ -626,44 +648,23 @@ impl UniversalSolver {
                             );
                             Some(recipe.entry.clone())
                         }
-                        // An unmodified request the cache has no row for
-                        // rediscovers its program from the documentation
-                        // captures; with none that verify, the research miss
-                        // names the inputs the policy seed's `miss_route`
-                        // lacks instead of hiding behind the template.
-                        None if rendered == *spec.template.code => {
-                            let commands =
-                                crate::discovery_production::catalog_run_commands(spec.language);
-                            crate::discovery_production::answer_cache_miss(
-                                log,
-                                spec.language.slug,
-                                spec.task.slug,
-                                &spec.task.output_for_language(spec.language),
-                                crate::discovery_production::RunContract {
-                                    save_as: &spec.language.save_as,
-                                    commands: &commands,
-                                },
-                            )
+                        None => {
+                            if rendered == *spec.template.code
+                                && log.first_of("procedure_cache").is_none()
+                            {
+                                crate::discovery_production::record_program_cache_miss(
+                                    log,
+                                    spec.language.slug,
+                                    spec.task.slug,
+                                    crate::discovery_production::NO_DOCUMENTATION_CAPTURE,
+                                );
+                            }
+                            None
                         }
-                        None => None,
                     }
                 }
                 _ => None,
             };
-            // Issue #1165 R1165-6: each shown command's source (page or catalog)
-            // and the documented program's departures.
-            if let SelectedRule::WriteProgram(spec) = &rule
-                && let Some(pair) =
-                    crate::coding::documented_pair(spec.task.slug, spec.language.slug)
-            {
-                for (kind, payload) in crate::discovery_production::documentation_events(
-                    spec.language.slug,
-                    spec.task.slug,
-                    &pair.program,
-                ) {
-                    log.append(kind, payload);
-                }
-            }
 
             let validation_choice = record_validation(log, prompt);
             let intent = validation_choice
@@ -674,7 +675,13 @@ impl UniversalSolver {
             let prior = coding_guidance::history_has_prior_code(history);
             let base_answer = match (&validation_choice, &rule) {
                 (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
-                _ => language_aware_answer_for(&rule, language, prompt, prior),
+                _ => language_aware_answer_for(
+                    &rule,
+                    language,
+                    prompt,
+                    prior,
+                    catalog_program.as_ref(),
+                ),
             };
             let base_answer = match (&rule, &cached_program) {
                 (SelectedRule::WriteProgram(spec), Some(entry)) => {
@@ -683,7 +690,12 @@ impl UniversalSolver {
                 _ => base_answer,
             };
             record_answer_test(log, &intent, &base_answer);
-            let base_answer = crate::question_necessity::enforce_questions(&base_answer, log);
+            let base_answer = crate::solver_helpers::enforce_answer_questions(
+                &base_answer,
+                log,
+                &rule,
+                catalog_program.is_some(),
+            );
 
             let response_link = response_link_for_intent(&rule, &intent);
             log.append("response", response_link.clone());
@@ -698,25 +710,8 @@ impl UniversalSolver {
             let answer =
                 append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
 
-            let execution_recipe = match &rule {
-                SelectedRule::WriteProgram(spec) => Some(Box::new(ExecutionRecipe {
-                    language: spec.language.code_fence.to_owned(),
-                    source: cached_program.unwrap_or_else(|| {
-                        crate::code_editing::apply_inline_hello_world_source_replacement(
-                            prompt,
-                            &spec.template.code,
-                            *spec,
-                        )
-                    }),
-                    path: spec.language.save_as.to_string(),
-                    supporting_files: Vec::new(),
-                    commands: crate::discovery_production::catalog_run_commands(spec.language)
-                        .into_iter()
-                        .map(str::to_owned)
-                        .collect(),
-                })),
-                _ => None,
-            };
+            let execution_recipe =
+                catalog_execution_recipe(&rule, prompt, catalog_program, cached_program);
 
             SymbolicAnswer {
                 intent,
@@ -750,6 +745,12 @@ impl UniversalSolver {
         // least action selects it over the direct derivation. A controlled
         // answer, a clarification and a paraphrase are drafts like any other.
         self.run_meta_procedure(prompt, history, probability_store, &mut answer, &mut log);
+        // A publisher miss can leave only a clarification that the question policy removes.
+        if answer.answer.trim().is_empty()
+            && let Some(gap) = crate::program_skill_gap::publisher_recurrence_gap(prompt, &mut log)
+        {
+            answer = gap;
+        }
         // A controlled answer or clarification the procedure kept is already
         // its own projection (`projectControlledAnswer` in the worker).
         if projection.as_deref() != Some(answer.answer.as_str()) {

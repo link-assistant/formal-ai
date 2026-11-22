@@ -511,14 +511,6 @@ meanings
     unit "boolean"
     example "brainstorm project ideas"
     grounding "data/seed/capability-routing.lino"
-  persona_or_topic
-    defined-by concept
-    role action
-    precondition "the request names a seeded persona or roleplay topic"
-    effect "admits the claim of the roleplay handler"
-    unit "boolean"
-    example "explain relativity as einstein"
-    grounding "data/seed/capability-routing.lino"
   document_operand
     defined-by concept
     role action
@@ -534,14 +526,6 @@ meanings
     effect "admits the claim of the translation handler"
     unit "boolean"
     example "translate apple to russian"
-    grounding "data/seed/capability-routing.lino"
-  triz_precedent
-    defined-by concept
-    role action
-    precondition "the contradiction question shares words with a seeded precedent"
-    effect "admits the claim of the triz handler"
-    unit "boolean"
-    example "make the wing stronger without weight"
     grounding "data/seed/capability-routing.lino"
   algorithm_operation
     defined-by concept

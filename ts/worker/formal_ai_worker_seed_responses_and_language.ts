@@ -16,14 +16,7 @@ let PROJECTS = [];
 // the seed loads (issue #918: the bootstrap copies of their lists, items and
 // templates are gone, so the seed is the only place those words live).
 let BRAINSTORM_SEEDS = { triggers: [], categories: [], defaultCount: 0, countCardinal: "" };
-let PERSONA_SEEDS = {
-  triggers: [],
-  defaultPersona: "",
-  bodyTemplate: "",
-  fallbackBody: "",
-  personas: [],
-  topics: [],
-};
+let PERSONA_SEEDS = { triggers: [], personas: [] };
 let COREFERENCE_SEEDS = { pronouns: [], antecedents: [] };
 let TOOLS = [];
 let SEED_RAW = {};
@@ -101,7 +94,6 @@ function hydrateLinoSeedText(raw) {
   if (typeof WEB_SEARCH_MARKERS_CACHE !== "undefined") WEB_SEARCH_MARKERS_CACHE = null;
   cachedMarketPriceReferences = null;
   if (typeof installSeedProgramTasks === "function") installSeedProgramTasks(raw); // R1021-6, formal_ai_worker_program_requests.js
-  if (typeof installDocumentedLanguageCommands === "function") installDocumentedLanguageCommands(raw); // R1165-6, formal_ai_worker_documented_commands.js
 }
 // Intent routing rules loaded from `seed/intent-routing.lino` at init time.
 // `intents` mirror `seed::IntentRoute` from the Rust crate, so the browser

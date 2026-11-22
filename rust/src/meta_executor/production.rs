@@ -235,7 +235,7 @@ impl crate::solver::UniversalSolver {
             },
             draft_of(&*answer),
             &mut solve_sub_task,
-            &crate::meta_executor::RunOptions::default(),
+            &crate::solver_helpers::meta_procedure_options(answer),
         ) else {
             return;
         };

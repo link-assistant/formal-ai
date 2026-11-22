@@ -1,0 +1,23 @@
+▶ JavaScript keeps released-client greetings, titles, and issue receipts usable
+  ✔ MCP and Telegram greet and open the Formal AI issue form (3181.913871ms)
+  ✔ Claude Code (1996.062463ms)
+  ✔ OpenCode (1476.475847ms)
+  ✔ Link Assistant Agent (1276.936447ms)
+  ✔ Codex (1384.181629ms)
+  ✔ Gemini (1536.431707ms)
+  ✔ Vertex (1235.339155ms)
+  ✔ Qwen Code (1220.857806ms)
+  ✔ Grok Build (1211.980664ms)
+  ✔ ordinary shell explanations describe the selected subcommand (587.749078ms)
+  ✔ Aider can confirm and run its own report command without function tools (188.642338ms)
+  ✔ OpenCode title requests stay plain and bounded (100.854589ms)
+✔ JavaScript keeps released-client greetings, titles, and issue receipts usable (18107.850958ms)
+﹣ native keeps released-client greetings, titles, and issue receipts usable (0.195786ms) # SKIP
+ℹ tests 14
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 19146.582257

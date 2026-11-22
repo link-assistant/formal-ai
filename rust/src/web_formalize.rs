@@ -28,7 +28,8 @@
 
 mod html_text;
 
-use html_text::{cell_texts, decode_entities, strip_tags, strip_tags_keep_lines, tag_attr};
+pub(crate) use html_text::strip_tags_keep_lines;
+use html_text::{cell_texts, decode_entities, strip_tags, tag_attr};
 
 use std::collections::BTreeMap;
 

@@ -85,7 +85,6 @@ pub(super) fn is_skipped_tree(relative: &str) -> bool {
             | "data/wikidata-cache"
             | "data/wiktionary-cache"
             | "data/http-cache"
-            | "data/seed/api-cache"
             // The content-addressed store of bytes retrieved by `--online`
             // source discovery (official OEIS JSON and the pages it cites).
             // Like the caches above it is verbatim third-party text, and it

@@ -1,4 +1,12 @@
 meanings
+  google_trends_rss
+    defined-by relation
+    role source
+    precondition "Bind a two-letter geography to the regional RSS endpoint declared by the publisher registry."
+    effect "Read the verified feed for that geography and use the observed titles as prompt operands."
+    unit "not applicable"
+    example "A learning request specifies a geography and the feed supplies its observed topics."
+    grounding "data/seed/sources-registry.lino"
   source-capture-offline-cache-miss
     role source-capture-offline-cache-miss
     defined-by relation

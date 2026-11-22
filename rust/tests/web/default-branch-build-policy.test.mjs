@@ -1,4 +1,5 @@
 import '../../../experiments/issue-1580/large-change-admission.test.mjs';
+import '../../../experiments/issue-1580/stage-source-capture.test.mjs';
 // Replays the recorded release/PR topology without compiling or publishing products.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -144,15 +145,20 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?\n' +
     'exit "$regression_status"\n',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1',
+    'export PATH="$GITHUB_WORKSPACE/rust/target/debug:$PATH"\nbash scripts/verify-docker-slim-runtime.sh\n',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1591-embeddings.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1593-prompt-data.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-901-triz-parity.test.mjs',
+    "node --test --test-concurrency=1 --test-name-pattern='native program replies' rust/tests/web/script-print-operand.test.mjs",
     codexReplay,
     gatewayReplay,
     'node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs',
-    'cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog\n' +
+    'node experiments/issue-1580/stage-source-capture.mjs "$FORMAL_AI_SOURCE_CACHE_DIR" docs/case-studies/issue-498/raw-data/google-trends-us-rss.xml "https://trends.google.com/trending/rss?geo=US"\n' +
+    'cargo build --manifest-path rust/Cargo.toml --locked --profile test --example dump_google_trends_catalog\n' +
     'rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"\n' +
     '{\n' +
     "  git rev-parse HEAD 'HEAD^{tree}'\n" +
@@ -189,6 +195,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
       '/experiments/dynamic-meta/**', '/experiments/js_dogfood/**',
       '/experiments/issue_859_codex_e2e/**',
       '/experiments/issue_1609_client_reports/**',
+      '/experiments/issue-1580/stage-source-capture.mjs',
       '/experiments/issue-1580/release-registry/', '/experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
       ...['candidate-output-bindings.json', 'candidate-release-caller.yml', 'original-release-workflow.yml','original-release-workflow.part-1.txt','original-release-workflow.part-2.txt',
         'stage-source-coverage.json'].map(file =>
@@ -202,7 +209,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const uploads = check.steps.filter(step => /upload-artifact/u.test(step.uses ?? ''));
   assert.equal(uploads.length, 1, 'only the exact fixture projection is retained');
   assert.equal(uploads[0].uses, 'actions/upload-artifact@v7');
-  assert.equal(uploads[0].with.name, 'google-trends-native-fixtures');
+  assert.equal(uploads[0].with.name, 'google-trends-native-fixtures-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}');
   assert.equal(uploads[0].with.path, '${{ runner.temp }}/google-trends-fixtures');
   assert.equal(uploads[0].if, "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
   assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
@@ -703,7 +710,7 @@ test('native data-file regressions select every consumed source and data format'
   for (const path of ['rust/tests/unit/data_files.rs', 'rust/tests/unit/data_files/technical_scalar.rs',
     'data/seed/meanings-calendar.lino', 'data/meta/technical-scalar-contracts.lino',
     'data/cache/wikidata/entity/Q146786.lino', 'data/cache/wikidata/entity/Q146786.json',
-    'data/cache/wiktionary/en/example.json', 'data/parity/fixture.lino', 'data/seed/api-cache/fixture.bin'])
+    'data/cache/wiktionary/en/example.json', 'data/parity/fixture.lino'])
     assert.equal(admission([path])['native-type-check'], true, path);
   for (const path of ['data/benchmarks/fixture.json', 'data/meta/fixture.txt',
     'data/cache/fixture.txt', 'rust/tests/unit/unrelated.rs'])
@@ -736,7 +743,7 @@ test('independent native replays continue after a regression fails and preserve 
   const job = workflow('native-type-check.yml').jobs.clippy;
   const later = job.steps.filter(step => step.name === 'Verify native unresolved-language source binding'
     || ['actions/setup-node@v7', './.github/actions/setup-bun-verified'].includes(step.uses) || step.name?.startsWith('Replay '));
-  assert.equal(later.length, 10);
+  assert.equal(later.length, 12);
   const selected = (step, {earlierFailure = true, compile = true, lint = 'success', bun = 'success', cancelled = false} = {}) => {
     const expression = step.if.slice(3, -2).trim()
       .replaceAll('inputs.compile-inputs-changed', "inputs['compile-inputs-changed']")
@@ -942,6 +949,8 @@ test('external lookup fixture contracts execute in the focused native lane', {ti
 test('catalog snapshots and native projection inputs select the complete generation lane', {timeout:15000}, () => {
   for (const path of ['rust/tests/unit/issue_498_google_trends.rs',
     'rust/examples/dump_google_trends_catalog.rs', 'data/seed/google-trends-prompts.lino',
+    'experiments/issue-1580/stage-source-capture.mjs',
+    'docs/case-studies/issue-498/raw-data/google-trends-us-rss.xml',
     'docs/case-studies/issue-498/agent-cli-session-google-trends.json'])
     assert.equal(admission([path])['native-type-check'], true, path);
   assert.equal(admission(['rust/examples/unrelated.rs'])['native-type-check'], false);
@@ -950,12 +959,16 @@ test('catalog snapshots and native projection inputs select the complete generat
   const steps = Object.values(workflow('native-type-check.yml').jobs)[0].steps;
   const producer = steps.find(step => step.name === 'Stage deterministic Google Trends fixtures from the native driver');
   assert.equal(producer.env.FORMAL_AI_OFFLINE, '1');
+  assert.equal(producer.env.FORMAL_AI_SOURCE_CACHE_DIR, '${{ runner.temp }}/google-trends-source-replay');
+  assert.equal(producer.env.CARGO_PROFILE_DEV_OPT_LEVEL, undefined);
+  assert.match(producer.run, /--profile test --example dump_google_trends_catalog/u);
+  assert.equal(producer.run.split('\n')[0], 'node experiments/issue-1580/stage-source-capture.mjs "$FORMAL_AI_SOURCE_CACHE_DIR" docs/case-studies/issue-498/raw-data/google-trends-us-rss.xml "https://trends.google.com/trending/rss?geo=US"');
   assert.match(producer.run, /cargo build [^\n]*--example dump_google_trends_catalog/u);
   assert.match(producer.run, /rust\/target\/debug\/examples\/dump_google_trends_catalog "\$CATALOG_OUTPUT"/u);
   assert.match(producer.run, /git rev-parse HEAD 'HEAD\^\{tree\}'/u);
   assert.match(producer.run, /sha256sum rust\/target\/debug\/examples\/dump_google_trends_catalog/u);
   const artifact = steps.find(step => step.name === 'Retain actual Google Trends fixture projections');
-  assert.equal(artifact.with.name, 'google-trends-native-fixtures');
+  assert.equal(artifact.with.name, 'google-trends-native-fixtures-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}');
   assert.equal(artifact.with['if-no-files-found'], 'error');
   assert.equal(artifact.with.path, '${{ runner.temp }}/google-trends-fixtures');
 });

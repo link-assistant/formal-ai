@@ -118,10 +118,8 @@ vscode/browser-runtime/
 desktop/dist-web/
 desktop/release/
 
-# Semantic-identity HTTP cache populated by FORMAL_AI_LIVE_API=1. These
-# directories are a local accelerator only; the committed source of
-# truth for offline tests is the raw-API-response seed bundle under
-# data/seed/api-cache/*.lino, bundled by rust/examples/refresh_translation_cache.rs.
+# Semantic-identity HTTP cache populated by FORMAL_AI_LIVE_API=1.
+# Offline tests supply their own inputs and transport.
 data/wikidata-cache/
 data/wiktionary-cache/
 data/http-cache/
