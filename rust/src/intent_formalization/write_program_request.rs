@@ -49,7 +49,18 @@ pub(super) fn requested_write_program_parameters(
     if quotes_carry_the_task {
         return None;
     }
-    let mut parameters = write_program_parameters(normalized)?;
+    let normalized_without_operands;
+    let parameter_view = if crate::coding::program_task_by_alias(normalized).is_some_and(|task| {
+        crate::coding::catalog_parameters::catalog_parameter_guidance(task.slug).is_some()
+    }) {
+        normalized_without_operands = crate::engine::normalize_prompt(
+            &crate::solver_handlers::text_outside_quoted_segments(raw),
+        );
+        &normalized_without_operands
+    } else {
+        normalized
+    };
+    let mut parameters = write_program_parameters(parameter_view)?;
     // Issue #1173 R1173-3: a request that names no catalogued task but text to
     // print names the operand task (`print_text`), unless the minimal-script
     // route answers it. The JavaScript twin is `requestedWriteProgramParameters`.
@@ -96,7 +107,6 @@ pub(super) fn write_program_parameters(normalized: &str) -> Option<BTreeMap<Stri
     {
         return None;
     }
-    let task = crate::coding::program_task_by_alias(normalized);
     let language = requested_program_language(normalized);
     let mentions_program_request = lexicon
         .mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized)
@@ -105,6 +115,11 @@ pub(super) fn write_program_parameters(normalized: &str) -> Option<BTreeMap<Stri
     let asks_for_known_language_program = language
         .as_deref()
         .is_some_and(|language| mentions_program_request && known_write_program_language(language));
+    let task = crate::coding::program_task_by_alias(normalized).filter(|task| {
+        crate::coding::catalog_parameters::catalog_parameter_guidance(task.slug).is_none()
+            || asks_for_program(normalized)
+            || asks_for_known_language_program
+    });
     // Issue #862 / #1021: "мне нужен код" names code as the artefact it wants
     // produced, and nothing else. It is the same request as "write me some
     // code" with a different asking verb, and the asking verbs live in the

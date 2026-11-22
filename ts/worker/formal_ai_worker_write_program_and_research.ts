@@ -112,13 +112,12 @@ function writeProgramVerificationTrace(candidateId, plan, template, modifiers) {
   const descending = templateHasDescendingOrder(template);
   const renderCheck = cancelsSort ? !descending : reversesSort ? descending : true;
   const passed = planCheck && renderCheck;
-  const expectedOrder = reversesSort && !cancelsSort ? "c.txt,b.txt,a.txt" : "a.txt,b.txt,c.txt";
+  const order = cancelsSort ? "ascending" : "descending";
   return [
     "rule_verification",
     `  candidate ${candidateId}`,
-    "  fixture list_files_output_order",
-    "  input a.txt,b.txt,c.txt",
-    `  expected_order ${expectedOrder}`,
+    "  verification_basis algorithm_structure",
+    ...(reversesSort || cancelsSort ? [`  expected_order ${order}`] : []),
     `  lowering_check ${planCheck ? "passed" : "failed"}`,
     `  render_check ${renderCheck ? "passed" : "failed"}`,
     `  status ${passed ? "passed" : "failed"}`,
@@ -218,13 +217,16 @@ async function tryWriteProgram(prompt, history, responseLanguage, composition, p
   const i18n = writeProgramStrings(responseLanguage);
   const operand = WRITE_PROGRAM_TASKS[task]?.procedure ? programTaskOperand(prompt) : null; // R1173-3
   const replacement = task === "hello_world" ? inlineHelloWorldReplacement(prompt) || null : null;
-  const documented = operand === null
-    ? await discoverDocumentedProgram(task, language, replacement ?? undefined, preferences)
-    : await operandProgram(task, language, operand, preferences);
   const suppliedOutput = operand ?? replacement;
   const composed = suppliedOutput === null ? null : literalOutputProgram(language, suppliedOutput);
   const original = suppliedOutput === null ? writeProgramTemplate(task, language) : composed;
-  const template = (WRITE_PROGRAM_LANGUAGES[language] && documented?.recipe?.entry) || original;
+  const parameterGuidance = CATALOG_PARAMETER_GUIDANCE[task];
+  const bound = parameterGuidance ? bindCatalogProgram(prompt, task, language, original) : null;
+  const documented = parameterGuidance ? null : operand === null
+    ? await discoverDocumentedProgram(task, language, replacement ?? undefined, preferences)
+    : await operandProgram(task, language, operand, preferences);
+  const template = parameterGuidance ? bound?.code
+    : (WRITE_PROGRAM_LANGUAGES[language] && documented?.recipe?.entry) || original;
   const diagnostics = writeProgramDiagnosticBundle({
     prompt,
     initiallyDetected,
@@ -235,6 +237,7 @@ async function tryWriteProgram(prompt, history, responseLanguage, composition, p
     plan,
     template,
   });
+  if (parameterGuidance && original && !bound) return catalogParameterGap(parameterGuidance, responseLanguage, language, task, diagnostics);
   if (!template) {
     // Issue #340 (R7): before the unsupported dead end, try a composite
     // blueprint. When the request decomposes into a recognized recipe for a
@@ -282,7 +285,7 @@ async function tryWriteProgram(prompt, history, responseLanguage, composition, p
   }
   const languageInfo = writeProgramLanguageInfo(task, language, documented);
   const taskInfo = WRITE_PROGRAM_TASKS[task];
-  const expectedOutput = documented?.recipe?.verified_output ?? suppliedOutput ?? taskInfo.output;
+  const expectedOutput = bound ? bound.output : documented?.recipe?.verified_output ?? suppliedOutput ?? taskInfo.output;
   const lines = [];
   lines.push(i18n.intro(languageInfo.name, taskInfo.label));
   lines.push("");

@@ -453,16 +453,17 @@ fn verification_trace(
         true
     };
     let passed = plan_check && render_check;
-    let expected_order = if reverses_sort && !cancels_sort {
-        "c.txt,b.txt,a.txt"
-    } else {
-        "a.txt,b.txt,c.txt"
-    };
     let mut out = String::from("rule_verification\n");
     push_field(&mut out, "candidate", candidate_id);
-    push_field(&mut out, "fixture", "list_files_output_order");
-    push_field(&mut out, "input", "a.txt,b.txt,c.txt");
-    push_field(&mut out, "expected_order", expected_order);
+    push_field(&mut out, "verification_basis", "algorithm_structure");
+    if reverses_sort || cancels_sort {
+        let order = if cancels_sort {
+            "ascending"
+        } else {
+            "descending"
+        };
+        push_field(&mut out, "expected_order", order);
+    }
     push_field(
         &mut out,
         "lowering_check",

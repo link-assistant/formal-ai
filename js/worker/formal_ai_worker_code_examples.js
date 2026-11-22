@@ -821,22 +821,9 @@ function installProgramTargets(root) {
 
 /** Compose the stdout operation from the shared syntax and literal policy. */
 function literalOutputProgram(language, output) {
-  if (typeof output !== "string" || /[\x00-\x08\x0a-\x1f\x7f-\x9f]/u.test(output)) return null;
-  const renderer = PROGRAM_PRINT_RENDERERS.get(language);
-  if (!renderer) return null;
-  const { style, syntax } = renderer;
-  let quoted;
-  if (style === "shell") {
-    quoted = "'" + output.replaceAll("'", "'\\''") + "'";
-  } else if (style === "php_single") {
-    quoted = "'" + output.replace(/[\\']/gu, (value) => "\\" + value) + "'";
-  } else {
-    quoted = '"' + output.replace(/[\\"\t$#]/gu, (value) => {
-      if (value === "\t") return "\\t";
-      if (value === "$" && style !== "dollar" || value === "#" && style !== "ruby") return value;
-      return "\\" + value;
-    }) + '"';
-    if (style === "rust_format" && /[{}]/u.test(output)) quoted = '"{}", ' + quoted;
-  }
-  return syntax.replace("{literal}", () => quoted);
+  const literal = programStringLiteral(language, output);
+  if (literal === null) return null;
+  const { style, syntax } = PROGRAM_PRINT_RENDERERS.get(language);
+  const argument = style === "rust_format" && /[{}]/u.test(output) ? '"{}", ' + literal : literal;
+  return syntax.replace("{literal}", () => argument);
 }

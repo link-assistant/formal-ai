@@ -157,8 +157,7 @@ coding_catalog
     label "hello world"
     output "Hello, world!"
   task count_to_three
-    label "count to three"
-    output "1\n2\n3"
+    label "count over a range"
   task list_files
     label "list files in the current directory"
   task list_files_arg
@@ -169,19 +168,14 @@ coding_catalog
     label "list files from a path argument in reverse-sorted order"
   task fizzbuzz
     label "FizzBuzz"
-    output "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz"
   task factorial
-    label "factorial of 5"
-    output "120"
+    label "factorial"
   task reverse_string
     label "string reversal"
-    output "olleh"
   task sum_to_ten
-    label "sum from 1 to 10"
-    output "55"
+    label "sum an integer range"
   task fibonacci
     label "recursive Fibonacci"
-    output "55"
   task copy_stdin_to_stdout
     label "copy standard input to standard output"
   task print_text

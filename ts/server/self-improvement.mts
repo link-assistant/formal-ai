@@ -189,7 +189,8 @@ export function proposeRuleFromTrace(trace, gate) {
     fields[name] = fieldValue(candidate.payload, name);
     if (fields[name] === null) return { rejection: serverMessage('learning_missing_field', { name }) };
   }
-  const fixture = fieldValue(verification.payload, 'fixture') ?? 'unknown';
+  const basis = fieldValue(verification.payload, 'verification_basis');
+  const fixture = basis ?? fieldValue(verification.payload, 'fixture') ?? 'unknown';
   for (const [name, key] of [['rule_id', 'id'], ['base_task', 'base_task'], ['modifier', 'modifier'], ['resolved_task', 'resolved_task']]) {
     const invalid = validateSlug(name, fields[key]);
     if (invalid !== null) return { rejection: invalid };
@@ -199,6 +200,7 @@ export function proposeRuleFromTrace(trace, gate) {
     modifier,
     base_task: baseTask,
     resolved_task: resolvedTask,
+    verification_label: basis === null ? 'fixture' : 'verification',
     fixture,
     suite: gate.suite_id,
     status: gate.statusSlug(),

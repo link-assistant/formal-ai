@@ -1,0 +1,31 @@
+▶ R1021-3/4/5/9: shell requests on the agentic planner
+  ✔ a command-naming noun is not an argument (#866, #867) (2245.724173ms)
+  ✔ a prose listing request routes to ls in any word order, english, russian, hindi and spanish (#865) (8329.443909ms)
+  ✔ a bare command is the request (#868) (1645.601405ms)
+  ✔ a move between absolute or home-relative paths is performed; a traversal is not (#824) (16317.804053ms)
+  ✔ a cue that names its object still takes a plain name (46102.628552ms)
+✔ R1021-3/4/5/9: shell requests on the agentic planner (76464.918101ms)
+▶ R1021-6/7: a named exercise is a program, not a file operation
+  ✔ neither the exercise nor its Rosetta Code URL reaches the shell (#862, #863) (71865.588104ms)
+  ✔ the exercise is answered as a catalogued program in english, russian, hindi, chinese and spanish (1707.530022ms)
+  ✔ the generated stdin copier accepts the caller’s stream (136.938116ms)
+  ✔ the generated listing uses the directory argument at runtime (143.295619ms)
+  ✔ a task that reads no input keeps its plain run command (54.859618ms)
+✔ R1021-6/7: a named exercise is a program, not a file operation (73911.141089ms)
+▶ R1021-8: a framework-named request is answered in that framework (#723)
+  ✔ Laravel is its own target; an uncatalogued framework falls back to its language (1689.332115ms)
+✔ R1021-8: a framework-named request is answered in that framework (#723) (1689.985313ms)
+▶ R1021-31: asking for code is a coding request whatever the asking verb
+  ✔ a named language is retained when the task is missing (990.00614ms)
+  ✔ code naming no language reaches the honest dead end in english, russian, hindi, chinese and spanish (2185.933772ms)
+  ✔ the dead end is worded in the language it was asked in (224.345912ms)
+  ✔ an asking verb that names another subject is not a coding request (2690.881271ms)
+✔ R1021-31: asking for code is a coding request whatever the asking verb (6091.993507ms)
+ℹ tests 15
+ℹ suites 4
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 161722.16227

@@ -36,9 +36,8 @@ const CANDIDATE = [
 const VERIFICATION = [
   "rule_verification",
   "  candidate reverse_sort_list_files_arg",
-  "  fixture list_files_output_order",
-  "  input a.txt,b.txt,c.txt",
-  "  expected_order c.txt,b.txt,a.txt",
+  "  verification_basis algorithm_structure",
+  "  expected_order descending",
   "  lowering_check passed",
   "  render_check passed",
   "  status passed",
@@ -106,12 +105,12 @@ test("a reported conversation stages one proposal against an absent gate", () =>
   assert.equal(proposal.rule_id, "reverse_sort_list_files_arg");
   assert.equal(proposal.base_task, "list_files_arg");
   assert.equal(proposal.resolved_task, "list_files_arg_reverse_sort");
-  assert.equal(proposal.fixture, "list_files_output_order");
+  assert.equal(proposal.fixture, "algorithm_structure");
   assert.equal(proposal.adoption, "blocked_by_benchmark");
   assert.equal(proposal.id, stableId("learned_rule", `${staged.trace.id}:reverse_sort_list_files_arg:list_files_arg:reverse_sort:list_files_arg_reverse_sort`));
   assert.equal(
     proposal.summary,
-    "Learn `reverse_sort` for `list_files_arg` by rewriting to `list_files_arg_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is absent (0/4).",
+    "Learn `reverse_sort` for `list_files_arg` by rewriting to `list_files_arg_reverse_sort`; verification `algorithm_structure` passed; benchmark `issue_362_multilingual_coding_modification` is absent (0/4).",
   );
   assert.match(proposal.seed_rule_lino, /^substitution_rules\n {2}id "learned_program_plan_rules"\n {2}rule "reverse_sort_list_files_arg"\n/);
   const lino = learningRunLinksNotation(staged.learning);

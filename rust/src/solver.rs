@@ -23,9 +23,8 @@
 
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
-    ExecutionRecipe, SelectedRule, SymbolicAnswer, answer_links_notation,
-    language_aware_answer_for, language_aware_intent_for, normalize_prompt,
-    response_link_for_intent,
+    SelectedRule, SymbolicAnswer, answer_links_notation, language_aware_answer_for,
+    language_aware_intent_for, normalize_prompt, response_link_for_intent,
 };
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::{
@@ -45,8 +44,8 @@ use crate::solver_formalization::{record_formalization, record_formalization_sel
 use crate::solver_handler_oracle::try_unsupported_write_program;
 use crate::solver_handlers::{finalize_simple, try_program_blueprint};
 use crate::solver_helpers::{
-    confidence_for, record_answer_test, record_candidates, record_decomposition, record_selection,
-    record_validation, unresolved_surfaces_present,
+    catalog_execution_recipe, confidence_for, record_answer_test, record_candidates,
+    record_decomposition, record_selection, record_validation, unresolved_surfaces_present,
 };
 use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{UnknownReasoningConfig, answer_unknown_prompt};
@@ -720,6 +719,12 @@ impl UniversalSolver {
                 return answer;
             }
 
+            let catalog_program = match &rule {
+                SelectedRule::WriteProgram(spec) => {
+                    crate::coding::catalog_parameters::bind_catalog_program(*spec, prompt)
+                }
+                _ => None,
+            };
             let intent = language_aware_intent_for(&rule, language);
             log.append("intent", intent.clone());
 
@@ -727,8 +732,13 @@ impl UniversalSolver {
                 if log.first_of("rule_synthesis_candidate").is_none() {
                     crate::coding::record_algorithm_construction(log);
                 }
-                let status = crate::coding::ExecutionStatus::NotProbed;
-                log.append("execution_status", status.label().to_owned());
+                if catalog_program.is_some()
+                    || crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
+                        .is_none()
+                {
+                    let status = crate::coding::ExecutionStatus::NotProbed;
+                    log.append("execution_status", status.label().to_owned());
+                }
                 log.append("program_parameter:language", spec.language.slug.to_owned());
                 log.append("program_parameter:task", spec.task.slug.to_owned());
                 log.append("program_parameters", spec.parameter_summary());
@@ -801,7 +811,13 @@ impl UniversalSolver {
             let prior = coding_guidance::history_has_prior_code(history);
             let base_answer = match (&validation_choice, &rule) {
                 (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
-                _ => language_aware_answer_for(&rule, language, prompt, prior),
+                _ => language_aware_answer_for(
+                    &rule,
+                    language,
+                    prompt,
+                    prior,
+                    catalog_program.as_ref(),
+                ),
             };
             let base_answer = match (&rule, &cached_program) {
                 (SelectedRule::WriteProgram(spec), Some(entry)) => {
@@ -825,25 +841,8 @@ impl UniversalSolver {
             let answer =
                 append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
 
-            let execution_recipe = match &rule {
-                SelectedRule::WriteProgram(spec) => Some(Box::new(ExecutionRecipe {
-                    language: spec.language.code_fence.to_owned(),
-                    source: cached_program.unwrap_or_else(|| {
-                        crate::code_editing::apply_inline_hello_world_source_replacement(
-                            prompt,
-                            &spec.template.code,
-                            *spec,
-                        )
-                    }),
-                    path: spec.language.save_as.to_string(),
-                    supporting_files: Vec::new(),
-                    commands: crate::discovery_production::catalog_run_commands(spec.language)
-                        .into_iter()
-                        .map(str::to_owned)
-                        .collect(),
-                })),
-                _ => None,
-            };
+            let execution_recipe =
+                catalog_execution_recipe(&rule, prompt, catalog_program, cached_program);
 
             SymbolicAnswer {
                 intent,

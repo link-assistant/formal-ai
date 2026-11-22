@@ -738,6 +738,35 @@ browser starts without a reviewed file. A cache row describing one example
 cannot replace a file or stream operation whose exact input is still unknown.
 [Procedure cache replay](evidence/verification/round22-issue-1165-server-procedure-cache.log)
 
+### Algorithm operands in the program catalog
+
+The catalog used the task slug as both an algorithm name and a completed
+example. An explicit factorial of seven could therefore select a template
+that multiplied through five and a matching fixed stdout value. The error
+crossed both runtimes because the same language templates were repeated in
+the Rust catalog and the browser seed. The cache keyed by language and task
+could also substitute the stored result of a different set of operands.
+
+The six affected operations keep their catalog identities. Numeric ranges
+bind the two endpoints named by the user, or apply the count-to convention
+of starting at one when the request gives only an upper endpoint. Factorial
+and Fibonacci use integer bounds supported by the catalog's numeric types.
+Reversal escapes the caller's text for the target language and reverses
+Unicode scalar values. An unspecified Fibonacci index produces a function
+without a sample invocation. Other incomplete or incompatible operands
+receive a clarification. The source and the expected stdout derive from the
+same parsed operands. The task-wide cache is bypassed for these operations.
+
+The browser replay checks all 72 affected language-template pairs against
+the Rust catalog, plus localized requests in Russian, Hindi and Chinese.
+It runs the generated JavaScript and Python for two distinct inputs per
+operation and compares stdout byte for byte. Native CI uses the public chat
+endpoint and executes the resulting Python for a different set of inputs.
+The sorting trace now records a structural check. Historical `fixture`
+fields remain readable by the learning-trace importer.
+[Catalog replay](evidence/verification/round23-worker-catalog.log) ·
+[Learning trace replay](evidence/verification/round23-learning-trace.log)
+
 The Layered CI replay on the previous head compared the new TRIZ summary to an
 old generated architecture map. The generator refreshed the map and the twin
 compares its output byte for byte with the committed document.

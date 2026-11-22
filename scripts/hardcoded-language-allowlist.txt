@@ -422,7 +422,6 @@ rust/src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); no les
 rust/src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); {} lesson(s) await human approval.
 rust/src/self_improvement.rs	  learned_rule\n
 rust/src/self_improvement.rs	  rejected_trace\n
-rust/src/self_improvement.rs	Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{}` is {} ({}/{}).
 rust/src/self_improvement.rs	learned rule does not parse: {error}
 rust/src/self_improvement.rs	missing `{name}` in candidate
 rust/src/self_improvement.rs	rule verification did not pass: {status}

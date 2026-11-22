@@ -235,7 +235,7 @@ server_messages
   message learning_invalid_slug
     text "invalid {name} `{value}`"
   message learning_proposal_summary
-    text "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{suite}` is {status} ({passed}/{minimum})."
+    text "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; {verification_label} `{fixture}` passed; benchmark `{suite}` is {status} ({passed}/{minimum})."
   message dreaming_reason_deleted_conversation
     text "event belongs to a conversation already marked deleted"
   message dreaming_reason_duplicate

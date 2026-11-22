@@ -22,6 +22,7 @@ pub mod blueprint;
 mod blueprint_data;
 mod blueprint_programs;
 pub mod catalog;
+pub(crate) mod catalog_parameters;
 pub mod composition;
 pub mod composition_search;
 pub mod concept_discovery;

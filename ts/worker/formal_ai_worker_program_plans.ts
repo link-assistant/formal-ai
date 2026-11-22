@@ -208,6 +208,7 @@ function programPlanLinksNotation(plan) {
 function writeProgramParameters(prompt) {
   const normalized = normalizeProgramPrompt(prompt);
   let task = programTaskFromPrompt(normalized);
+  if (CATALOG_PARAMETER_GUIDANCE[task]) task = programTaskFromPrompt(normalizeProgramPrompt(obligationTextOutsideQuotes(prompt)));
   const language = programLanguageFromPrompt(normalized);
   // Issue #386: recognise "write a <program>" by *meaning*, not a hardcoded
   // per-language word list — a program_kind artifact (program / script / code /
@@ -222,6 +223,7 @@ function writeProgramParameters(prompt) {
     Boolean(language) &&
     (mentionsProgramRequest || asksForScript) &&
     (Boolean(WRITE_PROGRAM_LANGUAGES[language]) || codingOracleKnowsLanguage(language));
+  if (CATALOG_PARAMETER_GUIDANCE[task] && !asksForProgram && !asksForKnownLanguageProgram) task = null;
   // Issue #1021 (R1021-31): "мне нужен код" names code and nothing else, so it is a
   // request with no parameters whatever the asking verb (namesCodeAndNothingElse).
   const asksForBareCode = !task && !language && namesCodeAndNothingElse(normalized);

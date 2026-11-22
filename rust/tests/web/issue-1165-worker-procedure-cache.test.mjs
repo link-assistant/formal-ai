@@ -31,16 +31,11 @@ test('the worker and the agentic root read the same miss_route gap', () => {
   assert.deepEqual(missResearchMissing(), ['reviewer_approval']);
 });
 
-// Python counting to three has no documentation capture (its output is not
-// one printed literal), so its unmodified request is the research miss.
-test('an unmodified catalog request logs the exact native procedure_cache miss', async () => {
+test('a caller-supplied range produces no task-wide procedure-cache event', async () => {
   const result = await host.solve('Write a Python program that counts to three', []);
   assert.equal(result.intent, 'write_program');
-  assert.deepEqual(cacheEvents(result), [
-    { kind: 'procedure_cache', payload: 'outcome=miss language=python task=count_to_three research_missing=reviewer_approval' },
-  ]);
-  const kinds = result.solverEvents.map((event) => event.kind);
-  assert.equal(kinds.indexOf('procedure_cache'), kinds.indexOf('legacy_intent') + 1);
+  assert.deepEqual(cacheEvents(result), []);
+  assert.equal(result.programExecution.output, '1\n2\n3');
 });
 
 test('a request that customised the template logs no procedure_cache event', async () => {

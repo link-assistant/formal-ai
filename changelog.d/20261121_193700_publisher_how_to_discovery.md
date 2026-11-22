@@ -11,3 +11,4 @@ bump: patch
 - Run computer-use plans from explicit operations or a supplied teaching corpus. Verify HTTP responses against the authorized origin and keep recorded tasks and responses in test fixtures.
 - Build contradiction worksheets from the demands in the request and keep reference contradictions in explicit tests.
 - Bind print operands and standard input at request or execution time. Report a program run only when a local execution or publication check was observed.
+- Bind caller-supplied ranges, numbers, and text in the program catalog, and derive expected output from those inputs.

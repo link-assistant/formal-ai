@@ -75,25 +75,28 @@ pub(crate) fn bound_language(
     language
 }
 
-/// Compose the stdout operation with a safely quoted literal.
-pub fn literal_output_program(language: &str, output: &str) -> Option<String> {
+fn print_renderer(language: &str) -> Option<&'static crate::seed::parser::LinoNode> {
+    static RENDERERS: std::sync::OnceLock<crate::seed::parser::LinoNode> =
+        std::sync::OnceLock::new();
+    let rules = RENDERERS
+        .get_or_init(|| crate::seed::parser::parse_lino(crate::seed::HELLO_WORLD_PROGRAMS_LINO));
+    rules
+        .children
+        .iter()
+        .find(|row| row.name == "write_program")?
+        .children
+        .iter()
+        .find(|row| row.name == "print_renderer" && row.id == language)
+}
+
+pub(super) fn program_string_literal(language: &str, output: &str) -> Option<String> {
     if output
         .chars()
         .any(|character| character.is_control() && character != '\t')
     {
         return None;
     }
-    static RENDERERS: std::sync::OnceLock<crate::seed::parser::LinoNode> =
-        std::sync::OnceLock::new();
-    let rules = RENDERERS
-        .get_or_init(|| crate::seed::parser::parse_lino(crate::seed::HELLO_WORLD_PROGRAMS_LINO));
-    let row = rules
-        .children
-        .iter()
-        .find(|row| row.name == "write_program")?
-        .children
-        .iter()
-        .find(|row| row.name == "print_renderer" && row.id == language)?;
+    let row = print_renderer(language)?;
     let style = row.find_child_value("literal");
     let literal = if style == "shell" {
         format!("'{}'", output.replace('\'', "'\\''"))
@@ -114,12 +117,18 @@ pub fn literal_output_program(language: &str, output: &str) -> Option<String> {
             }
         }
         quoted.push('"');
-        if style == "rust_format" && (output.contains('{') || output.contains('}')) {
-            format!("\"{{}}\", {quoted}")
-        } else {
-            quoted
-        }
+        quoted
     };
+    Some(literal)
+}
+
+/// Compose the stdout operation with a safely quoted literal.
+pub fn literal_output_program(language: &str, output: &str) -> Option<String> {
+    let row = print_renderer(language)?;
+    let mut literal = program_string_literal(language, output)?;
+    if row.find_child_value("literal") == "rust_format" && output.contains(['{', '}']) {
+        literal = format!("\"{{}}\", {literal}");
+    }
     Some(
         row.find_child_value("syntax")
             .replace("{literal}", &literal),
@@ -211,7 +220,7 @@ pub fn program_spec(task_slug: &str, language_slug: &str) -> Option<ProgramSpec<
 /// and [`crate::seed::ROLE_PROGRAM_TASK_ALIAS`]) — instead of an inline list, so the
 /// matchers below name only the concept by slug while the words stay self-describing
 /// seed data shared byte-for-byte with the JS worker (issue #386).
-fn alias_surfaces(prefix: &str, slug: &str) -> impl Iterator<Item = &'static str> {
+pub(super) fn alias_surfaces(prefix: &str, slug: &str) -> impl Iterator<Item = &'static str> {
     crate::seed::lexicon()
         .meaning(&format!("{prefix}_{slug}"))
         .into_iter()

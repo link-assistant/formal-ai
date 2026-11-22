@@ -179,7 +179,7 @@ fn unknown_bare_program_modifier_constructs_and_verifies_a_rule() {
             "rule_synthesis_candidate",
             "modifier reverse_sort",
             "rule_verification",
-            "fixture list_files_output_order",
+            "verification_basis algorithm_structure",
             "status passed",
         ] {
             assert!(

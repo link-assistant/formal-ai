@@ -22,7 +22,7 @@
 //! schema for each category is documented in the corresponding `.lino` file.
 
 mod agentic_messages;
-pub(crate) use agentic_messages::agentic_message;
+pub(crate) use agentic_messages::{agentic_message, server_message};
 mod agentic_tool_capabilities;
 mod brainstorm;
 mod caller_context;

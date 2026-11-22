@@ -634,7 +634,8 @@ How to test it yourself:
     // Held out: a catalogued task, and a numeric-list task the universal
     // composer derives from `data/seed/coding-idioms.lino` rather than from a
     // template — both must reach PHP now that the language is catalogued.
-    let fizzbuzz = UniversalSolver::default().solve("write a fizzbuzz program in php");
+    let fizzbuzz =
+        UniversalSolver::default().solve("write a fizzbuzz program in php from 1 through 15");
     assert_eq!(
         fizzbuzz.answer,
         r#"Here is a minimal PHP FizzBuzz program:
@@ -678,7 +679,7 @@ FizzBuzz
 ```
 
 How it works:
-The program loops over the numbers 1 to 15. For each number it prints `FizzBuzz` when the number is divisible by both 3 and 5, `Fizz` when it is divisible by 3, `Buzz` when it is divisible by 5, and otherwise the number itself — each on its own line.
+For each integer in the requested range, the program prints Fizz for multiples of 3, Buzz for multiples of 5, FizzBuzz for multiples of both, and the number otherwise.
 
 How to test it yourself:
 1. Install PHP from https://www.php.net/downloads.

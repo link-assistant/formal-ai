@@ -430,7 +430,7 @@ pub struct LearnedRuleProposal {
     pub modifier: String,
     /// Program-plan task after rewriting.
     pub resolved_task: String,
-    /// Verification fixture named by the rule-synthesis trace.
+    /// Verification evidence named by the trace. The field name preserves the historical schema.
     pub fixture: String,
     /// Human-readable review summary.
     pub summary: String,
@@ -582,8 +582,15 @@ fn propose_rule_from_trace(
     let base_task = require_field(&candidate.payload, "base_task")?;
     let modifier = require_field(&candidate.payload, "modifier")?;
     let resolved_task = require_field(&candidate.payload, "resolved_task")?;
-    let fixture =
-        field_value(&verification.payload, "fixture").unwrap_or_else(|| String::from("unknown"));
+    let basis = field_value(&verification.payload, "verification_basis");
+    let verification_label = if basis.is_some() {
+        "verification"
+    } else {
+        "fixture"
+    };
+    let fixture = basis
+        .or_else(|| field_value(&verification.payload, "fixture"))
+        .unwrap_or_else(|| String::from("unknown"));
 
     for (name, value) in [
         ("rule_id", rule_id.as_str()),
@@ -603,12 +610,19 @@ fn propose_rule_from_trace(
     } else {
         LearnedRuleAdoption::BlockedByBenchmark
     };
-    let summary = format!(
-        "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{}` is {} ({}/{}).",
-        gate.suite_id,
-        gate.status_slug(),
-        gate.passed,
-        gate.minimum_pass_count
+    let summary = crate::seed::server_message(
+        "learning_proposal_summary",
+        &[
+            ("modifier", &modifier),
+            ("base_task", &base_task),
+            ("resolved_task", &resolved_task),
+            ("verification_label", verification_label),
+            ("fixture", &fixture),
+            ("suite", &gate.suite_id),
+            ("status", gate.status_slug()),
+            ("passed", &gate.passed.to_string()),
+            ("minimum", &gate.minimum_pass_count.to_string()),
+        ],
     );
     let id = stable_id(
         "learned_rule",

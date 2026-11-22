@@ -15,8 +15,8 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
     },
     ProgramTask {
         slug: "count_to_three",
-        label: "count to three",
-        output: "1\n2\n3",
+        label: "count over a range",
+        output: "",
     },
     ProgramTask {
         slug: "list_files",
@@ -41,50 +41,31 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
         label: "list files from a path argument in reverse-sorted order",
         output: "",
     },
-    // Issue #330: the catalog supports general coding tasks, not only
-    // hello-world. The tasks below are classic, deterministic exercises that
-    // exercise control flow (fizzbuzz), arithmetic (factorial, sum), and string
-    // handling (reverse). Each has a fixed, self-describing scenario so the
-    // verified output is unambiguous, and every supported prompt language
-    // (en, ru, hi, zh) is covered.
+    // These operations take their operands from the typed request.
     ProgramTask {
         slug: "fizzbuzz",
         label: "FizzBuzz",
-        output: "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
+        output: "",
     },
     ProgramTask {
         slug: "factorial",
-        label: "factorial of 5",
-        // Tied to the concrete value 5 (5! = 120) so the verified output is
-        // unambiguous; the seed aliases keep the number 5 so a different
-        // factorial is never answered with the 5! program.
-        output: "120",
+        label: "factorial",
+        output: "",
     },
     ProgramTask {
         slug: "reverse_string",
         label: "string reversal",
-        // Reverses the literal string "hello" -> "olleh"; the scenario is fixed
-        // so the output is verifiable, mirroring the hello-world philosophy.
-        output: "olleh",
+        output: "",
     },
     ProgramTask {
         slug: "sum_to_ten",
-        label: "sum from 1 to 10",
-        // Sums 1..=10 -> 55; the range is fixed so the output is verifiable.
-        output: "55",
+        label: "sum an integer range",
+        output: "",
     },
-    // Issue #334: the website demo asked for "a Python function that calculates
-    // the Fibonacci sequence recursively" and then "the 10th Fibonacci number".
-    // The catalog had no Fibonacci entry, so step one resolved to "I didn't
-    // understand you". This task defines a recursive `fibonacci` function and
-    // prints the 10th term (F(1)=F(2)=1 -> F(10)=55), so the scenario is fixed
-    // and the verified output is unambiguous. Every supported prompt language
-    // (en, ru, hi, zh) is covered, including the explicit "recursive" /
-    // "function" phrasings from the report.
     ProgramTask {
         slug: "fibonacci",
         label: "recursive Fibonacci",
-        output: "55",
+        output: "",
     },
     // Its output depends on the input stream supplied at runtime.
     ProgramTask {

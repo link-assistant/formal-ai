@@ -20,6 +20,7 @@
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { before, test } from 'node:test';
 
 import { programLanguages, programTasks, programTemplates } from '../../../js/agentic/crate/coding_catalog.mjs';
@@ -29,8 +30,12 @@ import { WorkerHost, evaluate } from '../../../js/server/worker-host.mjs';
 
 let host;
 let context;
+const bind = (prompt, task, language) => {
+  const template = workerTemplate(task, language);
+  return worker(`bindCatalogProgram(${[prompt, task, language, template].map((item) => JSON.stringify(item)).join(',')})`);
+};
 before(async () => {
-  host = new WorkerHost();
+  host = new WorkerHost({}, { networkFetch: async () => new Response(null, { status: 503 }) });
   context = await host.boot();
   await installNodeHost(new WorkerHost());
 });
@@ -126,7 +131,7 @@ const ENGLISH_PROMPTS = [
   ['list_files_arg', (name) => `Write me a ${name} program that lists files with a path argument`],
   ['list_files_reverse_sort', (name) => `Write me a ${name} program that lists files sorted in reverse order`],
   ['list_files_arg_reverse_sort', (name) => `Write me a ${name} program that lists files with a path argument sorted descending`],
-  ['fizzbuzz', (name) => `Write me a FizzBuzz program in ${name}`],
+  ['fizzbuzz', (name) => `Write me a FizzBuzz program in ${name} from 1 through 15`],
   ['factorial', (name) => `Write me a ${name} program for the factorial of 5`],
   ['reverse_string', (name) => `Write me a ${name} program to reverse the string hello`],
   ['sum_to_ten', (name) => `Write me a ${name} program for the sum from 1 to 10`],
@@ -147,9 +152,10 @@ test('R921-8: english Scala and Kotlin requests answer every catalog task with t
       const result = await host.solve(prompt(name), []);
       assert.equal(result.intent, 'write_program', prompt(name));
       assert.equal(parameters(result), `write_program(language=${language}, task=${task})`, prompt(name));
-      const program = workerTemplate(task, language);
+      const bound = bind(prompt(name), task, language);
+      const program = bound?.code ?? workerTemplate(task, language);
       assert.ok(result.content.includes(`\`\`\`${language}\n${program}\n\`\`\``), result.content);
-      const output = worker('WRITE_PROGRAM_TASKS')[task].output;
+      const output = bound ? bound.output : worker('WRITE_PROGRAM_TASKS')[task].output;
       if (output == null) {
         assert.equal(result.content.includes('```text'), false, result.content);
       } else {
@@ -162,7 +168,7 @@ test('R921-8: english Scala and Kotlin requests answer every catalog task with t
 });
 
 test('R921-8: the Scala FizzBuzz answer is the catalog answer with an honest not-run status', async () => {
-  const result = await host.solve('Write me a FizzBuzz program in Scala', []);
+  const result = await host.solve('Write me a FizzBuzz program in Scala from 1 through 15', []);
   assert.equal(result.content.split('\n')[0], 'Here is a minimal Scala FizzBuzz program:');
   assert.equal(result.programExecution.block, 'Execution status: not run - the browser sandbox cannot invoke a scala toolchain.\n\nCopy the snippet into a scala environment to verify.\n\nExpected output after verification:\n```text\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n```');
   assert.deepEqual(
@@ -174,15 +180,15 @@ test('R921-8: the Scala FizzBuzz answer is the catalog answer with an honest not
 // The Russian, Hindi and Chinese prompts of task_catalog.rs, and the same
 // shapes asked for Scala and Kotlin.
 const MULTILINGUAL = [
-  ['russian', 'Напиши факториал 5 на питоне', 'python', 'factorial', 'Вот минимальная программа на языке Python (factorial of 5):'],
-  ['russian', 'Напиши факториал 5 на Scala', 'scala', 'factorial', 'Вот минимальная программа на языке Scala (factorial of 5):'],
-  ['russian', 'Напиши программу FizzBuzz на Kotlin', 'kotlin', 'fizzbuzz', 'Вот минимальная программа на языке Kotlin (FizzBuzz):'],
-  ['hindi', 'Rust में स्ट्रिंग को उलटें', 'rust', 'reverse_string', 'यहाँ Rust में एक न्यूनतम प्रोग्राम है (string reversal):'],
-  ['hindi', 'Kotlin में स्ट्रिंग को उलटें', 'kotlin', 'reverse_string', 'यहाँ Kotlin में एक न्यूनतम प्रोग्राम है (string reversal):'],
-  ['hindi', 'Scala में फ़िज़बज़ प्रोग्राम लिखें', 'scala', 'fizzbuzz', 'यहाँ Scala में एक न्यूनतम प्रोग्राम है (FizzBuzz):'],
-  ['chinese', '用 Go 写 1到10的和 的程序', 'go', 'sum_to_ten', '这是一个最小的 Go 程序（sum from 1 to 10）：'],
-  ['chinese', '用 Kotlin 写 1到10的和 的程序', 'kotlin', 'sum_to_ten', '这是一个最小的 Kotlin 程序（sum from 1 to 10）：'],
-  ['chinese', '用 Scala 写 菲茨巴兹 的程序', 'scala', 'fizzbuzz', '这是一个最小的 Scala 程序（FizzBuzz）：'],
+  ['russian', 'Напиши факториал 5 на питоне', 'python', 'factorial', 'Вот минимальная программа на языке Python (factorial):'],
+  ['russian', 'Напиши факториал 5 на Scala', 'scala', 'factorial', 'Вот минимальная программа на языке Scala (factorial):'],
+  ['russian', 'Напиши программу FizzBuzz от 1 до 15 на Kotlin', 'kotlin', 'fizzbuzz', 'Вот минимальная программа на языке Kotlin (FizzBuzz):'],
+  ['hindi', 'Rust में प्रोग्राम लिखें जो स्ट्रिंग को उलटें «नमस्ते»', 'rust', 'reverse_string', 'यहाँ Rust में एक न्यूनतम प्रोग्राम है (string reversal):'],
+  ['hindi', 'Kotlin में प्रोग्राम लिखें जो स्ट्रिंग को उलटें «नमस्ते»', 'kotlin', 'reverse_string', 'यहाँ Kotlin में एक न्यूनतम प्रोग्राम है (string reversal):'],
+  ['hindi', 'Scala में 1 से 15 तक फ़िज़बज़ प्रोग्राम लिखें', 'scala', 'fizzbuzz', 'यहाँ Scala में एक न्यूनतम प्रोग्राम है (FizzBuzz):'],
+  ['chinese', '用 Go 写 1到10的和 的程序', 'go', 'sum_to_ten', '这是一个最小的 Go 程序（sum an integer range）：'],
+  ['chinese', '用 Kotlin 写 1到10的和 的程序', 'kotlin', 'sum_to_ten', '这是一个最小的 Kotlin 程序（sum an integer range）：'],
+  ['chinese', '用 Scala 写 1到15的菲茨巴兹 程序', 'scala', 'fizzbuzz', '这是一个最小的 Scala 程序（FizzBuzz）：'],
 ];
 
 test('R921-8: russian, hindi and chinese requests answer catalog tasks in Scala and Kotlin', async () => {
@@ -191,7 +197,7 @@ test('R921-8: russian, hindi and chinese requests answer catalog tasks in Scala 
     assert.equal(result.intent, 'write_program', prompt);
     assert.equal(parameters(result), `write_program(language=${language}, task=${task})`, prompt);
     assert.equal(result.content.split('\n')[0], heading, prompt);
-    assert.ok(result.content.includes(workerTemplate(task, language)), result.content);
+    assert.ok(result.content.includes(bind(prompt, task, language)?.code ?? workerTemplate(task, language)), result.content);
   }
 });
 
@@ -201,8 +207,8 @@ test('R921-8: russian, hindi and chinese requests answer catalog tasks in Scala 
 // operator the arithmetic promotion reads, and a recursive Fibonacci request
 // is promoted to program synthesis. The prompts are task_catalog.rs's.
 const PROMOTED = [
-  ['Write me a C++ program for the factorial of 5', 'cpp', 'factorial', 'Here is a minimal C++ factorial of 5 program:'],
-  ['Write me a C++ program for the sum from 1 to 10', 'cpp', 'sum_to_ten', 'Here is a minimal C++ sum from 1 to 10 program:'],
+  ['Write me a C++ program for the factorial of 5', 'cpp', 'factorial', 'Here is a minimal C++ factorial program:'],
+  ['Write me a C++ program for the sum from 1 to 10', 'cpp', 'sum_to_ten', 'Here is a minimal C++ sum an integer range program:'],
   ['Write a Python function that calculates the Fibonacci sequence recursively.', 'python', 'fibonacci',
     'Here is a minimal Python recursive Fibonacci program:'],
 ];
@@ -213,6 +219,58 @@ test('R921-8: a concrete catalog request is not claimed by a promoted handler', 
     assert.equal(result.intent, 'write_program', prompt);
     assert.equal(parameters(result), `write_program(language=${language}, task=${task})`, prompt);
     assert.equal(result.content.split('\n')[0], heading, prompt);
-    assert.ok(result.content.includes(workerTemplate(task, language)), result.content);
+    assert.ok(result.content.includes(bind(prompt, task, language)?.code ?? workerTemplate(task, language)), result.content);
   }
+});
+
+test('issue #1613: each bound operation executes with two different caller inputs', async () => {
+  const cases = [
+    ['counts from -3 to 2', '-3\n-2\n-1\n0\n1\n2'],
+    ['counts to seven', '1\n2\n3\n4\n5\n6\n7'],
+    ['implements FizzBuzz from -2 to 3', '-2\n-1\nFizzBuzz\n1\n2\nFizz'],
+    ['implements FizzBuzz from 13 to 17', '13\n14\nFizzBuzz\n16\n17'],
+    ['calculates the factorial of 0', '1'],
+    ['calculates the factorial of seven', '5040'],
+    ['reverses a string by reversing the string «cat 🧩»', '🧩 tac'],
+    ['will reverse the string «{{n}} \\ €»', '€ \\ }}n{{'],
+    ['calculates the sum from -9 to -7', '-24'],
+    ['calculates the sum from 12 to 15', '54'],
+    ['calculates the 13th Fibonacci number', '233'],
+    ['calculates the 77th Fibonacci number', '5527939700884757'],
+  ];
+  for (const [language, executable, args] of [['JavaScript', process.execPath, ['-e']], ['Python', 'python3', ['-I', '-c']]]) {
+    for (const [specification, output] of cases) {
+      const prompt = `Write a ${language} program that ${specification}`;
+      const result = await host.solve(prompt, []);
+      assert.equal(result.intent, 'write_program', prompt);
+      assert.equal(result.programExecution?.output, output, result.content);
+      const source = result.content.match(/```(?:javascript|python)\n([\s\S]*?)\n```/u)?.[1];
+      assert.ok(source, result.content);
+      const execution = spawnSync(executable, [...args, source], { encoding: 'utf8', timeout: 5000, maxBuffer: 64 * 1024 });
+      assert.equal(execution.status, 0, execution.stderr ?? execution.error?.message);
+      assert.equal(execution.stdout, output + '\n', prompt);
+    }
+  }
+});
+
+test('issue #1613: incomplete or out-of-range inputs leave no runnable recipe', async () => {
+  for (const [operation, question] of [
+    ['will count to a number', 'Which integer range'],
+    ['will count from 7', 'Which integer range'],
+    ['implements FizzBuzz', 'Which integer range'],
+    ['calculates the factorial of -7', 'Which integer'],
+    ['calculates the factorial of 7.5', 'Which integer'],
+    ['calculates the sum from 19 to 12', 'Which integer range'],
+    ['calculates the sum of 5 and 8', 'Which integer range'],
+    ['will reverse a string', 'Which text'],
+    ['calculates the 78th Fibonacci number', 'Which Fibonacci index'],
+  ]) {
+    const result = await host.solve(`Write a Python program that ${operation}`, []);
+    assert.equal(result.intent, 'write_program', operation);
+    assert.ok(result.content.startsWith(question), result.content);
+    assert.equal(result.programExecution, undefined);
+    assert.ok(!result.content.includes('```'));
+  }
+  const plain = await host.solve('What is the factorial of 7?', []);
+  assert.notEqual(plain.intent, 'write_program');
 });

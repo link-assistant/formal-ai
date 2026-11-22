@@ -264,10 +264,8 @@ function solverWriteProgramEvents(answer, prompt) {
   ];
 }
 
-// The `procedure_cache` event of the native `WriteProgram` branch (R1165-10).
-// The worker reads no cache file, so an unmodified catalog request either
-// rediscovers its program from the documentation captures (R1165-1,
-// `outcome=discovered`) or is the miss Rust logs, including its input and capture gaps.
+// Mirror R1165-10 cache and discovery events from the selected documentation
+// result, or record why the answer used the local operation.
 function solverProcedureCacheEvents(prompt, language, task, documented) {
   const { recipe, rejected } = documented || {};
   if (recipe?.task === task) {

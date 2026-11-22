@@ -559,11 +559,11 @@ pub fn default_cache_path() -> Option<PathBuf> {
         return Some(PathBuf::from(explicit.trim()));
     }
     let paths = crate::runtime_cache::runtime_cache_paths().ok()?;
-    Some(
-        paths
-            .runtime_root
-            .join(Path::new(DEFAULT_CACHE_FILE).file_name()?),
-    )
+    Some(paths.runtime_root.join(procedure_cache_filename()?))
+}
+
+fn procedure_cache_filename() -> Option<&'static std::ffi::OsStr> {
+    Path::new(DEFAULT_CACHE_FILE).file_name()
 }
 
 /// Quote a value for the cache file, using the parser's backslash dialect.

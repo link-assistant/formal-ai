@@ -6,6 +6,7 @@ import {planLiteralArtifactEdit} from './artifact_literal_edit.mjs';
 import {Progress} from './progress.mjs';
 import { classifyTool, toolFor } from './capability_router.mjs';
 import { plainText } from './content.mjs';
+import { realm } from './host.mjs';
 import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { programLanguageByAlias, programSaveAs, programTaskByAlias, programTemplate } from './crate/coding_catalog.mjs';
@@ -132,7 +133,13 @@ function generatedArtifact(task) {
   if (!programTask) return null;
   const template = programTemplate(programTask.slug, language.slug);
   if (!template) return null;
-  return { path: programSaveAs(programTask.slug, language), content: `${trimEnd(template.code)}\n` };
+  let code = template.code;
+  if (/\{\{[a-z_]+\}\}/u.test(code)) {
+    const bound = realm().bindCatalogProgram?.(task, programTask.slug, language.slug, code);
+    if (!bound) return null;
+    code = bound.code;
+  }
+  return { path: programSaveAs(programTask.slug, language), content: `${trimEnd(code)}\n` };
 }
 
 function requestedRewrite(task, artifact) {

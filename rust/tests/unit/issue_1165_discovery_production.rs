@@ -344,16 +344,18 @@ fn write_program_reuses_the_cached_procedure_only_for_an_unmodified_request() {
 /// the solver's `WriteProgram` branch records the miss with the approval it
 /// lacks instead of answering as if research had run.
 ///
-/// Python counting to three has no documentation capture (its output is
-/// not one printed literal), so its miss is the research miss.
+/// An offline literal exercise renders locally and records the review gap.
 #[test]
 fn miss_route_names_what_research_lacks_on_a_solve() {
     assert_eq!(miss_research_missing(), ["reviewer_approval"]);
-    let response =
-        formal_ai::UniversalSolver::default().solve("Write a Python program that counts to three");
+    let response = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    })
+    .solve("Write a hello world program in Python");
     assert!(
         response.links_notation.contains(
-            "procedure_cache outcome=miss language=python task=count_to_three \
+            "procedure_cache outcome=miss language=python task=hello_world \
              research_missing=reviewer_approval"
         ),
         "{}",

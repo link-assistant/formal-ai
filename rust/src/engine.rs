@@ -576,7 +576,13 @@ impl SelectedRule {
             Self::AssistantFreeTime => String::from(assistant_free_time_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::AssistantName => String::from(assistant_name_answer()),
-            Self::WriteProgram(spec) => write_program_answer(*spec, Language::English, false),
+            Self::WriteProgram(spec) => {
+                crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
+                    .map_or_else(
+                        || write_program_answer(*spec, Language::English, false),
+                        |key| crate::coding::guidance::guidance(key, Language::English, &[]),
+                    )
+            }
             Self::UnsupportedWriteProgram { task, language } => crate::program_skill_gap::render(
                 task.as_deref(),
                 language.as_deref(),
@@ -596,6 +602,7 @@ pub(crate) fn language_aware_answer_for(
     language: Language,
     prompt: &str,
     prior_code_response: bool,
+    catalog_program: Option<&crate::coding::catalog_parameters::BoundCatalogProgram>,
 ) -> String {
     match (rule, language) {
         (SelectedRule::AssistantFreeTime, _) => {
@@ -635,6 +642,25 @@ pub(crate) fn language_aware_answer_for(
             String::from(chinese_assistant_name_answer())
         }
         (SelectedRule::WriteProgram(spec), language) => {
+            if let Some(key) =
+                crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
+            {
+                return catalog_program.map_or_else(
+                    || crate::coding::guidance::guidance(key, language, &[]),
+                    |bound| {
+                        write_program_answer_with_output(
+                            ProgramSpec {
+                                template: &bound.template,
+                                ..*spec
+                            },
+                            language,
+                            prior_code_response,
+                            &bound.expected_output,
+                            None,
+                        )
+                    },
+                );
+            }
             if spec.task.slug == "hello_world"
                 && let Some(output) = crate::code_editing::inline_hello_world_replacement(prompt)
             {

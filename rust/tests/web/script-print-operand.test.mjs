@@ -145,4 +145,19 @@ test("native program replies bind caller operands and report unobserved executio
   assert.doesNotMatch(copy, /```text|printf/u);
   const input = Buffer.from([0, 37, 195, 169, 10, 255]);
   assert.deepEqual(runPython(copy.match(/```python\n([\s\S]*?)\n```/u)?.[1], input), input);
+  for (const [task, expected] of [
+    ["counts from -6 to -4", "-6\n-5\n-4"],
+    ["implements FizzBuzz from 14 to 16", "14\nFizzBuzz\n16"],
+    ["calculates the factorial of seven", "5040"],
+    ["will reverse the string «cat 🧩»", "🧩 tac"],
+    ["calculates the sum from 12 through 15", "54"],
+    ["calculates the 13th Fibonacci number", "233"],
+  ]) {
+    const answer = await solve(`Write a Python program that ${task}`);
+    assert.match(answer, /not probed/u);
+    assert.equal(runPython(answer.match(/```python\n([\s\S]*?)\n```/u)?.[1]).toString(), expected + "\n");
+  }
+  const missing = await solve("Write a Python program that calculates the factorial");
+  assert.match(missing, /^Which integer from 0 to 18/u);
+  assert.doesNotMatch(missing, /```|Execution status/u);
 });

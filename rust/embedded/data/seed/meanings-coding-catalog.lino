@@ -306,14 +306,14 @@ meanings
     defined-by program_task
     role program_task_alias
     precondition "a coding request contains this task surface"
-    effect "the program-task slot is bound to count to three"
+    effect "the program-task slot is bound to count over a range"
     unit "not applicable"
-    example "count to three"
-    lexeme en "count to three" "count to 3" "counts to three" "counts to 3"
-    lexeme ru "посчитай до трёх" "посчитай до 3"
-    lexeme hi "तीन तक गिनें" "3 तक गिनें"
-    lexeme zh 数到三 数到3
-    lexeme es "cuenta hasta tres" "cuenta hasta 3" "cuente hasta tres" "contar hasta tres" "contar hasta 3"
+    example "count from the lower endpoint to the upper endpoint"
+    lexeme en "count to" "counts to" "count from" "counts from" "count up to"
+    lexeme ru "посчитай до" "считает до" "посчитать от" "посчитай от" "счёт до"
+    lexeme hi "तक गिनें" "तक गिनती"
+    lexeme zh "数到" "数数"
+    lexeme es "cuenta hasta" "cuente hasta" "contar hasta" "contar desde" "cuenta desde"
   program_task_list_files
     defined-by program_task
     role program_task_alias
@@ -424,64 +424,60 @@ meanings
     precondition "a coding request contains this task surface"
     effect "the program-task slot is bound to factorial"
     unit "not applicable"
-    example "factorial of 5"
-    lexeme en "factorial of 5" "factorial of five" "5 factorial" "five factorial"
-    lexeme ru "факториал 5" "факториал пяти" "факториал числа 5"
-    lexeme hi "5 का फैक्टोरियल" "पाँच का फैक्टोरियल"
-    lexeme zh 5的阶乘 五的阶乘
-    lexeme es "factorial de 5" "factorial de cinco" "el factorial de 5" "el factorial de cinco"
+    example "factorial of a nonnegative integer"
+    lexeme en "factorial"
+    lexeme ru "факториал"
+    lexeme hi "फैक्टोरियल" "फ़ैक्टोरियल" "क्रमगुणित"
+    lexeme zh "阶乘" "階乘"
+    lexeme es "factorial"
   program_task_reverse_string
     defined-by program_task
     role program_task_alias
     precondition "a coding request contains this task surface"
-    effect "the program-task slot is bound to reverse string"
+    effect "the program-task slot is bound to string reversal"
     unit "not applicable"
-    example "reverse a string"
-    lexeme en
-      words "reverse a string" "reverse the string hello" "reverse hello" "reverse string hello"
-      words "reverse the word hello"
-    lexeme ru "перевернуть строку" "перевернуть строку hello" "развернуть строку"
+    example "reverse the caller’s text"
+    lexeme en "reverse a string" "reverse the string" "reverse string" "reverse the word" "reverses a string" "reverses the string" "reversing a string" "reversing the string" "string reversal"
+    lexeme ru "перевернуть строку" "развернуть строку" "обратить строку"
     lexeme hi "स्ट्रिंग को उलटें" "स्ट्रिंग पलटें"
-    lexeme zh 反转字符串 翻转字符串 反转hello
-    lexeme es
-      words "invierte una cadena" "invertir una cadena" "invierte la cadena hello" "invierte hello"
-      words "invierte la palabra hello" "da la vuelta a una cadena"
+    lexeme zh "反转字符串" "翻转字符串" "反转文本"
+    lexeme es "invierte una cadena" "invertir una cadena" "invierte la cadena" "invierte la palabra" "da la vuelta a una cadena"
+  program-reverse-operand-introducer
+    defined-by program_task_reverse_string
+    role program_task_alias
+    precondition "a request to reverse text ends with an unquoted word"
+    effect "the following word binds the literal text to reverse"
+    unit "not applicable"
+    example "reverse the word followed by its literal operand"
+    lexeme en "reverse the string" "reverse string" "reverse the word"
+    lexeme ru "перевернуть строку" "развернуть строку" "обратить строку"
+    lexeme hi "स्ट्रिंग पलटें" "शब्द उलटें"
+    lexeme zh "反转字符串" "翻转字符串" "反转文本"
+    lexeme es "invierte la cadena" "invierte la palabra"
   program_task_sum_to_ten
     defined-by program_task
     role program_task_alias
     precondition "a coding request contains this task surface"
-    effect "the program-task slot is bound to sum to ten"
+    effect "the program-task slot is bound to sum an integer range"
     unit "not applicable"
-    example "sum of 1 to 10"
-    lexeme en
-      words "sum of 1 to 10" "sum from 1 to 10" "sum the numbers 1 to 10" "sum of numbers from 1 to 10" "sum 1 to 10"
-      words "sum to ten"
-    lexeme ru "сумма от 1 до 10" "сумма чисел от 1 до 10" "сумма чисел от одного до десяти"
-    lexeme hi "1 से 10 तक का योग" "1 से 10 तक योग"
-    lexeme zh 1到10的和 1到10求和 求1到10的和
-    lexeme es
-      words "suma de 1 a 10" "suma del 1 al 10" "suma los números del 1 al 10" "suma de los números del 1 al 10"
-      words "suma hasta diez" "suma de uno a diez"
+    example "sum the integers between two endpoints"
+    lexeme en "sum of" "sum from" "sum to" "sum the numbers" "sum the integers"
+    lexeme ru "сумма от" "сумма чисел" "сумму чисел" "сложить числа"
+    lexeme hi "तक का योग" "तक योग"
+    lexeme zh "求和" "的和"
+    lexeme es "suma de" "suma del" "suma los números" "suma hasta" "sumar desde"
   program_task_fibonacci
     defined-by program_task
     role program_task_alias
     precondition "a coding request contains this task surface"
-    effect "the program-task slot is bound to recursive fibonacci"
+    effect "the program-task slot is bound to recursive Fibonacci"
     unit "not applicable"
-    example "fibonacci sequence recursively"
-    lexeme en
-      words "fibonacci sequence recursively" "fibonacci sequence" "recursive fibonacci" "fibonacci recursively"
-      words "fibonacci function" "fibonacci numbers" "fibonacci number" "10th fibonacci number"
-      words "the 10th fibonacci number" "tenth fibonacci number" "nth fibonacci number"
-    lexeme ru
-      words "последовательность фибоначчи" "числа фибоначчи" "число фибоначчи" "рекурсивный фибоначчи"
-      words "фибоначчи рекурсивно" "10-е число фибоначчи" "десятое число фибоначчи"
-    lexeme hi "फ़िबोनाची अनुक्रम" "फिबोनाची अनुक्रम" "फ़िबोनाची संख्या" "फिबोनाची संख्या"
-    lexeme zh 斐波那契数列 斐波那契序列 斐波那契数 递归斐波那契
-    lexeme es
-      words "sucesión de fibonacci" "secuencia de fibonacci" "fibonacci recursivo" "fibonacci de forma recursiva"
-      words "función de fibonacci" "números de fibonacci" "número de fibonacci" "el décimo número de fibonacci"
-      words "décimo número de fibonacci" "el n-ésimo número de fibonacci"
+    example "Fibonacci at a supplied index"
+    lexeme en "fibonacci"
+    lexeme ru "фибоначчи"
+    lexeme hi "फ़िबोनाची" "फिबोनाची"
+    lexeme zh "斐波那契"
+    lexeme es "fibonacci"
   program_task_copy_stdin_to_stdout
     defined-by program_task
     role program_task_alias
