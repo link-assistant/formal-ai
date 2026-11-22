@@ -349,11 +349,7 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 vec!["document_operand"]
             ),
             ("translation", "tryTranslation", vec!["translation_text"]),
-            (
-                "triz_resolution",
-                "tryTrizResolution",
-                vec!["triz_precedent"]
-            ),
+            ("triz_resolution", "tryTrizResolution", vec!["triz_demands"]),
             ("algorithm", "tryAlgorithm", vec!["algorithm_operation"]),
             (
                 "source_refresh",

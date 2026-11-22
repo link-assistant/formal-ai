@@ -117,10 +117,7 @@ pub fn class_evidence_holds(
         }
         "document_operand" => handlers::names_document_operand(prompt),
         "translation_text" => names_translation_text(prompt),
-        "triz_precedent" => {
-            !crate::triz_solver::relevant_tasks(prompt, &crate::triz_solver::triz_benchmark_tasks())
-                .is_empty()
-        }
+        "triz_demands" => crate::triz_solver::triz_demands(prompt).is_some(),
         "algorithm_operation" => {
             let vocabulary = crate::seed::operation_vocabulary();
             let text = crate::engine::normalize_prompt(normalized);

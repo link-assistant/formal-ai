@@ -734,6 +734,20 @@ task corpus and response files. The pull request's native job also runs the
 four existing #707 test executables with the loopback publisher.
 [Package inventory](evidence/verification/round20-cargo-package-inventory.log.gz)
 
+On commit `66169b8fa`, native checks reached the HTTP receipt test and it
+passed. Two later assertions failed because the native workflow's sparse
+checkout omitted the harness and the localization test's mostly English
+prompt was detected as English. The Layered CI policy test also found
+the new native command missing from its inventory, and its subprocess
+test flagged the HTTP adapter's direct call to Node's child-process API.
+The workflow now includes the harness script and its policy inventory
+matches the commands it runs. The Hindi test uses a Devanagari prompt, and
+the HTTP adapter uses the shared subprocess supervisor for request input
+and both output streams.
+[Native job, lines 1703–1734](evidence/workflows/job-round20-native-137137583566.log.gz) ·
+[Layered policy job, lines 2113–2149](evidence/workflows/job-round20-layered-137137539167.log.gz) ·
+[Layered subprocess job, lines 2719–2739](evidence/workflows/job-round20-layered-137137539177.log.gz)
+
 Layered CI on `3362640bc` found outdated TypeScript translations for the
 associative report and planner edits. The job log lists all fourteen files at
 line 302. The regenerated TypeScript projection passes the parity check.
@@ -747,6 +761,47 @@ mirrored seed and runtime inventory, and recording the smaller closure gap.
 [First rechecks](evidence/verification/round20-gate-rechecks.log) ·
 [Final rechecks](evidence/verification/round20-final-gate-rechecks.log) ·
 [JavaScript-to-Rust generation](evidence/verification/round20-js-rust-generation.log)
+
+## TRIZ worksheets from stated demands
+
+The old runtime stored the twenty cases for issue #901 beside the resolution
+methods. Its match score counted overlapping words of at least five letters.
+For an unfamiliar contradiction with no overlapping words, both solvers used
+the first three rows. Asking about latency versus acoustic damping returned
+pill dispensing, wheat grains, and lawn care. An incomplete paradox request
+repeated the same cases while the claim router recorded a refusal.
+[Before-fix replay](evidence/verification/triz-baseline.log) ·
+[Original benchmark request](https://github.com/link-assistant/formal-ai/issues/901)
+
+Both solvers now extract the two stated demands and ask the caller for missing
+information before printing a worksheet. The worksheet uses the original terms
+and the installed resolution methods. It asks when and where the requirements
+apply and how to measure success. When the caller provides priorities, the
+existing selection heuristics can derive a weight from the requirement clauses.
+MATRIZ technical materials start from competing demands, their operating time
+and zone, and hypotheses about how to separate them. The Altshuller Foundation
+publishes the inventive principles as reusable methods. A design still needs
+tests or observations from its own domain to establish that it satisfies both
+demands.
+[MATRIZ study materials](https://wiki.trizstudies.org/Problem-solving-tools.html) ·
+[Altshuller Foundation principles](https://altshuller.ru/world/eng/technique1.asp) ·
+[Altshuller Institute introduction](https://aitriz.org/pages/triz)
+
+The regression parses all twenty historical contradictions loaded from a test
+file. It also exercises held-out pairs in five languages, preserves literal
+braces and ratio punctuation, and checks that incomplete or repeated demands
+produce a clarification. The native PR workflow repeats held-out and
+missing-input cases through the public gateway.
+[Historical cases](../../../rust/tests/fixtures/triz/benchmark-tasks.lino) ·
+[Browser and gateway replay](../../../rust/tests/web/issue-901-triz-parity.test.mjs) ·
+[Local test log](evidence/verification/triz-tests.log) ·
+[Claim routing test](evidence/verification/round21-claim-tests.log)
+
+The full local run identified two file-size checks on an intermediate seed
+layout. Moving the missing-demands intent to the engine report registry kept
+both registries below the line limit. The targeted rerun passed both checks.
+[Full gate log](evidence/verification/round21-local-gates.log) ·
+[Targeted rechecks](evidence/verification/round21-local-gate-rechecks.log)
 
 ## Evidence archive
 

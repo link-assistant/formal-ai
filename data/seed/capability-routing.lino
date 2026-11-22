@@ -808,9 +808,9 @@ capability_routing
   claim
     handler triz_resolution
     browser_handler tryTrizResolution
-    admits_on triz_precedent
+    admits_on triz_demands
     refusal_event "triz_resolution:refusal"
-    because "issue 1175 R3: a contradiction question claims with the precedent its words overlap; with none it is admitted to the refusal lane"
+    because "issue 1175 R3: a contradiction question admits a worksheet when the prompt supplies two distinct demands; if either side is absent it admits the request for details"
   claim
     handler algorithm
     browser_handler tryAlgorithm

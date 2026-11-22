@@ -1,4 +1,4 @@
-import { spawnSync } from 'node:child_process';
+import { boundedCommandSync } from './bounded-command.mjs';
 import { readNetworkAllowed } from './read-access.mjs';
 
 const BODY_BYTE_LIMIT = 1024 * 1024;
@@ -32,7 +32,9 @@ export function computerUseHttpRequest(target, body) {
     '--write-out', '%{stderr}\n%{http_code}\n%{content_type}'];
   if (body !== null) options.push('--data-binary', '@-');
   options.push('--', target.href);
-  const result = spawnSync('curl', options, { input: body ?? undefined, maxBuffer: BODY_BYTE_LIMIT, timeout: 16_000 });
+  const result = boundedCommandSync('curl', options, {
+    input: body ?? undefined, stdoutLimitBytes: BODY_BYTE_LIMIT, stderrLimitBytes: 4096, timeout: 16_000,
+  });
   if (result.error || result.status !== 0) throw new ComputerUseHttpError('computer_use_http_transport_failed');
   const metadata = /^\n(\d{3})\n([^\r\n]*)$/u.exec(result.stderr.toString('utf8'));
   if (!metadata) throw new ComputerUseHttpError('computer_use_http_metadata_missing');

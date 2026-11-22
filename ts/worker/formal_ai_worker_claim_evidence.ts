@@ -218,7 +218,7 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   document_operand: (prompt) => claimEvidenceDocumentOperand(prompt),
   translation_text: (prompt) => Boolean(extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt)
     || /`[^`]+`/u.test(String(prompt || "")) || textTransformFreeTextPayload(prompt)),
-  triz_precedent: (prompt) => trizRelevantTasks(prompt, trizBenchmarkTasks()).length > 0,
+  triz_demands: (prompt) => trizDemands(prompt) !== null,
   algorithm_operation: (prompt, normalized) => ["sort", "reverse_sort"].some((slug) => operationMatchesSlug(slug, normalized)),
   source_reference: (prompt) => firstUrlCandidate(prompt) !== null || /(^|\s)[\w.-]*\/[\w.\/-]+/u.test(String(prompt || "")),
   stated_claim: (prompt) => claimEvidenceStatedClaim(extractProofClaim(normalizePrompt(prompt))),

@@ -99,7 +99,7 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "roleplay", browserHandler: "tryRoleplayRequest", admitsOn: ["persona_or_topic"], refusalEvents: ["roleplay:refusal"] },
     { handler: "document_originality_check", browserHandler: "tryDocumentOriginalityCheck", admitsOn: ["document_operand"], refusalEvents: ["document_originality_check:refusal"] },
     { handler: "translation", browserHandler: "tryTranslation", admitsOn: ["translation_text"], refusalEvents: ["translation:refusal"] },
-    { handler: "triz_resolution", browserHandler: "tryTrizResolution", admitsOn: ["triz_precedent"], refusalEvents: ["triz_resolution:refusal"] },
+    { handler: "triz_resolution", browserHandler: "tryTrizResolution", admitsOn: ["triz_demands"], refusalEvents: ["triz_resolution:refusal"] },
     { handler: "algorithm", browserHandler: "tryAlgorithm", admitsOn: ["algorithm_operation"], refusalEvents: ["algorithm:refusal"] },
     { handler: "source_refresh", browserHandler: "trySourceRefresh", admitsOn: ["source_reference"], refusalEvents: ["source_refresh:refusal"] },
     { handler: "proof_request", browserHandler: "tryProofRequest", admitsOn: ["stated_claim"], refusalEvents: ["proof_request:refusal"] },

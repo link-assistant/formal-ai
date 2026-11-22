@@ -312,7 +312,7 @@ fn rendering_capability_gap_is_explicit_in_all_supported_languages() {
     let cues = [
         "Take a screenshot of the rendered page",
         "Сделай снимок отрисованной страницы",
-        "rendered page का screenshot लो",
+        "दिखाए गए पृष्ठ का स्क्रीनशॉट लो",
         "截取渲染页面的屏幕截图",
     ];
     let mut locales = BTreeSet::new();

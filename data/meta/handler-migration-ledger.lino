@@ -340,7 +340,7 @@ handler-migration-ledger
   handler triz_resolution
     status "justified-native"
     primitive "rust/src/triz_solver.rs"
-    justification "Issue 901 resolves seeded contradiction families and benchmark methods through the native scoring interpreter. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_triz.js answers the same seed records in the worker."
+    justification "The native handler and browser twin extract caller-stated demands, render a localized TRIZ worksheet, and ask for missing demands. Benchmark tasks are explicit test fixtures."
   handler concept_lookup
     status migrated
     data "data/seed/concepts.lino|data/seed/concept-contexts.lino|data/seed/prompt-patterns.lino|data/seed/code-task-cues.lino|data/seed/multilingual-responses-concept-lookup.lino"

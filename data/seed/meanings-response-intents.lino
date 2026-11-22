@@ -413,10 +413,10 @@ meanings
   triz_resolution_map
     defined-by answer
     role localized_response_template
-    precondition "a contradiction or paradox request was recognized by the TRIZ cues"
-    effect "the resolution families and benchmark precedents are listed with the link-value note"
+    precondition "a contradiction or paradox request states two conflicting demands"
+    effect "the answer applies a worksheet to the supplied demands and lists reusable resolution families"
     unit "not applicable"
-    example "A contradiction is a link with a value, not a wall. Ways through: ..."
+    example "Conflicting demands to evaluate with the worksheet."
     grounding "data/seed/multilingual-responses-triz.lino"
   product_search
     defined-by method

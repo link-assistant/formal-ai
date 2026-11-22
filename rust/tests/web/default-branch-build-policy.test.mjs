@@ -69,7 +69,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1591-embeddings.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1593-prompt-data.test.mjs',
-    'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs'];
+    'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-901-triz-parity.test.mjs'];
   const clientReportReplay = 'node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs';
   const codexReplay = 'bash experiments/issue_859_codex_e2e/run.sh';
   const gatewayReplay = 'bun install --frozen-lockfile --ignore-scripts\n' +
@@ -77,6 +78,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
     'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity --test t3code_launch -- --test-threads=1',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1',
     ...nativeReplays, codexReplay, gatewayReplay, clientReportReplay]);
   assert.deepEqual(check.steps.find(step => step.name === 'Verify calendar, currency, forced OpenAI function, CNL and T3 Code behavior').env,
     {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
@@ -94,7 +96,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     {FORMAL_AI_DYNAMIC_META_NATIVE: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   const checkout = check.steps.find(step => step.uses === 'actions/checkout@v7').with;
   assert.deepEqual(checkout['sparse-checkout'].trim().split('\n'),
-    ['/*', '!/dev/log/', '!/experiments/*', '/experiments/dynamic-meta/',
+    ['/*', '!/dev/log/', '!/experiments/*', '/experiments/agent_cli_e2e/run_issue_707.sh', '/experiments/dynamic-meta/',
       '/experiments/issue_859_codex_e2e/', '/experiments/js_dogfood/']);
   assert.deepEqual(check.steps.find(step => step.uses === 'oven-sh/setup-bun@v2').with,
     {'bun-version-file': '.bun-version', 'no-cache': true});

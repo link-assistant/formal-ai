@@ -118,7 +118,7 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "persona_or_topic",
     "document_operand",
     "translation_text",
-    "triz_precedent",
+    "triz_demands",
     "algorithm_operation",
     "source_reference",
     "stated_claim",

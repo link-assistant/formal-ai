@@ -1279,13 +1279,13 @@ meanings
     unit "boolean"
     example "translate apple to russian"
     grounding "data/seed/capability-routing.lino"
-  triz_precedent
+  triz_demands
     defined-by concept
     role action
-    precondition "the contradiction question shares words with a seeded precedent"
-    effect "admits the claim of the triz handler"
+    precondition "the contradiction question supplies two distinct demands"
+    effect "admits the worksheet for those demands"
     unit "boolean"
-    example "make the wing stronger without weight"
+    example "first demand versus second demand"
     grounding "data/seed/capability-routing.lino"
   algorithm_operation
     defined-by concept
