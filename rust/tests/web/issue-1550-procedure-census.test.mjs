@@ -35,7 +35,8 @@ const read = (file) => readFileSync(new URL(file, new URL('../../../', import.me
 // The cascade's methods inside the closure; each returns the closure's draft,
 // which the procedure records as a candidate. Change only with a method the
 // procedure records (never with an exit of the entry).
-const CASCADE_METHOD_RETURNS = 21;
+// Includes the source gap draft for callables that require publisher evidence.
+const CASCADE_METHOD_RETURNS = 22;
 
 let host;
 before(async () => {

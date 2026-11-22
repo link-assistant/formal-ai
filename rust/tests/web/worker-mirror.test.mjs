@@ -167,6 +167,10 @@ test("cold workers discover and verify recurrences through publisher transports"
   assert.match(missing.content, /no verified source statement was captured/iu);
   assert.doesNotMatch(missing.content, /def factorial\(n\)/u);
   assert.doesNotMatch(missing.content, /\?/u);
+  assert.ok(
+    missing.metaExecution?.events.some(event => event.startsWith("meta_exec:result ")),
+    "the publisher gap must carry the result of the recursive procedure",
+  );
   const program = await retrieved.solve("Write a Python program that calculates the factorial", [], { offline: true });
   assert.match(program.content, /^Which integer from 0 to 18/u);
   assert.doesNotMatch(program.content, /```|Execution status/u);
