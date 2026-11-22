@@ -1332,3 +1332,13 @@ The initial full protocol replay passes Claude and Codex but cancels Agent at th
 - [ ] Finish review outside this explicit selection, full template-practice acceptance and original runtime criteria. This inventory does not claim whole-PR review, current native execution or independent authored work.
 
 See [the scoped review manifest](evidence/checks/published-scoped-production-review/manifest.json).
+
+
+## Runner recovery and raw artifact practice comparison, 2026-11-22
+
+- [x] Compare the four complete pinned template sources with the maintained production adapters and controls. Verify current production sources match published head `c90f94ca`. Retain source identities, full hosted observations and the exact reviewed log ranges.
+- [x] Verify all 27 runner-recovery controls in hosted Layered CI, including the actual production command with simulated GitHub responses. Preserve genuine test failures, superseded sources, pagination and unknown-state refusals; no live GitHub rerun is claimed.
+- [x] Verify eight real ZIP cases and the bounded transport/annotation/portable-option controls in hosted Layered CI. Read the separate real Linux, macOS and Windows upload/download/extraction observations, including strict artifact digests, original bytes and cached-file replacement. This qualifies the applied artifact practice without claiming release publication or whole-archive atomicity.
+- [ ] Finish every remaining applicable template practice, original runtime criterion and aggregate review. The overall template and issue completion flags remain false, and all supplied material retains zero independent authorship credit.
+
+See [the practice evidence manifest](evidence/checks/runner-and-artifact-practices/manifest.json).

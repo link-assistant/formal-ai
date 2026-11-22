@@ -2201,7 +2201,7 @@
       "literalReadLines": 2346,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false,
-      "reviewNote": "One tool display of lines 1201\u20131600 was truncated; the omitted release-body span was reread completely from the retained log, lines 1506\u20131563. No complete-file credit was assigned before all seven original source ranges and the omitted span were read."
+      "reviewNote": "One tool display of lines 1201–1600 was truncated; the omitted release-body span was reread completely from the retained log, lines 1506–1563. No complete-file credit was assigned before all seven original source ranges and the omitted span were read."
     },
     {
       "path": "dev/log/issues/247/pulls/248/research.md",
@@ -6248,8 +6248,19 @@
         ".github/workflows/rerun-infrastructure-failures.yml",
         "scripts/unacquired-jobs.py"
       ],
-      "assessment": "Requires failed/cancelled result, no runner/steps and explicit acquisition annotation; only newest same-workflow/branch/event run, at most three attempts. Runtime and Formal AI comparison remain pending.",
-      "status": "source-reviewed-comparison-pending"
+      "assessment": "Compared the complete pinned classifier and recovery workflow with the maintained Formal AI production command, workflow and controls. Formal AI retains positive acquisition annotations, newest same-workflow source and three-attempt limits while additionally paginating job and annotation observations and rechecking exact repository, check URL, source and attempt identities. All 27 controls pass in hosted Layered CI at the byte-identical published source, including the actual CLI with a fake GitHub transport. This verifies the implemented decision policy; no actual GitHub infrastructure incident or live rerun is claimed.",
+      "status": "formal-ai-production-policy-hosted-controls-verified",
+      "formalAiPaths": [
+        "scripts/rerun-unacquired-jobs.mjs",
+        ".github/workflows/recover-unacquired-runners.yml",
+        "experiments/issue-1580/runner-acquisition-recovery.test.mjs"
+      ],
+      "verification": {
+        "manifest": "experiments/issue-1580/evidence/checks/runner-and-artifact-practices/manifest.json",
+        "hostedHead": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+        "layeredJob": "https://github.com/link-assistant/formal-ai/actions/runs/45018199621/job/137201294856",
+        "artifactWorkflow": "https://github.com/link-assistant/formal-ai/actions/runs/45018199633"
+      }
     },
     {
       "practice": "Validate artifact paths and reject duplicate destinations before streaming ZIP payloads",
@@ -6257,8 +6268,24 @@
         ".github/actions/download-artifact/action.yml",
         "scripts/extract-artifacts.py"
       ],
-      "assessment": "Digest verification belongs to the download action; the extractor rejects traversal, symlinks and collisions and streams bytes. No hosted archive extraction executed in this batch.",
-      "status": "source-reviewed-comparison-pending"
+      "assessment": "Compared both complete pinned artifact sources with the maintained Formal AI adapter, extractor and executable controls. Pinned raw downloads retain strict digest verification, all original selectors, bounded transport retry and partial cleanup. Destinations are validated before streaming; CRC-checked temporary files replace each cached file only after that member succeeds. All eight actual ZIP controls and the 11 transport, eight annotation and three portable-option controls pass in hosted Layered CI. Separate real GitHub upload/download/extraction round trips pass on Linux, macOS and Windows, preserving all payload bytes and cached-file replacement. These observations do not establish release publication or whole-archive atomicity.",
+      "status": "formal-ai-production-adapter-hosted-controls-and-desktop-roundtrips-verified",
+      "formalAiPaths": [
+        "scripts/extract-artifacts.py",
+        ".github/actions/download-artifact/action.yml",
+        "rust/tests/web/native-test-artifact.test.mjs",
+        "experiments/issue-1580/artifact-download-retry.test.mjs",
+        "experiments/issue-1580/artifact-download-portable-options.test.mjs",
+        "experiments/issue-1580/artifact-extraction-fixtures.py",
+        "experiments/issue-1580/artifact-transport-roundtrip.py",
+        ".github/workflows/workflows.yml"
+      ],
+      "verification": {
+        "manifest": "experiments/issue-1580/evidence/checks/runner-and-artifact-practices/manifest.json",
+        "hostedHead": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+        "layeredJob": "https://github.com/link-assistant/formal-ai/actions/runs/45018199621/job/137201294856",
+        "artifactWorkflow": "https://github.com/link-assistant/formal-ai/actions/runs/45018199633"
+      }
     },
     {
       "practice": "Enumerate updater coverage across all tracked manifests",
@@ -7387,7 +7414,7 @@
       "templateEvidence": [
         "docs/case-studies/issue-19/ci-logs/ci-run-20885464993.log.gz"
       ],
-      "assessment": "All 1,310 decoded historical lines are literally read and reassembled exactly. This is the Agent repository run at 1347edef98519b56b62c10f340740eecc50b7558, not a present Rust-template run. Its three Bun platform jobs each pass 17 JSON protocol tests, while the release fails at lines 1294\u20131295 with ENOENT opening ./js/package.json after changing package version from 0.7.0 to 0.8.0. The release first checks out the trigger revision, observes remote main advanced to 4f7a0d469c67403139a8017960b8e74ee52d8031, then rebases before versioning. A successful earlier test cannot qualify that changed checkout. Preserve process-owned working directories, explicit package roots, refreshed source qualification before side effects, pinned runtime/runner identities and least permissions. The historical npm audit count and mutable latest Bun/runner selections do not establish current security or compatibility. This source comparison supplies no present package publication or complete practice adoption proof.",
+      "assessment": "All 1,310 decoded historical lines are literally read and reassembled exactly. This is the Agent repository run at 1347edef98519b56b62c10f340740eecc50b7558, not a present Rust-template run. Its three Bun platform jobs each pass 17 JSON protocol tests, while the release fails at lines 1294–1295 with ENOENT opening ./js/package.json after changing package version from 0.7.0 to 0.8.0. The release first checks out the trigger revision, observes remote main advanced to 4f7a0d469c67403139a8017960b8e74ee52d8031, then rebases before versioning. A successful earlier test cannot qualify that changed checkout. Preserve process-owned working directories, explicit package roots, refreshed source qualification before side effects, pinned runtime/runner identities and least permissions. The historical npm audit count and mutable latest Bun/runner selections do not establish current security or compatibility. This source comparison supplies no present package publication or complete practice adoption proof.",
       "status": "complete-literal-decoded-log-review-current-practice-runtime-open"
     },
     {
