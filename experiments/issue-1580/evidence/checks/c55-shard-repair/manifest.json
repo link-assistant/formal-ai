@@ -1,0 +1,72 @@
+{
+  "capturedAt": "2026-11-22T05:37:41.575010+00:00",
+  "publishedHead": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+  "autonomousAuthorshipCredit": 0,
+  "nativeExecutionClaim": false,
+  "files": [
+    {
+      "sourceName": "after.stderr",
+      "retainedName": "after.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "after.stdout",
+      "retainedName": "after.stdout.gz",
+      "bytes": 649,
+      "lines": 13,
+      "sha256": "3504785abe11e082dff22bf27a6b2a1970534b743b095ca313159436af84e30b",
+      "retainedSha256": "a3b5c89782ecbe1d1e3373d46dc0ad462dae1bb9296e407df7a8c0b02b8aec45"
+    },
+    {
+      "sourceName": "before.lino",
+      "retainedName": "before.lino",
+      "bytes": 43918,
+      "lines": 1134,
+      "sha256": "6702ca4a8a4d5056afc208b30e3d38dc08941ed5b1b3da1113787fd6d8061e0d",
+      "retainedSha256": "6702ca4a8a4d5056afc208b30e3d38dc08941ed5b1b3da1113787fd6d8061e0d"
+    },
+    {
+      "sourceName": "before.stderr",
+      "retainedName": "before.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "before.stdout",
+      "retainedName": "before.stdout.gz",
+      "bytes": 1617,
+      "lines": 33,
+      "sha256": "08d99363cf5f57cf32f59264482395381aea19149f7f7c0e3a038dae85b0fb6d",
+      "retainedSha256": "73b1b6302cccce34aa6aa0189f3b01e88f29dd3579e7782c6e766e3169e5ed53"
+    },
+    {
+      "sourceName": "outcome.json",
+      "retainedName": "outcome.json",
+      "bytes": 784,
+      "lines": 38,
+      "sha256": "649ddecd50517a25dcb48a015db361f7f4b338179deb82f9f4450e641a10958b",
+      "retainedSha256": "649ddecd50517a25dcb48a015db361f7f4b338179deb82f9f4450e641a10958b"
+    },
+    {
+      "sourceName": "timing-suite.stderr",
+      "retainedName": "timing-suite.stderr.gz",
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "sourceName": "timing-suite.stdout",
+      "retainedName": "timing-suite.stdout.gz",
+      "bytes": 2574,
+      "lines": 42,
+      "sha256": "ded43c2f4808ce61c23f80fe35cefc6c7b2aba55cdc97315ce75618a5fe3f63e",
+      "retainedSha256": "baceefc1d9064529c0a7ef6ac06fd548f7291e06e2db66b868e48cd8174df9d2"
+    }
+  ]
+}

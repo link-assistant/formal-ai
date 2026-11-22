@@ -83,3 +83,24 @@ test('complete current hosted costs fit the deployed eight-shard plan without di
     assert(Math.max(...load) <= 270, 'current measured shard ' + (index + 1) + ': ' + Math.max(...load));
   }
 });
+
+test('complete c55 hosted costs retain failed-shard observations and fit the unchanged warning threshold', () => {
+  const fixture = new URL('./fixtures/hosted-javascript-c55a5f9c/', import.meta.url);
+  const identity = JSON.parse(readFileSync(new URL('identity.json', fixture), 'utf8'));
+  const observations = readFileSync(new URL('durations.jsonl', fixture), 'utf8').trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(identity.runConclusion, 'failure');
+  assert.equal(observations.length, identity.completeObservations);
+  assert.equal(new Set(observations.map(row => row.file)).size, observations.length);
+  assert(observations.every(row => row.complete));
+  const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
+  const weights = parseTestDurations(recorded);
+  const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
+  const {shards} = planShards(files, 8, durationLookup(weights, Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
+  const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
+  for (const [index, shard] of shards.entries()) {
+    const workers = Array(identity.modeledWorkers).fill(0);
+    for (const file of shard) workers[workers.indexOf(Math.min(...workers))] += costs(file);
+    assert(Math.max(...workers) <= 270, 'c55 measured shard ' + (index + 1) + ': ' + Math.max(...workers));
+  }
+});

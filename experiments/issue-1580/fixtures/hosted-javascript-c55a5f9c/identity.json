@@ -1,0 +1,15 @@
+{
+  "head": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+  "run": 44988162770,
+  "runConclusion": "failure",
+  "capturedAt": "2026-11-22T05:29:49.095134+00:00",
+  "completeObservations": 913,
+  "modeledWorkers": 4,
+  "unobservedFallbackSeconds": 0.34,
+  "warningSeconds": 270,
+  "executionBudgetSeconds": 360,
+  "logSha256": "c578fe24677d15228a22e4601c44e2580b310f649e98f3b1e0f4738e2caa6d21",
+  "durationsSha256": "70a844bbea8832d1f0520459e93ecd86a4dc10bf9d86a1bf861061d9b5a6c877",
+  "completeObservationIsPassingClaim": false,
+  "hostedNewPlanQualification": false
+}

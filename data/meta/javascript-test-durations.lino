@@ -8,7 +8,7 @@ javascript-test-durations
   unit seconds
   regenerate "node experiments/formal_ai_subagent/ci-durations.mjs --javascript-files --write"
   # observed-run: Layered CI runs whose js-tier `[test-file]` seconds were folded in (issue #1571).
-  observed-run 44982575709
+  observed-run 44988162770
   default-seconds 0.34
   test "rust/tests/web/full-provenance-archived-cli.test.mjs"
     seconds 316.415456503
@@ -25,7 +25,7 @@ javascript-test-durations
   test "rust/tests/web/issue-1165-production-research.test.mjs"
     seconds 247
   test "rust/tests/web/recipe-resume-protocols.test.mjs"
-    seconds 207.1
+    seconds 237.2
   test "rust/tests/web/cnl-solver-dialogue.test.mjs"
     seconds 203.0
   test "rust/tests/web/hive-work-item-consumer.test.mjs"
@@ -47,10 +47,10 @@ javascript-test-durations
     runtime-source-closure Unknown
     execution-source-authentication Unknown
     definition-binding import-time-only
+  test "rust/tests/web/issue-1580-template-observations.test.mjs"
+    seconds 146.7
   test "rust/tests/web/pull-request-1188-workspace-search.test.mjs"
     seconds 141.6
-  test "rust/tests/web/issue-1580-template-observations.test.mjs"
-    seconds 104.1
   test "rust/tests/web/cnl-grammar-matrix.test.mjs"
     seconds 93.0
   test "rust/tests/web/rust-specification-programs.test.mjs"
@@ -61,14 +61,14 @@ javascript-test-durations
     seconds 86.8
   test "rust/tests/web/issue-1395-practical-help.test.mjs"
     seconds 84.5
+  test "rust/tests/web/release-completion-producer.test.mjs"
+    seconds 81.7
   test "rust/tests/web/work-item-adapter-sessions.test.mjs"
     seconds 81.3
+  test "rust/tests/web/fresh-runtime-custody.test.mjs"
+    seconds 80.8
   test "rust/tests/web/r1175-routing-probes.test.mjs"
     seconds 79.5
-  test "rust/tests/web/release-completion-producer.test.mjs"
-    seconds 79.1
-  test "rust/tests/web/fresh-runtime-custody.test.mjs"
-    seconds 78
   test "rust/tests/web/procedural-runtime-parity.test.mjs"
     seconds 77.9
   test "rust/tests/web/specification-in-javascript.test.mjs"
@@ -102,6 +102,8 @@ javascript-test-durations
     seconds 60.1
   test "rust/tests/web/provenance-logical-memory-capture.test.mjs"
     seconds 57.3
+  test "rust/tests/web/issue-1593-prompt-data.test.mjs"
+    seconds 52.6
   test "rust/tests/web/cnl-parity.test.mjs"
     seconds 52.2
   test "rust/tests/web/script-print-operand.test.mjs"
@@ -132,8 +134,6 @@ javascript-test-durations
     seconds 39.5
   test "rust/tests/web/pull-request-1188-dialogue-utterance.test.mjs"
     seconds 37.9
-  test "rust/tests/web/issue-1593-prompt-data.test.mjs"
-    seconds 37.6
   test "rust/tests/web/additive-request-scope.test.mjs"
     seconds 37.1
   test "rust/tests/web/server-structured-log-cli.test.mjs"
@@ -151,23 +151,25 @@ javascript-test-durations
   test "rust/tests/web/default-self-cst.test.mjs"
     seconds 32.9
   test "rust/tests/web/complete-edit-source-bytes.test.mjs"
-    seconds 30.7
+    seconds 31.6
   test "rust/tests/web/repository-consumer-discovery.test.mjs"
     seconds 30.6
   test "rust/tests/web/worker-mirror.test.mjs"
     seconds 30.6
   test "rust/tests/web/ladder-document-delivery.test.mjs"
     seconds 30.5
+  test "rust/tests/web/legacy-release-protocol.test.mjs"
+    seconds 30.5
   test "rust/tests/web/self-authored-publication-source.test.mjs"
     seconds 30.2
   test "rust/tests/web/issue-0408-text-edit-parity.test.mjs"
     seconds 30.1
-  test "rust/tests/web/legacy-release-protocol.test.mjs"
-    seconds 29.6
   test "rust/tests/web/typescript-runtime.test.mjs"
     seconds 29.1
   test "rust/tests/web/pull-request-1188-teach-e.test.mjs"
     seconds 28.5
+  test "rust/tests/web/issue-1582-defaults.test.mjs"
+    seconds 28.4
   test "rust/tests/web/source-scalar-assessment.test.mjs"
     seconds 28.4
   test "rust/tests/web/release-workflow-scope-controls.test.mjs"
@@ -183,7 +185,7 @@ javascript-test-durations
   test "rust/tests/web/file-obligation-receipts.test.mjs"
     seconds 26.2
   test "rust/tests/web/issue-1166-worker-obligation-gaps.test.mjs"
-    seconds 25.7
+    seconds 25.8
   test "rust/tests/web/literal-action-independent-goals.test.mjs"
     seconds 25.6
   test "rust/tests/web/permitted-read-operation-provider.test.mjs"
@@ -216,8 +218,6 @@ javascript-test-durations
     seconds 21.6
   test "rust/tests/web/issue-0921-worker-coding-catalog.test.mjs"
     seconds 21.5
-  test "rust/tests/web/issue-1582-defaults.test.mjs"
-    seconds 21.4
   test "rust/tests/web/issue-context-literal-ownership.test.mjs"
     seconds 21.3
   test "rust/tests/web/source-walk-offline-policy.test.mjs"
@@ -256,8 +256,12 @@ javascript-test-durations
     seconds 18.9
   test "rust/tests/web/issue-0133-search-fusion.test.mjs"
     seconds 18.8
+  test "rust/tests/web/explicit-module-target-binding.test.mjs"
+    seconds 18.6
   test "rust/tests/web/literal-write-request-scope.test.mjs"
     seconds 18
+  test "rust/tests/web/drive-git-executor-capture.test.mjs"
+    seconds 17.9
   test "rust/tests/web/pull-request-1188-cifix.test.mjs"
     seconds 17.9
   test "rust/tests/web/dependency-summarization.test.mjs"
@@ -266,8 +270,6 @@ javascript-test-durations
     seconds 17.6
   test "rust/tests/web/pull-request-1188-line-operations.test.mjs"
     seconds 17.5
-  test "rust/tests/web/explicit-module-target-binding.test.mjs"
-    seconds 17.4
   test "rust/tests/web/connector-work-item-receipts.test.mjs"
     seconds 17.3
   test "rust/tests/web/literal-transport-block-content.test.mjs"
@@ -276,8 +278,6 @@ javascript-test-durations
     seconds 17.2
   test "rust/tests/web/server.test.mjs"
     seconds 17.1
-  test "rust/tests/web/drive-git-executor-capture.test.mjs"
-    seconds 16.9
   test "rust/tests/web/file-read-shell-token-boundaries.test.mjs"
     seconds 16.9
   test "rust/tests/web/worker-unknown-language.test.mjs"
@@ -294,6 +294,8 @@ javascript-test-durations
     seconds 16.3
   test "rust/tests/web/whole-write-digest-freshness.test.mjs"
     seconds 16.3
+  test "rust/tests/web/issue-1186-prover-seam.test.mjs"
+    seconds 16.1
   test "rust/tests/web/open-reasoning-delivery.test.mjs"
     seconds 16.1
   test "rust/tests/web/agentic-write.test.mjs"
@@ -310,17 +312,21 @@ javascript-test-durations
     seconds 15.4
   test "rust/tests/web/r1017-small-math-tasks.test.mjs"
     seconds 15.4
+  test "rust/tests/web/readable-code.test.mjs"
+    seconds 15.4
+  test "rust/tests/web/repository-documentation.test.mjs"
+    seconds 15.2
+  test "rust/tests/web/issue-1155-read-validation.test.mjs"
+    seconds 15.1
   test "rust/tests/web/module-function-live-command-policy.test.mjs"
     seconds 15
-  test "rust/tests/web/issue-1186-prover-seam.test.mjs"
-    seconds 14.9
+  test "rust/tests/web/project-summary-parity.test.mjs"
+    seconds 15
   test "rust/tests/web/line-slice-read-ownership.test.mjs"
     seconds 14.9
   test "rust/tests/web/issue-1162-delivery-commands.test.mjs"
     seconds 14.8
   test "rust/tests/web/issue-0918-browser-twins.test.mjs"
-    seconds 14.7
-  test "rust/tests/web/project-summary-parity.test.mjs"
     seconds 14.7
   test "rust/tests/web/source-qualified-definition.test.mjs"
     seconds 14.7
@@ -336,12 +342,8 @@ javascript-test-durations
     seconds 14.4
   test "rust/tests/web/quantity-aggregate-comparison.test.mjs"
     seconds 14.2
-  test "rust/tests/web/readable-code.test.mjs"
-    seconds 14
   test "rust/tests/web/source-unary-consolidation.test.mjs"
     seconds 13.9
-  test "rust/tests/web/repository-documentation.test.mjs"
-    seconds 13.6
   test "rust/tests/web/observed-callable-discovery.test.mjs"
     seconds 13.4
   test "rust/tests/web/source-cst-documentation-transform.test.mjs"
@@ -349,6 +351,8 @@ javascript-test-durations
   test "rust/tests/web/progressive-cohort-scheduler.test.mjs"
     seconds 13.2
   test "rust/tests/web/cnl-output-http.test.mjs"
+    seconds 13.1
+  test "rust/tests/web/server-dreaming-runtime.test.mjs"
     seconds 13.1
   test "rust/tests/web/issue-0703-orchestration-run.test.mjs"
     seconds 12.8
@@ -358,29 +362,29 @@ javascript-test-durations
     seconds 12.8
   test "rust/tests/web/ci-failure-collection.test.mjs"
     seconds 12.6
-  test "rust/tests/web/server-dreaming-runtime.test.mjs"
+  test "rust/tests/web/issue-1138-concept-lookup.test.mjs"
+    seconds 12.6
+  test "rust/tests/web/issue-1177-shell-compose-parity.test.mjs"
     seconds 12.5
+  test "rust/tests/web/host-workspace-creation-evidence.test.mjs"
+    seconds 12.4
   test "rust/tests/web/issue-1580-client-output-constraints.test.mjs"
     seconds 12.4
   test "rust/tests/web/pull-request-1188-subagent-folder.test.mjs"
     seconds 12.4
-  test "rust/tests/web/context-label-ownership.test.mjs"
-    seconds 12.2
   test "rust/tests/web/issue-1328-recursive-schema-projection.test.mjs"
+    seconds 12.3
+  test "rust/tests/web/context-label-ownership.test.mjs"
     seconds 12.2
   test "rust/tests/web/issue-1588-intent-spans.test.mjs"
     seconds 12.2
   test "rust/tests/web/server-dreaming-learning.test.mjs"
     seconds 12.2
-  test "rust/tests/web/issue-1177-shell-compose-parity.test.mjs"
-    seconds 12.1
   test "rust/tests/web/issue-1328-bounded-retries.test.mjs"
     seconds 12
   test "rust/tests/web/final-payload-roles.test.mjs"
     seconds 11.9
   test "rust/tests/web/following-exact-content-create.test.mjs"
-    seconds 11.8
-  test "rust/tests/web/host-workspace-creation-evidence.test.mjs"
     seconds 11.8
   test "rust/tests/web/pinned-first-line-obligations.test.mjs"
     seconds 11.8
@@ -414,8 +418,6 @@ javascript-test-durations
     seconds 11.2
   test "rust/tests/web/drive-provenance-capture.test.mjs"
     seconds 11.1
-  test "rust/tests/web/issue-1138-concept-lookup.test.mjs"
-    seconds 11
   test "rust/tests/web/provenance-engine-observation.test.mjs"
     seconds 11
   test "rust/tests/web/unresolved-research-routing.test.mjs"
@@ -440,8 +442,6 @@ javascript-test-durations
     seconds 10.4
   test "rust/tests/web/fetch-work-item-observations.test.mjs"
     seconds 10.4
-  test "rust/tests/web/issue-1155-read-validation.test.mjs"
-    seconds 10.2
   test "rust/tests/web/issue-1587-request-context.test.mjs"
     seconds 10.2
   test "rust/tests/web/literal-write-instruction-authority.test.mjs"
@@ -474,6 +474,10 @@ javascript-test-durations
     seconds 9.6
   test "rust/tests/web/literal-action-ownership.test.mjs"
     seconds 9.6
+  test "rust/tests/web/signature-census.test.mjs"
+    seconds 9.6
+  test "rust/tests/web/typed-source-items.test.mjs"
+    seconds 9.6
   test "rust/tests/web/explicit-shell-payload-routing.test.mjs"
     seconds 9.5
   test "rust/tests/web/shell-path-operands.test.mjs"
@@ -484,11 +488,13 @@ javascript-test-durations
     seconds 9.2
   test "rust/tests/web/issue-0703-orchestration-dispatch.test.mjs"
     seconds 9.1
+  test "rust/tests/web/worker-agent-workspace.test.mjs"
+    seconds 9.1
   test "rust/tests/web/general-plan-event-append.test.mjs"
     seconds 9
   test "rust/tests/web/issue-1166-task-acceptance.test.mjs"
     seconds 9
-  test "rust/tests/web/worker-agent-workspace.test.mjs"
+  test "rust/tests/web/prompt-specialization.test.mjs"
     seconds 9
   test "rust/tests/web/issue-1138-workspace-listing.test.mjs"
     seconds 8.9
@@ -516,8 +522,6 @@ javascript-test-durations
     seconds 8.6
   test "rust/tests/web/server-terminal-events.test.mjs"
     seconds 8.6
-  test "rust/tests/web/signature-census.test.mjs"
-    seconds 8.6
   test "rust/tests/web/issue-1582-permissions.test.mjs"
     seconds 8.5
   test "rust/tests/web/additive-scope-operation-ownership.test.mjs"
@@ -538,11 +542,7 @@ javascript-test-durations
     seconds 8.1
   test "rust/tests/web/staged-release-activation-transition.test.mjs"
     seconds 8.1
-  test "rust/tests/web/typed-source-items.test.mjs"
-    seconds 8.1
   test "rust/tests/web/agentic-core.test.mjs"
-    seconds 8
-  test "rust/tests/web/prompt-specialization.test.mjs"
     seconds 8
   test "rust/tests/web/pull-request-1188-line-anchor.test.mjs"
     seconds 8
@@ -560,7 +560,11 @@ javascript-test-durations
     seconds 7.8
   test "rust/tests/web/staged-release-secret-authority.test.mjs"
     seconds 7.8
+  test "rust/tests/web/algorithm-learning-command-receipts.test.mjs"
+    seconds 7.7
   test "rust/tests/web/provenance-signed-logs.test.mjs"
+    seconds 7.7
+  test "rust/tests/web/source-cst-semantic-transform.test.mjs"
     seconds 7.7
   test "rust/tests/web/issue-1028-all-mode-sharding.test.mjs"
     seconds 7.6
@@ -574,6 +578,8 @@ javascript-test-durations
     seconds 7.5
   test "rust/tests/web/seed-routing-ci-regressions.test.mjs"
     seconds 7.5
+  test "rust/tests/web/issue-1184-derivation-server.test.mjs"
+    seconds 7.4
   test "rust/tests/web/page-formalization-route.test.mjs"
     seconds 7.4
   test "rust/tests/web/post-write-source-read.test.mjs"
@@ -586,8 +592,6 @@ javascript-test-durations
     seconds 7.3
   test "rust/tests/web/specification-parity-worker.test.mjs"
     seconds 7.3
-  test "rust/tests/web/algorithm-learning-command-receipts.test.mjs"
-    seconds 7.2
   test "rust/tests/web/declared-append-provider.test.mjs"
     seconds 7.2
   test "rust/tests/web/issue-1180-repository-qa.test.mjs"
@@ -620,8 +624,6 @@ javascript-test-durations
     seconds 6.8
   test "rust/tests/web/worker-candidate-validation.test.mjs"
     seconds 6.8
-  test "rust/tests/web/issue-1184-derivation-server.test.mjs"
-    seconds 6.7
   test "rust/tests/web/issue-1557-prose-language.test.mjs"
     seconds 6.7
   test "rust/tests/web/mixed-read-prerequisite-gap.test.mjs"
@@ -630,6 +632,8 @@ javascript-test-durations
     seconds 6.7
   test "rust/tests/web/rust-specification-lifetimes.test.mjs"
     seconds 6.7
+  test "rust/tests/web/shared-solver-formalization-evidence.test.mjs"
+    seconds 6.6
   test "rust/tests/web/github-json-observation.test.mjs"
     seconds 6.5
   test "rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs"
@@ -638,9 +642,9 @@ javascript-test-durations
     seconds 6.5
   test "rust/tests/web/readmany-structural-ownership.test.mjs"
     seconds 6.5
-  test "rust/tests/web/shared-solver-formalization-evidence.test.mjs"
-    seconds 6.5
   test "rust/tests/web/issue-1177-code-plans-parity.test.mjs"
+    seconds 6.4
+  test "rust/tests/web/server-auto-free-space.test.mjs"
     seconds 6.4
   test "rust/tests/web/agentic-recipes-b.test.mjs"
     seconds 6.3
@@ -652,22 +656,26 @@ javascript-test-durations
     seconds 6.2
   test "rust/tests/web/prepared-artifact-inventory.test.mjs"
     seconds 6.1
+  test "rust/tests/web/server-memory-recall.test.mjs"
+    seconds 6.1
   test "rust/tests/web/issue-1138-browser-runtime.test.mjs"
     seconds 6
   test "rust/tests/web/issue-1176-statistics-parity.test.mjs"
     seconds 6
   test "rust/tests/web/issue-1184-derivation-identifier-surfaces.test.mjs"
     seconds 6
-  test "rust/tests/web/server-memory-recall.test.mjs"
+  test "rust/tests/web/node-source-physical-read.test.mjs"
     seconds 6
   test "rust/tests/web/issue-0702-nested-contexts.test.mjs"
     seconds 5.9
   test "rust/tests/web/issue-1186-formalization-probe-set.test.mjs"
     seconds 5.9
-  test "rust/tests/web/source-cst-semantic-transform.test.mjs"
-    seconds 5.9
   test "rust/tests/web/source-read-provenance.test.mjs"
     seconds 5.9
+  test "rust/tests/web/procedure-command-receipts.test.mjs"
+    seconds 5.8
+  test "rust/tests/web/source-reference-read.test.mjs"
+    seconds 5.8
   test "rust/tests/web/bounded-command.test.mjs"
     seconds 5.7
   test "rust/tests/web/declared-create-dispatch-ownership.test.mjs"
@@ -690,17 +698,15 @@ javascript-test-durations
     seconds 5.6
   test "rust/tests/web/literal-payload-first-line-constraints.test.mjs"
     seconds 5.6
-  test "rust/tests/web/node-source-physical-read.test.mjs"
-    seconds 5.6
   test "rust/tests/web/release-source-freshness.test.mjs"
     seconds 5.6
   test "rust/tests/web/repository-workspace-runners.test.mjs"
     seconds 5.6
   test "rust/tests/web/append-record-schema.test.mjs"
     seconds 5.5
-  test "rust/tests/web/issue-1178-creative-parity.test.mjs"
+  test "rust/tests/web/issue-1165-server-procedure-cache.test.mjs"
     seconds 5.5
-  test "rust/tests/web/procedure-command-receipts.test.mjs"
+  test "rust/tests/web/issue-1178-creative-parity.test.mjs"
     seconds 5.5
   test "rust/tests/web/round-trip-translation.test.mjs"
     seconds 5.5
@@ -718,9 +724,9 @@ javascript-test-durations
     seconds 5.4
   test "rust/tests/web/negated-command-ownership.test.mjs"
     seconds 5.4
-  test "rust/tests/web/source-authoring-document-root.test.mjs"
+  test "rust/tests/web/read-mode-grammar-cache.test.mjs"
     seconds 5.4
-  test "rust/tests/web/source-reference-read.test.mjs"
+  test "rust/tests/web/source-authoring-document-root.test.mjs"
     seconds 5.4
   test "rust/tests/web/typed-meaning-preservation.test.mjs"
     seconds 5.4
@@ -734,10 +740,12 @@ javascript-test-durations
     seconds 5.3
   test "rust/tests/web/pull-request-1188-working-rules.test.mjs"
     seconds 5.3
-  test "rust/tests/web/read-mode-grammar-cache.test.mjs"
-    seconds 5.3
   test "rust/tests/web/rust-specification-tuples.test.mjs"
     seconds 5.3
+  test "rust/tests/web/issue-1085-handler-rules-parity.test.mjs"
+    seconds 5.2
+  test "rust/tests/web/issue-1168-workflow-render-parity.test.mjs"
+    seconds 5.2
   test "rust/tests/web/pull-request-1188-addition-guard.test.mjs"
     seconds 5.2
   test "rust/tests/web/r1017-line-tasks.test.mjs"
@@ -749,8 +757,6 @@ javascript-test-durations
   test "rust/tests/web/translation-complete-spans.test.mjs"
     seconds 5.2
   test "rust/tests/web/fast-pull-request-production-profile.test.mjs"
-    seconds 5.1
-  test "rust/tests/web/issue-1085-handler-rules-parity.test.mjs"
     seconds 5.1
   test "rust/tests/web/issue-1364-action-failures.test.mjs"
     seconds 5.1
@@ -764,13 +770,9 @@ javascript-test-durations
     seconds 5
   test "rust/tests/web/issue-1159-toolchain-bootstrap.test.mjs"
     seconds 5
-  test "rust/tests/web/issue-1168-workflow-render-parity.test.mjs"
-    seconds 5
   test "rust/tests/web/observed-callable-contracts.test.mjs"
     seconds 5
   test "rust/tests/web/scoped-creation-evidence.test.mjs"
-    seconds 5
-  test "rust/tests/web/server-auto-free-space.test.mjs"
     seconds 5
   test "rust/tests/web/container-apt-retry.test.mjs"
     seconds 4.9
@@ -794,6 +796,8 @@ javascript-test-durations
     seconds 4.8
   test "rust/tests/web/dogfood-driver-grep.test.mjs"
     seconds 4.7
+  test "rust/tests/web/issue-0703-synthesis-pipeline.test.mjs"
+    seconds 4.7
   test "rust/tests/web/issue-1180-history-store.test.mjs"
     seconds 4.7
   test "rust/tests/web/issue-1186-formalization-parity.test.mjs"
@@ -808,6 +812,8 @@ javascript-test-durations
     seconds 4.6
   test "rust/tests/web/command-output-parent.test.mjs"
     seconds 4.5
+  test "rust/tests/web/issue-0703-orchestration-committed.test.mjs"
+    seconds 4.5
   test "rust/tests/web/issue-800-product-search-parity.test.mjs"
     seconds 4.5
   test "rust/tests/web/qa-dialogue-obligations.test.mjs"
@@ -818,6 +824,8 @@ javascript-test-durations
     seconds 4.5
   test "rust/tests/web/container-source-event-cli.test.mjs"
     seconds 4.4
+  test "rust/tests/web/issue-0096-calculator-arithmetic.test.mjs"
+    seconds 4.4
   test "rust/tests/web/pull-request-1188-quoted-payload-cues.test.mjs"
     seconds 4.4
   test "rust/tests/web/release-current-group-membership.test.mjs"
@@ -826,19 +834,17 @@ javascript-test-durations
     seconds 4.4
   test "rust/tests/web/calendar-act-paraphrases.test.mjs"
     seconds 4.3
-  test "rust/tests/web/issue-0703-orchestration-committed.test.mjs"
-    seconds 4.3
   test "rust/tests/web/issue-0901-triz-registry.test.mjs"
     seconds 4.3
   test "rust/tests/web/issue-1163-formal-knowledge-paths.test.mjs"
-    seconds 4.3
-  test "rust/tests/web/issue-1165-server-procedure-cache.test.mjs"
     seconds 4.3
   test "rust/tests/web/issue-1166-obligation-routing-parity.test.mjs"
     seconds 4.3
   test "rust/tests/web/issue-1580-algebra-substitution.test.mjs"
     seconds 4.3
   test "rust/tests/web/native-release-artifact.test.mjs"
+    seconds 4.3
+  test "rust/tests/web/release-advertisement.test.mjs"
     seconds 4.3
   test "rust/tests/web/round-trip-translation-route.test.mjs"
     seconds 4.3
@@ -868,9 +874,9 @@ javascript-test-durations
     seconds 4
   test "rust/tests/web/tool-result-failed-streams.test.mjs"
     seconds 4
+  test "rust/tests/web/web-formalization.test.mjs"
+    seconds 4
   test "rust/tests/web/execution-box-deadline.test.mjs"
-    seconds 3.9
-  test "rust/tests/web/issue-0096-calculator-arithmetic.test.mjs"
     seconds 3.9
   test "rust/tests/web/issue-1180-history-statements-lineage.test.mjs"
     seconds 3.9
@@ -878,19 +884,21 @@ javascript-test-durations
     seconds 3.9
   test "rust/tests/web/bundled-seed-source-parity.test.mjs"
     seconds 3.7
-  test "rust/tests/web/issue-0703-synthesis-pipeline.test.mjs"
+  test "rust/tests/web/coding-research-kernel.test.mjs"
     seconds 3.7
   test "rust/tests/web/issue-1168-version-resolution-parity.test.mjs"
+    seconds 3.7
+  test "rust/tests/web/issue-1172-live-fact-parity.test.mjs"
     seconds 3.7
   test "rust/tests/web/issue-1185-stop-note.test.mjs"
     seconds 3.7
   test "rust/tests/web/issue-1364-work-item-envelopes.test.mjs"
     seconds 3.7
-  test "rust/tests/web/web-formalization.test.mjs"
-    seconds 3.7
   test "rust/tests/web/browser-seed-byte-roundtrip.test.mjs"
     seconds 3.6
   test "rust/tests/web/issue-1165-procedure-cache-parity.test.mjs"
+    seconds 3.6
+  test "rust/tests/web/module-function-expression-binding.test.mjs"
     seconds 3.6
   test "rust/tests/web/module-function-signature-vectors.test.mjs"
     seconds 3.6
@@ -898,9 +906,13 @@ javascript-test-durations
     seconds 3.5
   test "rust/tests/web/attachment-url-scope.test.mjs"
     seconds 3.5
+  test "rust/tests/web/issue-0361-cross-runtime-parity.test.mjs"
+    seconds 3.5
   test "rust/tests/web/issue-1185-fourteen-languages.test.mjs"
     seconds 3.5
   test "rust/tests/web/opaque-context-labels.test.mjs"
+    seconds 3.5
+  test "rust/tests/web/pull-request-1188-quoted-content.test.mjs"
     seconds 3.5
   test "rust/tests/web/worker-engine-prerequisite.test.mjs"
     seconds 3.5
@@ -914,8 +926,6 @@ javascript-test-durations
     seconds 3.4
   test "rust/tests/web/native-release-workflow.test.mjs"
     seconds 3.4
-  test "rust/tests/web/pull-request-1188-quoted-content.test.mjs"
-    seconds 3.4
   test "rust/tests/web/container-image-receipt.test.mjs"
     seconds 3.3
   test "rust/tests/web/issue-1163-1164-captured-pages.test.mjs"
@@ -926,7 +936,7 @@ javascript-test-durations
     seconds 3.3
   test "rust/tests/web/issue-1188-registry-parity.test.mjs"
     seconds 3.3
-  test "rust/tests/web/module-function-expression-binding.test.mjs"
+  test "rust/tests/web/server-meta-learned.test.mjs"
     seconds 3.3
   test "rust/tests/web/tracked-source-evidence-provenance.test.mjs"
     seconds 3.3
@@ -934,15 +944,13 @@ javascript-test-durations
     seconds 3.2
   test "rust/tests/web/generated-files.test.mjs"
     seconds 3.2
-  test "rust/tests/web/issue-0361-cross-runtime-parity.test.mjs"
-    seconds 3.2
   test "rust/tests/web/issue-1186-rml-export.test.mjs"
+    seconds 3.2
+  test "rust/tests/web/native-test-artifact.test.mjs"
     seconds 3.2
   test "rust/tests/web/qualified-argument-domain.test.mjs"
     seconds 3.2
   test "rust/tests/web/seed-data-headroom.test.mjs"
-    seconds 3.2
-  test "rust/tests/web/server-meta-learned.test.mjs"
     seconds 3.2
   test "rust/tests/web/comment-meaning.test.mjs"
     seconds 3.1
@@ -950,11 +958,11 @@ javascript-test-durations
     seconds 3.1
   test "rust/tests/web/rust-specification-enum-predicates.test.mjs"
     seconds 3.1
-  test "rust/tests/web/coding-research-kernel.test.mjs"
-    seconds 3
+  test "rust/tests/web/source-cst-seed-diagnostics.test.mjs"
+    seconds 3.1
   test "rust/tests/web/handler-registry.test.mjs"
     seconds 3
-  test "rust/tests/web/issue-1172-live-fact-parity.test.mjs"
+  test "rust/tests/web/issue-1163-web-formalize-parity.test.mjs"
     seconds 3
   test "rust/tests/web/issue-1176-unit-conversion-parity.test.mjs"
     seconds 3
@@ -968,15 +976,11 @@ javascript-test-durations
     seconds 2.9
   test "rust/tests/web/issue-0327-wasm-synthesis-bridge.test.mjs"
     seconds 2.8
-  test "rust/tests/web/issue-1163-web-formalize-parity.test.mjs"
-    seconds 2.8
   test "rust/tests/web/server-live-memory-shutdown.test.mjs"
     seconds 2.8
   test "rust/tests/web/worker-script-prerequisites.test.mjs"
     seconds 2.8
   test "rust/tests/web/dynamic-meta.test.mjs"
-    seconds 2.7
-  test "rust/tests/web/release-advertisement.test.mjs"
     seconds 2.7
   test "rust/tests/web/runner-label-pinning.test.mjs"
     seconds 2.7
@@ -996,8 +1000,6 @@ javascript-test-durations
     seconds 2.5
   test "rust/tests/web/main-only-planner-twins.test.mjs"
     seconds 2.5
-  test "rust/tests/web/native-test-artifact.test.mjs"
-    seconds 2.5
   test "rust/tests/web/supplied-file-completeness.test.mjs"
     seconds 2.5
   test "rust/tests/web/issue-1328-diagnostic-metadata-bounds.test.mjs"
@@ -1007,8 +1009,6 @@ javascript-test-durations
   test "rust/tests/web/container-images-workflow.test.mjs"
     seconds 2.3
   test "rust/tests/web/self-coding-proof.test.mjs"
-    seconds 2.3
-  test "rust/tests/web/source-cst-seed-diagnostics.test.mjs"
     seconds 2.3
   test "rust/tests/web/worker-boot-crate-seed-prefetch.test.mjs"
     seconds 2.3
@@ -1036,10 +1036,10 @@ javascript-test-durations
     seconds 2.1
   test "rust/tests/web/issue-1188-why-question-scope.test.mjs"
     seconds 2.1
+  test "rust/tests/web/pull-request-1188-doctrine-ratchets.test.mjs"
+    seconds 2.1
   test "rust/tests/web/rust-specification-copy-records.test.mjs"
     seconds 2
-  test "rust/tests/web/pull-request-1188-doctrine-ratchets.test.mjs"
-    seconds 1.9
   test "rust/tests/web/issue-1176-wikidata-grounding.test.mjs"
     seconds 1.8
   test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
@@ -1047,13 +1047,13 @@ javascript-test-durations
   test "rust/tests/web/self-translation.test.mjs"
     seconds 1.8
   test "rust/tests/web/r999-worker-budget-rationale.test.mjs"
+    seconds 1.7
+  test "rust/tests/web/issue-0563-repository-summarization.test.mjs"
     seconds 1.5
   test "rust/tests/web/r1085-16-ci-gate-justifications.test.mjs"
     seconds 1.4
   test "rust/tests/web/debugger-client.test.mjs"
     seconds 1.3
-  test "rust/tests/web/issue-0563-repository-summarization.test.mjs"
-    seconds 1.2
   test "rust/tests/web/issue-1180-rust-ast-census.test.mjs"
     seconds 1.2
   test "rust/tests/web/scripts-js-twins-checks.test.mjs"
