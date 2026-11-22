@@ -1,0 +1,1 @@
+Update both audited Rust lockfiles to url 2.5.9 and its required form_urlencoded 1.2.3 dependency, repairing RUSTSEC-2026-0592. Keep the strict audit and replay bounded nested-blob origin controls in the focused native interface contracts.
