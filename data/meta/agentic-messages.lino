@@ -374,6 +374,8 @@ agentic_messages
     text "Formal AI ranked {expressions} {subject}; the human-review-gated report is in {path}."
   message learning_report_final_ungated
     text "Formal AI persisted and ranked {expressions} {subject} through the associative auto-learning pipeline; the reproducible Links Notation report is in {path}."
+  message learning-report-memory-required
+    text "Supply the persisted memory events in a fenced `lino` block to generate {path}."
   message learning_report_retention_formula
     text "reads + writes + incoming_links + outgoing_links"
   message learning_report_task_associative_learning

@@ -679,24 +679,24 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "maintainedTranslationSha256":"ae279e637c82f5402fe4e320fbe139657fb00cd4a92bf537583688bfda01121e"},{"path":
 "formal_ai::engine::DEFAULT_MODEL","canonicalPath":"formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant",
 "nativeType":"&str","returnType":"string","value":"formal-ai","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1859,"end":1903},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"05143449f5860b6ad0dfe6788049866af67cf2a59b52d2d93bb703c9dad19c18"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1838,"end":1882},"sourceWitnesses":[{"path":
+"rust/src/engine.rs","sha256":"2339cebc52cbdc716374ec1a2e2c1e77f3e547a7d12dce8dc13185327781e247"},{"path":
 "rust/src/lib.rs","sha256":"e3866ad34299a9e960f8dd7857493a6fd51abfae289e5161ad4a810aef9b82d7"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
 "ae51fd1ade1b46003293eb348681e0a20e349a9afc0507e08151337e73e0a818"},{"path":"formal_ai::DEFAULT_MODEL","canonicalPath":
 "formal_ai::engine::DEFAULT_MODEL","kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"formal-ai"
-,"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1859,"end":1903},
+,"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1838,"end":1882},
 "sourceWitnesses":[{"path":"rust/src/engine.rs","sha256":
-"05143449f5860b6ad0dfe6788049866af67cf2a59b52d2d93bb703c9dad19c18"},{"path":"rust/src/lib.rs","sha256":
+"2339cebc52cbdc716374ec1a2e2c1e77f3e547a7d12dce8dc13185327781e247"},{"path":"rust/src/lib.rs","sha256":
 "e3866ad34299a9e960f8dd7857493a6fd51abfae289e5161ad4a810aef9b82d7"}],"maintainedMeta":
 "(constant DEFAULT-MODEL (exported) (type string) (value (string formal-ai)))","maintainedJavaScript":
 "export const DEFAULT_MODEL = 'formal-ai';","maintainedTranslationSha256":
 "ae51fd1ade1b46003293eb348681e0a20e349a9afc0507e08151337e73e0a818"},{"path":
 "formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","canonicalPath":"formal_ai::engine::KNOWLEDGE_SCHEMA_VERSION","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"0.2.0","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4034,"end":4085},"sourceWitnesses":[{"path":
-"rust/src/engine.rs","sha256":"05143449f5860b6ad0dfe6788049866af67cf2a59b52d2d93bb703c9dad19c18"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4013,"end":4064},"sourceWitnesses":[{"path":
+"rust/src/engine.rs","sha256":"2339cebc52cbdc716374ec1a2e2c1e77f3e547a7d12dce8dc13185327781e247"},{"path":
 "rust/src/lib.rs","sha256":"e3866ad34299a9e960f8dd7857493a6fd51abfae289e5161ad4a810aef9b82d7"}],"maintainedMeta":
 "(constant KNOWLEDGE-SCHEMA-VERSION (exported) (type string) (value (string 0.2.0)))","maintainedJavaScript":
 "export const KNOWLEDGE_SCHEMA_VERSION = '0.2.0';","maintainedTranslationSha256":

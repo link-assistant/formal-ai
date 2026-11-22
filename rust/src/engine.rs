@@ -6,9 +6,8 @@
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::coding::{
-    PROGRAM_LANGUAGES, ProgramLanguage, ProgramSpec, WRITE_PROGRAM_INTENT,
-    program_language_by_alias, program_spec, program_template_count, supported_program_languages,
-    supported_program_tasks,
+    PROGRAM_LANGUAGES, ProgramSpec, WRITE_PROGRAM_INTENT, program_language_by_alias, program_spec,
+    program_template_count, supported_program_languages, supported_program_tasks,
 };
 
 use std::sync::OnceLock;

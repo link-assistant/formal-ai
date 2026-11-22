@@ -137,6 +137,7 @@ b2faa3ed73cc7ea30ad2fdc1ce8aa1462c78c1f77e65fe7a72c4a9e4a98095b8  ./verification
 4681044713b920a906ca779f731218ee7bf9a222d9f324729775144235c6b527  ./verification/all-gates-round7-final.log
 ffd743e964b5e633952a383ab238234673a432e4037b5822e944f298019801e7  ./verification/baseline-docs-method.log
 2f8936d85f55cd64e747c1bbb16b800e33cdbce13b27af0cffaed2ce76da6b28  ./verification/baseline-encyclopedia-precache.log
+6df4608f7e237174ad6bfc7b026b91cc883d118ba0d561b3c7f8c9159b41bdb5  ./verification/baseline-learning-report.log
 abbcf099e8d9dd00863a12412bd68caeb452937fc8f80cd8d24aa320f0d1fccd  ./verification/baseline-meaning-detail.log
 1db0d821f1512a73cbb47c9a3c11824446be80673573c25296b5b0198f30d24c  ./verification/baseline-mediawiki-procedures.log
 17b33a6e59d8036695dc9240e9cb545e0f990f02cb51e6b146b25783337ed33b  ./verification/baseline-native-issue-corpus.log
@@ -145,6 +146,9 @@ f2fe289a6a05564e3cef01ecb5baf3f5698245da3a90b3de5acf72125084b127  ./verification
 831cc20add2b71fb3f67fc21f520a70274c77188eff02895ed01031157c55b98  ./verification/baseline-translation-build-cache.log
 d95b8d8aa2c1c995dd4ebc35dc0736c61722cc4f78ac40322f8be033c50697b1  ./verification/baseline-unnamed-algorithm.log
 9c577446396bba500bc48f4deb62922d3a31dd6c2ababd0816f437a28c3812fa  ./verification/build-script-optional-inputs-round2.log
+d47d52e625b8c39abf917f1d47f26d3b9c4518b4209f50c2ca886bd221a7f75e  ./verification/ci-44995590873-js-tier-one.log.gz
+74ff987544850f81ecf905a732425b15a00a72840281acbe669cf997e30edb49  ./verification/ci-44995590873-js-tier-two.log.gz
+3f461ed4cd1f878523da4cb07830c41177d7a30537fdecdff716bb73595d4941  ./verification/ci-44995591571-native.log.gz
 9f6bf911e296504dc829f30382b9f66c23e0ac82705d120c23fc8e10a0be4e8f  ./verification/currency-compound-browser.log
 e3c39c324b12371ae227eb43bbdc1a887fddf464a65b667b510183c015dfe43e  ./verification/currency-conversion-browser-final.log
 6868d34e19c342e52dfb670cd1d72cf2de7c3e544765e366fed4d12f3ed2ad60  ./verification/currency-conversion-browser.log

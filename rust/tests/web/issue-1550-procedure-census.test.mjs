@@ -2,7 +2,7 @@
 // turn-derived records (acceptance criterion d).
 //
 // (c) Both production entries end in the recursive procedure: the native
-// `solve_with_history_probability_store_and_intent_cache` has no exit before or
+// `solve_inner` has no exit before or
 // after its cascade closure, runs the closure through the controlled output
 // hook (`controlled_solve`, issue #1584) and hands the hook's draft to
 // `run_meta_procedure`; the worker's `solve` has exactly two exits (the
@@ -35,7 +35,7 @@ const read = (file) => readFileSync(new URL(file, new URL('../../../', import.me
 // The cascade's methods inside the closure; each returns the closure's draft,
 // which the procedure records as a candidate. Change only with a method the
 // procedure records (never with an exit of the entry).
-const CASCADE_METHOD_RETURNS = 20;
+const CASCADE_METHOD_RETURNS = 21;
 
 let host;
 before(async () => {

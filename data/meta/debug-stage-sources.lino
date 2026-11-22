@@ -11,7 +11,7 @@ debug_stage_sources
   runtime rust
     keyword fn
     tree "rust/src" ".rs"
-    entry "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
+    entry "rust/src/solver.rs" "solve_inner"
   runtime js
     keyword function
     tree "js/worker" ".js"

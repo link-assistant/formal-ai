@@ -1,0 +1,8 @@
+caller supplied memory false
+plan kind tool_calls
+first tool write_file
+historical expressions [
+  'learned_expression_01',
+  'learned_expression_02',
+  'learned_expression_03'
+]

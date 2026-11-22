@@ -18,6 +18,7 @@ import {host, installHost} from "../../../js/agentic/host.mjs";
 import {readSourceLinks, sourceFromLinks, ownedSourceLinks, writeSourceLinks} from "../../../js/meta/readable-source.js";
 import * as algorithmLearning from "../../../js/agentic/algorithm_learning.mjs";
 import * as procedure from "../../../js/agentic/procedure.mjs";
+import { planChatStep } from "../../../js/agentic/planner.mjs";
 import * as learningReport from "../../../js/agentic/learning_report.mjs";
 import * as associativeLearning from "../../../js/agentic/associative_learning.mjs";
 import * as selfHostingLearning from "../../../js/agentic/learning_report/self_hosting_learning.mjs";
@@ -499,21 +500,26 @@ test("Agent CLI procedure localizes an honest unpersisted artifact", () => {
 
 // ---- learning reports (issues #686, #657, #709, ...) -----------------------
 
+const learningTask = (request, memory) => [request, "```lino", memory, "```"].join("\n");
+
 test("the associative report and answer match the committed Agent CLI session", () => {
   const recorded = session(
     "docs/case-studies/issue-686/agent-cli-session-associative-learning.json",
   );
   assert.equal(learningReport.route(recorded.task), associativeLearning.REPORT);
-  const document = associativeLearning.renderDocument();
+  const memory = read("data/meta/associative-learning-case.lino");
+  const task = learningTask(recorded.task, memory);
+  const document = associativeLearning.renderDocumentFrom(memory);
   assert.equal(document, recorded.steps[0].arguments.content);
   assert.equal(
     associativeLearning.finalAnswer(document),
     recorded.final_answer,
   );
-  const messages = [user(recorded.task)];
+  const messages = [user(task)];
   for (const step of recorded.steps) {
     const plan = learningReport.planReportStep(
       associativeLearning.REPORT,
+      task,
       messages,
       recorded.tools_advertised,
     );
@@ -524,11 +530,28 @@ test("the associative report and answer match the committed Agent CLI session", 
   }
   const final = learningReport.planReportStep(
     associativeLearning.REPORT,
+    task,
     messages,
     recorded.tools_advertised,
   );
   assert.equal(final.kind, "final");
   assert.equal(final.answer, recorded.final_answer);
+});
+
+test("the planner ranks supplied observations and asks for missing memory", async () => {
+  const request = "Rank our linked facts and save associative-learning-report.lino";
+  const tools = ["write_file", "run_command"];
+  const absent = await planChatStep([user(request)], tools);
+  assert.equal(absent.kind, "final");
+  assert.match(absent.answer, /fenced `lino` block/u);
+  const interrupted = await planChatStep([user(request + "\n```lino\ndemo_memory")], tools);
+  assert.equal(interrupted.kind, "final");
+  const memory = read("data/meta/associative-learning-case.lino").replaceAll('accessCount "2"', 'accessCount "8"');
+  const supplied = await planChatStep([user(learningTask(request, memory))], tools);
+  assert.equal(supplied.calls[0].tool, "write_file");
+  const artifact = JSON.parse(supplied.calls[0].arguments);
+  assert.equal(artifact.content, associativeLearning.renderDocumentFrom(memory));
+  assert.match(artifact.content, /reads "9"/u);
 });
 
 test("the associative report is derived from persisted usage, not canned", () => {
@@ -585,7 +608,7 @@ test("self-hosting and search-fusion reports are derived and review gated", () =
       .finalAnswer(first)
       .includes("human-review-gated report"),
   );
-  const report = searchFusionLearning.renderDocument();
+  const report = searchFusionLearning.renderDocumentFrom(read("data/meta/issue-709-search-fusion-learning.lino"));
   assert.ok(
     report.startsWith('search_fusion_learning_report\n  issue "709"\n'),
   );
@@ -613,17 +636,20 @@ test("every registered report routes from its own task and identities are unique
 });
 
 test("committed Agent CLI evidence reports match a fresh render", () => {
-  for (const [module, path] of [
+  for (const [module, memory, path] of [
     [
       "learning_report/handler_precedence_learning",
+      "data/meta/issue-663-handler-precedence-learning.lino",
       "docs/case-studies/issue-663/agent-cli-evidence/handler-precedence-learning-report.lino",
     ],
     [
       "learning_report/lexeme_import_learning",
+      "data/meta/issue-660-lexeme-import-learning.lino",
       "docs/case-studies/issue-660/agent-cli-evidence/lexeme-import-learning-report.lino",
     ],
     [
       "learning_report/hardcoded_language_learning",
+      "data/meta/issue-659-hardcoded-language-learning.lino",
       "docs/case-studies/issue-659/agent-cli-evidence/hardcoded-language-learning-report.lino",
     ],
   ]) {
@@ -631,7 +657,7 @@ test("committed Agent CLI evidence reports match a fresh render", () => {
       .reports()
       .find((entry) => path.endsWith(entry.path));
     assert.ok(report, module);
-    assert.equal(learningReport.renderDocument(report), read(path), path);
+    assert.equal(learningReport.renderDocumentFrom(report, read(memory)), read(path), path);
   }
 });
 

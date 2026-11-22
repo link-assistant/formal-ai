@@ -507,6 +507,15 @@ cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark ratchet -
 cargo test --manifest-path rust/Cargo.toml --test unit external_benchmarks -- --ignored --nocapture
 ```
 
+## Associative learning reports
+
+Attach the observation events as a fenced `lino` block in the same request as
+the learning report's path. Copy the persisted event network you want to rank.
+Report recipes select their subject and review requirements from the requested
+report, then derive the observations and scores from the supplied network.
+When the request lacks a complete event block, the planner asks for it before
+scheduling a file write.
+
 ## How to run
 
 Each suite is an executable ratchet — CI fails if the derived pass count drops

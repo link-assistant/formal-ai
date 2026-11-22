@@ -408,6 +408,10 @@ async function planChatStepRoutes(messages, toolNames, received) {
     const general = composeGeneralChangePlan(task);
     if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
   }
+  if (task.split('\n').some((line) => line.trimEnd() === '```lino')) {
+    const report = learningReport.route(task);
+    if (report !== null) return learningReport.planReportStep(report, task, messages, toolNames);
+  }
   const answer = programContractAnswer(task);
   if (answer !== null) {
     if (answer.execution_recipe && ciWorkflow.requestedIn(task)) ciWorkflow.attach(answer.execution_recipe, task);
@@ -457,7 +461,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
   const compiled = procedure.compileTask(task);
   if (compiled !== null) return procedure.planStep(messages, toolNames, compiled);
   const report = learningReport.route(task);
-  if (report !== null) return learningReport.planReportStep(report, messages, toolNames);
+  if (report !== null) return learningReport.planReportStep(report, task, messages, toolNames);
   const artifact = (await codeArtifact.planCodeArtifactStep(task, messages, toolNames)) ?? (await missingSemanticImplementation(task, messages, toolNames));
   if (artifact !== null) return artifact;
   for (const [predicate, step] of [[selfHeal.isSelfHealTask, documentRecipe.planSelfHealStep], [dreamingAudit.isDreamingAuditTask,

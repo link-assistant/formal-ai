@@ -10,6 +10,9 @@ use formal_ai::agentic_coding::{
     HANDLER_PRECEDENCE_LEARNING_PATH, HANDLER_PRECEDENCE_LEARNING_TASK, run_agentic_task,
 };
 
+const REPORT_MEMORY: &str =
+    include_str!("../../../../data/meta/issue-663-handler-precedence-learning.lino");
+
 #[test]
 fn handler_precedence_learning_is_derived_and_review_gated() {
     let baseline = include_str!("../../../../data/meta/issue-663-handler-precedence-learning.lino");
@@ -36,7 +39,10 @@ fn handler_precedence_learning_is_derived_and_review_gated() {
 
 #[test]
 fn formal_ai_executes_the_handler_precedence_learning_task_through_agent_cli() {
-    let outcome = run_agentic_task(HANDLER_PRECEDENCE_LEARNING_TASK).expect("agent workspace");
+    let outcome = run_agentic_task(&format!(
+        "{HANDLER_PRECEDENCE_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("agent workspace");
 
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.turns, 3);
@@ -47,7 +53,7 @@ fn formal_ai_executes_the_handler_precedence_learning_task_through_agent_cli() {
     assert_eq!(arguments["path"], HANDLER_PRECEDENCE_LEARNING_PATH);
     assert_eq!(
         arguments["content"],
-        handler_precedence_learning::render_document()
+        handler_precedence_learning::render_document_from(REPORT_MEMORY)
     );
     assert_eq!(outcome.steps[1].tool, "run_command");
     assert!(outcome.final_answer.contains("human-review-gated report"));
@@ -61,5 +67,8 @@ fn committed_agent_cli_artifact_is_byte_reproducible() {
     let committed = include_str!(
         "../../../../docs/case-studies/issue-663/agent-cli-evidence/handler-precedence-learning-report.lino"
     );
-    assert_eq!(committed, handler_precedence_learning::render_document());
+    assert_eq!(
+        committed,
+        handler_precedence_learning::render_document_from(REPORT_MEMORY)
+    );
 }

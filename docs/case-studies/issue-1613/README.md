@@ -145,6 +145,13 @@ and the implementation made only the first call.
   [Docker Registry manifest API](https://docs.docker.com/reference/api/registry/latest/operations/HeadImageManifest/) ·
   [Hive Mind #4122](https://github.com/link-assistant/hive-mind/issues/4122)
 
+- Bind associative report recipes to an input event graph. The cold replay
+  initially produced three observed expressions from compiled historical data.
+  Both planners now require a fenced Links Notation block before writing the
+  report. Replaying a modified graph yields a different score and the
+  lightweight mirror contains none of the eleven historical report bodies.
+  [Cold baseline](evidence/verification/baseline-learning-report.log)
+
 ## Acceptance and evidence
 
 | Requirement from the issue | Evidence and current coverage |

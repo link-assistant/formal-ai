@@ -33,7 +33,7 @@ fn issue_659_evidence_and_ci_are_traceable() {
     );
     assert_eq!(
         report,
-        formal_ai::agentic_coding::learning_report::hardcoded_language_learning::render_document(),
+        formal_ai::agentic_coding::learning_report::hardcoded_language_learning::render_document_from(include_str!("../../../../data/meta/issue-659-hardcoded-language-learning.lino")),
         "committed Agent CLI evidence must reproduce byte for byte"
     );
     for expected in [

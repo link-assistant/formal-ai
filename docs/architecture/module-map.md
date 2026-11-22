@@ -116,7 +116,7 @@ new module fails CI until this map documents it.
 | `family_method` | Seed-declared generic handler-family interpreter (issue #1138 B9). | §5 |
 | `formal_system` | Named formal-system scope for relative statement probabilities. | §5 |
 | `grammar_kinds` | The tree-sitter kind inventory of the committed corpora (issue #1138,. | §5 |
-| `knowledge` | External knowledge oracles, treated as cached APIs (issue #412). | §5 |
+| `knowledge` | Public knowledge-source identifiers, cache size policy and coding discovery. | §5 |
 | `meta_construction` | Issue #559: the upward construction pass and the `recursion_mode` knob. | §5 |
 | `meta_executor` | Issue #1550 — the recursive procedure every answer goes through, in both. | §5 |
 | `meta_frame` | Issue #559 Phase 1A: an explicit, link-serializable problem frame. | §5 |

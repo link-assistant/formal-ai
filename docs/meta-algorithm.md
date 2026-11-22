@@ -53,7 +53,7 @@ the one in the README:
 
 | Runtime | Entry chain (each function calls the next) | Recursive executor |
 | --- | --- | --- |
-| Rust | `solve_with_history_probability_store_and_intent_cache` → `run_meta_procedure` → `solve_answer` → `solve_turn` → `InProcessExecutor` → `execute_procedure` | `solve_recursively` |
+| Rust | `solve_inner` → `run_meta_procedure` → `solve_answer` → `solve_turn` → `InProcessExecutor` → `execute_procedure` | `solve_recursively` |
 | JavaScript | `solve` → `metaRunProcedure` → `solveAnswer` → `solveTurn` → `inProcessExecutor` → `executeProcedure` | `solveRecursively` |
 <!-- meta-procedure:end -->
 

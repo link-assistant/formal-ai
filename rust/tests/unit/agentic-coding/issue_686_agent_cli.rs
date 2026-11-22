@@ -4,6 +4,8 @@ use formal_ai::agentic_coding::{
 };
 
 include!("../../fixtures/native-protocol-observation.rs");
+const REPORT_MEMORY: &str = include_str!("../../../../data/meta/associative-learning-case.lino");
+
 #[test]
 fn associative_report_is_derived_from_persisted_usage_not_canned() {
     let baseline = include_str!("../../../../data/meta/associative-learning-case.lino");
@@ -36,7 +38,10 @@ fn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {
 
 #[test]
 fn formal_ai_executes_associative_learning_through_agent_cli() {
-    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("agent workspace");
+    let outcome = run_agentic_task(&format!(
+        "{ASSOCIATIVE_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("agent workspace");
 
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.turns, 3);
@@ -47,13 +52,41 @@ fn formal_ai_executes_associative_learning_through_agent_cli() {
     assert_eq!(arguments["path"], ASSOCIATIVE_LEARNING_PATH);
     assert_eq!(
         arguments["content"],
-        associative_learning::render_document()
+        associative_learning::render_document_from(REPORT_MEMORY)
     );
     assert_eq!(outcome.steps[1].tool, "run_command");
     assert!(
         outcome
             .final_answer
             .contains("persisted and ranked 3 expressions")
+    );
+}
+
+#[test]
+fn associative_learning_requires_a_supplied_observation_network() {
+    let requested = "Rank our linked facts and save associative-learning-report.lino";
+    let interrupted = format!("{requested}\n```lino\ndemo_memory");
+    for request in [requested, interrupted.as_str()] {
+        let outcome = run_agentic_task(request).expect("agent workspace");
+        assert!(outcome.steps.is_empty());
+        assert!(outcome.final_answer.contains("fenced `lino` block"));
+    }
+
+    let changed = REPORT_MEMORY.replace("accessCount \"2\"", "accessCount \"8\"");
+    let outcome = run_agentic_task(&format!("{requested}\n```lino\n{changed}\n```"))
+        .expect("agent workspace");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&outcome.steps[0].arguments).expect("write arguments");
+    assert_eq!(outcome.steps[0].tool, "write_file");
+    assert_eq!(
+        arguments["content"],
+        associative_learning::render_document_from(&changed)
+    );
+    assert!(
+        arguments["content"]
+            .as_str()
+            .unwrap()
+            .contains("reads \"9\"")
     );
 }
 
@@ -76,9 +109,18 @@ fn committed_agent_cli_session_is_byte_reproducible() {
         .iter()
         .map(|tool| tool.as_str().expect("advertised tool name"))
         .collect::<Vec<_>>();
-    let outcome =
-        run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect("agent workspace");
-    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect("session JSON");
+    let outcome = run_agentic_task_with_tools(
+        &format!("{ASSOCIATIVE_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```"),
+        &tools,
+    )
+    .expect("agent workspace");
+    let mut session = outcome.session_json();
+    assert_eq!(
+        session["task"],
+        format!("{ASSOCIATIVE_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```")
+    );
+    session["task"] = recorded["task"].clone();
+    let fresh = serde_json::to_string_pretty(&session).expect("session JSON");
 
     assert_eq!(format!("{fresh}\n"), committed);
 }
@@ -86,9 +128,18 @@ fn committed_agent_cli_session_is_byte_reproducible() {
 #[test]
 fn replay_driver_rejects_unavailable_or_repeated_adapters_before_execution() {
     for tools in [vec!["unsupported"], vec!["write_file", "write_file"]] {
-        assert!(run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).is_err());
+        assert!(
+            run_agentic_task_with_tools(
+                &format!("{ASSOCIATIVE_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```"),
+                &tools
+            )
+            .is_err()
+        );
     }
-    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("default execution");
+    let outcome = run_agentic_task(&format!(
+        "{ASSOCIATIVE_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("default execution");
     assert_eq!(
         outcome.tools_advertised,
         formal_ai::agentic_coding::DRIVER_TOOLS

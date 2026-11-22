@@ -317,6 +317,11 @@ fn plan_chat_step_routes(
             ));
         }
     }
+    if task.lines().any(|line| line.trim_end() == "```lino")
+        && let Some(report) = learning_report::route(&task)
+    {
+        return Some(report.plan_step(&task, messages, tool_names));
+    }
     // Bind a program's semantic operands before treating its source path as a
     // destination for a report about the rest of the request.
     if let Some(mut answer) =
@@ -363,14 +368,9 @@ fn plan_chat_step_routes(
 /// peels a named destination off a request and re-plans the remainder, and that
 /// is only ever the right reading when the destination is not already some
 /// other route's whole answer. A registered recipe *is* named by its artifact —
-/// `learning_report::route` matches a prompt precisely by finding its own
-/// `path` in it — so peeling that path off leaves a residual that no longer
-/// reaches the recipe, and the request is answered by whatever the remainder
-/// happens to look like instead.
-///
-/// Splitting the tail out lets the peeling ask the question directly: plan the
-/// *whole* request through the routes below and see whether one of them writes
-/// the file. Nothing here re-enters the peeling, so asking cannot recurse.
+/// peeling its `path` off prevents that route from recognizing the remainder.
+/// These routes can test what the whole request writes without re-entering
+/// the delivery peeling.
 pub(super) fn plan_settled_routes(
     task: &str,
     messages: &[ChatMessage],
@@ -539,7 +539,7 @@ pub(super) fn plan_settled_routes(
     // learning comes before self-healing because both accept auto-learning terms;
     // the requested artifact scope distinguishes their recipes.
     if let Some(report) = learning_report::route(task) {
-        return Some(report.plan_step(messages, tool_names));
+        return Some(report.plan_step(task, messages, tool_names));
     }
     // Workspace mutations are grounded in client-owned file bytes. This route
     // follows the explicit learning recipes so their requested artifacts cannot
