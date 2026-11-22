@@ -153,20 +153,21 @@ test('documentation sparse inputs cover the static policy closure and locked par
 
 // Execute the retained workflow conditions for a real documentation-only
 // classification; an event-level reporting exception cannot admit a build.
-function assertDocumentationContextSafety(release, native) {
+function assertDocumentationContextSafety(release, native, verifiedSha = 'a'.repeat(40)) {
+  const candidateSha = 'a'.repeat(40);
   const outputs = new Proxy({}, {get: (_, key) => key === 'docs-changed' ? 'true' : 'false'});
   const results = new Map();
   const needs = new Proxy({}, {get: (_, id) => {
     assert.ok(Object.hasOwn(release.jobs, id), 'unknown job dependency ' + id);
     if (!results.has(id)) results.set(id, evaluate(release.jobs[id].if) ? 'success' : 'skipped');
-    return {result: results.get(id), outputs};
+    return {result: results.get(id), outputs: id === 'fast-pr-lint' ? {'tested-sha': verifiedSha} : outputs};
   }});
   const evaluate = (expression, inputs = {}) => {
     if (expression === undefined) return true;
     const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
       .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
     return Boolean(new Script(source).runInNewContext({
-      github: {event_name: 'pull_request', ref: 'refs/pull/1/merge', event: {inputs: {}, workflow_run: {head_branch: 'main'}}},
+      github: {sha: candidateSha, event_name: 'pull_request', ref: 'refs/pull/1/merge', event: {inputs: {}, workflow_run: {head_branch: 'main'}}},
       needs, inputs, vars: {}, cancelled: () => false, always: () => true,
       fromJSON: JSON.parse, contains: (container, value) => container.includes(value),
     }, {timeout: 100}));
@@ -190,6 +191,10 @@ test('documentation PR context reporting runs no native tool, product build or p
   const release = workflows.find(row => row.path.endsWith('/release.yml')).document;
   const native = workflows.find(row => row.path.endsWith('/native-type-check.yml')).document;
   assertDocumentationContextSafety(release, native);
+  for (const receipt of ['', 'b'.repeat(40)]) {
+    assert.throws(() => assertDocumentationContextSafety(release, native, receipt),
+      'a missing or different-source receipt cannot admit the native reporter');
+  }
   for (const mutate of [
     value => delete value.jobs['build-artifacts'].if,
     value => value.jobs['native-type-check'].with['compile-inputs-changed'] = true,

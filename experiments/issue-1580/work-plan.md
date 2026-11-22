@@ -510,3 +510,6 @@ Evidence and limitations: [terminal/candidate/custody case study](../../docs/cas
 
 
 Complete local replay at `dd99013af518469481fb8072c4d964b1f59b3cf1`: 89 maintained gates pass, 54 CI-only exclusions, zero failures, clean before/after and no Rust build. Final-source hosted execution and all wider requirements remain unfinished. See the exact-source manifest in `evidence/checks/terminal-candidate-full-gates/manifest.json`.
+
+
+The maintained checks dispatch at `b8383d52` reveals incompatible GitHub CLI pagination flags and hosted documentation run 45039167261 reveals missing candidate receipts in its simulator. The action regression fails before the correction; ten dispatch and 37 documentation tests pass after it, with focused gates passing. Exact-source hosted verification is still pending. See `docs/case-studies/issue-1580/dispatch-pagination-and-context.md` and `evidence/checks/dispatch-pagination-repair/manifest.json`; these supplied edits earn zero authorship credit.
