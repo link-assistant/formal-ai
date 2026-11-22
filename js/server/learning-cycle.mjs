@@ -23,7 +23,6 @@ import { parseLino, readRepoFile } from './lino.mjs';
 import { serverMessage } from './messages.mjs';
 
 export const GOOGLE_TRENDS_FRONTIER = 'google-trends';
-export const GOOGLE_TRENDS_FRONTIER_RECORD_FILE = 'data/meta/learning-frontier-google-trends.lino';
 export const LEARNED_REQUEST_OPENERS_SEED_FILE = 'data/seed/learned-request-openers.lino';
 export const TERM_INFORMATION_ROLE = 'term_information_request_opener';
 export const MINIMUM_SUPPORT = 2;
@@ -216,9 +215,9 @@ export function runLearningCycle(frontier, items) {
   return { frontier, frontier_items: items.length, candidates, blocked, proposals: buildProposals(frontier, candidates) };
 }
 
-/** Mirrors `google_trends_learning_cycle`: the cycle over the frozen Google Trends frontier. */
-export function googleTrendsLearningCycle() {
-  return runLearningCycle(GOOGLE_TRENDS_FRONTIER, parseFrontierRecord(readRepoFile(GOOGLE_TRENDS_FRONTIER_RECORD_FILE)));
+/** Mirrors `google_trends_learning_cycle` over the caller-supplied frontier. */
+export function googleTrendsLearningCycle(document) {
+  return runLearningCycle(GOOGLE_TRENDS_FRONTIER, parseFrontierRecord(document));
 }
 
 /** Mirrors `escape_value` in rust/src/memory.rs, imported as `quote` by promotion. */

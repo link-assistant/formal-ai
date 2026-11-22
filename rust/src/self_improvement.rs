@@ -196,7 +196,7 @@ impl BenchmarkGateReport {
         self.observed && self.passed >= self.minimum_pass_count
     }
 
-    const fn status_slug(&self) -> &'static str {
+    pub(crate) const fn status_slug(&self) -> &'static str {
         if !self.observed {
             return "absent";
         }

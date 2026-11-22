@@ -26,8 +26,8 @@ pub enum LearnAction {
         #[arg(long, default_value_t = String::from(GOOGLE_TRENDS_FRONTIER))]
         frontier: String,
 
-        /// Read frontier items from this `learning_frontier` document instead of
-        /// the committed record.
+        /// Read frontier items from this `learning_frontier` document or source report.
+        /// Required for Google Trends.
         #[arg(long, value_name = "PATH")]
         from: Option<PathBuf>,
 
@@ -61,7 +61,7 @@ pub enum LearnAction {
 pub struct LearnCycleArgs {
     /// The slug of the recorded frontier to run the cycle over.
     pub frontier: String,
-    /// Read frontier items from this file instead of the committed record.
+    /// Read frontier items from this file instead of the registered record.
     pub from: Option<PathBuf>,
     /// Explicit acknowledgement that the run only proposes. Always true today.
     pub dry_run: bool,
@@ -153,7 +153,17 @@ pub fn run_learn_cycle(args: &LearnCycleArgs) -> Result<(), Box<dyn Error>> {
 fn load_frontier(args: &LearnCycleArgs) -> Result<(String, Vec<FrontierItem>), Box<dyn Error>> {
     if let Some(path) = &args.from {
         let document = fs::read_to_string(path)?;
-        return Ok((String::from("custom"), parse_frontier_record(&document)));
+        let items = parse_frontier_record(&document);
+        let tree = formal_ai::seed::parse_lino(&document);
+        let frontier = if tree.children.iter().any(|root| {
+            root.name == "google_trends_learning"
+                || root.find_child_value("frontier") == GOOGLE_TRENDS_FRONTIER
+        }) {
+            GOOGLE_TRENDS_FRONTIER
+        } else {
+            "custom"
+        };
+        return Ok((frontier.to_owned(), items));
     }
     let Some(frontier) = recorded_frontier(&args.frontier) else {
         return Err(format!(
@@ -167,6 +177,13 @@ fn load_frontier(args: &LearnCycleArgs) -> Result<(String, Vec<FrontierItem>), B
         )
         .into());
     };
+    if frontier.document.is_empty() {
+        return Err(format!(
+            "frontier '{}' requires a learning report via --from <PATH>",
+            frontier.slug
+        )
+        .into());
+    }
     Ok((
         String::from(frontier.slug),
         parse_frontier_record(frontier.document),

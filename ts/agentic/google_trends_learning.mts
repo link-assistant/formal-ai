@@ -1,19 +1,7 @@
-// Agentic recipe for issues #498 + #558: route the Google Trends learning
-// frontier through the human-gated self-improvement loop
-// (rust/src/agentic_coding/google_trends_learning.rs).
-//
-// The routing predicate is ported exactly, including the seed-declared
-// learn-from-source directive (crate/seed_learning_sources.mjs). The report
-// itself replays every catalog prompt through the engine
-// (`crate::google_trends_learning::trending_learning_report`):
-// native-only: rust/src/google_trends_learning.rs (an engine replay of the
-// catalog). `renderDocument` returns the committed artifact
-// data/meta/google-trends-learning.lino, pinned byte-for-byte to
-// `render_document()` by the Rust test
-// `committed_google_trends_learning_report_is_generated_by_the_recipe`; the
-// final answer reads its counts from the fields `links_notation` writes.
+// Plan a human-gated learning report from the captured publisher feed.
 
-import { readText } from './host.mjs';
+import { BenchmarkGateReport, learnRulesFromUnknownTraces, unknownTraceFromEventLog } from '../server/self-improvement.mjs';
+import { linoField, loadCatalog } from './google_trends_catalog.mjs';
 import { agenticMessage } from './messages.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
 import { learningSources, matchDirective } from './crate/seed_learning_sources.mjs';
@@ -50,9 +38,55 @@ function isLearnFromSourceDirective(lowercased) {
   return matchDirective(learningSources(), lowercased)?.capability === LEARNING_CAPABILITY;
 }
 
-/** Mirrors `fn render_document` in rust/src/agentic_coding/google_trends_learning.rs (the committed artifact). */
-export function renderDocument() {
-  return readText(`data/meta/${GOOGLE_TRENDS_LEARNING_PATH}`);
+/** Mirrors `trending_learning_report_from_feed`. */
+export function renderLearningReport(catalog) {
+  const frontier = [];
+  const traces = [];
+  let total = 0;
+  for (const topic of catalog.topics) {
+    for (const { language, variation, prompt, answer } of topic.answered) {
+      total += 1;
+      if (answer.intent !== 'unknown') continue;
+      frontier.push({ rank: topic.rank, query: topic.query, language, variation, prompt, engine_intent: answer.intent, routed_to: 'human_triage' });
+      const trace = unknownTraceFromEventLog(prompt, answer.intent, answer.solver_events ?? []);
+      if (trace) traces.push(trace);
+    }
+  }
+  const run = learnRulesFromUnknownTraces(traces, BenchmarkGateReport.absentForIssue362());
+  const reason = run.rejections[0]?.reason;
+  const summary = agenticMessage(frontier.length ? 'google_trends_frontier_triage' : 'google_trends_frontier_empty');
+  const fields = {
+    record_type: 'google_trends_learning_report',
+    issue: '498',
+    auto_learning_loop: 'issue_558_self_improvement',
+    human_gated: 'true',
+    summary,
+    source_url: catalog.url,
+    source_sha256: catalog.sha256,
+    total_prompts: total,
+    handled_by_engine: total - frontier.length,
+    learning_frontier: frontier.length,
+    learning_run_id: run.id,
+    learning_run_trace_count: run.trace_count,
+    learning_run_proposals: run.proposals.length,
+    learning_run_adopted: 0,
+    learning_run_rejection_reason: reason && run.rejections.every((item) => item.reason === reason) ? reason : 'none',
+    benchmark_suite: run.gate.suite_id,
+    benchmark_status: run.gate.statusSlug(),
+  };
+  let out = 'google_trends_learning\n';
+  for (const [key, value] of Object.entries(fields)) out += linoField(2, key, value);
+  for (const entry of frontier) {
+    out += '  frontier_prompt\n';
+    for (const [key, value] of Object.entries(entry)) out += linoField(4, key, value);
+  }
+  return out;
+}
+
+/** Mirrors `document_for_task`. */
+export async function renderDocument(task) {
+  const catalog = await loadCatalog(task);
+  return catalog && renderLearningReport(catalog);
 }
 
 /**
@@ -60,13 +94,14 @@ export function renderDocument() {
  * @param {string} document
  */
 export function finalAnswer(document) {
-  const report = parseRoot(renderDocument()).children[0];
+  const report = parseRoot(document).children[0];
   return agenticMessage('google_trends_learning_final_answer', {
     total: findChildValue(report, 'total_prompts'),
     handled: findChildValue(report, 'handled_by_engine'),
     frontier: findChildValue(report, 'learning_frontier'),
     proposals: findChildValue(report, 'learning_run_proposals'),
     adopted: findChildValue(report, 'learning_run_adopted'),
+    source_url: findChildValue(report, 'source_url'),
     path: GOOGLE_TRENDS_LEARNING_PATH,
     document: trimEnd(document),
   });

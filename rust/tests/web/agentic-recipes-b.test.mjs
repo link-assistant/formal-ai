@@ -10,6 +10,7 @@
 import { procedureWorkspace } from "./helpers/procedure-workspace.mjs";
 import { before, test } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 import { installNodeHost } from "../../../js/agentic/node-host.mjs";
@@ -26,6 +27,7 @@ import * as dreamingAudit from "../../../js/agentic/dreaming_audit.mjs";
 import * as questionCatalog from "../../../js/agentic/question_catalog.mjs";
 import * as googleTrendsCatalog from "../../../js/agentic/google_trends_catalog.mjs";
 import * as googleTrendsLearning from "../../../js/agentic/google_trends_learning.mjs";
+import { planGoogleTrendsCatalogStep } from "../../../js/agentic/document_recipe.mjs";
 import {
   candidateFromLinksNotation,
   candidateLinksNotation,
@@ -730,7 +732,7 @@ test("the question catalog recipe routes narrowly and answers like the committed
   );
 });
 
-test("the Google Trends recipes route and answer like the committed sessions", () => {
+test("the Google Trends recipes still recognize the recorded task shapes", () => {
   assert.ok(
     googleTrendsCatalog.isGoogleTrendsCatalogTask(
       googleTrendsCatalog.googleTrendsCatalogTask(),
@@ -811,19 +813,81 @@ test("the Google Trends recipes route and answer like the committed sessions", (
       assert.ok(recipe.isGoogleTrendsLearningTask(recorded.task), path);
     else assert.ok(recipe.isGoogleTrendsCatalogTask(recorded.task), path);
     assert.equal(
-      recipe.renderDocument(),
-      recorded.steps[0].arguments.content,
-      path,
-    );
-    assert.equal(
       JSON.parse(JSON.stringify(recorded.steps[1].arguments)).command,
       recipe.verificationCommand(),
       path,
     );
-    assert.equal(
-      recipe.finalAnswer(recipe.renderDocument()),
-      recorded.final_answer,
-      path,
-    );
+  }
+});
+
+test("Trends recipes solve the selected publisher feed and keep its digest across tool turns", async () => {
+  const original = host();
+  const captures = new Map(["US", "DE"].map((region) => {
+    const base = `docs/case-studies/issue-1613/evidence/trends/${region}`;
+    const text = read(`${base}.xml`);
+    const url = read(`${base}.url`).trim();
+    return [url, { text, source_url: url, fetched_at: "1795306791", sha256: createHash("sha256").update(text).digest("hex") }];
+  }));
+  const [us, de] = [...captures.values()];
+  let fetches = 0;
+  const requests = [];
+  try {
+    installHost({
+      ...original,
+      sourceFetch: ({ ttlSeconds }) => {
+        assert.equal(ttlSeconds, 900);
+        return (url) => { fetches += 1; return captures.get(url); };
+      },
+      solve: async (prompt) => {
+        requests.push(prompt);
+        return { intent: prompt.startsWith("Tell me about") ? "unknown" : "web_search", answer: prompt, confidence: 0 };
+      },
+    });
+    const document = await googleTrendsCatalog.renderDocument("Google Trends catalog");
+    assert.ok(document.includes("michigan vs villanova"));
+    assert.ok(document.includes(us.sha256));
+    assert.match(document, /  prompt_count "80"/u);
+
+    const report = await googleTrendsLearning.renderDocument("Google Trends learning frontier geo DE");
+    assert.ok(report.includes("juventus turin"));
+    assert.ok(report.includes(de.sha256));
+    assert.match(report, /  learning_frontier "10"/u);
+    assert.match(report, /  learning_run_trace_count "10"/u);
+    assert.match(report, /  learning_run_adopted "0"/u);
+    assert.match(report, /  benchmark_status "absent"/u);
+    assert.equal(requests.length, 160);
+    assert.ok(requests.some((prompt) => prompt.startsWith("Расскажи") && prompt.includes("juventus turin")));
+
+    assert.equal(await googleTrendsCatalog.renderDocument("Google Trends catalog geo=123"), null);
+    assert.equal(fetches, 2);
+    assert.equal(await googleTrendsCatalog.loadCatalog("", () => ({ ...us, sha256: de.sha256 })), null);
+    assert.deepEqual(googleTrendsCatalog.parseGoogleTrendsRss("<html>source unavailable</html>"), []);
+
+    const task = "Build a Google Trends catalog with prompts geo=DE";
+    const messages = [user(task)];
+    const tools = ["write_file", "run_command"];
+    const write = await planGoogleTrendsCatalogStep(messages, tools, task);
+    const written = JSON.parse(write.calls[0].arguments).content;
+    assert.ok(written.includes(de.sha256));
+    assert.equal(fetches, 3);
+    answerToolCall(messages, write.calls[0], `wrote ${Buffer.byteLength(written)} byte(s) to google-trends-catalog.lino`);
+
+    installHost({ ...original, sourceFetch: () => () => { throw Error("unexpected second source request"); } });
+    const verify = await planGoogleTrendsCatalogStep(messages, tools, task);
+    const command = googleTrendsCatalog.verificationCommand();
+    assert.equal(JSON.parse(verify.calls[0].arguments).command, command);
+    answerToolCall(messages, verify.calls[0], JSON.stringify({
+      schema: "command-execution-receipt/v1", command, complete: true, exit_code: 0,
+      stdout: written.split("\n").slice(0, 12).join("\n"), stderr: "", timed_out: false, truncated: false,
+    }));
+    const result = await planGoogleTrendsCatalogStep(messages, tools, task);
+    assert.equal(result.answer, googleTrendsCatalog.finalAnswer(written));
+
+    installHost({ ...original, sourceFetch: () => () => null });
+    assert.equal(await googleTrendsCatalog.renderDocument(task), null);
+    const offline = await planGoogleTrendsCatalogStep([user(task)], tools, task);
+    assert.match(offline.answer, /feed is unavailable/u);
+  } finally {
+    installHost(original);
   }
 });

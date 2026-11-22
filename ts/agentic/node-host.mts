@@ -183,10 +183,11 @@ function curlGet(url) {
  * the user's runtime cache, outside the caller repository) and
  * online by default; explicit offline and network-deny controls take precedence.
  */
-function nodeSourceFetch(readOnly) {
+function nodeSourceFetch(readOnly, { ttlSeconds } = {}) {
   return cachedSourceFetch({
     cacheDir: process.env.FORMAL_AI_SOURCE_CACHE_DIR || runtimeCachePaths().runtimeRoot,
     online: !readOnly && readNetworkAllowed(process.env),
+    ttlSeconds,
     io: boundedSourceCacheIo(curlGet)
   });
 }
@@ -308,7 +309,7 @@ export async function installNodeHost(worker, options = {}) {
     sourceCstTransformCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/source-cst-transform-request.mjs')],
     sourceUnaryConsolidationCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/consolidate-stateless-unary-request.mjs')],
     generatedSeedOwnerDeclarations,
-    sourceFetch: () => nodeSourceFetch(readOnly),
+    sourceFetch: (options) => nodeSourceFetch(readOnly, options),
     validateProgram: validateRepairProgram,
     comparisonBoundaryOperation: observedComparisonBoundaryOperation,
     observedSourceRepair: observedSourceRepairOperation,

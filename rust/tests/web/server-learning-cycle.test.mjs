@@ -11,12 +11,14 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import {
-  GOOGLE_TRENDS_FRONTIER, GOOGLE_TRENDS_FRONTIER_RECORD_FILE, LEARNED_REQUEST_OPENERS_SEED_FILE, googleTrendsLearningCycle,
+  GOOGLE_TRENDS_FRONTIER, LEARNED_REQUEST_OPENERS_SEED_FILE, googleTrendsLearningCycle,
   learningCycleLinksNotation, parseFrontierRecord, renderPromotionProposals, runLearningCycle, validated,
 } from '../../../js/server/learning-cycle.mjs';
 import { readRepoFile } from '../../../js/server/lino.mjs';
 
 const FIXTURES = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'learning-cycle');
+
+const HISTORICAL_FRONTIER = readRepoFile('docs/case-studies/issue-701/replay/learning-frontier-google-trends.lino');
 
 test('a fixture frontier renders the exact learning-cycle record both runtimes commit to', () => {
   const items = parseFrontierRecord(fs.readFileSync(path.join(FIXTURES, 'frontier.lino'), 'utf8'));
@@ -29,7 +31,7 @@ test('a fixture frontier renders the exact learning-cycle record both runtimes c
 });
 
 test('the Google Trends cycle emits promotion proposals in the issue-656 shape', () => {
-  const run = googleTrendsLearningCycle();
+  const run = googleTrendsLearningCycle(HISTORICAL_FRONTIER);
   assert.equal(run.frontier, GOOGLE_TRENDS_FRONTIER);
   assert.ok(run.proposals.length > 0, 'the cycle must propose something');
   assert.ok(run.candidates.some((candidate) => candidate.held_out.length > 0));
@@ -44,20 +46,20 @@ test('the Google Trends cycle emits promotion proposals in the issue-656 shape',
 });
 
 test('the cycle is deterministic and reproducible offline', () => {
-  const first = learningCycleLinksNotation(googleTrendsLearningCycle());
-  assert.equal(first, learningCycleLinksNotation(googleTrendsLearningCycle()));
+  const first = learningCycleLinksNotation(googleTrendsLearningCycle(HISTORICAL_FRONTIER));
+  assert.equal(first, learningCycleLinksNotation(googleTrendsLearningCycle(HISTORICAL_FRONTIER)));
   assert.ok(first.includes('mode "proposal_only"'));
   assert.ok(first.includes('human_gated "true"'));
 });
 
 test('the frozen frontier record spans every supported language, all unrouted', () => {
-  const items = parseFrontierRecord(readRepoFile(GOOGLE_TRENDS_FRONTIER_RECORD_FILE));
+  const items = parseFrontierRecord(HISTORICAL_FRONTIER);
   for (const language of ['en', 'ru', 'hi', 'zh']) assert.ok(items.some((item) => item.language === language), language);
   assert.ok(items.every((item) => item.engine_intent === 'unknown'));
 });
 
 test('every failure to adopt is preserved as a durable record', () => {
-  const run = googleTrendsLearningCycle();
+  const run = googleTrendsLearningCycle(HISTORICAL_FRONTIER);
   const record = learningCycleLinksNotation(run);
   assert.equal(run.blocked.filter((entry) => entry.reason === 'held_out_validation_failed').length,
     run.candidates.length - run.candidates.filter(validated).length);

@@ -12,10 +12,9 @@
 //!
 //! The cycle is deliberately small and symbolic — no statistics, no fabrication:
 //!
-//! 1. **Read a recorded frontier.** Frontier items come from a committed record
-//!    (`data/meta/learning-frontier-google-trends.lino`), not from a live network
-//!    call, so `formal-ai learn cycle --dry-run` is deterministic, reproducible
-//!    offline, and still replayable *after* its own proposals were adopted.
+//! 1. **Read a recorded frontier.** Pass an acquired report to `formal-ai learn
+//!    cycle --from REPORT --dry-run`. The cycle is deterministic and offline.
+//!    Tests explicitly supply the archived report to replay pre-adoption inputs.
 //! 2. **Derive a template.** Deleting the topic query from a frontier prompt
 //!    leaves the request frame around it. Two frontier items of the same class
 //!    must agree on that frame — a frame supported by one prompt is memorisation,
@@ -52,10 +51,6 @@ use crate::seed::parser::parse_lino;
 
 /// The frontier slug of the Google Trends learning frontier (issues #498/#499).
 pub const GOOGLE_TRENDS_FRONTIER: &str = "google-trends";
-
-/// The committed, frozen record of the Google Trends frontier.
-pub const GOOGLE_TRENDS_FRONTIER_RECORD: &str =
-    include_str!("../embedded/data/meta/learning-frontier-google-trends.lino");
 
 /// The frontier slug of the language learning frontier (issue #706).
 pub const LANGUAGE_GAP_FRONTIER: &str = "language-gap";
@@ -107,7 +102,7 @@ pub const UPSTREAM_BENCHMARKS_FRONTIER_PARTS: usize = 6;
 pub struct RecordedFrontier {
     /// The slug the CLI accepts.
     pub slug: &'static str,
-    /// The embedded frontier document.
+    /// The default frontier document, empty when replay requires caller input.
     pub document: &'static str,
     /// What the frontier records, for `--help`-style listings.
     pub summary: &'static str,
@@ -119,8 +114,8 @@ pub fn recorded_frontiers() -> Vec<RecordedFrontier> {
     vec![
         RecordedFrontier {
             slug: GOOGLE_TRENDS_FRONTIER,
-            document: GOOGLE_TRENDS_FRONTIER_RECORD,
-            summary: "trending prompts the engine could not route (issues #498/#499/#701)",
+            document: "",
+            summary: "trending prompts the engine could not route (provide a report with --from)",
         },
         RecordedFrontier {
             slug: LANGUAGE_GAP_FRONTIER,
@@ -352,12 +347,6 @@ pub fn parse_frontier_record(document: &str) -> Vec<FrontierItem> {
     items
 }
 
-/// The recorded Google Trends learning frontier.
-#[must_use]
-pub fn recorded_google_trends_frontier() -> Vec<FrontierItem> {
-    parse_frontier_record(GOOGLE_TRENDS_FRONTIER_RECORD)
-}
-
 /// Run the adoption cycle over a recorded frontier.
 #[must_use]
 pub fn run_learning_cycle(frontier: &str, items: &[FrontierItem]) -> LearningCycleRun {
@@ -423,8 +412,8 @@ pub fn language_gap_learning_cycle() -> LearningCycleRun {
 
 /// Run the cycle over the recorded Google Trends frontier.
 #[must_use]
-pub fn google_trends_learning_cycle() -> LearningCycleRun {
-    run_learning_cycle(GOOGLE_TRENDS_FRONTIER, &recorded_google_trends_frontier())
+pub fn google_trends_learning_cycle(document: &str) -> LearningCycleRun {
+    run_learning_cycle(GOOGLE_TRENDS_FRONTIER, &parse_frontier_record(document))
 }
 
 /// Derive one candidate surface for a frontier class.

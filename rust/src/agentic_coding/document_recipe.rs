@@ -392,43 +392,84 @@ pub(super) fn plan_dreaming_audit_step(
     )
 }
 
-/// The issues-#498 + #558 learning-frontier recipe: write the generated
-/// learning-frontier report → verify → final. Like the other self-referential recipes
-/// it needs no web step — the report is a pure function of the committed Trends catalog
-/// routed through the human-gated self-improvement loop
-/// ([`google_trends_learning::render_document`]), so the loop maps its own coverage gap
-/// and hands it to human triage. Steps whose tool the CLI did not advertise are skipped.
+/// Render the learning frontier from the regional capture.
 pub(super) fn plan_google_trends_learning_step(
+    task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> AgenticPlan {
-    let document = google_trends_learning::render_document();
-    let final_answer = google_trends_learning::final_answer(&document);
-    plan_document_recipe(
+    plan_trends_document(
+        task,
         messages,
         tool_names,
-        DocumentRecipe {
-            path: google_trends_learning::GOOGLE_TRENDS_LEARNING_PATH,
-            verify_command: google_trends_learning::verification_command(),
-            final_answer,
-            document,
-        },
+        google_trends_learning::GOOGLE_TRENDS_LEARNING_PATH,
+        google_trends_learning::document_for_task,
+        google_trends_learning::verification_command,
+        google_trends_learning::final_answer,
     )
 }
 
+/// Render the catalog from the regional capture.
 pub(super) fn plan_google_trends_catalog_step(
+    task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> AgenticPlan {
-    let document = google_trends_catalog::render_document();
-    let final_answer = google_trends_catalog::final_answer(&document);
+    plan_trends_document(
+        task,
+        messages,
+        tool_names,
+        google_trends_catalog::GOOGLE_TRENDS_CATALOG_PATH,
+        google_trends_catalog::document_for_task,
+        google_trends_catalog::verification_command,
+        google_trends_catalog::final_answer,
+    )
+}
+
+fn plan_trends_document(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    path: &'static str,
+    render: fn(&str) -> Option<String>,
+    verify: fn() -> String,
+    answer: fn(&str) -> String,
+) -> AgenticPlan {
+    let progress = Progress::scan(messages);
+    let previous = progress
+        .research_attempts()
+        .iter()
+        .rev()
+        .find_map(|attempt| {
+            if attempt.capability != Capability::Write {
+                return None;
+            }
+            let args: serde_json::Value =
+                serde_json::from_str(attempt.arguments.as_deref()?).ok()?;
+            let names = ["path", "filePath", "file_path"];
+            if names
+                .iter()
+                .filter_map(|key| args.get(*key))
+                .any(|value| value.as_str() != Some(path))
+                || !names.iter().any(|key| args.get(*key).is_some())
+            {
+                return None;
+            }
+            args.get("content")?.as_str().map(str::to_owned)
+        });
+    let Some(document) = previous.or_else(|| render(task)) else {
+        return AgenticPlan::Final(crate::seed::agentic_message(
+            "google_trends_source_unavailable",
+            &[],
+        ));
+    };
     plan_document_recipe(
         messages,
         tool_names,
         DocumentRecipe {
-            path: google_trends_catalog::GOOGLE_TRENDS_CATALOG_PATH,
-            verify_command: google_trends_catalog::verification_command(),
-            final_answer,
+            path,
+            verify_command: verify(),
+            final_answer: answer(&document),
             document,
         },
     )

@@ -642,10 +642,10 @@ pub(super) fn plan_settled_routes(
     // disjoint from the catalog recipe's (prompt/answer/catalog/test), so ordering only
     // guards a request that somehow names both.
     if google_trends_learning::is_google_trends_learning_task(task) {
-        return Some(plan_google_trends_learning_step(messages, tool_names));
+        return Some(plan_google_trends_learning_step(task, messages, tool_names));
     }
     if google_trends_catalog::is_google_trends_catalog_task(task) {
-        return Some(plan_google_trends_catalog_step(messages, tool_names));
+        return Some(plan_google_trends_catalog_step(task, messages, tool_names));
     }
     // The question-catalog recipe (issue #527): enumerate every possible question
     // smallest-first, classify each grammatically and logically, and answer the

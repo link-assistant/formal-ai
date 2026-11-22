@@ -22,6 +22,8 @@ import * as ledger from './ledger.mjs';
 import * as meaningDetail from './meaning_detail.mjs';
 import { fetchArguments, finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { Progress } from './progress.mjs';
+import { agenticMessage } from './messages.mjs';
+import { parseJson } from './crate/rust_str.mjs';
 import * as questionCatalog from './question_catalog.mjs';
 import * as rebuildPlan from './rebuild_plan.mjs';
 import * as repairStrategy from './repair_strategy.mjs';
@@ -150,24 +152,36 @@ export async function planDreamingAuditStep(messages, toolNames) {
   return planDocumentRecipe(messages, toolNames, await catRecipe(dreamingAudit, dreamingAudit.DREAMING_AUDIT_PATH));
 }
 
-/** Mirrors `fn plan_google_trends_learning_step`. */
-export async function planGoogleTrendsLearningStep(messages, toolNames) {
-  const document = await googleTrendsLearning.renderDocument();
+async function planTrendsDocument(task, messages, toolNames, module, path) {
+  const progress = Progress.scan(messages);
+  const names = ['path', 'filePath', 'file_path'];
+  let document;
+  for (const attempt of [...progress.attempts].reverse()) {
+    if (attempt.capability !== Capability.Write || !attempt.arguments) continue;
+    const args = parseJson(attempt.arguments);
+    if (!args || typeof args.content !== 'string') continue;
+    const paths = names.filter((key) => Object.hasOwn(args, key));
+    if (paths.length && paths.every((key) => args[key] === path)) {
+      document = args.content;
+      break;
+    }
+  }
+  document ??= await module.renderDocument(task);
+  if (!document) return finalAnswer(agenticMessage('google_trends_source_unavailable'));
   return planDocumentRecipe(messages, toolNames, {
-    path: googleTrendsLearning.GOOGLE_TRENDS_LEARNING_PATH,
-    verify_command: await googleTrendsLearning.verificationCommand(),
-    final_answer: await googleTrendsLearning.finalAnswer(document),
+    path,
+    verify_command: module.verificationCommand(),
+    final_answer: module.finalAnswer(document),
     document,
   });
 }
 
+/** Mirrors `fn plan_google_trends_learning_step`. */
+export async function planGoogleTrendsLearningStep(messages, toolNames, task) {
+  return planTrendsDocument(task, messages, toolNames, googleTrendsLearning, googleTrendsLearning.GOOGLE_TRENDS_LEARNING_PATH);
+}
+
 /** Mirrors `fn plan_google_trends_catalog_step`. */
-export async function planGoogleTrendsCatalogStep(messages, toolNames) {
-  const document = await googleTrendsCatalog.renderDocument();
-  return planDocumentRecipe(messages, toolNames, {
-    path: googleTrendsCatalog.GOOGLE_TRENDS_CATALOG_PATH,
-    verify_command: await googleTrendsCatalog.verificationCommand(),
-    final_answer: await googleTrendsCatalog.finalAnswer(document),
-    document,
-  });
+export async function planGoogleTrendsCatalogStep(messages, toolNames, task) {
+  return planTrendsDocument(task, messages, toolNames, googleTrendsCatalog, googleTrendsCatalog.GOOGLE_TRENDS_CATALOG_PATH);
 }

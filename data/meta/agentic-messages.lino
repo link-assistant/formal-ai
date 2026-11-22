@@ -427,9 +427,9 @@ agentic_messages
   message dreaming_audit_final_answer
     text "Audited the grounded issue-#540 dreaming meta-algorithm through Formal AI by cross-referencing its recipe stages against the functions and test suites the recipe itself declares. {stage_count} stages analyzed, {open_gaps} open gap(s) found.\n\nGenerated document ({path}):\n\n{document}"
   message google_trends_learning_final_answer
-    text "Routed the Google Trends learning frontier through the human-gated self-improvement loop: of {total} trending prompts, the engine already resolves {handled} and leaves {frontier} on the learning frontier. Every frontier trace was handed to the issue-#558 learner, which — because trending searches are open-domain questions, not program-plan modifiers — proposed {proposals} rules and adopted {adopted}: nothing changes without human review. The report is a pure function of the committed catalog.\n\nGenerated document ({path}):\n\n{document}"
+    text "Routed trends from {source_url} through human-gated learning. The engine routed {handled} of {total} generated prompts and left {frontier} for triage. The learner proposed {proposals} rules and adopted {adopted}.\n\nGenerated document ({path}):\n\n{document}"
   message google_trends_catalog_final_answer
-    text "Generated the Google Trends catalog from {topic_count} top searches in {geo}: produced {prompt_count} multilingual request variants and answered {answer_count} of them through the standard Formal AI engine. The catalog is generated from the checked-in Trends RSS snapshot, so tests stay offline while the converter can refresh the seed from the live RSS feed.\n\nGenerated document ({path}):\n\n{document}"
+    text "Generated the Google Trends catalog from {topic_count} searches in {geo} using {source_url}. The engine answered {answer_count} of {prompt_count} multilingual prompts.\n\nGenerated document ({path}):\n\n{document}"
   message question_catalog_final_answer
     text "Generated the question catalog from a frequency-tiered vocabulary of {vocabulary} words: classified {candidates} candidates smallest-first into the four-way distinction (grammatical-and-meaningful, grammatical open-slot, fragment, ungrammatical) and answered the first {answers} grammatical-and-meaningful questions with the deterministic engine. The answered questions are a reviewable recall table — a repeated question is answered from the catalog instead of re-derived — and nothing changes solver behaviour without the human-gated learning ledger. Neural inference is not used; every candidate, class, and answer is a deterministic function of the lexicon.\n\nGenerated document ({path}):\n\n{document}"
   message associative_persistence_unresolved_evidence
@@ -720,3 +720,11 @@ agentic_messages
 
   message literal-create-receipt-unbound
     text "Unbound target verification receipt."
+  message google_trends_source_unavailable
+    text "The requested regional Google Trends feed is unavailable. Provide a valid feed region and a verified capture or allow the source to be fetched."
+  message google_trends_chat_learning_summary
+    text "I collected {total} multilingual prompts from Google Trends ({source_url}). The solver routed {handled}, and the remaining {frontier} went to the human-gated learning loop. The learner proposed {proposals} rules and adopted {adopted}."
+  message google_trends_frontier_empty
+    text "Every generated prompt from this feed routed through the engine."
+  message google_trends_frontier_triage
+    text "The learning frontier records generated prompts the engine could not route and hands their traces to human triage."

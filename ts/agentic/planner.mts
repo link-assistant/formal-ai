@@ -468,7 +468,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
          documentRecipe.planRebuildStep], [googleTrendsLearning.isGoogleTrendsLearningTask, documentRecipe.planGoogleTrendsLearningStep],
          [googleTrendsCatalog.isGoogleTrendsCatalogTask, documentRecipe.planGoogleTrendsCatalogStep], [questionCatalog.isQuestionCatalogTask,
          documentRecipe.planQuestionCatalogStep]]) {
-    if (predicate(task)) return await step(messages, toolNames);
+    if (predicate(task)) return await step(messages, toolNames, task);
   }
   // The file-analysis arm. After its typed read, where a name or literal is
   // used inside the workspace is a content search (PR #1188 T90): grep it,

@@ -338,10 +338,12 @@ pub use github_logs::{
 pub use google_trends_catalog::{
     GOOGLE_TRENDS_TOP_LIMIT, GoogleTrendNewsItem, GoogleTrendPromptAnswer,
     GoogleTrendPromptVariant, GoogleTrendTopic, GoogleTrendsCatalog, GoogleTrendsParseError,
-    google_trends_catalog, parse_google_trends_rss, render_google_trends_snapshot_lino,
+    answer_google_trends_catalog, fetch_google_trends_feed, google_trends_catalog,
+    parse_google_trends_rss, render_google_trends_snapshot_lino,
 };
 pub use google_trends_learning::{
     TrendingFrontierEntry, TrendingLearningReport, trending_learning_report,
+    trending_learning_report_from_feed,
 };
 pub use intent_formalization::{
     IntentFormalization, IntentFormalizationCache, IntentFormalizationCacheEntry, IntentKind,
@@ -355,8 +357,7 @@ pub use language::{Language, detect as detect_language};
 pub use learning_adoption_ledger::{AdoptionLedger, AdoptionPair, google_trends_adoption_ledger};
 pub use learning_cycle::{
     BlockedClass, CandidateSurface, FrontierItem, HeldOutTest, LearningCycleRun,
-    google_trends_learning_cycle, parse_frontier_record, recorded_google_trends_frontier,
-    run_learning_cycle,
+    google_trends_learning_cycle, parse_frontier_record, run_learning_cycle,
 };
 pub use learning_ledger::{
     HumanApproval, LearningLedger, LedgerEntry, PromotionRejected, approved_lesson_for,

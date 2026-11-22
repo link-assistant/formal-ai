@@ -1,11 +1,10 @@
-//! Google Trends snapshot conversion and multilingual prompt cataloging.
+//! Google Trends feed retrieval and multilingual prompt cataloging.
 //!
 //! Issue #498 asks for an automated path from Google Trends into reviewable test
 //! cases: take the top searches, turn each search into Formal AI requests, include
 //! variants in every supported language, and answer them through the normal symbolic
-//! engine. The module keeps the live-network part outside tests. A checked-in Trends
-//! RSS snapshot is parsed into `data/seed/google-trends-snapshot.lino`; the catalog is
-//! then a deterministic function of that seed and `FormalAiEngine`.
+//! engine. The runtime reads the publisher through its source capture client.
+//! Tests can pass recorded RSS bytes directly to the same conversion.
 //!
 //! The multilingual request wording is *data*, not code: the templates live in
 //! `data/seed/google-trends-prompts.lino` and are expanded per topic (per the
@@ -18,14 +17,18 @@ use std::fmt::{self, Write as _};
 use std::sync::OnceLock;
 
 use crate::engine::FormalAiEngine;
-use crate::seed::parser::{LinoNode, parse_lino};
+use crate::seed::parser::parse_lino;
 use crate::seed::supported_languages;
+use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
 
 /// How many Google Trends topics issue #498 requires the system to answer.
 pub const GOOGLE_TRENDS_TOP_LIMIT: usize = 10;
 
-const GOOGLE_TRENDS_SNAPSHOT_LINO: &str =
-    include_str!("../embedded/data/seed/google-trends-snapshot.lino");
+const SOURCE_ID: &str = "google_trends_rss";
+const DEFAULT_GEO: &str = "US";
+
+const FEED_TTL_SECONDS: u64 = 900;
+
 const GOOGLE_TRENDS_PROMPTS_LINO: &str =
     include_str!("../embedded/data/seed/google-trends-prompts.lino");
 
@@ -40,8 +43,10 @@ pub struct GoogleTrendsCatalog {
     pub geo: String,
     /// Google Trends locale used when collecting the feed.
     pub locale: String,
-    /// ISO-like timestamp for when the checked-in snapshot was collected.
+    /// Timestamp assigned when the source was captured.
     pub collected_at: String,
+    /// Digest of the exact feed bytes, when captured by the source client.
+    pub source_sha256: Option<String>,
     /// Ranked topics, capped at [`GOOGLE_TRENDS_TOP_LIMIT`] for issue #498.
     pub topics: Vec<GoogleTrendTopic>,
 }
@@ -146,8 +151,14 @@ pub fn parse_google_trends_rss(
     geo: &str,
     locale: &str,
 ) -> Result<GoogleTrendsCatalog, GoogleTrendsParseError> {
+    if !rss_xml.contains("<rss") || !rss_xml.contains("<channel>") {
+        return Err(GoogleTrendsParseError::NoTopics);
+    }
     let mut topics = Vec::new();
     for block in extract_blocks(rss_xml, "item") {
+        if topics.len() == GOOGLE_TRENDS_TOP_LIMIT {
+            break;
+        }
         let Some(query) = extract_text(block, "title") else {
             continue;
         };
@@ -174,19 +185,101 @@ pub fn parse_google_trends_rss(
     }
 
     Ok(GoogleTrendsCatalog {
-        source: "google_trends_rss".to_string(),
-        source_url: format!("https://trends.google.com/trending/rss?geo={geo}"),
+        source: SOURCE_ID.to_owned(),
+        source_url: feed_url(geo).unwrap_or_default(),
         geo: geo.to_string(),
         locale: locale.to_string(),
         collected_at: String::new(),
+        source_sha256: None,
         topics,
     })
 }
 
-/// The deterministic issue-#498 catalog generated from the checked-in Trends snapshot.
+fn feed_url(geo: &str) -> Option<String> {
+    if geo.len() != 2 || !geo.bytes().all(|byte| byte.is_ascii_uppercase()) {
+        return None;
+    }
+    crate::seed::source_record(SOURCE_ID).map(|source| source.api_url(&[("geo", geo)]))
+}
+
+fn default_locale() -> Option<String> {
+    crate::seed::source_record(SOURCE_ID)?
+        .api_language
+        .into_iter()
+        .next()
+}
+
+/// Read the ranked topics for one region through the caller's capture client.
+pub fn fetch_google_trends_feed<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    geo: &str,
+    locale: &str,
+) -> Option<GoogleTrendsCatalog> {
+    let url = feed_url(geo)?;
+    let capture = client.fetch(&url).ok()?;
+    let rss = std::str::from_utf8(capture.bytes()).ok()?;
+    let mut snapshot = parse_google_trends_rss(rss, geo, locale).ok()?;
+    snapshot.source_url = capture.source_url().into();
+    snapshot.collected_at = capture.fetched_at().into();
+    snapshot.source_sha256 = Some(capture.sha256().into());
+    Some(snapshot)
+}
+
+/// Open the configured regional feed, respecting the runtime's network policy.
+pub fn runtime_google_trends_feed(
+    geo: &str,
+    locale: &str,
+    online: bool,
+) -> Option<GoogleTrendsCatalog> {
+    let client = CachedSourceClient::new(
+        crate::coding::synthesis_runtime::source_cache_root(),
+        CurlSourceTransport,
+    )
+    .with_ttl_seconds(FEED_TTL_SECONDS)
+    .with_online(online && crate::solver_config::read_network_allowed());
+    fetch_google_trends_feed(&client, geo, locale)
+}
+
+/// Resolve the requested feed geography from a geo argument or the default feed.
+pub fn requested_geo(task: &str) -> Option<String> {
+    let lower = task.to_ascii_lowercase();
+    let mut words = lower
+        .split(|ch: char| ch.is_whitespace() || matches!(ch, '?' | '&' | '#'))
+        .filter(|word| !word.is_empty());
+    let mut geo = DEFAULT_GEO;
+    while let Some(word) = words.next() {
+        if let Some(value) = word.strip_prefix("geo=") {
+            geo = value;
+            break;
+        }
+        if word == "geo" {
+            geo = words.next()?;
+            break;
+        }
+    }
+    (geo.len() == 2 && geo.bytes().all(|byte| byte.is_ascii_alphabetic()))
+        .then(|| geo.to_ascii_uppercase())
+}
+
+/// Load the current feed identified by a recipe request.
+pub fn feed_for_task(task: &str) -> Option<GoogleTrendsCatalog> {
+    runtime_google_trends_feed(&requested_geo(task)?, &default_locale()?, true)
+}
+
+/// Load the default feed used by the catalog API.
 #[must_use]
 pub fn google_trends_catalog() -> GoogleTrendsCatalog {
-    cached_catalog().clone()
+    feed_for_task("")
+        .map(answer_google_trends_catalog)
+        .unwrap_or_else(|| GoogleTrendsCatalog {
+            source: SOURCE_ID.to_owned(),
+            source_url: feed_url(DEFAULT_GEO).unwrap_or_default(),
+            geo: DEFAULT_GEO.to_owned(),
+            locale: default_locale().unwrap_or_default(),
+            collected_at: String::new(),
+            source_sha256: None,
+            topics: Vec::new(),
+        })
 }
 
 /// Render a parsed Trends snapshot as seed Links Notation.
@@ -196,7 +289,7 @@ pub fn google_trends_catalog() -> GoogleTrendsCatalog {
 /// ```text
 /// curl -sL 'https://trends.google.com/trending/rss?geo=US&hl=ru' \
 ///   | cargo run --example issue_498_parse_google_trends_rss \
-///   > data/seed/google-trends-snapshot.lino
+///   > /tmp/google-trends-snapshot.lino
 /// ```
 #[must_use]
 pub fn render_google_trends_snapshot_lino(snapshot: &GoogleTrendsCatalog) -> String {
@@ -208,6 +301,9 @@ pub fn render_google_trends_snapshot_lino(snapshot: &GoogleTrendsCatalog) -> Str
     field(&mut out, 2, "locale", &snapshot.locale);
     if !snapshot.collected_at.trim().is_empty() {
         field(&mut out, 2, "collected_at", &snapshot.collected_at);
+    }
+    if let Some(digest) = &snapshot.source_sha256 {
+        field(&mut out, 2, "source_sha256", digest);
     }
     for topic in snapshot.topics.iter().take(GOOGLE_TRENDS_TOP_LIMIT) {
         out.push_str("google_trend_topic\n");
@@ -231,13 +327,9 @@ pub fn render_google_trends_snapshot_lino(snapshot: &GoogleTrendsCatalog) -> Str
     format!("{}\n", out.trim_end())
 }
 
-fn cached_catalog() -> &'static GoogleTrendsCatalog {
-    static CATALOG: OnceLock<GoogleTrendsCatalog> = OnceLock::new();
-    CATALOG.get_or_init(build_catalog)
-}
-
-fn build_catalog() -> GoogleTrendsCatalog {
-    let mut catalog = load_seed_snapshot();
+/// Expand and answer the ranked topics from a supplied feed.
+#[must_use]
+pub fn answer_google_trends_catalog(mut catalog: GoogleTrendsCatalog) -> GoogleTrendsCatalog {
     catalog.topics.sort_by_key(|topic| topic.rank);
     catalog.topics.truncate(GOOGLE_TRENDS_TOP_LIMIT);
 
@@ -265,77 +357,6 @@ fn build_catalog() -> GoogleTrendsCatalog {
     catalog
 }
 
-fn load_seed_snapshot() -> GoogleTrendsCatalog {
-    let tree = parse_lino(GOOGLE_TRENDS_SNAPSHOT_LINO);
-    let root = tree
-        .children
-        .iter()
-        .find(|record| record.find_child_value("record_type") == "google_trends_snapshot");
-
-    let mut catalog = GoogleTrendsCatalog {
-        source: child_value(root, "source")
-            .unwrap_or("google_trends_rss")
-            .to_string(),
-        source_url: child_value(root, "source_url")
-            .unwrap_or("https://trends.google.com/trending/rss?geo=US")
-            .to_string(),
-        geo: child_value(root, "geo").unwrap_or("US").to_string(),
-        locale: child_value(root, "locale").unwrap_or("ru").to_string(),
-        collected_at: child_value(root, "collected_at")
-            .unwrap_or_default()
-            .to_string(),
-        topics: Vec::new(),
-    };
-
-    for record in tree
-        .children
-        .iter()
-        .filter(|record| record.find_child_value("record_type") == "google_trend_topic")
-    {
-        let rank = record
-            .find_child_value("rank")
-            .parse::<usize>()
-            .unwrap_or(catalog.topics.len() + 1);
-        let query = record.find_child_value("query").trim();
-        if query.is_empty() {
-            continue;
-        }
-        let news_items = record
-            .children
-            .iter()
-            .filter(|child| child.find_child_value("record_type") == "google_trend_news_item")
-            .map(|child| GoogleTrendNewsItem {
-                title: child.find_child_value("title").to_string(),
-                source: child.find_child_value("source").to_string(),
-                url: child.find_child_value("url").to_string(),
-            })
-            .filter(|item| !item.title.trim().is_empty())
-            .collect();
-
-        catalog.topics.push(GoogleTrendTopic {
-            rank,
-            query: query.to_string(),
-            approx_traffic: optional_child(record.find_child_value("approx_traffic")),
-            pub_date: optional_child(record.find_child_value("pub_date")),
-            news_items,
-            prompts: Vec::new(),
-            answered: Vec::new(),
-        });
-    }
-
-    catalog
-}
-
-fn child_value<'a>(root: Option<&'a LinoNode>, name: &str) -> Option<&'a str> {
-    root.map(|node| node.find_child_value(name))
-        .filter(|value| !value.trim().is_empty())
-}
-
-fn optional_child(value: &str) -> Option<String> {
-    let trimmed = value.trim();
-    (!trimmed.is_empty()).then(|| trimmed.to_string())
-}
-
 /// A multilingual request template loaded from the prompt seed.
 ///
 /// The natural-language pattern lives in `data/seed/google-trends-prompts.lino`
@@ -357,7 +378,7 @@ const QUERY_PLACEHOLDER: &str = "{query}";
 /// Adding a language or a request variation is a data-only change to the prompt
 /// seed — this converter iterates whatever the seed declares, so no Rust edit is
 /// needed to extend catalog coverage.
-fn prompt_variants_for_topic(search: &str) -> Vec<GoogleTrendPromptVariant> {
+pub(crate) fn prompt_variants_for_topic(search: &str) -> Vec<GoogleTrendPromptVariant> {
     let templates = prompt_templates();
     supported_languages()
         .iter()
@@ -403,7 +424,7 @@ fn load_prompt_templates() -> Vec<GoogleTrendPromptTemplate> {
 }
 
 fn parse_news_item(block: &str) -> Option<GoogleTrendNewsItem> {
-    let title = extract_text(block, "ht:news_item_title")?;
+    let title = extract_text(block, "ht:news_item_title").filter(|value| !value.is_empty())?;
     let source = extract_text(block, "ht:news_item_source").unwrap_or_default();
     let url = extract_text(block, "ht:news_item_url").unwrap_or_default();
     Some(GoogleTrendNewsItem { title, source, url })
@@ -441,16 +462,17 @@ fn extract_text(text: &str, tag: &str) -> Option<String> {
 }
 
 fn decode_xml_text(raw: &str) -> String {
-    let cdata = raw
+    if let Some(text) = raw
         .strip_prefix("<![CDATA[")
         .and_then(|value| value.strip_suffix("]]>"))
-        .unwrap_or(raw);
-    cdata
-        .replace("&amp;", "&")
-        .replace("&lt;", "<")
+    {
+        return text.to_owned();
+    }
+    raw.replace("&lt;", "<")
         .replace("&gt;", ">")
         .replace("&quot;", "\"")
         .replace("&apos;", "'")
+        .replace("&amp;", "&")
 }
 
 fn field(out: &mut String, indent: usize, name: &str, value: &str) {
@@ -459,7 +481,9 @@ fn field(out: &mut String, indent: usize, name: &str, value: &str) {
 }
 
 fn escape_lino_value(value: &str) -> String {
-    collapse_whitespace(value).replace('"', "'")
+    collapse_whitespace(value)
+        .replace('\\', "\\\\")
+        .replace('"', "'")
 }
 
 fn collapse_whitespace(value: &str) -> String {

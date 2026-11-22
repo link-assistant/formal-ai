@@ -20,8 +20,10 @@ fn adopted_methods_equal_methods_with_a_qualifying_effect() {
         .iter()
         .filter(|method| method.status == LearnedMethodStatus::Adopted)
         .count();
-    let ledger = fs::read_to_string(root.join("data/meta/learning-adoption-ledger.lino"))
-        .expect("adoption ledger readable");
+    let ledger = fs::read_to_string(
+        root.join("docs/case-studies/issue-701/replay/learning-adoption-ledger.lino"),
+    )
+    .expect("adoption ledger readable");
     let qualifying = ledger
         .split("  adoption_effect\n")
         .skip(1)

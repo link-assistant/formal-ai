@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 // Cooperative, default-on dreaming for the JavaScript server: the twin of
 // rust/src/dreaming_runtime.rs (`ForegroundActivity`, `core_is_idle`,
 // `start_core_dreaming`, `run_core_dreaming_once`, `dreaming_disabled`,
@@ -140,7 +141,11 @@ export function learningCycleRecordPath(memoryPath) {
 
 /** Mirrors `write_learning_cycle_record`: the Google Trends cycle, proposal-only, beside the log. */
 export function writeLearningCycleRecord(memoryPath) {
-  writeAtomic(learningCycleRecordPath(memoryPath), `${learningCycleLinksNotation(googleTrendsLearningCycle())}\n`);
+  const input = learningCycleRecordPath(memoryPath).replace(/learning-cycle\.lino$/u, 'learning-frontier.lino');
+  let document = '';
+  try { document = readFileSync(input, 'utf8'); }
+  catch (error) { if (error.code !== 'ENOENT') throw error; }
+  writeAtomic(learningCycleRecordPath(memoryPath), `${learningCycleLinksNotation(googleTrendsLearningCycle(document))}\n`);
 }
 
 /** Run one pass on the dreaming thread; resolves with its outcome or rejects with its error. */
