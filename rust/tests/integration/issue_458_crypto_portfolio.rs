@@ -139,6 +139,10 @@ fn issue_458_crypto_portfolio_tracker_covers_supported_languages() {
             response.answer
         );
         assert!(response.answer.contains(case.localized_status));
-        assert!(response.answer.contains("<holdings.json> <prices-file-or-url> <alert-threshold>"));
+        assert!(
+            response
+                .answer
+                .contains("<holdings.json> <prices-file-or-url> <alert-threshold>")
+        );
     }
 }

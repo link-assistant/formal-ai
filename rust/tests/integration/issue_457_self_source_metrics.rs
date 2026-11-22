@@ -62,9 +62,11 @@ fn issue_457_rust_self_source_metrics_request_returns_blueprint_program() {
         response.links_notation
     );
     assert!(!response.answer.contains("RESPONSE_REASONING"));
-    assert!(!response
-        .answer
-        .contains("Reasoning text metrics: functions="));
+    assert!(
+        !response
+            .answer
+            .contains("Reasoning text metrics: functions=")
+    );
 }
 
 #[test]
