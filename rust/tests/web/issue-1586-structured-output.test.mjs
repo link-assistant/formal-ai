@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import { runInNewContext } from 'node:vm';
 import { installHost } from '../../../js/agentic/host.mjs';
 import { loadRuntimeDerivation } from '../../../js/server/runtime-cache.mjs';
+import { anchoredPattern } from '../../../js/server/structured-pattern.mjs';
 import { startCli } from './support/structured-log-fixture.mjs';
 
 const object = (properties, required = Object.keys(properties)) => ({
@@ -15,6 +16,15 @@ const nullableInteger = { type: ['integer', 'null'] };
 const nullableString = { type: ['string', 'null'] };
 const experience = 'Backend developer, at least 3 years of experience with Go.';
 const jobTitle = 'job title: storekeeper';
+// z.toJSONSchema(z.object({ email: z.string().email() }), { target: 'draft-7' }).
+const zodEmail = pattern => ({
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  ...object({ email: { type: 'string', format: 'email', pattern } }),
+});
+const zodCurrentPattern = String.raw`^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$`; // 4.6.7
+const zodLegacyPattern = String.raw`^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$`; // 4.0.0, 4.1.13
+const zodEmailSchema = zodEmail(zodCurrentPattern);
+const zodLegacyEmailSchema = zodEmail(zodLegacyPattern);
 const cases = [
   {
     name: 'job', prompt: 'Warehouse supervisor wanted in Springfield. At least 3 years of experience required.',
@@ -129,8 +139,70 @@ const cases = [
     expected: { record: { city: 'Dover' } },
   },
   {
-    name: 'unsupported', prompt: '{"city":"Dover"}',
-    chat: true, schema: object({ city: { ...city, format: 'hostname' } }),
+    name: 'out', prompt: experience,
+    chat: true, strict: null,
+    schema: {
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      type: 'object', properties: { min_years_of_experience: { type: ['number', 'null'] } },
+      required: ['min_years_of_experience'],
+    },
+    expected: { min_years_of_experience: 3 },
+  },
+  {
+    name: 'zod_email', prompt: 'email: jane@example.com',
+    schema: zodEmailSchema,
+    expected: { email: 'jane@example.com' },
+  },
+  {
+    name: 'zod_email_pattern', prompt: 'email: a.b+c@domain.example.com',
+    schema: zodEmailSchema, expected: { email: 'a.b+c@domain.example.com' },
+  },
+  {
+    name: 'zod_email_invalid_pattern', prompt: 'email: jane@example.c',
+    schema: zodEmailSchema, refusalDetail: 'Could not derive a valid JSON object',
+  },
+  {
+    name: 'zod_legacy_email', prompt: 'email: a.b+c@domain.example.com',
+    schema: zodLegacyEmailSchema, expected: { email: 'a.b+c@domain.example.com' },
+  },
+  {
+    name: 'zod_legacy_email_invalid_pattern', prompt: 'email: jane..doe@example.com',
+    schema: zodLegacyEmailSchema, refusalDetail: 'Could not derive a valid JSON object',
+  },
+  {
+    name: 'nested_annotations', prompt: 'email: unverified',
+    schema: {
+      $schema: 'https://json-schema.org/draft/2019-09/schema',
+      $id: 'https://example.com/contact', $comment: 'Contact record',
+      ...object({ email: {
+        type: 'string', format: 'email', deprecated: true, readOnly: true, writeOnly: true,
+        contentMediaType: 'text/plain', contentEncoding: 'base64',
+      } }),
+    },
+    expected: { email: 'unverified' },
+  },
+  {
+    name: 'unsupported_multiple', prompt: '{"count":3}', stream: true,
+    schema: object({ count: { type: 'number', multipleOf: 3 } }),
+    refusalDetail: 'unsupported keyword "multipleOf" at /properties/count',
+  },
+  {
+    name: 'unsupported_reference', prompt: '{"record":[1]}',
+    schema: {
+      ...object({ record: { $ref: '#/definitions/line~1items~0raw/anyOf/0' } }),
+      definitions: { 'line/items~raw': { anyOf: [{ type: 'array', uniqueItems: true }] } },
+    },
+    refusalDetail: 'unsupported keyword "uniqueItems" at /definitions/line~1items~0raw/anyOf/0',
+  },
+  {
+    name: 'invalid_keyword', prompt: '{"name":"Ada"}',
+    schema: object({ name: { minLength: '2' } }),
+    refusalDetail: 'invalid value for keyword "minLength" at /properties/name',
+  },
+  {
+    name: 'invalid_root_keyword', prompt: '{"name":"Ada"}',
+    schema: { ...object({ name: city }), $schema: 'https://example.com/unknown-dialect' },
+    refusalDetail: 'invalid value for keyword "$schema" at ""',
   },
 ];
 
@@ -159,7 +231,8 @@ function assertSchema(value, schema, root = schema) {
 
 function formatFor(row, chat) {
   if (!row.schema) return { type: 'json_object' };
-  const spec = { name: row.name, strict: row.strict ?? true, schema: row.schema };
+  const { strict = true } = row;
+  const spec = { name: row.name, ...(strict === null ? {} : { strict }), schema: row.schema };
   return chat ? { type: 'json_schema', json_schema: spec } : { type: 'json_schema', ...spec };
 }
 
@@ -173,6 +246,7 @@ function checkResult(row, format, chat, envelope, content, refusal, steps, env) 
   } else {
     assert.ok(!content);
     assert.match(refusal, /Could not derive|unsupported constraints/u);
+    if (row.refusalDetail) assert.ok(refusal.includes(row.refusalDetail), refusal);
   }
   const step = steps.find(step => step.step === 'structured_output');
   const detail = JSON.parse(step.detail);
@@ -189,6 +263,20 @@ function events(text) {
   return text.split('\n').filter(line => line.startsWith('data: ') && line !== 'data: [DONE]')
     .map(line => JSON.parse(line.slice(6)));
 }
+
+test('anchored structured patterns bound repetition without changing matches', () => {
+  for (const source of ['^(?:a?)*b$', '^[ab]{2,}(?:ab+)?x?$', zodCurrentPattern, zodLegacyPattern]) {
+    const original = new RegExp(source, 'u');
+    const bounded = anchoredPattern(source);
+    assert.ok(bounded, source);
+    for (const input of ['', 'b', 'aa', 'aab', 'ababbbx', 'a.b+c@domain.example.com',
+      'jane@example.c', '.jane@example.com', 'jane..doe@example.com']) {
+      assert.equal(bounded.test(input), original.test(input), `${source} on ${input}`);
+    }
+  }
+  assert.equal(anchoredPattern('^(?:a+)*b$').test('a'.repeat(16_384)), false);
+  assert.equal(anchoredPattern('^(?=abc)abc$'), null);
+});
 
 test('OpenAI requests constrain final JSON across endpoint and streaming shapes', { timeout: 120_000 }, async t => {
   const parserContext = { self: {} };

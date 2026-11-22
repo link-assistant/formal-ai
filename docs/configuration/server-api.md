@@ -36,7 +36,11 @@ including the `strict` value when supplied.
 
 The supported schema constraints include JSON types, required keys,
 `additionalProperties`, `enum`, `const`, arrays, local references, schema
-combinations, length and numeric bounds, and simple ASCII patterns.
+combinations, length and numeric bounds, and bounded ASCII patterns.
+The schema can declare draft-07, 2019-09, or 2020-12 in `$schema`. Each uses
+the same supported subset. The validator treats `$id`, `$comment`,
+`deprecated`, `readOnly`, `writeOnly`, `contentMediaType`, `contentEncoding`,
+and `format` as annotations. References resolve within the supplied schema.
 
 When extracting values from text, Formal AI recognizes equivalent camelCase,
 PascalCase, snake_case, and kebab-case property names, including acronyms such
@@ -48,7 +52,10 @@ Formal AI validates both strict and non-strict requests. It can return a
 schema-allowed `null` or `"unknown"` for a missing required value.
 If the schema uses unsupported constraints or the result cannot be
 derived, Chat Completions returns `message.refusal` and Responses returns
-a `refusal` content item. Streaming clients receive the corresponding
+a `refusal` content item. Schema diagnostics name the keyword and give
+the JSON Pointer of its containing schema, such as `unsupported keyword
+"multipleOf" at /properties/count`. The empty pointer (`""` in the message)
+identifies the root schema. Streaming clients receive the corresponding
 refusal delta or events.
 
 The `structured_output` thinking step contains the format and the validated
