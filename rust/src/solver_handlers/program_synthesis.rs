@@ -1,7 +1,5 @@
 //! Research-backed Python synthesis for structurally recognized coding tasks.
 
-use std::fmt::Write as _;
-
 use crate::coding::synthesis_runtime::{
     attach_execution_recipe, discover_and_compose, discover_recurrence_and_compose,
     live_fetch_enabled, procedure_ledger, render_answer, research_trail_line, response_language,
@@ -53,23 +51,13 @@ pub(crate) fn try_bound_publisher_recurrence(
     trace_synthesis_stage(if answer.is_some() {
         "publisher_recurrence_verified"
     } else {
-        log.append("synthesis:publisher_recurrence_unverified", language.slug());
+        log.append(
+            crate::program_skill_gap::UNVERIFIED_RECURRENCE,
+            language.slug(),
+        );
         "publisher_recurrence_unverified"
     });
     answer
-}
-
-pub(crate) fn publisher_recurrence_gap(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    let miss = log.last_of("synthesis:publisher_recurrence_unverified")?;
-    let body = crate::seed::localized_response("compose_no_verified_capture", &miss.payload)?;
-    Some(finalize_simple(
-        prompt,
-        log,
-        "write_program_skill_gap",
-        "response:write_program:skill_gap",
-        &body,
-        1.0,
-    ))
 }
 
 fn publisher_recurrence_specification(prompt: &str, route: Option<&str>) -> Option<CodingTaskSpec> {
@@ -137,22 +125,18 @@ fn synthesize(
             crate::program_skill_gap::gap_name(Some(&spec.name), Some(&spec.language)),
         );
         let response_language = response_language(&spec);
-        let mut body = crate::program_skill_gap::render(
+        let gap = crate::program_skill_gap::render(
             Some(&spec.name),
             Some(&spec.language),
             response_language,
         );
-        let _ = write!(
-            body,
-            "\n\n{}",
-            research_trail_line(response_language, &outcome.research_trail)
-        );
+        let trail = research_trail_line(response_language, &outcome.research_trail);
         return Some(finalize_simple(
             prompt,
             log,
             "write_program_skill_gap",
             "response:write_program:skill_gap",
-            &body,
+            &format!("{gap}\n\n{trail}"),
             1.0,
         ));
     };
