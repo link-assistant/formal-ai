@@ -992,6 +992,7 @@ changelog.d/20261121_230000_issue_1593_prompt_data.md	0.356.3
 changelog.d/20261122_073000_client_report_release_verification.md	0.356.4
 changelog.d/20261122_093000_dind_runtime_memory.md	0.356.5
 changelog.d/20261122_100800_url_dependency.md	0.356.5
+changelog.d/20261122_162100_embeddings_dimensions.md	0.356.8
 changelog.d/20261122_162400_issue_1617_structured_output_labels.md	0.356.7
 changelog.d/ci-gate-citation-fixed.md	0.355.28
 changelog.d/desktop-package-source-boundary.md	0.355.17
