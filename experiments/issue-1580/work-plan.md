@@ -654,3 +654,23 @@ literally read, reaching 227/254 pages and 13,859 source lines; remaining litera
 and semantic review stays open. Current-head hosted verification and all broader
 original acceptance remain unfinished. Supplied work earns zero independent
 credit, and the PR remains draft and unmerged.
+
+
+## Combined-worker hosted registration failures
+
+- [x] Finish all 33 normal workflows on 2f1fc287; preserve complete Pipeline and Layered failures, all job records and the explicit integration skip.
+- [x] Repair every reported focused-target import/registration and stale constant; preserve all native test cases, release warnings-as-errors and negative controls.
+- [x] Reproduce both deterministic Layered failures and repair the actual test placement and exact fixture checkout expectation.
+- [x] Reproduce the intermittent Hive refusal with a controlled inherited-cache change; isolate fixture source captures, retain exact ownership tracing off by default, and pass the unchanged full delivery controls.
+- [x] Pass all 73 focused JavaScript cases and Rust 2024 formatting without local Rust execution.
+- [x] Pass all ten touched local gates and all 63 native-lane policy cases; preserve all outcomes and logs.
+- [x] Commit the three atomic source repairs locally.
+- [ ] Commit the evidence and push once after checking the queue and main ancestry.
+- [ ] Verify actual combined-head native compilation and behavior, normal hosted checks and both artifact rerun paths.
+- [ ] Complete all wider original acceptance, template semantic comparison and aggregate review before readiness.
+
+Java literal review is 237/254 pages, 138 complete files and 14,005 complete
+source lines; seventeen pages and semantic review remain. Fresh published
+dependency evidence at 21:02Z still shows both Chrono migration paths blocked.
+The native goal remains usage-limited; this checklist carries the objective.
+Supplied work and conclusions retain zero independent credit.

@@ -158,3 +158,76 @@ reviews; all are reread, with no new requirements. Java historical literal revie
 advances to 227/254 pages and 13,859 source lines. This does not complete the
 remaining semantic comparison or broader issue acceptance. A normal hosted run
 on the combined published head, including actual native regressions, is pending.
+
+
+## Combined-worker hosted failures and registration repair
+
+All 33 workflows on `2f1fc2875f7928a996f5411465d50104fafc69bb` finish:
+30 succeed, Pipeline and Layered fail, and the Issue 1028 integration remains
+explicitly skipped. Complete logs and job records are retained in
+`experiments/issue-1580/evidence/checks/combined-worker-hosted/manifest.json`.
+Successful local source gates did not establish native compilation or full
+hosted JavaScript success.
+
+Pipeline [45069591603](https://github.com/link-assistant/formal-ai/actions/runs/45069591603)
+reports these independent compiler failures in its complete raw log:
+
+| Raw lines | Failure | Repair and verification |
+| --- | --- | --- |
+| 65380–65381 | Focused reasoning cannot import the sibling publisher helper or original Google Trends module name. | Share the unchanged publisher transport under `tests/fixtures`; preserve the Google Trends test names with a root alias. Actual native CI must compile both full and isolated consumers. |
+| 67224–67233 | The standalone synthesis target refers above its crate root. | Include the same physical publisher helper directly from synthesis. Keep every original case and assertion. |
+| 67258–67285 | A practical-help negative control uses the old capture-limit constant. | Use the actual production `MAXIMUM_CAPTURE_BYTES + 1`; preserve the oversized-source control. |
+| 68824–68826 | The release creator imports a shared collector-only helper with warnings denied. | Mark only that helper's intentional per-consumer nonuse; keep warnings denied and all real release CLI controls. |
+
+Layered [45069591265](https://github.com/link-assistant/formal-ai/actions/runs/45069591265)
+fails source placement at raw lines 16490–16514, Hive delivery at 19469–19486,
+and checkout expectations at 19487–19524. Move the unchanged JavaScript
+extractor Rust regression under `rust/tests` and point its production registration
+there. The checkout assertion now retains both actually consumed compressed
+browser fixture paths already present in the maintained workflow.
+
+The isolated Codex Hive case initially passes, so that replay alone does not
+reproduce the intermittent hosted failure. An explicit disposable cache-change
+control then reproduces the same `recipe-source-epoch-invalidated` refusal at
+turn 12 after a real successful Git push and clean status. All three patch
+owners retain exact successful receipt bindings. Offline source resolution
+still reads the inherited user cache; changing its action-release captures
+changes the regenerated workflow. The hosted log does not identify a specific
+parallel writer. The controlled reproduction establishes that this shared cache
+can cause the observed refusal without a source edit or receipt corruption.
+
+Give each fixture a private source cache outside its Git worktree before host
+installation. Repeat the same controlled cache changes and require both captures
+to have been written. The complete original delivery assertions now pass,
+including real pushed-head equality, clean status, exactly two commits, all three
+published files and the simulated PR operations. Source freshness and receipt
+checks remain active; compiler, network and CI fixture responses remain mocks.
+Optional source-owner tracing defaults off and changes no planner evidence.
+
+Local verification passes all 73 cases across source placement, checkout policy,
+the complete 18-case Hive file and practical help. The full Hive replay takes
+161 seconds; its original two-second command, sixty-second probe and sixty-five-
+second case limits remain. All nine changed Rust files pass Rust 2024 formatting.
+No local Rust compilation or execution occurs. Native behavior and broader
+original acceptance remain unfinished until actual hosted verification.
+
+All issue and PR comments, inline comments and reviews are refreshed and read;
+counts remain one, eleven, zero and zero. Main ae36 remains current. Java literal
+history review reaches 237/254 pages, 138 complete files and 14,005 complete
+source lines; seventeen pages and semantic application remain open. At
+2026-11-22T21:02:01Z the latest published command-stream 1.13.0 and
+link-calculator 0.24.0 still require Chrono. The registry captures preserve the
+unresolved migration evidence; they do not qualify an unpublished repair.
+Supplied commands, patches and conclusions earn zero independent authorship
+or reasoning credit. The PR stays draft and unmerged.
+
+
+The ten touched local gates also pass, together with all 63 native-lane policy
+tests. Those policy tests use a compiler mock and do not qualify native behavior.
+The 136 JavaScript assertions, gate outcomes, controlled before/after failures,
+source reviews and refreshed publication evidence are retained losslessly in
+`evidence/checks/combined-registration-repairs/manifest.json`. The archive SHA-256
+is `f4b25f88499fe24a9488d668ff3f74a9bb9140ce2d6e97c9e58f2bf5b1c7f429`.
+The complete terminal hosted-cohort archive SHA-256 is
+`903a0062842561bd174201e78e78a3fd8300ffbc6d904ea0bf70cade5cd4355c`.
+All archive payloads are round-trip verified. Native execution remains pending.
