@@ -32,6 +32,8 @@ seed-metadata-gaps
     record "knowledge_value"
   gap seed-metadata-gap-5cdf308063bd7087
     record "official_language"
+  gap seed-metadata-gap-160087c45eb6d186
+    record "opening-date"
   gap seed-metadata-gap-c72274864fb8e771
     record "painter_of_painting"
   gap seed-metadata-gap-996687952747f5d1

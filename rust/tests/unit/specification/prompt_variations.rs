@@ -641,56 +641,52 @@ fn records_information_prompts_route_to_web_search() {
 // Promoted project lookup tests live in
 // `project_lookups.rs` so this file stays under the 1000-line cap.
 
-// Fact-lookup matrix across each supported language. Publisher cases pass
-// explicit test captures. Historical unbound records use the normal solver.
-const ENGLISH_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
-    ("Who wrote The Lord of the Rings?", Some("Q15228")),
-    (
-        "Who is the author of The Lord of the Rings?",
-        Some("Q15228"),
-    ),
-    ("When was the Eiffel Tower built?", None),
+// Fact-query matrix across each supported language with explicit publisher fixtures.
+const ENGLISH_FACTUAL_PROMPTS: &[(&str, &str)] = &[
+    ("Who wrote The Lord of the Rings?", "Q15228"),
+    ("Who is the author of The Lord of the Rings?", "Q15228"),
+    ("When was the Eiffel Tower built?", "Q243"),
     (
         "What year did construction of the Eiffel Tower start?",
-        None,
+        "Q243",
     ),
-    ("What is the capital of Japan?", Some("Q17")),
-    ("Which city is Japan's capital?", Some("Q17")),
-    ("What is the capital of Russia?", Some("Q159")),
-    ("Which city is Russia's capital?", Some("Q159")),
-    ("Who painted the Mona Lisa?", Some("Q12418")),
-    ("Who is the painter of the Mona Lisa?", Some("Q12418")),
-    ("What is the speed of light?", Some("Q2111")),
-    ("How fast is the speed of light?", Some("Q2111")),
+    ("What is the capital of Japan?", "Q17"),
+    ("Which city is Japan's capital?", "Q17"),
+    ("What is the capital of Russia?", "Q159"),
+    ("Which city is Russia's capital?", "Q159"),
+    ("Who painted the Mona Lisa?", "Q12418"),
+    ("Who is the painter of the Mona Lisa?", "Q12418"),
+    ("What is the speed of light?", "Q2111"),
+    ("How fast is the speed of light?", "Q2111"),
 ];
 
-const RUSSIAN_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
-    ("Кто написал Властелин колец?", Some("Q15228")),
-    ("Кто автор Властелина колец?", Some("Q15228")),
-    ("Когда построили Эйфелеву башню?", None),
-    ("Какова столица Японии?", Some("Q17")),
-    ("Какова столица России?", Some("Q159")),
-    ("столица россии", Some("Q159")),
-    ("Кто написал Мону Лизу?", Some("Q12418")),
-    ("Чему равна скорость света?", Some("Q2111")),
+const RUSSIAN_FACTUAL_PROMPTS: &[(&str, &str)] = &[
+    ("Кто написал Властелин колец?", "Q15228"),
+    ("Кто автор Властелина колец?", "Q15228"),
+    ("Когда построили Эйфелеву башню?", "Q243"),
+    ("Какова столица Японии?", "Q17"),
+    ("Какова столица России?", "Q159"),
+    ("столица россии", "Q159"),
+    ("Кто написал Мону Лизу?", "Q12418"),
+    ("Чему равна скорость света?", "Q2111"),
 ];
 
-const HINDI_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
-    ("द लॉर्ड ऑफ द रिंग्स किसने लिखी?", Some("Q15228")),
-    ("एफिल टॉवर कब बनी?", None),
-    ("जापान की राजधानी क्या है?", Some("Q17")),
-    ("रूस की राजधानी क्या है?", Some("Q159")),
-    ("मोना लिसा किसने बनाई?", Some("Q12418")),
-    ("प्रकाश की गति कितनी है?", Some("Q2111")),
+const HINDI_FACTUAL_PROMPTS: &[(&str, &str)] = &[
+    ("द लॉर्ड ऑफ द रिंग्स किसने लिखी?", "Q15228"),
+    ("एफिल टॉवर कब बनी?", "Q243"),
+    ("जापान की राजधानी क्या है?", "Q17"),
+    ("रूस की राजधानी क्या है?", "Q159"),
+    ("मोना लिसा किसने बनाई?", "Q12418"),
+    ("प्रकाश की गति कितनी है?", "Q2111"),
 ];
 
-const CHINESE_FACTUAL_PROMPTS: &[(&str, Option<&str>)] = &[
-    ("魔戒是谁写的?", Some("Q15228")),
-    ("埃菲尔铁塔建于何时?", None),
-    ("日本的首都是什么?", Some("Q17")),
-    ("俄罗斯的首都是什么?", Some("Q159")),
-    ("蒙娜丽莎是谁画的?", Some("Q12418")),
-    ("光速是多少?", Some("Q2111")),
+const CHINESE_FACTUAL_PROMPTS: &[(&str, &str)] = &[
+    ("魔戒是谁写的?", "Q15228"),
+    ("埃菲尔铁塔建于何时?", "Q243"),
+    ("日本的首都是什么?", "Q17"),
+    ("俄罗斯的首都是什么?", "Q159"),
+    ("蒙娜丽莎是谁画的?", "Q12418"),
+    ("光速是多少?", "Q2111"),
 ];
 
 #[test]
@@ -702,18 +698,8 @@ fn factual_qna_matrix_records_wikidata_anchor() {
         CHINESE_FACTUAL_PROMPTS,
     ] {
         for (prompt, subject) in prompts {
-            let (response, intent) = match subject {
-                Some(subject) => (
-                    super::prompt_variations_facts::fact_answer(prompt, subject),
-                    "fact_query",
-                ),
-                None => (answer(prompt), "fact_lookup"),
-            };
-            assert_eq!(
-                response.intent, intent,
-                "prompt {prompt:?} should route to {intent}, got {}",
-                response.intent,
-            );
+            let response = super::prompt_variations_facts::fact_answer(prompt, subject);
+            assert_eq!(response.intent, "fact_query", "prompt {prompt:?}");
             assert!(
                 response
                     .evidence_links
@@ -735,10 +721,7 @@ fn factual_qna_matrix_records_per_language_evidence() {
         (CHINESE_FACTUAL_PROMPTS, "language:zh"),
     ] {
         for (prompt, subject) in prompts {
-            let response = subject.map_or_else(
-                || answer(prompt),
-                |qid| super::prompt_variations_facts::fact_answer(prompt, qid),
-            );
+            let response = super::prompt_variations_facts::fact_answer(prompt, subject);
             assert!(
                 response.evidence_links.iter().any(|link| link == tag),
                 "{prompt}: {:?}",

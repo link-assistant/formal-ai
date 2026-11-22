@@ -574,21 +574,24 @@ const FACT_LIVE_MAX_SUBJECT_WORDS = 12;
 let FACT_LIVE_PROPERTIES = null;
 
 /**
- * The Wikidata property a meaning is `grounded-in` ("" when none).
+ * The Wikidata property and display precision declared by a relation meaning.
  * @param {string} slug
- * @returns {string}
+ * @returns {{property?: string, yearOnly?: boolean}}
  */
-function factRelationProperty(slug) {
+function factRelationBinding(slug) {
   if (!FACT_LIVE_PROPERTIES) {
     FACT_LIVE_PROPERTIES = new Map();
     for (const container of parseLinoTree(MEANINGS_LINO).children) {
       for (const node of container.children || []) {
         const grounded = (node.children || []).find((child) => child.name === "grounded-in");
-        if (grounded) FACT_LIVE_PROPERTIES.set(meaningSlug(node), grounded.value);
+        if (grounded) FACT_LIVE_PROPERTIES.set(meaningSlug(node), {
+          property: grounded.value,
+          yearOnly: node.children.some(({ name, value }) => name === "defined-by" && value === "year_period"),
+        });
       }
     }
   }
-  return FACT_LIVE_PROPERTIES.get(slug) || "";
+  return FACT_LIVE_PROPERTIES.get(slug) || {};
 }
 
 function factTrimSubject(text, stops) {
@@ -625,12 +628,12 @@ function factLiveQuestions(prompt) {
   const normalized = normalizePrompt(prompt);
   const mentions = (text, meaning) => meaning.words.some((word) => factualQaLocate(text, normalizePrompt(word)) >= 0);
   const clauses = String(prompt).split(/[,;:()—!?，；：。？]/u).map(normalizePrompt);
-  const stops = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD)
-    .concat(factualQaSurfaces(FACTUAL_QA_ROLE_INTERROGATIVE), factualQaSurfaces("fact_subject_connector"))
+  const stops = [FACTUAL_QA_ROLE_FUNCTION_WORD, FACTUAL_QA_ROLE_INTERROGATIVE,
+    "statement_time_question", "fact_subject_connector"].flatMap(factualQaSurfaces)
     .sort((left, right) => right.length - left.length);
   const questions = [];
   for (const relation of meaningsWithRole("fact_relation")) {
-    if (!/^P[0-9]+$/.test(factRelationProperty(relation.slug)) || !mentions(normalized, relation)) continue;
+    if (!/^P[0-9]+$/.test(factRelationBinding(relation.slug).property) || !mentions(normalized, relation)) continue;
     const clause = clauses.find((part) => mentions(part, relation)) ?? normalized;
     const surface = relation.words.map(normalizePrompt).sort((left, right) => right.length - left.length)
       .find((word) => factualQaLocate(clause, word) >= 0);

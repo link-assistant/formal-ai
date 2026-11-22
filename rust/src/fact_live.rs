@@ -18,6 +18,7 @@
 //! `resolveFactQueryViaWikidata` (`js/worker/formal_ai_worker_facts_and_software_phrases.js`).
 
 use serde_json::Value;
+use unicode_normalization::UnicodeNormalization;
 
 use crate::coding::contains_cjk;
 use crate::engine::normalize_prompt;
@@ -102,6 +103,7 @@ pub(crate) fn live_fact_questions(prompt: &str) -> Vec<LiveFactQuestion> {
     let normalized = normalize_prompt(prompt);
     let mut stops = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
     stops.extend(role_surfaces(seed::ROLE_INTERROGATIVE_OPENER));
+    stops.extend(role_surfaces("statement_time_question"));
     stops.extend(role_surfaces("fact_subject_connector"));
     stops.sort_by_key(|word| std::cmp::Reverse(word.len()));
     let mut candidates: Vec<_> = seed::lexicon()
@@ -247,7 +249,7 @@ fn is_item_identifier(value: &str) -> bool {
 }
 
 fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
-    let query = crate::engine::normalize_prompt(term);
+    let query = subject_search_key(term);
     let document = json(bytes);
     let Some(hits) = document.get("search").and_then(Value::as_array) else {
         return Vec::new();
@@ -268,7 +270,7 @@ fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
             .flatten()
             .chain(aliases.into_iter().flatten())
             .filter_map(Value::as_str)
-            .any(|candidate| crate::engine::normalize_prompt(candidate) == query)
+            .any(|candidate| subject_search_key(candidate) == query)
             .then_some(identifier)
     });
     let mut unique = Vec::<String>::new();
@@ -280,9 +282,40 @@ fn matching_search_hits(bytes: &[u8], term: &str) -> Vec<String> {
     unique
 }
 
+fn subject_search_key(term: &str) -> String {
+    let normalized = normalize_prompt(term);
+    if normalized
+        .chars()
+        .any(|ch| matches!(ch, '\u{0900}'..='\u{097f}'))
+    {
+        return hindi_search_spelling(&normalized);
+    }
+    normalized
+}
+
+// Search transliterated names with or without nukta and the borrowed vowel.
+fn hindi_search_spelling(term: &str) -> String {
+    term.nfd()
+        .filter(|ch| *ch != '\u{093c}')
+        .map(|ch| match ch {
+            'ऑ' => 'आ',
+            'ॉ' => 'ा',
+            ch => ch,
+        })
+        .nfc()
+        .collect()
+}
+
 // In Russian a feminine singular noun at the head of a name can take an
 // accusative ending in the question. Search the original name first.
-fn nominative_subjects(term: &str, language: &str) -> Vec<String> {
+fn alternative_subject_spellings(term: &str, language: &str) -> Vec<String> {
+    if language == "hi" {
+        let alternative = hindi_search_spelling(term);
+        return (alternative != term)
+            .then_some(alternative)
+            .into_iter()
+            .collect();
+    }
     if language != "ru" {
         return Vec::new();
     }
@@ -327,25 +360,56 @@ fn label(entity: &Value, language: &str, fallback: &str) -> Option<String> {
 fn first_claim<'a>(entity: &'a Value, property: &str) -> Option<&'a Value> {
     let claims = entity.get("claims")?.get(property)?.as_array()?;
     ["preferred", "normal"].into_iter().find_map(|rank| {
-        claims.iter().find(|claim| {
-            claim
-                .get("rank")
-                .and_then(Value::as_str)
-                .unwrap_or("normal")
-                == rank
-                && claim
-                    .pointer("/mainsnak/snaktype")
-                    .and_then(Value::as_str)
-                    .unwrap_or("value")
-                    == "value"
-                && claim_value(claim).is_some()
-        })
+        claims
+            .iter()
+            .find(|claim| claim_rank(claim) == rank && claim_value(claim).is_some())
     })
+}
+
+fn snak_value(claim: &Value) -> Option<&Value> {
+    let snak = claim.get("mainsnak")?;
+    if snak
+        .get("snaktype")
+        .and_then(Value::as_str)
+        .unwrap_or("value")
+        != "value"
+    {
+        return None;
+    }
+    snak.pointer("/datavalue/value")
+}
+
+fn claim_rank(claim: &Value) -> &str {
+    claim
+        .get("rank")
+        .and_then(Value::as_str)
+        .unwrap_or("normal")
+}
+
+/// Collect the distinct Gregorian dates supported by the highest usable rank.
+fn claim_dates(entity: &Value, property: &str, rank: &str, year_only: bool) -> Vec<String> {
+    let Some(claims) = entity
+        .get("claims")
+        .and_then(|claims| claims.get(property))
+        .and_then(Value::as_array)
+    else {
+        return Vec::new();
+    };
+    let mut dates = Vec::new();
+    for claim in claims.iter().filter(|claim| claim_rank(claim) == rank) {
+        if let Some(date) = snak_value(claim).and_then(|value| fact_date(value, year_only))
+            && !dates.contains(&date)
+        {
+            dates.push(date);
+        }
+    }
+    dates.sort_unstable();
+    dates
 }
 
 /// The claim's value: an item id, a quantity amount, or a literal string.
 fn claim_value(claim: &Value) -> Option<(Option<String>, String)> {
-    let value = claim.get("mainsnak")?.get("datavalue")?.get("value")?;
+    let value = snak_value(claim)?;
     if let Some(id) = value
         .get("id")
         .and_then(Value::as_str)
@@ -370,7 +434,7 @@ fn claim_value(claim: &Value) -> Option<(Option<String>, String)> {
         };
         return Some((unit, amount.trim_start_matches('+').to_owned()));
     }
-    if let Some(date) = fact_date(value) {
+    if let Some(date) = fact_date(value, false) {
         return Some((None, date));
     }
     value
@@ -386,7 +450,7 @@ fn unit_identifier(unit: &str) -> Option<&str> {
 }
 
 /// Render a Gregorian date at the precision declared by Wikidata.
-fn fact_date(value: &Value) -> Option<String> {
+fn fact_date(value: &Value, year_only: bool) -> Option<String> {
     let precision = value.get("precision")?.as_u64()?;
     if precision < 9 || !value.get("calendarmodel")?.as_str()?.ends_with("/Q1985727") {
         return None;
@@ -409,7 +473,7 @@ fn fact_date(value: &Value) -> Option<String> {
         return None;
     }
     let sign = if sign == "-" { sign } else { "" };
-    Some(match precision {
+    Some(match if year_only { 9 } else { precision } {
         9 => format!("{sign}{year}"),
         10 => format!("{sign}{year}-{month}"),
         _ => format!("{sign}{year}-{month}-{day}"),
@@ -475,13 +539,13 @@ pub fn resolve_facts_live<T: SourceTransport>(
     let bindings: Vec<_> = relations
         .iter()
         .filter_map(|relation| {
-            let property = crate::seed::lexicon().meaning(relation)?.wikidata.as_str();
-            property
-                .strip_prefix('P')
-                .filter(|digits| {
-                    !digits.is_empty() && digits.bytes().all(|byte| byte.is_ascii_digit())
-                })
-                .map(|_| (*relation, property))
+            let meaning = seed::lexicon().meaning(relation)?;
+            let property = meaning.wikidata.as_str();
+            let year_only = meaning
+                .defined_by
+                .iter()
+                .any(|meaning| meaning == "year_period");
+            is_property_id(property).then_some((*relation, property, year_only))
         })
         .collect();
     let search_template = registry_field("item_search_api");
@@ -510,7 +574,7 @@ pub fn resolve_facts_live<T: SourceTransport>(
     let original = search(subject_term)?;
     let mut candidates = matching_search_hits(original.bytes(), subject_term);
     let mut captures = vec![original];
-    for term in nominative_subjects(subject_term, language) {
+    for term in alternative_subject_spellings(subject_term, language) {
         if !candidates.is_empty() {
             break;
         }
@@ -528,11 +592,26 @@ pub fn resolve_facts_live<T: SourceTransport>(
         };
         let claims = bindings
             .iter()
-            .filter_map(|(relation, property)| {
+            .filter_map(|(relation, property, year_only)| {
                 let claim = first_claim(subject, property)?;
-                let (value_qid, literal) = claim_value(claim)?;
-                let reference_url = claim_reference(claim, &reference_property)
-                    .unwrap_or_else(|| capture.source_url().to_owned());
+                let (value_qid, mut literal) = claim_value(claim)?;
+                let dates = if snak_value(claim)
+                    .and_then(|value| fact_date(value, false))
+                    .is_some()
+                {
+                    claim_dates(subject, property, claim_rank(claim), *year_only)
+                } else {
+                    Vec::new()
+                };
+                if !dates.is_empty() {
+                    literal = dates.join(", ");
+                }
+                let reference_url = if dates.len() > 1 {
+                    capture.source_url().to_owned()
+                } else {
+                    claim_reference(claim, &reference_property)
+                        .unwrap_or_else(|| capture.source_url().to_owned())
+                };
                 Some((*relation, *property, value_qid, literal, reference_url))
             })
             .collect::<Vec<_>>();

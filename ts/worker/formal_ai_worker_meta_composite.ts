@@ -156,4 +156,5 @@ function metaAttachLearned(answer) {
 
 const metaRunProcedure = async (prompt, answer, subTask) => (await crateModule("crate/meta_executor.mjs")
   .solveAnswer({ text: prompt, language: detectLanguage(prompt) }, answer, subTask,
-    answer?.evidence?.includes("prompt_text:network:none") ? { bounds: { depth: 0 } } : undefined)).answer;
+    answer?.evidence?.some((link) => link === "prompt_text:network:none" || link === "prompt_data:network:none")
+      ? { bounds: { depth: 0 } } : undefined)).answer;

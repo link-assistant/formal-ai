@@ -52,28 +52,3 @@ fact_formal_ai_creator
     summary "Formal AI 由 github.com/konard 使用 github.com/link-assistant/hive-mind 创建。"
     source "https://github.com/link-assistant/formal-ai"
     source_kind github
-fact_eiffel_tower_built
-  intent fact_lookup
-  category landmark
-  wikidata Q243
-  subject_aliases ("eiffel tower" "the eiffel tower" "эйфелева башня" "эйфелеву башню" "эйфелевой башни" "эйфелевой башне" "эйфелевой башней" "एफिल टॉवर" "एफिल मीनार" "埃菲尔铁塔" "艾菲爾鐵塔")
-  question_keywords ("when" "built" "construction" "year" "opened" "completed" "когда" "построена" "построили" "открыта" "открыли" "строительство" "кб" "बनी" "बनाई" "कब" "निर्माण" "खुली" "何时" "建于" "建造" "完工" "开放" "什么时候")
-  summary "Construction of the Eiffel Tower started in 1887 and it opened in 1889."
-  source "https://en.wikipedia.org/wiki/Eiffel_Tower"
-  source_kind wikipedia
-  localized en
-    summary "Construction of the Eiffel Tower started in 1887 and it opened to the public on 31 March 1889."
-    source "https://en.wikipedia.org/wiki/Eiffel_Tower"
-    source_kind wikipedia
-  localized ru
-    summary "Строительство Эйфелевой башни началось в 1887 году, а официальное открытие состоялось 31 марта 1889 года."
-    source "https://ru.wikipedia.org/wiki/Эйфелева_башня"
-    source_kind wikipedia
-  localized hi
-    summary "एफिल टॉवर का निर्माण 1887 में शुरू हुआ और 31 मार्च 1889 को इसका उद्घाटन हुआ।"
-    source "https://hi.wikipedia.org/wiki/एफिल_टॉवर"
-    source_kind wikipedia
-  localized zh
-    summary 埃菲尔铁塔的建造始于1887年,并于1889年3月31日正式落成开放。
-    source "https://zh.wikipedia.org/wiki/埃菲尔铁塔"
-    source_kind wikipedia

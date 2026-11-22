@@ -91,12 +91,23 @@ meanings
   built_year
     grounded-in P571
     defined-by knowledge_relation
+    defined-by year_period
     role fact_relation
-    lexeme en inception built "construction of" construction
-    lexeme ru "начало строительства" когда построена построили
-    lexeme hi "निर्माण की शुरुआत" बनी बनाई
-    lexeme zh 始建日期 建于 建造 建成
-    lexeme es fundación construido construida construcción fundado fundada
+    lexeme en "inception year" inception built "construction of" construction "founded" "established"
+    lexeme ru "год основания" "начало строительства" построена построили основан основана
+    lexeme hi "स्थापना वर्ष" "निर्माण की शुरुआत" बनी बनाई
+    lexeme zh 始建年份 始建日期 建于 建造 建成 成立
+    lexeme es "año de fundación" fundación construido construida construcción fundado fundada
+  opening-date
+    grounded-in P1619
+    defined-by knowledge_relation
+    defined-by time
+    role fact_relation
+    lexeme en "opening date" "inaugurate" "inaugurated" "opened" open
+    lexeme ru "даты открытия" "дата открытия" открылась открыт открыли открыта
+    lexeme hi "उद्घाटन की तारीख" उद्घाटन खुली खुला
+    lexeme zh 开幕日期 開幕日期 开放 開放 揭幕
+    lexeme es "fechas de inauguración" "fecha de inauguración" inaugurado inaugurada abrió
   inception
     grounded-in P571
     defined-by time
@@ -137,7 +148,7 @@ meanings
     lexeme en "s" "which city" "what city" "what year" "year did" start
     lexeme ru "какая" "какое" "каков" "какова"
     lexeme hi "क्या है" "कौन सा"
-    lexeme zh "是什么" "是什麼"
+    lexeme zh "是什么" "是什麼" "是什么时候" "是什麼時候" 什么时候 什麼時候 的
     lexeme es "es" "son" "la" "las" "el" "los" "de" "del" "cuál" "cuáles"
   fact_comparison_request
     defined-by compare

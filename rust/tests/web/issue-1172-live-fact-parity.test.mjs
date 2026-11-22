@@ -179,6 +179,53 @@ test("facts require the subject, property and labeled value from the publisher",
   }
 });
 
+test("dates come from ranked publisher claims for any matched subject", async () => {
+  const fresh = createWorkerContext();
+  const seedOnly = fresh.fetch;
+  const requests = [];
+  const subjects = new Map([
+    ["eiffel tower", { id: "Q243", label: "Eiffel Tower" }],
+    ["эйфелева башня", { id: "Q243", label: "Эйфелева башня" }],
+    ["एफिल टावर", { id: "Q243", label: "एफ़िल टावर" }],
+    ["埃菲尔铁塔", { id: "Q243", label: "埃菲尔铁塔" }],
+    ["unesco", { id: "Q7809", label: "UNESCO" }],
+  ]);
+  fresh.fetch = async (url, options) => {
+    const target = new URL(String(url), "http://localhost");
+    if (target.hostname !== "www.wikidata.org") return seedOnly(url, options);
+    requests.push(target.href);
+    const term = target.searchParams.get("search");
+    const subject = term && subjects.get(term.toLowerCase());
+    const body = term ? { search: subject ? [subject] : [] } : wikidataFixture(target, null, "live-entities");
+    return { ok: Boolean(body), status: body ? 200 : 404, text: async () => JSON.stringify(body) };
+  };
+  await evaluate(fresh, "loadSeed()");
+  const ask = async (prompt, preferences = {}) => plain(await fresh.solve(prompt, [], preferences));
+  const construction = "When was the Eiffel Tower built?";
+  const opening = "When did the Eiffel Tower open?";
+  const cold = await ask(construction, { offline: true });
+  assert.doesNotMatch(cold.content, /1887|1889/u);
+  assert.deepEqual(requests, []);
+  for (const prompt of [construction, "What year did construction of the Eiffel Tower start?", "Когда построили Эйфелеву башню?", "एफिल टॉवर कब बनी?", "埃菲尔铁塔建于何时?"]) {
+    const answer = await ask(prompt);
+    assert.equal(answer.intent, "fact_query", `${prompt}\n${answer.content}\n${requests.join("\n")}`);
+    assert.match(answer.content, /\b1887\b/u, prompt);
+    assert.doesNotMatch(answer.content, /1889|1887-01/u, prompt);
+    assert.ok(answer.evidence.some((value) => /Q243.*sha256=[0-9a-f]{64}/u.test(value)), prompt);
+  }
+  const dates = await ask(opening);
+  assert.equal(dates.intent, "fact_query", dates.content);
+  assert.match(dates.content, /1889-03-31, 1889-05-15/u);
+  assert.doesNotMatch(dates.content, /1887/u);
+  const heldOut = await ask("When was UNESCO founded?");
+  assert.equal(heldOut.intent, "fact_query", heldOut.content);
+  assert.match(heldOut.content, /UNESCO.*1945/u);
+  assert.ok(heldOut.evidence.includes("wikidata:Q7809"));
+  const fetched = requests.length;
+  assert.equal((await ask(opening, { offline: true })).content, dates.content);
+  assert.equal(requests.length, fetched);
+});
+
 test("R3: an authorship answer reads through the relation's own seeded phrasing", async () => {
   const snapshot = "https://www.wikidata.org/wiki/Special:EntityData/Q161531.json";
   const cases = [

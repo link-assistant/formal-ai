@@ -439,6 +439,26 @@ multilingual_responses
     intent fact_live_answer
     language es
     text "Según Wikidata, {relation} de {subject}: {value}. Fuente: {reference}"
+  response response-fact-live-answer-opening-date-en
+    intent fact_live_answer_opening-date
+    language en
+    text "Wikidata lists these opening dates for {subject}: {value}. Source: {reference}"
+  response response-fact-live-answer-opening-date-ru
+    intent fact_live_answer_opening-date
+    language ru
+    text "Даты открытия {subject} по Викиданным: {value}. Источник: {reference}"
+  response response-fact-live-answer-opening-date-hi
+    intent fact_live_answer_opening-date
+    language hi
+    text "विकिडेटा में {subject} की उद्घाटन तिथियाँ: {value}। स्रोत: {reference}"
+  response response-fact-live-answer-opening-date-zh
+    intent fact_live_answer_opening-date
+    language zh
+    text "维基数据所列的{subject}开放日期：{value}。来源：{reference}"
+  response response-fact-live-answer-opening-date-es
+    intent fact_live_answer_opening-date
+    language es
+    text "Fechas de inauguración de {subject} en Wikidata: {value}. Fuente: {reference}"
   response response_fact_live_answer_author_of_book_en
     intent fact_live_answer_author_of_book
     language en

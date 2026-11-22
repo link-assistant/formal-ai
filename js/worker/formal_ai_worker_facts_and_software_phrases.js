@@ -272,7 +272,7 @@ async function tryLiveFactComparison(prompt, normalized, preferences) {
   if (!sides || preferences?.externalServiceMediawikiFamily === false) return null;
   const language = detectLanguage(prompt);
   const bindings = meaningsWithRole("fact_relation")
-    .map(({ slug }) => [slug, factRelationProperty(slug)])
+    .map(({ slug }) => [slug, factRelationBinding(slug).property])
     .filter(([, property]) => /^P[0-9]+$/.test(property));
   async function resolve(term) {
     const source = await wikidataFactCandidates(term, language, preferences, false);
@@ -280,15 +280,15 @@ async function tryLiveFactComparison(prompt, normalized, preferences) {
     const candidates = source.candidates.map(({ subject, entity }) => ({
       subject,
       entity,
-      claims: bindings.map(([relation, property]) => [relation, wikidataFactClaim(entity, property)])
-        .filter(([, claim]) => claim),
+      claims: bindings.map(([relation, property]) => [relation, wikidataFactClaims(entity, property)])
+        .filter(([, claims]) => claims.length),
     })).filter(({ claims }) => claims.length);
     if (candidates.length !== 1) return null;
     const [{ subject, entity, claims }] = candidates;
     const facts = new Map();
     const references = new Set();
-    for (const [relation, claim] of claims) {
-      const fact = await realizeWikidataFact({ relation, subjectTerm: term, language }, { subject, entity, claim }, source);
+    for (const [relation, records] of claims) {
+      const fact = await realizeWikidataFact({ relation, subjectTerm: term, language }, { subject, entity, claims: records }, source);
       if (fact) {
         facts.set(relation, { label: fact.subjectLabel, value: fact.valueLabel });
         if (fact.source) references.add(`source:${humanizeUrl(fact.source)}`);
@@ -333,7 +333,7 @@ async function wikidataSearchEntities(term, language, options, captures) {
     if (!Array.isArray(data?.search)) continue;
     const matches = new Map();
     for (const hit of data.search.slice(0, 5)) {
-      if (/^Q[0-9]+$/.test(hit?.id) && wikidataHitMatchesTerm(hit, term)) {
+      if (/^Q[0-9]+$/.test(hit?.id) && wikidataHitMatchesTerm(hit, term, factSubjectSearchKey)) {
         matches.set(hit.id, { qid: hit.id, label: hit.label || term });
       }
     }
@@ -351,8 +351,8 @@ function wikidataConceptUrl(hit) {
   return "https://www.wikidata.org/wiki/Wikidata:Main_Page";
 }
 
-function wikidataHitMatchesTerm(hit, term) {
-  const target = normalizeLookupText(term);
+function wikidataHitMatchesTerm(hit, term, normalize = normalizeLookupText) {
+  const target = normalize(term);
   if (!target || !hit) return false;
   const candidates = [
     hit.label,
@@ -363,7 +363,7 @@ function wikidataHitMatchesTerm(hit, term) {
   if (Array.isArray(hit.aliases)) {
     candidates.push(...hit.aliases);
   }
-  return candidates.some((candidate) => normalizeLookupText(candidate) === target);
+  return candidates.some((candidate) => normalize(candidate) === target);
 }
 
 async function fetchWikidataConceptSummary(term, language) {
@@ -530,15 +530,15 @@ function factEntityLabel(entity, language) {
   return (entity?.labels?.[language] || entity?.labels?.en || entity?.labels?.mul)?.value || "";
 }
 
-function wikidataFactClaim(entity, property) {
+function wikidataFactClaims(entity, property) {
   const claims = entity?.claims?.[property];
-  if (!Array.isArray(claims)) return null;
+  if (!Array.isArray(claims)) return [];
   for (const rank of ["preferred", "normal"]) {
-    const claim = claims.find((candidate) => (candidate.rank || "normal") === rank &&
+    const ranked = claims.filter((candidate) => (candidate.rank || "normal") === rank &&
       (candidate.mainsnak?.snaktype || "value") === "value" && wikidataValue(candidate.mainsnak?.datavalue?.value));
-    if (claim) return claim;
+    if (ranked.length) return ranked;
   }
-  return null;
+  return [];
 }
 
 function factQueryEvidence(record, language) {
@@ -571,9 +571,27 @@ function wikidataValue(value) {
     const [, signedYear, month, day] = time;
     const year = signedYear.replace(/^\+/, "");
     const fields = [year, month, day];
-    return { label: fields.slice(0, Math.min(value.precision - 8, fields.length)).join("-") };
+    return { date: true, year, label: fields.slice(0, Math.min(value.precision - 8, fields.length)).join("-") };
   }
   return null;
+}
+
+function hindiFactSearchSpelling(term) {
+  return term.normalize("NFD").replace(/\u093c/gu, "").replace(/ऑ/gu, "आ").replace(/ॉ/gu, "ा").normalize("NFC");
+}
+
+function factSubjectSearchKey(term) {
+  return hindiFactSearchSpelling(normalizeLookupText(term));
+}
+
+function alternativeFactSubjectSpellings(term, language) {
+  if (language === "hi") return [hindiFactSearchSpelling(term)];
+  if (language !== "ru") return [];
+  // A feminine name can be inflected in the question.
+  const nominate = (word) => word.replace(/^([а-яё]{2,})([ую])$/iu,
+    (_, stem, ending) => stem + (ending.toLowerCase() === "у" ? "а" : "я"));
+  const [head, ...tail] = term.split(/\s+/u);
+  return [[nominate(head), ...tail].join(" "), [head, ...tail].map(nominate).join(" ")];
 }
 
 async function wikidataFactCandidates(subjectTerm, language, preferences, forceFresh, log) {
@@ -586,17 +604,11 @@ async function wikidataFactCandidates(subjectTerm, language, preferences, forceF
   const captures = [];
   if (log) log.push(`fact_query:wbsearchentities:request:${subjectTerm}`);
   let hits = await wikidataSearchEntities(subjectTerm, language, options, captures);
-  // A feminine singular noun may use the accusative in the question.
-  if (!hits.length && language === "ru") {
-    const nominate = (word) => word.replace(/^([а-яё]{2,})([ую])$/iu,
-      (_, stem, ending) => stem + (ending.toLowerCase() === "у" ? "а" : "я"));
-    const [head, ...tail] = subjectTerm.split(/\s+/u);
-    const terms = new Set([[nominate(head), ...tail].join(" "), [head, ...tail].map(nominate).join(" ")]);
-    terms.delete(subjectTerm);
-    for (const term of terms) {
-      hits = await wikidataSearchEntities(term, language, options, captures);
-      if (hits.length) break;
-    }
+  const terms = new Set(alternativeFactSubjectSpellings(subjectTerm, language));
+  terms.delete(subjectTerm);
+  for (const term of terms) {
+    if (hits.length) break;
+    hits = await wikidataSearchEntities(term, language, options, captures);
   }
   if (!hits.length && log) log.push("fact_query:wbsearchentities:no_match");
   const candidates = [];
@@ -609,13 +621,13 @@ async function wikidataFactCandidates(subjectTerm, language, preferences, forceF
 }
 
 async function resolveFactQueryViaWikidata(query, log, preferences) {
-  const property = factRelationProperty(query.relation);
+  const { property } = factRelationBinding(query.relation);
   if (!/^P[0-9]+$/.test(property)) return null;
   const source = await wikidataFactCandidates(query.subjectTerm, query.language, preferences, query.forceFresh, log);
   if (!source?.candidates.length) return null;
   const matching = source.candidates
-    .map((candidate) => ({ ...candidate, claim: wikidataFactClaim(candidate.entity, property) }))
-    .filter((candidate) => candidate.claim);
+    .map((candidate) => ({ ...candidate, claims: wikidataFactClaims(candidate.entity, property) }))
+    .filter((candidate) => candidate.claims.length);
   if (matching.length !== 1) {
     if (log) log.push(matching.length ? "fact_query:wbgetentities:ambiguous_subject" : "fact_query:wbgetentities:no_claim");
     return null;
@@ -623,11 +635,17 @@ async function resolveFactQueryViaWikidata(query, log, preferences) {
   return realizeWikidataFact(query, matching[0], source, log);
 }
 
-async function realizeWikidataFact(query, { subject, entity, claim }, { options, captures }, log) {
+async function realizeWikidataFact(query, { subject, entity, claims }, { options, captures }, log) {
   if (log) log.push(`fact_query:wbsearchentities:resolved:${subject.qid}`);
-  const value = wikidataValue(claim.mainsnak.datavalue.value);
+  const [first, ...alternatives] = claims;
+  const value = wikidataValue(first.mainsnak.datavalue.value);
+  const { yearOnly } = factRelationBinding(query.relation);
+  const dates = value.date
+    ? Array.from(new Set([value, ...alternatives.map((claim) => wikidataValue(claim.mainsnak.datavalue.value))]
+      .filter((candidate) => candidate.date).map((candidate) => yearOnly ? candidate.year : candidate.label))).sort()
+    : [];
   const valueQid = value.qid || "";
-  let valueLabel = value.label;
+  let valueLabel = dates.length ? dates.join(", ") : value.label;
   if (valueQid) {
     if (log) log.push(`fact_query:label_resolve:request:${valueQid}`);
     const valueEntity = await wikidataFactEntity(valueQid, query.language, false, options, captures);
@@ -646,7 +664,7 @@ async function realizeWikidataFact(query, { subject, entity, claim }, { options,
     subjectQid: subject.qid,
     valueLabel,
     valueQid,
-    ...factLiveSummary(query, subject.qid, subjectLabel, claim, valueLabel),
+    ...factLiveSummary(query, subject.qid, subjectLabel, dates.length > 1 ? null : first, valueLabel),
     sourceKind: "wikidata",
     captures,
     language: query.language,

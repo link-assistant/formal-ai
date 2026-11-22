@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_factual_qa.js"
-  ceiling 1008
-  rationale "Grounded relation candidates share a subject parser and are ordered by the longest matching surface before the publisher is consulted."
+  ceiling 1011
+  rationale "Grounded relation candidates share a subject parser and are ordered by the longest matching surface before the publisher is consulted. Relation definitions supply the display precision for publisher time claims."

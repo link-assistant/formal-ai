@@ -93,6 +93,36 @@ fn publisher_quantity_units_and_painting_attribution_are_resolved() {
             .any(|link| link == "wikidata:Q762")
     );
 }
+
+#[test]
+fn publisher_temporal_claims_keep_the_requested_precision_and_all_equal_ranks() {
+    let built = fact_answer("When was the Eiffel Tower built?", "Q243");
+    assert_eq!(
+        built.answer,
+        "Wikidata states that the inception year of Eiffel Tower is 1887. Source: https://www.wikidata.org/wiki/Special:EntityData/Q243.json"
+    );
+    let opening = fact_answer("When did the Eiffel Tower open?", "Q243");
+    assert_eq!(
+        opening.answer,
+        "Wikidata lists these opening dates for Eiffel Tower: 1889-03-31, 1889-05-15. Source: https://www.wikidata.org/wiki/Special:EntityData/Q243.json"
+    );
+    assert!(
+        opening.evidence_links.iter().any(|link| {
+            link.contains("Special:EntityData/Q243.json") && link.contains("sha256=")
+        })
+    );
+    let foundation = fact_answer("When was UNESCO founded?", "Q7809");
+    assert_eq!(
+        foundation.answer,
+        "Wikidata states that the inception year of UNESCO is 1945. Source: https://www.un.org/youthenvoy/2013/08/unesco-united-nations-educational-scientific-and-cultural-organization/"
+    );
+    assert!(
+        foundation
+            .evidence_links
+            .contains(&"wikidata:Q7809".to_owned())
+    );
+}
+
 //
 // (country_label, expected_subject_qid, expected_value_qid, expected_answer, prompts)
 type CapitalCase = (
