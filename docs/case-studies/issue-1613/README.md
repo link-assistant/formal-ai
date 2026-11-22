@@ -386,12 +386,12 @@ witnesses exposed by the preceding changes. The profile expected the old
 hash of the unchanged rung order, the module map omitted the new native
 Trends module, and the return census treated publisher discovery as a new
 exit. The local reproductions now check all three. Native server builds
-and earlier cases passed. A multiple-choice prompt with a conjunction
-inside an option exceeded the ten-second request budget and the server's
-90-second lifetime expired during the following cases. The local handler
-had already supplied a classification from the caller's spans. The meta
-procedure now treats such answers and their input as one task, so it
-cannot separately solve an option or a fragment of the supplied text.
+and earlier cases passed. The completion replay reached its request limit
+and the server's 90-second lifetime expired during the remaining cases.
+The first repair targeted multiple-choice decomposition because a
+conjunction can appear inside an option. The meta procedure now preserves
+such options with their supplied evidence. The next native replay isolated
+the remaining timeouts in the supplied-text summary fixture.
 [Layered CI](evidence/workflows/layered-round9-44971850354.log.gz) ·
 [Native job](evidence/workflows/native-round9-137053287872.log.gz) ·
 [Profile](evidence/verification/round10-hosted-replay-fast-pull-request-production-profile.log) ·
@@ -440,6 +440,44 @@ recognition strings for the new surfaces, and asserting the complete
 answers in the native regression.
 [Full gate run](evidence/verification/round11-full-gates.log) ·
 [Focused rechecks](evidence/verification/round11-final-gate-rechecks.log)
+
+### Project origin and supplied-text summaries
+
+A cold worker answered questions about who created Formal AI from text in
+the installed seed. Both runtimes now use the registered GitHub declaration
+for this question. They check the comment and issue identities, the named
+project, and whether the logged-in author made the statement about their own
+work. The live public response allows cross-origin retrieval and reports the
+author as a contributor. The authenticated view reports membership. A
+browser replay uses the public response's association, checks the citation
+and digest in four languages, then exercises a second project and rejects
+unassociated or mismatched declarations.
+[Cold baseline](evidence/verification/round12-origin-baseline.log) ·
+[Browser replay](evidence/verification/round12-issue-1172-live-fact-parity.log) ·
+[Public response](evidence/facts/formal-ai-origin-comment-live.json) ·
+[Publisher statement](https://github.com/link-assistant/formal-ai/issues/157#issuecomment-4526577668)
+
+At head `1b195df2e`, native compilation passed. Three native completion
+requests hit the ten-second request limit (lines 9414, 9682, and 9703 of the
+pipeline log). The fixture ID is `decision` and the instruction is to
+summarize a supplied paragraph. The request decomposition could split prose
+on a conjunction and recursively solve its fragments before the summarizer
+ran. Both runtimes now recognize the summary command at the head and keep
+the supplied paragraph together. The replay asserts the decision and both
+reasons in English and Russian, in default and agent modes.
+[Pipeline log](evidence/workflows/pipeline-round11-44976920425.log.gz) ·
+[Local replay](evidence/verification/round12-issue-1593-prompt-data.log)
+
+The same head's Layered CI caught a stale governed native test-source
+digest. Regenerating the witness incorporates the current source identities
+and the added native date regression, with all 222 supported cases preserved.
+The fixture integrity and Unicode source projection replays passed locally.
+[Layered CI log](evidence/workflows/layered-round11-44976920393.log.gz) ·
+[Witness comparison](evidence/verification/round12-governed-delta.log) ·
+[Fixture integrity](evidence/verification/round12-rust-specification-fixture-integrity.log)
+
+All 138 local JavaScript gates passed or reported an expected skip.
+[Full gate run](evidence/verification/round12-final-full-gates.log)
 
 ## Evidence archive
 
