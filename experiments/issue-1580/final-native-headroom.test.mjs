@@ -97,5 +97,5 @@ for(const {owner,helpers} of [
     ]
   }
 ]) test(owner+' retains source headroom',()=>{
- assert.deepEqual(checkListedFiles(root,new Set([owner,...helpers])),{warnings:[],violations:[],embeddedDataViolations:[]});
+ assert.deepEqual(checkListedFiles(root,new Set([owner,...helpers])),{warnings:[],violations:[],embeddedDataViolations:[],errors:[]});
 });

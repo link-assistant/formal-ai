@@ -7,7 +7,7 @@ import YAML from 'yaml';
 import {checkListedFiles} from '../../scripts/check-file-size.mjs';
 const root=fileURLToPath(new URL('../../',import.meta.url)).replace(/\/$/u,'');
 test('desktop release retains unchanged source-size headroom',()=>{
- assert.deepEqual(checkListedFiles(root,new Set(['.github/workflows/desktop-release.yml','scripts/desktop-release-manifest.sh','scripts/desktop-release-evidence.sh'])),{warnings:[],violations:[],embeddedDataViolations:[]});
+ assert.deepEqual(checkListedFiles(root,new Set(['.github/workflows/desktop-release.yml','scripts/desktop-release-manifest.sh','scripts/desktop-release-evidence.sh'])),{warnings:[],violations:[],embeddedDataViolations:[],errors:[]});
 });
 test('the manifest helper is captured before selected-source import',()=>{
  const workflow=YAML.parse(readFileSync(root+'/.github/workflows/desktop-release.yml','utf8'));

@@ -9,7 +9,7 @@ const root = fileURLToPath(new URL('../../', import.meta.url)).replace(/\/$/u, '
 test('contributor rules retain source headroom and reachable detailed guides', () => {
   const guides = ['docs/development/merge-conflict-layout.md', 'docs/development/changelog-management.md'];
   assert.deepEqual(checkListedFiles(root, new Set(['CONTRIBUTING.md', ...guides])),
-    {warnings: [], violations: [], embeddedDataViolations: []});
+    {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
   const entry = readFileSync(resolve(root, 'CONTRIBUTING.md'), 'utf8');
   for (const guide of guides) {
     assert(entry.includes('](' + guide + ')'), 'contributor entry must link the detailed rule: ' + guide);

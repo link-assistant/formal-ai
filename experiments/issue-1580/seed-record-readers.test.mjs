@@ -8,7 +8,7 @@ import {checkListedFiles} from '../../scripts/check-file-size.mjs';
 const root=fileURLToPath(new URL('../../',import.meta.url)).replace(/\/$/u,'');
 const read=name=>readFileSync(root+'/'+name,'utf8');
 for(const owner of ['js/seed_loader.js','ts/seed_loader.ts'])test(owner+' retains source headroom',()=>{
- assert.deepEqual(checkListedFiles(root,new Set([owner])),{warnings:[],violations:[],embeddedDataViolations:[]});
+ assert.deepEqual(checkListedFiles(root,new Set([owner])),{warnings:[],violations:[],embeddedDataViolations:[],errors:[]});
 });
 function api(loader,records=true){
  const context=vm.createContext({console,TextEncoder});context.self=context;

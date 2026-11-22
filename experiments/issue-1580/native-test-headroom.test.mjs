@@ -17,7 +17,7 @@ for (const [owner, child] of [
   test(owner + ' retains file-size headroom and a reachable regression group', () => {
     const files = new Set([owner + '.rs', owner + '/' + child + '.rs']);
     const result = checkListedFiles(root, files);
-    assert.deepEqual(result, {warnings: [], violations: [], embeddedDataViolations: []});
+    assert.deepEqual(result, {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
     assert.match(readFileSync(root + '/' + owner + '.rs', 'utf8'), new RegExp('^mod ' + child + ';$', 'mu'));
     assert.match(readFileSync(root + '/' + owner + '/' + child + '.rs', 'utf8'), /^#\[test\]$/mu);
   });
@@ -52,7 +52,7 @@ for (const [owner, child] of [
 ]) {
   test(owner + ' keeps native policy module headroom', () => {
     const result = checkListedFiles(root, new Set([owner + '.rs', owner + '/' + child + '.rs']));
-    assert.deepEqual(result, {warnings: [], violations: [], embeddedDataViolations: []});
+    assert.deepEqual(result, {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
     assert.match(readFileSync(root + '/' + owner + '.rs', 'utf8'), new RegExp('^mod ' + child + ';$', 'mu'));
     assert.match(readFileSync(root + '/' + owner + '/' + child + '.rs', 'utf8'), /^(?:pub\(super\) )?fn /mu);
   });
@@ -82,7 +82,7 @@ for (const [owner, child, names] of [
 ]) {
   test(owner + ' retains headroom and original native test names', () => {
     assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/' + child + '.rs'])),
-      {warnings: [], violations: [], embeddedDataViolations: []});
+      {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
     const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
     const extracted = readFileSync(root + '/' + owner + '/' + child + '.rs', 'utf8');
     for (const name of names) {
@@ -95,7 +95,7 @@ for (const [owner, child, names] of [
 test('Hive commit expectations retain headroom without moving native test names', () => {
   const owner = 'rust/tests/unit/issue_1133_hive_mind_three_runs/extended';
   assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/commit_expectations.rs'])),
-    {warnings: [], violations: [], embeddedDataViolations: []});
+    {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
   const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
   assert.match(source, /^mod commit_expectations;$/mu);
   const helpers = readFileSync(root + '/' + owner + '/commit_expectations.rs', 'utf8');
@@ -110,7 +110,7 @@ test('Hive commit expectations retain headroom without moving native test names'
 test('procedure fixtures retain headroom while assertion bodies remain extractable', () => {
   const owner = 'rust/tests/unit/specification/reasoning_paths_procedures';
   assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/fixtures.rs'])),
-    {warnings: [], violations: [], embeddedDataViolations: []});
+    {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
   const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
   assert.match(source, /^mod fixtures;$/mu);
   for (const name of ['INSTALL_CASES', 'SURFACE_CASES', 'TYPO_CASES']) assert(source.includes('fixtures::' + name));
@@ -120,7 +120,7 @@ test('procedure fixtures retain headroom while assertion bodies remain extractab
 test('documentation requirement helpers retain headroom and the original assertion owners', () => {
   const owner = 'rust/tests/unit/docs_requirements';
   assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/text_haystack.rs'])),
-    {warnings: [], violations: [], embeddedDataViolations: []});
+    {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
   const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
   assert.match(source, /^mod text_haystack;$/mu);
   assert.match(source, /^fn repository_text_avoids_deferred_labels_requested_by_issue_103\(\) \{/mu);
@@ -173,7 +173,7 @@ test('path-loaded native owners explicitly resolve every extracted helper', () =
 test('capability routing retains file-size headroom with all public tool entry points', () => {
   const owner = 'rust/src/agentic_coding/capability_router';
   assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/tool_classification.rs'])),
-    {warnings: [], violations: [], embeddedDataViolations: []});
+    {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
   const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
   const classification = readFileSync(root + '/' + owner + '/tool_classification.rs', 'utf8');
   for (const name of ['tool_for', 'shell_command_tool', 'classify_tool', 'workspace_creation_tool', 'is_workspace_creation_tool']) {
@@ -239,7 +239,7 @@ for (const [owner, child, names] of [
 ]) {
   test(owner + ' keeps warning-free native acceptance owners and original test names', () => {
     assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/' + child + '.rs'])),
-      {warnings: [], violations: [], embeddedDataViolations: []});
+      {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
     const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
     const extracted = readFileSync(root + '/' + owner + '/' + child + '.rs', 'utf8');
     const declaration = owner.endsWith('/openai_compatibility')
@@ -327,7 +327,7 @@ for (const [owner, child, names] of [
 ]) {
   test(owner + ' retains its native test inventory below the size warning', () => {
     assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/' + child + '.rs'])),
-      {warnings: [], violations: [], embeddedDataViolations: []});
+      {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
     const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
     const file = explicitHelperPath(owner, child, source);
     const helper = readFileSync(file, 'utf8');
@@ -348,7 +348,7 @@ for (const [owner, child, names] of [
 test('whole-line operation application retains source-size headroom', () => {
   const owner = 'rust/src/agentic_coding/workspace_line_operation';
   assert.deepEqual(checkListedFiles(root, new Set([owner + '.rs', owner + '/applied_changes.rs'])),
-    {warnings: [], violations: [], embeddedDataViolations: []});
+    {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
   const source = readFileSync(root + '/' + owner + '.rs', 'utf8');
   const helper = readFileSync(root + '/' + owner + '/applied_changes.rs', 'utf8');
   assert(source.includes('mod applied_changes;'));

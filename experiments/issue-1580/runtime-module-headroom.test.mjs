@@ -79,7 +79,7 @@ for (const [owner,helper,name] of [
   ]
 ]) {
  test(owner+' keeps its complete function below the unchanged size warning',()=>{
-  assert.deepEqual(checkListedFiles(root,new Set([owner,helper])),{warnings:[],violations:[],embeddedDataViolations:[]});
+  assert.deepEqual(checkListedFiles(root,new Set([owner,helper])),{warnings:[],violations:[],embeddedDataViolations:[],errors:[]});
   const source=readFileSync(root+'/'+owner,'utf8'),child=readFileSync(root+'/'+helper,'utf8');
   const module=helper.split('/').at(-1).slice(0,-3);
   assert(source.includes('mod '+module+';'));
