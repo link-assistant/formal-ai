@@ -112,6 +112,11 @@ pub(super) fn release_scripts_check_configured_release_artifacts() {
         env!("CARGO_MANIFEST_DIR")
     ))
     .unwrap();
+    let registry = fs::read_to_string(format!(
+        "{}/../scripts/registry.rs",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("the waiter's shared registry module should be readable");
     let release_script = fs::read_to_string(format!(
         "{}/../scripts/create-github-release.rs",
         env!("CARGO_MANIFEST_DIR")
@@ -135,8 +140,10 @@ pub(super) fn release_scripts_check_configured_release_artifacts() {
         "release-needed check should output whether the crate already exists"
     );
     assert!(
-        wait_for_crate.contains("crates.io/api/v1/crates"),
-        "release workflow should wait for crates.io visibility before image publishing"
+        wait_for_crate.contains("#[path = \"registry.rs\"]")
+            && wait_for_crate.contains("registry::version_exists(&crate_name, &version)")
+            && registry.contains("https://crates.io/api/v1/crates/{crate_name}/{version}"),
+        "the waiter must check the selected crate version through the actual registry module before image publishing"
     );
     assert!(
         wait_for_crate.contains("example-sum-package-name")
