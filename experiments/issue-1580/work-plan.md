@@ -1133,3 +1133,9 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Correct JavaScript/Rust query and root-layout source classification; eight output tests, 161 policy tests, 63 native admission tests and five gates pass.
 - [x] Register native classifier regression and admission; Rust 2024 formatting passes without a local build.
 - [ ] Execute the new native regression and both repaired gates in the next complete hosted round; collect all other 754 failures first.
+
+## Codex integration cleanup follow-up, 2026-11-22
+
+- Published 754fd314 job 137115847267 ran the native parser contracts successfully, then failed removing the Codex plugin-clone directory (raw lines 2498–2500).
+- The actual client launcher now stops and observes its owned process group before returning. Five original-launcher negative controls fail; ten fixed-launcher cases and the focused-map test pass. Hosted replay is pending. See `docs/case-studies/issue-1580/codex-client-lifetime.md`.
+- Supplied implementation and procedures retain zero independent authorship credit. The historical Agent recipe failure and GPU dependency warnings remain unresolved.
