@@ -30,7 +30,6 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/concepts.lino",
   "seed/coreference.lino",
   "seed/creative-composition-rules.lino",
-  "seed/demo-dialogs.lino",
   "seed/derivation-schema.lino",
   "seed/entity-names.lino",
   "seed/environments.lino",

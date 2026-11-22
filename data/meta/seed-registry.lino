@@ -106,9 +106,6 @@ seed_registry
   seed creative-composition-rules
     bundle true
     web true
-  seed demo-dialogs
-    bundle true
-    web true
   seed derivation-schema
     bundle true
     web true
