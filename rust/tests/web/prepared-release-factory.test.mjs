@@ -38,6 +38,7 @@ if(command==='cargo'){if(args[0]==='metadata')console.log(JSON.stringify(state.m
 else if(command==='rustc')process.stdout.write(state.compiler);
 else if(command==='docker'){const destination=args.some(value=>value.replace(/^docker\\.io\\//u,'').startsWith('fixture/mirror'));const image=destination?state.destination:state.image;const digest=destination?state.destinationDigest:state.digest;const reference=image+'@'+digest;
  if(state.mode==='docker-failed'&&args[0]==='buildx')fail('actual Node Docker stand-in failed',23);
+ if(args[0]==='buildx'&&args[1]==='imagetools'&&args[2]==='inspect')console.log(state.mode==='wrong-tag-digest'?'sha256:'+'f'.repeat(64):digest);
  if(args[0]==='image'&&args[1]==='inspect')console.log(JSON.stringify([{Os:'linux',Architecture:'amd64',Id:destination&&state.mode==='mirror-config-changed'?'sha256:'+'f'.repeat(64):state.configDigest,RepoDigests:[reference],Config:{Env:['FORMAL_AI_IMAGE_VARIANT=dind'],Labels:{'org.opencontainers.image.revision':state.head,'org.opencontainers.image.version':'1.2.3','io.link-assistant.formal-ai.executable.sha256':state.binarySha}}}]));
  if(args[0]==='run'){if(args.includes('--version'))console.log(state.mode==='wrong-version'?'formal-ai 9.9.9':'formal-ai 1.2.3');else if(args.includes('sha256sum'))console.log((state.mode==='wrong-binary'?'e'.repeat(64):state.binarySha)+'  /usr/local/bin/formal-ai');else {if(state.mode==='runtime-failed')fail('actual runtime stand-in failed',24);console.log('Actual Node fixture DinD runtime observation');}}
 }else fail('unknown controlled command',99);
@@ -129,9 +130,17 @@ test('actual Node Docker stand-in builds prebuilt once, preserves immutable full
  assert.ok(docker.indexOf(builds[1])>docker.findIndex(call=>call.args.includes('verify-formal-ai-dind')));
  const args=builds[0].args;
  assert.ok(args.includes('--push'));assert.ok(args.includes('--provenance=false'));assert.ok(args.includes('--progress')&&args.includes('plain'));assert.ok(!args.includes('--load'));
- const tags=args.flatMap((value,index)=>value==='--tag'?[args[index+1]]:[]);assert.deepEqual(tags,['ghcr.io/fixture/formal-ai:1.2.3','ghcr.io/fixture/formal-ai:latest']);
+ const image='ghcr.io/fixture/formal-ai',candidate=image+':candidate-1.2.3-123-1';
+ const tags=args.flatMap((value,index)=>value==='--tag'?[args[index+1]]:[]);assert.deepEqual(tags,[candidate]);
  assert.equal(docker.some(call=>call.args[0]==='tag'&&call.args[2]?.startsWith('ghcr.io/')||call.args[0]==='push'&&call.args[1]?.startsWith('ghcr.io/')),false);
- const buildIndex=docker.indexOf(builds[0]);const pullIndex=docker.findIndex(call=>call.args[0]==='pull'&&call.args[1]==='ghcr.io/fixture/formal-ai:1.2.3');assert.ok(pullIndex>buildIndex);
+ const buildIndex=docker.indexOf(builds[0]);
+ const pullIndex=docker.findIndex(call=>call.args[0]==='pull'&&call.args[1]===candidate);
+ const runtimeIndex=docker.findIndex(call=>call.args.includes('verify-formal-ai-dind'));
+ const promotionIndex=docker.findIndex(call=>call.args[1]==='imagetools'&&call.args[2]==='create');
+ assert.ok(buildIndex<pullIndex&&pullIndex<runtimeIndex&&runtimeIndex<promotionIndex);
+ assert.deepEqual(docker[promotionIndex].args,['buildx','imagetools','create','--prefer-index=false','--tag',image+':1.2.3','--tag',image+':latest',full.image]);
+ assert.deepEqual(docker.slice(promotionIndex+1,promotionIndex+3).map(call=>call.args),['1.2.3','latest'].map(suffix=>['buildx','imagetools','inspect','--format','{{.Manifest.Digest}}',image+':'+suffix]));
+ assert.ok(promotionIndex+2<docker.indexOf(builds[1]));
  const publicationOrder=[];
  for(const suffix of ['1.2.3','latest']){const tagged=docker.findIndex(call=>call.args[0]==='tag'&&call.args[2]==='fixture/mirror:'+suffix);const pushed=docker.findIndex(call=>call.args[0]==='push'&&call.args[1]==='fixture/mirror:'+suffix);assert.ok(tagged>pullIndex&&pushed>tagged);publicationOrder.push(pushed);}
  assert.ok(publicationOrder[0]<publicationOrder[1]);
@@ -154,7 +163,7 @@ for(const failure of ['nonzero','timeout','throw'])test('optional cache '+failur
     assert.deepEqual(settings.stdio,['ignore','inherit','inherit']);assert.ok(!args.includes('--push'));
     assert.equal(args.at(-1),'.');assert.ok(args.includes('BINARY_SOURCE=prebuilt'));assert.ok(args.includes('type=gha,mode=max,scope=docker-image'));
     const calls=readFileSync(f.trace,'utf8').trim().split('\n').map(JSON.parse);
-    assert.ok(calls.some(call=>call.command==='docker'&&call.args.includes('verify-formal-ai-dind')));
+    assert.ok(calls.some(call=>call.command==='docker'&&call.args[1]==='imagetools'&&call.args[2]==='create'));
     assert.ok(options.requests.some(request=>request.url.startsWith('https://ghcr.io/')));
     if(failure==='nonzero')return {status:23,signal:null};
     if(failure==='timeout')return spawnSync(process.execPath,['-e','setInterval(()=>{},1000)'],{...settings,timeout:40,stdio:'pipe'});
@@ -174,10 +183,23 @@ for(const mode of ['docker-failed','wrong-version','wrong-binary','runtime-faile
  try{const options=declaredGnuFactory(f);
  f.update({mode});
  await assert.rejects(publishPreparedFullImage(options));
- assert.equal(readFileSync(f.trace,'utf8').includes('type=cacheonly'),false);
+ const trace=readFileSync(f.trace,'utf8');
+ assert.equal(trace.includes('type=cacheonly'),false);
+ assert.equal(trace.includes('ghcr.io/fixture/formal-ai:1.2.3'),false);
+ assert.equal(trace.includes('ghcr.io/fixture/formal-ai:latest'),false);
  assert.equal(existsSync(join(f.options.directory,'full-image.json')),false);
  }finally{f.close();
  }
+});
+test('a release tag resolving to different bytes vetoes the full image receipt',async()=>{
+ const f=fixture();
+ try{
+  const options=declaredGnuFactory(f);
+  f.update({mode:'wrong-tag-digest'});
+  await assert.rejects(publishPreparedFullImage(options),/release tag differs from the verified image/);
+  assert.equal(readFileSync(f.trace,'utf8').includes('type=cacheonly'),false);
+  assert.equal(existsSync(join(f.options.directory,'full-image.json')),false);
+ }finally{f.close();}
 });
 test('altered producer bytes, source fields and status veto before any Docker process',async()=>{
  for(const kind of ['binary','source','status','identity']){const f=fixture();

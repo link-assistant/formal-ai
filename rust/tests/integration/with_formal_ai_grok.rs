@@ -27,7 +27,8 @@ fn with_formal_ai_grok_reaches_configured_openai_endpoint() {
         &grok,
         r#"#!/bin/sh
 [ "$GROK_API_KEY" = "formal-ai-local" ] || exit 92
-case "$GROK_BASE_URL" in */api/openai/v1) ;; *) exit 93 ;; esac
+[ -n "$FORMAL_AI_REPORT_DIALOG_ID" ] || exit 93
+case "$GROK_BASE_URL" in */api/openai/v1/dialog/"$FORMAL_AI_REPORT_DIALOG_ID") ;; *) exit 93 ;; esac
 curl --silent --show-error --fail --max-time 5 \
   -H "Authorization: Bearer $GROK_API_KEY" \
   -H "Content-Type: application/json" \
@@ -43,21 +44,24 @@ curl --silent --show-error --fail --max-time 5 \
     let listener = TcpListener::bind("127.0.0.1:0").expect("bind recording endpoint");
     let port = listener.local_addr().expect("recording address").port();
     let server = std::thread::spawn(move || {
-        let (mut stream, _) = listener.accept().expect("accept grok request");
-        stream
-            .set_read_timeout(Some(std::time::Duration::from_secs(5)))
-            .expect("request timeout");
-        let mut bytes = [0_u8; 8192];
-        let count = stream.read(&mut bytes).expect("read grok request");
-        let request = String::from_utf8_lossy(&bytes[..count]).into_owned();
-        let body = r#"{"choices":[{"message":{"content":"Hi from Formal AI"}}]}"#;
-        write!(
-            stream,
-            "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
-            body.len()
-        )
-        .expect("respond to grok");
-        request
+        let respond = |body: &str| {
+            let (mut stream, _) = listener.accept().expect("accept wrapper or Grok request");
+            stream
+                .set_read_timeout(Some(std::time::Duration::from_secs(5)))
+                .expect("request timeout");
+            let mut bytes = [0_u8; 8192];
+            let count = stream.read(&mut bytes).expect("read request");
+            write!(
+                stream,
+                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            )
+            .expect("respond to request");
+            String::from_utf8_lossy(&bytes[..count]).into_owned()
+        };
+        let probe = respond(r#"{"models":[]}"#);
+        assert!(probe.starts_with("GET /v1/models "));
+        respond(r#"{"choices":[{"message":{"content":"Hi from Formal AI"}}]}"#)
     });
 
     let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
@@ -91,7 +95,13 @@ curl --silent --show-error --fail --max-time 5 \
     );
     assert!(String::from_utf8_lossy(&output.stdout).contains("Hi from Formal AI"));
     let request = server.join().expect("recording endpoint");
-    assert!(request.starts_with("POST /api/openai/v1/chat/completions "));
+    let target = request
+        .lines()
+        .next()
+        .and_then(|line| line.strip_prefix("POST /api/openai/v1/dialog/"))
+        .and_then(|line| line.split_once("/chat/completions HTTP/"))
+        .expect("Grok sends requests through its report dialog");
+    assert!(!target.0.is_empty());
     assert!(request.contains("Authorization: Bearer formal-ai-local"));
     assert!(request.contains("\"model\":\"formal-ai\""));
     let _ = std::fs::remove_dir_all(&dir);
