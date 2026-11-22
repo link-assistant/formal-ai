@@ -539,3 +539,35 @@ test('native changelog classification is compiled and admitted for either reposi
   assert.match(readFileSync('rust/tests/unit/workflow_contracts.rs', 'utf8'),
     /#\[path = "\.\.\/\.\.\/\.\.\/scripts\/check-changelog-fragment\.rs"\]\nmod check_changelog_fragment;/u);
 });
+
+
+test('native library regressions preserve every invocation after an earlier failure', {timeout: 15000}, () => {
+  const workflow = YAML.parse(readFileSync('.github/workflows/native-type-check.yml', 'utf8'));
+  const step = workflow.jobs.clippy.steps.find(row => row.name === 'Verify native source binding and canonical operand readers');
+  assert(step);
+  const directory = mkdtempSync(join(tmpdir(), 'native-library-contracts-'));
+  try {
+    const calls = join(directory, 'calls.jsonl');
+    writeFileSync(join(directory, 'cargo'), `#!/usr/bin/env node
+import fs from 'node:fs';
+const args = process.argv.slice(2);
+fs.appendFileSync(process.env.NATIVE_LIBRARY_CALLS, JSON.stringify(args) + '\\n');
+process.exit(args.includes('solver_unknown_reasoning::tests::') ? 17 : 0);
+`, {mode: 0o755});
+    const result = spawnSync('bash', ['-c', step.run], {
+      cwd: directory, encoding: 'utf8', timeout: 5000, maxBuffer: 65536,
+      env: {...process.env, PATH: directory + ':' + process.env.PATH, NATIVE_LIBRARY_CALLS: calls},
+    });
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 17, result.stderr);
+    const invocations = readFileSync(calls, 'utf8').trim().split('\n').map(JSON.parse);
+    assert.equal(invocations.length, 4);
+    for (const [index, filter] of ['solver_unknown_reasoning::tests::',
+      'solver_helpers::code::javascript_program_tests::', 'rule_interpreter::parser::reference_list_tests::'].entries()) {
+      assert(invocations[index].includes('--lib'));
+      assert(invocations[index].includes(filter));
+      assert(invocations[index].includes('--test-threads=1'));
+    }
+    assert(invocations[3].includes('a_language_without_localized_openers_reports_a_gap_not_english'));
+  } finally { rmSync(directory, {recursive: true, force: true}); }
+});

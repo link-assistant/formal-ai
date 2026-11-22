@@ -153,13 +153,15 @@ jobs:
           # Routing assertions use committed captures; fixture transports opt in explicitly.
           FORMAL_AI_OFFLINE: '1'
         run: bash scripts/ci-native-regressions.sh core
-      - name: Verify native unresolved-language source binding
+      - name: Verify native source binding and canonical operand readers
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
           CARGO_BUILD_JOBS: '2'
         run: |
           regression_status=0
           cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?
+          cargo test --manifest-path rust/Cargo.toml --locked --lib solver_helpers::code::javascript_program_tests:: -- --test-threads=1 || regression_status=$?
+          cargo test --manifest-path rust/Cargo.toml --locked --lib rule_interpreter::parser::reference_list_tests:: -- --test-threads=1 || regression_status=$?
           cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?
           exit "$regression_status"
       - name: Verify explicit computer-use plans and HTTP receipts
