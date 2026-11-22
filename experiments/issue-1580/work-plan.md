@@ -1220,3 +1220,17 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Reproduce and repair the governed manifest witness, receipt-bound duration merge, complete-run scheduling reserve and native Bun installer failures. Retain failing controls and source-bound evidence; no lowered budget or warning threshold.
 - [x] Run the full JavaScript inventory after implementation: 89 applicable gates pass, 53 hosted-only exclusions remain unqualified. Archive complete logs, final status and production diff review.
 - [ ] Verify every repair on the next published head. Bun-dependent native client tests skipped on a558f834; local installer tests do not replace their hosted replay. All original broad acceptance criteria remain active.
+
+
+## Main v0.356.4 integration and final local gate replay
+
+- [x] Merge current main 09711c000, preserve both regression ledgers, native runtime contracts, literal JSON settings and main's client report fixtures. Refresh the governed witness through its maintained generator; complete-object comparison changes only four manifest hashes.
+- [x] Preserve the initial overstrict witness guard and stale status projection failures. Correct the comparison against the common ancestor and regenerate status with the maintained renderer. Focused seed, fixture, Unicode, client-report and 163 workflow policy cases pass; two native client cases remain skipped.
+- [x] Preserve the first complete inventory's release-fixture failure; replace shared partial-clone history with a four-commit local fixture and pass all seven real CLI reconstruction cases. Replay the entire local JavaScript inventory after repair: 89 applicable passes, 53 explicit hosted-only exclusions, no failed gate, no local Rust execution. Archive complete evidence and exact source identities.
+- [ ] Verify the complete repair batch on its next published head. Finish all original acceptance criteria; PR #1581 remains draft and unmerged.
+
+
+## Native execution and text paired review
+
+- [x] Fully read thirty-two additional native diffs (4655 lines) and verify fresh Git hashes after the current-main merge. Sixteen move-only diffs preserve shard emission, record fields, method execution, reasoning steps, numeric helpers, condition surfaces, replacement and genre composition. Imports, restricted visibility and parent exports remain consistent.
+- [ ] Separately qualify the live census, CLI verbosity, quoted cue masking, selected evidence, typed answer host, protocol extraction and constraints, repository allowlist, and web-search query visibility/removal changes. These diffs were fully read but receive no move-only qualification. Finish the wider aggregate review and native runtime evidence.

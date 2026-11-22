@@ -1,0 +1,288 @@
+{
+  "at": "2026-11-22T09:07:28.871620+00:00",
+  "base": "09711c000cca319d7269b4b0fa15d15339baf881",
+  "sourceHead": "dd08c3e1515debc1fe3bc2e672c1de5c24a55f70",
+  "files": [
+    {
+      "path": "rust/src/history_context/repository_qa.rs",
+      "file": "0311.diff.gz",
+      "sha256": "9ff25ec0cd4a3c6a75eca9c09c3efc5427b97cfad8e13d3219c543d0b6c5f59c",
+      "lines": 117,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/intent_formalization/obligations.rs",
+      "file": "0312.diff.gz",
+      "sha256": "04e78c22c93ae997726cf86a631454e8d5790c881dcfacd4a6fde7beb49b1761",
+      "lines": 13,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/lexeme_import.rs",
+      "file": "0313.diff.gz",
+      "sha256": "28af48ebc641a8f4dc51c75f7b04fb89ce467d193dd3e35a99881c33a88ad2c1",
+      "lines": 98,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/lexeme_import/shard_files.rs",
+      "file": "0314.diff.gz",
+      "sha256": "9b4d7c793865a4bd6ba44c5b9a6dc759a6c935e8971eed3ad04ad7d24a48e658",
+      "lines": 86,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/link_store.rs",
+      "file": "0315.diff.gz",
+      "sha256": "d8c7727286317da6c89e595dbaf700f2a4d13758edfe16fe3ea7421ecf6a1c11",
+      "lines": 119,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/link_store/record_fields.rs",
+      "file": "0316.diff.gz",
+      "sha256": "c444bdbbcc0c10d3a2d8402db44beb8bef68a3399b1c2b254917f4f50b95aa8c",
+      "lines": 98,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/main.rs",
+      "file": "0317.diff.gz",
+      "sha256": "91fd953aca14188a90feb1b52acad1089eed86a4a088e662423a437efb706e14",
+      "lines": 200,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/meta_executor.rs",
+      "file": "0318.diff.gz",
+      "sha256": "8c576fa95908c8a56910e1539f85799a9af9b9a9a39179b3691ec9c16c9e9566",
+      "lines": 239,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/meta_executor/decomposition.rs",
+      "file": "0319.diff.gz",
+      "sha256": "79c7905ee144e7e3aca7086730dd44caae76f84dc7ba084aad9f04a9d4425bd9",
+      "lines": 52,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/meta_executor/production.rs",
+      "file": "0320.diff.gz",
+      "sha256": "583fd98bda248fc43fefba0cca822bfd8594960577dbaad3341192396d24d788",
+      "lines": 87,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/meta_executor/selection.rs",
+      "file": "0321.diff.gz",
+      "sha256": "387c8ab5a4114758f6b3eb3045c7d330a899b6fa1a215e923d94b5e968e10014",
+      "lines": 112,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/meta_method_dispatch.rs",
+      "file": "0322.diff.gz",
+      "sha256": "58739522734dd64e6c58f2f97d98473dc2ae2088150b1977e23806e0105cbc60",
+      "lines": 217,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/meta_method_dispatch/execution.rs",
+      "file": "0323.diff.gz",
+      "sha256": "38ece753de062d2fcc149974ac87849167f3fe6ad8b4c22cbe8991ffec6bb63a",
+      "lines": 210,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/meta_reasoner/reasoner.rs",
+      "file": "0324.diff.gz",
+      "sha256": "d5d58b948d1b12a2f20ad2010e78399c159369bc995f4af12cce84b9029641c5",
+      "lines": 230,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/meta_reasoner/reasoner/reasoning_steps.rs",
+      "file": "0325.diff.gz",
+      "sha256": "678910cf78544905036b6981cb5a683fe919b3d18c94e7a3f44e7c041b458ee6",
+      "lines": 224,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/proof_engine/decision/linear.rs",
+      "file": "0326.diff.gz",
+      "sha256": "56bb493408a042661472e8f8551ff18a36e447b1a90a0cff2674799ac70a8f1f",
+      "lines": 91,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/proof_engine/decision/linear/numeric.rs",
+      "file": "0327.diff.gz",
+      "sha256": "b6727c16bb19abd5c3a7fd7d954c5daf217c9337dd30594d4a121fa46fb0c8a9",
+      "lines": 67,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/protocol.rs",
+      "file": "0328.diff.gz",
+      "sha256": "eecbdddb9572c1ecd1d3514eac61d2cd1d081686bf1cea3a472ec2b38daf232f",
+      "lines": 250,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/protocol/chat_message.rs",
+      "file": "0329.diff.gz",
+      "sha256": "4235955be4bbe9450ad27129032938b71f764e9d8775edd449bde77c0984f704",
+      "lines": 227,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/protocol/request_context.rs",
+      "file": "0330.diff.gz",
+      "sha256": "b7ef612c054efa836a0ea396ab782064574cc285c598bc6a218e3766af3a6ed2",
+      "lines": 145,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/protocol_policy.rs",
+      "file": "0331.diff.gz",
+      "sha256": "113100c4f2a619be7ad74a82e79fa5cdfbde3a8b76a5244434fb0074d6dbeb1a",
+      "lines": 19,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/protocol_responses.rs",
+      "file": "0332.diff.gz",
+      "sha256": "c54c3f4d5faf3098b0e36d59efff7463a6e26bdc95f36860b4a36726cf78a148",
+      "lines": 15,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/repository_workspace/command_allowlist.rs",
+      "file": "0333.diff.gz",
+      "sha256": "5580285877b37ac037e5997f0002a4a22d151eea1fe722f9994f6cf321adeb04",
+      "lines": 145,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/repository_workspace/mod.rs",
+      "file": "0334.diff.gz",
+      "sha256": "e442b8dbfedb641eb6bae657a389cfedc598fd766701e02a077172a63f91ae6d",
+      "lines": 167,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/rule_interpreter.rs",
+      "file": "0335.diff.gz",
+      "sha256": "5d40d39f9380fe0c18e19c1cabe2bf14ac6d9bc4364ffa6a13264c0ffaad255e",
+      "lines": 132,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/rule_interpreter/surfaces.rs",
+      "file": "0336.diff.gz",
+      "sha256": "9d02dc215e684688e768f10d24ee1ccd73b11b481286366089fcbd5afd618108",
+      "lines": 120,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/solver_handlers/text_manipulation.rs",
+      "file": "0352.diff.gz",
+      "sha256": "f8301f86f8c2c2c495eceb2471ea5531753847c52048e0058451c15e681e32f1",
+      "lines": 152,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/solver_handlers/text_manipulation/replacement.rs",
+      "file": "0353.diff.gz",
+      "sha256": "b52bfabf6b175f6480f9b06b947f19e7897d3210fbee0c9e710787f7728dd469",
+      "lines": 125,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/solver_handlers/text_rewrite.rs",
+      "file": "0354.diff.gz",
+      "sha256": "83afa3e3c0c6e308fb54d8141edac98712c4234193b20a0915735b122adcc7da",
+      "lines": 313,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/solver_handlers/text_rewrite/genre_writing.rs",
+      "file": "0355.diff.gz",
+      "sha256": "cdebee3dcf693f9509c1dde527c46a7ae6ff11733e4332dd1f2dcc2e383392bc",
+      "lines": 308,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": true
+    },
+    {
+      "path": "rust/src/solver_handlers/web_search_intent.rs",
+      "file": "0359.diff.gz",
+      "sha256": "83590d09bc8c46a26af0432877c1fa9b0ba493c63bbd70d63ede16f7f080b3ad",
+      "lines": 156,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    },
+    {
+      "path": "rust/src/solver_handlers/web_search_intent/followup.rs",
+      "file": "0360.diff.gz",
+      "sha256": "fa7a8559abb13ff05f558d6d0d320db833769149b31bda2699e4a053173f8931",
+      "lines": 121,
+      "literalDiffFullyReviewed": true,
+      "moveOnlyQualification": false
+    }
+  ],
+  "fileCount": 32,
+  "diffLines": 4655,
+  "finding": "Shard-file emission, record fields, method execution, reasoning steps, affine numeric helpers, condition surfaces, text replacement and genre composition preserve their moved bodies. Imports, restricted visibility and parent exports match their new locations. Web-search follow-up extraction preserves the algorithm but adjacent query visibility/removal changes require a separate semantic review; they receive no move-only qualification.",
+  "wholePullRequestReviewed": false,
+  "runtimeValidation": "Source review does not establish native runtime qualification.",
+  "localRustExecution": false,
+  "autonomousAuthorshipCredit": 0,
+  "additionalSemanticDiffsReadButNotQualified": [
+    "rust/src/history_context/repository_qa.rs",
+    "rust/src/intent_formalization/obligations.rs",
+    "rust/src/main.rs",
+    "rust/src/meta_executor.rs",
+    "rust/src/meta_executor/decomposition.rs",
+    "rust/src/meta_executor/production.rs",
+    "rust/src/meta_executor/selection.rs",
+    "rust/src/protocol.rs",
+    "rust/src/protocol/chat_message.rs",
+    "rust/src/protocol/request_context.rs",
+    "rust/src/protocol_policy.rs",
+    "rust/src/protocol_responses.rs",
+    "rust/src/repository_workspace/command_allowlist.rs",
+    "rust/src/repository_workspace/mod.rs",
+    "rust/src/solver_handlers/web_search_intent.rs",
+    "rust/src/solver_handlers/web_search_intent/followup.rs"
+  ]
+}
