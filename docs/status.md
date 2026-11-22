@@ -50,15 +50,11 @@ This document is a deterministic projection of committed ledgers.
 | Input | Lines |
 | --- | ---: |
 | `data/benchmarks/external-results.lino` | 969 |
-| `data/meta/self-hosting-ledger.lino` | 229 |
-| `data/meta/debt-ratchet.lino` | 65 |
-| `data/meta/core-boundary-ledger.lino` | 548 |
 | `data/meta/self-hosting-ledger.lino` | 235 |
-| `data/meta/debt-ratchet.lino` | 64 |
-| `data/meta/core-boundary-ledger.lino` | 545 |
+| `data/meta/debt-ratchet.lino` | 65 |
+| `data/meta/core-boundary-ledger.lino` | 554 |
 | `data/meta/handler-migration-ledger.lino` | 502 |
 | `data/meta/ladder-ratchet.lino` | 21 |
 | `data/meta/requirement-status-ledger.lino` | 175 |
 | `data/seed/languages.lino` | 113 |
-| `data/meta/worker-line-budget/*.lino` | 182 files |
-| `data/meta/worker-line-budget/*.lino` | 177 files |
+| `data/meta/worker-line-budget/*.lino` | 183 files |

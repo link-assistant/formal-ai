@@ -26,7 +26,7 @@ export function isGoogleTrendsCatalogTask(prompt) {
     && (lower.includes('prompt') || lower.includes('answer') || lower.includes('catalog') || lower.includes('test'));
 }
 
-const SOURCE_ID = 'google_trends_rss';
+const SOURCE_IDENTIFIER = 'google_trends_rss';
 const TOP_LIMIT = 10;
 const XML_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
 const compact = (value) => String(value ?? '').trim().replace(/\s+/gu, ' ');
@@ -44,9 +44,11 @@ function text(xml, tag) {
 
 /** Mirrors `parse_google_trends_rss`. */
 export function parseGoogleTrendsRss(xml) {
-  if (!xml.includes('<rss') || !xml.includes('<channel>')) return [];
+  const feed = /<rss(?:\s[^>]*)?>([\s\S]*?)<\/rss>/u.exec(xml)?.[1];
+  const channel = feed && blocks(feed, 'channel')[0];
+  if (!channel) return [];
   const topics = [];
-  for (const item of blocks(xml, 'item')) {
+  for (const item of blocks(channel, 'item')) {
     const query = text(item, 'title');
     if (!query) continue;
     const news = blocks(item, 'ht:news_item').map((entry) => ({
@@ -67,9 +69,9 @@ export function parseGoogleTrendsRss(xml) {
 }
 
 function trendsSource() {
-  return cached(SOURCE_ID, () => parseRoot(readText('data/seed/sources-registry.lino')).children
+  return cached(SOURCE_IDENTIFIER, () => parseRoot(readText('data/seed/sources-registry.lino')).children
     .flatMap(({ children }) => children)
-    .find(({ name, id }) => name === 'source' && id === SOURCE_ID));
+    .find(({ name, id }) => name === 'source' && id === SOURCE_IDENTIFIER));
 }
 
 function promptTemplates() {
@@ -104,7 +106,7 @@ export async function loadCatalog(task = '', fetchSource = host().sourceFetch?.(
       topic.answered.push({ language, variation, prompt, answer: await solve(prompt) });
     }
   }
-  return { source: SOURCE_ID, url, geo, locale, collected: capture.fetched_at, sha256: capture.sha256, topics };
+  return { source: SOURCE_IDENTIFIER, url, geo, locale, collected: capture.fetched_at, sha256: capture.sha256, topics };
 }
 
 /** Mirrors `field`. */

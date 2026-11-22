@@ -178,11 +178,13 @@ fn load_frontier(args: &LearnCycleArgs) -> Result<(String, Vec<FrontierItem>), B
         .into());
     };
     if frontier.document.is_empty() {
-        return Err(format!(
-            "frontier '{}' requires a learning report via --from <PATH>",
-            frontier.slug
+        let message = render_response(
+            "learning-frontier-report-required",
+            "en",
+            &[("frontier", frontier.slug)],
         )
-        .into());
+        .unwrap_or_default();
+        return Err(message.into());
     }
     Ok((
         String::from(frontier.slug),

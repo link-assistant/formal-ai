@@ -575,6 +575,22 @@ meanings
     unit "not applicable"
     example "the kotlinlang.org command-line compiler page"
     grounding "data/seed/sources-registry.lino"
+  data-feed
+    defined-by document
+    role software_artifact_kind
+    precondition "a registered publisher provides a machine-readable series of current records"
+    effect "the runtime verifies the response capture and derives observations from the records"
+    unit "publisher record"
+    example "a regional RSS feed of current search topics"
+    grounding "data/seed/sources-registry.lino"
+  learning-frontier-report-required
+    defined-by document
+    role localized-response-template
+    precondition "the requested learning frontier has no supplied report"
+    effect "the learning command requests the report path"
+    unit "report"
+    example "a user supplies the output of a regional feed analysis"
+    grounding "rust/src/cli_learn.rs"
   role_slot
     defined-by method
     role action

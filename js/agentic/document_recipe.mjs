@@ -158,11 +158,11 @@ async function planTrendsDocument(task, messages, toolNames, module, path) {
   let document;
   for (const attempt of [...progress.attempts].reverse()) {
     if (attempt.capability !== Capability.Write || !attempt.arguments) continue;
-    const args = parseJson(attempt.arguments);
-    if (!args || typeof args.content !== 'string') continue;
-    const paths = names.filter((key) => Object.hasOwn(args, key));
-    if (paths.length && paths.every((key) => args[key] === path)) {
-      document = args.content;
+    const argumentsObject = parseJson(attempt.arguments);
+    if (!argumentsObject || typeof argumentsObject.content !== 'string') continue;
+    const paths = names.filter((key) => Object.hasOwn(argumentsObject, key));
+    if (paths.length && paths.every((key) => argumentsObject[key] === path)) {
+      document = argumentsObject.content;
       break;
     }
   }

@@ -29,6 +29,7 @@ import { validateRepairProgram } from '../server/repair-program-syntax.mjs';
 import { createNodeSourceSessionHost } from '../server/node-source-session-host.mjs';
 import { sourceQualifiedSeedOwners } from '../../scripts/generate-seed-registry.mjs';
 import { currentDialogId } from '../server/dialog-log.mjs';
+import { BenchmarkGateReport, learnRulesFromUnknownTraces, unknownTraceFromEventLog } from '../server/self-improvement.mjs';
 function stat(path) {
   try {
     return statSync(path);
@@ -310,6 +311,10 @@ export async function installNodeHost(worker, options = {}) {
     sourceUnaryConsolidationCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/consolidate-stateless-unary-request.mjs')],
     generatedSeedOwnerDeclarations,
     sourceFetch: (options) => nodeSourceFetch(readOnly, options),
+    reviewUnknownAnswers: (answers) => {
+      const traces = answers.map(({ prompt, intent, events }) => unknownTraceFromEventLog(prompt, intent, events)).filter(Boolean);
+      return learnRulesFromUnknownTraces(traces, BenchmarkGateReport.absentForIssue362());
+    },
     validateProgram: validateRepairProgram,
     comparisonBoundaryOperation: observedComparisonBoundaryOperation,
     observedSourceRepair: observedSourceRepairOperation,

@@ -57,9 +57,7 @@ rust/src/agentic_coding/general_planner.rs	written plan event {}
 rust/src/agentic_coding/google_trends_catalog.rs	    source_news\n
 rust/src/agentic_coding/google_trends_catalog.rs	  record_type \"google_trends_catalog\"\n
 rust/src/agentic_coding/google_trends_catalog.rs	Convert the Google Trends top 10 searches into multilingual Formal AI test prompts, include two request variations in every supported language, answer each request, and record the Google Trends catalog in Links Notation.
-rust/src/agentic_coding/google_trends_catalog.rs	Generated the Google Trends catalog from {topic_count} top searches in {geo}: produced {prompt_count} multilingual request variants and answered {answer_count} of them through the standard Formal AI engine. The catalog is generated from the checked-in Trends RSS snapshot, so tests stay offline while the converter can refresh the seed from the live RSS feed.\n\nGenerated document ({GOOGLE_TRENDS_CATALOG_PATH}):\n\n{document}
 rust/src/agentic_coding/google_trends_learning.rs	Collect the Google Trends learning frontier — the trending searches Formal AI cannot yet resolve — route them through the human-gated self-improvement loop, and record the learning report in Links Notation.
-rust/src/agentic_coding/google_trends_learning.rs	Routed the Google Trends learning frontier through the human-gated self-improvement loop: of {total} trending prompts, the engine already resolves {handled} and leaves {frontier} on the learning frontier. Every frontier trace was handed to the issue-#558 learner, which — because trending searches are open-domain questions, not program-plan modifiers — proposed {proposals} rules and adopted {adopted}: nothing changes without human review. The report is a pure function of the committed catalog.\n\nGenerated document ({GOOGLE_TRENDS_LEARNING_PATH}):\n\n{document}
 rust/src/agentic_coding/learning_report.rs	  record_type \"agent_cli_auto_learning\"\n
 rust/src/agentic_coding/learning_report.rs	  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n
 rust/src/agentic_coding/learning_report.rs	  substrate \"links_network\"\n
@@ -296,7 +294,6 @@ rust/src/google_trends_catalog.rs	  record_type \"google_trend_topic\"\n
 rust/src/google_trends_catalog.rs	  record_type \"google_trends_snapshot\"\n
 rust/src/google_trends_catalog.rs	google_trend_topic\n
 rust/src/google_trends_learning.rs	  frontier_prompt\n
-rust/src/google_trends_learning.rs	Trending searches are open-domain questions, not program-plan modifiers, so the rule-synthesis learner declines to fabricate seed rules for them. The learning frontier — every trending prompt the engine cannot yet route — is recorded here and handed to the human-gated self-improvement loop for triage; nothing is auto-adopted.
 rust/src/intent_formalization.rs	intent_formalization {}
 rust/src/intent_formalization.rs	referent=active_program_artifact task={} language={}
 rust/src/intent_formalization.rs	write_program task={task_slug} language={language_slug}
@@ -420,7 +417,6 @@ rust/src/repair_strategy.rs	Why did the reverse-sort answer change between relea
 rust/src/repair_strategy.rs	the trace shows `{signal}` — a correct behaviour is unguarded by a test
 rust/src/repair_strategy.rs	the trace shows `{signal}` — the meta algorithm could not route the task
 rust/src/repair_strategy.rs	the trace shows `{signal}` — the seed data the task needs is absent or wrong
-rust/src/retrieval_procedures.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
 rust/src/rule_synthesis.rs	node {primary} {stem}.wasm < input.tsv
 rust/src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
 rust/src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm

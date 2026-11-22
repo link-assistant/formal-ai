@@ -444,18 +444,18 @@ fn plan_trends_document(
             if attempt.capability != Capability::Write {
                 return None;
             }
-            let args: serde_json::Value =
+            let arguments: serde_json::Value =
                 serde_json::from_str(attempt.arguments.as_deref()?).ok()?;
             let names = ["path", "filePath", "file_path"];
             if names
                 .iter()
-                .filter_map(|key| args.get(*key))
+                .filter_map(|key| arguments.get(*key))
                 .any(|value| value.as_str() != Some(path))
-                || !names.iter().any(|key| args.get(*key).is_some())
+                || !names.iter().any(|key| arguments.get(*key).is_some())
             {
                 return None;
             }
-            args.get("content")?.as_str().map(str::to_owned)
+            arguments.get("content")?.as_str().map(str::to_owned)
         });
     let Some(document) = previous.or_else(|| render(task)) else {
         return AgenticPlan::Final(crate::seed::agentic_message(

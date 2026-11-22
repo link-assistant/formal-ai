@@ -1,6 +1,6 @@
 // Plan a human-gated learning report from the captured publisher feed.
 
-import { BenchmarkGateReport, learnRulesFromUnknownTraces, unknownTraceFromEventLog } from '../server/self-improvement.mjs';
+import { host } from './host.mjs';
 import { linoField, loadCatalog } from './google_trends_catalog.mjs';
 import { agenticMessage } from './messages.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
@@ -41,18 +41,17 @@ function isLearnFromSourceDirective(lowercased) {
 /** Mirrors `trending_learning_report_from_feed`. */
 export function renderLearningReport(catalog) {
   const frontier = [];
-  const traces = [];
+  const unresolved = [];
   let total = 0;
   for (const topic of catalog.topics) {
     for (const { language, variation, prompt, answer } of topic.answered) {
       total += 1;
       if (answer.intent !== 'unknown') continue;
       frontier.push({ rank: topic.rank, query: topic.query, language, variation, prompt, engine_intent: answer.intent, routed_to: 'human_triage' });
-      const trace = unknownTraceFromEventLog(prompt, answer.intent, answer.solver_events ?? []);
-      if (trace) traces.push(trace);
+      unresolved.push({ prompt, intent: answer.intent, events: answer.solver_events ?? [] });
     }
   }
-  const run = learnRulesFromUnknownTraces(traces, BenchmarkGateReport.absentForIssue362());
+  const run = host().reviewUnknownAnswers(unresolved);
   const reason = run.rejections[0]?.reason;
   const summary = agenticMessage(frontier.length ? 'google_trends_frontier_triage' : 'google_trends_frontier_empty');
   const fields = {

@@ -372,10 +372,7 @@ impl UniversalSolver {
             record_intent_formalization(log, &intent_entry);
             let intent_formalization = intent_entry.formalization;
 
-            // R1012: the general loop runs ahead of the handler table. A
-            // program verified against the request's examples, or one every
-            // word of the request grounds, answers here (`metaReason` at the
-            // top of `solveImpl`, js/worker/formal_ai_worker_solve.js).
+            // R1012: the general loop can answer before the handler table.
             if let Some(answer) = crate::meta_reasoner::try_meta_answer(
                 prompt,
                 language.slug(),
@@ -385,12 +382,8 @@ impl UniversalSolver {
                 return answer;
             }
 
-            // Issue #661 (R384): before any contextual handler runs (a language
-            // directive would otherwise be replayed by the response-language
-            // follow-up), check whether this newly formalized requirement
-            // contradicts a retained one. A clash — same subject, opposite polarity
-            // — is surfaced as a warning naming both statements, their weights, and
-            // a resolution that reuses the append-only retraction protocol.
+            // #661: check for contradictions before contextual language replay.
+            // The warning binds both requirements to the append-only retraction protocol.
             if let Some(answer) = crate::requirement_contradiction::detect_and_report(
                 prompt,
                 language,

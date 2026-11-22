@@ -24,7 +24,7 @@ use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTranspo
 /// How many Google Trends topics issue #498 requires the system to answer.
 pub const GOOGLE_TRENDS_TOP_LIMIT: usize = 10;
 
-const SOURCE_ID: &str = "google_trends_rss";
+const SOURCE_IDENTIFIER: &str = "google_trends_rss";
 const DEFAULT_GEO: &str = "US";
 
 const FEED_TTL_SECONDS: u64 = 900;
@@ -151,11 +151,19 @@ pub fn parse_google_trends_rss(
     geo: &str,
     locale: &str,
 ) -> Result<GoogleTrendsCatalog, GoogleTrendsParseError> {
-    if !rss_xml.contains("<rss") || !rss_xml.contains("<channel>") {
-        return Err(GoogleTrendsParseError::NoTopics);
-    }
+    let channel = rss_xml
+        .split_once("<rss")
+        .and_then(|(_, tag)| {
+            if !tag.starts_with(|ch: char| ch == '>' || ch.is_ascii_whitespace()) {
+                return None;
+            }
+            let (_, content) = tag.split_once('>')?;
+            let (feed, _) = content.split_once("</rss>")?;
+            extract_blocks(feed, "channel").into_iter().next()
+        })
+        .ok_or(GoogleTrendsParseError::NoTopics)?;
     let mut topics = Vec::new();
-    for block in extract_blocks(rss_xml, "item") {
+    for block in extract_blocks(channel, "item") {
         if topics.len() == GOOGLE_TRENDS_TOP_LIMIT {
             break;
         }
@@ -185,7 +193,7 @@ pub fn parse_google_trends_rss(
     }
 
     Ok(GoogleTrendsCatalog {
-        source: SOURCE_ID.to_owned(),
+        source: SOURCE_IDENTIFIER.to_owned(),
         source_url: feed_url(geo).unwrap_or_default(),
         geo: geo.to_string(),
         locale: locale.to_string(),
@@ -199,11 +207,11 @@ fn feed_url(geo: &str) -> Option<String> {
     if geo.len() != 2 || !geo.bytes().all(|byte| byte.is_ascii_uppercase()) {
         return None;
     }
-    crate::seed::source_record(SOURCE_ID).map(|source| source.api_url(&[("geo", geo)]))
+    crate::seed::source_record(SOURCE_IDENTIFIER).map(|source| source.api_url(&[("geo", geo)]))
 }
 
 fn default_locale() -> Option<String> {
-    crate::seed::source_record(SOURCE_ID)?
+    crate::seed::source_record(SOURCE_IDENTIFIER)?
         .api_language
         .into_iter()
         .next()
@@ -272,7 +280,7 @@ pub fn google_trends_catalog() -> GoogleTrendsCatalog {
     feed_for_task("")
         .map(answer_google_trends_catalog)
         .unwrap_or_else(|| GoogleTrendsCatalog {
-            source: SOURCE_ID.to_owned(),
+            source: SOURCE_IDENTIFIER.to_owned(),
             source_url: feed_url(DEFAULT_GEO).unwrap_or_default(),
             geo: DEFAULT_GEO.to_owned(),
             locale: default_locale().unwrap_or_default(),
