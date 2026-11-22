@@ -303,7 +303,7 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
         (
             "grok",
             vec!["--model", "formal-ai"],
-            vec!["--model", "formal-ai", "--prompt", "hi"],
+            vec!["--model", "formal-ai", "-p", "hi"],
         ),
         (
             "aider",
