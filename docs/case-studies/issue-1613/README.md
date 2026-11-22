@@ -610,3 +610,56 @@ initial composition, and sequence-source expansion if the delay recurs.
   did not produce an independent analysis or implementation.
 - [SHA256SUMS](evidence/SHA256SUMS) covers the archived files. Run
   `sha256sum -c SHA256SUMS` from the evidence directory.
+
+## Wikisource and Wikidata evidence in agentic recipes
+
+The historical formalization trace showed the same seven-sentence synopsis on
+successful fetch and source failure. It selected the nine-primitive result
+before verifying any publisher response. The meaning-detail recipe had the
+same failure mode for tomato and potato, with three embedded lexeme responses
+standing in for a complete request. An unknown word could even borrow the
+tomato recipe before the earlier routing correction.
+
+On November 22, the direct MediaWiki parse endpoint returned the public-domain
+Pushkin poem at 03:54 UTC. Its first poem block starts with the primary text.
+A later poem block in the same page is a variant in the commentary. An
+experiment with raw wikitext found the main verse under a template and a
+literal poem tag in the variant. The rendered article gives the extractor an
+explicit class and ordered body to verify. The historical synopsis remains
+an explicit test input for the nine-primitive coverage requirement.
+[Wikisource HTTP evidence](evidence/lexemes/fisherman.headers) ·
+[Historical synopsis fixture](../../../rust/tests/fixtures/publisher-agentic/fisherman-synopsis.txt) ·
+[Publisher response fixture](../../../rust/tests/fixtures/publisher-agentic/fisherman.json) ·
+[MediaWiki parse API](https://www.mediawiki.org/wiki/API:Parsing_wikitext)
+
+Live Wikidata requests at 03:18, 03:54, and 04:13 UTC returned the requested
+tomato, potato, and apple lexemes. The first senses of L7993, L3526, and L3784 refer
+to edible food items. Their second senses contain the plant item required by
+the tomato and potato declarations. L170542 supplies declared Russian word forms
+and carries no matching plant sense. The required sense is checked by item
+claim, including when its number changes. One batch supplies all declared
+forms, and a missing or mismatched response leaves a visible source gap.
+[Acquisition endpoints and checksums](evidence/lexemes/README.md) ·
+[Wikibase lexeme data model](https://www.mediawiki.org/wiki/Extension:WikibaseLexeme/Data_Model)
+
+The existing source client provides bounded acquisition and cache identity.
+The tool-history parser associates responses with their request URL. Direct
+Lexeme API queries use stable registered IDs and avoid committing copies.
+An open-ended request can still use the general research lane when no
+registered meaning is identified. The publisher replay verifies the poem,
+detects the commentary variant, and checks the same grammatical form logic
+for three concepts. It also supplies absent, partial, and wrong responses
+and verifies that the planner ends before creating a document.
+[Recipe verification](evidence/verification/round15-agentic-recipes-a.log) ·
+[Agentic server verification](evidence/verification/round15-agentic-server.log) ·
+[Cargo source archive inventory](evidence/verification/round15-cargo-package-inventory.log)
+
+The first hosted run on the release-timeline change stopped in two different
+places. The native type checker reported two calls passing an owned string
+where a borrowed fare qualifier was required. Both are now borrowed. The two
+browser replay shards stopped before dispatch because the worker boot manifest
+still held a previous digest for the changed timeline script. The maintained
+generator refreshed the worker and server manifests before the next replay.
+[Native log, lines 8740–8778](evidence/workflows/pipeline-round14-44983621991.log.gz) ·
+[Browser log, lines 8589 and 9779](evidence/workflows/layered-round14-44983621838.log.gz) ·
+[Worker prerequisite verification](evidence/verification/round15-worker-script-prerequisites.log)
