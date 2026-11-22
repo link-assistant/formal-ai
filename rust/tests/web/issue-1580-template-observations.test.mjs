@@ -84,3 +84,5 @@ import '../../../experiments/issue-1580/zizmor-transport.test.mjs';
 import '../../../experiments/issue-1580/template-shared-runner-pagination.test.mjs';
 
 import '../../../experiments/issue-1580/environment-command-routing.test.mjs';
+
+import '../../../experiments/issue-1580/template-java-boundary-controls.test.mjs';

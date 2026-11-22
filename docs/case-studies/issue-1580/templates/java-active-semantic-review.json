@@ -168,7 +168,7 @@
         ".github/workflows/layered-ci.yml",
         "scripts/ci-pull-request-admission.mjs"
       ],
-      "decision": "Reviewed all 610 lines: narrow writer permissions, separate cancelable checks and serialized non-canceling writers, artifact downloads and byte comparison, recovery worktrees, and pinned matrix/tool versions. Java builds on PRs are not applicable to Formal AI default-branch-only application builds. Missing aggregate status is already Java #29. Manual dispatch lint is skipped by its dependency success rule while build admits skipped lint; this is a source observation, not a dispatched or modeled result."
+      "decision": "Reviewed all 610 lines: narrow writer permissions, separate cancelable checks and serialized non-canceling writers, artifact downloads and byte comparison, recovery worktrees, and pinned matrix/tool versions. Java builds on PRs are not applicable to Formal AI default-branch-only application builds. Missing aggregate status is already Java #29. Manual dispatch lint is skipped by its dependency success rule while build admits skipped lint; this is a source observation, not a dispatched or modeled result. Continuation 2026-11-22: the exact pinned YAML now has a bounded expression-model reproduction of skipped manual lint followed by eligible build/release. Candidate guards require successful lint and test on dispatch while retaining push/PR change controls. No hosted Java dispatch is claimed. See java-boundary-controls-20261122.md."
     },
     {
       "path": ".github/workflows/rerun-unacquired.yml",
@@ -603,7 +603,7 @@
       "formalAiComparison": [
         "scripts/collect-changelog.rs"
       ],
-      "decision": "Protect contributor text when printed and keep fragment consumption tied to successful release writes. Java can ignore invalid fragments while removing input files; this is a source observation without a separate executed defect claim."
+      "decision": "Protect contributor text when printed and keep fragment consumption tied to successful release writes. Java can ignore invalid fragments while removing input files; this is a source observation without a separate executed defect claim. Continuation 2026-11-22: the unchanged complete collector CLI now reproduces deletion of CRLF, malformed and empty inputs without their notes. Disposable candidate copies retain valid LF/CRLF notes and preserve every input plus the changelog when any fragment is invalid; mixed good/bad batches are covered. See java-boundary-controls-20261122.md."
     },
     {
       "path": "scripts/create-github-release.mjs",
@@ -946,5 +946,28 @@
       "dev/log/issues/24/pulls/25/toolchains.log",
       "dev/log/issues/24/pulls/25/transitive-inventory.log"
     ]
+  },
+  "continuationVerification20261122": {
+    "scope": "Two previously unexecuted observations, not complete repository semantic/runtime qualification.",
+    "regression": "experiments/issue-1580/template-java-boundary-controls.test.mjs",
+    "originalCandidateControls": {
+      "tests": 5,
+      "pass": 3,
+      "expectedFailure": 2
+    },
+    "candidateControls": {
+      "tests": 5,
+      "pass": 5,
+      "failure": 0
+    },
+    "otherFocusedPositiveCases": 11,
+    "hostedManualRelease": false,
+    "mavenExecution": false,
+    "completeRepositorySemanticReview": false,
+    "formalAiComparison": [
+      "release.yml uses explicit status functions and successful native/build/preflight/secret prerequisites; current aggregate failure is observed, but main manual-release execution remains unqualified.",
+      "scripts/changelog-files.rs snapshots all reads and verifies every fragment before removal; collect-changelog.rs accepts CRLF and plain descriptions. Formal AI allows plain fragments, so Java frontmatter validation is not copied. Mixed empty batches are not qualified by the new Java reproduction."
+    ],
+    "independentAuthorshipCredit": 0
   }
 }

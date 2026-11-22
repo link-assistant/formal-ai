@@ -1,0 +1,19 @@
+{
+  "source": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "payloadCount": 23,
+  "archiveSha256": "6c6810ad232addf22bac7253a03fc64d24079f10f17bbf7ad5349df4e5e17f23",
+  "roundTripVerified": true,
+  "qualification": {
+    "newCases": 5,
+    "positivePass": 5,
+    "originalCandidateExpectedFailures": 2,
+    "originalCandidatePositivePass": 3,
+    "adjacentPositivePass": 11,
+    "actualCollectorCli": true,
+    "dispatchExpressionModel": true,
+    "hostedManualRelease": false,
+    "mavenExecution": false,
+    "completeRepositoryQualification": false
+  },
+  "independentAuthorshipCredit": 0
+}
