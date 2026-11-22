@@ -71,7 +71,6 @@ jobs:
       - name: Verify explicit computer-use plans and HTTP receipts
         env:
           CARGO_BUILD_JOBS: '2'
-          CARGO_PROFILE_TEST_OPT_LEVEL: '0'
         run: cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1
       - uses: actions/setup-node@v7
         with: {node-version: 22}
