@@ -96,6 +96,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/meanings-number-constraints.lino",
   "seed/meanings-number-words.lino",
   "seed/meanings-object-shapes.lino",
+  "seed/meanings-occupations.lino",
   "seed/meanings-ontology.lino",
   "seed/meanings-playwright.lino",
   "seed/meanings-policy.lino",

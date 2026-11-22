@@ -525,6 +525,7 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "slug": embeddings::MODEL,
                 "capabilities": ["embeddings"],
                 "dimensions": embeddings::DIMENSIONS,
+                "supported_dimensions": {"min": embeddings::MINIMUM_DIMENSIONS, "max": embeddings::DIMENSIONS},
                 "object": "model",
                 "owned_by": "link-assistant"
             }],
@@ -547,7 +548,8 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "slug": embeddings::MODEL,
                 "name": embeddings::MODEL,
                 "capabilities": ["embeddings"],
-                "dimensions": embeddings::DIMENSIONS
+                "dimensions": embeddings::DIMENSIONS,
+                "supported_dimensions": {"min": embeddings::MINIMUM_DIMENSIONS, "max": embeddings::DIMENSIONS}
             }],
             "rate_limit": {
                 "requests_per_minute": 60,

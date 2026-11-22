@@ -27,7 +27,7 @@ function cosine(left, right) {
   return dot / (Math.hypot(...left) * Math.hypot(...right));
 }
 
-test('the OpenAI embeddings API advertises and returns fixed, reproducible concept vectors', { timeout: 20_000 }, async t => {
+test('the OpenAI embeddings API advertises and returns reproducible concept vectors', { timeout: 20_000 }, async t => {
   const first = await startCli(t, launch);
   await first.ready(headers);
   const body = { model: 'formal-ai', input: inputs };
@@ -52,7 +52,9 @@ test('the OpenAI embeddings API advertises and returns fixed, reproducible conce
     assert.equal(listing.data[0].id, 'formal-ai');
     assert.deepEqual(listing.data.find(item => item.id === model), {
       id: model, slug: model, capabilities: ['embeddings'], dimensions, object: 'model', owned_by: 'link-assistant',
+      supported_dimensions: { min: 1, max: dimensions },
     });
+    assert.deepEqual(listing.models.find(item => item.id === model).supported_dimensions, { min: 1, max: dimensions });
   }
 
   const base64 = await embed(first, {
@@ -69,16 +71,16 @@ test('the OpenAI embeddings API advertises and returns fixed, reproducible conce
   assert.deepEqual(await embed(restarted, body), result);
 });
 
-test('English synonyms and Russian translations share concept coordinates', { timeout: 12_000 }, async t => {
+test('English synonyms and translations share concept coordinates', { timeout: 12_000 }, async t => {
   const run = await startCli(t, launch);
   await run.ready(headers);
   const request = {
     model,
     input: ['storekeeper', 'stockroom attendant', 'КЛАДОВЩИК', 'भंडारपाल', '仓库保管员', 'almacenero', 'forklift operator',
-      'tomato', 'томат', 'помидор', 'картофель', 'foldqlxvunknown'],
+      'tomato', 'томат', 'помидор', 'картофель'],
   };
   const result = await embed(run, request);
-  const [storekeeper, synonym, russian, hindi, chinese, spanish, forklift, tomato, tomat, pomidor, potato, unknown] =
+  const [storekeeper, synonym, russian, hindi, chinese, spanish, forklift, tomato, tomat, pomidor, potato] =
     result.data.map(({ embedding }) => embedding);
   assert.equal(cosine(storekeeper, synonym), 1);
   assert.equal(cosine(storekeeper, russian), 1);
@@ -89,13 +91,78 @@ test('English synonyms and Russian translations share concept coordinates', { ti
   assert.equal(cosine(tomat, pomidor), 1);
   assert.equal(cosine(tomato, pomidor), 1);
   assert.ok(cosine(pomidor, tomat) > cosine(pomidor, potato));
-  assert.ok(unknown.every(value => value === 0));
 
   if (launch.binary) {
     await run.stop();
     const javascript = await startCli(t, { ...launch, binary: undefined });
     await javascript.ready(headers);
     assert.deepEqual(await embed(javascript, request), result);
+  }
+});
+
+test('reduced vectors are deterministic, unit length and the same in both encodings', { timeout: 20_000 }, async t => {
+  const run = await startCli(t, launch);
+  await run.ready(headers);
+  const request = { model: 'formal-ai', input: ['warehouse supervisor', 'forklift operator', 'Python developer', 'разработчик Python'], dimensions: 256 };
+  const result = await embed(run, request);
+  const [warehouse, forklift, developer, translation] = result.data.map(({ embedding }) => embedding);
+  for (const vector of [warehouse, forklift, developer, translation]) {
+    assert.equal(vector.length, request.dimensions);
+    assert.ok(Math.abs(Math.hypot(...vector) - 1) < 1e-6);
+  }
+  assert.ok(Math.abs(cosine(warehouse, forklift)) < 0.2);
+  assert.deepEqual(developer, translation);
+  const single = await embed(run, { ...request, input: 'warehouse supervisor' });
+  assert.deepEqual(single.data[0].embedding, warehouse);
+  const combined = await embed(run, { ...request, input: 'warehouse supervisor forklift operator' });
+  assert.ok(Math.abs(cosine(combined.data[0].embedding, warehouse) - Math.SQRT1_2) < 0.1);
+  const encoded = await embed(run, { ...request, encoding_format: 'base64' }, { path: '/api/openai/v1/embeddings' });
+  for (const { embedding, index } of encoded.data) {
+    const bytes = Buffer.from(embedding, 'base64');
+    assert.equal(bytes.length, request.dimensions * 4);
+    assert.deepEqual(result.data[index].embedding.map((_, coordinate) => bytes.readFloatLE(coordinate * 4)), result.data[index].embedding);
+  }
+  for (const size of [1, 768, 1024, 1536, 4095]) {
+    const { data } = await embed(run, { model, input: 'warehouse supervisor forklift operator', dimensions: size });
+    assert.equal(data[0].embedding.length, size);
+    assert.ok(Math.abs(Math.hypot(...data[0].embedding) - 1) < 1e-6);
+  }
+  await run.stop();
+  const restarted = await startCli(t, { ...launch, binary: undefined });
+  await restarted.ready(headers);
+  assert.deepEqual(await embed(restarted, request), result);
+});
+
+test('occupations and their B2B qualifier match multilingual lexicon concepts', { timeout: 12_000 }, async t => {
+  const run = await startCli(t, launch);
+  await run.ready(headers);
+  const result = await embed(run, { model, input: [
+    'sales manager', 'менеджер по продажам', 'B2B sales manager', 'менеджер по продажам B2B',
+    'accountant', 'бухгалтер', 'electrician', 'электрик',
+  ] });
+  const [sales, salesRussian, b2b, b2bRussian, accountant, accountantRussian, electrician, electricianRussian] =
+    result.data.map(({ embedding }) => embedding);
+  assert.deepEqual(sales, salesRussian);
+  assert.deepEqual(b2b, b2bRussian);
+  assert.deepEqual(accountant, accountantRussian);
+  assert.deepEqual(electrician, electricianRussian);
+  assert.ok(cosine(sales, b2b) > 0 && cosine(sales, b2b) < 1);
+  assert.equal(cosine(sales, accountant), 0);
+  assert.equal(cosine(accountant, electrician), 0);
+});
+
+test('unmatched text returns a no_concepts error with the first unmatched input index', { timeout: 12_000 }, async t => {
+  const run = await startCli(t, launch);
+  await run.ready(headers);
+  for (const [request, index] of [
+    [{ model: 'formal-ai', input: 'zzqx' }, 0],
+    [{ model, input: ['tomato', 'zzqx', 'foldqlxvunknown', 'potato'], dimensions: 256, encoding_format: 'base64' }, 1],
+  ]) {
+    const { error, data } = await embed(run, request, { status: 400 });
+    assert.equal(data, undefined);
+    assert.equal(error.type, 'formal_ai_error');
+    assert.equal(error.code, 'no_concepts');
+    assert.equal(error.input_index, index);
   }
 });
 
@@ -113,7 +180,7 @@ test('invalid embeddings requests return an error and both aliases require authe
     [{ model, input: [] }, /input/],
     [{ model, input: ['tomato', '  '] }, /input/],
     [{ model, input: 'a'.repeat(8193) }, /input/],
-    [{ model, input: inputs, dimensions: 128 }, /dimensions/],
+    ...[null, '256', 0, -1, 1.5, dimensions + 1].map(size => [{ model, input: inputs, dimensions: size }, /dimensions/]),
     [{ model, input: inputs, encoding_format: 'hex' }, /encoding_format/],
   ]) {
     const { error } = await embed(run, request, { status: 400 });

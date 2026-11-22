@@ -119,7 +119,6 @@ jobs:
         env:
           BIN: ${{ github.workspace }}/rust/target/debug/formal-ai
           CODEX_VERSION: '0.147.0'
-          # Match the release replay and keep background plugin checkout out of the fixture.
           CODEX_EXTRA_ARGS: '--disable plugins'
           SCENARIO: report
         run: bash experiments/issue_859_codex_e2e/run.sh
