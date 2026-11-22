@@ -13,13 +13,11 @@ import { nonNullObject as isObjectValue } from '../logging/object-values.js';
 // `event_payload` reads it.
 
 import { stableId } from './ids.mjs';
-import { readRepoFile } from './lino.mjs';
+import { benchmarkGatePolicies } from './benchmark-gate-policy.mjs';
 import { rustLines } from './memory-store.mjs';
 import { serverMessage } from './messages.mjs';
 
-const CODING_MODIFICATION_SUITE = 'data/benchmarks/coding-modification-suite.lino';
-const DEFAULT_SUITE_ID = 'issue_362_multilingual_coding_modification';
-const DEFAULT_RUNNER = 'cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture';
+const CODING_MODIFICATION_GATE = 'issue_362_multilingual_coding_modification';
 const ABSENT_COUNT = 0;
 const LEARNABLE_KINDS = ['selected_rule', 'rule_synthesis_candidate', 'rule_verification', 'write_program_plan'];
 const CANDIDATE_FIELDS = ['id', 'source', 'base_task', 'modifier', 'operation', 'operation_modifier', 'target', 'resolved_task'];
@@ -64,20 +62,6 @@ export function fieldValue(block, name) {
   return null;
 }
 
-/** Mirrors rust/src/self_improvement.rs `parse_first_record`. */
-function parseFirstRecord(text) {
-  const block = text.split('\n\n').map((record) => record.trim()).find((record) => record);
-  if (block === undefined) return null;
-  const fields = [];
-  for (const line of rustLines(block).slice(1)) {
-    const trimmed = line.trim();
-    const space = trimmed.indexOf(' ');
-    if (space < 0) continue;
-    fields.push([trimmed.slice(0, space), unquote(trimmed.slice(space + 1).trim())]);
-  }
-  return { field: (name) => fields.find(([key]) => key === name)?.[1] ?? null };
-}
-
 /** Mirrors rust/src/self_improvement.rs `BenchmarkGateReport`. */
 export class BenchmarkGateReport {
   constructor(suiteId, runner, passed, failed, minimumPassCount, observed = true) {
@@ -91,15 +75,9 @@ export class BenchmarkGateReport {
 
   /** Mirrors `BenchmarkGateReport::issue_362_from_counts`. */
   static issue362FromCounts(passed, failed) {
-    const suite = parseFirstRecord(readRepoFile(CODING_MODIFICATION_SUITE));
-    const minimum = Number.parseInt(suite.field('minimum_pass_count') ?? '', 10);
-    return new BenchmarkGateReport(
-      suite.field('id') ?? DEFAULT_SUITE_ID,
-      suite.field('runner') ?? DEFAULT_RUNNER,
-      passed,
-      failed,
-      /^\+?[0-9]+$/.test(suite.field('minimum_pass_count') ?? '') ? minimum : 1,
-    );
+    const suite = benchmarkGatePolicies().find((gate) => gate.id === CODING_MODIFICATION_GATE);
+    if (!suite) throw new Error("Missing coding modification benchmark promotion gate");
+    return new BenchmarkGateReport(suite.id, suite.runner, passed, failed, suite.minimumPassCount);
   }
 
   /** Mirrors `BenchmarkGateReport::absent_for_issue_362`. */

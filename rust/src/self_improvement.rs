@@ -13,9 +13,6 @@ use crate::event_log::{Event, EventLog};
 use crate::learning_ledger::LearningLedger;
 use crate::substitution::SubstitutionRuleSet;
 
-const CODING_MODIFICATION_SUITE_LINO: &str =
-    include_str!("../embedded/data/benchmarks/coding-modification-suite.lino");
-
 /// A solver trace that reached or started from the unknown path.
 ///
 /// The trace stores structured [`EventLog`] events rather than only the
@@ -167,24 +164,17 @@ impl BenchmarkGateReport {
     /// Build an issue #362 gate report using the checked-in benchmark manifest.
     ///
     /// The caller supplies the latest pass/fail counts; the suite id, runner,
-    /// and ratchet floor are read from `data/benchmarks/coding-modification-suite.lino`.
+    /// and ratchet floor come from the benchmark promotion policy.
     #[must_use]
     pub fn issue_362_from_counts(passed: usize, failed: usize) -> Self {
-        let suite = parse_first_record(CODING_MODIFICATION_SUITE_LINO)
-            .expect("coding-modification suite fixture should contain a suite record");
-        let suite_id = suite
-            .field("id")
-            .unwrap_or("issue_362_multilingual_coding_modification")
-            .to_owned();
-        let runner = suite
-            .field("runner")
-            .unwrap_or("cargo test --manifest-path rust/Cargo.toml --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture")
-            .to_owned();
-        let minimum_pass_count = suite
-            .field("minimum_pass_count")
-            .and_then(|value| value.parse::<usize>().ok())
-            .unwrap_or(1);
-        Self::new(suite_id, runner, passed, failed, minimum_pass_count)
+        let gate = crate::promotion::PromotionRatchet::coding_modification(passed, failed);
+        Self::new(
+            gate.suite_id,
+            gate.runner,
+            passed,
+            failed,
+            gate.minimum_pass_count,
+        )
     }
 
     /// Whether the gate allows learned-rule adoption.
@@ -687,36 +677,6 @@ fn validate_slug(name: &str, value: &str) -> Result<(), String> {
     } else {
         Err(format!("invalid {name} `{value}`"))
     }
-}
-
-#[derive(Debug)]
-struct ParsedRecord {
-    fields: Vec<(String, String)>,
-}
-
-impl ParsedRecord {
-    fn field(&self, name: &str) -> Option<&str> {
-        self.fields
-            .iter()
-            .find_map(|(field_name, value)| (field_name == name).then_some(value.as_str()))
-    }
-}
-
-fn parse_first_record(text: &str) -> Option<ParsedRecord> {
-    let block = text
-        .split("\n\n")
-        .map(str::trim)
-        .find(|record| !record.is_empty())?;
-    let fields = block
-        .lines()
-        .skip(1)
-        .filter_map(|line| {
-            let trimmed = line.trim();
-            let (name, raw) = trimmed.split_once(' ')?;
-            Some((name.to_owned(), unquote(raw.trim())))
-        })
-        .collect();
-    Some(ParsedRecord { fields })
 }
 
 fn unquote(value: &str) -> String {

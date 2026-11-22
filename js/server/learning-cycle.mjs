@@ -4,7 +4,7 @@
 // `LearningCycleRun::links_notation`, `derive_candidate`, `frame_of`,
 // `classify_slot`, `recovers_query`, `build_proposals`, `meaning_block`)
 // and the slice of rust/src/promotion.rs it renders through
-// (`render_promotion_proposals`, `manifest_field`) and the canonical quote
+// (`render_promotion_proposals`) and the canonical quote
 // escaper `escape_value` in rust/src/memory.rs, with the
 // canonical gate identities of rust/src/promotion/gates.rs `required_gates`.
 //
@@ -20,6 +20,7 @@ import { normalizePrompt } from '../agentic/crate/engine.mjs';
 import { splitPipeList } from '../agentic/crate/seed.mjs';
 import { agentInfoValue } from '../agentic/crate/seed_agent_info.mjs';
 import { parseLino, readRepoFile } from './lino.mjs';
+import { benchmarkGatePolicies } from './benchmark-gate-policy.mjs';
 import { serverMessage } from './messages.mjs';
 
 export const GOOGLE_TRENDS_FRONTIER = 'google-trends';
@@ -27,11 +28,6 @@ export const LEARNED_REQUEST_OPENERS_SEED_FILE = 'data/seed/learned-request-open
 export const TERM_INFORMATION_ROLE = 'term_information_request_opener';
 export const MINIMUM_SUPPORT = 2;
 const UNIT_SPECS_SUITE = 'formal_ai_unit_specifications';
-const BENCHMARK_MANIFESTS = [
-  ['data/benchmarks/coding-modification-suite.lino', 'issue_362_multilingual_coding_modification'],
-  ['data/benchmarks/industry-suite.lino', 'issue_304_industry_permissive_slice'],
-];
-
 /** The repository-data host the crate seed readers need (the agentic server installs the full one). */
 export function ensureDataHost() {
   if (!hasHost()) installHost({ readText: readRepoFile, parseLino });
@@ -225,41 +221,10 @@ function quote(value) {
   return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n').replaceAll('\r', '\\r').replaceAll('\t', '\\t');
 }
 
-/** Mirrors `unquote` in rust/src/promotion.rs. */
-function unquote(raw) {
-  const value = raw.length >= 2 && raw.startsWith('"') && raw.endsWith('"') ? raw.slice(1, -1) : raw;
-  let out = '';
-  for (let index = 0; index < value.length; index += 1) {
-    const character = value[index];
-    if (character !== '\\') {
-      out += character;
-      continue;
-    }
-    index += 1;
-    const next = value[index];
-    if (next === 'n') out += '\n';
-    else if (next === 't') out += '\t';
-    else if (next === 'r') out += '\r';
-    else if (next === '"') out += '"';
-    else if (next === '\\' || next === undefined) out += '\\';
-    else out += `\\${next}`;
-  }
-  return out;
-}
-
-/** Mirrors `manifest_field` in rust/src/promotion.rs. */
-function manifestField(manifest, key) {
-  for (const line of manifest.split('\n')) {
-    const trimmed = line.trim();
-    if (trimmed.startsWith(key) && /^\s/u.test(trimmed.slice(key.length))) return unquote(trimmed.slice(key.length).trim());
-  }
-  return null;
-}
-
 /** The canonical suite identities every proposal document declares (`required_gates`). */
 export function requiredGateSuites() {
   return cached('required-gate-suites', () => [
-    ...BENCHMARK_MANIFESTS.map(([file, fallback]) => manifestField(readRepoFile(file), 'id') ?? fallback),
+    ...benchmarkGatePolicies().map((gate) => gate.id),
     UNIT_SPECS_SUITE,
   ]);
 }

@@ -8,9 +8,12 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 
+import { benchmarkGatePolicies } from "../../../js/server/benchmark-gate-policy.mjs";
 import { learnFromConversation } from "../../../js/server/conversations.mjs";
 import { stableId } from "../../../js/server/ids.mjs";
+import { childValue, parseLino, readRepoFile } from "../../../js/server/lino.mjs";
 import {
   BenchmarkGateReport,
   eventPayload,
@@ -20,6 +23,7 @@ import {
   learningTraceFromSymbolicAnswer,
   unknownTrace,
 } from "../../../js/server/self-improvement.mjs";
+import { collectDemands } from "../../../scripts/mirror-package-data.mjs";
 
 const PROMPT = "Сделай сортировку результатов в обратном порядке";
 const CANDIDATE = [
@@ -89,6 +93,28 @@ test("event_payload stops at the next step and keeps only known fields", () => {
   assert.equal(eventPayload(links, "selected_rule"), "write_program reason seed_route");
   assert.equal(eventPayload(links, "rule_verification"), "rule_verification\n  fixture f\n  noise x\n  status passed");
   assert.equal(eventPayload(links, "rule_synthesis_candidate"), null);
+});
+
+test("promotion reads thresholds without packaging the benchmark cases", () => {
+  const fixtures = [
+    "data/benchmarks/coding-modification-suite.lino",
+    "data/benchmarks/industry-suite.lino",
+  ];
+  const expected = fixtures.map((filename) => {
+    const [suite] = parseLino(readRepoFile(filename)).children;
+    return {
+      id: childValue(suite, "id"),
+      runner: childValue(suite, "runner"),
+      minimumPassCount: Number(childValue(suite, "minimum_pass_count")),
+    };
+  });
+  assert.deepEqual(benchmarkGatePolicies(), expected);
+  const root = fileURLToPath(new URL("../../../", import.meta.url));
+  const rust = path.join(root, "rust");
+  const demands = collectDemands(path.join(rust, "src"), rust, root);
+  assert.ok(demands.has("data/meta/benchmark-promotion-gates.lino"));
+  for (const filename of fixtures) assert.ok(!demands.has(filename), filename);
+  assert.ok(!demands.has("data/seed/demo-dialogs.lino"));
 });
 
 test("a reported conversation stages one proposal against an absent gate", () => {
