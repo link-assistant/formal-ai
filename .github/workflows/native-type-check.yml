@@ -50,6 +50,7 @@ jobs:
             /experiments/agent_cli_e2e/run_issue_707.sh
             /experiments/dynamic-meta/
             /experiments/issue_859_codex_e2e/
+            /experiments/issue_1609_client_reports/
             /experiments/js_dogfood/
           sparse-checkout-cone-mode: false
       - uses: dtolnay/rust-toolchain@stable

@@ -12,6 +12,13 @@ import YAML from 'yaml';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
 const workflow = name => YAML.parse(read('.github/workflows/' + name));
+test('Codex report fixture from main run 44953310700 disables background marketplace activity', () => {
+  const script = read('experiments/issue_1609_client_reports/verify-release.sh');
+  const report = script.match(/^\s*codex\)\n([\s\S]*?)^\s*;;/mu)?.[1];
+  assert.match(report, /CODEX_EXTRA_ARGS='--disable plugins'/u);
+  assert.match(report, /SCENARIO=report-publication/u);
+});
+
 function evaluate(expression, event, ref, variables = {}, {results = {}, outputs: changed = {}, releaseMode = 'checks', isCancelled = false} = {}) {
   const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
@@ -70,7 +77,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'node --test --test-concurrency=1 rust/tests/web/issue-1591-embeddings.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1593-prompt-data.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs',
-    'node --test --test-concurrency=1 rust/tests/web/issue-901-triz-parity.test.mjs'];
+    'node --test --test-concurrency=1 rust/tests/web/issue-901-triz-parity.test.mjs',
+    "node --test --test-concurrency=1 --test-name-pattern='native program replies' rust/tests/web/script-print-operand.test.mjs"];
   const clientReportReplay = 'node --test --test-concurrency=1 rust/tests/web/issue-1609-client-reports.test.mjs';
   const codexReplay = 'bash experiments/issue_859_codex_e2e/run.sh';
   const gatewayReplay = 'bun install --frozen-lockfile --ignore-scripts\n' +
@@ -97,7 +105,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const checkout = check.steps.find(step => step.uses === 'actions/checkout@v7').with;
   assert.deepEqual(checkout['sparse-checkout'].trim().split('\n'),
     ['/*', '!/dev/log/', '!/experiments/*', '/experiments/agent_cli_e2e/run_issue_707.sh', '/experiments/dynamic-meta/',
-      '/experiments/issue_859_codex_e2e/', '/experiments/js_dogfood/']);
+      '/experiments/issue_859_codex_e2e/', '/experiments/issue_1609_client_reports/', '/experiments/js_dogfood/']);
   assert.deepEqual(check.steps.find(step => step.uses === 'oven-sh/setup-bun@v2').with,
     {'bun-version-file': '.bun-version', 'no-cache': true});
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
