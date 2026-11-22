@@ -1,0 +1,48 @@
+{
+  "head": "9451c81b5e14f118301f2e571f4a651fb8da79d0",
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "newCompleteDiffsRead": 103,
+  "parts": [
+    {
+      "file": "files-00.json",
+      "records": 20,
+      "sha256": "2e13e97e14d0b0f72f88ddd6593730621dad99108e032c9f5a72bfbb8107ea99"
+    },
+    {
+      "file": "files-01.json",
+      "records": 20,
+      "sha256": "afc5c4205c5d33bbee3792aaddd74fc0eb1b479b6031ba3bfa81da0082864440"
+    },
+    {
+      "file": "files-02.json",
+      "records": 20,
+      "sha256": "0952c22d7809673694cf08aed52df2ef9b64b568a157ab0ea6f628a14b560497"
+    },
+    {
+      "file": "files-03.json",
+      "records": 20,
+      "sha256": "50289405033ef03d2ccdd6a1987c7447ec1ba720b962c0219146c8d508bcea3f"
+    },
+    {
+      "file": "files-04.json",
+      "records": 20,
+      "sha256": "f0315efc496561f7026f3cd7bdcb1007acaf974f42efec499d9ea3a1ac1508f4"
+    },
+    {
+      "file": "files-05.json",
+      "records": 3,
+      "sha256": "d10e0299030ca3a07da1267e3e4c6d4da585103eeea76a5bc1da6c26956a359c"
+    }
+  ],
+  "reviewNotes": [
+    "Every listed complete diff was read; interrupted tails 18, 235, 236, 237, 238, 378, 382, 397 and 453 were completed before inclusion.",
+    "Workspace-manifest read errors found in diff 380 are repaired by de5e7645927dac1b5bab3262bad5cd8923f08433; its new native execution remains pending.",
+    "Incomplete file-size observations and absolute exclusion paths found in diff 387 are repaired by 5a54e23af7792ce1fb3eae614480dc7275bb0f11; its new native execution remains pending.",
+    "Recipe batching retains exact source ownership, callback contradiction invalidation and bounded 16-path/total-byte checks; extracted execution preserves existing recovery and CI fallback.",
+    "The seed quote normalization preserves string values; the occupation extraction retains all original surfaces. Calendar admission and explicit cache-prefix changes still require their broader runtime evidence."
+  ],
+  "currentProductionDiffsInventoried": 524,
+  "wholePullRequestReviewed": false,
+  "allPriorFeaturesProvenPreserved": false,
+  "independentAuthorshipCredit": 0
+}
