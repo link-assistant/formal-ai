@@ -289,6 +289,12 @@ tests, and 23 workflow build-policy tests passed.
 [Docker tests](evidence/verification/round27-container-merged-test.log) ·
 [Build policy tests](evidence/verification/round27-build-policy-merged-test.log)
 
+The subsequent `v0.356.5` release merge updated the Cargo manifest digest in
+four test witnesses. Comparing all 223 cases confirmed that this was the only
+inventory change, and all 34 governed witness tests passed again.
+[Release comparison](evidence/verification/round27-governed-release-merge-delta.json) ·
+[Release merge tests](evidence/verification/round27-governed-release-merged-test.log)
+
 ## System self-explanation
 
 The agentic recipe attached fresh citation IDs to five fixed paragraphs. One

@@ -368,6 +368,8 @@ efcbefffa83fff75a7a996a081073995de8ba49fabfe5b82c6cfddb42b3b0b6f  ./verification
 b0da09c6916578d1c373e89690337b28d797838df57c04f0ee30a4d34542d808  ./verification/round27-coreference-final.log
 0331ce8c83746aeb8a9749ec3ca6a78953ce2445e7e6895f540f6cb2c9491641  ./verification/round27-governed-merge-delta.json
 fe0a77cccd89c2f3da28c3ca8f0540e759a02d0ba8eb3af504b4cb3f64053800  ./verification/round27-governed-merged-test.log
+ff202db7f43cb6ca2e31bbcdc17db18956720f986a96fb4c013cb8e35e6b0bd9  ./verification/round27-governed-release-merge-delta.json
+bda9871fb0733fc1156760c2cceb7a2e4fde905987c69787f084067d437ada71  ./verification/round27-governed-release-merged-test.log
 9121d5d850235ac8c5f13a37dfd56e0a34304389b461af4258700ae835c43998  ./verification/round27-issue-0918-handler-final.log
 e0c2b6140763d4487be6723772562c5f1b5ef1739a8de51279831a95c0a200df  ./verification/round27-issue-1175-claim-final.log
 508d454b46f4e6294ab3fd21c8fa9981a26a3c17ed878957c491ce0b1ab12469  ./verification/round27-page-formalization-final.log

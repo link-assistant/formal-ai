@@ -5,8 +5,9 @@ import { readFileSync } from 'node:fs';
 import { isDeepStrictEqual } from 'node:util';
 import { deserialize } from 'node:v8';
 
-const [branchSnapshot, mainSnapshot] = process.argv.slice(2);
+const [branchSnapshot, mainSnapshot, mode] = process.argv.slice(2);
 assert.ok(branchSnapshot && mainSnapshot, 'Supply the pre-merge branch and main witness files.');
+assert.ok(mode === undefined || mode === '--release-merge');
 const repo = new URL('../../', import.meta.url);
 const manifest = 'rust/Cargo.toml';
 const witness = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8';
@@ -38,10 +39,22 @@ const sourceChanges = changes(before.sourceManifest, after.sourceManifest, recor
 
 assert.deepEqual(cargoWitnesses(after), [cargoSha256]);
 assert.deepEqual(cargoWitnesses(main), [cargoSha256]);
-assert.ok(caseChanges.length > 0 && caseChanges.every(record => record.id.startsWith(`${lookupSpec}::`)));
-assert.ok(unsupportedChanges.every(record => record.id.startsWith(`${lookupSpec}::`)));
-assert.deepEqual(sourceChanges.map(record => record.id).sort(), [lookupSpec, roleplaySpec].sort());
-assert.ok(sourceChanges.every(record => record.change === 'updated'));
+if (mode === '--release-merge') {
+  assert.equal(cargoWitnesses(before).length, 1);
+  assert.notEqual(cargoWitnesses(before)[0], cargoSha256);
+  for (const item of before.inventory.cases) {
+    for (const fixture of item.program?.fixtures ?? []) {
+      if (fixture.file === `repo:${manifest}`) fixture.sha256 = cargoSha256;
+    }
+  }
+  assert.deepEqual(before.inventory, after.inventory);
+  assert.deepEqual(sourceChanges, []);
+} else {
+  assert.ok(caseChanges.length > 0 && caseChanges.every(record => record.id.startsWith(`${lookupSpec}::`)));
+  assert.ok(unsupportedChanges.every(record => record.id.startsWith(`${lookupSpec}::`)));
+  assert.deepEqual(sourceChanges.map(record => record.id).sort(), [lookupSpec, roleplaySpec].sort());
+  assert.ok(sourceChanges.every(record => record.change === 'updated'));
+}
 
 console.log(JSON.stringify({
   oldCases: before.inventory.cases.length,
