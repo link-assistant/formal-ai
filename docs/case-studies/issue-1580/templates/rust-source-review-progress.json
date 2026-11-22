@@ -6480,13 +6480,24 @@
         "scripts/check-release-needed.rs",
         "scripts/check-cargo-lock.rs"
       ],
-      "assessment": "Template check-cargo-lock resolves selected package identity from Cargo metadata and requires a binary lockfile to exist in the HEAD commit. Formal AI has no same-named helper, while its dependency audit enumerates tracked locks and Rust CI uses locked inputs. A full equivalent-behavior decision remains unfinished.",
-      "status": "source-compared-applicability-and-repairs-pending",
+      "assessment": "The complete template checker requires the selected binary lockfile to exist at HEAD. Formal AI has a fixed binary crate at rust/Cargo.toml and a fixed primary lock at rust/Cargo.lock. Its dependency audit previously accepted an index-only primary lock, so that claim was not equivalent. The repaired wrapper checks the primary index inventory and then git cat-file -e HEAD:rust/Cargo.lock before any Cargo invocation. A missing checked-out primary remains fatal while independent committed locks still receive their existing audits. The maintained real-Git regression fails before the repair and passes afterward; Cargo remains a recording stub in local controls. Generic template package discovery is unnecessary for this fixed repository path; actual hosted Cargo audit qualification remains pending.",
+      "status": "implemented-local-regression-verified-hosted-audit-pending",
       "formalAiPaths": [
         "scripts/check-rust-dependencies.sh",
-        "rust/Cargo.lock"
+        "rust/Cargo.toml",
+        "rust/Cargo.lock",
+        "rust/tests/web/cargo-audit-inventory.test.mjs",
+        "rust/tests/web/cargo-audit-blocked-proof.test.mjs",
+        "data/benchmarks/fast-pull-request-javascript-tests.json"
       ],
-      "verification": null
+      "verification": {
+        "caseStudy": "docs/case-studies/issue-1580/committed-primary-lock-checkpoint.md",
+        "evidenceManifest": "experiments/issue-1580/evidence/checks/committed-primary-lock/manifest.json",
+        "inventoryCases": 11,
+        "blockedProofCases": 8,
+        "rustExecuted": false,
+        "hostedAuditVerified": false
+      }
     },
     {
       "practice": "Registry uncertainty, crate publication and package path helpers",

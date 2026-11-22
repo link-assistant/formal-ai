@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,copyFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {spawnSync} from 'node:child_process';
+import {execFileSync,spawnSync} from 'node:child_process';
 
 const root=new URL('../../../',import.meta.url);
 const config=readFileSync(new URL('.cargo/audit.toml',root),'utf8');
@@ -17,6 +17,11 @@ function withAudit(run){
     copyFileSync(new URL('scripts/check-rust-dependencies.sh',root),join(directory,'scripts/check-rust-dependencies.sh'));
     writeFileSync(join(directory,'rust/Cargo.lock'),'# protocol fixture; no Rust dependency resolution\n');
     writeFileSync(join(directory,'extra/Cargo.lock'),'# independent committed-lock fixture\n');
+    const git=(args)=>execFileSync('git',args,{cwd:directory,encoding:'utf8',stdio:['ignore','pipe','pipe']});
+    git(['init','--quiet']);
+    git(['add','--','rust/Cargo.lock','extra/Cargo.lock']);
+    git(['-c','user.name=Formal AI test fixture','-c','user.email=fixture@example.invalid',
+      '-c','core.hooksPath=/dev/null','commit','--quiet','--no-gpg-sign','-m','Commit audit lock fixtures']);
     const trace=join(directory,'calls.jsonl');
     writeFileSync(join(directory,'bin/cargo'),`#!${process.execPath}\n`+String.raw`
 const fs=require('node:fs');
@@ -31,7 +36,12 @@ if(args[0]==='tree'){
 else process.exit(99);
 `,{mode:0o755});
     writeFileSync(join(directory,'bin/git'),`#!${process.execPath}\n`+String.raw`
-if(process.argv[2]!=='ls-files')process.exit(99);
+if(process.argv[2]!=='ls-files'){
+  const result=require('node:child_process').spawnSync('git',process.argv.slice(2),{
+    stdio:'inherit',env:{...process.env,PATH:process.env.AUDIT_ORIGINAL_PATH}
+  });
+  process.exit(result.status??1);
+}
 const paths=process.env.GIT_INVENTORY_OUTPUT??'rust/Cargo.lock\n';
 process.stdout.write(process.argv.includes('-z')?paths.replaceAll('\n','\0'):paths);
 process.exit(Number(process.env.GIT_INVENTORY_STATUS??0));
@@ -41,8 +51,10 @@ process.exit(Number(process.env.GIT_INVENTORY_STATUS??0));
       writeFileSync(trace,'');
       const result=spawnSync('bash',['scripts/check-rust-dependencies.sh'],{
         cwd:directory,encoding:'utf8',timeout:5000,maxBuffer:65536,
-        env:{...process.env,PATH:join(directory,'bin')+':'+process.env.PATH,AUDIT_TRACE:trace,...env},
+        env:{...process.env,PATH:join(directory,'bin')+':'+process.env.PATH,
+        AUDIT_ORIGINAL_PATH:process.env.PATH,AUDIT_TRACE:trace,...env},
       });
+      assert.ifError(result.error);
       const calls=readFileSync(trace,'utf8').split('\n').filter(Boolean).map(line=>JSON.parse(line));
       return {...result,calls};
     };

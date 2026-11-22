@@ -76,6 +76,13 @@ if [[ "$primary_tracked" -ne 1 ]]; then
   exit 1
 fi
 
+# The index also contains newly staged files. A binary lock is reproducible
+# from this revision only when it is already part of the HEAD commit.
+if ! git cat-file -e "HEAD:$lock"; then
+  echo "::error::$lock is not committed at HEAD." >&2
+  exit 1
+fi
+
 # The ignored advisory IDs, one per line: everything quoted inside the
 # `ignore = [...]` array, which may be written on one line or across several.
 ignored="$(

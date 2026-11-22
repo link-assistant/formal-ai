@@ -23,6 +23,28 @@ Initial exploration/recovery used external tools. The first Formal AI request, `
 
 Frozen before new implementation: CI freshness/taxonomy; worker budget; passage network ownership; flow-YAML parsing; retry coverage; child-result consumption; compound decomposition; constraint precedence; described-file authority; solver boundaries; native timing/shard balance; collector failure propagation; draft custody; transfer/deadline accounting; dependency verification; external benchmark diagnosis; qualification preconditions; full-tree template comparison; negative regression controls; final delivery evidence (20 units). Formal AI attempted and independently accepted shares are reported separately. Supplied conclusions receive zero credit.
 
+## Active continuation, committed primary lock
+
+- [x] Reproduce the staged-only primary lock false success against the actual
+  audit wrapper and a finite temporary Git repository.
+- [x] Require HEAD membership before Cargo; preserve independent audit collection.
+- [x] Repair the adjacent fixture to use real HEAD commits; 11 inventory, eight
+  blocked-proof, three advisory-proof and eight repository-audit controls pass.
+- [x] Register the inventory regression in the optional local feedback inventory;
+  the full hosted JavaScript test glob already discovers it.
+- [x] Run the complete JavaScript gate inventory after this shared-data edit:
+  89 passes, 53 explicit exclusions, no failed gate; retain the full summary
+  and latest detailed logs, distinguishing six later packaging observations.
+- [ ] Finish all 33 exact-head hosted workflows for published `c90f94ca`, preserve
+  complete failed logs and repair every actionable failure before another push.
+- [ ] Finish aggregate review, every applicable template practice and every
+  remaining original acceptance criterion; keep PR #1581 draft and unmerged.
+
+The published CI collector includes three exact-head workflows omitted by the
+branch run-list endpoint, using their independently confirmed run IDs. Queued
+workflows are pending observations and earn no executed-path qualification.
+See [the committed-lock checkpoint](../../docs/case-studies/issue-1580/committed-primary-lock-checkpoint.md).
+
 ## Current verification checkpoint, 2026-11-22
 
 Published `79a024bffdcee2dd94149d929e81b4b65496ed2d` has 33 terminal workflows:

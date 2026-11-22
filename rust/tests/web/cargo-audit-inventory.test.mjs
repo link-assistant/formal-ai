@@ -9,7 +9,7 @@ import test from 'node:test';
 const script = new URL('../../../scripts/check-rust-dependencies.sh', import.meta.url);
 const primary = 'rust/Cargo.lock';
 function observe({paths = [primary], missing = [], failures = {}, inventoryFailure = 0,
-  inventoryBytes = null, quotePaths = true, untracked = []} = {}) {
+  inventoryBytes = null, quotePaths = true, untracked = [], stagedOnly = []} = {}) {
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-cargo-inventory-'));
   try {
     for (const folder of ['.cargo', 'bin']) mkdirSync(join(directory, folder));
@@ -20,7 +20,12 @@ function observe({paths = [primary], missing = [], failures = {}, inventoryFailu
       mkdirSync(dirname(join(directory, path)), {recursive:true});
       writeFileSync(join(directory, path), '# finite protocol fixture; no Rust resolution\n');
     }
-    if (paths.length) git(['add', '--', ...paths]);
+    const committed = paths.filter(path => !stagedOnly.includes(path));
+    if (committed.length) git(['add', '--', ...committed]);
+    git(['-c', 'user.name=Formal AI test fixture', '-c', 'user.email=fixture@example.invalid',
+      '-c', 'core.hooksPath=/dev/null', 'commit', '--quiet', '--allow-empty', '--no-gpg-sign',
+      '-m', 'Commit finite lockfile fixtures']);
+    if (stagedOnly.length) git(['add', '--', ...stagedOnly]);
     for (const path of missing) rmSync(join(directory, path));
     const trace = join(directory, 'cargo-calls.jsonl');
     writeFileSync(trace, '');
@@ -100,4 +105,11 @@ test('a missing primary lock remains fatal while independent locks are audited',
   assert.equal(result.status, 1, result.stdout + result.stderr);
   assert.match(result.stdout, /rust\/Cargo\.lock is committed but not checked out/u);
   assert.deepEqual(result.calls, [expected('extra/Cargo.lock')]);
+});
+
+test('a staged-only primary binary lock cannot stand in for a committed HEAD lock', {timeout:10000}, () => {
+  const result = observe({paths:[primary, 'extra/Cargo.lock'], stagedOnly:[primary]});
+  assert.equal(result.status, 1, result.stdout + result.stderr);
+  assert.match(result.stdout + result.stderr, /rust\/Cargo\.lock is not committed at HEAD/u);
+  assert.deepEqual(result.calls, []);
 });
