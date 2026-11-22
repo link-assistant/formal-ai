@@ -245,3 +245,13 @@ self_hosting_ledger
     until "755e8781a649b12f6a0878a972f8b93fbfa065cd"
     changed_lines "261"
     commits "9"
+  release
+    tag "v0.356.6"
+    since "v0.356.5"
+    until "38fb0750de475466ef98ceb9f4b81ddde7e30594"
+    self_authored_lines "2"
+    changed_lines "95335"
+    self_authored_commits "1"
+    commits "124"
+    self_authored_pull_request "https://github.com/link-assistant/formal-ai/pull/1614"
+    self_authored_pull_request_author "https://github.com/link-assistant/formal-ai/pull/1614 konard"
