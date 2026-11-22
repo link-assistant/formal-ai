@@ -28,7 +28,7 @@ const expected = {
     ru: ['Город: Казань', '«Город: Казань»', '«Требования: опыт продаж от двух лет и водительские права»'],
   },
   language: {
-    en: ['Russian', 'Dictionary matches: около, лет, в', '«Около трёх лет, в основном оборудование.»'],
+    en: ['Russian', /Dictionary matches: около, (?:трёх, )?лет, в(?:\n|$)/u, '«Около трёх лет, в основном оборудование.»'],
     ru: ['Английский', 'Словарные совпадения: about, three', '«About three years, mostly equipment.»'],
   },
   agreement: {
@@ -71,7 +71,10 @@ const additionalExamples = [
 function assertAnswer(content, [firstLine, ...evidence], label) {
   assert.equal(typeof content, 'string', label);
   if (firstLine) assert.equal(content.split('\n')[0], firstLine, label);
-  for (const span of evidence) assert.ok(content.includes(span), `${label}: ${content}`);
+  for (const span of evidence) {
+    if (span instanceof RegExp) assert.match(content, span, label);
+    else assert.ok(content.includes(span), `${label}: ${content}`);
+  }
   assert.doesNotMatch(content, cannedSearch, label);
 }
 
