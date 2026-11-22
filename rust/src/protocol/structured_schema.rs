@@ -2,6 +2,7 @@
 //! present. Their schemas determine whether a null or empty value is valid.
 use serde_json::Value;
 use std::collections::HashSet;
+use std::sync::LazyLock;
 
 const MAXIMUM_DEPTH: usize = 32;
 const MAXIMUM_SAFE_INTEGER: f64 = 9_007_199_254_740_991.0;
@@ -9,7 +10,7 @@ const TYPES: [&str; 7] = [
     "object", "array", "string", "number", "integer", "boolean", "null",
 ];
 
-pub(super) fn reference<'a>(root: &'a Value, pointer: &str) -> Option<&'a Value> {
+fn reference_pointer(pointer: &str) -> Option<String> {
     let mut bytes = pointer.strip_prefix('#')?.bytes();
     let mut decoded = Vec::new();
     while let Some(byte) = bytes.next() {
@@ -21,57 +22,198 @@ pub(super) fn reference<'a>(root: &'a Value, pointer: &str) -> Option<&'a Value>
             byte
         });
     }
-    root.pointer(std::str::from_utf8(&decoded).ok()?)
+    let pointer = String::from_utf8(decoded).ok()?;
+    (pointer.is_empty() || pointer.starts_with('/')).then_some(pointer)
 }
 
-fn pattern(text: &str) -> Option<regex::Regex> {
+pub(super) fn reference<'a>(root: &'a Value, pointer: &str) -> Option<&'a Value> {
+    root.pointer(&reference_pointer(pointer)?)
+}
+
+struct Pattern {
+    regex: regex::Regex,
+    forbidden: Vec<regex::Regex>,
+}
+
+impl Pattern {
+    fn is_match(&self, text: &str) -> bool {
+        self.regex.is_match(text) && self.forbidden.iter().all(|guard| !guard.is_match(text))
+    }
+}
+
+fn pattern(text: &str) -> Option<Pattern> {
     if text.len() > 128
         || !text.bytes().all(|byte| matches!(byte, b' '..=b'~'))
-        || text.contains(['.', '(', ')', '|', '{', '}', '\\'])
         || ["[^", "&&", "--", "~~"]
             .into_iter()
             .any(|op| text.contains(op))
+    {
+        return None;
+    }
+    let needs_anchored_subset = text.contains(['.', '(', ')', '|', '{', '}', '\\'])
         || text
             .bytes()
             .filter(|byte| matches!(byte, b'+' | b'*' | b'?'))
             .count()
-            > 1
-    {
+            > 1;
+    if !needs_anchored_subset {
+        return Some(Pattern {
+            regex: regex::Regex::new(text).ok()?,
+            forbidden: Vec::new(),
+        });
+    }
+    let mut tail = text.strip_prefix('^')?;
+    let mut forbidden = Vec::new();
+    while let Some(guard) = NEGATIVE_PREFIX.captures(tail) {
+        forbidden.push(regex::Regex::new(&format!("^{}", &guard[1])).ok()?);
+        tail = &tail[guard.get(0)?.end()..];
+    }
+    if !ANCHORED_PATTERN.is_match(tail) {
         return None;
     }
-    regex::Regex::new(text).ok()
+    Some(Pattern {
+        regex: regex::Regex::new(&format!("^{tail}")).ok()?,
+        forbidden,
+    })
 }
 
-pub(super) fn supported(root: &Value) -> bool {
-    fn visit(
-        schema: &Value,
-        root: &Value,
+// Same anchored grammar as server/structured-pattern.mjs. The regex crate
+// handles matching without backtracking.
+static ANCHORED_PATTERN: LazyLock<regex::Regex> = LazyLock::new(|| {
+    let atom = r"(?:\[(?:\\[-.]|[A-Za-z0-9 _'+@-])+\]|\\\.|[A-Za-z0-9 _'@-])";
+    let quantifier = r"(?:[?*+]|\{[1-8],\})";
+    let term = format!("{atom}{quantifier}?");
+    regex::Regex::new(&format!(r"\A(?:{term}|\((?:\?:)?(?:{term})+\)[?*+]?)+\$\z"))
+        .expect("anchored structured pattern grammar")
+});
+static NEGATIVE_PREFIX: LazyLock<regex::Regex> = LazyLock::new(|| {
+    regex::Regex::new(r"\A\(\?!((?:\.\*)?(?:\\\.|[A-Za-z0-9_@-])+)\)")
+        .expect("anchored structured pattern prefix grammar")
+});
+
+fn supported_dialect(value: &Value) -> bool {
+    value
+        .as_str()
+        .and_then(|uri| {
+            uri.strip_prefix("https://json-schema.org/")
+                .or_else(|| uri.strip_prefix("http://json-schema.org/"))
+        })
+        .is_some_and(|dialect| {
+            matches!(
+                dialect.strip_suffix('#').unwrap_or(dialect),
+                "draft-07/schema" | "draft/2019-09/schema" | "draft/2020-12/schema"
+            )
+        })
+}
+
+fn child_pointer(pointer: &str, key: &str) -> String {
+    format!("{pointer}/{}", key.replace('~', "~0").replace('/', "~1"))
+}
+
+pub(super) struct SchemaIssue<'a> {
+    keyword: &'a str,
+    pointer: String,
+    unsupported: bool,
+}
+
+impl SchemaIssue<'_> {
+    pub(super) fn message(&self) -> String {
+        let key = if self.unsupported {
+            "structured-output-schema-unsupported-keyword"
+        } else {
+            "structured-output-schema-invalid-keyword"
+        };
+        let keyword = serde_json::to_string(self.keyword).expect("serialize schema keyword");
+        let pointer = if self.pointer.is_empty() {
+            "\"\""
+        } else {
+            self.pointer.as_str()
+        };
+        crate::seed::agentic_message(key, &[("keyword", &keyword), ("pointer", pointer)])
+    }
+}
+
+pub(super) fn check(root: &Value) -> Result<(), SchemaIssue<'_>> {
+    fn visit<'a>(
+        schema: &'a Value,
+        root: &'a Value,
+        pointer: &str,
         depth: usize,
+        keyword: &'a str,
         visited: &mut HashSet<*const Value>,
-    ) -> bool {
-        if depth > MAXIMUM_DEPTH {
-            return false;
+    ) -> Result<(), SchemaIssue<'a>> {
+        let invalid = |keyword| SchemaIssue {
+            keyword,
+            pointer: pointer.to_owned(),
+            unsupported: false,
+        };
+        let location_depth = pointer.bytes().filter(|byte| *byte == b'/').count();
+        if depth > MAXIMUM_DEPTH || location_depth > MAXIMUM_DEPTH {
+            return Err(invalid(keyword));
         }
         if !visited.insert(std::ptr::from_ref(schema)) || schema.is_boolean() {
-            return true;
+            return Ok(());
         }
-        let mut nested = |schema: &Value| visit(schema, root, depth + 1, visited);
+        let fields = schema.as_object().ok_or_else(|| invalid(keyword))?;
         let kind = |value: &Value| value.as_str().is_some_and(|kind| TYPES.contains(&kind));
-        schema.as_object().is_some_and(|fields| {
-            fields.iter().all(|(key, value)| match key.as_str() {
-                "$schema" => value == "https://json-schema.org/draft/2020-12/schema",
-                "title" | "description" | "default" | "examples" | "const" => true,
-                "$ref" => value
-                    .as_str()
-                    .and_then(|pointer| reference(root, pointer))
-                    .is_some_and(&mut nested),
-                "$defs" | "definitions" | "properties" => value
-                    .as_object()
-                    .is_some_and(|map| map.values().all(&mut nested)),
-                "additionalProperties" | "items" | "not" => nested(value),
-                "anyOf" | "allOf" | "oneOf" => value
-                    .as_array()
-                    .is_some_and(|items| !items.is_empty() && items.iter().all(&mut nested)),
+        for (key, value) in fields {
+            let key = key.as_str();
+            if matches!(
+                key,
+                "title"
+                    | "description"
+                    | "default"
+                    | "examples"
+                    | "$id"
+                    | "$comment"
+                    | "deprecated"
+                    | "readOnly"
+                    | "writeOnly"
+                    | "contentMediaType"
+                    | "contentEncoding"
+                    | "format"
+            ) {
+                continue;
+            }
+            let field_depth = location_depth + 1;
+            if field_depth > MAXIMUM_DEPTH {
+                return Err(invalid(key));
+            }
+            let mut nested = |part, at: &str| visit(part, root, at, depth + 1, key, visited);
+            let valid = match key {
+                "$schema" => supported_dialect(value),
+                "$ref" => {
+                    let target_pointer = value
+                        .as_str()
+                        .and_then(reference_pointer)
+                        .ok_or_else(|| invalid(key))?;
+                    let target = root.pointer(&target_pointer).ok_or_else(|| invalid(key))?;
+                    nested(target, &target_pointer)?;
+                    continue;
+                }
+                "$defs" | "definitions" | "properties" => {
+                    let entries = value.as_object().ok_or_else(|| invalid(key))?;
+                    let at = child_pointer(pointer, key);
+                    for (name, part) in entries {
+                        nested(part, &child_pointer(&at, name))?;
+                    }
+                    continue;
+                }
+                "additionalProperties" | "items" | "not" => {
+                    nested(value, &child_pointer(pointer, key))?;
+                    continue;
+                }
+                "anyOf" | "allOf" | "oneOf" => {
+                    let items = value
+                        .as_array()
+                        .filter(|items| !items.is_empty())
+                        .ok_or_else(|| invalid(key))?;
+                    let at = child_pointer(pointer, key);
+                    for (index, part) in items.iter().enumerate() {
+                        nested(part, &format!("{at}/{index}"))?;
+                    }
+                    continue;
+                }
                 "required" => value
                     .as_array()
                     .is_some_and(|items| items.iter().all(Value::is_string)),
@@ -90,11 +232,28 @@ pub(super) fn supported(root: &Value) -> bool {
                     value.is_number()
                 }
                 "pattern" => value.as_str().and_then(pattern).is_some(),
-                _ => false,
-            })
-        })
+                "const" => true,
+                _ => {
+                    return Err(SchemaIssue {
+                        unsupported: true,
+                        ..invalid(key)
+                    });
+                }
+            };
+            if !valid || !portable(value, field_depth) {
+                return Err(invalid(key));
+            }
+        }
+        Ok(())
     }
-    root.is_object() && visit(root, root, 0, &mut HashSet::new())
+    if !root.is_object() {
+        return Err(SchemaIssue {
+            keyword: "schema",
+            pointer: String::new(),
+            unsupported: false,
+        });
+    }
+    visit(root, root, "", 0, "schema", &mut HashSet::new())
 }
 
 fn json_equal(left: &Value, right: &Value) -> bool {

@@ -574,3 +574,14 @@ Evidence: [reduced embeddings main integration](../../docs/case-studies/issue-15
 
 
 The complete local gate run at `41bd3c382df1cafac80124425ef7b1b7057528b0` passes all 89 JavaScript gates, with 54 explicit CI-only skips and no failures. The tree is clean before and after, and no local Rust build is performed. The exact-source archive is round-trip verified at `evidence/checks/main-664e03-full-local-gates/manifest.json`. Combined-head hosted execution and all wider acceptance remain unfinished.
+
+
+## Main 510417 integration
+
+- [x] Read PR #1622's complete maintained-source delta and all feedback; preserve bounded matching and schema diagnostics in both roots.
+- [x] Verify complete baseline object equality without refreshing it, all physical source identities, focused HTTP controls, formatting and canonical projections.
+- [x] Correct the historical generator comparison wording; supplied operations receive zero independent authorship credit.
+- [ ] Pass the complete local gate inventory and qualify the combined source in hosted CI after collecting every current published-head failure.
+- [ ] Complete all remaining original runtime, template, delivery, cache, aggregate-review and genuine authorship acceptance; retain draft/unmerged state.
+
+Evidence: [structured-schema main integration](../../docs/case-studies/issue-1580/main-510417-integration.md).

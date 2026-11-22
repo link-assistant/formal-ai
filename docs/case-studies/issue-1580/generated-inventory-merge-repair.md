@@ -10,8 +10,8 @@ new include in `embedded_registry.rs`. The included `embedded_files.rs` still
 named four seed files already retired by main. Running the existing canonical
 JavaScript generator removes the duplicate body and those four stale entries;
 the one included function retains the complete current registered bundle.
-Both generated files were compared byte for byte with the independently
-rendered expectations before accepting the change. No generator or assertion
+Both generated files were compared byte for byte with the previously
+rendered canonical expectations before accepting the change. No generator or assertion
 was changed. The existing generator gate reproduces the pre-fix failure.
 
 The worker-budget checks found 1307 lines against a stale ceiling of 1292.
