@@ -6572,8 +6572,8 @@
         "scripts/collect-changelog.rs",
         "scripts/create-changelog-fragment.rs"
       ],
-      "assessment": "The complete pinned creator, collector and fragment guard are compared. Four exclusive-create controls pass again at c90f; the seconds-only template collision was already reported in upstream issue #254. Published physical collection failure controls also pass. Both collection paths now draft fenced-heading and exact-old-byte preservation with twelve physical fixtures, awaiting hosted execution. Safe creator logging and the fragment guard policy differences remain unfinished; the template comparison is not a completed implementation claim.",
-      "status": "exclusive-create-and-read-failure-controls-hosted-insertion-and-policy-gaps-open",
+      "assessment": "Exclusive creation and physical collection failure controls pass on the published c90f native target. Both collection paths now share strict heading offsets and preserve old LF/CRLF bytes with twelve native fixtures, awaiting hosted execution. The fragment creator also now encodes operator-controlled paths, descriptions and invalid bump diagnostics with the existing dual-protocol log helper. Two actual CLI regressions retain exact file bytes and round-trip the encoded text; their new compiled execution remains pending. Fragment guard policy and full CLI parity remain unfinished.",
+      "status": "published-exclusive-creation-verified-byte-preservation-and-safe-creator-await-hosted",
       "formalAiPaths": [
         "scripts/check-changelog-fragment.rs",
         "scripts/create-changelog-fragment.rs",

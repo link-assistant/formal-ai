@@ -22,6 +22,11 @@ name = "check-version-modification"
 path = "../../../scripts/check-version-modification.rs"
 test = false
 
+[[bin]]
+name = "create-changelog-fragment"
+path = "../../../scripts/create-changelog-fragment.rs"
+test = false
+
 # Compile the exact standalone sources and their split test modules. This
 # isolated manifest avoids another build of the application and its grammars.
 [[test]]

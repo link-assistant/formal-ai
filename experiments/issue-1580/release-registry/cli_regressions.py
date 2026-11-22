@@ -149,6 +149,32 @@ class RegistryRegressions(unittest.TestCase):
         self.git('push', '-q')
         self.env.update(GITHUB_EVENT_NAME='pull_request', GITHUB_BASE_REF='main')
 
+    def test_fragment_content_cannot_inject_actions_commands_into_the_log(self):
+        description = 'Keep λ bytes.\n::warning::forged notice\n##[error]forged legacy error'
+        self.env.update(GITHUB_ACTIONS='true', DESCRIPTION=description)
+        result = self.script('create-changelog-fragment.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        fragments = list((self.work / 'changelog.d').glob('*.md'))
+        self.assertEqual(len(fragments), 1)
+        content = fragments[0].read_bytes()
+        self.assertEqual(content, ('---\nbump: patch\n---\n\n### Fixed\n\n- ' + description + '\n').encode('utf-8'))
+        self.assertNotIn('::warning::', result.stdout + result.stderr)
+        self.assertNotIn('##[error]', result.stdout + result.stderr)
+        logged = [line for line in result.stdout.splitlines() if line.startswith('"---')]
+        self.assertEqual(len(logged), 1)
+        self.assertEqual(json.loads(logged[0]).encode('utf-8'), content)
+
+    def test_invalid_fragment_bump_cannot_inject_actions_commands_into_the_log(self):
+        value = 'invalid\n::warning::forged notice\n##[error]forged legacy error'
+        self.env.update(GITHUB_ACTIONS='true', BUMP_TYPE=value)
+        result = self.script('create-changelog-fragment.rs')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn('::warning::', result.stdout + result.stderr)
+        self.assertNotIn('##[error]', result.stdout + result.stderr)
+        self.assertEqual(json.loads(result.stderr.strip()),
+                         f'Invalid bump type: {value}. Must be major, minor, or patch.')
+        self.assertFalse((self.work / 'changelog.d').exists())
+
     def test_version_check_rejects_a_package_change_after_a_dependency_table(self):
         base = ('[dependencies.decoy]\nversion = "9.9.9"\n'
                 '[package]\nname = "fixture"\nversion = "1.2.3"\n')

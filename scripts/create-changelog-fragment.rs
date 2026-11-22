@@ -25,6 +25,10 @@ use std::process::exit;
 #[path = "changelog-fragment-file.rs"]
 mod changelog_fragment_file;
 
+#[path = "lib/github-actions-log.rs"]
+mod github_actions_log;
+use github_actions_log::safe_log_text;
+
 #[path = "rust-paths.rs"]
 mod rust_paths;
 
@@ -88,8 +92,10 @@ fn main() {
     // Validate bump type
     if !["major", "minor", "patch"].contains(&bump_type.as_str()) {
         eprintln!(
-            "Invalid bump type: {}. Must be major, minor, or patch.",
-            bump_type
+            "{}",
+            safe_log_text(&format!(
+                "Invalid bump type: {bump_type}. Must be major, minor, or patch."
+            ))
         );
         exit(1);
     }
@@ -113,19 +119,28 @@ fn main() {
     let dir_path = Path::new(&changelog_dir);
     if !dir_path.exists() {
         if let Err(e) = fs::create_dir_all(dir_path) {
-            eprintln!("Error creating directory {}: {}", changelog_dir, e);
+            eprintln!(
+                "{}",
+                safe_log_text(&format!("Error creating directory {changelog_dir}: {e}"))
+            );
             exit(1);
         }
     }
 
     // Write the fragment file
     if let Err(e) = changelog_fragment_file::create(Path::new(&fragment_file), &fragment_content) {
-        eprintln!("Error creating new fragment {}: {}", fragment_file, e);
+        eprintln!(
+            "{}",
+            safe_log_text(&format!("Error creating new fragment {fragment_file}: {e}"))
+        );
         exit(1);
     }
 
-    println!("Created changelog fragment: {}", fragment_file);
+    println!(
+        "Created changelog fragment: {}",
+        safe_log_text(&fragment_file)
+    );
     println!();
     println!("Content:");
-    println!("{}", fragment_content);
+    println!("{}", safe_log_text(&fragment_content));
 }
