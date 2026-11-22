@@ -117,3 +117,26 @@ A source preparation commit uses `[skip ci]` only to publish the immutable sourc
 needed by the explicit worker producer. It does not qualify CI or acceptance.
 The combined source and actual artifact must subsequently pass the full gates
 and a normal current-head CI run. The PR remains draft and unmerged.
+
+
+## Actual hosted worker import
+
+[Explicit producer 45068095941](https://github.com/link-assistant/formal-ai/actions/runs/45068095941)
+passes on preparation commit `d5b64675ef55ff5437bb73d9a43fc971e0d1f3c9`,
+attempt 1. Its actual build takes seventeen seconds (raw lines 479–491).
+The upload identifies artifact `14771458725`, three files and the full ZIP digest
+at lines 508–519. The maintained immutable-ID downloader verifies metadata before
+and after transfer, the full archive length/digest and bounded ZIP extraction.
+The maintained compiler verifier checks the native receipt, exact source commit
+and tree, all 27 recorded inputs, compiler identity, recipe and binary digest
+before importing any file. The actual compiler is Rust 1.100.0; the worker is
+311,893 bytes with SHA-256
+`ec8186543a701ccad0f8f7faa8bdf2a21b513359717230748954c6707a8b4ff2`.
+The manifest changes only the actual arithmetic input hash and worker bytes/hash.
+Its 25 compiler dependency inputs now pass the maintained currency check.
+
+The previously missing transcript inventory passes the unchanged committed
+secret scan. Complete producer logs, artifact metadata, extracted files and
+verification records are retained in `hosted-worker-regeneration/manifest.json`.
+No local Rust compilation or execution occurs. Complete combined-head local gates
+and normal hosted CI remain pending, and broader issue acceptance stays open.

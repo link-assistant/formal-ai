@@ -637,3 +637,10 @@ Evidence and limits: [current CI regressions](../../docs/case-studies/issue-1580
 The bootstrap duplicate-declaration removal and all supplied work earn zero
 independent credit. The native goal remains usage-limited; this checklist carries
 the unfinished objective. No local Rust compilation or execution occurred.
+
+
+The real hosted worker producer 45068095941 passes on d5b64675, attempt 1.
+Artifact 14771458725 is imported only after immutable metadata, complete ZIP,
+compiler closure, source/tree and binary verification. Worker currency now
+passes; the full combined-source local gate run and normal hosted CI remain
+pending. See `evidence/checks/hosted-worker-regeneration/manifest.json`.

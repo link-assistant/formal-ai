@@ -1,15 +1,15 @@
 {
   "schema": "selected-source-wasm/v1",
-  "sourceCommit": "de79e6ece67142fe8c6012059e6eb2bc0300e7bd",
-  "sourceTree": "46ab8131348a807c637b0ae922b53cb7e8e67b64",
-  "packageVersion": "0.356.2",
+  "sourceCommit": "d5b64675ef55ff5437bb73d9a43fc971e0d1f3c9",
+  "sourceTree": "1e8e1803bc0b5d570a82fe00668e5dbfd0f19eee",
+  "packageVersion": "0.356.9",
   "identity": {
     "repository": "link-assistant/formal-ai",
-    "run": "44962282997",
+    "run": "45068095941",
     "attempt": "1",
     "job": "regenerate-worker-receipt",
     "event": "workflow_dispatch",
-    "workflowCommit": "de79e6ece67142fe8c6012059e6eb2bc0300e7bd"
+    "workflowCommit": "d5b64675ef55ff5437bb73d9a43fc971e0d1f3c9"
   },
   "target": "wasm32-unknown-unknown",
   "compiler": "rustc 1.100.0 (0ef1bc386 2026-11-09)\nbinary: rustc\ncommit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a\ncommit-date: 2026-11-09\nhost: x86_64-unknown-linux-gnu\nrelease: 1.100.0\nLLVM version: 23.1.5\n",
@@ -353,9 +353,9 @@
     },
     {
       "path": "rust/Cargo.toml",
-      "gitBlob": "9bf36ca9ddfeebc75ff3bcf9e2d63698a8c29764",
-      "bytes": 9207,
-      "sha256": "774eda6ee7a511f43c54f0d016c37fb32c7dd2a1d6236b07c60ffe50d62a27be"
+      "gitBlob": "928067cff8296f1c12c7e1a53af5ecac42bba7f3",
+      "bytes": 9169,
+      "sha256": "2ebef87d696cd4f5e39c03d48e949ef6c50b9e73cf3a7f2d4020c49857e24007"
     },
     {
       "path": "rust/embedded/data/seed/language-detection.lino",
@@ -395,9 +395,9 @@
     },
     {
       "path": "rust/src/arithmetic_word_tables.rs",
-      "gitBlob": "30b959ffe905a36ca9d025e759c1198db47718ab",
-      "bytes": 3316,
-      "sha256": "a56f57e1cb1d34512f8035029c1b7eb448a50b8667199aac262a74f26497b334"
+      "gitBlob": "6b5ef08e7084b811320a254187f1fb2c7f16e4a6",
+      "bytes": 3494,
+      "sha256": "9a4fc4e1a3cff77f76bf2d2920f66b73cd42e1708545a125278e391855400ac6"
     },
     {
       "path": "rust/src/arithmetic.rs",
@@ -482,8 +482,8 @@
   "dependencyInfoSha256": "fde9a1864fa2b7cdd99cedf68e3a6a7f08d6acad9a8591b686e8de262e6e2abb",
   "output": {
     "path": "formal_ai_worker.wasm",
-    "bytes": 311765,
-    "sha256": "754cfedad4bc0c6a8811cae8b1ca201e25308b1a49acab3261a1eeea9b844ba1"
+    "bytes": 311893,
+    "sha256": "ec8186543a701ccad0f8f7faa8bdf2a21b513359717230748954c6707a8b4ff2"
   },
   "nativeCompilationEvidence": true
 }
