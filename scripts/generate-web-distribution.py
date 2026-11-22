@@ -11,13 +11,14 @@ WEB = ROOT / 'js'
 SEED = ROOT / 'data/seed'
 PACKAGE = ROOT / 'packages/formal-ai-engine'
 EXCLUDED = {'precache-manifest.js', 'service-worker.js', 'deployment.json'}
+EXCLUDED_ASSET_PREFIXES = ("app/", "distribution/", "seed/", "vendor/")
 assets = {}
 for path in sorted(WEB.rglob('*')):
     if path.is_file() and path.suffix in {'.js', '.css', '.html', '.wasm', '.lino', '.png', '.svg', '.webmanifest'}:
         name = path.relative_to(WEB).as_posix()
         # vendor/ holds the Node-side tree-sitter runtime and grammar (issue
         # #1180 R11); no page loads them, so they are not precached.
-        if path.name not in EXCLUDED and not name.startswith(('app/', 'distribution/', 'seed/', 'vendor/')):
+        if path.name not in EXCLUDED and not name.startswith(EXCLUDED_ASSET_PREFIXES):
             assets[name] = path
 # A selected CI build supplies a source-bound receipt; local source-only builds stay compiler-free.
 receipt = WEB / 'formal_ai_worker.receipt.json'
