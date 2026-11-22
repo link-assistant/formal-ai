@@ -153,7 +153,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     '  sha256sum rust/target/debug/examples/dump_google_trends_catalog rust/examples/dump_google_trends_catalog.rs rust/src/google_trends_catalog.rs data/seed/google-trends-prompts.lino\n' +
     '} > "$CATALOG_OUTPUT/generation-identity.txt"\n']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
-  for (const step of check.steps.filter(step => (step.uses && !['actions/setup-node@v7', 'actions/upload-artifact@v7', 'oven-sh/setup-bun@v2'].includes(step.uses)) || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
+  for (const step of check.steps.filter(step => (step.uses && !['actions/setup-node@v7', 'actions/upload-artifact@v7', './.github/actions/setup-bun-verified'].includes(step.uses)) || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
     assert.equal(step.if, step.id === 'native-checkout-retry'
       ? "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-checkout.outcome == 'failure' }}"
       : '${{ inputs.compile-inputs-changed }}');
@@ -184,9 +184,9 @@ test('the focused PR native check limits execution to lint and isolated regressi
       ...['candidate-output-bindings.json', 'candidate-release-caller.yml', 'original-release-workflow.yml','original-release-workflow.part-1.txt','original-release-workflow.part-2.txt',
         'stage-source-coverage.json'].map(file =>
         '/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/' + file)]);
-  for (const step of check.steps.filter(step => step.uses === 'oven-sh/setup-bun@v2' || step.run === gatewayReplay))
+  for (const step of check.steps.filter(step => step.uses === './.github/actions/setup-bun-verified' || step.run === gatewayReplay))
     assert.equal(step.if, step.run === gatewayReplay ? "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' && steps.bun.outcome == 'success' }}" : "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
-  assert.deepEqual(check.steps.find(step => step.uses === 'oven-sh/setup-bun@v2').with,
+  assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/setup-bun-verified').with,
     {'bun-version-file': '.bun-version', 'no-cache': true});
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
   assert(!check.steps.some(step => /attest|cache@|cache\/save/u.test(step.uses ?? '')));
@@ -725,7 +725,7 @@ test('localized native replay selects both its test source and consumed fixture'
 test('independent native replays continue after a regression fails and preserve failure status', () => {
   const job = workflow('native-type-check.yml').jobs.clippy;
   const later = job.steps.filter(step => step.name === 'Verify native unresolved-language source binding'
-    || ['actions/setup-node@v7', 'oven-sh/setup-bun@v2'].includes(step.uses) || step.name?.startsWith('Replay '));
+    || ['actions/setup-node@v7', './.github/actions/setup-bun-verified'].includes(step.uses) || step.name?.startsWith('Replay '));
   assert.equal(later.length, 10);
   const selected = (step, {earlierFailure = true, compile = true, lint = 'success', bun = 'success', cancelled = false} = {}) => {
     const expression = step.if.slice(3, -2).trim()

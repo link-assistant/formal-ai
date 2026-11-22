@@ -182,7 +182,8 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs
-      - uses: oven-sh/setup-bun@v2
+      # Reuse the bounded installer retry and exact-version check (issue #1569).
+      - uses: ./.github/actions/setup-bun-verified
         id: bun
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         with:
