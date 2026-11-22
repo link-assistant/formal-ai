@@ -17,7 +17,7 @@
 
 /**
  * Browser binding for the `algorithm` precedence row: a sorting or algorithm
- * request gets the seeded reviewable snippet of the language the
+ * request composes a reviewable function in the language the
  * `algorithm_language` table finds, through the shared rule interpreter over
  * the lowercased prompt, as the native dispatcher runs it.
  * @param {string} prompt raw prompt

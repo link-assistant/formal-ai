@@ -219,7 +219,7 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   translation_text: (prompt) => Boolean(extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt)
     || /`[^`]+`/u.test(String(prompt || "")) || textTransformFreeTextPayload(prompt)),
   triz_precedent: (prompt) => trizRelevantTasks(prompt, trizBenchmarkTasks()).length > 0,
-  algorithm_operation: (prompt) => operationMatchesSlug("sort", normalizePrompt(String(prompt || "").toLowerCase())),
+  algorithm_operation: (prompt, normalized) => ["sort", "reverse_sort"].some((slug) => operationMatchesSlug(slug, normalized)),
   source_reference: (prompt) => firstUrlCandidate(prompt) !== null || /(^|\s)[\w.-]*\/[\w.\/-]+/u.test(String(prompt || "")),
   stated_claim: (prompt) => claimEvidenceStatedClaim(extractProofClaim(normalizePrompt(prompt))),
   assistant_subject: (prompt, normalized) => claimEvidenceAddressesAssistant(normalized) || !claimEvidenceNamesOtherSubject(prompt),

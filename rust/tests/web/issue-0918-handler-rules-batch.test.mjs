@@ -396,16 +396,15 @@ test("a topic summary is the seeded record, run after web search as the native r
   assert.notEqual(conversation.intent, "summarize_topic");
 });
 
-const SORT_RUST = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_GO = "Вот проверяемый алгоритм сортировки на go:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования.";
-const SORT_RUST_HI = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
-const SORT_TYPESCRIPT_TESTS = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
-const SORT_PYTHON_TESTS = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nTests:\n```python\ndef test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_RUST = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_GO = "Вот проверяемый алгоритм сортировки на go:\n\n```go\npackage sorting\n\nimport \"sort\"\n\nfunc sortValues(values []int) {\n\tsort.Slice(values, func(i, j int) bool { return values[i] < values[j] })\n}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования.";
+const SORT_RUST_HI = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
+const SORT_TYPESCRIPT_TESTS = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values: number[]): number[] {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort() {\n  const expected = [0, 1, 2];\n  const actual = sort([2, 1, 0]);\n  if (actual.length !== expected.length || actual.some((value, index) => value !== expected[index])) {\n    throw new Error(\"Unexpected order\");\n  }\n}\n\ntest_sort();\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
+const SORT_PYTHON_TESTS = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n```\n\nTests:\n```python\ndef test_sort():\n    assert sort([2, 1, 0]) == [0, 1, 2]\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
 
-// The algorithm rule set (issue #918): the sort operation or the word
-// "algorithm", the language table and the seeded snippets answer exactly as
-// the deleted handleAlgorithm / try_algorithm did, in every prompt language.
-test("the algorithm rule set answers unchanged in english, russian, hindi and chinese", async () => {
+// The operation and target language determine the composed callable. The
+// surrounding answer remains localized to the language of the request.
+test("the algorithm rules compose the requested language in each conversation language", async () => {
   const english = await solve("Write me a sorting algorithm in Rust");
   assert.equal(english.intent, "algorithm_sort_rust");
   assert.equal(english.content, SORT_RUST);

@@ -194,6 +194,23 @@ pub fn try_numeric_list_with_history(
     log: &mut EventLog,
     history: &[ConversationTurn],
 ) -> Option<SymbolicAnswer> {
+    let vocabulary = seed::operation_vocabulary();
+    let normalized = crate::web_engine_core::normalize_prompt(prompt);
+    if vocabulary.matches("algorithm_request", &normalized)
+        && matches!(
+            detect_operation(&vocabulary, &normalized),
+            Some(Operation::Transform(
+                Transform::SortAscending | Transform::SortDescending
+            ))
+        )
+    {
+        return crate::rule_interpreter::run_handler(
+            "algorithm",
+            prompt,
+            &prompt.to_lowercase(),
+            log,
+        );
+    }
     let inherited = numeric_list_history_context(history);
     let has_inheritance =
         inherited.language.is_some() || inherited.code_requested || !inherited.items.is_empty();
@@ -445,6 +462,47 @@ fn detect_operation(
         }
     }
     None
+}
+
+/// Compose a callable list transformation or a standalone test of that callable.
+pub(crate) fn render_list_callable(
+    slug: &str,
+    prompt: &str,
+    normalized: &str,
+    test: bool,
+) -> Option<String> {
+    let language = crate::coding::program_language_by_slug(slug)?;
+    let operation = detect_operation(&seed::operation_vocabulary(), normalized)?;
+    let Operation::Transform(transform) = operation else {
+        return None;
+    };
+    let mut items = parse_numbers(prompt);
+    for item in &mut items {
+        let unsigned = item.text.trim_start_matches(['+', '-']);
+        let significant = unsigned.trim_start_matches('0');
+        let sign = if item.text.starts_with('-') { "-" } else { "" };
+        item.text = if significant.is_empty() || significant.starts_with('.') {
+            format!("{sign}0{significant}")
+        } else {
+            format!("{sign}{significant}")
+        };
+    }
+    if test && items.is_empty() {
+        // Use a sequence ordered opposite to the requested result so an identity
+        // implementation fails even when the caller supplied no examples.
+        let mut values = [0, 1, 2];
+        if transform != Transform::SortDescending {
+            values.reverse();
+        }
+        items.extend(values.into_iter().map(|value| ParsedListItem {
+            text: value.to_string(),
+            value: ListValue::Number(f64::from(value)),
+        }));
+    }
+    let is_float = items.iter().any(|item| item.text.contains('.'));
+    let program = codegen::build(language, &items, operation, is_float);
+    let expected = test.then(|| compute(operation, &items, is_float));
+    program.render_callable(expected.as_deref())
 }
 
 /// Apply the operation to the parsed list and return the surface tokens to

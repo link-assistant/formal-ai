@@ -397,7 +397,7 @@ handler-migration-ledger
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-code-tasks.lino|data/seed/operation-vocabulary.lino"
     primitive "rust/src/rule_interpreter.rs"
-    justification "issue #918 (R914-6): the row is four rules of data/seed/handler-rules.lino: the seeded sort operation (the new operation condition over data/seed/operation-vocabulary.lino) or the word algorithm, with or without a test requested; the language is the first row of the algorithm_language table the request contains and the snippet family the algorithm_snippet row it keys, both read by the new table value; the snippets, their tests and the English-only answer are seeded algorithm_sort* responses read by the new response value. try_algorithm, detect_algorithm_language and build_sorting_algorithm_answer are deleted natively and handleAlgorithm, algorithmDetectLanguage and algorithmSortingAnswer in the worker, which runs the same rules through runHandlerRuleSet. Every answer is byte-identical to the deleted code in en, ru, hi and zh."
+    justification "Issue #918 (R914-6) moved the algorithm route to shared handler rules and operation vocabulary. Issue #1613 replaces the stored implementations and test cases with the numeric-list composer. Both runtimes bind the target language and operation, compose a callable from language idioms, and derive expected output for supplied or generated test inputs. When the operation is missing, the rules ask for the expected behavior."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler source_refresh
     status migrated

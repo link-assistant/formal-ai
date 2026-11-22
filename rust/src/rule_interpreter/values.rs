@@ -102,6 +102,15 @@ impl Rule {
                     lookup_table(table, lookup, context, &resolved)?
                 }
                 ValueSource::Transform(name) => transform_payload(name, context.prompt)?,
+                ValueSource::ListCode { language, test } => {
+                    let (_, slug) = resolved.iter().find(|(name, _)| name == language)?;
+                    crate::solver_handlers::numeric_list::render_list_callable(
+                        slug,
+                        context.prompt,
+                        &context.cleaned,
+                        *test,
+                    )?
+                }
                 ValueSource::Response(template) => {
                     let pairs: Vec<(&str, &str)> = resolved
                         .iter()

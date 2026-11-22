@@ -372,12 +372,13 @@ handler-rules
   handler algorithm
     rule algorithm_sort_with_tests
       when
-        operation sort of cleaned
+        any
+          operation sort of cleaned
+          operation reverse_sort of cleaned
         substring test
       value language table algorithm_language of normalized
-      value snippet table algorithm_snippet key language
-      value code response "algorithm_sort_code_{snippet}"
-      value tests response "algorithm_sort_tests_{snippet}"
+      value code list_code language
+      value tests list_code language test
       log "execution_status" "unavailable"
       log "execution_environment" "no compile/run sandbox configured for this generated snippet"
       respond algorithm_sort_with_tests
@@ -386,10 +387,11 @@ handler-rules
       confidence 1.0
     rule algorithm_sort
       when
-        operation sort of cleaned
+        any
+          operation sort of cleaned
+          operation reverse_sort of cleaned
       value language table algorithm_language of normalized
-      value snippet table algorithm_snippet key language
-      value code response "algorithm_sort_code_{snippet}"
+      value code list_code language
       log "execution_status" "unavailable"
       log "execution_environment" "no compile/run sandbox configured for this generated snippet"
       respond algorithm_sort
@@ -398,12 +400,7 @@ handler-rules
       confidence 1.0
     rule algorithm-unnamed
       when
-        any
-          substring algorithm
-          substring алгоритм
-          substring एल्गोरिदम
-          substring 算法
-          substring algoritmo
+        operation algorithm_request of cleaned
       log "algorithm:refusal" "no operation named"
       respond algorithm-operation-required
       intent algorithm-operation-required
@@ -467,11 +464,6 @@ handler-rules
     row golang go
     row java java
     row ruby ruby
-    default python
-  table algorithm_snippet
-    row rust rust
-    row javascript javascript
-    row typescript typescript
     default python
   table document_software_artifact
     row "app" "software"

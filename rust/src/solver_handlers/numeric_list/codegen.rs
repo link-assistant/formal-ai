@@ -219,6 +219,30 @@ impl NumericProgram {
         composer.expand(scaffold, 0)
     }
 
+    /// Use the same operation idioms as the script, without binding the input
+    /// list to a literal in the callable. Tests bind inputs and expected values.
+    pub(super) fn render_callable(&self, expected: Option<&[String]>) -> Option<String> {
+        let chain = language_chain(idiom_catalog()?, self.language.slug);
+        let mut composer = Composer::new(self, chain);
+        composer.bindings.insert("list", "values".to_owned());
+        let scaffold = if let Some(values) = expected {
+            let literals = values.iter().map(|value| {
+                if self.value_type == ValueType::Float && !value.contains('.') {
+                    format!("{value}.0")
+                } else {
+                    value.clone()
+                }
+            });
+            composer
+                .bindings
+                .insert("expected", literals.collect::<Vec<_>>().join(", "));
+            "list_function_test"
+        } else {
+            "list_function"
+        };
+        composer.expand(composer.scaffold(scaffold)?, 0)
+    }
+
     /// Trace-friendly Links Notation view of the program tree.
     #[must_use]
     pub fn links_notation(&self) -> String {

@@ -537,7 +537,7 @@ fn every_code_answer_declares_execution_status_or_unavailability() {
     let response = answer("Write me a sorting algorithm in Rust");
     assert_eq!(
         response.answer,
-        "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+        "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
     );
     assert!(
         response.answer.contains("Execution status:")

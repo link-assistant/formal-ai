@@ -97,7 +97,7 @@ meanings
     defined-by answer
     role localized_response_template
     precondition "a request asks for a sorting algorithm without a test"
-    effect "the answer lays out the seeded snippet of the found language with its execution status"
+    effect "the answer presents a callable composed from the requested order and language with its execution status"
     unit "not applicable"
     example "Here is a reviewable sorting algorithm in rust:"
     grounding "data/seed/multilingual-responses-code-tasks.lino"
@@ -105,7 +105,7 @@ meanings
     defined-by answer
     role localized_response_template
     precondition "a request asks for a sorting algorithm with a test"
-    effect "the answer lays out the seeded snippet and its test with the execution status"
+    effect "the answer presents the composed callable, a generated test and the execution status"
     unit "not applicable"
     example "Here is a reviewable sorting algorithm in python with a test:"
     grounding "data/seed/multilingual-responses-code-tasks.lino"
@@ -116,70 +116,6 @@ meanings
     effect "asks for the operation and, if known, the input and expected output"
     unit "not applicable"
     example "What should the algorithm do?"
-    grounding "data/seed/multilingual-responses-code-tasks.lino"
-  algorithm_sort_code_python
-    defined-by answer
-    role localized_response_template
-    precondition "the algorithm answer needs the python sorting snippet"
-    effect "the snippet is the python function that returns the values in ascending order"
-    unit "not applicable"
-    example "sort"
-    grounding "data/seed/multilingual-responses-code-tasks.lino"
-  algorithm_sort_tests_python
-    defined-by answer
-    role localized_response_template
-    precondition "the algorithm answer needs the python test of its sorting snippet"
-    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in python"
-    unit "not applicable"
-    example "test_sort_ascending"
-    grounding "data/seed/multilingual-responses-code-tasks.lino"
-  algorithm_sort_code_rust
-    defined-by answer
-    role localized_response_template
-    precondition "the algorithm answer needs the rust sorting snippet"
-    effect "the snippet is the rust function that returns the values in ascending order"
-    unit "not applicable"
-    example "sort"
-    grounding "data/seed/multilingual-responses-code-tasks.lino"
-  algorithm_sort_tests_rust
-    defined-by answer
-    role localized_response_template
-    precondition "the algorithm answer needs the rust test of its sorting snippet"
-    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in rust"
-    unit "not applicable"
-    example "test_sort_ascending"
-    grounding "data/seed/multilingual-responses-code-tasks.lino"
-  algorithm_sort_code_javascript
-    defined-by answer
-    role localized_response_template
-    precondition "the algorithm answer needs the javascript sorting snippet"
-    effect "the snippet is the javascript function that returns the values in ascending order"
-    unit "not applicable"
-    example "sort"
-    grounding "data/seed/multilingual-responses-code-tasks.lino"
-  algorithm_sort_tests_javascript
-    defined-by answer
-    role localized_response_template
-    precondition "the algorithm answer needs the javascript test of its sorting snippet"
-    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in javascript"
-    unit "not applicable"
-    example "test_sort_ascending"
-    grounding "data/seed/multilingual-responses-code-tasks.lino"
-  algorithm_sort_code_typescript
-    defined-by answer
-    role localized_response_template
-    precondition "the algorithm answer needs the typescript sorting snippet"
-    effect "the snippet is the typescript function that returns the values in ascending order"
-    unit "not applicable"
-    example "sort"
-    grounding "data/seed/multilingual-responses-code-tasks.lino"
-  algorithm_sort_tests_typescript
-    defined-by answer
-    role localized_response_template
-    precondition "the algorithm answer needs the typescript test of its sorting snippet"
-    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in typescript"
-    unit "not applicable"
-    example "test_sort_ascending"
     grounding "data/seed/multilingual-responses-code-tasks.lino"
   document_generation_plan_format
     defined-by answer

@@ -32,7 +32,7 @@
 //! A later batch moved `algorithm` into the rule document: the sort
 //! operation (a new `operation` condition over the seeded operation
 //! vocabulary) or the word "algorithm", the language a `table` block finds,
-//! and the snippets as seeded responses read by a `response` value. Its
+//! and renders callable programs through the numeric-list composer. Its
 //! answers are byte-identical to the deleted `try_algorithm` in every prompt
 //! language.
 //!
@@ -503,17 +503,24 @@ fn a_topic_summary_is_the_seeded_record_in_both_runtimes() {
     }
 }
 
-const SORT_RUST: &str = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_GO: &str = "Вот проверяемый алгоритм сортировки на go:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования.";
-const SORT_RUST_HI: &str = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
-const SORT_TYPESCRIPT_TESTS: &str = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
-const SORT_PYTHON_TESTS: &str = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nTests:\n```python\ndef test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_RUST: &str = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_GO: &str = "Вот проверяемый алгоритм сортировки на go:\n\n```go\npackage sorting\n\nimport \"sort\"\n\nfunc sortValues(values []int) {\n\tsort.Slice(values, func(i, j int) bool { return values[i] < values[j] })\n}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования.";
+const SORT_RUST_HI: &str = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
+const SORT_TYPESCRIPT_TESTS: &str = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values: number[]): number[] {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort() {\n  const expected = [0, 1, 2];\n  const actual = sort([2, 1, 0]);\n  if (actual.length !== expected.length || actual.some((value, index) => value !== expected[index])) {\n    throw new Error(\"Unexpected order\");\n  }\n}\n\ntest_sort();\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
+const SORT_PYTHON_TESTS: &str = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n```\n\nTests:\n```python\ndef test_sort():\n    assert sort([2, 1, 0]) == [0, 1, 2]\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
 
 #[test]
-fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
+fn the_algorithm_rules_compose_the_requested_language() {
     let english = FormalAiEngine.answer("Write me a sorting algorithm in Rust");
     assert_eq!(english.intent, "algorithm_sort_rust");
     assert_eq!(english.answer, SORT_RUST);
+    let descending = FormalAiEngine.answer(
+        "Write a sorting algorithm in JavaScript in descending order with a test using -6, +08, 8, 01.5",
+    );
+    assert_eq!(descending.intent, "algorithm_sort_javascript");
+    assert!(descending.answer.contains("(a, b) => b - a"));
+    assert!(descending.answer.contains("sort([-6.0, 8.0, 8.0, 1.5])"));
+    assert!(descending.answer.contains("[8.0, 8.0, 1.5, -6.0]"));
     for (prompt, intent, expected) in [
         (
             "write a sorting algorithm in python with tests",

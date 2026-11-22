@@ -121,8 +121,11 @@ pub fn class_evidence_holds(
             !crate::triz_solver::relevant_tasks(prompt, &crate::triz_solver::triz_benchmark_tasks())
                 .is_empty()
         }
-        "algorithm_operation" => crate::seed::operation_vocabulary()
-            .matches("sort", &crate::engine::normalize_prompt(normalized)),
+        "algorithm_operation" => {
+            let vocabulary = crate::seed::operation_vocabulary();
+            let text = crate::engine::normalize_prompt(normalized);
+            vocabulary.matches("sort", &text) || vocabulary.matches("reverse_sort", &text)
+        }
         "source_reference" => {
             super::first_url(prompt).is_some() || super::first_path(prompt).is_some()
         }
