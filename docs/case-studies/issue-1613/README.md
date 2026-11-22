@@ -657,6 +657,50 @@ suites passed 29 tests locally.
 [Layered CI](evidence/workflows/layered-round16-44987974451.log.gz) ·
 [Translation projection](evidence/verification/round17-translate-trends.log)
 
+## Programming language contracts and publisher documentation
+
+A request for a small output program used compiled templates, an example
+oracle, and publisher responses preloaded into the runtime. Removing an
+explicit template could leave the other two mechanisms answering from the
+same example. A fresh offline request now composes an output operation
+from the requested language's syntax and the caller's quoted text. The
+canonical greeting remains the operand of the named Hello World exercise.
+An online request can acquire the publisher example, bind its output and
+command contract, and cite its source and content digest. The raw capture
+cache may reuse the document without creating a reviewed execution recipe.
+The Node server renders the execution status for this program separately
+from the historical toolchain observation.
+
+The original publisher captures, with their digests, are now under
+`rust/tests/fixtures/coding-discovery`. Test transports explicitly supply
+them to the resolver. The fresh worker catalog test covers language and task
+parity and the missing capture case. The old dedicated oracle returns no
+installed answers. Its capture reconstruction and public-source
+registrations can still work with explicit documents.
+[Worker catalog regression](evidence/verification/round18-worker-catalog.log) ·
+[Publisher and procedure cache replays](evidence/verification/round18-focused-replay.log)
+
+The governed specification replay retained all 222 supported case identities.
+Its inventory still contains 963 unsupported cases, with four renamed to
+describe the execution-status assertions they now make. The generated native
+projections retain the same delivery boundary. The local gate replays also
+verify that the source status page and hardcoded-language ceiling reflect the
+removed literals. The full run completed 135 of 138 gates locally. All three
+reported failures passed in the focused rerun after the two generated surfaces
+were corrected.
+[Full local run](evidence/verification/round18-local-gates.log)
+
+The prior hosted run failed on private numeric-value visibility, generated
+requirement status, the notation ledger title, and stale native source
+fingerprints. The archived job logs locate the failures at lines 1257–1291,
+765–768, 4164 and 4632, and 2716–2759 respectively.
+[Type check](evidence/workflows/job-round17-137109013250.log.gz) ·
+[Requirement status](evidence/workflows/job-round17-137108905081.log.gz) ·
+[Notation](evidence/workflows/job-round17-137108948497.log.gz) ·
+[Source fingerprints](evidence/workflows/job-round17-137108948526.log.gz) ·
+[Pipeline](evidence/workflows/pipeline-round17-44990051689.log.gz) ·
+[Layered CI](evidence/workflows/layered-round17-44990051323.log.gz)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,
