@@ -63,46 +63,34 @@ fn every_container_image_is_digest_pinned_or_explicitly_excepted() {
 fn a_pedantic_pass_enforces_the_hash_pin_policy_on_images() {
     let audit = repository_file(".github/workflows/workflows.yml");
     let passes: Vec<&str> = audit
-        .split("uses: zizmorcore/zizmor-action@")
-        .skip(1)
+        .lines()
+        .filter_map(|line| {
+            line.trim()
+                .strip_prefix("run: node scripts/run-zizmor.mjs ")
+        })
         .collect();
     assert_eq!(
-        passes.len(),
-        2,
-        "workflows.yml must run zizmor twice: `--persona regular` for the \
-         findings everyone should see, and a narrow pedantic pass for \
-         `unpinned-images`, which the regular persona cannot report at all \
-         (issue #1079, defect D3)"
+        passes,
+        ["regular", "pedantic"],
+        "both complete online audit personas must run, in order (issue #1079, D3)"
     );
-
-    let regular = passes[0];
+    let runner = repository_file("scripts/run-zizmor.mjs");
+    assert!(runner.contains("`--persona=${persona}`"));
+    assert!(runner.contains("`--min-confidence=${persona === 'regular' ? 'medium' : 'high'}`"));
     assert!(
-        !regular.contains("persona:"),
-        "the first zizmor pass must stay on the default persona"
+        runner.contains("if (persona === 'pedantic') args.push('--min-severity=high')"),
+        "only the pedantic pass may narrow severity; regular must retain all findings"
     );
     assert!(
-        !regular.contains("min-severity"),
-        "the first zizmor pass must not filter by severity -- that hides real \
-         findings rather than noisy ones (hive-mind CI/CD best practices, \
-         principle 14). Severity is the narrowing device for the *second* pass \
-         only, where it substitutes for the per-rule persona override zizmor \
-         does not have."
+        runner.contains("args.push('--', '.github/workflows', '.github/actions')"),
+        "both passes must audit all workflow and action sources"
     );
-
-    let pedantic = passes[1];
-    for (key, value) in [
-        ("persona:", "pedantic"),
-        ("min-severity:", "high"),
-        ("min-confidence:", "high"),
-    ] {
-        assert!(
-            pedantic.contains(&format!("{key} {value}")),
-            "the second zizmor pass must set `{key} {value}`: without the \
-             persona it cannot see `unpinned-images`, and without both floors \
-             it reports 164 findings instead of the one class it is for \
-             (issue #1079)"
-        );
-    }
+    assert!(
+        !runner.contains("--no-online-audits"),
+        "online advisory checks remain authoritative"
+    );
+    // The fast JavaScript transport regression calls this actual runner with
+    // captured process results and checks both personas' complete arguments.
 }
 
 /// D6. Both passes name the version they run, and it is the version the
@@ -131,34 +119,33 @@ fn every_zizmor_pass_pins_the_version_its_comment_documents() {
          audit; a finding nobody can reproduce is a finding nobody fixes"
     );
 
-    let pinned: Vec<String> = audit
-        .split("uses: zizmorcore/zizmor-action@")
-        .skip(1)
-        .map(|pass| {
-            pass.lines()
-                .find_map(|line| line.trim().strip_prefix("version:"))
-                .unwrap_or_else(|| {
-                    panic!(
-                        "every zizmor step must set `version:`. Left at its \
-                         default, `zizmor-action@v0.6.2` installs whatever its \
-                         own static version table calls `latest` -- 1.29.0, \
-                         frozen -- so the version CI runs is a property of the \
-                         action rather than of this file (issue #1079, defect \
-                         D6)"
-                    )
-                })
-                .trim()
-                .to_owned()
+    let runner = repository_file("scripts/run-zizmor.mjs");
+    let image = runner
+        .lines()
+        .find_map(|line| {
+            line.trim()
+                .strip_prefix("export const image = '")
+                .and_then(|value| value.strip_suffix("';"))
         })
-        .collect();
-
-    for version in &pinned {
+        .expect("the shared online auditor must pin its executable image");
+    let (tagged, digest) = image
+        .split_once("@sha256:")
+        .expect("immutable auditor digest");
+    assert_eq!(digest.len(), 64);
+    assert!(digest.bytes().all(|value| value.is_ascii_hexdigit()));
+    let version = tagged
+        .strip_prefix("ghcr.io/zizmorcore/zizmor:")
+        .expect("official auditor registry");
+    assert!(
+        documented.contains(&version),
+        "the shared auditor runs {version} but the reproduction instructions name {documented:?}"
+    );
+    for persona in ["regular", "pedantic"] {
         assert!(
-            documented.contains(&version.as_str()),
-            "workflows.yml runs zizmor {version} but tells a maintainer to \
-             reproduce with {documented:?}. The comment said 1.30.0 while CI \
-             ran 1.29.0 and could not have run 1.30.0 -- the action's version \
-             table stops there (issue #1079, defect D6)."
+            audit
+                .lines()
+                .any(|line| line.trim() == format!("run: node scripts/run-zizmor.mjs {persona}")),
+            "every documented audit persona must execute the same pinned runner"
         );
     }
 }

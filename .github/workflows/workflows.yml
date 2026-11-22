@@ -67,7 +67,16 @@ jobs:
       cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     steps:
       - uses: actions/checkout@v7
-        timeout-minutes: 3
+        id: actionlint-checkout
+        continue-on-error: true
+        timeout-minutes: 1
+        # Abort a stalled transfer early enough for checkout's bounded retries.
+        env:
+          GIT_CONFIG_COUNT: 2
+          GIT_CONFIG_KEY_0: http.lowSpeedLimit
+          GIT_CONFIG_VALUE_0: 1024
+          GIT_CONFIG_KEY_1: http.lowSpeedTime
+          GIT_CONFIG_VALUE_1: 20
         with:
           persist-credentials: false
           filter: blob:none
@@ -79,6 +88,40 @@ jobs:
             /scripts/documentation-policy-dependencies/
             /package.json
           sparse-checkout-cone-mode: false
+
+      - uses: actions/checkout@v7
+        id: actionlint-checkout-retry
+        continue-on-error: true
+        if: ${{ !cancelled() && steps.actionlint-checkout.outcome == 'failure' }}
+        timeout-minutes: 2
+        # Abort a stalled transfer early enough for checkout's bounded retries.
+        env:
+          GIT_CONFIG_COUNT: 2
+          GIT_CONFIG_KEY_0: http.lowSpeedLimit
+          GIT_CONFIG_VALUE_0: 1024
+          GIT_CONFIG_KEY_1: http.lowSpeedTime
+          GIT_CONFIG_VALUE_1: 20
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/
+            /rust/tests/fixtures/actionlint/
+            /scripts/check-workflow-concurrency.mjs
+            /experiments/issue-1580/workflow-concurrency.test.mjs
+            /scripts/documentation-policy-dependencies/
+            /package.json
+          sparse-checkout-cone-mode: false
+
+      - name: Require a successful workflow source checkout
+        env:
+          INITIAL_OUTCOME: ${{ steps.actionlint-checkout.outcome }}
+          RETRY_OUTCOME: ${{ steps.actionlint-checkout-retry.outcome }}
+        run: |
+          if [ "$INITIAL_OUTCOME" != success ] && [ "$RETRY_OUTCOME" != success ]; then
+            echo '::error::Workflow source checkout failed after two bounded attempts.' >&2
+            exit 1
+          fi
 
       # The upstream schema still rejects queue. Qualify its values and the
       # forbidden cancellation combination separately, using only the locked parser.

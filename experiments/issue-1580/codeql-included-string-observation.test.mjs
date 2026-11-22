@@ -27,7 +27,8 @@ test('included string observation retains unavailable expansions and leaves secu
   const gate = steps.find(step => step.name === 'Reject unresolved CodeQL findings');
   assert.ok(steps.indexOf(gate) > steps.indexOf(probe));
   assert.equal(gate.if, '${{ !cancelled() }}');
-  assert.equal(workflow.jobs['codeql-readonly'].steps, steps);
+  // YAML emitters may copy an anchored sequence; its complete content is authoritative.
+  assert.deepEqual(workflow.jobs['codeql-readonly'].steps, steps);
 });
 
 test('producer cache arguments compose with the action without duplicate boolean options', () => {

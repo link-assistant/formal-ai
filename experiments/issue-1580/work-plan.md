@@ -25,27 +25,29 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `2809ce657a6216599252c929f436687652091302` has 33 terminal workflows:
-29 succeed, three fail and one skips. All 163 checks and 30 annotations are
-preserved with complete original workflow logs and hashes. The collected failures
-and actionable warnings have concrete local repairs; fresh hosted execution of
-the repaired source remains pending. Main `82e506f54` (v0.356.3) is merged.
+Published `6903d9bd28ac96f3e73b35d700dce1415c0f5ac6` has 33 workflows.
+The final native Pipeline families are still running. Complete early logs preserve
+two Layered CI alias-identity failures, the stale public-download baseline hash,
+and an Actionlint checkout connection failure. The completed native workflow
+contract job additionally identifies its obsolete inline Zizmor action selector.
+Source repairs retain both complete online audit personas, the real original
+public verification payload, existing time limits and complete failure evidence.
+No final-head green qualification is claimed while that run is active.
 
-All 362 maintained issue observations pass. After retaining and repairing the
-intermediate failed inventories, the final full local inventory has 88 passing
-JavaScript gates and 53 explicit hosted-only exclusions. Native-source and
-TypeScript projection checks pass. No local Rust compilation or native execution
-is claimed. The official terminal-seed package and ignored browser mirrors are
-current; both before/after command-routing and workflow-trigger controls pass.
+The next local batch also enforces required public documentation and restores the
+original eight-step missing-compiler regression through one bounded supporting
+source observation. Each artifact retains its own preimage and mutation epoch;
+ambiguous callbacks invalidate every owner of their shared receipt. Physical
+read-only controls cover existing, absent, multilingual and rejected path forms.
+No step ceiling was increased. The full changed gate inventory is running after
+focused regression checks. All supplied code and procedures earn zero independent
+authorship credit; native execution remains hosted only.
 
 All eight pinned template trees have complete per-file applicability maps.
 Applicable-practice/runtime qualification, original strict acceptance and complete
-aggregate review remain unfinished. The 53 reviewed workflow/configuration diffs
-have exact source and diff hashes; this is not whole-PR review. Genuine independent
-authorship remains zero against the CONTRIBUTING.md 20% authored-leaf requirement.
-The independent reasoning target remains 0/20. PR #1581 stays draft and unmerged.
-
-Latest evidence: [collected hosted-source repairs](../../docs/case-studies/issue-1580/hosted-round-2809-repairs.md).
+aggregate review remain unfinished. Independent authorship remains zero against
+the CONTRIBUTING.md 20% authored-leaf requirement; independent reasoning is 0/20.
+PR #1581 remains draft and unmerged. Main `82e506f54` (v0.356.3) is merged.
 
 The entries below are retained historical observations, not current-head claims.
 
@@ -1069,4 +1071,16 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 
 - [x] Inspect the pinned template documentation checker and current workflow; confirm current checks do not enforce required public files and headings.
 - [x] Add one shared documentation requirement contract, 35 passing documentation observations, actual missing-document before/after controls and local/hosted admission. Full next-batch inventory and hosted execution remain pending.
-- [ ] Continue original eight-step verifier-failure reconciliation without increasing the budget or discarding source ownership.
+- [x] Restore the original eight-step verifier-failure ceiling with physical bounded supporting-source reads; local before/after and seven strict callback controls pass. Hosted native execution remains pending.
+
+
+## Current batch acceptance and verification
+
+- [x] Preserve current-head early CI failures and the completed native-job log with original line numbers.
+- [x] Restore the original eight-step failure-report ceiling with generic bounded supporting-source reads, independent owner epochs and complete callback binding.
+- [x] Repair copied YAML sequence comparisons, bind the public verifier to the actual original Git object, and retain all reviewed transport and Mac shell obligations.
+- [x] Retain the three-minute Actionlint checkout allowance across two bounded attempts; execute the terminal guard for every success/failure/skipped/cancelled outcome. All 161 policy checks pass.
+- [x] Make native Zizmor contracts follow the actual shared online runner, both personas and its immutable documented executable.
+- [x] Complete all 142 local gate entries (89 pass, 53 hosted-only exclusions), retain stale TypeScript failure plus official regeneration and passing currency, review every changed source diff and commit useful steps locally.
+- [ ] Collect every current-head terminal workflow and annotation, repair every additional actionable result, then publish one coordinated batch.
+- [ ] Verify the resulting published head and finish the remaining original acceptance criteria before readiness.

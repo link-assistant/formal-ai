@@ -407,11 +407,19 @@ test('download resolution hydrates only its reviewed controller inputs while pub
   }
   assert.deepEqual([...seen].sort(), expected);
   assert.equal(literalDynamicImportCovered, true);
-  // Reviewed main101992d baseline: acquisition changes cannot alter actual downstream verification.
+  // Reviewed main 101992d84e7b12c843722992050585192dfc3996: acquisition changes cannot alter actual downstream verification.
   const downstream = source.slice(source.indexOf('\n  all-public-bytes:\n'));
   assert.notEqual(source.indexOf('\n  all-public-bytes:\n'), -1);
-  // Issue #1571 pinned the runner image. Issue #1580 replaces only the two artifact adapters
-  // and their suppression; the complete workflow comparison is retained by verify-artifact-migration.mjs.
+  // Normalize only the reviewed runner pin, artifact transport and explicit Mac shell.
+  // Every other downstream byte remains bound to the original verification contract.
   assert.doesNotMatch(downstream, /runs-on: ubuntu-latest/u);
-  assert.equal(createHash('sha256').update(downstream.replaceAll('runs-on: ubuntu-24.04', 'runs-on: ubuntu-latest')).digest('hex'), '23c51407ffac430eff187421381d1a1c6a2c44c789a43360c44bef8ffdb68f30');
+  const adapter = '      - uses: ./.github/actions/download-artifact\n';
+  const originalAdapter = '      - uses: actions/download-artifact@v8\n        env:\n          NODE_OPTIONS: --disable-warning=DEP0005\n';
+  assert.equal(downstream.split(adapter).length - 1, 2);
+  const shell = '    defaults:\n      run:\n        shell: bash\n';
+  assert.equal(downstream.split(shell).length - 1, 1);
+  assert.deepEqual(YAML.parse(source).jobs['macos-public-packages'].defaults, {run: {shell: 'bash'}});
+  const original = downstream.replaceAll('runs-on: ubuntu-24.04', 'runs-on: ubuntu-latest')
+    .replaceAll(adapter, originalAdapter).replace(shell, '');
+  assert.equal(createHash('sha256').update(original).digest('hex'), '11977c67b61a050577b42afa0ea0f0f37bc321e03601bd66e1b5e03d3b8f4018');
 });

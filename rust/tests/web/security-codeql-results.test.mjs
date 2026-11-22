@@ -480,7 +480,8 @@ test('optional Rust macro observation reuses the read-only producer without repl
   assert.ok(steps.indexOf(gate) > steps.indexOf(probe));
   assert.equal(gate.if, '${{ !cancelled() }}', 'failed diagnostics must still check original SARIF');
   assert.ok(probe.run.includes('codeql-results/macro-contexts'));
-  assert.equal(workflow.jobs['codeql-readonly'].steps, steps);
+  // YAML emitters may copy an anchored sequence; its complete content is authoritative.
+  assert.deepEqual(workflow.jobs['codeql-readonly'].steps, steps);
 });
 
 test('macro observation preserves actual command failures and rejects incomplete tables without local compilation', {timeout: 20000}, () => {

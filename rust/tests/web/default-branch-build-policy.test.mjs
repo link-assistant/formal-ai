@@ -12,6 +12,7 @@ import {builtinModules} from 'node:module';
 import YAML from 'yaml';
 import '../../../experiments/issue-1580/native-regression-groups.test.mjs';
 import '../../../experiments/issue-1580/native-checkout-retry.test.mjs';
+import '../../../experiments/issue-1580/workflow-checkout-retry.test.mjs';
 import '../../../experiments/issue-1580/template-cpp-policy-result.test.mjs';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
@@ -403,7 +404,11 @@ test('workflow lint checks only its source closure and retains the real ShellChe
     assert.equal(checkout.with.filter,'blob:none');
     assert(checkout.with['sparse-checkout'].includes('/.github/'));
     assert(checkout.with['sparse-checkout'].includes('/rust/tests/fixtures/actionlint/'));
-    assert.equal(checkout['timeout-minutes'],3);
+    assert.equal(checkout['timeout-minutes'],id === 'actionlint' ? 1 : 3);
+    if (id === 'actionlint') assert.deepEqual(Object.fromEntries(Object.entries(checkout.env).map(([key,value])=>[key,String(value)])), {
+      GIT_CONFIG_COUNT:'2',GIT_CONFIG_KEY_0:'http.lowSpeedLimit',GIT_CONFIG_VALUE_0:'1024',
+      GIT_CONFIG_KEY_1:'http.lowSpeedTime',GIT_CONFIG_VALUE_1:'20',
+    });
   }
   assert(jobs.actionlint.steps.some(step=>step.run?.includes('shellcheck-canary.yml')));
 });
