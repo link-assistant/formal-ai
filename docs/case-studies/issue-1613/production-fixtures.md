@@ -310,3 +310,17 @@ primary cited source. The historical Agent CLI capture remains an explicit
 test fixture.
 [Baseline](evidence/verification/round27-self-explanation-baseline.log.gz) ·
 [Updated replay](evidence/verification/round27-self-explanation-green.log)
+
+## Generated procedure-census fixture
+
+On `9b544e8a5`, Layered CI ran 1,250 tests in its second JavaScript group.
+The procedure-census freshness test reported that the fixture still listed
+the two earlier fetch requests and omitted the new English project lookup.
+The generator reads the specification corpus and now emits 122 prompts,
+including the exact issue URL and the unregistered URL. The local baseline
+reproduced the mismatch, and all eight census tests passed after regeneration.
+[Hosted failure](https://github.com/link-assistant/formal-ai/actions/runs/45025294500/job/137219097157) ·
+[Full workflow log](evidence/verification/round27-hosted-45025294500.log.gz) ·
+[Job log, line 2722](evidence/verification/round27-hosted-45025294500-job-137219097157.log.gz) ·
+[Baseline](evidence/verification/round27-census-baseline.log.gz) ·
+[Regenerated replay](evidence/verification/round27-census-green.log.gz)

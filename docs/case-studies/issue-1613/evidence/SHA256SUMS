@@ -362,6 +362,8 @@ aac970fdd99deb2831f60e97fc1108022bcada7e96e0cf03df6207411bd1fdab  ./verification
 27d40123cfee9440f52f36787bcc7cc2577cf6f418d65e1bcf5b42351ce9d1f5  ./verification/round27-browser-exclusion.log
 55326b66e85739debb7d55095e17ad4fe5d9d7ed33f08aa989390e2debf71e37  ./verification/round27-build-policy-merged-test.log
 79f45ff061dabffe8f06d4049fb0970db0013dca3ecab72dbf6e250aa038ce65  ./verification/round27-cargo-audit.log
+e57a5369f79272555a165089ba8e4da378744c8b014430b9af48629f3c6b422d  ./verification/round27-census-baseline.log.gz
+00cacc4c6093f29da510992bd5708dc8c91c9a861ecff5b7afb71d62537d40ff  ./verification/round27-census-green.log.gz
 efcbefffa83fff75a7a996a081073995de8ba49fabfe5b82c6cfddb42b3b0b6f  ./verification/round27-container-merged-test.log
 50d47a71d351dc5895da8407d97d0e12b23070bd4250d2c76a92574d577ee58c  ./verification/round27-contribution-verified.log
 753e21db48d4869a02db3ee38fe03e0408f75e74816496795301f5db9cb806d4  ./verification/round27-coreference-baseline.log.gz
@@ -370,6 +372,8 @@ b0da09c6916578d1c373e89690337b28d797838df57c04f0ee30a4d34542d808  ./verification
 fe0a77cccd89c2f3da28c3ca8f0540e759a02d0ba8eb3af504b4cb3f64053800  ./verification/round27-governed-merged-test.log
 ff202db7f43cb6ca2e31bbcdc17db18956720f986a96fb4c013cb8e35e6b0bd9  ./verification/round27-governed-release-merge-delta.json
 bda9871fb0733fc1156760c2cceb7a2e4fde905987c69787f084067d437ada71  ./verification/round27-governed-release-merged-test.log
+b7fc1726ffd22233b3c14bbbde2028e0093e9e5133d89a23621436797d17c970  ./verification/round27-hosted-45025294500-job-137219097157.log.gz
+e5e0d4324cceb183b5b8304b108cad3b73e1ce9a294eb2786955e8fc486fa247  ./verification/round27-hosted-45025294500.log.gz
 9121d5d850235ac8c5f13a37dfd56e0a34304389b461af4258700ae835c43998  ./verification/round27-issue-0918-handler-final.log
 e0c2b6140763d4487be6723772562c5f1b5ef1739a8de51279831a95c0a200df  ./verification/round27-issue-1175-claim-final.log
 508d454b46f4e6294ab3fd21c8fa9981a26a3c17ed878957c491ce0b1ab12469  ./verification/round27-page-formalization-final.log
