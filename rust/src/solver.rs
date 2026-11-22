@@ -826,7 +826,12 @@ impl UniversalSolver {
                 _ => base_answer,
             };
             record_answer_test(log, &intent, &base_answer);
-            let base_answer = crate::question_necessity::enforce_questions(&base_answer, log);
+            let base_answer = crate::solver_helpers::enforce_answer_questions(
+                &base_answer,
+                log,
+                &rule,
+                catalog_program.is_some(),
+            );
 
             let response_link = response_link_for_intent(&rule, &intent);
             log.append("response", response_link.clone());

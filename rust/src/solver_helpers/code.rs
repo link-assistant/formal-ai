@@ -11,6 +11,32 @@ use super::{extract_backticked, extract_fenced_block, extract_quoted_phrase};
 use crate::language::{Language, detect as detect_language};
 use crate::proof_program::FormalProof;
 
+pub(crate) fn enforce_answer_questions(
+    body: &str,
+    log: &mut crate::event_log::EventLog,
+    rule: &crate::engine::SelectedRule,
+    has_bound_program: bool,
+) -> String {
+    use crate::engine::SelectedRule;
+    let requires_input = match rule {
+        SelectedRule::WriteProgram(spec) => {
+            !has_bound_program
+                && crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
+                    .is_some()
+        }
+        SelectedRule::UnsupportedWriteProgram {
+            task: None,
+            language: Some(_),
+        } => true,
+        _ => false,
+    };
+    if requires_input {
+        crate::question_necessity::enforce_requirement_questions(body, log)
+    } else {
+        crate::question_necessity::enforce_questions(body, log)
+    }
+}
+
 pub(crate) fn catalog_execution_recipe(
     rule: &crate::engine::SelectedRule,
     prompt: &str,

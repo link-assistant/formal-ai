@@ -160,4 +160,10 @@ test("native program replies bind caller operands and report unobserved executio
   const missing = await solve("Write a Python program that calculates the factorial");
   assert.match(missing, /^Which integer from 0 to 18/u);
   assert.doesNotMatch(missing, /```|Execution status/u);
+  const missingRange = await solve("Write a Python program that implements FizzBuzz");
+  assert.match(missingRange, /^Which integer range/u);
+  assert.doesNotMatch(missingRange, /```|Execution status/u);
+  const missingText = await solve("Write a Python program that reverses a string");
+  assert.match(missingText, /^Which text should the program reverse\?/u);
+  assert.doesNotMatch(missingText, /```|Execution status/u);
 });
