@@ -184,7 +184,7 @@ test('quantity lexical and response data cover five languages with faithful text
     }
   }
   const responses = parseLino(fs.readFileSync(new URL(
-    '../../../data/seed/multilingual-responses-agentic.lino', import.meta.url), 'utf8'));
+    '../../../data/seed/multilingual-responses-quantity-constraint.lino', import.meta.url), 'utf8'));
   for (const intent of ['quantity-constraint-within', 'quantity-constraint-exceeds',
     'quantity-constraint-unknown']) {
     const rows = childrenNamed(responses, 'response').filter(node => childValue(node, 'intent') === intent);
