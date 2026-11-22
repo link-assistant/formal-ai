@@ -35,6 +35,10 @@ mod rust_paths;
 #[path = "changelog-files.rs"]
 mod changelog_files;
 
+#[allow(dead_code)]
+#[path = "release-changelog.rs"]
+mod release_changelog;
+
 const INSERT_MARKER: &str = "<!-- changelog-insert-here -->";
 
 fn get_arg(name: &str) -> Option<String> {
@@ -140,27 +144,11 @@ fn update_changelog(
             // carries no trailing newline of its own here.
             content = content.replace(INSERT_MARKER, &format!("{}\n\n{}", INSERT_MARKER, section));
         } else {
-            // Insert after the first ## heading
-            let lines: Vec<&str> = content.lines().collect();
-            let mut insert_index = None;
-
-            for (i, line) in lines.iter().enumerate() {
-                if line.starts_with("## [") {
-                    insert_index = Some(i);
-                    break;
-                }
-            }
-
-            if let Some(idx) = insert_index {
-                let mut new_lines: Vec<String> =
-                    lines[..idx].iter().map(|s| s.to_string()).collect();
-                new_lines.push(new_entry.clone());
-                new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
-                // `lines()` drops the trailing newline and `join` never
-                // restores it.
-                content = format!("{}\n", new_lines.join("\n"));
+            if let Some(offset) = release_changelog::first_heading_offset(&content) {
+                // Preserve examples, old sections and their exact line endings.
+                content.insert_str(offset, &format!("{section}\n\n"));
             } else {
-                // Append after the main heading
+                // Append after the main heading.
                 content.push_str(&new_entry);
             }
         }
@@ -237,6 +225,50 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn insertion_ignores_fenced_examples_and_preserves_existing_bytes() {
+        let directory = env::temp_dir().join(format!(
+            "collector-fenced-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        fs::create_dir(&directory).unwrap();
+        struct Cleanup(std::path::PathBuf);
+        impl Drop for Cleanup {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+        let _cleanup = Cleanup(directory.clone());
+        let changelog = directory.join("CHANGELOG.md");
+        for newline in ["\n", "\r\n"] {
+            for delimiter in ["```", "~~~", "   ````"] {
+                let prefix = format!(
+                    "# Changelog{newline}{newline}{delimiter}md{newline}## [9.9.9]{newline}{delimiter}{newline}{newline}"
+                );
+                let previous = format!("## [1.0.0]{newline}  Preserve these bytes.{newline}");
+                fs::write(&changelog, format!("{prefix}{previous}")).unwrap();
+                update_changelog(
+                    changelog.to_str().unwrap(),
+                    "1.1.0",
+                    "### Fixed\n- New notes",
+                    "2026-11-22",
+                )
+                .unwrap();
+                let content = fs::read_to_string(&changelog).unwrap();
+                assert!(content.starts_with(&prefix), "{content:?}");
+                assert!(content.ends_with(&previous), "{content:?}");
+                assert_eq!(
+                    release_changelog::section(&content, "1.1.0").unwrap(),
+                    "### Fixed\n- New notes"
+                );
+            }
+        }
+    }
 
     #[test]
     fn failed_fragment_or_existing_changelog_reads_preserve_every_input() {

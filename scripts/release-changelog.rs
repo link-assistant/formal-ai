@@ -27,17 +27,14 @@ fn release_heading(line: &str) -> Option<&str> {
     Some(version)
 }
 
-/// Ignore release-looking headings inside backtick or tilde fenced examples.
-pub fn section(content: &str, version: &str) -> Option<String> {
+/// Byte offsets of actual release headings, ignoring fenced examples.
+fn headings(content: &str) -> impl Iterator<Item = (usize, usize, &str)> {
     let mut fence: Option<(u8, usize)> = None;
-    let mut body_start = None;
     let mut offset = 0;
-    for full_line in content.split_inclusive('\n') {
+    content.split_inclusive('\n').filter_map(move |full_line| {
         let start = offset;
         offset += full_line.len();
-        let Some(line) = markdown_line(full_line.trim_end_matches(['\r', '\n'])) else {
-            continue;
-        };
+        let line = markdown_line(full_line.trim_end_matches(['\r', '\n']))?;
         let marker = line.as_bytes().first().copied();
         let width = line
             .as_bytes()
@@ -51,22 +48,33 @@ pub fn section(content: &str, version: &str) -> Option<String> {
             {
                 fence = None;
             }
-            continue;
+            return None;
         }
         if matches!(marker, Some(b'`' | b'~'))
             && width >= 3
             && (marker != Some(b'`') || !line[width..].contains('`'))
         {
             fence = Some((marker.unwrap(), width));
-            continue;
+            return None;
         }
-        if let Some(found) = release_heading(line) {
-            if let Some(body) = body_start {
-                return Some(notes_or_fallback(&content[body..start], version));
-            }
-            if found == version {
-                body_start = Some(offset);
-            }
+        release_heading(line).map(|version| (start, offset, version))
+    })
+}
+
+/// The collector inserts before the first actual release without rewriting old bytes.
+pub fn first_heading_offset(content: &str) -> Option<usize> {
+    headings(content).next().map(|(start, _, _)| start)
+}
+
+/// Ignore release-looking headings inside backtick or tilde fenced examples.
+pub fn section(content: &str, version: &str) -> Option<String> {
+    let mut body_start = None;
+    for (start, body, found) in headings(content) {
+        if let Some(body) = body_start {
+            return Some(notes_or_fallback(&content[body..start], version));
+        }
+        if found == version {
+            body_start = Some(body);
         }
     }
     body_start.map(|body| notes_or_fallback(&content[body..], version))

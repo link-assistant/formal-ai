@@ -1363,3 +1363,16 @@ See [the lifetime manifest](evidence/checks/child-lifetime-hosted-verification/m
 See [the scoped verification manifest](evidence/checks/version-release-practice-verification/manifest.json).
 
 Local verification for this batch passes the lightweight HTTP fixture, the JavaScript template observation suite and all six packaging gates. The fixture check mocks compilation; the two new compiled version cases remain pending hosted CI.
+
+
+## Release collection byte preservation and I/O evidence, 2026-11-22
+
+- [x] Compare the complete pinned release-content, filesystem, bump, collector, fragment creator and guard sources with the current implementations. Preserve their exact hashes and the published c90f native job.
+- [x] Verify the published native target passes all 231 workflow contracts, including physical collection read failures, snapshot preservation, exclusive creation and strict fenced-section extraction. Keep that result bound to the pre-refactor source bytes.
+- [x] Fix both collection paths to insert at an actual release heading without rewriting existing bytes. Share the lazy strict heading scanner with release-section extraction; add six real filesystem fixtures per path for LF/CRLF and three fence forms.
+- [ ] Run focused JavaScript packaging/runner checks and rustfmt, then qualify the iterator and both new native regressions on adequately provisioned hosted CI. No local Rust build is authorized by the repository guidance.
+- [ ] Finish safe creator logging, fragment policy decisions, remaining release dependency closure and full seven-CLI parity. These findings and all broader original acceptance remain open; source review earns no independent authorship credit.
+
+Evidence: [the scoped release I/O manifest](evidence/checks/release-io-and-heading-practices/manifest.json).
+
+Local verification passes rustfmt, 63 runner-group tests, 20 artifact tests, two script-selection tests and all six packaging gates. The twelve native physical fixtures and shared iterator still await hosted execution.

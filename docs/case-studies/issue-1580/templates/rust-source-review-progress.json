@@ -6369,15 +6369,17 @@
         ".github/secretlint/package.json",
         "scripts/fixtures/lychee-report.md"
       ],
-      "assessment": "The twelve complete pinned sources are read. Formal AI has since adopted the fallible output writer in six callers (284e24430) and now drafts parsed package identity and token-only version writes. Directory-entry/read propagation, fenced release heading boundaries and remaining dependency closure decisions are still unfinished. The original observations remain in the retained read logs; source inspection does not prove native behavior.",
-      "status": "source-compared-applicable-repairs-pending",
+      "assessment": "The published c90f native workflow target passes 231 contracts, including fallible physical fragment/changelog reads, bump selection, package identity and fenced release section controls. Comparing the complete pinned collector found an additional real gap: both Formal AI collection paths could insert into a fenced pseudo-heading and rewrite old line endings. They now share the strict byte-offset heading scanner and each has six physical-file fixtures; these new changes await hosted execution. Remaining tool/dependency closure and every original acceptance criterion are not complete.",
+      "status": "published-release-io-hosted-verified-byte-preserving-insertion-pending-native",
       "formalAiPaths": [
-        "scripts/get-version.rs",
+        "scripts/release-changelog.rs",
+        "scripts/changelog-files.rs",
+        "scripts/collect-changelog.rs",
+        "scripts/version-changelog.rs",
         "scripts/get-bump-type.rs",
-        "scripts/git-config.rs",
-        "scripts/bump-version.rs"
+        "scripts/cargo-package.rs"
       ],
-      "verification": null
+      "verification": "experiments/issue-1580/evidence/checks/release-io-and-heading-practices/manifest.json"
     },
     {
       "practice": "Pinned development inputs, lint configuration and example boundaries",
@@ -6570,14 +6572,14 @@
         "scripts/collect-changelog.rs",
         "scripts/create-changelog-fragment.rs"
       ],
-      "assessment": "The template seconds-only fs::write creator remains an upstream reproduction/report task. Formal AI exclusive creation (fc868688a) is now verified by all four native cases in exact-head core job 136080808912 at 11c0bd05. Template collection and new-fragment policy comparison remain unfinished.",
-      "status": "formal-ai-exclusive-create-hosted-verified-template-comparison-and-report-pending",
+      "assessment": "The complete pinned creator, collector and fragment guard are compared. Four exclusive-create controls pass again at c90f; the seconds-only template collision was already reported in upstream issue #254. Published physical collection failure controls also pass. Both collection paths now draft fenced-heading and exact-old-byte preservation with twelve physical fixtures, awaiting hosted execution. Safe creator logging and the fragment guard policy differences remain unfinished; the template comparison is not a completed implementation claim.",
+      "status": "exclusive-create-and-read-failure-controls-hosted-insertion-and-policy-gaps-open",
       "formalAiPaths": [
         "scripts/check-changelog-fragment.rs",
         "scripts/create-changelog-fragment.rs",
         "scripts/collect-changelog.rs"
       ],
-      "verification": "experiments/issue-1580/evidence/ci/native-families-11c0bd05/early-completed-jobs.json"
+      "verification": "experiments/issue-1580/evidence/checks/release-io-and-heading-practices/manifest.json"
     },
     {
       "practice": "Crate release identity, package size and downstream smoke tests",
@@ -6782,9 +6784,9 @@
       "templateFiles": [
         "experiments/issue-192-release-io-regressions.py"
       ],
-      "assessment": "Read all 145 lines of the pinned upstream release I/O regression. It compiles and probes seven real release CLIs against invalid Actions output, directory and fragment fixtures. Shared output behavior is covered on the published head; newly drafted collector and bump-selection filesystem replays still require hosted execution. Full CLI equivalence and all applicable practice verification remain pending.",
-      "status": "literal-source-read-comparison-and-hosted-verification-pending",
-      "verification": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json"
+      "assessment": "The current hosted workflow target directly executes the production collector, version collector, bump selector, output writer and filesystem helpers; the former pending physical read-error replays now pass. The new shared iterator and twelve LF/CRLF insertion fixtures await hosted CI. Direct module coverage is distinct from the pinned seven-CLI subprocess experiment, whose complete equivalence remains open.",
+      "status": "published-production-module-io-hosted-verified-new-insertion-and-full-cli-parity-open",
+      "verification": "experiments/issue-1580/evidence/checks/release-io-and-heading-practices/manifest.json"
     },
     {
       "practice": "Release registry uncertainty and runtime workflow replay",
