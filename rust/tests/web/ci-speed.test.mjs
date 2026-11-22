@@ -272,6 +272,14 @@ describe('the measured records', () => {
     assert.equal(mergeJavaScriptDurations(merged, observed, {raiseOnly: true}), merged);
   });
 
+  test('a faster or slower ordinary cohort cannot restate a receipted duration', () => {
+    const table = 'javascript-test-durations\n  test "bound"\n    seconds 40\n    receipt-sha256 abc\n    request-sha256 def\n    measurement-kind local-single-file\n';
+    for (const seconds of [30, 50]) for (const complete of [true, false]) for (const raiseOnly of [true, false]) {
+      const merged = mergeJavaScriptDurations(table, new Map([['bound', {seconds, complete}]]), {raiseOnly});
+      assert.equal(merged, table, JSON.stringify({seconds, complete, raiseOnly}));
+    }
+  });
+
   test('observed js seconds replace records, never lower a bound or a receipt, and set default-seconds', () => {
     const table = [
       '# generated',

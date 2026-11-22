@@ -278,8 +278,11 @@ export function mergeJavaScriptDurations(text, observed, { source, floor = 2, re
   for (const [file, { seconds, complete = true }] of [...observed].sort(([left], [right]) => left.localeCompare(right))) {
     const entry = byFile.get(file);
     if (entry) {
-      const replace = round(seconds) > entry.seconds
-        || (complete && !raiseOnly && entry.extra.length === 0 && round(seconds) !== entry.seconds);
+      // A receipt binds the exact measured seconds and their source identity.
+      // Ordinary cohort imports cannot replace it, even with a larger timing.
+      const receipted = entry.extra.some((line) => /^ {4}receipt-sha256 /u.test(line));
+      const replace = !receipted && (round(seconds) > entry.seconds
+        || (complete && !raiseOnly && entry.extra.length === 0 && round(seconds) !== entry.seconds));
       if (replace) {
         Object.assign(entry, { seconds: round(seconds), text: String(round(seconds)), comments: [], extra: [] });
       }
