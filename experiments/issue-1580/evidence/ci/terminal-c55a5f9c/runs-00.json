@@ -1,0 +1,138 @@
+[
+  {
+    "file": "44988162724.log.gz",
+    "rawBytes": 62724,
+    "rawSha256": "82c59b700e160de2ad774b94948eff5b827ad94d2b2a428258aabeb57c7699eb",
+    "archiveSha256": "cd8a2cfda60aaf928b1f39ac46be1a3942aab600ca47496214334cafaa1b1f02",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162724,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:07Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162724",
+      "workflowName": "Guarded staged release authority refusal"
+    },
+    "rawLines": 405
+  },
+  {
+    "file": "44988162730.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "620e3fa00c59c285e361b1e25a20121b0cf94f06a006dc19c5ec3dd272cb01fb",
+    "archiveSha256": "5dd0607745f7fc19900dd49388049c88a5a0e599023cfb39ab7a5b0c842ce3c5",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162730,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:03Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162730",
+      "workflowName": "Self-development status"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162693.log.gz",
+    "rawBytes": 92943,
+    "rawSha256": "2d2298dd4212b73b4b929c0f9203100c7857234043b8c674cffba896c8d30418",
+    "archiveSha256": "10b448f5e8a0478c93e2e8fdb86547b915253655d51e48a37074e87194b72a9c",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162693,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:03Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162693",
+      "workflowName": "Security"
+    },
+    "rawLines": 798
+  },
+  {
+    "file": "44988162527.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "c78b36f628f78bf93391051d2945ddcac8ebeb093a387ca223a3ab566abaa017",
+    "archiveSha256": "002d744130d87e07c22db4bab89c7f73f03f1b1b06403262dd099d0aec6b57bb",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162527,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:01Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162527",
+      "workflowName": "container-images"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162683.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "cc314d5b4fdf2d2d07ad4629df5c33b8492f877aa87c870e85dc6c722be214d0",
+    "archiveSha256": "a6325228ecf127871b1cfc389f221afc8e0125257db61f8332ecddeab017cd6b",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162683,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:07Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162683",
+      "workflowName": "Native provenance interoperability and performance"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162762.log.gz",
+    "rawBytes": 31643,
+    "rawSha256": "3072e9c5b8800dd8c4e636fa0e2228a08738d4e43f82bf04bf5bc4ab580db1f6",
+    "archiveSha256": "46e1a6663868e7007205e7a1d90ca77519074f211641410be85917c8e3bec587",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162762,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:17Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162762",
+      "workflowName": "Web UI boundary"
+    },
+    "rawLines": 281
+  },
+  {
+    "file": "44988162829.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "e3ab7355e489d6f61485aab448c63033a2c9271e952b70e06e7b8db34396c2e5",
+    "archiveSha256": "0cb86aa5b3e4ce6e4368b6c231209595867c029d1730c846cc60310451b8d3cc",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162829,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:09Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162829",
+      "workflowName": "Agentic CLI Matrix"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162479.log.gz",
+    "rawBytes": 76896,
+    "rawSha256": "eab11a9f12b9df1a951066e312769d393457ae0c560700ea4d66718e8362e619",
+    "archiveSha256": "394aaa19965986ca48623e18dcb6415de4151caf875a34268a72b190fe50e686",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162479,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:47Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162479",
+      "workflowName": "Resolve provenance native dependencies"
+    },
+    "rawLines": 516
+  }
+]

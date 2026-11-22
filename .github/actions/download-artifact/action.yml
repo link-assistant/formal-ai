@@ -37,11 +37,19 @@ runs:
       id: temporary
       shell: bash
       run: echo "path=$(mktemp -d "$RUNNER_TEMP/artifact-archives.XXXXXX")" >> "$GITHUB_OUTPUT"
+    - name: Prepare portable Node observation options
+      id: observation_options
+      shell: bash
+      env:
+        ACTION_DIRECTORY: ${{ github.action_path }}
+      run: |
+        action_directory="${ACTION_DIRECTORY//\\//}"
+        printf 'node-options=--throw-deprecation --require="%s/retry-observations.cjs"\n' "$action_directory" >> "$GITHUB_OUTPUT"
     - id: download_first
       uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       continue-on-error: true
       env:
-        NODE_OPTIONS: --throw-deprecation --require="${{ github.action_path }}/retry-observations.cjs"
+        NODE_OPTIONS: ${{ steps.observation_options.outputs.node-options }}
         ARTIFACT_RETRY_ATTEMPT: '1'
       with:
         name: ${{ inputs.name }}
@@ -69,7 +77,7 @@ runs:
       uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       continue-on-error: true
       env:
-        NODE_OPTIONS: --throw-deprecation --require="${{ github.action_path }}/retry-observations.cjs"
+        NODE_OPTIONS: ${{ steps.observation_options.outputs.node-options }}
         ARTIFACT_RETRY_ATTEMPT: '2'
       with:
         name: ${{ inputs.name }}
@@ -96,7 +104,7 @@ runs:
       if: ${{ !cancelled() && steps.retry_third.outcome == 'success' }}
       uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       env:
-        NODE_OPTIONS: --throw-deprecation --require="${{ github.action_path }}/retry-observations.cjs"
+        NODE_OPTIONS: ${{ steps.observation_options.outputs.node-options }}
         ARTIFACT_RETRY_ATTEMPT: '3'
       with:
         name: ${{ inputs.name }}

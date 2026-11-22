@@ -25,6 +25,15 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
+Published c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d includes the artifact annotation,
+partial-ID, timing and physical workspace/file-size I/O repairs. Its CI round is
+still active; terminal qualification must precede another push. The next local
+repair shares the production release-note parser with the original native tests,
+adds fenced-heading and physical I/O cases, and preserves the optional-source
+fallback. See production-changelog-selection.md in the case study. Local checks
+and hosted native execution remain distinct evidence.
+
+
 Published `6903d9bd28ac96f3e73b35d700dce1415c0f5ac6` has 33 workflows.
 The final native Pipeline families are still running. Complete early logs preserve
 two Layered CI alias-identity failures, the stale public-download baseline hash,
@@ -1097,3 +1106,15 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [ ] Publish one batch after the final branch queue and source preflight.
 - [ ] Verify both new I/O native fixtures and all current-head CI; measure the new JavaScript wall times and inspect every annotation before final qualification.
 - [ ] Finish every applicable template practice, whole-PR review, original full-suite budget/delivery evidence and external acceptance criteria. Supplied patches and commands still receive zero independent authorship credit; issue 1580 remains unfinished.
+
+
+## Complete c55 round, changelog production parser and Windows options
+
+- [x] Retain every complete log from all 33 terminal workflows, all 163 checks, 25 annotations and 43 classified diagnostic candidates. Both failing workflows have concrete local repairs.
+- [x] Confirm actual hosted workspace and file-size native I/O passes, preserving exact test names and raw-log line/digest bindings.
+- [x] Repair all 63 clean-result consumer assertions and rebalance from 913 complete hosted file-cost observations; lower no weights or warning/execution budgets.
+- [x] Share production changelog section selection, ignore fenced headings and fail on unreadable main/archive observations. Original native test bodies now call production code; retain source-derived baseline boundaries and focused admission.
+- [x] Reproduce Windows preload backslash loss through the actual Node option parser before repair; normalize portable options and pass three new process controls, eight annotation controls, eleven transport controls and 20 maintained entry cases. Actual Windows filesystem loading remains hosted.
+- [x] Complete the 142-entry local inventory (89 passes and 53 explicit hosted exclusions), then pass every additional touched portable-options gate. Retain stale expected-vector and incorrect gate-name failures with their recoveries.
+- [ ] Publish this entire batch only after a fresh empty-queue/source preflight; verify new native changelog execution, actual Windows transport and unchanged hosted shard headroom.
+- [ ] Complete every remaining original acceptance criterion, applicable practice and aggregate review; preserve original budget, publication/identity/delivery and genuine authorship limits. Keep PR #1581 draft and unmerged until verified.

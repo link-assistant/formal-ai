@@ -143,7 +143,7 @@ test('shared native and renderer downloads replace the deprecated extractor with
  assert.equal(transport.with['skip-decompress'],true);
  assert.equal(transport.with['digest-mismatch'],'error');
  assert.equal(transport.with['merge-multiple'],false);
- assert.equal(transport.env.NODE_OPTIONS,'--throw-deprecation --require="${{ github.action_path }}/retry-observations.cjs"');
+ assert.equal(transport.env.NODE_OPTIONS,'${{ steps.observation_options.outputs.node-options }}');
  const extraction=adapter.runs.steps.find(step=>step.id==='extract');
  assert.equal(extraction['working-directory'],'${{ github.workspace }}');
  assert.equal(extraction.env.ALLOW_EMPTY_SELECTION,"${{ inputs.name == '' && inputs.artifact-ids == '' }}");
@@ -232,4 +232,11 @@ test('release-note contracts exercise the production parser in the focused nativ
  assert.match(original,/release_changelog::section\(content, version\)/u);
  assert.doesNotMatch(original,/Regex::new/u);
  assert.match(focused,/#\[path = "ci-cd[/]changelog_parsing[.]rs"\]\nmod changelog_parsing;/u);
+});
+
+// Exercise the production Bash output and Node option parser before hosted transports.
+test('artifact observation options preserve Windows separators and POSIX spaces', {timeout:30000},()=>{
+ const env={...process.env};delete env.NODE_TEST_CONTEXT;delete env.NODE_OPTIONS;
+ const result=spawnSync(process.execPath,['--test','--test-reporter=tap','--test-concurrency=1',fileURLToPath(new URL('../../../experiments/issue-1580/artifact-download-portable-options.test.mjs',import.meta.url))],{encoding:'utf8',maxBuffer:256*1024,env});
+ assert.equal(result.status,0,result.stdout+result.stderr);assert.match(result.stdout,/# tests 3/u);
 });

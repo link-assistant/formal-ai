@@ -1,0 +1,303 @@
+[
+  {
+    "runId": 44988162693,
+    "workflow": "Security",
+    "line": 701,
+    "text": "Cargo audit\tRun taiki-e/install-action@v2\t2026-11-22T05:09:51.0746145Z ^[[36;1m  printf '::error::install-action: %s\\n' \"$*\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162542,
+    "workflow": "Workflows",
+    "line": 203,
+    "text": "Actionlint\tRequire a successful workflow source checkout\t2026-11-22T05:09:40.2087710Z ^[[36;1m  echo '::error::Workflow source checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162542,
+    "workflow": "Workflows",
+    "line": 613,
+    "text": "Actionlint\tProve the linter can still see inside a run block\t2026-11-22T05:09:50.4442376Z ^[[36;1m  echo \"::error file=${canary}::actionlint accepted a workflow whose run: block does not parse. ShellCheck is not running, so every run: block above went unchecked.\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162542,
+    "workflow": "Workflows",
+    "line": 1323,
+    "text": "Immutable BuildKit bootstrap and registry fallback\tInitialize an actual daemon through the mirror fallback\t2026-11-22T05:09:53.5332109Z ^[[36;1m  echo '::error::Canonical BuildKit setup failed and registry mirror is disabled'^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162542,
+    "workflow": "Workflows",
+    "line": 1595,
+    "text": "Immutable BuildKit bootstrap and registry fallback\tCheck the fallback control outcome\t2026-11-22T05:09:58.4370691Z ^[[36;1m  echo '::error::BuildKit fallback control failed; inspect the retained Docker observations.'^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162542,
+    "workflow": "Workflows",
+    "line": 2387,
+    "text": "Artifact transport (windows-2025)\tRun ./.github/actions/download-artifact\t2026-11-22T05:09:59.0417646Z Error: Cannot find module 'D:aformal-aiformal-ai./.github/actions/download-artifact/retry-observations.cjs'",
+    "classification": "actionable Windows NODE_OPTIONS backslash loss; portable options repaired; actual Windows rerun pending"
+  },
+  {
+    "runId": 44988162542,
+    "workflow": "Workflows",
+    "line": 2444,
+    "text": "Artifact transport (windows-2025)\tRun ./.github/actions/download-artifact\t2026-11-22T05:10:01.7536298Z Error: Cannot find module 'D:aformal-aiformal-ai./.github/actions/download-artifact/retry-observations.cjs'",
+    "classification": "actionable Windows NODE_OPTIONS backslash loss; portable options repaired; actual Windows rerun pending"
+  },
+  {
+    "runId": 44988162542,
+    "workflow": "Workflows",
+    "line": 2501,
+    "text": "Artifact transport (windows-2025)\tRun ./.github/actions/download-artifact\t2026-11-22T05:10:05.9831034Z Error: Cannot find module 'D:aformal-aiformal-ai./.github/actions/download-artifact/retry-observations.cjs'",
+    "classification": "actionable Windows NODE_OPTIONS backslash loss; portable options repaired; actual Windows rerun pending"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 3712,
+    "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-22T05:15:20.0416340Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step.",
+    "classification": "actionable JavaScript shard headroom; 55 raise-only measured weights imported; hosted new-plan timing pending"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 4036,
+    "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-22T05:15:49.4576384Z \u2714 printed FAILED completion cannot be certified by an exit-zero harness (72.219517ms)",
+    "classification": "passing test title containing a diagnostic word; not an emitted failure"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 5972,
+    "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-22T05:15:57.2437753Z ##[error]Process completed with exit code 1.",
+    "classification": "actionable 63 stale file-size consumer assertions; all 11 consumer suites pass after repair"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 10253,
+    "text": "js tier (node --check over js, suite group 6)\tRun this shard of the JavaScript suites\t2026-11-22T05:15:40.1252084Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step.",
+    "classification": "actionable JavaScript shard headroom; 55 raise-only measured weights imported; hosted new-plan timing pending"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 10650,
+    "text": "js tier (node --check over js, suite group 6)\tRun this shard of the JavaScript suites\t2026-11-22T05:16:29.7410555Z WorkerBootstrapFailed Error: ActualBootstrapImportFailed",
+    "classification": "expected worker prerequisite import rejection controls; captured stack binds the fixture source"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 10661,
+    "text": "js tier (node --check over js, suite group 6)\tRun this shard of the JavaScript suites\t2026-11-22T05:16:29.9869529Z WorkerBootstrapFailed Error: ActualRecordReaderImportFailed",
+    "classification": "expected worker prerequisite import rejection controls; captured stack binds the fixture source"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 13730,
+    "text": "js tier (node --check over js, suite group 5)\tRun this shard of the JavaScript suites\t2026-11-22T05:14:30.2756401Z \u2714 check alerts with ::error only on a sustained regression and samples only executed runs (1.609988ms)",
+    "classification": "passing test title containing a diagnostic word; not an emitted failure"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 21010,
+    "text": "js tier (node --check over js, suite group 1)\tSyntax-check every committed js file\t2026-11-22T05:10:36.8398463Z ^[[36;1m  echo \"::error::the js tier found no js files -- the tier predicate is wrong\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 21934,
+    "text": "js tier (node --check over js, suite group 1)\tRun the focused tests for the changed components first\t2026-11-22T05:13:22.6597456Z \u2714 check alerts with ::error only on a sustained regression and samples only executed runs (1.914869ms)",
+    "classification": "passing test title containing a diagnostic word; not an emitted failure"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 22625,
+    "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-22T05:15:14.7098054Z fatal: ambiguous argument 'refs/tags/v1.2.4^{commit}': unknown revision or path not in the working tree.",
+    "classification": "expected release/source authority negative probe in a successful shard; source context retained"
+  },
+  {
+    "runId": 44988162770,
+    "workflow": "Layered CI",
+    "line": 23948,
+    "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-22T05:16:22.6792684Z fatal: ref HEAD is not a symbolic ref",
+    "classification": "expected release/source authority negative probe in a successful shard; source context retained"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 196,
+    "text": "Release Preflight\tProbe every release credential\t2026-11-22T05:09:52.1698743Z ##[warning]UNKNOWN: crates.io publish token -- token present; crates.io offers no token-accepting read endpoint (GET /api/v1/me is cookie-only), so only `cargo publish` can prove it",
+    "classification": "unresolved publication authority observation UNKNOWN; public reads cannot prove crates.io token permission"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 58110,
+    "text": "Native type and lint check / Compile focused native contracts once\tUNKNOWN STEP\t2026-11-22T05:10:33.3213839Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 58455,
+    "text": "Native type and lint check / Compile focused native contracts once\tUNKNOWN STEP\t2026-11-22T05:10:38.4910279Z ^[[36;1m  echo \"::warning title=sccache install failed::The sccache download failed; this job builds without the compiler cache (issue #1569).\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 58465,
+    "text": "Native type and lint check / Compile focused native contracts once\tUNKNOWN STEP\t2026-11-22T05:10:38.4913306Z ^[[36;1m  echo \"::warning title=sccache unavailable::Compiler-cache probe failed; subsequent Cargo steps use the real compiler without cache (issue #1031).\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 58467,
+    "text": "Native type and lint check / Compile focused native contracts once\tUNKNOWN STEP\t2026-11-22T05:10:38.4914067Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 58615,
+    "text": "Native type and lint check / Compile focused native contracts once\tUNKNOWN STEP\t2026-11-22T05:10:53.7458172Z ^[[36;1m  echo \"::warning title=cargo registry cache miss::No entry matched ${WANTED_KEY} or any of its restore keys. If the step log above shows a 429, this was a refused request rather than an absent entry (issue #1076).\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 59723,
+    "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:10:36.7201921Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 60039,
+    "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:10:42.1109393Z ^[[36;1m  echo \"::warning title=sccache install failed::The sccache download failed; this job builds without the compiler cache (issue #1569).\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 60049,
+    "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:10:42.1112119Z ^[[36;1m  echo \"::warning title=sccache unavailable::Compiler-cache probe failed; subsequent Cargo steps use the real compiler without cache (issue #1031).\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 60051,
+    "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:10:42.1112856Z ^[[36;1msccache --show-stats >> \"$probe_log\" 2>&1 || echo \"::warning::sccache statistics unavailable (issue #1031).\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 60196,
+    "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:10:58.4565026Z ^[[36;1m  echo \"::warning title=cargo registry cache miss::No entry matched ${WANTED_KEY} or any of its restore keys. If the step log above shows a 429, this was a refused request rather than an absent entry (issue #1076).\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 61363,
+    "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:16:10.0234035Z Error: IO error for operation on /tmp/check-file-size-missing-root-1795324570023240340/missing: No such file or directory (os error 2)",
+    "classification": "expected physical file-size I/O negative controls; named unchanged native tests pass at lines 61367 and 61368"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 61364,
+    "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:16:10.0235090Z Error: Could not read /tmp/check-file-size-invalid-utf8-1795324570023326201/broken.rs: stream did not contain valid UTF-8",
+    "classification": "expected physical file-size I/O negative controls; named unchanged native tests pass at lines 61367 and 61368"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 63032,
+    "text": "Native type and lint check / Release registry scripts\tUNKNOWN STEP\t2026-11-22T05:10:20.7403957Z ^[[36;1m  echo \"::warning title=cargo registry cache miss::No entry matched ${WANTED_KEY} or any of its restore keys. If the step log above shows a 429, this was a refused request rather than an absent entry (issue #1076).\"^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 63555,
+    "text": "Native type and lint check / Native contracts (coding-2)\tUNKNOWN STEP\t2026-11-22T05:14:38.7128281Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 64366,
+    "text": "Native type and lint check / Native contracts (interfaces)\tUNKNOWN STEP\t2026-11-22T05:31:56.7737714Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 65222,
+    "text": "Native type and lint check / Native contracts (reasoning-1)\tUNKNOWN STEP\t2026-11-22T05:20:53.4997382Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 66079,
+    "text": "Native type and lint check / Native contracts (hive-1)\tUNKNOWN STEP\t2026-11-22T05:35:28.2950751Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 66862,
+    "text": "Native type and lint check / Native contracts (hive-2)\tUNKNOWN STEP\t2026-11-22T05:38:46.0468204Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 67652,
+    "text": "Native type and lint check / Native contracts (benchmarks)\tUNKNOWN STEP\t2026-11-22T05:28:04.8651740Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 68443,
+    "text": "Native type and lint check / Native contracts (hive-3)\tUNKNOWN STEP\t2026-11-22T05:43:07.3692655Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 69235,
+    "text": "Native type and lint check / Native contracts (coding-1)\tUNKNOWN STEP\t2026-11-22T05:14:34.2945319Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 70044,
+    "text": "Native type and lint check / Native contracts (reasoning-2)\tUNKNOWN STEP\t2026-11-22T05:23:55.4118923Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  },
+  {
+    "runId": 44988162955,
+    "workflow": "CI/CD Pipeline",
+    "line": 70901,
+    "text": "Native type and lint check / Native contracts (hive-4)\tUNKNOWN STEP\t2026-11-22T05:44:51.2805688Z ^[[36;1m  echo '::error::Native input checkout failed after two bounded attempts.' >&2^[[0m",
+    "classification": "printed source of a conditional diagnostic; no runtime firing observed"
+  }
+]

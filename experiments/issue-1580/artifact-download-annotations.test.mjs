@@ -55,7 +55,7 @@ test('all three pinned action attempts load the guard with strict digest and dis
  const steps=action.runs.steps.filter(step=>step.uses?.startsWith('actions/download-artifact@'));assert.equal(steps.length,3);
  for(const [index,step] of steps.entries()){
   assert.equal(step.env.ARTIFACT_RETRY_ATTEMPT,String(index+1));
-  assert.equal(step.env.NODE_OPTIONS,'--throw-deprecation --require="${{ github.action_path }}/retry-observations.cjs"');
+  assert.equal(step.env.NODE_OPTIONS,'${{ steps.observation_options.outputs.node-options }}');
   assert.equal(step.with['digest-mismatch'],'error');assert.equal(step.with['skip-decompress'],true);
  }
 });

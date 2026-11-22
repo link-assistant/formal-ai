@@ -1,0 +1,138 @@
+[
+  {
+    "file": "44988162524.log.gz",
+    "rawBytes": 43649,
+    "rawSha256": "3c1d530afcb318985c183daa2aaf2eedcc8dbcc4f1597bd2a1c64feee45205b6",
+    "archiveSha256": "9dc49570804e36e475c31d09aa2f70afe10462b749c8c37db2e8685333d87ceb",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162524,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:46Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162524",
+      "workflowName": "Broken Link Checker"
+    },
+    "rawLines": 352
+  },
+  {
+    "file": "44988162749.log.gz",
+    "rawBytes": 25489,
+    "rawSha256": "9bd2357e71047c61f009ce7e5145b4ae6a30b009a720785a65d161b109f45108",
+    "archiveSha256": "56551918c14a2d0c7f165f86ca65da140f61b9bf2f58454f1c1681d7d4dd25b3",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162749,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:46Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162749",
+      "workflowName": "Publish browser engine"
+    },
+    "rawLines": 226
+  },
+  {
+    "file": "44988162744.log.gz",
+    "rawBytes": 25725,
+    "rawSha256": "7a5aec33b25797152b3d9f4c7f4574f6db116ec6a86115ecb820a51157ecf70a",
+    "archiveSha256": "db19accbb4201dbe02e17df540f10e5735d67f53346ea928a039cc71d2394a83",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162744,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:09:47Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162744",
+      "workflowName": "Publish VS Code extension"
+    },
+    "rawLines": 229
+  },
+  {
+    "file": "44988162741.log.gz",
+    "rawBytes": 4580,
+    "rawSha256": "c2e2d2c5750b3f145eb544e241b9129efc6b309d2b06d0efe1ae6e358864bc2a",
+    "archiveSha256": "7d1aedd63b13dd62138dbc059a3763d77f4c5c7d5c77f17b069150f636fb0028",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162741,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:08Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162741",
+      "workflowName": "Task Ladder"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162737.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "ad40bb975b7e3bd5f0a59c73d395e560a19720fcb61c73b30e2642686f350e1d",
+    "archiveSha256": "592d65a7e2e2c035bcce1d5c61fa096681dd3a7196241408ba180b7d1211654b",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162737,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:09Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162737",
+      "workflowName": "External Benchmarks"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162542.log.gz",
+    "rawBytes": 511815,
+    "rawSha256": "610ac02c97964e62752ef0d5b04a589717ba05dbb2eaa8a742d0959b6569cdb7",
+    "archiveSha256": "520a43605c809f26cb4c8d38b649a5967560516e35eddf5066ad2f4b4f35ceb2",
+    "run": {
+      "conclusion": "failure",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162542,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:10Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162542",
+      "workflowName": "Workflows"
+    },
+    "rawLines": 3291
+  },
+  {
+    "file": "44988162747.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "0abba2684bcfa74bafc35dcba9b0d15bcd00d2221e4b0d7dbcfdd97b7e67a5fb",
+    "archiveSha256": "8755844b603dd47328bb662e3fef6e4592d38290d40c67173020e7e657ac5633",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162747,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:10Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162747",
+      "workflowName": "Question necessity ratchet"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162849.log.gz",
+    "rawBytes": 9633,
+    "rawSha256": "bf52a550fd6a48f30d3807c067dfd01dbb173791ad50598b5b4adbea0a7ff702",
+    "archiveSha256": "34b8cabff875652cb23761ae42533880a9a7b73347a6897bf858ba59167b34b2",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162849,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:11Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162849",
+      "workflowName": "Coding Ladder"
+    },
+    "rawLines": 79
+  }
+]

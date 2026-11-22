@@ -1,0 +1,138 @@
+[
+  {
+    "file": "44988162727.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "c266d635d1148d3f8643f5a8ac515c1a9faab4427dc277eb7e36d25cdcbbf563",
+    "archiveSha256": "6cebe2cfeb1b1fcf6539367aaad62ffd5cd09b7a46267a44c9133a3973c456dd",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162727,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:11Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162727",
+      "workflowName": "Stock Rust Install"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162772.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "8673c0154e378778a00ea27cd16e37c54e469811da084c0d8453ca7827734d76",
+    "archiveSha256": "2da97d17851af559a28f49f165ce650fd556c3d80b6ae23847b9ce7824fd6a3b",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162772,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:15Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162772",
+      "workflowName": "Benchmark Corpus Gate"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162719.log.gz",
+    "rawBytes": 4583,
+    "rawSha256": "38ea4495b858e4352297515b45be7ef1ec39619202b10d147643c0c6ed0b374a",
+    "archiveSha256": "eff7931ab90de77ddf58dc57aa95c96f804fdd67a3fd7058b408c5de2e32c4bc",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162719,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:04Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162719",
+      "workflowName": "Regenerate native session projections"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162652.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "0c17a4098903492643e602867f42b310ee8dd1ad3fcd9cc1abb0104c9dc9615c",
+    "archiveSha256": "6d0e7b73a0f94a117868048dc4ce8283cbeb98756c0214daa4fe73135c6d3016",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162652,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:11Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162652",
+      "workflowName": "Verify full readable source content"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162783.log.gz",
+    "rawBytes": 4581,
+    "rawSha256": "ca66628964db233010139ccf3f1fc1899bc1fbc1069a70738a0d46af7a633873",
+    "archiveSha256": "3feb34424d25442f71a00f2665266d8e4555a0cd2fbaa10c4437d259be480d89",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162783,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:11Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162783",
+      "workflowName": "Summarization Ratchet"
+    },
+    "rawLines": 38
+  },
+  {
+    "file": "44988162632.log.gz",
+    "rawBytes": 107815,
+    "rawSha256": "5337b989d6aca707b055daf5f9380e81da556242b9a325c6ae5e5a3ec32f951f",
+    "archiveSha256": "213afb8e7e070351fe852d044c6df7a34039416cd9d7a37a0469f66e84098391",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162632,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:40Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162632",
+      "workflowName": "Observe read-only GitHub authorization profiles"
+    },
+    "rawLines": 694
+  },
+  {
+    "file": "44988162807.log.gz",
+    "rawBytes": 51986,
+    "rawSha256": "e8485233634d24be58f128825f6b1e8a630c332ebf426b5b03ce0043969bc428",
+    "archiveSha256": "e7c46885f5a8fac3ed3f55e9f363fc39b6bf15883f8a2f105d1eb6a288cef0b7",
+    "run": {
+      "conclusion": "success",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162807,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:10:44Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162807",
+      "workflowName": "Source scanner qualification and debt inventory"
+    },
+    "rawLines": 432
+  },
+  {
+    "file": "44988162770.log.gz",
+    "rawBytes": 5020089,
+    "rawSha256": "c578fe24677d15228a22e4601c44e2580b310f649e98f3b1e0f4738e2caa6d21",
+    "archiveSha256": "2a01e37473f99dae0f82ec1bf5f77975a7c6edf87726eeff99ce4d9dfd5ec224",
+    "run": {
+      "conclusion": "failure",
+      "createdAt": "2026-11-22T05:09:30Z",
+      "databaseId": 44988162770,
+      "headSha": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+      "status": "completed",
+      "updatedAt": "2026-11-22T05:16:46Z",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44988162770",
+      "workflowName": "Layered CI"
+    },
+    "rawLines": 27043
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "head": "c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d",
+  "run": 44988162955,
+  "rawLogSha256": "1d431b6a156ca75a52a281b808c3244371f44b9a0866de8a0c61cc304457a41c",
+  "cases": [
+    {
+      "name": "cargo_package_identity::unreadable_workspace_members_do_not_redirect_release_identity",
+      "line": 61339,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:16:10.0198281Z test cargo_package_identity::unreadable_workspace_members_do_not_redirect_release_identity ... ok"
+    },
+    {
+      "name": "check_file_size::tests::unavailable_walk_roots_remain_errors_in_the_completed_observation",
+      "line": 61367,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:16:10.0237216Z test check_file_size::tests::unavailable_walk_roots_remain_errors_in_the_completed_observation ... ok"
+    },
+    {
+      "name": "check_file_size::tests::unreadable_maintained_text_is_an_error_without_changing_its_bytes",
+      "line": 61368,
+      "text": "Native type and lint check / Rust compile inputs changed\tUNKNOWN STEP\t2026-11-22T05:16:10.0237731Z test check_file_size::tests::unreadable_maintained_text_is_an_error_without_changing_its_bytes ... ok"
+    }
+  ],
+  "newChangelogParserExecuted": false,
+  "independentAuthorshipCredit": 0
+}
