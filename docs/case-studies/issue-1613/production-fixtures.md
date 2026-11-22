@@ -418,3 +418,15 @@ both JavaScript shards with 2,665 passing tests, 39 skips, and zero failures.
 [Browser verification](evidence/verification/round30-browser-callable-green.log.gz) ·
 [Layered shard 1](evidence/verification/round29-layered-group-1-137233631235.log.gz) ·
 [Layered shard 2](evidence/verification/round29-layered-group-2-137233631938.log.gz)
+
+At `44bbe6d25`, the procedure census reported 22 returns inside the native
+drafting closure against a recorded count of 21. The additional return hands
+the callable's publisher gap to the controlled output hook and the recursive
+procedure as a draft. The census records that method and still requires zero
+exits around the procedure. The cold worker replay also requires the
+procedure's result event on the publisher-gap response. All eight census
+tests passed after the count was updated.
+[Layered workflow log](evidence/verification/round30-layered-45033350971.log.gz) ·
+[Shard 2 log, lines 2719–2734](evidence/verification/round30-layered-group-2-137241869012.log.gz) ·
+[Local census replay](evidence/verification/round31-procedure-census-green.log.gz) ·
+[Worker procedure trace replay](evidence/verification/round31-worker-procedure-trace-green.log.gz)
