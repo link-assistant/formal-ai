@@ -4,16 +4,18 @@
 // the conversation `learn` route stages from a recorded dialog.
 
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 
 import { benchmarkGatePolicies } from "../../../js/server/benchmark-gate-policy.mjs";
 import { learnFromConversation } from "../../../js/server/conversations.mjs";
 import { stableId } from "../../../js/server/ids.mjs";
-import { childValue, parseLino, readRepoFile } from "../../../js/server/lino.mjs";
+import { childrenNamed, childValue, parseLino, readRepoFile } from "../../../js/server/lino.mjs";
 import {
   BenchmarkGateReport,
   eventPayload,
@@ -115,6 +117,36 @@ test("promotion reads thresholds without packaging the benchmark cases", () => {
   assert.ok(demands.has("data/meta/benchmark-promotion-gates.lino"));
   for (const filename of fixtures) assert.ok(!demands.has(filename), filename);
   assert.ok(!demands.has("data/seed/demo-dialogs.lino"));
+});
+
+test("Formal AI reproduces the pre-extraction coding benchmark promotion contract", () => {
+  const evidence = new URL("../../../docs/case-studies/issue-1613/evidence/formal-development/promotion-oracle/", import.meta.url);
+  const expected = readFileSync(new URL("../fixtures/benchmark-promotion/coding-modification-contract.lino", import.meta.url));
+  const manifest = gunzipSync(readFileSync(new URL("coding-modification-suite.lino.gz", evidence)));
+  const prompt = readFileSync(new URL("request.txt", evidence), "utf8").trim();
+  const oracle = parseLino(expected.toString("utf8"));
+  assert.equal(oracle.name, "promotion_contract");
+  const [observation] = childrenNamed(oracle, "source_observation");
+  const [contract] = childrenNamed(oracle, "derived_formalization");
+  const [suite] = parseLino(manifest.toString("utf8")).children;
+  const policy = parseLino(readRepoFile("data/meta/benchmark-promotion-gates.lino"));
+  const coding = childrenNamed(policy, "gate").find((gate) => gate.id === childValue(suite, "id"));
+  assert.ok(coding);
+  for (const field of ["runner", "minimum_pass_count", "pass_rate_basis_points"]) {
+    assert.equal(childValue(coding, field), childValue(contract, field), field);
+  }
+
+  const workdir = mkdtempSync(path.join(os.tmpdir(), "formal-ai-promotion-contract-"));
+  const manifestPath = path.join(workdir, childValue(observation, "path"));
+  const drive = fileURLToPath(new URL("../../../experiments/js_dogfood/drive.mjs", import.meta.url));
+  try {
+    mkdirSync(path.dirname(manifestPath), { recursive: true });
+    writeFileSync(manifestPath, manifest);
+    execFileSync(process.execPath, [drive, "--dir", workdir, "--steps", "5", prompt], { stdio: "pipe" });
+    assert.deepEqual(readFileSync(path.join(workdir, "promotion-contract.lino")), expected);
+  } finally {
+    rmSync(workdir, { recursive: true, force: true });
+  }
 });
 
 test("a reported conversation stages one proposal against an absent gate", () => {
