@@ -100,7 +100,7 @@ pub fn class_evidence_holds(
             .split_once(':')
             .is_some_and(|(_, rest)| !rest.trim().is_empty()),
         "summary_topic" => crate::seed::summary_topic_seeds()
-            .pick_topic(normalized)
+            .subject(normalized)
             .is_some(),
         "brainstorm_topic" => crate::seed::brainstorm_seeds()
             .topic(normalized)

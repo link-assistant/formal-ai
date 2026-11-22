@@ -95,11 +95,9 @@ function claimEvidenceRecallQueryTerm(normalized) {
   }));
 }
 
-/** Whether a seeded summary topic's detection keyword occurs (Rust `SummaryTopicSeeds::pick_topic`). */
+/** Whether the request names a subject (Rust `SummaryTopicSeeds::subject`). */
 function claimEvidenceSummaryTopic(normalized) {
-  const text = seedRawText(SEED_RAW, "summary-topics.lino") || "";
-  return text.split("\n").filter((line) => /^\s+detection_keywords /u.test(line))
-    .some((line) => [...line.matchAll(/"([^"]+)"/gu)].some((match) => String(normalized || "").includes(match[1])));
+  return Boolean(summarySubject(summaryTopicSeeds(), String(normalized || "")));
 }
 
 /** A document the originality check reads: an attachment, a text sample or a supplied payload (Rust `names_document_operand`). */
