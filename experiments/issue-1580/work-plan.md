@@ -522,3 +522,6 @@ Fresh template identities at 2026-11-22 15:31:48 UTC identify five new deltas (R
 
 
 The published b838 native script job passes all 25 compiled CLI methods; three newer base-isolation methods remain pending. Its native workflow contract target has 249 passes and two obsolete source-location/order assertions, now repaired locally with six gates, eight stream controls and 21 image behavior cases passing. An inherited-NODE_OPTIONS source-view refusal is retained; the clean-environment focused replay passes. Both native contract edits await hosted execution. Original cache backend logs now establish HTTP 429 rate limiting with retry-after delays, rather than an unknown backend cause; later storage/reuse remains unqualified. See `native-release-source-contract-repair.md` and its lossless evidence manifest.
+
+
+Native artifact rerun draft is locally verified: unique run/attempt/SHA uploads, immutable producer artifact ID, original producer attempt and strict pre-download selection preserve source/compiler/physical-input/executable receipts. Both complete neighboring JavaScript files and six touched gates pass; original mismatched-attempt failures are retained. Actual hosted full-rerun and failed-job-rerun paths remain unqualified. See `native-artifact-reruns.md`; all original issue criteria remain active.

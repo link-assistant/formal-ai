@@ -245,6 +245,9 @@ jobs:
   # Partition the live listing while preserving the existing 20-minute clock.
   contract-build:
     name: Compile focused native contracts once
+    outputs:
+      artifact-id: ${{ steps.contract-upload.outputs.artifact-id }}
+      build-attempt: ${{ github.run_attempt }}
     if: ${{ inputs.compile-inputs-changed }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -330,8 +333,9 @@ jobs:
           TEST_WARN_RATIO_PERCENT: '75'
         run: bash scripts/run-with-budget-warning.sh 900 "Compile native contracts" node scripts/native-contract-artifact.mjs build "${{ runner.temp }}/native-contracts"
       - uses: actions/upload-artifact@v7
+        id: contract-upload
         with:
-          name: native-contracts-${{ github.sha }}
+          name: native-contracts-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
           path: ${{ runner.temp }}/native-contracts
           if-no-files-found: error
           compression-level: 0
@@ -353,6 +357,8 @@ jobs:
     env:
       CARGO_BUILD_JOBS: '2'
       FORMAL_AI_OFFLINE: '1'
+      FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: ${{ needs.contract-build.outputs.artifact-id }}
+      FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: ${{ needs.contract-build.outputs.build-attempt }}
     steps:
       # A promisor-blob transfer can fail after the initial fetch succeeds.
       # Keep the original four-minute checkout allowance across both attempts.
@@ -425,9 +431,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: actions/setup-node@v7
         with: {node-version: 22}
+      - name: Require the producer upload receipt
+        run: node scripts/native-contract-artifact.mjs selection
       - uses: ./.github/actions/download-artifact
         with:
-          name: native-contracts-${{ github.sha }}
+          artifact-ids: ${{ needs.contract-build.outputs.artifact-id }}
           path: ${{ runner.temp }}/native-contracts
       - name: Verify the complete selected contract family
         env:

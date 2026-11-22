@@ -99,6 +99,15 @@ export function verifyContractArtifact(directory,identity) {
   return receipt;
 }
 
+/** Successful producer outputs survive failed-job reruns; their original attempt remains exact. */
+export function contractArtifactProducer(environment=process.env) {
+  for(const key of ['GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID','FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT'])
+    assert.match(environment[key]??'',/^[1-9]\d*$/u,'missing or invalid native producer selection: '+key);
+  const attempt=environment.FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT;
+  assert(BigInt(attempt)<=BigInt(environment.GITHUB_RUN_ATTEMPT),'native producer attempt is in the future');
+  return {artifactId:environment.FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID,attempt};
+}
+
 /** Accept only the existing focused runner's Cargo invocations. */
 export function contractInvocation(args) {
   assert.deepEqual(args.slice(0,6),['test','--manifest-path','rust/Cargo.toml','--locked','--no-fail-fast','--test']);
@@ -130,19 +139,28 @@ export function runContractArtifact(directory,identity,cargoArguments,cwd) {
 }
 
 if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
-  const [mode,directory,...args]=process.argv.slice(2),cwd=process.cwd();assert(directory);
-  const identity=contractIdentity(cwd);
-  if(mode==='build') {
-    assert.equal(process.env.GITHUB_ACTIONS,'true','native contract compilation is hosted-only');
-    assert.match(identity.run,/^\d+$/u,'actual workflow run required');
-    assert.match(identity.attempt,/^\d+$/u,'actual workflow attempt required');
-    assert.equal(args.length,0);mkdirSync(directory,{recursive:true});
-    const built=spawnSync('cargo',['test','--manifest-path','rust/Cargo.toml','--locked','--no-run','--message-format=json',...CONTRACT_TARGETS.flatMap(target=>['--test',target])],{cwd,encoding:'utf8',maxBuffer:32*1024*1024,stdio:['ignore','pipe','inherit']});
-    writeFileSync(join(directory,'cargo-messages.jsonl'),built.stdout??'');
-    if(built.error)throw built.error;
-    if(built.status!==0){process.stderr.write(built.stdout??'');process.exit(built.status??1);}
-    sealContractArtifact(directory,identity,selectContractExecutables(built.stdout,cwd));
-    assert.deepEqual(contractIdentity(cwd),identity,'inputs changed during compilation');
-  } else if(mode==='cargo')process.exitCode=runContractArtifact(directory,identity,args,cwd);
-  else assert.fail('unsupported mode: '+mode);
+  const [mode,directory,...args]=process.argv.slice(2),cwd=process.cwd();
+  if(mode==='selection') {
+    assert.equal(directory,undefined);assert.equal(args.length,0);
+    console.log(JSON.stringify(contractArtifactProducer()));
+  } else {
+    assert(directory);
+    const selected=mode==='cargo'&&['FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID','FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT']
+      .some(key=>process.env[key]!==undefined)?contractArtifactProducer():null;
+    const environment=selected?{...process.env,GITHUB_RUN_ATTEMPT:selected.attempt}:process.env;
+    const identity=contractIdentity(cwd,environment);
+    if(mode==='build') {
+      assert.equal(process.env.GITHUB_ACTIONS,'true','native contract compilation is hosted-only');
+      assert.match(identity.run,/^\d+$/u,'actual workflow run required');
+      assert.match(identity.attempt,/^\d+$/u,'actual workflow attempt required');
+      assert.equal(args.length,0);mkdirSync(directory,{recursive:true});
+      const built=spawnSync('cargo',['test','--manifest-path','rust/Cargo.toml','--locked','--no-run','--message-format=json',...CONTRACT_TARGETS.flatMap(target=>['--test',target])],{cwd,encoding:'utf8',maxBuffer:32*1024*1024,stdio:['ignore','pipe','inherit']});
+      writeFileSync(join(directory,'cargo-messages.jsonl'),built.stdout??'');
+      if(built.error)throw built.error;
+      if(built.status!==0){process.stderr.write(built.stdout??'');process.exit(built.status??1);}
+      sealContractArtifact(directory,identity,selectContractExecutables(built.stdout,cwd));
+      assert.deepEqual(contractIdentity(cwd),identity,'inputs changed during compilation');
+    } else if(mode==='cargo')process.exitCode=runContractArtifact(directory,identity,args,cwd);
+    else assert.fail('unsupported mode: '+mode);
+  }
 }

@@ -94,7 +94,9 @@ test('native workflow gives every expensive family its own bounded independent j
   assert.equal(matrix['runs-on'], 'ubuntu-24.04');
   assert.equal(matrix['timeout-minutes'], 20);
   assert.deepEqual(matrix.permissions, {contents: 'read'});
-  assert.deepEqual(matrix.env, {CARGO_BUILD_JOBS: '2', FORMAL_AI_OFFLINE: '1'});
+  assert.deepEqual(matrix.env, {CARGO_BUILD_JOBS: '2', FORMAL_AI_OFFLINE: '1',
+    FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID: '${{ needs.contract-build.outputs.artifact-id }}',
+    FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT: '${{ needs.contract-build.outputs.build-attempt }}'});
   assert.equal(matrix['continue-on-error'], undefined);
   const execute = matrix.steps.at(-1);
   assert.equal(execute.run, 'bash scripts/run-with-budget-warning.sh 900 "Native contracts ${{ matrix.group }}" bash scripts/ci-native-regressions.sh "${{ matrix.group }}"');
@@ -112,13 +114,24 @@ test('native workflow gives every expensive family its own bounded independent j
   const upload = producer.steps.find(step => step.uses === 'actions/upload-artifact@v7');
   const download = matrix.steps.find(step => step.uses === './.github/actions/download-artifact');
   assert(upload && download);
-  assert.equal(upload.with.name, 'native-contracts-${{ github.sha }}');
-  assert.equal(download.with.name, upload.with.name);
+  assert.equal(upload.with.name, 'native-contracts-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}');
+  const artifactName = attempt => upload.with.name.replace('${{ github.run_id }}', '123')
+    .replace('${{ github.run_attempt }}', String(attempt)).replace('${{ github.sha }}', 'a'.repeat(40));
+  assert.notEqual(artifactName(1), artifactName(2), 'full reruns must not collide on immutable artifact names');
+  assert.equal(upload.id, 'contract-upload');
+  assert.equal(download.with.name, undefined, 'consumers select the immutable producer upload ID');
+  assert.equal(download.with['artifact-ids'], '${{ needs.contract-build.outputs.artifact-id }}');
+  const selection = matrix.steps.find(step => step.name === 'Require the producer upload receipt');
+  assert.equal(selection.run, 'node scripts/native-contract-artifact.mjs selection');
+  assert(matrix.steps.indexOf(selection) < matrix.steps.indexOf(download), 'missing outputs must fail before download can select everything');
   assert.equal(download.with.path, upload.with.path);
   assert.equal(download.with['run-id'], undefined, 'download is restricted to this workflow run');
   assert.equal(upload.with['if-no-files-found'], 'error');
   assert.equal(upload.with['retention-days'], 1);
-  assert.equal(producer.outputs, undefined, 'transport grants no release or semantic authority');
+  assert.deepEqual(producer.outputs, {
+    'artifact-id': '${{ steps.contract-upload.outputs.artifact-id }}',
+    'build-attempt': '${{ github.run_attempt }}'
+  }, 'producer outputs identify transport; executable receipts retain source and byte authority');
   assert.equal(producer.steps.find(step => step.name === 'Compile and bind the three focused test targets').run,
     'bash scripts/run-with-budget-warning.sh 900 "Compile native contracts" node scripts/native-contract-artifact.mjs build "${{ runner.temp }}/native-contracts"');
   for (const path of ['scripts/native-contract-artifact.mjs', 'scripts/native-release-source.mjs', 'scripts/native-release-trust.mjs'])

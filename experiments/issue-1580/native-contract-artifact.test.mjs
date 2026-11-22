@@ -84,7 +84,7 @@ test('all ten real runner groups reuse bound finite executables and invoke no Ca
   writeFileSync(join(bin,'rustc'),'#!/usr/bin/env node\nconsole.log("rustc finite-transport-fixture\\nhost: fixture-host");\n',{mode:0o755});
   writeFileSync(join(bin,'cargo'),'#!/usr/bin/env node\nconsole.error("finite transport probe: Cargo must not run");process.exit(99);\n',{mode:0o755});
   const calls=join(root,'calls.jsonl'),environment={...process.env,PATH:bin+':'+process.env.PATH,FORMAL_AI_NATIVE_CONTRACT_ARTIFACT:directory,
-    NATIVE_CONTRACT_CASES:JSON.stringify(cases),NATIVE_CONTRACT_CALLS:calls};delete environment.CARGO_TARGET_DIR;
+    GITHUB_RUN_ID:'123',GITHUB_RUN_ATTEMPT:'1',NATIVE_CONTRACT_CASES:JSON.stringify(cases),NATIVE_CONTRACT_CALLS:calls};delete environment.CARGO_TARGET_DIR;
   const executables={};
   const program=`#!/usr/bin/env node
 import {appendFileSync} from 'node:fs';import {basename} from 'node:path';
@@ -116,10 +116,24 @@ if(args.includes('--list')){
   }
   const expected=Object.entries(cases).flatMap(([target,names])=>names.map(name=>target+'\t'+name));
   assert.deepEqual(actual.toSorted(),expected.toSorted());assert.equal(new Set(actual).size,actual.length);
+  const beforeRerun=readFileSync(calls,'utf8');
+  const rerun={...environment,GITHUB_RUN_ATTEMPT:'2'};
+  const unbound=spawnSync('bash',[runner,'coding-1'],{cwd:root,env:rerun,encoding:'utf8',timeout:5000});
+  assert.notEqual(unbound.status,0,'a new consumer attempt cannot silently relabel old binaries');
+  assert.equal(readFileSync(calls,'utf8'),beforeRerun);
+  const selected={...rerun,FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID:'456',FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT:'1'};
+  const resumed=spawnSync('bash',[runner,'coding-1'],{cwd:root,env:selected,encoding:'utf8',timeout:5000});
+  assert.equal(resumed.status,0,'the unchanged successful producer remains valid on a failed-job rerun: '+resumed.stderr);
+  const beforeRejections=readFileSync(calls,'utf8');
+  for(const values of [{GITHUB_RUN_ID:'124'},{FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT:'2'},
+    {FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT:'3'},{FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID:''}]) {
+    const result=spawnSync('bash',[runner,'coding-1'],{cwd:root,env:{...selected,...values},encoding:'utf8',timeout:5000});
+    assert.notEqual(result.status,0);assert.equal(readFileSync(calls,'utf8'),beforeRejections);
+  }
   writeFileSync(join(directory,'coding_contracts'),'tampered');
   const rejected=spawnSync('bash',[runner,'coding-1'],{cwd:root,env:environment,encoding:'utf8',timeout:5000});
   assert.notEqual(rejected.status,0);assert.match(rejected.stderr,/artifact bytes changed/u);
-  assert.equal(readFileSync(calls,'utf8').trimEnd().split('\n').length,rows.length,'invalid receipt must not list or execute tests');
+  assert.equal(readFileSync(calls,'utf8'),beforeRejections,'invalid receipt must not list or execute tests');
 });
 
 test('the interface executable can launch its receipt-bound standalone wrapper', {timeout:5000}, t=>{
@@ -133,4 +147,16 @@ if(result.error)throw result.error;process.exit(result.status??1);
   for(const name of ['formal-ai','with-formal-ai'])assert.deepEqual(readFileSync(join(root,'rust/target/debug',name)),readFileSync(join(directory,name)));
   writeFileSync(join(directory,'with-formal-ai'),'tampered standalone wrapper');
   assert.throws(()=>runContractArtifact(directory,identity,invocation('interface_contracts',['--test-threads=1','--nocapture']),root),/artifact bytes changed: with-formal-ai/u);
+});
+
+test('producer selection refuses incomplete or future attempts before artifact download', {timeout:10000}, t=>{
+  const {root}=workspace(t),script=resolve('scripts/native-contract-artifact.mjs');
+  const base={...process.env,GITHUB_RUN_ID:'123',GITHUB_RUN_ATTEMPT:'2',
+    FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID:'456',FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT:'1'};
+  const invoke=values=>spawnSync(process.execPath,[script,'selection'],{cwd:root,env:{...base,...values},encoding:'utf8',timeout:2000,maxBuffer:16384});
+  const valid=invoke({});assert.equal(valid.status,0,valid.stderr);
+  assert.deepEqual(JSON.parse(valid.stdout),{artifactId:'456',attempt:'1'});
+  for(const field of ['GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','FORMAL_AI_NATIVE_CONTRACT_ARTIFACT_ID','FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT'])
+    for(const value of ['', '0', '01', '-1', '1\n', 'unobserved'])assert.notEqual(invoke({[field]:value}).status,0,field+'='+JSON.stringify(value));
+  assert.notEqual(invoke({FORMAL_AI_NATIVE_CONTRACT_PRODUCER_ATTEMPT:'3'}).status,0);
 });
