@@ -27,9 +27,26 @@ test('partitioning preserves every original seed record and every bundle, lexico
   const before=gunzipSync(readFileSync(new URL('../../../experiments/issue-1580/fixtures/seed-and-workflow-headroom/'+first+'.lino.before.gz',import.meta.url))).toString();
   const parent=read('data/seed/'+first+'.lino');
   const bodies=children.map(name=>read('data/seed/'+name+'.lino')).map(child=>child.slice(child.indexOf('\n')+1));
-  if(kind==='meaning')assert.deepEqual(parseLexiconText(parent+bodies.join('')),parseLexiconText(before),'concise lexemes preserve every original meaning field');
-  // Restore the original separator between files; record bytes stay exact.
-  else assert.equal(parent+bodies.join('\n'),before,'response source bytes are preserved');
+  if(kind==='meaning'){
+   const records=parseLexiconText(parent+bodies.join(''));
+   const bySlug=new Map(records.map(record=>[record.slug,record]));
+   assert.equal(bySlug.size,records.length,'partitioned meanings keep unique identities');
+   for(const record of parseLexiconText(before))assert.deepEqual(bySlug.get(record.slug),record,
+    'every original meaning field survives later additions: '+record.slug);
+  }
+  else {
+   // Main commit 908f48238203a16a403d82508eac3386edef3097 retired
+   // precisely these five hard-coded summaries in favor of captured sources.
+   // Keep the original partition fixture, and compare every other byte.
+   const retiredLanguages=['en','ru','hi','zh','es'];
+   const retired=[...before.matchAll(/^  response response_http_fetch_curated_project_(\w+)\n    intent http_fetch_curated_project\n    language (\w+)\n    text "[^\n]*"\n/gmu)];
+   assert.deepEqual(retired.map(match=>[match[1],match[2]]),retiredLanguages.map(language=>[language,language]));
+   let retained=before;
+   for(const [record] of retired)retained=retained.replace(record,'');
+   const current=parent+bodies.join('\n');
+   assert.ok(!current.includes('response_http_fetch_curated_project_'),'retired source-free summaries stay absent');
+   assert.equal(current,retained,'all retained response source bytes are preserved');
+  }
   for(const name of [first,...children]){
    const row=registry.seeds.find(seed=>seed.name===name);assert(row,name+' is registered');
    assert(row.bundle&&row.web&&row.lexicon.has(kind),name+' retains all three original consumers');

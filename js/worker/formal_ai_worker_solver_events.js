@@ -131,13 +131,20 @@ function linkCalculatorTrace(expression) {
 }
 
 // `try_arithmetic`: the calculator trace for one evaluated expression.
-function solverCalculationEvents(expression, content, backend) {
+function solverCalculationEvents(expression, content, backend, quantity = false) {
   const events = [solverEvent("calculation:request", expression)];
   const trace = /^js$|^wasm$/.test(String(backend)) ? linkCalculatorTrace(expression) : null;
   if (trace) {
-    events.push(solverEvent("calculation:engine", SOLVER_ENGINE_LINK_CALCULATOR));
-    events.push(solverEvent("calculation:lino", trace.lino));
-    events.push(solverEvent("calculation:steps", trace.steps));
+    // A routed arithmetic method can reach either emitter; record the branch.
+    if (quantity) {
+      events.push(solverEvent("calculation:engine", SOLVER_ENGINE_LINK_CALCULATOR, "calculation:quantity:engine"));
+      events.push(solverEvent("calculation:lino", trace.lino, "calculation:quantity:lino"));
+      events.push(solverEvent("calculation:steps", trace.steps, "calculation:quantity:steps"));
+    } else {
+      events.push(solverEvent("calculation:engine", SOLVER_ENGINE_LINK_CALCULATOR, "calculation:arithmetic:engine"));
+      events.push(solverEvent("calculation:lino", trace.lino, "calculation:arithmetic:lino"));
+      events.push(solverEvent("calculation:steps", trace.steps, "calculation:arithmetic:steps"));
+    }
   }
   events.push(solverEvent("calculation", content));
   return events;

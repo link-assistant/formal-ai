@@ -619,3 +619,21 @@ complete. No local Rust compilation or execution occurs. Review and complete
 local logs are round-trip archived in
 `evidence/checks/release-process-repair/manifest.json`. Supplied edits retain zero
 independent authorship credit. Wider issue acceptance remains unfinished.
+
+
+## Current published-head CI regression batch
+
+- [x] Collect all 64 terminal automatic/manual workflows on published 3479d01b and retain every failed log with original line references.
+- [x] Reproduce the local failure set and repair source paths, operand binding, inline JavaScript parsing, explanation subjects and event origins with positive and negative controls.
+- [x] Preserve all publisher questions through real captured transport; preserve all 167 historical AST sources and the original native histograms.
+- [x] Regenerate canonical arithmetic and TypeScript projections; review complete governed witness deltas without changing supported cases or hiding unsupported declarations.
+- [x] Pass focused repaired checks and measure each budget delta; preserve existing exclusions, counts and documented native behavior.
+- [x] Report the verified Rust-template release pipe defect as upstream issue #265.
+- [ ] Compile and import the real worker artifact through the explicit hosted producer; pass the final complete local gate inventory.
+- [ ] Verify all combined-head hosted checks, including the new native release CLI and publisher controls.
+- [ ] Complete every wider original acceptance criterion and aggregate PR review; keep draft/unmerged until verified.
+
+Evidence and limits: [current CI regressions](../../docs/case-studies/issue-1580/current-ci-regressions.md).
+The bootstrap duplicate-declaration removal and all supplied work earn zero
+independent credit. The native goal remains usage-limited; this checklist carries
+the unfinished objective. No local Rust compilation or execution occurred.

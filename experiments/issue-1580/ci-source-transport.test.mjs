@@ -22,13 +22,15 @@ test('the actual layered sparse checkout retains consumed source fixtures', { ti
   });
   const captures = JSON.parse(read('experiments/issue-1580/fixtures/immutable-source-captures.json'));
   files.push(...captures.map(row => row.archivePath));
-  assert.equal(files.length, 10);
+  files.push('docs/case-studies/issue-1613/evidence/formal-development/browser-cache-exclusion/generator-input.py.gz',
+    'docs/case-studies/issue-1613/evidence/formal-development/promotion-oracle/coding-modification-suite.lino.gz');
+  assert.equal(files.length, 12);
   const directory = mkdtempSync(join(tmpdir(), 'issue-1580-sparse-fixtures-'));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const git = (...args) => execFileSync('git', args, { cwd: directory, stdio: 'pipe', timeout: 10_000,
     env: { ...process.env, GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null' } });
   git('init', '-q');git('config', 'user.name', 'Fixture');git('config', 'user.email', 'fixture@example.invalid');
-  const archive = 'experiments/issue-1580/evidence/checks/unconsumed-history.log.gz';
+  const archive = 'docs/case-studies/issue-1613/evidence/unconsumed-history.log.gz';
   for (const path of [...files, archive]) {
     mkdirSync(dirname(join(directory, path)), { recursive: true });
     writeFileSync(join(directory, path), 'bounded sparse-checkout operand');

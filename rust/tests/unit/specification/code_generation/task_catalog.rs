@@ -177,3 +177,41 @@ fn new_coding_tasks_are_each_supported_in_a_popular_language() {
         );
     }
 }
+
+/// Artifact counts are not the factorial operand; the native catalog uses the
+/// same canonical program-kind role as the browser operand regression.
+#[test]
+fn factorial_operand_excludes_the_number_of_requested_functions() {
+    for (prompt, expected) in [
+        (
+            "Python में एक फ़ंक्शन लिखो जो n का फ़ैक्टोरियल लौटाए",
+            "इस अनुरोध के लिए कोई सत्यापित स्रोत-कथन प्राप्त नहीं हुआ, इसलिए कुछ भी नहीं लिखा गया।",
+        ),
+        (
+            "Write one function in Python that returns the factorial of n",
+            "No verified source statement was captured for this request, so nothing was composed.",
+        ),
+    ] {
+        let response = answer(prompt);
+        assert_eq!(response.answer, expected, "{prompt}");
+        assert!(
+            !response.answer.contains("```python"),
+            "{prompt}: {}",
+            response.answer
+        );
+    }
+    for (prompt, end) in [
+        ("Python में एक फ़ंक्शन लिखो जो 5 का फ़ैक्टोरियल लौटाए", 6),
+        ("Write one function in Python for factorial of five", 6),
+        ("Write a Python function for factorial of one", 2),
+        ("Write 2 functions in Python to calculate factorial of 5", 6),
+    ] {
+        let response = answer(prompt);
+        assert_write_program_parameters(&response, "python", "factorial");
+        assert!(
+            response.answer.contains(&format!("range(1, {end})")),
+            "{prompt}: {}",
+            response.answer
+        );
+    }
+}

@@ -96,13 +96,13 @@ pub(super) fn plan_chat_step_routes(
         crate::coding::program_contract::answer(&task, &mut crate::event_log::EventLog::default())
     {
         if let Some(recipe) = answer.execution_recipe.as_mut()
-            && super::ci_workflow::requested_in(&task)
+            && super::super::ci_workflow::requested_in(&task)
         {
-            super::ci_workflow::attach(recipe, &task);
+            super::super::ci_workflow::attach(recipe, &task);
         }
-        if let Some(plan) =
-            super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
-        {
+        if let Some(plan) = super::super::command_reroute::plan_symbolic_command_reroute(
+            messages, tool_names, &answer,
+        ) {
             return Some(plan);
         }
     }

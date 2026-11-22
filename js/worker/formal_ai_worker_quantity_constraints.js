@@ -163,7 +163,7 @@ function tryQuantityConstraint(prompt) {
         solverEvent("quantity_constraint:verdict", String(holds)),
         solverEvent("quantity_constraint:expression", expression),
         solverEvent("quantity_constraint:difference", formatArithmeticResult(difference)),
-        ...solverCalculationEvents(expression, formatArithmeticResult(total), "js")
+        ...solverCalculationEvents(expression, formatArithmeticResult(total), "js", true)
       ]};
   } catch (_error) { return unresolved("arithmetic-unresolved"); }
 }

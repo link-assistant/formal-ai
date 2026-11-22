@@ -13,6 +13,11 @@ use std::{
 /// Return true in the parent after validating the isolated replay; the child
 /// returns false so the original assertions execute unchanged.
 pub fn in_child(test: &str) -> bool {
+    in_child_with_cache(test, |_| {})
+}
+
+/// Seed an exclusive cache in the parent before replaying an offline test.
+pub fn in_child_with_cache(test: &str, seed: impl FnOnce(&std::path::Path)) -> bool {
     const MARKER: &str = "FORMAL_AI_ISOLATED_OFFLINE_REPLAY";
     if std::env::var(MARKER).as_deref() == Ok(test) {
         return false;
@@ -26,6 +31,7 @@ pub fn in_child(test: &str) -> bool {
         std::process::id()
     ));
     fs::create_dir(&cache).expect("create an exclusive empty source cache");
+    seed(&cache);
     let result = Command::new(std::env::current_exe().unwrap())
         .args(["--exact", test, "--nocapture"])
         .env(MARKER, test)

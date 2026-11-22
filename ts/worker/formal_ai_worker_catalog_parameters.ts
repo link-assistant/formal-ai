@@ -27,6 +27,9 @@ function catalogIntegers(text, language) {
     const before = text.slice(0, token.index).trimEnd();
     const afterLanguage = aliases.some((alias) => before.endsWith(alias) && before.length - alias.length <= previousEnd);
     previousEnd = token.index + word.length;
+    // A requested artifact's count is separate from the algorithm's operand.
+    const next = text.slice(previousEnd).trimStart().split(/\s+/u, 1)[0];
+    if (lexiconMentionsRole(ROLE_PROGRAM_KIND, normalizePrompt(next))) continue;
     if (/^[-+]?[0-9]/u.test(word)) {
       if (afterLanguage && /\s/u.test(text[token.index - 1] || "")) continue;
       const value = Number(word.replace(/(?:st|nd|rd|th)$/u, ""));

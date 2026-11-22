@@ -295,6 +295,11 @@ for (const [owner, child, names] of [
   ],
   [
     "rust/tests/unit/issue_918_handler_rules_batch",
+    "document_answers",
+    ["the_document_plan_renders_the_seeded_plan_in_every_prompt_language", "a_software_project_follow_up_renders_the_seeded_sentences"]
+  ],
+  [
+    "rust/tests/unit/issue_918_handler_rules_batch",
     "algorithm_answers",
     [
       "the_algorithm_rule_set_answers_unchanged_in_every_prompt_language"

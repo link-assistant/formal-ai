@@ -368,6 +368,8 @@ jobs:
             /docs/case-studies/issue-896/self-hosting-authorship/formal-ai.log
             /docs/case-studies/issue-932/raw-data/verify-*.log
             /docs/case-studies/issue-982/self-hosting/contract/*.gz
+            /docs/case-studies/issue-1613/evidence/formal-development/browser-cache-exclusion/generator-input.py.gz
+            /docs/case-studies/issue-1613/evidence/formal-development/promotion-oracle/coding-modification-suite.lino.gz
             /docs/case-studies/issue-989/self-hosting-authorship/decomposition-session/agent-cli.log
             /docs/case-studies/issue-989/self-hosting-authorship/decomposition-session/formal-ai.log
             /experiments/issue-1580/evidence/ci/main-826289fc/cli/opencode-interactive-proxy.jsonl.gz

@@ -35,9 +35,12 @@ class CalculationCluster {
     this.expression = null;
     this.steps = null;
     this.result = null;
+    this.origins = new Map();
   }
 
-  absorb(kind, payload) {
+  absorb(kind, payload, origin) {
+    if (typeof origin === 'string') this.origins.set(kind, origin);
+    else this.origins.delete(kind);
     const value = String(payload).trim();
     if (kind === 'calculation') this.result = value;
     else if (kind === 'calculation:request') this.request = value;
@@ -51,10 +54,17 @@ class CalculationCluster {
   }
 
   drainInto(plan) {
+    const start = plan.length;
+    const parentKind = this.result !== null ? 'calculation' : 'calculation:request';
     plan.push(planned('compute', this.result ?? this.request ?? '', 'high', 'calculation', ROLE_PARENT));
     if (this.engine !== null) plan.push(planned('compute_engine', this.engine, 'detailed', 'calculation:engine', ROLE_CHILD));
     if (this.expression !== null) plan.push(planned('compute_expression', this.expression, 'detailed', 'calculation:lino', ROLE_CHILD));
     if (this.steps !== null) plan.push(planned('compute_steps', this.steps, 'detailed', 'calculation:steps', ROLE_CHILD));
+    for (let index = start; index < plan.length; index += 1) {
+      const kind = index === start ? parentKind : plan[index].source;
+      const origin = this.origins.get(kind);
+      if (origin !== undefined) plan[index].source_origin = origin;
+    }
     this.reset();
   }
 }
@@ -118,7 +128,7 @@ export function thinkingStepsFromEvents(events, finalAnswer = '') {
   for (const event of events) {
     const kind = String(event.kind);
     if (kind === 'calculation' || kind.startsWith('calculation:')) {
-      calculation.absorb(kind, event.payload ?? '');
+      calculation.absorb(kind, event.payload ?? '', event.source_origin);
       continue;
     }
     if (calculation.hasData()) calculation.drainInto(plan);

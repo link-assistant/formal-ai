@@ -54,6 +54,10 @@ for (const vector of vectors.cases) {
     if (vector.expected.kind === 'comparison') {
       const expectedIntent = vector.expected.holds ? 'quantity_constraint_within' : 'quantity_constraint_exceeds';
       assert.equal(result.intent, expectedIntent);
+      for (const kind of ['engine', 'lino', 'steps']) {
+        const event = result.solverEvents.find(row => row.kind === `calculation:${kind}`);
+        assert.equal(event?.source_origin, `calculation:quantity:${kind}`);
+      }
       assert(result.evidence.includes('quantity_constraint:verdict:' + vector.expected.holds));
       assert.equal(result.content, vector.expected.content);
       const frame = frameFor(result);
@@ -83,6 +87,10 @@ test('ordinary arithmetic remains unchanged through whole QA', async () => {
   const result = await host.solve(vectors.arithmeticRegression.question);
   assert.equal(result.intent, 'calculation');
   assert.equal(result.content, vectors.arithmeticRegression.expectedContent);
+  for (const kind of ['engine', 'lino', 'steps']) {
+    const event = result.solverEvents.find(row => row.kind === `calculation:${kind}`);
+    assert.equal(event?.source_origin, `calculation:arithmetic:${kind}`);
+  }
   assert.equal(wasmAttempts, 0);
 });
 

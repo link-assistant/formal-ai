@@ -38,6 +38,18 @@ debug_stage_sources
     rust "rust/src/solver_handlers/compound_interest.rs" "answer_final_amount_conversion"
     rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
     js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:arithmetic:engine"
+    step compute_engine
+    rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:arithmetic:lino"
+    step compute_expression
+    rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:arithmetic:steps"
+    step compute_steps
+    rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
   event "calculation:engine"
     step compute_engine
     rust "rust/src/quantity_constraint.rs" "record_calculation"
@@ -49,6 +61,18 @@ debug_stage_sources
     step compute_expression
     rust "rust/src/quantity_constraint.rs" "record_calculation"
     rust "rust/src/solver_handlers/mod.rs" "try_arithmetic_with_online"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:quantity:engine"
+    step compute_engine
+    rust "rust/src/quantity_constraint.rs" "record_calculation"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:quantity:lino"
+    step compute_expression
+    rust "rust/src/quantity_constraint.rs" "record_calculation"
+    js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
+  event "calculation:quantity:steps"
+    step compute_steps
+    rust "rust/src/quantity_constraint.rs" "record_calculation"
     js "js/worker/formal_ai_worker_solver_events.js" "solverCalculationEvents"
   event "calculation:steps"
     step compute_steps

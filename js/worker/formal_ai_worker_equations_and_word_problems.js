@@ -1129,13 +1129,19 @@ function extractJavaScriptProgram(prompt) {
   if (!asksToRun) return null;
   const fenced = extractFencedBlock(prompt, ["javascript", "js"]);
   if (fenced !== null) return fenced;
+  // A colon introduces the whole program; its string literals are not wrappers.
+  const body = prompt.includes(": ") ? prompt.slice(prompt.indexOf(": ") + 2).trim() : "";
+  if (body) {
+    const delimiter = body[0];
+    if ((delimiter === '"' || delimiter === "`") && body.length > 1 && body.at(-1) === delimiter) {
+      return body.slice(1, -1);
+    }
+    return body;
+  }
   const backticks = prompt.match(/`([^`]+)`/);
   if (backticks) return backticks[1];
   const quoted = prompt.match(/"([^"]+)"/);
-  if (quoted) return quoted[1];
-  // The colon after the request introduces the program ("Run this JavaScript: console.log(1 + 2)").
-  const body = prompt.includes(": ") ? prompt.slice(prompt.indexOf(": ") + 2).trim() : "";
-  return body || null;
+  return quoted ? quoted[1] : null;
 }
 
 // Look up an intent route by id (e.g. "intent_greeting"). Returns `null`

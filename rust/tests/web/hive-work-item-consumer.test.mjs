@@ -147,7 +147,7 @@ test('the Codex fixture projects patch calls and observes real Git delivery with
     assert.equal(JSON.parse(step.content).success,true);
   }
   const final=run.steps.at(-1).plan;
-  assert.equal(final.result.disposition,'finding');
+  assert.equal(final.result.disposition,'finding',JSON.stringify({final,lastSteps:run.steps.slice(-4),outcome:run.outcome}));
   assert.doesNotMatch(final.answer,/command completed\. Output/u);
   assert.ok(final.answer.includes(run.outcome.head));
   assert.equal(run.outcome.head,run.outcome.pushedHead);

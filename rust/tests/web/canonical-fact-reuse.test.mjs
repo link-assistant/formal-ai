@@ -15,7 +15,7 @@ for(const reverse of [false,true])test('canonical helper identities and raw muta
  const differential=plain(evaluate(worker,`(()=>{
   const raw={...factFixtureRaw};
   const direct=()=>crateModule('crate/fact_derivation.mjs').deriveFactsFromTexts(
-   seedRawText(raw,FACT_CAPTURES_FILE),seedRawText(raw,FACT_REALIZATION_FILE),factRelationProperty);
+   seedRawText(raw,FACT_CAPTURES_FILE),seedRawText(raw,FACT_REALIZATION_FILE),(slug)=>factRelationBinding(slug).property||"");
   const baseline=derivedCaptureFacts(raw);
   const captures=Object.keys(raw).find(key=>seedFileBaseName(key)===FACT_CAPTURES_FILE);
   const realization=Object.keys(raw).find(key=>seedFileBaseName(key)===FACT_REALIZATION_FILE);

@@ -64,33 +64,33 @@ const SUMMARIES = [
   [
     `formalize this page: ${URL_UNDER_TEST}`,
     `Formalized \`${URL_UNDER_TEST}\`: 25 sentences became 67 statements. 3 sentences are fully formal; `
-      + "195 of 423 terms have no meaning yet; 61 of 62 facts survive the round trip back to text.",
+      + "195 of 423 terms have no meaning yet; 62 of 62 facts survive the round trip back to text.",
     "… and 27 more statements.",
   ],
   [
     `формализуй эту страницу: ${URL_UNDER_TEST}`,
     `Страница \`${URL_UNDER_TEST}\` формализована: из 25 предложений получено 67 утверждений. `
       + "Полностью формальны предложений: 3; терминов без значения: 195 из 423; "
-      + "фактов, переживших обратный перевод в текст: 61 из 62.",
+      + "фактов, переживших обратный перевод в текст: 62 из 62.",
     "… и ещё утверждений: 27.",
   ],
   [
     `इस पेज को औपचारिक बनाओ: ${URL_UNDER_TEST}`,
     `\`${URL_UNDER_TEST}\` को औपचारिक बनाया गया: 25 वाक्यों से 67 कथन बने। 3 वाक्य पूरी तरह औपचारिक हैं; `
-      + "423 में से 195 पदों का अभी कोई अर्थ नहीं है; 62 में से 61 तथ्य पाठ में वापस बदलने पर बचे रहते हैं।",
+      + "423 में से 195 पदों का अभी कोई अर्थ नहीं है; 62 में से 62 तथ्य पाठ में वापस बदलने पर बचे रहते हैं।",
     "… और 27 कथन।",
   ],
   [
     `形式化这个网页 ${URL_UNDER_TEST}`,
     `已形式化 \`${URL_UNDER_TEST}\`：25 个句子变为 67 条陈述。3 个句子完全形式化；423 个术语中有 195 个尚无含义；`
-      + "62 个事实中有 61 个在转回文本后保留。",
+      + "62 个事实中有 62 个在转回文本后保留。",
     "……另有 27 条陈述。",
   ],
   [
     `formaliza esta página: ${URL_UNDER_TEST}`,
     `Página \`${URL_UNDER_TEST}\` formalizada: 25 oraciones se convirtieron en 67 enunciados. `
       + "Oraciones totalmente formales: 3; términos aún sin significado: 195 de 423; "
-      + "hechos que sobreviven a la vuelta al texto: 61 de 62.",
+      + "hechos que sobreviven a la vuelta al texto: 62 de 62.",
     "… y 27 enunciados más.",
   ],
 ];
@@ -107,6 +107,31 @@ test("formalize <url> answers the statements of the fetched page in every langua
     assert.equal(lines.at(-1), more, prompt);
     assert.ok(answer.evidence.includes(`page_formalization:request:${URL_UNDER_TEST}`), prompt);
     assert.ok(answer.evidence.includes("response:page_formalization"), prompt);
+  }
+});
+
+test("each of the 62 factual statements retains its actual known terms", async () => {
+  await ready;
+  worker.roundTripProse = fixtureParagraphs("Moon").join("\n");
+  const report = plain(evaluate(worker, `(() => {
+    const page = crateModule('crate/page_formalization.mjs');
+    const text = crateModule('crate/text_formalization.mjs');
+    const typed = crateModule('crate/typed_meaning.mjs');
+    const report = page.formalizePage(roundTripProse, 'en');
+    return {counts: {factual: report.factual, survived: report.survived},
+      rows: report.sentences.flatMap(sentence => sentence.statements).map(statement => {
+        const reread = text.clauseStatement(text.deformalizeStatement(statement, 'en'), 'en', null, false);
+        return {source: statement.text, known: text.knownIds(statement), back: text.knownIds(reread),
+          typed: typed.typedMeaning(statement.dialogue), backTyped: typed.typedMeaning(reread.dialogue)};
+      })};
+  })()`));
+  assert.deepEqual(report.counts, {factual: 62, survived: 62});
+  assert.equal(report.rows.length, 67);
+  const factual = report.rows.filter(row => row.known.length > 0);
+  assert.equal(factual.length, 62);
+  for (const row of factual) {
+    assert.deepEqual(row.back, row.known, row.source);
+    assert.equal(row.backTyped, row.typed, row.source);
   }
 });
 

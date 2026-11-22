@@ -163,7 +163,7 @@ main-run 44188508650
       introduced-by "PR #1597, merged as 015a6831"
       failed "seed_lino_values_never_pipe_pack_multi_values: handler-rules.lino:1236 year|years"
       check rust/tests/web/issue-1589-calendar-currency.test.mjs
-      marker "handler table rows carry one surface each without pipe-packed aliases"
+      marker "calendar and currency vocabulary rows carry one surface each without pipe-packed aliases"
 main-run 44188508228
   javascript-twin
     regression health-schema-access-mode

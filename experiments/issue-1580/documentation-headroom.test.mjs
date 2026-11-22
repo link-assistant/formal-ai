@@ -7,7 +7,7 @@ import {checkListedFiles} from '../../scripts/check-file-size.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url)).replace(/\/$/u, '');
 test('contributor rules retain source headroom and reachable detailed guides', () => {
-  const guides = ['docs/development/merge-conflict-layout.md', 'docs/development/changelog-management.md'];
+  const guides = ['docs/development/merge-conflict-layout.md', 'docs/development/changelog-management.md', 'docs/development/dependency-policy.md'];
   assert.deepEqual(checkListedFiles(root, new Set(['CONTRIBUTING.md', ...guides])),
     {warnings: [], violations: [], embeddedDataViolations: [], errors: []});
   const entry = readFileSync(resolve(root, 'CONTRIBUTING.md'), 'utf8');

@@ -83,7 +83,7 @@ const SUMMARIES: &[(&str, &str, &str)] = &[
     (
         "formalize this page: https://en.wikipedia.org/wiki/Moon",
         "Formalized `https://en.wikipedia.org/wiki/Moon`: 25 sentences became 67 statements. 3 \
-         sentences are fully formal; 195 of 423 terms have no meaning yet; 61 of 62 facts survive \
+         sentences are fully formal; 195 of 423 terms have no meaning yet; 62 of 62 facts survive \
          the round trip back to text.",
         "… and 27 more statements.",
     ),
@@ -91,27 +91,27 @@ const SUMMARIES: &[(&str, &str, &str)] = &[
         "формализуй эту страницу: https://en.wikipedia.org/wiki/Moon",
         "Страница `https://en.wikipedia.org/wiki/Moon` формализована: из 25 предложений получено \
          67 утверждений. Полностью формальны предложений: 3; терминов без значения: 195 из 423; \
-         фактов, переживших обратный перевод в текст: 61 из 62.",
+         фактов, переживших обратный перевод в текст: 62 из 62.",
         "… и ещё утверждений: 27.",
     ),
     (
         "इस पेज को औपचारिक बनाओ: https://en.wikipedia.org/wiki/Moon",
         "`https://en.wikipedia.org/wiki/Moon` को औपचारिक बनाया गया: 25 वाक्यों से 67 कथन बने। 3 \
-         वाक्य पूरी तरह औपचारिक हैं; 423 में से 195 पदों का अभी कोई अर्थ नहीं है; 62 में से 61 \
+         वाक्य पूरी तरह औपचारिक हैं; 423 में से 195 पदों का अभी कोई अर्थ नहीं है; 62 में से 62 \
          तथ्य पाठ में वापस बदलने पर बचे रहते हैं।",
         "… और 27 कथन।",
     ),
     (
         "形式化这个网页 https://en.wikipedia.org/wiki/Moon",
         "已形式化 `https://en.wikipedia.org/wiki/Moon`：25 个句子变为 67 条陈述。3 \
-         个句子完全形式化；423 个术语中有 195 个尚无含义；62 个事实中有 61 个在转回文本后保留。",
+         个句子完全形式化；423 个术语中有 195 个尚无含义；62 个事实中有 62 个在转回文本后保留。",
         "……另有 27 条陈述。",
     ),
     (
         "formaliza esta página: https://en.wikipedia.org/wiki/Moon",
         "Página `https://en.wikipedia.org/wiki/Moon` formalizada: 25 oraciones se convirtieron en \
          67 enunciados. Oraciones totalmente formales: 3; términos aún sin significado: 195 de \
-         423; hechos que sobreviven a la vuelta al texto: 61 de 62.",
+         423; hechos que sobreviven a la vuelta al texto: 62 de 62.",
         "… y 27 enunciados más.",
     ),
 ];

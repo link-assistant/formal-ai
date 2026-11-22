@@ -157,7 +157,7 @@ impl EventLog {
         let mut calculation = CalculationCluster::default();
         for (index, event) in self.events.iter().enumerate() {
             if event.kind == "calculation" || event.kind.starts_with("calculation:") {
-                calculation.absorb(event.kind, &event.payload);
+                calculation.absorb(event.kind, &event.payload, self.origins[index]);
                 continue;
             }
             if calculation.has_data() {
@@ -314,6 +314,7 @@ impl PlannedThinkingStep {
 /// requirement R11 — recursively composite / fractal steps).
 #[derive(Default)]
 struct CalculationCluster {
+    origins: std::collections::BTreeMap<&'static str, &'static str>,
     request: Option<String>,
     engine: Option<String>,
     expression: Option<String>,
@@ -322,7 +323,12 @@ struct CalculationCluster {
 }
 
 impl CalculationCluster {
-    fn absorb(&mut self, kind: &str, payload: &str) {
+    fn absorb(&mut self, kind: &'static str, payload: &str, origin: Option<&'static str>) {
+        if let Some(origin) = origin {
+            self.origins.insert(kind, origin);
+        } else {
+            self.origins.remove(kind);
+        }
         let value = payload.trim().to_owned();
         match kind {
             "calculation" => self.result = Some(value),
@@ -345,6 +351,12 @@ impl CalculationCluster {
     }
 
     fn drain_into(&mut self, plan: &mut Vec<PlannedThinkingStep>) {
+        let start = plan.len();
+        let parent_kind = if self.result.is_some() {
+            "calculation"
+        } else {
+            "calculation:request"
+        };
         let parent_detail = self
             .result
             .clone()
@@ -379,6 +391,10 @@ impl CalculationCluster {
                 "detailed",
                 "calculation:steps",
             ));
+        }
+        for (index, step) in plan[start..].iter_mut().enumerate() {
+            let kind = if index == 0 { parent_kind } else { step.source };
+            step.origin = self.origins.get(kind).copied();
         }
         *self = Self::default();
     }

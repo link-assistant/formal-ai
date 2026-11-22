@@ -273,7 +273,16 @@ fn explanation_concept_follows_the_seeded_cue() {
         explanation_concept("Explain the Kotlin compiler"),
         Some("kotlin compiler".to_owned())
     );
-    assert_eq!(explanation_concept("The Kotlin compiler is fast"), None);
+    for (prompt, expected) in [
+        ("Explain Kotlin compiler", Some("kotlin compiler")),
+        ("Explain the theory of types", Some("theory of types")),
+        ("Explain vitamin A", Some("vitamin a")),
+        ("Explain theorem", Some("theorem")),
+        ("Explain the", None),
+        ("The Kotlin compiler is fast", None),
+    ] {
+        assert_eq!(explanation_concept(prompt).as_deref(), expected, "{prompt}");
+    }
 }
 
 /// R8: an explanation is composed from the retrieved page's statements that

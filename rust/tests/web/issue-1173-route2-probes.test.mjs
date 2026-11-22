@@ -114,7 +114,13 @@ test("R1173-3: the browser learns from the requested regional publisher feed", a
     assert.ok(answer.content.includes("google trends"), answer.content);
     assert.ok(answer.content.includes(`(${geo})`), answer.content);
     assert.ok(answer.content.includes(topic), answer.content);
-    assert.match(answer.content, /80/u);
+    fresh.fixtureTemplates = readFileSync(new URL("../../../data/seed/google-trends-prompts.lino", import.meta.url), "utf8");
+    fresh.fixtureFeed = feeds.get(url);
+    const templates = await evaluate(fresh, 'crateModule("crate/google_trends_feed.mjs").loadPromptTemplates(fixtureTemplates)');
+    assert.ok(templates.some(({ language }) => language === "es"));
+    const topics = await evaluate(fresh, 'crateModule("crate/google_trends_feed.mjs").parseGoogleTrendsRss(fixtureFeed)');
+    const count = topics.length * templates.length;
+    assert.match(answer.content, new RegExp(`\\b${count}\\b`, "u"));
     const sha = createHash("sha256").update(feeds.get(url)).digest("hex");
     assert.ok(answer.evidence.includes(`learning_source_capture:${url}#sha256=${sha}`));
     const replay = await ask(prompt, { allowNetwork: false });

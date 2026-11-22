@@ -28,6 +28,7 @@ import * as dreamingAudit from "../../../js/agentic/dreaming_audit.mjs";
 import * as questionCatalog from "../../../js/agentic/question_catalog.mjs";
 import * as googleTrendsCatalog from "../../../js/agentic/google_trends_catalog.mjs";
 import * as googleTrendsLearning from "../../../js/agentic/google_trends_learning.mjs";
+import { loadPromptTemplates } from "../../../js/agentic/crate/google_trends_feed.mjs";
 import { planGoogleTrendsCatalogStep } from "../../../js/agentic/document_recipe.mjs";
 import {
   candidateFromLinksNotation,
@@ -855,6 +856,9 @@ test("Trends recipes solve the selected publisher feed and keep its digest acros
     return [url, { text, source_url: url, fetched_at: "1795306791", sha256: createHash("sha256").update(text).digest("hex") }];
   }));
   const [us, de] = [...captures.values()];
+  const templates = loadPromptTemplates(read("data/seed/google-trends-prompts.lino"));
+  assert.ok(templates.some(({ language }) => language === "es"));
+  const count = capture => googleTrendsCatalog.parseGoogleTrendsRss(capture.text).length * templates.length;
   let fetches = 0;
   const requests = [];
   try {
@@ -872,7 +876,7 @@ test("Trends recipes solve the selected publisher feed and keep its digest acros
     const document = await googleTrendsCatalog.renderDocument("Google Trends catalog");
     assert.ok(document.includes("michigan vs villanova"));
     assert.ok(document.includes(us.sha256));
-    assert.match(document, /  prompt_count "80"/u);
+    assert.ok(document.includes(`  prompt_count "${count(us)}"`));
 
     const report = await googleTrendsLearning.renderDocument("Google Trends learning frontier geo DE");
     assert.ok(report.includes("juventus turin"));
@@ -881,7 +885,10 @@ test("Trends recipes solve the selected publisher feed and keep its digest acros
     assert.match(report, /  learning_run_trace_count "10"/u);
     assert.match(report, /  learning_run_adopted "0"/u);
     assert.match(report, /  benchmark_status "absent"/u);
-    assert.equal(requests.length, 160);
+    assert.equal(requests.length, count(us) + count(de));
+    for (const { template, language } of templates.filter(row => row.language === "es")) {
+      assert.ok(requests.includes(template.replaceAll("{query}", "juventus turin")), language);
+    }
     assert.ok(requests.some((prompt) => prompt.startsWith("Расскажи") && prompt.includes("juventus turin")));
 
     assert.equal(await googleTrendsCatalog.renderDocument("Google Trends catalog geo=123"), null);

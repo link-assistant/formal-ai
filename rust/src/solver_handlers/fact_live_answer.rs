@@ -149,9 +149,20 @@ pub fn explanation_concept(prompt: &str) -> Option<String> {
     }
     let cue = role_surfaces(seed::ROLE_CAPABILITY_ACT_EXPLAIN)
         .into_iter()
-        .find(|cue| locate(&normalized, cue) == Some(0))?;
-    let rest = normalized.strip_prefix(cue.as_str())?;
-    bounded_subject(rest.trim())
+        .filter(|cue| locate(&normalized, cue) == Some(0))
+        .max_by_key(|cue| cue.len())?;
+    let mut rest = normalized.strip_prefix(cue.as_str())?.trim();
+    let function_words = role_surfaces(seed::ROLE_STATEMENT_FUNCTION_WORD);
+    // Only leading grammar is outside the concept. Internal words and a
+    // trailing "a" in a concept such as "vitamin A" remain meaningful.
+    while let Some(word) = function_words
+        .iter()
+        .filter(|word| locate(rest, word) == Some(0))
+        .max_by_key(|word| word.len())
+    {
+        rest = rest.strip_prefix(word.as_str())?.trim();
+    }
+    bounded_subject(rest)
 }
 
 /// Answer an explanation request from retrieved pages (issue #1172 R8).

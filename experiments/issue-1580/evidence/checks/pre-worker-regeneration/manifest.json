@@ -1,0 +1,31 @@
+{
+  "sourceHead": "65e78a232511890545cdfdbc428a119bf32e721e",
+  "fullGateOutcome": {
+    "head": "65e78a232511890545cdfdbc428a119bf32e721e",
+    "trackedDraftSha256": "d97f0cb7ca9799009f6f34b73520bc34d2d580a7a53f1295ac432e3e017958db",
+    "exitCode": 1,
+    "seconds": 536.152,
+    "pass": 86,
+    "fail": 3,
+    "skip": 54,
+    "finishedAt": "2026-11-22T20:38:54.902127+00:00",
+    "rustExecuted": false,
+    "independentAuthorshipCredit": 0
+  },
+  "failedGates": [
+    "check-status-render",
+    "check-wasm-worker-current",
+    "release#2"
+  ],
+  "statusProjectionReviewed": true,
+  "focusedStatusChecks": "pass",
+  "rustfmtFiles": 21,
+  "archiveSha256": "f2cd7f0627e1cfde492681f639334f63f0b58fd6f6d649958a149a704c10f554",
+  "payloadCount": 115,
+  "roundTripVerified": true,
+  "secretScan": "pending committed transcript rename inventory; missing uncommitted original path reviewed",
+  "workerProducer": "pending explicit hosted run on published source",
+  "nativeExecutedLocal": false,
+  "independentAuthorshipCredit": 0,
+  "allIssueAcceptanceComplete": false
+}
