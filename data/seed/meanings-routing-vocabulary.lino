@@ -1261,7 +1261,7 @@ meanings
     precondition "the request supplies a role and the facts to explain"
     effect "admits the claim of the roleplay handler"
     unit "boolean"
-    example "act as a mapmaker: contour lines connect points at equal elevation"
+    example "act as {role}: {facts}"
     grounding "data/seed/capability-routing.lino"
   document_operand
     defined-by concept

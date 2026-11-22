@@ -790,9 +790,9 @@ capability_routing
   claim
     handler roleplay
     browser_handler tryRoleplayRequest
-    admits_on persona_or_topic
+    admits_on roleplay_facts
     refusal_event "roleplay:refusal"
-    because "issue 1175 R3: a roleplay claims with the persona or topic it names; the default persona on the fallback topic is admitted to the refusal lane"
+    because "issue 1175 R3: a roleplay claims with a caller-supplied role and facts; missing input takes the refusal lane"
   claim
     handler document_originality_check
     browser_handler tryDocumentOriginalityCheck

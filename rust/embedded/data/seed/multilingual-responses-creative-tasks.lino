@@ -586,3 +586,43 @@ multilingual_responses
     intent planning_no_fit
     language es
     text "Ninguna visita citada cabe en los horarios de apertura, traslado y comida. Indica un horario de apertura más amplio o una visita más corta."
+  response response_roleplay_supplied_facts_en
+    intent roleplay_supplied_facts
+    language en
+    text "Roleplay frame for {role}. Supplied facts: {facts}"
+  response response_roleplay_supplied_facts_ru
+    intent roleplay_supplied_facts
+    language ru
+    text "Ролевая рамка для {role}. Предоставленные факты: {facts}"
+  response response_roleplay_supplied_facts_hi
+    intent roleplay_supplied_facts
+    language hi
+    text "भूमिका: {role}। दिए गए तथ्य: {facts}"
+  response response_roleplay_supplied_facts_zh
+    intent roleplay_supplied_facts
+    language zh
+    text "扮演角色：{role}。已提供的事实：{facts}"
+  response response_roleplay_supplied_facts_es
+    intent roleplay_supplied_facts
+    language es
+    text "Marco de rol para {role}. Hechos proporcionados: {facts}"
+  response response_roleplay_facts_needed_en
+    intent roleplay_facts_needed
+    language en
+    text "Name the role, then put the facts to explain after a colon."
+  response response_roleplay_facts_needed_ru
+    intent roleplay_facts_needed
+    language ru
+    text "Укажите роль, а после двоеточия приведите факты, которые нужно объяснить."
+  response response_roleplay_facts_needed_hi
+    intent roleplay_facts_needed
+    language hi
+    text "भूमिका बताइए, फिर जिन तथ्यों को समझाना है उन्हें कोलन के बाद लिखिए।"
+  response response_roleplay_facts_needed_zh
+    intent roleplay_facts_needed
+    language zh
+    text "请写出角色，再在冒号后提供需要解释的事实。"
+  response response_roleplay_facts_needed_es
+    intent roleplay_facts_needed
+    language es
+    text "Indica el rol y escribe los hechos que quieres explicar después de dos puntos."
