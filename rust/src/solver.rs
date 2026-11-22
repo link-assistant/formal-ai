@@ -876,6 +876,12 @@ impl UniversalSolver {
         // least action selects it over the direct derivation. A controlled
         // answer, a clarification and a paraphrase are drafts like any other.
         self.run_meta_procedure(prompt, history, probability_store, &mut answer, &mut log);
+        // A publisher miss can leave only a clarification that the question policy removes.
+        if answer.answer.trim().is_empty()
+            && let Some(gap) = crate::solver_handlers::publisher_recurrence_gap(prompt, &mut log)
+        {
+            answer = gap;
+        }
         // A controlled answer or clarification the procedure kept is already
         // its own projection (`projectControlledAnswer` in the worker).
         if projection.as_deref() != Some(answer.answer.as_str()) {

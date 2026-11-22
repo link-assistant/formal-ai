@@ -88,7 +88,7 @@ test("native offline chat needs a publisher capture to synthesize a recurrence",
   const { name, prompt } = recurrenceCases[0];
   const { ask } = await startNativeRecurrenceReplay(t);
   const answer = await ask(prompt);
-  assert.ok(answer.trim(), prompt);
+  assert.match(answer, /no verified source statement was captured/iu);
   assert.ok(!answer.includes(`def ${name}(`), answer);
 });
 
