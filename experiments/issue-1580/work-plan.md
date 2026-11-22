@@ -23,7 +23,38 @@ Initial exploration/recovery used external tools. The first Formal AI request, `
 
 Frozen before new implementation: CI freshness/taxonomy; worker budget; passage network ownership; flow-YAML parsing; retry coverage; child-result consumption; compound decomposition; constraint precedence; described-file authority; solver boundaries; native timing/shard balance; collector failure propagation; draft custody; transfer/deadline accounting; dependency verification; external benchmark diagnosis; qualification preconditions; full-tree template comparison; negative regression controls; final delivery evidence (20 units). Formal AI attempted and independently accepted shares are reported separately. Supplied conclusions receive zero credit.
 
-## Current verification checkpoint
+## Current verification checkpoint, 2026-11-22
+
+Published `79a024bffdcee2dd94149d929e81b4b65496ed2d` has 33 workflows;
+the final native Pipeline families are still active. Do not push before their
+terminal observations are collected. Security rejects RUSTSEC-2026-0592 in
+both URL lock entries. Local `8eeb2f8d3` updates only URL and its required
+form-urlencoded package, refreshes the four governed manifest hashes through
+the maintained generator and adds a bounded native interface regression.
+Its online audit and native behavior require new-head hosted execution.
+
+Local `5c80db6aa` repairs 13 abbreviated archive names and a manifest above
+the file-size cap, preserving all 221 compressed and original payload hashes.
+The original full gate inventory has 85 passes, 53 exclusions and four packaging
+failures; all four focused checks now pass after the packaging commit.
+Failed helper assumptions remain retained. See the URL origin and evidence
+packaging case study. The current Layered run passes but records 283/302-second
+shards above the unchanged 270-second warning. Its 915 complete timings are
+retained. The initial 35% import fixes the newer cohort but fails an older one.
+A bounded search rejects 36% and 38%, then selects 40%: all nine retained
+timing cases and all 27 queue controls pass. No floors are lowered and receipt
+fields are identical. The complete 142-entry local inventory now has 89 passes,
+53 explicit hosted-only exclusions and zero failures. New-plan hosted wall times
+and the new native origin behavior remain pending.
+
+Complete issue acceptance, aggregate review, applicable template practices,
+original budgets, delivery and serving identity, publication authority, GPU
+behavior and trusted cross-request epochs remain unfinished. Independently
+accepted reasoning stays 0/20; supplied work has zero authorship credit.
+PR #1581 remains draft and unmerged. The native goal is usage-limited;
+this checklist continues to track the uncompleted objective.
+
+## Historical verification checkpoints
 
 Published c55a5f9c50ebe58d9bb6103ca46c685e355fcd0d includes the artifact annotation,
 partial-ID, timing and physical workspace/file-size I/O repairs. Its CI round is
@@ -1256,3 +1287,9 @@ The initial full protocol replay passes Claude and Codex but cancels Agent at th
 - [x] Pass all six protocol cases at the original 512 MiB heap and unchanged 120-second client deadlines after removing whole-body boundary copying (Claude 39.70s, Codex 39.65s, Agent 37.50s). Preserve the initial timeout, failed before test and CPU profile.
 - [x] Finish the full shared-data inventory: 87 gates pass, filename abbreviation and stale browser projection fail; rename the new test with full `string`, run the maintained generator and pass the same two gates. Preserve 53 explicit hosted-only exclusions, both original failures and focused repairs. Rust formatting/projection currency pass without local native execution.
 - [ ] Finish new-source hosted verification, trusted cross-request generation retention and every wider unchecked acceptance criterion. The issue and PR remain unfinished and unmerged.
+
+
+## Additional native semantic review, 2026-11-22
+
+- [x] Fully read and compare 14 current parent/child diffs (1970 lines), with matching source hashes against main `09711c000cca319d7269b4b0fa15d15339baf881`. Review CLI verbosity, quote masking, selected evidence, typed/untyped composition, protocol extraction and constraints, the repository allowlist and web-query boundaries. Read the adjacent maintained controls and JavaScript request-context twin. No new defect found in these diffs. The per-file assessments distinguish semantic changes from moves.
+- [ ] Complete the whole-PR and template-practice review and runtime acceptance. This source review does not qualify whole-file behavior or native execution, and supplied assessments receive zero independent-authorship credit.
