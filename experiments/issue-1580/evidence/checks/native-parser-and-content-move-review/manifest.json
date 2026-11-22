@@ -1,0 +1,158 @@
+{
+  "at": "2026-11-22T08:30:50.893588+00:00",
+  "base": "82e506f5447cd6c0b96095993107d6d028a890f5",
+  "sourceHead": "13fb0ff42bc15e69ea24c66be0471333888a3f8e",
+  "files": [
+    {
+      "path": "rust/src/calculation.rs",
+      "file": "0279.diff.gz",
+      "sha256": "e29647360ffd602cd1b141345676b863757e24caf85c964d5dda60dc048c2c02",
+      "gzipSHA256": "2918c498a8bec781d218981b6a58075a450b20de43a3145b5472cf39d9ce6d11",
+      "lines": 318,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/calculation/linear_equation.rs",
+      "file": "0280.diff.gz",
+      "sha256": "9431047af4aa0980e654a5e98277609b80ef38bac9da02a7380117e392e1d980",
+      "gzipSHA256": "f5b919335283662e256af39bb5449dcaeced9ba11395a328810f2fa2f47546d6",
+      "lines": 308,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/coding_research_learning.rs",
+      "file": "0290.diff.gz",
+      "sha256": "18ab3fb784bba9282f27bb380d33cb5f145bd5c5304972527acf7cb668272ca3",
+      "gzipSHA256": "efde8f4517e148ddca6f91233200350b73b219cb1d6d51cd8a802322248c6c5a",
+      "lines": 111,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/coding_research_learning/adoption.rs",
+      "file": "0291.diff.gz",
+      "sha256": "961e2c2bd40f9aa130a5458f2b82ff2133ff2269585a4fb4c4f42fed6dc5706c",
+      "gzipSHA256": "bca84259bd13ffb573ab390ce8ab9e6de554d706a9df84f24684054ada935dfb",
+      "lines": 101,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/computer_use/executor.rs",
+      "file": "0292.diff.gz",
+      "sha256": "6d7eaed40db159aadbc54c04f74ab622769ab2a529224691a0404f2b1e71544b",
+      "gzipSHA256": "19752e51f28595754a37011e8614318ca161447bf6d59f37729ad4800440fd00",
+      "lines": 108,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/computer_use/executor_content.rs",
+      "file": "0293.diff.gz",
+      "sha256": "501548fe98c366b931c2ca02f16ca8929f6b0ce95071233bddb5010e42449a52",
+      "gzipSHA256": "0555117bdc4788daf37820012a348a63a8bf29210da7d041a860865d39555535",
+      "lines": 93,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/concept_lookup.rs",
+      "file": "0294.diff.gz",
+      "sha256": "bf6f764dbe22e88e3120a66502de3a97b6c4515d65337347fa368b3251c4b62b",
+      "gzipSHA256": "191f559353ff783cfee732f40a1a3f8dce1a7ed6cb56510f49cceee955b8cc59",
+      "lines": 173,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/concept_lookup/unknown_surfaces.rs",
+      "file": "0295.diff.gz",
+      "sha256": "f4014d554413983c1f9e47f2c4c13568d1d1e33665da28bf0ca1174f8b9b5cdf",
+      "gzipSHA256": "187c70d6dcbd6d0708d980510bd40c2fa7dec65c3ad7eab89f3382132b73ef26",
+      "lines": 158,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/engine.rs",
+      "file": "0297.diff.gz",
+      "sha256": "e63f85d57e4c2d867985361f700a8cc2762d950237b1d01527654e83e05a3371",
+      "gzipSHA256": "f3b303df1496f26ab26d2f429e90c7c133e72cf51e633ba25e46b00da7178cbb",
+      "lines": 156,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/engine/knowledge_graph.rs",
+      "file": "0298.diff.gz",
+      "sha256": "65db19b22164258f20412106a2e1efbe2d2a89a6ecb3aea95152535ba5cca9c1",
+      "gzipSHA256": "ced9b352f74a2224f1bda24653542db802a235e2dbfd30597a34d0a0e607c71b",
+      "lines": 150,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/es_meta.rs",
+      "file": "0299.diff.gz",
+      "sha256": "55998150196ef58eb02dee9e9b481c7e3026f03c2fb59997c38604c3abf8e2c1",
+      "gzipSHA256": "5bf0fc6e491f1549f06b9eb6028d90a233199a9d2d321bcb2741b731bb8b6f02",
+      "lines": 166,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/es_meta/source_layout.rs",
+      "file": "0300.diff.gz",
+      "sha256": "ff75d4029f8f84a6ea0be5cf58e2045e24a5da5aedfb1a52862a64dc632a31c0",
+      "gzipSHA256": "41a5c7d05b8ee7458af011280e8ef04ccfc75783358d6838e5ba3f3204ca4b1e",
+      "lines": 149,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/execution_box/configuration.rs",
+      "file": "0302.diff.gz",
+      "sha256": "d79a0309b721c2ef09e7a93ff0d9f9ef5013b4796921772d1cec82e46bab1fc0",
+      "gzipSHA256": "be9b387ef7e06dd63ab9640b7f7da05edf3aa443e6b67f5899122699c60bc78d",
+      "lines": 101,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/execution_box/mod.rs",
+      "file": "0303.diff.gz",
+      "sha256": "67b5bcd6540efb10976396301fa2c4e54aedf2167786cf2b073ca81ea614fd2c",
+      "gzipSHA256": "37f2bff83679d15c0b2352a531acfde22273f3d3377556142f2c79b95298774d",
+      "lines": 107,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/formalization/proposition_structure.rs",
+      "file": "0305.diff.gz",
+      "sha256": "8853a43187a2df6e0c0deb581def517b87bd5e65628490bf20138161c1ddd7f5",
+      "gzipSHA256": "29bc2be61809bb5a122a1ad5aa2c2f4b3cad55a03ce1f4cfc41636bcebb85f40",
+      "lines": 138,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/formalization/proposition_structure/reader.rs",
+      "file": "0306.diff.gz",
+      "sha256": "b4831bfa905c71936162140aa980008f33712508e38ea5d3d7889421ec82fb5c",
+      "gzipSHA256": "10db92cee1984093beb64416e953e986364e737bf6d332c883085f34d488498e",
+      "lines": 132,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/formalization/text_statements.rs",
+      "file": "0307.diff.gz",
+      "sha256": "f1fea74566695f7dbb2309ca9da76fd4c7a253441a52089e9bdb648e616dfb3b",
+      "gzipSHA256": "ef9412d11da8d63cefe102f57a6114dc70e88835763209c3c9cdae455906c5e2",
+      "lines": 119,
+      "literalDiffFullyReviewed": true
+    },
+    {
+      "path": "rust/src/formalization/text_statements/types.rs",
+      "file": "0308.diff.gz",
+      "sha256": "cb33d001915202f5070b3b1c8cd8ca66ed90310e8a440361c20209afe0ba92bd",
+      "gzipSHA256": "bc6b9ed9a32e4837679916aeb46c83807ebb3a78fb4067b32ab567e644af855a",
+      "lines": 111,
+      "literalDiffFullyReviewed": true
+    }
+  ],
+  "fileCount": 18,
+  "diffLines": 2699,
+  "finding": "Paired complete diffs preserve linear-equation parsing, procedure-adoption refusals, fixture CSV/HTML operations, unknown-surface scanning, knowledge-graph construction, ES source layout, execution-backend configuration, proposition parsing and statement types. Bodies and comments remain intact; imports, relative type paths, restricted visibility, conditional compilation and parent reexports match their callers. No new defect found in these moves.",
+  "limits": "This review covers only the eighteen named diffs. Adjacent grammar, composition, event-origin, punctuation and CLI-verbosity changes are not qualified by these function-move comparisons.",
+  "wholePullRequestReviewed": false,
+  "localRustCompilation": false,
+  "autonomousAuthorshipCredit": 0
+}

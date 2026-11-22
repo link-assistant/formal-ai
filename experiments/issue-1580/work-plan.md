@@ -1206,3 +1206,17 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Reuse the bounded, exact-pin Bun installer after the current native job's HTTP 403. Seven installer controls and all 162 native admission tests pass locally; final installation failure remains fatal. Keep the earlier local 100ms expression timeout and sequential successful retry as separate observations.
 - [ ] Finish the final full JavaScript gate inventory and collect every terminal hosted result before the next push. The earlier gate inventory was cancelled after the receipt defect was found; it is not a final qualification.
 - [ ] Verify the next hosted head, finish the wider template/aggregate review and every issue criterion. Local replay and fixture repairs do not establish complete issue acceptance.
+
+
+## Parser and content paired review, 2026-11-22
+
+- [x] Fully read eighteen additional native parent/child diffs (2699 lines) and verify each fresh Git diff hash. The linear-equation, procedure-adoption, fixture-content, unknown-surface, knowledge-graph, ES-layout, backend-configuration, proposition-reader and statement-type moves preserve bodies, comments, visibility, conditional compilation, relative type references and parent exports.
+- [ ] Complete the remaining semantic changes and aggregate review. Adjacent grammar, composition, event-origin, punctuation and CLI-verbosity changes remain separate review work; no runtime or whole-PR qualification is claimed by these eighteen comparisons.
+
+
+## Complete a558f834 terminal diagnosis and repair gate
+
+- [x] Collect all 33 terminal workflow logs, 163 checks and 29 annotations; review 530 diagnostic candidates and distinguish emitted failures, expected controls, printed branches and successful test titles.
+- [x] Reproduce and repair the governed manifest witness, receipt-bound duration merge, complete-run scheduling reserve and native Bun installer failures. Retain failing controls and source-bound evidence; no lowered budget or warning threshold.
+- [x] Run the full JavaScript inventory after implementation: 89 applicable gates pass, 53 hosted-only exclusions remain unqualified. Archive complete logs, final status and production diff review.
+- [ ] Verify every repair on the next published head. Bun-dependent native client tests skipped on a558f834; local installer tests do not replace their hosted replay. All original broad acceptance criteria remain active.
