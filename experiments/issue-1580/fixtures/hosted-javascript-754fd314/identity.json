@@ -1,0 +1,25 @@
+{
+  "run": 44992280972,
+  "head": "754fd314fd3c08152b19f9f5c51a87ea23fa6940",
+  "rawBytes": 4777314,
+  "rawSha256": "c8868029a1b8a57cc1a58817b38187d3ba20e205e8d07a0cc42902d399252dce",
+  "completeFileObservations": 913,
+  "warnings": [
+    {
+      "line": 6333,
+      "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-22T06:12:35.1293284Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step."
+    },
+    {
+      "line": 22108,
+      "text": "js tier (node --check over js, suite group 4)\tRun this shard of the JavaScript suites\t2026-11-22T06:12:35.0762443Z ##[warning]The command is still running after 270s (75% of its 360s execution budget). Speed up or repartition it before the budget terminates the step."
+    }
+  ],
+  "runConclusion": "failure",
+  "completeObservations": 913,
+  "modeledWorkers": 4,
+  "unobservedFallbackSeconds": 0.34,
+  "warningSeconds": 270,
+  "budgetSeconds": 360,
+  "executionProof": false,
+  "durationsSha256": "8581718b81a600b2c71418c567c958e96e8844dc5f9723dea847b9dd87dd074f"
+}

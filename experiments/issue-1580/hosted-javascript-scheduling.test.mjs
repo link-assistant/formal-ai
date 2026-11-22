@@ -104,3 +104,29 @@ test('complete c55 hosted costs retain failed-shard observations and fit the unc
     assert(Math.max(...workers) <= 270, 'c55 measured shard ' + (index + 1) + ': ' + Math.max(...workers));
   }
 });
+
+test('complete 754 hosted costs retain the failed file and both budget warnings below the modeled threshold', () => {
+  const fixture = new URL('./fixtures/hosted-javascript-754fd314/', import.meta.url);
+  const identity = JSON.parse(readFileSync(new URL('identity.json', fixture), 'utf8'));
+  const observations = readFileSync(new URL('durations.jsonl', fixture), 'utf8').trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(identity.runConclusion, 'failure');
+  assert.equal(identity.executionProof, false);
+  assert.equal(identity.warnings.length, 2);
+  assert.equal(identity.budgetSeconds, 360);
+  assert.equal(identity.warningSeconds, 270);
+  assert.equal(observations.length, identity.completeObservations);
+  assert.equal(new Set(observations.map(row => row.file)).size, observations.length);
+  assert(observations.every(row => row.complete));
+  assert(observations.some(row => row.file === 'rust/tests/web/recipe-resume-protocols.test.mjs' && row.result === 'failed'));
+  const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
+  const weights = parseTestDurations(recorded);
+  const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
+  const {shards} = planShards(files, 8, durationLookup(weights, Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
+  const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
+  for (const [index, shard] of shards.entries()) {
+    const workers = Array(identity.modeledWorkers).fill(0);
+    for (const file of shard) workers[workers.indexOf(Math.min(...workers))] += costs(file);
+    assert(Math.max(...workers) <= identity.warningSeconds, '754 measured shard ' + (index + 1) + ': ' + Math.max(...workers));
+  }
+});

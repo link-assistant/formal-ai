@@ -1139,3 +1139,13 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - Published 754fd314 job 137115847267 ran the native parser contracts successfully, then failed removing the Codex plugin-clone directory (raw lines 2498–2500).
 - The actual client launcher now stops and observes its owned process group before returning. Five original-launcher negative controls fail; ten fixed-launcher cases and the focused-map test pass. Hosted replay is pending. See `docs/case-studies/issue-1580/codex-client-lifetime.md`.
 - Supplied implementation and procedures retain zero independent authorship credit. The historical Agent recipe failure and GPU dependency warnings remain unresolved.
+
+## Checkpoint: complete 754 JavaScript scheduling costs
+
+- Retain all 913 file completion observations and both actual warning records;
+  preserve the failed recipe file rather than interpreting its completion as pass.
+- Raise 32 scheduling weights and lower none. Six historical cost regressions and
+  26 CI speed cases pass. Four-worker modeled maximum: 237.237 seconds; actual
+  execution of this plan is pending. Neither 270/360-second boundary changes.
+- Supplied implementation credit remains zero. The Agent assertion, native GPU
+  dependency warnings, and broader acceptance criteria remain unfinished.
