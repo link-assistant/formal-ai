@@ -341,7 +341,10 @@ pub(super) fn ordered_procedure_steps(
     let headings: Vec<_> = HEADINGS.captures_iter(html).collect();
     let named_section = headings.iter().enumerate().find_map(|(index, heading)| {
         let label = compact_step_text(&heading[2]).to_lowercase();
-        if !labels.split('|').any(|name| name == label) {
+        if !crate::seed::split_pipe_list(labels)
+            .iter()
+            .any(|name| name == &label)
+        {
             return None;
         }
         let start = heading.get(0)?.end();

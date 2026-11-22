@@ -545,7 +545,7 @@ function currencyCodeForRole(role) {
 // only ever feed this Latin or Cyrillic tokens.
 function currencyCodeFromWord(value) {
   if (PERCENT_OF_CURRENCY_CODES.has(value)) return PERCENT_OF_CURRENCY_CODES.get(value);
-  if (/^[A-Z]{3}$/.test(value) && handlerRulesTableValue("currency-quote-provider", "iso-codes")?.split("|").includes(value)) return value;
+  if (/^[A-Z]{3}$/.test(value) && crateModule("crate/seed.mjs").splitPipeList(handlerRulesTableValue("currency-quote-provider", "iso-codes") || "").includes(value)) return value;
   const lower = String(value || "").toLowerCase();
   if (!lower) return "";
   for (const role of [

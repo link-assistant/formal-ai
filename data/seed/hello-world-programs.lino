@@ -126,7 +126,7 @@ write_program
     fence "r"
     save_as "hello.R"
     setup_hint "R from https://www.r-project.org/"
-    check_command "Rscript -e 'invisible(parse(\"hello.R\"))'"
+    check_command `Rscript -e 'invisible(parse("hello.R"))'`
     run_command "Rscript hello.R"
   target "laravel"
     name "Laravel"
@@ -176,7 +176,7 @@ write_program
   print_renderer "haskell"
     syntax "main :: IO ()\nmain = putStrLn {literal}"
   print_renderer r
-    syntax "cat({literal}, \"\\n\", sep = \"\")"
+    syntax 'cat({literal}, "\\n", sep = "")'
   print_renderer laravel
     literal "php_single"
     syntax '<?php\n\nnamespace App\\Console\\Commands;\n\nuse Illuminate\\Console\\Command;\n\nclass HelloWorld extends Command\n{\n    protected $signature = \x27hello:world\x27;\n\n    protected $description = \x27Print a greeting\x27;\n\n    public function handle(): int\n    {\n        $this->line({literal});\n\n        return self::SUCCESS;\n    }\n}'

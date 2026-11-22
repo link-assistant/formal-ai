@@ -430,7 +430,10 @@ fn nominal_search(
         "procedure-nominal-title-namespaces",
         &record.id,
     )?;
-    let (namespace, prefix) = declaration.split_once('|')?;
+    let values = crate::seed::split_pipe_list(&declaration);
+    let [namespace, prefix] = values.as_slice() else {
+        return None;
+    };
     Some((
         subject.to_owned(),
         format!("{prefix}:"),

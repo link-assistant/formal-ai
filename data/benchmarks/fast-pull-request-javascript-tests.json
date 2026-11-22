@@ -10,6 +10,7 @@
     "rust/tests/web/issue-1438-report-and-edit.test.mjs",
     "rust/tests/web/issue-1396-native.test.mjs",
     "rust/tests/web/documentation-method-sources.test.mjs",
+    "rust/tests/web/issue-1580-native-seed-data.test.mjs",
     "rust/tests/web/issue-1557-prose-language.test.mjs",
     "rust/tests/web/issue-1588-intent-spans.test.mjs",
     "rust/tests/web/issue-1587-request-context.test.mjs",

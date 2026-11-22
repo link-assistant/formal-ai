@@ -93,7 +93,7 @@ function howToNominalSearch(record, task, language) {
   const [action, ...words] = task.split(" ");
   const actions = String(handlerRulesPolicy("procedural_how_to", `nominal-title-actions-${language}`) || "").split(/\s+/u);
   if (!words.length || !actions.includes(action)) return null;
-  const [namespace, prefix] = String(handlerRulesTableValue("procedure-nominal-title-namespaces", record.id) || "").split("|");
+  const [namespace, prefix] = crateModule("crate/seed.mjs").splitPipeList(handlerRulesTableValue("procedure-nominal-title-namespaces", record.id) || "");
   return /^\d+$/u.test(namespace) && prefix ? { namespace, prefix: prefix + ":", subject: words.join(" ") } : null;
 }
 
@@ -544,7 +544,7 @@ function howToReadCapture(record, task, capture, depth, produced, bounds, langua
     if (produced > 0) return { items, follow, detail };
     const relevant = isWiki && titleMatches(payload.title);
     const localized = isWikiHow && new URL(capture.url).hostname !== "www.wikihow.com";
-    const labels = String(handlerRulesPolicy("procedural_how_to", "ordered-section-labels") || "").split("|");
+    const labels = crateModule("crate/seed.mjs").splitPipeList(handlerRulesPolicy("procedural_how_to", "ordered-section-labels") || "");
     const found = !relevant ? [] : localized
       ? howToWikiHowStepLists(payload.html, bounds.maxItems, true)
       : isWikiHow ? howToExtractSteps(payload.html, bounds.maxItems)

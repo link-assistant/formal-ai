@@ -26,7 +26,8 @@ impl Node {
 /// Parse an indented Links Notation document into a tree of `name args…` nodes.
 ///
 /// Values may be wrapped in double or single quotes to keep spaces; there are no
-/// escape sequences.
+/// escape sequences. A parenthesized reference group stays one operand, with
+/// its internal quotes preserved for the shared reference-list reader.
 pub(super) fn parse_tree(text: &str) -> Vec<Node> {
     let mut roots: Vec<Node> = Vec::new();
     let mut stack: Vec<(usize, Node)> = Vec::new();
@@ -69,14 +70,32 @@ fn tokenize(line: &str) -> Vec<String> {
     let mut tokens = Vec::new();
     let mut current = String::new();
     let mut quote: Option<char> = None;
+    let mut depth = 0_usize;
     for ch in line.chars() {
         match quote {
             Some(open) if ch == open => {
                 quote = None;
-                tokens.push(std::mem::take(&mut current));
+                if depth > 0 {
+                    current.push(ch);
+                } else {
+                    tokens.push(std::mem::take(&mut current));
+                }
             }
-            None if ch == '"' || ch == '\'' => quote = Some(ch),
-            None if ch.is_whitespace() => {
+            None if ch == '"' || ch == '\'' => {
+                quote = Some(ch);
+                if depth > 0 {
+                    current.push(ch);
+                }
+            }
+            None if ch == '(' => {
+                depth += 1;
+                current.push(ch);
+            }
+            None if ch == ')' && depth > 0 => {
+                depth -= 1;
+                current.push(ch);
+            }
+            None if ch.is_whitespace() && depth == 0 => {
                 if !current.is_empty() {
                     tokens.push(std::mem::take(&mut current));
                 }
@@ -397,5 +416,21 @@ fn parse_value_ref(raw: &str) -> ValueRef {
             || ValueRef::Literal(raw.to_owned()),
             |name| ValueRef::Capture(name.to_owned()),
         ),
+    }
+}
+
+#[cfg(test)]
+mod reference_list_tests {
+    use super::tokenize;
+
+    #[test]
+    fn grouped_references_keep_their_quotes_and_spaces() {
+        let tokens = tokenize(r#"row sample ("a b" "c")"#);
+        assert_eq!(tokens, ["row", "sample", r#"("a b" "c")"#]);
+        assert_eq!(crate::seed::split_pipe_list(&tokens[2]), ["a b", "c"]);
+        assert_eq!(
+            tokenize(r#"row sample "a (b) c""#),
+            ["row", "sample", "a (b) c"]
+        );
     }
 }
