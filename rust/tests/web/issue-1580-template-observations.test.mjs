@@ -78,3 +78,5 @@ import '../../../experiments/issue-1580/javascript-runtime-warnings.test.mjs';
 import '../../../experiments/issue-1580/buildkit-image-identity.test.mjs';
 
 import '../../../experiments/issue-1580/provenance-scenario-partition.test.mjs';
+
+import '../../../experiments/issue-1580/zizmor-transport.test.mjs';

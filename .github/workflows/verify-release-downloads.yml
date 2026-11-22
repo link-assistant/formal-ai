@@ -113,6 +113,9 @@ jobs:
             architecture: x64
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
     env:
       RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
       RELEASE_ID: ${{ needs.resolve.outputs.release_id }}

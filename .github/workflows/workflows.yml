@@ -160,6 +160,7 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             /.github/
+            /scripts/run-zizmor.mjs
             /rust/tests/fixtures/actionlint/
           sparse-checkout-cone-mode: false
 
@@ -168,16 +169,16 @@ jobs:
       #     --min-confidence medium --persona regular \
       #     .github/workflows .github/actions
       #
-      # 1.29.0, and `version:` set rather than left at its default, because
+      # 1.29.0, with the same immutable image digest as zizmor-action v0.6.4:
       # "reproduce locally with X" is only true if CI runs X (issue #1079,
       # defect D6). This comment said 1.30.0 and CI could not run it:
       # `zizmor-action` resolves the version from a static table shipped inside
       # the action (`support/versions`), and v0.6.2's table stops at 1.29.0 --
       # its `latest` row is literally the same digest as its `1.29.0` row. So
       # `latest` here does not float, it freezes, and it freezes one minor
-      # release behind what the comment told a maintainer to install. Naming
-      # the version makes the two agree and makes the next bump a visible line
-      # in the diff rather than a side effect of bumping the action.
+      # release behind what the comment told a maintainer to install. The helper
+      # now pins that exact image and retries only advisory transport failures;
+      # findings, unknown failures and exhausted retries remain fatal.
       #
       # `inputs:` is not optional here even though it reads like it. The action
       # defaults it to `.`, i.e. the whole repository, and this repository keeps
@@ -193,14 +194,12 @@ jobs:
       # Annotations rather than SARIF: the results should be a red check on the
       # pull request that introduced them, not a Security tab entry that depends
       # on Advanced Security being enabled.
-      - uses: zizmorcore/zizmor-action@v0.6.4
-        with:
-          advanced-security: false
-          annotations: true
-          config: .github/zizmor.yml
-          inputs: .github/workflows .github/actions
-          min-confidence: medium
-          version: 1.29.0
+      - uses: actions/setup-node@v7
+        with: {node-version: '24', package-manager-cache: false}
+      - name: Audit workflows with online advisory checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/run-zizmor.mjs regular
 
       # The pass above runs `--persona regular`, which is the right default:
       # pedantic turns up 164 findings here, nearly all of them stylistic, and
@@ -227,16 +226,9 @@ jobs:
       # reverting the digest pin and dropping the stock image's explicit
       # exception marker takes it to exit 14 with both findings named.
       - name: 'Enforce the hash-pin policy on container images'
-        uses: zizmorcore/zizmor-action@v0.6.4
-        with:
-          advanced-security: false
-          annotations: true
-          config: .github/zizmor.yml
-          inputs: .github/workflows .github/actions
-          min-confidence: high
-          min-severity: high
-          persona: pedantic
-          version: 1.29.0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/run-zizmor.mjs pedantic
 
   artifact-roundtrip:
     name: Artifact transport (${{ matrix.os }})
