@@ -6,7 +6,7 @@ Rust template regression (309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb).
 It copies script sources and changes only three HTTPS origins to one loopback
 server and the retry delay to zero. Production URLs remain fixed.
 
-Hosted native CI runs the real HTTP/module tests and ten CLI binaries. Registry
+Hosted native CI runs the real HTTP/module tests and eleven production CLI binaries. Registry
 consumers cover 503, 429, 403, malformed-success, dropped-connection and 404
 fixtures. The writer uses a temporary Git repository and local bare origin. Failures must preserve the
 manifest and clean tree and must not emit release authorization. Successful
@@ -56,3 +56,13 @@ The base-version CLI also checks custom remote refmaps, concurrent changes to
 tracking refs and FETCH_HEAD, invalid base references and temporary-ref cleanup.
 The separate `../version-base-git-probe.py` reproduces the underlying Git behavior
 without compiling or executing a Rust binary; it cannot qualify the native guard.
+
+
+The release creator runs against a local `gh` stub, including an immutable
+pre-fix production binary as a negative control. Each stdout/stderr pipe control
+uses 131,072 diagnostic bytes, a finite request, a process-group deadline and a
+192 MiB address-space limit. The original binary must reach the deadline before
+the repaired binary can qualify. Other controls preserve the UTF-8 byte cap,
+metric suffix, short notes and release identity, and reject mixed, malformed,
+negated duplicate evidence and failed stdin writes. These cases execute only in
+hosted native CI; the local fixture-only check does not run either binary.

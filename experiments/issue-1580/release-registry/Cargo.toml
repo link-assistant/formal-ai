@@ -57,6 +57,11 @@ name = "collect-changelog"
 path = "../../../scripts/collect-changelog.rs"
 test = false
 
+[[bin]]
+name = "create-github-release"
+path = "../../../scripts/create-github-release.rs"
+test = false
+
 # Compile the exact standalone sources and their split test modules. This
 # isolated manifest avoids another build of the application and its grammars.
 [[test]]

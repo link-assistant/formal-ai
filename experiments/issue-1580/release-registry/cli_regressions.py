@@ -12,12 +12,16 @@ import subprocess
 import tempfile
 import threading
 import unittest
+import sys
+
+sys.dont_write_bytecode = True
+from release_process_regressions import ReleaseProcessRegressions, add_release_process_controls
 
 ROOT = Path(__file__).resolve().parents[3]
 HARNESS = Path(__file__).resolve().parent
 
 
-class RegistryRegressions(unittest.TestCase):
+class RegistryRegressions(ReleaseProcessRegressions, unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.requests = []
@@ -71,6 +75,7 @@ class RegistryRegressions(unittest.TestCase):
         cls.temp = tempfile.TemporaryDirectory(prefix='registry-scripts-')
         cls.scripts = Path(cls.temp.name) / 'scripts'
         shutil.copytree(ROOT / 'scripts', cls.scripts)
+        release_controls = add_release_process_controls(HARNESS, cls.scripts)
         address = f'http://127.0.0.1:{cls.server.server_port}'
         for path in cls.scripts.rglob('*.rs'):
             source = path.read_text()
@@ -85,7 +90,7 @@ class RegistryRegressions(unittest.TestCase):
         harness = Path(cls.temp.name) / 'harness'
         harness.mkdir()
         (harness / 'Cargo.toml').write_text((HARNESS / 'Cargo.toml').read_text()
-                                           .replace('../../../scripts/', '../scripts/'))
+                                           .replace('../../../scripts/', '../scripts/') + release_controls)
         shutil.copyfile(HARNESS / 'Cargo.lock', harness / 'Cargo.lock')
         result = subprocess.run(['cargo', 'build', '--manifest-path', str(harness / 'Cargo.toml'),
                                  '--locked', '--bins'], env=cls.env, capture_output=True, text=True)

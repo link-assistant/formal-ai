@@ -321,48 +321,45 @@ fn first_json_object(input: &str) -> Option<&str> {
 
 fn validation_error_is_duplicate_release(error: &GitHubApiError) -> bool {
     error.errors.as_ref().is_some_and(|errors| {
-        errors.iter().any(|entry| {
-            entry
-                .resource
-                .as_deref()
-                .is_some_and(|value| value.eq_ignore_ascii_case("Release"))
-                && entry
-                    .code
+        !errors.is_empty()
+            && errors.iter().all(|entry| {
+                entry
+                    .resource
                     .as_deref()
-                    .is_some_and(|value| value.eq_ignore_ascii_case("already_exists"))
-                && entry
-                    .field
-                    .as_deref()
-                    .is_some_and(|value| value.eq_ignore_ascii_case("tag_name"))
-        })
+                    .is_some_and(|value| value.eq_ignore_ascii_case("Release"))
+                    && entry
+                        .code
+                        .as_deref()
+                        .is_some_and(|value| value.eq_ignore_ascii_case("already_exists"))
+                    && entry
+                        .field
+                        .as_deref()
+                        .is_some_and(|value| value.eq_ignore_ascii_case("tag_name"))
+            })
     })
 }
 
 fn line_reports_duplicate_release(line: &str) -> bool {
     let lowered = line.trim().to_ascii_lowercase();
-    lowered == "already_exists"
-        || lowered.contains("release already exists")
-        || lowered.contains("github release already exists")
-        || lowered.contains("release with this tag already exists")
-        || lowered.contains("release with the same tag_name already exists")
+    matches!(
+        lowered.as_str(),
+        "already_exists"
+            | "release already exists"
+            | "github release already exists"
+            | "release with this tag already exists"
+            | "release with the same tag_name already exists"
+    )
 }
 
 fn is_duplicate_release_error(output: &str) -> bool {
-    if output.lines().any(line_reports_duplicate_release) {
-        return true;
+    // Structured diagnostics take precedence over a preceding human summary.
+    // An incomplete document or an unrelated validation error is not success.
+    if output.contains('{') {
+        return first_json_object(output)
+            .and_then(|json| serde_json::from_str::<GitHubApiError>(json).ok())
+            .is_some_and(|error| validation_error_is_duplicate_release(&error));
     }
-
-    let lowered = output.to_ascii_lowercase();
-
-    if let Some(json) = first_json_object(output)
-        && let Ok(error) = serde_json::from_str::<GitHubApiError>(json)
-    {
-        return validation_error_is_duplicate_release(&error);
-    }
-
-    lowered.contains("\"resource\":\"release\"")
-        && lowered.contains("\"code\":\"already_exists\"")
-        && lowered.contains("\"field\":\"tag_name\"")
+    output.lines().any(line_reports_duplicate_release)
 }
 
 #[cfg_attr(not(test), derive(Serialize))]
@@ -517,15 +514,18 @@ fn main() {
         .spawn()
         .expect("Failed to execute gh command");
 
-    if let Some(ref mut stdin) = child.stdin {
-        stdin
-            .write_all(payload_json.as_bytes())
-            .expect("Failed to write to stdin");
-    }
-
+    let mut stdin = child.stdin.take().expect("Missing gh stdin");
+    // gh may emit diagnostics before reading its request. Drain both output
+    // pipes while the writer feeds stdin, then observe a failed write before
+    // classifying the API response as an idempotent success.
+    let writer = std::thread::spawn(move || stdin.write_all(payload_json.as_bytes()));
     let output = child
         .wait_with_output()
         .expect("Failed to wait on gh command");
+    writer
+        .join()
+        .expect("Failed to join gh stdin writer")
+        .expect("Failed to write to stdin");
 
     if output.status.success() {
         println!("Created GitHub release: {tag}");

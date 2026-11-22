@@ -598,3 +598,24 @@ The complete local gate run at `bfc2e11749e48e65f65c37d9850fa847cfc1950a` passes
 - [ ] Repair all failures collected from both exact-head Pipeline and Layered runs before another push. Complete wider issue acceptance and keep the PR draft until verified.
 
 Evidence: `evidence/checks/main-ae36-integration/manifest.json`. Supplied commands and edits earn zero independent authorship credit.
+
+
+## Release subprocess repair, current local draft
+
+The real release creator now drains both `gh` output pipes while writing its
+request, joins the writer before classifying the response, and accepts structured
+duplicate evidence only when every validation entry describes the existing tag.
+Mixed, malformed and negated diagnostics remain failures. The original production
+source is retained unchanged, with its SHA-256 checked before the hosted harness
+builds the negative-control binary. Five bounded CLI tests cover both output
+pipes, Unicode byte limits, the metric suffix, duplicate errors, failed writes
+and unchanged short notes and release identity. They await hosted native CI.
+
+Local verification passes two HTTP fixture controls, all 63 native-lane policy
+tests, Python AST syntax, Rust 2024 formatting and four bounded OS-pipe controls.
+The OS probe executes Python processes; it does not qualify either Rust binary.
+Its sequential controls reach the two-second deadline and its concurrent controls
+complete. No local Rust compilation or execution occurs. Review and complete
+local logs are round-trip archived in
+`evidence/checks/release-process-repair/manifest.json`. Supplied edits retain zero
+independent authorship credit. Wider issue acceptance remains unfinished.
