@@ -133,7 +133,7 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
-      "path": "pr-current-diff.log.gz",
+      "path": "pull-request-current-diff.log.gz",
       "bytes": 287,
       "sha256": "06dda70ebfef8b578f4e212792b89631413563da7dfaa7598b90c00adb13cfe5"
     },
@@ -166,6 +166,11 @@
       "path": "prompt-data-main-merge-inspection-driver.log.gz",
       "bytes": 633,
       "sha256": "078ed9f39e9deb013c7bad27a80a7de8e18802d9babe1ff98d6cb2acbfe6dc07"
+    },
+    {
+      "path": "initial-archive-abbreviation-failure.log.gz",
+      "bytes": 423,
+      "sha256": "31b61bc28852e9ced75b9034dd2b908250d9b47d37289413d9f5f18d93d9b007"
     }
   ],
   "localGates": {
@@ -186,6 +191,7 @@
     "Full hosted final-source validation remains pending.",
     "Raw imported session logs retain their original whitespace; authored source diff passes.",
     "The seed generator owns exact included Rust bytes outside rustfmt reach.",
-    "Initial FormAI startup failed on generated conflict markers; the official JavaScript generator restored startup externally, and the unchanged request then succeeded."
+    "Initial FormAI startup failed on generated conflict markers; the official JavaScript generator restored startup externally, and the unchanged request then succeeded.",
+    "The first archive filename introduced an abbreviation; renaming it in full repairs the unchanged 90-file ceiling."
   ]
 }
