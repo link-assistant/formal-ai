@@ -524,23 +524,43 @@ multilingual_responses
   response response_learn_from_source_browser_summary_en
     intent learn_from_source_browser_summary
     language en
-    text "I recognized {source} as a declared data source I can learn from ({capability}). The loop that learns from it runs in the native engine: it replays the source prompts through the local links rules and sends the ones they leave unanswered to the human-gated self-improvement loop. This browser worker records the source but does not run that loop, so nothing was learned here."
+    text "{source} ({geo}) supplied these topics: {topics}. Local reasoning solved {handled} of {total} generated prompts. {frontier} remain open."
   response response_learn_from_source_browser_summary_ru
     intent learn_from_source_browser_summary
     language ru
-    text "Я распознал {source} как объявленный источник данных, на котором могу учиться ({capability}). Цикл обучения на нём работает в нативном движке: он прогоняет запросы источника через локальные правила связей и передаёт оставшиеся без ответа в цикл самоулучшения под контролем человека. Этот браузерный воркер записывает источник, но не запускает этот цикл, поэтому здесь ничему не научился."
+    text "Темы из {source} ({geo}): {topics}. Локальные правила решили {handled} из {total} составленных запросов. Осталось открытых запросов: {frontier}."
   response response_learn_from_source_browser_summary_hi
     intent learn_from_source_browser_summary
     language hi
-    text "मैंने {source} को एक घोषित डेटा स्रोत के रूप में पहचाना, जिससे मैं सीख सकता हूँ ({capability})। इससे सीखने वाला लूप नेटिव इंजन में चलता है: वह स्रोत के प्रॉम्प्ट को स्थानीय लिंक नियमों से दोबारा चलाता है और जिनका उत्तर नहीं मिलता उन्हें मानव-नियंत्रित आत्म-सुधार लूप को भेजता है। यह ब्राउज़र वर्कर स्रोत को दर्ज करता है, पर वह लूप नहीं चलाता, इसलिए यहाँ कुछ नहीं सीखा गया।"
+    text "{source} ({geo}) से मिले विषय: {topics}। स्थानीय तर्क ने बनाए गए {total} प्रॉम्प्ट में से {handled} हल किए। {frontier} खुले हैं।"
   response response_learn_from_source_browser_summary_zh
     intent learn_from_source_browser_summary
     language zh
-    text "我已将 {source} 识别为可供学习的已声明数据源（{capability}）。从中学习的循环在原生引擎中运行：它通过本地链接规则重放该来源的提示，并把仍未得到回答的提示交给需人工把关的自我改进循环。此浏览器工作线程只记录该来源，不运行该循环，因此这里没有学到任何东西。"
+    text "{source}（{geo}）提供的主题：{topics}。本地推理解决了生成的 {total} 条提示中的 {handled} 条。还有 {frontier} 条待解决。"
   response response_learn_from_source_browser_summary_es
     intent learn_from_source_browser_summary
     language es
-    text "Reconocí {source} como una fuente de datos declarada de la que puedo aprender ({capability}). El ciclo que aprende de ella se ejecuta en el motor nativo: reproduce las solicitudes de la fuente con las reglas de enlaces locales y envía las que quedan sin respuesta al ciclo de automejora supervisado por humanos. Este worker del navegador registra la fuente pero no ejecuta ese ciclo, así que aquí no se aprendió nada."
+    text "{source} ({geo}) publicó estos temas: {topics}. El razonamiento local resolvió {handled} de {total} solicitudes generadas. Quedan abiertas {frontier}."
+  response response-learn-from-source-gap-en
+    intent learn-from-source-gap
+    language en
+    text "No verified feed from {source} is available for this request."
+  response response-learn-from-source-gap-ru
+    intent learn-from-source-gap
+    language ru
+    text "Для этого запроса нет проверенной ленты {source}."
+  response response-learn-from-source-gap-hi
+    intent learn-from-source-gap
+    language hi
+    text "इस अनुरोध के लिए {source} की सत्यापित फ़ीड उपलब्ध नहीं है।"
+  response response-learn-from-source-gap-zh
+    intent learn-from-source-gap
+    language zh
+    text "此请求没有可用的 {source} 已验证数据源。"
+  response response-learn-from-source-gap-es
+    intent learn-from-source-gap
+    language es
+    text "No hay una fuente verificada de {source} disponible para esta solicitud."
   response response-project-lookup-promoted-en
     intent project-lookup-promoted
     language en

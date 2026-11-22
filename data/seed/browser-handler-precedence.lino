@@ -51,8 +51,6 @@ browser-handler-precedence
     argument_prompt
     argument_normalized
     argument_history
-  handler tryLearnFromSource
-    argument_prompt
   handler tryResearchComparisonTable
     argument_prompt
     argument_normalized

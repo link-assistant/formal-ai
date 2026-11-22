@@ -325,8 +325,9 @@ test("native HTTP release timelines require publisher captures for registered an
     return (await response.json()).choices[0].message.content;
   }
   const spiderMan = "Перечисли фильмы про Человека-паука в порядке выхода";
-  const harryPotter = "List Harry Potter films in release order";
+  const harryPotter = "List Harry Potter films in release order.";
   assert.doesNotMatch(await ask(spiderMan), /Тоби Магуайр|Человек-паук \(2002\)/u);
+  assert.doesNotMatch(await ask(harryPotter), /Philosopher's Stone/u);
   storeTimeline("spider-man.ru", "Q2307877", "ru");
   storeTimeline("harry-potter.en", "Q216930", "en");
   storeCapture(cache,

@@ -14,8 +14,8 @@
 //! `data/seed/release-timelines.lino`; this file only fills placeholders.
 
 use crate::seed::{
-    ReleaseTimeline, ReleaseTimelineEntry, ReleaseTimelinePhrasing, ReleaseTimelines,
-    release_timelines,
+    ReleaseSeriesRequest, ReleaseTimeline, ReleaseTimelineEntry, ReleaseTimelinePhrasing,
+    ReleaseTimelines, release_timelines,
 };
 
 const SUBJECT_SLOT: &str = "{subject}";
@@ -411,6 +411,23 @@ fn series_subject<'a>(normalized: &'a str, frame: &str) -> Option<&'a str> {
     (subject.chars().count() <= 120).then_some(subject)
 }
 
+pub(crate) fn open_series_subject<'a>(
+    normalized: &'a str,
+    language: &str,
+) -> Option<(&'a str, &'static ReleaseSeriesRequest)> {
+    let request = release_timelines()
+        .open_series
+        .as_ref()?
+        .requests
+        .iter()
+        .find(|entry| entry.language == language)?;
+    let subject = request
+        .frames
+        .iter()
+        .find_map(|frame| series_subject(normalized, frame))?;
+    Some((subject, request))
+}
+
 pub(crate) fn try_open_release_timeline<T: crate::source_fetch::SourceTransport>(
     normalized: &str,
     language: &str,
@@ -420,14 +437,8 @@ pub(crate) fn try_open_release_timeline<T: crate::source_fetch::SourceTransport>
 ) -> Option<RenderedTimeline> {
     let registry = release_timelines();
     let series = registry.open_series.as_ref()?;
-    let request = series
-        .requests
-        .iter()
-        .find(|entry| entry.language == language)?;
-    let subject = request
-        .frames
-        .iter()
-        .find_map(|frame| series_subject(normalized, frame))?;
+    let normalized = crate::engine::normalize_prompt(normalized);
+    let (subject, request) = open_series_subject(&normalized, language)?;
     if !timeline_source_allowed(log) {
         return None;
     }

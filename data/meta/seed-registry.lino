@@ -141,6 +141,8 @@ seed_registry
   seed formalization-relations
     bundle true
     web true
+  seed google-trends-prompts
+    web true
   seed grammar-projection-rules
     bundle true
   seed greetings
@@ -858,9 +860,6 @@ seed_registry
   seed writing-genre-styleguides
     bundle true
     web true
-  unregistered google-trends-*
-    owner "src/google_trends_catalog.rs"
-    reason "The Google Trends catalog embeds its own prompts and snapshot; the capability owns the data rather than the shared bundle."
   unregistered question-generation-lexicon
     owner "src/question_generation.rs"
     reason "Question generation embeds its own lexicon so the words it may use are scoped to the one module that may use them."

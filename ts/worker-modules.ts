@@ -49,6 +49,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_crate_final_result.js",
   "worker/formal_ai_worker_crate_formalization_grammar.js",
   "worker/formal_ai_worker_crate_formalization_segment.js",
+  "worker/formal_ai_worker_crate_google_trends_feed.js",
   "worker/formal_ai_worker_crate_host.js",
   "worker/formal_ai_worker_crate_intent_formalization.js",
   "worker/formal_ai_worker_crate_intent_formalization_requirements.js",

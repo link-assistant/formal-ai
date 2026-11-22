@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_solve.js"
-  ceiling 1415
-  rationale "The dispatcher awaits the shared publisher lookup for a resolved reference and attaches its events to the final answer. Issue #1613. Assists project creation questions through the publisher declaration before generic assistant identity and binds inline summaries before splitting tasks."
+  ceiling 1416
+  rationale "The dispatcher awaits the shared publisher lookup for a resolved reference and attaches its events to the final answer. Issue #1613. Assists project creation questions through the publisher declaration before generic assistant identity and binds inline summaries before splitting tasks. Source learning runs at the declared asynchronous precedence row."

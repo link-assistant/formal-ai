@@ -419,14 +419,14 @@ function tryLinkNativeSynthesis(prompt) {
 // Mirrors looks_like_python_function_request in
 // src/solver_handlers/program_synthesis.rs: a function *subject*, a *domain*
 // signal (Python or a data kind), and an *action* verb — all supplied by the
-// meaning lexicon, never hardcoded. `def ` is Python syntax a user may paste,
-// so a literal signature satisfies both the subject and action sides.
+// meaning lexicon. A Python declaration already identifies the language,
+// function and request shape when the caller supplies the signature.
 function looksLikePythonFunctionSynthesis(prompt, normalized) {
-  const hasDef = String(prompt || "").toLowerCase().includes("def ");
+  if (/\bdef\s+[A-Za-z_][A-Za-z0-9_]*\s*\(/u.test(String(prompt || ""))) return true;
   return (
-    (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) || hasDef) &&
+    lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_SUBJECT, normalized) &&
     (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_DOMAIN, normalized) || browserFunctionTemplate(programLanguageFromPrompt(normalized)) !== null) &&
-    (lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_ACTION, normalized) || hasDef)
+    lexiconMentionsRole(ROLE_PROGRAM_SYNTHESIS_ACTION, normalized)
   );
 }
 

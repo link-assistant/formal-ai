@@ -39,6 +39,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/formal-language-projections.lino",
   "seed/formal-targets.lino",
   "seed/formalization-relations.lino",
+  "seed/google-trends-prompts.lino",
   "seed/greetings.lino",
   "seed/handler-precedence.lino",
   "seed/handler-promotions.lino",

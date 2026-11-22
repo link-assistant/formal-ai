@@ -170,10 +170,15 @@ fn continues_procedure(dialogue: &EventLog) -> bool {
 /// Whether a fact question names the subject one of its arms resolves.
 ///
 /// A question over supplied text, a comparison of seeded subjects, the
-/// subject the gate admits, the relation and subject of a live question, or
-/// the concept an explanation researches.
+/// subject the gate admits, a publisher series, a live relation and subject,
+/// or the concept an explanation researches.
 fn names_fact_subject(prompt: &str, normalized: &str) -> bool {
     handlers::gated_fact_record(prompt, normalized).is_some()
+        || crate::release_timeline::open_series_subject(
+            &crate::engine::normalize_prompt(normalized),
+            crate::detect_language(prompt).slug(),
+        )
+        .is_some()
         || crate::fact_live::live_fact_question(prompt).is_some()
         || handlers::explanation_concept(prompt).is_some()
         || handlers::try_prompt_text_question(prompt, &mut EventLog::new()).is_some()

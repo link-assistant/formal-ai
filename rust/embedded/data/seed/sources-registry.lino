@@ -306,6 +306,7 @@ sources_registry
     name "Google Trends regional RSS"
     kind data-feed
     default_enabled true
+    settings_key externalServiceGoogleTrends
     how_to_role none
     primacy first_hand_record
       basis "Google publishes this publisher-ranked record of activity on its own search service."

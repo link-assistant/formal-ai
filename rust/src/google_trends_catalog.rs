@@ -170,7 +170,7 @@ pub fn parse_google_trends_rss(
         let Some(query) = extract_text(block, "title") else {
             continue;
         };
-        if query.trim().is_empty() {
+        if query.trim().is_empty() || query.encode_utf16().count() > 256 {
             continue;
         }
         let news_items = extract_blocks(block, "ht:news_item")
@@ -419,7 +419,8 @@ fn load_prompt_templates() -> Vec<GoogleTrendPromptTemplate> {
             let language = record.find_child_value("language").trim();
             let variation_key = record.find_child_value("variation").trim();
             let text = record.find_child_value("text");
-            if language.is_empty() || variation_key.is_empty() || text.trim().is_empty() {
+            if language.is_empty() || variation_key.is_empty() || !text.contains(QUERY_PLACEHOLDER)
+            {
                 return None;
             }
             Some(GoogleTrendPromptTemplate {

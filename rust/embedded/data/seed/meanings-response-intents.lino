@@ -405,10 +405,10 @@ meanings
   learn_from_source_browser_summary
     defined-by answer
     role localized_response_template
-    precondition "a learning directive named a declared learnable source in the browser worker"
-    effect "the answer says the learning loop for that source runs in the native engine and that nothing was learned in the browser"
-    unit "not applicable"
-    example "This browser worker records the source but does not run that loop."
+    precondition "the browser read a verified feed for the named regional source and locally replayed the resulting prompts"
+    effect "the answer reports the region, captured topics and the counts of solved and open prompts"
+    unit "generated prompts"
+    example "Local reasoning solved 2 of 8 generated prompts."
     grounding "data/seed/multilingual-responses-parity.lino"
   triz_resolution_map
     defined-by answer

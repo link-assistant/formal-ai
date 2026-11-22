@@ -2,9 +2,12 @@
 
 import { cached, host, readText, solve } from './host.mjs';
 import { agenticMessage } from './messages.mjs';
+import { compactFeedText, GOOGLE_TRENDS_SOURCE, loadPromptTemplates, parseGoogleTrendsRss, requestedGeo } from './crate/google_trends_feed.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
 import { findChildValue, parseRoot } from './crate/seed_parser.mjs';
+
+export { parseGoogleTrendsRss };
 
 /** Mirrors `GOOGLE_TRENDS_CATALOG_PATH` in rust/src/agentic_coding/google_trends_catalog.rs. */
 export const GOOGLE_TRENDS_CATALOG_PATH = 'google-trends-catalog.lino';
@@ -26,75 +29,26 @@ export function isGoogleTrendsCatalogTask(prompt) {
     && (lower.includes('prompt') || lower.includes('answer') || lower.includes('catalog') || lower.includes('test'));
 }
 
-const SOURCE_IDENTIFIER = 'google_trends_rss';
-const TOP_LIMIT = 10;
-const XML_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
-const compact = (value) => String(value ?? '').trim().replace(/\s+/gu, ' ');
-
-function blocks(xml, tag) {
-  const pattern = new RegExp('<' + tag + '>([\\s\\S]*?)</' + tag + '>', 'gu');
-  return Array.from(xml.matchAll(pattern), (match) => match[1]);
-}
-
-function text(xml, tag) {
-  const raw = blocks(xml, tag)[0]?.trim() ?? '';
-  if (raw.startsWith('<![CDATA[') && raw.endsWith(']]>')) return compact(raw.slice(9, -3));
-  return compact(raw.replace(/&(amp|lt|gt|quot|apos);/gu, (_, name) => XML_ENTITIES[name]));
-}
-
-/** Mirrors `parse_google_trends_rss`. */
-export function parseGoogleTrendsRss(xml) {
-  const feed = /<rss(?:\s[^>]*)?>([\s\S]*?)<\/rss>/u.exec(xml)?.[1];
-  const channel = feed && blocks(feed, 'channel')[0];
-  if (!channel) return [];
-  const topics = [];
-  for (const item of blocks(channel, 'item')) {
-    const query = text(item, 'title');
-    if (!query) continue;
-    const news = blocks(item, 'ht:news_item').map((entry) => ({
-      title: text(entry, 'ht:news_item_title'),
-      source: text(entry, 'ht:news_item_source'),
-      url: text(entry, 'ht:news_item_url'),
-    })).find(({ title }) => title);
-    topics.push({
-      rank: topics.length + 1,
-      query,
-      traffic: text(item, 'ht:approx_traffic'),
-      published: text(item, 'pubDate'),
-      news,
-    });
-    if (topics.length === TOP_LIMIT) break;
-  }
-  return topics;
-}
-
 function trendsSource() {
-  return cached(SOURCE_IDENTIFIER, () => parseRoot(readText('data/seed/sources-registry.lino')).children
+  return cached(GOOGLE_TRENDS_SOURCE, () => parseRoot(readText('data/seed/sources-registry.lino')).children
     .flatMap(({ children }) => children)
-    .find(({ name, id }) => name === 'source' && id === SOURCE_IDENTIFIER));
+    .find(({ name, id }) => name === 'source' && id === GOOGLE_TRENDS_SOURCE));
 }
 
 function promptTemplates() {
-  return cached('google-trends-prompts', () => parseRoot(readText('data/seed/google-trends-prompts.lino')).children
-    .filter((row) => findChildValue(row, 'record_type') === 'google_trend_prompt_template')
-    .map((row) => ({
-      language: findChildValue(row, 'language'),
-      variation: findChildValue(row, 'variation'),
-      template: findChildValue(row, 'text'),
-    }))
-    .filter(({ language, variation, template }) => language && variation && template));
+  return cached('google-trends-prompts', () =>
+    loadPromptTemplates(readText('data/seed/google-trends-prompts.lino')));
 }
 
 /** Mirrors `feed_for_task` and `answer_google_trends_catalog`. */
 export async function loadCatalog(task = '', fetchSource = host().sourceFetch?.({ ttlSeconds: 900 })) {
   const source = trendsSource();
   if (!source || !fetchSource) return null;
-  const words = task.toLowerCase().split(/[\s?&#]+/u);
-  const argument = words.findIndex((word) => word === 'geo' || word.startsWith('geo='));
-  const geo = (argument < 0 ? 'US' : words[argument] === 'geo' ? words[argument + 1] ?? '' : words[argument].slice(4)).toUpperCase();
-  if (!/^[A-Z]{2}$/u.test(geo)) return null;
+  const geo = requestedGeo(task);
+  const endpoint = findChildValue(source, 'api');
+  if (!geo || !endpoint.includes('{geo}')) return null;
+  const url = endpoint.replace('{geo}', geo);
   const locale = findChildValue(source, 'api_language');
-  const url = findChildValue(source, 'api').replace('{geo}', geo);
   const capture = await fetchSource(url);
   if (!capture?.text || capture.source_url !== url || sha256Hex(capture.text) !== capture.sha256) return null;
   const topics = parseGoogleTrendsRss(capture.text);
@@ -102,16 +56,16 @@ export async function loadCatalog(task = '', fetchSource = host().sourceFetch?.(
   for (const topic of topics) {
     topic.answered = [];
     for (const { language, variation, template } of promptTemplates()) {
-      const prompt = template.replaceAll('{query}', topic.query);
+      const prompt = template.replaceAll('{query}', () => topic.query);
       topic.answered.push({ language, variation, prompt, answer: await solve(prompt) });
     }
   }
-  return { source: SOURCE_IDENTIFIER, url, geo, locale, collected: capture.fetched_at, sha256: capture.sha256, topics };
+  return { source: GOOGLE_TRENDS_SOURCE, url, geo, locale, collected: capture.fetched_at, sha256: capture.sha256, topics };
 }
 
 /** Mirrors `field`. */
 export function linoField(indent, key, value) {
-  const escaped = compact(value).replaceAll('\\', '\\\\').replaceAll('"', "'");
+  const escaped = compactFeedText(value).replaceAll('\\', '\\\\').replaceAll('"', "'");
   return ' '.repeat(indent) + key + ' "' + escaped + '"\n';
 }
 

@@ -743,7 +743,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     });
     return finalize(events, steps, toolCalls, webSearch, formalizationContext);
   }
-  // The `summarization` row runs after web search, as the native table runs it.
+  const learning = await claimRouteRun("tryLearnFromSource", prompt, normalized, history, () => tryLearnFromSource(prompt, preferences));
+  if (learning) return finalizeInlineHandler(events, steps, toolCalls, learning, "tryLearnFromSource", formalizationContext);
   const topicSummary = claimRouteRun("trySummarizationTopic", prompt, normalized, history, () => trySummarizationTopic(prompt));
   if (topicSummary) return finalizeInlineHandler(events, steps, toolCalls, topicSummary, "trySummarizationTopic", formalizationContext);
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
@@ -969,7 +970,7 @@ function workerHandlerRegistryDefinition() {
     product_search: "tryProductSearch",
     requirement_listing: "requirement_listing", // seed rule set (handler-rules.lino), bound by its `rule_set` browser row
     web_search: null, // phase async
-    learn_from_source: "tryLearnFromSource",
+    learn_from_source: null, // phase async
     research_comparison_table: "tryResearchComparisonTable",
     research_result_followup: "tryResearchResultFollowup",
     docs_method_explanation: null, // phase async: verified publisher capture

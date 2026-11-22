@@ -1421,3 +1421,11 @@ meanings
     unit "not applicable"
     example "a checked-baggage statement from the carrier"
     grounding "data/seed/multilingual-responses-entities.lino"
+  learn-from-source-gap
+    defined-by answer
+    role localized_response_template
+    precondition "a browser learning turn has no eligible verified feed for the named source"
+    effect "the answer reports the missing verified feed"
+    unit "not applicable"
+    example "No verified feed from Google Trends is available for this request."
+    grounding "data/seed/multilingual-responses-parity.lino"

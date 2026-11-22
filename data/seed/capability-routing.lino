@@ -852,7 +852,7 @@ capability_routing
   claim
     handler fact_lookup
     admits_on fact_subject
-    because "issue 1175 R3: a fact question claims only with the subject one of its arms resolves: a question over supplied text, a comparison of seeded subjects, the gated record, a live relation and subject, or the concept an explanation researches"
+    because "issue 1175 R3: a fact question claims only with the subject one of its arms resolves: a question over supplied text, a comparison, the gated record, a publisher series, a live relation and subject, or the concept an explanation researches"
   claim_note "Issue 1175 R3 last five rows: each handler that read nothing but its cue now reads the operand its answer is about, through a reader the rule interpreter also captures the operand with (value <name> operand <kind>), so the row and the answer read the same thing."
   claim
     handler docs_method_explanation
