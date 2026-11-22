@@ -409,6 +409,12 @@ b203523ccb2ba4019f98b2acefc1e35264d09bc44052e7556f6d3c7ac7a8f2ed  ./verification
 cbab6561685e4ff17fff42bed5ee034659e37a0a30bd09856159ce39adf27e05  ./verification/round28-native-replay-137230861025.log.gz
 984f9d2864087e33575979573e6d4be54b5548644d48c7ddb0fae3ae17d3b403  ./verification/round28-native-timing.json
 1e03d8ffa39f25e07a4965c83eba9e066431f315f6c91787c4aa934897563921  ./verification/round28-witness.log.gz
+ece03af68361d61d770f0449df0e9696633e17245b6ceb40ec816fdc193bef21  ./verification/round29-browser-callable-baseline.log.gz
+30c3d12456236f5c98960d86943f8b9a21d37710266c595eaa504fdeda225963  ./verification/round29-hosted-45030753684.log.gz
+87c8436dc29b7b6a18c19d9ecb6052ee142a35a14ef86e4ea3a9c900c1a4a3e3  ./verification/round29-layered-group-1-137233631235.log.gz
+4c4bc2474d27667da78735c85f3704ceefdeb5311dc6dd7a5f7dbb74b222f411  ./verification/round29-layered-group-2-137233631938.log.gz
+b22a85d78315009001623d9b9689930a9ab518c29cef7240e5e8adcdb7236ff5  ./verification/round29-native-job-137233722428.log.gz
+04f7b0800f6e3b6fdc107f4502eb96958a0479d1bd930ebbb3862260757b6664  ./verification/round30-browser-callable-green.log.gz
 540c15e55372b6541b95062d91e1d1583240b9a3352c56f6e2c28ec0a76b6b83  ./verification/round4-documentation-method-post-format.log
 4d6ddfc0e83618b9deaeb0e779e2e927f3b0ee45c61495296bac99078738f13b  ./verification/round4-fast-governance.log
 cfcc1e5653b226d4d9b0089fc4b8b2126d63ee34fcd1a76f33af0b22b921605c  ./verification/round4-readable-code-recheck.log

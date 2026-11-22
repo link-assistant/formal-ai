@@ -335,7 +335,7 @@ with explicit publisher captures, including the three factorial locales and
 the independent Fibonacci request. The recurrence probe deliberately yields
 to other synthesis methods when it misses. This allowed the remaining
 fallback to collapse to an empty answer. The solver now records the miss
-and renders a localized source gap only if the ordinary solver and procedure
+and renders a localized source gap if the ordinary solver and procedure
 selection leave the answer empty. The regression checks that the gap is
 visible and that no function is returned from the empty cache.
 
@@ -400,3 +400,21 @@ in the released client report suite.
 [Codex replay](evidence/verification/round28-native-codex.log.gz) ·
 [Gateway replay](evidence/verification/round28-native-gateway.log.gz) ·
 [Client replay](evidence/verification/round28-native-client-reports.log.gz)
+
+The next hosted run at `d2313bd11` found that authorizing required-input
+questions exposed a second routing error. The native trace recorded a missing
+publisher recurrence, then the standalone program catalog asked the caller to
+choose a concrete factorial input. The browser worker replay reproduced the
+same wrong response. A callable declares a parameter the caller supplies when
+running the function. The existing recurrence request recognizers now give
+the recorded source gap precedence over a catalog reply for unbound operands.
+Both replay suites pair the callable with a standalone request that still asks
+for its operand. The captured recurrence cases continue to require a verified
+publisher citation and the generated function. The same hosted head passed
+both JavaScript shards with 2,665 passing tests, 39 skips, and zero failures.
+[Native job log, lines 2550–2573](evidence/verification/round29-native-job-137233722428.log.gz) ·
+[Full pipeline log](evidence/verification/round29-hosted-45030753684.log.gz) ·
+[Browser reproduction](evidence/verification/round29-browser-callable-baseline.log.gz) ·
+[Browser verification](evidence/verification/round30-browser-callable-green.log.gz) ·
+[Layered shard 1](evidence/verification/round29-layered-group-1-137233631235.log.gz) ·
+[Layered shard 2](evidence/verification/round29-layered-group-2-137233631938.log.gz)
