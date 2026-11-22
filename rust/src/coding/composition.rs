@@ -732,6 +732,14 @@ fn verify(
     {
         return (false, "no executable examples or derived tests".to_owned());
     }
+    let expected_stdout = if spec.artifact_shape == ArtifactShape::Program {
+        let Some(expected) = program_stdout_expectation(spec, concepts) else {
+            return (false, "no bounded expected stdout".to_owned());
+        };
+        Some(expected)
+    } else {
+        None
+    };
     let mut script = draft.source.clone();
     if spec.language == "python" && spec.artifact_shape == ArtifactShape::Function {
         let Ok(entrypoint) = template(catalog, "python_test_entrypoint", &[]) else {
@@ -782,16 +790,11 @@ fn verify(
             .command_results
             .iter()
             .any(|result| result.status_code == Some(0) && !result.timed_out);
-    let expected_stdout = program_stdout_expectation(spec, concepts);
-    let output_matches = if spec.artifact_shape == ArtifactShape::Program {
-        expected_stdout.is_some_and(|expected| {
-            run.command_results
-                .last()
-                .is_some_and(|result| result.stdout.trim_end() == expected)
-        })
-    } else {
-        true
-    };
+    let output_matches = expected_stdout.is_none_or(|expected| {
+        run.command_results
+            .last()
+            .is_some_and(|result| result.stdout.trim_end() == expected)
+    });
     let passed = command_succeeded && output_matches;
     let detail = run.command_results.last().map_or_else(
         || "no command result".to_owned(),
@@ -807,6 +810,15 @@ fn verify(
     (passed, detail)
 }
 
+const MAX_DERIVED_RANGE: usize = 1_000;
+
+fn verification_range(spec: &CodingTaskSpec) -> Option<std::ops::RangeInclusive<usize>> {
+    let bound = first_positive_integer(&spec.requirement_sentences)?
+        .parse::<usize>()
+        .ok()?;
+    (bound <= MAX_DERIVED_RANGE).then_some(1..=bound)
+}
+
 fn program_stdout_expectation(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Option<String> {
     if let Some(expected) = &spec.expected_stdout {
         return Some(expected.clone());
@@ -816,11 +828,8 @@ fn program_stdout_expectation(spec: &CodingTaskSpec, concepts: &ConceptMap) -> O
         .iter()
         .any(|structure| structure == "range_inclusive")
     {
-        let bound = first_positive_integer(&spec.requirement_sentences)?
-            .parse::<usize>()
-            .ok()?;
         return Some(
-            (1..=bound)
+            verification_range(spec)?
                 .map(|value| value.to_string())
                 .collect::<Vec<_>>()
                 .join("\n"),
@@ -832,56 +841,122 @@ fn program_stdout_expectation(spec: &CodingTaskSpec, concepts: &ConceptMap) -> O
 fn derived_examples(spec: &CodingTaskSpec, concepts: &ConceptMap) -> Vec<Example> {
     let structures = concepts.structure_ids();
     let has = |id: &str| structures.iter().any(|structure| structure == id);
-    let example = |arguments: &[&str], expected: &str| Example {
-        arguments: arguments.iter().map(|value| (*value).to_owned()).collect(),
-        expected: expected.to_owned(),
+    // Exercise the empty and nonempty domains without borrowing any task's
+    // example inputs. Compute the expected result independently of the draft.
+    let sequence = |length| {
+        (-2_i32..)
+            .filter(|value| *value != 0)
+            .take(length)
+            .collect::<Vec<_>>()
     };
+    let lengths = [0, 5];
     if has("tuple_of") && has("reduce_sum") && has("reduce_product") {
-        return vec![
-            example(&["[]"], "(0, 1)"),
-            example(&["[1, 2, 3]"], "(6, 6)"),
-        ];
+        return lengths
+            .map(|length| {
+                let values = sequence(length);
+                let sum = values.iter().sum::<i32>();
+                let product = values.iter().product::<i32>();
+                Example {
+                    arguments: vec![format!("{values:?}")],
+                    expected: format!("({sum}, {product})"),
+                }
+            })
+            .into();
     }
     if has("quantifier_any") && has("pairwise_distinct") && has("predicate_abs_diff_lt") {
-        return vec![
-            example(&["[1.0, 2.0, 3.0]", "0.5"], "False"),
-            example(&["[1.0, 2.8, 3.0]", "0.3"], "True"),
-        ];
+        return [(0.0, 1.0), (1.0, 1.0), (1.0, 1.5), (2.0, 1.5)]
+            .map(|(gap, threshold): (f64, f64)| {
+                let values: Vec<_> = (0..4).map(|position| f64::from(position) * gap).collect();
+                Example {
+                    arguments: vec![format!("{values:?}"), threshold.to_string()],
+                    expected: if gap < threshold { "True" } else { "False" }.to_owned(),
+                }
+            })
+            .into();
     }
     if has("reduce_count") && has("vowel_character_class") {
-        return vec![example(&["'hello'"], "2"), example(&["'sky'"], "0")];
+        let vowels = |letter: u8| b"aeiou".contains(&letter.to_ascii_lowercase());
+        return [false, true]
+            .map(|include_vowels| {
+                let input: String = (b'a'..=b'z')
+                    .filter(|letter| include_vowels || !vowels(*letter))
+                    .map(char::from)
+                    .collect();
+                Example {
+                    arguments: vec![format!("{input:?}")],
+                    expected: input
+                        .bytes()
+                        .filter(|letter| vowels(*letter))
+                        .count()
+                        .to_string(),
+                }
+            })
+            .into();
     }
     if has("set_intersection") {
-        return vec![
-            example(&["(3, 4, 5, 6)", "(5, 7, 4, 10)"], "(4, 5)"),
-            example(&["(1, 2)", "(3, 4)"], "()"),
-        ];
+        let left = sequence(4);
+        return [2, 5]
+            .map(|offset| {
+                let right: Vec<_> = left.iter().map(|value| value + offset).collect();
+                let shared: Vec<_> = left
+                    .iter()
+                    .copied()
+                    .filter(|value| right.contains(value))
+                    .collect();
+                Example {
+                    arguments: vec![python_int_tuple(&left), python_int_tuple(&right)],
+                    expected: python_int_tuple(&shared),
+                }
+            })
+            .into();
     }
     if has("distinct_elements") && (has("reduce_count") || has("reduce_len")) {
-        return vec![example(&["[1, 1, 2, 3]"], "3"), example(&["[]"], "0")];
+        return lengths
+            .map(|length| {
+                let values: Vec<_> = sequence(length)
+                    .into_iter()
+                    .flat_map(|value| [value; 2])
+                    .collect();
+                Example {
+                    arguments: vec![format!("{values:?}")],
+                    expected: values
+                        .into_iter()
+                        .collect::<std::collections::BTreeSet<_>>()
+                        .len()
+                        .to_string(),
+                }
+            })
+            .into();
     }
     if has("range_inclusive") {
-        if spec.parameters.is_empty() {
-            if let Some(bound) = first_positive_integer(&spec.requirement_sentences)
-                && let Ok(number) = bound.parse::<usize>()
-            {
-                let expected = format!(
-                    "[{}]",
-                    (1..=number)
-                        .map(|value| value.to_string())
-                        .collect::<Vec<_>>()
-                        .join(", ")
-                );
-                return vec![Example {
-                    arguments: Vec::new(),
-                    expected,
-                }];
-            }
+        let ranges = if spec.parameters.is_empty() {
+            verification_range(spec).into_iter().collect()
         } else {
-            return vec![example(&["3"], "[1, 2, 3]"), example(&["1"], "[1]")];
-        }
+            vec![1..=2, 1..=5]
+        };
+        return ranges
+            .into_iter()
+            .map(|range| Example {
+                arguments: if spec.parameters.is_empty() {
+                    Vec::new()
+                } else {
+                    vec![range.end().to_string()]
+                },
+                expected: format!("{:?}", range.collect::<Vec<_>>()),
+            })
+            .collect();
     }
     Vec::new()
+}
+
+fn python_int_tuple(values: &[i32]) -> String {
+    let rendered = values
+        .iter()
+        .map(i32::to_string)
+        .collect::<Vec<_>>()
+        .join(", ");
+    let trailing = if values.len() == 1 { "," } else { "" };
+    format!("({rendered}{trailing})")
 }
 
 fn first_positive_integer(sentences: &[String]) -> Option<String> {

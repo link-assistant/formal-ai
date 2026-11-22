@@ -335,6 +335,22 @@ fn runnable_programs_are_composed_from_output_and_range_observations() {
 }
 
 #[test]
+fn a_large_derived_range_is_not_executed_to_verify_stdout() {
+    let outcome = compose(
+        &program("Count to 1001 inclusive.", None),
+        &map(&["range_inclusive"], Vec::new()),
+    );
+    assert!(outcome.selected.is_none());
+    assert!(
+        outcome
+            .attempts
+            .iter()
+            .any(|attempt| attempt.detail == "no bounded expected stdout"),
+        "{outcome:#?}"
+    );
+}
+
+#[test]
 fn source_recurrence_candidates_are_verified_with_discovered_examples() {
     let mut source_candidate = candidate(
         "source-abstract-17",
