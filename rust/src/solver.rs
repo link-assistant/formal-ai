@@ -575,22 +575,23 @@ impl UniversalSolver {
                 return answer;
             }
 
-            if is_concrete_write_program
-                && let Some(answer) = crate::solver_handlers::try_publisher_recurrence(
+            let publisher_program = if is_concrete_write_program {
+                crate::solver_handlers::try_publisher_recurrence(
                     prompt,
                     log,
                     !self.config.offline && crate::solver_config::read_network_allowed(),
                 )
-            {
-                return answer;
-            }
-
-            if let Some(answer) = crate::coding::rosetta_request::try_rosetta_code_request(
-                prompt,
-                &intent_formalization.normalized_text,
-                log,
-                self.config.offline,
-            ) {
+            } else {
+                None
+            };
+            if let Some(answer) = publisher_program.or_else(|| {
+                crate::coding::rosetta_request::try_rosetta_code_request(
+                    prompt,
+                    &intent_formalization.normalized_text,
+                    log,
+                    self.config.offline,
+                )
+            }) {
                 return answer;
             }
 

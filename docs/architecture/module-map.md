@@ -63,7 +63,7 @@ new module fails CI until this map documents it.
 | `draft_portfolio` | Deterministic parallel candidate-solution portfolios (issue #704). | §3 |
 | `execution_box` | Where code actually runs, and the honest report of what happened (#930, #937). | §3 |
 | `formalization` | Deep formalization: segmentation, need emission, concept grounding,. | §3 |
-| `google_trends_catalog` | Google Trends snapshot conversion and multilingual prompt cataloging. | §3 |
+| `google_trends_catalog` | Google Trends feed retrieval and multilingual prompt cataloging. | §3 |
 | `google_trends_learning` | Wire the Google Trends catalog's *unanswered* prompts into the human-gated. | §3 |
 | `how_to_guide` | Bounded multi-source synthesis of a "how to X" guide. | §3 |
 | `intent_formalization` | Links-Notation intent formalization and cache. | §3 |
