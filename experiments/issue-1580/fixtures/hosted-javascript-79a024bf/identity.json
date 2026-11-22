@@ -2,7 +2,7 @@
   "sourceCommit": "79a024bffdcee2dd94149d929e81b4b65496ed2d",
   "run": 45011615137,
   "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/45011615137",
-  "runConclusion": "success",
+  "runConclusion": "failure",
   "completeObservations": 915,
   "modeledWorkers": 4,
   "warningSeconds": 270,
@@ -11,7 +11,7 @@
   "unobservedFallbackSeconds": 0.34,
   "schedulingFactor": 1.4,
   "rawLogSha256": "0d7001a45feb193af0ef1e8944d29e46655536e611dd1fa77d62e49e925e81b3",
-  "durationsSha256": "e9c164cb4dbb4a5c76c2539cb79c27854bc98134c7a505d6caaaf43853644c58",
+  "durationsSha256": "2f4c554d6647a759682d58bbde49b0e2b2ec904df5fccd66dcd603309dc09822",
   "warnings": [
     {
       "shard": 8,
@@ -67,5 +67,18 @@
     }
   ],
   "executionProof": false,
-  "autonomousAuthorshipCredit": 0
+  "autonomousAuthorshipCredit": 0,
+  "failedObservations": [
+    {
+      "file": "rust/tests/web/translate-es.test.mjs",
+      "job": "js tier (node --check over js, suite group 4)",
+      "rawLogLine": 10224
+    },
+    {
+      "file": "rust/tests/web/typescript-runtime.test.mjs",
+      "job": "js tier (node --check over js, suite group 1)",
+      "rawLogLine": 15287
+    }
+  ],
+  "correction": "The prior supplied fixture writer hardcoded success despite both API and job failures. Retain original archive; current receipt is source-derived."
 }

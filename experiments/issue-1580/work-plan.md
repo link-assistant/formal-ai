@@ -25,27 +25,36 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint, 2026-11-22
 
-Published `79a024bffdcee2dd94149d929e81b4b65496ed2d` has 33 workflows;
-the final native Pipeline families are still active. Do not push before their
-terminal observations are collected. Security rejects RUSTSEC-2026-0592 in
-both URL lock entries. Local `8eeb2f8d3` updates only URL and its required
-form-urlencoded package, refreshes the four governed manifest hashes through
-the maintained generator and adds a bounded native interface regression.
-Its online audit and native behavior require new-head hosted execution.
+Published `79a024bffdcee2dd94149d929e81b4b65496ed2d` has 33 terminal workflows:
+29 success, two failure, one skip and one deliberately cancelled Pipeline.
+The cancelled Pipeline preserves the actual Fast Linux manifest failure, one
+successful native coding group and nine groups with no executed steps. Their
+35-minute runner wait earns zero qualification. Ordinary cancellation required
+force cancellation 310 seconds later. Thirty-two whole-run CLI logs and all 12
+executed Pipeline REST job streams are retained; the failed original Pipeline
+whole-log endpoint remains explicit. Check metadata has 163 entries and 31
+annotations; all 36 diagnostic candidates have line-referenced classifications.
 
-Local `5c80db6aa` repairs 13 abbreviated archive names and a manifest above
-the file-size cap, preserving all 221 compressed and original payload hashes.
-The original full gate inventory has 85 passes, 53 exclusions and four packaging
-failures; all four focused checks now pass after the packaging commit.
-Failed helper assumptions remain retained. See the URL origin and evidence
-packaging case study. The current Layered run passes but records 283/302-second
-shards above the unchanged 270-second warning. Its 915 complete timings are
-retained. The initial 35% import fixes the newer cohort but fails an older one.
-A bounded search rejects 36% and 38%, then selects 40%: all nine retained
-timing cases and all 27 queue controls pass. No floors are lowered and receipt
-fields are identical. The complete 142-entry local inventory now has 89 passes,
-53 explicit hosted-only exclusions and zero failures. New-plan hosted wall times
-and the new native origin behavior remain pending.
+Local `5c80db6aa` repairs 13 archive names and the 2024-line manifest, preserving
+all 221 payload hashes. Local `8eeb2f8d3` updates only URL and its required
+form-urlencoded package, refreshes four governed manifest hashes and adds a
+bounded native interface regression. Online audit and native behavior await CI.
+
+The supplied timing fixture writer mistakenly hardcoded Layered success despite
+two failed jobs. Fresh metadata and original assertions agree on failure. Both
+translation and actual TypeScript runtime tests reproduce before canonical
+regeneration and pass afterward. Four companions are regenerated. Source-grounded
+receipt assertions fail before correction and pass afterward; all 915 durations
+stay exact, now retaining 913 completed and two failed file outcomes. Original
+erroneous evidence is preserved without silently rewriting its history.
+
+The same run records 283/302-second shards above the unchanged 270-second warning.
+Local `f832ca133` selects a 40% scheduling reserve after rejecting earlier drafts:
+all nine timing replays and 27 queue controls pass, with no lowered floors or
+changed receipt identities. Full local inventory: 89 passes, 53 explicit hosted-only
+exclusions, zero failures. Six subsequent packaging/documentation/secret controls
+and both governed witness tests pass. Current TypeScript currency and source
+projection checks also pass. New-plan hosted wall times remain pending.
 
 Complete issue acceptance, aggregate review, applicable template practices,
 original budgets, delivery and serving identity, publication authority, GPU

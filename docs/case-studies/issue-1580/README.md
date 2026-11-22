@@ -2,6 +2,15 @@
 
 Work in progress in [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), addressing [issue #1580](https://github.com/link-assistant/formal-ai/issues/1580). This record distinguishes source fixes, executed checks and unresolved acceptance criteria. It is not a completion claim.
 
+## Current checkpoint
+
+The [terminal collection and TypeScript repair](current-terminal-and-typescript-repair.md)
+records all 33 published-head workflow outcomes, four repaired failed checks,
+the actual two failed file observations, the nine unacquired native groups and
+before/after canonical projection tests. It corrects the supplied timing fixture's
+false success label. Current-source hosted verification and the wider criteria
+remain unfinished. Earlier dated checkpoints below retain their original scope.
+
 ## Reproduction and evidence
 
 The issue's workflow table, every issue/PR conversation comment, inline review comments and reviews were read. The interrupted session was recovered from its authenticated Gists; its five commits were preserved, and main was merged forward. The audited main source is `b68d21647e678cce91ec83d5a28ea86b481064bf`; the source checkpoint for this report is `22ffaa73d1b2b0dc800ed2f9093059ac80ddef56`.

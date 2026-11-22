@@ -190,7 +190,19 @@ test('complete 79a hosted costs preserve both warnings and the fixed runner allo
   const identity = JSON.parse(readFileSync(new URL('identity.json', fixture), 'utf8'));
   const raw = readFileSync(new URL('durations.jsonl', fixture), 'utf8');
   const observations = raw.trim().split('\n').map(line => JSON.parse(line));
-  assert.equal(identity.runConclusion, 'success');
+  const run = JSON.parse(readFileSync(new URL('run-observation.json', fixture), 'utf8'));
+  assert.equal(run.id, identity.run);
+  assert.equal(run.head_sha, identity.sourceCommit);
+  assert.equal(run.conclusion, 'failure');
+  assert.equal(identity.runConclusion, run.conclusion);
+  assert.deepEqual(observations.filter(row => row.result === 'failed').map(row => row.file).sort(),
+    ['rust/tests/web/translate-es.test.mjs', 'rust/tests/web/typescript-runtime.test.mjs']);
+  assert.deepEqual(identity.failedObservations.map(row => row.file).sort(),
+    observations.filter(row => row.result === 'failed').map(row => row.file).sort());
+  for (const row of identity.failedObservations) {
+    assert.equal(identity.jobs.find(job => job.job === row.job)?.conclusion, 'failure');
+    assert(observations.some(observed => observed.file === row.file && observed.job === row.job && observed.result === 'failed'));
+  }
   assert.equal(identity.executionProof, false);
   assert.equal(identity.schedulingFactor, 1.4);
   assert.deepEqual(identity.warnings.map(row => row.seconds), [302, 283]);

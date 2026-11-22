@@ -16,7 +16,7 @@ changes. The root manifest requires `2.5.9`; the maintained witness generator
 refreshes only four manifest hashes. All 1,189 governed test identities,
 221 supported cases and 968 unsupported cases remain unchanged.
 
-Reproduce the pre-repair audit failure with the maintained Cargo audit wrapper
+Reproduce the pre-repair audit failure with `bash scripts/check-rust-dependencies.sh`
 at the published source. The new `url_origins_keep_nested_blob_schemes_opaque`
 native interface case preserves ordinary HTTPS and a single blob HTTPS origin,
 requires opaque nested-blob and blob-WebSocket origins, and bounds its longest

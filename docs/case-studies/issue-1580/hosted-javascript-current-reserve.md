@@ -1,8 +1,9 @@
 # Current hosted JavaScript scheduling reserve
 
 [Layered run 45011615137](https://github.com/link-assistant/formal-ai/actions/runs/45011615137)
-passes at published 79a024bffdcee2dd94149d929e81b4b65496ed2d, but shards seven
-and eight take 283 and 302 seconds. The unchanged 270-second warnings occur
+fails at published 79a024bffdcee2dd94149d929e81b4b65496ed2d: shards one
+and four reject stale TypeScript projections. Shards seven and eight separately
+take 283 and 302 seconds. The unchanged 270-second warnings occur
 at complete raw-log lines 6595 and 3693. All eight wall times and all 915 complete
 file observations remain retained. The file without its own summary stays
 unobserved; its fallback is not presented as a measured duration.
@@ -29,3 +30,14 @@ explicit hosted-only exclusions, zero failures. Required documentation, Rust
 remain evidence. Supplied procedures and data imports earn zero independent
 authorship credit. Wider acceptance for [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581)
 remains unfinished.
+
+The earlier supplied fixture writer incorrectly hardcoded `runConclusion: success`
+while already retaining two failed job conclusions. GitHub's complete run response,
+job responses, check annotations and raw assertions agree on failure. The correction
+retains the old archive, derives the current conclusion from the fresh response,
+and preserves all 915 exact measured durations while restoring their actual file
+results: 913 completed and two failed. The new provenance assertions fail before
+this correction and pass afterward. Both failed test files reproduce before
+canonical TypeScript regeneration and pass afterward; the runtime test executes
+the actual TypeScript worker/planner and its missing/altered projection controls.
+See current-terminal-and-typescript-repair.md for complete terminal collection.
