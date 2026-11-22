@@ -26,6 +26,7 @@ mod live_fact_answer;
 
 #[path = "issue_498_google_trends.rs"]
 mod google_trends;
+use google_trends as issue_498_google_trends;
 
 #[path = "solver/issue_1138_self_use_concept_lookup.rs"]
 mod concept_lookup_self_use;

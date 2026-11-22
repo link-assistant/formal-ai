@@ -363,5 +363,5 @@ pub fn extract_javascript_program(prompt: &str) -> Option<String> {
 }
 
 #[cfg(test)]
-#[path = "tests/javascript_program.rs"]
+#[path = "../../tests/unit/solver/javascript_program.rs"]
 mod javascript_program_tests;

@@ -7,7 +7,9 @@ use formal_ai::{
     try_coreference_with_client,
 };
 
-use super::prompt_variations_facts::{FactTransport, fact_answer};
+#[path = "../../fixtures/fact-claims/publisher_transport.rs"]
+mod publisher_transport;
+use publisher_transport::{FactTransport, fact_answer};
 
 #[test]
 fn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {

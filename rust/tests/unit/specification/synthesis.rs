@@ -10,6 +10,9 @@ use formal_ai::{
 };
 use serde::Deserialize;
 
+#[path = "../../fixtures/fact-claims/publisher_transport.rs"]
+mod publisher_transport;
+
 const CROSS_RUNTIME_SYNTHESIS_FIXTURE: &str =
     include_str!("../../../../data/parity/cross-runtime-synthesis.json");
 
@@ -77,7 +80,7 @@ fn shared_cross_runtime_synthesis_fixture_matches_rust_solver() {
 
     for case in cases {
         let response = if case.id == "e1172_publisher_capital_subject_gate" {
-            super::prompt_variations_facts::fact_answer(&case.prompt, "Q159")
+            publisher_transport::fact_answer(&case.prompt, "Q159")
         } else {
             solver.solve(&case.prompt)
         };

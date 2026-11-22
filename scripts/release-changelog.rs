@@ -62,6 +62,7 @@ fn headings(content: &str) -> impl Iterator<Item = (usize, usize, &str)> {
 }
 
 /// The collector inserts before the first actual release without rewriting old bytes.
+#[allow(dead_code)] // Used by the collectors; the publishing CLI selects sections only.
 pub fn first_heading_offset(content: &str) -> Option<usize> {
     headings(content).next().map(|(start, _, _)| start)
 }
