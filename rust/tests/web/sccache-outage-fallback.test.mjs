@@ -210,7 +210,37 @@ test('actual budget wrapper retains backend evidence without replacing command o
 test('reusable native checks receive the repository diagnostic switch with a quiet default', () => {
   const workflow=YAML.parse(fs.readFileSync(path.join(root,'.github/workflows/native-type-check.yml'),'utf8'));
   assert.equal(workflow.env.FORMAL_AI_CI_VERBOSE, "${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}");
+  const retain=workflow.jobs.clippy.steps.find(row=>row.name==='Retain opt-in native compiler cache observations');
+  assert.equal(retain.if,"${{ !cancelled() && inputs.compile-inputs-changed && env.FORMAL_AI_CI_VERBOSE == 'true' }}");
+  assert.equal(retain.run,'bash scripts/check-sccache-write-health.sh');
+  assert.equal(workflow.jobs.clippy.steps.at(-1),retain,'retain failures after the last compiler command');
   const diagnostic=step('Enable opt-in sccache diagnostics');
   assert.equal(diagnostic.if, "env.FORMAL_AI_CI_VERBOSE == 'true'");
   assert(action.runs.steps.indexOf(diagnostic)<action.runs.steps.indexOf(step('Start the sccache server')));
+});
+
+test('diagnostic startup selects the write-error message before compiler noise can displace it', t => {
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'sccache-diagnostic-filter-'));
+  t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
+  const environmentFile=path.join(directory,'environment');
+  const observed=spawnSync('bash',['-e','-c',step('Enable opt-in sccache diagnostics').run],{
+    cwd:root,encoding:'utf8',timeout:5000,
+    env:{...process.env,GITHUB_ENV:environmentFile,RUNNER_TEMP:directory},
+  });
+  assert.equal(observed.status,0,observed.stderr);
+  const exported=Object.fromEntries(fs.readFileSync(environmentFile,'utf8').trim().split('\n').map(line=>{
+    const split=line.indexOf('=');return[line.slice(0,split),line.slice(split+1)];
+  }));
+  // sccache 0.16.0 uses env_logger's supported level/message-regex syntax.
+  // Its server emits this exact prefix before incrementing cache_write_errors.
+  assert.equal(exported.SCCACHE_LOG,'debug/Error executing cache write:');
+  assert.equal(exported.SCCACHE_LOG_MILLIS,'1');
+  assert.equal(exported.SCCACHE_ERROR_LOG,path.join(directory,'sccache-server.log'));
+  const messageFilter=new RegExp(exported.SCCACHE_LOG.split('/')[1]);
+  assert(messageFilter.test('Error executing cache write: HTTP 429 reservation refused'));
+  assert(messageFilter.test('Error executing cache write: HTTP 409 concurrent key reservation'));
+  assert(!messageFilter.test('parse_arguments: CannotCache(crate-type, bin): '+ 'argument '.repeat(10000)));
+  assert(!messageFilter.test('handle_client: get_stats'));
+  assert(action.runs.steps.indexOf(step('Enable opt-in sccache diagnostics'))<
+    action.runs.steps.indexOf(step('Start the sccache server')));
 });

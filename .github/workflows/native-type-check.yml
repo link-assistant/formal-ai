@@ -237,6 +237,10 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Retain opt-in native compiler cache observations
+        if: ${{ !cancelled() && inputs.compile-inputs-changed && env.FORMAL_AI_CI_VERBOSE == 'true' }}
+        run: bash scripts/check-sccache-write-health.sh
+
   # Run 44918895118 exhausted the coding clock after 58/62 passing tests.
   # Partition the live listing while preserving the existing 20-minute clock.
   contract-build:

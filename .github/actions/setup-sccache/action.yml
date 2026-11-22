@@ -63,6 +63,11 @@ runs:
     # repository variable to true and rerun the affected workflow. The
     # budget wrapper retains the bounded, URL-redacted tail in the job log via
     # check-sccache-write-health.sh, even if statistics are unavailable.
+    # sccache v0.16.0 uses env_logger's level/message-regex filter. Its server
+    # records this prefix immediately before cache_write_errors increments.
+    # A broad debug trace ended with 57 KiB compiler argument messages in run
+    # 45032342321, displacing the actual backend failure from the bounded tail.
+    # Filter at the producer so failed writes survive without retaining that noise.
     - name: Enable opt-in sccache diagnostics
       if: env.FORMAL_AI_CI_VERBOSE == 'true'
       shell: bash
@@ -70,7 +75,7 @@ runs:
         set -euo pipefail
         error_log="${RUNNER_TEMP:-/tmp}/sccache-server.log"
         {
-          echo "SCCACHE_LOG=debug"
+          echo "SCCACHE_LOG=debug/Error executing cache write:"
           echo "SCCACHE_LOG_MILLIS=1"
           echo "SCCACHE_ERROR_LOG=${error_log}"
         } >> "$GITHUB_ENV"

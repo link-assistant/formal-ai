@@ -36,7 +36,9 @@
 #
 # Neither the counts nor job finishing order distinguish these hypotheses.
 # The evidence that separates them is the backend's own response, which sccache logs only
-# under `SCCACHE_LOG=debug`. That is wired to the `FORMAL_AI_CI_VERBOSE`
+# under debug logging. The shared setup filters the producer by the exact
+# `Error executing cache write:` message so large compiler arguments cannot
+# displace the backend response. That is wired to `FORMAL_AI_CI_VERBOSE`
 # repository variable in `.github/actions/setup-sccache/action.yml` and is off by
 # default; set it to `true` and rerun. The EXIT diagnostic below retains a
 # bounded, URL-redacted tail in the hosted job log, including when stats fail.
