@@ -58,7 +58,6 @@ pub const CONTRIBUTION_ARTIFACTS_LINO: &str =
 pub const COREFERENCE_LINO: &str = include_str!("../../embedded/data/seed/coreference.lino");
 pub const CREATIVE_COMPOSITION_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/creative-composition-rules.lino");
-pub const DEMO_DIALOGS_LINO: &str = include_str!("../../embedded/data/seed/demo-dialogs.lino");
 pub const DERIVATION_SCHEMA_LINO: &str =
     include_str!("../../embedded/data/seed/derivation-schema.lino");
 pub const DIAGNOSTIC_CODE_SHAPES_LINO: &str =
@@ -496,7 +495,6 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/contribution-artifacts.lino", CONTRIBUTION_ARTIFACTS_LINO),
         ("data/seed/coreference.lino", COREFERENCE_LINO),
         ("data/seed/creative-composition-rules.lino", CREATIVE_COMPOSITION_RULES_LINO),
-        ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
         ("data/seed/derivation-schema.lino", DERIVATION_SCHEMA_LINO),
         ("data/seed/diagnostic-code-shapes.lino", DIAGNOSTIC_CODE_SHAPES_LINO),
         ("data/seed/draft-strategies.lino", DRAFT_STRATEGIES_LINO),
