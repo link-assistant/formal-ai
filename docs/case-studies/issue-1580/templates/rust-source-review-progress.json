@@ -6379,7 +6379,14 @@
         "scripts/get-bump-type.rs",
         "scripts/cargo-package.rs"
       ],
-      "verification": "experiments/issue-1580/evidence/checks/release-io-and-heading-practices/manifest.json"
+      "verification": "experiments/issue-1580/evidence/checks/release-io-and-heading-practices/manifest.json",
+      "currentDraftObservation": {
+        "at": "2026-11-22T14:51:03.539299+00:00",
+        "sourceHead": "d2cf0bae92a7888c2121e0e5b6a29fb85cf99fd1",
+        "newNativeExecutionVerified": false,
+        "evidence": "experiments/issue-1580/evidence/checks/release-capacity-and-cache-draft/manifest.json",
+        "assessment": "The published native contract compilation exposes an unused helper under strict warnings; a real UTF-8/CRLF/fence byte-offset contract now calls it. Existing successful controls do not establish this new target compilation."
+      }
     },
     {
       "practice": "Pinned development inputs, lint configuration and example boundaries",
@@ -6547,7 +6554,14 @@
         "scripts/wait-for-crate.rs",
         "scripts/check-release-needed.rs"
       ],
-      "verification": null
+      "verification": null,
+      "currentDraftObservation": {
+        "at": "2026-11-22T14:51:03.539348+00:00",
+        "sourceHead": "d2cf0bae92a7888c2121e0e5b6a29fb85cf99fd1",
+        "newNativeExecutionVerified": false,
+        "evidence": "experiments/issue-1580/evidence/checks/release-capacity-and-cache-draft/manifest.json",
+        "assessment": "The local waiter now uses the shared bounded registry helper and validates version identity. Eight new compiled CLI methods and the expanded ten-binary harness await hosted execution. Current shared-template source identity defect reported in upstream issue 264; template sparse-first behavior is not claimed for the downstream API-only waiter."
+      }
     },
     {
       "practice": "Release-source and Git-index ownership",
@@ -6579,7 +6593,14 @@
         "scripts/create-changelog-fragment.rs",
         "scripts/collect-changelog.rs"
       ],
-      "verification": "experiments/issue-1580/evidence/checks/release-io-and-heading-practices/manifest.json"
+      "verification": "experiments/issue-1580/evidence/checks/release-io-and-heading-practices/manifest.json",
+      "currentDraftObservation": {
+        "at": "2026-11-22T14:51:03.539357+00:00",
+        "sourceHead": "d2cf0bae92a7888c2121e0e5b6a29fb85cf99fd1",
+        "newNativeExecutionVerified": false,
+        "evidence": "experiments/issue-1580/evidence/checks/release-capacity-and-cache-draft/manifest.json",
+        "assessment": "Safe creator execution passes in the published 17-method CLI suite. New actual detector/collector/bump output, inventory and byte-preservation controls extend the harness to 25 methods; new cases and repaired heading target await hosted execution."
+      }
     },
     {
       "practice": "Crate release identity, package size and downstream smoke tests",
@@ -6675,7 +6696,14 @@
         "scripts/version-and-commit.rs",
         "rust/tests/unit/workflow_contracts.rs"
       ],
-      "verification": "experiments/issue-1580/evidence/ci/native-families-11c0bd05/early-completed-jobs.json"
+      "verification": "experiments/issue-1580/evidence/ci/native-families-11c0bd05/early-completed-jobs.json",
+      "currentDraftObservation": {
+        "at": "2026-11-22T14:51:03.539363+00:00",
+        "sourceHead": "d2cf0bae92a7888c2121e0e5b6a29fb85cf99fd1",
+        "newNativeExecutionVerified": false,
+        "evidence": "experiments/issue-1580/evidence/checks/release-capacity-and-cache-draft/manifest.json",
+        "assessment": "The new change-detector consumer delegates to the shared fatal output writer. Actual CLI output-path tests cover directory, empty, post-open and Unix filename behavior for five output CLIs; their new native execution remains pending."
+      }
     },
     {
       "practice": "Release and terminal gate policy contracts",
@@ -6786,7 +6814,14 @@
       ],
       "assessment": "The current hosted workflow target directly executes the production collector, version collector, bump selector, output writer and filesystem helpers; the former pending physical read-error replays now pass. The new shared iterator and twelve LF/CRLF insertion fixtures await hosted CI. Direct module coverage is distinct from the pinned seven-CLI subprocess experiment, whose complete equivalence remains open.",
       "status": "published-production-module-io-hosted-verified-new-insertion-and-full-cli-parity-open",
-      "verification": "experiments/issue-1580/evidence/checks/release-io-and-heading-practices/manifest.json"
+      "verification": "experiments/issue-1580/evidence/checks/release-io-and-heading-practices/manifest.json",
+      "currentDraftObservation": {
+        "at": "2026-11-22T14:51:03.539368+00:00",
+        "sourceHead": "d2cf0bae92a7888c2121e0e5b6a29fb85cf99fd1",
+        "newNativeExecutionVerified": false,
+        "evidence": "experiments/issue-1580/evidence/checks/release-capacity-and-cache-draft/manifest.json",
+        "assessment": "The expanded compiled harness declares ten production binaries and 25 methods, covering the former detector, collector, bump and output gaps. Python syntax succeeds, but full CLI parity is not credited before the new hosted execution."
+      }
     },
     {
       "practice": "Release registry uncertainty and runtime workflow replay",
