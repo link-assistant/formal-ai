@@ -158,7 +158,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
     "  git rev-parse HEAD 'HEAD^{tree}'\n" +
     '  rustc -vV\n' +
     '  sha256sum rust/target/debug/examples/dump_google_trends_catalog rust/examples/dump_google_trends_catalog.rs rust/src/google_trends_catalog.rs data/seed/google-trends-prompts.lino\n' +
-    '} > "$CATALOG_OUTPUT/generation-identity.txt"\n']);
+    '} > "$CATALOG_OUTPUT/generation-identity.txt"\n',
+    'bash scripts/check-sccache-write-health.sh']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
   for (const step of check.steps.filter(step => (step.uses && !['actions/setup-node@v7', 'actions/upload-artifact@v7', './.github/actions/setup-bun-verified'].includes(step.uses)) || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
     assert.equal(step.if, step.id === 'native-checkout-retry'

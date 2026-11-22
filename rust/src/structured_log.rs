@@ -332,7 +332,8 @@ fn directory() -> Option<PathBuf> {
             std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".formal-ai/logs"))
         })
 }
-/// Render the legacy request trace from its declarative wire header.
+/// Render request metadata; full payloads require their separate explicit custody opt-in.
+/// Mirrors the JavaScript server logger's explicit trace payload boundary.
 #[must_use]
 pub fn request_trace_message(method: &str, path: &str, body: &str) -> String {
     static HEADER: OnceLock<String> = OnceLock::new();
@@ -352,7 +353,11 @@ pub fn request_trace_message(method: &str, path: &str, body: &str) -> String {
         header,
         &[("method", method), ("path", path), ("body_bytes", &bytes)],
     );
-    format!("{header}\n{body}")
+    if crate::solver_config::flag_enabled("FORMAL_AI_LOG_PAYLOAD_CUSTODY") {
+        format!("{header}\n{body}")
+    } else {
+        header
+    }
 }
 
 // Producer budgets mirror js/logging/diagnostic-metadata.mjs, not reader policy.
