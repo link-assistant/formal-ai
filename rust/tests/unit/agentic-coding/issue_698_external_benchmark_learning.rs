@@ -35,6 +35,9 @@ fn run_with_failures() -> SuiteRun {
     }
 }
 
+const REPORT_MEMORY: &str =
+    include_str!("../../../../data/meta/issue-698-external-benchmark-learning.lino");
+
 #[test]
 fn real_failures_become_review_gated_associative_learning_evidence() {
     let report = external_benchmarks::learning::render_failure_report(&[run_with_failures()])
@@ -80,13 +83,14 @@ fn formal_ai_routes_the_issue_698_learning_task_through_agentic_mode() {
         Some(EXTERNAL_BENCHMARK_LEARNING_PATH)
     );
 
-    let outcome = run_agentic_task(&task).expect("Agent CLI-style execution");
+    let outcome = run_agentic_task(&format!("{task}\n```lino\n{REPORT_MEMORY}\n```"))
+        .expect("Agent CLI-style execution");
     let arguments: serde_json::Value =
         serde_json::from_str(&outcome.steps[0].arguments).expect("write arguments");
     assert_eq!(arguments["path"], EXTERNAL_BENCHMARK_LEARNING_PATH);
     assert_eq!(
         arguments["content"],
-        external_benchmark_learning::render_document()
+        external_benchmark_learning::render_document_from(REPORT_MEMORY)
     );
     assert!(outcome.final_answer.contains("human-review-gated"));
 }

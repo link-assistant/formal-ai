@@ -1,0 +1,20 @@
+{"prompt":"Who created you?","intent":"identity","content":"I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.","storedAnswer":"Formal AI was created by github.com/konard using github.com/link-assistant/hive-mind."}
+{"prompt":"Who created Formal AI?","intent":"identity","content":"I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.","storedAnswer":"Formal AI was created by github.com/konard using github.com/link-assistant/hive-mind."}
+{"prompt":"Кто тебя создал?","intent":"fact_lookup","content":"Formal AI был создан пользователем github.com/konard с использованием github.com/link-assistant/hive-mind.","storedAnswer":"Formal AI был создан пользователем github.com/konard с использованием github.com/link-assistant/hive-mind."}
+{"prompt":"谁创建了你？","intent":"fact_lookup","content":"Formal AI 由 github.com/konard 使用 github.com/link-assistant/hive-mind 创建。","storedAnswer":"Formal AI 由 github.com/konard 使用 github.com/link-assistant/hive-mind 创建。"}
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: offline fact lookup must not return a bundled project origin
+    at file:///tmp/gh-issue-solver-1795289097006/[eval1]:12:8
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v26.13.0

@@ -350,8 +350,15 @@ fn propose_rule_from_trace(
     let base_task = require_field(&candidate.payload, "base_task")?;
     let modifier = require_field(&candidate.payload, "modifier")?;
     let resolved_task = require_field(&candidate.payload, "resolved_task")?;
-    let fixture =
-        field_value(&verification.payload, "fixture").unwrap_or_else(|| String::from("unknown"));
+    let basis = field_value(&verification.payload, "verification_basis");
+    let verification_label = if basis.is_some() {
+        "verification"
+    } else {
+        "fixture"
+    };
+    let fixture = basis
+        .or_else(|| field_value(&verification.payload, "fixture"))
+        .unwrap_or_else(|| String::from("unknown"));
 
     for (name, value) in [
         ("rule_id", rule_id.as_str()),
@@ -372,7 +379,7 @@ fn propose_rule_from_trace(
         LearnedRuleAdoption::BlockedByBenchmark
     };
     let summary = format!(
-        "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{}` is {} ({}/{}).",
+        "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; {verification_label} `{fixture}` passed; benchmark `{}` is {} ({}/{}).",
         gate.suite_id,
         gate.status_slug(),
         gate.passed,

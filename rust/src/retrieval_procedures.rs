@@ -10,6 +10,8 @@
 //! `source_refresh` and `source_conflict` rule sets of
 //! `data/seed/handler-rules.lino`.
 
+use std::cell::Cell;
+
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
@@ -34,7 +36,7 @@ pub fn try_learn_from_source(
 ) -> Option<SymbolicAnswer> {
     let registry = crate::seed::learning_sources();
     let source = registry.match_directive(normalized)?;
-    let summary = learning_source_summary(&source.capability)?;
+    let summary = learning_source_summary(prompt, &source.capability)?;
     log.append("learning_source", source.id.clone());
     log.append("learning_capability", source.capability.clone());
 
@@ -55,28 +57,41 @@ pub fn try_learn_from_source(
     ))
 }
 
-/// Render the deterministic learning summary for a source `capability`.
-///
-/// Returns `None` for a capability with no wired learning loop so the handler
-/// declines rather than inventing an answer; a new capability is registered here
-/// alongside the loop that ingests it.
-fn learning_source_summary(capability: &str) -> Option<String> {
-    match capability {
-        "google_trends_learning" => {
-            let report = crate::google_trends_learning::trending_learning_report();
-            Some(format!(
-                "I recognized Google Trends as a data source I can learn from. I collected \
-                 {total} trending prompts across every supported language, already answer \
-                 {handled} of them from local links rules, and routed the remaining {frontier} \
-                 to the human-gated self-improvement loop. That loop proposed {proposals} rules \
-                 and adopted {adopted}: nothing changes without human review.",
-                total = report.total_prompts,
-                handled = report.handled_by_engine,
-                frontier = report.frontier_count(),
-                proposals = report.run.proposals.len(),
-                adopted = report.adopted_count(),
-            ))
-        }
-        _ => None,
+thread_local! {
+    static LEARNING_SOURCE_ACTIVE: Cell<bool> = const { Cell::new(false) };
+}
+
+/// A topic in a publisher feed can itself mention a learning source. In that
+/// nested answer, acknowledge discovery without starting another collection.
+fn learning_source_summary(prompt: &str, capability: &str) -> Option<String> {
+    if capability != "google_trends_learning" {
+        return None;
     }
+    LEARNING_SOURCE_ACTIVE.with(|active| {
+        let was_active = active.replace(true);
+        let report = if was_active {
+            None
+        } else {
+            crate::google_trends_catalog::feed_for_task(prompt)
+                .as_ref()
+                .map(crate::google_trends_learning::trending_learning_report_from_feed)
+        };
+        active.set(was_active);
+        Some(report.map_or_else(
+            || crate::seed::agentic_message("google_trends_source_unavailable", &[]),
+            |report| {
+                crate::seed::agentic_message(
+                    "google_trends_chat_learning_summary",
+                    &[
+                        ("source_url", &report.source_url),
+                        ("total", &report.total_prompts.to_string()),
+                        ("handled", &report.handled_by_engine.to_string()),
+                        ("frontier", &report.frontier_count().to_string()),
+                        ("proposals", &report.run.proposals.len().to_string()),
+                        ("adopted", &report.adopted_count().to_string()),
+                    ],
+                )
+            },
+        ))
+    })
 }

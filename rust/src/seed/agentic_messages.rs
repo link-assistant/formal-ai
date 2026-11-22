@@ -4,21 +4,36 @@ use std::collections::BTreeMap;
 pub fn agentic_message(key: &str, values: &[(&str, &str)]) -> String {
     static MESSAGES: std::sync::OnceLock<BTreeMap<String, String>> = std::sync::OnceLock::new();
     let messages = MESSAGES.get_or_init(|| {
-        let root = super::parser::parse_lino(include_str!(
+        load_messages(include_str!(
             "../../embedded/data/meta/agentic-messages.lino"
-        ));
-        root.children.first().map_or_else(BTreeMap::new, |root| {
-            root.children
-                .iter()
-                .filter(|node| node.name == "message")
-                .map(|node| {
-                    (
-                        node.id.clone(),
-                        node.find_child_value("text").replace("\\n", "\n"),
-                    )
-                })
-                .collect()
-        })
+        ))
     });
     super::fill_template_once(messages.get(key).map_or(key, String::as_str), values)
+}
+
+/// Wording shared with the JavaScript server.
+pub fn server_message(key: &str, values: &[(&str, &str)]) -> String {
+    static MESSAGES: std::sync::OnceLock<BTreeMap<String, String>> = std::sync::OnceLock::new();
+    let messages = MESSAGES.get_or_init(|| {
+        load_messages(include_str!(
+            "../../embedded/data/meta/server-messages.lino"
+        ))
+    });
+    super::fill_template_once(messages.get(key).map_or(key, String::as_str), values)
+}
+
+fn load_messages(source: &str) -> BTreeMap<String, String> {
+    let root = super::parser::parse_lino(source);
+    root.children.first().map_or_else(BTreeMap::new, |root| {
+        root.children
+            .iter()
+            .filter(|node| node.name == "message")
+            .map(|node| {
+                (
+                    node.id.clone(),
+                    node.find_child_value("text").replace("\\n", "\n"),
+                )
+            })
+            .collect()
+    })
 }

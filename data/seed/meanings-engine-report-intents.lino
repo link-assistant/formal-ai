@@ -145,13 +145,13 @@ meanings
     unit "not applicable"
     example "no overlapping items; travel time accounted between consecutive items (20 min intra-district, 40 min cross-district); every item inside its opening hours; at most 4 items a day"
     grounding "data/seed/multilingual-responses-creative-tasks.lino"
-  triz_link_note
+  triz_resolution_missing_demands
     defined-by answer
     role localized_response_template
-    precondition "a contradiction question is answered with the resolution families"
-    effect "the answer ties the contradiction to the range-selection value the requirements choose"
+    precondition "a contradiction or paradox request does not supply two distinct demands"
+    effect "asks for the two demands and their conditions"
     unit "not applicable"
-    example "A contradiction is a link whose value (0-1) is chosen from the requirement's own clauses."
+    example "State the two conflicting demands."
     grounding "data/seed/multilingual-responses-triz.lino"
   formalization_rml_absent
     defined-by answer
@@ -365,10 +365,18 @@ meanings
   project-lookup-promoted
     defined-by answer
     role localized_response_template
-    precondition "a curated project lookup promotes the configured authoritative repository source"
-    effect "the response names the selected repository and the grounded source-registry promotion"
+    precondition "a project lookup promotes the registered repository identity"
+    effect "the response names the selected repository and shows its verified description when available"
     unit "not applicable"
     example "a curated repository source was selected"
+    grounding "data/seed/multilingual-responses-parity.lino"
+  project-description-unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "repository metadata was unavailable or did not supply a verified description"
+    effect "the response makes the information gap visible"
+    unit "not applicable"
+    example "no verified repository description is available"
     grounding "data/seed/multilingual-responses-parity.lino"
   runtime_derivation_record_missing
     defined-by answer
@@ -586,3 +594,19 @@ meanings
     unit "not applicable"
     example "All requirements were verified (2)."
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  documentation-method-source-guidance
+    defined-by answer
+    role localized_response_template
+    precondition "a publisher capture confirms the requested symbol and supplies its signature and description"
+    effect "presents the signature and a short excerpt alongside the source link"
+    unit "one documented symbol"
+    example "The publisher documents the method with this signature."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  documentation-method-ambiguous
+    defined-by answer
+    role localized_response_template
+    precondition "multiple documented symbols match the method name in the publisher index"
+    effect "asks the user to select among the symbols the index returned"
+    unit "one method clarification"
+    example "Which documented method did you mean?"
+    grounding "data/seed/multilingual-responses-policy.lino"

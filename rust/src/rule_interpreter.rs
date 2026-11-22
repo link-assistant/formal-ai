@@ -211,6 +211,11 @@ enum ValueSource {
     /// The seeded response whose intent this template names once earlier
     /// captures fill it, in the prompt language (issue #918).
     Response(String),
+    /// A callable list operation or its test, projected into the captured language.
+    ListCode {
+        language: String,
+        test: bool,
+    },
     /// The named text transform (`values::TEXT_TRANSFORMS`) applied to the
     /// request's free-text payload; the rule does not match without a payload
     /// or when the transform declines it (R1188-U20).

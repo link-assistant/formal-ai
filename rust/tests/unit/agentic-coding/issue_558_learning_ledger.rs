@@ -10,16 +10,22 @@
 //! failure is answered from the ledger instead of re-derived; and the ledger
 //! serialises to valid Links Notation pinned byte-for-byte to a committed artifact.
 
+#[path = "../../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::LEDGER_TASK;
+use repair_fixture::SELF_HEAL_TASK;
+use repair_fixture::{canonical_case, canonical_failure_trace, canonical_ledger};
+
 use std::fs;
 use std::path::Path;
 
 use formal_ai::agentic_coding::{
-    AgenticPlan, DRIVER_TOOLS, LEDGER_PATH, LEDGER_TASK, PlannedToolCall, is_ledger_task, ledger,
+    AgenticPlan, DRIVER_TOOLS, LEDGER_PATH, PlannedToolCall, is_ledger_task, ledger,
     plan_chat_step, run_agentic_task,
 };
 use formal_ai::{
     ChatMessage, HumanApproval, LearningLedger, PromotionRejected, RepairCase, RepairOutcome,
-    ToolCall, canonical_case, canonical_ledger,
+    ToolCall,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -116,8 +122,8 @@ fn refuses_promotion_when_the_benchmark_gate_is_not_green() {
     // A real case whose benchmark gate did not pass: a lesson exists but "tests" did
     // not accept, so it is blocked.
     let blocked = RepairCase::from_trace(
-        formal_ai::canonical_failure_trace(),
-        formal_ai::SourceRoundTrip::for_pinned_target(),
+        canonical_failure_trace(),
+        repair_fixture::pinned_round_trip(),
         formal_ai::BenchmarkGateReport::issue_362_from_counts(0, 5),
     );
     assert_eq!(blocked.outcome, RepairOutcome::BlockedByBenchmark);
@@ -189,12 +195,13 @@ fn committed_ledger_artifact_matches_the_generated_ledger() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    let committed = fs::read_to_string(root.join("data/meta/learning-ledger.lino"))
-        .expect("data/meta/learning-ledger.lino should be committed");
+    let committed =
+        fs::read_to_string(root.join("rust/tests/fixtures/issue-558/learning-ledger.lino"))
+            .expect("rust/tests/fixtures/issue-558/learning-ledger.lino should be committed");
     let expected = format!("{}\n", canonical_ledger().links_notation());
     assert_eq!(
         committed, expected,
-        "regenerate with `cargo run --example dump_learning_ledger > data/meta/learning-ledger.lino`"
+        "regenerate with `cargo run --example dump_learning_ledger > rust/tests/fixtures/issue-558/learning-ledger.lino`"
     );
 }
 
@@ -203,7 +210,7 @@ fn canonical_ledger_is_loaded_from_the_link_store_backed_seed() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    let seed = fs::read_to_string(root.join("data/seed/approved-lessons.lino"))
+    let seed = fs::read_to_string(root.join("rust/tests/fixtures/issue-558/approved-lessons.lino"))
         .expect("approved-lessons seed should be committed");
     let loaded = LearningLedger::from_approved_lessons_seed(&seed)
         .expect("approved lessons must cross the link-store projection");
@@ -269,9 +276,7 @@ fn recognises_the_ledger_task_without_colliding_with_the_sibling_recipes() {
     ));
     // Unrelated and sibling self-inspection requests do not route here.
     assert!(!is_ledger_task("what files are in this folder?"));
-    assert!(!is_ledger_task(
-        formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
-    ));
+    assert!(!is_ledger_task(SELF_HEAL_TASK));
     assert!(!is_ledger_task(
         formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK
     ));
@@ -294,14 +299,21 @@ fn planner_walks_the_ledger_recipe() {
     assert_eq!(call.tool, "write_file");
     assert!(call.arguments.contains(LEDGER_PATH));
     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
-    assert_eq!(written["content"], ledger::render_document());
+    assert_eq!(
+        written["content"],
+        ledger::render_document(formal_ai::learning_ledger::configured_ledger().unwrap())
+    );
     answer_tool_call(&mut messages, &call, "wrote learning-ledger.lino");
 
     // Step 2: verify by reading the document back.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "run_command");
     assert!(call.arguments.contains(LEDGER_PATH));
-    answer_tool_call(&mut messages, &call, &ledger::render_document());
+    answer_tool_call(
+        &mut messages,
+        &call,
+        &ledger::render_document(formal_ai::learning_ledger::configured_ledger().unwrap()),
+    );
 
     // Step 3: the recipe is exhausted — the final answer carries the ledger.
     match plan_chat_step(&messages, &tools) {
@@ -326,7 +338,10 @@ fn driver_drives_the_ledger_recipe_to_a_write() {
         .find(|step| step.tool == "write_file")
         .expect("a write step");
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
-    assert_eq!(written["content"], ledger::render_document());
+    assert_eq!(
+        written["content"],
+        ledger::render_document(formal_ai::learning_ledger::configured_ledger().unwrap())
+    );
     assert_eq!(written["path"], LEDGER_PATH);
     assert!(outcome.final_answer.contains(LEDGER_PATH));
 }

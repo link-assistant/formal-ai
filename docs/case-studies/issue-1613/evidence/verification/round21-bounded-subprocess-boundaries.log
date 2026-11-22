@@ -1,0 +1,22 @@
+✔ Rust actual constructors, imports, typed children and fields refuse raw blocking (14.68254ms)
+✔ local constructor aliases and spawned child provenance survive chains (3.936403ms)
+✔ eight original domain status boundaries remain non-process (258.819226ms)
+✔ terminal allowance requires the exact two terminal predicates and consequence (1.759772ms)
+✔ JS imported and namespace synchronous child APIs refuse unbounded calls (9.508167ms)
+✔ JS finite ignore startup policy keeps SIGKILL and literal deadline mandatory (7.677783ms)
+✔ opaque macro call shapes retain process provenance without parsing macro data as Rust (1.30293ms)
+✔ comments, strings, domain methods and bounded calls do not masquerade as child APIs (1.633027ms)
+✔ hosted subprocess boundary scan covers maintained source directories (11486.994824ms)
+✔ hosted capture source projection remains mechanically current (185.34518ms)
+✔ dynamic child-process imports retain provenance under both Babel AST representations (13.068919ms)
+✔ capture generation checks and repairs the native embedded consumer together with canonical source (20.97568ms)
+✔ readable capture projection is valid canonical notation and round-trips quotes, escapes and UTF-8 (3557.605306ms)
+✔ secret scanner bounds npm shell arguments and retains every literal filename (1100.935837ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16919.662004

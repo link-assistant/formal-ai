@@ -18,18 +18,12 @@ pub static REPORT: LearningReport = LearningReport {
     promotion_gate: Some("routing_precedence_from_seed_and_parity_fixture_pass"),
     path: HANDLER_PRECEDENCE_LEARNING_PATH,
     task: HANDLER_PRECEDENCE_LEARNING_TASK,
-    memory: include_str!("../../../embedded/data/meta/issue-663-handler-precedence-learning.lino"),
     subject: "handler-precedence observations and the precedence-is-data amendment",
 };
 
 #[must_use]
 pub fn is_handler_precedence_learning_task(prompt: &str) -> bool {
     REPORT.matches(prompt)
-}
-
-#[must_use]
-pub fn render_document() -> String {
-    REPORT.render_document()
 }
 
 #[must_use]

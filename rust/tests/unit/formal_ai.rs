@@ -1,57 +1,11 @@
 use formal_ai::{
     ChatCompletionRequest, ChatMessage, ConversationTurn, FormalAiEngine, ResponsesRequest,
-    UniversalSolver, create_chat_completion, create_response, handle_api_request,
+    SolverConfig, UniversalSolver, create_chat_completion, create_response, handle_api_request,
     knowledge_links_notation,
 };
 use lino_objects_codec::format::parse_indented;
 
 mod seed_and_memory;
-
-const PYTHON_SCRIPT_ANSWER: &str = r"Here is a minimal Python script:
-
-```python
-print('Hello, world!')
-```
-
-Execution status: not run; this program was rediscovered from https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples and its output contract was checked by decomposition, not by executing it.
-Check command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`
-Run command: `python3 main.py`
-Expected output after verification:
-```text
-Hello, world!
-```";
-
-const RUST_SCRIPT_ANSWER: &str = r#"Here is a minimal Rust script:
-
-```rust
-fn main() {
-    println!("Hello, world!");
-}
-```
-
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
-Check command: `rustc main.rs -o main`
-Run command: `./main`
-Output:
-```text
-Hello, world!
-```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."#;
-
-const JAVASCRIPT_SCRIPT_ANSWER: &str = r#"Here is a minimal JavaScript script:
-
-```javascript
-console.log("Hello, world!");
-```
-
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
-Check command: `node --check main.js`
-Run command: `node main.js`
-Output:
-```text
-Hello, world!
-```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."#;
 
 const OWLBEAR_PROJECT_PLAN: &str = r#"Implementation plan pending approval for a extension targeting Owlbear.
 
@@ -348,7 +302,11 @@ fn how_you_work_prompts_return_meta_explanation() {
 
 #[test]
 fn rust_hello_world_prompt_returns_code_block() {
-    let response = FormalAiEngine.answer("Write me hello world program in Rust");
+    let response = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve("Write me hello world program in Rust");
 
     assert_eq!(response.intent, "write_program");
     assert!(
@@ -367,9 +325,13 @@ fn rust_hello_world_prompt_returns_code_block() {
     assert!(
         response
             .answer
-            .contains("Execution status: compiled and ran")
+            .contains("Execution status: not probed in this environment.")
     );
-    assert!(response.answer.contains("Output:"));
+    assert!(
+        response
+            .answer
+            .contains("Output, not observed in this environment:")
+    );
     assert!(response.answer.contains("```text\nHello, world!\n```"));
 }
 
@@ -440,60 +402,42 @@ fn hello_world_prompt_supports_multiple_programming_languages() {
 }
 
 #[test]
-fn write_script_prompt_returns_code_block() {
-    // Regression test for issue #35: "Напиши скрипт на питоне" was returning
-    // intent: unknown instead of routing to a code answer.
+fn script_requests_without_a_task_ask_for_operands() {
     let cases = [
         (
             "Напиши скрипт на питоне",
-            "write_script_python",
-            "```python",
-            PYTHON_SCRIPT_ANSWER,
+            "Что должна делать программа на языке python?",
         ),
         (
             "Write a script in Python",
-            "write_script_python",
-            "```python",
-            PYTHON_SCRIPT_ANSWER,
+            "What should the python program do?",
         ),
-        (
-            "Write a script in Rust",
-            "write_script_rust",
-            "```rust",
-            RUST_SCRIPT_ANSWER,
-        ),
+        ("Write a script in Rust", "What should the rust program do?"),
+        ("Write a Bash script", "What should the bash program do?"),
         (
             "Write me some code in JavaScript",
-            "write_script_javascript",
-            "```javascript",
-            JAVASCRIPT_SCRIPT_ANSWER,
+            "What should the javascript program do?",
         ),
         (
             "написать скрипт на javascript",
-            "write_script_javascript",
-            "```javascript",
-            JAVASCRIPT_SCRIPT_ANSWER,
+            "Что должна делать программа на языке javascript?",
         ),
     ];
 
-    for (prompt, intent, code_fence, expected_answer) in cases {
-        let response = FormalAiEngine.answer(prompt);
-
-        assert_eq!(response.answer, expected_answer, "prompt: {prompt:?}");
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    });
+    for (prompt, question) in cases {
+        let response = solver.solve(prompt);
+        assert_eq!(response.intent, "write_program_skill_gap", "{prompt}");
         assert_eq!(
-            response.intent, intent,
-            "prompt: {prompt:?} — answer was: {}",
+            response.answer.starts_with(question),
+            true,
+            "{prompt}: {}",
             response.answer
         );
-        assert!(
-            response.answer.contains(code_fence),
-            "prompt: {prompt:?} — expected {code_fence} in answer: {}",
-            response.answer
-        );
-        assert_ne!(
-            response.intent, "unknown",
-            "prompt: {prompt:?} — got unknown intent"
-        );
+        assert_eq!(response.answer.contains("```"), false, "{prompt}");
     }
 }
 
@@ -725,6 +669,7 @@ fn telegram_webhook_supports_public_chat_code_replies() {
         .as_str()
         .expect("telegram reply text should be a string");
     assert!(text.contains("<pre><code class=\"language-rust\">"));
-    assert!(text.contains("Execution status: compiled and ran"));
+    assert!(text.contains("Execution status:"));
+    assert!(!text.contains("compiled and ran"));
     assert!(text.contains("Hello, world!"));
 }

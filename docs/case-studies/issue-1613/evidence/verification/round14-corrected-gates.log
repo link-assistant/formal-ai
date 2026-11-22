@@ -1,0 +1,10 @@
+PASS check-debt-ratchet-js-twin 1.0s
+PASS check_debt_ratchet 0.8s
+PASS check-self-translation 0.2s
+PASS check-status-render 1.1s
+FAIL check-tests-as-docs 6.8s -> experiments/formal_ai_subagent/sandboxes/gates/check-tests-as-docs.log
+FAIL check-tests-as-documentation-javascript-twin 7.0s -> experiments/formal_ai_subagent/sandboxes/gates/check-tests-as-documentation-javascript-twin.log
+PASS check-worker-line-budget-js-twin 0.3s
+PASS check-worker-line-budget 0.2s
+
+6/8 passed or skipped; failed: check-tests-as-docs, check-tests-as-documentation-javascript-twin

@@ -9,6 +9,10 @@
 
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
@@ -168,42 +172,39 @@ describe('R1021-6/7: a named exercise is a program, not a file operation', () =>
     }
   });
 
-  test('the stdin answer pipes the input it was verified against into the run command', async () => {
-    const answer = await solve('copy stdin to stdout in Rust');
-    assert.equal(answer.content, [
-      'Here is a minimal Rust copy standard input to standard output program:',
-      '',
-      '```rust',
-      'use std::io::{self, Read, Write};',
-      '',
-      'fn main() -> io::Result<()> {',
-      '    let mut input = Vec::new();',
-      '    io::stdin().read_to_end(&mut input)?;',
-      '    io::stdout().write_all(&input)',
-      '}',
-      '```',
-      '',
-      'Execution status: not run - the browser sandbox cannot invoke a rust toolchain.',
-      '',
-      'Copy the snippet into a rust environment to verify.',
-      '',
-      'Expected output after verification:',
-      '```text',
-      'hello',
-      'world',
-      '```',
-      '',
-      'How it works:',
-      'The program performs the requested task and prints its result to standard output.',
-      '',
-      'How to test it yourself:',
-      '1. Install the Rust toolchain from https://rustup.rs.',
-      '2. Save the code above to a file named `main.rs`.',
-      '3. Check that it compiles: `rustc main.rs -o main`.',
-      "4. Run it: `printf 'hello\\nworld\\n' | ./main`.",
-      '5. Compare the output with the expected output shown above.',
-    ].join('\n'));
-    assert.equal(answer.programExecution.runCommand, "printf 'hello\\nworld\\n' | ./main");
+  test('the generated stdin copier accepts the caller’s stream', async () => {
+    const answer = await solve('Write a JavaScript program that copies stdin to stdout');
+    assert.equal(answer.programExecution.runCommand, 'node main.js');
+    assert.equal(answer.programExecution.output, null);
+    assert.match(answer.content, /Pipe your data into the command or redirect standard input/u);
+    assert.equal(answer.content.includes('```text'), false);
+    const code = answer.content.match(/```javascript\n([\s\S]*?)\n```/u)?.[1];
+    assert.ok(code);
+    const bytes = Buffer.from([0, 37, 195, 169, 10, 255]);
+    const run = spawnSync(process.execPath, ['-e', code], { input: bytes, timeout: 5000, maxBuffer: 4096 });
+    assert.equal(run.status, 0, String(run.stderr));
+    assert.deepEqual(run.stdout, bytes);
+  });
+
+  test('the generated listing uses the directory argument at runtime', async () => {
+    const answer = await solve('Write a JavaScript program that lists files with a path argument sorted descending');
+    assert.equal(answer.programExecution.output, null);
+    assert.equal(answer.content.includes('```text'), false);
+    const code = answer.content.match(/```javascript\n([\s\S]*?)\n```/u)?.[1];
+    assert.ok(code);
+    const directory = mkdtempSync(join(tmpdir(), 'formal-ai-listing-'));
+    try {
+      writeFileSync(join(directory, 'aurora.txt'), '');
+      writeFileSync(join(directory, 'zephyr.log'), '');
+      mkdirSync(join(directory, 'excluded-folder'));
+      const run = spawnSync(process.execPath, ['-e', code, '--', 'unused-script-name', directory], {
+        encoding: 'utf8', timeout: 5000, maxBuffer: 4096,
+      });
+      assert.equal(run.status, 0, run.stderr);
+      assert.equal(run.stdout, 'zephyr.log\naurora.txt\n');
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
   });
 
   test('a task that reads no input keeps its plain run command', async () => {
@@ -215,37 +216,43 @@ describe('R1021-6/7: a named exercise is a program, not a file operation', () =>
 
 describe('R1021-8: a framework-named request is answered in that framework (#723)', () => {
   test('Laravel is its own target; an uncatalogued framework falls back to its language', async () => {
-    for (const [prompt, intent] of [
-      ['напиши мне код на PHP Laravel', 'write_script_laravel'],
-      ['write me PHP Laravel code', 'write_script_laravel'],
-      ['PHP Laravel में कोड लिखें', 'write_script_laravel'],
-      ['用 PHP Laravel 写代码', 'write_script_laravel'],
-      ['write me PHP Symfony code', 'write_script_php'],
-      ['write me some PHP code', 'write_script_php'],
-      ['PHP में कोड लिखें', 'write_script_php'],
-      ['用 PHP 写代码', 'write_script_php'],
-      ['write me Ruby on Rails code', 'write_script_ruby'],
-      ['напиши мне код на Python Django', 'write_script_python'],
+    for (const [prompt, language] of [
+      ['напиши мне код на PHP Laravel', 'laravel'],
+      ['write me PHP Laravel code', 'laravel'],
+      ['PHP Laravel में कोड लिखें', 'laravel'],
+      ['用 PHP Laravel 写代码', 'laravel'],
+      ['write me PHP Symfony code', 'php'],
+      ['write me some PHP code', 'php'],
+      ['PHP में कोड लिखें', 'php'],
+      ['用 PHP 写代码', 'php'],
+      ['write me Ruby on Rails code', 'ruby'],
+      ['напиши мне код на Python Django', 'python'],
     ]) {
-      assert.equal((await solve(prompt)).intent, intent, prompt);
+      const answer = await solve(prompt);
+      assert.equal(answer.intent, 'write_program_skill_gap', prompt);
+      assert.ok(answer.evidence.includes(`program_parameter:language:${language}`), prompt);
+      assert.equal(answer.programExecution, undefined, prompt);
     }
   });
 });
 
 describe('R1021-31: asking for code is a coding request whatever the asking verb', () => {
-  test('a named language is answered with its minimal script in every asking verb', async () => {
-    for (const [prompt, intent] of [
-      ['мне нужен код на пхп', 'write_script_php'],
-      ['дай мне код на php', 'write_script_php'],
-      ['мне нужен код на python', 'write_script_python'],
-      ['I need PHP code', 'write_script_php'],
-      ['I want PHP code', 'write_script_php'],
-      ['give me python code', 'write_script_python'],
-      ['मुझे php कोड चाहिए', 'write_script_php'],
-      ['我需要 php 代码', 'write_script_php'],
-      ['escribe código en Python', 'write_script_python'],
+  test('a named language is retained when the task is missing', async () => {
+    for (const [prompt, language] of [
+      ['мне нужен код на пхп', 'php'],
+      ['дай мне код на php', 'php'],
+      ['мне нужен код на python', 'python'],
+      ['I need PHP code', 'php'],
+      ['I want PHP code', 'php'],
+      ['give me python code', 'python'],
+      ['मुझे php कोड चाहिए', 'php'],
+      ['我需要 php 代码', 'php'],
+      ['escribe código en Python', 'python'],
     ]) {
-      assert.equal((await solve(prompt)).intent, intent, prompt);
+      const answer = await solve(prompt);
+      assert.equal(answer.intent, 'write_program_skill_gap', prompt);
+      assert.ok(answer.evidence.includes(`program_parameter:language:${language}`), prompt);
+      assert.equal(answer.programExecution, undefined, prompt);
     }
   });
 

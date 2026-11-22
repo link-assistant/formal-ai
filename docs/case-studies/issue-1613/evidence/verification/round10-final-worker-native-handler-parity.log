@@ -1,0 +1,15 @@
+✔ whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace (13294.661297ms)
+✔ whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts (11088.987356ms)
+✔ whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question (13066.208367ms)
+✔ loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries (2036.011676ms)
+✔ actual matching seed is required before any coreference event is recorded (3603.030673ms)
+✔ embedded antecedent words do not fabricate a recognized prior user topic (4039.362447ms)
+✔ real seeded antecedents defer meta reasoning only for command-head references (10686.270561ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 58788.998247

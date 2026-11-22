@@ -61,11 +61,8 @@ test.describe('Issue #334 — Fibonacci agent plan', () => {
 
     const code = codeBlock.locator('code.hljs');
     await expect(code).toContainText('def fibonacci');
-    await expect(code).toContainText('fibonacci(n - 1)');
-    await expect(code).toContainText('fibonacci(n - 2)');
-
-    // The verified run prints F(10) = 55, and the explanation is rendered.
-    await expect(message).toContainText('55');
+    await expect(code).toContainText('advance(remaining - 1, current, previous + current)');
+    await expect(code).not.toContainText('print(');
     await expect(message).toContainText('How it works:');
   });
 

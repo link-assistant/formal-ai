@@ -6,6 +6,7 @@ Agent environment. It runs an inner Docker daemon; use `--privileged` or Sysbox
 and do not mount the host `/var/run/docker.sock`.
 
 ```bash
+install -d -m 0700 "$HOME/.formal-ai"
 TELEGRAM_BOT_TOKEN=123:abc docker compose up -d
 docker compose --profile server up -d
 docker compose --profile agent up -d
@@ -17,13 +18,16 @@ or all three. Their shared memory bind is equivalent to:
 
 ```bash
 docker run --rm --privileged \
-  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
-  -v "$HOME/.formal-ai:/root/.formal-ai" \
+  -e FORMAL_AI_MEMORY_PATH=/home/box/.formal-ai/memory.lino \
+  -v "$HOME/.formal-ai:/home/box/.formal-ai" \
   ghcr.io/link-assistant/formal-ai:latest
 ```
 
-On Windows use `${env:APPDATA}\formal-ai:/root/.formal-ai`. The inner Docker
-state uses a separate named volume; it is not the conversation memory.
+On Windows use `${env:APPDATA}\formal-ai:/home/box/.formal-ai`. On Linux the
+directory and existing memory files must be writable by the container's `box`
+user. When upgrading a custom deployment, keep the same host directory or
+named memory volume and remount it at `/home/box/.formal-ai`. The inner Docker
+state uses a separate named volume.
 
 Verify the runtime and isolation contract:
 

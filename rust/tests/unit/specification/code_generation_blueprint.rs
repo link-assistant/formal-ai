@@ -162,18 +162,24 @@ fn budget_calculator_request_returns_python_blueprint_program() {
         "program should calculate the 50/30/20 rule, got: {}",
         response.answer
     );
-    assert!(
-        response.answer.contains("future_value")
-            && response.answer.contains("0.08")
-            && response.answer.contains("10"),
-        "program should calculate the requested 10-year future value, got: {}",
-        response.answer
-    );
-    for city in ["Moscow", "Berlin", "New York"] {
+    for field in [
+        "future_value",
+        "monthly_contribution",
+        "annual_return",
+        "savings_goal",
+        "living_cost_ex_rent",
+        "<scenario.json> <report.md>",
+    ] {
         assert!(
-            response.answer.contains(city),
-            "program should compare {city}, got: {}",
+            response.answer.contains(field),
+            "missing {field}: {}",
             response.answer
+        );
+    }
+    for literal in ["Moscow", "Berlin", "New York", "0.08", "$100,000"] {
+        assert!(
+            !response.answer.contains(literal),
+            "embedded test assumption: {literal}"
         );
     }
     assert!(
@@ -245,14 +251,20 @@ fn travel_planner_request_returns_python_blueprint_program() {
         "generate_itinerary",
         "visa-free",
         "Budget warning",
-        "Sample output",
-        "7-day",
-        "$2,000",
+        "average_flight_cost",
+        "daily_cost",
+        "<scenario.json>",
     ] {
         assert!(
             response.answer.contains(required),
             "answer should include {required:?}, got: {}",
             response.answer
+        );
+    }
+    for fixture in ["Japan", "UAE", "Serbia", "7-day", "$2,000"] {
+        assert!(
+            !response.answer.contains(fixture),
+            "embedded test assumption: {fixture}"
         );
     }
     assert!(

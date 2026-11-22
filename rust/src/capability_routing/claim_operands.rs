@@ -3,7 +3,7 @@
 //! `docs_method_explanation`, `kupi_slona`, `source_conflict`,
 //! `github_repository_traffic` and `formalization_request` used to read
 //! nothing but their cue. Each now reads the operand its answer is about: the
-//! seeded documentation page whose project and method the prompt names, the
+//! documentation selector whose project and method the prompt names, the
 //! circular idiom as the whole utterance, the two alternatives a conflict
 //! attributes to sources, the repository a traffic question names, and the
 //! statement a formalization carries beyond its cue.
@@ -34,7 +34,7 @@ const FRAME_ROLES: [&str; 3] = [
 #[must_use]
 pub fn claim_operands(kind: &str, prompt: &str) -> Option<Vec<String>> {
     Some(match kind {
-        "documented_method" => documented_method(prompt),
+        "documented_method" => crate::solver_handlers::documentation_method::operands(prompt),
         "idiom_utterance" => idiom_utterance(prompt).into_iter().collect(),
         "attributed_alternatives" => attributed_alternatives(prompt),
         "named_repository" => named_repository(prompt).into_iter().collect(),
@@ -137,47 +137,6 @@ pub fn only_frame_words(text: &str) -> bool {
     }
     let rest = without_surfaces(text, &unspaced_surfaces);
     words(&rest).iter().all(|word| covered.contains(word))
-}
-
-/// The seeded documentation page whose project and method the prompt names,
-/// as `[page, project, docs url]`.
-///
-/// The page is the `policy docs_method_explanation` block of
-/// `data/seed/handler-rules.lino`; the prompt names its project and method as
-/// identifiers, and its class (or the class alias, or a method noun).
-fn documented_method(prompt: &str) -> Vec<String> {
-    let policy = |key| crate::rule_interpreter::handler_policy("docs_method_explanation", key);
-    let (Some(page), Some(docs_url)) = (policy("page"), policy("docs_url")) else {
-        return Vec::new();
-    };
-    let alias = policy("class-alias").unwrap_or_default().to_lowercase();
-    let segments: Vec<&str> = page.split('.').collect();
-    let parts: Vec<String> = segments
-        .iter()
-        .map(|segment| segment.to_lowercase())
-        .collect();
-    let (Some(project), Some(method)) = (parts.first(), parts.last()) else {
-        return Vec::new();
-    };
-    if parts.len() < 3 {
-        return Vec::new();
-    }
-    let lower = prompt.to_lowercase();
-    let identifiers: Vec<&str> = lower
-        .split(|ch: char| !(ch.is_ascii_alphanumeric() || ch == '_'))
-        .filter(|word| !word.is_empty())
-        .collect();
-    let named = |word: &str| identifiers.contains(&word);
-    let class_named = parts[1..parts.len() - 1]
-        .iter()
-        .any(|class| named(class.as_str()))
-        || (!alias.is_empty() && named(alias.as_str()))
-        || crate::seed::lexicon().mentions_role("code_method_noun", &lower);
-    if named(project.as_str()) && named(method.as_str()) && class_named {
-        vec![page.clone(), segments[0].to_owned(), docs_url]
-    } else {
-        Vec::new()
-    }
 }
 
 /// The circular idiom when it is the whole utterance, framed only by frame

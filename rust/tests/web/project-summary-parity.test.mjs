@@ -1,5 +1,5 @@
-// R1188-U29: all assertions of the five native project-summary cases run
-// against the actual production worker; the native expectations stay intact.
+// R1188-U29: all assertions of the four native project-summary cases run
+// against the actual production worker.
 import assert from 'node:assert/strict';
 import { before, test } from 'node:test';
 import { existsSync, readFileSync } from 'node:fs';
@@ -12,7 +12,6 @@ const NATIVE_CASE_NAMES = [
   'curated_project_concept_prompt_routes_to_project_lookup',
   'linksplatform_repository_is_promoted_by_default',
   'explicit_formal_ai_repository_url_still_routes_to_project_lookup',
-  'http_fetch_of_curated_github_url_describes_project_via_summarization',
 ];
 const carried = specificationCases(REPO_ROOT).cases;
 let host;
@@ -25,7 +24,7 @@ for (const [index, name] of NATIVE_CASE_NAMES.entries()) {
     const item = selected[0];
     const responses = new Map();
     for (const ask of item.asks) responses.set(ask.binding, await host.solve(ask.prompt));
-    assert.equal(item.checks.length, [5, 4, 4, 4, 5][index], 'all 22 original assertions remain carried');
+    assert.equal(item.checks.length, [4, 4, 4, 4][index], 'all 16 project-summary assertions are carried');
     for (const check of item.checks) assert.equal(checkFailure(check, responses), null, `${item.id}: ${JSON.stringify(check)}`);
   });
 }
@@ -82,7 +81,7 @@ test('localized summaries retain native explicit-English and outer-statement fal
   assert.equal(await host.run('describeProjectRecord(__fixture, "en", "short")', { __fixture: { ...project, localized: [{ language: 'en', statements: [] }] } }), 'Outer statement.');
 });
 
-test('curated HTTP projection precedes network availability for any registry organization', async () => {
+test('an unavailable HTTP transport cannot substitute a registered project description', async () => {
   const isolated = new WorkerHost();
   await isolated.boot();
   const answer = await isolated.run(`(() => {
@@ -92,43 +91,71 @@ test('curated HTTP projection precedes network availability for any registry org
     return tryFetch("fetch https://github.com/arbitrary-org/arbitrary-project");
   })()`);
   assert.equal(answer.intent, 'http_fetch');
-  assert.ok(answer.content.includes('A registry description.'));
-  assert.ok(answer.evidence.includes('http_fetch:curated_project:arbitrary-org/arbitrary-project'));
-  assert.ok(answer.evidence.includes('summarization:mode:standard'));
-  assert.ok(!answer.evidence.some(link => link.startsWith('http_fetch:status:') || link.startsWith('http_fetch:component:')));
-  assert.equal(answer.iframeUrl, null);
+  assert.ok(answer.content.includes('HTTP fetch is not available'));
+  assert.ok(!answer.content.includes('A registry description.'));
+  assert.deepEqual(Array.from(answer.evidence), ['http_fetch:request:https://github.com/arbitrary-org/arbitrary-project']);
 });
 
-test('curated URL matching preserves native literal segment and GitHub host boundaries', async () => {
-  assert.equal(await host.run('projectRepoSlug(curatedProjectForHttpUrl("HTTPS://GITHUB.COM/LINK-ASSISTANT/HIVE-MIND/tree/main"))'), 'link-assistant/hive-mind');
-  for (const url of [
-    'https://github.com/link-assistant/hive-mind.git',
-    'https://github.com/link-assistant/hive-mind?tab=readme',
-    'https://github.com/link-assistant/%68ive-mind',
-    'https://www.github.com/link-assistant/hive-mind',
-    'https://github.com:443/link-assistant/hive-mind',
-    'https://github.com.example/link-assistant/hive-mind',
-    'https://gitlab.com/link-assistant/hive-mind',
-  ]) assert.equal(await host.run('curatedProjectForHttpUrl(__url)', { __url: url }), null, url);
-});
-
-test('uncurated HTTP still performs the configured real fetch operation', async () => {
+test('explicit fetch observes the requested repository paths regardless of promotion', async () => {
   const isolated = new WorkerHost();
   await isolated.boot();
+  const targets = [
+    ['https://github.com/link-assistant/hive-mind/issues/7', 'Issue data at the requested path.'],
+    ['https://github.com/link-assistant/formal-ai/blob/main/README.md', 'Current README at the requested path.'],
+    ['https://example.test/unregistered', 'Unregistered publisher response.'],
+  ];
   const observation = await isolated.run(`(async () => {
     const requested = [];
+    const replies = new Map(__targets);
     fetch = async (url) => {
-      requested.push(String(url));
-      return { ok: true, status: 200, headers: { get: () => "text/plain" }, text: async () => "Uncurated live fixture." };
+      const href = new URL(String(url)).searchParams.get("url") || String(url);
+      requested.push(href);
+      return { ok: true, status: 200, headers: { get: () => "text/plain" }, text: async () => replies.get(href) };
     };
-    const answer = await tryFetch("fetch https://example.test/unregistered");
-    return { requested, answer };
-  })()`);
-  assert.equal(observation.answer.intent, 'http_fetch');
-  assert.ok(observation.requested.length > 0);
-  assert.ok(observation.answer.content.includes('Uncurated live fixture.'));
-  assert.ok(observation.answer.evidence.includes('http_fetch:status:200'));
-  assert.ok(!observation.answer.evidence.some(link => link.startsWith('http_fetch:curated_project:')));
+    const answers = [];
+    for (const [url] of __targets) answers.push(await tryFetch("fetch " + url));
+    return { requested, answers };
+  })()`, { __targets: targets });
+  assert.deepEqual(Array.from(observation.requested), targets.map(([url]) => url));
+  for (const [index, [url, body]] of targets.entries()) {
+    const answer = observation.answers[index];
+    assert.equal(answer.intent, 'http_fetch');
+    assert.ok(answer.content.includes(body));
+    assert.ok(answer.evidence.includes(`http_fetch:request:${url}`));
+    assert.ok(answer.evidence.includes('http_fetch:status:200'));
+  }
+});
+
+test('explicit fetch and page formalization respect offline and network-denied preferences', async () => {
+  const isolated = new WorkerHost();
+  await isolated.boot();
+  const url = 'https://github.com/link-assistant/hive-mind/issues/7';
+  const observed = await isolated.run(`(async () => {
+    const requests = [];
+    fetch = async (target) => {
+      requests.push(String(target));
+      return { ok: true, text: async () => "A captured issue body." };
+    };
+    const offline = await solve("fetch " + __url, [], { offline: true });
+    const denied = await solve("fetch " + __url, [], { allowNetwork: false });
+    const formalization = await solve("Formalize " + __url, [], { offline: true });
+    const before = requests.length;
+    await sourceWalkFetchCapture(__url);
+    const cached = await solve("fetch " + __url, [], { offline: true });
+    return { offline, denied, formalization, before, cached, requests };
+  })()`, { __url: url });
+  for (const result of [observed.offline, observed.denied]) {
+    assert.equal(result.intent, 'http_fetch');
+    assert.equal(result.content, `no cached capture for ${url}`);
+    assert.ok(result.evidence.includes('policy:offline'));
+    assert.equal(result.iframeUrl, undefined);
+  }
+  assert.equal(observed.formalization.intent, 'page_formalization');
+  assert.ok(observed.formalization.evidence.includes('response:page_formalization_unavailable'));
+  assert.equal(observed.before, 0);
+  assert.deepEqual(Array.from(observed.requests), [url]);
+  assert.equal(observed.cached.content, 'A captured issue body.');
+  assert.ok(observed.cached.evidence.includes(`cache_hit:${url}`));
 });
 
 test('promoted lookup retains actually fetched and fused browser search results and diagnostics', async () => {
@@ -155,6 +182,62 @@ test('promoted lookup retains actually fetched and fused browser search results 
   assert.ok(answer.evidence.includes('web_search:fusion_planned:rrf:k=60'));
   assert.ok(answer.evidence.some(link => link.startsWith('web_search:fused:') && link.endsWith(providerUrl)));
   assert.ok(answer.diagnostics.fused.some(result => result.url === providerUrl));
+});
+
+test('project lookup and named summaries read repository metadata under the capture policy', async () => {
+  const requested = [];
+  const repository = 'https://github.com/link-assistant/hive-mind';
+  const endpoint = 'https://api.github.com/repos/link-assistant/hive-mind';
+  let description = 'Current description from the repository.';
+  let identity = 'link-assistant/hive-mind';
+  const isolated = new WorkerHost({ fetch: async (url) => {
+    const href = String(url);
+    if (href.startsWith('http://localhost')) {
+      const relative = new URL(href).pathname.replace(/^\//, '');
+      const disk = relative.startsWith('seed/') ? join(REPO_ROOT, 'data', relative) : join(REPO_ROOT, 'js', relative);
+      return { ok: existsSync(disk), status: existsSync(disk) ? 200 : 404, text: async () => existsSync(disk) ? readFileSync(disk, 'utf8') : '' };
+    }
+    if (href !== endpoint) throw new TypeError('Unexpected external URL');
+    requested.push(href);
+    return { ok: true, status: 200, text: async () => JSON.stringify({ full_name: identity, html_url: repository, description }) };
+  } });
+  const lookup = () => isolated.solve('What is Hive Mind?');
+  const summarize = (offline = false) => isolated.run('solve("Please summarize Hive Mind in one paragraph.", [], { offline: __offline })', { __offline: offline });
+  const cold = await summarize(true);
+  assert.equal(cold.intent, 'summarize_topic');
+  assert.equal(cold.content, 'No verified repository description is available.');
+  assert.equal(requested.length, 0);
+  const live = await lookup();
+  assert.equal(live.intent, 'project_lookup');
+  assert.ok(live.content.includes(description), live.content);
+  assert.ok(live.evidence.some(link => link.startsWith(`source:http:${endpoint} `)));
+  assert.ok(live.evidence.includes('summarization:mode:short'));
+  assert.deepEqual(requested, [endpoint]);
+  const cached = await summarize(true);
+  assert.equal(cached.content, description);
+  assert.ok(cached.evidence.some(link => link.startsWith(`source:http:${endpoint} `) && link.endsWith('cached=true')));
+  assert.deepEqual(requested, [endpoint]);
+
+  await isolated.run('sourceWalkCaptureCache.clear()');
+  description = 'Updated description from the same repository.';
+  assert.equal((await summarize()).content, description);
+  await isolated.run('sourceWalkCaptureCache.clear()');
+  identity = 'another-org/another-repository';
+  const rejected = await lookup();
+  assert.ok(rejected.content.includes('No verified repository description is available.'));
+  assert.ok(!rejected.content.includes(description));
+  assert.ok(!rejected.evidence.some(link => link.startsWith(`source:http:${endpoint} `)));
+  assert.deepEqual(requested, [endpoint, endpoint, endpoint]);
+});
+
+test('the production project registry carries identities without answer statements', async () => {
+  const records = await host.run('PROJECTS.map(project => [project.url, project.statements.length, project.localized.map(entry => entry.statements.length)])');
+  assert.ok(records.length > 1);
+  for (const [url, statements, localized] of records) {
+    assert.match(url, /^https:\/\/github\.com\//u);
+    assert.equal(statements, 0, url);
+    assert.ok(localized.every(count => count === 0), url);
+  }
 });
 
 

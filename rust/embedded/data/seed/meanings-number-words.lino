@@ -24,7 +24,7 @@ meanings
     defined-by single
     role cardinal_number_word
     lexeme en one 1
-    lexeme ru один одна одно
+    lexeme ru один одна одно одного
     lexeme hi एक
     lexeme zh 一
     lexeme es un una uno
@@ -42,7 +42,7 @@ meanings
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en three 3
-    lexeme ru три
+    lexeme ru три трёх трех
     lexeme hi तीन
     lexeme zh 三
     lexeme es tres
@@ -60,7 +60,7 @@ meanings
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en five 5
-    lexeme ru пять
+    lexeme ru пять пяти
     lexeme hi पाँच
     lexeme zh 五
     lexeme es cinco
@@ -105,7 +105,7 @@ meanings
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en ten 10
-    lexeme ru десять
+    lexeme ru десять десяти
     lexeme hi दस
     lexeme zh 十
     lexeme es diez

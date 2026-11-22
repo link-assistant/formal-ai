@@ -9,11 +9,9 @@
 // solves the prompt without the marker and appends the evidence and trace
 // lines under it, as rust/src/meta_method_dispatch.rs `try_diagnostic` does.
 //
-// `coreference`: the pronouns, antecedents and bodies are data/seed/coreference.lino.
-// The worker read only the last user turn and answered only through a seeded
-// fact, so "Why is it safer than C?" after "I love Rust." was unknown; it now
-// resolves the nearest earlier user turn naming an antecedent and answers the
-// antecedent's seeded body, as the native row does.
+// `coreference`: the worker resolves the nearest earlier user turn naming an
+// antecedent and attempts a fact lookup after rewriting the follow-up. It
+// reports the reference when the question has no verified answer.
 
 import assert from "node:assert/strict";
 import test from "node:test";
@@ -28,7 +26,7 @@ async function solve(prompt, history = []) {
   return worker.solve(prompt, history, {}, {}, [], {});
 }
 
-const RUST_BODY = "`it` resolves to Rust from your prior turn. Compared with C, Rust adds ownership, borrowing, and stronger compile-time checks so memory-safety errors are caught before the program runs while retaining native-code performance.";
+const RUST_RESOLUTION = "The reference resolves to Rust from your earlier turn. I need evidence to answer the follow-up.";
 
 const turn = (role, content) => ({ role, content });
 
@@ -51,7 +49,7 @@ test("only the exact seeded marker is recognized, so an upper-case one never re-
   assert.ok(!response.content.includes("\n\n[diagnostic]\n"), response.content);
 });
 
-test("a pronoun resolves to the nearest earlier antecedent and answers its seeded body", async () => {
+test("a pronoun resolves to the nearest earlier antecedent and exposes the resolution", async () => {
   const history = [
     turn("user", "I love Rust."),
     turn("assistant", "Rust is a systems programming language."),
@@ -60,10 +58,17 @@ test("a pronoun resolves to the nearest earlier antecedent and answers its seede
   ];
   const response = await solve("Why is it safer than C?", history);
   assert.equal(response.intent, "coreference_rust");
-  assert.equal(response.content, RUST_BODY);
+  assert.equal(response.content, RUST_RESOLUTION);
   for (const link of ["coreference:resolved:it=Rust", "wikidata:Q575650", "response:coreference"]) {
     assert.ok(response.evidence.includes(link), `${link} in ${response.evidence}`);
   }
+});
+
+test("resolved follow-ups expose the referent without inventing an answer", async () => {
+  const response = await solve("Is it installed here?", [turn("user", "I use Rust.")]);
+  assert.equal(response.intent, "coreference_rust");
+  assert.match(response.content, /reference resolves to Rust/);
+  assert.doesNotMatch(response.content, /ownership|compared with C/i);
 });
 
 test("a pronoun with no antecedent in any earlier user turn is not a coreference", async () => {

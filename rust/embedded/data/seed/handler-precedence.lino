@@ -122,14 +122,14 @@ handler_precedence
     rank 280
   handler brainstorm_composition
     rank 285
-    note "issue 1178 topic-bearing brainstorm requests compose candidates before bare-topic fallback"
+    note "issue 1178 topic-bearing brainstorm requests compose candidates before the broader brainstorm cues"
   handler brainstorming
     rank 290
   handler conversation_topic
     rank 300
   handler advice_request
     rank 305
-    note "issue 1178 seeded evidence-grade advice precedes generic factual lookup"
+    note "issue 1178 advice ordered by supplied evidence grades precedes generic factual lookup"
   handler fact_lookup
     rank 310
     note "phase async -- the worker's fact query runs after the synchronous table"

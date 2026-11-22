@@ -11,7 +11,8 @@
 //! they are *what the lexicon recognised*; [`super::formalize`] consumes them.
 
 /// The closed-class lexicon (data, not code), loaded at compile time.
-pub const LEXICON_LINO: &str = include_str!("../../embedded/data/agentic-coding/fisherman-lexicon.lino");
+pub const LEXICON_LINO: &str =
+    include_str!("../../embedded/data/agentic-coding/fisherman-lexicon.lino");
 
 /// The kind of a recognised term.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -137,6 +138,9 @@ pub struct Work {
     pub id: String,
     pub doc_id: String,
     pub title: String,
+    pub publisher_api: Option<String>,
+    pub publisher_title: Option<String>,
+    pub publisher_content_class: Option<String>,
     aliases: Vec<Vec<String>>,
     signature: Vec<String>,
     lexemes: Vec<Lexeme>,
@@ -268,6 +272,11 @@ impl Lexicon {
                     id: record.head.clone(),
                     doc_id: record.field("doc_id").unwrap_or(&record.head).to_owned(),
                     title: record.field("title").unwrap_or(&record.head).to_owned(),
+                    publisher_api: record.field("publisher-api").map(str::to_owned),
+                    publisher_title: record.field("publisher-title").map(str::to_owned),
+                    publisher_content_class: record
+                        .field("publisher-content-class")
+                        .map(str::to_owned),
                     aliases: record
                         .fields("alias")
                         .map(tokenize)
@@ -329,6 +338,10 @@ impl Lexicon {
             }
         }
         Self { works }
+    }
+
+    pub(super) fn works(&self) -> &[Work] {
+        &self.works
     }
 
     /// Resolve a document title by identity, not by its topic or lexeme overlap.

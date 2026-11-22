@@ -10,4 +10,6 @@ rust/target
 !rust/target/release/formal-ai
 .git
 ci-logs
+# Publisher captures are test inputs and are excluded from the build context.
+data/cache
 docs/screenshots

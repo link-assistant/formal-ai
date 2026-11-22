@@ -1,0 +1,22 @@
+✔ R921-8: the worker installs the Rust catalog tasks from the seed, in Rust table order (4857.865436ms)
+✔ R921-8: the worker language rows equal the Rust catalog rows the seed stores programs for (6.041352ms)
+✔ R921-8: every task x language pair has a worker program exactly when the Rust catalog has one (40.494963ms)
+✔ R921-8: the worker stores no program for a pair the seed retires to the documentation route (7.845723ms)
+✔ R921-8: english Scala and Kotlin requests answer every catalog task with the Rust template (11414.015279ms)
+✔ R921-8: the Scala FizzBuzz answer is the catalog answer with an honest not-run status (84.819806ms)
+✔ R921-8: russian, hindi and chinese requests answer catalog tasks in Scala and Kotlin (2876.434889ms)
+✔ R921-8: a concrete catalog request is not claimed by a promoted handler (4431.335219ms)
+✔ issue #1613: each bound operation executes with two different caller inputs (89300.614712ms)
+✔ issue #1613: incomplete or out-of-range inputs leave no runnable recipe (44216.31196ms)
+✔ issue #1613: a budget blueprint reports caller assumptions and changing sourced city costs (2852.320193ms)
+✔ issue #1613: a travel blueprint ranks supplied visa and cost observations and flags a changed budget (3077.810146ms)
+✔ issue #1613: a portfolio blueprint values explicit holdings from caller-selected observations (4941.570277ms)
+✔ issue #1613: source metrics compare actual files without rendering a predetermined verdict (1822.70978ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 171282.058357

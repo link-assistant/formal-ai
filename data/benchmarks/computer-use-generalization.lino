@@ -5,7 +5,7 @@ computer_use_generalization_suite
   license Unlicense
   source self_authored_for_issue_707
   provenance "Self-authored held-out requests; no third-party benchmark text is redistributed."
-  purpose "Every prompt here is absent from data/seed/computer-use-tasks.lino, so a plan can only be produced by the schemas auto-learned from that corpus, never by recalling a recorded plan."
+  purpose "Every prompt here is absent from rust/tests/fixtures/computer-use/tasks.lino, so a plan can only be produced by the schemas auto-learned from that corpus, never by recalling a recorded plan."
   runner "cargo test --test issue_707_generalization"
   minimum_cases "12"
   languages_per_case "4"

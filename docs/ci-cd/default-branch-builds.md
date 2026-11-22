@@ -15,14 +15,16 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   and later with clippy::manual_contains, because JavaScript cannot see Rust
   types or lints. Issue #1589 additionally runs the isolated calendar_currency
   regression target against the shared worker/native acceptance fixtures in this
-  existing job, with two compiler jobs and test optimization disabled. Issue
-  #1584 adds the isolated cnl_output and cnl_parity targets to the same step, so
+  existing job, with two compiler jobs. Issue #1584 adds the isolated cnl_output
+  and cnl_parity targets to the same step, so
   the native controlled-language engine runs against the JavaScript parity
   fixtures before merge. Issue #1604 reuses the native binary from that step to
   verify dynamic meta authorization and transaction receipts through the native
   gateway. Its JavaScript host uses the frozen Bun lockfile with lifecycle
-  scripts disabled. These
-  regressions prove native behavior; they do not produce release evidence. Full
+  scripts disabled. Issue #1613 gives both Cargo test steps
+  the same optimized profile so they share a build, then runs the container
+  smoke script against that native executable and isolated application state.
+  The focused job does not produce release evidence. Full
   suites and product builds remain on main. The job uploads and attests nothing,
   saves no cache and publishes no outputs.
   Docs-only, JS-only, test-only and script-only PRs skip it. Its selector is
@@ -57,8 +59,9 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   fixtures do not prove real transport or deployment success.
 - Small PR unit suites share one JavaScript runner. The broad main inventory
   retains its measured eight-shard plan. Do not shard merely to add runners.
-  Native test optimization remains on main: prior measurements found expensive
-  tests slower without optimization. No Rust compilation or tests run locally.
+  The focused PR native check and main use Cargo's optimized test profile.
+  Prior measurements found expensive tests slower without optimization. No
+  Rust compilation or tests run locally in these JavaScript checks.
 - Full live-link crawling is retained as a main-only opt-in through
   FORMAL_AI_FULL_LINK_CHECKS=run or an explicit live-audit=true dispatch on main.
   Its original parser, retry, archive and failure checks remain intact. Parser

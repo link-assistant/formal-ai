@@ -20,6 +20,8 @@ import {
   workerMirrorFiles,
 } from "./support/browser-runtime.mjs";
 
+import { recurrenceCases, recurrencePublisherReplay } from "./support/recurrence-publisher-captures.mjs";
+
 /** One booted worker shared by the read-only assertions below. */
 const worker = createWorkerContext();
 
@@ -153,34 +155,45 @@ test("every coding handler executes the shared meta-algorithm", async () => {
   assertSharedConstructionEvidence(rule, "rule_synthesis");
 });
 
-test("source-derived recurrences render and evaluate without a task template", async () => {
-  await worker.init();
-  // A recursive Fibonacci request names the catalog's fibonacci task, so the
-  // solver answers it from the catalog, as rust/src/solver.rs does for a
-  // concrete write_program rule (task_catalog.rs pins the native answer); the
-  // recurrence route itself is exercised directly.
-  const prompt = "Write a Python function that calculates the Fibonacci sequence recursively.";
-  const catalog = await solve(prompt);
-  assert.equal(catalog.content.split("\n")[0], "Here is a minimal Python recursive Fibonacci program:");
-  const fibonacci = await worker.trySourceRecurrenceSynthesis(prompt);
-  assert.equal(fibonacci.intent, "write_program");
-  assert.match(fibonacci.content, /def fibonacci\(n\)/);
-  assert.match(fibonacci.content, /fibonacci\(n - 1\)/);
-  assert.match(fibonacci.content, /fibonacci\(n - 2\)/);
-  assert.match(fibonacci.content, /fibonacci\(10\): 55/);
+test("cold workers discover and verify recurrences through publisher transports", { timeout: 45_000 }, async () => {
+  const requests = [];
+  const retrieved = createWorkerContext({}, { networkFetch: async url => {
+    requests.push(String(url));
+    const body = recurrencePublisherReplay(url);
+    return body === null ? new Response("", { status: 404 }) : new Response(body);
+  } });
+  const query = recurrenceCases[0].prompt;
+  const missing = await retrieved.solve(query, [], { offline: true });
+  assert.match(missing.content, /no verified source statement was captured/iu);
+  assert.doesNotMatch(missing.content, /def factorial\(n\)/u);
+  assert.doesNotMatch(missing.content, /\?/u);
   assert.ok(
-    fibonacci.evidence.includes("synthesis:source_tests:passed=4"),
-    "the browser replays source tests before presenting the recurrence",
+    missing.metaExecution?.events.some(event => event.startsWith("meta_exec:result ")),
+    "the publisher gap must carry the result of the recursive procedure",
   );
+  const program = await retrieved.solve("Write a Python program that calculates the factorial", [], { offline: true });
+  assert.match(program.content, /^Which integer from 0 to 18/u);
+  assert.doesNotMatch(program.content, /```|Execution status/u);
+  assert.deepEqual(requests, []);
 
-  const factorial = await solve(
-    "Write a Python function that calculates factorial recursively.",
-  );
-  assert.equal(factorial.intent, "write_program");
-  assert.match(factorial.content, /def factorial\(n\)/);
-  assert.match(factorial.content, /n \* factorial\(n - 1\)/);
-  assert.match(factorial.content, /factorial\(10\): 3628800/);
-  assert.ok(factorial.content.includes("Q120976.json"));
+  for (const { language, prompt, name } of recurrenceCases) {
+    const answer = await retrieved.solve(prompt);
+    assert.equal(answer.intent, "write_program", JSON.stringify({ prompt, requests, steps: answer.steps?.map(step => step.detail) }));
+    assert.ok(answer.content.includes(`def ${name}(n)`), answer.content);
+    assert.ok(answer.evidence.includes(name === "factorial" ? "execution_result:3628800" : "execution_result:55"), answer.content);
+    assert.ok(answer.evidence.includes("synthesis:source_tests:passed=4"), answer.content);
+    assert.ok(answer.evidence.some(item => item.startsWith("source_capture:https://www.wikifunctions.org/")));
+    if (language !== "en") {
+      assert.ok(answer.evidence.some(item => item.startsWith(`source_capture:https://${language}.wikipedia.org/`)));
+    }
+  }
+  const afterDiscovery = requests.length;
+  assert.ok(afterDiscovery > 0);
+  const reused = await retrieved.solve(query, [], { offline: true });
+  assert.match(reused.content, /def factorial\(n\)/u);
+  const disabled = await retrieved.solve(query, [], { offline: true, externalServiceMediawikiFamily: false });
+  assert.doesNotMatch(disabled.content, /def factorial\(n\)/u);
+  assert.equal(requests.length, afterDiscovery);
 });
 
 test("prompt normalization collapses whitespace and case", () => {

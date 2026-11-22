@@ -2,6 +2,8 @@ use formal_ai::agentic_coding::{
     ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK, routing_learning, run_agentic_task,
 };
 
+const REPORT_MEMORY: &str = include_str!("../../../../data/meta/issue-712-routing-learning.lino");
+
 #[test]
 fn routing_learning_is_derived_and_review_gated() {
     let baseline = include_str!("../../../../data/meta/issue-712-routing-learning.lino");
@@ -20,7 +22,10 @@ fn routing_learning_is_derived_and_review_gated() {
 
 #[test]
 fn formal_ai_executes_the_routing_learning_task_through_agent_cli() {
-    let outcome = run_agentic_task(ROUTING_LEARNING_TASK).expect("agent workspace");
+    let outcome = run_agentic_task(&format!(
+        "{ROUTING_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("agent workspace");
 
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.turns, 3);
@@ -29,7 +34,10 @@ fn formal_ai_executes_the_routing_learning_task_through_agent_cli() {
     let arguments: serde_json::Value =
         serde_json::from_str(&outcome.steps[0].arguments).expect("write arguments");
     assert_eq!(arguments["path"], ROUTING_LEARNING_PATH);
-    assert_eq!(arguments["content"], routing_learning::render_document());
+    assert_eq!(
+        arguments["content"],
+        routing_learning::render_document_from(REPORT_MEMORY)
+    );
     assert_eq!(outcome.steps[1].tool, "run_command");
     assert!(outcome.final_answer.contains("human-review-gated report"));
 }

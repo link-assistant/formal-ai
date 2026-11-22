@@ -1,0 +1,1 @@
+Attempt budget: 20 minutes including image pull retries; build budget: 22 minutes on a separate runner.

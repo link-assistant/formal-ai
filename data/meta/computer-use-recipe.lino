@@ -110,7 +110,7 @@ computer_use_data_taxonomy
   purpose "primitive taxonomy with permission, isolation, and verification context"
 computer_use_data_corpus
   record_type "meta_data"
-  source_file "data/seed/computer-use-tasks.lino"
+  source_file "rust/tests/fixtures/computer-use/tasks.lino"
   purpose "recorded example tasks in four languages"
 computer_use_data_meanings
   record_type "meta_data"
@@ -123,7 +123,7 @@ computer_use_data_generalization
 computer_use_evidence_schemas
   record_type "meta_evidence"
   source_file "docs/case-studies/issue-707/learned-schemas.lino"
-  produced_by "cargo run --bin formal-ai -- computer-use --learn"
+  produced_by "cargo run --bin formal-ai -- computer-use --learn --from rust/tests/fixtures/computer-use/tasks.lino"
   purpose "the induced schemas, committed so drift is a CI failure"
 computer_use_benchmark_recorded
   record_type "meta_benchmark"

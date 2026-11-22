@@ -15,7 +15,7 @@ selection-heuristic-ratchet
   measure non-binary-work-unit-nodes
     direction "down"
     value "0"
-    measured_by "examples/measure_non_binary_work_units.rs"
+    measured-by "examples/measure_non_binary_work_units.rs"
     corpora "data/benchmarks/capability-routing, data/benchmarks/handler-family-paraphrases, data/benchmarks/local-path-discovery"
     prompts "776"
     work-unit-nodes "1266"

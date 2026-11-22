@@ -1,6 +1,7 @@
 learning_sources
   source google_trends
     capability google_trends_learning
+    feed google_trends_rss
     host "trends.google.com"
     keyword "google trends"
     keyword "гугл тренды"

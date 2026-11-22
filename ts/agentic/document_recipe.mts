@@ -22,6 +22,8 @@ import * as ledger from './ledger.mjs';
 import * as meaningDetail from './meaning_detail.mjs';
 import { fetchArguments, finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { Progress } from './progress.mjs';
+import { agenticMessage } from './messages.mjs';
+import { parseJson } from './crate/rust_str.mjs';
 import * as questionCatalog from './question_catalog.mjs';
 import * as rebuildPlan from './rebuild_plan.mjs';
 import * as repairStrategy from './repair_strategy.mjs';
@@ -63,19 +65,22 @@ async function catRecipe(module, path) {
  * @param {Array<string>} toolNames
  */
 export function planMeaningDetailStep(task, messages, toolNames) {
-  const concept = meaningDetail.conceptForTask(task) ?? meaningDetail.TOMATO;
+  const concept = meaningDetail.conceptForTask(task);
+  if (concept === null) return null;
   const searchTool = toolFor(toolNames, Capability.Search);
   const fetchTool = toolFor(toolNames, Capability.Fetch);
   const writeTool = toolFor(toolNames, Capability.Write);
   const runTool = toolFor(toolNames, Capability.Run);
   const progress = Progress.scan(messages);
   if (searchTool !== null && !progress.done(Capability.Search)) {
-    return planOne(searchTool, jsonText({ query: meaningDetail.searchQuery(concept) }));
+    return planOne(searchTool, jsonText({ query: concept.search_query }));
   }
   if (fetchTool !== null && !progress.done(Capability.Fetch)) {
     return planOne(fetchTool, fetchArguments(concept.source_url));
   }
-  const block = meaningDetail.enrichBlock(concept, progress.fetched_text);
+  const evidence = progress.fetched_pages.findLast(([url]) => url === concept.source_url);
+  const block = meaningDetail.enrichBlock(concept, evidence?.[1]);
+  if (block === null) return finalAnswer(agenticMessage('meaning_detail_source_unavailable', { source: concept.source_url }));
   if (writeTool !== null && !progress.done(Capability.Write)) {
     return planOne(writeTool, writeArguments(concept.kb_path, block));
   }
@@ -105,8 +110,16 @@ export async function planSelfAstStep(messages, toolNames) {
 }
 
 /** Mirrors `fn plan_self_heal_step`. */
-export async function planSelfHealStep(messages, toolNames) {
-  return planSourceDocumentRecipe(messages, toolNames, selfHeal, selfHeal.SELF_HEAL_PATH);
+export async function planSelfHealStep(messages, toolNames, task) {
+  let repair;
+  try {
+    repair = await selfHeal.caseFromTask(task);
+  } catch {
+    return finalAnswer(agenticMessage('self_heal_source_unavailable'));
+  }
+  if (!repair) return finalAnswer(agenticMessage('self_heal_input_needed'));
+  const document = selfHeal.renderDocument(repair);
+  return planRequestDocument(messages, toolNames, selfHeal.SELF_HEAL_PATH, document, selfHeal.finalAnswer(repair, document));
 }
 
 /** Mirrors `fn plan_source_links_step`. */
@@ -116,7 +129,11 @@ export async function planSourceLinksStep(messages, toolNames) {
 
 /** Mirrors `fn plan_ledger_step`. */
 export async function planLedgerStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(ledger, ledger.LEDGER_PATH));
+  try {
+    return planDocumentRecipe(messages, toolNames, await catRecipe(ledger, ledger.LEDGER_PATH));
+  } catch (error) {
+    return finalAnswer(`Unknown:ReviewDocumentUnavailable:${error.message}`);
+  }
 }
 
 /** Mirrors `fn plan_explain_step`. */
@@ -125,18 +142,27 @@ export async function planExplainStep(messages, toolNames) {
 }
 
 /** Mirrors `fn plan_change_request_step`. */
-export async function planChangeRequestStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(changeRequest, changeRequest.CHANGE_PATH));
+export function planChangeRequestStep(messages, toolNames, task) {
+  const request = changeRequest.requestFromTask(task);
+  if (!request) return finalAnswer(agenticMessage('change_request_input_needed'));
+  const document = changeRequest.renderDocument(request);
+  return planRequestDocument(messages, toolNames, changeRequest.CHANGE_PATH, document, changeRequest.finalAnswer(request, document));
 }
 
 /** Mirrors `fn plan_repair_strategy_step`. */
-export async function planRepairStrategyStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(repairStrategy, repairStrategy.REPAIR_STRATEGY_PATH));
+export function planRepairStrategyStep(messages, toolNames, task) {
+  const strategies = repairStrategy.strategiesFromTask(task);
+  if (!strategies) return finalAnswer(agenticMessage('repair_strategy_input_needed'));
+  const document = repairStrategy.renderDocument(strategies);
+  return planRequestDocument(messages, toolNames, repairStrategy.REPAIR_STRATEGY_PATH, document, repairStrategy.finalAnswer(strategies, document));
 }
 
 /** Mirrors `fn plan_rebuild_step`. */
-export async function planRebuildStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(rebuildPlan, rebuildPlan.REBUILD_PATH));
+export function planRebuildStep(messages, toolNames, task) {
+  const plan = rebuildPlan.planFromTask(task);
+  if (!plan) return finalAnswer(agenticMessage('rebuild_input_needed'));
+  const document = rebuildPlan.renderDocument(plan);
+  return planRequestDocument(messages, toolNames, rebuildPlan.REBUILD_PATH, document, rebuildPlan.finalAnswer(plan, document));
 }
 
 /** Mirrors `fn plan_question_catalog_step`. */
@@ -149,24 +175,41 @@ export async function planDreamingAuditStep(messages, toolNames) {
   return planDocumentRecipe(messages, toolNames, await catRecipe(dreamingAudit, dreamingAudit.DREAMING_AUDIT_PATH));
 }
 
-/** Mirrors `fn plan_google_trends_learning_step`. */
-export async function planGoogleTrendsLearningStep(messages, toolNames) {
-  const document = await googleTrendsLearning.renderDocument();
+async function planTrendsDocument(task, messages, toolNames, module, path) {
+  const progress = Progress.scan(messages);
+  const names = ['path', 'filePath', 'file_path'];
+  let document;
+  for (const attempt of [...progress.attempts].reverse()) {
+    if (attempt.capability !== Capability.Write || !attempt.arguments) continue;
+    const argumentsObject = parseJson(attempt.arguments);
+    if (!argumentsObject || typeof argumentsObject.content !== 'string') continue;
+    const paths = names.filter((key) => Object.hasOwn(argumentsObject, key));
+    if (paths.length && paths.every((key) => argumentsObject[key] === path)) {
+      document = argumentsObject.content;
+      break;
+    }
+  }
+  document ??= await module.renderDocument(task);
+  if (!document) return finalAnswer(agenticMessage('google_trends_source_unavailable'));
   return planDocumentRecipe(messages, toolNames, {
-    path: googleTrendsLearning.GOOGLE_TRENDS_LEARNING_PATH,
-    verify_command: await googleTrendsLearning.verificationCommand(),
-    final_answer: await googleTrendsLearning.finalAnswer(document),
+    path,
+    verify_command: module.verificationCommand(),
+    final_answer: module.finalAnswer(document),
     document,
   });
 }
 
+/** Mirrors `fn plan_google_trends_learning_step`. */
+export async function planGoogleTrendsLearningStep(messages, toolNames, task) {
+  return planTrendsDocument(task, messages, toolNames, googleTrendsLearning, googleTrendsLearning.GOOGLE_TRENDS_LEARNING_PATH);
+}
+
 /** Mirrors `fn plan_google_trends_catalog_step`. */
-export async function planGoogleTrendsCatalogStep(messages, toolNames) {
-  const document = await googleTrendsCatalog.renderDocument();
-  return planDocumentRecipe(messages, toolNames, {
-    path: googleTrendsCatalog.GOOGLE_TRENDS_CATALOG_PATH,
-    verify_command: await googleTrendsCatalog.verificationCommand(),
-    final_answer: await googleTrendsCatalog.finalAnswer(document),
-    document,
-  });
+export async function planGoogleTrendsCatalogStep(messages, toolNames, task) {
+  return planTrendsDocument(task, messages, toolNames, googleTrendsCatalog, googleTrendsCatalog.GOOGLE_TRENDS_CATALOG_PATH);
+}
+
+
+function planRequestDocument(messages, toolNames, path, document, final_answer) {
+  return planDocumentRecipe(messages, toolNames, { path, verify_command: `cat ${path}`, final_answer, document });
 }

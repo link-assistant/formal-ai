@@ -1,28 +1,14 @@
 #!/usr/bin/env python3
-"""Ground `data/seed/release-timelines.lino` in the Wikidata cache (issue #892).
+"""Regenerate the historical film-timeline test fixture (issue #892).
 
-The Spider-Man release-order answer used to be a frozen sentence typed into
-`data/seed/facts.lino`, so it could neither gain a newly released film nor tell
-an announced title from a released one. This script keeps the timeline
-*derived* instead:
+The raw SPARQL response and its lossless LiNo twin are kept under
+`rust/tests/fixtures/release-timeline/historical`. The renderer regression
+replays the film dates from this capture and the localized labels from
+the Wikidata entity records. Runtime timelines acquire publisher data
+through the verified source client.
 
-  1. The SPARQL query checked in next to the cache (`<slug>.rq`) is sent to the
-     Wikidata Query Service and its raw answer stored as
-     `data/cache/wikidata/query/<slug>.json`, with the lossless `.lino` twin the
-     rest of the cache uses. `--refresh` re-fetches; otherwise the checked-in
-     snapshot is reused, so builds and tests stay offline and deterministic.
-  2. Every film the query returns is fetched into
-     `data/cache/wikidata/entity/<Q-id>.json` (labels/descriptions/aliases of
-     the supported languages, the shape the entity cache already uses), so the
-     titles in the seed are checked-in Wikidata labels rather than human
-     guesses.
-  3. The `entry` blocks of the seed timeline are rewritten from those two
-     caches, and the provenance fields (`retrieved-at`, `sha256`) are stamped
-     from the snapshot actually on disk.
-
-Run `python3 scripts/ground-release-timelines.py` (add `--check` to fail instead
-of writing, which is what CI wants). Network is only needed with `--refresh` or
-when an entity is missing from the cache.
+Run `python3 scripts/ground-release-timelines.py --check` for the offline check.
+`--refresh` fetches a new test capture and updates the reviewed comparison data.
 """
 from __future__ import annotations
 
@@ -36,7 +22,7 @@ import urllib.request
 from pathlib import Path
 
 USER_AGENT = "formal-ai-grounding/1.0 (https://github.com/link-assistant/formal-ai)"
-SEED = Path("data/seed/release-timelines.lino")
+FIXTURE = Path("rust/tests/fixtures/release-timeline/spider-man-replay.lino")
 LANGUAGE_REGISTRY = Path("data/seed/languages.lino")
 ENTITY_CACHE = Path("data/cache/wikidata/entity")
 FETCH_ATTEMPTS = 40
@@ -160,7 +146,7 @@ def field(lines: list[str], key: str) -> str:
         stripped = line.strip()
         if stripped.startswith(f"{key} "):
             return stripped[len(key) + 1 :].strip().strip('"')
-    raise SystemExit(f"{SEED}: timeline is missing `{key}`")
+    raise SystemExit(f"{FIXTURE}: timeline is missing `{key}`")
 
 
 def quote(text: str) -> str:
@@ -238,20 +224,20 @@ def main(argv: list[str]) -> int:
     if check and refresh:
         print("--check and --refresh are mutually exclusive", file=sys.stderr)
         return 2
-    text = SEED.read_text(encoding="utf-8")
+    text = FIXTURE.read_text(encoding="utf-8")
     rendered = render(text, refresh)
     if rendered == text:
-        print(f"{SEED}: already grounded in the checked-in Wikidata cache")
+        print(f"{FIXTURE}: already grounded in the checked-in Wikidata cache")
         return 0
     if check:
         print(
-            f"{SEED} does not match its Wikidata cache; run "
+            f"{FIXTURE} does not match its Wikidata cache; run "
             "python3 scripts/ground-release-timelines.py",
             file=sys.stderr,
         )
         return 1
-    SEED.write_text(rendered, encoding="utf-8")
-    print(f"{SEED}: rewrote the timelines from the Wikidata cache")
+    FIXTURE.write_text(rendered, encoding="utf-8")
+    print(f"{FIXTURE}: rewrote the timelines from the Wikidata cache")
     return 0
 
 

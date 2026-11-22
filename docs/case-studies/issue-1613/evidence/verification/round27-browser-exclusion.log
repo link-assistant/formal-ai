@@ -1,0 +1,30 @@
+{"scope":"inert npm pack only; no native or publication proof","private":{"integrity":"sha512-xnTkTOe4wrauwU5PvpfIVVWPHaLVkZK5s/QcQ7CzGWOgOoTm4DhlFjdpxnnj4rkOrKXIMFyfkLeNbKLBc78oPg==","sha256":"a132b2e9b970b0f4c103007a13ad3f121e72b46ed3134aa5723e6303c2e72bae","files":["assets/formal_ai_worker.wasm","package.json"]},"embeddedFirst":{"integrity":"sha512-OiCnqCdCXQKjkWOAxhszSX4rxp5JUfuYaUHPwsuWwp7A1TInRz57sX/GiPLCBClBJ2X5gMCunFG5Ve1prPkRCA==","sha256":"703e9affac2abeba6679d90922607e0d480406e46d0ff1ff4b4b7d434182787d","files":["assets/formal_ai_worker.receipt.json","assets/formal_ai_worker.wasm","package.json"]},"embeddedSecond":{"integrity":"sha512-4H4141IzykLXD7C+KS0m71UJQ2BfXq0LAjs8uV4vfP/yxPwlGvGOfs5/5LQ3+Sm8DdSqCAhkdgPMvIAIc68nLQ==","sha256":"95e7b896bc10db010eeec9ab350ba5f5b7ca02ef6c34f1c18297833b0902e83c","files":["assets/formal_ai_worker.receipt.json","assets/formal_ai_worker.wasm","package.json"]}}
+{"scope":"actual Python generator plus inert npm pack; no compiler/browser/publication proof","first":{"integrity":"sha512-Qy2EkUki8J4sxK9ydg1AMfHad/k5nYF3tkCWDuwLWbIW4T3WKj2d7gxtjKHadQ5jeIjJhtPEL6rK26ntyeZAEw==","sha256":"78c6edbeb02ede3bfdcfce19954d9cf0e1c608a4a97936e1ea45ad9bbc37ddd1","files":["LICENSE","assets/app.js","assets/app/index.html","assets/formal_ai_worker.wasm","assets/seed-files.js","assets/seed/fixture.lino","assets/vendor.bundle.js","package.json"]},"second":{"integrity":"sha512-Qy2EkUki8J4sxK9ydg1AMfHad/k5nYF3tkCWDuwLWbIW4T3WKj2d7gxtjKHadQ5jeIjJhtPEL6rK26ntyeZAEw==","sha256":"78c6edbeb02ede3bfdcfce19954d9cf0e1c608a4a97936e1ea45ad9bbc37ddd1","files":["LICENSE","assets/app.js","assets/app/index.html","assets/formal_ai_worker.wasm","assets/seed-files.js","assets/seed/fixture.lino","assets/vendor.bundle.js","package.json"]}}
+✔ compiler Make dependencies retain escaped spaces and folded lines (5.36086ms)
+✔ an injected compiler can verify fixture boundaries but never supplies native evidence (326.615217ms)
+✔ production entry point refuses local compiler execution before invoking rustc (105.01791ms)
+✔ a packaged copy retains the independently pinned receipt and output bytes (466.531605ms)
+✔ Release jobs verify greetings and reporting before delivering browser assets (2.121458ms)
+✔ receipt changes cannot be blessed by an unchanged independent digest (236.827817ms)
+✔ dirty and untracked compiler dependencies fail even after compiler success (400.613542ms)
+✔ target library mutation during compilation fails the original identity (148.27921ms)
+✔ changed selected source, omitted source, and symlink dependency fail (610.967997ms)
+✔ foreign source and source revision changes cannot reuse a receipt (492.001216ms)
+✔ actual compiler identity must remain equal before and after its compile call (213.948938ms)
+✔ receipt retains every immutable Git blob and refuses a changed captured protocol (393.930325ms)
+✔ independent producer identity refuses foreign repository and run while retaining same-run transfers (567.294037ms)
+✔ private receipt binds packaged bytes without publishing producer identity (792.679268ms)
+✔ actual npm archive stays identical across private run receipts while embedded receipts differ (4358.381834ms)
+✔ actual distribution generator separates offline receipts from repeatable npm publication (2123.45114ms)
+✔ Formal AI reproduces the browser source capture exclusion (10697.874676ms)
+✔ actual compiler tool boundary conserves all original shell operands and receipt authority (191.639804ms)
+✔ every omitted or altered original compiler operand and unknown shell effect refuses (25.169591ms)
+✔ lint runs exactly the selected source compiler before the WASM budget gate (103.057402ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22427.430485

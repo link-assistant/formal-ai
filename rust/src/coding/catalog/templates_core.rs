@@ -13,7 +13,7 @@ pub(super) const TEMPLATES_CORE: &[CompiledTemplate] = &[
         task_slug: "count_to_three",
         language_slug: "rust",
         code: r#"fn main() {
-    for number in 1..=3 {
+    for number in {{start}}..={{end}} {
         println!("{number}");
     }
 }"#,
@@ -21,22 +21,22 @@ pub(super) const TEMPLATES_CORE: &[CompiledTemplate] = &[
     CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "python",
-        code: r"for number in range(1, 4):
-    print(number)",
+        code: r#"for number in range({{start}}, {{end_exclusive}}):
+    print(number)"#,
     },
     CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "javascript",
-        code: r"for (let number = 1; number <= 3; number += 1) {
+        code: r#"for (let number = {{start}}; number <= {{end}}; number += 1) {
     console.log(number);
-}",
+}"#,
     },
     CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "typescript",
-        code: r"for (let number = 1; number <= 3; number += 1) {
+        code: r#"for (let number = {{start}}; number <= {{end}}; number += 1) {
     console.log(number);
-}",
+}"#,
     },
     CompiledTemplate {
         task_slug: "count_to_three",
@@ -46,7 +46,7 @@ pub(super) const TEMPLATES_CORE: &[CompiledTemplate] = &[
 import "fmt"
 
 func main() {
-    for number := 1; number <= 3; number++ {
+    for number := {{start}}; number <= {{end}}; number++ {
         fmt.Println(number)
     }
 }"#,
@@ -57,7 +57,7 @@ func main() {
         code: r#"#include <stdio.h>
 
 int main(void) {
-    for (int number = 1; number <= 3; number++) {
+    for (int number = {{start}}; number <= {{end}}; number++) {
         printf("%d\n", number);
     }
     return 0;
@@ -66,11 +66,11 @@ int main(void) {
     CompiledTemplate {
         task_slug: "count_to_three",
         language_slug: "php",
-        code: r"<?php
+        code: r#"<?php
 
-foreach (range(1, 3) as $number) {
+foreach (range({{start}}, {{end}}) as $number) {
     echo $number, PHP_EOL;
-}",
+}"#,
     },
     CompiledTemplate {
         task_slug: "list_files",

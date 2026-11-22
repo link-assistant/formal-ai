@@ -1,0 +1,30 @@
+﹣ native offline chat synthesizes recurrences only from supplied publisher captures (2.153807ms) # SKIP
+﹣ native offline chat discovers procedures from verified Wikibooks captures (0.301021ms) # SKIP
+﹣ native offline chat reads ranked publisher pages before giving procedural steps (0.172551ms) # SKIP
+﹣ native localized procedure and follow-up use matching captures over HTTP (0.178553ms) # SKIP
+﹣ native chat uses the localized source for the short Russian prompt (0.243143ms) # SKIP
+﹣ native chat recovers a matching article after discarding an unrelated one (0.216774ms) # SKIP
+﹣ native Responses uses procedural sources with the client web search tool available (0.20381ms) # SKIP
+﹣ native HTTP calculates dated currency pairs only from publisher captures (0.205203ms) # SKIP
+﹣ native HTTP documentation answers require a matching publisher capture (0.225561ms) # SKIP
+﹣ native Agent CLI requires a retrieved capture for a known benchmark issue (0.373446ms) # SKIP
+✔ JavaScript Responses uses procedural sources with the client web search tool available (10096.483469ms)
+✔ JavaScript Codex report confirms destination and context without a Plan-only tool (7913.601993ms)
+▶ JavaScript report shows localized destination and context menus
+  ✔ shows both report menus in en (2227.380406ms)
+  ✔ shows both report menus in hi (350.37201ms)
+  ✔ shows both report menus in zh (292.738688ms)
+  ✔ shows both report menus in es (292.964289ms)
+✔ JavaScript report shows localized destination and context menus (6355.84351ms)
+✔ JavaScript report honors Plan mode and compatible prompt tools (5667.479587ms)
+﹣ native Codex report confirms destination and context without a Plan-only tool (0.401769ms) # SKIP
+﹣ native report shows localized destination and context menus (0.333372ms) # SKIP
+﹣ native report honors Plan mode and compatible prompt tools (0.099556ms) # SKIP
+ℹ tests 21
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 13
+ℹ todo 0
+ℹ duration_ms 31909.393465

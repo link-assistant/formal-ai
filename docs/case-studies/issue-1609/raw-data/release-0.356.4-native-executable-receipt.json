@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "identity": {
+    "source_commit": "09711c000cca319d7269b4b0fa15d15339baf881",
+    "source_tree": "d178524eed9e374d4198f3cf2f8e479119f3d0dc",
+    "source_selection_sha256": "fcc37f5efd2c30451fb0f19a6b79bf3ca5d79b4f718a17830b22e6e2689d48d3",
+    "cargo_lock_sha256": "7616bc661833c26bdf078ae672f988a25911de91a092884493b3c56a947d2741",
+    "native_inputs_sha256": "71b538dd03435115030ed60151566959f79c69cf0410478ea785ee9c49681b07",
+    "target": "x86_64-unknown-linux-gnu",
+    "profile": "release",
+    "requested_features": "default",
+    "root_default_features": [
+      "doublets-native",
+      "equality-saturation",
+      "meta-language"
+    ],
+    "rust_flags": "-Dwarnings",
+    "compiler_release": "1.100.0",
+    "compiler_commit": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+    "producer_run": "45001543202",
+    "platform": "linux",
+    "architecture": "x64",
+    "host": "x86_64-unknown-linux-gnu"
+  },
+  "producer": {
+    "job": "auto_compile-release",
+    "attempt": "1",
+    "compiler": "rustc 1.100.0 (0ef1bc386 2026-11-09)\nbinary: rustc\ncommit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a\ncommit-date: 2026-11-09\nhost: x86_64-unknown-linux-gnu\nrelease: 1.100.0\nLLVM version: 23.1.5\n",
+    "environment": {
+      "RUSTFLAGS": "-Dwarnings",
+      "CARGO_INCREMENTAL": "0"
+    }
+  },
+  "executable": {
+    "name": "formal-ai",
+    "bytes": 255045840,
+    "sha256": "faa25eed783bc5c417e2872417466099dd02eb4a9f0d64a670cd5fdc9c7a2e5a"
+  }
+}

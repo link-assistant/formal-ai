@@ -61,6 +61,9 @@ fn classify(url: &str) -> SearchSourceClassification {
     }
 }
 
+const REPORT_MEMORY: &str =
+    include_str!("../../../data/meta/issue-709-search-fusion-learning.lino");
+
 #[test]
 fn execution_frontier_infers_only_after_two_independent_successes() {
     let cache = temp_cache("frontier");
@@ -266,7 +269,7 @@ fn associative_report_is_derived_from_agent_authored_observations() {
             root().join("docs/case-studies/issue-709/agent-cli-evidence/learning-report-execution/search-fusion-learning-report.lino")
         )
         .expect("live Agent CLI report"),
-        search_fusion_learning::render_document(),
+        search_fusion_learning::render_document_from(REPORT_MEMORY),
         "the committed live Agent CLI output must match Formal AI's in-process recipe"
     );
 }
@@ -274,7 +277,8 @@ fn associative_report_is_derived_from_agent_authored_observations() {
 #[test]
 fn formal_ai_executes_the_issue_709_learning_report_recipe() {
     let task = "Rank the reusable issue 709 fusion lessons without adopting them and write search-fusion-learning-report.lino";
-    let outcome = run_agentic_task(task).expect("agent workspace");
+    let outcome = run_agentic_task(&format!("{task}\n```lino\n{REPORT_MEMORY}\n```"))
+        .expect("agent workspace");
 
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.steps.len(), 2);
@@ -283,7 +287,7 @@ fn formal_ai_executes_the_issue_709_learning_report_recipe() {
     assert_eq!(arguments["path"], SEARCH_FUSION_LEARNING_PATH);
     assert_eq!(
         arguments["content"],
-        search_fusion_learning::render_document()
+        search_fusion_learning::render_document_from(REPORT_MEMORY)
     );
     assert!(outcome.final_answer.contains("human-review-gated report"));
 }

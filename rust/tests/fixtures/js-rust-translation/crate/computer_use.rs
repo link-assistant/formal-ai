@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=edb5b11be9e3f8026181b525041f7ff9419e497049ce205205d49c5caf9ca4d8 bytes=4450
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0a243e07783b05f7190de7f40e2be75bd7e6fa359ac027bbff051b713fe83294 bytes=6966
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=2
+// formal-ai:workarounds import-pruning items=0 carried=4
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -9,6 +9,14 @@
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -67,10 +75,22 @@ pub static PLAN_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::
 // formal-ai:refusal function value …
 // formal-ai:blockers assignment of a field or element | call of a sibling function | object without a $ tag | sibling value
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal nullish coalescing
-// formal-ai:blockers call of an imported function | field access | null | nullish coalescing | optional chaining
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=5d441f64b244f463fb978e60399e211ac7da68a236f9d07170650bd7ed4761e1
+// | const PLAN_FENCE = '```computer-use';
+pub const PLAN_FENCE: &str = "```computer-use";
+
+// meta-language:carried JavaScript lexical_declaration (unsupported)
+// formal-ai:refusal new expression
+// formal-ai:blockers new TextEncoder
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal typeof operator
+// formal-ai:blockers Array.isArray | Object.entries | Object.hasOwn | arrow callback of .every() | call of a sibling function | field access | method call .every() | object without a $ tag | sibling value | typeof operator | undefined
 
 // meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | call of an imported function | nullish coalescing
+// formal-ai:refusal method call .split()
+// formal-ai:blockers Array.isArray | JSON.parse | Object.hasOwn | Object.keys | arrow callback of .findIndex() | arrow callback of .some() | assignment of a field or element | call of a sibling function | call of an imported function | destructuring | field access | global call String() | let without a value | method call .encode() | method call .findIndex() | method call .join() | method call .padStart() | method call .push() | method call .slice() | method call .some() | method call .split() | null | object without a $ tag | regular expression | sibling value | try statement | typeof operator
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal method call .split()
+// formal-ai:blockers arrow callback of .findIndex() | call of a sibling function | call of an imported function | method call .findIndex() | method call .join() | method call .slice() | method call .split() | null | regular expression

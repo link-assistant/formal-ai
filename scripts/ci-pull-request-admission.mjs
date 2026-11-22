@@ -10,7 +10,7 @@ export const isDocumentation = isDocumentationPath;
 // Issue #1191: PR #1497 passed every PR check, then main failed with E0308 in
 // rust/src, because no PR job compiles Rust. Clippy on the library and
 // binaries reads rust/ (src, build.rs, manifests, the embedded mirror),
-// build.rs reads data/seed/api-cache, Cargo reads .cargo/, the toolchain files
+// Cargo reads .cargo/, the toolchain files
 // and clippy.toml, and the job runs scripts/ci-clippy-profile.sh. The prefixes
 // below are proven NOT to be inputs, so a path outside them (unknown included)
 // selects the native check: missing it costs a broken main.
@@ -23,7 +23,7 @@ const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 't
 export function nativeCompileInput(path) {
   if (path === 'scripts/ci-clippy-profile.sh') return true;
   if (isDocumentation(path) || NON_NATIVE_FILES.has(path)) return false;
-  if (path.startsWith('data/')) return path.startsWith('data/seed/api-cache/');
+  if (path.startsWith('data/')) return false;
   // Its own job definition and the composite actions it runs stay inputs.
   if (path.startsWith('.github/workflows/')) return ['release.yml', 'native-type-check.yml'].some(file => path === '.github/workflows/' + file);
   return !NON_NATIVE_PREFIXES.some(prefix => path.startsWith(prefix));

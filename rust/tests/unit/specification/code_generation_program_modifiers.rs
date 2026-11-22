@@ -46,18 +46,7 @@ fn explicit_list_files_reverse_sort_modifiers_compose() {
         "reverse-sort template should sort descending, got: {}",
         response.answer
     );
-    assert!(
-        response
-            .answer
-            .contains("Output:\n```text\nmain.rs\ndata.txt\nREADME.md"),
-        "reverse-sort template should publish descending sample output, got: {}",
-        response.answer
-    );
-    assert!(
-        !response.answer.contains("Cargo.toml"),
-        "language-aware list-files samples should not use the old Cargo fixture, got: {}",
-        response.answer
-    );
+    assert_eq!(response.answer.contains("```text"), false);
 }
 
 #[test]

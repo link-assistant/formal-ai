@@ -1,0 +1,21 @@
+✔ every workaround is recorded with the refusal it lifts, its upstream issue, its scope and how it works (3.885698ms)
+✔ the projections apply only recorded workarounds, and every projection-scope workaround is in use (242.418929ms)
+✔ the ledger counts workaround items apart from the items meta-language translated (8.570177ms)
+✔ every recorded workaround is covered by a call of calls.lino (523.342556ms)
+✔ every use an import translates to names an item its module translated (9.278419ms)
+✔ import-pruning keeps the bound names, and carries an import with none (2.080581ms)
+✔ the import graph resolves a module directory's relative named imports, and the closure adds importers and imports (0.988053ms)
+✔ crate-assembly re-roots a module's own paths at it and keeps the paths of other modules (1.888322ms)
+✔ the blocker scan names every construct of an item the portable core refuses (5.227721ms)
+✔ the unlock order lifts first the construct that frees the most items (1.79583ms)
+✔ the committed blocker table is the scan of the carried items the projections hold (1.258467ms)
+✔ every stub is typed JavaScript that meta-language names as its recorded Rust signature says (4.687444ms)
+✔ the lowering rules rewrite method calls, pushes, callbacks, string lengths and string loops (3.716644ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1077.206274

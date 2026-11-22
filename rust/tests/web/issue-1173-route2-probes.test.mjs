@@ -4,6 +4,8 @@
 // rust/tests/unit/capability-routing/issue_1173_route2_probes.rs.
 
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { createWorkerContext, evaluate } from "./support/browser-runtime.mjs";
@@ -67,15 +69,72 @@ test("R1173-3: a product request with no marketplace names the catalogued ones i
   assert.ok(russian.content.startsWith("Я составляю поиск товара"), russian.content);
 });
 
-test("R1173-3: a learning directive naming a declared source reaches learn_from_source in the browser", async () => {
-  for (const prompt of [
-    "Отсюда ты узнаешь актуальные темы https://trends.google.com/trending?hl=ru&geo=DE",
-    "Here you can learn trending topics https://trends.google.com/trending",
+test("R1173-3: the browser learns from the requested regional publisher feed", async () => {
+  const requests = [];
+  const componentRequests = [];
+  const feeds = new Map(["DE", "US"].map((geo) => [
+    `https://trends.google.com/trending/rss?geo=${geo}`,
+    readFileSync(new URL(`../../../docs/case-studies/issue-1613/evidence/trends/${geo}.xml`, import.meta.url), "utf8"),
+  ]));
+  const fresh = createWorkerContext({}, {
+    networkFetch: async (url, options) => {
+      requests.push(String(url));
+      const text = feeds.get(String(url));
+      assert.equal(options.redirect, "error");
+      assert.equal(options.credentials, "omit");
+      if (String(url).endsWith("geo=DE")) throw new TypeError("Blocked by CORS");
+      return { ok: true, status: 200, url, text: async () => text ?? "<html>Unavailable</html>" };
+    },
+  });
+  await evaluate(fresh, "loadSeed()");
+  fresh.FormalAIWebSearchComponent = {
+    package: "test-web-capture",
+    fetchUrl: async (url) => {
+      componentRequests.push(url);
+      assert.equal(url, [...feeds.keys()][0]);
+      return { ok: true, text: async () => feeds.get(url) };
+    },
+  };
+  const ask = (prompt, preferences = {}) => fresh.solve(prompt, [], preferences, {}, [], {});
+  const german = "Отсюда ты узнаешь актуальные темы https://trends.google.com/trending?hl=ru&geo=DE";
+  const american = "Here you can learn trending topics https://trends.google.com/trending";
+  const cold = await ask(german, { offline: true });
+  assert.equal(cold.intent, "learn_from_source");
+  assert.match(cold.content, /нет проверенной ленты/u);
+  assert.ok(cold.evidence.includes("learning_source_unavailable:google_trends"));
+  assert.deepEqual(requests, []);
+  assert.deepEqual(componentRequests, []);
+  for (const [prompt, geo, topic] of [
+    [german, "DE", "juventus turin"],
+    [american, "US", "michigan vs villanova"],
   ]) {
-    const answer = await solve(prompt);
+    const url = `https://trends.google.com/trending/rss?geo=${geo}`;
+    const answer = await ask(prompt);
     assert.equal(answer.intent, "learn_from_source", JSON.stringify(answer));
     assert.ok(answer.content.includes("google trends"), answer.content);
+    assert.ok(answer.content.includes(`(${geo})`), answer.content);
+    assert.ok(answer.content.includes(topic), answer.content);
+    assert.match(answer.content, /80/u);
+    const sha = createHash("sha256").update(feeds.get(url)).digest("hex");
+    assert.ok(answer.evidence.includes(`learning_source_capture:${url}#sha256=${sha}`));
+    const replay = await ask(prompt, { allowNetwork: false });
+    assert.equal(replay.content, answer.content);
+    assert.deepEqual(Array.from(replay.evidence), Array.from(answer.evidence));
   }
+  assert.deepEqual(requests, [...feeds.keys()]);
+  const disabled = await ask(german, { externalServiceGoogleTrends: false });
+  assert.equal(disabled.content, cold.content);
+  assert.deepEqual(requests, [...feeds.keys()]);
+  const unavailable = await ask("Here you can learn trending topics geo=FR");
+  assert.match(unavailable.content, /No verified feed/u);
+  assert.equal(requests.at(-1), "https://trends.google.com/trending/rss?geo=FR");
+  const requested = requests.length;
+  const invalidRegion = await ask("Here you can learn trending topics geo=Kr");
+  assert.equal(invalidRegion.confidence, 0);
+  assert.equal(requests.length, requested);
+  assert.equal(requests.length, 3);
+  assert.deepEqual(componentRequests, [[...feeds.keys()][0]]);
+  assert.equal(await evaluate(fresh, "metaNewChunks.size"), 0);
   const unrelated = await solve("Learn about cats");
   assert.notEqual(unrelated.intent, "learn_from_source");
 });

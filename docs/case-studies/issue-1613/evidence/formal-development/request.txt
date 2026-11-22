@@ -1,0 +1,1 @@
+Read data/seed/handler-rules.lino in this local checkout. Identify the exact procedural source alias rules and report the input and output for each with line numbers. Do not change any files.

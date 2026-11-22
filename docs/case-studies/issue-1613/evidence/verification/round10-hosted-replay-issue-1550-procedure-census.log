@@ -1,0 +1,16 @@
+✔ the native entry has no exit around the procedure (2457.575718ms)
+✔ the worker entry exits only through the procedure (18.367031ms)
+✔ controlled-output rewrites retain the recursive procedure trace (177.068244ms)
+✔ controlled dialogue answers retain the recursive procedure trace (35.3506ms)
+✔ the census fixture lists every prompt of the specification corpus (7912.977296ms)
+✔ a sample of the corpus prompts is answered through the procedure (4241.523636ms)
+✔ the candidate, validation and selection records hold no constant that is not derived from the turn (2.673317ms)
+✔ the records are computed from the turn: executed tests and their verdicts (402.907854ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16157.76726

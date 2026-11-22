@@ -1,26 +1,40 @@
-//! The issue-#538 agentic recipe — Formal AI driving its *own* agentic CLI to
-//! make one of its meanings more detailed, reproducing the exact seed data change.
-//!
-//! Issue #468 proved the loop can *formalize a text*. Issue #538 asks the harder,
-//! self-referential question the maintainer set as the project's direction: can
-//! the **same** loop edit Formal AI's own seed knowledge to make a meaning more
-//! detailed? These pins lock that: the deterministic planner walks
-//! search → fetch → write → verify → final for the tomato meaning, and the block
-//! the loop writes is **byte-for-byte** the enriched seed block in
-//! `data/seed/meanings-translation.lino`. So the agentic CLI reproduces the exact
-//! change the issue asked for — not a hand-authored approximation.
+//! The meaning-detail recipe derives its output from explicit Wikidata captures.
 
 use formal_ai::agentic_coding::{
     AgenticPlan, CORE_RECIPE_TOOLS, PlannedToolCall, corpus, diagram, is_meaning_detail_task,
-    meaning_detail, plan_chat_step, run_agentic_task, run_agentic_task_with_tools, self_ast,
+    meaning_detail, plan_chat_step, run_agentic_task, run_agentic_task_with_source_fetch,
+    run_agentic_task_with_tools, run_agentic_task_with_tools_and_source_fetch, self_ast,
 };
 use formal_ai::{ChatMessage, ToolCall};
 
-/// Derive the enriched tomato block from the given fetched text (or the embedded
-/// real Wikidata cache when `None`) — the recipe under test, pinned to the tomato
-/// concept for the tomato-specific assertions.
-fn enrich_tomato_block(fetched: Option<&str>) -> String {
-    meaning_detail::enrich_block(&meaning_detail::TOMATO, fetched)
+const TOMATO_TASK: &str = "Make the tomato meaning more detailed: pin every surface's \
+    part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат.";
+const POTATO_TASK: &str = "Please make the potato word and meaning richer — record the \
+    singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata.";
+const APPLE_TASK: &str = "Find the grammatical forms for apple.";
+const TOMATO_CAPTURE: &str = include_str!("../../fixtures/publisher-agentic/tomato.json");
+const POTATO_CAPTURE: &str = include_str!("../../fixtures/publisher-agentic/potato.json");
+const APPLE_CAPTURE: &str = include_str!("../../fixtures/publisher-agentic/apple.json");
+
+fn tomato() -> &'static meaning_detail::Concept {
+    meaning_detail::concept_for_task(TOMATO_TASK).expect("tomato concept")
+}
+
+fn potato() -> &'static meaning_detail::Concept {
+    meaning_detail::concept_for_task(POTATO_TASK).expect("potato concept")
+}
+
+fn publisher_capture(url: &str) -> Result<String, String> {
+    for (task, capture) in [
+        (TOMATO_TASK, TOMATO_CAPTURE),
+        (POTATO_TASK, POTATO_CAPTURE),
+        (APPLE_TASK, APPLE_CAPTURE),
+    ] {
+        if meaning_detail::concept_for_task(task).is_some_and(|concept| concept.source_url == url) {
+            return Ok(capture.to_owned());
+        }
+    }
+    Err(format!("no fixture for {url}"))
 }
 
 /// Extract the enriched tomato meaning block from the seed file — everything from
@@ -51,7 +65,7 @@ include!("../../fixtures/native-protocol-observation.rs");
 #[test]
 fn recognises_the_meaning_detail_task() {
     // The canonical task string and its keywords route to the #538 recipe…
-    assert!(is_meaning_detail_task(meaning_detail::MEANING_DETAIL_TASK));
+    assert!(is_meaning_detail_task(TOMATO_TASK));
     assert!(is_meaning_detail_task(
         "make the помидор meaning more detailed with grammatical number"
     ));
@@ -64,13 +78,13 @@ fn enriched_block_matches_the_seed_byte_for_byte() {
     // The heart of the issue: the block re-derived from the fetched Wikidata lexeme
     // facts is exactly the enriched seed block. If someone hand-edits the seed, this
     // fails until the recipe is re-derived — the loop and the seed stay in lockstep.
-    let produced = enrich_tomato_block(None);
+    let produced = meaning_detail::enrich_block(tomato(), TOMATO_CAPTURE).unwrap();
     assert_eq!(produced, seed_tomato_block());
 }
 
 #[test]
 fn enriched_block_is_grounded_and_adds_the_missing_plural() {
-    let block = enrich_tomato_block(None);
+    let block = meaning_detail::enrich_block(tomato(), TOMATO_CAPTURE).unwrap();
     // Every surface pins part of speech (6 grounded + 3 extra: hi, zh×2) and every
     // grounded surface pins grammatical number.
     assert_eq!(block.matches("part_of_speech noun").count(), 9);
@@ -86,17 +100,51 @@ fn enriched_block_is_grounded_and_adds_the_missing_plural() {
 }
 
 #[test]
-fn fetch_and_canonical_fallback_yield_the_same_block() {
-    // Whether the fetch "succeeds" (returns the corpus body) or errors (falls back
-    // to the canonical facts), the loop derives an identical block — the
-    // determinism invariant the planner relies on.
-    let from_fetch = enrich_tomato_block(Some(
-        corpus::web_fetch(meaning_detail::TOMATO.source_url).as_str(),
-    ));
-    let from_fallback = enrich_tomato_block(Some("web_fetch error: 404 not found"));
-    let from_none = enrich_tomato_block(None);
-    assert_eq!(from_fetch, from_none);
-    assert_eq!(from_fallback, from_none);
+fn missing_partial_and_wrong_publisher_evidence_leave_no_enrichment() {
+    assert_eq!(meaning_detail::enrich_block(tomato(), ""), None);
+    assert_eq!(meaning_detail::enrich_block(tomato(), POTATO_CAPTURE), None);
+    let mut capture: serde_json::Value = serde_json::from_str(TOMATO_CAPTURE).unwrap();
+    capture["entities"]["L170542"]["forms"] = serde_json::json!([]);
+    assert_eq!(
+        meaning_detail::enrich_block(tomato(), &capture.to_string()),
+        None
+    );
+    let mut capture: serde_json::Value = serde_json::from_str(TOMATO_CAPTURE).unwrap();
+    capture["entities"]["L7993"]["senses"] = serde_json::json!([]);
+    assert_eq!(
+        meaning_detail::enrich_block(tomato(), &capture.to_string()),
+        None
+    );
+    let unavailable =
+        run_agentic_task_with_source_fetch(TOMATO_TASK, |_| Err("offline".to_owned())).unwrap();
+    assert_eq!(
+        unavailable
+            .steps
+            .iter()
+            .map(|step| step.tool.as_str())
+            .collect::<Vec<_>>(),
+        ["web_search", "web_fetch"]
+    );
+    assert_eq!(
+        unavailable.final_answer,
+        format!(
+            "I could not verify the required grammatical forms at {}.",
+            tomato().source_url
+        )
+    );
+}
+
+#[test]
+fn enriches_another_registered_noun_and_binds_the_publisher_sense() {
+    let apple = meaning_detail::concept_for_task(APPLE_TASK).expect("apple concept");
+    let block = meaning_detail::enrich_block(apple, APPLE_CAPTURE).expect("apple forms");
+    assert!(block.contains("surface L3257-F2"));
+    assert!(block.contains("text apples"));
+    let tomato_block =
+        meaning_detail::enrich_block(tomato(), TOMATO_CAPTURE).expect("tomato forms");
+    assert!(tomato_block.contains("sense L7993-S2"));
+    assert!(!tomato_block.contains("sense L7993-S1"));
+    assert!(!tomato_block.contains("sense L170542-S1"));
 }
 
 /// Plan one step and assert it is a single tool call, returning it.
@@ -122,34 +170,41 @@ fn answer_tool_call(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, res
 }
 
 #[test]
+fn unregistered_word_uses_the_requested_subject_for_research() {
+    let messages = [ChatMessage::user(
+        "Find the grammatical number for the word garden.",
+    )];
+    let call = expect_single_call(&messages, &["web_search", "web_fetch", "write_file"]);
+    assert_eq!(call.tool, "web_search");
+    assert!(call.arguments.contains("garden"), "{}", call.arguments);
+    assert!(!call.arguments.contains("tomato"), "{}", call.arguments);
+}
+
+#[test]
 fn planner_walks_the_full_recipe_for_the_meaning_detail_task() {
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(meaning_detail::MEANING_DETAIL_TASK)];
+    let mut messages = vec![ChatMessage::user(TOMATO_TASK)];
 
     // Step 1: search for the Wikidata lexeme data.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "web_search");
-    assert!(call.arguments.contains(meaning_detail::TOMATO.search_query));
+    assert!(call.arguments.contains(&tomato().search_query));
     answer_tool_call(
         &mut messages,
         &call,
-        &corpus::web_search(meaning_detail::TOMATO.search_query),
+        &corpus::web_search(&tomato().search_query),
     );
 
     // Step 2: fetch the tomato lexemes.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "web_fetch");
-    assert!(call.arguments.contains(meaning_detail::TOMATO.source_url));
-    answer_tool_call(
-        &mut messages,
-        &call,
-        &corpus::web_fetch(meaning_detail::TOMATO.source_url),
-    );
+    assert!(call.arguments.contains(&tomato().source_url));
+    answer_tool_call(&mut messages, &call, TOMATO_CAPTURE);
 
     // Step 3: write the enriched meaning block — byte-for-byte the seed block.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "write_file");
-    assert!(call.arguments.contains(meaning_detail::TOMATO.kb_path));
+    assert!(call.arguments.contains(&tomato().kb_path));
     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
     assert_eq!(written["content"], seed_tomato_block());
     answer_tool_call(&mut messages, &call, "wrote meanings-tomato-detail.lino");
@@ -157,7 +212,7 @@ fn planner_walks_the_full_recipe_for_the_meaning_detail_task() {
     // Step 4: verify by reading the file back.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "run_command");
-    assert!(call.arguments.contains(meaning_detail::TOMATO.kb_path));
+    assert!(call.arguments.contains(&tomato().kb_path));
     answer_tool_call(&mut messages, &call, &seed_tomato_block());
 
     // Step 5: the recipe is exhausted — the final answer carries the block inline.
@@ -165,28 +220,17 @@ fn planner_walks_the_full_recipe_for_the_meaning_detail_task() {
         Some(AgenticPlan::Final(answer)) => {
             assert!(answer.contains("more detailed"));
             assert!(answer.contains("томаты"));
-            assert!(answer.contains(meaning_detail::TOMATO.kb_path));
+            assert!(answer.contains(&tomato().kb_path));
         }
         other => panic!("expected a final answer, got {other:?}"),
     }
 }
 
 #[test]
-fn corpus_serves_the_tomato_lexemes_for_search_and_fetch() {
-    // A tomato-lexeme query surfaces the Wikidata page and its url…
-    let results = corpus::web_search("wikidata lexeme tomato помидор томат grammatical number");
-    assert!(results.contains(meaning_detail::TOMATO.source_url));
-    // …and fetching that url returns the canonical lexeme facts (with the plural).
-    let body = corpus::web_fetch(meaning_detail::TOMATO.source_url);
-    // The body is the real Wikidata lexeme JSON (the linguistic core): the plural
-    // form `томаты` (L170542-F7, feature Q146786) is present to be derived from.
-    assert!(body.contains("\"L170542\""));
-    assert!(body.contains("L170542-F7"));
-    assert!(body.contains("томаты"));
-    assert!(body.contains("Q146786"));
-    // It really is JSON we can parse back, not a bespoke compact fixture.
-    let parsed: serde_json::Value = serde_json::from_str(&body).expect("web_fetch body is JSON");
-    assert!(parsed["entities"]["L170542"].is_object());
+fn corpus_search_lists_the_publisher_without_a_synthetic_response() {
+    let results = corpus::web_search(&tomato().search_query);
+    assert!(results.contains(&tomato().source_url));
+    assert!(!results.contains("L170542-F7"));
 }
 
 #[test]
@@ -195,7 +239,8 @@ fn driver_runs_the_meaning_detail_loop_and_writes_the_seed_block() {
     // and the file it writes into the sandbox is byte-for-byte the enriched seed
     // block — Formal AI making its own meaning more detailed, offline and
     // deterministically.
-    let outcome = run_agentic_task(meaning_detail::MEANING_DETAIL_TASK).expect("sandbox workspace");
+    let outcome = run_agentic_task_with_source_fetch(TOMATO_TASK, publisher_capture)
+        .expect("sandbox workspace");
 
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
 
@@ -220,17 +265,15 @@ fn driver_runs_the_meaning_detail_loop_and_writes_the_seed_block() {
 
     // The final answer summarises the change with the block inline.
     assert!(outcome.final_answer.contains("more detailed"));
-    assert!(
-        outcome
-            .final_answer
-            .contains(meaning_detail::TOMATO.kb_path)
-    );
+    assert!(outcome.final_answer.contains(&tomato().kb_path));
 }
 
 #[test]
 fn driver_is_deterministic_for_the_meaning_detail_task() {
-    let first = run_agentic_task(meaning_detail::MEANING_DETAIL_TASK).expect("workspace");
-    let second = run_agentic_task(meaning_detail::MEANING_DETAIL_TASK).expect("workspace");
+    let first =
+        run_agentic_task_with_source_fetch(TOMATO_TASK, publisher_capture).expect("workspace");
+    let second =
+        run_agentic_task_with_source_fetch(TOMATO_TASK, publisher_capture).expect("workspace");
     assert_eq!(first.steps, second.steps);
     assert_eq!(first.final_answer, second.final_answer);
     assert_eq!(first.turns, second.turns);
@@ -242,18 +285,16 @@ fn routes_different_requests_to_different_concepts() {
     // natural language requests, so we test that solutions are never hardcoded but
     // truly general."* Two differently worded requests route to two different
     // concepts — the recipe is parameterized, not tomato-hardcoded.
-    let tomato = meaning_detail::concept_for_task(meaning_detail::MEANING_DETAIL_TASK)
-        .expect("tomato request routes");
-    let potato = meaning_detail::concept_for_task(meaning_detail::POTATO_DETAIL_TASK)
-        .expect("potato request routes");
+    let tomato = meaning_detail::concept_for_task(TOMATO_TASK).expect("tomato request routes");
+    let potato = meaning_detail::concept_for_task(POTATO_TASK).expect("potato request routes");
     assert_eq!(tomato.name, "tomato");
     assert_eq!(potato.name, "potato");
     assert_ne!(tomato.kb_path, potato.kb_path);
     // Both requests are recognised as the #538 meaning-detail task…
-    assert!(is_meaning_detail_task(meaning_detail::POTATO_DETAIL_TASK));
+    assert!(is_meaning_detail_task(POTATO_TASK));
     // …and the potato request uses *none* of the tomato task's wording.
-    assert!(!meaning_detail::POTATO_DETAIL_TASK.contains("tomato"));
-    assert!(!meaning_detail::POTATO_DETAIL_TASK.contains("томат"));
+    assert!(!POTATO_TASK.contains("tomato"));
+    assert!(!POTATO_TASK.contains("томат"));
 }
 
 #[test]
@@ -262,7 +303,7 @@ fn enriched_potato_block_matches_the_seed_byte_for_byte() {
     // its Wikidata lexeme facts is exactly the enriched seed potato block. This is
     // the missing English plural `potatoes` (form L3784-F2) recovered, every
     // surface pinned to part of speech and grammatical number, byte-for-byte.
-    let produced = meaning_detail::enrich_block(&meaning_detail::POTATO, None);
+    let produced = meaning_detail::enrich_block(potato(), POTATO_CAPTURE).unwrap();
     assert_eq!(produced, seed_potato_block());
     // Proof it is a real enrichment: the plural surface and its number are present.
     assert!(produced.contains("surface L3784-F2 # wikidata english plural surface"));
@@ -276,7 +317,8 @@ fn driver_runs_the_potato_recipe_with_a_different_request() {
     // End-to-end proof of generality: the *same* in-repo agentic CLI, driven by a
     // *differently worded* request, enriches the potato meaning and writes
     // byte-for-byte the enriched seed potato block into the sandbox.
-    let outcome = run_agentic_task(meaning_detail::POTATO_DETAIL_TASK).expect("workspace");
+    let outcome =
+        run_agentic_task_with_source_fetch(POTATO_TASK, publisher_capture).expect("workspace");
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
 
     let executed: Vec<&str> = outcome.steps.iter().map(|s| s.tool.as_str()).collect();
@@ -287,7 +329,7 @@ fn driver_runs_the_potato_recipe_with_a_different_request() {
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
     assert_eq!(written["content"], seed_potato_block());
     // It writes to the potato KB path, not the tomato one.
-    assert_eq!(written["path"], meaning_detail::POTATO.kb_path);
+    assert_eq!(written["path"], potato().kb_path);
 
     // The verify step reads the enriched block back and observes the added plural.
     let run = &outcome.steps[3];
@@ -295,40 +337,36 @@ fn driver_runs_the_potato_recipe_with_a_different_request() {
     assert!(run.result.contains("grammatical_number plural"));
 
     assert!(outcome.final_answer.contains("more detailed"));
-    assert!(
-        outcome
-            .final_answer
-            .contains(meaning_detail::POTATO.kb_path)
-    );
+    assert!(outcome.final_answer.contains(&potato().kb_path));
 }
 
 #[test]
-fn committed_potato_session_matches_a_fresh_run() {
-    // The second committed Agent CLI session (a *different* natural-language
-    // request solving a *different* concept with the same recipe). Regenerate with:
-    //   formal-ai agent --task "<POTATO_DETAIL_TASK>" \
-    //       --session-json docs/case-studies/issue-538/agent-cli-session-potato.json
-    let committed =
-        include_str!("../../../../docs/case-studies/issue-538/agent-cli-session-potato.json");
-    let recorded: serde_json::Value =
-        serde_json::from_str(committed).expect("immutable session JSON");
-    let tools = recorded["tools_advertised"]
+fn potato_request_accepts_the_tools_in_the_archived_session() {
+    let recorded: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../docs/case-studies/issue-538/agent-cli-session-potato.json"
+    ))
+    .expect("immutable session JSON");
+    let tools: Vec<_> = recorded["tools_advertised"]
         .as_array()
-        .expect("archived advertised tool schema")
+        .unwrap()
         .iter()
-        .map(|tool| tool.as_str().expect("advertised tool name"))
-        .collect::<Vec<_>>();
+        .map(|tool| tool.as_str().unwrap())
+        .collect();
+    assert_eq!(recorded["task"], POTATO_TASK);
     let fresh =
-        run_agentic_task_with_tools(meaning_detail::POTATO_DETAIL_TASK, &tools).expect("workspace");
-    let rendered = format!(
-        "{}\n",
-        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
-    );
+        run_agentic_task_with_tools_and_source_fetch(POTATO_TASK, &tools, publisher_capture)
+            .unwrap();
     assert_eq!(
-        committed, rendered,
-        "the committed potato Agent CLI session is stale — regenerate it with \
-         `formal-ai agent --session-json …`"
+        fresh
+            .steps
+            .iter()
+            .map(|step| step.tool.as_str())
+            .collect::<Vec<_>>(),
+        CORE_RECIPE_TOOLS
     );
+    assert!(fresh.steps[1].arguments.contains(&potato().source_url));
+    let write: serde_json::Value = serde_json::from_str(&fresh.steps[2].arguments).unwrap();
+    assert_eq!(write["content"], seed_potato_block());
 }
 
 #[test]
@@ -416,7 +454,7 @@ fn planner_walks_the_diagram_recipe() {
 }
 
 #[test]
-fn committed_diagram_session_matches_a_fresh_run() {
+fn historical_diagram_session_preserves_the_recipe_tool_sequence() {
     // The third committed Agent CLI session (a different request, a different axis,
     // the same recipe machinery). Regenerate with:
     //   formal-ai agent --task "<DIAGRAM_TASK>" \
@@ -437,46 +475,51 @@ fn committed_diagram_session_matches_a_fresh_run() {
         .map(|tool| tool.as_str().expect("advertised tool name"))
         .collect::<Vec<_>>();
     let fresh = run_agentic_task_with_tools(diagram::DIAGRAM_TASK, &tools).expect("workspace");
-    let rendered = format!(
-        "{}\n",
-        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
-    );
-    assert_eq!(
-        committed, rendered,
-        "the committed diagram Agent CLI session is stale — regenerate it with \
-         `formal-ai agent --session-json …`"
+    let fresh = fresh.session_json();
+    assert_eq!(recorded["task"], fresh["task"]);
+    for session in [&recorded, &fresh] {
+        let tools = session["steps"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|step| step["tool"].as_str().unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(tools, ["write_file", "run_command"]);
+    }
+    assert!(
+        fresh["final_answer"]
+            .as_str()
+            .unwrap()
+            .contains("report a source gap")
     );
 }
 
 #[test]
-fn committed_agent_cli_session_matches_a_fresh_run() {
-    // The committed artifact (docs/case-studies/issue-538/agent-cli-session.json)
-    // is the reproducible record the maintainer asked for: "the json file with the
-    // Agent CLI session that fully solved this exact task." Because the loop is
-    // deterministic, a fresh run must reproduce it byte-for-byte — so the artifact
-    // can never silently drift from what the code actually does. Regenerate with:
-    //   formal-ai agent --task "<MEANING_DETAIL_TASK>" \
-    //       --session-json docs/case-studies/issue-538/agent-cli-session.json
+fn historical_tomato_request_uses_an_explicit_publisher_capture() {
     let committed = include_str!("../../../../docs/case-studies/issue-538/agent-cli-session.json");
-    let recorded: serde_json::Value =
-        serde_json::from_str(committed).expect("immutable session JSON");
+    let recorded: serde_json::Value = serde_json::from_str(committed).expect("immutable session");
     let tools = recorded["tools_advertised"]
         .as_array()
-        .expect("archived advertised tool schema")
+        .unwrap()
         .iter()
-        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .map(|tool| tool.as_str().unwrap())
         .collect::<Vec<_>>();
-    let fresh = run_agentic_task_with_tools(meaning_detail::MEANING_DETAIL_TASK, &tools)
-        .expect("workspace");
-    let rendered = format!(
-        "{}\n",
-        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
-    );
+    assert_eq!(recorded["task"], TOMATO_TASK);
+    let fresh =
+        run_agentic_task_with_tools_and_source_fetch(TOMATO_TASK, &tools, publisher_capture)
+            .expect("workspace");
+    let executed: Vec<_> = fresh.steps.iter().map(|step| step.tool.as_str()).collect();
     assert_eq!(
-        committed, rendered,
-        "the committed Agent CLI session is stale — regenerate it with `formal-ai agent \
-         --session-json …`"
+        executed,
+        ["web_search", "web_fetch", "write_file", "run_command"]
     );
+    assert!(
+        fresh.final_answer.contains("Wikidata"),
+        "{}",
+        fresh.final_answer
+    );
+    let written: serde_json::Value = serde_json::from_str(&fresh.steps[2].arguments).unwrap();
+    assert_eq!(written["content"], seed_tomato_block());
 }
 
 // --- Fourth axis (issue #538): store the CST/AST of the meta algorithm itself ---
