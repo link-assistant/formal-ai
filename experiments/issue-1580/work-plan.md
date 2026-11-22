@@ -513,3 +513,6 @@ Complete local replay at `dd99013af518469481fb8072c4d964b1f59b3cf1`: 89 maintain
 
 
 The maintained checks dispatch at `b8383d52` reveals incompatible GitHub CLI pagination flags and hosted documentation run 45039167261 reveals missing candidate receipts in its simulator. The action regression fails before the correction; ten dispatch and 37 documentation tests pass after it, with focused gates passing. Exact-source hosted verification is still pending. See `docs/case-studies/issue-1580/dispatch-pagination-and-context.md` and `evidence/checks/dispatch-pagination-repair/manifest.json`; these supplied edits earn zero authorship credit.
+
+
+Hosted Layered run 45039178952 reveals two stale source-contract fixtures in addition to the already repaired documentation receipt fixture. Both focused files fail before correction and pass after it (3 release-pending and 2 complete-profile cases); see `layered-source-contract-repair.md` and its complete hosted evidence. Fresh PHP template #35 also exposes the same successful-fetch/stale-tracking-ref gap in Formal AI. A finite Git probe reproduces it; the Rust guard now compares the isolated fetched commit, with three additional compiled CLI tests awaiting hosted execution. See `version-base-commit-isolation.md`. Native acceptance and the wider issue remain open; supplied edits earn zero authorship credit.

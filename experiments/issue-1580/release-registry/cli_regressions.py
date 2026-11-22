@@ -410,6 +410,78 @@ class RegistryRegressions(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn('Version check passed', result.stdout)
 
+    def advance_remote_version_base(self):
+        stale = self.git('rev-parse', 'origin/main').strip()
+        other = self.work.parent / 'other'
+        origin = self.git('remote', 'get-url', 'origin').strip()
+        subprocess.run(['git', 'clone', '-q', '--branch', 'main', origin, str(other)], check=True)
+        def git(*args):
+            return subprocess.run(['git', *args], cwd=other, capture_output=True, text=True, check=True).stdout
+        git('config', 'user.name', 'Fixture')
+        git('config', 'user.email', 'fixture@example.invalid')
+        current = '[package]\nname = "fixture"\nversion = "1.2.4"\n'
+        (other / 'Cargo.toml').write_text(current)
+        git('add', 'Cargo.toml')
+        git('commit', '-qm', 'advance remote base')
+        git('push', '-q', 'origin', 'main')
+        return stale, git('rev-parse', 'HEAD').strip(), current
+
+    def test_version_check_uses_fetched_commit_under_a_custom_refmap(self):
+        self.version_base('[package]\nname = "fixture"\nversion = "1.2.3"\n')
+        stale, current_commit, current = self.advance_remote_version_base()
+        self.git('config', 'remote.origin.fetch', '+refs/heads/*:refs/remotes/alternate/*')
+        fetched_head = self.work / '.git/FETCH_HEAD'
+        fetched_head.write_text('unrelated fetch observation\n')
+        for content, expected in [((self.work / 'Cargo.toml').read_text(), False), (current, True)]:
+            with self.subTest(matches_current_base=expected):
+                (self.work / 'Cargo.toml').write_text(content)
+                result = self.script('check-version-modification.rs')
+                self.assertEqual(result.returncode == 0, expected, result.stdout + result.stderr)
+                self.assertIn(current_commit, result.stdout)
+                self.assertEqual(self.git('rev-parse', 'origin/main').strip(), stale)
+                self.assertEqual(fetched_head.read_text(), 'unrelated fetch observation\n')
+                self.assertEqual(self.git('for-each-ref', 'refs/formal-ai/version-base'), '')
+                self.assertEqual((self.work / 'Cargo.toml').read_text(), content)
+
+    @unittest.skipUnless(os.name == 'posix', 'executable local Git interposer')
+    def test_version_check_ignores_a_concurrent_tracking_ref_and_fetch_head_change(self):
+        self.version_base('[package]\nname = "fixture"\nversion = "1.2.3"\n')
+        stale, current_commit, current = self.advance_remote_version_base()
+        real_git = shutil.which('git')
+        binary = self.work.parent / 'bin'
+        binary.mkdir()
+        wrapper = binary / 'git'
+        wrapper.write_text('#!/usr/bin/env python3\n'
+                           'import os,subprocess,sys\n'
+                           f'real={real_git!r}\n'
+                           'args=sys.argv[1:]\n'
+                           'result=subprocess.run([real,*args])\n'
+                           'if result.returncode == 0 and args and args[0] == "fetch":\n'
+                           f' subprocess.run([real,"update-ref","refs/remotes/origin/main",{stale!r}],check=True)\n'
+                           ' with open(".git/FETCH_HEAD","w") as stream: stream.write("concurrent observation\\n")\n'
+                           'sys.exit(result.returncode)\n')
+        wrapper.chmod(0o755)
+        self.env['PATH'] = str(binary) + os.pathsep + self.env['PATH']
+        for content, expected in [((self.work / 'Cargo.toml').read_text(), False), (current, True)]:
+            with self.subTest(matches_current_base=expected):
+                (self.work / 'Cargo.toml').write_text(content)
+                result = self.script('check-version-modification.rs')
+                self.assertEqual(result.returncode == 0, expected, result.stdout + result.stderr)
+                self.assertIn(current_commit, result.stdout)
+                self.assertEqual(self.git('rev-parse', 'origin/main').strip(), stale)
+                self.assertEqual(self.git('for-each-ref', 'refs/formal-ai/version-base'), '')
+
+    def test_version_check_refuses_invalid_base_branch_names(self):
+        self.version_base('[package]\nname = "fixture"\nversion = "1.2.3"\n')
+        for branch in ['main..invalid', 'main:refs/heads/other', 'main\nother', '']:
+            with self.subTest(branch=branch):
+                self.env['GITHUB_BASE_REF'] = branch
+                result = self.script('check-version-modification.rs')
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('Could not fetch the current base branch', result.stderr)
+                self.assertNotIn('Version check passed', result.stdout)
+                self.assertEqual(self.git('for-each-ref', 'refs/formal-ai/version-base'), '')
+
     def test_version_check_refuses_cached_base_after_failed_fetch(self):
         self.version_base("[package]\nname = 'fixture'\nversion = '1.2.3'\n")
         cached = self.git('show', 'origin/main:Cargo.toml')

@@ -39,6 +39,7 @@ use std::env;
 use std::fs;
 use std::path::Path;
 use std::process::{Command, exit};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
@@ -95,11 +96,58 @@ fn head_version() -> Option<String> {
     version_in(&manifest)
 }
 
-fn base_version(base_ref: &str) -> Option<String> {
+fn fetch_base_commit(base_ref: &str) -> Option<String> {
+    let source = format!("refs/heads/{base_ref}");
+    if !exec_quiet("git", &["check-ref-format", &source]) {
+        return None;
+    }
+    // Neither configured refmaps nor another fetch may select our comparison.
+    let nonce = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .ok()?
+        .as_nanos();
+    let destination = format!("refs/formal-ai/version-base/{}-{nonce}", std::process::id());
+    let refspec = format!("{source}:{destination}");
+    let fetched = exec_quiet(
+        "git",
+        &[
+            "fetch",
+            "--atomic",
+            "--no-tags",
+            "--no-write-fetch-head",
+            "--refmap=",
+            "--depth=1",
+            "--",
+            "origin",
+            &refspec,
+        ],
+    );
+    let commit = if fetched {
+        exec(
+            "git",
+            &[
+                "rev-parse",
+                "--verify",
+                &format!("{destination}^{{commit}}"),
+            ],
+        )
+    } else {
+        String::new()
+    };
+    // Always attempt cleanup, including after a failed fetch or resolution.
+    let cleaned = exec_quiet("git", &["update-ref", "-d", &destination]);
+    (fetched
+        && cleaned
+        && matches!(commit.len(), 40 | 64)
+        && commit.bytes().all(|byte| byte.is_ascii_hexdigit()))
+    .then_some(commit)
+}
+
+fn base_version(base_commit: &str) -> Option<String> {
     // The base branch may predate the rust/ layout, so try the root
     // manifest first and the rust/ one second.
     for path in ["Cargo.toml", "rust/Cargo.toml"] {
-        let manifest = exec("git", &["show", &format!("origin/{base_ref}:{path}")]);
+        let manifest = exec("git", &["show", &format!("{base_commit}:{path}")]);
         if manifest.is_empty() {
             continue;
         }
@@ -122,11 +170,12 @@ fn main() {
 
     // A release-like branch name is not authorization to change the version.
     let base_ref = env::var("GITHUB_BASE_REF").unwrap_or_else(|_| "main".to_string());
-    if !exec_quiet("git", &["fetch", "origin", &base_ref, "--depth=1"]) {
+    let Some(base_commit) = fetch_base_commit(&base_ref) else {
         eprintln!("Error: Could not fetch the current base branch {base_ref}.");
         eprintln!("Refusing to compare against a possibly stale cached base version.");
         exit(1);
-    }
+    };
+    println!("Comparing against fetched base commit {base_commit}.");
 
     let Some(head) = head_version() else {
         eprintln!("Error: Could not read a crate version from the checked-out tree.");
@@ -134,7 +183,7 @@ fn main() {
         exit(1);
     };
 
-    let Some(base) = base_version(&base_ref) else {
+    let Some(base) = base_version(&base_commit) else {
         eprintln!(
             "Error: Could not read a crate version from origin/{}.",
             base_ref

@@ -51,3 +51,8 @@ workflow contexts do not gain a new fragment-inventory dependency.
 
 These new native cases require hosted compilation and execution. Local Python
 syntax checks do not establish CLI success or live publication.
+
+The base-version CLI also checks custom remote refmaps, concurrent changes to
+tracking refs and FETCH_HEAD, invalid base references and temporary-ref cleanup.
+The separate `../version-base-git-probe.py` reproduces the underlying Git behavior
+without compiling or executing a Rust binary; it cannot qualify the native guard.
