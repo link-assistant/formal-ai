@@ -246,6 +246,9 @@ pub fn try_fact_lookup(
         return Some(answer);
     }
     let (record, gate) = super::factual_qa::gated_fact_record(prompt, normalized)?;
+    if !record.publisher_heading.is_empty() {
+        return None;
+    }
 
     log.append("fact_lookup:request", prompt.to_owned());
     log.append("fact_lookup:hit", record.slug.clone());

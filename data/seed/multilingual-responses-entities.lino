@@ -559,3 +559,23 @@ multilingual_responses
     intent project-origin-author-and-tool
     language es
     text "{author} creó {subject} con {tool}."
+  response response-publisher-policy-excerpt-en
+    intent publisher-policy-excerpt
+    language en
+    text "The official policy says: “{excerpt}” Source: {source}"
+  response response-publisher-policy-excerpt-ru
+    intent publisher-policy-excerpt
+    language ru
+    text "В официальных правилах сказано: «{excerpt}» Источник: {source}"
+  response response-publisher-policy-excerpt-hi
+    intent publisher-policy-excerpt
+    language hi
+    text "आधिकारिक नीति में लिखा है: “{excerpt}” स्रोत: {source}"
+  response response-publisher-policy-excerpt-zh
+    intent publisher-policy-excerpt
+    language zh
+    text "官方政策写道：“{excerpt}”来源：{source}"
+  response response-publisher-policy-excerpt-es
+    intent publisher-policy-excerpt
+    language es
+    text "La política oficial indica: «{excerpt}» Fuente: {source}"

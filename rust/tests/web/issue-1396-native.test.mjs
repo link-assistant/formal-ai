@@ -50,8 +50,20 @@ async function startNativeRecurrenceReplay(t) {
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   const run = await startCli(t, {
     binary: NATIVE_CLI,
-    env: { FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_OFFLINE: "1" },
+    silent: false,
+    env: {
+      FORMAL_AI_SOURCE_CACHE_DIR: cache,
+      FORMAL_AI_OFFLINE: "1",
+      FORMAL_AI_TRACE_REQUESTS: "1",
+      FORMAL_AI_LOG_LEVEL: "trace",
+      FORMAL_AI_LOG_STDERR: "1",
+    },
     lifetime: NATIVE_CASE.timeout,
+  });
+  t.after(() => {
+    const stages = run.stderr.split("\n")
+      .filter(line => /publisher_recurrence_|general_synthesis_/u.test(line));
+    t.diagnostic(stages.length ? stages.join("\n") : "No native synthesis stages were logged");
   });
   await run.ready();
   async function ask(prompt) {
@@ -73,8 +85,11 @@ async function startNativeRecurrenceReplay(t) {
 }
 
 test("native offline chat needs a publisher capture to synthesize a recurrence", NATIVE_CASE, async (t) => {
+  const { name, prompt } = recurrenceCases[0];
   const { ask } = await startNativeRecurrenceReplay(t);
-  assert.doesNotMatch(await ask(recurrenceCases[0].prompt), /def factorial\(n\)/u);
+  const answer = await ask(prompt);
+  assert.ok(answer.trim(), prompt);
+  assert.ok(!answer.includes(`def ${name}(`), answer);
 });
 
 for (const { language, name, prompt } of recurrenceCases) {

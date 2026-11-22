@@ -476,6 +476,8 @@ impl Rules {
             source: lead.source,
             source_kind: relation.source_kind.clone(),
             release_timeline: String::new(),
+            publisher_heading: String::new(),
+            publisher_terms: Vec::new(),
             localized,
         }
     }

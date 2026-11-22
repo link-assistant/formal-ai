@@ -51,9 +51,15 @@ function practicalHelpTrustedSource(source) {
 }
 
 function practicalHelpExcerpt(text, goal) {
-  const heading = normalizePrompt(practicalHelpPolicy(goal + "-heading"));
-  if (!heading || new TextEncoder().encode(text).length > HOW_TO_CAPTURE_MAXIMUM_BYTES) return "";
-  const cues = practicalHelpForms(goal + "-excerpt-terms");
+  return sourceSectionExcerpt(text, practicalHelpPolicy(goal + "-heading"),
+    practicalHelpForms(goal + "-excerpt-terms"));
+}
+
+function sourceSectionExcerpt(text, title, terms) {
+  const heading = normalizePrompt(title);
+  const cues = terms.map(normalizePrompt);
+  if (!heading || !cues.length || cues.some(word => !word) ||
+      new TextEncoder().encode(text).length > HOW_TO_CAPTURE_MAXIMUM_BYTES) return "";
   let level = 0;
   for (const block of pageHtmlBlocks(text, pageFormalizationRules())) {
     if (block.kind === "heading") {

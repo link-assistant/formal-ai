@@ -786,16 +786,15 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         questionKeywords: splitList(findChildValue(item, "question_keywords")).map(toLower),
         summary: findChildValue(item, "summary"),
         releaseTimeline: findChildValue(item, "release_timeline"),
+        publisherHeading: findChildValue(item, "publisher-heading"),
+        publisherTerms: splitList(findChildValue(item, "publisher-terms")),
         source: findChildValue(item, "source"),
         sourceKind: findChildValue(item, "source_kind"),
         localized: localized,
       });
     };
-    if (root.name && root.name.indexOf("fact_") === 0) {
-      visit(root);
-    } else {
-      root.children.forEach(visit);
-    }
+    var entries = root.name?.startsWith("fact_") ? [root] : root.children;
+    entries.forEach(visit);
     return facts;
   }
   // Mirrors ProjectStatement::parse: a complete decimal u8, including zero.

@@ -78,6 +78,7 @@ debug_stage_sources
   event "fact_lookup:hit"
     step lookup_fact
     rust "rust/src/solver_handlers/benchmark_prompts.rs" "try_fact_lookup"
+    rust "rust/src/solver_handlers/fact_live_answer.rs" "publisher_policy_answer"
   event "fact_query:relation"
     step lookup_fact
     rust "rust/src/fact_live.rs" "record_fact_question"

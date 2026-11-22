@@ -420,6 +420,15 @@ impl UniversalSolver {
                 .or_else(|| {
                     crate::solver_handlers::handle_summarization_request(prompt, prompt, log)
                 })
+                .or_else(|| {
+                    crate::solver_handlers::try_bound_publisher_recurrence(
+                        prompt,
+                        intent_formalization.route.as_deref(),
+                        self.config,
+                        language,
+                        log,
+                    )
+                })
             {
                 return answer;
             }
@@ -578,23 +587,12 @@ impl UniversalSolver {
                 return answer;
             }
 
-            let publisher_program = if is_concrete_write_program {
-                crate::solver_handlers::try_publisher_recurrence(
-                    prompt,
-                    log,
-                    !self.config.offline && crate::solver_config::read_network_allowed(),
-                )
-            } else {
-                None
-            };
-            if let Some(answer) = publisher_program.or_else(|| {
-                crate::coding::rosetta_request::try_rosetta_code_request(
-                    prompt,
-                    &intent_formalization.normalized_text,
-                    log,
-                    self.config.offline,
-                )
-            }) {
+            if let Some(answer) = crate::coding::rosetta_request::try_rosetta_code_request(
+                prompt,
+                &intent_formalization.normalized_text,
+                log,
+                self.config.offline,
+            ) {
                 return answer;
             }
 

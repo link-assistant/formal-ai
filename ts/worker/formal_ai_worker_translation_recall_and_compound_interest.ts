@@ -463,7 +463,7 @@ function localizedFactFor(record, language) {
 // Issue #1172: a record answers only through the subject gate (gatedFactRecord, formal_ai_worker_factual_qa.js): its subject Q-id must equal the formalized question's; word-boundary alias matching is the last-resort hint for Q-id-less records.
 function tryFactLookup(prompt, normalized) {
   const gated = gatedFactRecord(normalized, prompt);
-  if (!gated) return null;
+  if (!gated || gated.record.publisherHeading) return null;
   const record = gated.record;
   const language = detectLanguage(prompt);
   const localized = localizedFactFor(record, language);

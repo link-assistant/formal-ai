@@ -1413,3 +1413,11 @@ meanings
     grounding "data/seed/source-context-grammar.lino::annotation opaque-label"
     source "js/agentic/planner/owned_goals.mjs::sourceContextLabel"
     source "rust/src/agentic_coding/general_planner/owned_goals.rs::source_context_label"
+  publisher-policy-excerpt
+    defined-by answer
+    role localized_response_template
+    precondition "a publisher page contains a statement in the requested policy section"
+    effect "quote the statement with an official source link"
+    unit "not applicable"
+    example "a checked-baggage statement from the carrier"
+    grounding "data/seed/multilingual-responses-entities.lino"

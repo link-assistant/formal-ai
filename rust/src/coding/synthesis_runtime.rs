@@ -458,6 +458,8 @@ fn research_phrases(spec: &CodingTaskSpec) -> Vec<String> {
         crate::seed::ROLE_PROGRAM_SYNTHESIS_ACTION,
         crate::seed::ROLE_PROGRAM_SYNTHESIS_DOMAIN,
         crate::seed::ROLE_PROGRAM_LANGUAGE_ALIAS,
+        crate::seed::ROLE_REQUEST_FUNCTION_WORD,
+        crate::seed::ROLE_STATEMENT_FUNCTION_WORD,
     ];
     let mut phrases = Vec::new();
     if spec.name != crate::coding::task_spec::PROVISIONAL_FUNCTION_NAME {
@@ -467,13 +469,13 @@ fn research_phrases(spec: &CodingTaskSpec) -> Vec<String> {
         let normalized = crate::engine::normalize_prompt(sentence);
         let words = normalized
             .split_whitespace()
-            .take(24)
             .filter(|token| {
                 token.chars().any(char::is_alphabetic)
                     && !grammatical_roles
                         .iter()
                         .any(|role| lexicon.mentions_role(role, token))
             })
+            .take(24)
             .collect::<Vec<_>>();
         for length in 1..=3 {
             phrases.extend(
@@ -513,7 +515,10 @@ fn catalogue_matches<T: SourceTransport>(
     match search_functions(client, phrase, language) {
         Ok(results) => results,
         Err(error) => {
-            log.append("synthesis:source_miss", error.to_string());
+            log.append(
+                "synthesis:source_miss",
+                format!("query={phrase};language={language};error={error}"),
+            );
             Vec::new()
         }
     }

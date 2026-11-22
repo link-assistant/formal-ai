@@ -27,19 +27,56 @@ pub fn try_program_synthesis_with_online(
     online: bool,
 ) -> Option<SymbolicAnswer> {
     let spec = recognise(prompt)?;
-    synthesize(prompt, spec, log, online, false)
+    trace_synthesis_stage("general_synthesis_started");
+    let answer = synthesize(prompt, spec, log, online, false);
+    trace_synthesis_stage("general_synthesis_finished");
+    answer
 }
 
-pub(crate) fn try_publisher_recurrence(
+pub(crate) fn try_bound_publisher_recurrence(
     prompt: &str,
+    route: Option<&str>,
+    config: crate::solver::SolverConfig,
+    language: crate::language::Language,
     log: &mut EventLog,
-    online: bool,
 ) -> Option<SymbolicAnswer> {
-    let spec = recognise(prompt)?;
-    if spec.artifact_shape != ArtifactShape::Function || spec.language != "python" {
+    let specification = publisher_recurrence_specification(prompt, route)?;
+    if let Some(answer) =
+        super::policy_gates::try_policy_gates(config.execution_surface, prompt, log, language)
+    {
+        return Some(answer);
+    }
+    trace_synthesis_stage("publisher_recurrence_started");
+    let online = !config.offline && crate::solver_config::read_network_allowed();
+    let answer = synthesize(prompt, specification, log, online, true);
+    trace_synthesis_stage(if answer.is_some() {
+        "publisher_recurrence_verified"
+    } else {
+        "publisher_recurrence_unverified"
+    });
+    answer
+}
+
+fn publisher_recurrence_specification(prompt: &str, route: Option<&str>) -> Option<CodingTaskSpec> {
+    if !matches!(route, Some("write_program" | "program_synthesis"))
+        || crate::solver_dispatch::code_artifact_task_claims(prompt)
+        || super::page_query_text::page_query_text_claims(prompt)
+    {
         return None;
     }
-    synthesize(prompt, spec, log, online, true)
+    recognise(prompt)
+        .filter(|spec| spec.artifact_shape == ArtifactShape::Function && spec.language == "python")
+}
+
+fn trace_synthesis_stage(stage: &'static str) {
+    if crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
+        crate::dialog_log::structured_log::event(
+            "trace",
+            module_path!(),
+            || stage.to_owned(),
+            || serde_json::json!({"stage":stage}),
+        );
+    }
 }
 
 fn synthesize(

@@ -97,10 +97,19 @@ fn source_is_trusted(source: &str) -> bool {
 }
 
 fn source_guidance(capture: &SourceCapture, goal: &str) -> Option<String> {
-    let heading = normalize_prompt(&policy(&format!("{goal}-heading")));
-    let cues = forms(&format!("{goal}-excerpt-terms"));
-    let bytes = capture.bytes();
+    section_excerpt(
+        capture.bytes(),
+        &policy(&format!("{goal}-heading")),
+        &forms(&format!("{goal}-excerpt-terms")),
+    )
+}
+
+pub(crate) fn section_excerpt(bytes: &[u8], heading: &str, terms: &[String]) -> Option<String> {
+    let heading = normalize_prompt(heading);
+    let cues: Vec<_> = terms.iter().map(|term| normalize_prompt(term)).collect();
     if heading.is_empty()
+        || cues.is_empty()
+        || cues.iter().any(String::is_empty)
         || bytes.len() > MAXIMUM_CAPTURE_BYTES
         || std::str::from_utf8(bytes).is_err()
     {

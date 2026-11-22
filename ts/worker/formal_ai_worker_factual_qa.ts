@@ -153,6 +153,48 @@ function gatedFactRecord(normalized, prompt) {
   return hinted ? { record: hinted, gate: "surface_hint" } : null;
 }
 
+async function tryPublisherPolicy(prompt, normalized, preferences, trace) {
+  const gated = gatedFactRecord(normalized, prompt);
+  if (!gated?.record.publisherHeading || gated.record.sourceKind !== "official-docs") return null;
+  const { record, gate } = gated;
+  const language = detectLanguage(prompt);
+  const source = localizedFactFor(record, language)?.source || record.source;
+  let url;
+  try { url = new URL(source); } catch { return null; }
+  if (url.protocol !== "https:" || url.username || url.password) return null;
+  const online = preferences?.offline !== true && preferences?.allowNetwork !== false;
+  trace.push(`publisher_policy:request:${source}`);
+  let capture = await sourceWalkFetchCapture(source, { online, bounded: true, indexed: true });
+  if (!capture.ok && online && capture.error !== "redirected_capture") {
+    const recovered = await howToCaptureThroughComponent(source, trace);
+    if (recovered) {
+      capture = { ...recovered, ok: true };
+      sourceWalkCaptureCache.set(`indexed:${source}`, Object.freeze(capture));
+    }
+  }
+  if (!capture.ok) {
+    trace.push(`publisher_policy:unavailable:${capture.error}`);
+    return null;
+  }
+  const excerpt = sourceSectionExcerpt(capture.text, record.publisherHeading, record.publisherTerms);
+  if (!excerpt) {
+    trace.push("publisher_policy:rejected:no_matching_excerpt");
+    return null;
+  }
+  const template = "publisher-policy-excerpt";
+  const content = factualQaRender(template, language, { excerpt, source });
+  if (!content) return null;
+  return {
+    intent: "fact_lookup", content, confidence: 0.85,
+    evidence: [
+      `response:${template}`, `source:${source}`,
+      `fact_lookup:hit:${record.slug}`, `fact_lookup:subject_gate:${gate}`,
+      ...(record.wikidata || []).map(identifier => `wikidata:${identifier}`),
+      `source:http:${source} fetched_at=${capture.fetchedAt} sha256=${capture.sha256} cached=${capture.cached}`,
+    ],
+  };
+}
+
 /**
  * A structured fact question answered from the seeded record the subject
  * gate admits (intent from the record, as the native fact_lookup row).

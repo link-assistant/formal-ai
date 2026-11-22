@@ -63,6 +63,10 @@ pub struct FactRecord {
     pub summary: String,
     pub source: String,
     pub source_kind: String,
+    /// A publisher section containing a statement relevant to the question.
+    pub publisher_heading: String,
+    /// Terms the extracted statement must all contain.
+    pub publisher_terms: Vec<String>,
     /// Slug of a `data/seed/release-timelines.lino` timeline that answers this
     /// fact. When set, the answer is *computed* from the checked-in snapshot at
     /// question time instead of being read from `summary`, so a list of dated
@@ -216,9 +220,10 @@ pub fn facts() -> Vec<FactRecord> {
         }
         let summary = entry.find_child_value("summary").to_string();
         let release_timeline = entry.find_child_value("release_timeline").to_string();
-        // A record needs *an* answer: either a written summary or a timeline to
-        // compute one from. Anything else is an incomplete entry.
-        if summary.is_empty() && release_timeline.is_empty() {
+        let publisher_heading = entry.find_child_value("publisher-heading").to_owned();
+        let publisher_terms = split_pipe_list(entry.find_child_value("publisher-terms"));
+        let has_publisher_policy = !publisher_heading.is_empty() && !publisher_terms.is_empty();
+        if summary.is_empty() && release_timeline.is_empty() && !has_publisher_policy {
             continue;
         }
         let subject_aliases = split_pipe_list(entry.find_child_value("subject_aliases"))
@@ -261,6 +266,8 @@ pub fn facts() -> Vec<FactRecord> {
             source: entry.find_child_value("source").to_string(),
             source_kind: entry.find_child_value("source_kind").to_string(),
             release_timeline,
+            publisher_heading,
+            publisher_terms,
             localized,
         });
     }

@@ -225,12 +225,67 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
         return Some(answer);
     }
     if let Some(answer) = super::project_origin::try_project_origin(prompt, log, client)
+        .or_else(|| publisher_policy_answer(prompt, normalized, log, client))
         .or_else(|| super::factual_qa::try_live_fact_comparison(prompt, log, client))
         .or_else(|| try_fact_live_answer(prompt, log, client))
     {
         return Some(answer);
     }
     explanation_fallback(prompt, log, client)
+}
+
+fn publisher_policy_answer<T: SourceTransport>(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
+    let (record, gate) = super::factual_qa::gated_fact_record(prompt, normalized)?;
+    if record.publisher_heading.is_empty() || record.source_kind != "official-docs" {
+        return None;
+    }
+    let language = detect_language(prompt).slug();
+    let source = record.source_for(language);
+    let url = url::Url::parse(source).ok()?;
+    if url.scheme() != "https" || !url.username().is_empty() || url.password().is_some() {
+        return None;
+    }
+    log.append("publisher_policy:request", source);
+    let capture = match client.fetch(source) {
+        Ok(capture) => capture,
+        Err(error) => {
+            log.append("publisher_policy:unavailable", error.to_string());
+            return None;
+        }
+    };
+    let Some(excerpt) = crate::solver_handler_how::practical_help::section_excerpt(
+        capture.bytes(),
+        &record.publisher_heading,
+        &record.publisher_terms,
+    ) else {
+        log.append("publisher_policy:rejected", "no_matching_excerpt");
+        return None;
+    };
+    let key = "publisher-policy-excerpt";
+    let body = render_template(key, language, &[("source", source), ("excerpt", &excerpt)]);
+    if body.is_empty() {
+        return None;
+    }
+    capture.record(log);
+    log.append("source", source);
+    log.append("fact_lookup:hit", record.slug.clone());
+    log.append("fact_lookup:subject_gate", gate);
+    for identifier in &record.wikidata {
+        log.append("wikidata", identifier.as_str());
+    }
+    Some(finalize_simple(
+        prompt,
+        log,
+        "fact_lookup",
+        &format!("response:{key}"),
+        &body,
+        0.85,
+    ))
 }
 
 /// The R8 step of the row.

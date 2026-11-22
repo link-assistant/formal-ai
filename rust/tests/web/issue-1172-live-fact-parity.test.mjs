@@ -332,3 +332,71 @@ test("project origin comes from an authorized declaration and an empty offline w
     ...secondDeclaration, body: "Another Widget was created by github.com/example-author.",
   })})`), null);
 });
+
+test("registered carrier policies use the checked section from a verified publisher capture", async () => {
+  const source = "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html";
+  const excerpt = "Infants are entitled to one collapsible stroller/carrycot/infant car seat.";
+  const prompt = "Does Air India allow a free stroller for an infant?";
+  const policyPage = `<h1>Checked Baggage</h1><h2>Domestic flights</h2><ul><li>${excerpt}</li></ul>`;
+  const makeWorker = async (page) => {
+    const worker = createWorkerContext();
+    await evaluate(worker, "loadSeed()");
+    const seedFetch = worker.fetch;
+    const requests = [];
+    worker.fetch = async (url, init) => {
+      if (String(url) === source) {
+        requests.push(String(url));
+        return { ok: true, status: 200, url: source, text: async () => page };
+      }
+      if (String(url).startsWith("https://")) return { ok: false, status: 404 };
+      return seedFetch(url, init);
+    };
+    return { worker, requests, ask: (question, options = {}) => worker.solve(question, [], options) };
+  };
+  const fixture = await makeWorker(policyPage);
+  const offline = await fixture.ask(prompt, { offline: true });
+  assert.equal(fixture.requests.length, 0);
+  assert.doesNotMatch(offline.content, /collapsible stroller|not allowed onboard/, offline.content);
+  for (const question of [prompt, "Даёт airindia бесплатную детскую коляску к багажу?",
+    "क्या एयर इंडिया शिशु के लिए मुफ्त बेबी स्ट्रॉलर सामान में देती है?", "印度航空允许婴儿推车免费作为行李吗?"]) {
+    const response = await fixture.ask(question);
+    assert.equal(response.intent, "fact_lookup", JSON.stringify(response));
+    assert.ok(response.content.includes(excerpt), response.content);
+    assert.ok(response.content.includes(source), response.content);
+    assert.ok(response.evidence.some(link => link.startsWith(`source:http:${source} fetched_at=`) && link.includes("sha256=")));
+    assert.ok(response.evidence.includes("wikidata:Q69906"));
+  }
+  assert.equal(fixture.requests.length, 1);
+  assert.ok((await fixture.ask(prompt, { offline: true })).content.includes(excerpt));
+  assert.equal(fixture.requests.length, 1);
+  const changed = await makeWorker(policyPage.replace("one collapsible", "two collapsible"));
+  assert.match((await changed.ask(prompt)).content, /two collapsible stroller/);
+  const unrelated = await makeWorker(`<h1>Promotions</h1><p>${excerpt}</p><h1>Checked Baggage</h1><p>Read the full list of allowances.</p>`);
+  assert.doesNotMatch((await unrelated.ask(prompt)).content, /collapsible stroller|not allowed onboard/);
+  const outOfScope = await fixture.ask("What is Air India's baggage allowance?");
+  assert.doesNotMatch(outOfScope.content, /collapsible stroller/);
+
+  const secondSource = "https://carrier.example/travel/rules";
+  const worker = fixture.worker;
+  const originalFetch = worker.fetch;
+  worker.fetch = async (url, init) => {
+    if (String(url) !== secondSource) return originalFetch(url, init);
+    return {
+      ok: true, status: 200, url: secondSource,
+      text: async () => "<h2>Sports gear</h2><p>Each bicycle must be packed in a hard case.</p>",
+    };
+  };
+  evaluate(worker, `FACTS.push(${literal({
+    slug: "fact_bicycle_policy",
+    subjectAliases: ["blue coast air"],
+    questionKeywords: ["bicycle"],
+    sourceKind: "official-docs",
+    source: secondSource,
+    publisherHeading: "Sports gear",
+    publisherTerms: ["bicycle", "hard case"],
+  })})`);
+  const second = await fixture.ask("Can I check my bicycle on Blue Coast Air?");
+  assert.equal(second.intent, "fact_lookup");
+  assert.match(second.content, /Each bicycle must be packed in a hard case/);
+  assert.ok(second.evidence.includes(`source:${secondSource}`));
+});
