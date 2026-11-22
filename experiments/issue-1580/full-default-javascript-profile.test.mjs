@@ -17,22 +17,25 @@ test('PR, feature dispatch and main plan the identical complete default JavaScri
   const job=YAML.parse(read('.github/workflows/layered-ci.yml')).jobs.js;
   const plan=job.steps.find(step=>step.id==='javascript-plan');
   const execute=job.steps.find(step=>step.name==='Run this shard of the JavaScript suites');
+  const mainShards=Array.from(evaluate(job.strategy.matrix.shard,'push','refs/heads/main'));
+  assert(mainShards.length>1);
+  assert.deepEqual(mainShards,mainShards.map((_,index)=>index+1));
   const expected=readdirSync('rust/tests/web').filter(name=>name.endsWith('.test.mjs')).map(name=>'rust/tests/web/'+name).sort();
   assert(expected.includes('rust/tests/web/pull-request-1188-teach-f.test.mjs'));
   const directory=mkdtempSync(join(tmpdir(),'complete-javascript-plan-'));
   t.after(()=>rmSync(directory,{recursive:true,force:true}));
   for(const [event,ref] of [['pull_request','refs/pull/1581/merge'],['workflow_dispatch','refs/heads/feature'],['push','refs/heads/main']]){
     const shards=Array.from(evaluate(job.strategy.matrix.shard,event,ref));
-    assert.deepEqual(shards,[1,2,3,4,5,6,7,8]);
-    assert.equal(evaluate(plan.env.SHARDS,event,ref),8);
-    assert.equal(evaluate(execute.env.SHARDS,event,ref),8);
+    assert.deepEqual(shards,mainShards);
+    assert.equal(evaluate(plan.env.SHARDS,event,ref),mainShards.length);
+    assert.equal(evaluate(execute.env.SHARDS,event,ref),mainShards.length);
     assert.equal(plan.env.FAST_PR_PROFILE,undefined);
     assert.equal(execute.env.FAST_PR_PROFILE,undefined);
     const actual=[];
     for(const shard of shards){
       const output=join(directory,'outputs');writeFileSync(output,'');
       const result=spawnSync('bash',['-c',plan.run],{encoding:'utf8',timeout:10000,maxBuffer:65536,
-        env:{...process.env,RUNNER_TEMP:directory,GITHUB_OUTPUT:output,SHARD:String(shard),SHARDS:'8'}});
+        env:{...process.env,RUNNER_TEMP:directory,GITHUB_OUTPUT:output,SHARD:String(shard),SHARDS:String(shards.length)}});
       assert.equal(result.error,undefined,String(result.error));
       assert.equal(result.status,0,result.stdout+result.stderr);
       const selected=read(join(directory,'javascript-shard.txt')).trim().split('\n');
