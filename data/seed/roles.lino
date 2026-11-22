@@ -61,6 +61,8 @@ roles
     kind predicate
   brainstorming_request
     kind meaning
+  business-market-qualifier
+    kind predicate
   cache-clearing-action
     kind predicate
   cache-reference
@@ -761,6 +763,8 @@ roles
     kind meaning
   observed-callable-authoring
     kind meaning
+  occupation-title
+    kind predicate
   ontology_category
     kind predicate
   ontology_root

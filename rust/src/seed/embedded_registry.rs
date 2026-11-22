@@ -210,6 +210,8 @@ pub const MEANINGS_NUMBER_WORDS_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-number-words.lino");
 pub const MEANINGS_OBJECT_SHAPES_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-object-shapes.lino");
+pub const MEANINGS_OCCUPATIONS_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-occupations.lino");
 pub const MEANINGS_ONTOLOGY_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-ontology.lino");
 pub const MEANINGS_PLAYWRIGHT_LINO: &str =
@@ -597,6 +599,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-number-constraints.lino", MEANINGS_NUMBER_CONSTRAINTS_LINO),
         ("data/seed/meanings-number-words.lino", MEANINGS_NUMBER_WORDS_LINO),
         ("data/seed/meanings-object-shapes.lino", MEANINGS_OBJECT_SHAPES_LINO),
+        ("data/seed/meanings-occupations.lino", MEANINGS_OCCUPATIONS_LINO),
         ("data/seed/meanings-ontology.lino", MEANINGS_ONTOLOGY_LINO),
         ("data/seed/meanings-playwright.lino", MEANINGS_PLAYWRIGHT_LINO),
         ("data/seed/meanings-policy.lino", MEANINGS_POLICY_LINO),
@@ -932,6 +935,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_NUMBER_CONSTRAINTS_LINO,
     MEANINGS_NUMBER_WORDS_LINO,
     MEANINGS_OBJECT_SHAPES_LINO,
+    MEANINGS_OCCUPATIONS_LINO,
     MEANINGS_ONTOLOGY_LINO,
     MEANINGS_PLAYWRIGHT_LINO,
     MEANINGS_POLICY_LINO,
