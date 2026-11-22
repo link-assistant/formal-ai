@@ -6218,7 +6218,17 @@
         "scripts/verify-javascript-provenance.mjs"
       ],
       "assessment": "Pinned upstream helper tests execute unchanged: 43 pass across detection, prerequisite refusal, clean-tree and provenance controls. Formal AI integration equivalence still requires source comparison.",
-      "status": "template-tests-verified-formal-ai-comparison-pending"
+      "status": "template-tests-verified-formal-ai-comparison-pending",
+      "currentDraftObservation": {
+        "at": "2026-11-22T15:17:45.253970+00:00",
+        "sourceHead": "41652335a2722b5702ae43c2b76f6f8bda182021",
+        "implementation": "The fast source-check job emits a receipt only for its actual clean 40-hex event commit; the focused native caller requires success and a matching receipt. Canonical operations, bindings and staged-release bytes are preserved.",
+        "verification": "Two behavioral Git/output and workflow-predicate controls pass. Six related JavaScript files, generator, logging policy and formatting pass. Hosted execution and full JavaScript/native parity qualification remain pending.",
+        "evidence": "experiments/issue-1580/evidence/checks/exact-candidate-and-native-custody/manifest.json",
+        "allApplicablePracticeVerified": false,
+        "newNativeExecutionVerified": false,
+        "independentAuthorshipCredit": 0
+      }
     },
     {
       "practice": "Keep PR builds and publication inside repository policy",

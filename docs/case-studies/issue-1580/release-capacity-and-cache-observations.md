@@ -51,3 +51,5 @@ controllers are in the
 No local Rust build, new-source hosted success, live publication, upstream
 execution or independently authored Formal AI work is claimed. Current CI
 collection, all broader original criteria and the draft PR remain unfinished.
+
+The later [terminal result and custody/candidate continuation](terminal-candidate-and-native-custody.md) records completed db19866f collection, its third underlying failure and subsequent local repairs. The earlier snapshot above remains bound to its original source.

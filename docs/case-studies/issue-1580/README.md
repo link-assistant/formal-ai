@@ -329,3 +329,5 @@ The [artifact-bound Pages checkpoint](pages-deployment-checkpoint.md) records ac
 The [current-head CI and compressed evidence checkpoint](current-head-repair-checkpoint.md) preserves the 8c712eb9 failures, minimal repairs, full archive scan and published Pages template reports. Hosted validation of these new drafts and all broader unfinished criteria remain open.
 
 The [current-source and CodeQL command checkpoint](current-source-ci-repair-checkpoint.md) records all 27 terminal workflows at `bd6fe77b`, all three collected root causes, the before/fixed controls and complete final local gate replay. Hosted native and CodeQL qualification of the new repairs and the wider issue remain unfinished. Rust literal review reaches 353/373 files and independent Formal AI reasoning stays 0/20.
+
+Latest bounded continuation: [terminal failures, native request custody and exact JavaScript candidate verification](terminal-candidate-and-native-custody.md). Hosted replay and broader acceptance remain unfinished.

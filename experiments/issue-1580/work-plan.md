@@ -494,3 +494,16 @@ Evidence: [the merged batch verification manifest](evidence/checks/merged-warnin
 - [ ] Finish all wider template practices, complete source review and original runtime, delivery, trusted-epoch, serving-identity and independent-authorship criteria. Supplied patches, controllers and assessments earn zero independent credit. The PR remains draft and unmerged.
 
 Evidence: [release, capacity and cache draft manifest](evidence/checks/release-capacity-and-cache-draft/manifest.json). Report: https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/264.
+
+
+## Terminal db19866f review and exact candidate prerequisite, 2026-11-22
+
+- [x] Preserve all 33 terminal workflows, 163 checks and 32 annotations. Review all selected diagnostic candidates and actual failure contexts. The two failed workflows have three root causes; every one has a local repair. Restore the originally absent diagnostic variable.
+- [x] Separate native phase metadata from raw payload custody, preserve complete private dialogs and wrapped-terminal isolation, and declare both explicit-mode native regressions. Changed Rust formatting and the logging policy pass; execution remains pending hosted CI.
+- [x] Gate the focused native caller on a successful JavaScript job's exact clean event commit. Reproduce the missing prerequisite before integration; pass real Git/output refusal controls and workflow predicates afterward. Preserve all 52 canonical operations, 104 bindings and staged-release bytes. Six related JavaScript files pass.
+- [x] Read the complete 1,017-line maintained implementation diff for this batch. Retain GitHub's whole-PR HTTP 406; the wider aggregate review remains incomplete. Preserve the two invalid gate names, interrupted secret wrapper and actual evidence-name regression; corrected checks and the detached 214-file scan pass.
+- [x] Preserve earlier checkpoint text byte exactly in the linked history, restoring work-plan headroom without dropping requirements or changing thresholds.
+- [ ] Finish final local gate verification, refresh main and all feedback, then publish the complete batch once after empty branch queues. Collect every exact-head workflow and validate all new native cases, the candidate receipt, actual nine-shard times and targeted cache backend evidence.
+- [ ] Complete every wider applicable practice and original runtime, delivery, publication, trusted-epoch, serving-identity, aggregate-review and genuine-authorship criterion. Passing partial CI and supplied controllers earn no independent credit; keep the PR draft and unmerged.
+
+Evidence and limitations: [terminal/candidate/custody case study](../../docs/case-studies/issue-1580/terminal-candidate-and-native-custody.md).
