@@ -206,3 +206,11 @@ test('actual budget wrapper retains backend evidence without replacing command o
     assert.match(observed.stdout,/cache fixture took/u);
   }
 });
+
+test('reusable native checks receive the repository diagnostic switch with a quiet default', () => {
+  const workflow=YAML.parse(fs.readFileSync(path.join(root,'.github/workflows/native-type-check.yml'),'utf8'));
+  assert.equal(workflow.env.FORMAL_AI_CI_VERBOSE, "${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}");
+  const diagnostic=step('Enable opt-in sccache diagnostics');
+  assert.equal(diagnostic.if, "env.FORMAL_AI_CI_VERBOSE == 'true'");
+  assert(action.runs.steps.indexOf(diagnostic)<action.runs.steps.indexOf(step('Start the sccache server')));
+});
