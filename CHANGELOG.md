@@ -20,6 +20,17 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.5] - 2026-11-22
+
+### Fixed
+
+- Start the full Docker image with a private memory directory writable by its `box` runtime user. Docker Compose and Desktop mount shared memory at that path.
+- Assign Docker release tags only after the full and slim images pass their runtime checks.
+
+### Security
+
+- Update the Rust `url` library to 2.5.9 for RUSTSEC-2026-0592.
+
 ## [0.356.4] - 2026-11-22
 
 ### Fixed
