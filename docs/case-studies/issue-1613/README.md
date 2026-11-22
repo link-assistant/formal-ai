@@ -627,6 +627,36 @@ example, and the audit and adjacent checks all passed on recheck.
 [Full run](evidence/verification/round16-local-gates.log) ·
 [Rechecks](evidence/verification/round16-gate-rechecks.log)
 
+## Callable sorting and historical learning reports
+
+Sorting directions originally selected complete response snippets in the
+handler table. A function request now binds the desired order and target
+language to list transformations. The test scaffold receives the caller's
+sample values or generates a sequence that an identity function could not
+sort correctly. The browser suite runs the rendered functions and tests,
+including repeated and fractional inputs and literals with signs and leading
+zeroes. The native rule and conversational handler share the list interpreter.
+[Browser regression](evidence/verification/round17-sorting-code-plans.log) ·
+[Adjacent rule tests](evidence/verification/round17-handler-rules.log)
+
+The native learning cycle used eight historically captured learning reports
+on a default invocation. The CLI now asks for a report path and accepts
+multiple files in the order supplied. It rejects a file that declares a
+different frontier. Historical replay commands in the benchmark guide name
+their inputs explicitly. The previous compile inputs are recorded in the
+[baseline inventory](evidence/verification/round17-frontier-package-baseline.log).
+They are absent from the new
+[Cargo source package inventory](evidence/verification/round17-frontier-package-inventory.log.gz).
+
+The hosted native run passed the film timeline replay with both required
+captures and an unregistered series. Its JavaScript jobs reported a stale
+role registry and an absent translation projection for the shared RSS
+parser. Both generated artifacts have been refreshed. The two translation
+suites passed 29 tests locally.
+[Pipeline](evidence/workflows/pipeline-round16-44987974668.log.gz) ·
+[Layered CI](evidence/workflows/layered-round16-44987974451.log.gz) ·
+[Translation projection](evidence/verification/round17-translate-trends.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,
