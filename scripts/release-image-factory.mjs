@@ -43,10 +43,12 @@ export function validatePreparedBinary({cwd,directory,version,environment=proces
 }
 export function dockerRunner(run,cwd,environment) {
  return args=>{
-  const streamed=args[0]==='buildx'||args[0]==='push'||args[0]==='pull';
+  const build=args[0]==='buildx'&&args[1]==='build';
+  const promotion=args[0]==='buildx'&&args[1]==='imagetools'&&args[2]==='create';
+  const streamed=build||promotion||args[0]==='push'||args[0]==='pull';
   const runtime=args[0]==='run'&&args.includes('verify-formal-ai-dind');
   const timed=streamed||runtime;
-  const phase=runtime?'privileged-runtime':args[0]==='buildx'?'build-and-export':args[0];
+  const phase=runtime?'privileged-runtime':build?'build-and-export':promotion?'registry-promotion':args[0];
   const started=Date.now();
   if(timed)console.error(JSON.stringify({dockerPhase:phase,event:'start',timeoutMs:1500000,progress:streamed?'streamed':'captured-receipt'}));
   let result;
@@ -111,15 +113,26 @@ export async function publishPreparedFullImage({cwd,directory,version,image,envi
  assert.ok(typeof environment.ACTIONS_RESULTS_URL==='string'&&/^https:\/\/[^\s,]+$/u.test(environment.ACTIONS_RESULTS_URL),'GHA cache endpoint missing or invalid');
  const cache=releaseImageCacheSettings(environment);
  const invoke=dockerRunner(run,cwd,environment);
- const buildArguments=['--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag',image+':'+version,'--tag',image+':latest',
+ const {GITHUB_RUN_ID:runId,GITHUB_RUN_ATTEMPT:attempt}=environment;
+ assert.match(runId,/^[1-9]\d*$/u);
+ assert.match(attempt,/^[1-9]\d*$/u);
+ const candidate=image+':candidate-'+version+'-'+runId+'-'+attempt;
+ const buildArguments=['--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag',candidate,
   '--label','org.opencontainers.image.revision='+record.selection.head,'--label','org.opencontainers.image.version='+version,
   '--label','io.link-assistant.formal-ai.executable.sha256='+record.executable.sha256,
   '--cache-from',cache['cache-from']];
  invoke(['buildx','build','--progress','plain','--push','--provenance=false',...buildArguments,'.']);
- invoke(['pull',image+':'+version]);const reference=immutableReference(image+':'+version,invoke);
+ invoke(['pull',candidate]);const reference=immutableReference(candidate,invoke);
  const expected={revision:record.selection.head,version,binarySha256:record.executable.sha256};
  const observation=await observePublished(reference,expected,invoke,fetcher);
  validatePreparedBinary({cwd,directory,version,environment,repositoryUrl});
+ const tags=[image+':'+version,image+':latest'];
+ // Keep the manifest format and digest that the runtime and anonymous checks observed.
+ invoke(['buildx','imagetools','create','--prefer-index=false',...tags.flatMap(tag=>['--tag',tag]),reference]);
+ for(const tag of tags) {
+  const digest=invoke(['buildx','imagetools','inspect','--format','{{.Manifest.Digest}}',tag]).trim();
+  assert.equal(digest,observation.anonymous.manifest_sha256,'release tag differs from the verified image: '+tag);
+ }
  exportOptionalCache(run,cwd,environment,buildArguments,cache);
  validatePreparedBinary({cwd,directory,version,environment,repositoryUrl});
  const result={schema:'prepared-release-image/v1',authority:record.authority,preparedBuildSha256:sha(readFileSync(join(directory,'prepared-build.json'))),sourceSelectionSha256:record.sourceSelectionSha256,expected,image:reference,...observation};

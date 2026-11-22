@@ -37,6 +37,7 @@ if(command==='cargo'){if(args[0]==='metadata')console.log(JSON.stringify(state.m
 else if(command==='rustc')process.stdout.write(state.compiler);
 else if(command==='docker'){const destination=args.some(value=>value.replace(/^docker\\.io\\//u,'').startsWith('fixture/mirror'));const image=destination?state.destination:state.image;const digest=destination?state.destinationDigest:state.digest;const reference=image+'@'+digest;
  if(state.mode==='docker-failed'&&args[0]==='buildx')fail('actual Node Docker stand-in failed',23);
+ if(args[0]==='buildx'&&args[1]==='imagetools'&&args[2]==='inspect')console.log(digest);
  if(args[0]==='image'&&args[1]==='inspect')console.log(JSON.stringify([{Os:'linux',Architecture:'amd64',Id:destination&&state.mode==='mirror-config-changed'?'sha256:'+'f'.repeat(64):state.configDigest,RepoDigests:[reference],Config:{Env:['FORMAL_AI_IMAGE_VARIANT=dind'],Labels:{'org.opencontainers.image.revision':state.head,'org.opencontainers.image.version':'1.2.3','io.link-assistant.formal-ai.executable.sha256':state.binarySha}}}]));
  if(args[0]==='run'){if(args.includes('--version'))console.log(state.mode==='wrong-version'?'formal-ai 9.9.9':'formal-ai 1.2.3');else if(args.includes('sha256sum'))console.log((state.mode==='wrong-binary'?'e'.repeat(64):state.binarySha)+'  /usr/local/bin/formal-ai');else {if(state.mode==='runtime-failed')fail('actual runtime stand-in failed',24);console.log('Actual Node fixture DinD runtime observation');}}
 }else fail('unknown controlled command',99);
@@ -89,10 +90,23 @@ test('both actual GHCR workflow settings preserve the original cache contract',(
 });
 for(const[index,text]of settings.entries())test('actual Node cacheenv '+index+' retains every full-image Docker CLI operand',async()=>{
  const f=fixture();try{const options=declaredGnuFactory(f);options.environment.BUILD_CACHE_SETTINGS=text;await publishPreparedFullImage(options);
- const builds=readFileSync(f.trace,'utf8').trim().split('\n').map(JSON.parse).filter(c=>c.command==='docker'&&c.args[0]==='buildx');assert.equal(builds.length,2);
- assert.deepEqual(builds[0].args,['buildx','build','--progress','plain','--push','--provenance=false','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag','ghcr.io/fixture/formal-ai:1.2.3','--tag','ghcr.io/fixture/formal-ai:latest','--label','org.opencontainers.image.revision='+f.git(['rev-parse','HEAD']),'--label','org.opencontainers.image.version=1.2.3','--label','io.link-assistant.formal-ai.executable.sha256='+sha(readFileSync(join(f.cwd,'rust/target/release/formal-ai'))),'--cache-from','type=gha,scope=docker-image','.']);
+ const docker=readFileSync(f.trace,'utf8').trim().split('\n').map(JSON.parse).filter(call=>call.command==='docker');
+ const builds=docker.filter(call=>call.args[0]==='buildx'&&call.args[1]==='build');assert.equal(builds.length,2);
+ assert.deepEqual(builds[0].args,['buildx','build','--progress','plain','--push','--provenance=false','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag','ghcr.io/fixture/formal-ai:candidate-1.2.3-123-1','--label','org.opencontainers.image.revision='+f.git(['rev-parse','HEAD']),'--label','org.opencontainers.image.version=1.2.3','--label','io.link-assistant.formal-ai.executable.sha256='+sha(readFileSync(join(f.cwd,'rust/target/release/formal-ai'))),'--cache-from','type=gha,scope=docker-image','.']);
  assert.deepEqual(builds[1].args,[...builds[0].args.slice(0,-1).filter(value=>value!=='--push'),'--output','type=cacheonly','--cache-to','type=gha,mode=max,scope=docker-image','.']);
+ const runtime=docker.findIndex(call=>call.args.includes('verify-formal-ai-dind'));
+ const promotion=docker.findIndex(call=>call.args.slice(0,3).join(' ')==='buildx imagetools create');
+ assert.ok(runtime>0&&promotion>runtime);
  }finally{f.close();}
+});
+test('slim release tags are assigned after observing the candidate digest',()=>{
+ const action=readFileSync(new URL('../../../.github/actions/publish-slim-image/action.yml',import.meta.url),'utf8');
+ assert.match(action,/tags: \$\{\{ inputs\.image \}\}:candidate-\$\{\{ inputs\.version \}\}-\$\{\{ github\.run_id \}\}-\$\{\{ github\.run_attempt \}\}-slim/u);
+ assert.match(action,/SLIM_IMAGE: \$\{\{ inputs\.image \}\}@\$\{\{ steps\.publish\.outputs\.digest \}\}/u);
+ const size=action.indexOf('test "$bytes" -le 2147483648');
+ const promote=action.indexOf('docker buildx imagetools create');
+ assert.ok(size>action.indexOf('docker run --rm --entrypoint verify-formal-ai-slim')&&promote>size);
+ assert.ok(action.includes('test "$(docker buildx imagetools inspect'));
 });
 for(const[label,text]of [
  ['empty',''],['missing export','cache-from: type=gha,scope=docker-image'],

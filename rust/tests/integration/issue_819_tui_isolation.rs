@@ -32,6 +32,7 @@ fn write_fake_requesting_tui_cli(bin_dir: &Path) {
 curl -fsS -X POST "http://127.0.0.1:$FORMAL_AI_TEST_PORT/api/openai/v1/chat/completions" \
   -H "Authorization: Bearer formal-ai" \
   -H "Content-Type: application/json" \
+  -H "x-opencode-session-id: ses_issue819_tui" \
   --data '{"model":"formal-ai","messages":[{"role":"user","content":"ISSUE819_RAW_REQUEST_MUST_NOT_REACH_TUI"}]}' \
   >/dev/null
 printf 'TUI_REMAINED_INTACT\n'
@@ -102,6 +103,9 @@ fn temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui() {
         })
         .expect("temporary server diagnostic log");
     let diagnostics = std::fs::read_to_string(server_log.path()).expect("read diagnostics");
-    assert!(diagnostics.contains("ISSUE819_RAW_REQUEST_MUST_NOT_REACH_TUI"));
+    assert!(diagnostics.contains("request.terminal"));
+    assert!(!diagnostics.contains("ISSUE819_RAW_REQUEST_MUST_NOT_REACH_TUI"));
+    let dialog = std::fs::read_to_string(logs.join("ses_issue819_tui.lino")).expect("read dialog");
+    assert!(dialog.contains("ISSUE819_RAW_REQUEST_MUST_NOT_REACH_TUI"));
     let _ = std::fs::remove_dir_all(&dir);
 }

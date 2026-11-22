@@ -202,3 +202,10 @@ main-run 44968089085
       workflow .github/workflows/native-type-check.yml
       check rust/tests/web/issue-1609-client-reports.test.mjs
       marker "Gemini report replay from main run 44968089085"
+main-run 45001543202
+  workflow-policy
+    regression dind-memory-path
+      introduced-by "PR #1611 added the server smoke to the full image"
+      failed "DinD serve exited with PermissionDenied before /health because box could not access /root/.formal-ai"
+      check rust/tests/web/container-node-runtime.test.mjs
+      marker "DinD memory path from main run 45001543202"
