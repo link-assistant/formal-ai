@@ -20,6 +20,13 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.7] - 2026-11-22
+
+### Fixed
+
+- Match structured output evidence for camelCase, PascalCase, snake_case, and kebab-case properties, including acronyms, in Chat Completions and Responses.
+- Use a property's description as a fallback source label when its name yields no evidence.
+
 ## [0.356.6] - 2026-11-22
 
 ### Fixed
