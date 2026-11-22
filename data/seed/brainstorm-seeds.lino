@@ -1,30 +1,23 @@
 brainstorm_seeds
-  trigger ("brainstorm" "give me five ideas" "give me 5 ideas" "give me ten ideas" "give me 10 ideas" "suggest five" "suggest 5" "suggest ten" "suggest 10" "five names" "5 names" "ten names" "10 names" "пять идей" "5 идей" "десять идей" "10 идей" "पाँच विचार" "5 विचार" "दस विचार" "10 विचार" "五个想法" "5 个想法" "十个想法" "10 个想法" "五个名字" "十个名字")
+  trigger ("brainstorm ideas for" "project ideas for" "give me ideas for" "ideas for" "idea for" "brainstorm" "give me five ideas" "give me 5 ideas" "give me ten ideas" "give me 10 ideas" "suggest five" "suggest 5" "suggest ten" "suggest 10" "five names" "5 names" "ten names" "10 names" "пять идей" "5 идей" "десять идей" "10 идей" "पाँच विचार" "5 विचार" "दस विचार" "10 विचार" "五个想法" "5 个想法" "十个想法" "10 个想法" "五个名字" "十个名字")
+  topic_prefix ("for an" "for a" "for the" "for" "an" "a" "the" "для" "के लिए")
   default_count "5"
   count_cardinal ten
   category names
     intent brainstorm_names
     detection_keywords ("name" "names" "имя" "имена" "названи" "नाम" "名字" "名称")
-    item TraceLint
-    item ReviewLink
-    item PatchSignal
-    item DiffAnchor
-    item CodeLedger
-    item SymbolScribe
-    item RuleBeacon
-    item LinkHarbor
-    item TraceForge
-    item PromptLedger
   category project_ideas
     intent brainstorm_project_ideas
     detection_keywords
-    item "A local Links Notation notebook with searchable traces."
-    item "A deterministic code-review checklist generator."
-    item "A multilingual prompt-variation test corpus."
-    item "A CLI that converts issue requirements into traceable tests."
-    item "A source-cache inspector for reproducible agent runs."
-    item "A changelog-fragment consistency checker."
-    item "A prompt-matrix generator for four-language smoke tests."
-    item "A Wikidata anchor verifier for local seed records."
-    item "A trace viewer that groups events by solver phase."
-    item "A small offline issue-to-test planning tool."
+    operation "Build a minimal prototype for {topic} and try it on a representative task."
+    operation "Design an onboarding exercise for {topic} and time a first attempt."
+    operation "Compare two approaches to {topic} under the same constraints."
+    operation "Make a checklist for {topic} based on common failure modes."
+    operation "Create an accessibility review for {topic} and validate one improvement."
+    operation "Make an offline companion for {topic} and try it without a connection."
+    operation "Create a visual explanation of {topic} and ask a new reader to use it."
+    operation "Make a reference implementation for {topic} with a repeatable example."
+    operation "Create a report for {topic} that measures progress against a stated goal."
+    operation "Design a small integration for {topic} and check how it handles invalid input."
+    operation "Create a walkthrough of {topic} that compares the novice and experienced workflows."
+    operation "Build a feedback exercise for {topic} and revise it after an observed difficulty."

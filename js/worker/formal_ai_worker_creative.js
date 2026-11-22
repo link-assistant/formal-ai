@@ -4,7 +4,7 @@
 // Mirrors rust/src/solver_handlers/creative_composition.rs. Recognition
 // vocabulary is read from data/seed/meanings-creative-tasks.lino through the
 // meaning lexicon; the morphology rules, spelled numbers, stop words, request
-// cues, distinctness metric and the evidence-graded advice table come from
+// cues, distinctness metric and evidence grades come from
 // data/seed/creative-composition-rules.lino; the prose renders the English
 // templates of data/seed/multilingual-responses-creative-tasks.lino. The seed
 // records sit under the file's `creative_composition_rules` root, and a
@@ -530,6 +530,10 @@ function creativeSelectCandidates(pool, topics, count, maxLength, excluded, metr
 function tryBrainstormComposition(prompt, normalized) {
   const normal = String(normalized || "");
   if (!lexiconMentionsRole(CREATIVE_ROLE_BRAINSTORMING, normal)) return null;
+  return composeBrainstormNames(prompt, normal, normal);
+}
+
+function composeBrainstormNames(prompt, normal, topic) {
   const language = detectLanguage(String(prompt || ""));
   const trace = [];
   const refusal = (reason) => {
@@ -537,7 +541,7 @@ function tryBrainstormComposition(prompt, normalized) {
     return creativeAnswer("brainstorming", "brainstorm_composition",
       creativeTemplate("brainstorming_refusal", []), 0.4, trace, language);
   };
-  const topics = creativeTopicWords(normal, language);
+  const topics = creativeTopicWords(topic, language).slice(0, 12);
   if (topics.length === 0) return refusal("no topic words");
   for (const topic of topics) trace.push(`brainstorming:topic:${topic}`);
   const requested = creativeRequestedCount(normal, language);
@@ -585,21 +589,49 @@ function creativeEvidenceGrades() {
     .filter((grade) => grade.grade.length > 0);
 }
 
-/**
- * The `advice_recommendation` rows of one topic.
- * @param {string} topic
- * @returns {Array<{text: string, grade: string, source: string, sourceUrl: string}>}
- */
-function creativeRecommendations(topic) {
-  return creativeRecords("advice_recommendation")
-    .filter((record) => childValue(record, "topic") === topic)
-    .map((record) => ({
-      text: childValue(record, "text"),
-      grade: childValue(record, "grade"),
-      source: childValue(record, "source"),
-      sourceUrl: childValue(record, "source_url"),
-    }))
-    .filter((record) => record.text.length > 0);
+function creativeRequestText(prompt) {
+  return String(prompt || "").split("```", 1)[0];
+}
+
+function creativeEvidence(prompt, kind) {
+  const block = extractFencedBlock(String(prompt || ""), ["json"]);
+  if (block === null || new TextEncoder().encode(block).length > 64 * 1024) return null;
+  try {
+    const item = JSON.parse(block)?.[kind];
+    return item && typeof item === "object" && !Array.isArray(item) ? item : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function creativeEvidenceText(record, field) {
+  const text = typeof record?.[field] === "string" ? record[field].trim() : "";
+  return text && !/\p{Cc}/u.test(text) ? text : null;
+}
+
+function creativeEvidenceSource(record) {
+  const source = creativeEvidenceText(record, "source_url");
+  if (!source?.startsWith("https://")) return null;
+  try {
+    const url = new URL(source);
+    return url.hostname && !url.username && !url.password ? source : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function suppliedCreativeAdvice(prompt, grades = creativeEvidenceGrades()) {
+  const evidence = creativeEvidence(prompt, "advice");
+  const topic = creativeEvidenceText(evidence, "topic");
+  if (!topic || !Array.isArray(evidence.items) || evidence.items.length > 64) return null;
+  const items = evidence.items.flatMap((record) => {
+    const text = creativeEvidenceText(record, "text");
+    const source = creativeEvidenceText(record, "source");
+    const grade = grades.find((candidate) => candidate.grade === creativeEvidenceText(record, "grade"));
+    const sourceUrl = creativeEvidenceSource(record);
+    return text && source && grade && sourceUrl ? [{ text, source, grade, sourceUrl }] : [];
+  });
+  return items.length ? { topic, items } : null;
 }
 
 /**
@@ -610,39 +642,26 @@ function creativeRecommendations(topic) {
  * @returns {object|null}
  */
 function tryAdviceRequest(prompt, normalized) {
-  const normal = String(normalized || "");
-  if (!lexiconMentionsRole(CREATIVE_ROLE_ADVICE, normal)) return null;
-  const language = detectLanguage(String(prompt || ""));
+  const request = creativeRequestText(prompt);
+  if (!lexiconMentionsRole(CREATIVE_ROLE_ADVICE, normalizePrompt(request))) return null;
+  const language = detectLanguage(request);
   const trace = [];
-  const matched = creativeRecords("advice_topic").find((record) =>
-    childValue(record, "topic").length > 0 &&
-    creativeChildValues(record, "surface").some((surface) => normal.includes(surface)));
-  if (matched === undefined) {
-    const fallback = creativeTopicWords(normal, language);
-    trace.push("advice:refusal:topic not in table");
-    return creativeAnswer("advice", "advice_request",
-      creativeTemplate("advice_refusal", [["topic", fallback.length > 0 ? fallback[0] : ""]]),
-      0.4, trace, language);
-  }
-  const topic = childValue(matched, "topic");
-  trace.push(`advice:topic:${topic}`);
   const grades = creativeEvidenceGrades();
-  const items = [];
-  for (const record of creativeRecommendations(topic)) {
-    const grade = grades.find((candidate) => candidate.grade === record.grade && record.sourceUrl.length > 0);
-    if (grade !== undefined) items.push({ weight: grade.weight, item: record });
+  const supplied = suppliedCreativeAdvice(prompt, grades);
+  if (supplied === null) {
+    trace.push("advice:refusal:no cited recommendations supplied");
+    return creativeAnswer("advice", "advice_request", creativeTemplate("advice_refusal", []), 0.4, trace, language);
   }
-  items.sort((left, right) => right.weight - left.weight);
-  for (const entry of items) {
-    trace.push(`advice:item:weight ${entry.weight.toFixed(2)} grade ${entry.item.grade}`);
+  const { topic, items } = supplied;
+  trace.push(`advice:topic:${topic}`);
+  items.sort((left, right) => right.grade.weight - left.grade.weight);
+  for (const item of items) {
+    trace.push(`advice:item:weight ${item.grade.weight.toFixed(2)} grade ${item.grade.grade}`);
   }
-  const listed = items.map((entry, index) => {
-    const grade = grades.find((candidate) => candidate.grade === entry.item.grade);
-    const label = grade === undefined ? "ungraded" : grade.label;
-    return `${index + 1}. ${entry.item.text} [${label} — ${entry.item.source}] (${entry.item.sourceUrl})`;
-  }).join("\n");
+  const listed = items.map((item, index) =>
+    `${index + 1}. ${item.text} [${item.grade.label} — ${item.source}] (${item.sourceUrl})`).join("\n");
   const weighting = grades.map((grade) => `${grade.grade} ${grade.weight.toFixed(2)}`).join(" > ");
-  const forwardNote = "Competing recommendations are ordered by grade weight; where two disagree, the higher grade wins here, and full relative probabilities are the relative-meta-logic work of issue #1179.";
+  const forwardNote = creativeTemplate("advice_forward_note", []);
   const body = creativeTemplate("advice_guidance", [
     ["topic", topic],
     ["items", listed],

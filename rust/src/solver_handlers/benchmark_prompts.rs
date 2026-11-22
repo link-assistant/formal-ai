@@ -8,7 +8,7 @@ use crate::fact_live::{live_fact_question, record_fact_question};
 use crate::language::detect as detect_language;
 use crate::seed::{
     self, Antecedent, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds,
-    Pronoun, SummaryTopic, SummaryTopicSeeds,
+    Pronoun, SummaryTopicSeeds,
 };
 use crate::world_model_dialog::resolve_coreference_antecedent;
 
@@ -19,21 +19,21 @@ fn summary_topic_seed_data() -> &'static SummaryTopicSeeds {
 
 pub fn try_summarization_request(
     prompt: &str,
-    normalized: &str,
+    _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let seeds = summary_topic_seed_data();
-    if !seeds.matches_trigger(normalized) {
+    let lower = prompt.to_lowercase();
+    if !seeds.matches_trigger(&lower) {
         return None;
     }
 
     let language = detect_language(prompt).slug();
-    let derived = seeds.pick_topic(normalized).and_then(|topic| {
-        derived_topic_summary(topic, language)
-            .map(|(body, source)| (topic.display_name.clone(), body, source))
-    });
+    let derived = seeds
+        .subject(&lower)
+        .and_then(|subject| derived_topic_summary(subject, language));
     if derived.is_none() {
-        log.append("summarization:refusal", "no seeded topic".to_owned());
+        log.append("summarization:refusal", "unresolved subject".to_owned());
     }
     let (topic, body, source) = derived.unwrap_or_else(|| {
         let label = prompt
@@ -51,7 +51,7 @@ pub fn try_summarization_request(
 
     log.append("summarization:topic", topic);
     log.append("summarization:source", source);
-    if let Some(label) = seeds.constraint_for(normalized) {
+    if let Some(label) = seeds.constraint_for(&lower) {
         log.append("summarization:constraint", label.to_owned());
     }
 
@@ -65,39 +65,40 @@ pub fn try_summarization_request(
     ))
 }
 
-/// Resolve one typed topic reference into canonical knowledge, then select a
-/// concise localized statement. The summary-topic file contains no prose body:
-/// edits to the concept/project record immediately change this answer.
-fn derived_topic_summary(topic: &SummaryTopic, language: &str) -> Option<(String, String)> {
-    match topic.source_kind.as_str() {
-        "concept" => {
-            let record = seed::concepts()
-                .into_iter()
-                .find(|record| record.slug == topic.source_id)?;
-            let localized = record.localized_for(language);
-            let summary = localized
-                .map(|value| value.summary.as_str())
-                .filter(|value| !value.is_empty())
-                .unwrap_or(record.summary.as_str())
-                .to_owned();
-            let source = localized
-                .map(|value| value.source.as_str())
-                .filter(|value| !value.is_empty())
-                .unwrap_or(record.source.as_str())
-                .to_owned();
-            Some((summary, source))
-        }
-        "project" => {
-            let registry = seed::projects_registry();
-            let record = registry.by_slug(&topic.source_id)?;
-            let statement = record
-                .statements_for(language)
-                .iter()
-                .max_by_key(|statement| statement.weight)?;
-            Some((statement.text.clone(), record.url.clone()))
-        }
-        _ => None,
+/// Read the requested record using the ordinary project or concept lookup.
+fn derived_topic_summary(subject: &str, language: &str) -> Option<(String, String, String)> {
+    let registry = seed::projects_registry();
+    if let Some(project) = registry.by_alias(subject)
+        && let Some(statement) = project
+            .statements_for(language)
+            .iter()
+            .max_by_key(|statement| statement.weight)
+    {
+        return Some((
+            project.display_name_for(language).to_owned(),
+            statement.text.clone(),
+            project.url.clone(),
+        ));
     }
+    let query = crate::concepts::ConceptQuery {
+        term: subject.to_owned(),
+        context: None,
+        response_language: None,
+    };
+    let record = crate::concepts::lookup_concept_query(&query)?.record;
+    let variant = record
+        .localized_for(language)
+        .filter(|variant| !variant.summary.is_empty());
+    Some((
+        variant.map_or(&record.term, |value| &value.term).clone(),
+        variant
+            .map_or(&record.summary, |value| &value.summary)
+            .clone(),
+        variant
+            .filter(|value| !value.source.is_empty())
+            .map_or(&record.source, |value| &value.source)
+            .clone(),
+    ))
 }
 
 fn brainstorm_seed_data() -> &'static BrainstormSeeds {
@@ -115,11 +116,38 @@ pub fn try_brainstorming_request(
         return None;
     }
     let category = seeds.pick_category(normalized)?;
-    if category.detection_keywords.is_empty() {
-        log.append("brainstorming:refusal", "no category keyword".to_owned());
-    }
-    let requested_count = requested_brainstorm_count(seeds, normalized);
-    let body = numbered(&category.items, requested_count);
+    let language = detect_language(prompt).slug();
+    let topic = seeds
+        .topic(normalized)
+        .filter(|topic| !super::creative_composition::topic_words(topic, language).is_empty());
+    let (body, confidence) = match topic {
+        Some(topic) if category.operations.is_empty() => {
+            log.append("brainstorm:category", category.slug.clone());
+            return Some(super::creative_composition::compose_brainstorm_names(
+                prompt,
+                normalized,
+                topic,
+                &category.intent,
+                log,
+            ));
+        }
+        Some(topic) => {
+            log.append("brainstorming:topic", topic.to_owned());
+            let count = super::creative_composition::requested_count(normalized, language)
+                .map_or_else(
+                    || requested_brainstorm_count(seeds, normalized),
+                    |count| count as usize,
+                );
+            (numbered(&category.operations, topic, count), 0.8)
+        }
+        None => {
+            log.append("brainstorming:refusal", "no topic words".to_owned());
+            (
+                seed::localized_response("brainstorming_refusal", language).unwrap_or_default(),
+                0.4,
+            )
+        }
+    };
     log.append("brainstorm:category", category.slug.clone());
     Some(finalize_simple(
         prompt,
@@ -127,7 +155,7 @@ pub fn try_brainstorming_request(
         &category.intent,
         "response:brainstorm",
         &body,
-        0.8,
+        confidence,
     ))
 }
 
@@ -159,12 +187,12 @@ fn cardinal_value(meaning: &Meaning) -> Option<usize> {
         .and_then(|numeral| numeral.parse().ok())
 }
 
-fn numbered(items: &[String], count: usize) -> String {
-    items
+fn numbered(operations: &[String], topic: &str, count: usize) -> String {
+    operations
         .iter()
         .take(count)
         .enumerate()
-        .map(|(index, item)| format!("{}. {item}", index + 1))
+        .map(|(index, item)| format!("{}. {}", index + 1, item.replace("{topic}", topic)))
         .collect::<Vec<_>>()
         .join("\n")
 }

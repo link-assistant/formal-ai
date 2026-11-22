@@ -123,11 +123,15 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 "tryCreativeWritingRequest",
                 vec!["composition_topic"]
             ),
-            ("advice_request", "tryAdviceRequest", vec!["advice_topic"]),
+            (
+                "advice_request",
+                "tryAdviceRequest",
+                vec!["advice_observations"]
+            ),
             (
                 "planning_request",
                 "tryPlanningRequest",
-                vec!["cached_destination"]
+                vec!["destination_observations"]
             ),
             (
                 "regex_synthesis",
@@ -340,7 +344,7 @@ fn the_claim_rows_are_read_from_the_capability_table() {
             (
                 "brainstorming",
                 "tryBrainstormingRequest",
-                vec!["brainstorm_category"]
+                vec!["brainstorm_topic"]
             ),
             ("roleplay", "tryRoleplayRequest", vec!["persona_or_topic"]),
             (

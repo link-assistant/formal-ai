@@ -9,25 +9,12 @@
 //! (compound, blend, suffix, definite). Every candidate then passes the
 //! request's explicit constraints (length, pronounceability, named
 //! exclusions) and the distinctness floor before it is returned, ranked by
-//! the stated pairwise normalized Levenshtein metric. This is the
-//! composition path the umbrella asks for: the two fixed categories in
-//! `data/seed/brainstorm-seeds.lino` stay as a deletable cache for bare
-//! topic-less "brainstorm" prompts, while every topic-bearing request is
-//! answered by composition, never by a memorized list and never by the
-//! canned web-search paragraph.
+//! the stated pairwise normalized Levenshtein metric.
 //!
-//! **Advice** (`handle_advice_request`) renders the recommendations
-//! formalized from primary health-authority pages in the rules seed, each
-//! with its citation and evidence grade, ordered by the grade weight. The
-//! weighting is ordinal and says so: full relative probabilities are the
-//! relative-meta-logic work of issue #1179, recorded as a forward
-//! dependency rather than guessed.
-//!
-//! Recognition vocabulary lives in `data/seed/meanings-creative-tasks.lino`
-//! (all five supported languages); the rules, rhyme and planning knowledge
-//! live in `data/seed/creative-composition-rules.lino`. Rust holds no cue
-//! or response literals.
+//! Advice ranks caller-supplied recommendations by the declared evidence grade.
+//! Shared vocabulary and composition rules live in the creative seed files.
 
+use serde_json::Value;
 use std::sync::OnceLock;
 
 use super::finalize_simple;
@@ -523,9 +510,7 @@ fn select_candidates(
 /// Recognize a topic-bearing brainstorming request and compose ranked name
 /// candidates from its formalized topic.
 ///
-/// Returns `None` when the prompt is
-/// not a brainstorming request or names no topic — bare topic-less
-/// "brainstorm" prompts stay with the legacy brainstorm-seeds path.
+/// Returns `None` outside the naming request vocabulary.
 pub fn handle_brainstorm_request(
     prompt: &str,
     normalized: &str,
@@ -534,18 +519,35 @@ pub fn handle_brainstorm_request(
     if !crate::seed::lexicon().mentions_role(ROLE_BRAINSTORMING, normalized) {
         return None;
     }
+    Some(compose_brainstorm_names(
+        prompt,
+        normalized,
+        normalized,
+        "brainstorming",
+        log,
+    ))
+}
+
+pub(super) fn compose_brainstorm_names(
+    prompt: &str,
+    normalized: &str,
+    topic: &str,
+    intent: &str,
+    log: &mut EventLog,
+) -> SymbolicAnswer {
     let language = crate::language::detect(prompt).slug();
-    let topics = topic_words(normalized, language);
+    let mut topics = topic_words(topic, language);
+    topics.truncate(12);
     if topics.is_empty() {
         log.append("brainstorming:refusal", "no topic words".to_owned());
-        return Some(finalize_simple(
+        return finalize_simple(
             prompt,
             log,
-            "brainstorming",
+            intent,
             "response:brainstorming",
             &template("brainstorming_refusal", &[]),
             0.4,
-        ));
+        );
     }
     for topic in &topics {
         log.append("brainstorming:topic", topic.clone());
@@ -578,14 +580,14 @@ pub fn handle_brainstorm_request(
     );
     if candidates.is_empty() {
         log.append("brainstorming:refusal", "no candidate passed".to_owned());
-        return Some(finalize_simple(
+        return finalize_simple(
             prompt,
             log,
-            "brainstorming",
+            intent,
             "response:brainstorming",
             &template("brainstorming_refusal", &[]),
             0.4,
-        ));
+        );
     }
     log.append("brainstorming:candidates", candidates.join(", "));
     // Each kept candidate is an explored option of the reasoning loop's
@@ -631,14 +633,7 @@ pub fn handle_brainstorm_request(
             ("rules", &rules_used),
         ],
     );
-    Some(finalize_simple(
-        prompt,
-        log,
-        "brainstorming",
-        "response:brainstorming",
-        &body,
-        0.6,
-    ))
+    finalize_simple(prompt, log, intent, "response:brainstorming", &body, 0.6)
 }
 
 /// One `advice_evidence_grade` record: the weight scale of the ordinal
@@ -660,7 +655,38 @@ fn evidence_grades() -> Vec<EvidenceGrade> {
         .collect()
 }
 
-/// One `advice_recommendation` record.
+/// Prompt prose before the first evidence block.
+pub(super) fn creative_request_text(prompt: &str) -> &str {
+    prompt.split("```").next().unwrap_or(prompt)
+}
+
+/// Read one bounded JSON object supplied as evidence with the request.
+pub(super) fn creative_evidence(prompt: &str, kind: &str) -> Option<Value> {
+    let block = crate::solver_helpers::extract_fenced_block(prompt, &["json"])?;
+    if block.len() > 64 * 1024 {
+        return None;
+    }
+    let value: Value = serde_json::from_str(&block).ok()?;
+    let evidence = value.get(kind)?;
+    evidence.is_object().then(|| evidence.clone())
+}
+
+pub(super) fn evidence_text<'a>(record: &'a Value, field: &str) -> Option<&'a str> {
+    let value = record.get(field)?.as_str()?.trim();
+    (!value.is_empty() && !value.chars().any(char::is_control)).then_some(value)
+}
+
+pub(super) fn evidence_source(record: &Value) -> Option<&str> {
+    let source = evidence_text(record, "source_url")?;
+    let url = url::Url::parse(source).ok()?;
+    (url.scheme() == "https"
+        && source.starts_with("https://")
+        && url.host_str().is_some()
+        && url.username().is_empty()
+        && url.password().is_none())
+    .then_some(source)
+}
+
 struct Recommendation {
     text: String,
     grade: String,
@@ -668,46 +694,38 @@ struct Recommendation {
     source_url: String,
 }
 
-fn recommendations(topic: &str) -> Vec<Recommendation> {
-    rules_records_named("advice_recommendation")
-        .filter(|record| record.find_child_value("topic") == topic)
-        .map(|record| Recommendation {
-            text: record.find_child_value("text").to_string(),
-            grade: record.find_child_value("grade").to_string(),
-            source: record.find_child_value("source").to_string(),
-            source_url: record.find_child_value("source_url").to_string(),
-        })
-        .filter(|record| !record.text.is_empty())
-        .collect()
-}
-
-/// The topics the advice table covers, with their detection surfaces.
-fn advice_topics() -> Vec<(String, Vec<String>)> {
-    rules_records_named("advice_topic")
-        .map(|record| {
-            (
-                record.find_child_value("topic").to_string(),
-                record
-                    .children
-                    .iter()
-                    .filter(|child| child.name == "surface")
-                    .map(|child| child.id.clone())
-                    .filter(|surface| !surface.is_empty())
-                    .collect(),
-            )
-        })
-        .filter(|(topic, _)| !topic.is_empty())
-        .collect()
-}
-
-/// Whether the advice table covers a topic the request names.
-///
-/// The `advice_topic` claim evidence of issue #1175 R3.
-#[must_use]
-pub fn names_advice_topic(normalized: &str) -> bool {
-    advice_topics()
+fn supplied_advice(
+    prompt: &str,
+    grades: &[EvidenceGrade],
+) -> Option<(String, Vec<Recommendation>)> {
+    let evidence = creative_evidence(prompt, "advice")?;
+    let topic = evidence_text(&evidence, "topic")?.to_owned();
+    let records = evidence.get("items")?.as_array()?;
+    if records.len() > 64 {
+        return None;
+    }
+    let items: Vec<_> = records
         .iter()
-        .any(|(_, surfaces)| surfaces.iter().any(|surface| normalized.contains(surface)))
+        .filter_map(|record| {
+            let grade = evidence_text(record, "grade")?;
+            if !grades.iter().any(|item| item.grade == grade) {
+                return None;
+            }
+            Some(Recommendation {
+                text: evidence_text(record, "text")?.to_owned(),
+                grade: grade.to_owned(),
+                source: evidence_text(record, "source")?.to_owned(),
+                source_url: evidence_source(record)?.to_owned(),
+            })
+        })
+        .collect();
+    (!items.is_empty()).then_some((topic, items))
+}
+
+/// Claim evidence exists when the request supplies usable cited recommendations.
+#[must_use]
+pub fn has_advice_evidence(prompt: &str) -> bool {
+    supplied_advice(prompt, &evidence_grades()).is_some()
 }
 
 /// Recognize an advice request and render its evidence-graded
@@ -718,48 +736,37 @@ pub fn names_advice_topic(normalized: &str) -> bool {
 /// issue #1179's relative meta logic.
 pub fn handle_advice_request(
     prompt: &str,
-    normalized: &str,
+    _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     // The canonical reading folds punctuation, as the browser twin does, so a
     // comma after the advice verb ("Посоветуй, как …") does not hide it.
-    let canonical = crate::engine::normalize_prompt(prompt);
-    let normalized = if canonical.is_empty() {
-        normalized
-    } else {
-        canonical.as_str()
-    };
-    if !crate::seed::lexicon().mentions_role(ROLE_ADVICE, normalized) {
+    let request = creative_request_text(prompt);
+    let normalized = crate::engine::normalize_prompt(request);
+    if !crate::seed::lexicon().mentions_role(ROLE_ADVICE, &normalized) {
         return None;
     }
-    let language = crate::language::detect(prompt).slug();
-    let matched = advice_topics()
-        .into_iter()
-        .find(|(_, surfaces)| surfaces.iter().any(|surface| normalized.contains(surface)));
-    let Some((topic, _)) = matched else {
-        let fallback_topic = topic_words(normalized, language)
-            .into_iter()
-            .next()
-            .unwrap_or_default();
-        log.append("advice:refusal", "topic not in table".to_owned());
+    let grades = evidence_grades();
+    let Some((topic, records)) = supplied_advice(prompt, &grades) else {
+        log.append(
+            "advice:refusal",
+            "no cited recommendations supplied".to_owned(),
+        );
         return Some(finalize_simple(
             prompt,
             log,
             "advice",
             "response:advice",
-            &template("advice_refusal", &[("topic", &fallback_topic)]),
+            &template("advice_refusal", &[]),
             0.4,
         ));
     };
     log.append("advice:topic", topic.clone());
-    let grades = evidence_grades();
-    let mut items: Vec<(f32, Recommendation)> = recommendations(&topic)
+    let mut items: Vec<(f32, Recommendation)> = records
         .into_iter()
         .filter_map(|record| {
             // An item without grade, source, or citation is not returned.
-            let grade = grades
-                .iter()
-                .find(|grade| grade.grade == record.grade && !record.source_url.is_empty());
+            let grade = grades.iter().find(|grade| grade.grade == record.grade);
             grade.map(|grade| (grade.weight, record))
         })
         .collect();

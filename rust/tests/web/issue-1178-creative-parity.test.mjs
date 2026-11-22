@@ -5,8 +5,13 @@
 
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+
+const observations = JSON.parse(readFileSync(new URL("../fixtures/issue-1178/creative-observations.json", import.meta.url), "utf8"));
+const withEvidence = (prompt, kind, value = observations[kind]) =>
+  `${prompt}\n\`\`\`json\n${JSON.stringify({ [kind]: value })}\n\`\`\``;
 
 const worker = createWorkerContext();
 const seeded = evaluate(worker, "loadSeed()");
@@ -88,7 +93,7 @@ test("brainstorming multilingual probes", async () => {
 });
 
 test("R3: a four-line poem about the sea passes its constraint check", async () => {
-  const answer = await bodyOf("tryCreativeWritingRequest", "Write a four-line poem about the sea");
+  const answer = await bodyOf("tryCreativeWritingRequest", withEvidence("Write a four-line poem about the sea", "rhyme"));
   const poem = poemOf(answer);
   assert.equal(poem.length, 4, answer);
   assert.ok(poem.some((line) => line.toLowerCase().includes("sea")), answer);
@@ -100,7 +105,7 @@ test("R3: a four-line poem about the sea passes its constraint check", async () 
 });
 
 test("R3: a violating poem is never returned", async () => {
-  const answer = await bodyOf("tryCreativeWritingRequest", "Write a rhyming sonnet about the star");
+  const answer = await bodyOf("tryCreativeWritingRequest", withEvidence("Write a rhyming sonnet about the star", "rhyme"));
   assert.ok(answer.includes("never returned"), answer);
   assert.ok(!answer.includes("Constraint check, run on the rendered poem"), answer);
 });
@@ -111,7 +116,7 @@ test("a haiku carries three lines and states its meter unverified", async () => 
   assert.ok(answer.includes("not machine-verified"), answer);
 });
 
-test("R4: the non-English rhyme gap is stated, not guessed", async () => {
+test("R4: rhyme evidence is requested for ungrounded verse", async () => {
   const prompts = [
     ["ru", "напиши стихотворение о море в четыре строки"],
     ["hi", "चार पंक्तियों में समुद्र पर कविता लिखो"],
@@ -120,16 +125,16 @@ test("R4: the non-English rhyme gap is stated, not guessed", async () => {
   for (const [language, prompt] of prompts) {
     const answer = await bodyOf("tryCreativeWritingRequest", prompt);
     assert.equal(poemOf(answer).length, 4, `${language}: ${answer}`);
-    assert.ok(answer.includes("gap"), `${language}: ${answer}`);
-    assert.ok(!answer.includes("rhyme scheme") || answer.includes("none"), `${language}: ${answer}`);
+    assert.ok(answer.includes("rhyme.classes"), `${language}: ${answer}`);
+    assert.doesNotMatch(answer, /^- rhyme scheme/m, `${language}: ${answer}`);
   }
 });
 
-test("R5: the Rome itinerary is cited and feasible", async () => {
-  const answer = await bodyOf("tryPlanningRequest", "3-day itinerary for Rome");
+test("R5: the itinerary is cited and feasible", async () => {
+  const answer = await bodyOf("tryPlanningRequest", withEvidence("3-day itinerary for Harbor City", "planning"));
   assert.ok(answer.includes("Day 1") && answer.includes("Day 3"), answer);
-  assert.ok(answer.includes("Colosseum"), answer);
-  assert.ok(answer.split("wikivoyage.org").length - 1 >= 5, answer);
+  assert.ok(answer.includes("Harbor Archive"), answer);
+  assert.ok(answer.split("example.org").length - 1 >= 5, answer);
   assert.ok(answer.includes("no overlapping items"), answer);
   assert.ok(answer.includes("travel time accounted"), answer);
   assert.ok(!answer.includes("terminal"), answer);
@@ -137,7 +142,7 @@ test("R5: the Rome itinerary is cited and feasible", async () => {
 });
 
 test("R5: every scheduled window sits inside the day and in order", async () => {
-  const answer = await bodyOf("tryPlanningRequest", "3-day itinerary for Rome");
+  const answer = await bodyOf("tryPlanningRequest", withEvidence("3-day itinerary for Harbor City", "planning"));
   let previousEnd = 0;
   for (const line of answer.split("\n")) {
     const trimmed = line.trim();
@@ -156,43 +161,43 @@ test("R5: every scheduled window sits inside the day and in order", async () => 
   }
 });
 
-test("planning refuses an uncached destination honestly", async () => {
+test("planning names missing observations", async () => {
   const answer = await bodyOf("tryPlanningRequest", "plan a trip to Atlantis");
-  assert.ok(answer.includes("no places in the seeded cache"), answer);
+  assert.ok(answer.includes("cited opening hours"), answer);
   assert.ok(!answer.includes("Web search requested for"), answer);
 });
 
 test("planning multilingual probes", async () => {
-  for (const [language, prompt] of [["ru", "составь маршрут по Риму на 3 дня"], ["zh", "罗马三天行程"]]) {
-    const answer = await bodyOf("tryPlanningRequest", prompt);
+  for (const [language, prompt] of [["ru", "составь маршрут по городу на 3 дня"], ["zh", "城市三天行程"]]) {
+    const answer = await bodyOf("tryPlanningRequest", withEvidence(prompt, "planning"));
     assert.ok(answer.includes("Day 1"), `${language}: ${answer}`);
     assert.ok(answer.includes("3-day"), `${language}: ${answer}`);
-    assert.ok(answer.includes("wikivoyage.org"), `${language}: ${answer}`);
+    assert.ok(answer.includes("example.org"), `${language}: ${answer}`);
     assert.ok(!answer.includes("terminal"), `${language}: ${answer}`);
   }
 });
 
 test("R6: advice is cited, graded and weighted", async () => {
-  const answer = await bodyOf("tryAdviceRequest", "evidence-based tips for trouble sleeping");
-  assert.ok(answer.includes("CDC"), answer);
-  assert.ok(answer.includes("cdc.gov"), answer);
-  assert.ok(answer.includes("strong (health-authority guideline)"), answer);
-  assert.ok(answer.includes("issue #1179"), answer);
+  const answer = await bodyOf("tryAdviceRequest", withEvidence("evidence-based tips for maintaining a project changelog", "advice"));
+  assert.ok(answer.includes("Project policy"), answer);
+  assert.ok(answer.includes("example.org/policy"), answer);
+  assert.ok(answer.includes("strong (authority guideline)"), answer);
+  assert.ok(answer.includes("supplied grades"), answer);
   assert.ok(answer.includes("authority_guideline 0.75 > primary_study 0.60"), answer);
-  assert.ok(answer.indexOf("moderate (individual primary study)") > answer.lastIndexOf("strong (health-authority guideline)"), answer);
+  assert.ok(answer.indexOf("moderate (individual primary study)") > answer.lastIndexOf("strong (authority guideline)"), answer);
   assert.ok(!answer.includes("Web search requested for"), answer);
 });
 
 test("advice multilingual probes", async () => {
-  for (const prompt of ["дай советы для борьбы с бессонницей", "नींद के लिए सलाह दो", "改善睡眠的建议"]) {
-    const answer = await bodyOf("tryAdviceRequest", prompt);
-    assert.ok(answer.includes("CDC") && answer.includes("cdc.gov"), `${prompt}: ${answer}`);
+  for (const prompt of ["дай советы по ведению журнала изменений", "परियोजना के लिए सलाह दो", "维护项目的建议"]) {
+    const answer = await bodyOf("tryAdviceRequest", withEvidence(prompt, "advice"));
+    assert.ok(answer.includes("Project policy") && answer.includes("example.org/policy"), `${prompt}: ${answer}`);
   }
 });
 
-test("advice refuses an unformalized topic honestly", async () => {
+test("advice names missing observations", async () => {
   const answer = await bodyOf("tryAdviceRequest", "advice for choosing a hoverboard");
-  assert.ok(answer.includes("no formalized recommendations"), answer);
+  assert.ok(answer.includes("cited recommendations"), answer);
 });
 
 test("R8: unrelated prompts are not claimed", async () => {
@@ -212,13 +217,80 @@ test("the full worker routes the four classes to their composition handlers", as
   await seeded;
   const routed = [
     ["five name ideas for a coffee shop near a university", "brainstorming", "name candidates"],
-    ["Write a four-line poem about the sea", "creative_writing", "Constraint check"],
-    ["3-day itinerary for Rome", "planning", "Day 1"],
-    ["evidence-based tips for trouble sleeping", "advice", "cdc.gov"],
+    [withEvidence("Write a four-line poem about the sea", "rhyme"), "creative_writing", "Constraint check"],
+    [withEvidence("3-day itinerary for Harbor City", "planning"), "planning", "Day 1"],
+    [withEvidence("evidence-based tips for maintaining a project changelog", "advice"), "advice", "example.org/policy"],
   ];
   for (const [prompt, intent, marker] of routed) {
     const answer = await worker.solve(prompt, [], {}, {}, [], {});
     assert.equal(answer.intent, intent, `${prompt}: ${answer.intent} ${answer.content}`);
     assert.ok(answer.content.includes(marker), answer.content);
   }
+});
+
+test("issue #1613: itineraries consume cited places for an unfamiliar destination", async () => {
+  const prompt = 'Plan a 2-day itinerary for Example Bay.\n```json\n'
+    + JSON.stringify({ planning: { destination: "Example Bay", places: [{
+      name: "Harbor Archive", district: "Harbor", category: "archive",
+      hours: "10:30-12:00", visit_minutes: 45, source_url: "https://example.org/archive",
+    }] } }) + '\n```';
+  const answer = await bodyOf("tryPlanningRequest", prompt);
+  assert.match(answer, /10:30-11:15 Harbor Archive/);
+  assert.ok(answer.includes("https://example.org/archive"), answer);
+  assert.doesNotMatch(answer, /Colosseum|Rome/);
+});
+
+test("issue #1613: advice orders cited observations for any supplied topic", async () => {
+  const prompt = 'Give evidence-based tips for maintaining a project changelog.\n```json\n'
+    + JSON.stringify({ advice: { topic: "project changelog", items: [{
+      text: "Group related changes.", grade: "anecdote",
+      source: "Maintainer notes", source_url: "https://example.org/notes",
+    }, {
+      text: "Publish release notes.", grade: "authority_guideline",
+      source: "Project policy", source_url: "https://example.org/policy",
+    }] } }) + '\n```';
+  const answer = await bodyOf("tryAdviceRequest", prompt);
+  assert.match(answer, /1\. Publish release notes\./);
+  assert.match(answer, /2\. Group related changes\./);
+  assert.ok(answer.includes("https://example.org/policy"), answer);
+});
+
+test("issue #1613: six-line verse uses three distinct supplied rhyme classes", async () => {
+  await seeded;
+  const prompt = "Write a six line poem about a lantern";
+  const classes = [
+    { id: "est", words: ["west", "crest"], source_url: "https://example.org/est" },
+    { id: "ain", words: ["rain", "chain"], source_url: "https://example.org/ain" },
+    { id: "ame", words: ["flame", "name"], source_url: "https://example.org/ame" },
+    { id: "all", words: ["tall", "fall"], source_url: "javascript:void(0)" },
+  ];
+  const answer = await worker.solve(withEvidence(prompt, "rhyme", { language: "en", scheme: "aabbcc", classes }), [], {}, {}, [], {});
+  const words = poemOf(answer.content).map(endWord);
+  assert.equal(words.length, 6, answer.content);
+  const sound = (word) => classes.slice(0, 3).findIndex(({ words }) => words.includes(word));
+  const pairs = [0, 2, 4].map((index) => {
+    assert.equal(sound(words[index]), sound(words[index + 1]), answer.content);
+    assert.ok(sound(words[index]) >= 0, answer.content);
+    return sound(words[index]);
+  });
+  assert.equal(new Set(pairs).size, 3, answer.content);
+  for (const { source_url } of classes.slice(0, 3)) assert.ok(answer.content.includes(source_url), answer.content);
+  assert.doesNotMatch(answer.content, /javascript:/);
+  const cold = await worker.solve(prompt, [], {}, {}, [], {});
+  assert.match(cold.content, /free verse/i);
+  assert.doesNotMatch(cold.content, /^- rhyme scheme/m);
+});
+
+test("issue #1613: a cold itinerary cannot reuse Rome and invalid observations cannot fill it", async () => {
+  const prompt = "Plan a three day itinerary for Rome";
+  const cold = await bodyOf("tryPlanningRequest", prompt);
+  assert.match(cold, /cited opening hours/);
+  assert.doesNotMatch(cold, /Colosseum/);
+  const answer = await bodyOf("tryPlanningRequest", withEvidence(prompt, "planning", {
+    destination: "Rome",
+    places: [{ name: "Bad source", district: "Central", category: "Museum", hours: "09:00-19:00", visit_minutes: 45,
+      source_url: "https://user:password@example.org/invalid" }],
+  }));
+  assert.match(answer, /cited opening hours/);
+  assert.doesNotMatch(answer, /password|Bad source|Colosseum/);
 });

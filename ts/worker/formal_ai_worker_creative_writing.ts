@@ -2,13 +2,9 @@
 // itinerary planning, browser twin (PR #1188 JavaScript-first parity).
 //
 // Mirrors rust/src/solver_handlers/creative_writing.rs and its include!-ed
-// half creative_writing_planning.rs. Verse is composed from the writing
-// forms, Wiktionary rhyme classes and line skeletons of
-// data/seed/creative-composition-rules.lino and is checked against every
-// stated constraint before it is returned; itineraries schedule the seeded,
-// cited place cache under the seeded plan constraints and pass their own
-// feasibility check first. Shared seed readers live in
-// formal_ai_worker_creative.js.
+// half creative_writing_planning.rs. The caller supplies cited rhyme classes
+// and itinerary observations alongside the request. Composition and
+// feasibility checks use the same observations.
 
 /**
  * The `writing_form` records: defaults and the surfaces naming the form.
@@ -33,53 +29,26 @@ function creativeWritingForms() {
     .filter((form) => form.form.length > 0);
 }
 
-/**
- * The `rhyme_class` records.
- * @returns {Array<{id: string, words: Array<string>, sourceUrl: string}>}
- */
-function creativeRhymeClasses() {
-  return creativeRecords("rhyme_class")
-    .map((record) => ({
-      id: childValue(record, "id"),
-      words: creativeChildValues(record, "word"),
-      sourceUrl: childValue(record, "source_url"),
-    }))
-    .filter((rhyme) => rhyme.id.length > 0);
-}
-
-/**
- * The `rhyme_coverage` record: grounded languages and the stated gap.
- * @returns {{languages: Array<string>, gap: string}}
- */
-function creativeRhymeCoverage() {
-  const record = creativeRecords("rhyme_coverage")[0];
-  if (record === undefined) return { languages: [], gap: "" };
-  return {
-    languages: creativeSplitPipeList(childValue(record, "rhyme_languages")),
-    gap: childValue(record, "gap"),
-  };
-}
-
-/**
- * `split_pipe_list`: a `(a "b c")` reference list or an `a|b` pipe list.
- * @param {string} raw
- * @returns {Array<string>}
- */
-function creativeSplitPipeList(raw) {
-  const trimmed = String(raw).trim();
-  if (trimmed.length === 0) return [];
-  if (trimmed.startsWith("(") && trimmed.endsWith(")")) {
-    const out = [];
-    const pattern = /"((?:[^"\\]|\\.)*)"|'([^']*)'|`([^`]*)`|(\S+)/g;
-    let match = pattern.exec(trimmed.slice(1, -1));
-    while (match !== null) {
-      const value = match[1] !== undefined ? match[1] : match[2] !== undefined ? match[2] : match[3] !== undefined ? match[3] : match[4];
-      out.push(value);
-      match = pattern.exec(trimmed.slice(1, -1));
+function suppliedCreativeRhymes(prompt, language) {
+  const evidence = creativeEvidence(prompt, "rhyme");
+  if (creativeEvidenceText(evidence, "language") !== language) return { scheme: null, classes: [] };
+  const candidate = creativeEvidenceText(evidence, "scheme");
+  const scheme = candidate && /^[a-z]{1,14}$/i.test(candidate) ? candidate.toLowerCase() : null;
+  const classes = [];
+  if (!Array.isArray(evidence.classes) || evidence.classes.length > 32) return { scheme, classes };
+  for (const record of evidence.classes) {
+    const id = creativeEvidenceText(record, "id");
+    const sourceUrl = creativeEvidenceSource(record);
+    if (!id || !sourceUrl || !Array.isArray(record.words) || record.words.length > 64
+      || classes.some((rhyme) => rhyme.id === id)) continue;
+    const words = [...new Set(record.words.filter((word) => typeof word === "string")
+      .map((word) => word.trim().toLowerCase())
+      .filter((word) => word && !/\s/u.test(word) && creativeEndWord(word) === word))];
+    if (words.length >= 2 && !classes.some((rhyme) => rhyme.words.some((word) => words.includes(word)))) {
+      classes.push({ id, sourceUrl, words });
     }
-    return out;
   }
-  return trimmed.split("|").map((part) => part.trim()).filter((part) => part.length > 0);
+  return { scheme, classes };
 }
 
 /**
@@ -114,7 +83,7 @@ function creativeDetectForm(normalized) {
  * @param {string} language
  * @returns {{lines: number, scheme: string, topic: string, rhymes: boolean, syllables: string}}
  */
-function creativeFormConstraints(normalized, language) {
+function creativeFormConstraints(normalized, language, supplied) {
   const form = creativeDetectForm(normalized);
   const lineWords = creativeCueWords("line_count");
   const counted = creativeRequestedCount(normalized, language);
@@ -122,14 +91,14 @@ function creativeFormConstraints(normalized, language) {
     ? counted
     : null;
   const lines = Math.min(14, Math.max(1, stated === null ? form.defaultLines : stated));
-  const statedScheme = creativeCueWords("stated_scheme").find((scheme) => normalized.includes(scheme));
+  const statedScheme = creativeCueWords("stated_scheme").find((scheme) => normalized.split(/\s+/u).includes(scheme));
   let scheme = form.defaultScheme;
-  if (statedScheme !== undefined) {
-    scheme = statedScheme;
+  if (statedScheme !== undefined || supplied.scheme !== null) {
+    scheme = statedScheme ?? supplied.scheme;
   } else if (creativeCueWords("rhyme_request").some((word) => normalized.includes(word))) {
     scheme = creativeCueField("rhyme_request", "scheme") || form.defaultScheme;
   }
-  const rhymes = scheme !== "none" && creativeRhymeCoverage().languages.includes(language);
+  const rhymes = scheme !== "none" && supplied.classes.length > 0;
   const topics = creativeTopicWords(normalized, language);
   return {
     lines: lines,
@@ -219,8 +188,7 @@ function creativeFillSkeleton(skeleton, topic, rhyme) {
  * @param {number} offset
  * @returns {Array<string>|null}
  */
-function creativeComposePoem(constraints, language, offset) {
-  const classes = creativeRhymeClasses();
+function creativeComposePoem(constraints, language, classes, offset) {
   const all = creativeSkeletons(language);
   if (all.length === 0 || constraints.topic.length === 0) return null;
   const free = all.filter((skeleton) => !skeleton.rhymeSlot);
@@ -234,49 +202,34 @@ function creativeComposePoem(constraints, language, offset) {
     }
     return unrhymed;
   }
-  const topicLower = constraints.topic.toLowerCase();
-  const span = Math.max(classes.length, 1);
-  const own = classes.findIndex((rhyme) => rhyme.words.includes(topicLower));
-  const primaryIndex = own === -1 ? offset % span : own;
-  const primary = classes[primaryIndex];
-  const partner = classes[(primaryIndex + 1 + offset) % span];
-  if (primary === undefined || partner === undefined) return null;
-  const primaryWords = primary.words.filter((word) => word !== topicLower);
-  if (primary.words.includes(topicLower)) primaryWords.unshift(topicLower);
-  const partnerWords = partner.words.filter((word) => !primary.words.includes(word));
+  const topic = constraints.topic.toLowerCase();
   const rhymed = all.filter((skeleton) => skeleton.rhymeSlot);
-  if (rhymed.length === 0) return null;
   const letters = creativeSchemeLetters(constraints.scheme);
-  const countA = letters.filter((letter) => letter === "a").length;
-  const countOther = letters.length - countA;
-  if (primaryWords.length < Math.max(countA, 1) || partnerWords.length < Math.max(countOther, 1)) return null;
+  const counts = new Map();
+  for (const letter of letters) counts.set(letter, (counts.get(letter) || 0) + 1);
+  const groups = [...counts].filter(([, count]) => count > 1)
+    .sort(([left, a], [right, b]) => b - a || left.localeCompare(right));
+  const start = offset % classes.length;
+  const available = [...classes.slice(start), ...classes.slice(0, start)];
+  available.sort((left, right) => Number(right.words.includes(topic)) - Number(left.words.includes(topic)));
+  const endings = new Map();
+  for (const [letter, count] of groups) {
+    const index = available.findIndex((rhyme) => rhyme.words.length >= count);
+    if (index < 0) return null;
+    const words = available.splice(index, 1)[0].words.slice();
+    words.sort((left, right) => Number(right === topic) - Number(left === topic));
+    endings.set(letter, words.reverse());
+  }
   const poem = [];
-  let aUsed = 0;
-  let otherUsed = 0;
-  let rhymeIndex = 0;
-  let freeIndex = 0;
-  for (const letter of letters) {
-    const repeats = letters.filter((other) => other === letter).length;
-    if (repeats < 2) {
-      let text = rhymed[rhymeIndex % rhymed.length].text;
-      if (free.length > 0) {
-        text = free[freeIndex % free.length].text;
-        freeIndex += 1;
-      }
-      poem.push(creativeFillSkeleton(text, constraints.topic, ""));
-      continue;
-    }
-    let word = "";
-    if (letter === "a") {
-      word = primaryWords[aUsed % primaryWords.length];
-      aUsed += 1;
+  for (const [index, letter] of letters.entries()) {
+    const word = endings.get(letter)?.pop() || "";
+    if (word && rhymed.length) {
+      poem.push(creativeFillSkeleton(rhymed[index % rhymed.length].text, constraints.topic, word));
     } else {
-      word = partnerWords[otherUsed % partnerWords.length];
-      otherUsed += 1;
+      if (!free.length) return null;
+      const line = creativeFillSkeleton(free[index % free.length].text, constraints.topic, "");
+      poem.push(word ? `${line} — ${word}` : line);
     }
-    const skeleton = rhymed[rhymeIndex % rhymed.length].text;
-    rhymeIndex += 1;
-    poem.push(creativeFillSkeleton(skeleton, constraints.topic, word));
   }
   return poem;
 }
@@ -287,7 +240,7 @@ function creativeComposePoem(constraints, language, offset) {
  * @param {{lines: number, scheme: string, topic: string, rhymes: boolean}} constraints
  * @returns {Array<string>}
  */
-function creativeCheckPoem(poem, constraints) {
+function creativeCheckPoem(poem, constraints, classes) {
   const failures = [];
   if (poem.length !== constraints.lines) {
     failures.push(`line count ${poem.length} but ${constraints.lines} wanted`);
@@ -298,7 +251,7 @@ function creativeCheckPoem(poem, constraints) {
     failures.push(`topic word '${constraints.topic}' absent`);
   }
   if (constraints.rhymes && constraints.scheme !== "none") {
-    for (const failure of creativeCheckScheme(poem, constraints.scheme, creativeRhymeClasses())) {
+    for (const failure of creativeCheckScheme(poem, constraints.scheme, classes)) {
       failures.push(failure);
     }
   }
@@ -313,10 +266,12 @@ function creativeCheckPoem(poem, constraints) {
  * @returns {object|null}
  */
 function tryCreativeWritingRequest(prompt, normalized) {
-  const normal = String(normalized || "");
+  const request = creativeRequestText(prompt);
+  const normal = normalizePrompt(request);
   if (!lexiconMentionsRole(CREATIVE_ROLE_WRITING, normal)) return null;
-  const language = detectLanguage(String(prompt || ""));
-  const constraints = creativeFormConstraints(normal, language);
+  const language = detectLanguage(request);
+  const supplied = suppliedCreativeRhymes(prompt, language);
+  const constraints = creativeFormConstraints(normal, language, supplied);
   const trace = [
     `creative_writing:constraints:lines ${constraints.lines} scheme ${constraints.scheme} topic ${constraints.topic} rhymes ${constraints.rhymes} syllables ${constraints.syllables}`,
   ];
@@ -334,9 +289,9 @@ function tryCreativeWritingRequest(prompt, normalized) {
   let poem = null;
   let failures = [];
   for (let offset = 0; offset < 2; offset += 1) {
-    const candidate = creativeComposePoem(constraints, language, offset);
+    const candidate = creativeComposePoem(constraints, language, supplied.classes, offset);
     if (candidate === null) continue;
-    const candidateFailures = creativeCheckPoem(candidate, constraints);
+    const candidateFailures = creativeCheckPoem(candidate, constraints, supplied.classes);
     if (candidateFailures.length === 0) {
       poem = candidate;
       failures = [];
@@ -356,18 +311,18 @@ function tryCreativeWritingRequest(prompt, normalized) {
     ["lines_want", String(constraints.lines)],
     ["lines_check", "holds"],
   ];
-  const coverage = creativeRhymeCoverage();
   if (constraints.rhymes) {
-    const topicLower = constraints.topic.toLowerCase();
-    const own = creativeRhymeClasses().find((rhyme) => rhyme.words.includes(topicLower));
+    const ends = new Set(poem.map(creativeEndWord));
+    const sources = supplied.classes.filter((rhyme) => rhyme.words.some((word) => ends.has(word)))
+      .map((rhyme) => `${rhyme.id} (${rhyme.sourceUrl})`).join(", ");
     return answer(creativeTemplate("creative_writing_poem", counts.concat([
       ["scheme", constraints.scheme],
       ["rhyme_check", "holds — every rhyming pair ends in one rhyme class"],
       ["topic_check", "yes"],
-      ["rhyme_class", own === undefined ? "rotated" : own.id],
+      ["rhyme_sources", sources],
     ])), 0.6);
   }
-  if (coverage.languages.includes(language)) {
+  if (constraints.scheme === "none") {
     return answer(creativeTemplate("creative_writing_unrhymed", counts.concat([
       ["topic_check", "yes"],
       ["syllables", constraints.syllables.length === 0 ? "none stated" : constraints.syllables],
@@ -375,7 +330,6 @@ function tryCreativeWritingRequest(prompt, normalized) {
   }
   return answer(creativeTemplate("creative_writing_gap", counts.concat([
     ["topic_check", "yes"],
-    ["gap", coverage.gap],
   ])), 0.6);
 }
 
@@ -393,7 +347,8 @@ function creativeParseClock(text) {
   if (colon === -1) return null;
   const hours = creativeParseUnsigned(text.slice(0, colon).trim());
   const minutes = creativeParseUnsigned(text.slice(colon + 1).trim());
-  return hours === null || minutes === null ? null : hours * 60 + minutes;
+  if (hours === null || minutes === null) return null;
+  return (hours < 24 && minutes < 60) || (hours === 24 && minutes === 0) ? hours * 60 + minutes : null;
 }
 
 /**
@@ -421,38 +376,26 @@ function creativeWindow(hours, open, close) {
   return { open: first === null ? open : first, close: last === null ? close : last };
 }
 
-/**
- * The `destination_surface` records.
- * @returns {Array<{destination: string, surfaces: Array<string>}>}
- */
-function creativeDestinations() {
-  return creativeRecords("destination_surface")
-    .map((record) => ({ destination: childValue(record, "destination"), surfaces: creativeChildValues(record, "surface") }))
-    .filter((entry) => entry.destination.length > 0);
-}
-
-/**
- * The cited `planning_place_cache` rows of one destination.
- * @param {string} destination
- * @returns {Array<object>}
- */
-function creativePlaces(destination) {
-  return creativeRecords("planning_place_cache")
-    .filter((record) => childValue(record, "destination") === destination)
-    .map((record) => {
-      const visit = creativeParseUnsigned(childValue(record, "visit_minutes"));
-      return {
-        id: childValue(record, "id"),
-        name: childValue(record, "name"),
-        district: childValue(record, "district"),
-        category: childValue(record, "category"),
-        hours: childValue(record, "hours"),
-        closedDays: childValue(record, "closed_days"),
-        visitMinutes: visit === null ? 60 : visit,
-        sourceUrl: childValue(record, "source_url"),
-      };
-    })
-    .filter((place) => place.id.length > 0 && place.sourceUrl.length > 0);
+function suppliedCreativePlaces(prompt) {
+  const evidence = creativeEvidence(prompt, "planning");
+  const destination = creativeEvidenceText(evidence, "destination");
+  if (!destination || !Array.isArray(evidence.places) || evidence.places.length > 64) return null;
+  const places = evidence.places.flatMap((record) => {
+    if (!record || Object.hasOwn(record, "closed_days")) return [];
+    const name = creativeEvidenceText(record, "name");
+    const district = creativeEvidenceText(record, "district");
+    const category = creativeEvidenceText(record, "category");
+    const hours = creativeEvidenceText(record, "hours");
+    const window = hours?.split("-").map(creativeParseClock);
+    if (window?.length !== 2 || window.some((time) => time === null)) return [];
+    const [open, close] = window;
+    const visitMinutes = record.visit_minutes;
+    const sourceUrl = creativeEvidenceSource(record);
+    return name && district && category && sourceUrl && Number.isInteger(visitMinutes)
+      && visitMinutes > 0 && visitMinutes <= close - open
+      ? [{ name, district, category, hours, open, close, visitMinutes, sourceUrl }] : [];
+  });
+  return places.length ? { destination, places } : null;
 }
 
 /**
@@ -492,7 +435,7 @@ function creativePlanConstraints() {
 
 /**
  * Schedule places across `days` days (`schedule_days`): whole districts
- * round-robin in seed order, early-closing and long visits first, travel,
+ * round-robin in input order, early-closing and long visits first, travel,
  * one lunch window, the daily cap and the category spread enforced.
  * @param {Array<object>} available
  * @param {number} days
@@ -510,9 +453,7 @@ function creativeScheduleDays(available, days, limits) {
   districts.forEach((district, index) => {
     const bucket = available.filter((place) => place.district === district);
     bucket.sort((left, right) => {
-      const leftClose = creativeWindow(left.hours, limits.dayStart, limits.dayEnd).close;
-      const rightClose = creativeWindow(right.hours, limits.dayStart, limits.dayEnd).close;
-      return leftClose !== rightClose ? leftClose - rightClose : right.visitMinutes - left.visitMinutes;
+      return left.close - right.close || right.visitMinutes - left.visitMinutes;
     });
     bucket.forEach((place, slot) => {
       plans[(index + slot) % plans.length].push(place);
@@ -525,23 +466,21 @@ function creativeScheduleDays(available, days, limits) {
     const items = [];
     let cursor = limits.dayStart;
     let previousDistrict = null;
-    let lunchTaken = false;
     for (const place of dayPlaces) {
+      let travel = 0;
       if (previousDistrict !== null) {
         if (items.length > 0 && items[items.length - 1].place.category === place.category) {
           skips.push(`${place.name} (would repeat the ${place.category} category consecutively)`);
           continue;
         }
-        cursor += previousDistrict === place.district ? limits.travelIntra : limits.travelCross;
+        travel = previousDistrict === place.district ? limits.travelIntra : limits.travelCross;
       }
-      const window = creativeWindow(place.hours, limits.dayStart, limits.dayEnd);
-      let start = Math.max(cursor, window.open);
-      if (!lunchTaken && start + 30 > limits.lunchStart) {
-        start = Math.max(start, limits.lunchEnd);
-        lunchTaken = true;
+      let start = Math.max(cursor + travel, place.open);
+      if (start < limits.lunchEnd && start + place.visitMinutes > limits.lunchStart) {
+        start = limits.lunchEnd;
       }
       const end = start + place.visitMinutes;
-      if (end > Math.min(window.close, limits.dayEnd)) {
+      if (end > Math.min(place.close, limits.dayEnd)) {
         skips.push(`${place.name} (would run past its ${place.hours} closing)`);
         continue;
       }
@@ -579,8 +518,7 @@ function creativeCheckSchedule(schedule, limits) {
       }
     }
     for (const item of items) {
-      const window = creativeWindow(item.place.hours, limits.dayStart, limits.dayEnd);
-      if (item.start < window.open || item.end > window.close) {
+      if (item.start < item.place.open || item.end > item.place.close) {
         failures.push(`${item.place.name} falls outside ${item.place.hours}`);
       }
     }
@@ -596,34 +534,32 @@ function creativeCheckSchedule(schedule, limits) {
  * @returns {object|null}
  */
 function tryPlanningRequest(prompt, normalized) {
-  const normal = String(normalized || "");
+  const request = creativeRequestText(prompt);
+  const normal = normalizePrompt(request);
   if (!lexiconMentionsRole(CREATIVE_ROLE_PLANNING, normal)) return null;
-  const language = detectLanguage(String(prompt || ""));
+  const language = detectLanguage(request);
   const trace = [];
   const answer = (body, confidence) => creativeAnswer("planning", "planning_request", body, confidence, trace, language);
-  const destinations = creativeDestinations();
-  const found = destinations.find((entry) =>
-    entry.surfaces.some((surface) => normal.includes(surface.toLowerCase())));
-  if (found === undefined) {
-    const fallback = creativeTopicWords(normal, language);
-    trace.push("planning:refusal:destination not cached");
-    return answer(creativeTemplate("planning_refusal", [
-      ["destination", fallback.length > 0 ? fallback[0] : ""],
-      ["cached_destinations", destinations.map((entry) => entry.destination).join(", ")],
-    ]), 0.4);
+  const supplied = suppliedCreativePlaces(prompt);
+  if (supplied === null) {
+    trace.push("planning:refusal:no cited places supplied");
+    return answer(creativeTemplate("planning_refusal", []), 0.4);
   }
-  const destination = found.destination;
+  const { destination, places: available } = supplied;
   trace.push(`planning:destination:${destination}`);
   const requested = creativeRequestedCount(normal, language);
   const days = Math.min(7, Math.max(1, requested === null ? 3 : requested));
   trace.push(`planning:days:${days}`);
   const limits = creativePlanConstraints();
-  const available = creativePlaces(destination);
   for (const place of available) {
     trace.push(`planning:place:${place.name} (${place.visitMinutes} min, ${place.hours})`);
   }
   const planned = creativeScheduleDays(available, days, limits);
   for (const skip of planned.skips) trace.push(`planning:skipped:${skip}`);
+  if (planned.schedule.every((day) => day.length === 0)) {
+    trace.push("planning:refusal:no visit fits the schedule");
+    return answer(creativeTemplate("planning_no_fit", []), 0.4);
+  }
   const failures = creativeCheckSchedule(planned.schedule, limits);
   if (failures.length > 0) {
     trace.push(`planning:infeasible:${failures.join("; ")}`);
@@ -644,6 +580,7 @@ function tryPlanningRequest(prompt, normalized) {
     ["destination", destination],
     ["schedule", rendered],
     ["feasibility", feasibility],
-    ["cache_note", limits.note],
+    ["input_note", limits.note],
+    ["skips", planned.skips.join("; ")],
   ]), 0.6);
 }

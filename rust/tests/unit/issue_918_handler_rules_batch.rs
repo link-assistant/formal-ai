@@ -397,30 +397,42 @@ fn a_terse_language_switch_replays_the_prior_answer_under_the_seeded_limit() {
     );
 }
 
-const BRAINSTORM_FIVE: &str = "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.";
-const BRAINSTORM_TEN: &str = "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.\n6. A changelog-fragment consistency checker.\n7. A prompt-matrix generator for four-language smoke tests.\n8. A Wikidata anchor verifier for local seed records.\n9. A trace viewer that groups events by solver phase.\n10. A small offline issue-to-test planning tool.";
-
-/// The seeded brainstorm list: how many items a reply lists by default and
-/// which cardinal a prompt names to ask for more are the seed's
-/// `default_count` and `count_cardinal`, not constants in either runtime.
-/// The list itself is seeded example data; topic-bearing requests are
-/// composed by `brainstorm_composition` before this row is reached.
 #[test]
-fn the_seeded_brainstorm_list_reads_its_count_policy_from_the_seed() {
-    for (prompt, expected) in [
+fn brainstormed_project_ideas_use_the_requested_topic_and_count() {
+    for (prompt, topic, count) in [
         (
             "Give me five ideas for an open-source side project.",
-            BRAINSTORM_FIVE,
+            "side project",
+            5,
         ),
         (
             "Suggest ten open-source utilities for developers.",
-            BRAINSTORM_TEN,
+            "utilities for developers",
+            10,
         ),
     ] {
         let response = FormalAiEngine.answer(prompt);
         assert_eq!(response.intent, "brainstorm_project_ideas", "{prompt}");
-        assert_eq!(response.answer, expected, "{prompt}");
+        assert_eq!(
+            response.answer.lines().count(),
+            count,
+            "{}",
+            response.answer
+        );
+        assert!(
+            response.answer.lines().all(|idea| idea.contains(topic)),
+            "{}",
+            response.answer
+        );
+        assert!(!response.answer.contains("Links Notation notebook"));
     }
+    let cold = FormalAiEngine.answer("Give me five ideas.");
+    assert!(
+        cold.answer.contains("topic") || cold.answer.contains("subject"),
+        "{}",
+        cold.answer
+    );
+    assert!(!cold.answer.contains("1. "));
 }
 
 /// The roleplay frame, personas, topics and fallback body are
@@ -484,12 +496,8 @@ const SUMMARY_RUST: &str = "Rust is a multi-paradigm, general-purpose programmin
 const SUMMARY_FORMAL_AI: &str =
     "formal-ai is a deterministic symbolic AI that answers without any neural-network inference.";
 
-/// A topic summary is the seeded topic's canonical concept summary or its
-/// heaviest project statement (`data/seed/summary-topics.lino`); the browser
-/// answered these requests with the unknown opener until it got the same
-/// reader, run after web search as the native row is.
 #[test]
-fn a_topic_summary_is_the_seeded_record_in_both_runtimes() {
+fn topic_summaries_resolve_subjects_through_the_shared_registries() {
     for (prompt, expected) in [
         ("Can you summarize Rust?", SUMMARY_RUST),
         (
@@ -501,6 +509,18 @@ fn a_topic_summary_is_the_seeded_record_in_both_runtimes() {
         assert_eq!(response.intent, "summarize_topic", "{prompt}");
         assert_eq!(response.answer, expected, "{prompt}");
     }
+    let held_out = FormalAiEngine.answer("Give me a one-paragraph summary of WebAssembly.");
+    assert_eq!(held_out.intent, "summarize_topic");
+    assert!(
+        held_out
+            .answer
+            .starts_with("WebAssembly (Wasm) is a binary instruction format")
+    );
+    let article = FormalAiEngine.answer("Summarise the Wikipedia entry for Wiktionary.");
+    assert_eq!(article.intent, "summarize_topic");
+    assert!(article.answer.starts_with("Wiktionary is a multilingual"));
+    let unrelated = FormalAiEngine.answer("Can you summarize rustic barns?");
+    assert!(!unrelated.answer.contains("Rust is a multi-paradigm"));
 }
 
 const SORT_RUST: &str = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";

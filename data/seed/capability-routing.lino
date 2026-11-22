@@ -518,15 +518,15 @@ capability_routing
   claim
     handler advice_request
     browser_handler tryAdviceRequest
-    admits_on advice_topic
+    admits_on advice_observations
     refusal_event "advice:refusal"
-    because "issue 1175 R3: advice is given only on a topic the cited recommendation table covers; any other topic is admitted to the refusal lane"
+    because "issue 1175 R3: cited recommendations come from the request; missing evidence is admitted to the refusal lane"
   claim
     handler planning_request
     browser_handler tryPlanningRequest
-    admits_on cached_destination
+    admits_on destination_observations
     refusal_event "planning:refusal"
-    because "issue 1175 R3: an itinerary is planned only for a destination whose places are cached; any other is admitted to the refusal lane"
+    because "issue 1175 R3: a feasible itinerary needs cited place observations; missing evidence is admitted to the refusal lane"
   claim
     handler regex_synthesis
     browser_handler tryRegexSynthesis
@@ -784,9 +784,9 @@ capability_routing
   claim
     handler brainstorming
     browser_handler tryBrainstormingRequest
-    admits_on brainstorm_category
+    admits_on brainstorm_topic
     refusal_event "brainstorming:refusal"
-    because "issue 1175 R3: a brainstorm list claims with the category its keywords name; the default category is admitted to the refusal lane"
+    because "issue 1175 R3: a brainstorm transforms the topic the caller named and asks for one when it is missing"
   claim
     handler roleplay
     browser_handler tryRoleplayRequest

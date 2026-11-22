@@ -35,10 +35,10 @@ pub use conversation_memory::{
     execute_memory_query_with_options, names_recall_query, try_conversation_memory,
 };
 pub use creative_composition::{
-    handle_advice_request, handle_brainstorm_request, names_advice_topic, topic_words,
+    handle_advice_request, handle_brainstorm_request, has_advice_evidence, topic_words,
 };
 pub use creative_writing::{
-    handle_creative_writing_request, handle_planning_request, names_cached_destination,
+    handle_creative_writing_request, handle_planning_request, has_planning_evidence,
 };
 pub use document_originality::{names_document_operand, try_document_originality_check};
 pub use document_request::{names_document_format, try_document_request};

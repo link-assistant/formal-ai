@@ -137,7 +137,7 @@ pub use roles::{
     ROLE_WHO_QUESTION_LEAD, ROLE_WHO_QUESTION_TAIL, ROLE_WIKIDATA_ENTITY_ANCHOR,
     ROLE_YEAR_UNIT_CUE,
 };
-pub use summary_topics::{SummaryTopic, SummaryTopicSeeds, summary_topic_seeds};
+pub use summary_topics::{SummaryTopicSeeds, summary_topic_seeds};
 
 /// Merge every embedded seed file into a single Links Notation document.
 ///

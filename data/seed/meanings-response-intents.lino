@@ -181,7 +181,7 @@ meanings
   creative_writing_gap
     defined-by answer
     role localized_response_template
-    precondition "a rhymed poem was requested but the rhyme lexicon could not fill the scheme"
+    precondition "a rhyme scheme has no supplied pronunciation classes"
     effect "free verse meeting the other constraints is returned with the rhyme gap stated"
     unit "not applicable"
     example "a free-verse poem with a note that the requested rhyme scheme could not be filled"
@@ -197,7 +197,7 @@ meanings
   planning_itinerary
     defined-by answer
     role localized_response_template
-    precondition "a trip-planning request names a cached destination and the schedule passed its feasibility check"
+    precondition "a trip-planning request supplies cited places and the schedule passed its feasibility check"
     effect "a day-by-day itinerary is returned with each item citing the fact it depends on"
     unit "not applicable"
     example "2-day itinerary for Rome: ..."
@@ -205,10 +205,18 @@ meanings
   planning_refusal
     defined-by answer
     role localized_response_template
-    precondition "a trip-planning request names a destination with no places in the seeded cache"
-    effect "no uncited plan is returned and the cached destinations are listed"
+    precondition "a trip-planning request lacks usable place observations"
+    effect "request the fields required to schedule cited places"
     unit "not applicable"
-    example "This reads as a planning request, but the destination has no places in the seeded cache."
+    example "Supply cited opening hours and visit lengths to plan the itinerary."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_no_fit
+    defined-by answer
+    role localized_response_template
+    precondition "no supplied place fits the scheduling windows"
+    effect "ask for a usable visit window or duration"
+    unit "not applicable"
+    example "No visit fits the opening and travel windows."
     grounding "data/seed/multilingual-responses-creative-tasks.lino"
   planning_infeasible
     defined-by answer
@@ -221,7 +229,7 @@ meanings
   advice_guidance
     defined-by answer
     role localized_response_template
-    precondition "an advice request names a topic with formalized recommendations in the seeded table"
+    precondition "an advice request supplies usable cited recommendations"
     effect "evidence-graded recommendations are listed with their citations and stated weighting"
     unit "not applicable"
     example "Evidence-graded guidance for sleep: ..."
@@ -229,10 +237,10 @@ meanings
   advice_refusal
     defined-by answer
     role localized_response_template
-    precondition "an advice request names a topic with no formalized recommendations"
-    effect "no uncited advice is returned and the covered topics are named"
+    precondition "an advice request lacks usable cited recommendations"
+    effect "request the fields needed to rank cited recommendations"
     unit "not applicable"
-    example "This reads as an advice request, but the topic has no formalized recommendations in the seeded table."
+    example "Supply recommendations with a citation and grade for each item."
     grounding "data/seed/multilingual-responses-creative-tasks.lino"
   formalization_result
     defined-by answer

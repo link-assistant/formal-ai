@@ -237,18 +237,22 @@ test("a terse language switch replays the prior answer under the seeded limit", 
   assert.ok(response.evidence.includes("response_language_followup:target:zh"));
 });
 
-const BRAINSTORM_FIVE = "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.";
-const BRAINSTORM_TEN = `${BRAINSTORM_FIVE}\n6. A changelog-fragment consistency checker.\n7. A prompt-matrix generator for four-language smoke tests.\n8. A Wikidata anchor verifier for local seed records.\n9. A trace viewer that groups events by solver phase.\n10. A small offline issue-to-test planning tool.`;
-
-test("the seeded brainstorm list reads its count policy from the seed", async () => {
-  for (const [prompt, expected] of [
-    ["Give me five ideas for an open-source side project.", BRAINSTORM_FIVE],
-    ["Suggest ten open-source utilities for developers.", BRAINSTORM_TEN],
+test("brainstormed project ideas use the requested topic and count", async () => {
+  for (const [prompt, topic, count] of [
+    ["Give me five ideas for an open-source side project.", "side project", 5],
+    ["Suggest ten open-source utilities for developers.", "utilities for developers", 10],
   ]) {
     const response = await solve(prompt);
     assert.equal(response.intent, "brainstorm_project_ideas", prompt);
-    assert.equal(response.content, expected, prompt);
+    const ideas = response.content.split("\n");
+    assert.equal(ideas.length, count, response.content);
+    assert.ok(ideas.every((idea) => idea.includes(topic)), response.content);
+    assert.equal(new Set(ideas.map((idea) => idea.replace(/^\d+\. /, ""))).size, count);
+    assert.doesNotMatch(response.content, /Links Notation notebook/);
   }
+  const cold = await solve("Give me five ideas.");
+  assert.match(cold.content, /topic|subject/i);
+  assert.doesNotMatch(cold.content, /^1\./m);
 });
 
 test("a roleplay frame renders the seeded persona and topic", async () => {
@@ -381,7 +385,7 @@ test("the concept-query reader takes its vocabulary from the seed cue records", 
   assert.equal(evaluate(worker, 'normalizeConceptTerm("The Rust language")'), "rust language");
 });
 
-test("a topic summary is the seeded record, run after web search as the native row is", async () => {
+test("topic summaries resolve the named subject through the shared registries", async () => {
   for (const [prompt, expected] of [
     ["Can you summarize Rust?", "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector."],
     ["Please summarize formal-ai in one paragraph.", "formal-ai is a deterministic symbolic AI that answers without any neural-network inference."],
@@ -392,6 +396,14 @@ test("a topic summary is the seeded record, run after web search as the native r
   }
   const constrained = await solve("Please summarize formal-ai in one paragraph.");
   assert.ok(constrained.evidence.includes("summarization:constraint:one_paragraph"));
+  const heldOut = await solve("Give me a one-paragraph summary of WebAssembly.");
+  assert.equal(heldOut.intent, "summarize_topic");
+  assert.match(heldOut.content, /^WebAssembly \(Wasm\) is a binary instruction format/);
+  const article = await solve("Summarise the Wikipedia entry for Wiktionary.");
+  assert.equal(article.intent, "summarize_topic");
+  assert.match(article.content, /^Wiktionary is a multilingual/);
+  const unrelated = await solve("Can you summarize rustic barns?");
+  assert.ok(!unrelated.content.includes("Rust is a multi-paradigm"));
   const conversation = await solve("Summarize our conversation");
   assert.notEqual(conversation.intent, "summarize_topic");
 });

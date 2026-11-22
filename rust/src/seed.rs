@@ -160,7 +160,7 @@ pub use sources::{
     external_trusted_sources, percent_encode, source_record, source_registry,
     sources_for_need_kind,
 };
-pub use summary_topics::{SummaryTopic, SummaryTopicSeeds, summary_topic_seeds};
+pub use summary_topics::{SummaryTopicSeeds, summary_topic_seeds};
 pub use terminal_commands::{TerminalCommandVocabulary, terminal_command_vocabulary};
 pub use tool_resource_scopes::{
     ToolResourceScopeVocabulary, parse_tool_resource_scopes, tool_resource_scope_vocabulary,

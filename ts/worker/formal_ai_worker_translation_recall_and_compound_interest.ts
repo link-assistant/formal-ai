@@ -424,31 +424,43 @@ function requestedBrainstormCount(seeds, normalized) {
   return Number(seeds.defaultCount) || 0;
 }
 
-function numbered(items, count) {
-  return items
-    .slice(0, count)
-    .map((item, index) => `${index + 1}. ${item}`)
-    .join("\n");
+function brainstormRequestTopic(seeds, normalized) {
+  let matched = "";
+  for (const trigger of seeds.triggers || []) {
+    if (trigger.length >= matched.length && normalized.includes(trigger)) matched = trigger;
+  }
+  if (!matched) return "";
+  const suffix = normalized.slice(normalized.indexOf(matched) + matched.length).trim().replace(/^\d+(?:\s+|$)/u, "");
+  const prefix = (seeds.topicPrefixes || []).find((prefix) => suffix.startsWith(prefix));
+  return (prefix ? suffix.slice(prefix.length) : suffix).trim();
 }
 
 function tryBrainstormingRequest(prompt, normalized) {
   const seeds = BRAINSTORM_SEEDS || {};
   if (!containsAny(normalized, seeds.triggers)) return null;
   const categories = Array.isArray(seeds.categories) ? seeds.categories : [];
-  const keyworded = categories.find((entry) => containsAny(normalized, entry.detectionKeywords));
-  const category = keyworded ||
-    categories.find((entry) => !entry.detectionKeywords || entry.detectionKeywords.length === 0);
-  if (!category || !Array.isArray(category.items) || category.items.length === 0) {
-    return null;
+  const category = categories.find((entry) => containsAny(normalized, entry.detectionKeywords))
+    || categories.find((entry) => !entry.detectionKeywords || entry.detectionKeywords.length === 0);
+  if (!category) return null;
+  const language = detectLanguage(prompt);
+  const topic = brainstormRequestTopic(seeds, normalized);
+  const evidence = [`brainstorm:category:${category.slug}`];
+  if (creativeTopicWords(topic, language).length === 0) {
+    evidence.push("brainstorming:refusal:no topic words");
+    return { intent: category.intent, content: textTransformLocalizedResponse("brainstorming_refusal", language) || creativeTemplate("brainstorming_refusal", []),
+      confidence: 0.4, evidence };
   }
-  const count = requestedBrainstormCount(seeds, normalized);
-  return {
-    intent: category.intent || "brainstorm_project_ideas",
-    content: numbered(category.items, count),
-    confidence: 0.8,
-    evidence: [`brainstorm:category:${category.slug || "project_ideas"}`]
-      .concat(keyworded ? [] : ["brainstorming:refusal:no category keyword"]), // #1175 R3 refusal lane
-  };
+  if (category.operations.length === 0) {
+    const composed = composeBrainstormNames(prompt, normalized, topic);
+    return { ...composed, intent: category.intent };
+  }
+  const count = creativeRequestedCount(normalized, language) ?? requestedBrainstormCount(seeds, normalized);
+  const content = category.operations
+    .slice(0, count)
+    .map((operation, index) => `${index + 1}. ${operation.replaceAll("{topic}", () => topic)}`)
+    .join("\n");
+  evidence.push(`brainstorming:topic:${topic}`);
+  return { intent: category.intent, content, confidence: 0.8, evidence };
 }
 
 function localizedFactFor(record, language) {

@@ -47,8 +47,8 @@ pub fn class_evidence_holds(
         "composition_topic" => {
             !handlers::topic_words(normalized, crate::language::detect(prompt).slug()).is_empty()
         }
-        "advice_topic" => handlers::names_advice_topic(normalized),
-        "cached_destination" => handlers::names_cached_destination(normalized),
+        "advice_observations" => handlers::has_advice_evidence(prompt),
+        "destination_observations" => handlers::has_planning_evidence(prompt),
         "pattern_constraints" => handlers::names_pattern_constraints(prompt),
         "table_reference" => handlers::names_query_table(prompt),
         "filesystem_object" => handlers::names_filesystem_object(prompt, normalized),
@@ -102,17 +102,11 @@ pub fn class_evidence_holds(
         "summary_topic" => crate::seed::summary_topic_seeds()
             .pick_topic(normalized)
             .is_some(),
-        "brainstorm_category" => {
-            crate::seed::brainstorm_seeds()
-                .categories
-                .iter()
-                .any(|category| {
-                    category
-                        .detection_keywords
-                        .iter()
-                        .any(|keyword| !keyword.is_empty() && normalized.contains(keyword.as_str()))
-                })
-        }
+        "brainstorm_topic" => crate::seed::brainstorm_seeds()
+            .topic(normalized)
+            .is_some_and(|topic| {
+                !handlers::topic_words(topic, crate::language::detect(prompt).slug()).is_empty()
+            }),
         "persona_or_topic" => {
             let seeds = crate::seed::persona_seeds();
             seeds.pick_persona(normalized).is_some() || seeds.pick_topic(normalized).is_some()

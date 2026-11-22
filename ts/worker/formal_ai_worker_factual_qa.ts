@@ -829,9 +829,8 @@ async function tryExplanationResearch(prompt, preferences) {
 // Topic summaries (the `summarization` precedence row; browser twin for issue
 // #918). Mirrors try_summarization_request in
 // rust/src/solver_handlers/benchmark_prompts.rs over
-// data/seed/summary-topics.lino: a triggered request names a seeded topic,
-// and the answer is that topic's canonical concept summary or heaviest project
-// statement, never a sentence of its own.
+// the request selects a subject through ordinary concept or project lookup.
+// The summary seed supplies only routing cues and subject boundaries.
 // ---------------------------------------------------------------------------
 
 let cachedSummaryTopicSeeds = null;
@@ -861,55 +860,58 @@ function summaryTopicSeeds() {
     constraintMarkers: values("constraint_marker"),
     constraintLabel: String(childValue(root || { children: [] }, "constraint_label") || ""),
     fallbackResponse: String(childValue(root || { children: [] }, "fallback_response") || ""),
-    topics: records.filter((node) => node.name === "topic" && node.value).map((node) => ({
-      displayName: node.value,
-      detectionKeywords: summaryTopicList(childValue(node, "detection_keywords")),
-      sourceKind: String(childValue(node, "source_kind") || ""),
-      sourceId: String(childValue(node, "source_id") || ""),
-    })).filter((topic) => topic.sourceKind && topic.sourceId),
+    topicLeads: values("topic_lead"),
+    topicTails: values("topic_tail"),
   };
   if (text) cachedSummaryTopicSeeds = seeds;
   return seeds;
 }
 
-/** A localized block for `language`, else the English one (Rust `localized_for`). */
-function summaryTopicLocalized(record, language) {
-  const localized = Array.isArray(record.localized) ? record.localized : [];
-  return localized.find((entry) => entry && entry.language === language) ||
-    localized.find((entry) => entry && entry.language === "en") || null;
-}
-
-/**
- * The topic's canonical statement and its source (Rust `derived_topic_summary`).
- * @returns {{body: string, source: string}|null}
- */
-function summaryTopicDerive(topic, language) {
-  if (topic.sourceKind === "concept") {
-    const record = (CONCEPTS || []).find((candidate) => candidate.slug === topic.sourceId);
-    if (!record) return null;
-    const localized = summaryTopicLocalized(record, language);
-    return {
-      body: (localized && localized.summary) || record.summary || "",
-      source: (localized && localized.source) || record.source || "",
-    };
-  }
-  if (topic.sourceKind === "project") {
-    const record = (PROJECTS || []).find((candidate) => candidate.slug === topic.sourceId);
-    if (!record) return null;
-    const localized = summaryTopicLocalized(record, language);
-    const statements = localized && Array.isArray(localized.statements) && localized.statements.length > 0
-      ? localized.statements : (record.statements || []);
-    let best = null;
-    for (const statement of statements) {
-      if (!best || statement.weight >= best.weight) best = statement; // the last of equal maxima, as Iterator::max_by_key
+function summarySubject(seeds, lower) {
+  const trim = (text) => text.replace(/^[\s?!.:？！。।]+|[\s?!.:？！。।]+$/gu, "");
+  let position = -1;
+  let end = -1;
+  for (const cue of seeds.triggers) {
+    const start = lower.indexOf(cue);
+    if (start >= 0 && start + cue.length >= end) {
+      position = start;
+      end = start + cue.length;
     }
-    return best ? { body: best.text, source: record.url || "" } : null;
   }
-  return null;
+  if (position < 0) return "";
+  const subject = trim(lower.slice(end)) || trim(lower.slice(0, position));
+  let start = 0;
+  for (const lead of seeds.topicLeads) {
+    const found = subject.lastIndexOf(lead);
+    if (found >= 0) start = Math.max(start, found + lead.length);
+  }
+  const name = trim(subject.slice(start));
+  let cut = name.length;
+  for (const tail of seeds.topicTails) {
+    if (name.endsWith(tail)) cut = Math.min(cut, name.length - tail.length);
+  }
+  return trim(name.slice(0, cut));
+}
+
+function summaryTopicDerive(subject, language) {
+  const project = projectByAlias(subject);
+  if (project) {
+    let best = null;
+    for (const statement of projectStatementsFor(project, language)) {
+      if (!best || statement.weight >= best.weight) best = statement;
+    }
+    if (best) return { label: projectDisplayName(project, language), body: best.text, source: project.url };
+  }
+  const record = lookupConcept(subject);
+  if (!record) return null;
+  const localized = (record.localized || []).find((entry) => entry.language === language)
+    || (record.localized || []).find((entry) => entry.language === "en");
+  const variant = localized?.summary ? localized : record;
+  return { label: variant.term || record.term, body: variant.summary, source: variant.source || record.source };
 }
 
 /**
- * The `summarization` row: a summary request over a seeded topic.
+ * Resolve and summarize the subject named in the request.
  * @param {string} prompt
  * @returns {object|null}
  */
@@ -920,15 +922,13 @@ function trySummarizationTopic(prompt) {
   if (seeds.rejectExact.some((exact) => lower === exact)) return null;
   if (seeds.rejectSubstrings.some((substring) => lower.includes(substring))) return null;
   const language = detectLanguage(prompt);
-  const topic = seeds.topics.find((candidate) =>
-    candidate.detectionKeywords.some((keyword) => lower.includes(keyword)));
-  const derived = topic ? summaryTopicDerive(topic, language) : null;
+  const derived = summaryTopicDerive(summarySubject(seeds, lower), language);
   const evidence = [];
-  let label = topic ? topic.displayName : "";
+  let label = derived ? derived.label : "";
   let body = derived ? derived.body : "";
   let source = derived ? derived.source : "";
   if (!derived) {
-    evidence.push("summarization:refusal:no_seeded_topic");
+    evidence.push("summarization:refusal:unresolved subject");
     label = String(prompt || "").replace(/^[\s!-/:-@[-`{-~]+|[\s!-/:-@[-`{-~]+$/gu, "");
     body = answerFor(seeds.fallbackResponse || "unknown", language);
     source = "none";

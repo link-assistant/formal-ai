@@ -155,7 +155,7 @@ handler-migration-ledger
     status migrated
     data "data/seed/summary-topics.lino|data/seed/concepts.lino|data/seed/projects.lino"
     primitive "rust/src/solver_handlers/benchmark_prompts.rs"
-    justification "issue #918 (R914-6): the triggers, rejections, constraint markers, topics and their typed record references are data/seed/summary-topics.lino, and the answer is the referenced concept's localized summary or the project's heaviest statement, never a sentence of the handler's own; the fallback is the seeded unknown response. The native part matches the seed table and dereferences the record. The browser had no twin (the row answered with the unknown opener); trySummarizationTopic in js/worker/formal_ai_worker_factual_qa.js now reads the same records and runs inline after web search, where the native table places the row. Pinned in both runtimes, beside rust/tests/unit/specification/prompt_variations.rs."
+    justification "The seed supplies summary framing, subject boundaries and the fallback intent. Both runtimes extract the requested subject and resolve it in the same project or concept registry used by other capabilities. An unresolved subject is traced without substituting a known answer. The summary row still runs after web search."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler verifiable_task
     status migrated
@@ -177,7 +177,7 @@ handler-migration-ledger
     status migrated
     data "data/seed/brainstorm-seeds.lino|data/seed/meanings.lino"
     primitive "rust/src/solver_handlers/benchmark_prompts.rs"
-    justification "issue #918 (R914-6): the triggers, categories, detection keywords and items were already data/seed/brainstorm-seeds.lino; the last policy in code, how many items a reply lists by default and which cardinal a prompt names to ask for more (a literal 5 and the slug ten in both runtimes), is now the seed default_count and count_cardinal, and the worker no longer carries a bootstrap copy of the seed. The native part reads the seed table and numbers the items. The items are seeded example data, not a composition: topic-bearing requests are composed by brainstorm_composition before this row (issue 1178), so this row is the canned fallback list. Pinned in both runtimes, and natively by rust/tests/unit/specification/prompt_variations.rs."
+    justification "Issue #918 moved the count policy to the brainstorm seed. Issue #1613 replaced the canned items with operations over the prompt topic. The handler uses the same name composition as brainstorm_composition or renders project ideas bound to the supplied topic, and records a missing-topic response when the caller supplies no topic."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler conversation_topic
     status migrated

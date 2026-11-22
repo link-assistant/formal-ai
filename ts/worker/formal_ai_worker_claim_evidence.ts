@@ -164,10 +164,8 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
     || shellTransformLoopCommand(String(prompt || "")) !== null,
   // (c) The specification a composer builds from.
   composition_topic: (prompt, normalized) => creativeTopicWords(normalized, detectLanguage(String(prompt || ""))).length > 0,
-  advice_topic: (prompt, normalized) => creativeRecords("advice_topic").some((record) => childValue(record, "topic").length > 0
-    && creativeChildValues(record, "surface").some((surface) => normalized.includes(surface))),
-  cached_destination: (prompt, normalized) => creativeDestinations().some((entry) =>
-    entry.surfaces.some((surface) => normalized.includes(surface.toLowerCase()))),
+  advice_observations: (prompt) => suppliedCreativeAdvice(prompt) !== null,
+  destination_observations: (prompt) => suppliedCreativePlaces(prompt) !== null,
   pattern_constraints: (prompt) => {
     const scan = regexSynthesisScanMentions(String(prompt || "").toLowerCase());
     return regexSynthesisCompose(scan.classes, scan.separators) !== null;
@@ -208,8 +206,9 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   recall_query_term: (prompt, normalized) => claimEvidenceRecallQueryTerm(normalized),
   supplied_payload: (prompt) => claimEvidencePayload(prompt) !== "",
   summary_topic: (prompt, normalized) => claimEvidenceSummaryTopic(normalized),
-  brainstorm_category: (prompt, normalized) => ((BRAINSTORM_SEEDS || {}).categories || [])
-    .some((category) => containsAny(normalized, category.detectionKeywords)),
+  brainstorm_topic: (prompt, normalized) => creativeTopicWords(
+    brainstormRequestTopic(BRAINSTORM_SEEDS || {}, normalized), detectLanguage(prompt),
+  ).length > 0,
   persona_or_topic: (prompt, normalized) => ((PERSONA_SEEDS || {}).personas || []).some((persona) => containsAny(normalized, persona.aliases))
     || ((PERSONA_SEEDS || {}).topics || []).some((topic) => containsAny(normalized, topic.detectionKeywords)),
   document_operand: (prompt) => claimEvidenceDocumentOperand(prompt),
