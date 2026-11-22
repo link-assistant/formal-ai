@@ -889,10 +889,11 @@ both registries below the line limit. The targeted rerun passed both checks.
   and after the fix and adjacent offline, practical-guidance, and procedural
   checks. The native cases in the server run were skipped because that run
   lacked a source-built native binary.
-- [Local Formal AI development attempt](evidence/formal-development/) holds a
-  request, endpoint identity, Agent CLI transcript, and server events. The
-  observed model tool actions repeated a search for the draft placeholder and
-  did not produce an independent analysis or implementation.
+- [Local Formal AI development sessions](evidence/formal-development/) hold
+  requests, endpoint identities, Agent CLI transcripts, and server events.
+  The first attempts found tool gaps. Later sessions independently produced
+  a benchmark contract fixture and a browser packaging rule.
+  [Development traces](production-fixtures.md#hosted-and-development-traces)
 - [SHA256SUMS](evidence/SHA256SUMS) covers the archived files. Run
   `sha256sum -c SHA256SUMS` from the evidence directory.
 
@@ -982,6 +983,13 @@ with a previously built WASM test asset.
 [Cold browser result](evidence/verification/round24-packaged-browser-cold.log) ·
 [Package inventory](evidence/verification/round24-npm-inventory.log) ·
 [Network opt-out regression](../../../rust/tests/web/procedural-runtime-parity.test.mjs)
+
+The browser generator scans disk, so a file left under `js/source-cache/` from
+an earlier checkout could still change the npm tarball. The generator now
+excludes that directory from both the offline manifest and the package. The
+replay adds a stale capture to the input tree and checks that the archive stays
+byte-for-byte identical. [Baseline](evidence/formal-development/browser-cache-exclusion/baseline.log) ·
+[Generator regression](../../../rust/tests/web/selected-source-wasm.test.mjs)
 
 Run `bash scripts/verify-docker-slim-runtime.sh` with the target binary on
 `PATH` to check new state, native offline policy, held-out tasks, greetings,

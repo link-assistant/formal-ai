@@ -139,10 +139,23 @@ session read the supplied manifest, wrote the expected-answer fixture, and
 read it back with matching bytes. The committed regression independently
 compares the three fields with the shipped descriptor and runs the same
 Formal AI plan against the archived manifest to reproduce the fixture
-byte-for-byte. This records one verified authored leaf. The evidence does
-not establish the repository's 20% contribution floor across the full change.
+byte-for-byte.
 [Request](evidence/formal-development/promotion-oracle/request.txt) ·
 [Agent transcript](evidence/formal-development/promotion-oracle/agent.log.gz) ·
 [Tool and read-back trace](evidence/formal-development/promotion-oracle/server-memory.lino.gz) ·
 [Replayed fixture](../../../rust/tests/fixtures/benchmark-promotion/coding-modification-contract.lino) ·
 [Regression results](evidence/verification/round26-promotion-oracle-replay.log)
+
+The browser package regression found that an old `js/source-cache` directory
+would enter the npm archive. A manual preparatory change named the existing
+asset exclusion list without changing its entries. The Agent CLI then used the
+branch's JavaScript planner to read the generator, add the capture directory to
+the list from a natural-language request, and verify the written file by hash.
+The commit uses those exact bytes. An independent replay verifies the same hash,
+and the packaging regression checks both the archive and offline manifest.
+These sessions verify two authored leaves. The 20% contribution floor for the
+full change remains unverified.
+[Request](evidence/formal-development/browser-cache-exclusion/request.txt) ·
+[Agent transcript](evidence/formal-development/browser-cache-exclusion/agent.log.gz) ·
+[Tool and digest trace](evidence/formal-development/browser-cache-exclusion/server-memory.lino.gz) ·
+[Regression results](evidence/verification/round27-browser-exclusion.log)

@@ -70,6 +70,15 @@ b7744af4fb46507cfbdf2bcc9bd3142bd6e362ae14523091123b35996e31ce4e  ./facts/subjec
 24ed74fb68ff49cb61d6352c914ba2a1eeb9ab075f7bc90760f99da4fb81a270  ./facts/value.json.gz
 82a99237a263439b8896355216a5180d75c3618f85d302b4a04b3733fef77a95  ./facts/value.url
 d3b777cfad3414835640cbac99804277ab714835e88f4191173ec5595a917444  ./formal-development/agent.log.gz
+8056838d30429d7dff5aab40c0cbae02afaa75c7016b6cc9cd586563d31bea17  ./formal-development/browser-cache-exclusion/agent-version.txt
+d1637ad3b878a35de6778491d0edbee005bd64f5c302b1c2c594546387806c0a  ./formal-development/browser-cache-exclusion/agent.log.gz
+5a3c0266ca33de661d230aefbd6f743b00ecbb6908bd64a971f5fe64a6ff77fa  ./formal-development/browser-cache-exclusion/baseline.log
+9a2d2c55368cafc109708664e324241a2952b9a9072ca40e25cb68ea129102a7  ./formal-development/browser-cache-exclusion/generator-input.py.gz
+c77c9b1b9e120df178c016592b64688e213a68d7852de0fb0559df01bdbef29f  ./formal-development/browser-cache-exclusion/health.json
+3a964be81a2f5bf1de299dc0c4bc07906bf1004a4709fcdee5d5574a0fb881c5  ./formal-development/browser-cache-exclusion/outcome.txt
+ce631e2fa2f2da346c456fa2118503fc692ca47b25d251882af9976811785a18  ./formal-development/browser-cache-exclusion/request.txt
+f36edfe57c5377bfa24f50c911879a7119bdbc2644b93c86d0152ab032d19911  ./formal-development/browser-cache-exclusion/server-memory.lino.gz
+a4cf49ef28cb83551fb68152c5a4520087945c9095f7df5b629d432e26639e6a  ./formal-development/browser-cache-exclusion/source.txt
 e18696360d12da2e94367055fa3163ccff85d1464cafcc09a03a504d9a910660  ./formal-development/health.json
 8056838d30429d7dff5aab40c0cbae02afaa75c7016b6cc9cd586563d31bea17  ./formal-development/promotion-oracle/agent-version.txt
 4f350481834c760a7675af6393873d7b640a967579ce2251b021005727d7ea9d  ./formal-development/promotion-oracle/agent.log.gz
@@ -333,6 +342,7 @@ d924362a7ca67aa7e4683465f890345a129c1369580dd834475c049b4d643e53  ./verification
 3cd299e1507b18b77c0a2b3476d79ed68213f9c8198158d253b7f6003850327a  ./verification/round26-local-gates-first-pass.log
 b011ead619829b27c1e76defbab27a4751e0b591c1b0ea61858b4b9dd791fc5b  ./verification/round26-promotion-oracle-replay.log
 aac970fdd99deb2831f60e97fc1108022bcada7e96e0cf03df6207411bd1fdab  ./verification/round26-summary-after.log
+27d40123cfee9440f52f36787bcc7cc2577cf6f418d65e1bcf5b42351ce9d1f5  ./verification/round27-browser-exclusion.log
 540c15e55372b6541b95062d91e1d1583240b9a3352c56f6e2c28ec0a76b6b83  ./verification/round4-documentation-method-post-format.log
 4d6ddfc0e83618b9deaeb0e779e2e927f3b0ee45c61495296bac99078738f13b  ./verification/round4-fast-governance.log
 cfcc1e5653b226d4d9b0089fc4b8b2126d63ee34fcd1a76f33af0b22b921605c  ./verification/round4-readable-code-recheck.log
