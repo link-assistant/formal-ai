@@ -605,7 +605,7 @@ pub struct ParsedListItem {
 }
 
 impl ParsedListItem {
-    const fn numeric_value(&self) -> Option<f64> {
+    pub(crate) const fn numeric_value(&self) -> Option<f64> {
         match self.value {
             ListValue::Number(value) => Some(value),
             ListValue::Text => None,

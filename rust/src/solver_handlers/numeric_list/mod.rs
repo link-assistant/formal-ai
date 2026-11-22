@@ -42,7 +42,7 @@ use crate::coding::list_program::{
     value_type_label,
 };
 pub use crate::coding::list_program::{
-    ListValue, Operation, ParsedListItem, Reduce, Transform, names_list_items, parse_numbers,
+    Operation, ParsedListItem, Transform, names_list_items, parse_numbers,
 };
 use crate::language::{Language, detect as detect_language};
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
