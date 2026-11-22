@@ -222,6 +222,29 @@ on that deployed source. [Public observations](raw-data/release-0.356.5-public-o
 [Pages artifact workflow](../../../.github/workflows/pages-artifact.yml),
 [deployment and live smoke workflow](../../../.github/workflows/release.yml).
 
+### v0.356.6 partial publication on November 22, 2026
+
+The next run passed the stock package verifier and installed the public
+crate. Its full GHCR candidate passed the privileged runtime smoke at 16:43:42
+UTC and was promoted to the version tag and `latest`. An anonymous HEAD
+request to the version tag returned the verified candidate's manifest digest
+`sha256:27bad63622a2686009a67b8157f9683b4dc64ae6d0a55a13e65a0555f2939ae3`.
+[Stock verification](https://github.com/link-assistant/formal-ai/actions/runs/45038778921/job/137265736854),
+[installed crate smoke](https://github.com/link-assistant/formal-ai/actions/runs/45038778921/job/137273012981),
+[image publication job](https://github.com/link-assistant/formal-ai/actions/runs/45038778921/job/137276086927).
+
+Main advanced from the selected v0.356.6 source `ffd50eb404a9` to
+`0367553b776a` at 16:45:02 UTC. The optional cache export reported its
+bounded timeout at 16:45:17 UTC. The subsequent source check rejected the
+changed main SHA and stopped the image stage before the slim sidecar and
+Docker Hub mirror. GitHub Release creation and the Pages artifact build were
+skipped. The strict API docs check in the same run had already reproduced
+all three markup errors from v0.356.5. The next trusted release must select
+fresh main source. [Main update](https://github.com/link-assistant/formal-ai/pull/1623),
+[image log](raw-data/release-publish-images-45038778921.log.gz),
+[API docs errors](raw-data/api-docs-45038778921.log),
+[skipped Pages build](https://github.com/link-assistant/formal-ai/actions/runs/45038778921/job/137279408287).
+
 ## Self-use attribution
 
 A read-only attempt asked the Agent CLI against the local JavaScript Formal AI
