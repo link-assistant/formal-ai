@@ -86,6 +86,11 @@ process.exit(process.argv[2] === 'pull' ? 0 : 14);
 });
 test('workflow integration retains both security gates and declares the dynamic macOS shell', () => {
   const workflow = YAML.parse(readFileSync('.github/workflows/workflows.yml', 'utf8'));
+  for (const event of ['push', 'pull_request']) {
+    for (const path of ['scripts/run-zizmor.mjs', 'experiments/issue-1580/zizmor-transport.test.mjs']) {
+      assert(workflow.on[event].paths.includes(path), `${event} must audit changes to ${path}`);
+    }
+  }
   const job = workflow.jobs.zizmor;
   const audits = job.steps.filter(step => step.run?.includes('scripts/run-zizmor.mjs'));
   assert.deepEqual(audits.map(step => step.run), ['node scripts/run-zizmor.mjs regular', 'node scripts/run-zizmor.mjs pedantic']);

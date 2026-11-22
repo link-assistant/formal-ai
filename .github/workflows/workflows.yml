@@ -46,12 +46,12 @@ on:
         type: string
   push:
     branches: [main]
-    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'experiments/issue-1580/buildkit-expected-outage.cjs', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'experiments/issue-1580/buildkit-expected-outage.cjs', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**', 'scripts/run-zizmor.mjs', 'experiments/issue-1580/zizmor-transport.test.mjs']
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
-    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'experiments/issue-1580/buildkit-expected-outage.cjs', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**']
+    paths: ['.github/**', 'scripts/extract-artifacts.py', 'experiments/issue-1580/artifact-transport-roundtrip.py', 'experiments/issue-1580/buildkit-bootstrap-probe.py', 'experiments/issue-1580/buildkit-expected-outage.cjs', 'scripts/check-workflow-concurrency.mjs', 'experiments/issue-1580/workflow-concurrency.test.mjs', 'scripts/documentation-policy-dependencies/**', 'scripts/run-zizmor.mjs', 'experiments/issue-1580/zizmor-transport.test.mjs']
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
 permissions:
