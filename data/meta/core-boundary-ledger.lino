@@ -1,4 +1,5 @@
 core_boundary_ledger
+  note "Issue #1580 conserves all three genre-writing functions and their comments in text_rewrite/genre_writing.rs. The parent falls from 941 to 643 lines and the child has 302; module imports/re-export add 4 source lines. The exact census is 95 files and 37190 lines; dispositions and outside-core ceilings are unchanged."
   note "Issue #1580 restores typed text-operation ownership before generic prompt-data field extraction. The reusable parser guard adds four measured lines to the promoted prompt_data.rs interpreter (559 to 563); source_lines_max increases by four to 37186. Handler dispositions and outside-core ceilings are unchanged."
   note "Issue #1580 conserves the complete statistics word-problem function in a child module: statistics.rs 976 to 865 lines and statistics/word_problems.rs 111 lines. The complete extraction retains the original aggregate line count. All prior dispositions and outside-core ceilings remain unchanged; the exact recursive source census is 93 files and 36532 lines."
   note "Issue #1580 shares numeral spans for calendar clock parsing and removes the duplicate digit-only scanner. The reviewed calendar_create.rs baseline falls from 671 to 668 lines; source_lines_max and outside_core_lines_max each fall by three. Handler dispositions remain unchanged."
@@ -12,8 +13,8 @@ core_boundary_ledger
   note "Issue #1580 retains seeded membership evidence alongside retrieved matches. Removing the obsolete conditional and its trailing blank line lowers verifiable_task.rs from 795 to 793 lines and source_lines_max by two; dispositions and migration ceilings are unchanged."
   note "Issue #1593 measures the new prompt-data interpreter and the existing rewrite interpreter with language-bound verb and punctuation rules. The rewrite interpreter quotes corrected questions to preserve caller text. Request vocabulary and rule evidence remain in seed data."
   boundary "docs/design/minimal-core-boundary.md"
-  source_file_count_max 94
-  source_lines_max 37186
+  source_file_count_max 95
+  source_lines_max 37190
   outside_core_file_count_max 50
   outside_core_lines_max 18639
   note "Re-measured 2026-09-30 after the seeded creative, formalization, planning, and product-search interpreters were split into ledgered modules: 73 handler sources and 30942 total lines, with 51 promoted-core files contributing 20267 migration lines."
@@ -481,9 +482,14 @@ core_boundary_ledger
     baseline_lines 835
     data_target "text transformation rules"
     reason "Transformation names, parsing policy, and rendering are domain knowledge. Re-measured 2026-10-07 for PR #1188: counting questions, line filters by prefix, character-class counts and chain ordering by vocabulary position with counts last (898 lines). Re-measured 2026-10-07 for PR #1188: names_format_conversion — a format-conversion cue in the prose around the quoted literals reads the payload as data (`Convert this JSON to YAML: {...}`), while a cue inside a quote stays content. Re-measured 2026-10-08 for the issue #918 text_manipulation batch: the replacement, input-context and input-continuation cues moved into the text_* tables of data/seed/handler-rules.lino, read by one table reader that also says which quoted operand is the target (948 lines; fourteen literal predicates gone)."
+  source rust/src/solver_handlers/text_rewrite/genre_writing.rs
+    disposition promote
+    baseline_lines 302
+    core_component text_rewrite_interpreter
+    reason "Issue #1580 moves the complete seed-driven genre-writing entry point and its two private helpers out of text_rewrite.rs. Original bodies and comments are conserved; the promoted interpreter disposition remains unchanged."
   source rust/src/solver_handlers/text_rewrite.rs
     disposition promote
-    baseline_lines 941
+    baseline_lines 643
     core_component text_rewrite_interpreter
     reason "Issue #1174: in-place rewrite engine (register, grammar agreement, commit-message and email composition) applying seed substitution tables, agreement rules, and genre style guides; the engine is core, the tables are data. Re-measured 2026-10-08 for R1188-U20 (850 lines): the free-text payload reader takes the CJK full-width colon as a command colon and counts each CJK character as a payload word (payload_word_count), and command_head is public so the handler-rule command_head subject reads the same head the transforms do."
   source rust/src/solver_handlers/unit_conversion.rs
