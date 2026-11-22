@@ -11,7 +11,7 @@ import { existsSync } from 'node:fs';
 const MAX_COMMAND_OUTPUT_BYTES = 16 * 1024 * 1024;
 
 function exec(command, args) {
-  const result = spawnSync(command, args, { encoding: 'utf8', maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
+  const result = spawnSync(command, args, { maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
   if (result.error) {
     const reason = result.error.code === 'ENOBUFS'
       ? `output exceeded ${MAX_COMMAND_OUTPUT_BYTES} bytes` : result.error.message;
@@ -20,10 +20,10 @@ function exec(command, args) {
   }
   if (result.status !== 0) {
     console.error(`Error executing ${command} ${debugList(args)}`);
-    console.error(result.stderr);
+    console.error(result.stderr.toString('utf8'));
     process.exit(1);
   }
-  return result.stdout.trim();
+  return result.stdout;
 }
 
 function rustRoot() {
@@ -33,13 +33,29 @@ function rustRoot() {
   return '.';
 }
 
-function changedFiles() {
-  const base = process.env.GITHUB_BASE_REF ?? 'main';
-  console.error(`Comparing against origin/${base}...HEAD`);
-  const output = exec('git', ['diff', '--no-renames', '--name-only', `origin/${base}...HEAD`]);
-  return output === '' ? [] : output.split('\n').filter(Boolean);
+export function parseGitPaths(bytes) {
+  const output = new TextDecoder('utf-8', {fatal:true, ignoreBOM:true}).decode(bytes);
+  if (output === '') return [];
+  if (!output.endsWith('\0')) throw new Error('Git path inventory is not NUL terminated');
+  const paths = output.slice(0, -1).split('\0');
+  if (paths.some(path => path === '')) throw new Error('Git path inventory contains an empty path');
+  return paths;
 }
 
+function changedFiles(addedOnly = false) {
+  const base = process.env.GITHUB_BASE_REF ?? 'main';
+  console.error(`Comparing against origin/${base}...HEAD`);
+  // Exact renames compare object IDs; similarity detection would fetch missing blobs.
+  const selection = addedOnly ? ['--find-renames=100%', '--diff-filter=A'] : ['--no-renames'];
+  const output = exec('git', ['diff', ...selection, '--name-only', '-z', `origin/${base}...HEAD`]);
+  try { return parseGitPaths(output); }
+  catch (error) {
+    console.error(`Invalid Git path inventory: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+const displayPath = (file) => file.replaceAll('\r', '\\r').replaceAll('\n', '\\n');
 const debugList = (items) => `[${items.map((item) => JSON.stringify(item)).join(', ')}]`;
 const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -51,8 +67,9 @@ export function isSourceFile(path, root) {
 
 export function isChangelogFragment(path, root) {
   const dir = root === '.' ? 'changelog.d/' : `${root}/changelog.d/`;
-  return (path.startsWith(dir) || path.startsWith('changelog.d/'))
-    && path.endsWith('.md') && !path.endsWith('README.md');
+  const slash = path.lastIndexOf('/'), parent = path.slice(0, slash + 1), name = path.slice(slash + 1);
+  return (parent === dir || parent === 'changelog.d/')
+    && name.endsWith('.md') && name !== 'README.md';
 }
 
 function main() {
@@ -65,15 +82,15 @@ function main() {
     process.exit(0);
   }
   console.log('Changed files:');
-  for (const file of files) console.log(`  ${file}`);
+  for (const file of files) console.log(`  ${displayPath(file)}`);
   console.log();
   const sources = files.filter((file) => isSourceFile(file, root));
   console.log(`Source files changed: ${sources.length}`);
-  for (const file of sources) console.log(`  ${file}`);
+  for (const file of sources) console.log(`  ${displayPath(file)}`);
   console.log();
-  const fragments = files.filter((file) => isChangelogFragment(file, root));
+  const fragments = changedFiles(true).filter((file) => isChangelogFragment(file, root));
   console.log(`Changelog fragments added: ${fragments.length}`);
-  for (const file of fragments) console.log(`  ${file}`);
+  for (const file of fragments) console.log(`  ${displayPath(file)}`);
   console.log();
   if (sources.length > 0 && fragments.length === 0) {
     console.error('::error::No changelog fragment found in this PR. Please add a changelog entry in changelog.d/');

@@ -1,0 +1,110 @@
+{
+  "sourceHeadBefore": "81dc39ef0328694ce2bec8540dd0a5073c29c77f",
+  "upstreamCommit": "260ae6f826d6bff0cbfe2280098c287a4c09b3f4",
+  "before": {
+    "cases": 16,
+    "pass": 2,
+    "fail": 14
+  },
+  "after": {
+    "changelogCases": 28,
+    "policyCases": 162,
+    "rustfmt": true
+  },
+  "nativeExecution": "hosted pending",
+  "upstreamExecution": false,
+  "autonomousAuthorshipCredit": 0,
+  "sourceFiles": {
+    "scripts/check-changelog-fragment.mjs": "5672c34e36ca1a545501716aa5a7f6ff6d791099a995f4b2d7dfaa1662ac4ea3",
+    "scripts/check-changelog-fragment.rs": "3738e9abf2c409741d3f69757e76c3d210fe5e88acced8f4da7802937b3153c0",
+    "rust/tests/fixtures/changelog-fragment/git-output.mjs": "ec3ad6678fea91e5cefc517a1a7f5b039f0ed75275a530688fd3455aa6a1b75b",
+    "rust/tests/web/changelog-fragment-output.test.mjs": "ad434993283812cc5d6d3f9a1549edd7e5b05e43d68467b5b1319fec252bcf61",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "1ed14ba0229ef8e170a62c0fcb6b576016936ebac206f04ee8766ea5b6d40409"
+  },
+  "files": [
+    {
+      "source": "before-regressions.log",
+      "file": "before-regressions.log.gz",
+      "bytes": 20529,
+      "sha256": "945b2ce63aa942a9981ad22eeb9271018fbc2f7a5e02ae737d1ad2eae8184a19",
+      "gzipSHA256": "9a913db774cf133dd47ddfc2cea3523c2b63e03e16124055302e68d8233f8bf7"
+    },
+    {
+      "source": "before-result.json",
+      "file": "before-result.json.gz",
+      "bytes": 103,
+      "sha256": "fa09be4e9607df12339ce5b59bb84a32e4989428dd7bfb0549301aa25d1fa6fc",
+      "gzipSHA256": "b948a11d8293981008e994104a77cc255f65ea274217fdc4e9efaec7a788eab3"
+    },
+    {
+      "source": "after-0.log",
+      "file": "after-0.log.gz",
+      "bytes": 2310,
+      "sha256": "ef98713f60396615852fd89d5d8c5302379bce31d79eb4c806a43c12207b96f0",
+      "gzipSHA256": "cc1d5fad6562dd59b70f6c30c3941229243607648a26fd83a1fe89cf4d2e4f66"
+    },
+    {
+      "source": "after-1.log",
+      "file": "after-1.log.gz",
+      "bytes": 16031,
+      "sha256": "dc6cfe98d1aa0a093f0e7590eb5b6f5204ee745a1c7f1be12c7fa7a9bcda450f",
+      "gzipSHA256": "06b1bdf6433ec0130c15085da9d2e3ec4404175a2dbf9c021bed38c0bec60124"
+    },
+    {
+      "source": "after-2.log",
+      "file": "after-2.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSHA256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "source": "after-results.json",
+      "file": "after-results.json.gz",
+      "bytes": 583,
+      "sha256": "9e6d36f52630998a87029ba6ad99b52d23fdd8cbc0594940e6e6264a2b26e35c",
+      "gzipSHA256": "e8dd43dcd53a8da2753571b03ae9907bde91425620be0fec9376a3958620f7e9"
+    },
+    {
+      "source": "before-checker.mjs",
+      "file": "before-checker.mjs.gz",
+      "bytes": 3750,
+      "sha256": "adfbb6e2d5ed1769e2f0bc85136a762bc8d71acf16d748ee1d3802abc763f52f",
+      "gzipSHA256": "4fe34a9cc5dcd8702bdb1daff6152c7f2d308037d718dbfd98f3e1d048d79702"
+    },
+    {
+      "source": "before-checker.rs",
+      "file": "before-checker.rs.gz",
+      "bytes": 7093,
+      "sha256": "c32874338be8961414b9416da6b1bfd0a3c3e5dccb8ee3110f88d55b6f4abb4d",
+      "gzipSHA256": "e1724f5ec32ef48e0dda62a7d8c69cad1664f85426e45f59670d1f0168502399"
+    },
+    {
+      "source": "upstream-pr-191.json",
+      "file": "upstream-pr-191.json.gz",
+      "bytes": 6186,
+      "sha256": "104d700cc4dbb0b0b1d2a9cc0712febfbdbc2d656c501a4341aac47fd67f7805",
+      "gzipSHA256": "a4e88ad6a39609188310d34a95b5563446ae0045c12ad2f90d16a33087c69c4b"
+    },
+    {
+      "source": "upstream-pr-238.json",
+      "file": "upstream-pr-238.json.gz",
+      "bytes": 10094,
+      "sha256": "ed0ebae957e31ce614f445798d1af29215ac3c59f57fb8135c7fb05645af2f9e",
+      "gzipSHA256": "ad45df1f2a18d733715d9f741b9d5290d0a159ca4562cb2fec84ab14db72f720"
+    },
+    {
+      "source": "check-changelog-fragment.rs",
+      "file": "check-changelog-fragment.rs.gz",
+      "bytes": 8212,
+      "sha256": "1973c93c68c0255de07876d06ee7eddcbd81c4e6098fb07c12d32c854e260874",
+      "gzipSHA256": "2580e03f7289db4538ed993e29f76787965127a6676625fb6a37df1ea0ecc9d8"
+    },
+    {
+      "source": "source.json",
+      "file": "source.json.gz",
+      "bytes": 12912,
+      "sha256": "c85891e23f348a2abd4f71aeea61e30596160058320adfcf7661bf4c661ccf1f",
+      "gzipSHA256": "fee63864b381b8f86223ff5dc9c5cbb8fd8d9a803c2a504871a27a37adc616fd"
+    }
+  ]
+}
