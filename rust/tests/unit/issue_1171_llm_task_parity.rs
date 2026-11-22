@@ -104,7 +104,7 @@ fn registry_classes() -> Vec<(String, Vec<String>)> {
 /// The issue number inside a tracking cell like
 /// `[#1174](https://github.com/link-assistant/formal-ai/issues/1174)`.
 fn tracking_number(row: &[String]) -> String {
-    let cell = &row[6];
+    let cell = &row[7];
     let start = cell.find('#').expect("the tracking cell names its issue");
     let digits: String = cell[start + 1..]
         .chars()
@@ -115,12 +115,12 @@ fn tracking_number(row: &[String]) -> String {
 }
 
 #[test]
-fn every_row_has_seven_non_empty_columns() {
+fn every_row_has_eight_non_empty_columns() {
     for (index, row) in table_rows(&read(DOCUMENT)).iter().enumerate() {
         assert_eq!(
             row.len(),
-            7,
-            "row {} (`{}`) must have the seven columns: {row:?}",
+            8,
+            "row {} (`{}`) must have the eight columns: {row:?}",
             index + 1,
             class_id(row)
         );
@@ -137,7 +137,7 @@ fn every_row_has_seven_non_empty_columns() {
 #[test]
 fn every_evidence_pointer_resolves() {
     for row in table_rows(&read(DOCUMENT)) {
-        let cell = &row[5];
+        let cell = &row[6];
         if let Some(open) = cell.find("](")
             && cell.starts_with('[')
         {

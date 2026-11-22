@@ -352,6 +352,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/program-cst-grammars.lino", PROGRAM_CST_GRAMMARS_LINO),
         ("data/seed/program-plan-rules.lino", PROGRAM_PLAN_RULES_LINO),
         ("data/seed/projects.lino", PROJECTS_LINO),
+        ("data/seed/prompt-data.lino", PROMPT_DATA_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
         ("data/seed/proof-library.lino", PROOF_LIBRARY_LINO),
         ("data/seed/proof-program-templates.lino", PROOF_PROGRAM_TEMPLATES_LINO),

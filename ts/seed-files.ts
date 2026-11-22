@@ -185,6 +185,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/program-cst-grammars.lino",
   "seed/program-plan-rules.lino",
   "seed/projects.lino",
+  "seed/prompt-data.lino",
   "seed/prompt-patterns.lino",
   "seed/proof-library.lino",
   "seed/proof-program-templates.lino",

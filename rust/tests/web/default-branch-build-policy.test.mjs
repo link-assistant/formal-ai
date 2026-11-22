@@ -139,6 +139,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1591-embeddings.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1593-prompt-data.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs',
     codexReplay,
     gatewayReplay,
@@ -220,6 +221,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
     '.github/actions/setup-sccache/action.yml', 'scripts/ci-clippy-profile.sh', 'scripts/ci-pull-request-admission.mjs',
     'scripts/lib/documentation-paths.mjs', 'rust/tests/web/issue-1590-forced-functions.test.mjs',
     'rust/tests/web/issue-1586-structured-output.test.mjs',
+    'rust/tests/web/issue-1591-embeddings.test.mjs',
+    'rust/tests/web/issue-1593-prompt-data.test.mjs',
     'rust/tests/web/support/structured-log-fixture.mjs', 'js/server/structured-log.mjs',
     'package.json', 'bun.lock', '.bun-version', '.github/workflows/links.yml', 'clippy.toml', 'new-top-level/unknown.txt'])
     assert.equal(native([path]), true, path);
@@ -716,7 +719,7 @@ test('independent native replays continue after a regression fails and preserve 
   const job = workflow('native-type-check.yml').jobs.clippy;
   const later = job.steps.filter(step => step.name === 'Verify native unresolved-language source binding'
     || ['actions/setup-node@v7', 'oven-sh/setup-bun@v2'].includes(step.uses) || step.name?.startsWith('Replay '));
-  assert.equal(later.length, 9);
+  assert.equal(later.length, 10);
   const selected = (step, {earlierFailure = true, compile = true, lint = 'success', bun = 'success', cancelled = false} = {}) => {
     const expression = step.if.slice(3, -2).trim()
       .replaceAll('inputs.compile-inputs-changed', "inputs['compile-inputs-changed']")
