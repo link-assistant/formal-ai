@@ -571,3 +571,8 @@ process.exit(args.includes('solver_unknown_reasoning::tests::') ? 17 : 0);
     assert(invocations[3].includes('a_language_without_localized_openers_reports_a_gap_not_english'));
   } finally { rmSync(directory, {recursive: true, force: true}); }
 });
+
+test('focused reasoning retains the original documentation publisher regressions', () => {
+  assert.match(readFileSync('rust/tests/unit/reasoning_contracts.rs', 'utf8'),
+    /#\[path = "issue_1101_documentation_question_parity\.rs"\]\nmod issue_1101_documentation_question_parity;/u);
+});

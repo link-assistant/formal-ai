@@ -1,4 +1,5 @@
 core_boundary_ledger
+  note "Issue #1580 closes the remaining native documentation-provider consumer after reference-list migration. The shared seed reader replaces its pipe split in documentation_method.rs (319 to 322 lines), adding exactly 3 promoted interpreter lines; outside-core ceilings, source counts and every disposition stay unchanged."
   note "Issue #1580 retains a formalized lookup request in fact_live_answer.rs (380 to 384 lines) and the actual current-call source outcomes in refused synthesis (program_synthesis.rs 196 to 211). The exact census adds nineteen source lines and fifteen outside-core lines; every existing file count, disposition and promotion decision stays binding. No source result or executable draft is fabricated."
   note "Issue #1580 measures nineteen source lines for preserved arithmetic emitter origins (mod.rs 743 to 751) and longest seeded explanation prefixes with leading-only function-word removal (fact_live_answer.rs 369 to 380). No handler is excluded or promoted, no rule vocabulary is embedded, and both file-count ceilings and every disposition remain unchanged; the outside-core line census adds only the eight event-origin lines."
   note "Issue #1580 reconciles main ffd50eb4 with four conserved child modules: statistics/word_problems.rs (111 lines), text_rewrite/genre_writing.rs (302), text_manipulation/replacement.rs (119), and web_search_intent/followup.rs (115). Their parents and the retained parser, coreference and calendar guards yield exactly 95 sources and 36680 lines (28 net lines above main). The coreference ownership guard accounts for four lines in fact_live_answer.rs (365 to 369). All existing dispositions are retained; the measured migration ceiling falls from 17884 to 17669 across the same 48 debt files."
@@ -27,7 +28,7 @@ core_boundary_ledger
   note "Issue #1613 measures caller-supplied creative evidence and registry-based topic summaries. Creative itinerary and verse parsing replace fixed tables, and the summary interpreter owns reusable subject lookup."
   note "Issue #1613 removes the canned repository fetch module and combines the duplicate project lookup entry points. The shared fetch handler and summary interpreter read publisher captures and preserve caller network policy, leaving 91 sources and 17860 outside-core lines."
   source_file_count_max 95
-  source_lines_max 36718
+  source_lines_max 36721
   outside_core_file_count_max 48
   outside_core_lines_max 17692
   note "Re-measured 2026-09-30 after the seeded creative, formalization, planning, and product-search interpreters were split into ledgered modules: 73 handler sources and 30942 total lines, with 51 promoted-core files contributing 20267 migration lines."
@@ -592,6 +593,6 @@ core_boundary_ledger
   note "Issue #1580 corrects its initial conservative child dispositions after the promotion test: substitution and caller-configured boundary scanning are generic primitives; their parents retain all domain recognition, seed selection and policy. The handler debt ceiling stays 47; no debt-ratchet value changes. Prior classifications and their failed checks remain in history and receipts."
   source rust/src/solver_handlers/documentation_method.rs
     disposition promote
-    baseline_lines 319
+    baseline_lines 322
     core_component documentation-method-interpreter
     reason "Resolves qualified identifiers and ambiguity from a registered documentation publisher. Syntax and extraction are shared across publishers; the seed owns provider declarations and response wording."

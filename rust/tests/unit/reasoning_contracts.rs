@@ -68,3 +68,7 @@ mod component_boundaries;
 // Repository definition answers must follow current source after helper extractions.
 #[path = "issue_1180_repository_qa.rs"]
 mod issue_1180_repository_qa;
+
+// Preserve all original documentation publisher and routing controls in focused CI.
+#[path = "issue_1101_documentation_question_parity.rs"]
+mod issue_1101_documentation_question_parity;

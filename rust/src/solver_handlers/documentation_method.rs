@@ -91,10 +91,13 @@ struct Provider {
 impl Provider {
     fn for_project(project: &str) -> Option<Self> {
         let declaration = handler_table_value("documentation-method-providers", project)?;
-        let (root, path) = declaration.split_once('|')?;
+        let values = crate::seed::split_pipe_list(&declaration);
+        let [root, path] = values.as_slice() else {
+            return None;
+        };
         Some(Self {
-            root: root.to_owned(),
-            path: path.to_owned(),
+            root: root.clone(),
+            path: path.clone(),
         })
     }
 

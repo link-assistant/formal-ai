@@ -710,3 +710,22 @@ lines and evidence identities. The diagnostic first full gate run has six known
 failures and overlaps later edits; it is not a clean final-head qualification.
 The objective remains active in this work plan because the native goal is usage
 limited. Supplied operations earn no independent credit; reasoning remains 0/20.
+
+
+## Native provider-consumer closure, 2026-11-22
+
+- [x] Finish the clean `c0bec336d` full gate run: 89 pass, zero failures and 54
+  explicit hosted-only skips; archive clean identity and all individual streams.
+- [x] Review every native consumer of the five migrated operand lists; repair
+  the documentation provider's remaining pipe splitter and measure its +3 lines.
+- [x] Register all five original native documentation publisher/cache/routing
+  regressions in focused hosted reasoning; their actual execution is pending.
+- [x] Pass the resulting 65 native-lane, two fixture and 34 Unicode JavaScript
+  checks; the cumulative focused total is 185. Format the new Rust changes.
+- [ ] Run the complete gates again on the clean final provider commit.
+- [ ] Push the complete batch after fresh main/queue checks and qualify native
+  behavior through the actual next-head hosted run, retaining every failure.
+- [ ] Complete the original full-scope requirements; keep the PR draft/unmerged.
+
+The original goal remains unfinished. Supplied operations still receive zero
+independent authorship or reasoning credit.

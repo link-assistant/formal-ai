@@ -101,3 +101,33 @@ authority, live delivery and serving identity, actual artifact full and consumer
 reruns, trusted epochs, CodeQL semantics, published dependency migrations and GPU
 equivalence remain unfinished. Passing this repair batch cannot complete those
 criteria. See the continuing work plan and original case-study requirement map.
+
+
+## Clean gate result and final provider-consumer review
+
+The clean combined-source run at `c0bec336d4cfc2dbe628ff72feb20c51c61f214d`
+finishes all 143 gates: 89 pass, none fail and 54 explicitly require hosted
+execution. It starts and ends with the same commit and a clean working tree.
+This closes the earlier draft-run local failures; it does not execute Rust.
+
+A subsequent exhaustive review of the five migrated handler operands finds one
+additional native consumer: the documentation provider still calls
+`split_once('|')`. It now consumes the same canonical reference-list reader as
+the worker, accepting exactly the original root and path operands. Its measured
+source budget grows by exactly three lines. The five original publisher,
+offline-cache, ambiguity and routing regressions are added to the existing
+focused native reasoning lane. Their execution awaits the next hosted run.
+The 65 native-lane JavaScript checks, two governed-fixture checks and 34 Unicode
+checks pass; formatting of both newly touched native files also passes.
+The combined focused JavaScript total is now 185. A fresh clean complete gate
+run is required after this provider correction.
+
+The evidence addendum in
+`experiments/issue-1580/evidence/checks/native-provider-closure/` retains the
+clean gate result and individual gate streams, the missed consumer's original
+source, the complete existing native test controls and the focused check output.
+It also retains an earlier rejected Formal AI command that unexpectedly wrote
+command text into the generated status document. That intermediate output was
+caught before committing; the maintained generator restored the document and
+the actual committed diff contains only the measured ledger line count. Neither
+the rejected command nor supplied recovery receives independent credit.
