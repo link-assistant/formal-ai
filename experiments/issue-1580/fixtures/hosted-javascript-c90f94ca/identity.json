@@ -66,5 +66,7 @@
   "observedSchedulingFactor": 1.4,
   "schedulingFactorScope": "proposed scheduling weights; not the measured run configuration",
   "reserveProbeCandidates": 13,
-  "reserveProbeAllFitCohorts": 10
+  "reserveProbeAllFitCohorts": 10,
+  "proposedDefaultSeconds": 0.4,
+  "priorSchedulingFloorSha256": "e655193e895736a5314015b37d449e9989345e54c2a18e9c8d864ab0ff9912d2"
 }

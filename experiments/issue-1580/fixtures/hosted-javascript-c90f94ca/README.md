@@ -18,7 +18,11 @@ allowances. This planning reserve is not a measured runtime or a larger budget.
 The observed run used the previous 40% policy. Hosted execution must verify the
 changed plan; no bound on future runtime is inferred from the model.
 
-The prior scheduling file is retained verbatim from the observed commit. Its
-explicit floors and 0.34-second default are preserved. 226 small new observations
-remain in `durations.jsonl` and use that existing default in the scheduling table,
-avoiding redundant records that would exceed the source-file limit.
+The prior scheduling file is retained verbatim from the observed commit. Every
+explicit floor is preserved. Its 0.34-second planning fallback rounds upward to
+0.4 seconds on the same tenth-second grid as new weights. 242 small new
+observations remain in `durations.jsonl` and use that conservative default rather
+than redundant explicit records. The scheduling table has 1387 lines,
+below both the unchanged 1,400-line warning and 1,500-line failure thresholds.
+The historical model's unobserved cost fallback stays 0.34 seconds; that measured
+cohort policy is distinct from the proposed scheduling fallback.

@@ -26,12 +26,14 @@ file. File-result candidates are emitted after the stream drains; real summaries
 remain authoritative and are not replaced by that named case.
 
 A finite 13-candidate scheduling probe keeps every earlier explicit floor and
-the 0.34-second fallback. A 65% reserve is the first tested candidate that fits
-all ten retained cohort replays. The raw observations stay exact; 226 small new
-observations use the existing fallback rather than redundant scheduling records.
-The resulting table has 1,419 lines. Eight shards, all test files, the 30-second
+the earlier fallback floor. A 65% reserve is the first tested candidate that fits
+all ten retained cohort replays. The raw observations stay exact; the 0.34-second planning fallback rounds up to
+0.4 seconds on the same tenth-second grid as new weights. The original historical
+cohort fallback remains 0.34 seconds. All 242 small new observations remain in
+the raw fixture and use that conservative planning default. The resulting table
+has 1,387 lines, below the unchanged 1,400-line warning threshold. Eight shards, all test files, the 30-second
 runner allowance, 270-second warning and 360-second execution budget stay fixed.
-The current replay's maximum is 241.18 seconds including that allowance; this
+The current replay's maximum is 241.28 seconds including that allowance; this
 model does not prove runtime of the new plan or bound future runner contention.
 
 Worker-import, untracked-owner and file-I/O diagnostics retain their passing

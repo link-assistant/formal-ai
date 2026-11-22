@@ -1395,3 +1395,12 @@ focused checks passed. The corrected table retains the prior default rather than
 adding 226 redundant small-cost overrides; all 916 observations stay exact, all
 ten replays pass and the table is now 1,419 lines. Complete gate re-verification
 is pending. The original failed gate logs and complete outcome remain archived.
+
+The 1,419-line intermediate table passed the hard gate but still emitted the
+1,400-line warning. Raw gate output exposed it before a push. Round the proposed
+planning default upward from 0.34 to 0.4 on the same tenth-second grid used for
+new weights. Earlier explicit and default floors are preserved; historical
+cohort costs and all 916 raw observations stay exact. All 242 small new records
+use the conservative default and the table is 1,387 lines. All ten cohort checks
+pass again; the finite 13-candidate probe still first fits at 65%. Full gate
+verification on the final committed snapshot is still required before pushing.

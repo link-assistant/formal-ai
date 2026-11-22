@@ -255,7 +255,9 @@ test('complete c90 costs retain the assertion-only file and fit the unchanged wa
   const prior=parseTestDurations(priorText);
   const weights=parseTestDurations(recorded);
   const defaultSeconds=Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1]);
-  assert.equal(defaultSeconds,Number(priorText.match(/^ {2}default-seconds (\S+)$/mu)[1]));
+  assert.equal(createHash('sha256').update(priorText).digest('hex'),identity.priorSchedulingFloorSha256);
+  assert.equal(defaultSeconds,identity.proposedDefaultSeconds);
+  assert(defaultSeconds>=Number(priorText.match(/^ {2}default-seconds (\S+)$/mu)[1]));
   for(const [file,seconds]of prior)assert(weights.get(file)>=seconds,'prior explicit floor '+file);
   for(const row of observations){
     const reserved=Math.ceil(row.seconds*identity.schedulingFactor*10)/10;

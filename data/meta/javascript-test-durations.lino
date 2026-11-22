@@ -1,5 +1,5 @@
 # Scheduling weights retain prior floors and reserve 65% over run 45018199621.
-# The bounded 13-candidate probe preserves all ten retained cohort headroom checks.
+# The fallback is rounded upward to the same tenth-second grid; all ten replays fit.
 # Scheduling reserve over run 45011615137: 40%; earlier floors and receipt identities are preserved.
 # Scheduling weights also reserve 35% over run 45006097030 file timings.
 # Exact timings, unchanged limits and the prior floor are retained in
@@ -18,7 +18,7 @@ javascript-test-durations
   regenerate "node experiments/formal_ai_subagent/ci-durations.mjs --javascript-files --write"
   # observed-run: Layered CI runs whose js-tier `[test-file]` seconds were folded in (issue #1571).
   observed-run 45018199621
-  default-seconds 0.34
+  default-seconds 0.4
   test "rust/tests/web/meta-reasoner.test.mjs"
     seconds 323.1
   test "rust/tests/web/full-provenance-archived-cli.test.mjs"
@@ -1321,41 +1321,9 @@ javascript-test-durations
     seconds 0.5
   test "rust/tests/web/self-authored-release-context.test.mjs"
     seconds 0.5
-  test "rust/tests/web/ci-change-detection-checkout.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/ci-fast-critical-profile.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/ci-phase-timing.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/detached-native-protocol-custody.test.mjs"
-    seconds 0.4
   test "rust/tests/web/issue-0538-meaning-detail.test.mjs"
     seconds 0.4
-  test "rust/tests/web/issue-1550-procedure-documentation.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/observed-source-usage.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/owned-read-projection.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/pages-artifact-trust.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/prerequisite-fetch-recovery.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/provenance-cli-trust-floor.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/release-docker-stream.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/release-failure-output-receipt.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/self-hosting-ledger-storage.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/shared-lexeme-fields.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/source-cst-packets.test.mjs"
-    seconds 0.4
   test "rust/tests/web/translate-es.test.mjs"
-    seconds 0.4
-  test "rust/tests/web/verify-public-release-downloads.test.mjs"
     seconds 0.4
   test "rust/tests/web/conversational-variation-floor.test.mjs"
     seconds 0.3

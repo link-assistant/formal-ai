@@ -7,7 +7,9 @@ const [floorPath,observationsPath]=process.argv.slice(2);
 if(!floorPath||!observationsPath)throw Error('Provide the previous scheduling floor and current observations');
 const floorText=readFileSync(floorPath,'utf8');
 const floors=parseTestDurations(floorText);
-const defaultSeconds=Number(floorText.match(/^ {2}default-seconds (\S+)$/mu)[1]);
+const priorDefault=Number(floorText.match(/^ {2}default-seconds (\S+)$/mu)[1]);
+// Round upward onto the same tenth-second grid as new scheduling weights.
+const defaultSeconds=Math.ceil(priorDefault*10)/10;
 const current=readFileSync(observationsPath,'utf8').trim().split('\n').map(line=>JSON.parse(line));
 const files=readdirSync(new URL('../../rust/tests/web/',import.meta.url)).filter(file=>file.endsWith('.test.mjs')).map(file=>'rust/tests/web/'+file);
 const captures=readdirSync(new URL('./fixtures/',import.meta.url)).filter(name=>name.startsWith('hosted-javascript-'));
@@ -33,5 +35,5 @@ for(let step=0;step<=12;step++){
     });
     return{name,max:Math.max(...seconds),fits:seconds.every(seconds=>seconds<=270)};
   });
-  console.log(JSON.stringify({factor,allFit:results.every(row=>row.fits),results}));
+  console.log(JSON.stringify({factor,defaultSeconds,allFit:results.every(row=>row.fits),results}));
 }
