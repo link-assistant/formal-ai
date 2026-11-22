@@ -5,9 +5,9 @@ name: Native type and lint check
 # (run 43730270231), since no PR job ran rustc. This is the one focused
 # native check a PR runs: main's clippy profile on the library and binaries,
 # called from release.yml when a Rust compile input changed or the
-# classification is unknown. It passes the test executable to a separate
-# replay job and records no release receipt. The isolated regressions verify
-# native calendar, currency, OpenAI, localized procedures, and client reports.
+# classification is unknown. It uploads nothing and records no receipt.
+# The isolated regressions verify native calendar, currency, OpenAI, localized
+# procedures, and reports from wrapped clients.
 # Main still runs full lint, tests and every build.
 on:
   workflow_call:
@@ -72,47 +72,6 @@ jobs:
         env:
           CARGO_BUILD_JOBS: '2'
         run: cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1
-      - name: Share the optimized test executable with the replay job
-        uses: actions/upload-artifact@v7
-        with:
-          name: native-type-check-cli
-          path: rust/target/debug/formal-ai
-          if-no-files-found: error
-          compression-level: 1
-          retention-days: 1
-
-  replay:
-    name: Replay native CLI behavior
-    needs: clippy
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v7
-        timeout-minutes: 4
-        env:
-          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
-          GIT_HTTP_LOW_SPEED_TIME: '20'
-        with:
-          persist-credentials: false
-          fetch-depth: 1
-          filter: blob:none
-          sparse-checkout: |
-            /*
-            !/dev/log/
-            !/experiments/*
-            /experiments/dynamic-meta/
-            /experiments/issue_859_codex_e2e/
-            /experiments/issue_1609_client_reports/
-            /experiments/js_dogfood/
-          sparse-checkout-cone-mode: false
-      - uses: actions/download-artifact@v8
-        with:
-          name: native-type-check-cli
-          path: rust/target/debug
-      - name: Restore the test binary's executable permission
-        run: chmod +x rust/target/debug/formal-ai
       - uses: actions/setup-node@v7
         with: {node-version: 22}
       - name: Exercise the cold runtime smoke against the native CLI
