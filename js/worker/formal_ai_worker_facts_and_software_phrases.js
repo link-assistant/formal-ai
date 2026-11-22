@@ -521,7 +521,7 @@ async function wikidataFactEntity(qid, language, includeClaims, options, capture
   const fields = includeClaims ? "claims%7Clabels%7Csitelinks" : "labels%7Csitelinks";
   const url = `${WIKIDATA_API}?action=wbgetentities&format=json&origin=*&ids=${encodeURIComponent(
     qid,
-  )}&props=${fields}&languages=${encodeURIComponent(language)}%7Cen`;
+  )}&props=${fields}&languages=${encodeURIComponent(language)}%7Cen%7Cmul`;
   const data = await factCaptureJson(url, options, captures);
   return data?.entities?.[qid] || null;
 }

@@ -167,6 +167,11 @@ test("facts require the subject, property and labeled value from the publisher",
   assert.match(creator.content, /Graydon Hoare/u);
   assert.ok(creator.evidence.includes("coreference:resolved:it=Rust"));
   assert.ok(creator.evidence.includes("wikidata:Q28937563"));
+  assert.ok(requests.some((url) => {
+    const { searchParams } = new URL(url);
+    return searchParams.get("ids") === "Q28937563" &&
+      searchParams.get("languages").split("|").includes("mul");
+  }));
   for (const prompt of ["Who created Rust?", "Кто создал Rust?", "Rust किसने बनाया?", "谁创建 Rust?"]) {
     const direct = await ask(prompt);
     assert.equal(direct.intent, "fact_query", prompt);

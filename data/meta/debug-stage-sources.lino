@@ -80,10 +80,10 @@ debug_stage_sources
     rust "rust/src/solver_handlers/benchmark_prompts.rs" "try_fact_lookup"
   event "fact_query:relation"
     step lookup_fact
-    rust "rust/src/solver_handlers/fact_live_answer.rs" "record_fact_question"
+    rust "rust/src/fact_live.rs" "record_fact_question"
   event "fact_query:subject"
     step lookup_fact
-    rust "rust/src/solver_handlers/fact_live_answer.rs" "record_fact_question"
+    rust "rust/src/fact_live.rs" "record_fact_question"
   event "http_fetch:request"
     step http_chat
     rust "rust/src/solver_handler_how.rs" "try_how_to_procedure"
