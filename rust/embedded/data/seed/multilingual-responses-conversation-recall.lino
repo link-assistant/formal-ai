@@ -79,3 +79,23 @@ multilingual-responses-conversation-recall
     intent conversation-summary-envelope
     language es
     text "Resumen de la conversación: {summary}\n\nTítulo: {title}\n\nTurnos del usuario:\n"
+  response response-coreference-resolved-reference-en
+    intent coreference_resolved_reference
+    language en
+    text "The reference resolves to {referent} from your earlier turn. I need evidence to answer the follow-up."
+  response response-coreference-resolved-reference-ru
+    intent coreference_resolved_reference
+    language ru
+    text "Вы имеете в виду {referent} из предыдущего сообщения. Для ответа на уточнение нужны данные."
+  response response-coreference-resolved-reference-hi
+    intent coreference_resolved_reference
+    language hi
+    text "संदर्भ आपके पहले संदेश में आए {referent} का है। अगले सवाल का उत्तर देने के लिए साक्ष्य चाहिए।"
+  response response-coreference-resolved-reference-zh
+    intent coreference_resolved_reference
+    language zh
+    text "指代的是你之前提到的 {referent}。回答这个后续问题需要证据。"
+  response response-coreference-resolved-reference-es
+    intent coreference_resolved_reference
+    language es
+    text "La referencia apunta a {referent}, mencionado en tu mensaje anterior. Necesito pruebas para responder a la pregunta de seguimiento."

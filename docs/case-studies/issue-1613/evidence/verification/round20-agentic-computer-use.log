@@ -1,0 +1,24 @@
+✔ ten seeded tasks, four prompts each, conditions name the permission (2544.835556ms)
+✔ a seed-recorded plan: first step and its arguments (11.570648ms)
+✔ every seeded plan is emitted step by step and completes (36.404324ms)
+✔ progress is scoped to the latest user turn; a failed verification halts (5.393022ms)
+✔ a name-less OpenAI tool result resolves through its call id and advances (3.15136ms)
+✔ localized messages come from the seed (1.869077ms)
+✔ capability gap: seeded cue and recognised phrasing in every language (972.05281ms)
+✔ a client that advertises no computer-use primitive gets null; a partial one is told the gap (3.871514ms)
+✔ literal payload is not read as a computer-use plan (0.971914ms)
+✔ lexicon: operation order and most specific resource (1.102447ms)
+✔ the committed schema snapshot matches a fresh induction (389.757926ms)
+✔ held-out requests synthesize the expected resource and operations; locales agree (5827.699974ms)
+✔ a synthesized plan is planned, advanced and completed (113.429498ms)
+✔ malformed plans fail before scheduling the first effect (1.810378ms)
+✔ chat schedules the caller operation and preserves quotes in its data (581.879887ms)
+✔ MCP observes caller HTTP bytes and verifies origin, status and confirmation (469.484239ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11835.739585

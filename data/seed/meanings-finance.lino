@@ -102,3 +102,39 @@ meanings
     lexeme hi "अंतिम राशि"
     lexeme zh 最终金额
     lexeme es "monto final" "importe final" "cantidad final"
+
+  currency-conversion-publisher
+    defined-by answer
+    role localized-response-template
+    precondition "an explicit conversion specifies two currencies for which a dated publisher quote is available"
+    effect "show the cent-rounded amount with the actual rate source and effective date"
+    unit "not applicable"
+    example "converted amount = stated amount multiplied by the published rate"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
+
+  currency-quote-provider
+    defined-by answer
+    role handler-table
+    precondition "a currency request names a base and a target"
+    effect "choose the configured public quote endpoint for the pair"
+    unit "not applicable"
+    example "an official publisher may cover a currency outside the default source"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
+
+  currency-quote-pair-needed
+    defined-by answer
+    role localized-response-template
+    precondition "the request asks how an exchange rate was obtained without a currency pair"
+    effect "request both currency codes"
+    unit "not applicable"
+    example "ask which two currencies the rate should exchange"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"
+
+  currency-quote-unavailable
+    defined-by answer
+    role localized-response-template
+    precondition "the requested quote could not be verified against a publisher capture"
+    effect "explain that the amount could not be converted"
+    unit "not applicable"
+    example "a fresh offline cache has no matching publisher quote"
+    grounding "data/seed/handler-rules.lino and data/seed/multilingual-responses-quantities.lino"

@@ -197,18 +197,20 @@ fn record_mode_emits_the_selection_artifact() {
 fn the_knob_changes_only_the_trace_not_the_answer() {
     let prompt = "translate apple to Russian and write a hello world program in Python";
     let off = UniversalSolver::new(SolverConfig {
+        offline: true,
         selection_mode: SelectionMode::Off,
         ..SolverConfig::default()
     })
     .solve(prompt);
     let record = UniversalSolver::new(SolverConfig {
+        offline: true,
         selection_mode: SelectionMode::Record,
         ..SolverConfig::default()
     })
     .solve(prompt);
     assert_eq!(
         off.answer,
-        "Here is a minimal Python hello world program:\n\n```python\nprint('Hello, world!')\n```\n\nExecution status: not run; this program was rediscovered from https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples and its output contract was checked by decomposition, not by executing it.\nCheck command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`\nRun command: `python3 main.py`\nExpected output after verification:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Python 3 from https://www.python.org/downloads/.\n2. Save the code above to a file named `main.py`.\n3. Check that it compiles: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`.\n4. Run it: `python3 main.py`.\n5. Compare the output with the expected output shown above."
+        "Here is a minimal Python hello world program:\n\n```python\nprint(\"Hello, world!\")\n```\n\nExecution status: not probed in this environment.\nCheck command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`\nRun command: `python3 main.py`\nOutput, not observed in this environment:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Python 3 from https://www.python.org/downloads/.\n2. Save the code above to a file named `main.py`.\n3. Check that it compiles: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`.\n4. Run it: `python3 main.py`.\n5. Compare the output with the expected output shown above."
     );
     assert_eq!(
         off.answer, record.answer,

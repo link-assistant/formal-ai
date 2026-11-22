@@ -12,6 +12,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renam
 import os from 'node:os';
 import path from 'node:path';
 
+import { ComputerUseHttpError, computerUseHttpRequest, computerUseHttpTarget } from './computer-use-http.mjs';
 import { sortedKeys, toCompactJson } from './json.mjs';
 import { childValue, childrenNamed, parseLino, readRepoFile } from './lino.mjs';
 import { serverMessage } from './messages.mjs';
@@ -22,17 +23,6 @@ import { solveSymbolic, statelessIssueForm } from './solve.mjs';
 const PROTOCOL_VERSION = '2025-06-18';
 const CHAT_TOOL = 'formal_ai_chat';
 const ARCHIVE_FORMAT = 'formal-ai-archive-v1';
-const FIXTURE_DIR = 'data/fixtures/computer-use';
-const FIXTURES = new Map([
-  ['fixture://orders.json', 'orders.json'],
-  ['fixture://status.html', 'status.html'],
-  ['fixture://form.html', 'form.html'],
-  ['fixture://inventory.csv', 'inventory.csv'],
-]);
-const SUBMIT_URL = 'fixture://submit';
-const SUBMIT_TOKEN = 'token=fixture-token';
-const REJECTED_SUBMISSION = '{"accepted":false,"error":"invalid token"}';
-
 // `COMPUTER_USE_PRIMITIVES`: [name, required arguments, own properties].
 const STRING = { type: 'string' };
 const BOOLEAN = { type: 'boolean' };
@@ -214,26 +204,14 @@ function decodeBase64(text) {
   return Buffer.from(text, 'base64');
 }
 
-function fixture(url) {
-  const file = FIXTURES.get(url);
-  return file ? readRepoFile(`${FIXTURE_DIR}/${file}`).trim() : null;
-}
-
-function contentType(url) {
-  const extension = path.extname(url).slice(1).toLowerCase();
-  if (extension === 'html') return 'text/html';
-  if (extension === 'csv') return 'text/csv';
-  return 'application/json';
-}
-
-function httpOutput(method, url, status, body, cachePath) {
+function httpOutput(method, url, status, body, cachePath, contentType) {
   const sha256 = digest(body);
   return {
     method,
     url,
     status,
     body,
-    headers: { 'content-type': contentType(url) },
+    headers: { 'content-type': contentType },
     sha256,
     cache_path: cachePath,
     cached: true,
@@ -403,7 +381,7 @@ class ComputerUseSession {
       this.validateArguments(name, args);
       return null;
     } catch (error) {
-      return String(error);
+      return error instanceof Error ? error.message : String(error);
     }
   }
 
@@ -418,8 +396,7 @@ class ComputerUseSession {
       }
       paths = [arg(args, 'input'), arg(args, 'output')];
     } else if (name === 'http.fetch' || name === 'http.post') {
-      const url = arg(args, 'url');
-      if (!url.startsWith('fixture://')) throw `network_fixture_not_permitted:${url}`;
+      computerUseHttpTarget(arg(args, 'url'));
       paths = [arg(args, 'save_as')];
     } else if (name === 'dom.query' || name === 'dom.extract') paths = [arg(args, 'source'), arg(args, 'save_as')];
     else if (name === 'archive.pack') paths = [...stringArray(args, 'paths'), arg(args, 'archive')];
@@ -476,23 +453,15 @@ class ComputerUseSession {
         return { from, to, moved: true, sha256: digest(bytes) };
       }
       case 'shell.run': return this.runAllowlisted(args);
-      case 'http.fetch': {
-        const url = arg(args, 'url');
-        const saveAs = arg(args, 'save_as');
-        const body = fixture(url);
-        if (body === null) throw `fixture_not_found:${url}`;
-        this.writeBytes(saveAs, body);
-        return httpOutput('GET', url, 200, body, saveAs);
-      }
+      case 'http.fetch':
       case 'http.post': {
         const url = arg(args, 'url');
         const saveAs = arg(args, 'save_as');
-        const requestBody = arg(args, 'body');
-        if (url !== SUBMIT_URL) throw `fixture_not_found:${url}`;
-        const accepted = requestBody === SUBMIT_TOKEN;
-        const body = accepted ? readRepoFile(`${FIXTURE_DIR}/submission.json`).trim() : REJECTED_SUBMISSION;
-        this.writeBytes(saveAs, body);
-        return httpOutput('POST', url, accepted ? 200 : 400, body, saveAs);
+        const post = name === 'http.post';
+        const target = computerUseHttpTarget(url);
+        const { status, text, contentType } = computerUseHttpRequest(target, post ? arg(args, 'body') : null);
+        this.writeBytes(saveAs, text);
+        return httpOutput(post ? 'POST' : 'GET', url, status, text, saveAs, contentType);
       }
       case 'dom.query': {
         const source = arg(args, 'source');
@@ -681,10 +650,11 @@ class ComputerUseSession {
       const changed = STATE_CHANGING.has(name) || typeof field(args, 'save_as') === 'string';
       effectDetail = `executed=${name};changed=${changed}`;
     } catch (error) {
-      if (typeof error !== 'string') throw error;
-      output = { error };
+      const detail = error instanceof ComputerUseHttpError ? error.message : error;
+      if (typeof detail !== 'string') throw error;
+      output = { error: detail };
       effectPassed = false;
-      effectDetail = error;
+      effectDetail = detail;
     }
     events.push(event('effect', effectPassed, effectDetail));
     const postPassed = effectPassed && this.verifyPostcondition(name, args, output);

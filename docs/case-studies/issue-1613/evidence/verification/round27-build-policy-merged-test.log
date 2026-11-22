@@ -1,0 +1,31 @@
+✔ Codex report fixture from main run 44953310700 disables background marketplace activity (2.518538ms)
+✔ all former heavy PR overrides remain closed, including bot branch dispatch (1173.495412ms)
+✔ actual compiler, image, application and deployment entries refuse PR execution (658.555045ms)
+✔ the focused PR native check limits execution to lint and isolated regressions (127.583846ms)
+✔ replays main run 43710854562: the E0308 pull request selects the native type check (2.451732ms)
+✔ the PR clippy mode runs main's lint flags on the library and binaries only (34.365579ms)
+✔ recorded Docker cold rebuild is optional and cannot hold the production build behind another build (99.275357ms)
+✔ main release depends on package and admission checks while broad failures reach pipeline status (185.325055ms)
+✔ PRs split the fast JS inventory over two groups; full main inventory retains its measured shard plan (109.514093ms)
+✔ complete PR diff, deletions and source-to-doc renames cannot disappear behind a final docs commit (8.204854ms)
+✔ workflow lint checks only its source closure and retains the real ShellCheck canary (2.709273ms)
+✔ version CLI reads exact immutable root manifest metadata without Git (210.460848ms)
+✔ version CLI reads exact immutable rust manifest metadata without Git (134.47503ms)
+✔ immutable API metadata does not excuse a changed package version (135.174395ms)
+✔ GitHub denials and server failures remain terminal without retries or Git fallback (330.00027ms)
+✔ invalid base cannot start API reads and non-PR or release bypasses stay unchanged (288.530582ms)
+✔ base source custody rejects wrong refs, commits, trees, paths, modes and blob bytes (24.164161ms)
+✔ rust fallback rejects a malformed root manifest instead of switching source layouts (1.945949ms)
+✔ base source reads enforce one aggregate deadline across all awaited metadata (1.296669ms)
+✔ base source reads fail closed on transport, redirects, oversized bodies and invalid UTF8 (12.110258ms)
+✔ changelog acquisition keeps complete Git history and only hydrates its checker closure (15.366982ms)
+✔ base source diagnostics retain public identity and redact unavailable response content (1.882361ms)
+✔ the fast PR lint job runs only scripts that need no installed package (96.802203ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3938.744845

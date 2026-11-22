@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_meta_composite.js"
-  ceiling 159
-  rationale "The meta reasoner's decomposition and memory (2026-10-06 meta-algorithm doctrine, R1007/R1011): a message holding several artifact requests is split into sub-goals solved by the same loop, and chunks learned by explanation-based learning leave as an append memory operation and come back through memory. Split from formal_ai_worker_meta_reasoner.js to keep that module under the 1000-line limit. Issue #1550 adds the four-line hook that passes every answer through the recursive procedure of js/agentic/crate/meta_executor.mjs; the procedure itself lives in that crate module."
+  ceiling 160
+  rationale "Prompt data joins prompt text as a single work unit that owns its caller-supplied text."

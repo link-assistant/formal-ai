@@ -424,31 +424,43 @@ function requestedBrainstormCount(seeds, normalized) {
   return Number(seeds.defaultCount) || 0;
 }
 
-function numbered(items, count) {
-  return items
-    .slice(0, count)
-    .map((item, index) => `${index + 1}. ${item}`)
-    .join("\n");
+function brainstormRequestTopic(seeds, normalized) {
+  let matched = "";
+  for (const trigger of seeds.triggers || []) {
+    if (trigger.length >= matched.length && normalized.includes(trigger)) matched = trigger;
+  }
+  if (!matched) return "";
+  const suffix = normalized.slice(normalized.indexOf(matched) + matched.length).trim().replace(/^\d+(?:\s+|$)/u, "");
+  const prefix = (seeds.topicPrefixes || []).find((prefix) => suffix.startsWith(prefix));
+  return (prefix ? suffix.slice(prefix.length) : suffix).trim();
 }
 
 function tryBrainstormingRequest(prompt, normalized) {
   const seeds = BRAINSTORM_SEEDS || {};
   if (!containsAny(normalized, seeds.triggers)) return null;
   const categories = Array.isArray(seeds.categories) ? seeds.categories : [];
-  const keyworded = categories.find((entry) => containsAny(normalized, entry.detectionKeywords));
-  const category = keyworded ||
-    categories.find((entry) => !entry.detectionKeywords || entry.detectionKeywords.length === 0);
-  if (!category || !Array.isArray(category.items) || category.items.length === 0) {
-    return null;
+  const category = categories.find((entry) => containsAny(normalized, entry.detectionKeywords))
+    || categories.find((entry) => !entry.detectionKeywords || entry.detectionKeywords.length === 0);
+  if (!category) return null;
+  const language = detectLanguage(prompt);
+  const topic = brainstormRequestTopic(seeds, normalized);
+  const evidence = [`brainstorm:category:${category.slug}`];
+  if (creativeTopicWords(topic, language).length === 0) {
+    evidence.push("brainstorming:refusal:missing_topic");
+    return { intent: category.intent, content: textTransformLocalizedResponse("brainstorming_refusal", language) || creativeTemplate("brainstorming_refusal", []),
+      confidence: 0.4, evidence };
   }
-  const count = requestedBrainstormCount(seeds, normalized);
-  return {
-    intent: category.intent || "brainstorm_project_ideas",
-    content: numbered(category.items, count),
-    confidence: 0.8,
-    evidence: [`brainstorm:category:${category.slug || "project_ideas"}`]
-      .concat(keyworded ? [] : ["brainstorming:refusal:no category keyword"]), // #1175 R3 refusal lane
-  };
+  if (category.operations.length === 0) {
+    const composed = composeBrainstormNames(prompt, normalized, topic);
+    return { ...composed, intent: category.intent };
+  }
+  const count = creativeRequestedCount(normalized, language) ?? requestedBrainstormCount(seeds, normalized);
+  const content = category.operations
+    .slice(0, count)
+    .map((operation, index) => `${index + 1}. ${operation.replaceAll("{topic}", () => topic)}`)
+    .join("\n");
+  evidence.push(`brainstorming:topic:${topic}`);
+  return { intent: category.intent, content, confidence: 0.8, evidence };
 }
 
 function localizedFactFor(record, language) {
@@ -463,16 +475,11 @@ function localizedFactFor(record, language) {
 // Issue #1172: a record answers only through the subject gate (gatedFactRecord, formal_ai_worker_factual_qa.js): its subject Q-id must equal the formalized question's; word-boundary alias matching is the last-resort hint for Q-id-less records.
 function tryFactLookup(prompt, normalized) {
   const gated = gatedFactRecord(normalized, prompt);
-  if (!gated) return null;
+  if (!gated || gated.record.publisherHeading || gated.record.releaseTimeline) return null;
   const record = gated.record;
   const language = detectLanguage(prompt);
   const localized = localizedFactFor(record, language);
-  // A record backed by a release timeline has no frozen answer: the snapshot
-  // is rendered against today (Rust `render_release_timeline`, issue #892).
-  const timeline = record.releaseTimeline
-    ? renderReleaseTimeline(record.releaseTimeline, language, new Date().toISOString().slice(0, 10))
-    : null;
-  const summary = (timeline && timeline.text) || (localized && localized.summary) || record.summary;
+  const summary = (localized && localized.summary) || record.summary;
   const source = (localized && localized.source) || record.source;
   const evidence = [
     `fact_lookup:hit:${record.slug}`,
@@ -481,7 +488,6 @@ function tryFactLookup(prompt, normalized) {
     ...((record.wikidata || []).map((qid) => `wikidata:${qid}`)),
   ];
   if (source) evidence.push(`source:${humanizeUrl(source)}`);
-  if (timeline) evidence.push(`release_timeline:${record.releaseTimeline}`);
   return {
     intent: "fact_lookup",
     content: summary,
@@ -490,30 +496,51 @@ function tryFactLookup(prompt, normalized) {
   };
 }
 
-function renderRoleplayBody(persona, body) {
-  const template = String((PERSONA_SEEDS && PERSONA_SEEDS.bodyTemplate) || "");
-  return template.replace(/<persona>/g, persona).replace(/<body>/g, body);
+function roleplayRequest(prompt) {
+  const input = prompt.trimStart();
+  const lower = input.toLowerCase();
+  let longest = 0;
+  for (const trigger of PERSONA_SEEDS.triggers) {
+    if (trigger.length <= longest || !lower.startsWith(trigger)) continue;
+    const next = lower[trigger.length];
+    if (/[a-z]$/u.test(trigger) && next && !/[\s:：]/u.test(next)) continue;
+    longest = trigger.length;
+  }
+  return longest ? input.slice(longest).trimStart() : null;
 }
 
-function tryRoleplayRequest(prompt, normalized) {
-  const seeds = PERSONA_SEEDS || {};
-  if (!containsAny(normalized, seeds.triggers)) return null;
-  const personas = Array.isArray(seeds.personas) ? seeds.personas : [];
-  const persona = personas.find((entry) => containsAny(normalized, entry.aliases));
-  const topics = Array.isArray(seeds.topics) ? seeds.topics : [];
-  const topic = topics.find((entry) => containsAny(normalized, entry.detectionKeywords));
-  const displayName = (persona && persona.displayName) || seeds.defaultPersona || "";
-  const body = (topic && topic.body) || seeds.fallbackBody || "";
-  const evidence = [`roleplay:persona:${displayName}`];
-  if (persona && persona.wikidata) evidence.push(`wikidata:${persona.wikidata}`);
-  if (topic && topic.slug) evidence.push(`roleplay:topic:${topic.slug}`);
-  if (!persona && !topic) evidence.push("roleplay:refusal:no persona or topic"); // #1175 R3 refusal lane
-  return {
-    intent: "roleplay_explanation",
-    content: renderRoleplayBody(displayName, body),
-    confidence: 0.8,
-    evidence,
-  };
+function roleplayFacts(request) {
+  if (!request) return null;
+  const separator = request.search(/[:：]/u);
+  if (separator < 0) return null;
+  const role = request.slice(0, separator).trim();
+  const facts = request.slice(separator + 1).trim();
+  return role && facts ? { role, facts } : null;
+}
+
+function tryRoleplayRequest(prompt) {
+  const request = roleplayRequest(prompt);
+  if (request === null) return null;
+  const language = detectLanguage(prompt);
+  const supplied = roleplayFacts(request);
+  if (!supplied) {
+    return {
+      intent: "roleplay_explanation",
+      content: answerFor("roleplay_facts_needed", language),
+      confidence: 0.5,
+      evidence: ["roleplay:refusal:missing role or facts"],
+    };
+  }
+  const role = supplied.role.toLowerCase();
+  const persona = PERSONA_SEEDS.personas.find((entry) =>
+    entry.displayName.toLowerCase() === role || entry.aliases.includes(role));
+  const displayName = persona?.displayName || supplied.role;
+  const content = answerFor("roleplay_supplied_facts", language)
+    .replace(/\{role\}|\{facts\}/gu, (placeholder) =>
+      placeholder === "{role}" ? displayName : supplied.facts);
+  const evidence = [`roleplay:persona:${displayName}`, "roleplay:supplied_facts"];
+  if (persona?.wikidata) evidence.push(`wikidata:${persona.wikidata}`);
+  return { intent: "roleplay_explanation", content, confidence: 0.8, evidence };
 }
 
 function tryKupiSlona(prompt, normalized) {
@@ -886,15 +913,6 @@ function trySummarizeConversation(prompt, history) {
 // the final-amount marker are the `policy compound_interest` block of
 // data/seed/handler-rules.lino. Mirrors src/solver_handlers/compound_interest.rs.
 // A function, not a const array, so the ROLE_* consts stay out of the TDZ.
-function compoundCurrencies() {
-  return [
-    [ROLE_CURRENCY_EUR_REFERENCE, "EUR"],
-    [ROLE_CURRENCY_USD_REFERENCE, "USD"],
-    [ROLE_CURRENCY_RUB_REFERENCE, "RUB"],
-  ];
-}
-const COMPOUND_PRINCIPAL_CURRENCY = "USD";
-
 function compoundPolicy(key) {
   return handlerRulesPolicy("compound_interest", key) || "";
 }
@@ -905,17 +923,18 @@ function compoundResponse(intent, values = {}) {
   return text;
 }
 
-function tryCompoundInterest(prompt, normalized, history) {
+function tryCompoundInterest(prompt, normalized, history, preferences) {
+  const date = statedCurrencyQuoteDate(prompt);
   const request = parseCompoundInterestRequest(prompt, normalized);
-  if (request) return answerCompoundInterest(request);
+  if (request) return answerCompoundInterest(request, date, preferences);
 
-  const conversion = parseFinalAmountConversionRequest(normalized, history);
-  if (conversion) return answerFinalAmountConversion(conversion);
+  const conversion = parseFinalAmountConversionRequest(prompt, normalized, history);
+  if (conversion) return answerFinalAmountConversion(conversion, date, preferences);
 
   return null;
 }
 
-function answerCompoundInterest(request) {
+async function answerCompoundInterest(request, date, preferences) {
   const annualRate = request.annualRatePercent / 100;
   const periodsPerYear = request.compoundsPerYear;
   const periodicRate = annualRate / periodsPerYear;
@@ -929,6 +948,7 @@ function answerCompoundInterest(request) {
   ];
   let content = compoundResponse("compound_interest_report", {
     principal: formatCompoundNumber(request.principal),
+    principal_currency: request.principalCurrency,
     rate: formatCompoundRate(annualRate),
     percent: formatCompoundNumber(request.annualRatePercent),
     periods_per_year: periodsPerYear,
@@ -940,12 +960,12 @@ function answerCompoundInterest(request) {
   });
 
   if (request.targetCurrency) {
-    content += compoundConversion(
+    content += await compoundConversion(
       evidence,
       finalAmount,
-      COMPOUND_PRINCIPAL_CURRENCY,
+      request.principalCurrency,
       request.targetCurrency,
-      request.asksForWebRate,
+      date, preferences,
     );
   }
 
@@ -957,19 +977,19 @@ function answerCompoundInterest(request) {
   };
 }
 
-function answerFinalAmountConversion(conversion) {
+async function answerFinalAmountConversion(conversion, date, preferences) {
   const evidence = ["calculation:final_amount_conversion"];
   const content =
     compoundResponse("compound_interest_final_amount_conversion", {
       amount: formatCompoundMoney(conversion.amount),
       source: conversion.sourceCurrency,
     }) +
-    compoundConversion(
+    await compoundConversion(
       evidence,
       conversion.amount,
       conversion.sourceCurrency,
       conversion.targetCurrency,
-      conversion.asksForWebRate,
+      date, preferences,
     );
   return {
     intent: "calculation",
@@ -979,44 +999,31 @@ function answerFinalAmountConversion(conversion) {
   };
 }
 
-// The conversion paragraph appended to a report: the seeded default rate,
-// the converted amount, and the rate detail; or the honest no-rate sentence.
-function compoundConversion(evidence, amount, source, target, asksForWebRate) {
-  const rate = compoundDefaultRate(source, target);
-  if (rate === null) {
+async function compoundConversion(evidence, amount, source, target, date, preferences) {
+  const quote = await readCurrencyQuote(source, target, date, preferences);
+  const displayedAmount = formatCompoundMoney(roundCompoundMoney(amount));
+  const converted = quote && convertCurrencyQuote(displayedAmount, quote.rate);
+  if (converted === null) {
     evidence.push(`calculation:currency_conversion:error:${source}->${target}`);
     return `\n\n${compoundResponse("compound_interest_rate_unavailable", { source, target })}`;
   }
-  const displayedAmount = roundCompoundMoney(amount);
-  const converted = displayedAmount * rate;
   evidence.push(
-    `calculation:currency_conversion:${formatCompoundMoney(displayedAmount)} ${source} to ${target} at ${formatCompoundRate(rate)}`,
+    `calculation:currency_conversion:${displayedAmount} ${source} to ${target} at ${quote.rate}`,
+    ...currencyQuoteEvidence(quote).map(({ kind, payload }) => `${kind}:${payload}`),
   );
   const expression = compoundPolicy("rate-expression").split("{source}").join(source).split("{target}").join(target);
   let text = `\n\n${compoundResponse("compound_interest_conversion", {
     source,
     target,
     expression,
-    rate: formatCompoundRate(rate),
-    amount: formatCompoundMoney(displayedAmount),
-    converted: formatCompoundMoney(converted),
+    rate: quote.rate,
+    amount: displayedAmount,
+    converted,
   })}`;
-  text += `\n${compoundResponse("compound_interest_rate_detail", { source, target, rate: formatCompoundRate(rate) })}`;
-  if (asksForWebRate) text += `\n${compoundResponse("compound_interest_live_rate_note")}`;
+  text += `\n${compoundResponse("compound_interest_rate_detail", {
+    source, target, rate: quote.rate, publisher: quote.source, date: quote.date,
+  })}`;
   return text;
-}
-
-// The seeded default rate from `source` to `target`: the direct pair, or the
-// inverse of the reverse pair.
-function compoundDefaultRate(source, target) {
-  const direct = compoundRateNumber(compoundPolicy(`rate_${source}_${target}`));
-  if (direct !== null) return direct;
-  const reverse = compoundRateNumber(compoundPolicy(`rate_${target}_${source}`));
-  return reverse === null || reverse === 0 ? null : 1 / reverse;
-}
-
-function compoundRateNumber(text) {
-  return /^\d+(?:\.\d+)?$/.test(text) ? Number(text) : null;
 }
 
 function parseCompoundInterestRequest(prompt, normalized) {
@@ -1043,16 +1050,16 @@ function parseCompoundInterestRequest(prompt, normalized) {
     return null;
   }
   return {
-    principal,
+    principal: principal.amount,
+    principalCurrency: principal.currency,
     annualRatePercent,
     compoundsPerYear,
     years,
-    targetCurrency: targetCurrencyFromText(normalized, COMPOUND_PRINCIPAL_CURRENCY),
-    asksForWebRate: asksForWebRate(normalized),
+    targetCurrency: targetCurrencyFromText(prompt, principal.currency),
   };
 }
 
-function parseFinalAmountConversionRequest(normalized, history) {
+function parseFinalAmountConversionRequest(prompt, normalized, history) {
   // "convert" and "final amount" are themselves meanings: a conversion action
   // applied to the final-amount reference produced by a prior turn. Mirrors
   // parse_final_amount_conversion_request.
@@ -1064,13 +1071,12 @@ function parseFinalAmountConversionRequest(normalized, history) {
   }
   const prior = priorFinalAmount(history);
   if (!prior) return null;
-  const targetCurrency = targetCurrencyFromText(normalized, prior.currency);
+  const targetCurrency = targetCurrencyFromText(prompt, prior.currency);
   if (!targetCurrency) return null;
   return {
     amount: prior.amount,
     sourceCurrency: prior.currency,
     targetCurrency,
-    asksForWebRate: asksForWebRate(normalized),
   };
 }
 
@@ -1092,25 +1098,18 @@ function parseFinalAmountFromText(text) {
   const lower = String(text || "").toLowerCase();
   const at = marker ? lower.indexOf(marker) : -1;
   if (at < 0) return null;
-  const match = /^[ \t\n\f\r]*([\d.,]*)[ \t\n\f\r]*(\p{L}*)/u.exec(lower.slice(at + marker.length));
+  const match = /^[ \t\n\f\r]*([\d.,]*)[ \t\n\f\r]*(\p{L}*)/u.exec(text.slice(at + marker.length));
   const amount = parseCompoundNumberText(match[1]);
-  const entry = compoundCurrencies().find(([role]) => wordsForRole(role).includes(match[2]));
-  return amount === null || !entry ? null : { amount, currency: entry[1] };
+  const currency = currencyCodeFromWord(match[2]);
+  return amount === null || !currency ? null : { amount, currency };
 }
 
 function parseCompoundCurrencyAmount(prompt) {
-  const text = String(prompt || "");
-  const dollarIndex = text.indexOf("$");
-  if (dollarIndex >= 0) return parseCompoundNumberRight(text, dollarIndex + 1);
-  // The spelled-out US-dollar markers are the English surfaces of
-  // currency_usd_reference, scanned as space-prefixed tokens with the amount
-  // to their left. Mirrors parse_currency_amount.
-  const lower = text.toLowerCase();
-  for (const word of wordsForRoleInLanguages(ROLE_CURRENCY_USD_REFERENCE, ["en"])) {
-    const index = lower.indexOf(` ${word}`);
-    if (index < 0) continue;
-    const amount = parseCompoundNumberLeft(lower, index);
-    if (amount !== null) return amount;
+  for (const { token, code, at } of currencyMentions(prompt)) {
+    const amount = /^\p{L}/u.test(token)
+      ? parseCompoundNumberLeft(prompt, at)
+      : parseCompoundNumberRight(prompt, at + token.length) ?? parseCompoundNumberLeft(prompt, at);
+    if (amount !== null) return { amount, currency: code };
   }
   return null;
 }
@@ -1151,20 +1150,8 @@ function parseCompoundsPerYear(normalized) {
   return /^\d+$/.test(periods) ? Number(periods) : null;
 }
 
-// The currency a conversion request names, skipping `source`: the first
-// currency meaning the prompt mentions as a whole token, in the priority of
-// compoundCurrencies(); the € glyph is a typographic symbol for the euro.
-// Mirrors target_currency.
-function targetCurrencyFromText(normalized, source) {
-  const entry = compoundCurrencies().find(([role, code]) => code !== source && (
-    lexiconMentionsRole(role, normalized) || (code === "EUR" && normalized.includes("€"))));
-  return entry ? entry[1] : "";
-}
-
-function asksForWebRate(normalized) {
-  // "fetch the live/current rate from the web" is the live_rate_freshness_cue
-  // meaning, matched as raw substrings. Mirrors asks_for_web_rate.
-  return lexiconMentionsRoleSubstring(ROLE_LIVE_RATE_FRESHNESS_CUE, normalized);
+function targetCurrencyFromText(prompt, source) {
+  return currencyMentions(prompt).find(({ code }) => code !== source)?.code ?? "";
 }
 
 // Number readers mirroring parse_number_left / parse_number_right: skip ASCII

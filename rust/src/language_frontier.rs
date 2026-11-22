@@ -21,7 +21,7 @@
 //!    whether the answer is the explicit language-gap text. Nothing here is
 //!    asserted by hand; a prompt the engine already routes never lands on the
 //!    frontier.
-//! 4. `formal-ai learn cycle --frontier language-gap` replays the record with
+//! 4. `formal-ai learn cycle --frontier language-gap --from <PATH>` replays it with
 //!    the *same* cycle the Google Trends frontier uses, and every class that
 //!    cannot be generalized is preserved as a blocked record naming the missing
 //!    data (R425) rather than dropped.
@@ -176,7 +176,7 @@ pub fn render_language_gap_frontier(candidates: &[LanguageCandidate]) -> String 
     );
     let _ = writeln!(
         document,
-        "  summary \"Every prompt a registered or candidate language supplied that the live engine still cannot answer in that language. Recorded by running the engine, not by hand: a prompt that already routes is coverage and never appears here. Replayed by 'formal-ai learn cycle --frontier language-gap', which derives the language's request frame from two prompts of a class and validates it on the rest.\""
+        "  summary \"Every prompt a registered or candidate language supplied that the live engine still cannot answer in that language. Recorded by running the engine, not by hand: a prompt that already routes is coverage and never appears here. Replayed by 'formal-ai learn cycle --frontier language-gap --from <PATH>', which derives the language's request frame from two prompts of a class and validates it on the rest.\""
     );
     let _ = writeln!(document, "  total_prompts \"{probed}\"");
     let _ = writeln!(document, "  learning_frontier \"{}\"", items.len());

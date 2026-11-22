@@ -1,0 +1,19 @@
+✔ #1172 R9: no written record states a fact the captures derive (637.702246ms)
+✔ #1172 R9: the derived records, their claims and their evidence order (10.086615ms)
+✔ #1172 R9: every retired answer is realized verbatim from the captures (7.180374ms)
+✔ #1172 R9: the localized labels and sources come from the captures (22.766457ms)
+✔ #1172 R9: Russian case forms and the English article are rules, not stored strings (3.090235ms)
+✔ #1172 R9: every surface the retired records resolved still resolves its subject (6.997322ms)
+✔ #1172 R9: a preferred label marked as a Wikidata alias is one of the entity's captured aliases (2.261608ms)
+✔ #1172 R9: the seed projection is exactly what the committed captures encode (6.383167ms)
+✔ #1172 R9: the derived records answer in every language they realize (2257.491412ms)
+✔ #1172 R9: both runtimes derive the same explicit fixtures (2651.412399ms)
+✔ a fresh offline worker has no historical fact captures (3730.790532ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12322.949431

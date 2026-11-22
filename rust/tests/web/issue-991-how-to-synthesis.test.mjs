@@ -15,6 +15,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+import { indexedProcedure, indexedProcedureBody, unrelatedProcedure } from "./support/indexed-procedure-capture.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const FIXTURE_DIR = path.join(REPO_ROOT, "rust/tests/fixtures/issue-991");
@@ -167,6 +168,45 @@ test("insufficient evidence is reported instead of invented", async () => {
   // The refusal is still explained per service rather than silent.
   assert.ok(guide.outcomes.length > 0);
   assert.ok(guide.outcomes.some((outcome) => outcome.detail.includes("no_relevant_result")));
+});
+
+test("the browser follows ranked URLs and takes steps from the matching publisher document", async () => {
+  const requested = [];
+  const privateUrl = "https://127.0.0.1/guide";
+  const captures = new Map([
+    [indexedProcedure.page, { body: indexedProcedureBody() }],
+    [unrelatedProcedure.page, { body: unrelatedProcedure.body }],
+  ]);
+  const context = await bootWorker(captures, requested);
+  context.__indexedResults = [privateUrl, unrelatedProcedure.page, indexedProcedure.page].map(url => ({
+    url, title: indexedProcedure.task, excerpt: "A search excerpt is not an instruction.",
+  }));
+  context.__indexedPrompt = `How to ${indexedProcedure.task}?`;
+  evaluate(context, "runWebSearchQuery = async () => ({ evidence: [], diagnostics: { fused: __indexedResults } })");
+  const answer = plain(await evaluate(context, "tryProceduralHowTo(__indexedPrompt, 'en')"));
+  assert.equal(answer.intent, "procedural_how_to");
+  assert.match(answer.guide.steps[0].text, indexedProcedure.firstStep);
+  assert.match(answer.content, indexedProcedure.finalAction);
+  assert.doesNotMatch(answer.content, /archive it|search excerpt/iu);
+  assert.ok(answer.guide.steps.every(step => step.sourceUrl === indexedProcedure.page
+    && step.sha256 === indexedProcedure.sha256));
+  assert.ok(requested.includes(unrelatedProcedure.page));
+  assert.ok(requested.includes(indexedProcedure.page));
+  assert.ok(!requested.includes(privateUrl));
+  requested.length = 0;
+  const replay = plain(await evaluate(context, "tryProceduralHowTo(__indexedPrompt, 'en', { offline: true })"));
+  assert.match(replay.guide.steps[0].text, indexedProcedure.firstStep);
+  assert.equal(requested.length, 0);
+});
+
+test("distinct ordered procedures under one matching heading require a narrower task", async () => {
+  const context = await bootWorker(new Map());
+  context.__ambiguousPage = `<main><h1>Assembling a garden bench</h1>
+    <h2>Metal kit</h2><ol><li>Position the feet.</li><li>Bolt on the seat.</li></ol>
+    <h2>Wooden kit</h2><ol><li>Oil the planks.</li><li>Nail on the seat.</li></ol></main>`;
+  const steps = (task) => plain(evaluate(context, "indexedProcedureSteps")(context.__ambiguousPage, task, "en", 5));
+  assert.deepEqual(steps("assemble a garden bench"), []);
+  assert.deepEqual(steps("assemble a garden bench from a metal kit"), ["Position the feet.", "Bolt on the seat."]);
 });
 
 test("per-service accessibility is remembered for at least seven days", async () => {

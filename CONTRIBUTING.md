@@ -1092,11 +1092,14 @@ hardcoded prompt→answer tables.
      (`lexicon().meanings_with_role(ROLE_…)`) or load a named vocabulary
      (e.g. `seed::terminal_command_vocabulary()`); they never hardcode
      per-language phrase arrays or branch on literal user phrasings.
-   - **Responses / output.** Every user-facing answer string is a template in
+   - **Responses / output.** User-facing presentation templates live in
      `data/seed/multilingual-responses.lino` looked up by intent
      (`seed::response_for(intent, lang)` in Rust, `answerFor(...)` in the
-     worker). Code fills placeholders like `{command}`; it does not embed the
-     surrounding prose.
+     worker). Code derives values such as `{command}` from the request and
+     available evidence before rendering. Keep task-specific fixtures and
+     expected answers in tests. A test snapshot that accelerates a run must
+     be recoverable from its source, and lightweight packages exclude
+     pre-cached data.
    - **Web front-end (React).** Every string the user sees in `js/app.js`
      — permission-panel titles, button labels, status words, onboarding copy,
      system messages — is a catalog entry in `js/i18n-catalog.lino`, looked

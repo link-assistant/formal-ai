@@ -1,0 +1,556 @@
+{
+  "prompt": "Apply TRIZ to latency vs acoustic damping",
+  "intent": "triz_resolution",
+  "content": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.",
+  "confidence": 0.7,
+  "evidence": [
+    "handler:triz_resolution",
+    "triz_solver:cued:contradiction question",
+    "triz_resolution:refusal:no overlapping precedent",
+    "response:triz_resolution_map",
+    "trace:impulse:Apply TRIZ to latency vs acoustic damping",
+    "trace:formalization:(@USER OP:express ?apply triz to latency vs acoustic damping)",
+    "trace:language:en",
+    "trace:meta:synthesize_from_meaning:open",
+    "trace:handler:triz_resolution",
+    "trace:deformalize:(@USER OP:express ?apply triz to latency vs acoustic damping):triz_resolution",
+    "prompt:prompt_c69cea90eb5232df",
+    "impulse:impulse_c6a328fe87a709cc",
+    "language:en",
+    "candidate:candidate_7537785773b89178",
+    "statement_weight:formalization:0 weight=1.000000 empty",
+    "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+    "intent_formalization_cache:miss:impulse_90fc9a261f20debf",
+    "intent_formalization:intent_formalization_09011f787aa34c11",
+    "intent_formalization:kind:unknown",
+    "search:local:search:local_1377efa38e49c1bc",
+    "selected_rule:selected_rule_c462a8ecb2667aef",
+    "intent:triz_resolution",
+    "validation:validation_ed49be5f7fca6391",
+    "response:triz_resolution",
+    "trace:simplification:trace:simplification_3f3fdd9d21e7ffed",
+    "trace:trace_52e2558f5fa5839f",
+    "method:method_1d0cafc7403e1242"
+  ],
+  "steps": [
+    {
+      "step": "impulse",
+      "detail": "Apply TRIZ to latency vs acoustic damping",
+      "level": "high"
+    },
+    {
+      "step": "formalize",
+      "detail": "Apply TRIZ to latency vs acoustic damping -> (@USER OP:express ?apply triz to latency vs acoustic damping)",
+      "formalization": {
+        "raw": "Apply TRIZ to latency vs acoustic damping",
+        "subject": "@USER",
+        "verb": "OP:express",
+        "object": "?apply triz to latency vs acoustic damping",
+        "tuple": "(@USER OP:express ?apply triz to latency vs acoustic damping)",
+        "interpretations": []
+      },
+      "level": "detailed"
+    },
+    {
+      "step": "detect_language",
+      "detail": "en",
+      "level": "high"
+    },
+    {
+      "step": "meta_reason",
+      "detail": "synthesize_from_meaning open",
+      "derivation": "derivation\n  goal synthesize_from_meaning\n  status open\n  unknown \"apply\"\n    status grounded\n    origin documentation\n    operation map_each\n  unknown \"triz\"\n    status open\n    origin none\n  unknown \"latency\"\n    status open\n    origin none\n  unknown \"vs\"\n    status open\n    origin none\n  unknown \"acoustic\"\n    status open\n    origin none\n  unknown \"damping\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"Apply TRIZ to latency vs acoustic damping\"\n  event 2\n    kind formalize\n    detail \"goal synthesize_from_meaning; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind evidence\n    detail \"the request opens with an operation (apply) and names no data to act on: it asks for the procedure\"\n  event 4\n    kind unknowns\n    detail \"apply, triz, latency, vs, acoustic, damping\"\n  event 5\n    kind hypothesis\n    detail \"apply → map_each:1.00 (documentation)\"\n  event 6\n    kind impasse\n    detail \"triz: unknown, lookup needed\"\n  event 7\n    kind impasse\n    detail \"latency: unknown, lookup needed\"\n  event 8\n    kind impasse\n    detail \"vs: unknown, lookup needed\"\n  event 9\n    kind impasse\n    detail \"acoustic: unknown, lookup needed\"\n  event 10\n    kind impasse\n    detail \"damping: unknown, lookup needed\"\n  event 11\n    kind impasse\n    detail \"5 open unknown(s) outweigh 1 grounded operation(s); no program is claimed\"",
+      "level": "detailed"
+    },
+    {
+      "step": "invoke_tool",
+      "detail": "response_language_followup",
+      "level": "detailed"
+    },
+    {
+      "step": "invoke_tool",
+      "detail": "project_lookup",
+      "level": "detailed"
+    },
+    {
+      "step": "invoke_tool",
+      "detail": "wikipedia_article_question",
+      "level": "detailed"
+    },
+    {
+      "step": "dispatch_handler",
+      "detail": "tryTrizResolution",
+      "level": "high"
+    },
+    {
+      "step": "deformalize",
+      "detail": "(@USER OP:express ?apply triz to latency vs acoustic damping) ⇒ triz_resolution: A contradiction is a link with a value, not a wall. Ways through:",
+      "projection": {
+        "tuple": "(@USER OP:express ?apply triz to latency vs acoustic damping)",
+        "intent": "triz_resolution",
+        "contentChars": 2588,
+        "evidenceCount": 4,
+        "language": "en",
+        "summary": "(@USER OP:express ?apply triz to latency vs acoustic damping) ⇒ triz_resolution: A contradiction is a link with a value, not a wall. Ways through:"
+      },
+      "answer": "A contradiction is a link with a value, not a wall. Ways through:",
+      "level": "high"
+    }
+  ],
+  "toolCalls": [],
+  "derivationId": "answer_67c3f20b68ced44d",
+  "rawSolverEvents": [
+    {
+      "kind": "impulse",
+      "payload": "Apply TRIZ to latency vs acoustic damping"
+    },
+    {
+      "kind": "language",
+      "payload": "en"
+    },
+    {
+      "kind": "intent",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "candidate",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "validation",
+      "payload": "answered(triz_resolution)=true"
+    },
+    {
+      "kind": "response",
+      "payload": "response:triz_resolution"
+    },
+    {
+      "kind": "trace:simplification",
+      "payload": "triz_resolution=1/1"
+    },
+    {
+      "kind": "trace",
+      "payload": "triz_resolution"
+    }
+  ],
+  "solverEvents": [
+    {
+      "kind": "impulse",
+      "payload": "Apply TRIZ to latency vs acoustic damping"
+    },
+    {
+      "kind": "language",
+      "payload": "en"
+    },
+    {
+      "kind": "candidate",
+      "payload": "formalization:0 score=0 probability=1.000000 empty"
+    },
+    {
+      "kind": "statement_weight",
+      "payload": "formalization:0 weight=1.000000 empty"
+    },
+    {
+      "kind": "policy:temperature_selection",
+      "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+    },
+    {
+      "kind": "intent_formalization_cache",
+      "payload": "miss impulse_90fc9a261f20debf"
+    },
+    {
+      "kind": "intent_formalization",
+      "payload": "intent_formalization impulse_90fc9a261f20debf\n  impulse_id \"impulse_90fc9a261f20debf\"\n  source_text \"Apply TRIZ to latency vs acoustic damping\"\n  normalized_text \"apply triz to latency vs acoustic damping\"\n  language \"en\"\n  kind \"unknown\"\n  known \"impulse:impulse_90fc9a261f20debf\"\n  known \"language:en\"\n"
+    },
+    {
+      "kind": "intent_formalization:kind",
+      "payload": "unknown"
+    },
+    {
+      "kind": "search:local",
+      "payload": "Apply TRIZ to latency vs acoustic damping"
+    },
+    {
+      "kind": "selected_rule",
+      "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+    },
+    {
+      "kind": "intent",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "validation",
+      "payload": "answered(triz_resolution)=true"
+    },
+    {
+      "kind": "response",
+      "payload": "response:triz_resolution"
+    },
+    {
+      "kind": "trace:simplification",
+      "payload": "triz_resolution=1/1"
+    },
+    {
+      "kind": "trace",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "method",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "meta_exec:bounds",
+      "payload": "depth=2 breadth=6 budget=8"
+    },
+    {
+      "kind": "meta_exec:task",
+      "payload": "id=t0 depth=0 relation=- children=0 atomic=no_relation text=Apply TRIZ to latency vs acoustic damping"
+    },
+    {
+      "kind": "meta_exec:test",
+      "payload": "task=t0 checks=answered requires=-"
+    },
+    {
+      "kind": "meta_exec:draft",
+      "payload": "task=t0 method=derivation steps=2 code_units=2588 executed=answered passed=true failed=-"
+    },
+    {
+      "kind": "meta_exec:select",
+      "payload": "task=t0 method=derivation reason=least_action steps=2 code_units=2588 passing=1/1"
+    },
+    {
+      "kind": "meta_exec:result",
+      "payload": "task=t0 status=resolved method=derivation budget_left=7"
+    }
+  ],
+  "derivation": "derivation\n  goal synthesize_from_meaning\n  status open\n  unknown \"apply\"\n    status grounded\n    origin documentation\n    operation map_each\n  unknown \"triz\"\n    status open\n    origin none\n  unknown \"latency\"\n    status open\n    origin none\n  unknown \"vs\"\n    status open\n    origin none\n  unknown \"acoustic\"\n    status open\n    origin none\n  unknown \"damping\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"Apply TRIZ to latency vs acoustic damping\"\n  event 2\n    kind formalize\n    detail \"goal synthesize_from_meaning; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind evidence\n    detail \"the request opens with an operation (apply) and names no data to act on: it asks for the procedure\"\n  event 4\n    kind unknowns\n    detail \"apply, triz, latency, vs, acoustic, damping\"\n  event 5\n    kind hypothesis\n    detail \"apply → map_each:1.00 (documentation)\"\n  event 6\n    kind impasse\n    detail \"triz: unknown, lookup needed\"\n  event 7\n    kind impasse\n    detail \"latency: unknown, lookup needed\"\n  event 8\n    kind impasse\n    detail \"vs: unknown, lookup needed\"\n  event 9\n    kind impasse\n    detail \"acoustic: unknown, lookup needed\"\n  event 10\n    kind impasse\n    detail \"damping: unknown, lookup needed\"\n  event 11\n    kind impasse\n    detail \"5 open unknown(s) outweigh 1 grounded operation(s); no program is claimed\"",
+  "metaExecution": {
+    "status": "resolved",
+    "method": "derivation",
+    "shape": "leaf",
+    "events": [
+      "meta_exec:bounds depth=2 breadth=6 budget=8",
+      "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=Apply TRIZ to latency vs acoustic damping",
+      "meta_exec:test task=t0 checks=answered requires=-",
+      "meta_exec:draft task=t0 method=derivation steps=2 code_units=2588 executed=answered passed=true failed=-",
+      "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=2588 passing=1/1",
+      "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+    ]
+  },
+  "outputProjection": {
+    "text": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.",
+    "notice": "",
+    "content": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.",
+    "document": {
+      "language": "en",
+      "source": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.",
+      "parts": [
+        {
+          "kind": "opaque",
+          "text": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows."
+        }
+      ]
+    },
+    "links_notation": "output-meaning\n  language \"en\"\n  opaque \"A contradiction is a link with a value, not a wall. Ways through:\\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\\nPrecedent from the benchmark corpus:\\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.\"\n",
+    "report": {
+      "output_standard": "cnl-default",
+      "lexical_density": "standard",
+      "compliant": false,
+      "violations": [
+        "sentence-length",
+        "explicit-references"
+      ],
+      "unchecked": [
+        "active-voice",
+        "unambiguous-vocabulary",
+        "ace-grammar",
+        "ste-dictionary",
+        "plain-language-rules",
+        "minimal-english-semantics"
+      ]
+    }
+  }
+}
+{
+  "prompt": "Explain a paradox: zoetrope",
+  "intent": "triz_resolution",
+  "content": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.",
+  "confidence": 0.7,
+  "evidence": [
+    "handler:triz_resolution",
+    "triz_solver:cued:contradiction question",
+    "triz_resolution:refusal:no overlapping precedent",
+    "response:triz_resolution_map",
+    "trace:impulse:Explain a paradox: zoetrope",
+    "trace:formalization:(@USER OP:define ?a paradox zoetrope)",
+    "trace:language:en",
+    "trace:meta:understand:open",
+    "trace:handler:triz_resolution",
+    "trace:deformalize:(@USER OP:define ?a paradox zoetrope):triz_resolution",
+    "prompt:prompt_8c5baa7099927b9e",
+    "impulse:impulse_2c00591fae0b4f55",
+    "language:en",
+    "candidate:candidate_d7437cf5da0fdae3",
+    "statement_weight:formalization:0 weight=1.000000 subject=wikipedia:en:paradox:_zoetrope",
+    "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+    "formalization:formalization_bab8b0b86c9b871a",
+    "formalization:fallback:wikipedia:en:paradox:_zoetrope",
+    "intent_formalization_cache:miss:impulse_d315190955f090a4",
+    "intent_formalization:intent_formalization_2db34e75ea47e146",
+    "intent_formalization:kind:statement",
+    "search:local:search:local_825069b1197b2058",
+    "selected_rule:selected_rule_8b06fb2d3be676be",
+    "intent:triz_resolution",
+    "validation:validation_c29f85315573d07f",
+    "response:triz_resolution",
+    "trace:simplification:trace:simplification_d76b00618c36918b",
+    "trace:trace_af817708e3d1c585",
+    "method:method_8bafcb24f9ae3964"
+  ],
+  "steps": [
+    {
+      "step": "impulse",
+      "detail": "Explain a paradox: zoetrope",
+      "level": "high"
+    },
+    {
+      "step": "formalize",
+      "detail": "Explain a paradox: zoetrope -> (@USER OP:define ?a paradox zoetrope)",
+      "formalization": {
+        "raw": "Explain a paradox: zoetrope",
+        "subject": "@USER",
+        "verb": "OP:define",
+        "object": "?a paradox zoetrope",
+        "tuple": "(@USER OP:define ?a paradox zoetrope)",
+        "interpretations": []
+      },
+      "level": "detailed"
+    },
+    {
+      "step": "detect_language",
+      "detail": "en",
+      "level": "high"
+    },
+    {
+      "step": "meta_reason",
+      "detail": "understand open",
+      "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"Explain a paradox: zoetrope\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"explain, paradox, zoetrope\"",
+      "level": "detailed"
+    },
+    {
+      "step": "invoke_tool",
+      "detail": "response_language_followup",
+      "level": "detailed"
+    },
+    {
+      "step": "invoke_tool",
+      "detail": "project_lookup",
+      "level": "detailed"
+    },
+    {
+      "step": "invoke_tool",
+      "detail": "wikipedia_article_question",
+      "level": "detailed"
+    },
+    {
+      "step": "dispatch_handler",
+      "detail": "tryTrizResolution",
+      "level": "high"
+    },
+    {
+      "step": "deformalize",
+      "detail": "(@USER OP:define ?a paradox zoetrope) ⇒ triz_resolution: A contradiction is a link with a value, not a wall. Ways through:",
+      "projection": {
+        "tuple": "(@USER OP:define ?a paradox zoetrope)",
+        "intent": "triz_resolution",
+        "contentChars": 2588,
+        "evidenceCount": 4,
+        "language": "en",
+        "summary": "(@USER OP:define ?a paradox zoetrope) ⇒ triz_resolution: A contradiction is a link with a value, not a wall. Ways through:"
+      },
+      "answer": "A contradiction is a link with a value, not a wall. Ways through:",
+      "level": "high"
+    }
+  ],
+  "toolCalls": [],
+  "derivationId": "answer_67c3f20b68ced44d",
+  "rawSolverEvents": [
+    {
+      "kind": "impulse",
+      "payload": "Explain a paradox: zoetrope"
+    },
+    {
+      "kind": "language",
+      "payload": "en"
+    },
+    {
+      "kind": "intent",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "candidate",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "validation",
+      "payload": "answered(triz_resolution)=true"
+    },
+    {
+      "kind": "response",
+      "payload": "response:triz_resolution"
+    },
+    {
+      "kind": "trace:simplification",
+      "payload": "triz_resolution=1/1"
+    },
+    {
+      "kind": "trace",
+      "payload": "triz_resolution"
+    }
+  ],
+  "solverEvents": [
+    {
+      "kind": "impulse",
+      "payload": "Explain a paradox: zoetrope"
+    },
+    {
+      "kind": "language",
+      "payload": "en"
+    },
+    {
+      "kind": "candidate",
+      "payload": "formalization:0 score=520 probability=1.000000 subject=wikipedia:en:paradox:_zoetrope"
+    },
+    {
+      "kind": "statement_weight",
+      "payload": "formalization:0 weight=1.000000 subject=wikipedia:en:paradox:_zoetrope"
+    },
+    {
+      "kind": "policy:temperature_selection",
+      "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+    },
+    {
+      "kind": "formalization",
+      "payload": "subject=wikipedia:en:paradox:_zoetrope"
+    },
+    {
+      "kind": "formalization:fallback",
+      "payload": "wikipedia:en:paradox:_zoetrope"
+    },
+    {
+      "kind": "intent_formalization_cache",
+      "payload": "miss impulse_d315190955f090a4"
+    },
+    {
+      "kind": "intent_formalization",
+      "payload": "intent_formalization impulse_d315190955f090a4\n  impulse_id \"impulse_d315190955f090a4\"\n  source_text \"Explain a paradox: zoetrope\"\n  normalized_text \"explain a paradox zoetrope\"\n  language \"en\"\n  kind \"statement\"\n  known \"impulse:impulse_d315190955f090a4\"\n  known \"language:en\"\n  known \"formalization:fallback:wikipedia:en:paradox:_zoetrope\"\n"
+    },
+    {
+      "kind": "intent_formalization:kind",
+      "payload": "statement"
+    },
+    {
+      "kind": "search:local",
+      "payload": "Explain a paradox: zoetrope"
+    },
+    {
+      "kind": "selected_rule",
+      "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+    },
+    {
+      "kind": "intent",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "validation",
+      "payload": "answered(triz_resolution)=true"
+    },
+    {
+      "kind": "response",
+      "payload": "response:triz_resolution"
+    },
+    {
+      "kind": "trace:simplification",
+      "payload": "triz_resolution=1/1"
+    },
+    {
+      "kind": "trace",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "method",
+      "payload": "triz_resolution"
+    },
+    {
+      "kind": "meta_exec:bounds",
+      "payload": "depth=2 breadth=6 budget=8"
+    },
+    {
+      "kind": "meta_exec:task",
+      "payload": "id=t0 depth=0 relation=- children=0 atomic=no_relation text=Explain a paradox: zoetrope"
+    },
+    {
+      "kind": "meta_exec:test",
+      "payload": "task=t0 checks=answered requires=-"
+    },
+    {
+      "kind": "meta_exec:draft",
+      "payload": "task=t0 method=derivation steps=2 code_units=2588 executed=answered passed=true failed=-"
+    },
+    {
+      "kind": "meta_exec:select",
+      "payload": "task=t0 method=derivation reason=least_action steps=2 code_units=2588 passing=1/1"
+    },
+    {
+      "kind": "meta_exec:result",
+      "payload": "task=t0 status=resolved method=derivation budget_left=7"
+    }
+  ],
+  "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"Explain a paradox: zoetrope\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"explain, paradox, zoetrope\"",
+  "metaExecution": {
+    "status": "resolved",
+    "method": "derivation",
+    "shape": "leaf",
+    "events": [
+      "meta_exec:bounds depth=2 breadth=6 budget=8",
+      "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=Explain a paradox: zoetrope",
+      "meta_exec:test task=t0 checks=answered requires=-",
+      "meta_exec:draft task=t0 method=derivation steps=2 code_units=2588 executed=answered passed=true failed=-",
+      "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=2588 passing=1/1",
+      "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+    ]
+  },
+  "outputProjection": {
+    "text": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.",
+    "notice": "",
+    "content": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.",
+    "document": {
+      "language": "en",
+      "source": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.",
+      "parts": [
+        {
+          "kind": "opaque",
+          "text": "A contradiction is a link with a value, not a wall. Ways through:\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\nPrecedent from the benchmark corpus:\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows."
+        }
+      ]
+    },
+    "links_notation": "output-meaning\n  language \"en\"\n  opaque \"A contradiction is a link with a value, not a wall. Ways through:\\n- Range selection: Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed.\\n- Dimension change: Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there.\\n- Separation in time: Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once.\\n- Separation in space: Let each pole own a zone of the system; the contradiction only exists where both were forced into one place.\\n- Separation upon condition: Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies.\\n- Escalate to the supersystem: Merge the conflicting elements into a larger whole that carries both properties at different roles.\\n- Descend to subsystems: Split the element so different parts carry different poles; laminate, layer, distribute.\\n- Phase and state transition: Change phase, state, or field regime so the conflicting property pair ceases to exist.\\n- Accumulate then release: Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction.\\n- Invert the problem: Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work.\\n- Bypass and redefine: Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means.\\n- Partial-spectrum solution: Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name.\\nPrecedent from the benchmark corpus:\\n- Coat tiny pills evenly without wasting coating material or sticking them together. (pharmaceutical manufacturing: coverage vs waste) — methods: family_dimension_change, family_phase_transition\\n- Separate wheat grains from stones of the same size and weight class. (agriculture: purity vs throughput) — methods: family_condition_separation, family_dimension_change\\n- Mow wet grass without the clippings clogging the mower deck. (consumer equipment: cutting quality vs clogging) — methods: family_dimension_change, family_time_separation\\nA contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows.\"\n",
+    "report": {
+      "output_standard": "cnl-default",
+      "lexical_density": "standard",
+      "compliant": false,
+      "violations": [
+        "sentence-length",
+        "explicit-references"
+      ],
+      "unchecked": [
+        "active-voice",
+        "unambiguous-vocabulary",
+        "ace-grammar",
+        "ste-dictionary",
+        "plain-language-rules",
+        "minimal-english-semantics"
+      ]
+    }
+  }
+}

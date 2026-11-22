@@ -64,7 +64,7 @@ test('the browser worker stops on an extends cycle instead of looping', () => {
 
 test('the JavaScript report renders the committed Agent CLI artifact byte for byte', () => {
   assert.equal(
-    contextHierarchyLearning.renderDocument(),
+    contextHierarchyLearning.renderDocumentFrom(read('data/meta/issue-702-context-hierarchy-learning.lino')),
     read('dev/log/issues/702/pulls/818/agent-cli/context-hierarchy-learning-report.lino'),
   );
 });

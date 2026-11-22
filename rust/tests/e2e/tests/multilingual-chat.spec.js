@@ -240,33 +240,30 @@ test.describe('multilingual chat surface', () => {
   });
 
   test('Russian currency conversion resolves as a calculation', async ({ page }) => {
-    const last = await sendPrompt(page, 'Посчитай 1000 рублей в долларах');
+    await page.route('https://api.frankfurter.dev/v2/providers/cbr/rate/rub/usd?date=2026-11-17', route =>
+      route.fulfill({
+        path: require.resolve('../../fixtures/currency-quotes/rub-usd.json'),
+        contentType: 'application/json',
+        headers: { 'access-control-allow-origin': '*' },
+      }));
+    const last = await sendPrompt(page, 'Посчитай 1000 рублей в долларах 2026-11-17');
     await expect(last).toHaveClass(/assistant/);
-    await expect(last).toContainText('1000 рублей в долларах = 11.1731843575 USD');
-    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    await expect(last).toContainText('1000 RUB ≈ 12.12 USD');
+    await expect(last).toContainText('Дата курса: 2026-11-17');
   });
 
-  test('exchange-rate basis prompts resolve as calculations across supported languages', async ({ page }) => {
+  test('exchange-rate basis prompts ask for both currencies across supported languages', async ({ page }) => {
     const cases = [
-      {
-        language: 'en',
-        prompt: 'what dollar exchange rate do you use for calculations?',
-      },
-      { language: 'ru', prompt: 'какой курс долора у тебя при расчетах?' },
-      {
-        language: 'hi',
-        prompt: 'गणना में आप डॉलर का कौन सा विनिमय दर उपयोग करते हैं?',
-      },
-      { language: 'zh', prompt: '你计算时使用什么美元汇率?' },
+      ['what dollar exchange rate do you use for calculations?', 'Which two currencies'],
+      ['какой курс долора у тебя при расчетах?', 'Какие две валюты'],
+      ['गणना में आप डॉलर का कौन सा विनिमय दर उपयोग करते हैं?', 'कौन सी दो मुद्राएँ'],
+      ['你计算时使用什么美元汇率?', '哪两种货币'],
     ];
 
-    for (const { language, prompt } of cases) {
+    for (const [prompt, expected] of cases) {
       const last = await sendPrompt(page, prompt);
-      await expect(last, `${language} reply`).toHaveClass(/assistant/);
-      await expect(last, `${language} calculator`).toContainText('link-calculator');
-      await expect(last, `${language} rate`).toContainText('1 USD in RUB = 89.5 RUB');
-      await expect(last, `${language} detail`).toContainText('Exchange rate: 1 USD = 89.5 RUB');
-      await expect(last, `${language} unknown`).not.toContainText(UNKNOWN_ANSWER_MARKER);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(expected);
     }
   });
 
@@ -734,33 +731,44 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Wikipedia|encyclopedia/i);
   });
 
-  test('Russian capital-of-Russia prompt returns the seeded fact answer', async ({ page }) => {
+  async function mockWikidata(page, subject) {
+    const { wikidataFixture } = await import('../../web/support/fact-fixtures.mjs');
+    await page.route('https://www.wikidata.org/**', async (route) => {
+      const body = wikidataFixture(route.request().url(), subject);
+      await route.fulfill({
+        status: body ? 200 : 404,
+        headers: { 'access-control-allow-origin': '*' },
+        json: body,
+      });
+    });
+  }
+
+  test('Russian capital-of-Russia prompt answers from a Wikidata capture', async ({ page }) => {
+    await mockWikidata(page, 'Q159');
     const last = await sendPrompt(page, 'столица россии');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('Москва');
     await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
   });
 
-  // Issue #127: the fact-query reasoning pipeline pre-warms the cache from
-  // `data/seed/facts.lino` records that carry a `relation` field. The seeded
-  // matrix covers Russia, Japan, France, Germany, China, India, USA, UK, and
-  // Brazil — every country resolves offline in every supported language.
+  // Issue #127: prompts in four languages resolve against explicit publisher fixtures.
   const FACT_QUERY_CASES = [
-    { prompt: 'What is the capital of France?', expected: 'Paris' },
-    { prompt: 'What is the capital of Germany?', expected: 'Berlin' },
-    { prompt: 'What is the capital of China?', expected: 'Beijing' },
-    { prompt: 'What is the capital of India?', expected: 'New Delhi' },
-    { prompt: 'What is the capital of the United States?', expected: 'Washington' },
-    { prompt: 'What is the capital of the UK?', expected: 'London' },
-    { prompt: 'What is the capital of Brazil?', expected: 'Bras' },
-    { prompt: 'Столица Германии', expected: 'Берлин' },
-    { prompt: 'Столица Франции', expected: 'Париж' },
-    { prompt: '中国的首都是什么?', expected: '北京' },
-    { prompt: 'भारत की राजधानी क्या है?', expected: 'दिल्ली' },
+    { subject: 'Q142', prompt: 'What is the capital of France?', expected: 'Paris' },
+    { subject: 'Q183', prompt: 'What is the capital of Germany?', expected: 'Berlin' },
+    { subject: 'Q148', prompt: 'What is the capital of China?', expected: 'Beijing' },
+    { subject: 'Q668', prompt: 'What is the capital of India?', expected: 'New Delhi' },
+    { subject: 'Q30', prompt: 'What is the capital of the United States?', expected: 'Washington' },
+    { subject: 'Q145', prompt: 'What is the capital of the UK?', expected: 'London' },
+    { subject: 'Q155', prompt: 'What is the capital of Brazil?', expected: 'Bras' },
+    { subject: 'Q183', prompt: 'Столица Германии', expected: 'Берлин' },
+    { subject: 'Q142', prompt: 'Столица Франции', expected: 'Париж' },
+    { subject: 'Q148', prompt: '中国的首都是什么?', expected: '北京' },
+    { subject: 'Q668', prompt: 'भारत की राजधानी क्या है?', expected: 'दिल्ली' },
   ];
 
-  for (const { prompt, expected } of FACT_QUERY_CASES) {
+  for (const { subject, prompt, expected } of FACT_QUERY_CASES) {
     test(`fact-query pipeline resolves: ${prompt}`, async ({ page }) => {
+      await mockWikidata(page, subject);
       const last = await sendPrompt(page, prompt);
       await expect(last).toHaveClass(/assistant/);
       await expect(last).toContainText(expected);

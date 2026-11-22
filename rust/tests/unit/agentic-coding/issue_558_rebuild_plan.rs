@@ -9,35 +9,21 @@
 //! serialises to valid Links Notation with a stable content id, and the recipe is
 //! reachable through the agentic interface as the eleventh recipe.
 
+#[path = "../../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::CHANGE_TASK;
+use repair_fixture::REBUILD_TASK;
+use repair_fixture::REPAIR_STRATEGY_TASK;
+use repair_fixture::SELF_HEAL_TASK;
+use repair_fixture::{canonical_change_request, canonical_rebuild_plan};
+
 use formal_ai::agentic_coding::{
-    AgenticPlan, DRIVER_TOOLS, PlannedToolCall, REBUILD_PATH, REBUILD_TASK, is_rebuild_task,
-    plan_chat_step, rebuild_plan as recipe, run_agentic_task,
+    AgenticPlan, is_rebuild_task, plan_chat_step, rebuild_plan as recipe,
 };
-use formal_ai::change_request::canonical_change_request;
 use formal_ai::learning_ledger::HumanApproval;
 use formal_ai::self_improvement::BenchmarkGateReport;
-use formal_ai::{ChatMessage, RebuildPlan, ToolCall, canonical_rebuild_plan, owned_manifest};
+use formal_ai::{ChatMessage, RebuildPlan, owned_manifest};
 use lino_objects_codec::format::parse_indented;
-
-fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
-    match plan_chat_step(messages, tools) {
-        Some(AgenticPlan::ToolCalls(mut calls)) => {
-            assert_eq!(calls.len(), 1, "the planner emits one call per step");
-            calls.remove(0)
-        }
-        other => panic!("expected a single tool call, got {other:?}"),
-    }
-}
-
-fn answer_tool_call(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, result: &str) {
-    let id = format!("call_{}", messages.len());
-    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-        id.clone(),
-        call.tool.clone(),
-        call.arguments.clone(),
-    )]));
-    messages.push(ChatMessage::tool_result(id, &call.tool, result));
-}
 
 /// An accepted change composed through the same human gate the ledger enforces, so the
 /// rebuild plan can only ever follow an approved change.
@@ -185,13 +171,9 @@ fn recognises_the_rebuild_task_without_colliding_with_the_sibling_recipes() {
     // Unrelated and sibling requests do not route here.
     assert!(!is_rebuild_task("what files are in this folder?"));
     assert!(!is_rebuild_task("change this line to uppercase"));
-    assert!(!is_rebuild_task(
-        formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
-    ));
-    assert!(!is_rebuild_task(formal_ai::agentic_coding::CHANGE_TASK));
-    assert!(!is_rebuild_task(
-        formal_ai::agentic_coding::REPAIR_STRATEGY_TASK
-    ));
+    assert!(!is_rebuild_task(SELF_HEAL_TASK));
+    assert!(!is_rebuild_task(CHANGE_TASK));
+    assert!(!is_rebuild_task(REPAIR_STRATEGY_TASK));
     assert!(!is_rebuild_task(
         formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK
     ));
@@ -214,49 +196,24 @@ fn recognises_the_rebuild_task_without_colliding_with_the_sibling_recipes() {
 }
 
 #[test]
-fn planner_walks_the_rebuild_recipe() {
-    let tools = ["web_search", "web_fetch", "write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(REBUILD_TASK)];
-
-    // Step 1: write the generated rebuild-and-reattach plan (no web step — it is a pure
-    // function of the accepted change and the grounded artifacts).
-    let call = expect_single_call(&messages, &tools);
-    assert_eq!(call.tool, "write_file");
-    assert!(call.arguments.contains(REBUILD_PATH));
-    let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
-    assert_eq!(written["content"], recipe::render_document());
-    answer_tool_call(&mut messages, &call, "wrote rebuild-and-reattach.lino");
-
-    // Step 2: verify by reading the document back.
-    let call = expect_single_call(&messages, &tools);
-    assert_eq!(call.tool, "run_command");
-    assert!(call.arguments.contains(REBUILD_PATH));
-    answer_tool_call(&mut messages, &call, &recipe::render_document());
-
-    // Step 3: the recipe is exhausted — the final answer carries the plan.
-    match plan_chat_step(&messages, &tools) {
-        Some(AgenticPlan::Final(answer)) => {
-            assert!(answer.contains(REBUILD_PATH));
-            assert!(answer.contains("reattaches it to"));
-        }
-        other => panic!("expected a final answer, got {other:?}"),
-    }
+fn unconfirmed_rebuild_has_no_write() {
+    let messages = [ChatMessage::user(REBUILD_TASK)];
+    let plan = plan_chat_step(&messages, &["write_file", "run_command"]).unwrap();
+    assert!(matches!(plan, AgenticPlan::Final(text) if text.contains("change_id")));
 }
 
 #[test]
-fn driver_drives_the_rebuild_recipe_to_a_write() {
-    // End-to-end through the in-repo Agent CLI driver: the loop finishes and writes
-    // exactly the generated rebuild-and-reattach plan.
-    assert!(DRIVER_TOOLS.contains(&"write_file"));
-    let outcome = run_agentic_task(REBUILD_TASK).expect("workspace");
-    assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
-    let write = outcome
-        .steps
-        .iter()
-        .find(|step| step.tool == "write_file")
-        .expect("a write step");
-    let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
-    assert_eq!(written["content"], recipe::render_document());
-    assert_eq!(written["path"], REBUILD_PATH);
-    assert!(outcome.final_answer.contains(REBUILD_PATH));
+fn operator_receipts_must_be_current_owned_unambiguous_approvals() {
+    let mut accepted = accepted_change();
+    let id = accepted.change_id.clone();
+    let records = serde_json::to_string(&[&accepted]).unwrap();
+    assert_eq!(
+        recipe::plan_from_accepted_changes(&id, &records).unwrap(),
+        canonical_rebuild_plan()
+    );
+    let duplicate = serde_json::to_string(&[&accepted, &accepted]).unwrap();
+    assert!(recipe::plan_from_accepted_changes(&id, &duplicate).is_none());
+    accepted.benchmark_passed = 0;
+    let rejected = serde_json::to_string(&[&accepted]).unwrap();
+    assert!(recipe::plan_from_accepted_changes(&id, &rejected).is_none());
 }

@@ -50,7 +50,7 @@ data/meta/self-ast/** merge=union
 data/seed/closure-generated-*.lino merge=union
 docs/status.md merge=union
 scripts/hardcoded-language-allowlist.txt merge=union
-js/source-cache/wikifunctions-recurrences.lino merge=union
+rust/tests/fixtures/coding-discovery/wikifunctions/recurrence-replay.lino merge=union
 
 # The seed inventory and the two files generated from it —
 # `rust-script scripts/generate-seed-registry.rs --write` sorts the registry,

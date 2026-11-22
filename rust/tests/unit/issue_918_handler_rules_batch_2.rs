@@ -44,7 +44,7 @@ use formal_ai::{ConversationTurn, FormalAiEngine, SolverConfig, SymbolicAnswer, 
 
 use super::installation_conversion::{DocumentedFormat, documented_conversion_answer};
 
-const RUST_BODY: &str = "`it` resolves to Rust from your prior turn. Compared with C, Rust adds ownership, borrowing, and stronger compile-time checks so memory-safety errors are caught before the program runs while retaining native-code performance.";
+const RUST_RESOLUTION: &str = "The reference resolves to Rust from your earlier turn. I need evidence to answer the follow-up.";
 
 #[test]
 fn the_diagnostic_marker_is_a_seed_table_row() {
@@ -96,17 +96,20 @@ fn an_upper_case_marker_is_not_the_seeded_marker() {
 }
 
 #[test]
-fn a_pronoun_answers_the_seeded_body_of_the_nearest_antecedent() {
+fn a_pronoun_exposes_the_nearest_antecedent_without_asserting_a_fact() {
     let history = [
         ConversationTurn::user("I love Rust."),
         ConversationTurn::assistant("Rust is a systems programming language."),
         ConversationTurn::user("The weather is pleasant."),
         ConversationTurn::assistant("It is."),
     ];
-    let response =
-        UniversalSolver::default().solve_with_history("Why is it safer than C?", &history);
+    let solver = UniversalSolver::default();
+    let response = solver.solve_with_history("Why is it safer than C?", &history);
     assert_eq!(response.intent, "coreference_rust");
-    assert_eq!(response.answer, RUST_BODY);
+    assert_eq!(response.answer, RUST_RESOLUTION);
+    let installation = solver.solve_with_history("Is it installed here?", &history);
+    assert_eq!(installation.intent, "coreference_rust");
+    assert_eq!(installation.answer, RUST_RESOLUTION);
     // The native log keeps the resolution event by id; the browser spells its payload.
     for link in [
         "coreference:resolved:",

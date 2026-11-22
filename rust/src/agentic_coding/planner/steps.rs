@@ -303,7 +303,12 @@ pub(super) fn plan_source_or_owned_goal_step(
                     tool_for(tool_names, Capability::MultiEdit).is_some(),
                 )
             })
-            .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
+            .or_else(|| {
+                if super::has_authoritative_literal_write(task) {
+                    return None;
+                }
+                crate::computer_use::plan_agentic_step(messages, tool_names)
+            })
             .map_or(SourceOrOwnedGoalStep::Unclaimed, |plan| {
                 SourceOrOwnedGoalStep::Claimed(Some(plan))
             })

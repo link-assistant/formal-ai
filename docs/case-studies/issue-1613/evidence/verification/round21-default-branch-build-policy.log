@@ -1,0 +1,30 @@
+✔ all former heavy PR overrides remain closed, including bot branch dispatch (896.085222ms)
+✔ actual compiler, image, application and deployment entries refuse PR execution (622.203537ms)
+✔ the focused PR native check limits execution to lint and isolated regressions (56.676169ms)
+✔ replays main run 43710854562: the E0308 pull request selects the native type check (3.011368ms)
+✔ the PR clippy mode runs main's lint flags on the library and binaries only (39.644107ms)
+✔ recorded Docker cold rebuild is optional and cannot hold the production build behind another build (54.012329ms)
+✔ main release depends on package and admission checks while broad failures reach pipeline status (77.220094ms)
+✔ PRs split the fast JS inventory over two groups; full main inventory retains its measured shard plan (79.333186ms)
+✔ complete PR diff, deletions and source-to-doc renames cannot disappear behind a final docs commit (3.678922ms)
+✔ workflow lint checks only its source closure and retains the real ShellCheck canary (2.584802ms)
+✔ version CLI reads exact immutable root manifest metadata without Git (99.859187ms)
+✔ version CLI reads exact immutable rust manifest metadata without Git (104.842914ms)
+✔ immutable API metadata does not excuse a changed package version (117.592799ms)
+✔ GitHub denials and server failures remain terminal without retries or Git fallback (324.879972ms)
+✔ invalid base cannot start API reads and non-PR or release bypasses stay unchanged (281.781321ms)
+✔ base source custody rejects wrong refs, commits, trees, paths, modes and blob bytes (13.478103ms)
+✔ rust fallback rejects a malformed root manifest instead of switching source layouts (1.718907ms)
+✔ base source reads enforce one aggregate deadline across all awaited metadata (1.061711ms)
+✔ base source reads fail closed on transport, redirects, oversized bodies and invalid UTF8 (10.133855ms)
+✔ changelog acquisition keeps complete Git history and only hydrates its checker closure (10.553348ms)
+✔ base source diagnostics retain public identity and redact unavailable response content (1.590507ms)
+✔ the fast PR lint job runs only scripts that need no installed package (94.048317ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3131.033988

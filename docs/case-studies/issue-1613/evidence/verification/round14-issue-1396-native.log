@@ -1,0 +1,36 @@
+﹣ native offline chat needs a publisher capture to synthesize a recurrence (2.383947ms) # SKIP
+﹣ native offline chat synthesizes a sourced factorial recurrence for en (0.370552ms) # SKIP
+﹣ native offline chat synthesizes a sourced factorial recurrence for ru (0.176871ms) # SKIP
+﹣ native offline chat synthesizes a sourced factorial recurrence for hi (0.147866ms) # SKIP
+﹣ native offline chat synthesizes a sourced fibonacci recurrence for en (0.384829ms) # SKIP
+﹣ native offline chat discovers procedures from verified Wikibooks captures (0.249896ms) # SKIP
+﹣ native offline chat reads ranked publisher pages before giving procedural steps (0.367736ms) # SKIP
+﹣ native localized procedure and follow-up use matching captures over HTTP (0.254856ms) # SKIP
+﹣ native chat uses the localized source for the short Russian prompt (0.495314ms) # SKIP
+﹣ native chat recovers a matching article after discarding an unrelated one (0.557821ms) # SKIP
+﹣ native Responses uses procedural sources with the client web search tool available (0.282677ms) # SKIP
+﹣ native HTTP calculates dated currency pairs only from publisher captures (0.382974ms) # SKIP
+﹣ native HTTP documentation answers require a matching publisher capture (0.187279ms) # SKIP
+﹣ native HTTP release timelines require publisher captures for registered and new film series (0.152735ms) # SKIP
+﹣ native HTTP reads registered airline baggage policy from the checked section (0.168465ms) # SKIP
+﹣ native Agent CLI requires a retrieved capture for a known benchmark issue (0.137326ms) # SKIP
+✔ JavaScript Responses uses procedural sources with the client web search tool available (12603.558041ms)
+✔ JavaScript Codex report confirms destination and context without a Plan-only tool (6089.657607ms)
+▶ JavaScript report shows localized destination and context menus
+  ✔ shows both report menus in en (2418.315677ms)
+  ✔ shows both report menus in hi (380.221506ms)
+  ✔ shows both report menus in zh (309.41738ms)
+  ✔ shows both report menus in es (319.133763ms)
+✔ JavaScript report shows localized destination and context menus (6630.33075ms)
+✔ JavaScript report honors Plan mode and compatible prompt tools (5822.57694ms)
+﹣ native Codex report confirms destination and context without a Plan-only tool (0.34852ms) # SKIP
+﹣ native report shows localized destination and context menus (0.08042ms) # SKIP
+﹣ native report honors Plan mode and compatible prompt tools (0.099986ms) # SKIP
+ℹ tests 27
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 19
+ℹ todo 0
+ℹ duration_ms 32968.139302

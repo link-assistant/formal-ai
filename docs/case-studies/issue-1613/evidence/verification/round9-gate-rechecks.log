@@ -1,0 +1,11 @@
+
+Checking REQUIREMENTS.md and docs/requirements/assembled/ against docs/requirements/ (181 shards)...
+
+REQUIREMENTS.md and its 6 part(s) match the shards.
+
+data/meta/response-language-parity-debt.lino is current
+closure audit (data/meta/closure-audit.lino):
+  unresolved_distinct_honest: measured 1035 / reviewed 1035
+closure audit holds
+minimal-core boundary: 92 handler sources, 18931 outside-core lines
+seed metadata: audited 2609 concepts; 1077 per-record gaps captured in data

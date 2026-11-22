@@ -1,252 +1,85 @@
-//! Issue #412 (R6): coding-oracle fallback for uncatalogued languages.
-//!
-//! The verified catalog templates a fixed set of languages. For a language it
-//! does not template — Swift, Bash, Lua, Haskell — a canonical request like
-//! "write a hello world program in Swift" used to dead-end on the unsupported
-//! answer. The solver now treats the public knowledge bases (the Hello World
-//! Collection, Rosetta Code, …) as cached external APIs and returns a reviewed
-//! snippet plus its output and source attribution, exactly the "code + result"
-//! shape the catalog produces.
-//!
-//! The set is not fixed forever, and that is the point: Kotlin was this file's
-//! headline example until issue #921 catalogued it, and PHP followed it out
-//! under issue #1021, so the first tests below now assert the graduation instead
-//! of the fallback. A language leaving the oracle is the catalog growing, which
-//! is the outcome the fallback exists to make unnecessary.
+//! The shipped runtime composes output programs without a bundled example.
 
-use formal_ai::UniversalSolver;
+use formal_ai::{SolverConfig, UniversalSolver};
 
-const KOTLIN_CATALOG_ANSWER: &str = r#"Here is a minimal Kotlin hello world program:
-
-```kotlin
-fun main() {
-    println("Hello, world!")
-}
-```
-
-Execution status: not run; this program was rediscovered from https://kotlinlang.org/docs/command-line.html and its output contract was checked by decomposition, not by executing it.
-Check command: `kotlinc Main.kt -include-runtime -d Main.jar`
-Run command: `java -jar Main.jar`
-Expected output after verification:
-```text
-Hello, world!
-```
-
-How it works:
-The program prints the text `Hello, world!` to standard output and then exits.
-
-How to test it yourself:
-1. Install the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well).
-2. Save the code above to a file named `Main.kt`.
-3. Check that it compiles: `kotlinc Main.kt -include-runtime -d Main.jar`.
-4. Run it: `java -jar Main.jar`.
-5. Compare the output with the expected output shown above."#;
-
-const PHP_CATALOG_ANSWER: &str = r#"Here is a minimal PHP hello world program:
-
-```php
-<?php
-
-echo "Hello, world!";
-
-?>
-```
-
-Execution status: not run; this program was rediscovered from https://www.php.net/manual/en/tutorial.firstpage.php and its output contract was checked by decomposition, not by executing it.
-Check command: `php -l main.php`
-Run command: `php main.php`
-Expected output after verification:
-```text
-Hello, world!
-```
-
-How it works:
-The program prints the text `Hello, world!` to standard output and then exits.
-
-How to test it yourself:
-1. Install PHP from https://www.php.net/downloads.
-2. Save the code above to a file named `main.php`.
-3. Check that it compiles: `php -l main.php`.
-4. Run it: `php main.php`.
-5. Compare the output with the expected output shown above."#;
-
-const RUST_CATALOG_ANSWER: &str = r#"Here is a minimal Rust hello world program:
-
-```rust
-fn main() {
-    println!("Hello, world!");
-}
-```
-
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
-Check command: `rustc main.rs -o main`
-Run command: `./main`
-Output:
-```text
-Hello, world!
-```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
-
-How it works:
-The program prints the text `Hello, world!` to standard output and then exits.
-
-How to test it yourself:
-1. Install the Rust toolchain from https://rustup.rs.
-2. Save the code above to a file named `main.rs`.
-3. Check that it compiles: `rustc main.rs -o main`.
-4. Run it: `./main`.
-5. Compare the output with the expected output shown above."#;
-
-/// Kotlin used to be the headline example here, because the catalog did not
-/// template it. Issue #921 added it — the hive-mind#2158 production matrix
-/// dispatched a Kotlin Hello World and could not be answered — so Kotlin has
-/// *graduated* from the oracle to the catalog.
-///
-/// That is the direction this handler was built for: its own module doc says it
-/// fires only when the catalog "does not template" a language and is "purely
-/// additive … only ever supplies an answer the caller would otherwise not have".
-/// A catalogued language taking the catalog route is the fallback correctly
-/// standing down, so the guarantee is asserted here rather than deleted.
-#[test]
-fn kotlin_graduated_from_the_oracle_to_the_catalog() {
-    let solver = UniversalSolver::default();
-    let response = solver.solve("Write a hello world program in Kotlin");
-
-    assert_eq!(
-        response.intent, "write_program",
-        "Kotlin is catalogued now, so it must take the catalog route, got: {} / {}",
-        response.intent, response.answer
-    );
-    assert!(
-        response.answer.contains("```kotlin"),
-        "answer must carry a Kotlin code fence, got: {}",
-        response.answer
-    );
-    assert!(
-        response.answer.contains("fun main()"),
-        "answer must contain the catalogued Kotlin template, got: {}",
-        response.answer
-    );
-    // The catalog templates Kotlin but no kotlinc verified it, so the answer
-    // must not borrow the "compiled and ran" claim the verified languages carry.
-    assert!(
-        !response.answer.contains("compiled and ran"),
-        "an unverified toolchain must not be reported as executed, got: {}",
-        response.answer
-    );
-    assert_eq!(response.answer, KOTLIN_CATALOG_ANSWER);
-}
-
-/// Swift has no catalog program, so it still resolves from the oracle -- and
-/// the oracle reads the documentation route before its cached snapshots
-/// (issue #1165 R1165-4): the program is the Swift book's, rediscovered from
-/// its captured guided tour, and the Hello World Collection snapshot that
-/// used to answer here is retired. The oracle route is the one place an
-/// answer carries an external attribution, so the answer is shown whole
-/// (R234-2, issue #960): the source line names the captured page.
-#[test]
-fn swift_hello_world_resolves_from_the_oracle() {
-    let solver = UniversalSolver::default();
-
-    let swift = solver.solve("write me a hello world program in swift");
-    assert_eq!(swift.intent, "write_program_oracle_hello_world_swift");
-    assert_eq!(
-        swift.answer,
-        "Here is a minimal Swift program (hello world):\n\
-         \n\
-         ```swift\n\
-         print(\"Hello, world!\")\n\
-         // Prints \"Hello, world!\"\n\
-         ```\n\
-         \n\
-         Output:\n\
-         ```text\n\
-         Hello, world!\n\
-         ```\n\
-         Source: Documentation capture \
-         (https://raw.githubusercontent.com/swiftlang/swift-book/main/TSPL.docc/GuidedTour/GuidedTour.md), \
-         cached locally as a popular example."
-    );
-}
-
-/// Lua has no catalog row either; its grammar row (meta-language ships
-/// tree-sitter-lua) lets the oracle answer it from lua.org's Programming in
-/// Lua through the documentation route, so its snapshot is retired too
-/// (issue #1165).
-#[test]
-fn lua_hello_world_resolves_from_the_documentation() {
-    let lua = UniversalSolver::default().solve("write me a hello world program in lua");
-    assert_eq!(lua.intent, "write_program_oracle_hello_world_lua");
-    assert_eq!(
-        lua.answer,
-        "Here is a minimal Lua program (hello world):\n\
-         \n\
-         ```lua\n\
-         print(\"Hello, world!\")\n\
-         ```\n\
-         \n\
-         Output:\n\
-         ```text\n\
-         Hello, world!\n\
-         ```\n\
-         Source: Documentation capture (https://www.lua.org/pil/1.html), \
-         cached locally as a popular example."
-    );
-}
-
-/// PHP shared this file's fallback example with Swift until issue #1021, which
-/// asked for a PHP request (issue #723) to be answered by generalization rather
-/// than by a per-prompt fix. Cataloguing PHP is that generalization: the eleven
-/// task templates every other catalogued language carries, verified by `php -l`
-/// and executed in the issue-8 harness, so PHP graduates from the oracle the way
-/// Kotlin did.
-#[test]
-fn php_graduated_from_the_oracle_to_the_catalog() {
-    let solver = UniversalSolver::default();
-    let response = solver.solve("write a hello world program in php");
-
-    assert_eq!(
-        response.intent, "write_program",
-        "PHP is catalogued now, so it must take the catalog route, got: {} / {}",
-        response.intent, response.answer
-    );
-    assert!(
-        response.answer.contains("```php"),
-        "answer must carry a PHP code fence, got: {}",
-        response.answer
-    );
-    assert!(
-        response.answer.contains("<?php"),
-        "answer must contain the catalogued PHP template, got: {}",
-        response.answer
-    );
-    // A real `php` toolchain verified the catalog's earlier template, not
-    // php.net's page example the answer now carries (issue #1165), so the
-    // answer must not borrow that run.
-    assert!(
-        !response.answer.contains("compiled and ran"),
-        "a rediscovered program must not be reported as executed, got: {}",
-        response.answer
-    );
-    assert_eq!(response.answer, PHP_CATALOG_ANSWER);
+fn offline_solver() -> UniversalSolver {
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
 }
 
 #[test]
-fn catalogued_languages_still_use_the_verified_catalog() {
-    let solver = UniversalSolver::default();
-    let response = solver.solve("write a hello world program in Rust");
+fn standard_output_programs_resolve_without_publisher_bytes() {
+    let solver = offline_solver();
+    for (language, fence_and_code, command) in [
+        (
+            "kotlin",
+            "kotlin\nfun main() {\n    println(\"Hello, world!\")\n}\n",
+            "java -jar Main.jar",
+        ),
+        (
+            "swift",
+            "swift\nprint(\"Hello, world!\")\n",
+            "swift hello.swift",
+        ),
+        ("lua", "lua\nprint(\"Hello, world!\")\n", "lua main.lua"),
+        (
+            "php",
+            "php\n<?php\n\necho \"Hello, world!\", PHP_EOL;\n",
+            "php main.php",
+        ),
+        (
+            "rust",
+            "rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n",
+            "./main",
+        ),
+    ] {
+        let response = solver.solve(&format!("Write a hello world program in {language}"));
+        assert_eq!(response.intent, "write_program", "{response:?}");
+        assert_eq!(
+            response.answer.split("```").nth(1),
+            Some(fence_and_code),
+            "{response:?}"
+        );
+        assert!(response.answer.contains(command), "{response:?}");
+        assert!(
+            response.answer.contains("Execution status:"),
+            "{response:?}"
+        );
+        assert!(
+            !response.answer.contains("compiled and ran"),
+            "{response:?}"
+        );
+    }
+}
 
-    // Rust is templated by the verified catalog, so it must NOT route through
-    // the oracle — its "compiled and ran" guarantee stays intact.
-    assert_eq!(
-        response.intent, "write_program",
-        "catalog languages must keep the verified route, got: {} / {}",
-        response.intent, response.answer
-    );
-    assert!(
-        response.answer.contains("compiled and ran"),
-        "catalog answer must keep its verified execution status, got: {}",
-        response.answer
-    );
-    assert_eq!(response.answer, RUST_CATALOG_ANSWER);
+#[test]
+fn offline_renderer_quotes_a_held_out_literal_for_each_target() {
+    let solver = offline_solver();
+    for (language, fence_and_code) in [
+        ("bash", "bash\nprintf '%s\\n' 'Three {plums} $4'\n"),
+        (
+            "haskell",
+            "haskell\nmain :: IO ()\nmain = putStrLn \"Three {plums} $4\"\n",
+        ),
+        (
+            "rust",
+            "rust\nfn main() {\n    println!(\"{}\", \"Three {plums} $4\");\n}\n",
+        ),
+    ] {
+        let response = solver.solve(&format!(
+            "Write a program in {language} to print \"Three {{plums}} $4\""
+        ));
+        assert_eq!(response.intent, "write_program", "{response:?}");
+        assert_eq!(
+            response.answer.split("```").nth(1),
+            Some(fence_and_code),
+            "{response:?}"
+        );
+        assert!(
+            !response.answer.contains("compiled and ran"),
+            "{response:?}"
+        );
+    }
 }

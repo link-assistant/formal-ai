@@ -62,8 +62,7 @@ function sourceCallableRequestSignature(prompt) {
   return { origin: "declared", name, parameters, declaration: "def " + name + "(" + inline[1] + ")" + suffix + ":" };
 }
 
-function trySourceRecurrenceSynthesis(prompt) {
-  const record = recurrenceSourceMatch(prompt);
+function trySourceRecurrenceSynthesis(prompt, record) {
   if (!record || !verifiedRecurrenceRecord(record)) return null;
   const signature = sourceCallableRequestSignature(prompt);
   const contract = bindCallableReadCoverage({
@@ -78,11 +77,12 @@ function trySourceRecurrenceSynthesis(prompt) {
   const expression = renderRecurrenceExpression(root, functionName);
   if (!expression) return null;
   const observation = recurrenceObservation(prompt);
+  if (observation === null) return null;
   const result = evaluateRecurrenceExpression(
     root,
     root,
     parameter,
-    observation,
+    BigInt(observation),
     0,
   );
   if (result === null) return null;
@@ -90,7 +90,17 @@ function trySourceRecurrenceSynthesis(prompt) {
   const imports = String(prompt || "").split("\n").map(line => line.trim()).filter(line => /^(?:import\s+|from\s+\S+\s+import\s+)/u.test(line));
   const code = `${imports.length ? imports.join("\n") + "\n\n" : ""}${declaration}\n    return ${expression}\n\nprint(${functionName}(${observation}))`;
   const sourceUrl = codingChildValue(record, "source_url");
-  const conceptUrl = codingChildValue(record, "concept_source_url");
+  const sources = [sourceUrl];
+  const provenance = [];
+  for (const name of ["source", "definition", "source_test", "search", "concept_source"]) {
+    const urls = record.children.filter(node => node.name === name + "_url");
+    const digests = record.children.filter(node => node.name === name + "_sha256");
+    for (const [index, url] of urls.entries()) {
+      if (url.value && !sources.includes(url.value)) sources.push(url.value);
+      if (url.value && digests[index]?.value) provenance.push(
+        "source_capture:" + url.value + "#sha256=" + digests[index].value);
+    }
+  }
   const tests = record.children.filter((child) => child.name === "source_test");
   return {
     intent: "write_program",
@@ -103,8 +113,8 @@ function trySourceRecurrenceSynthesis(prompt) {
       "",
       `Result for ${functionName}(${observation}): ${result}`,
       "",
-      `How it works: the cached abstract definition was formalized into a boundary condition and a transition whose ${codingChildValue(record, "termination_measure")} measure strictly decreases on every recursive call.`,
-      `Validated against ${tests.length} source-provided tests. Sources: ${sourceUrl}; ${conceptUrl}.`,
+      `How it works: the publisher abstract definition was formalized into a boundary condition and a transition whose ${codingChildValue(record, "termination_measure")} measure strictly decreases on every recursive call.`,
+      `Validated against ${tests.length} source-provided tests. Sources: ${sources.join("; ")}.`,
     ].join("\n"),
     confidence: 1.0,
     evidence: [
@@ -116,8 +126,8 @@ function trySourceRecurrenceSynthesis(prompt) {
         .map((child) => child.value)
         .join(",")}`,
       `synthesis:source_tests:passed=${tests.length}`,
-      `source:${sourceUrl}`,
-      `source:${conceptUrl}`,
+      ...sources.map(url => `source:${url}`),
+      ...provenance,
       "execution_environment:pure browser evaluation of source-derived recurrence AST",
       `execution_result:${result}`,
     ],

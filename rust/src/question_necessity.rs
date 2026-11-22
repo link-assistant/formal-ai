@@ -168,6 +168,16 @@ pub fn authorize_question(
 /// questions authorized by the seed policy.
 #[must_use]
 pub fn enforce_questions(body: &str, log: &mut EventLog) -> String {
+    enforce_classified_questions(body, log, false)
+}
+
+/// Apply the same search trace and question budget to a reply that supplies
+/// only a clarification for a required input identified by the solver.
+pub(crate) fn enforce_requirement_questions(body: &str, log: &mut EventLog) -> String {
+    enforce_classified_questions(body, log, true)
+}
+
+fn enforce_classified_questions(body: &str, log: &mut EventLog, requires_input: bool) -> String {
     let candidates = question_candidates(body);
     if candidates.is_empty() {
         return body.to_owned();
@@ -181,7 +191,14 @@ pub fn enforce_questions(body: &str, log: &mut EventLog) -> String {
     for candidate in candidates {
         let question_id = stable_id("question", &normalized_question_text(&candidate.text));
         let trace = record_search_trace(log, &question_id);
-        let classification = classify(&candidate.text, candidate.in_requirement_section);
+        let classification = if requires_input {
+            QuestionClassification {
+                class: QuestionClass::Requirement,
+                matched_cue: Some(String::from("required_input")),
+            }
+        } else {
+            classify(&candidate.text, candidate.in_requirement_section)
+        };
         log.append(
             "question_necessity:classification",
             trace_payload(&[
@@ -666,6 +683,9 @@ fn looks_like_url(text: &str) -> bool {
         .rsplit_once(char::is_whitespace)
         .map_or(text, |(_, token)| token);
     text_predicate_matches("url", token)
+        || token
+            .split_once('：')
+            .is_some_and(|(_, value)| text_predicate_matches("url", value))
 }
 
 fn is_replayed_question(text: &str) -> bool {

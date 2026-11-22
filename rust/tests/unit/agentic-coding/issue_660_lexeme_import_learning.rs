@@ -5,6 +5,9 @@ use formal_ai::agentic_coding::{LEXEME_IMPORT_LEARNING_PATH, REPORTS, run_agenti
 
 const DIFFERENTLY_WORDED_TASK: &str = "Study the persisted bulk vocabulary ingestion evidence as an associative network, rank reusable amendments without adopting them, and save lexeme-import-learning-report.lino";
 
+const REPORT_MEMORY: &str =
+    include_str!("../../../../data/meta/issue-660-lexeme-import-learning.lino");
+
 #[test]
 fn issue_660_report_is_derived_from_persisted_observations() {
     let memory = include_str!("../../../../data/meta/issue-660-lexeme-import-learning.lino");
@@ -20,7 +23,7 @@ fn issue_660_report_is_derived_from_persisted_observations() {
 
 #[test]
 fn issue_660_learning_remains_human_review_gated() {
-    let report = lexeme_import_learning::render_document();
+    let report = lexeme_import_learning::render_document_from(REPORT_MEMORY);
     assert!(report.starts_with("lexeme_import_learning_report\n  issue \"660\"\n"));
     assert!(report.contains("decision \"awaiting_human_review\""));
     assert!(
@@ -48,7 +51,10 @@ fn generalized_table_routes_different_issue_660_wording() {
 
 #[test]
 fn formal_ai_executes_the_whole_issue_660_learning_task() {
-    let outcome = run_agentic_task(DIFFERENTLY_WORDED_TASK).expect("agent workspace");
+    let outcome = run_agentic_task(&format!(
+        "{DIFFERENTLY_WORDED_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("agent workspace");
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.turns, 3);
     assert_eq!(outcome.steps.len(), 2);
@@ -59,7 +65,7 @@ fn formal_ai_executes_the_whole_issue_660_learning_task() {
     assert_eq!(arguments["path"], LEXEME_IMPORT_LEARNING_PATH);
     assert_eq!(
         arguments["content"],
-        lexeme_import_learning::render_document()
+        lexeme_import_learning::render_document_from(REPORT_MEMORY)
     );
     assert_eq!(outcome.steps[1].tool, "run_command");
     assert!(outcome.final_answer.contains("human-review-gated report"));

@@ -130,9 +130,9 @@ pub const PROGRAM_PLAN_RULES_LINO: &str =
     include_str!("../../../../data/seed/program-plan-rules.lino");
 pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
     include_str!("../../../../data/seed/self-improvement-loop.lino");
-pub const DEMO_DIALOGS_LINO: &str = include_str!("../../../../data/seed/demo-dialogs.lino");
 pub const ENVIRONMENTS_LINO: &str = include_str!("../../../../data/seed/environments.lino");
-pub const PROJECTS_LINO: &str = include_str!("../../../../data/seed/projects.lino");
+// Historical source-suite fixture for weighted project statement behavior.
+pub const PROJECTS_LINO: &str = include_str!("../fixtures/project-statements-legacy.lino");
 
 /// Embedded copy of every Links Notation seed file. Returned in declaration
 /// order so callers can render the merged bundle deterministically.
@@ -308,7 +308,6 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/self-improvement-loop.lino",
             SELF_IMPROVEMENT_LOOP_LINO,
         ),
-        ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
         ("data/seed/environments.lino", ENVIRONMENTS_LINO),
         ("data/seed/projects.lino", PROJECTS_LINO),
     ]

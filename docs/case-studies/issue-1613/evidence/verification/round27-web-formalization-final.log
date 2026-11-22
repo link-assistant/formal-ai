@@ -1,0 +1,25 @@
+▶ the shared text formalizer
+  ✔ tokens keep apostrophes and numbers whole and set Han runs apart (37.201586ms)
+  ✔ an anaphor and a clause continuation keep the subject; a negation cue denies (1445.802623ms)
+  ✔ every language reads through the same lexicon (118.820447ms)
+  ✔ a shared surface goes to the meaning in more languages, then with fewer surfaces, then declared first (52.957097ms)
+  ✔ a sentence-opening word is a name only when the text writes it as one elsewhere (7.979474ms)
+  ✔ a statement deformalizes subject first, in any language (6.089901ms)
+✔ the shared text formalizer (1676.469628ms)
+▶ page formalization
+  ✔ a page reports every sentence, its unknown words and its surviving facts (28.045747ms)
+  ✔ a sentence whose terms are all known is covered and its fact survives (4.206637ms)
+  ✔ nothing on a cached page is dropped silently (1617.866109ms)
+✔ page formalization (1653.023041ms)
+▶ the cached corpus and its ratchet
+  ✔ every language holds the same topics, each with its source URL and revision id (10.30354ms)
+  ✔ page formalization does not fall below its ratchet (1331.144849ms)
+✔ the cached corpus and its ratchet (1342.022933ms)
+ℹ tests 11
+ℹ suites 3
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5599.614552

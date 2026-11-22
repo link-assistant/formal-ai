@@ -18,7 +18,7 @@ router — the `otherwise` edge in Part 1 stands for all of them.
 ```mermaid
 flowchart TD
     user["user task"] --> router{"plan_chat_step<br/>routes by keywords"}
-    router -->|"formaliz / knowledge base / fisherman"| formalize["Formalize a text into a knowledge base (#468)"]
+    router -->|"formalize a text / knowledge base"| formalize["Formalize a text into a knowledge base (#468)"]
     router -->|"more detailed / grammatical number / a known concept"| meaning["Make a meaning more detailed (#538)"]
     router -->|"mermaid / diagram / visual overview"| diagram["Generate these diagrams (#538)"]
     router -->|"cst/ast / abstract-syntax / reason about itself"| self_ast["Store the CST/AST of the meta algorithm (#538)"]
@@ -29,9 +29,9 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    formalize_task["user task<br/>(formaliz / knowledge base / fisherman)"]
+    formalize_task["user task<br/>(formalize a text / knowledge base)"]
     formalize_task --> formalize_0["1. web_search<br/>find the source text"]
-    formalize_0 --> formalize_1["2. web_fetch<br/>read it; a tool error falls back to the canonical synopsis"]
+    formalize_0 --> formalize_1["2. web_fetch<br/>read and verify the publisher text or report a source gap"]
     formalize_1 --> formalize_2["3. write_file<br/>formalize prose into Links Notation"]
     formalize_2 --> formalize_3["4. run_command<br/>cat the file to verify the write landed"]
     formalize_3 --> formalize_final(["final answer<br/>the artifact inline"])
@@ -43,8 +43,8 @@ flowchart LR
 flowchart LR
     meaning_task["user task<br/>(more detailed / grammatical number / a known concept)"]
     meaning_task --> meaning_0["1. web_search<br/>find the concept's Wikidata lexemes"]
-    meaning_0 --> meaning_1["2. web_fetch<br/>read the forms; recover the missing plural"]
-    meaning_1 --> meaning_2["3. write_file<br/>re-derive the grounded block, byte-for-byte the seed"]
+    meaning_0 --> meaning_1["2. web_fetch<br/>verify the lexemes and read their grammatical forms"]
+    meaning_1 --> meaning_2["3. write_file<br/>derive the meaning block from the verified forms"]
     meaning_2 --> meaning_3["4. run_command<br/>cat the block to verify"]
     meaning_3 --> meaning_final(["final answer<br/>the artifact inline"])
 ```

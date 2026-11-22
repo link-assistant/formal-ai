@@ -1,7 +1,7 @@
 use formal_ai::FormalAiEngine;
 
 #[test]
-fn calendar_and_currency_share_the_worker_acceptance_cases() {
+fn calendar_calculations_share_the_worker_acceptance_cases() {
     let rows: serde_json::Value = serde_json::from_str(include_str!(
         "../../../data/parity/issue-1589-calendar-currency.json"
     ))
@@ -48,13 +48,6 @@ fn calendar_and_currency_share_the_worker_acceptance_cases() {
                 && (step.detail.contains('=') || step.detail.contains('×'))
         }) {
             failures.push(format!("{prompt}: missing actual arithmetic derivation"));
-        }
-        if evidence.starts_with("currency:") {
-            for text in ["2026-11-17", "https://www.cbr.ru/"] {
-                if !answer.answer.contains(text) {
-                    failures.push(format!("{prompt}: missing rate provenance {text:?}"));
-                }
-            }
         }
     }
     assert!(

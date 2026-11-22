@@ -16,8 +16,6 @@ pub const AGENTIC_TOOL_CAPABILITIES_LINO: &str =
     include_str!("../../embedded/data/seed/agentic-tool-capabilities.lino");
 pub const AGREEMENT_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/agreement-rules.lino");
-pub const APPROVED_LESSONS_LINO: &str =
-    include_str!("../../embedded/data/seed/approved-lessons.lino");
 pub const BRAINSTORM_SEEDS_LINO: &str =
     include_str!("../../embedded/data/seed/brainstorm-seeds.lino");
 pub const CALLER_CONTEXT_LINO: &str = include_str!("../../embedded/data/seed/caller-context.lino");
@@ -60,7 +58,6 @@ pub const CONTRIBUTION_ARTIFACTS_LINO: &str =
 pub const COREFERENCE_LINO: &str = include_str!("../../embedded/data/seed/coreference.lino");
 pub const CREATIVE_COMPOSITION_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/creative-composition-rules.lino");
-pub const DEMO_DIALOGS_LINO: &str = include_str!("../../embedded/data/seed/demo-dialogs.lino");
 pub const DERIVATION_SCHEMA_LINO: &str =
     include_str!("../../embedded/data/seed/derivation-schema.lino");
 pub const DIAGNOSTIC_CODE_SHAPES_LINO: &str =
@@ -69,11 +66,8 @@ pub const DRAFT_STRATEGIES_LINO: &str =
     include_str!("../../embedded/data/seed/draft-strategies.lino");
 pub const ENTITY_NAMES_LINO: &str = include_str!("../../embedded/data/seed/entity-names.lino");
 pub const ENVIRONMENTS_LINO: &str = include_str!("../../embedded/data/seed/environments.lino");
-pub const FACT_CAPTURES_LINO: &str = include_str!("../../embedded/data/seed/fact-captures.lino");
 pub const FACT_CHECK_SOURCES_LINO: &str =
     include_str!("../../embedded/data/seed/fact-check-sources.lino");
-pub const FACT_REALIZATION_LINO: &str =
-    include_str!("../../embedded/data/seed/fact-realization.lino");
 pub const FACTS_LINO: &str = include_str!("../../embedded/data/seed/facts.lino");
 pub const FEATURE_CAPABILITIES_LINO: &str =
     include_str!("../../embedded/data/seed/feature-capabilities.lino");
@@ -477,7 +471,6 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/agent-info.lino", AGENT_INFO_LINO),
         ("data/seed/agentic-tool-capabilities.lino", AGENTIC_TOOL_CAPABILITIES_LINO),
         ("data/seed/agreement-rules.lino", AGREEMENT_RULES_LINO),
-        ("data/seed/approved-lessons.lino", APPROVED_LESSONS_LINO),
         ("data/seed/brainstorm-seeds.lino", BRAINSTORM_SEEDS_LINO),
         ("data/seed/caller-context.lino", CALLER_CONTEXT_LINO),
         ("data/seed/client-completion-contracts.lino", CLIENT_COMPLETION_CONTRACTS_LINO),
@@ -502,15 +495,12 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/contribution-artifacts.lino", CONTRIBUTION_ARTIFACTS_LINO),
         ("data/seed/coreference.lino", COREFERENCE_LINO),
         ("data/seed/creative-composition-rules.lino", CREATIVE_COMPOSITION_RULES_LINO),
-        ("data/seed/demo-dialogs.lino", DEMO_DIALOGS_LINO),
         ("data/seed/derivation-schema.lino", DERIVATION_SCHEMA_LINO),
         ("data/seed/diagnostic-code-shapes.lino", DIAGNOSTIC_CODE_SHAPES_LINO),
         ("data/seed/draft-strategies.lino", DRAFT_STRATEGIES_LINO),
         ("data/seed/entity-names.lino", ENTITY_NAMES_LINO),
         ("data/seed/environments.lino", ENVIRONMENTS_LINO),
-        ("data/seed/fact-captures.lino", FACT_CAPTURES_LINO),
         ("data/seed/fact-check-sources.lino", FACT_CHECK_SOURCES_LINO),
-        ("data/seed/fact-realization.lino", FACT_REALIZATION_LINO),
         ("data/seed/facts.lino", FACTS_LINO),
         ("data/seed/feature-capabilities.lino", FEATURE_CAPABILITIES_LINO),
         ("data/seed/formal-language-projections.lino", FORMAL_LANGUAGE_PROJECTIONS_LINO),

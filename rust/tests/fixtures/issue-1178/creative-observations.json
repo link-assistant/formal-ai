@@ -1,0 +1,36 @@
+{
+  "rhyme": {
+    "language": "en",
+    "classes": [
+      {
+        "id": "ight",
+        "words": ["night", "light", "bright", "white", "sight", "flight"],
+        "source_url": "https://en.wiktionary.org/wiki/Rhymes:English/aɪt"
+      },
+      {
+        "id": "ay",
+        "words": ["day", "way", "say"],
+        "source_url": "https://en.wiktionary.org/wiki/Rhymes:English/eɪ"
+      }
+    ]
+  },
+  "planning": {
+    "destination": "Harbor City",
+    "places": [
+      {"name":"Harbor Archive","district":"Harbor","category":"archive","hours":"10:30-12:00","visit_minutes":45,"source_url":"https://example.org/archive"},
+      {"name":"Signal Garden","district":"Harbor","category":"garden","hours":"09:00-18:00","visit_minutes":90,"source_url":"https://example.org/garden"},
+      {"name":"River Workshop","district":"River","category":"museum","hours":"12:00-18:00","visit_minutes":120,"source_url":"https://example.org/workshop"},
+      {"name":"Hill Observatory","district":"Hill","category":"observatory","hours":"09:00-19:00","visit_minutes":60,"source_url":"https://example.org/observatory"},
+      {"name":"Letterpress Gallery","district":"Hill","category":"gallery","hours":"10:00-16:00","visit_minutes":65,"source_url":"https://example.org/gallery"},
+      {"name":"Wharf Lookout","district":"River","category":"walk","hours":"09:00-18:00","visit_minutes":30,"source_url":"https://example.org/lookout"}
+    ]
+  },
+  "advice": {
+    "topic": "project changelog",
+    "items": [
+      {"text":"Group related changes.","grade":"anecdote","source":"Maintainer notes","source_url":"https://example.org/maintainer-notes"},
+      {"text":"Publish release notes.","grade":"authority_guideline","source":"Project policy","source_url":"https://example.org/policy"},
+      {"text":"Log timestamps consistently.","grade":"primary_study","source":"Project evaluation","source_url":"https://example.org/evaluation"}
+    ]
+  }
+}

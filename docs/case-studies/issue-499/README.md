@@ -17,7 +17,7 @@ drives *two* entry points through one seed-declared registry:
 - in chat, it is recognized as `learn_from_source` and acknowledged in the
   prompt's language, reporting the auto-learning coverage split; and
 - through the **Agent CLI**, the very same directive drives the human-gated
-  Google Trends learning recipe that writes the committed learning report.
+  Google Trends learning recipe that writes a report for the acquired feed.
 
 Nothing is auto-adopted: the frontier of prompts the engine cannot yet resolve
 flows into the issue-#558 human-gated self-improvement loop for triage.
@@ -37,7 +37,7 @@ flows into the issue-#558 human-gated self-improvement loop for triage.
 - Seed-declared learnable-source registry:
   [`../../../data/seed/learning-sources.lino`](../../../data/seed/learning-sources.lino)
 - Generated learning-frontier artifact:
-  [`../../../data/meta/google-trends-learning.lino`](../../../data/meta/google-trends-learning.lino)
+  [Historical learning report](../issue-498/replay/google-trends-learning.lino)
 
 ## 1. Collected Data
 
@@ -71,9 +71,9 @@ download or verify.
 | R499-2 | The reported directive must no longer return `intent: unknown`. | `try_learn_from_source` routes it to `intent "learn_from_source"` with high confidence; `tests/unit/issue_499_learn_from_source.rs` pins the exact reported prompt. |
 | R499-3 | Recognition must be language-agnostic, proven with different wording per language. | Detection reads the seed `learning_sources` registry (language-agnostic directive cues + native-language keywords) so `en`, `ru`, `hi`, and `zh` directives all route; the acknowledgement is localized to the prompt's language. |
 | R499-4 | Routing must be data-driven, never a hardcoded URL or phrase. | Production code branches only on a source's declared `capability` slug (`LearningSources::match_directive`); a directive needs both a learning cue and a declared source, and a new source is a seed edit. |
-| R499-5 | The directive must feed the auto-learning process rather than answer in isolation. | Both entry points route the Google Trends learning frontier through the human-gated issue-#558 self-improvement loop; of 80 trending prompts, 20 are already routed and 60 land on the frontier — nothing is auto-adopted. |
-| R499-6 | Drive the *same* teaching directive through Formal AI's own Agent CLI. | `is_google_trends_learning_task` recognizes the seed-driven directive, so `run_agentic_task(<reported prompt>)` walks `write_file -> run_command -> final` and writes `data/meta/google-trends-learning.lino`. |
-| R499-7 | Pin the Agent CLI session byte-for-byte and prove it live. | `tests/unit/issue_499_learn_from_source.rs` compares a fresh run with `agent-cli-session-learn-from-source.json`; `.github/workflows/release.yml` drives the directive through the real external Agent CLI in CI. |
+| R499-5 | The directive must feed the auto-learning process rather than answer in isolation. | Both native entry points route the current Google Trends frontier through the issue-#558 loop. The original archived run observed 20 routed and 60 frontier prompts. |
+| R499-6 | Drive the *same* teaching directive through Formal AI's own Agent CLI. | `is_google_trends_learning_task` recognizes the seed-driven directive, so `run_agentic_task(<reported prompt>)` walks `write_file -> run_command -> final` and writes `google-trends-learning.lino`. |
+| R499-7 | Pin the Agent CLI session byte-for-byte and prove it live. | The original session is archived, and the current test asserts the same tool sequence and the RSS capture digest. The real external Agent CLI scenario injects the RSS in CI. |
 | R499-8 | Keep the documentation and implementation contract test-covered. | `tests/unit/docs_requirements_issue_499.rs` protects this case-study evidence, and the issue-specific tests protect routing, localization, recipe driving, and artifact freshness. |
 
 ## 3. Root Cause
@@ -115,12 +115,11 @@ declared source (its host or one of its keywords). Both entry points call it:
   — the Agent CLI recipe router. It now recognizes the same seed-driven directive
   (for the `google_trends_learning` capability) in addition to the operator-worded
   learning-frontier task, so the reported prompt drives the recipe that writes
-  `data/meta/google-trends-learning.lino`.
+  `google-trends-learning.lino`.
 
 `src/google_trends_learning.rs::trending_learning_report` is the auto-learning
 loop the directive feeds. It re-answers every Google Trends catalog prompt, splits
-them into the ones the engine already routes (20) and the **learning frontier**
-(60), and hands that frontier to the human-gated issue-#558 learner. Trending
+them into the ones the engine already routes and the **learning frontier**, and hands that frontier to the human-gated issue-#558 learner. Trending
 searches are open-domain questions, not program-plan modifiers, so the learner
 honestly adopts nothing — the value is the auditable frontier and the proof the
 gap flows into the gated loop rather than off a cliff.
@@ -132,7 +131,7 @@ gap flows into the gated loop rather than off a cliff.
 | Issue #498 Google Trends catalog + learning recipe | Already turns Trends into multilingual prompts and routes the frontier through the gated loop. | Reused directly: the #499 directive routes into the *same* `trending_learning_report` and Agent CLI recipe rather than a parallel path. |
 | Issue #558 human-gated self-improvement loop | Provides the proposal-only learner that adopts nothing without review. | Reused as the destination for the learning frontier the directive surfaces. |
 | Existing seed-driven routing (intents, responses) | The engine already routes intents from data, not code branches. | Mirrored with a new `learning-sources.lino` registry so the directive is data-driven and multilingual. |
-| Google Trends RSS feed / API alpha / pytrends | Candidate live-source ingestion paths. | RSS snapshot kept as the deterministic source; API alpha and pytrends recorded as future prior art, not CI dependencies. |
+| Google Trends RSS feed / API alpha / pytrends | Candidate live-source ingestion paths. | Runtime consumes the regional RSS through the verified source client. CI passes a historical RSS response to that client explicitly. |
 | Issue #527 Agent CLI session pinning | Established byte-for-byte generated artifacts driven by the in-repo CLI. | Mirrored: the reported directive's Agent CLI session is pinned and driven live in CI. |
 
 ## 6. Verification
@@ -153,13 +152,13 @@ change, focused coverage verifies:
   navigation request or a sourceless cue does not trigger it);
 - the frontier flows into the human-gated loop and nothing is auto-adopted;
 - the same reported directive drives the Agent CLI learning recipe to write
-  `data/meta/google-trends-learning.lino`;
-- a fresh Agent CLI run matches the committed
-  `agent-cli-session-learn-from-source.json`; and
+  `google-trends-learning.lino`;
+- the same tool sequence as the archived session verifies a generated document
+  carrying the supplied capture digest; and
 - this documentation/evidence contract.
 
 The real external Agent CLI drives the directive end-to-end in CI
-(`.github/workflows/release.yml`) against a live `formal-ai serve`, writing the
+(`.github/workflows/agent-cli-e2e.yml`) against a live `formal-ai serve`, writing the
 learning report and asserting the `human_gated` canary — captured in
 `agent-cli-e2e-run-learn-from-source.log`.
 

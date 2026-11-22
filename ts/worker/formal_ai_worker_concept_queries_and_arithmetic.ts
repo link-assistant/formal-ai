@@ -522,27 +522,6 @@ const PERCENT_OF_CURRENCY_CODES = new Map([
   ["₽", "RUB"],
 ]);
 
-const DEFAULT_CURRENCY_RATES = new Map([
-  ["USD:EUR", 0.92],
-  ["USD:GBP", 0.79],
-  ["USD:JPY", 148.5],
-  ["USD:CHF", 0.88],
-  ["USD:CNY", 7.25],
-  ["USD:RUB", 89.5],
-  ["USD:INR", 86.5],
-  ["USD:CLF", 0.022],
-  ["USD:VND", 25810.0],
-  ["USD:KZT", 470.0],
-  ["EUR:USD", 1.087],
-  ["EUR:GBP", 0.86],
-  ["EUR:JPY", 161.5],
-  ["EUR:CHF", 0.96],
-  ["GBP:USD", 1.27],
-  ["GBP:EUR", 1.16],
-]);
-
-const USD_RUB_RATE_EXPRESSION = "1 USD in RUB";
-
 // Issue #386: the canonical ISO 4217 code is the recognizer's output, so it
 // stays in code; only the recognition vocabulary lives in the seed. Mirrors the
 // role -> code mapping the Rust calculator handlers resolve from the same roles.
@@ -565,6 +544,8 @@ function currencyCodeForRole(role) {
 // from доллар / руб without listing each inflected form. The calculator regexes
 // only ever feed this Latin or Cyrillic tokens.
 function currencyCodeFromWord(value) {
+  if (PERCENT_OF_CURRENCY_CODES.has(value)) return PERCENT_OF_CURRENCY_CODES.get(value);
+  if (/^[A-Z]{3}$/.test(value) && handlerRulesTableValue("currency-quote-provider", "iso-codes")?.split("|").includes(value)) return value;
   const lower = String(value || "").toLowerCase();
   if (!lower) return "";
   for (const role of [
@@ -584,20 +565,6 @@ function currencyCodeFromWord(value) {
     }
   }
   return "";
-}
-
-function defaultCurrencyRate(from, to) {
-  if (from === to) return 1;
-  const direct = DEFAULT_CURRENCY_RATES.get(`${from}:${to}`);
-  if (direct) return direct;
-  const inverse = DEFAULT_CURRENCY_RATES.get(`${to}:${from}`);
-  if (inverse) return 1 / inverse;
-  if (from !== "USD" && to !== "USD") {
-    const fromUsd = defaultCurrencyRate(from, "USD");
-    const usdTo = defaultCurrencyRate("USD", to);
-    if (fromUsd && usdTo) return fromUsd * usdTo;
-  }
-  return null;
 }
 
 // Issue #386: the trailing currency word in an "N% of M <currency>" expression
@@ -651,122 +618,6 @@ function evaluatePercentOfExpression(expression) {
     currencyCodeFromWord(match[4]);
   const result = formatArithmeticResult((amount * percent) / 100);
   return currency ? `${result} ${currency}` : result;
-}
-
-function evaluateCurrencyConversionExpression(expression) {
-  const match = String(expression || "")
-    .trim()
-    .match(
-      /^([+-]?\d+(?:[.,]\d+)?)\s+(.+?)\s+(?:in|as|to|в|во|к)\s+(.+)$/iu,
-    );
-  if (!match) return null;
-  const amount = Number(match[1].replace(",", "."));
-  if (!Number.isFinite(amount)) return null;
-  const from = currencyCodeFromWord(match[2].trim());
-  const to = currencyCodeFromWord(match[3].trim());
-  if (!from || !to) return null;
-  const rate = defaultCurrencyRate(from, to);
-  if (!rate) return null;
-  return `${formatArithmeticResult(amount * rate)} ${to}`;
-}
-
-function usdRubRateDetail() {
-  const rate = defaultCurrencyRate("USD", "RUB");
-  if (!rate) return "";
-  return `Exchange rate: 1 USD = ${formatArithmeticResult(rate)} RUB (source: default (hardcoded), date: unknown)`;
-}
-
-function evaluateUsdRubRateBasis() {
-  const wasmResult = wasmEvaluateArithmetic(USD_RUB_RATE_EXPRESSION);
-  if (wasmResult && wasmResult.ok) {
-    return {
-      formatted: wasmResult.value,
-      backend: "wasm",
-      detail: usdRubRateDetail(),
-    };
-  }
-  const currencyConversionResult = evaluateCurrencyConversionExpression(
-    USD_RUB_RATE_EXPRESSION,
-  );
-  if (currencyConversionResult === null) return null;
-  return {
-    formatted: currencyConversionResult,
-    backend: "js-currency",
-    detail: usdRubRateDetail(),
-  };
-}
-
-// Issue #386: recognise the USD/RUB rate-basis question by *meaning*, not by a
-// hardcoded per-language word list. The surface forms live once in
-// data/seed/meanings-calculator.lino and are queried by semantic role, matched
-// as raw substrings — the JS mirror of mentions_role_raw and of
-// asks_for_usd_rate_basis in src/solver_handlers/calculator_rate.rs.
-//
-// A prompt references US dollars (an exchange_rate between currencies AND the
-// us_dollar currency) when both currency roles are present.
-function mentionsUsdRate(normalized) {
-  return (
-    lexiconMentionsRoleSubstring(ROLE_EXCHANGE_RATE_REFERENCE, normalized) &&
-    lexiconMentionsRoleSubstring(ROLE_CURRENCY_USD_REFERENCE, normalized)
-  );
-}
-
-// A prompt asks what the assistant uses as the basis for a calculation when the
-// calculation_basis role is present (the question side of "which rate do you
-// use for calculations").
-function mentionsRateCalculationBasis(normalized) {
-  return lexiconMentionsRoleSubstring(ROLE_CALCULATION_BASIS_REFERENCE, normalized);
-}
-
-function tryCalculatorRateBasis(normalized, language) {
-  if (!mentionsUsdRate(normalized) || !mentionsRateCalculationBasis(normalized)) {
-    return null;
-  }
-  const evaluation = evaluateUsdRubRateBasis();
-  if (!evaluation) {
-    const content =
-      language === "ru"
-        ? "Я распознал вопрос о курсе USD/RUB для расчетов, но калькулятор не смог его вычислить."
-        : "I recognized this as a question about the USD/RUB rate used for calculations, but the calculator could not evaluate it.";
-    return {
-      intent: "calculation_error",
-      content,
-      confidence: 0.3,
-      evidence: ["calculation_error:USD/RUB"],
-    };
-  }
-  const calculationBody = `${USD_RUB_RATE_EXPRESSION} = ${evaluation.formatted}`;
-  let content;
-  if (language === "ru") {
-    content = `При расчетах валюты я использую link-calculator. Для USD/RUB он возвращает: ${calculationBody}.`;
-  } else if (language === "hi") {
-    content = `मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: ${calculationBody}.`;
-  } else if (language === "zh") {
-    content = `货币计算时我使用 link-calculator。USD/RUB 返回: ${calculationBody}.`;
-  } else {
-    content = `For currency calculations I use link-calculator. For USD/RUB it returns: ${calculationBody}.`;
-  }
-  if (evaluation.detail) {
-    let details = "Calculator rate details";
-    if (language === "ru") {
-      details = "Детали курса от калькулятора";
-    } else if (language === "hi") {
-      details = "कैलकुलेटर दर विवरण";
-    } else if (language === "zh") {
-      details = "计算器汇率详情";
-    }
-    content += `\n\n${details}: ${evaluation.detail}`;
-  }
-  return {
-    intent: "calculation",
-    content,
-    confidence: 1.0,
-    evidence: [
-      `calculation:${calculationBody}`,
-      `calculation_backend:${evaluation.backend}`,
-      "calculation_rate_basis:USD/RUB",
-    ],
-  };
 }
 
 // Rewrite "N% of M" percentage-of phrases into explicit arithmetic the parser
@@ -1211,59 +1062,4 @@ function parseLinearExpression(input) {
   skipWhitespace();
   if (state.position !== input.length) throw new Error("expression could not be parsed");
   return { value, variables };
-}
-
-// Captured currency quotes, twin of calculator_rate::conversion.
-// Integer ratios round half away from zero directly to cents, once.
-function currencyQuoteDecimal(text) {
-  const match = /^([+-]?)([0-9]{1,12})(?:[.,]([0-9]{1,6}))?$/u.exec(text);
-  if (!match) return null;
-  const fraction = match[3] || "";
-  return {mantissa:BigInt((match[1] === "-" ? "-" : "") + match[2] + fraction),
-    divisor:10n ** BigInt(fraction.length)};
-}
-function currencyQuoteRequest(expression) {
-  expression = expression.trim();
-  const cue = wordsForRole("quantity_conversion_cue").find((word) => calendarOffsetStartsWithTerm(expression.toLowerCase(), word));
-  if (cue) expression = expression.slice(cue.length).trimStart();
-  const match = /^([+-]?[0-9]{1,12}(?:[.,][0-9]{1,6})?)\s+(\S+)\s+(.+?)\s+(\S+)$/u.exec(expression.trim());
-  if (!match || !calendarDurationWords("currency-conversion-connector").includes(match[3].toLowerCase())) return null;
-  const from = currencyCodeFromWord(match[2]);
-  const to = currencyCodeFromWord(match[4]);
-  if (!from || !to) return null;
-  const fromRate = handlerRulesTableValue("currency-reference-quote", from);
-  const toRate = handlerRulesTableValue("currency-reference-quote", to);
-  const amount = currencyQuoteDecimal(match[1]);
-  const source = currencyQuoteDecimal(fromRate || "");
-  const target = currencyQuoteDecimal(toRate || "");
-  if (!amount || !source || !target || source.mantissa <= 0n || target.mantissa <= 0n) return null;
-  const numerator = amount.mantissa * source.mantissa * target.divisor * 100n;
-  const denominator = amount.divisor * source.divisor * target.mantissa;
-  const absolute = numerator < 0n ? -numerator : numerator;
-  const cents = absolute / denominator + (absolute % denominator >= (denominator + 1n) / 2n ? 1n : 0n);
-  const digits = cents.toString().padStart(3, "0");
-  const result = (numerator < 0n && cents !== 0n ? "-" : "") + digits.slice(0, -2) + "." + digits.slice(-2);
-  return {amount:match[1].replace(",", "."), from, to, fromRate, toRate, result};
-}
-function tryCapturedCurrencyConversion(prompt, expression) {
-  const request = currencyQuoteRequest(expression);
-  if (!request) return null;
-  const date = handlerRulesTableValue("currency-reference-provenance", "date");
-  const source = handlerRulesTableValue("currency-reference-provenance", "source");
-  const derivation = request.amount + " × " + request.fromRate + " / " + request.toRate + " ≈ " + request.result + " " + request.to;
-  const template = calendarOffsetLocalizedResponse("currency-conversion-captured", detectLanguage(prompt));
-  if (!template || !date || !source) return null;
-  const values = {...request, date, source, derivation};
-  let content = template;
-  for (const [key, value] of Object.entries(values)) content = content.replaceAll("{" + key + "}", value);
-  return {intent:"calculation", content, confidence:1, evidence:[
-    "currency:rate_basis:" + request.from + ":" + request.fromRate + "RUB;" + request.to + ":" + request.toRate + "RUB",
-    "currency:source:" + source, "currency:date:" + date,
-    "currency:derivation:" + derivation, "currency:result:" + request.result + " " + request.to,
-    "calculation:" + content, "calculation_backend:captured-currency"],
-    solverEvents:[{kind:"currency:rate_basis", payload:request.from + ":" + request.fromRate + "RUB;" + request.to + ":" + request.toRate + "RUB"},
-      {kind:"currency:source", payload:source}, {kind:"currency:date", payload:date},
-      {kind:"currency:derivation", payload:derivation},
-      {kind:"currency:result", payload:request.result + " " + request.to},
-      {kind:"calculation:engine", payload:"captured-currency"}, {kind:"calculation", payload:content}]};
 }

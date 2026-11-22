@@ -7,6 +7,7 @@
 // asserts against the native engine.
 
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
@@ -236,46 +237,147 @@ test("a terse language switch replays the prior answer under the seeded limit", 
   assert.ok(response.evidence.includes("response_language_followup:target:zh"));
 });
 
-const BRAINSTORM_FIVE = "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.";
-const BRAINSTORM_TEN = `${BRAINSTORM_FIVE}\n6. A changelog-fragment consistency checker.\n7. A prompt-matrix generator for four-language smoke tests.\n8. A Wikidata anchor verifier for local seed records.\n9. A trace viewer that groups events by solver phase.\n10. A small offline issue-to-test planning tool.`;
-
-test("the seeded brainstorm list reads its count policy from the seed", async () => {
-  for (const [prompt, expected] of [
-    ["Give me five ideas for an open-source side project.", BRAINSTORM_FIVE],
-    ["Suggest ten open-source utilities for developers.", BRAINSTORM_TEN],
+test("brainstormed project ideas use the requested topic and count", async () => {
+  for (const [prompt, topic, count] of [
+    ["Give me five ideas for an open-source side project.", "side project", 5],
+    ["Suggest ten open-source utilities for developers.", "utilities for developers", 10],
   ]) {
     const response = await solve(prompt);
     assert.equal(response.intent, "brainstorm_project_ideas", prompt);
-    assert.equal(response.content, expected, prompt);
+    const ideas = response.content.split("\n");
+    assert.equal(ideas.length, count, response.content);
+    assert.ok(ideas.every((idea) => idea.includes(topic)), response.content);
+    assert.equal(new Set(ideas.map((idea) => idea.replace(/^\d+\. /, ""))).size, count);
+    assert.doesNotMatch(response.content, /Links Notation notebook/);
   }
+  const cold = await solve("Give me five ideas.");
+  assert.match(cold.content, /topic|subject/i);
+  assert.doesNotMatch(cold.content, /^1\./m);
 });
 
-test("a roleplay frame renders the seeded persona and topic", async () => {
-  // The prompts and answers rust/tests/unit/specification/prompt_variations_facts.rs pins natively.
-  for (const [prompt, expected] of [
-    ["Pretend you are Albert Einstein and explain relativity to a teenager.", "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent."],
-    ["Roleplay as a teacher explaining relativity.", "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent."],
-    ["Explain like you are Ada Lovelace teaching algorithms.", "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result."],
-    ["Pretend you are a patient teacher and explain time dilation.", "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields."],
-  ]) {
+test("roleplay frames an arbitrary persona and caller evidence", async () => {
+  const cases = [
+    ["Roleplay as a field botanist", "a field botanist", "Mosses absorb water across their surfaces."],
+    ["Pretend you are Einstein", "Albert Einstein", "A moving clock can measure a different elapsed time."],
+    ["Explain like you are Ada Lovelace", "Ada Lovelace", "An algorithm is a sequence of steps."],
+    ["Act as an assistant to Ada Lovelace", "an assistant to Ada Lovelace", "The figures match column 4: 28 runs."],
+    ["Roleplay as the {facts} narrator", "the {facts} narrator", "Keep dollar amounts literal: $& and $20."],
+  ];
+  for (const [request, role, facts] of cases) {
+    const response = await solve(`${request}: ${facts}`);
+    assert.equal(response.intent, "roleplay_explanation", request);
+    assert.equal(response.content, `Roleplay frame for ${role}. Supplied facts: ${facts}`, request);
+    assert.ok(response.evidence.includes("roleplay:supplied_facts"));
+  }
+  const chinese = await solve("扮演園丁：苔蘚可以吸水。");
+  assert.equal(chinese.content, "扮演角色：園丁。已提供的事实：苔蘚可以吸水。");
+});
+
+test("roleplay without caller facts asks for grounding", async () => {
+  for (const prompt of ["Roleplay as a teacher explaining relativity.", "Act as a botanist:", "Act as: facts"]) {
     const response = await solve(prompt);
     assert.equal(response.intent, "roleplay_explanation", prompt);
-    assert.equal(response.content, expected, prompt);
+    assert.equal(response.content, "Name the role, then put the facts to explain after a colon.");
+    assert.ok(response.evidence.some((event) => event.startsWith("roleplay:refusal")));
   }
+  const unrelated = await solve("What does roleplayer mean?");
+  assert.notEqual(unrelated.intent, "roleplay_explanation");
 });
 
 const SPIDER_EN = "Released title-role Spider-Man films in release order: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023); 11. Spider-Man: Brand New Day (2026). Announced but not yet released: Spider-Man: Beyond the Spider-Verse (2027-06-18). Source: Wikidata Query Service, snapshot taken 2026-08-04.";
 const SPIDER_RU = "Вышедшие фильмы, где Человек-паук — главный герой в порядке выхода: 1. Человек-паук (2002); 2. Человек-паук 2 (2004); 3. Человек-паук 3: Враг в отражении (2007); 4. Новый Человек-паук (2012); 5. Новый Человек-паук. Высокое напряжение (2014); 6. Человек-паук: Возвращение домой (2017); 7. Человек-паук: Через вселенные (2018); 8. Человек-паук: Вдали от дома (2019); 9. Человек-паук: Нет пути домой (2021); 10. Человек-паук: Паутина вселенных (2023); 11. Человек-паук: Новый день (2026). Анонсированы, но ещё не вышли: Человек-паук: За пределами вселенных (2027-06-18). Источник: Wikidata Query Service, снимок данных от 2026-08-04.";
 
-test("a release-timeline fact renders the snapshot against the day it is asked", async () => {
+const timelineFixture = name =>
+  readFileSync(new URL(`../fixtures/release-timeline/${name}`, import.meta.url), "utf8");
+
+test("the historical timeline renders the test snapshot in both languages", async () => {
   await ready;
-  assert.equal(plain(evaluate(worker, 'renderReleaseTimeline("spider_man_title_role_films", "en", "2026-08-04")')).text, SPIDER_EN);
-  assert.equal(plain(evaluate(worker, 'renderReleaseTimeline("spider_man_title_role_films", "ru", "2026-08-04")')).text, SPIDER_RU);
-  const response = await solve("List Spider-Man films in release order.");
-  assert.equal(response.intent, "fact_lookup");
-  const today = new Date().toISOString().slice(0, 10);
-  assert.equal(response.content,
-    plain(evaluate(worker, `renderReleaseTimeline("spider_man_title_role_films", "en", "${today}")`)).text);
+  const fixture = timelineFixture("spider-man-replay.lino");
+  const render = language => evaluate(worker, `(() => {
+    const registry = parseReleaseTimelineRegistry(${JSON.stringify(fixture)});
+    return renderReleaseTimeline(registry.timelines[0], ${JSON.stringify(language)}, "2026-08-04", registry);
+  })()`);
+  assert.equal(render("en").text, SPIDER_EN);
+  assert.equal(render("ru").text, SPIDER_RU);
+  assert.equal(evaluate(worker, "releaseTimelineRegistry().timelines[0].entries.length"), 0);
+});
+
+async function timelineWorker({ reject = false, ambiguous = false } = {}) {
+  const isolated = createWorkerContext();
+  await evaluate(isolated, "loadSeed()");
+  const loadSeedResource = isolated.fetch;
+  const requests = [];
+  isolated.fetch = async (url, init) => {
+    const source = new URL(String(url), "https://local.test");
+    let body;
+    if (source.hostname === "query-main.wikidata.org") {
+      const query = source.searchParams.get("query");
+      requests.push(source.href);
+      const subject = query?.match(/BIND\(wd:(Q[0-9]+)/u)?.[1];
+      const language = query?.match(/LANG\(\?localized\) = '([a-z]+)'/u)?.[1];
+      const series = { Q2307877: "spider-man", Q216930: "harry-potter" }[subject];
+      assert.ok(series && language, query);
+      body = timelineFixture(`${series}.${language}.json`);
+      if (reject) body = body.replaceAll(subject, "Q42");
+    } else if (source.hostname === "www.wikidata.org" &&
+        source.searchParams.get("search") === "harry potter film series") {
+      requests.push(source.href);
+      body = timelineFixture("harry-potter-search.en.json");
+      if (ambiguous) {
+        const parsed = JSON.parse(body);
+        parsed.search.push({ ...parsed.search[0], id: "Q42" });
+        body = JSON.stringify(parsed);
+      }
+    }
+    if (body) return { ok: true, status: 200, url: source.href, text: async () => body };
+    if (source.hostname !== "local.test") return { ok: false, status: 404 };
+    return loadSeedResource(url, init);
+  };
+  return { requests, solve: (prompt, options = {}) => isolated.solve(prompt, [], options) };
+}
+
+test("release requests acquire verified series data and reuse the runtime cache offline", async () => {
+  const { requests, solve } = await timelineWorker();
+  const spiderMan = "List Spider-Man films in release order.";
+  const harryPotter = "List Harry Potter films in release order.";
+  const cold = await solve(spiderMan, { offline: true });
+  assert.doesNotMatch(cold.content, /Spider-Man \(2002\)/u);
+  const denied = await solve(harryPotter, { externalServiceWikidata: false });
+  assert.doesNotMatch(denied.content, /Philosopher's Stone \(2001\)/u);
+  assert.equal(requests.length, 0);
+
+  const registered = await solve(spiderMan);
+  assert.equal(registered.intent, "fact_lookup");
+  assert.match(registered.content, /1\. Spider-Man \(2002\); 2\. Spider-Man 2 \(2004\)/u);
+  assert.ok(registered.evidence.includes("wikidata:Q2307877"));
+  assert.ok(registered.evidence.some(link => link.startsWith("release_timeline:sha256:")));
+  assert.ok(registered.evidence.includes(`source:${requests[0]}`));
+
+  const russian = await solve("Перечисли фильмы про человека-паука в порядке выхода на экран?");
+  assert.equal(russian.intent, "fact_lookup");
+  assert.match(russian.content, /1\. Человек-паук \(2002\); 2\. Человек-паук 2 \(2004\)/u);
+
+  const heldOut = await solve(harryPotter);
+  assert.equal(heldOut.intent, "fact_lookup");
+  assert.match(heldOut.content, /Released Harry Potter films in release order/u);
+  assert.match(heldOut.content, /1\. Harry Potter and the Philosopher's Stone \(2001\)/u);
+  assert.match(heldOut.content, /8\. Harry Potter and the Deathly Hallows – Part 2 \(2011\)/u);
+  assert.ok(heldOut.evidence.includes("wikidata:Q216930"));
+  assert.ok(heldOut.evidence.some(link => link.startsWith(`source:http:${requests[2]}`)));
+  assert.equal((await solve(spiderMan, { offline: true })).content, registered.content);
+  assert.equal((await solve(harryPotter, { offline: true })).content, heldOut.content);
+  assert.equal(requests.length, 4);
+});
+
+test("release requests reject mismatched rows and ambiguous series matches", async () => {
+  const mismatched = await timelineWorker({ reject: true });
+  const spiderMan = await mismatched.solve("List Spider-Man films in release order.");
+  assert.doesNotMatch(spiderMan.content, /Spider-Man \(2002\)/u);
+  assert.equal(mismatched.requests.length, 1);
+  const multiple = await timelineWorker({ ambiguous: true });
+  const harryPotter = await multiple.solve("List Harry Potter films in release order.");
+  assert.doesNotMatch(harryPotter.content, /Philosopher's Stone \(2001\)/u);
+  assert.equal(multiple.requests.length, 1);
 });
 
 test("the concept-query reader takes its vocabulary from the seed cue records", async () => {
@@ -298,10 +400,10 @@ test("the concept-query reader takes its vocabulary from the seed cue records", 
   assert.equal(evaluate(worker, 'normalizeConceptTerm("The Rust language")'), "rust language");
 });
 
-test("a topic summary is the seeded record, run after web search as the native row is", async () => {
+test("topic summaries resolve the named subject through the shared registries", async () => {
   for (const [prompt, expected] of [
     ["Can you summarize Rust?", "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector."],
-    ["Please summarize formal-ai in one paragraph.", "formal-ai is a deterministic symbolic AI that answers without any neural-network inference."],
+    ["Please summarize formal-ai in one paragraph.", "No verified repository description is available."],
   ]) {
     const response = await solve(prompt);
     assert.equal(response.intent, "summarize_topic", prompt);
@@ -309,21 +411,27 @@ test("a topic summary is the seeded record, run after web search as the native r
   }
   const constrained = await solve("Please summarize formal-ai in one paragraph.");
   assert.ok(constrained.evidence.includes("summarization:constraint:one_paragraph"));
+  const heldOut = await solve("Give me a one-paragraph summary of WebAssembly.");
+  assert.equal(heldOut.intent, "summarize_topic");
+  assert.match(heldOut.content, /^WebAssembly \(Wasm\) is a binary instruction format/);
+  const article = await solve("Summarise the Wikipedia entry for Wiktionary.");
+  assert.equal(article.intent, "summarize_topic");
+  assert.match(article.content, /^Wiktionary is a multilingual/);
+  const unrelated = await solve("Can you summarize rustic barns?");
+  assert.ok(!unrelated.content.includes("Rust is a multi-paradigm"));
   const conversation = await solve("Summarize our conversation");
   assert.notEqual(conversation.intent, "summarize_topic");
 });
 
-const SORT_RUST = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_GO = "Вот проверяемый алгоритм сортировки на go:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования.";
-const SORT_RUST_HI = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
-const SORT_TYPESCRIPT_TESTS = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
-const SORT_PYTHON_TESTS = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nTests:\n```python\ndef test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_PYTHON = "Here is a reviewable sorting algorithm in python:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_RUST = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_GO = "Вот проверяемый алгоритм сортировки на go:\n\n```go\npackage sorting\n\nimport \"sort\"\n\nfunc sortValues(values []int) {\n\tsort.Slice(values, func(i, j int) bool { return values[i] < values[j] })\n}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования.";
+const SORT_RUST_HI = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut [i64]) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
+const SORT_TYPESCRIPT_TESTS = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values: number[]): number[] {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort() {\n  const expected = [0, 1, 2];\n  const actual = sort([2, 1, 0]);\n  if (actual.length !== expected.length || actual.some((value, index) => value !== expected[index])) {\n    throw new Error(\"Unexpected order\");\n  }\n}\n\ntest_sort();\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
+const SORT_PYTHON_TESTS = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n```\n\nTests:\n```python\ndef test_sort():\n    assert sort([2, 1, 0]) == [0, 1, 2]\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
 
-// The algorithm rule set (issue #918): the sort operation or the word
-// "algorithm", the language table and the seeded snippets answer exactly as
-// the deleted handleAlgorithm / try_algorithm did, in every prompt language.
-test("the algorithm rule set answers unchanged in english, russian, hindi and chinese", async () => {
+// The operation and target language determine the composed callable. The
+// surrounding answer remains localized to the language of the request.
+test("the algorithm rules compose the requested language in each conversation language", async () => {
   const english = await solve("Write me a sorting algorithm in Rust");
   assert.equal(english.intent, "algorithm_sort_rust");
   assert.equal(english.content, SORT_RUST);
@@ -339,9 +447,18 @@ test("the algorithm rule set answers unchanged in english, russian, hindi and ch
     assert.equal(response.content, expected, prompt);
     assert.ok(!response.evidence.some((link) => link.startsWith("algorithm:refusal")), prompt);
   }
-  const unnamed = await rule("algorithm", "explain the algorithm");
-  assert.equal(unnamed.content, SORT_PYTHON);
-  assert.ok(unnamed.evidence.includes("algorithm:refusal:no operation named"));
+  for (const { language, prompt, expected } of [
+    { language: "en", prompt: "write an algorithm with tests", expected: "What should the algorithm do? Include its expected inputs and outputs." },
+    { language: "ru", prompt: "Напиши алгоритм с тестом", expected: "Что должен делать алгоритм? Укажите входные данные и ожидаемый результат." },
+    { language: "hi", prompt: "टेस्ट के साथ एक एल्गोरिदम लिखें", expected: "एल्गोरिदम को क्या करना चाहिए? अपेक्षित इनपुट और आउटपुट बताएं।" },
+    { language: "zh", prompt: "请写一个带测试的算法", expected: "算法应该完成什么任务？请说明预期的输入和输出。" },
+    { language: "es", prompt: "Por favor, escribe un algoritmo con pruebas.", expected: "¿Qué debe hacer el algoritmo? Indica las entradas y salidas esperadas." },
+  ]) {
+    const unnamed = await rule("algorithm", prompt);
+    assert.equal(unnamed.intent, "algorithm-operation-required", language);
+    assert.equal(unnamed.content, expected, language);
+    assert.ok(unnamed.evidence.includes("algorithm:refusal:no operation named"), language);
+  }
   assert.equal(await rule("algorithm", "What is the capital of France?"), null);
 });
 

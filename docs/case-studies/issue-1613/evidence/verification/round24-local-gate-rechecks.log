@@ -1,0 +1,8 @@
+PASS check-debt-ratchet-js-twin 1.1s
+PASS check_debt_ratchet 1.4s
+PASS check-worker-line-budget-js-twin 1.0s
+PASS check-worker-line-budget 0.3s
+PASS lint-shell-scripts 9.4s
+
+5/5 passed or skipped; failed: none
+specification in JavaScript: 1185 tests, 222 carried, 222 pass in the worker

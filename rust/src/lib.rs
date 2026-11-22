@@ -287,7 +287,7 @@ pub use associative_package::{
 pub use associative_persistence::{
     AssociativeMemory, PersistedExpression, RetentionWeights, ScoredExpression,
 };
-pub use change_request::{AcceptedChange, ChangeRejected, ChangeRequest, canonical_change_request};
+pub use change_request::{AcceptedChange, ChangeRejected, ChangeRequest};
 pub use client_contract_learning::{
     ClientContractFinding, ClientContractLearningReport, ClientContractObservation,
     ClientContractProposal, DeliveryMode, learn_client_contracts, load_observations,
@@ -338,10 +338,12 @@ pub use github_logs::{
 pub use google_trends_catalog::{
     GOOGLE_TRENDS_TOP_LIMIT, GoogleTrendNewsItem, GoogleTrendPromptAnswer,
     GoogleTrendPromptVariant, GoogleTrendTopic, GoogleTrendsCatalog, GoogleTrendsParseError,
-    google_trends_catalog, parse_google_trends_rss, render_google_trends_snapshot_lino,
+    answer_google_trends_catalog, fetch_google_trends_feed, google_trends_catalog,
+    parse_google_trends_rss, render_google_trends_snapshot_lino,
 };
 pub use google_trends_learning::{
     TrendingFrontierEntry, TrendingLearningReport, trending_learning_report,
+    trending_learning_report_from_feed,
 };
 pub use intent_formalization::{
     IntentFormalization, IntentFormalizationCache, IntentFormalizationCacheEntry, IntentKind,
@@ -355,12 +357,10 @@ pub use language::{Language, detect as detect_language};
 pub use learning_adoption_ledger::{AdoptionLedger, AdoptionPair, google_trends_adoption_ledger};
 pub use learning_cycle::{
     BlockedClass, CandidateSurface, FrontierItem, HeldOutTest, LearningCycleRun,
-    google_trends_learning_cycle, parse_frontier_record, recorded_google_trends_frontier,
-    run_learning_cycle,
+    google_trends_learning_cycle, parse_frontier_record, run_learning_cycle,
 };
 pub use learning_ledger::{
     HumanApproval, LearningLedger, LedgerEntry, PromotionRejected, approved_lesson_for,
-    canonical_ledger, canonical_ledger_failure_prompts,
 };
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 pub use link_store::{
@@ -420,12 +420,12 @@ pub use question_generation::{
     QuestionGenerator, QuestionGrammarClass, QuestionLexiconSummary, QuestionWord,
     generated_question_answers, question_lexicon_summary, question_lexicon_summary_for_language,
 };
-pub use rebuild_plan::{ReattachArtifact, RebuildPlan, RebuildStep, canonical_rebuild_plan};
+pub use rebuild_plan::{ReattachArtifact, RebuildPlan, RebuildStep};
 pub use relative_meta_logic::{
     ASSUMED_TRUE_PRIOR, Aggregator, RelativeEvidence, SourceTier, Stance, StatementAssessment,
     TruthValue,
 };
-pub use repair_strategy::{RepairStrategy, RepairTarget, canonical_strategies};
+pub use repair_strategy::{RepairStrategy, RepairTarget};
 pub use search_fusion::{
     FormalizedSearchObservation, FusedSearchStatement, NormalizedSearchSource, SearchFusionAnswer,
     SearchFusionExecution, SearchObservationOrigin, SearchSourceClassification,
@@ -452,9 +452,7 @@ pub use self_ast_census::{
 pub use self_explanation::{
     Citation, CitationKind, ExplanationSection, SystemExplanation, canonical_explanation,
 };
-pub use self_healing::{
-    RepairCase, RepairOutcome, SourceRoundTrip, canonical_case, canonical_failure_trace,
-};
+pub use self_healing::{RepairCase, RepairOutcome, SourceRoundTrip};
 pub use self_improvement::{
     BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal, LearningRejection, LearningRun,
     ReportedLearning, UnknownTrace, learn_from_reported_conversation,
@@ -505,6 +503,7 @@ pub use solver_handler_how_synthesis::{
     DISABLED_SERVICES_ENV, service_preferences_from_env, try_how_to_procedure_with_client,
     try_how_to_procedure_with_offline,
 };
+pub use solver_handlers::documentation_method::try_with_client as try_documentation_method_with_client;
 pub use solver_handlers::{
     AnswerAgreement, MemoryQueryExecution, VerifiedAnswer, answer_memory_recall,
     classify_agreement, execute_memory_query, execute_memory_query_with_options,
@@ -533,10 +532,11 @@ pub use solver_handlers::{
 // Issue #1172 R3/R8: the live Wikidata answer and the researched explanation
 // of the `fact_lookup` row, public so the unit suite drives them through a
 // fixture transport.
+pub use fact_live::{LiveFactQuestion, live_fact_question};
 #[cfg(feature = "meta-language")]
 pub use solver_handlers::try_explanation_research;
 pub use solver_handlers::{
-    LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
+    explanation_concept, try_coreference_with_client, try_fact_live_answer,
     try_fact_lookup_with_client, try_fact_lookup_with_offline,
 };
 // Issue #1172 R1172-5: the concept_lookup row's dictionary step, public so the

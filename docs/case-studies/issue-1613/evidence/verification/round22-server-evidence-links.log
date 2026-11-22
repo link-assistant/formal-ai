@@ -1,0 +1,18 @@
+✔ the prompt link is the one the Rust server answers with (2549.806641ms)
+✔ event ids hash kind, position and payload exactly as EventLog::append (1.055137ms)
+✔ every arm shape of build_evidence_links (0.613344ms)
+✔ the Responses evidence projects the worker's native log (1394.58264ms)
+✔ execution_report shows the run contract without inferring output from a toolchain probe (17.268382ms)
+✔ a rediscovered program reports its page, not the language's recorded run (4394.117334ms)
+✔ a cold composed program reports the expected output without a historical run (6105.489282ms)
+✔ a follow-up program edit carries the native execution report (1736.146543ms)
+✔ quantity evidence retains raw frames and exact computation payloads (0.974799ms)
+✔ actual quantity solves retain frames and verdicts through the server projection (4936.643572ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22385.096163

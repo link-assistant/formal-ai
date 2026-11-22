@@ -1,0 +1,14 @@
+✔ every captured replay is complete and its failure family has focused tests (2415.540411ms)
+✔ hive-mind-4031-cited-program.json: the captured null does not recur on the current planner (18712.313397ms)
+✔ hive-mind-4034-cited-program.json: the captured null does not recur on the current planner (3342.786294ms)
+✔ hive-mind-4035-cited-program.json: the captured null does not recur on the current planner (12322.343806ms)
+✔ issue-1486-read-policy.json: the captured ReadPolicyRefused does not recur on the current planner (9158.025614ms)
+✔ the extractor keeps the final request verbatim and maps its captured reason to a family (26.158491ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 47092.869951

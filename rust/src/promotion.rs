@@ -41,9 +41,8 @@ pub use draft_pull_request::{DraftPullRequest, open_draft_pull_request};
 pub use gates::{GateCommandOutput, replay_promotion_gates, replay_promotion_gates_with};
 pub use materialize::apply_promotions;
 
-const CODING_MODIFICATION_SUITE_LINO: &str =
-    include_str!("../embedded/data/benchmarks/coding-modification-suite.lino");
-const INDUSTRY_SUITE_LINO: &str = include_str!("../embedded/data/benchmarks/industry-suite.lino");
+const BENCHMARK_PROMOTION_GATES: &str =
+    include_str!("../embedded/data/meta/benchmark-promotion-gates.lino");
 
 /// The default seed file learned program-plan rules are promoted into.
 pub const LEARNED_PROGRAM_RULES_SEED_FILE: &str = "data/seed/learned-program-rules.lino";
@@ -97,27 +96,17 @@ impl PromotionRatchet {
     }
 
     /// The coding-modification suite ratchet (issue #362), floor and runner read
-    /// from `data/benchmarks/coding-modification-suite.lino`.
+    /// from the benchmark promotion policy.
     #[must_use]
     pub fn coding_modification(passed: usize, failed: usize) -> Self {
-        Self::from_manifest(
-            CODING_MODIFICATION_SUITE_LINO,
-            "issue_362_multilingual_coding_modification",
-            passed,
-            failed,
-        )
+        Self::from_manifest("issue_362_multilingual_coding_modification", passed, failed)
     }
 
     /// The permissive industry-suite ratchet (issue #304), floor and runner read
-    /// from `data/benchmarks/industry-suite.lino`.
+    /// from the benchmark promotion policy.
     #[must_use]
     pub fn industry(passed: usize, failed: usize) -> Self {
-        Self::from_manifest(
-            INDUSTRY_SUITE_LINO,
-            "issue_304_industry_permissive_slice",
-            passed,
-            failed,
-        )
+        Self::from_manifest("issue_304_industry_permissive_slice", passed, failed)
     }
 
     /// The unit-specification gate: the `cargo test` unit suite must be green
@@ -135,16 +124,23 @@ impl PromotionRatchet {
         gate
     }
 
-    fn from_manifest(manifest: &str, fallback_id: &str, passed: usize, failed: usize) -> Self {
-        let suite_id = manifest_field(manifest, "id").unwrap_or_else(|| fallback_id.to_owned());
-        let runner =
-            manifest_field(manifest, "runner").unwrap_or_else(|| String::from("cargo test"));
-        let minimum_pass_count = manifest_field(manifest, "minimum_pass_count")
-            .and_then(|value| value.parse::<usize>().ok())
-            .unwrap_or(1);
-        let minimum_pass_rate_basis_points = manifest_field(manifest, "pass_rate_basis_points")
-            .and_then(|value| value.parse::<usize>().ok())
-            .unwrap_or(0);
+    fn from_manifest(suite_id: &str, passed: usize, failed: usize) -> Self {
+        let policy = crate::seed::parser::parse_lino(BENCHMARK_PROMOTION_GATES);
+        let gate = policy
+            .children
+            .iter()
+            .flat_map(|root| &root.children)
+            .find(|node| node.name == "gate" && node.id == suite_id)
+            .expect("missing benchmark promotion gate");
+        let runner = gate.find_child_value("runner");
+        let minimum_pass_count = gate
+            .find_child_value("minimum_pass_count")
+            .parse::<usize>()
+            .expect("invalid benchmark promotion floor");
+        let minimum_pass_rate_basis_points = gate
+            .find_child_value("pass_rate_basis_points")
+            .parse::<usize>()
+            .expect("invalid benchmark promotion pass rate");
         let mut gate = Self::new(suite_id, runner, minimum_pass_count, passed, failed);
         gate.minimum_pass_rate_basis_points = minimum_pass_rate_basis_points;
         gate
@@ -812,19 +808,6 @@ impl DraftGate {
 }
 
 // ---- small local helpers, mirroring src/self_improvement.rs ---------------
-
-fn manifest_field(manifest: &str, key: &str) -> Option<String> {
-    for line in manifest.lines() {
-        let trimmed = line.trim();
-        let Some(rest) = trimmed.strip_prefix(key) else {
-            continue;
-        };
-        if rest.starts_with(char::is_whitespace) {
-            return Some(unquote(rest.trim()));
-        }
-    }
-    None
-}
 
 fn split_field(content: &str) -> Option<(&str, String)> {
     let (key, rest) = content.split_once(' ')?;

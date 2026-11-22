@@ -153,6 +153,48 @@ function gatedFactRecord(normalized, prompt) {
   return hinted ? { record: hinted, gate: "surface_hint" } : null;
 }
 
+async function tryPublisherPolicy(prompt, normalized, preferences, trace) {
+  const gated = gatedFactRecord(normalized, prompt);
+  if (!gated?.record.publisherHeading || gated.record.sourceKind !== "official-docs") return null;
+  const { record, gate } = gated;
+  const language = detectLanguage(prompt);
+  const source = localizedFactFor(record, language)?.source || record.source;
+  let url;
+  try { url = new URL(source); } catch { return null; }
+  if (url.protocol !== "https:" || url.username || url.password) return null;
+  const online = preferences?.offline !== true && preferences?.allowNetwork !== false;
+  trace.push(`publisher_policy:request:${source}`);
+  let capture = await sourceWalkFetchCapture(source, { online, bounded: true, indexed: true });
+  if (!capture.ok && online && capture.error !== "redirected_capture") {
+    const recovered = await howToCaptureThroughComponent(source, trace);
+    if (recovered) {
+      capture = { ...recovered, ok: true };
+      sourceWalkCaptureCache.set(`indexed:${source}`, Object.freeze(capture));
+    }
+  }
+  if (!capture.ok) {
+    trace.push(`publisher_policy:unavailable:${capture.error}`);
+    return null;
+  }
+  const excerpt = sourceSectionExcerpt(capture.text, record.publisherHeading, record.publisherTerms);
+  if (!excerpt) {
+    trace.push("publisher_policy:rejected:no_matching_excerpt");
+    return null;
+  }
+  const template = "publisher-policy-excerpt";
+  const content = factualQaRender(template, language, { excerpt, source });
+  if (!content) return null;
+  return {
+    intent: "fact_lookup", content, confidence: 0.85,
+    evidence: [
+      `response:${template}`, `source:${source}`,
+      `fact_lookup:hit:${record.slug}`, `fact_lookup:subject_gate:${gate}`,
+      ...(record.wikidata || []).map(identifier => `wikidata:${identifier}`),
+      `source:http:${source} fetched_at=${capture.fetchedAt} sha256=${capture.sha256} cached=${capture.cached}`,
+    ],
+  };
+}
+
 /**
  * A structured fact question answered from the seeded record the subject
  * gate admits (intent from the record, as the native fact_lookup row).
@@ -240,37 +282,6 @@ function factComparisonPlan(normalized) {
 }
 
 /**
- * The seeded facts of one subject, grouped by relation (first record wins).
- * @param {string} qid
- * @param {string} language
- * @returns {Map<string, {value: string, label: string, record: object}>}
- */
-function factRelationsFor(qid, language) {
-  const relations = new Map();
-  for (const record of Array.isArray(FACTS) ? FACTS : []) {
-    if (record.subjectQid !== qid || !record.relation || relations.has(record.relation)) continue;
-    const localized = localizedFactFor(record, language) || {};
-    relations.set(record.relation, {
-      value: localized.valueLabel || record.valueLabel || "",
-      label: localized.subjectLabel || record.subjectLabel || "",
-      record,
-    });
-  }
-  return relations;
-}
-
-/**
- * The display label of a resolved subject.
- * @param {Map<string, object>} facts
- * @param {{surface: string}} subject
- * @returns {string}
- */
-function factSubjectDisplay(facts, subject) {
-  const first = facts.values().next().value;
-  return (first && first.label) || subject.surface;
-}
-
-/**
  * "Compare X and Y" over two seeded subjects: aligned rows and differences.
  * @param {string} prompt
  * @param {string} normalized
@@ -282,11 +293,15 @@ function tryFactComparison(prompt, normalized) {
   const language = detectLanguage(prompt);
   const leftFacts = factRelationsFor(plan.left.qid, language);
   const rightFacts = factRelationsFor(plan.right.qid, language);
+  return renderFactComparison(language, plan, leftFacts, rightFacts, []);
+}
+
+function renderFactComparison(language, plan, leftFacts, rightFacts, sources) {
   if (leftFacts.size === 0 || rightFacts.size === 0) return null;
   const left = factSubjectDisplay(leftFacts, plan.left);
   const right = factSubjectDisplay(rightFacts, plan.right);
   const missing = factualQaRender("fact_comparison_missing_value", language, {});
-  const evidence = [`fact_comparison:left:${plan.left.qid}`, `fact_comparison:right:${plan.right.qid}`];
+  const evidence = [...sources, `fact_comparison:left:${plan.left.qid}`, `fact_comparison:right:${plan.right.qid}`];
   const rows = [];
   const differences = [];
   for (const relation of new Set([...leftFacts.keys(), ...rightFacts.keys()])) {
@@ -325,11 +340,14 @@ function tryFactComparisonGap(prompt, normalized) {
   if (!plan || (plan.left && plan.right) || (!plan.left && !plan.right)) return null;
   const subject = plan.left || plan.right;
   const missingNormalized = plan.left ? plan.sides.right : plan.sides.left;
+  const language = detectLanguage(prompt);
+  return renderFactComparisonGap(prompt, language, subject, missingNormalized, factRelationsFor(subject.qid, language), []);
+}
+
+function renderFactComparisonGap(prompt, language, subject, missingNormalized, facts, sources) {
   // Name the missing side as the user spelled it when the prompt carries it verbatim.
   const at = String(prompt).toLowerCase().indexOf(missingNormalized);
   const missingSide = at >= 0 ? String(prompt).slice(at, at + missingNormalized.length) : missingNormalized;
-  const language = detectLanguage(prompt);
-  const facts = factRelationsFor(subject.qid, language);
   if (facts.size === 0) return null;
   const known = factSubjectDisplay(facts, subject);
   const rows = [...facts.keys()].map((relation) => factualQaRender("fact_comparison_known_row", language, {
@@ -339,8 +357,13 @@ function tryFactComparisonGap(prompt, normalized) {
     intent: "fact_comparison_gap",
     content: factualQaRender("fact_comparison_gap", language, { known, missing: missingSide, rows: rows.join("\n") }),
     confidence: 0.6,
-    evidence: [`fact_comparison:known:${subject.qid}`, `fact_comparison:missing:${missingSide}`, `language:${language}`, "response:fact_comparison_gap"],
+    evidence: [...sources, `fact_comparison:known:${subject.qid}`, `fact_comparison:missing:${missingSide}`, `language:${language}`, "response:fact_comparison_gap"],
   };
+}
+
+function factComparisonSubjects(normalized) {
+  const sides = factComparisonSides(normalized);
+  return sides && sides.left !== sides.right && [sides.left, sides.right].every(factBoundedSubject) ? sides : null;
 }
 
 /**
@@ -442,6 +465,12 @@ function promptTextCovered(sentence, units) {
 function tryPromptTextQuestion(prompt, normalized) {
   const passage = promptTextPassage(prompt);
   if (!passage) return null;
+  const suppliedPage = pageSplitSuppliedPage(prompt);
+  const codeExampleQuery = findMeaning("code_example_decomposition_request");
+  if (suppliedPage && (
+    pageFormalizationRules().pageQueries.some(([, template]) => pageMatchTemplate(template, suppliedPage.query) !== null) ||
+    (codeExampleQuery && meaningEvidencedIn(codeExampleQuery, normalizePrompt(suppliedPage.query)))
+  )) return null;
   const lead = normalizePrompt(String(prompt).slice(0, passage.start));
   const question = String(prompt).slice(passage.end).replace(/^[\s.,;:!?。，；：！？)\]—-]+/u, "").trim();
   if (!question) return null;
@@ -583,64 +612,82 @@ function promptTextStatementAnswer(slots, quote, [question, units], language) {
 // interrogative openers and the function words are removed from the
 // relation's clause; what remains is the subject term), and the answer is the
 // seeded fact_live_answer template citing the claim's reference URL.
-const FACT_LIVE_MAX_SUBJECT_WORDS = 4;
+const FACT_LIVE_MAX_SUBJECT_WORDS = 12;
 let FACT_LIVE_PROPERTIES = null;
 
 /**
- * The Wikidata property a meaning is `grounded-in` ("" when none).
+ * The Wikidata property and display precision declared by a relation meaning.
  * @param {string} slug
- * @returns {string}
+ * @returns {{property?: string, yearOnly?: boolean}}
  */
-function factRelationProperty(slug) {
+function factRelationBinding(slug) {
   if (!FACT_LIVE_PROPERTIES) {
     FACT_LIVE_PROPERTIES = new Map();
     for (const container of parseLinoTree(MEANINGS_LINO).children) {
       for (const node of container.children || []) {
         const grounded = (node.children || []).find((child) => child.name === "grounded-in");
-        if (grounded) FACT_LIVE_PROPERTIES.set(meaningSlug(node), grounded.value);
+        if (grounded) FACT_LIVE_PROPERTIES.set(meaningSlug(node), {
+          property: grounded.value,
+          yearOnly: node.children.some(({ name, value }) => name === "defined-by" && value === "year_period"),
+        });
       }
     }
   }
-  return FACT_LIVE_PROPERTIES.get(slug) || "";
+  return FACT_LIVE_PROPERTIES.get(slug) || {};
 }
 
-/**
- * The content words of `text` without `removed` surfaces and stop words, or
- * null when nothing (or a whole sentence) is left.
- * @param {string} text
- * @param {Array<string>} removed
- * @returns {string|null}
- */
-function factLiveContentWords(text, removed) {
-  let tokens = normalizePrompt(text).split(" ").filter(Boolean);
-  for (const surface of removed) {
-    const parts = surface.split(" ").filter(Boolean);
-    if (parts.length === 0) continue;
-    for (let index = 0; index + parts.length <= tokens.length; ) {
-      if (parts.every((part, offset) => tokens[index + offset] === part)) tokens.splice(index, parts.length);
-      else index += 1;
+function factTrimSubject(text, stops) {
+  let subject = text.trim();
+  for (;;) {
+    let rest;
+    for (const surface of stops) {
+      const cjk = containsCjk(surface);
+      if (subject === surface) return "";
+      if (subject.startsWith(surface) && (cjk || subject[surface.length] === " ")) {
+        rest = subject.slice(surface.length);
+        break;
+      }
+      if (subject.endsWith(surface) && (cjk || subject[subject.length - surface.length - 1] === " ")) {
+        rest = subject.slice(0, -surface.length);
+        break;
+      }
     }
+    if (rest === undefined) return subject;
+    subject = rest.trim();
   }
-  const stop = factualQaSurfaces(FACTUAL_QA_ROLE_FUNCTION_WORD).concat(factualQaSurfaces(FACTUAL_QA_ROLE_INTERROGATIVE));
-  tokens = tokens.filter((token) => !stop.includes(token));
-  return tokens.length > 0 && tokens.length <= FACT_LIVE_MAX_SUBJECT_WORDS ? tokens.join(" ") : null;
 }
 
-/**
- * Formalize a fact question for the live path: the relation (whose
- * grounded-in must be a Wikidata property) and the subject term.
- * @param {string} prompt
- * @returns {{relation: string, subjectTerm: string}|null}
- */
+function factBoundedSubject(subject) {
+  return subject && subject.split(/\s+/u).length <= FACT_LIVE_MAX_SUBJECT_WORDS ? subject : null;
+}
+
+/** Formalize a fact question from its relation and one subject clause. */
 function factLiveQuestion(prompt) {
+  return factLiveQuestions(prompt)[0] ?? null;
+}
+
+function factLiveQuestions(prompt) {
   const normalized = normalizePrompt(prompt);
-  if (!normalized || containsCjk(normalized)) return null;
-  const mentions = (text, meaning) => meaning.words.some((word) => surfacePresent(text, normalizePrompt(word)));
-  const relation = meaningsWithRole("fact_relation").find((meaning) => mentions(normalized, meaning));
-  if (!relation || !/^P\d+$/.test(factRelationProperty(relation.slug))) return null;
-  const clause = String(prompt).split(/[,;:()—!?，；：。？]/).find((part) => mentions(normalizePrompt(part), relation));
-  const subjectTerm = factLiveContentWords(clause === undefined ? prompt : clause, relation.words.map(normalizePrompt));
-  return subjectTerm ? { relation: relation.slug, subjectTerm } : null;
+  const mentions = (text, meaning) => meaning.words.some((word) => factualQaLocate(text, normalizePrompt(word)) >= 0);
+  const clauses = String(prompt).split(/[,;:()—!?，；：。？]/u).map(normalizePrompt);
+  const stops = [FACTUAL_QA_ROLE_FUNCTION_WORD, FACTUAL_QA_ROLE_INTERROGATIVE,
+    "statement_time_question", "fact_subject_connector"].flatMap(factualQaSurfaces)
+    .sort((left, right) => right.length - left.length);
+  const questions = [];
+  for (const relation of meaningsWithRole("fact_relation")) {
+    if (!/^P[0-9]+$/.test(factRelationBinding(relation.slug).property) || !mentions(normalized, relation)) continue;
+    const clause = clauses.find((part) => mentions(part, relation)) ?? normalized;
+    const surface = relation.words.map(normalizePrompt).sort((left, right) => right.length - left.length)
+      .find((word) => factualQaLocate(clause, word) >= 0);
+    if (!surface) continue;
+    const at = factualQaLocate(clause, surface);
+    const left = factTrimSubject(clause.slice(0, at), stops);
+    const right = factTrimSubject(clause.slice(at + surface.length), stops);
+    const subjectTerm = !(left && right) && factBoundedSubject(left || right);
+    if (subjectTerm) questions.push({ relation: relation.slug, subjectTerm, length: surface.length });
+  }
+  return questions.sort((left, right) => right.length - left.length)
+    .map(({ relation, subjectTerm }) => ({ relation, subjectTerm }));
 }
 
 /**
@@ -653,7 +700,7 @@ function factClaimReference(claim, property) {
   for (const reference of (claim && claim.references) || []) {
     const snak = ((reference.snaks || {})[property] || [])[0];
     const value = snak && snak.datavalue && snak.datavalue.value;
-    if (typeof value === "string" && value) return value;
+    if (typeof value === "string" && /^https?:\/\//i.test(value)) return value;
   }
   return "";
 }
@@ -704,7 +751,7 @@ function explanationConcept(prompt) {
   const normalized = normalizePrompt(prompt);
   if (!normalized || containsCjk(normalized)) return null;
   const cue = factualQaSurfaces(EXPLANATION_ROLE_CUE).find((surface) => factualQaLocate(normalized, surface) === 0);
-  return cue ? factLiveContentWords(normalized.slice(cue.length), []) : null;
+  return cue ? factBoundedSubject(normalized.slice(cue.length).trim()) : null;
 }
 
 /**
@@ -750,14 +797,14 @@ async function researchPageSenses(subject, bounds) {
 }
 
 /**
- * Answer an explanation request from retrieved pages (intent
- * `explanation_research`), or null so the dispatch keeps looking.
+ * Answer an explanation request from retrieved pages, or return null.
  * @param {string} prompt
+ * @param {object} [preferences]
  * @returns {Promise<object|null>}
  */
-async function tryExplanationResearch(prompt) {
+async function tryExplanationResearch(prompt, preferences) {
   const concept = explanationConcept(prompt);
-  if (!concept) return null;
+  if (!concept || preferences?.offline === true || preferences?.allowNetwork === false) return null;
   const language = detectLanguage(prompt);
   const researched = await researchPageSenses(concept, CONCEPT_LOOKUP_BOUNDS);
   if (!researched || researched.senses.length === 0) return null;
@@ -779,124 +826,11 @@ async function tryExplanationResearch(prompt) {
 // timeline answer is never a stored sentence but the snapshot rendered
 // against the day it is asked, every word from the seed's phrasing blocks.
 // ---------------------------------------------------------------------------
-
-let cachedReleaseTimelines = null;
-
-/**
- * The phrasing blocks and timelines of data/seed/release-timelines.lino.
- * Mirrors parse_release_timelines in rust/src/seed/release_timelines.rs.
- * @returns {{phrasings: object[], timelines: object[]}}
- */
-function releaseTimelineRegistry() {
-  if (cachedReleaseTimelines) return cachedReleaseTimelines;
-  const text = seedRawText(SEED_RAW, "release-timelines.lino");
-  const root = text ? parseLinoTree(text).children.find((node) => node.name === "release_timelines") : null;
-  const records = root ? root.children : [];
-  const localizedPairs = (node, field) => node.children
-    .filter((child) => child.name === "localized")
-    .map((child) => ({ language: child.value, text: childValue(child, field) }))
-    .filter((pair) => pair.language && pair.text);
-  const registry = {
-    phrasings: records.filter((node) => node.name === "phrasing").map((node) => ({
-      language: node.value,
-      releasedHeading: childValue(node, "released-heading"),
-      releasedItem: childValue(node, "released-item"),
-      announcedHeading: childValue(node, "announced-heading"),
-      announcedItem: childValue(node, "announced-item"),
-      undatedItem: childValue(node, "undated-item"),
-      itemSeparator: childValue(node, "item-separator"),
-      sectionEnd: childValue(node, "section-end"),
-      provenanceNote: childValue(node, "provenance-note"),
-      staleNote: childValue(node, "stale-note"),
-    })),
-    timelines: records.filter((node) => node.name === "timeline").map((node) => ({
-      slug: node.value,
-      sourceLabel: childValue(node, "source-label"),
-      retrievedAt: String(childValue(node, "retrieved-at") || ""),
-      freshForDays: Number.parseInt(String(childValue(node, "fresh-for-days") || "").trim(), 10) || 0,
-      subjects: localizedPairs(node, "subject"),
-      entries: node.children.filter((child) => child.name === "entry").map((entry) => ({
-        qid: entry.value,
-        releaseDate: String(childValue(entry, "release-date") || ""),
-        titles: localizedPairs(entry, "title"),
-      })),
-    })),
-  };
-  if (text) cachedReleaseTimelines = registry;
-  return registry;
-}
-
-/** The pair for `language`, else the English one (Rust `title_for` / `subject_for`). */
-function releaseTimelineLocalized(pairs, language, fallback) {
-  const hit = pairs.find((pair) => pair.language === language) || pairs.find((pair) => pair.language === "en");
-  return hit ? hit.text : fallback;
-}
-
-/** Days since the Unix epoch for an ISO day, or null (Rust `days_from_iso_date`). */
-function releaseTimelineDays(date) {
-  const parts = String(date || "").split("-").map((part) => Number.parseInt(part, 10));
-  if (parts.length < 3 || parts.some((part) => Number.isNaN(part))) return null;
-  const [year, month, day] = parts;
-  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
-  const adjustedYear = year - (month <= 2 ? 1 : 0);
-  const era = Math.floor(adjustedYear / 400);
-  const yearOfEra = adjustedYear - era * 400;
-  const dayOfYear = Math.floor((153 * (month + (month > 2 ? -3 : 9)) + 2) / 5) + day - 1;
-  const dayOfEra = yearOfEra * 365 + Math.floor(yearOfEra / 4) - Math.floor(yearOfEra / 100) + dayOfYear;
-  return era * 146097 + dayOfEra - 719468;
-}
-
-/**
- * Render the timeline `slug` in `language` as of `today` (an ISO day), or
- * null for an unknown slug. Mirrors release_timeline::render_from.
- * @param {string} slug
- * @param {string} language
- * @param {string} today
- * @returns {{text: string, released: object[], announced: object[], stale: boolean}|null}
- */
-function renderReleaseTimeline(slug, language, today) {
-  const registry = releaseTimelineRegistry();
-  const timeline = registry.timelines.find((candidate) => candidate.slug === slug);
-  const phrasing = registry.phrasings.find((candidate) => candidate.language === language) ||
-    registry.phrasings.find((candidate) => candidate.language === "en");
-  if (!timeline || !phrasing) return null;
-  const isReleased = (entry) => entry.releaseDate !== "" && entry.releaseDate <= today;
-  const released = timeline.entries.filter(isReleased).sort((left, right) =>
-    (left.releaseDate < right.releaseDate ? -1 : left.releaseDate > right.releaseDate ? 1
-      : left.qid < right.qid ? -1 : left.qid > right.qid ? 1 : 0));
-  const announced = timeline.entries.filter((entry) => !isReleased(entry));
-  const retrieved = releaseTimelineDays(timeline.retrievedAt);
-  const now = releaseTimelineDays(today);
-  const stale = retrieved === null || now === null || now - retrieved > timeline.freshForDays;
-  const subject = releaseTimelineLocalized(timeline.subjects, language, "");
-  const fill = (template, entry, position) => String(template)
-    .split("{position}").join(String(position))
-    .split("{title}").join(releaseTimelineLocalized(entry.titles, language, entry.qid))
-    .split("{year}").join(entry.releaseDate.split("-")[0] || "")
-    .split("{date}").join(entry.releaseDate);
-  const sections = [];
-  if (released.length > 0) {
-    const items = released.map((entry, index) => fill(phrasing.releasedItem, entry, index + 1));
-    sections.push(`${phrasing.releasedHeading.split("{subject}").join(subject)} ${items.join(phrasing.itemSeparator)}${phrasing.sectionEnd}`);
-  }
-  if (announced.length > 0) {
-    const items = announced.map((entry) =>
-      fill(entry.releaseDate === "" ? phrasing.undatedItem : phrasing.announcedItem, entry, 0));
-    sections.push(`${phrasing.announcedHeading.split("{subject}").join(subject)} ${items.join(phrasing.itemSeparator)}${phrasing.sectionEnd}`);
-  }
-  sections.push(String(stale ? phrasing.staleNote : phrasing.provenanceNote)
-    .split("{source}").join(timeline.sourceLabel)
-    .split("{retrieved}").join(timeline.retrievedAt));
-  return { text: sections.join(" "), released, announced, stale };
-}
-
-// ---------------------------------------------------------------------------
 // Topic summaries (the `summarization` precedence row; browser twin for issue
 // #918). Mirrors try_summarization_request in
 // rust/src/solver_handlers/benchmark_prompts.rs over
-// data/seed/summary-topics.lino: a triggered request names a seeded topic,
-// and the answer is that topic's canonical concept summary or heaviest project
-// statement, never a sentence of its own.
+// the request selects a subject through ordinary concept or project lookup.
+// The summary seed supplies only routing cues and subject boundaries.
 // ---------------------------------------------------------------------------
 
 let cachedSummaryTopicSeeds = null;
@@ -926,74 +860,73 @@ function summaryTopicSeeds() {
     constraintMarkers: values("constraint_marker"),
     constraintLabel: String(childValue(root || { children: [] }, "constraint_label") || ""),
     fallbackResponse: String(childValue(root || { children: [] }, "fallback_response") || ""),
-    topics: records.filter((node) => node.name === "topic" && node.value).map((node) => ({
-      displayName: node.value,
-      detectionKeywords: summaryTopicList(childValue(node, "detection_keywords")),
-      sourceKind: String(childValue(node, "source_kind") || ""),
-      sourceId: String(childValue(node, "source_id") || ""),
-    })).filter((topic) => topic.sourceKind && topic.sourceId),
+    topicLeads: values("topic_lead"),
+    topicTails: values("topic_tail"),
   };
   if (text) cachedSummaryTopicSeeds = seeds;
   return seeds;
 }
 
-/** A localized block for `language`, else the English one (Rust `localized_for`). */
-function summaryTopicLocalized(record, language) {
-  const localized = Array.isArray(record.localized) ? record.localized : [];
-  return localized.find((entry) => entry && entry.language === language) ||
-    localized.find((entry) => entry && entry.language === "en") || null;
-}
-
-/**
- * The topic's canonical statement and its source (Rust `derived_topic_summary`).
- * @returns {{body: string, source: string}|null}
- */
-function summaryTopicDerive(topic, language) {
-  if (topic.sourceKind === "concept") {
-    const record = (CONCEPTS || []).find((candidate) => candidate.slug === topic.sourceId);
-    if (!record) return null;
-    const localized = summaryTopicLocalized(record, language);
-    return {
-      body: (localized && localized.summary) || record.summary || "",
-      source: (localized && localized.source) || record.source || "",
-    };
-  }
-  if (topic.sourceKind === "project") {
-    const record = (PROJECTS || []).find((candidate) => candidate.slug === topic.sourceId);
-    if (!record) return null;
-    const localized = summaryTopicLocalized(record, language);
-    const statements = localized && Array.isArray(localized.statements) && localized.statements.length > 0
-      ? localized.statements : (record.statements || []);
-    let best = null;
-    for (const statement of statements) {
-      if (!best || statement.weight >= best.weight) best = statement; // the last of equal maxima, as Iterator::max_by_key
+function summarySubject(seeds, lower) {
+  const trim = (text) => text.replace(/^[\s?!.:？！。।]+|[\s?!.:？！。।]+$/gu, "");
+  let position = -1;
+  let end = -1;
+  for (const cue of seeds.triggers) {
+    const start = lower.indexOf(cue);
+    if (start >= 0 && start + cue.length >= end) {
+      position = start;
+      end = start + cue.length;
     }
-    return best ? { body: best.text, source: record.url || "" } : null;
   }
-  return null;
+  if (position < 0) return "";
+  const subject = trim(lower.slice(end)) || trim(lower.slice(0, position));
+  let start = 0;
+  for (const lead of seeds.topicLeads) {
+    const found = subject.lastIndexOf(lead);
+    if (found >= 0) start = Math.max(start, found + lead.length);
+  }
+  const name = trim(subject.slice(start));
+  let cut = name.length;
+  for (const tail of seeds.topicTails) {
+    if (name.endsWith(tail)) cut = Math.min(cut, name.length - tail.length);
+  }
+  return trim(name.slice(0, cut));
+}
+
+async function summaryTopicDerive(subject, language, preferences, evidence) {
+  const project = projectByAlias(subject);
+  if (project) {
+    const verified = await verifiedProjectDescription(project, preferences, evidence);
+    const summary = verified || { body: unavailableProjectDescription(language, evidence), source: "none" };
+    return { label: projectDisplayName(project, language), ...summary };
+  }
+  const record = lookupConcept(subject);
+  if (!record) return null;
+  const localized = (record.localized || []).find((entry) => entry.language === language)
+    || (record.localized || []).find((entry) => entry.language === "en");
+  const variant = localized?.summary ? localized : record;
+  return { label: variant.term || record.term, body: variant.summary, source: variant.source || record.source };
 }
 
 /**
- * The `summarization` row: a summary request over a seeded topic.
+ * Resolve and summarize the subject named in the request.
  * @param {string} prompt
- * @returns {object|null}
+ * @returns {Promise<object|null>}
  */
-function trySummarizationTopic(prompt) {
+async function trySummarizationTopic(prompt, preferences) {
   const seeds = summaryTopicSeeds();
   const lower = String(prompt || "").toLowerCase();
   if (!seeds.triggers.some((trigger) => lower.includes(trigger))) return null;
   if (seeds.rejectExact.some((exact) => lower === exact)) return null;
   if (seeds.rejectSubstrings.some((substring) => lower.includes(substring))) return null;
   const language = detectLanguage(prompt);
-  const topic = seeds.topics.find((candidate) =>
-    candidate.detectionKeywords.some((keyword) => lower.includes(keyword)));
-  const derived = topic ? summaryTopicDerive(topic, language) : null;
   const evidence = [];
-  let label = topic ? topic.displayName : "";
+  const derived = await summaryTopicDerive(summarySubject(seeds, lower), language, preferences, evidence);
+  let label = derived ? derived.label : "";
   let body = derived ? derived.body : "";
   let source = derived ? derived.source : "";
   if (!derived) {
-    evidence.push("summarization:refusal:no_seeded_topic");
+    evidence.push("summarization:refusal:unresolved_subject");
     label = String(prompt || "").replace(/^[\s!-/:-@[-`{-~]+|[\s!-/:-@[-`{-~]+$/gu, "");
     body = answerFor(seeds.fallbackResponse || "unknown", language);
     source = "none";

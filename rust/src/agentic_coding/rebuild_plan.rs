@@ -24,38 +24,14 @@
 //! Neural inference stays a NON-GOAL — the plan is a deterministic function of the
 //! accepted change and the embedded artifacts.
 
-use std::sync::OnceLock;
+use serde::Deserialize;
 
-use crate::rebuild_plan::{canonical_rebuild_plan, RebuildPlan};
+use crate::change_request::AcceptedChange;
+use crate::rebuild_plan::RebuildPlan;
 
-/// The workspace path the planner writes the generated rebuild-and-reattach plan to.
+use super::repair_input::{data, owned_source};
+
 pub const REBUILD_PATH: &str = "rebuild-and-reattach.lino";
-
-/// The canonical rebuild-and-reattach plan, computed once per process.
-///
-/// Building it accepts the canonical change through the same green-gate-plus-approval
-/// the ledger and change request enforce, then grounds every reattached artifact; the
-/// recipe touches it several times per run (planner write step, verify step, final
-/// answer) and a server may serve it repeatedly, so memoising keeps the loop responsive
-/// without changing its deterministic result.
-fn cached_rebuild_plan() -> &'static RebuildPlan {
-    static PLAN: OnceLock<RebuildPlan> = OnceLock::new();
-    PLAN.get_or_init(canonical_rebuild_plan)
-}
-
-/// A *differently worded* request for the rebuild-and-reattach recipe.
-///
-/// The router recognises the intent from the words, not a hardcoded string.
-/// Deliberately avoids the source-links keyword "recompile" (and its "entire"/"whole"/
-/// "all" fallback), the change-request "capability"/"feature"/"support" fallback, the
-/// self-healing "heal"/"learn a" fallback, and the ledger/explain/repair-strategy
-/// keywords, so the recipes never collide: this recipe keys on *reattaching* the rebuilt
-/// worker to the UI.
-pub const REBUILD_TASK: &str =
-    "An improvement to Formal AI was accepted — now rebuild it and reattach the improved \
-     WebAssembly worker to the UI: give me the ordered, reversible steps to regenerate \
-     the worker, reattach it to the browser UI, hot-swap the local server, and verify \
-     the UI uses the accepted version.";
 
 /// Keywords that mark a user turn as the rebuild-and-reattach recipe.
 ///
@@ -80,30 +56,59 @@ pub fn is_rebuild_task(prompt: &str) -> bool {
         .any(|keyword| lower.contains(keyword))
 }
 
-/// Render the rebuild-and-reattach plan (Links Notation) for the canonical accepted
-/// change. Deterministic and ends with exactly one trailing newline.
-///
-/// The output is what the Agent CLI writes to [`REBUILD_PATH`]. It is asserted *live*
-/// (never committed byte-for-byte) in the issue-#558 tests, because the reattached
-/// artifacts' content ids change with every source edit — committing it would force a
-/// regenerate on every unrelated PR.
-#[must_use]
-pub fn render_document() -> String {
-    format!("{}\n", cached_rebuild_plan().links_notation().trim_end())
+#[derive(Deserialize)]
+struct RebuildInput {
+    change_id: String,
 }
 
-/// The canonical rebuild-and-reattach plan backing the recipe. Exposed so tests can
-/// assert the plan grounds its artifacts without rebuilding it.
+/// Join the requested change id to an approval recorded by the operator.
 #[must_use]
-pub fn plan() -> RebuildPlan {
-    cached_rebuild_plan().clone()
+pub fn plan_from_task(task: &str) -> Option<RebuildPlan> {
+    let input = data::<RebuildInput>(task)?;
+    let path = std::env::var_os("FORMAL_AI_ACCEPTED_CHANGES")?;
+    let text = crate::learning_ledger::read_review_document(&path).ok()?;
+    plan_from_accepted_changes(&input.change_id, &text)
 }
 
-/// The self-contained final answer: a natural-language summary plus the generated
-/// rebuild-and-reattach plan inline.
+/// Resolve an accepted change from already authenticated operator records.
 #[must_use]
-pub fn final_answer(document: &str) -> String {
-    let plan = cached_rebuild_plan();
+pub fn plan_from_accepted_changes(change_id: &str, records: &str) -> Option<RebuildPlan> {
+    let records: Vec<AcceptedChange> = serde_json::from_str(records).ok()?;
+    let mut matching = records
+        .iter()
+        .filter(|record| record.change_id == change_id);
+    let accepted = matching.next()?;
+    let suffix = change_id.strip_prefix("change_request_")?;
+    if suffix.len() != 16
+        || !suffix
+            .bytes()
+            .all(|byte| byte.is_ascii_hexdigit() && !byte.is_ascii_uppercase())
+        || matching.next().is_some()
+        || accepted.benchmark_passed == 0
+        || accepted.benchmark_passed as u64 > (1_u64 << 53) - 1
+        || [
+            &accepted.request,
+            &accepted.requirement,
+            &accepted.test,
+            &accepted.benchmark_suite,
+            &accepted.reviewer,
+        ]
+        .iter()
+        .any(|value| value.trim().is_empty())
+    {
+        return None;
+    }
+    owned_source(&accepted.target_module)?;
+    Some(RebuildPlan::for_accepted_change(accepted))
+}
+
+#[must_use]
+pub fn render_document(plan: &RebuildPlan) -> String {
+    format!("{}\n", plan.links_notation().trim_end())
+}
+
+#[must_use]
+pub fn final_answer(plan: &RebuildPlan, document: &str) -> String {
     format!(
         "Composed the rebuild-and-reattach plan for accepted change `{change}` (approved by \
          {reviewer}): a {steps}-step, reversible pipeline that recompiles Formal AI, regenerates \

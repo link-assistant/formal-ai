@@ -1,14 +1,10 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5ea9cd462c17d3a1f3d9bb2d008119a9a3afb00be0247a3bb0c46da5341c801e bytes=11645
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=7966998e8c4786040bab95811999b1471fce97dcc5e39b28316bb592b31f6049 bytes=11407
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=3
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
-
-// meta-language:carried JavaScript import_statement (unsupported)
-// formal-ai:refusal import from '…'
-// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -31,10 +27,9 @@
 // | const RECORD_TYPE = 'computer_use_learned_schemas';
 pub const RECORD_TYPE: &str = "computer_use_learned_schemas";
 
-// meta-language:translated JavaScript lexical_declaration items=1 sha256=1aeaca7b71cc3729eed2ff4fec94f5edca19a5c54d5284c97b2b072affe91d4e
-// | /** The corpus the schemas are induced from. */
-// | const CORPUS_PATH = 'data/seed/computer-use-tasks.lino';
-pub const CORPUS_PATH: &str = "data/seed/computer-use-tasks.lino";
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=2af618a26d99068ace25107bdc8dc74451f91e8f8b63ce3256e7f687574ce29a
+// | const FIELD_INDENT = '  ';
+pub const FIELD_INDENT: &str = "  ";
 
 // meta-language:translated JavaScript export_statement items=1 sha256=29f9e37910e5d8ad30aebd94edb0984a671489dbe268c4cf335a865ad9575405
 // | /** `FETCH_OPERATION`: the operation realised by a materialisation prefix. */
@@ -64,10 +59,6 @@ pub const FETCH_OPERATION: &str = "computer_use_fetch";
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal typeof operator
 // formal-ai:blockers Array.isArray | arrow function | global call Boolean() | typeof operator
-
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal arrow function
-// formal-ai:blockers arrow function | call of a sibling function | call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access
@@ -111,4 +102,4 @@ pub static PARAMETER_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyL
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
-// formal-ai:blockers call of a sibling function | call of an imported function | field access | method call .get() | method call .join() | method call .push()
+// formal-ai:blockers JSON.stringify | call of a sibling function | call of an imported function | field access | method call .get() | method call .join() | method call .push()

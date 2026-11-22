@@ -1,20 +1,12 @@
-// Fact records derived from committed Wikidata captures (issue #1172 R9),
-// the crate twin of rust/src/seed/fact_derivation.rs (`derived_facts`) for the
-// agentic port; js/worker/formal_ai_worker_fact_derivation.js is the browser
-// worker's. A record is a subject entity of data/seed/fact-captures.lino whose
-// first claim's property grounds a fact_relation meaning that
-// data/seed/fact-realization.lino realizes, with its value item captured too;
-// the record has the browser shape (`subjectAliases`, `questionKeywords`,
-// `localized`, ...), which solver_handlers_benchmark_prompts.mjs reads.
+// Derive fact records from explicit captures and realization rules.
+// The same function is available through the browser worker factory.
 
 import { lower as canonicalUnaryLower } from './rust_str.mjs';
-import { cached, parseLino, readText } from '../host.mjs';
+import { parseLino } from '../host.mjs';
 import { splitPipeList } from './seed.mjs';
-import { meaning } from './seed_meanings.mjs';
-
-const FACT_CAPTURES_FILE = "data/seed/fact-captures.lino";
-const FACT_REALIZATION_FILE = "data/seed/fact-realization.lino";
 const FACT_SLOT_PATTERN = /\{(subject|value)(?::([a-z_]+))?\}/g;
+const FACT_CAPTURES_ROOT = "fact_captures";
+const FACT_REALIZATION_ROOT = "fact_realization";
 
 /**
  * The single top-level record of a parsed seed file named `name`, or null.
@@ -320,25 +312,9 @@ function factLabelSurfaces(rules, entity) {
   return out;
 }
 
-/**
- * The fact records the captures and the realization rules derive, in capture
- * order (`derived_facts`).
- * @returns {Array<object>}
- */
-export function derivedFacts() {
-  return cached("derived-capture-facts", () => buildDerivedFacts());
-}
-
-function buildDerivedFacts() {
-  return deriveFactsFromTexts(
-    readText(FACT_CAPTURES_FILE), readText(FACT_REALIZATION_FILE),
-    (slug) => meaning(slug)?.wikidata ?? "",
-  );
-}
-
 export function deriveFactsFromTexts(captureText, realizationText, propertyOf) {
-  const captures = factSeedRoot(captureText, "fact_captures");
-  const realization = factSeedRoot(realizationText, "fact_realization");
+  const captures = factSeedRoot(captureText, FACT_CAPTURES_ROOT);
+  const realization = factSeedRoot(realizationText, FACT_REALIZATION_ROOT);
   if (captures === null || realization === null) return [];
   const rules = factRealizationRules(realization);
   const entities = factCapturedEntities(captures);

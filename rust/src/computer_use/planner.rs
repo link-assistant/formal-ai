@@ -70,7 +70,7 @@ pub fn plan_agentic_step(messages: &[ChatMessage], tool_names: &[&str]) -> Optio
         )));
     };
     let Some(tool) = tool_for_primitive(tool_names, step.primitive) else {
-        // A seed-defined computer-use plan is executed by the client that
+        // A supplied computer-use plan is executed by the client that
         // advertises the primitives, and a client that advertises none of them
         // is not this route's client at all. Reporting the gap to it claims the
         // request and ends the turn with a sentence about `fs.write`, while the

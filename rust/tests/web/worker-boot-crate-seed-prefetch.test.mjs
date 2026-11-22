@@ -17,9 +17,18 @@ import { REPO_ROOT, createWorkerContext, evaluate } from "./support/browser-runt
 /** Boots the worker with a fetch that logs each web-root path it is asked for. */
 async function bootLogged() {
   const requested = [];
-  const fetch = (url) => {
+  const heldSeed = "seed/agent-info.lino";
+  let started;
+  let release;
+  const began = new Promise(resolve => { started = resolve; });
+  const held = new Promise(resolve => { release = resolve; });
+  const fetch = async (url) => {
     const relative = new URL(String(url), "http://localhost/").pathname.slice(1);
     requested.push(relative);
+    if (relative === heldSeed) {
+      started();
+      await held;
+    }
     const onDisk = relative.startsWith("seed/")
       ? path.join(REPO_ROOT, "data", relative)
       : path.join(REPO_ROOT, "js", relative);
@@ -31,24 +40,26 @@ async function bootLogged() {
     }
   };
   const worker = createWorkerContext({ fetch });
-  await evaluate(worker, "loadSeed()");
-  return { worker, requested };
+  const boot = evaluate(worker, "loadSeed()");
+  await began;
+  await new Promise(resolve => setImmediate(resolve));
+  const whileHeld = new Set(requested);
+  release();
+  await boot;
+  return { worker, requested, whileHeld };
 }
 
-test("the missing crate meaning seeds are fetched at boot, once, beside the worker's own seeds", async () => {
-  const { worker, requested } = await bootLogged();
+test("the missing crate meaning seeds are fetched at boot, once, beside the worker's own seeds", { timeout: 20_000 }, async () => {
+  const { worker, requested, whileHeld } = await bootLogged();
   const listed = new Set(evaluate(worker, "FORMAL_AI_SEED_FILES").map((file) => file.split("/").pop()));
   const missing = [...evaluate(worker, "FORMAL_AI_CRATE_MEANING_SEEDS")]
     .map((seed) => `seed/${seed}.lino`)
     .filter((file) => !listed.has(file.split("/").pop()));
   assert.ok(missing.length > 0, "the registry names meaning seeds the worker list leaves out");
-  // `loadSeed` fetches the recurrence source cache once the worker's own
-  // seeds have all arrived; a crate seed requested after it waited for them.
-  const afterOwnSeeds = requested.indexOf("source-cache/wikifunctions-recurrences.lino");
-  assert.ok(afterOwnSeeds > 0, "loadSeed fetched the recurrence source cache");
+  assert.equal(requested.some(file => file.startsWith("source-cache/")), false);
   for (const file of missing) {
     assert.equal(requested.filter((each) => each === file).length, 1, `${file} fetched once`);
-    assert.ok(requested.indexOf(file) < afterOwnSeeds, `${file} waited for the worker's own seeds`);
+    assert.ok(whileHeld.has(file), `${file} waited for the worker's own seeds`);
   }
   // `loadCrateSeeds` took the prefetched texts: the crate host reads them.
   const sample = missing[0].split("/").pop();

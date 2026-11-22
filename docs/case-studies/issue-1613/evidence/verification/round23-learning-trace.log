@@ -1,0 +1,15 @@
+✔ a verified candidate in the worker trace yields the Rust learning_trace (11.685998ms)
+✔ the native solver event log is read verbatim once it carries the candidate (0.751542ms)
+✔ no learning_trace without both a candidate and a verification (3.565798ms)
+✔ event_payload stops at the next step and keeps only known fields (0.375701ms)
+✔ a reported conversation stages one proposal against an absent gate (195.560384ms)
+✔ a failed verification is a rejection, not a proposal (7.624005ms)
+✔ the learn route counts the proposals of a recorded dialog (51.108771ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2272.62146

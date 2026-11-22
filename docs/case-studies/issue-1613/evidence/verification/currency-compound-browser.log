@@ -1,0 +1,31 @@
+✔ a seeded rename program runs to fixpoint with the seeded wording (3734.151885ms)
+✔ the program id is the native stable id of the canonical program (1.435888ms)
+✔ the russian request compiles to the same program and answers in russian (633.939525ms)
+✔ a destructive program is refused without confirmation (81.721607ms)
+✔ a memory request no seeded family covers names its gap (117.174658ms)
+✔ a compound-interest report converts at the publisher euro and ruble rates (1169.040286ms)
+✔ a principal spelled in dollars is never converted to dollars (143.00082ms)
+✔ a follow-up converts the earlier final amount (146.403549ms)
+✔ compound interest accepts another ISO principal without a network quote (144.227269ms)
+✔ playwright starters answer with the native pins in every language (623.165378ms)
+✔ a low guess probability asks for the script's scope (91.480379ms)
+✔ a navigation the frame policy blocks keeps the external link (3.834783ms)
+✔ a navigation the frame policy allows shows the page (1.343567ms)
+✔ an unreachable frame-policy service names its reason (0.711147ms)
+✔ a fetched text body is shown and a binary body is not (2.53073ms)
+✔ a failed fetch falls back to the frame policy (1.61894ms)
+✔ web search texts come from the seed in every language (2.060152ms)
+✔ a procedural plan renders its seeded lines in English and Russian (77.004938ms)
+✔ a task text with braces is never re-filled (25.022034ms)
+✔ the mechanism discovery plan answers as the native row does (261.789459ms)
+✔ feature capability questions answer from the seeded table (296.414546ms)
+✔ numeric-list answers render their seeded intro and result label (4587.316849ms)
+✔ meta explanations render the seeded records (792.763901ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16008.153569

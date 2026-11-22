@@ -1,4 +1,4 @@
-external_benchmark_frontier_summary	"上一次定时运行中失败的每个上游基准用例，每个用例一个前沿提示，使学习循环依据账本评分所用的同一证据来提出种子表面（issue #1085 D5.1）。由 formal-ai benchmark run --frontier-record 重写；完全通过的测试集会被移除。由 formal-ai learn cycle --frontier upstream-benchmarks 重放。"
+external_benchmark_frontier_summary	"上一次定时运行中失败的每个上游基准用例，每个用例一个前沿提示，使学习循环依据账本评分所用的同一证据来提出种子表面（issue #1085 D5.1）。由 formal-ai benchmark run --frontier-record 重写；完全通过的测试集会被移除。由 formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...] 重放。"
 external_benchmark_frontier_written	"已写入上游失败前沿：{path}"
 external_benchmark_stagnant_suite	"{suite}：passed={passed} 在切片 {slice} 上最近三次运行中均未变化（{first}、{second}、{third}）；停滞的测试集在有所变化之前都视为警告（issue #1085 D5.2）"
 software_project_followup_approved	"计划已批准，因此生成的入门代码已包含这个测试框架。实际运行它需要 test_execution 和 network_access 闸门。"

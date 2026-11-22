@@ -32,7 +32,9 @@ fn issue_660_evidence_and_ci_are_traceable() {
         read("docs/case-studies/issue-660/agent-cli-evidence/lexeme-import-learning-report.lino");
     assert_eq!(
         report,
-        formal_ai::agentic_coding::learning_report::lexeme_import_learning::render_document(),
+        formal_ai::agentic_coding::learning_report::lexeme_import_learning::render_document_from(
+            include_str!("../../../../data/meta/issue-660-lexeme-import-learning.lino")
+        ),
         "committed Agent CLI evidence must reproduce byte for byte"
     );
     assert!(report.contains("issue \"660\""));

@@ -1,0 +1,18 @@
+8151 # Subtest: native offline chat needs a publisher capture to synthesize a recurrence
+8152 not ok 1 - native offline chat needs a publisher capture to synthesize a recurrence
+8158   error: 'test timed out after 30000ms'
+8162 2026-11-22T03:49:16.028258666Z publisher_recurrence_started
+8162 2026-11-22T03:49:16.230140629Z publisher_recurrence_unverified
+8162 2026-11-22T03:49:16.515251746Z general_synthesis_started
+8164 ok 2 - native offline chat synthesizes a sourced factorial recurrence for en
+8171 2026-11-22T03:49:45.986855011Z publisher_recurrence_started
+8171 2026-11-22T03:49:46.372092001Z publisher_recurrence_verified
+8173 ok 3 - native offline chat synthesizes a sourced factorial recurrence for ru
+8180 2026-11-22T03:49:49.215332657Z publisher_recurrence_started
+8180 2026-11-22T03:49:50.252877670Z publisher_recurrence_verified
+8182 ok 4 - native offline chat synthesizes a sourced factorial recurrence for hi
+8189 2026-11-22T03:49:52.243658768Z publisher_recurrence_started
+8189 2026-11-22T03:49:53.221206538Z publisher_recurrence_verified
+8191 ok 5 - native offline chat synthesizes a sourced fibonacci recurrence for en
+8198 2026-11-22T03:49:55.244220273Z publisher_recurrence_started
+8198 2026-11-22T03:49:56.029950745Z publisher_recurrence_verified

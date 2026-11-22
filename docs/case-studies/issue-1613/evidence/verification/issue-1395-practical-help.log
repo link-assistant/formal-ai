@@ -1,0 +1,27 @@
+✔ real solver gives source-backed practical guidance in en (6023.400699ms)
+✔ real solver gives source-backed practical guidance in ru (5035.149364ms)
+✔ real solver gives source-backed practical guidance in hi (4930.643929ms)
+✔ real solver gives source-backed practical guidance in zh (4234.596583ms)
+✔ real solver gives source-backed practical guidance in es (4328.930128ms)
+✔ Spanish detection, follow-up and unavailable guidance use the same strategy (4529.17749ms)
+✔ unavailable guidance asks for the user choice in en (4290.956109ms)
+✔ unavailable guidance asks for the user choice in ru (4804.476939ms)
+✔ unavailable guidance asks for the user choice in hi (5505.361944ms)
+✔ unavailable guidance asks for the user choice in zh (5129.783781ms)
+✔ unavailable guidance asks for the user choice in es (5883.123499ms)
+✔ the urgent report and a short follow-up preserve the actual goal (4823.402012ms)
+✔ negations, quotations and unrelated requests do not become personal needs (2724.140568ms)
+✔ an empty cache discovers the registered source and labels fetched evidence honestly (2682.169326ms)
+✔ failed, irrelevant and oversized sources produce a useful question rather than unsupported advice (12217.872631ms)
+✔ both fetch and body-read stalls have a deadline even when transport ignores abort (5347.440832ms)
+✔ zero-byte stream chunks have a finite read budget and are cancelled (2775.97952ms)
+✔ the same strategy handles a new data-defined goal without a prompt-specific code branch (2737.553981ms)
+✔ an empty matcher operand terminates within the same finite contract as Rust (2507.686145ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 91373.253283

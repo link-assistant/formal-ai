@@ -1,0 +1,25 @@
+fast-governance language-parity: PASS (676ms)
+language parity: 42 explicit dated gaps; debt rows are exact
+
+fast-governance minimal-core: PASS (192ms)
+minimal-core boundary: 91 handler sources, 18854 outside-core lines
+
+fast-governance current-debt-ceilings: PASS (1003ms)
+Current debt ceilings match measured source; base nonincrease is checked by the existing separate gate
+
+fast-governance honest-closure: PASS (7086ms)
+closure audit (data/meta/closure-audit.lino):
+  unresolved_distinct_honest: measured 1035 / reviewed 1035
+closure audit holds
+
+fast-governance role-namespace: PASS (683ms)
+roles: 667 (342 also meanings, 325 predicate-only)
+checked data/seed/roles.lino
+
+fast-governance seed-metadata: PASS (323ms)
+seed metadata: audited 2596 concepts; 1073 per-record gaps captured in data
+
+fast-governance response-language-parity: PASS (184ms)
+data/meta/response-language-parity-debt.lino is current
+
+{"scope":"current source governance; not base nonincrease or tests-as-docs parity","results":[{"name":"language-parity","passed":true,"status":0,"durationMs":676},{"name":"minimal-core","passed":true,"status":0,"durationMs":192},{"name":"current-debt-ceilings","passed":true,"status":0,"durationMs":1003},{"name":"honest-closure","passed":true,"status":0,"durationMs":7086},{"name":"role-namespace","passed":true,"status":0,"durationMs":683},{"name":"seed-metadata","passed":true,"status":0,"durationMs":323},{"name":"response-language-parity","passed":true,"status":0,"durationMs":184}]}

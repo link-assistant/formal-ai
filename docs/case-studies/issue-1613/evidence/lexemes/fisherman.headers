@@ -1,0 +1,5 @@
+GET https://ru.wikisource.org/w/api.php?action=parse&page=%D0%A1%D0%BA%D0%B0%D0%B7%D0%BA%D0%B0+%D0%BE+%D1%80%D1%8B%D0%B1%D0%B0%D0%BA%D0%B5+%D0%B8+%D1%80%D1%8B%D0%B1%D0%BA%D0%B5+%28%D0%9F%D1%83%D1%88%D0%BA%D0%B8%D0%BD%29&prop=text&formatversion=2&format=json
+HTTP/2 200
+date: Sun, 22 Nov 2026 03:54:08 GMT
+content-type: application/json; charset=utf-8
+x-request-id: e0d0f5c0-b031-43f8-bd7a-17df27988e68

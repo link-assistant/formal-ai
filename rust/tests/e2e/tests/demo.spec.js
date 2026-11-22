@@ -561,7 +561,7 @@ test.describe('formal-ai demo UI', () => {
     await switchToManualMode(page);
 
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await input.fill('Write me a FizzBuzz program in Rust');
+    await input.fill('Write me a FizzBuzz program in Rust from 1 through 15');
 
     const messages = page.locator('[data-testid="chat-message"]');
     const initialCount = await messages.count();

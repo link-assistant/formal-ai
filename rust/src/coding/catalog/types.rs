@@ -80,42 +80,6 @@ impl ProgramLanguage {
         crate::prerequisite::probe::seed_setup_hint(self.slug)
     }
 
-    /// The execution note shown under this language's programs.
-    ///
-    /// A row whose `notes` is empty states it in the response seed instead,
-    /// as `program_execution_notes_<slug>`, so the sentence lives with the
-    /// other answer prose rather than in this table.
-    #[must_use]
-    pub fn execution_notes(&self) -> String {
-        if self.execution.notes.is_empty() {
-            crate::seed::report_text(&format!("program_execution_notes_{}", self.slug), &[])
-        } else {
-            self.execution.notes.to_owned()
-        }
-    }
-
-    /// The environment the recorded verification ran in.
-    #[must_use]
-    pub fn environment(&self) -> String {
-        crate::prerequisite::probe::seed_environment(self.slug)
-    }
-
-    /// Whether the output shown beside this language's programs was observed.
-    ///
-    /// Read from `data/seed/toolchains.lino`, which records what a harness run
-    /// actually observed, rather than from a constant in this file. A caller
-    /// holding a live [`crate::prerequisite::probe::ProbeVerdict`] derives the
-    /// status from it through [`ExecutionStatus::from_verdict`] instead; the
-    /// seed row is what a caller with no observation of its own may say.
-    #[must_use]
-    pub fn execution_status(&self) -> ExecutionStatus {
-        match crate::prerequisite::probe::seed_execution_status(self.slug).as_str() {
-            "verified" => ExecutionStatus::Verified,
-            "unavailable" => ExecutionStatus::Unavailable,
-            _ => ExecutionStatus::NotProbed,
-        }
-    }
-
     /// Probe this language's toolchain on this machine, right now.
     #[must_use]
     // Read by plan 06 leaf L13 (the Telegram execution surface) and leaf L15
@@ -136,26 +100,6 @@ pub struct ProgramTask {
     pub slug: &'static str,
     pub label: &'static str,
     pub output: &'static str,
-    /// Standard input the task is defined against, or `""` when the program
-    /// reads none.
-    ///
-    /// Issue #863 asked for *copy stdin to stdout*, and a task whose whole
-    /// subject is standard input has no verifiable output until its input is
-    /// fixed: `output` alone would claim a result the reader cannot reproduce.
-    /// The fixture therefore belongs to the task, next to the output it
-    /// produces, rather than to whichever harness happens to run it — which is
-    /// what lets [`ProgramSpec::run_command_line`] and the issue-330
-    /// verification harness feed the same bytes without agreeing on anything
-    /// but the catalog.
-    pub input: &'static str,
-}
-
-impl ProgramTask {
-    #[must_use]
-    pub fn output_for_language(&self, language: &ProgramLanguage) -> String {
-        list_files_sample_output(self.slug, &language.save_as)
-            .unwrap_or_else(|| self.output.to_owned())
-    }
 }
 
 /// A program the catalog compiles in: a row of the `templates_*` tables.
@@ -166,12 +110,7 @@ pub struct CompiledTemplate {
     pub code: &'static str,
 }
 
-/// A program the catalog answers a `(task, language)` pair with.
-///
-/// The program is runtime data (issue #1165 R1165-4): a compiled row lends
-/// its text, while a pair the documentation route covers owns the program
-/// rediscovered from `data/seed/coding-documentation-captures.lino` when the
-/// catalog table is first read, so a retired program is no longer compiled.
+/// Code for a task and language, compiled locally or composed for one request.
 #[derive(Clone)]
 pub struct ProgramTemplate {
     pub task_slug: &'static str,
@@ -190,13 +129,13 @@ impl From<&CompiledTemplate> for ProgramTemplate {
 }
 
 #[derive(Clone, Copy)]
-pub struct ProgramSpec {
-    pub language: &'static ProgramLanguage,
-    pub task: &'static ProgramTask,
-    pub template: &'static ProgramTemplate,
+pub struct ProgramSpec<'a> {
+    pub language: &'a ProgramLanguage,
+    pub task: &'a ProgramTask,
+    pub template: &'a ProgramTemplate,
 }
 
-impl ProgramSpec {
+impl ProgramSpec<'_> {
     #[must_use]
     pub fn response_link(self) -> String {
         format!(
@@ -223,78 +162,16 @@ impl ProgramSpec {
     }
 
     #[must_use]
-    pub fn expected_output(self) -> String {
-        self.task.output_for_language(self.language)
-    }
-
-    /// The stdin fixture this task is defined against, if it reads any.
-    #[must_use]
-    pub fn stdin_fixture(self) -> Option<&'static str> {
-        (!self.task.input.is_empty()).then_some(self.task.input)
-    }
-
-    /// The run command as a reader must actually type it.
-    ///
-    /// A program that reads standard input is not run by naming it alone: with
-    /// no redirection it waits for a terminal that, in an answer, nobody is
-    /// typing into. The fixture is therefore piped in on the command line
-    /// rather than left to a file the answer would also have to describe, so
-    /// the command is copy-pasteable and carries the input it was verified
-    /// against (issue #863).
-    #[must_use]
-    pub fn run_command_line(self) -> String {
-        let run_command = &self.language.execution.run_command;
-        self.stdin_fixture().map_or_else(
-            || run_command.to_string(),
-            |input| format!("printf '{}' | {run_command}", shell_escaped(input)),
-        )
+    pub fn run_command_line(&self) -> &str {
+        &self.language.execution.run_command
     }
 }
 
-/// `input` with the characters a single-quoted `printf` format cannot carry
-/// written as the escapes `printf` expands back into them.
-fn shell_escaped(input: &str) -> String {
-    let mut escaped = String::with_capacity(input.len());
-    for character in input.chars() {
-        match character {
-            '\n' => escaped.push_str("\\n"),
-            '\t' => escaped.push_str("\\t"),
-            '\\' => escaped.push_str("\\\\"),
-            '%' => escaped.push_str("%%"),
-            '\'' => escaped.push_str("'\\''"),
-            other => escaped.push(other),
-        }
-    }
-    escaped
-}
-
-fn list_files_sample_output(task_slug: &str, save_as: &str) -> Option<String> {
-    let reverse = match task_slug {
-        "list_files" | "list_files_arg" => false,
-        "list_files_reverse_sort" | "list_files_arg_reverse_sort" => true,
-        _ => return None,
-    };
-    let mut files = ["README.md", "data.txt", save_as];
-    files.sort_unstable();
-    if reverse {
-        files.reverse();
-    }
-    Some(files.join("\n"))
-}
-
-/// How a catalogued program is checked and run.
-///
-/// Issue #1138 plan 06 leaf L3 removed `status` and `environment` from this
-/// record. They were the two fields a human wrote by hand to say whether the
-/// program had been observed working, in a record the runtime could not update;
-/// they are rows of `data/seed/toolchains.lino` now, read through
-/// [`ProgramLanguage::execution_status`] and [`ProgramLanguage::environment`],
-/// beside the probe that observes the toolchain on this machine.
+/// Commands for checking and running a catalogued program.
 #[derive(Clone)]
 pub struct ProgramExecution {
     pub check_command: Option<Cow<'static, str>>,
     pub run_command: Cow<'static, str>,
-    pub notes: &'static str,
 }
 
 /// Whether the output shown beside a program was observed.

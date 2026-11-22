@@ -1,8 +1,7 @@
 // Issue #1173 R1173-3 browser twin, the fifth routing-probe pass (ROUTE3).
 // "a program that prints <text>" names the catalog task whose output is the
 // request's operand (`print_text` in data/seed/hello-world-programs.lino): the
-// program is the documented hello_world print procedure with the text bound
-// into its output literal, never a stored program. And a handler the
+// offline renderer binds the text to the shared stdout operation. A handler the
 // precedence seed marks `before-promotion` is asked in solve()'s fixed early
 // phase, which the native dispatcher now mirrors (issue #1175 p133). Native
 // pins: rust/tests/unit/seed/issue_1173_route3_probes.rs.
@@ -17,10 +16,10 @@ import { REPO_ROOT, createWorkerContext, evaluate, plain } from "./support/brows
 const worker = createWorkerContext();
 await evaluate(worker, "loadSeed()");
 
-const solve = async (prompt) => plain(await worker.solve(prompt, [], {}, {}, [], {}));
+const solve = async (prompt) => plain(await worker.solve(prompt, [], { offline: true }, {}, [], {}));
 const operand = (prompt) => JSON.parse(evaluate(worker, `JSON.stringify(programTaskOperand(${JSON.stringify(prompt)}))`));
 
-test("R1173-3: a program that prints a greeting is the print_text task, composed from the documented procedure", async () => {
+test("R1173-3: a program that prints a greeting binds the task's output operand", async () => {
   const answer = await solve("Write a program in Rust that prints hello");
   assert.equal(answer.intent, "write_program");
   assert.equal(answer.content, [
@@ -52,10 +51,10 @@ test("R1173-3: a program that prints a greeting is the print_text task, composed
     "5. Compare the output with the expected output shown above.",
   ].join("\n"));
   assert.equal(answer.programExecution.task, "print_text");
-  assert.equal(answer.programExecution.rediscoveredFrom, "https://doc.rust-lang.org/book/ch01-02-hello-world.html");
+  assert.equal(answer.programExecution.rediscoveredFrom, undefined);
   const russian = await solve("Напиши программу на Python, которая печатает привет");
   assert.equal(russian.intent, "write_program");
-  assert.ok(russian.content.includes("```python\nprint('привет')\n```"), russian.content);
+  assert.ok(russian.content.includes('```python\nprint("привет")\n```'), russian.content);
   assert.equal(russian.programExecution.output, "привет");
 });
 
@@ -82,7 +81,9 @@ test("R1173-3: a described value, two literals or no print verb name no operand"
 });
 
 test("R1173-3: a script request stays the minimal-script lane, and no program is stored for print_text", async () => {
-  assert.equal((await solve("Write a Python script that prints hello")).intent, "write_script_python");
+  const script = await solve("Write a Python script that prints hello");
+  assert.equal(script.intent, "write_script_python");
+  assert.ok(script.content.includes('print("hello")'), script.content);
   assert.equal(evaluate(worker, 'writeProgramTemplate("print_text", "rust")'), null);
   const seed = readFileSync(path.join(REPO_ROOT, "data/seed/hello-world-programs.lino"), "utf8");
   assert.ok(seed.includes("task_print_text\n  task print_text\n  label \"print text\"\n  output \"{operand}\"\n  procedure hello_world\n"));

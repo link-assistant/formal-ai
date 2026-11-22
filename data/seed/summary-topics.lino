@@ -6,15 +6,5 @@ summary_topics
   constraint_marker one-paragraph
   constraint_label one_paragraph
   fallback_response unknown
-  topic Rust
-    detection_keywords ("rust" "раст" "러스트" "रस्ट" "锈语言")
-    source_kind concept
-    source_id concept_rust
-  topic Wikipedia
-    detection_keywords ("wikipedia" "википедии" "википедия" "википедию" "विकिपीडिया" "维基百科")
-    source_kind concept
-    source_id concept_wikipedia
-  topic formal-ai
-    detection_keywords ("formal-ai" "formal ai" "формал-ай" "formalाई" "福尔玛尔-人工智能")
-    source_kind project
-    source_id project_link_assistant_formal_ai
+  topic_lead (" article on " " article about " " entry for " " page on " " page about " "статью о " "статью про ")
+  topic_tail (" in one paragraph" " in a paragraph" " please" " в одном абзаце" " का" " के")

@@ -63,7 +63,9 @@ fn issue_657_self_hosting_evidence_is_traceable() {
     // case study is describing a run that no longer reproduces.
     assert_eq!(
         report,
-        formal_ai::agentic_coding::learning_report::self_hosting_learning::render_document(),
+        formal_ai::agentic_coding::learning_report::self_hosting_learning::render_document_from(
+            include_str!("../../../../data/meta/issue-657-self-hosting-learning.lino")
+        ),
         "the committed Agent CLI evidence has drifted from the rendered report; \
          re-run experiments/agent_cli_e2e/run_issue_657_metric.sh"
     );

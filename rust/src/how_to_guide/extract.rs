@@ -214,8 +214,14 @@ pub fn decode_entities(value: &str) -> String {
             "gt" => decoded.push('>'),
             _ => {
                 let numeric = entity
-                    .strip_prefix('#')
-                    .and_then(|digits| digits.parse::<u32>().ok())
+                    .strip_prefix("#x")
+                    .or_else(|| entity.strip_prefix("#X"))
+                    .and_then(|digits| u32::from_str_radix(digits, 16).ok())
+                    .or_else(|| {
+                        entity
+                            .strip_prefix('#')
+                            .and_then(|digits| digits.parse::<u32>().ok())
+                    })
                     .and_then(char::from_u32);
                 if let Some(character) = numeric {
                     decoded.push(character);
@@ -317,6 +323,142 @@ pub(super) fn wiki_how_steps(html: &str, limit: usize) -> Vec<String> {
         // Older structured captures contain bare list items.
         extract_steps(html, limit)
     }
+}
+
+/// Select one ordered procedure. Nominal catalogue entries must explicitly
+/// label the section that supplies the steps.
+pub(super) fn ordered_procedure_steps(
+    html: &str,
+    labels: &str,
+    require_section: bool,
+    limit: usize,
+) -> Vec<String> {
+    use std::sync::LazyLock;
+    static HEADINGS: LazyLock<regex::Regex> =
+        LazyLock::new(|| regex::Regex::new(r"(?is)<h([1-6])(?:\s[^>]*)?>(.*?)</h[1-6]>").unwrap());
+    static LISTS: LazyLock<regex::Regex> =
+        LazyLock::new(|| regex::Regex::new(r"(?is)<ol(?:\s[^>]*)?>(.*?)</ol>").unwrap());
+    let headings: Vec<_> = HEADINGS.captures_iter(html).collect();
+    let named_section = headings.iter().enumerate().find_map(|(index, heading)| {
+        let label = compact_step_text(&heading[2]).to_lowercase();
+        if !labels.split('|').any(|name| name == label) {
+            return None;
+        }
+        let start = heading.get(0)?.end();
+        let end = headings[index + 1..]
+            .iter()
+            .find(|next| next[1] <= heading[1])
+            .and_then(|next| next.get(0))
+            .map_or(html.len(), |next| next.start());
+        Some(&html[start..end])
+    });
+    if require_section && named_section.is_none() {
+        return Vec::new();
+    }
+    LISTS
+        .captures_iter(named_section.unwrap_or(html))
+        .map(|list| extract_steps(&list[1], limit))
+        .find(|steps| steps.len() >= super::MIN_ACCEPTED_STEPS)
+        .unwrap_or_default()
+}
+
+/// Read a unique ordered list under a publisher heading that binds the task.
+#[cfg(not(target_arch = "wasm32"))]
+pub(super) fn indexed_procedure_steps(
+    html: &str,
+    matches_title: impl Fn(&str) -> bool,
+    limit: usize,
+) -> Vec<String> {
+    use std::sync::LazyLock;
+    static AUXILIARY: LazyLock<regex::Regex> = LazyLock::new(|| {
+        regex::Regex::new(concat!(
+            r"(?is)<!--.*?-->|<script\b[^>]*>.*?</script\s*>|<style\b[^>]*>.*?</style\s*>",
+            r"|<nav\b[^>]*>.*?</nav\s*>|<aside\b[^>]*>.*?</aside\s*>|<footer\b[^>]*>.*?</footer\s*>",
+        )).unwrap()
+    });
+    static MAIN: LazyLock<regex::Regex> =
+        LazyLock::new(|| regex::Regex::new(r"(?is)<main(?:\s[^>]*)?>(.*?)</main>").unwrap());
+    static HEADINGS: LazyLock<regex::Regex> =
+        LazyLock::new(|| regex::Regex::new(r"(?is)<h([1-6])(?:\s[^>]*)?>(.*?)</h[1-6]>").unwrap());
+    let main = MAIN.captures(html);
+    let body = AUXILIARY.replace_all(main.as_ref().map_or(html, |main| &main[1]), "");
+    let headings = HEADINGS.captures_iter(&body).collect::<Vec<_>>();
+    let Some(start) = headings.iter().position(|heading| &heading[1] == "1") else {
+        return Vec::new();
+    };
+    let mut labels = Vec::new();
+    let mut procedure = Vec::new();
+    for (index, heading) in headings.iter().enumerate().skip(start) {
+        let level = usize::from(heading[1].as_bytes()[0] - b'0');
+        labels.resize(level, String::new());
+        labels[level - 1] = compact_step_text(&heading[2]);
+        if !matches_title(&labels.join(" ")) {
+            continue;
+        }
+        let end = headings
+            .get(index + 1)
+            .map_or(body.len(), |next| next.get(0).unwrap().start());
+        let section = &body[heading.get(0).unwrap().end()..end];
+        for steps in indexed_section_lists(section, limit) {
+            if !procedure.is_empty() && procedure != steps {
+                return Vec::new();
+            }
+            procedure = steps;
+        }
+    }
+    procedure
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn indexed_section_lists(html: &str, limit: usize) -> Vec<Vec<String>> {
+    use std::sync::LazyLock;
+    static TAG: LazyLock<regex::Regex> =
+        LazyLock::new(|| regex::Regex::new(r"(?i)<(/?)(ol|ul|li)\b[^>]*>").unwrap());
+    static ICON: LazyLock<regex::Regex> = LazyLock::new(|| {
+        regex::Regex::new(r#"(?is)<svg\b[^>]*\baria-label="([^"]*)"[^>]*>.*?</svg>"#).unwrap()
+    });
+    static PUNCTUATION: LazyLock<regex::Regex> =
+        LazyLock::new(|| regex::Regex::new(r"\s+([,.!?])").unwrap());
+    let mut depth = 0_i32;
+    let mut start = None;
+    let mut steps: Option<Vec<String>> = None;
+    let mut lists = Vec::new();
+    for tag in TAG.captures_iter(html) {
+        let closing = &tag[1] == "/";
+        let kind = &tag[2];
+        let span = tag.get(0).unwrap();
+        if !kind.eq_ignore_ascii_case("li") {
+            if !closing && depth == 0 {
+                steps = kind.eq_ignore_ascii_case("ol").then(Vec::new);
+            }
+            depth += if closing { -1 } else { 1 };
+            if depth < 0 {
+                return Vec::new();
+            }
+            if depth == 0
+                && let Some(list) = steps.take()
+                && list.len() >= super::MIN_ACCEPTED_STEPS
+            {
+                lists.push(list);
+            }
+        } else if depth == 1
+            && let Some(steps) = steps.as_mut()
+        {
+            if !closing {
+                start = Some(span.end());
+            } else if let Some(start) = start.take()
+                && steps.len() < limit
+            {
+                let item = ICON.replace_all(&html[start..span.start()], " ${1} ");
+                let text = compact_step_text(&item);
+                let text = PUNCTUATION.replace_all(&text, "${1}").into_owned();
+                if !text.is_empty() && !steps.contains(&text) {
+                    steps.push(text);
+                }
+            }
+        }
+    }
+    lists
 }
 
 /// Ordered steps found in rendered HTML.

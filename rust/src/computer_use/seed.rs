@@ -5,7 +5,7 @@ use serde_json::Value;
 
 use super::{ComputerPlanStep, ComputerUsePlan, ComputerUsePrimitive};
 
-const TASKS_LINO: &str = crate::seed::COMPUTER_USE_TASKS_LINO;
+const POLICY_LINO: &str = crate::seed::COMPUTER_USE_TASKS_LINO;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BenchmarkTask {
@@ -29,19 +29,18 @@ struct ParsedSeed {
     verification_failures: BTreeMap<String, String>,
     preconditions: BTreeMap<String, String>,
     postconditions: BTreeMap<String, String>,
-    gap_cues: Vec<(String, String, String)>,
     gap_responses: BTreeMap<(String, String), String>,
 }
 
 #[must_use]
-pub fn benchmark_tasks() -> &'static [BenchmarkTask] {
-    &parsed().tasks
+pub fn parse_benchmark_tasks(document: &str) -> Vec<BenchmarkTask> {
+    parse_seed(document).tasks
 }
 
 #[must_use]
-pub fn plan_for_prompt(prompt: &str) -> Option<ComputerUsePlan> {
+pub fn plan_for_prompt(tasks: &[BenchmarkTask], prompt: &str) -> Option<ComputerUsePlan> {
     let normalized = normalize(prompt);
-    for task in benchmark_tasks() {
+    for task in tasks {
         for (locale, candidate) in &task.prompts {
             if normalize(candidate) == normalized {
                 return Some(ComputerUsePlan {
@@ -54,25 +53,6 @@ pub fn plan_for_prompt(prompt: &str) -> Option<ComputerUsePlan> {
         }
     }
     None
-}
-
-#[must_use]
-pub fn capability_gap_for_prompt(prompt: &str) -> Option<CapabilityGap> {
-    let normalized = normalize(prompt);
-    let seed = parsed();
-    let (capability, locale, _) = seed
-        .gap_cues
-        .iter()
-        .find(|(_, _, cue)| normalize(cue) == normalized)?;
-    let response = seed
-        .gap_responses
-        .get(&(capability.clone(), locale.clone()))?
-        .clone();
-    Some(CapabilityGap {
-        capability: capability.clone(),
-        locale: locale.clone(),
-        response,
-    })
 }
 
 #[must_use]
@@ -168,15 +148,15 @@ pub fn tool_description(primitive: ComputerUsePrimitive) -> String {
 
 fn parsed() -> &'static ParsedSeed {
     static PARSED: OnceLock<ParsedSeed> = OnceLock::new();
-    PARSED.get_or_init(parse_seed)
+    PARSED.get_or_init(|| parse_seed(POLICY_LINO))
 }
 
-fn parse_seed() -> ParsedSeed {
+fn parse_seed(document: &str) -> ParsedSeed {
     let mut parsed = ParsedSeed::default();
     let mut current_task: Option<BenchmarkTask> = None;
     let mut current_gap: Option<String> = None;
 
-    for line in TASKS_LINO.lines() {
+    for line in document.lines() {
         if let Some(rest) = line.strip_prefix("  completion ") {
             if let Some((locale, value)) = parse_localized(rest) {
                 parsed.completions.insert(locale, value);
@@ -246,24 +226,14 @@ fn parse_seed() -> ParsedSeed {
                 )
             {
                 let number = task.steps.len() + 1;
+                let (precondition, postcondition) = step_conditions(primitive);
                 task.steps.push(ComputerPlanStep {
                     id: format!("{}-{number:02}", task.id),
                     primitive,
                     arguments,
-                    precondition: render_template(
-                        primitive_template(&parsed.preconditions, primitive),
-                        &[("permission", &primitive.permission_key())],
-                    ),
-                    postcondition: primitive_template(&parsed.postconditions, primitive).to_owned(),
+                    precondition,
+                    postcondition,
                 });
-            }
-            continue;
-        }
-        if let Some(rest) = line.strip_prefix("    cue ") {
-            if let (Some(capability), Some((locale, cue))) =
-                (current_gap.as_ref(), parse_localized(rest))
-            {
-                parsed.gap_cues.push((capability.clone(), locale, cue));
             }
             continue;
         }

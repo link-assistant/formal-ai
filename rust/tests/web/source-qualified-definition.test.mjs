@@ -3,10 +3,9 @@
 import assert from 'node:assert/strict';
 import { before, test } from 'node:test';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
 import { WorkerHost, REPO_ROOT } from '../../../js/server/worker-host.mjs';
-import { parseLino } from '../../../js/server/lino.mjs';
 import { specificationCases, checkFailure } from '../../../scripts/lib/rust-specification-cases.mjs';
+import { installSourceDefinitionCaptures, sourceDefinitionCaptures } from './support/source-definition-captures.mjs';
 const original = 'Cite a definition of associative memory from Wikipedia';
 const url = 'https://en.wikipedia.org/api/rest_v1/page/summary/associative%20memory';
 const digest = 'd8c37a8c6e2e0abcb15cab4ece37127ab3a1d6335319be0fc79be0be66f5fa09';
@@ -22,7 +21,29 @@ const expected = 'associative memory — Wikipedia (disambiguation):\n'
   + meanings.map((meaning,index) => `  ${index + 1}. ${meaning}\n`).join('')
   + `Source: ${url} (sha256 ${digest}; captured-at 1791508773; cached true; CC BY-SA 4.0; https://creativecommons.org/licenses/by-sa/4.0/)`;
 let host;
-before(async () => { host = new WorkerHost(); await host.boot(); host.context.fetch = () => { throw new Error('offline test must replay verified bytes'); }; });
+before(async () => {
+  host = new WorkerHost();
+  await installSourceDefinitionCaptures(host);
+  host.context.fetch = () => { throw new Error('offline test must replay verified bytes'); };
+});
+
+test('a fresh worker needs an actual retrievable capture for a previously recorded subject', async () => {
+  const fixture = sourceDefinitionCaptures().find(capture => capture.url === url);
+  let requests = 0;
+  const fresh = new WorkerHost({}, { networkFetch: async requested => {
+    assert.equal(String(requested), url);
+    requests++;
+    return new Response(fixture.text);
+  } });
+  const capture = online => fresh.run('sourceWalkFetchCapture(__url, { online: __online })', { __url: url, __online: online });
+  assert.equal((await capture(false)).failureKind, 'offline_cache_miss');
+  assert.equal(requests, 0);
+  const retrieved = await capture(true);
+  assert.equal(retrieved.sha256, digest);
+  assert.equal(retrieved.cached, false);
+  assert.deepEqual(await capture(false), { ...retrieved, cached: true });
+  assert.equal(requests, 1);
+});
 
 test('unchanged native original pin and all six real meanings', async () => {
   const answer = await host.solve(original);
@@ -36,20 +57,17 @@ test('unchanged native original pin and all six real meanings', async () => {
 });
 
 test('genuine held-out English and Russian entries keep actual subjects and capture times', async () => {
-  const raw = readFileSync(`${REPO_ROOT}/data/seed/sources-registry.lino`,'utf8');
-  const records = parseLino(raw).children.find(node => node.name === 'source-captures').children;
+  const records = sourceDefinitionCaptures();
   for (const [prompt,subject,language] of [['Cite a definition of entropy from Wikipedia','entropy','en'],['Приведи определение энтропия из Wikipedia','энтропия','ru']]) {
     const answer = await host.solve(prompt);
-    const record = records.find(record => record.children.find(field => field.name === 'url').value.startsWith(`https://${language}.`)
-      && !record.children.find(field => field.name === 'url').value.endsWith('memory'));
-    const field = name => record.children.find(field => field.name === name).value;
-    const value = JSON.parse(field('body'));
+    const record = records.find(record => record.url.startsWith(`https://${language}.`) && !record.url.endsWith('memory'));
+    const value = JSON.parse(record.text);
     assert.equal(value.type,'standard');
-    assert.equal(createHash('sha256').update(field('body')).digest('hex'),field('sha256'));
+    assert.equal(createHash('sha256').update(record.text).digest('hex'),record.sha256);
     assert.ok(answer.content.startsWith(`${subject} — Wikipedia (definition):\n`),answer.content);
     assert.ok(answer.content.includes(value.extract.replace(/\s+/gu,' ').trim()));
-    assert.ok(answer.content.includes(`captured-at ${field('fetched-at')}; cached true`));
-    assert.ok(answer.evidence.includes(`source:${field('url')}`));
+    assert.ok(answer.content.includes(`captured-at ${record.fetchedAt}; cached true`));
+    assert.ok(answer.evidence.includes(`source:${record.url}`));
     assert.ok(!answer.content.includes(value.timestamp),'article revision time is not fetch time');
   }
 });

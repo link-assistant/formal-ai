@@ -10,9 +10,10 @@
 //! CI.
 //!
 //! It advertises a tool set, sends a chat request, and whenever the server answers
-//! with `tool_calls` it **executes** each call — `web_search` / `web_fetch`
-//! against the offline [`corpus`], `write_file` / `run_command` against a single
-//! reused, sandboxed [`AgentWorkspace`] — feeds each result back as a `tool`
+//! with `tool_calls` it **executes** each call. Search uses the offline [`corpus`].
+//! Fetch uses the corpus by default and also accepts a caller-supplied transport.
+//! Workspace tools share a single sandboxed [`AgentWorkspace`]. The driver feeds
+//! each result back as a `tool`
 //! message, and loops until the server answers with `finish_reason: "stop"`. The
 //! loop is bounded by a hard turn cap, so unbounded reasoning stays a NON-GOAL and
 //! neural inference is never involved.
@@ -112,10 +113,8 @@ impl DriverOutcome {
 
     /// A stable, replayable JSON record of the whole agentic session — the task,
     /// the tools the CLI advertised, every executed tool call with its arguments
-    /// and result, the turn count, and the final answer. This is the "Agent CLI
-    /// session that solved the task" artifact: it is deterministic (no clock, no
-    /// randomness, no network), so committing it to the repo documents exactly how
-    /// Formal AI drove its own CLI to the solution.
+    /// and result, the turn count, and the final answer. Publisher captures and explicitly
+    /// supplied test inputs are recorded in the tool steps.
     #[must_use]
     pub fn session_json(&self) -> Value {
         json!({
@@ -153,7 +152,42 @@ pub fn run_agentic_task_with_tools(
     task: &str,
     tool_names: &[&str],
 ) -> Result<DriverOutcome, AgentError> {
-    run_agentic_task_in_with_tools(task, &AgentWorkspaceConfig::default(), tool_names)
+    run_agentic_task_in_with_tools(
+        task,
+        &AgentWorkspaceConfig::default(),
+        tool_names,
+        &corpus::fetch_cli_source,
+    )
+}
+
+/// Drive the loop with a caller-supplied source transport for `web_fetch`.
+///
+/// Benchmark callers use this seam to supply their recorded inputs without
+/// adding those inputs to the executable.
+///
+/// # Errors
+/// Returns an error if the workspace or agent protocol cannot start or continue.
+pub fn run_agentic_task_with_source_fetch(
+    task: &str,
+    fetch_source: impl Fn(&str) -> Result<String, String>,
+) -> Result<DriverOutcome, AgentError> {
+    run_agentic_task_in_with_tools(
+        task,
+        &AgentWorkspaceConfig::default(),
+        &DRIVER_TOOLS,
+        &fetch_source,
+    )
+}
+
+/// Replay a caller's tool list with an explicit source transport.
+/// # Errors
+/// Returns an error when tools are invalid or the workspace cannot start.
+pub fn run_agentic_task_with_tools_and_source_fetch(
+    task: &str,
+    tools: &[&str],
+    fetch_source: impl Fn(&str) -> Result<String, String>,
+) -> Result<DriverOutcome, AgentError> {
+    run_agentic_task_in_with_tools(task, &AgentWorkspaceConfig::default(), tools, &fetch_source)
 }
 
 /// Drive the agentic loop for `task` using the given workspace `config`.
@@ -165,13 +199,14 @@ pub fn run_agentic_task_in(
     task: &str,
     config: &AgentWorkspaceConfig,
 ) -> Result<DriverOutcome, AgentError> {
-    run_agentic_task_in_with_tools(task, config, &DRIVER_TOOLS)
+    run_agentic_task_in_with_tools(task, config, &DRIVER_TOOLS, &corpus::fetch_cli_source)
 }
 
 fn run_agentic_task_in_with_tools(
     task: &str,
     config: &AgentWorkspaceConfig,
     tool_names: &[&str],
+    fetch_source: &dyn Fn(&str) -> Result<String, String>,
 ) -> Result<DriverOutcome, AgentError> {
     if tool_names
         .iter()
@@ -258,7 +293,8 @@ fn run_agentic_task_in_with_tools(
             if !tool_names.contains(&call.function.name.as_str()) {
                 return Err(std::io::Error::from(std::io::ErrorKind::InvalidInput).into());
             }
-            let (result, failed, source_read) = execute_tool_call(call, &mut workspace);
+            let (result, failed, source_read) =
+                execute_tool_call(call, &mut workspace, fetch_source);
             steps.push(DriverToolStep {
                 tool: call.function.name.clone(),
                 arguments: call.function.arguments.clone(),
@@ -277,13 +313,14 @@ fn run_agentic_task_in_with_tools(
     }
 }
 
-/// Execute one tool call against the offline corpus or the sandbox workspace and
+/// Execute one tool call with the supplied source transport or sandbox workspace and
 /// return the textual result to feed back to the server, plus whether the call
 /// failed to produce its output at all (refused, unsupported, or lost) — the
 /// transport fact a real Agent CLI flags with `is_error`.
 fn execute_tool_call(
     call: &ToolCall,
     workspace: &mut AgentWorkspace,
+    fetch_source: &dyn Fn(&str) -> Result<String, String>,
 ) -> (String, bool, Option<Value>) {
     let mut source_read = None;
     let (content, failed) = (|| {
@@ -291,7 +328,7 @@ fn execute_tool_call(
             serde_json::from_str(&call.function.arguments).unwrap_or(Value::Null);
         match call.function.name.as_str() {
             "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
-            "web_fetch" => match corpus::web_fetch_result(arg_str(&arguments, "url")) {
+            "web_fetch" => match fetch_source(arg_str(&arguments, "url")) {
                 Ok(body) => (body, false),
                 Err(detail) => (detail, true),
             },

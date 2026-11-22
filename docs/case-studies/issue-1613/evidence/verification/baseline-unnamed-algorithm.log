@@ -1,0 +1,31 @@
+✖ the algorithm rule set answers unchanged in english, russian, hindi and chinese (5093.864896ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8154.520052
+
+✖ failing tests:
+
+test at rust/tests/web/issue-0918-handler-rules-batch.test.mjs:325:1
+✖ the algorithm rule set answers unchanged in english, russian, hindi and chinese (5093.864896ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'algorithm_sort_python'
+  - 'algorithm_operation_required'
+               ^
+
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/issue-0918-handler-rules-batch.test.mjs:343:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'algorithm_sort_python',
+    expected: 'algorithm_operation_required',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

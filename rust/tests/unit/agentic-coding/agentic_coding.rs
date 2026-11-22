@@ -5,14 +5,29 @@
 //! behaviour on text the closed lexicon does not recognise.
 
 use formal_ai::agentic_coding::{
-    AgenticPlan, CANONICAL_FISHERMAN_SYNOPSIS, CANONICAL_SOURCE_URL, CORE_RECIPE_TOOLS,
-    FISHERMAN_DOC_ID, KB_PATH, PRIMITIVE_KINDS, PlannedToolCall, SEARCH_QUERY, corpus,
-    coverage_line, formalize_text_to_links, plan_chat_step, run_agentic_task,
+    AgenticPlan, CORE_RECIPE_TOOLS, FISHERMAN_DOC_ID, KB_PATH, PRIMITIVE_KINDS, PlannedToolCall,
+    corpus, coverage_line, formalize_text_to_links, plan_chat_step, run_agentic_task,
+    run_agentic_task_with_source_fetch,
 };
 use formal_ai::{
     ChatCompletionRequest, ChatMessage, SolverConfig, ToolCall, UniversalSolver,
     create_chat_completion_with_solver,
 };
+
+const CANONICAL_FISHERMAN_SYNOPSIS: &str =
+    include_str!("../../fixtures/publisher-agentic/fisherman-synopsis.txt");
+const PUBLISHER_CAPTURE: &str = include_str!("../../fixtures/publisher-agentic/fisherman.json");
+const SEARCH_QUERY: &str = "Сказка о рыбаке и рыбке (Пушкин)";
+const CANONICAL_SOURCE_URL: &str = "https://ru.wikisource.org/w/api.php?action=parse&page=%D0%A1%D0%BA%D0%B0%D0%B7%D0%BA%D0%B0+%D0%BE+%D1%80%D1%8B%D0%B1%D0%B0%D0%BA%D0%B5+%D0%B8+%D1%80%D1%8B%D0%B1%D0%BA%D0%B5+%28%D0%9F%D1%83%D1%88%D0%BA%D0%B8%D0%BD%29&prop=text&formatversion=2&format=json";
+
+fn publication_fixture(text: &str) -> String {
+    serde_json::json!({ "parse": { "title": SEARCH_QUERY, "text": format!("<div class=\"poem\">{text}</div>") } }).to_string()
+}
+
+fn fetched_publication(url: &str, capture: &str) -> Result<String, String> {
+    assert_eq!(url, CANONICAL_SOURCE_URL);
+    Ok(capture.to_owned())
+}
 
 #[test]
 fn canonical_synopsis_covers_all_nine_primitives() {
@@ -462,7 +477,11 @@ fn planner_walks_the_full_search_fetch_write_run_recipe() {
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "web_fetch");
     assert!(call.arguments.contains(CANONICAL_SOURCE_URL));
-    answer_tool_call(&mut messages, &call, CANONICAL_FISHERMAN_SYNOPSIS);
+    answer_tool_call(
+        &mut messages,
+        &call,
+        &publication_fixture(CANONICAL_FISHERMAN_SYNOPSIS),
+    );
 
     // Step 3: write the formalized knowledge base.
     let call = expect_single_call(&messages, &tools);
@@ -494,10 +513,10 @@ fn planner_walks_the_full_search_fetch_write_run_recipe() {
 
 #[test]
 fn planner_skips_capabilities_no_advertised_tool_provides() {
-    // A CLI that only exposes a write tool: the planner skips search/fetch/run
-    // and writes the canonical-synopsis knowledge base immediately, then ends.
     let tools = ["write_file"];
-    let mut messages = vec![ChatMessage::user("formalize the fisherman tale")];
+    let mut messages = vec![ChatMessage::user(
+        "Formalize «The cat sat on the mat» into Links Notation.",
+    )];
 
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "write_file");
@@ -511,11 +530,11 @@ fn planner_skips_capabilities_no_advertised_tool_provides() {
 
 #[test]
 fn planner_completes_directly_when_no_tools_are_advertised() {
-    // No tools at all: the planner cannot act, so it answers directly with the
-    // canonical knowledge base rather than stalling.
     let messages = vec![ChatMessage::user("formalize the fisherman tale")];
     match plan_chat_step(&messages, &[]) {
-        Some(AgenticPlan::Final(answer)) => assert!(answer.contains("knowledge_base")),
+        Some(AgenticPlan::Final(answer)) => {
+            assert!(answer.contains("could not verify the requested text"))
+        }
         other => panic!("expected a final answer, got {other:?}"),
     }
 }
@@ -528,7 +547,11 @@ fn planner_formalizes_the_fetched_text_when_fetch_succeeds() {
 
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "web_fetch");
-    answer_tool_call(&mut messages, &call, "Старик поймал золотую рыбку.");
+    answer_tool_call(
+        &mut messages,
+        &call,
+        &publication_fixture("Старик поймал золотую рыбку."),
+    );
 
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "write_file");
@@ -549,10 +572,7 @@ fn planner_formalizes_the_fetched_text_when_fetch_succeeds() {
 }
 
 #[test]
-fn planner_falls_back_to_the_synopsis_when_fetch_errors() {
-    // The fetch tool returns an error string. The planner does not trust it as
-    // source text; the written knowledge base is the canonical-synopsis one, so
-    // the loop still completes with a stable, all-nine-primitive document.
+fn planner_reports_the_source_gap_when_fetch_errors() {
     let tools = ["web_fetch", "write_file"];
     let mut messages = vec![ChatMessage::user("formalize the fisherman tale")];
 
@@ -560,18 +580,21 @@ fn planner_falls_back_to_the_synopsis_when_fetch_errors() {
     assert_eq!(call.tool, "web_fetch");
     answer_tool_call(&mut messages, &call, "Error: 404 Not Found");
 
-    let call = expect_single_call(&messages, &tools);
-    assert_eq!(call.tool, "write_file");
-    let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
-    let expected = formalize_text_to_links(CANONICAL_FISHERMAN_SYNOPSIS, "").links_notation;
-    assert_eq!(written["content"], expected);
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("source failure must end before writing");
+    };
+    assert!(
+        answer.contains("could not verify the requested text"),
+        "{answer}"
+    );
+    assert!(!answer.contains("knowledge_base"));
 }
 
 #[test]
 fn planner_classifies_results_by_tool_call_id_when_name_is_absent() {
     // Some CLIs omit the tool result's `name`; the planner then maps the
     // `tool_call_id` back to the originating assistant `tool_calls` turn.
-    let tools = ["web_search", "write_file"];
+    let tools = ["web_search", "web_fetch", "write_file"];
     let mut messages = vec![ChatMessage::user("formalize the fisherman tale")];
 
     let call = expect_single_call(&messages, &tools);
@@ -587,9 +610,9 @@ fn planner_classifies_results_by_tool_call_id_when_name_is_absent() {
     result.tool_call_id = Some(String::from(id)); // name deliberately left None
     messages.push(result);
 
-    // Search is now recognised as done, so the planner advances to write.
+    // Search is now recognised as done, so the planner advances to fetch.
     let next = expect_single_call(&messages, &tools);
-    assert_eq!(next.tool, "write_file");
+    assert_eq!(next.tool, "web_fetch");
 }
 
 #[test]
@@ -631,10 +654,7 @@ fn server_emits_tool_calls_for_a_formalization_task_in_agent_mode() {
 }
 
 #[test]
-fn server_returns_final_knowledge_base_once_the_recipe_is_exhausted() {
-    // After the only advertised tool (web_search) has produced a result, the
-    // planner has nothing left to call, so the server completes with the
-    // knowledge base inline and finish_reason "stop".
+fn server_reports_the_missing_publisher_text_when_fetch_is_unavailable() {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
         "model": "formal-ai",
         "messages": [
@@ -663,11 +683,14 @@ fn server_returns_final_knowledge_base_once_the_recipe_is_exhausted() {
     assert_eq!(choice.finish_reason, "stop");
     assert_eq!(choice.message.tool_calls, [] as [formal_ai::ToolCall; 0]);
     let body = choice.message.content.plain_text();
-    assert!(body.contains("knowledge_base"));
-    assert!(body.contains("9 of 9 protocol primitives"), "{body}");
+    assert!(
+        body.contains("could not verify the requested text"),
+        "{body}"
+    );
+    assert!(!body.contains("knowledge_base"));
 }
 
-// --- Offline web corpus (what web_search/web_fetch resolve against) ---------
+// --- Publisher discovery and source fetch ---------
 
 #[test]
 fn corpus_search_surfaces_the_canonical_source() {
@@ -675,23 +698,13 @@ fn corpus_search_surfaces_the_canonical_source() {
     // agent can fetch it next.
     let results = corpus::web_search("Пушкин Сказка о рыбаке и рыбке полный текст");
     assert!(results.contains(CANONICAL_SOURCE_URL));
-    assert!(results.contains("Викитека"));
+    assert!(results.contains(SEARCH_QUERY));
 }
 
 #[test]
 fn corpus_search_reports_no_results_for_an_unrelated_query() {
     let results = corpus::web_search("weather forecast tomorrow");
     assert!(results.starts_with("web_search: no results"));
-}
-
-#[test]
-fn corpus_fetch_returns_the_canonical_synopsis_for_the_known_url() {
-    // The fetch body is exactly the formalizer's fallback text, so a successful
-    // fetch and the offline fallback produce the same knowledge base.
-    assert_eq!(
-        corpus::web_fetch(CANONICAL_SOURCE_URL),
-        CANONICAL_FISHERMAN_SYNOPSIS
-    );
 }
 
 #[test]
@@ -707,13 +720,11 @@ fn corpus_fetch_reports_a_404_for_an_unknown_url() {
 
 #[test]
 fn driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer() {
-    // The driver plays an external agentic CLI: it advertises its tool set,
-    // executes every tool call the server emits against the offline corpus and a
-    // sandboxed workspace, feeds results back, and loops until the server returns
-    // the finished knowledge base. This is the end-to-end "agentic coding mode".
-    let outcome = run_agentic_task(
+    let capture = publication_fixture(CANONICAL_FISHERMAN_SYNOPSIS);
+    let outcome = run_agentic_task_with_source_fetch(
         "Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base \
          covering all nine protocol primitives.",
+        |url| fetched_publication(url, &capture),
     )
     .expect("the sandbox workspace should be created");
 
@@ -744,22 +755,27 @@ fn driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer() {
 
 #[test]
 fn driver_fetches_the_canonical_source_and_writes_the_knowledge_base() {
-    let outcome = run_agentic_task(
+    let outcome = run_agentic_task_with_source_fetch(
         "Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.",
+        |url| fetched_publication(url, PUBLISHER_CAPTURE),
     )
     .expect("the sandbox workspace should be created");
 
-    // Step 2 fetches the canonical url and gets the synopsis back, not a 404.
+    // Step 2 delivers the explicitly supplied publisher capture.
     let fetch = &outcome.steps[1];
     assert_eq!(fetch.tool, "web_fetch");
     assert!(fetch.arguments.contains(CANONICAL_SOURCE_URL));
-    assert!(fetch.result.contains("Старик поймал золотую рыбку."));
+    assert!(fetch.result.contains("Жил старик со своею старухой"));
 
     // Step 3 writes the formalized knowledge base to the expected path.
     let write = &outcome.steps[2];
     assert_eq!(write.tool, "write_file");
     assert!(write.arguments.contains(KB_PATH));
     assert!(write.result.starts_with("wrote "));
+    let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+    let content = written["content"].as_str().unwrap();
+    assert!(content.contains("Жил старик со своею старухой"));
+    assert!(!content.contains("римскою папой"));
 
     // Step 4 reads the file back and sees the knowledge-base header — proof the
     // command ran inside the workspace and observed the written bytes.
@@ -774,8 +790,10 @@ fn driver_is_deterministic() {
     // No clock, no randomness, no network: the same task yields byte-identical
     // transcripts and final answers run to run.
     let task = "formalize the fisherman tale into links notation";
-    let first = run_agentic_task(task).expect("workspace");
-    let second = run_agentic_task(task).expect("workspace");
+    let capture = publication_fixture(CANONICAL_FISHERMAN_SYNOPSIS);
+    let fetch = |url: &str| fetched_publication(url, &capture);
+    let first = run_agentic_task_with_source_fetch(task, fetch).expect("workspace");
+    let second = run_agentic_task_with_source_fetch(task, fetch).expect("workspace");
     assert_eq!(first.steps, second.steps);
     assert_eq!(first.final_answer, second.final_answer);
     assert_eq!(first.turns, second.turns);
@@ -808,7 +826,7 @@ fn a_custom_task_is_formalized_instead_of_the_seeded_fairy_tale() {
     );
     assert!(
         !formalized.links_notation.contains(CANONICAL_SOURCE_URL),
-        "the pinned source URL is a last-resort fallback, never the plan"
+        "a publication URL needs an explicitly named work"
     );
     assert!(
         formalized.summary.needs_raised > 0,

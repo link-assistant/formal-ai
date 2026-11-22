@@ -5,7 +5,7 @@
 //! expressions are handled by the upstream crate, and local arithmetic remains
 //! as a fallback for syntax that calculator does not support yet.
 
-use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
+use formal_ai::{ConversationTurn, FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -108,9 +108,16 @@ fn calculator_handles_supported_language_time_duration_cues() {
 // quantity_conversion_cue exempts it, because a conversion is itself a calculation.
 #[test]
 fn calculator_currency_conversion_is_exempt_from_prose_rejection() {
-    // "to" is a quantity_conversion_cue (matched whole-token), so the currency
-    // conversion is recognised and delegated to the calculator.
-    assert_calculation("$100 to euros", &["EUR"]);
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    });
+    let conversion = solver.solve("$100 to euros on 1900-01-01");
+    assert_eq!(conversion.intent, "calculation_error");
+    assert_eq!(
+        conversion.answer,
+        "A verified USD/EUR exchange rate is unavailable for the requested date."
+    );
 
     // With no conversion cue the same currency-plus-letters prompt is prose, so
     // the guard rejects it and it is not delegated to the calculator.
@@ -168,7 +175,6 @@ fn calculator_handles_russian_variations() {
     for (prompt, expected) in [
         ("Сколько будет 2 + 2?", &["4"][..]),
         ("Сколько будет два плюс два?", &["4"][..]),
-        ("Посчитай 1000 рублей в долларах", &["USD"][..]),
         ("Вычисли 1 тонна в кг", &["1000", "kg"][..]),
         ("Рассчитай 17 февраля 2027 - 6 месяцев", &["2026-08"][..]),
         ("Сколько будет 300000 ms in seconds?", &["300"][..]),
@@ -202,25 +208,19 @@ fn calculator_handles_embedded_request_variations() {
 }
 
 #[test]
-fn calculator_explains_usd_rate_basis_prompts() {
-    for (language, prompt) in [
-        (
-            "en",
-            "what dollar exchange rate do you use for calculations?",
-        ),
-        ("ru", "какой курс долора у тебя при расчетах?"),
-        ("ru", "какой курс доллара у тебя при расчётах?"),
-        ("hi", "गणना में आप डॉलर का कौन सा विनिमय दर उपयोग करते हैं?"),
-        ("zh", "你计算时使用什么美元汇率?"),
+fn exchange_rate_basis_requires_a_currency_pair() {
+    for prompt in [
+        "what dollar exchange rate do you use for calculations?",
+        "какой курс долора у тебя при расчетах?",
+        "какой курс доллара у тебя при расчётах?",
+        "गणना में आप डॉलर का कौन सा विनिमय दर उपयोग करते हैं?",
+        "你计算时使用什么美元汇率?",
     ] {
-        let response = assert_calculation(prompt, &["link-calculator", "1 USD in RUB = 89.5 RUB"]);
-        assert!(
-            response
-                .evidence_links
-                .iter()
-                .any(|link| link == "calculation:engine:link-calculator"),
-            "{language} rate-basis answers should be delegated to link-calculator: {:?}",
-            response.evidence_links,
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "clarification",
+            "{prompt}: {}",
+            response.answer
         );
     }
 }
@@ -230,7 +230,6 @@ fn calculator_handles_chinese_variations() {
     for (prompt, expected) in [
         ("计算 2 + 2", &["4"][..]),
         ("1000 克 换成 公斤 是多少?", &["1", "kg"][..]),
-        ("请计算 1000 美元 换成 欧元", &["EUR"][..]),
         ("17 二月 2027 - 6 个月 等于多少", &["2026-08"][..]),
         ("1 一月 2027 + 7 天 等于多少", &["2027-01-08"][..]),
     ] {
@@ -242,7 +241,6 @@ fn calculator_handles_chinese_variations() {
 fn calculator_handles_hindi_variations() {
     for (prompt, expected) in [
         ("2 + 2 कितना है?", &["4"][..]),
-        ("गणना करें 1000 डॉलर में यूरो", &["EUR"][..]),
         ("1000 ग्राम में किलोग्राम कितना है?", &["1", "kg"][..]),
         ("17 फरवरी 2027 - 6 महीने की गणना करें", &["2026-08"][..]),
         ("1 जनवरी 2027 + 7 दिन कितना है?", &["2027-01-08"][..]),

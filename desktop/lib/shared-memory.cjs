@@ -4,7 +4,7 @@ const os = require("node:os");
 const path = require("node:path");
 const fs = require("node:fs");
 
-const CONTAINER_MEMORY_DIRECTORY = "/root/.formal-ai";
+const CONTAINER_MEMORY_DIRECTORY = "/home/box/.formal-ai";
 const CONTAINER_MEMORY_PATH = `${CONTAINER_MEMORY_DIRECTORY}/memory.lino`;
 
 function resolveSharedMemoryPath(env = process.env, options = {}) {

@@ -1,0 +1,17 @@
+✔ a fresh worker needs an actual retrievable capture for a previously recorded subject (5167.100853ms)
+✔ unchanged native original pin and all six real meanings (17362.593536ms)
+✔ genuine held-out English and Russian entries keep actual subjects and capture times (744.994579ms)
+✔ explicit source controls, cache misses and unrelated prompts never invent citations (5.051042ms)
+✔ five language frames, reversed order and delimiter words bind distinct slots (6.084258ms)
+✔ arbitrary providers and subjects use actual captured extractor bytes (6.61622ms)
+✔ cache replay refuses corruption, invalid times and duplicate records (31.145762ms)
+✔ observer validates capture URL and hash before advertising provenance (6.185768ms)
+✔ all disambiguation list entries survive the source projection (5.462368ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24633.946386

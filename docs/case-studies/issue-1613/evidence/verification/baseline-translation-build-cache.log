@@ -1,0 +1,29 @@
+✖ local API response fixtures cannot become inputs to a production binary (138.948793ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 294.716078
+
+✖ failing tests:
+
+test at rust/tests/web/build-script-optional-inputs.test.mjs:12:1
+✖ local API response fixtures cannot become inputs to a production binary (138.948793ms)
+  AssertionError [ERR_ASSERTION]: untracked native compilation input: data/seed/api-cache/legacy.lino
+      at inspect (file:///tmp/gh-issue-solver-1795289097006/scripts/native-release-source.mjs:32:12)
+      at nativeInputIdentity (file:///tmp/gh-issue-solver-1795289097006/scripts/native-release-source.mjs:37:2)
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/build-script-optional-inputs.test.mjs:18:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

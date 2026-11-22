@@ -1,21 +1,12 @@
-// Rediscovery from documentation on the `write_program` miss path (issue
-// #1165 R1165-1/R1165-2), included into `discovery_production`.
+// Rediscovery from registered publisher documentation on a coding request.
+// Only source references are installed. Each request acquires its own
+// verified response through the runtime capture client and formalizes it.
 //
-// A cache miss whose `(language, task)` pair has documentation captures in
-// `data/seed/coding-documentation-captures.lino` rediscovers its program at
-// answer time: the captures are pre-cached source data (the code blocks the
-// page formalizer reads from a page fetched byte for byte), and the program
-// is derived from them by the #1164 decomposer, never stored. The policy
-// seed's `documentation_route` record says whether the route is active and
-// how a rediscovered program is verified. The JavaScript twin is
-// `rediscoverDocumentedProgram` in js/worker/formal_ai_worker_code_examples.js.
+// The browser twin is discoverDocumentedProgram in
+// js/worker/formal_ai_worker_code_examples.js.
 
-/// The documentation captures seed, mirrored into the embedded bundle.
 const DOCUMENTATION_CAPTURES: &str =
     include_str!("../embedded/data/seed/coding-documentation-captures.lino");
-
-/// The environment variable naming a writable runtime procedure cache.
-const RUNTIME_CACHE_ENV: &str = "FORMAL_AI_PROCEDURE_CACHE";
 
 /// Why no program was rediscovered: the pair has no captured page (or the
 /// route is retired in the policy seed), so the miss is the research miss.
@@ -34,10 +25,10 @@ pub struct DocumentationCapture {
     pub url: String,
     /// The mime type the page was served as.
     pub mime: String,
-    /// The repository path of the byte-for-byte capture.
-    pub fixture: String,
-    /// The SHA-256 of the captured bytes.
-    pub sha256: String,
+    /// Evidence from the acquisition, when the page has been read.
+    pub source_trace: String,
+    /// The verified capture was reused from the runtime cache.
+    pub cached: bool,
     /// The query that finds the page again, the row's `rediscovery_query`.
     pub rediscovery_query: String,
     /// `(language, text)` of every code block on the page, in page order.
@@ -119,22 +110,57 @@ pub fn all_documentation_captures() -> Vec<DocumentationCapture> {
             task: node.find_child_value("task").to_owned(),
             url: node.find_child_value("url").to_owned(),
             mime: node.find_child_value("mime").to_owned(),
-            fixture: node.find_child_value("fixture").to_owned(),
-            sha256: node.find_child_value("sha256").to_owned(),
             rediscovery_query: node.find_child_value("rediscovery_query").to_owned(),
-            blocks: node
-                .children
-                .iter()
-                .filter(|child| child.name == "block")
-                .map(|block| {
-                    (
-                        block.find_child_value("language").to_owned(),
-                        block.find_child_value("code").to_owned(),
-                    )
-                })
-                .collect(),
+            source_trace: String::new(),
+            cached: false,
+            blocks: Vec::new(),
         })
         .collect()
+}
+
+/// Retrieve and formalize verified publisher responses for a single request.
+pub fn acquire_documentation_captures<T: SourceTransport>(
+    language: &str,
+    task: &str,
+    client: &CachedSourceClient<T>,
+) -> Vec<DocumentationCapture> {
+    use crate::web_formalize::{PageBlock, formalize_page_with_context};
+    if !documentation_route_active() {
+        return Vec::new();
+    }
+    documentation_captures(language, task)
+        .into_iter()
+        .filter_map(|mut reference| {
+            let capture = client.fetch(&reference.url).ok()?;
+            std::str::from_utf8(capture.bytes()).ok()?;
+            let (_, blocks) = formalize_page_with_context(
+                capture.bytes(),
+                Some(reference.mime.as_str()),
+                Some(capture.source_url()),
+            );
+            reference.blocks = blocks
+                .into_iter()
+                .filter_map(|(_, block)| match block {
+                    PageBlock::CodeBlock { language, text } => Some((language, text)),
+                    _ => None,
+                })
+                .collect();
+            reference.source_trace = capture.trace_payload();
+            reference.cached = capture.cached();
+            Some(reference)
+        })
+        .collect()
+}
+
+fn documentation_client(
+    offline: bool,
+) -> CachedSourceClient<crate::source_fetch::PublicPageTransport> {
+    CachedSourceClient::new(
+        crate::coding::synthesis_runtime::source_cache_root(),
+        crate::source_fetch::PublicPageTransport,
+    )
+    .with_online(!offline)
+    .with_ttl_seconds(86_400)
 }
 
 /// Whether a captured block's own language tag names `language`.
@@ -238,21 +264,56 @@ pub fn rediscover_from_documentation(
 /// retired), else why the captured pages yielded no program:
 /// `no_single_line_output`, `no_output_example`, `no_program_body`,
 /// `verification`, or `run_contract:<names>`.
-#[cfg(feature = "meta-language")]
 pub fn rediscover_documented_program(
     language: &str,
     task: &str,
     expected_output: &str,
     contract: RunContract<'_>,
 ) -> Result<DocumentedProgram, String> {
+    resolve_documented_program(language, task, expected_output, contract, true)
+}
+
+/// Resolve a procedure under the current request's source policy.
+pub(crate) fn resolve_documented_program(
+    language: &str,
+    task: &str,
+    expected_output: &str,
+    contract: RunContract<'_>,
+    offline: bool,
+) -> Result<DocumentedProgram, String> {
+    let client = documentation_client(offline);
+    rediscover_documented_program_with_client(language, task, expected_output, contract, &client)
+}
+
+/// Resolve a procedure from an explicitly supplied capture client.
+pub fn rediscover_documented_program_with_client<T: SourceTransport>(
+    language: &str,
+    task: &str,
+    expected_output: &str,
+    contract: RunContract<'_>,
+    client: &CachedSourceClient<T>,
+) -> Result<DocumentedProgram, String> {
+    if !documentation_route_active() || documentation_captures(language, task).is_empty() {
+        return Err(NO_DOCUMENTATION_CAPTURE.to_owned());
+    }
+    if !cfg!(feature = "meta-language") {
+        return Err("no_decomposer".to_owned());
+    }
+    let captures = acquire_documentation_captures(language, task, client);
+    rediscover_documented_program_from(language, task, expected_output, contract, &captures)
+}
+
+#[cfg(feature = "meta-language")]
+fn rediscover_documented_program_from(
+    language: &str,
+    task: &str,
+    expected_output: &str,
+    contract: RunContract<'_>,
+    captures: &[DocumentationCapture],
+) -> Result<DocumentedProgram, String> {
     use crate::code_example_knowledge::{
         CodePartKind, ParameterBindings, decompose_code_node_from, generalize_examples,
         recompose_for_requirement,
-    };
-    let captures = if documentation_route_active() {
-        documentation_captures(language, task)
-    } else {
-        Vec::new()
     };
     if captures.is_empty() {
         return Err(NO_DOCUMENTATION_CAPTURE.to_owned());
@@ -261,7 +322,7 @@ pub fn rediscover_documented_program(
         return Err(String::from("no_single_line_output"));
     }
     let (capture, node) =
-        documented_example(&captures, language).ok_or_else(|| String::from("no_output_example"))?;
+        documented_example(captures, language).ok_or_else(|| String::from("no_output_example"))?;
     let call = node
         .parts
         .iter()
@@ -293,7 +354,7 @@ pub fn rediscover_documented_program(
     if !verified {
         return Err(String::from("verification"));
     }
-    let bound = documented_run_contract(language, contract, &recomposed.source, &captures)?;
+    let bound = documented_run_contract(language, contract, &recomposed.source, captures)?;
     let deviation = documentation_deviation(language, &call, &recomposed.source);
     Ok(DocumentedProgram {
         recipe: RediscoverableRecipe {
@@ -308,102 +369,43 @@ pub fn rediscover_documented_program(
         contract: bound,
         deviation,
         language_name: capture.language_name.clone(),
+        source_trace: capture.source_trace.clone(),
+        cached: capture.cached,
     })
 }
 
-/// Without the meta-language parse there is no decomposer, so a captured
-/// pair is refused as `no_decomposer` and any other pair is
-/// [`NO_DOCUMENTATION_CAPTURE`].
-///
-/// # Errors
-///
-/// Always: rediscovery needs the decomposer.
 #[cfg(not(feature = "meta-language"))]
-pub fn rediscover_documented_program(
-    language: &str,
-    task: &str,
-    expected_output: &str,
-    contract: RunContract<'_>,
+fn rediscover_documented_program_from(
+    _language: &str,
+    _task: &str,
+    _expected_output: &str,
+    _contract: RunContract<'_>,
+    _captures: &[DocumentationCapture],
 ) -> Result<DocumentedProgram, String> {
-    let _ = (expected_output, contract);
-    if documentation_route_active() && !documentation_captures(language, task).is_empty() {
-        return Err(String::from("no_decomposer"));
-    }
-    Err(NO_DOCUMENTATION_CAPTURE.to_owned())
+    Err("no_decomposer".to_owned())
 }
 
-/// Store a row rediscovered on the solve path in the runtime cache.
-///
-/// Only an explicitly configured cache (`FORMAL_AI_PROCEDURE_CACHE`) is
-/// written: the committed `data/cache/coding-procedure-cache.lino` is
-/// shipped data, and a solve that rewrote it would change the repository it
-/// runs in. The next request for the pair reads the stored row as a hit.
-///
-/// # Errors
-///
-/// `no_runtime_cache` when no runtime cache is configured, or the store's
-/// own refusal.
-pub fn record_discovered(recipe: &RediscoverableRecipe) -> Result<(), String> {
-    let explicit = std::env::var(RUNTIME_CACHE_ENV).unwrap_or_default();
-    if explicit.trim().is_empty() {
-        return Err(String::from("no_runtime_cache"));
-    }
-    ProcedureCache::load_at(Path::new(&explicit)).store(recipe.clone())
-}
-
-/// The `write_program` cache miss of the solver (R1165-1/R1165-2).
-///
-/// An unmodified request the cache has no row for rediscovers its program
-/// from the documentation captures: on success the `procedure_cache` event
-/// is `outcome=discovered` with the page and the program's `content_id`, the
-/// row is recorded in the runtime cache, and the program is returned for the
-/// answer and the execution recipe. Otherwise the event is the research miss
-/// naming the `miss_route` inputs a solve lacks, plus why captured pages
-/// yielded nothing when there were some, and `None` keeps the template.
-pub fn answer_cache_miss(
+/// Record the inputs still needed to derive a source-backed procedure.
+pub(crate) fn record_program_cache_miss(
     log: &mut crate::event_log::EventLog,
     language: &str,
     task: &str,
-    expected_output: &str,
-    contract: RunContract<'_>,
-) -> Option<String> {
-    match rediscover_from_documentation(language, task, expected_output, contract) {
-        Ok(recipe) => {
-            let content_id = format!("0x{:016x}", recipe.content_id);
-            log.append_fields(
-                "procedure_cache",
-                &[
-                    ("outcome", "discovered"),
-                    ("language", language),
-                    ("task", task),
-                    ("rediscovery_source", &recipe.rediscovery_source),
-                    ("content_id", &content_id),
-                ],
-            );
-            if !crate::solver_config::ephemeral_enabled() {
-                let _recorded = record_discovered(&recipe);
-            }
-            Some(recipe.entry)
-        }
-        Err(reason) => {
-            let missing = miss_research_missing().join(",");
-            let mut fields = vec![
-                ("outcome", "miss"),
-                ("language", language),
-                ("task", task),
-                ("research_missing", missing.as_str()),
-            ];
-            if reason != NO_DOCUMENTATION_CAPTURE {
-                fields.push(("documentation_rejected", reason.as_str()));
-            }
-            log.append_fields("procedure_cache", &fields);
-            None
-        }
+    reason: &str,
+) {
+    let missing = miss_research_missing().join(",");
+    let mut fields = vec![
+        ("outcome", "miss"),
+        ("language", language),
+        ("task", task),
+        ("research_missing", missing.as_str()),
+    ];
+    if reason != NO_DOCUMENTATION_CAPTURE {
+        fields.push(("documentation_rejected", reason));
     }
+    log.append_fields("procedure_cache", &fields);
 }
 
-/// The commands that check and run a catalog row's program, in the order
-/// the solver hands them to [`answer_cache_miss`] as its run contract.
+/// The commands that check and run a catalog program in argument order.
 #[must_use]
 pub(crate) fn catalog_run_commands(language: &crate::coding::ProgramLanguage) -> Vec<&str> {
     language
@@ -413,33 +415,6 @@ pub(crate) fn catalog_run_commands(language: &crate::coding::ProgramLanguage) ->
         .into_iter()
         .chain(std::iter::once(language.execution.run_command.as_ref()))
         .collect()
-}
-
-/// The program the documentation route rediscovers for a catalog pair.
-///
-/// The task's expected output for the language is bound into the documented
-/// example and the catalog row's run contract is bound, as on the solve
-/// path; the catalog table calls this once per pair the seed bundle retires
-/// to the documentation route (R1165-4).
-///
-/// # Errors
-///
-/// Why no program was rediscovered, as [`rediscover_documented_program`]
-/// names it.
-pub(crate) fn rediscover_catalog_program(
-    language: &crate::coding::ProgramLanguage,
-    task: &crate::coding::ProgramTask,
-) -> Result<DocumentedProgram, String> {
-    let commands = catalog_run_commands(language);
-    rediscover_documented_program(
-        language.slug,
-        task.slug,
-        &task.output_for_language(language),
-        RunContract {
-            save_as: &language.save_as,
-            commands: &commands,
-        },
-    )
 }
 
 /// Every `(task, language)` pair the documentation captures cover, in seed
@@ -478,10 +453,22 @@ pub struct DocumentedCommand {
 /// `documentedRunCommands`.
 #[must_use]
 pub fn documented_run_commands(language: &str, task: &str) -> Vec<DocumentedCommand> {
+    documented_run_commands_from(
+        language,
+        &acquire_documentation_captures(language, task, &documentation_client(true)),
+    )
+}
+
+/// Verify which known run commands appear in the acquired publisher pages.
+#[must_use]
+pub fn documented_run_commands_from(
+    language: &str,
+    captures: &[DocumentationCapture],
+) -> Vec<DocumentedCommand> {
     let Some(row) = crate::coding::program_language_by_slug(language) else {
         return Vec::new();
     };
-    let lines = documentation_command_lines(&documentation_captures(language, task));
+    let lines = documentation_command_lines(captures);
     catalog_run_commands(row)
         .into_iter()
         .map(|command| DocumentedCommand {
@@ -494,26 +481,13 @@ pub fn documented_run_commands(language: &str, task: &str) -> Vec<DocumentedComm
         .collect()
 }
 
-/// Whether the documentation route knows `language` (R1165-4): some task its
-/// captures cover rediscovers a verified program.
-///
-/// A catalog row's program is bound to its run contract; a language the
-/// catalog has no row for (Lua) is rediscovered as the coding oracle answers
-/// it. The JavaScript twin is `documentationKnowsLanguage`.
+/// Whether the enabled registry identifies a publisher for the language.
 #[must_use]
 pub fn language_has_documented_procedure(language: &str) -> bool {
     let needle = language.trim().to_ascii_lowercase();
-    let row = crate::coding::program_language_by_slug(&needle);
     documented_pairs()
         .iter()
-        .filter(|(_, documented)| *documented == needle)
-        .filter_map(|(task, _)| crate::coding::program_task_by_slug(task))
-        .any(|task| {
-            row.map_or_else(
-                || documented_oracle_program(task.slug, &needle).is_some(),
-                |row| rediscover_catalog_program(row, task).is_ok(),
-            )
-        })
+        .any(|(_, documented)| *documented == needle)
 }
 
 /// The `program_source` of a seed template row whose program is retired to
@@ -535,10 +509,17 @@ pub struct DocumentedCatalogProgram {
 ///
 /// A row of `data/seed/hello-world-programs.lino` whose `program_source` is
 /// `documentation_route` stores no program, and the Rust catalog compiles
-/// none for it: the catalog table and the solver both take the program the
-/// documentation captures yield, listed here beside each pair.
+/// none for it. This diagnostic reports what its local source cache yields.
 #[must_use]
 pub fn documented_catalog_programs() -> Vec<DocumentedCatalogProgram> {
+    documented_catalog_programs_with_client(&documentation_client(true))
+}
+
+/// Inspect every declared pair using an explicitly supplied capture client.
+#[must_use]
+pub fn documented_catalog_programs_with_client<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+) -> Vec<DocumentedCatalogProgram> {
     let seed = parse_lino(crate::seed::HELLO_WORLD_PROGRAMS_LINO);
     seed.children
         .iter()
@@ -550,7 +531,16 @@ pub fn documented_catalog_programs() -> Vec<DocumentedCatalogProgram> {
             Some(DocumentedCatalogProgram {
                 language: language.slug.to_owned(),
                 task: task.slug.to_owned(),
-                rediscovered: rediscover_catalog_program(language, task),
+                rediscovered: rediscover_documented_program_with_client(
+                    language.slug,
+                    task.slug,
+                    task.output,
+                    RunContract {
+                        save_as: &language.save_as,
+                        commands: &catalog_run_commands(language),
+                    },
+                    client,
+                ),
             })
         })
         .collect()

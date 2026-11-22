@@ -2,7 +2,7 @@
 const formalAiWorkerScriptPrerequisites = Object.freeze([
   {
     "script": "js/seed_loader.js",
-    "sourceSha256": "62e9682efeb745471a8c81b19adccbb2d6d03250823883bb0b221f61ca1a73d7",
+    "sourceSha256": "9358ab258de5b85f6359934cf2b327ab7a248ba5dcd29b91272b58d850620f41",
     "requires": [
       {
         "script": "js/parser-cache-primordials.js",
@@ -16,7 +16,7 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
     "requires": [
       {
         "script": "js/seed_loader.js",
-        "sourceSha256": "62e9682efeb745471a8c81b19adccbb2d6d03250823883bb0b221f61ca1a73d7"
+        "sourceSha256": "9358ab258de5b85f6359934cf2b327ab7a248ba5dcd29b91272b58d850620f41"
       }
     ]
   },
@@ -26,7 +26,7 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
     "requires": [
       {
         "script": "js/seed_loader.js",
-        "sourceSha256": "62e9682efeb745471a8c81b19adccbb2d6d03250823883bb0b221f61ca1a73d7"
+        "sourceSha256": "9358ab258de5b85f6359934cf2b327ab7a248ba5dcd29b91272b58d850620f41"
       },
       {
         "script": "js/worker/formal_ai_worker_meta_reasoner.js",
@@ -36,11 +36,11 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
   },
   {
     "script": "js/worker/formal_ai_worker_solve.js",
-    "sourceSha256": "03d147ee0a3e8934847e4e1fe45ae6c57f9f853dc744a0cbcc558cb4ff61e047",
+    "sourceSha256": "72a696cf60706e736e6669158ab745a6b78639cbdea300f606f5cd86fe32a533",
     "requires": [
       {
         "script": "js/worker/formal_ai_worker_web_providers_and_wasm_calls.js",
-        "sourceSha256": "64b9fa10525bc9340bbce363d2a10c6744de7e390ae0fc4ac85e00e9b01dee19"
+        "sourceSha256": "d80ebca30ba7569792edb33df3c191c832c1c54807ddfa1dd84efe3af24686c6"
       }
     ]
   }

@@ -986,9 +986,12 @@ changelog.d/20261118_174200_localized_procedure_research.md	0.356.0
 changelog.d/20261120_1604_dynamic_meta.md	0.356.0
 changelog.d/20261121_110800_issue_1396_procedure_reporting_release.md	0.356.0
 changelog.d/20261121_182459_client_greetings_and_issue_reports.md	0.356.1
+changelog.d/20261121_193700_publisher_how_to_discovery.md	0.356.6
 changelog.d/20261121_220000_issue_1591_embeddings.md	0.356.2
 changelog.d/20261121_230000_issue_1593_prompt_data.md	0.356.3
 changelog.d/20261122_073000_client_report_release_verification.md	0.356.4
+changelog.d/20261122_093000_dind_runtime_memory.md	0.356.5
+changelog.d/20261122_100800_url_dependency.md	0.356.5
 changelog.d/ci-gate-citation-fixed.md	0.355.28
 changelog.d/desktop-package-source-boundary.md	0.355.17
 changelog.d/fast-pr-offline-e2e-admission.md	0.355.15
