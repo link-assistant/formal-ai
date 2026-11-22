@@ -1,0 +1,51 @@
+{
+  "previousIndexSummary": {
+    "literalPages": 219,
+    "totalPages": 254,
+    "completeFiles": 137,
+    "partialFiles": 1,
+    "literalLines": 13659,
+    "nextForwardPage": 220,
+    "remainingPages": 35,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "pagesFullyRead": [
+    220,
+    221,
+    222,
+    223,
+    224,
+    225,
+    226,
+    227
+  ],
+  "filesChangedSincePrevious": [
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+      "newReadLines": [
+        32,
+        231
+      ],
+      "cumulativeReadLines": [
+        1,
+        231
+      ],
+      "completeSourceRead": false
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 227,
+    "totalPages": 254,
+    "completeFiles": 137,
+    "partialFiles": 1,
+    "literalLines": 13859,
+    "nextForwardPage": 228,
+    "remainingPages": 27,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "observations": [
+    "All eight pages were literally read without truncation. The captured Maven histories cover HTTP components, Log4j, Doxia, Maven plugins, resolver and shared utilities, and part of Surefire. Complete split lines are reassembled before counting source lines. Registry version lists are historical evidence, not proof that a version is safe or that an actual consumer is compatible. Pages 228\u2013254 and semantic applicability remain unfinished; supplied reading earns zero independent authorship credit."
+  ]
+}

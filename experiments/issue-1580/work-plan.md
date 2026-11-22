@@ -629,7 +629,7 @@ independent authorship credit. Wider issue acceptance remains unfinished.
 - [x] Regenerate canonical arithmetic and TypeScript projections; review complete governed witness deltas without changing supported cases or hiding unsupported declarations.
 - [x] Pass focused repaired checks and measure each budget delta; preserve existing exclusions, counts and documented native behavior.
 - [x] Report the verified Rust-template release pipe defect as upstream issue #265.
-- [ ] Compile and import the real worker artifact through the explicit hosted producer; pass the final complete local gate inventory.
+- [x] Compile and import the real worker artifact through the explicit hosted producer; pass the final complete local gate inventory.
 - [ ] Verify all combined-head hosted checks, including the new native release CLI and publisher controls.
 - [ ] Complete every wider original acceptance criterion and aggregate PR review; keep draft/unmerged until verified.
 
@@ -644,3 +644,13 @@ Artifact 14771458725 is imported only after immutable metadata, complete ZIP,
 compiler closure, source/tree and binary verification. Worker currency now
 passes; the full combined-source local gate run and normal hosted CI remain
 pending. See `evidence/checks/hosted-worker-regeneration/manifest.json`.
+
+
+The clean combined worker source 32363d09 passes all 89 local JavaScript gates,
+with zero failures and 54 explicit hosted-only skips; the complete logs are
+round-trip archived in `evidence/checks/combined-worker-full-gates/manifest.json`.
+No local Rust compilation or execution occurs. Java history pages 220–227 are
+literally read, reaching 227/254 pages and 13,859 source lines; remaining literal
+and semantic review stays open. Current-head hosted verification and all broader
+original acceptance remain unfinished. Supplied work earns zero independent
+credit, and the PR remains draft and unmerged.

@@ -140,3 +140,21 @@ secret scan. Complete producer logs, artifact metadata, extracted files and
 verification records are retained in `hosted-worker-regeneration/manifest.json`.
 No local Rust compilation or execution occurs. Complete combined-head local gates
 and normal hosted CI remain pending, and broader issue acceptance stays open.
+
+
+## Complete combined-source local replay
+
+The clean committed source `32363d09636554c7ccba7a0a41241d34639ce358`
+passes all 89 maintained JavaScript gates, with zero failures and 54 explicit
+hosted-only skips. The tree is clean before and after the run. Worker currency,
+status projections and the unchanged committed secret scanner pass together.
+No local Rust compilation or execution occurs. The complete per-gate logs and
+exact outcome are round-trip archived in
+`evidence/checks/combined-worker-full-gates/manifest.json`.
+
+The eight template identities and main ae36 remain current. The issue has one
+comment, the PR has eleven conversation comments and no inline comments or
+reviews; all are reread, with no new requirements. Java historical literal review
+advances to 227/254 pages and 13,859 source lines. This does not complete the
+remaining semantic comparison or broader issue acceptance. A normal hosted run
+on the combined published head, including actual native regressions, is pending.
