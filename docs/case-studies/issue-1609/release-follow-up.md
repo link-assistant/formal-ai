@@ -140,6 +140,22 @@ public crate, GitHub Release and downstream download checks. The changelog
 fragment queues a new version through the normal release workflow.
 [Issue discussion](raw-data/issue-release-follow-up.json), [PR #1626](https://github.com/link-assistant/formal-ai/pull/1626).
 
+### Native verification of the pull request
+
+The first PR native job compiled the test CLI at optimization level zero. In
+both server modes, the same classification request reached its 10-second
+deadline and the server reached its 90-second fixture lifetime before the
+last ten assertions. The failure stopped the later reporting steps. The job
+now inherits Cargo's test profile at optimization level two, with assertions
+and overflow checks enabled. The request and server deadlines still apply.
+The same replay passed 84 assertions against the optimized v0.356.4 native
+executable, with the JavaScript-only worker assertion skipped by design.
+[Hosted native job](https://github.com/link-assistant/formal-ai/actions/runs/45008981956/job/137166953914),
+[captured prompt-data log](raw-data/pr-native-prompt-data-45008981956.log.gz),
+[optimized executable replay](raw-data/replay-0.356.4-prompt-data.log),
+[Cargo test profile](../../../rust/Cargo.toml),
+[native verification workflow](../../../.github/workflows/native-type-check.yml).
+
 ## Self-use attribution
 
 A read-only attempt asked the Agent CLI against the local JavaScript Formal AI
