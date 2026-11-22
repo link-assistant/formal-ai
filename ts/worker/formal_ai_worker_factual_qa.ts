@@ -893,14 +893,12 @@ function summarySubject(seeds, lower) {
   return trim(name.slice(0, cut));
 }
 
-function summaryTopicDerive(subject, language) {
+async function summaryTopicDerive(subject, language, preferences, evidence) {
   const project = projectByAlias(subject);
   if (project) {
-    let best = null;
-    for (const statement of projectStatementsFor(project, language)) {
-      if (!best || statement.weight >= best.weight) best = statement;
-    }
-    if (best) return { label: projectDisplayName(project, language), body: best.text, source: project.url };
+    const verified = await verifiedProjectDescription(project, preferences, evidence);
+    const summary = verified || { body: unavailableProjectDescription(language, evidence), source: "none" };
+    return { label: projectDisplayName(project, language), ...summary };
   }
   const record = lookupConcept(subject);
   if (!record) return null;
@@ -913,17 +911,17 @@ function summaryTopicDerive(subject, language) {
 /**
  * Resolve and summarize the subject named in the request.
  * @param {string} prompt
- * @returns {object|null}
+ * @returns {Promise<object|null>}
  */
-function trySummarizationTopic(prompt) {
+async function trySummarizationTopic(prompt, preferences) {
   const seeds = summaryTopicSeeds();
   const lower = String(prompt || "").toLowerCase();
   if (!seeds.triggers.some((trigger) => lower.includes(trigger))) return null;
   if (seeds.rejectExact.some((exact) => lower === exact)) return null;
   if (seeds.rejectSubstrings.some((substring) => lower.includes(substring))) return null;
   const language = detectLanguage(prompt);
-  const derived = summaryTopicDerive(summarySubject(seeds, lower), language);
   const evidence = [];
+  const derived = await summaryTopicDerive(summarySubject(seeds, lower), language, preferences, evidence);
   let label = derived ? derived.label : "";
   let body = derived ? derived.body : "";
   let source = derived ? derived.source : "";

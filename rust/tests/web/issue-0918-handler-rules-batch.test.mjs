@@ -388,7 +388,7 @@ test("the concept-query reader takes its vocabulary from the seed cue records", 
 test("topic summaries resolve the named subject through the shared registries", async () => {
   for (const [prompt, expected] of [
     ["Can you summarize Rust?", "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector."],
-    ["Please summarize formal-ai in one paragraph.", "formal-ai is a deterministic symbolic AI that answers without any neural-network inference."],
+    ["Please summarize formal-ai in one paragraph.", "No verified repository description is available."],
   ]) {
     const response = await solve(prompt);
     assert.equal(response.intent, "summarize_topic", prompt);

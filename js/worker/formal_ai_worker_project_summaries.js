@@ -1,8 +1,26 @@
-// Curated project descriptions and local HTTP projection (R1188-U29).
-// Mirrors describe_project in rust/src/summarization/mod.rs and
-// try_curated_http_fetch in rust/src/solver_handlers/curated_project_fetch.rs.
-// Statements, localized surfaces and response text all come from seed records;
-// summary modes and ordering come from the shared formalization pipeline.
+// Repository metadata and the shared project-statement summarizer.
+
+async function verifiedProjectDescription(project, preferences, evidence) {
+  const endpoint = githubApiRepositoryUrl({ owner: project.org, name: project.name });
+  const online = preferences?.offline !== true && preferences?.allowNetwork !== false;
+  const capture = await sourceWalkFetchCapture(endpoint, { online, bounded: true, indexed: true, maxAgeSeconds: 86400 });
+  if (!capture.ok) return null;
+  let metadata;
+  try { metadata = JSON.parse(capture.text); } catch { return null; }
+  if (typeof metadata?.full_name !== "string" || typeof metadata.html_url !== "string" ||
+      metadata.full_name.toLowerCase() !== projectRepoSlug(project).toLowerCase() ||
+      metadata.html_url.toLowerCase() !== project.url.toLowerCase()) return null;
+  const body = typeof metadata.description === "string" ? metadata.description.trim() : "";
+  if (!body) return null;
+  evidence.push(`source:http:${endpoint} fetched_at=${capture.fetchedAt} sha256=${capture.sha256} cached=${capture.cached}`);
+  if (capture.cached) evidence.push(`cache_hit:${endpoint}`);
+  return { body, source: endpoint };
+}
+
+function unavailableProjectDescription(language, evidence) {
+  evidence.push("project:description:unavailable");
+  return answerFor("project-description-unavailable", language);
+}
 
 function describeProjectRecord(project, language, mode = "short") {
   const summary = crateModule("crate/summarization.mjs");
@@ -15,34 +33,4 @@ function projectSummaryResponse(intent, language, values) {
   const template = crateModule("crate/seed.mjs").localizedResponse(intent, language);
   if (template === null) return null;
   return handlerRulesFillOnce(template, values);
-}
-
-function curatedProjectForHttpUrl(url) {
-  // The native registry matcher uses literal URL segments, not repository
-  // reference cleanup: a .git suffix, query or encoded name is not stripped.
-  const match = String(url).toLowerCase().match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)(?:\/|$)/);
-  if (!match) return null;
-  return PROJECTS.find((project) =>
-    String(project.org).toLowerCase() === match[1] &&
-    String(project.name).toLowerCase() === match[2]) || null;
-}
-
-function tryCuratedProjectFetch(prompt, url) {
-  const project = curatedProjectForHttpUrl(url);
-  if (!project) return null;
-  const language = detectLanguage(prompt);
-  const content = projectSummaryResponse("http_fetch_curated_project", language, {
-    url, summary: describeProjectRecord(project, language, "standard"),
-  });
-  if (content === null) return null;
-  return {
-    intent: "http_fetch", content, confidence: 0.95,
-    evidence: [
-      `http_fetch:request:${url}`,
-      `http_fetch:curated_project:${projectRepoSlug(project)}`,
-      "summarization:mode:standard",
-      `summarization:language:${language}`,
-    ],
-    iframeUrl: null,
-  };
 }

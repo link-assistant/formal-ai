@@ -23,6 +23,14 @@ pub fn try_summarization_request(
     _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    try_summarization_request_with_offline(prompt, log, true)
+}
+
+pub(crate) fn try_summarization_request_with_offline(
+    prompt: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<SymbolicAnswer> {
     let seeds = summary_topic_seed_data();
     let lower = prompt.to_lowercase();
     if !seeds.matches_trigger(&lower) {
@@ -32,7 +40,7 @@ pub fn try_summarization_request(
     let language = detect_language(prompt).slug();
     let derived = seeds
         .subject(&lower)
-        .and_then(|subject| derived_topic_summary(subject, language));
+        .and_then(|subject| derived_topic_summary(subject, language, log, offline));
     if derived.is_none() {
         log.append("summarization:refusal", "unresolved_subject".to_owned());
     }

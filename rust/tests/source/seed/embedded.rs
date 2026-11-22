@@ -131,7 +131,8 @@ pub const PROGRAM_PLAN_RULES_LINO: &str =
 pub const SELF_IMPROVEMENT_LOOP_LINO: &str =
     include_str!("../../../../data/seed/self-improvement-loop.lino");
 pub const ENVIRONMENTS_LINO: &str = include_str!("../../../../data/seed/environments.lino");
-pub const PROJECTS_LINO: &str = include_str!("../../../../data/seed/projects.lino");
+// Historical source-suite fixture for weighted project statement behavior.
+pub const PROJECTS_LINO: &str = include_str!("../fixtures/project-statements-legacy.lino");
 
 /// Embedded copy of every Links Notation seed file. Returned in declaration
 /// order so callers can render the merged bundle deterministically.

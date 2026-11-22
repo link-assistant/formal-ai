@@ -165,8 +165,6 @@ async function tryFetch(prompt) {
   const normalized = normalizePrompt(prompt);
   const url = extractHttpFetchUrl(prompt, normalized);
   if (!url) return null;
-  const curated = tryCuratedProjectFetch(prompt, url);
-  if (curated) return curated;
   const evidence = [`http_fetch:request:${url}`];
   if (typeof fetch !== "function") {
     return {

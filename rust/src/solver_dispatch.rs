@@ -235,6 +235,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     // discovery-plan handler remains the fallback when the evidence is thin.
     "procedural_how_to",
     "procedural_how_to_followup",
+    "summarization",
     // Issue #1172 R3/R8: a fact question no seeded record answers is asked
     // of Wikidata, and an explanation is composed from retrieved pages, both
     // through the capture client, which needs the runtime's offline flag. The
@@ -351,6 +352,11 @@ pub fn try_contextual_override(
             normalized,
             log,
             runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+        ),
+        "summarization" => crate::solver_handlers::try_summarization_request_with_offline(
+            prompt,
+            log,
+            runtime.solver_config.offline,
         ),
         // Issue #1172 R1172-5: a definition request the seeded concepts do
         // not cover is answered from the registry's dictionary sources. A

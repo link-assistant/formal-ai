@@ -84,18 +84,25 @@ pub fn handle_summarization_request(
 pub(super) fn derived_topic_summary(
     subject: &str,
     language: &str,
+    log: &mut EventLog,
+    offline: bool,
 ) -> Option<(String, String, String)> {
     let registry = seed::projects_registry();
-    if let Some(project) = registry.by_alias(subject)
-        && let Some(statement) = project
-            .statements_for(language)
-            .iter()
-            .max_by_key(|statement| statement.weight)
-    {
+    if let Some(project) = registry.by_alias(subject) {
+        let (description, source) =
+            super::web_requests::verified_project_description(project, offline, log)
+                .unwrap_or_else(|| {
+                    log.append("project:description", "unavailable".to_owned());
+                    (
+                        seed::localized_response("project-description-unavailable", language)
+                            .unwrap_or_default(),
+                        String::from("none"),
+                    )
+                });
         return Some((
             project.display_name_for(language).to_owned(),
-            statement.text.clone(),
-            project.url.clone(),
+            description,
+            source,
         ));
     }
     let query = crate::concepts::ConceptQuery {

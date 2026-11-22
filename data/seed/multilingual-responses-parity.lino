@@ -561,6 +561,26 @@ multilingual_responses
     intent learn-from-source-gap
     language es
     text "No hay una fuente verificada de {source} disponible para esta solicitud."
+  response response-project-description-unavailable-en
+    intent project-description-unavailable
+    language en
+    text "No verified repository description is available."
+  response response-project-description-unavailable-ru
+    intent project-description-unavailable
+    language ru
+    text "Подтверждённое описание репозитория недоступно."
+  response response-project-description-unavailable-hi
+    intent project-description-unavailable
+    language hi
+    text "रिपॉज़िटरी का सत्यापित विवरण उपलब्ध नहीं है।"
+  response response-project-description-unavailable-zh
+    intent project-description-unavailable
+    language zh
+    text "暂无经过验证的仓库描述。"
+  response response-project-description-unavailable-es
+    intent project-description-unavailable
+    language es
+    text "No hay una descripción verificada del repositorio."
   response response-project-lookup-promoted-en
     intent project-lookup-promoted
     language en

@@ -493,11 +493,14 @@ fn a_meaning_question_resolves_through_the_seeded_query_vocabulary() {
 }
 
 const SUMMARY_RUST: &str = "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector.";
-const SUMMARY_FORMAL_AI: &str =
-    "formal-ai is a deterministic symbolic AI that answers without any neural-network inference.";
+const SUMMARY_FORMAL_AI: &str = "No verified repository description is available.";
 
 #[test]
 fn topic_summaries_resolve_subjects_through_the_shared_registries() {
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    });
     for (prompt, expected) in [
         ("Can you summarize Rust?", SUMMARY_RUST),
         (
@@ -505,21 +508,21 @@ fn topic_summaries_resolve_subjects_through_the_shared_registries() {
             SUMMARY_FORMAL_AI,
         ),
     ] {
-        let response = FormalAiEngine.answer(prompt);
+        let response = solver.solve(prompt);
         assert_eq!(response.intent, "summarize_topic", "{prompt}");
         assert_eq!(response.answer, expected, "{prompt}");
     }
-    let held_out = FormalAiEngine.answer("Give me a one-paragraph summary of WebAssembly.");
+    let held_out = solver.solve("Give me a one-paragraph summary of WebAssembly.");
     assert_eq!(held_out.intent, "summarize_topic");
     assert!(
         held_out
             .answer
             .starts_with("WebAssembly (Wasm) is a binary instruction format")
     );
-    let article = FormalAiEngine.answer("Summarise the Wikipedia entry for Wiktionary.");
+    let article = solver.solve("Summarise the Wikipedia entry for Wiktionary.");
     assert_eq!(article.intent, "summarize_topic");
     assert!(article.answer.starts_with("Wiktionary is a multilingual"));
-    let unrelated = FormalAiEngine.answer("Can you summarize rustic barns?");
+    let unrelated = solver.solve("Can you summarize rustic barns?");
     assert!(!unrelated.answer.contains("Rust is a multi-paradigm"));
 }
 

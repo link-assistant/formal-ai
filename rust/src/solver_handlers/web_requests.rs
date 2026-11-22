@@ -6,8 +6,12 @@ use crate::event_log::EventLog;
 use crate::formalization::page::{formalize_page, page_answer};
 use crate::language::detect as detect_language;
 use crate::seed::{self, ProjectRecord, projects_registry};
-use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, FetchError, SourceTransport};
-use crate::summarization::{SummarizationConfig, SummarizationMode, describe_project};
+use crate::source_fetch::{
+    CachedSourceClient, CurlSourceTransport, FetchError, PublicPageTransport, SourceTransport,
+};
+use crate::summarization::{
+    SummarizationConfig, SummarizationMode, deformalize, formalize, summarize,
+};
 use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
 };
@@ -15,7 +19,6 @@ use crate::web_search_core::{
 mod live_search;
 mod url_parse;
 
-use super::curated_project_fetch::try_curated_http_fetch;
 use super::finalize_simple;
 use super::installation_conversion::is_install_conversion_request;
 use super::web_search_intent::{WebSearchQueryKind, extract_web_search_request};
@@ -76,28 +79,28 @@ fn answer_http_fetch_url(
     offline: bool,
 ) -> SymbolicAnswer {
     let offline = offline || !crate::solver_config::read_network_allowed();
+    let cache_root = crate::coding::synthesis_runtime::source_cache_root();
+    let client = CachedSourceClient::new(&cache_root, CurlSourceTransport).with_online(!offline);
     if is_page_formalization_prompt(prompt, &normalize_prompt(prompt)) {
-        let cache_root = crate::coding::synthesis_runtime::source_cache_root();
-        let client =
-            CachedSourceClient::new(&cache_root, CurlSourceTransport).with_online(!offline);
         return answer_page_formalization(prompt, url, log, &client);
     }
     log.append("http_fetch:request", url);
-    if let Some(answer) = try_curated_http_fetch(prompt, url, log) {
-        return answer;
-    }
-    if offline {
-        log.append("policy:offline", url);
-        let body = seed::response_for("lexeme_import_cache_miss_offline", "en")
-            .unwrap_or_else(|| String::from("lexeme_import_cache_miss_offline"))
-            .replace("{qid}", url);
-        return finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0);
-    }
-    let cache_dir =
-        std::env::var("FORMAL_AI_SOURCE_CACHE_DIR").unwrap_or_else(|_| String::from("data"));
-    let client = CachedSourceClient::new(cache_dir, CurlSourceTransport).with_online(true);
     let capture = match client.fetch(url) {
         Ok(capture) => capture,
+        Err(FetchError::OfflineCacheMiss(_)) => {
+            log.append("policy:offline", url);
+            let body = seed::response_for("lexeme_import_cache_miss_offline", "en")
+                .unwrap_or_else(|| String::from("lexeme_import_cache_miss_offline"))
+                .replace("{qid}", url);
+            return finalize_simple(
+                prompt,
+                log,
+                "http_fetch",
+                "response:http_fetch_unavailable",
+                &body,
+                0.0,
+            );
+        }
         Err(error) => {
             log.append("error:fetch", error.to_string());
             let body = seed::response_for("lexeme_import_fetch_failed", "en")
@@ -387,26 +390,18 @@ impl RepositoryReference {
 /// disabled, the same prompts stay on the generic repository lookup path.
 pub fn try_project_lookup(
     prompt: &str,
-    _normalized: &str,
     log: &mut EventLog,
-    promote_associative_repositories: bool,
+    config: crate::solver::SolverConfig,
     suppress_identity_route: bool,
 ) -> Option<SymbolicAnswer> {
-    try_project_lookup_internal(
-        prompt,
-        prompt,
-        log,
-        promote_associative_repositories,
-        suppress_identity_route,
-        None,
-    )
+    try_project_lookup_internal(prompt, prompt, log, config, suppress_identity_route, None)
 }
 
 pub fn try_explicit_repository_lookup(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
-    promote_associative_repositories: bool,
+    config: crate::solver::SolverConfig,
     suppress_identity_route: bool,
     response_language: Option<&str>,
 ) -> Option<SymbolicAnswer> {
@@ -423,7 +418,7 @@ pub fn try_explicit_repository_lookup(
         prompt,
         prompt,
         log,
-        promote_associative_repositories,
+        config,
         suppress_identity_route,
         response_language,
     )
@@ -433,7 +428,7 @@ pub fn try_project_lookup_with_response_language(
     prompt: &str,
     lookup_prompt: &str,
     log: &mut EventLog,
-    promote_associative_repositories: bool,
+    config: crate::solver::SolverConfig,
     suppress_identity_route: bool,
     response_language: &str,
 ) -> Option<SymbolicAnswer> {
@@ -441,7 +436,7 @@ pub fn try_project_lookup_with_response_language(
         prompt,
         lookup_prompt,
         log,
-        promote_associative_repositories,
+        config,
         suppress_identity_route,
         Some(response_language),
     )
@@ -451,10 +446,11 @@ fn try_project_lookup_internal(
     prompt: &str,
     lookup_prompt: &str,
     log: &mut EventLog,
-    promote_associative_repositories: bool,
+    config: crate::solver::SolverConfig,
     suppress_identity_route: bool,
     response_language: Option<&str>,
 ) -> Option<SymbolicAnswer> {
+    let promote_associative_repositories = config.associative_project_promotion;
     // A repository URL can be source material rather than the requested action.
     // Keep installation-guide/script transformations on their more specific
     // conversion path instead of treating the embedded clone URL as a lookup.
@@ -473,6 +469,7 @@ fn try_project_lookup_internal(
                 log,
                 project,
                 response_language,
+                config.offline,
             ));
         }
         return Some(render_generic_repository_lookup(
@@ -494,6 +491,7 @@ fn try_project_lookup_internal(
             log,
             project,
             response_language,
+            config.offline,
         ));
     }
 
@@ -506,31 +504,77 @@ fn try_project_lookup_internal(
     ))
 }
 
+pub(super) fn verified_project_description(
+    project: &ProjectRecord,
+    offline: bool,
+    log: &mut EventLog,
+) -> Option<(String, String)> {
+    let root = crate::coding::synthesis_runtime::source_cache_root();
+    let online = !offline && crate::solver_config::read_network_allowed();
+    let client = CachedSourceClient::new(root, PublicPageTransport).with_online(online);
+    let mut endpoint = url::Url::parse("https://api.github.com/repos").ok()?;
+    endpoint
+        .path_segments_mut()
+        .ok()?
+        .push(&project.org)
+        .push(&project.name);
+    let capture = client.fetch(endpoint.as_str()).ok()?;
+    let metadata: serde_json::Value = serde_json::from_slice(capture.bytes()).ok()?;
+    if !metadata["full_name"]
+        .as_str()?
+        .eq_ignore_ascii_case(&project.repo_slug())
+        || !metadata["html_url"]
+            .as_str()?
+            .eq_ignore_ascii_case(&project.url)
+    {
+        return None;
+    }
+    let description = metadata["description"].as_str()?.trim();
+    if description.is_empty() {
+        return None;
+    }
+    capture.record(log);
+    Some((description.to_owned(), endpoint.to_string()))
+}
+
 fn render_project_lookup(
     prompt: &str,
     log: &mut EventLog,
     project: &ProjectRecord,
     response_language: Option<&str>,
+    offline: bool,
 ) -> SymbolicAnswer {
     let language = response_language.unwrap_or_else(|| detect_language(prompt).slug());
     // Issue #556: record the forced target language so a response-language
     // replay's trace and evidence carry `language_to:<code>` even though the
-    // localized surface itself is produced by the summarizer below.
+    // repository description retains the language returned by its publisher.
     if response_language.is_some() {
         log.append("language_to", language.to_owned());
     }
-    let config = SummarizationConfig::default()
-        .with_mode(SummarizationMode::Short)
-        .with_language(language);
-    let description = describe_project(project, &config);
+    let description = verified_project_description(project, offline, log)
+        .map(|(description, _)| {
+            let config = SummarizationConfig::default()
+                .with_mode(SummarizationMode::Short)
+                .with_language(language);
+            let rendered = deformalize(&summarize(&formalize(&description), &config));
+            if rendered.is_empty() {
+                description
+            } else {
+                log.append("summarization:mode", "short".to_owned());
+                log.append("summarization:language", language.to_owned());
+                rendered
+            }
+        })
+        .unwrap_or_else(|| {
+            log.append("project:description", "unavailable".to_owned());
+            seed::localized_response("project-description-unavailable", language)
+                .unwrap_or_default()
+        });
     let display_name = project.display_name_for(language);
     let repo_slug = project.repo_slug();
     let project_url = project.url.clone();
 
     log.append("project:promoted", repo_slug.clone());
-    log.append("source", project_url.clone());
-    log.append("summarization:mode", "short".to_owned());
-    log.append("summarization:language", language.to_owned());
     log.append("web_search:request", display_name.to_owned());
     for provider in WEB_SEARCH_PROVIDERS {
         log.append("web_search:provider_planned", (*provider).to_owned());
@@ -689,13 +733,7 @@ fn matched_project(prompt: &str) -> Option<&'static ProjectRecord> {
         return None;
     }
     let registry = registry_static();
-    if let Some(project) = registry.by_alias(&term) {
-        return Some(project);
-    }
-    if term == "hivemind" {
-        return registry.by_alias("hive mind");
-    }
-    None
+    registry.by_alias(&term)
 }
 
 fn promoted_project_by_repo(org: &str, name: &str) -> Option<&'static ProjectRecord> {
@@ -851,7 +889,7 @@ fn normalize_concept_term(value: &str) -> String {
 /// Lazy-init the curated projects registry once per process. The seed file is
 /// embedded via `include_str!` and the parsed form is immutable, so a `OnceLock`
 /// is enough and avoids re-parsing on every prompt.
-pub(super) fn registry_static() -> &'static crate::seed::ProjectsRegistry {
+fn registry_static() -> &'static crate::seed::ProjectsRegistry {
     use std::sync::OnceLock;
     static REGISTRY: OnceLock<crate::seed::ProjectsRegistry> = OnceLock::new();
     REGISTRY.get_or_init(projects_registry)

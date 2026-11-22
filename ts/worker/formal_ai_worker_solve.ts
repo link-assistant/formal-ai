@@ -745,7 +745,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   }
   const learning = await claimRouteRun("tryLearnFromSource", prompt, normalized, history, () => tryLearnFromSource(prompt, preferences));
   if (learning) return finalizeInlineHandler(events, steps, toolCalls, learning, "tryLearnFromSource", formalizationContext);
-  const topicSummary = claimRouteRun("trySummarizationTopic", prompt, normalized, history, () => trySummarizationTopic(prompt));
+  const topicSummary = await claimRouteRun("trySummarizationTopic", prompt, normalized, history, () => trySummarizationTopic(prompt, preferences));
   if (topicSummary) return finalizeInlineHandler(events, steps, toolCalls, topicSummary, "trySummarizationTopic", formalizationContext);
   steps.push({ step: "invoke_tool", detail: "wikipedia_lookup" });
   const wiki = await tryWikipediaLookup(prompt, language, preferences);

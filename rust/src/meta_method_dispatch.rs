@@ -114,7 +114,7 @@ pub fn try_dispatch(
                 prompt,
                 &normalized,
                 log,
-                solver.config.associative_project_promotion,
+                solver.config,
                 intent_formalization.route.as_deref() == Some("identity"),
                 forced_response_language,
             )
@@ -232,16 +232,15 @@ pub fn try_dispatch(
                     prompt,
                     prompt,
                     log,
-                    solver.config.associative_project_promotion,
+                    solver.config,
                     intent_formalization.route.as_deref() == Some("identity"),
                     language,
                 )
             } else {
                 try_project_lookup(
                     prompt,
-                    &normalized,
                     log,
-                    solver.config.associative_project_promotion,
+                    solver.config,
                     intent_formalization.route.as_deref() == Some("identity"),
                 )
             };

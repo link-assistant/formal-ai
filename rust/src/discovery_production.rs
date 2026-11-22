@@ -21,11 +21,9 @@
 //! branch of `crate::solver` and `plan_work_item_execution` in
 //! `crate::agentic_coding::general_execution` — call
 //! [`cached_or_research`] so a cache miss routes to
-//! [`research_coding_skill_gap`] instead of a template literal, and the
-//! template sets the issue deletes (`hello-world-programs.lino`, the
-//! `ORACLE_SNAPSHOTS` bootstrap, the `entry`/`operation`/`ci_setup`/
-//! `documented_source` fields) retire once every row they covered is
-//! reproduced by a rediscovery run.
+//! [`research_coding_skill_gap`] when the caller supplies expected output and
+//! reviewer approval. Other requests can discover supported procedures from
+//! publisher documentation or compose programs from the requested operands.
 
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
@@ -148,11 +146,7 @@ fn required_entry_fields() -> Vec<String> {
         .unwrap_or_default()
 }
 
-/// Whether the policy seed still serves the embedded bootstrap snapshots.
-///
-/// Deleting the bootstrap record in the seed stops every
-/// `ORACLE_SNAPSHOTS`-backed answer with no Rust change — the deletable-cache
-/// contract applied to the compiled-in tier.
+/// Read the historical bootstrap flag for compatibility with old policy files.
 #[must_use]
 pub fn bootstrap_cache_active() -> bool {
     let policy = parse_lino(POLICY);

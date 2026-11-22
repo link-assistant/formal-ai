@@ -944,9 +944,20 @@ async function renderPromotedProjectLookup(prompt, language, project, preference
   const displayName = projectDisplayName(project, language);
   const repository = projectRepoSlug(project);
   const url = project.url || `https://github.com/${repository}`;
-  const description = describeProjectRecord(project, language, "short");
   const providers = WEB_SEARCH_PROVIDERS.map((provider) => provider.id);
   const fusionConstant = webSearchRrfK();
+  const evidence = [`project:promoted:${repository}`];
+  const verified = await verifiedProjectDescription(project, preferences, evidence);
+  let description;
+  if (verified) {
+    const summary = crateModule("crate/summarization.mjs");
+    const configuration = summary.withMode(summary.withLanguage(summary.defaultConfig(), language), "short");
+    const rendered = summary.deformalize(summary.summarize(summary.formalize(verified.body), configuration));
+    if (rendered) evidence.push("summarization:mode:short", `summarization:language:${language}`);
+    description = rendered || verified.body;
+  } else {
+    description = unavailableProjectDescription(language, evidence);
+  }
   const body = projectSummaryResponse("project-lookup-promoted", language, {
     "promoted-orgs": PROMOTED_PROJECT_ORGS.join(", "),
     "display-name": displayName,
@@ -957,14 +968,12 @@ async function renderPromotedProjectLookup(prompt, language, project, preference
     "reciprocal-rank-constant": fusionConstant,
   });
   const search = await runWebSearchQuery(displayName, language, undefined, preferences);
-  const evidence = [
-    `project:promoted:${repository}`, `source:${url}`,
-    "summarization:mode:short", `summarization:language:${language}`,
+  evidence.push(
     `web_search:request:${displayName}`,
     ...providers.map((provider) => `web_search:provider_planned:${provider}`),
     `web_search:fusion_planned:rrf:k=${fusionConstant}`,
     ...(search && Array.isArray(search.evidence) ? search.evidence : []),
-  ];
+  );
   const grounded = search && search.diagnostics &&
     Array.isArray(search.diagnostics.fused) && search.diagnostics.fused.length > 0;
   return {

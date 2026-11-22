@@ -23,7 +23,6 @@ pub mod compound_interest;
 mod conversation_memory;
 mod creative_composition;
 mod creative_writing;
-mod curated_project_fetch;
 mod document_originality;
 mod document_request;
 pub mod documentation_method;

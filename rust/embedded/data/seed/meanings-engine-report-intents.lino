@@ -365,10 +365,18 @@ meanings
   project-lookup-promoted
     defined-by answer
     role localized_response_template
-    precondition "a curated project lookup promotes the configured authoritative repository source"
-    effect "the response names the selected repository and the grounded source-registry promotion"
+    precondition "a project lookup promotes the registered repository identity"
+    effect "the response names the selected repository and shows its verified description when available"
     unit "not applicable"
     example "a curated repository source was selected"
+    grounding "data/seed/multilingual-responses-parity.lino"
+  project-description-unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "repository metadata was unavailable or did not supply a verified description"
+    effect "the response makes the information gap visible"
+    unit "not applicable"
+    example "no verified repository description is available"
     grounding "data/seed/multilingual-responses-parity.lino"
   runtime_derivation_record_missing
     defined-by answer
