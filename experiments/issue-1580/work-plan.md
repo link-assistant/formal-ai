@@ -1029,3 +1029,5 @@ Evidence: `evidence/ci/de79e6ec-terminal-round/`. Pull request: https://github.c
 - [ ] Publish the complete batch, verify all current-source hosted runs and actual provenance durations, and finish every remaining original issue criterion.
 
 Evidence: `evidence/checks/prompt-data-main-integration/`; case study: `docs/case-studies/issue-1580/main-prompt-data-integration.md`.
+
+- [x] Complete the pinned 608-file PHP applicability map with all 114 active files tied to exact retained literal-source reviews. Classify all four executable captured template trees separately from historical records. Preserve structured comparison methods, upstream reports and unverified runtime/practice criteria distinctly.

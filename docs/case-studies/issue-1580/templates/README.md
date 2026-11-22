@@ -173,3 +173,7 @@ authorship credit.
 ## Python complete source applicability map
 
 [`python-complete-file-comparison.json`](python-complete-file-comparison.json) binds all 338 pinned blobs. The per-file receipt distinguishes unchanged reviewed source, current deltas, complete structured historical records, the universal Python lock, and actual hosted generated-byte comparison. The historical catalogs preserve parent constraints, runner ABI selection, bounded retries, strict warning checks and external publisher observations; those are compared with actual Formal AI counterparts. This completes the file map, while final-source CI and the broader implementation acceptance remain open.
+
+## PHP complete file applicability map
+
+`php-complete-file-comparison.json` binds all 608 current pinned blobs. All 114 active root files reuse retained complete literal reviews only at exact content hashes. The 229 captured-template files include four current executable CI inputs plus their comparison manifests; they are distinguished from 265 historical records. Complete structured practice/declaration/JSON observations support each captured or historical comparison, without claiming literal rereading or current runtime proof. All applicable-practice execution and full issue acceptance remain separate.
