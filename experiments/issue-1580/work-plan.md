@@ -25,26 +25,27 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 
 ## Current verification checkpoint
 
-Published `9e945eae` includes main `f574289f`. All 32 workflows are terminal:
-29 pass, one skips, Layered CI and Pipeline fail. Six source/transport checks
-are repaired locally; Pipeline reports the same missing seed-reader prerequisite
-in native HTTP replay. The actual cycle-rejection panic is an expected passing
-negative control. All nine native contract groups and release registry scripts
-pass on the published source; later local Rust changes still require hosted CI.
+Published `2809ce657a6216599252c929f436687652091302` has 33 terminal workflows:
+29 succeed, three fail and one skips. All 163 checks and 30 annotations are
+preserved with complete original workflow logs and hashes. The collected failures
+and actionable warnings have concrete local repairs; fresh hosted execution of
+the repaired source remains pending. Main `82e506f54` (v0.356.3) is merged.
 
-All 313 maintained issue cases pass. The complete JavaScript gate run has 87
-passes, 53 hosted-only skips and one UI inventory failure, corrected afterward
-with a failing-before registration regression and passing unchanged boundary gate.
-All 1,429 traceability rows survive the indexed partition with unchanged status
-fields and explicit evidence bindings. Eight immutable source captures are losslessly archived with a consumed complete-byte
-conservation regression; one live canonical workflow size warning remains under
-unchanged limits. Complete pinned C# and Rust per-file comparisons
-are recorded; applicable practices and other template comparisons remain open.
+All 362 maintained issue observations pass. After retaining and repairing the
+intermediate failed inventories, the final full local inventory has 88 passing
+JavaScript gates and 53 explicit hosted-only exclusions. Native-source and
+TypeScript projection checks pass. No local Rust compilation or native execution
+is claimed. The official terminal-seed package and ignored browser mirrors are
+current; both before/after command-routing and workflow-trigger controls pass.
 
-The stale WASM worker input receipt still requires actual hosted regeneration;
-the inactive, admission-tested proposal awaits the explicit build-policy exception.
-No local native compilation or execution is claimed. Independent reasoning remains
-0/20. PR #1581 remains draft and unmerged; wider acceptance is unfinished.
+All eight pinned template trees have complete per-file applicability maps.
+Applicable-practice/runtime qualification, original strict acceptance and complete
+aggregate review remain unfinished. The 53 reviewed workflow/configuration diffs
+have exact source and diff hashes; this is not whole-PR review. Genuine independent
+authorship remains zero against the CONTRIBUTING.md 20% authored-leaf requirement.
+The independent reasoning target remains 0/20. PR #1581 stays draft and unmerged.
+
+Latest evidence: [collected hosted-source repairs](../../docs/case-studies/issue-1580/hosted-round-2809-repairs.md).
 
 The entries below are retained historical observations, not current-head claims.
 
@@ -1031,3 +1032,34 @@ Evidence: `evidence/ci/de79e6ec-terminal-round/`. Pull request: https://github.c
 Evidence: `evidence/checks/prompt-data-main-integration/`; case study: `docs/case-studies/issue-1580/main-prompt-data-integration.md`.
 
 - [x] Complete the pinned 608-file PHP applicability map with all 114 active files tied to exact retained literal-source reviews. Classify all four executable captured template trees separately from historical records. Preserve structured comparison methods, upstream reports and unverified runtime/practice criteria distinctly.
+
+### 2026-11-22: current-head regressions and remaining template maps
+
+- [x] Complete the JavaScript 566-file and C++ 552-file pinned applicability maps with exact blob identities and explicit literal/structured/binary methods. All eight requested template maps now exist; execution and applicable-practice qualification remain separate.
+- [x] Reproduce both shared annotation pagination defects with actual upstream sources, bounded 101-annotation fixtures, candidate controls and a disabled-pagination negative control. Report C++ #41 and C# #114 without claiming upstream repair.
+- [x] Reproduce and repair current-head text extraction ownership, moved quantity seed consumer and all affected generated TypeScript twins. Focused JavaScript checks pass; native behavior remains hosted.
+- [x] Draft a bounded online advisory-transport retry while preserving both Zizmor gates, and remove actual shell/alias audit warnings without changing parsed CodeQL behavior.
+- [ ] Collect all remaining native CI outcomes and warnings, run the complete local gate inventory and maintained issue regressions, then commit/push the complete repair round only after current-head runs are terminal.
+- [ ] Verify all final-source hosted checks, finish applicable-practice/strict acceptance and genuine authorship, review the complete PR and merge current main before readiness.
+
+
+### 2026-11-22: current hosted-source failure batch
+
+- [x] Reproduce current Zizmor advisory transport failure; preserve complete online auditing and fail-closed controls. Remove actual YAML-alias and dynamic-shell warnings with parsed behavior conservation.
+- [x] Reproduce and repair typed text-operation ownership in both roots, moved quantity-response consumption and all stale generated TypeScript registrations.
+- [x] Capture all 910 complete current file timings and reproduce the actual overloaded shard before raise-only import. Retain original budgets, all eight shards and conservative inherited bounds; record the three actual provenance-scenario timings.
+- [x] Reproduce actual pinned C++/C# annotation pagination misses, retain licensed sources and negative controls, and publish verified upstream reports (C++ #41, C# #114).
+- [x] Complete exact per-file applicability maps for all eight pinned template trees. Runtime/practice acceptance is a separate unfinished criterion.
+- [x] Identify both stale native Grok vectors from the real interface failure; update only those exact expectations, and measure the four-line promoted-interpreter change. Preserve the JavaScript worker ceiling.
+- [x] Collect all 33 terminal current-head workflows, 163 checks and 30 annotations; address their actionable failures and warnings. Final maintained entry: 362 passes. Final local inventory: 88 passes and 53 explicit hosted-only exclusions; no local Rust compilation.
+- [ ] Qualify all repaired hosted paths, finish original strict/practice acceptance and genuine authorship, review the whole PR, merge current main and mark ready only when complete.
+
+Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hosted-round-2809-repairs.md).
+
+
+### 2026-11-22: final local validation of the collected hosted round
+
+- [x] Retain every failed intermediate full inventory, correct the official embedded terminal-seed mirror, and finish all 141 final local gate entries successfully or with explicit hosted-only exclusions.
+- [x] Reproduce the environment-command routing gap, improve the shared generic classifier, regenerate its package mirror and execute the unchanged original request. All three regression controls pass; supplied authorship credit remains zero.
+- [x] Read the complete 53 changed workflow/configuration diffs, repair the newly discovered audit-source trigger omission and prove the added assertion fails before and all six controls pass afterward. Preserve exact source/diff hashes and an explicit incomplete aggregate-review boundary.
+- [ ] Qualify this source with all fresh hosted checks and finish the original strict/practice acceptance, complete aggregate review and genuine independent-authorship floor. Keep the PR draft and unmerged until verified.
