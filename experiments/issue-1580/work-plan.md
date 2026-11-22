@@ -1082,5 +1082,6 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Retain the three-minute Actionlint checkout allowance across two bounded attempts; execute the terminal guard for every success/failure/skipped/cancelled outcome. All 161 policy checks pass.
 - [x] Make native Zizmor contracts follow the actual shared online runner, both personas and its immutable documented executable.
 - [x] Complete all 142 local gate entries (89 pass, 53 hosted-only exclusions), retain stale TypeScript failure plus official regeneration and passing currency, review every changed source diff and commit useful steps locally.
-- [ ] Collect every current-head terminal workflow and annotation, repair every additional actionable result, then publish one coordinated batch.
+- [x] Collect all 33 terminal current-head workflows, 163 checks and 29 annotations; all ten native groups pass, and the three actionable failing workflows have local repairs. Preserve fresh dependency-publication blockers separately.
+- [ ] Publish the complete locally verified batch only after a fresh queue/source preflight, then qualify its actual hosted results.
 - [ ] Verify the resulting published head and finish the remaining original acceptance criteria before readiness.
