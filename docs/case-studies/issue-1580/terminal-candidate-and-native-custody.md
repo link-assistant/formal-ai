@@ -55,3 +55,13 @@ All wider applicable-template practices, production/runtime delivery, complete
 aggregate review, trusted epochs, serving identity and genuine authorship remain
 unfinished. Supplied code and controllers receive zero independent credit. This
 PR remains draft and unmerged.
+
+
+## Complete local inventory replay
+
+The complete maintained local gate inventory at clean source `dd99013af518469481fb8072c4d964b1f59b3cf1`
+finishes with **89 passes, 54 explicit CI-only exclusions and zero failures**.
+The generated-file and status-renderer checks pass in this replay. The command
+leaves the worktree clean and performs no native build. Earlier failed wrappers
+and their corrections remain preserved; these results do not qualify excluded
+native checks or any production release. See the [exact-source gate evidence](../../../experiments/issue-1580/evidence/checks/terminal-candidate-full-gates/manifest.json).

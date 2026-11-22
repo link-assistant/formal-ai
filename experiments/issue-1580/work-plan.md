@@ -507,3 +507,6 @@ Evidence: [release, capacity and cache draft manifest](evidence/checks/release-c
 - [ ] Complete every wider applicable practice and original runtime, delivery, publication, trusted-epoch, serving-identity, aggregate-review and genuine-authorship criterion. Passing partial CI and supplied controllers earn no independent credit; keep the PR draft and unmerged.
 
 Evidence and limitations: [terminal/candidate/custody case study](../../docs/case-studies/issue-1580/terminal-candidate-and-native-custody.md).
+
+
+Complete local replay at `dd99013af518469481fb8072c4d964b1f59b3cf1`: 89 maintained gates pass, 54 CI-only exclusions, zero failures, clean before/after and no Rust build. Final-source hosted execution and all wider requirements remain unfinished. See the exact-source manifest in `evidence/checks/terminal-candidate-full-gates/manifest.json`.
