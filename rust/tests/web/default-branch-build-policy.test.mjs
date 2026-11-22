@@ -21,6 +21,13 @@ const nativeRegressionSource = step => {
   assert.equal(step.run, 'bash scripts/ci-native-regressions.sh core');
   return read('scripts/ci-native-regressions.sh');
 };
+test('Codex report fixture from main run 44953310700 disables background marketplace activity', () => {
+  const script = read('experiments/issue_1609_client_reports/verify-release.sh');
+  const report = script.match(/^\s*codex\)\n([\s\S]*?)^\s*;;/mu)?.[1];
+  assert.match(report, /CODEX_EXTRA_ARGS='--disable plugins'/u);
+  assert.match(report, /SCENARIO=report-publication/u);
+});
+
 function evaluate(expression, event, ref, variables = {}, {results = {}, outputs: changed = {}, releaseMode = 'checks', isCancelled = false} = {}) {
   if(typeof expression!=='string')return expression;
   const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
@@ -180,6 +187,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     ['/*', '!/dev/log/','/dev/log/issues/1079/pulls/1080/upstream-reports/', '!/experiments/**', '/experiments/**/*.sh',
       '/experiments/dynamic-meta/**', '/experiments/js_dogfood/**',
       '/experiments/issue_859_codex_e2e/**',
+      '/experiments/issue_1609_client_reports/**',
       '/experiments/issue-1580/release-registry/', '/experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
       ...['candidate-output-bindings.json', 'candidate-release-caller.yml', 'original-release-workflow.yml','original-release-workflow.part-1.txt','original-release-workflow.part-2.txt',
         'stage-source-coverage.json'].map(file =>

@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.4] - 2026-11-22
+
+### Fixed
+
+- Preserve Formal AI report-session metadata through Gemini CLI shell redaction and verify both conversation exports before publishing a release, including reports with a trimmed issue preview.
+
 ## [0.356.3] - 2026-11-22
 
 ### Added

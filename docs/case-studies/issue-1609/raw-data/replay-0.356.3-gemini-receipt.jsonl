@@ -1,0 +1,7 @@
+{"type":"init","timestamp":"2026-11-22T07:39:46.265Z","session_id":"db546961-94d5-4f10-838c-4898aa4e1dcb","model":"formal-ai"}
+{"type":"message","timestamp":"2026-11-22T07:39:46.267Z","role":"user","content":"Both logs"}
+{"type":"message","timestamp":"2026-11-22T07:39:54.815Z","role":"assistant","content":"I’ll file the report in the Formal AI GitHub repository.","delta":true}
+{"type":"tool_use","timestamp":"2026-11-22T07:39:54.880Z","tool_name":"run_shell_command","tool_id":"run_shell_command__call_2b72bc487fdf0137","parameters":{"command":"formal-ai report create-issue --session 'gemini_release_report' --source both --surface agentic-cli --repo 'link-assistant/formal-ai' --title 'Formal AI: `Hello`' --separate-context-links"}}
+{"type":"tool_result","timestamp":"2026-11-22T07:39:55.210Z","tool_id":"run_shell_command__call_2b72bc487fdf0137","status":"success","output":"https://github.com/link-assistant/formal-ai/issues/9999"}
+{"type":"message","timestamp":"2026-11-22T07:40:09.141Z","role":"assistant","content":"Filed the issue on GitHub: https://github.com/link-assistant/formal-ai/issues/9999","delta":true}
+{"type":"result","timestamp":"2026-11-22T07:40:09.144Z","status":"success","stats":{"total_tokens":65912,"input_tokens":65556,"output_tokens":356,"cached":0,"input":65556,"duration_ms":22909,"tool_calls":1,"models":{"formal-ai":{"total_tokens":65912,"input_tokens":65556,"output_tokens":356,"cached":0,"input":65556}}}}

@@ -66,6 +66,7 @@ jobs:
             /experiments/dynamic-meta/**
             /experiments/js_dogfood/**
             /experiments/issue_859_codex_e2e/**
+            /experiments/issue_1609_client_reports/**
             /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json
@@ -97,6 +98,7 @@ jobs:
             /experiments/dynamic-meta/**
             /experiments/js_dogfood/**
             /experiments/issue_859_codex_e2e/**
+            /experiments/issue_1609_client_reports/**
             /experiments/issue-1580/release-registry/
             /experiments/agent_cli_e2e/mock-meaning-mcp.mjs
             /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json

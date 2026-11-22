@@ -5,7 +5,20 @@ BIN="${1:?Pass the selected release binary}"
 ARTIFACTS="${2:?Pass the destination for the stream logs}"
 PORT="${3:?Pass the local server port}"
 mkdir -p "$ARTIFACTS" "$HOME/.gemini"
-printf '%s\n' '{"security":{"auth":{"selectedType":"gemini-api-key"}},"privacy":{"usageStatisticsEnabled":false}}' > "$HOME/.gemini/settings.json"
+cat > "$HOME/.gemini/settings.json" <<'EOF'
+{
+  "security": {
+    "auth": { "selectedType": "gemini-api-key" },
+    "environmentVariableRedaction": {
+      "allowed": ["FORMAL_AI_REPORT_CLIENT", "FORMAL_AI_REPORT_DIALOG_ID", "FORMAL_AI_DIALOG_LOG_DIR", "FORMAL_AI_TEST_ISSUE_BODY"]
+    }
+  },
+  "privacy": { "usageStatisticsEnabled": false }
+}
+EOF
+
+# Exercise the same strict shell environment Gemini uses in GitHub Actions.
+export GITHUB_SHA="${GITHUB_SHA:-release-client-report-fixture}"
 
 export GEMINI_CLI_HOME="$HOME" GEMINI_API_KEY=formal-ai GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key
 export GEMINI_CLI_TRUST_WORKSPACE=true GOOGLE_GEMINI_BASE_URL="http://127.0.0.1:$PORT/api/gemini"

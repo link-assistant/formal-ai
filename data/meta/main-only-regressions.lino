@@ -181,3 +181,24 @@ main-run 44188508228
       failed "issue-1168-source-cache: empty source cache expected baseline but live publisher returned a pin"
       check rust/tests/web/issue-1168-source-cache.test.mjs
       marker "process.env.FORMAL_AI_LIVE_FETCH = '0'"
+main-run 44953310700
+  workflow-policy
+    regression codex-report-marketplace-cleanup
+      introduced-by "PR #1611"
+      failed "A background Codex marketplace clone raced deletion of the report fixture after the issue receipt"
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Codex report fixture from main run 44953310700"
+main-run 44968089085
+  javascript-twin
+    regression qwen-report-trimmed-preview
+      introduced-by "PR #1611"
+      failed "Release verification expected both message counts in a trimmed issue body after successful publication"
+      check rust/tests/web/issue-1609-client-reports.test.mjs
+      marker "release report replay from main run 44968089085"
+  focused-native
+    regression gemini-report-shell-redaction
+      introduced-by "PR #1611"
+      failed "Gemini shell redaction dropped the report environment in GitHub Actions"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/issue-1609-client-reports.test.mjs
+      marker "Gemini report replay from main run 44968089085"

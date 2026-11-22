@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { startCli, temporaryHome } from './support/structured-log-fixture.mjs';
 import { startServer } from '../../../js/server/main.mjs';
 
@@ -27,6 +28,8 @@ const TITLE_SYSTEM = [
   '</task>',
 ].join('\n');
 const ISSUE_URL = 'https://github.com/link-assistant/formal-ai/issues/9999';
+const RELEASE_GH = fileURLToPath(new URL('../../../experiments/issue_1609_client_reports/fake-gh.sh', import.meta.url));
+const GEMINI_REPORT_ENV = ['FORMAL_AI_REPORT_CLIENT', 'FORMAL_AI_REPORT_DIALOG_ID', 'FORMAL_AI_DIALOG_LOG_DIR'];
 const NATIVE = process.env.FORMAL_AI_TEST_NATIVE_CLI;
 const user = content => ({ role: 'user', content });
 const assistant = content => ({ role: 'assistant', content });
@@ -177,6 +180,54 @@ function writeFixture(file, ...records) {
   mkdirSync(path.dirname(file), { recursive: true });
   writeFileSync(file, records.map(record => JSON.stringify(record)).join('\n') + '\n');
 }
+
+test('release report replay from main run 44968089085 checks the attachment beyond a trimmed preview', t => {
+  const directory = temporaryHome(t);
+  const preview = path.join(directory, 'preview.md');
+  const merged = path.join(directory, 'context.lino');
+  const issueBody = path.join(directory, 'issue.md');
+  const env = { ...process.env, FORMAL_AI_TEST_ISSUE_BODY: issueBody };
+  const gh = (...args) => spawnSync('bash', [RELEASE_GH, ...args], { encoding: 'utf8', env });
+  const record = (harness, server) => {
+    writeFileSync(merged, 'conversation session\n  metadata\n'
+      + `    harness_message_count ${harness}\n    server_message_count ${server}\n`);
+    const result = gh('gist', 'create', '--filename', 'context.lino', merged);
+    assert.equal(result.status, 0, result.stderr);
+  };
+  const submit = () => gh('issue', 'create', '--repo', 'link-assistant/formal-ai', '--body-file', preview);
+  const trimmedPreview = '## Reproduction of dialog\n\n... omitted 36 earlier messages ...\n';
+  writeFileSync(preview, trimmedPreview);
+
+  record(0, 9);
+  const withoutHarness = submit();
+  assert.equal(withoutHarness.status, 1);
+  assert.match(withoutHarness.stderr, /missing a nonempty harness capture/u);
+  assert.equal(withoutHarness.stdout, '');
+  record(11, 0);
+  const withoutServer = submit();
+  assert.equal(withoutServer.status, 1);
+  assert.match(withoutServer.stderr, /missing a nonempty server capture/u);
+  assert.equal(withoutServer.stdout, '');
+  record(11, 9);
+  const submitted = submit();
+  assert.equal(submitted.status, 0, submitted.stderr);
+  assert.equal(submitted.stdout.trim(), ISSUE_URL);
+  assert.equal(readFileSync(issueBody, 'utf8'), trimmedPreview);
+});
+
+test('Gemini report replay from main run 44968089085 configures shell redaction narrowly', { skip: !NATIVE }, t => {
+  const home = temporaryHome(t);
+  writeFileSync(path.join(home, 'gemini'), `#!/usr/bin/env node
+const {readFileSync} = require('node:fs');
+process.stdout.write(readFileSync(process.env.GEMINI_CLI_HOME + '/.gemini/settings.json'));
+`, { mode: 0o755 });
+  const settings = JSON.parse(execFileSync(NATIVE, ['with', '--no-start-server', '--base-url', 'http://127.0.0.1:1', 'gemini', 'Hello'], {
+    cwd: home,
+    env: { ...process.env, HOME: home, PATH: home + path.delimiter + process.env.PATH },
+    encoding: 'utf8',
+  }));
+  assert.deepEqual(settings.security.environmentVariableRedaction, { allowed: GEMINI_REPORT_ENV });
+});
 
 function checkNativeExport(run, client, logs, command) {
   const history = ['Hello', 'Report', 'GitHub issue', 'Both logs'];
