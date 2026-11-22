@@ -31,6 +31,7 @@ pub mod fragment_catalog;
 pub mod function_catalog;
 pub mod guidance;
 pub mod ir_lowering;
+pub(crate) mod list_program;
 pub mod operand_program;
 pub mod program_contract;
 pub mod program_ir;

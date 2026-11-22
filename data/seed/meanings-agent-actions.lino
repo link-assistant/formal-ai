@@ -591,6 +591,14 @@ meanings
     unit "report"
     example "a user supplies the output of a regional feed analysis"
     grounding "rust/src/cli_learn.rs"
+  learning-frontier-report-conflict
+    defined-by document
+    role localized-response-template
+    precondition "a supplied report declares a frontier different from the requested or preceding frontier"
+    effect "identifies the report the command could not combine"
+    unit "report"
+    example "two supplied report files declare different frontiers"
+    grounding "rust/src/cli_learn.rs"
   role_slot
     defined-by method
     role action
@@ -631,6 +639,27 @@ meanings
     unit "not applicable"
     example "rust from write me a sorting algorithm in Rust"
     grounding "data/seed/handler-rules.lino"
+  algorithm_request
+    defined-by action
+    role action
+    precondition "the request asks for a procedure that can be applied to inputs"
+    effect "composes a callable operation and binds any supplied examples to its tests"
+    unit "not applicable"
+    example "a sorting algorithm with a test"
+    lexeme en algorithm
+    lexeme ru алгоритм
+    lexeme hi एल्गोरिदम
+    lexeme zh 算法
+    lexeme es algoritmo
+    grounding "data/seed/operation-vocabulary.lino"
+  algoritmo
+    defined-by algorithm_request
+    role action
+    precondition "a Spanish request names an algorithm"
+    effect "grounds the operation vocabulary in the callable procedure meaning"
+    unit "not applicable"
+    example "un algoritmo de ordenación con una prueba"
+    grounding "data/seed/operation-vocabulary.lino"
   list_code
     defined-by method
     role action

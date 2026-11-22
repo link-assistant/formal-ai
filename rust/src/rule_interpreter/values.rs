@@ -104,7 +104,7 @@ impl Rule {
                 ValueSource::Transform(name) => transform_payload(name, context.prompt)?,
                 ValueSource::ListCode { language, test } => {
                     let (_, slug) = resolved.iter().find(|(name, _)| name == language)?;
-                    crate::solver_handlers::numeric_list::render_list_callable(
+                    crate::coding::list_program::render_list_callable(
                         slug,
                         context.prompt,
                         &context.cleaned,

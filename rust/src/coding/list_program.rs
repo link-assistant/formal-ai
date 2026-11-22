@@ -21,15 +21,14 @@
 //! Links Notation so the solver's reasoning can be inspected independently from
 //! the printed code.
 
+use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::coding::catalog::ProgramLanguage;
-use crate::seed::CODING_IDIOMS_LINO;
 use crate::seed::parser::{LinoNode, parse_lino};
-
-use super::{ListValue, Operation, ParsedListItem};
+use crate::seed::{self, CODING_IDIOMS_LINO, NUMERIC_LIST_OPERATIONS_LINO};
 
 /// Safety cap on recursive `{slot}` expansion. The deepest legitimate chain is
 /// scaffold → idiom → nested idiom; anything past this depth is a definition
@@ -214,14 +213,14 @@ impl NumericProgram {
             return None;
         }
         let composer = Composer::new(self, chain);
-        let family = super::family_for(self.operation.canonical());
+        let family = family_for(self.operation.canonical());
         let scaffold = composer.scaffold(family)?;
         composer.expand(scaffold, 0)
     }
 
     /// Use the same operation idioms as the script, without binding the input
     /// list to a literal in the callable. Tests bind inputs and expected values.
-    pub(super) fn render_callable(&self, expected: Option<&[String]>) -> Option<String> {
+    fn render_callable(&self, expected: Option<&[String]>) -> Option<String> {
         let chain = language_chain(idiom_catalog()?, self.language.slug);
         let mut composer = Composer::new(self, chain);
         composer.bindings.insert("list", "values".to_owned());
@@ -480,7 +479,7 @@ pub fn build(
                 },
                 source: list,
                 target: target.clone(),
-                direction: super::direction_for(canonical),
+                direction: direction_for(canonical),
             });
             statements.push(ProgramStatement::PrintJoined {
                 source: target,
@@ -541,4 +540,406 @@ fn quoted_string_literal(value: &str) -> String {
     }
     out.push('"');
     out
+}
+
+/// Whether a list transformation orders the numbers up, down, or simply flips
+/// their given order.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Transform {
+    /// `sort` — ascending order.
+    SortAscending,
+    /// `reverse_sort` — descending order.
+    SortDescending,
+    /// `reverse` — the given order, reversed (no comparison).
+    Reverse,
+}
+
+/// Which scalar a list reduction collapses the numbers into.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Reduce {
+    Sum,
+    Product,
+    Minimum,
+    Maximum,
+}
+
+/// One recognized numeric-list operation: either a transformation that yields
+/// another list, or a reduction that yields a scalar.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Operation {
+    Transform(Transform),
+    Reduce(Reduce),
+}
+
+impl Operation {
+    /// The canonical operation token, matching both the
+    /// `operation-vocabulary.lino` entry and the `numeric-list-operations.lino`
+    /// ontology key.
+    #[must_use]
+    pub const fn canonical(self) -> &'static str {
+        match self {
+            Self::Transform(Transform::SortAscending) => "sort",
+            Self::Transform(Transform::SortDescending) => "reverse_sort",
+            Self::Transform(Transform::Reverse) => "reverse",
+            Self::Reduce(Reduce::Sum) => "sum",
+            Self::Reduce(Reduce::Product) => "product",
+            Self::Reduce(Reduce::Minimum) => "minimum",
+            Self::Reduce(Reduce::Maximum) => "maximum",
+        }
+    }
+}
+
+/// The value domain of a list item lifted from the prompt.
+#[derive(Debug, Clone, Copy)]
+pub enum ListValue {
+    Number(f64),
+    Text,
+}
+
+/// A single list item lifted from the prompt. The surface text is preserved for
+/// echoing and code generation; the value domain drives sorting/reduction.
+#[derive(Debug, Clone)]
+pub struct ParsedListItem {
+    pub text: String,
+    pub value: ListValue,
+}
+
+impl ParsedListItem {
+    const fn numeric_value(&self) -> Option<f64> {
+        match self.value {
+            ListValue::Number(value) => Some(value),
+            ListValue::Text => None,
+        }
+    }
+
+    pub(crate) const fn is_text(&self) -> bool {
+        matches!(self.value, ListValue::Text)
+    }
+}
+
+/// Recognize which numeric-list operation the prompt asks for, in priority
+/// order. Sort phrasings are checked first because "sort in reverse order"
+/// legitimately contains the bare `reverse` verb; the descending variant wins
+/// whenever the `reverse_sort` phrasing is present.
+pub(crate) fn detect_operation(
+    vocabulary: &crate::seed::OperationVocabulary,
+    normalized: &str,
+) -> Option<Operation> {
+    if vocabulary.matches("sort", normalized) || vocabulary.matches("reverse_sort", normalized) {
+        let transform = if vocabulary.matches("reverse_sort", normalized) {
+            Transform::SortDescending
+        } else {
+            Transform::SortAscending
+        };
+        return Some(Operation::Transform(transform));
+    }
+    if vocabulary.matches("reverse", normalized) {
+        return Some(Operation::Transform(Transform::Reverse));
+    }
+    for (canonical, reduce) in [
+        ("sum", Reduce::Sum),
+        ("product", Reduce::Product),
+        ("minimum", Reduce::Minimum),
+        ("maximum", Reduce::Maximum),
+    ] {
+        if vocabulary.matches(canonical, normalized) {
+            return Some(Operation::Reduce(reduce));
+        }
+    }
+    None
+}
+
+/// Compose a callable list transformation or a standalone test of that callable.
+pub(crate) fn render_list_callable(
+    slug: &str,
+    prompt: &str,
+    normalized: &str,
+    test: bool,
+) -> Option<String> {
+    let language = crate::coding::program_language_by_slug(slug)?;
+    let operation = detect_operation(&seed::operation_vocabulary(), normalized)?;
+    let Operation::Transform(transform) = operation else {
+        return None;
+    };
+    let mut items = parse_numbers(prompt);
+    for item in &mut items {
+        let unsigned = item.text.trim_start_matches(['+', '-']);
+        let significant = unsigned.trim_start_matches('0');
+        let sign = if item.text.starts_with('-') { "-" } else { "" };
+        item.text = if significant.is_empty() || significant.starts_with('.') {
+            format!("{sign}0{significant}")
+        } else {
+            format!("{sign}{significant}")
+        };
+    }
+    if test && items.is_empty() {
+        // Use a sequence ordered opposite to the requested result so an identity
+        // implementation fails even when the caller supplied no examples.
+        let mut values = [0, 1, 2];
+        if transform != Transform::SortDescending {
+            values.reverse();
+        }
+        items.extend(values.into_iter().map(|value| ParsedListItem {
+            text: value.to_string(),
+            value: ListValue::Number(f64::from(value)),
+        }));
+    }
+    let is_float = items.iter().any(|item| item.text.contains('.'));
+    let program = build(language, &items, operation, is_float);
+    let expected = test.then(|| compute(operation, &items, is_float));
+    program.render_callable(expected.as_deref())
+}
+
+/// Apply the operation to the parsed list and return the surface tokens to
+/// display: the reordered list for a transformation, or a single computed scalar
+/// for a numeric reduction.
+pub(crate) fn compute(
+    operation: Operation,
+    items: &[ParsedListItem],
+    is_float: bool,
+) -> Vec<String> {
+    match operation {
+        Operation::Transform(transform) => {
+            let mut ordered: Vec<ParsedListItem> = items.to_vec();
+            match transform {
+                Transform::SortAscending => ordered.sort_by(compare_items),
+                Transform::SortDescending => ordered.sort_by(|a, b| compare_items(b, a)),
+                Transform::Reverse => ordered.reverse(),
+            }
+            ordered.into_iter().map(|n| n.text).collect()
+        }
+        Operation::Reduce(reduce) => {
+            let value = match reduce {
+                Reduce::Sum => items
+                    .iter()
+                    .filter_map(ParsedListItem::numeric_value)
+                    .sum::<f64>(),
+                Reduce::Product => items
+                    .iter()
+                    .filter_map(ParsedListItem::numeric_value)
+                    .product::<f64>(),
+                Reduce::Minimum => items
+                    .iter()
+                    .filter_map(ParsedListItem::numeric_value)
+                    .fold(f64::INFINITY, f64::min),
+                Reduce::Maximum => items
+                    .iter()
+                    .filter_map(ParsedListItem::numeric_value)
+                    .fold(f64::NEG_INFINITY, f64::max),
+            };
+            vec![format_scalar(value, is_float)]
+        }
+    }
+}
+
+fn compare_items(left: &ParsedListItem, right: &ParsedListItem) -> Ordering {
+    match (left.numeric_value(), right.numeric_value()) {
+        (Some(a), Some(b)) => a.partial_cmp(&b).unwrap_or(Ordering::Equal),
+        _ => left.text.cmp(&right.text),
+    }
+}
+
+pub(crate) fn value_type_label(items: &[ParsedListItem], is_float: bool) -> &'static str {
+    if items.iter().any(ParsedListItem::is_text) {
+        "string"
+    } else if is_float {
+        "float"
+    } else {
+        "integer"
+    }
+}
+
+/// Format a computed scalar so its textual form matches the runnable code's
+/// stdout: an integer with no decimal point when every input was an integer.
+fn format_scalar(value: f64, is_float: bool) -> String {
+    if is_float {
+        format!("{value}")
+    } else {
+        // Integer inputs fold to an integer-valued `f64`; rendering it without a
+        // decimal point keeps the textual form identical to the generated code's
+        // integer stdout. The value is exact (sum/product/min/max of i64-range
+        // inputs), so the cast cannot truncate meaningfully.
+        #[allow(clippy::cast_possible_truncation)]
+        let rounded = value.round() as i64;
+        format!("{rounded}")
+    }
+}
+
+/// Parsed root of the numeric-list type ontology, loaded once per lookup.
+fn ontology() -> LinoNode {
+    parse_lino(NUMERIC_LIST_OPERATIONS_LINO)
+}
+
+/// Look up an operation's declared `result_kind` (`"list"` / `"scalar"`) from
+/// the seed ontology, falling back to `"list"` for an unknown token.
+pub(crate) fn result_kind_for(canonical: &str) -> &'static str {
+    let tree = ontology();
+    if let Some(root) = tree.children.first() {
+        for op in root.children.iter().filter(|c| c.name == "operation") {
+            if op.id == canonical {
+                return match op.find_child_value("result_kind") {
+                    "scalar" => "scalar",
+                    _ => "list",
+                };
+            }
+        }
+    }
+    "list"
+}
+
+/// Look up an operation's declared `family` from the seed ontology.
+pub(crate) fn family_for(canonical: &str) -> &'static str {
+    let tree = ontology();
+    if let Some(root) = tree.children.first() {
+        for op in root.children.iter().filter(|c| c.name == "operation") {
+            if op.id == canonical {
+                return match op.find_child_value("family") {
+                    "list_reduction" => "list_reduction",
+                    _ => "list_transformation",
+                };
+            }
+        }
+    }
+    "list_transformation"
+}
+
+/// Look up a transformation's declared `direction` from the seed ontology.
+/// The token feeds the program trace so the semantic tree stays inspectable.
+fn direction_for(canonical: &str) -> String {
+    let tree = ontology();
+    if let Some(root) = tree.children.first() {
+        for op in root.children.iter().filter(|c| c.name == "operation") {
+            if op.id == canonical {
+                return op.find_child_value("direction").to_owned();
+            }
+        }
+    }
+    String::new()
+}
+
+pub(crate) fn parse_list_items(prompt: &str, operation: Operation) -> Vec<ParsedListItem> {
+    let quoted = parse_quoted_strings(prompt);
+    if matches!(operation, Operation::Transform(_)) && quoted.len() >= 2 {
+        return quoted;
+    }
+    parse_numbers(prompt)
+}
+
+/// Extract every quoted string literal from the raw prompt, in order. Quoted
+/// strings let the same list algorithm handle non-numeric values without trying
+/// to infer arbitrary unquoted prose as data.
+fn parse_quoted_strings(prompt: &str) -> Vec<ParsedListItem> {
+    let chars: Vec<char> = prompt.chars().collect();
+    let mut items = Vec::new();
+    let mut index = 0;
+    while index < chars.len() {
+        let quote = chars[index];
+        if quote != '"' && quote != '\'' {
+            index += 1;
+            continue;
+        }
+        index += 1;
+        let mut text = String::new();
+        while index < chars.len() {
+            let ch = chars[index];
+            if ch == '\\'
+                && let Some(next) = chars.get(index + 1)
+            {
+                text.push(*next);
+                index += 2;
+                continue;
+            }
+            if ch == quote {
+                break;
+            }
+            text.push(ch);
+            index += 1;
+        }
+        if index < chars.len() && chars[index] == quote {
+            index += 1;
+            if !text.is_empty() {
+                items.push(ParsedListItem {
+                    text,
+                    value: ListValue::Text,
+                });
+            }
+        }
+    }
+    items
+}
+
+/// Whether the request lists numbers, or at least two quoted values.
+///
+/// The `list_items` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_list_items(prompt: &str) -> bool {
+    !parse_numbers(prompt).is_empty() || parse_quoted_strings(prompt).len() >= 2
+}
+
+/// Extract every number token from the raw prompt, in order of appearance.
+///
+/// Recognizes optionally-signed integers and decimals (e.g. `-3`, `5`, `7.5`).
+/// The surface text is preserved so the echo and the generated code use exactly
+/// what the user typed; the parsed `f64` value drives the computation.
+pub fn parse_numbers(prompt: &str) -> Vec<ParsedListItem> {
+    let chars: Vec<char> = prompt.chars().collect();
+    let mut numbers = Vec::new();
+    let mut index = 0;
+    while index < chars.len() {
+        let ch = chars[index];
+        let sign = if (ch == '-' || ch == '+')
+            && chars.get(index + 1).is_some_and(char::is_ascii_digit)
+            && !preceded_by_digit_or_word(&chars, index)
+        {
+            let s = ch;
+            index += 1;
+            Some(s)
+        } else if ch.is_ascii_digit() {
+            None
+        } else {
+            index += 1;
+            continue;
+        };
+
+        let start = index;
+        while index < chars.len() && chars[index].is_ascii_digit() {
+            index += 1;
+        }
+        // Optional single decimal point followed by digits.
+        if index < chars.len()
+            && chars[index] == '.'
+            && chars.get(index + 1).is_some_and(char::is_ascii_digit)
+        {
+            index += 1;
+            while index < chars.len() && chars[index].is_ascii_digit() {
+                index += 1;
+            }
+        }
+
+        if start == index {
+            continue;
+        }
+        let mut text = String::new();
+        if let Some(s) = sign {
+            text.push(s);
+        }
+        text.extend(&chars[start..index]);
+        if let Ok(value) = text.parse::<f64>() {
+            numbers.push(ParsedListItem {
+                text,
+                value: ListValue::Number(value),
+            });
+        }
+    }
+    numbers
+}
+
+/// A leading sign only introduces a negative/positive literal when it is not
+/// glued to a preceding digit or letter (so `main2` or `a-b` do not spawn a
+/// bogus number, but a standalone `-3` does).
+fn preceded_by_digit_or_word(chars: &[char], index: usize) -> bool {
+    index
+        .checked_sub(1)
+        .and_then(|prev| chars.get(prev))
+        .is_some_and(|prev| prev.is_alphanumeric())
 }

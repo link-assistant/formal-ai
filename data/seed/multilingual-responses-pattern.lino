@@ -443,6 +443,26 @@ multilingual_responses
     intent learning-frontier-report-required
     language es
     text "Indica el informe de aprendizaje de '{frontier}' con --from <PATH>."
+  response response-learning-frontier-report-conflict-en
+    intent learning-frontier-report-conflict
+    language en
+    text "{path} declares a different frontier."
+  response response-learning-frontier-report-conflict-ru
+    intent learning-frontier-report-conflict
+    language ru
+    text "В отчёте {path} указано другое направление обучения."
+  response response-learning-frontier-report-conflict-hi
+    intent learning-frontier-report-conflict
+    language hi
+    text "{path} में सीखने का अलग क्षेत्र घोषित है।"
+  response response-learning-frontier-report-conflict-zh
+    intent learning-frontier-report-conflict
+    language zh
+    text "{path} 声明了另一个学习方向。"
+  response response-learning-frontier-report-conflict-es
+    intent learning-frontier-report-conflict
+    language es
+    text "{path} declara otra línea de aprendizaje."
   response response_algorithm_observation_missing_ru
     intent algorithm_observation_missing
     language ru

@@ -169,7 +169,14 @@ fn load_frontier(args: &LearnCycleArgs) -> Result<(String, Vec<FrontierItem>), B
                     .as_ref()
                     .is_some_and(|known| known.as_str() != declared)
                 {
-                    return Err(format!("{} declares a different frontier", path.display()).into());
+                    let path = path.to_string_lossy();
+                    let message = render_response(
+                        "learning-frontier-report-conflict",
+                        "en",
+                        &[("path", &path)],
+                    )
+                    .unwrap_or_default();
+                    return Err(message.into());
                 }
                 frontier.get_or_insert_with(|| declared.to_owned());
             }
