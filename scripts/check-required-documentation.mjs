@@ -14,7 +14,7 @@ export function sectionHeadings(markdown) {
   let fence = null;
   for (const line of markdown.split(/\r?\n/u)) {
     if (fence) {
-      const close = /^ {0,3}(`+|~+)\s*$/u.exec(line)?.[1];
+      const close = /^ {0,3}(`+|~+)[ \t]*$/u.exec(line)?.[1];
       if (close?.[0] === fence[0] && close.length >= fence.length) fence = null;
       continue;
     }

@@ -257,3 +257,30 @@ test('required documentation uses one contract for listing and execution', () =>
   const invalid = spawnSync(process.execPath, ['scripts/check-required-documentation.mjs', '--unknown'], {encoding:'utf8', timeout:5000});
   assert.equal(invalid.status, 2);
 });
+
+test('non-ASCII or vertical whitespace cannot close documentation fences', {timeout:5000}, () => {
+  const root = mkdtempSync(join(tmpdir(), 'documentation-fence-'));
+  try {
+    const actual = [], expected = [];
+    for (const fence of ['```', '~~~']) {
+      for (const suffix of ['\u00a0', '\u2003', '\u202f', '\ufeff', '\v', '\f']) {
+        writeFileSync(join(root, 'README.md'), fence + '\n' + fence + suffix + '\n## Quick Start\n');
+        actual.push(documentationProblems(root, {'README.md':['Quick Start']}));
+        expected.push(['README.md: missing required heading "## Quick Start"']);
+      }
+    }
+    assert.deepEqual(actual, expected);
+  } finally { rmSync(root, {recursive:true, force:true}); }
+});
+
+test('spaces and tabs close documentation fences before actual required sections', {timeout:5000}, () => {
+  const root = mkdtempSync(join(tmpdir(), 'documentation-fence-close-'));
+  try {
+    for (const fence of ['```', '~~~']) {
+      for (const suffix of ['', ' ', '\t', ' \t ']) {
+        writeFileSync(join(root, 'README.md'), fence + '\nexample\n' + fence + suffix + '\n## Quick Start\n');
+        assert.deepEqual(documentationProblems(root, {'README.md':['Quick Start']}), []);
+      }
+    }
+  } finally { rmSync(root, {recursive:true, force:true}); }
+});

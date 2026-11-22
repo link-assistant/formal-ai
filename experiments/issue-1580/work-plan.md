@@ -1118,3 +1118,10 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Complete the 142-entry local inventory (89 passes and 53 explicit hosted exclusions), then pass every additional touched portable-options gate. Retain stale expected-vector and incorrect gate-name failures with their recoveries.
 - [ ] Publish this entire batch only after a fresh empty-queue/source preflight; verify new native changelog execution, actual Windows transport and unchanged hosted shard headroom.
 - [ ] Complete every remaining original acceptance criterion, applicable practice and aggregate review; preserve original budget, publication/identity/delivery and genuine authorship limits. Keep PR #1581 draft and unmerged until verified.
+
+## Documentation fence review checkpoint
+
+- [x] Reproduced twelve invalid closing-fence suffixes accepting a fake required heading; original checker fails the new regression.
+- [x] Restrict closure to ASCII spaces/tabs; all 37 maintained tests and five focused gates pass.
+- [x] Preserve complete before/after evidence and eight valid closing controls; zero independent-authorship credit.
+- [ ] Verify the corrected file in the next complete hosted round; retain all wider unfinished criteria.
