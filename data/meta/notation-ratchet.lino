@@ -37,14 +37,14 @@
 # with `-`; no hand-written record gained a `_` name.
 notation-ratchet
   scope data/meta
-    underscore-names 2016
-    abbreviated-names 198
+    underscore-names 1986
+    abbreviated-names 196
     duplicated-blocks 9
-    repeated-fields 78
-    characters 2101081
+    repeated-fields 74
+    characters 2021099
   scope data/seed
-    underscore-names 9244
+    underscore-names 9239
     abbreviated-names 240
     duplicated-blocks 26
-    repeated-fields 174
-    characters 3644097
+    repeated-fields 173
+    characters 3645325

@@ -278,3 +278,37 @@ fn controlled_dialogue_answers_retain_the_recursive_procedure_trace() {
     assert_eq!(switched.answer, MAX_PRECISION_CAT);
     assert!(trace.iter().any(|event| event.kind == "meta_exec:result"));
 }
+
+#[test]
+fn prompt_data_drafts_reach_the_recursive_procedure_with_a_forced_response_language() {
+    use ::formal_ai::meta_executor::{last_turn_trace, remember_trace};
+    use ::formal_ai::{SolverConfig, UniversalSolver};
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        forced_response_language: Some("ru"),
+        ..SolverConfig::default()
+    });
+    remember_trace(&[]);
+    let answer = solver.solve("Identify the language: Hola, buenos días. ¿Cómo estás?");
+    assert_eq!(answer.intent, "prompt_data_language");
+    assert_eq!(answer.answer.lines().next(), Some("Испанский"));
+    assert!(answer.answer.contains("Словарные совпадения: hola"));
+    assert!(
+        answer
+            .evidence_links
+            .iter()
+            .any(|link| link == "prompt_data:network:none")
+    );
+    let trace = last_turn_trace();
+    assert!(trace.iter().any(|event| {
+        event.kind == "meta_exec:draft"
+            && event
+                .payload
+                .split_whitespace()
+                .any(|field| field == "method=derivation")
+    }));
+    assert_eq!(
+        trace.last().map(|event| event.kind),
+        Some("meta_exec:result")
+    );
+}

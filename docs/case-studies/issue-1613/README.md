@@ -317,6 +317,39 @@ browser probe and the inventory now includes it.
 [Pipeline log](evidence/workflows/pipeline-44962926030.log.gz) ·
 [Layered CI log](evidence/workflows/layered-44962925794.log.gz)
 
+The next [native check](evidence/workflows/native-job-137041134994.log.gz)
+compiled successfully. Its HTTP replay grouped five recurrence requests into
+one 60-second deadline and timed out without identifying the active request
+(lines 1836–1847). The publisher recurrence path was also fetching raw code
+implementations and unrelated concept sources that it later discarded. That
+path now checks matched recurrence definitions and their examples directly.
+The HTTP replay gives each prompt a bounded request and records the individual
+latencies so a later failure identifies the affected input.
+
+The GitHub Docs replay returned steps from the matching capture and preserved
+the rejected page in the source trace as `no_steps` (lines 1863–1896). The
+replay now verifies the capture digest in the instructions and both outcomes
+in the trace. The Chinese currency replay returned the right amount but lost
+the publisher URL before `?date=` (lines 1934–1948). A regression exercises
+the CJK source label directly in the question filter that removed the URL.
+The [Layered CI log](evidence/workflows/layered-44967918592.log.gz) reports
+three assertions tied to stale governed source identities. The inventory was
+regenerated after rebuilding the callable registry from the merged native
+sources. The case comparison records the relocated capital test and the added
+currency case. Every previously supported test remains supported.
+[Pipeline log](evidence/workflows/pipeline-44967918716.log.gz) ·
+[Witness comparison](evidence/verification/governed-baseline-round9-delta.log)
+
+The regional Google Trends probes fetched separate US and DE RSS responses.
+The agentic replay checks the response digest, an empty offline cache, and
+reuse of the original artifact across tool turns. The coverage report keeps
+unresolved prompts available for triage and requires human review of rule
+proposals. Historical reports and feeds remain available to explicit replays.
+[Publisher evidence](evidence/trends/) ·
+[Recipe replay](evidence/verification/google-trends-agentic-recipes.log) ·
+[Dreaming replay](evidence/verification/google-trends-dreaming-runtime.log) ·
+[Learning cycle replay](evidence/verification/google-trends-learning-cycle.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,

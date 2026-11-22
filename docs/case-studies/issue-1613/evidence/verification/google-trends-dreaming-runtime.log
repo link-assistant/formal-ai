@@ -1,0 +1,17 @@
+✔ foreground activity blocks idleness until released (1.691477ms)
+✔ the FORMAL_AI_DREAMING opt-out honours only explicit off values (0.434982ms)
+✔ a foreground request cancels a run mid-flight without touching the log (37.701691ms)
+✔ an idle run learns but does not free without consent, and writes the composed recipe (4129.065013ms)
+✔ a missing log is never created, yet the run leaves its ledger and learning-cycle record; an incompatible one is refused unmodified (50.51019ms)
+✔ the recipe sidecar replaces the memory log extension like Path::with_extension (0.219569ms)
+✔ the dreaming thread runs a pass and shares the foreground counter (6359.260262ms)
+✔ startCoreDreaming waits for idleness, runs once, and is off on an explicit opt-out (4.483697ms)
+✔ serve starts the dreaming worker and every request guards the idle clock (1.190131ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11302.61527

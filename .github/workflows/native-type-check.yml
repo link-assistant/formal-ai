@@ -79,6 +79,10 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1591-embeddings.test.mjs
+      - name: Replay prompt-local classification, record QA and text processing against the native CLI
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 rust/tests/web/issue-1593-prompt-data.test.mjs
       - name: Replay localized procedures and issue reporting against the native CLI
         id: report-http
         env:

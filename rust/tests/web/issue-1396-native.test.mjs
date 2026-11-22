@@ -45,35 +45,47 @@ function storeCapture(cache, source, content) {
     `source-capture-v2\nurl=${source}\nfetched_at=${Math.floor(Date.now() / 1000)}\nsha256=${digest}\n`);
 }
 
-test("native offline chat synthesizes recurrences only from supplied publisher captures", NATIVE_MULTI_TURN_CASE, async (t) => {
+async function startNativeRecurrenceReplay(t) {
   const cache = temporaryHome(t);
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   const run = await startCli(t, {
     binary: NATIVE_CLI,
     env: { FORMAL_AI_SOURCE_CACHE_DIR: cache, FORMAL_AI_OFFLINE: "1" },
-    lifetime: NATIVE_MULTI_TURN_CASE.timeout,
+    lifetime: NATIVE_CASE.timeout,
   });
   await run.ready();
   async function ask(prompt) {
+    const started = performance.now();
+    t.diagnostic(`Native recurrence request started for ${prompt}`);
     const response = await fetch(`${run.url}/v1/chat/completions`, {
       method: "POST",
       headers: { "content-type": "application/json" },
+      signal: t.signal,
       body: JSON.stringify({
         model: "formal-ai", stream: false, messages: [{ role: "user", content: prompt }],
       }),
     });
     assert.ok(response.ok, await response.clone().text());
+    t.diagnostic(`Native recurrence response took ${Math.round(performance.now() - started)} ms`);
     return (await response.json()).choices[0].message.content;
   }
+  return { cache, ask };
+}
 
+test("native offline chat needs a publisher capture to synthesize a recurrence", NATIVE_CASE, async (t) => {
+  const { ask } = await startNativeRecurrenceReplay(t);
   assert.doesNotMatch(await ask(recurrenceCases[0].prompt), /def factorial\(n\)/u);
-  for (const [url, body] of recurrenceNativeCaptures()) storeCapture(cache, url, body);
-  for (const { name, prompt } of recurrenceCases) {
+});
+
+for (const { language, name, prompt } of recurrenceCases) {
+  test(`native offline chat synthesizes a sourced ${name} recurrence for ${language}`, NATIVE_CASE, async (t) => {
+    const { cache, ask } = await startNativeRecurrenceReplay(t);
+    for (const [url, body] of recurrenceNativeCaptures()) storeCapture(cache, url, body);
     const retrieved = await ask(prompt);
     assert.ok(retrieved.includes(`def ${name}(n)`), `${prompt} \n${retrieved}`);
     assert.match(retrieved, /https:\/\/www\.wikifunctions\.org\/w\/api\.php/u);
-  }
-});
+  });
+}
 
 test("native offline chat discovers procedures from verified Wikibooks captures", NATIVE_CASE, async (t) => {
   const cache = temporaryHome(t);
@@ -134,8 +146,10 @@ test("native offline chat reads ranked publisher pages before giving procedural 
   const content = (await response.json()).choices[0].message.content;
   assert.match(content.match(/^1\. (.+)$/mu)?.[1] ?? "", indexedProcedure.firstStep);
   assert.match(content, indexedProcedure.finalAction);
-  assert.ok(content.includes(indexedProcedure.page), content);
-  assert.ok(!content.includes(unrelatedProcedure.page), content);
+  const [instructions, sourceTrace] = content.split("\n### Sources\n", 2);
+  assert.ok(instructions.includes(indexedProcedure.sha256.slice(0, 12)), instructions);
+  assert.ok(sourceTrace?.includes(`web_page — contributed (1 page(s), 11 step(s)): ${indexedProcedure.page}`), content);
+  assert.ok(sourceTrace?.includes(`web_page — no_steps (1 page(s), 0 step(s)): ${unrelatedProcedure.page}`), content);
 });
 
 async function startNativeProcedureReplay(t, { agentMode = false, lifetime = NATIVE_CASE.timeout } = {}) {

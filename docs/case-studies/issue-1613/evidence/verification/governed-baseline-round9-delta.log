@@ -1,0 +1,10 @@
+Cases supported before: 221
+Cases supported after: 222
+Removed identifiers: [
+  'rust/tests/unit/specification/prompt_variations.rs::russian_capital_russia_prompt_returns_moscow'
+]
+Added identifiers: [
+  'rust/tests/unit/specification/calculator_delegation.rs::calculator_currency_conversion_is_exempt_from_prose_rejection',
+  'rust/tests/unit/specification/prompt_variations_facts.rs::russian_capital_russia_prompt_returns_moscow'
+]
+Newly unsupported previously supported identifiers: []

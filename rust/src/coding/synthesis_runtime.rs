@@ -50,7 +50,7 @@ pub fn discovery_catalog(
             .clone()
     };
 
-    discovery_catalog_with_client(spec, log, &client, stdlib)
+    discovery_catalog_with_client(spec, log, &client, stdlib, false)
 }
 
 /// Discover function signatures, implementations and verification inputs through a
@@ -60,6 +60,7 @@ fn discovery_catalog_with_client<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
     stdlib: StdlibIndex,
+    recurrence_only: bool,
 ) -> DiscoveryCatalog {
     let preferences = crate::solver_handler_how_synthesis::service_preferences_from_env(log);
     if !crate::seed::source_record("wikifunctions")
@@ -92,6 +93,9 @@ fn discovery_catalog_with_client<T: SourceTransport>(
         }
         for matched in found {
             let exact = recurrence_match(&phrase, &matched);
+            if recurrence_only && !exact {
+                continue;
+            }
             if let Some(index) = matches.iter().position(|existing| {
                 existing.page_title == matched.page_title
                     && existing.match_label == matched.match_label
@@ -134,11 +138,15 @@ fn discovery_catalog_with_client<T: SourceTransport>(
         let Ok(definition) = fetch_function(client, &matched.page_title) else {
             continue;
         };
-        let implementations = fetch_implementations(
-            client,
-            &definition.implementation_zids[..definition.implementation_zids.len().min(8)],
-        )
-        .unwrap_or_default();
+        let implementations = if recurrence_only {
+            Vec::new()
+        } else {
+            fetch_implementations(
+                client,
+                &definition.implementation_zids[..definition.implementation_zids.len().min(8)],
+            )
+            .unwrap_or_default()
+        };
         let mut recurrence = None;
         let mut source_tests = Vec::new();
         for implementation_zid in definition.implementation_zids.iter().take(8) {
@@ -331,15 +339,13 @@ pub(crate) fn discover_recurrence_and_compose(
 ) -> Option<(ConceptMap, composition::CompositionOutcome)> {
     let client =
         CachedSourceClient::new(source_cache_root(), CurlSourceTransport).with_online(live);
-    let mut catalog = discovery_catalog_with_client(spec, log, &client, StdlibIndex::default());
+    let mut catalog =
+        discovery_catalog_with_client(spec, log, &client, StdlibIndex::default(), true);
     catalog.functions.retain(|item| item.recurrence.is_some());
     if catalog.functions.is_empty() {
         return None;
     }
-    for function in &mut catalog.functions {
-        function.implementations.clear();
-    }
-    let mut concepts = discover_over_registry(spec, &catalog, log, false);
+    let mut concepts = discover_with_source_depth(spec, &catalog, log, false, 0);
     for need in &mut concepts.needs {
         need.candidates
             .retain(|part| part.kind == "wikifunctions_recurrence");
@@ -362,6 +368,17 @@ pub fn discover_over_registry(
     log: &mut EventLog,
     live: bool,
 ) -> ConceptMap {
+    let depth = crate::coding::concept_discovery::DiscoveryBounds::default().max_depth;
+    discover_with_source_depth(spec, catalog, log, live, depth)
+}
+
+fn discover_with_source_depth(
+    spec: &CodingTaskSpec,
+    catalog: &DiscoveryCatalog,
+    log: &mut EventLog,
+    live: bool,
+    max_depth: usize,
+) -> ConceptMap {
     let client =
         CachedSourceClient::new(source_cache_root(), CurlSourceTransport).with_online(live);
     let preferences = crate::solver_handler_how_synthesis::service_preferences_from_env(log);
@@ -382,7 +399,10 @@ pub fn discover_over_registry(
         spec,
         catalog,
         &mut lookup,
-        crate::coding::concept_discovery::DiscoveryBounds::default(),
+        crate::coding::concept_discovery::DiscoveryBounds {
+            max_depth,
+            ..Default::default()
+        },
     );
     for row in lookup.outcomes() {
         log.append(

@@ -666,6 +666,9 @@ fn looks_like_url(text: &str) -> bool {
         .rsplit_once(char::is_whitespace)
         .map_or(text, |(_, token)| token);
     text_predicate_matches("url", token)
+        || token
+            .split_once('：')
+            .is_some_and(|(_, value)| text_predicate_matches("url", value))
 }
 
 fn is_replayed_question(text: &str) -> bool {

@@ -762,6 +762,9 @@ seed_registry
   seed projects
     bundle true
     web true
+  seed prompt-data
+    bundle true
+    web true
   seed prompt-patterns
     bundle true
     web true

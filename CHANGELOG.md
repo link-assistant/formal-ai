@@ -20,6 +20,13 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.3] - 2026-11-22
+
+### Added
+
+- Answer bilingual label classification, record questions, field extraction, and language identification from supplied text with supporting quotations.
+- Correct supported English and Russian grammar forms with Wiktionary evidence and publish bilingual task-parity measurements for the 0.356.0 release.
+
 ## [0.356.2] - 2026-11-21
 
 ### Added

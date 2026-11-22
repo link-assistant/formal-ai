@@ -1,0 +1,32 @@
+✔ repeated event sequences become a validated parameterized algorithm (2548.190237ms)
+✔ held-out constant drift is preserved as a failed candidate (2.127089ms)
+✔ artifact round trip and conformance do not implicitly approve execution (18.625949ms)
+✔ the memory reader round-trips the issue-531 observation document (4.841295ms)
+✔ Agent CLI algorithm learning: write, discover, read back, conformance (1269.71146ms)
+✔ an arbitrary four-step procedure compiles and restates its steps (21.822665ms)
+✔ the same procedure in every supported language compiles to the same skill links (10.654633ms)
+✔ an uncompilable step reports a named gap and compiles nothing (487.458201ms)
+✔ the gap name collapses the seed quote escape (1.070177ms)
+✔ the compiler records every ordered requirement under the solver impulse (2.277721ms)
+✔ the compiled artifact round-trips and rejects tampering (20.783176ms)
+✔ Agent CLI procedure: write, verify, execute, and return the same artifact (49.618618ms)
+✔ Agent CLI procedure rejects a corrupted readback and a failed execution (67.837676ms)
+✔ Agent CLI procedure localizes an honest unpersisted artifact (4.088651ms)
+✔ the associative report and answer match the committed Agent CLI session (15.586948ms)
+✔ the associative report is derived from persisted usage, not canned (1.397728ms)
+✔ self-hosting and search-fusion reports are derived and review gated (9.694801ms)
+✔ every registered report routes from its own task and identities are unique (1.129929ms)
+✔ committed Agent CLI evidence reports match a fresh render (4.219925ms)
+✔ the dreaming audit is derived from the recipe and matches the committed session (6.214167ms)
+✔ the self-inspection recipe requires recursive source content and refuses count-only fallback (12.92508ms)
+✔ the question catalog recipe routes narrowly and answers like the committed session (11.544414ms)
+✔ the Google Trends recipes still recognize the recorded task shapes (5.227866ms)
+✔ Trends recipes solve the selected publisher feed and keep its digest across tool turns (1011.598153ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6729.355068
