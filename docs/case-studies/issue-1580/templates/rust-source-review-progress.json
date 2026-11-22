@@ -6322,14 +6322,14 @@
       "templateEvidence": [
         "scripts/run-with-budget-warning.sh"
       ],
-      "assessment": "The pinned template checks its root status file before group liveness, returning success with a live finite child. The actual Formal AI production wrapper independently returns 0 in 0.07s while its child keeps stdout open for four seconds under a one-second budget. A local repair retains group liveness after root exit and passes seven finite process controls; upstream repair and exact-head hosted validation remain pending. The seven finite Linux child-lifetime cases now enter the maintained issue-1580 JavaScript adapter; their earlier omission from hosted admission is corrected. All seven pass locally after the unchanged production repair. Hosted execution of this newly admitted group remains pending.",
-      "status": "formal-ai-local-repair-verified-template-defect-observed",
+      "assessment": "The complete pinned template wrapper still checks its root status file before process-group liveness. The maintained Formal AI production wrapper independently monitors the group after root exit and waits for signal delivery; failed inspection returns 125. All nine current finite Linux child-subreaper cases pass in hosted Layered CI at byte-identical production and fixture sources, including successful and failing early roots, TERM resistance, delayed KILL, short roots, warning-only behavior and failed inspection with delayed termination. The original failing observation remains retained. This supersedes the earlier seven-case local-only qualification; the upstream template report remains open and no cross-platform child-subreaper execution is claimed.",
+      "status": "formal-ai-production-wrapper-hosted-child-lifetime-controls-verified-template-report-open",
       "formalAiPaths": [
         "scripts/run-with-budget-warning.sh",
         "experiments/issue-1580/budget-process-lifetime.test.mjs",
         "rust/tests/web/issue-1580-template-observations.test.mjs"
       ],
-      "verification": "experiments/issue-1580/evidence/checks/budget-process-lifetime/validation.json",
+      "verification": "experiments/issue-1580/evidence/checks/child-lifetime-hosted-verification/manifest.json",
       "existingUpstreamReport": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/172"
     },
     {

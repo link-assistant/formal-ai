@@ -1342,3 +1342,12 @@ See [the scoped review manifest](evidence/checks/published-scoped-production-rev
 - [ ] Finish every remaining applicable template practice, original runtime criterion and aggregate review. The overall template and issue completion flags remain false, and all supplied material retains zero independent authorship credit.
 
 See [the practice evidence manifest](evidence/checks/runner-and-artifact-practices/manifest.json).
+
+
+## Hosted child lifetime and additional source review, 2026-11-22
+
+- [x] Verify all nine current finite child-lifetime controls in hosted Layered CI at byte-identical production and fixture sources. Include delayed signal delivery and unavailable process inspection; preserve the original regression and upstream report. The Linux-only fixture does not qualify other operating systems.
+- [x] Fully read six additional guidance/example diffs and both moved guidance documents. Verify exact grammar-row bytes and ordering across both spines. Preserve all source patches and per-scope review limits.
+- [ ] Finish the wider aggregate review, all other template practices and original runtime criteria. No complete issue, upstream repair or independent authored-work credit is inferred.
+
+See [the lifetime manifest](evidence/checks/child-lifetime-hosted-verification/manifest.json) and [the additional source review](evidence/checks/additional-examples-and-guidance-review/manifest.json).
