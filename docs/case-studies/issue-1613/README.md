@@ -479,6 +479,72 @@ The fixture integrity and Unicode source projection replays passed locally.
 All 138 local JavaScript gates passed or reported an expected skip.
 [Full gate run](evidence/verification/round12-final-full-gates.log)
 
+### Checked-baggage policy
+
+The cold-cache replay returned a complete stroller policy, including cabin
+and fee conditions, without retrieving the airline's policy. Those conditions
+came from four installed translations of the same written answer. The airline
+currently lists a stroller, carrycot, or infant car seat under domestic
+checked baggage. Its travelling-with-infants page separately discusses
+equipment on board. Quoting the matched checked-baggage passage avoids
+extending the passage to cabin, fee, and itinerary rules it does not state.
+Direct requests from this workspace failed to retrieve the page. The public
+publisher page was inspected through the search tool, and deterministic
+replays use a reduced HTML excerpt in the tests.
+[Cold baseline](evidence/verification/round13-policy-baseline.log) ·
+[Air India checked baggage](https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html) ·
+[Air India guidance for travelling with infants](https://www.airindia.com/content/air-india/in/en/travel-information/first-time-flyers/expected-mothers-infants.html)
+
+The installed record carries a source reference, a heading, and evidence
+terms. Both solvers reuse the practical-help section reader. The browser
+replay covers changed publisher text, an unrelated section, four prompt
+languages, cold and warm offline requests, and an independently registered
+carrier. The native regression checks the same capture and its recorded hash.
+[Browser replay](evidence/verification/round13-final-issue-1172-live-fact-parity.log) ·
+[Native regression source](../../../rust/tests/unit/specification/stroller_baggage_fact.rs)
+
+### Native publisher recurrence routing
+
+At head `d7ecf560a`, the native completion replay passed 84 cases and
+skipped one expected case. Its following recurrence replay recorded two
+English factorial requests reaching the 30-second test limit (pipeline
+lines 9795 and 9806). The Russian and Hindi factorial requests returned
+sourced functions. The held-out Fibonacci request returned a catalog
+example that invoked a fixed demo argument and omitted the publisher
+citation (lines 9833–9915). Layered CI passed on this head.
+[Native pipeline](evidence/workflows/pipeline-round12-44979226068.log.gz) ·
+[Layered CI](evidence/workflows/layered-round12-44979225868.log.gz)
+
+The original publisher branch ran after the native solver had selected a
+matching program catalog task. It could miss a callable outside that
+catalog or allow a general program handler to respond first. The native
+solver now attempts a verified publisher recurrence once it has bound
+the request to a callable Python artifact. The phrase extractor removes
+grammatical scaffolding before it limits candidate spans, preserving
+subjects such as “nth Fibonacci number.” The general synthesis path
+remains available for requests the publisher cannot support.
+
+The English timeouts did not identify the stage where the request
+stalled. The recurrence replay now enables trace events for publisher
+and general synthesis and reports the final observed stages, plus the
+individual request time and the source failure reason when available.
+The installed 0.355.27 reference CLI returned a cold factorial fallback
+in under three seconds with the same empty-cache policy. That run
+establishes a reference timing for a different build. The native
+regression on the new commit is verified by its own hosted pipeline.
+[Reference CLI run](evidence/verification/round13-reference-cli-cold-recurrence.log) ·
+[Native regression](../../../rust/tests/web/issue-1396-native.test.mjs)
+
+The full local JavaScript gate run passed or skipped 135 of 138 checks.
+The other three passed after spelling out the recurrence helper's name
+and documenting the complete policy response for each tested language.
+The regenerated native trace locations and test-source witnesses also
+passed their focused checks.
+[Full gate run](evidence/verification/round13-final-gates.log) ·
+[Focused rechecks](evidence/verification/round13-gate-rechecks.log) ·
+[Fixture integrity](evidence/verification/round13-corrected-rust-specification-fixture-integrity.log) ·
+[Unicode source projection](evidence/verification/round13-corrected-rust-specification-unicode-identifiers.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,

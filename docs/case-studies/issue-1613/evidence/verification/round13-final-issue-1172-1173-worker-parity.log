@@ -1,0 +1,12 @@
+✔ #1172 R10: the alias "us" does not fire inside "australia" (2221.960709ms)
+✔ #1172 R10: a seeded alias still answers as a whole word (183.494692ms)
+✔ #1173 R5: a canned search description degrades to web_search_unavailable (0.763645ms)
+✔ #1173 R5: an offline research prompt never answers with the canned description (169.69662ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5488.534977
