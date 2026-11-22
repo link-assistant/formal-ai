@@ -131,3 +131,12 @@ command text into the generated status document. That intermediate output was
 caught before committing; the maintained generator restored the document and
 the actual committed diff contains only the measured ledger line count. Neither
 the rejected command nor supplied recovery receives independent credit.
+
+
+The final provider-corrected source `34d0470951f178acc925614c5dea12f736b7a245` also passes the complete
+143-gate run: 89 pass, zero failures and 54 explicit hosted-only skips in
+650.00 seconds. Both commit identity and clean working tree are
+unchanged throughout. All per-gate streams and the outcome are round-trip
+verified in `experiments/issue-1580/evidence/checks/clean-provider-contract-gates/`.
+This closes the final local gate obligation; native execution and wider issue
+acceptance remain pending.

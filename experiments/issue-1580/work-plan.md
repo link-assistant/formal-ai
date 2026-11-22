@@ -729,3 +729,10 @@ limited. Supplied operations earn no independent credit; reasoning remains 0/20.
 
 The original goal remains unfinished. Supplied operations still receive zero
 independent authorship or reasoning credit.
+
+
+- [x] Final clean provider source `34d0470951f178acc925614c5dea12f736b7a245`: all 143 gates complete,
+  89 pass, zero fail and 54 explicit hosted-only skips. Same clean commit before
+  and after; complete streams and hashes retained in the final gate archive.
+- [ ] Qualify this exact implementation in hosted CI and exercise both real
+  artifact rerun paths; preserve every original broader acceptance criterion.
