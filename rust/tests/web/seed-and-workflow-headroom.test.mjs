@@ -14,7 +14,7 @@ const pairs=[
 ];
 test('grown seed owners, their package copies and the staged workflow stay below warning limits',()=>{
  const paths=['.github/workflows/release-staged.yml',...pairs.flatMap(([first,children])=>[first,...children].flatMap(name=>['data/seed/'+name+'.lino','rust/embedded/data/seed/'+name+'.lino']))];
- assert.deepEqual(checkListedFiles(root,new Set(paths)),{warnings:[],violations:[],embeddedDataViolations:[]});
+ assert.deepEqual(checkListedFiles(root,new Set(paths)),{warnings:[],violations:[],embeddedDataViolations:[],errors:[]});
 });
 test('partitioning preserves every original seed record and every bundle, lexicon and web consumer',async()=>{
  const {installHost}=await import('../../../js/agentic/host.mjs');

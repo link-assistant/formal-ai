@@ -15,7 +15,7 @@ const pairs=[
 ];
 test('canonical seed records and package mirrors retain headroom without losing consumers',()=>{
   const paths=pairs.flatMap(([first,second])=>[first,second].flatMap(name=>['data/seed/'+name+'.lino','rust/embedded/data/seed/'+name+'.lino']));
-  assert.deepEqual(checkListedFiles(root,new Set(paths)),{warnings:[],violations:[],embeddedDataViolations:[]});
+  assert.deepEqual(checkListedFiles(root,new Set(paths)),{warnings:[],violations:[],embeddedDataViolations:[],errors:[]});
   const registry=parseRegistry(readFileSync(root+'/data/meta/seed-registry.lino','utf8'));
   const web=readFileSync(root+'/js/seed-files.js','utf8');
   for(const [first,second,kind] of pairs)for(const name of [first,second]){

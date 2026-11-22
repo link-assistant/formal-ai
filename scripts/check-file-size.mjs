@@ -105,7 +105,7 @@ function isEmbeddedLinoDataLine(line) {
  * `warn(line)` receives the stderr lines the Rust original prints.
  */
 export function checkListedFiles(cwd, listed = null, warn = (line) => process.stderr.write(`${line}\n`)) {
-  const result = { warnings: [], violations: [], embeddedDataViolations: [] };
+  const result = { warnings: [], violations: [], embeddedDataViolations: [], errors: [] };
   // Directories listed paths live under, so a walk need not open the rest.
   const listedDirectories = listed ? directoriesOf(listed) : null;
   // Pruning only skips directories none of whose files the Rust walk would
@@ -116,9 +116,15 @@ export function checkListedFiles(cwd, listed = null, warn = (line) => process.st
       || (listedDirectories !== null && !listedDirectories.has(relative));
   };
   for (const entry of walkDir(cwd, skip)) {
-    if (entry.error || entry.type !== 'file') continue;
+    if (entry.error) {
+      const message = `Error: ${entry.error}`;
+      result.errors.push(message);
+      warn(safeLogText(message));
+      continue;
+    }
+    if (entry.type !== 'file') continue;
     const relative = relativePath(entry.path, cwd);
-    if (shouldExclude(entry.path) || (listed && !listed.has(relative))) continue;
+    if (shouldExclude(relative) || (listed && !listed.has(relative))) continue;
     const limit = fileLimit(entry.path);
     const checkWorkerData = isWorkerJsPath(entry.path);
     if (!limit && !checkWorkerData) continue;
@@ -127,7 +133,9 @@ export function checkListedFiles(cwd, listed = null, warn = (line) => process.st
       content = readToString(entry.path);
     } catch (error) {
       if (!(error instanceof RustError)) throw error;
-      warn(safeLogText(`Warning: Could not read ${entry.path}: ${error.message}`));
+      const message = `Error: Could not read ${entry.path}: ${error.message}`;
+      result.errors.push(message);
+      warn(safeLogText(message));
       continue;
     }
     if (limit) {
@@ -232,7 +240,7 @@ function main() {
   const result = checkListedFiles(cwd, committablePaths());
   const growing = growingPathsSince(process.env.FILE_SIZE_WARNING_BASE ?? '');
   printWarnings(growing ? result.warnings.filter((finding) => growing.includes(finding.file)) : result.warnings, out);
-  if (result.violations.length === 0 && result.embeddedDataViolations.length === 0) {
+  if (result.errors.length === 0 && result.violations.length === 0 && result.embeddedDataViolations.length === 0) {
     out('All checked files are within their line limits\n');
     process.exitCode = 0;
     return;

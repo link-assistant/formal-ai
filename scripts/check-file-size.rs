@@ -212,6 +212,7 @@ struct CheckResult {
     warnings: Vec<Finding>,
     violations: Vec<Finding>,
     embedded_data_violations: Vec<EmbeddedDataFinding>,
+    errors: Vec<String>,
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -266,16 +267,33 @@ fn check_listed_files(cwd: &Path, listed: Option<&BTreeSet<String>>) -> CheckRes
         warnings: Vec::new(),
         violations: Vec::new(),
         embedded_data_violations: Vec::new(),
+        errors: Vec::new(),
     };
 
-    for entry in WalkDir::new(cwd)
-        .into_iter()
-        .filter_map(std::result::Result::ok)
-        .filter(|e| e.file_type().is_file())
-    {
+    let listed_directories = listed.map(directories_of);
+    for entry in WalkDir::new(cwd).into_iter().filter_entry(|entry| {
+        entry.depth() == 0
+            || !entry.file_type().is_dir()
+            || (!should_exclude(Path::new(&relative_path(entry.path(), cwd)))
+                && listed_directories.as_ref().is_none_or(|directories| {
+                    directories.contains(&relative_path(entry.path(), cwd))
+                }))
+    }) {
+        let entry = match entry {
+            Ok(entry) => entry,
+            Err(error) => {
+                let message = format!("Error: {error}");
+                eprintln!("{}", safe_log_text(&message));
+                result.errors.push(message);
+                continue;
+            }
+        };
+        if !entry.file_type().is_file() {
+            continue;
+        }
         let path = entry.path();
 
-        if should_exclude(path)
+        if should_exclude(Path::new(&relative_path(path, cwd)))
             || listed.is_some_and(|listed| !listed.contains(&relative_path(path, cwd)))
         {
             continue;
@@ -321,18 +339,31 @@ fn check_listed_files(cwd: &Path, listed: Option<&BTreeSet<String>>) -> CheckRes
                 }
             }
             Err(error) => {
-                eprintln!(
-                    "{}",
-                    safe_log_text(&format!(
-                        "Warning: Could not read {}: {error}",
-                        path.display()
-                    ))
-                );
+                let message = format!("Error: Could not read {}: {error}", path.display());
+                eprintln!("{}", safe_log_text(&message));
+                result.errors.push(message);
             }
         }
     }
 
     result
+}
+
+fn directories_of(paths: &BTreeSet<String>) -> BTreeSet<String> {
+    let mut directories = BTreeSet::new();
+    for path in paths {
+        let mut remainder = path.as_str();
+        while let Some(at) = remainder.rfind('/') {
+            if at == 0 {
+                break;
+            }
+            remainder = &remainder[..at];
+            if !directories.insert(remainder.to_string()) {
+                break;
+            }
+        }
+    }
+    directories
 }
 
 fn escape_annotation_property(value: &str) -> String {
@@ -517,7 +548,10 @@ fn main() {
         print_warnings(&result.warnings);
     }
 
-    if result.violations.is_empty() && result.embedded_data_violations.is_empty() {
+    if result.errors.is_empty()
+        && result.violations.is_empty()
+        && result.embedded_data_violations.is_empty()
+    {
         println!("All checked files are within their line limits\n");
         exit(0);
     } else {

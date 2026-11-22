@@ -61,3 +61,8 @@ mod release_publishing;
 #[allow(dead_code)]
 #[path = "../../../scripts/generate-seed-registry.rs"]
 mod generate_seed_registry;
+
+// Exercise file observation failures in focused pre-merge native contracts.
+#[allow(dead_code, clippy::duplicate_mod)]
+#[path = "../../../scripts/check-file-size.rs"]
+pub mod check_file_size;

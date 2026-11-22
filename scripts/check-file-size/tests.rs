@@ -373,3 +373,70 @@ fn warning_annotation_uses_github_actions_format() {
         "::warning file=src/near_limit.rs::Rust file has 901 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts."
     );
 }
+
+#[test]
+fn unreadable_maintained_text_is_an_error_without_changing_its_bytes() {
+    let root = temp_dir("invalid-utf8");
+    let file = root.join("broken.rs");
+    fs::write(&file, [0xff]).unwrap();
+    let observed = check_directory(&root);
+    assert_eq!(observed.errors.len(), 1);
+    assert!(observed.errors[0].contains("broken.rs: stream did not contain valid UTF-8"));
+    assert_eq!(fs::read(&file).unwrap(), [0xff]);
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn unavailable_walk_roots_remain_errors_in_the_completed_observation() {
+    let root = temp_dir("missing-root");
+    let observed = check_directory(&root.join("missing"));
+    assert_eq!(observed.errors.len(), 1);
+    assert!(observed.errors[0].contains("Error: IO error for operation on"));
+    assert!(observed.errors[0].contains("missing: No such file or directory"));
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn excluded_and_unlisted_invalid_text_does_not_widen_the_size_inventory() {
+    let root = temp_dir("inventory-boundary");
+    fs::create_dir(root.join("target")).unwrap();
+    fs::create_dir(root.join("unlisted")).unwrap();
+    fs::write(root.join("good.rs"), "// valid\n").unwrap();
+    fs::write(root.join("target/broken.rs"), [0xff]).unwrap();
+    fs::write(root.join("unlisted/broken.rs"), [0xff]).unwrap();
+    fs::write(root.join("icon.png"), [0xff]).unwrap();
+    let listed = ["good.rs", "target/broken.rs", "icon.png"]
+        .into_iter()
+        .map(str::to_string)
+        .collect();
+    let observed = check_listed_files(&root, Some(&listed));
+    assert!(observed.errors.is_empty());
+    assert!(observed.violations.is_empty());
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn exclusions_are_relative_to_a_checkout_inside_a_target_directory() {
+    let parent = temp_dir("relative-exclusions");
+    let root = parent.join("target/checkout");
+    fs::create_dir_all(root.join("src")).unwrap();
+    fs::create_dir_all(root.join(".github/scripts")).unwrap();
+    fs::create_dir_all(root.join("target")).unwrap();
+    write_rust_file_with_lines(&root.join("src/retarget.rs"), 1001);
+    write_rust_file_with_lines(&root.join(".github/scripts/tool.rs"), 1001);
+    fs::write(root.join("target/ignored.rs"), [0xff]).unwrap();
+    let observed = check_directory(&root);
+    let files: BTreeSet<_> = observed
+        .violations
+        .iter()
+        .map(|item| item.file.as_str())
+        .collect();
+    assert_eq!(
+        files,
+        ["src/retarget.rs", ".github/scripts/tool.rs"]
+            .into_iter()
+            .collect()
+    );
+    assert!(observed.errors.is_empty());
+    fs::remove_dir_all(parent).unwrap();
+}
