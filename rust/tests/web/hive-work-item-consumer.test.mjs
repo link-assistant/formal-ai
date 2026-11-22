@@ -3,6 +3,9 @@
 import assert from 'node:assert/strict';
 import {after,before,test} from 'node:test';
 import {spawnSync} from 'node:child_process';
+import {mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep,planChatStepResolved} from '../../../js/agentic/planner.mjs';
@@ -112,10 +115,10 @@ test('fetched original public task retains the explicitly named CI workflow targ
 });
 
 
-function nativeFixtureProbe(language,args){
+function nativeFixtureProbe(language,args,environment={}){
   const result=spawnSync(process.execPath,['experiments/issue-1580/native-hive-fixture-probe.mjs',language,...args],{
     encoding:'utf8',timeout:60000,maxBuffer:4*1024*1024,
-    env:{...process.env,NODE_OPTIONS:'--max-old-space-size=256',FORMAL_AI_OFFLINE:'1',FORMAL_AI_LIVE_FETCH:'0'},
+    env:{...process.env,...environment,NODE_OPTIONS:'--max-old-space-size=256',FORMAL_AI_OFFLINE:'1',FORMAL_AI_LIVE_FETCH:'0'},
   });
   assert.equal(result.error,undefined,String(result.error));
   assert.equal(result.status,0,result.stderr);
@@ -136,9 +139,18 @@ test('the original Scala compiler failure is correlated with its verifier after 
   assert.doesNotMatch(final.answer,/Created and verified/u);
 });
 
-test('the Codex fixture projects patch calls and observes real Git delivery with explicitly simulated CI',{timeout:65000},()=>{
-  const run=nativeFixtureProbe('Rust',[
-    '--steps=18','--physical-edits','--project-edits','--physical-delivery','--agent-cli-receipts',
+test('the Codex fixture projects patch calls and observes real Git delivery while inherited cache changes, with explicitly simulated CI',{timeout:65000},()=>{
+  const inheritedCache=mkdtempSync(join(tmpdir(),'hive-inherited-source-cache-'));
+  let run;
+  try{
+    run=nativeFixtureProbe('Rust',[
+      '--steps=18','--physical-edits','--project-edits','--physical-delivery','--agent-cli-receipts',
+      '--trace-source-owners','--churn-inherited-source-cache',
+    ],{FORMAL_AI_SOURCE_CACHE_DIR:inheritedCache});
+  }finally{rmSync(inheritedCache,{recursive:true,force:true});}
+  assert.deepEqual(run.churnedSourceUrls,[
+    'https://api.github.com/repos/actions/checkout/releases/latest',
+    'https://api.github.com/repos/actions/checkout/commits/v99.0.0',
   ]);
   const patches=run.steps.filter(step=>step.call?.tool==='apply_patch');
   assert.equal(patches.length,3);
@@ -147,7 +159,7 @@ test('the Codex fixture projects patch calls and observes real Git delivery with
     assert.equal(JSON.parse(step.content).success,true);
   }
   const final=run.steps.at(-1).plan;
-  assert.equal(final.result.disposition,'finding',JSON.stringify({final,lastSteps:run.steps.slice(-4),outcome:run.outcome}));
+  assert.equal(final.result.disposition,'finding',JSON.stringify({final,lastSteps:run.steps.slice(-4),sourceOwnerTrace:run.sourceOwnerTrace,outcome:run.outcome}));
   assert.doesNotMatch(final.answer,/command completed\. Output/u);
   assert.ok(final.answer.includes(run.outcome.head));
   assert.equal(run.outcome.head,run.outcome.pushedHead);

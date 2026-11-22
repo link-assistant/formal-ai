@@ -10,6 +10,9 @@ import {planChatStepResolved} from '../../js/agentic/planner.mjs';
 import {appendDefinition,projectAppendContracts} from '../../js/agentic/append_contract.mjs';
 import {applyPatchInput} from '../../js/agentic/crate/protocol_responses_apply_patch.mjs';
 import {canonicalCreation} from '../../js/agentic/qualified_tool_observation.mjs';
+import {Progress,qualifiedToolAttempt} from '../../js/agentic/progress.mjs';
+import {Capability} from '../../js/agentic/capability.mjs';
+import {cachedSourceFetch} from '../../js/agentic/crate/source_cache.mjs';
 
 const native=fs.readFileSync('rust/tests/unit/issue_1133_hive_mind_three_runs.rs','utf8');
 const rustString=value=>JSON.parse(value.replace(/\\\r?\n[ \t]*/gu,'').replace(/\r?\n/gu,'\\n'));
@@ -27,6 +30,10 @@ const physicalEdits=process.argv.includes('--physical-edits');
 const projectEdits=process.argv.includes('--project-edits');
 const physicalDelivery=process.argv.includes('--physical-delivery');
 const agentCliReceipts=process.argv.includes('--agent-cli-receipts');
+const traceSourceOwners=process.argv.includes('--trace-source-owners');
+const inheritedSourceCache=process.env.FORMAL_AI_SOURCE_CACHE_DIR;
+const churnInheritedSourceCache=process.argv.includes('--churn-inherited-source-cache');
+if(churnInheritedSourceCache&&!inheritedSourceCache)throw Error('cache churn requires an explicit disposable inherited source cache');
 const requestedSteps=process.argv.find(arg=>arg.startsWith('--steps='))?.slice('--steps='.length);
 const ceiling=requestedSteps===undefined
   ?(process.argv.includes('--expanded-steps')?32:(mode==='Scala'?8:10)):Number(requestedSteps);
@@ -36,11 +43,15 @@ if(!claudeToolNames||claudeToolNames.length!==20)throw Error('original Claude to
 const tools=claudeTools?claudeToolNames:agentTools||mode==='Scala'
   ?['bash','batch','codesearch','edit','glob','grep','list','read','task','todoread','todowrite','webfetch','websearch','write']
   :['shell','apply_patch','update_plan','mcp__codex_apps__github_fetch','mcp__codex_apps__github_search'];
-await installNodeHost(new WorkerHost());
-const root=fs.mkdtempSync(path.join(os.tmpdir(),'hive-source-fixture-'));
+const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'hive-source-fixture-'));
+const root=path.join(temporary,'workspace');fs.mkdirSync(root);
+// Offline still replays cached sources. Keep the fixture's source epoch private
+// from sibling suites, outside Git's worktree, through delivery verification.
+process.env.FORMAL_AI_SOURCE_CACHE_DIR=path.join(temporary,'source-captures');
 const messages=[{role:'user',content:prompt.replaceAll('Scala',mode)}];
 const definitions=tools.filter(name=>['Write','write'].includes(name)).map(appendDefinition);
 const steps=[];
+const churnedSourceUrls=[];
 const toolEnv={PATH:process.env.PATH,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null'};
 function execute(command){
   const result=spawnSync('sh',['-c',command],{
@@ -77,9 +88,28 @@ function setupDelivery(){
   }));
 }
 try {
+  await installNodeHost(new WorkerHost());
   if(physicalDelivery)setupDelivery();
   for(let turn=0;turn<ceiling;turn++){
     const started=Date.now();
+    if(churnInheritedSourceCache&&turn===12){
+      // A separate suite may update the caller cache between a write and delivery.
+      // Only an explicitly supplied disposable directory is touched by this control.
+      const bodies=new Map([
+        ['https://api.github.com/repos/actions/checkout/releases/latest','{"tag_name":"v99.0.0"}'],
+        ['https://api.github.com/repos/actions/checkout/commits/v99.0.0','{"sha":"1111111111111111111111111111111111111111"}'],
+      ]);
+      const fetch=cachedSourceFetch({cacheDir:inheritedSourceCache,online:true,io:{
+        readText:file=>{try{return fs.readFileSync(file,'utf8');}catch{return null;}},
+        readBytes:file=>{try{return new Uint8Array(fs.readFileSync(file));}catch{return null;}},
+        writeBytes:fs.writeFileSync,createDirAll:folder=>fs.mkdirSync(folder,{recursive:true}),
+        get:url=>bodies.has(url)?new TextEncoder().encode(bodies.get(url)):null,
+      }});
+      for(const url of bodies.keys()){
+        if(fetch(url)===null)throw Error('cache churn control did not write capture');
+        churnedSourceUrls.push(url);
+      }
+    }
     const plan=await planChatStepResolved(projectAppendContracts(messages,definitions),tools);
     if(plan?.kind!=='tool_calls'){
       steps.push({turn,elapsedMs:Date.now()-started,plan});break;
@@ -124,6 +154,20 @@ try {
     commits:Number(git('rev-list','--count','HEAD')),
     state:JSON.parse(fs.readFileSync(toolEnv.FAKE_GH_STATE,'utf8')),
   }:null;
-  console.log(JSON.stringify({mode,agentTools,claudeTools,verifierResult,physicalEdits,projectEdits,physicalDelivery,agentCliReceipts,ceiling,
+  // Opt-in diagnostics retain owner binding without changing planner evidence.
+  const sourceOwnerTrace=traceSourceOwners?(()=>{
+    const progress=Progress.scan(messages);
+    return steps.flatMap(step=>{
+      const owner=step.call?.tool==='apply_patch'?canonicalCreation(step.wireArguments):null;
+      if(owner===null)return [];
+      const index=progress.latestSourceMutationIndex(owner.path);
+      const attempt=index===null?null:progress.attempts[index];
+      const frame=attempt===null?null:qualifiedToolAttempt(progress,Capability.Edit,attempt.arguments);
+      return [{path:owner.path,mutationIndex:index,capability:attempt?.capability,
+        succeeded:attempt?.succeeded,binding:frame?.binding,receipt:frame?.detail,
+        canonicalMatch:attempt?.arguments===step.wireArguments}];
+    });
+  })():undefined;
+  console.log(JSON.stringify({sourceOwnerTrace,churnInheritedSourceCache,churnedSourceUrls,mode,agentTools,claudeTools,verifierResult,physicalEdits,projectEdits,physicalDelivery,agentCliReceipts,ceiling,
     steps,messages,outcome,compilerAndNetworkAreMocks:true,fullIssueComplete:false},null,2));
-}finally{fs.rmSync(root,{recursive:true,force:true});}
+}finally{fs.rmSync(temporary,{recursive:true,force:true});}
