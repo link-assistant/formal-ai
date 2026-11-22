@@ -545,6 +545,44 @@ passed their focused checks.
 [Fixture integrity](evidence/verification/round13-corrected-rust-specification-fixture-integrity.log) ·
 [Unicode source projection](evidence/verification/round13-corrected-rust-specification-unicode-identifiers.log)
 
+## Film release timelines and the offline synthesis delay
+
+The baseline browser answered the original Spider-Man request with twelve
+records from the installed timeline and zero publisher requests. It returned
+unknown for a Harry Potter request with the same structure. The installed
+registry now supplies query scope and wording. The Wikidata Query Service
+supplies membership and dates at request time through the shared capture
+client. The former snapshot remains a test input, including its original
+release classification and freshness date. [Cold baseline](evidence/timelines/cold-baseline.log) ·
+[Historical replay](../../../rust/tests/fixtures/release-timeline/spider-man-replay.lino)
+
+The recorded live query returned twelve rows in English and Russian for
+Spider-Man and eight for Harry Potter. `P179` and `P527` cover series and
+subseries membership. The film, distributor, and media filters preserve the
+title-role benchmark scope and exclude shorts, television, and extended
+editions. The answer uses the earliest date asserted by the publisher, which
+can differ from a single market's release date. A unique item label grounds
+an unregistered series. Ambiguous item matches, excessive rows, and rows
+about the wrong subject produce an explicit evidence gap. The main WDQS
+endpoint responded in the test environment after the legacy endpoint timed out
+and the alternate endpoint returned HTTP 403.
+[WDQS API](https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/API) ·
+[Publisher query and response metadata](evidence/timelines/) ·
+[Browser replay](evidence/verification/round14-issue-0918-handler-rules-batch.log)
+
+The next native run verified all four supplied recurrence cases. Its only
+failure was the absent-capture test. The trace shows the publisher attempt
+returning in 202 ms and general synthesis starting 285 ms later, with no
+completion event before the 30-second test deadline. The call path could start
+enumerating typed Python candidates before checking for examples it could use
+to test them. The runtime now starts that enumeration only when the caller,
+recognized requirements, or a verified source provide an executable oracle.
+Further opt-in events identify catalog acquisition, concept discovery,
+initial composition, and sequence-source expansion if the delay recurs.
+[Native run](https://github.com/link-assistant/formal-ai/actions/runs/44981802284) ·
+[Trace with log line numbers](evidence/verification/round13-native-synthesis-phases.log) ·
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/44981801921)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,
