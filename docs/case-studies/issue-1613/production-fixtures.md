@@ -324,3 +324,28 @@ reproduced the mismatch, and all eight census tests passed after regeneration.
 [Job log, line 2722](evidence/verification/round27-hosted-45025294500-job-137219097157.log.gz) ·
 [Baseline](evidence/verification/round27-census-baseline.log.gz) ·
 [Regenerated replay](evidence/verification/round27-census-green.log.gz)
+
+## Native recurrence with an empty source cache
+
+The native job at `9b544e8a5` passed type-checking, the Rust behavior suites,
+the cold runtime smoke, and the prompt-data replays. Its recurrence replay
+then returned an empty string for a cold function request. The synthesis
+trace records an unverified publisher recurrence. The same replay passed
+with explicit publisher captures, including the three factorial locales and
+the independent Fibonacci request. The recurrence probe deliberately yields
+to other synthesis methods when it misses. This allowed the remaining
+fallback to collapse to an empty answer. The solver now records the miss
+and renders a localized source gap only if the ordinary solver and procedure
+selection leave the answer empty. The regression checks that the gap is
+visible and that no function is returned from the empty cache.
+
+The job reached its 20-minute budget during the same replay. Cargo had built
+the CLI twice with different optimization levels before running the serial
+requests. Both Rust suites now share the optimized build. A separate,
+10-minute job retrieves that executable and runs the full existing list of
+CLI replays, including the cold smoke. The compile job keeps its existing
+budget.
+[Hosted job](https://github.com/link-assistant/formal-ai/actions/runs/45025294658/job/137220672532) ·
+[Job log, lines 2877 and 3061](evidence/verification/round27-hosted-45025294658-job-137220672532.log.gz) ·
+[Timeout annotation](evidence/verification/round27-hosted-45025294658-job-137220672532-annotations.json) ·
+[Full workflow log](evidence/verification/round27-hosted-45025294658.log.gz)
