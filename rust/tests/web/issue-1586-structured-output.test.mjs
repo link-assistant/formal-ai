@@ -11,6 +11,10 @@ const object = (properties, required = Object.keys(properties)) => ({
 });
 const city = { type: 'string' };
 const integer = { type: 'integer' };
+const nullableInteger = { type: ['integer', 'null'] };
+const nullableString = { type: ['string', 'null'] };
+const experience = 'Backend developer, at least 3 years of experience with Go.';
+const jobTitle = 'job title: storekeeper';
 const cases = [
   {
     name: 'job', prompt: 'Warehouse supervisor wanted in Springfield. At least 3 years of experience required.',
@@ -20,6 +24,58 @@ const cases = [
   {
     name: 'new_location', prompt: 'Office manager wanted in New York. Minimum of 7 years of experience.',
     chat: true, schema: object({ city, min_years: integer }), expected: { city: 'New York', min_years: 7 },
+  },
+  ...['min_years_of_experience', 'minYearsOfExperience', 'MinYears', 'min-years-of-experience']
+    .map((key, index) => ({
+      name: `experience_${index}`, prompt: experience,
+      schema: object({ [key]: nullableInteger }), expected: { [key]: 3 },
+    })),
+  ...['job_title', 'jobTitle'].map((key, index) => ({
+    name: `job_title_${index}`, prompt: jobTitle,
+    schema: object({ [key]: nullableString }), expected: { [key]: 'storekeeper' }, stream: true,
+  })),
+  {
+    name: 'acronym', prompt: 'HTTP status: 200; APIErrorCount = 1',
+    schema: object({ HTTPStatus: integer, 'api-error-count': integer }),
+    expected: { HTTPStatus: 200, 'api-error-count': 1 },
+  },
+  {
+    name: 'description_label', prompt: 'Name of the role in the posting is storekeeper',
+    schema: object({ role: { ...nullableString, description: 'Name of the role in the posting' } }),
+    expected: { role: 'storekeeper' },
+  },
+  {
+    name: 'description_ref', prompt: 'Position name: storekeeper; Position type: part time',
+    schema: {
+      ...object({
+        role: { $ref: '#/$defs/role', description: 'Position name' },
+        contract: { $ref: '#/$defs/contract' },
+      }),
+      $defs: {
+        role: { ...city, description: 'Position type' },
+        contract: { ...city, description: 'Position type' },
+      },
+    },
+    expected: { role: 'storekeeper', contract: 'part time' },
+  },
+  {
+    name: 'description_priority',
+    prompt: 'Job title: storekeeper; Position name: cashier; Office manager wanted in Boston; Office location: Dover.',
+    schema: object({
+      jobTitle: { ...nullableString, description: 'Position name' },
+      city: { ...nullableString, description: 'Office location' },
+    }),
+    expected: { jobTitle: 'storekeeper', city: 'Boston' },
+  },
+  {
+    name: 'description_location', prompt: 'Office location: Dover.',
+    schema: object({ city: { ...nullableString, description: 'Office location' } }),
+    expected: { city: 'Dover' },
+  },
+  {
+    name: 'description_ambiguity', prompt: 'Job title: storekeeper; Job title: cashier; Position name: porter',
+    schema: object({ jobTitle: { ...nullableString, description: 'Position name' } }),
+    expected: { jobTitle: null },
   },
   {
     name: 'json_mode', prompt: 'Return a JSON object with key "answer" equal to the sum of 2 and 3.',
@@ -151,7 +207,7 @@ test('OpenAI requests constrain final JSON across endpoint and streaming shapes'
   for (const chat of [true, false]) {
     for (const row of cases.filter(row => row.chat === undefined || row.chat === chat)) {
       const format = formatFor(row, chat);
-      for (const stream of row.name === 'job' || row.name === 'missing' ? [false, true] : [false]) {
+      for (const stream of row.stream || row.name === 'job' || row.name === 'missing' ? [false, true] : [false]) {
         const payload = chat ? {
           response_format: format,
           messages: [

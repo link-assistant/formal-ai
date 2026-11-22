@@ -37,6 +37,13 @@ including the `strict` value when supplied.
 The supported schema constraints include JSON types, required keys,
 `additionalProperties`, `enum`, `const`, arrays, local references, schema
 combinations, length and numeric bounds, and simple ASCII patterns.
+
+When extracting values from text, Formal AI recognizes equivalent camelCase,
+PascalCase, snake_case, and kebab-case property names, including acronyms such
+as `HTTPStatus`. If the property name yields no evidence, an explicit source
+label can match the property's `description`. The output uses the original
+property names from the schema.
+
 Formal AI validates both strict and non-strict requests. It can return a
 schema-allowed `null` or `"unknown"` for a missing required value.
 If the schema uses unsupported constraints or the result cannot be
