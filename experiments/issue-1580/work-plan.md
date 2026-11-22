@@ -674,3 +674,39 @@ source lines; seventeen pages and semantic review remain. Fresh published
 dependency evidence at 21:02Z still shows both Chrono migration paths blocked.
 The native goal remains usage-limited; this checklist carries the objective.
 Supplied work and conclusions retain zero independent credit.
+
+
+## Complete registration-head cohort and native repairs, 2026-11-22
+
+- [x] Refresh and read the entire issue and all current conversation comments;
+  inline comments and reviews remain empty. No new requirement is discarded.
+- [x] Collect all 33 terminal `e6943875` workflows and every failed job; retain
+  timestamps, exact heads, complete raw logs and line-referenced failure causes.
+- [x] Repair canonical seed quoting and all five grouped-reference operands,
+  retaining complete decoded graphs and the entire currency-code list.
+- [x] Repair native relation ranking, request-intent recording and actual-source
+  refusal trails; strengthen cold-cache and refusal regressions.
+- [x] Review the one benchmark count change through the complete governed graph;
+  retain all 223 supported and 970 unsupported outcomes and the same reader.
+- [x] Verify 184 focused JavaScript cases, canonical parsing of 4,329 data files
+  and formatting of all ten changed native sources without local Rust execution.
+- [x] Regenerate both demanded seed mirrors and record only measured source
+  growth: nineteen handler lines and eleven generic worker-tokenizer lines.
+- [x] Register both native library regressions in hosted CI and prove the actual
+  YAML block executes all four commands after an earlier failure.
+- [x] Finish the pinned Java historical literal reading, all 254 pages; retain
+  semantic, runtime and publication qualification as unfinished obligations.
+- [ ] Finish the final clean combined-source gate run; archive its exact outcome.
+- [ ] Recheck current main, remote queue and all failure evidence; push one batch.
+- [ ] Verify the new head through hosted native execution; collect every failure
+  before any further repair push, including failures after the shared mutex recovers.
+- [ ] Run actual artifact full-workflow and consumer-only reruns, preserving the
+  immutable successful original producer identity and every attempt receipt.
+- [ ] Complete every original requirement and broad practice/runtime obligation;
+  preserve PR draft/unmerged state until actual acceptance is verified.
+
+See the native-contract repair checkpoint for reproduction, exact native failure
+lines and evidence identities. The diagnostic first full gate run has six known
+failures and overlaps later edits; it is not a clean final-head qualification.
+The objective remains active in this work plan because the native goal is usage
+limited. Supplied operations earn no independent credit; reasoning remains 0/20.
