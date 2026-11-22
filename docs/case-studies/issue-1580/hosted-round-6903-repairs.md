@@ -62,9 +62,9 @@ stale Zizmor contract described above. All three actionable workflow failures
 have local repairs. This is verification of published `6903d9bd`, not of its
 three later implementation commits.
 
-Every annotation has an explicit disposition: eight failure annotations map to
+Every annotation has an explicit disposition: seven failure annotations map to
 the repaired failures and terminal propagation; one warning preserves genuinely
-unknown crates.io publication authority; twenty notices retain the explicit
+unknown crates.io publication authority; twenty-one notices retain the explicit
 unexecuted heavy paths, successful zero-error cache statistics, macOS capacity
 notice and successful deliberate BuildKit outage control. Printed shell bodies,
 expected Git failure controls and browser-import negative-control stacks are

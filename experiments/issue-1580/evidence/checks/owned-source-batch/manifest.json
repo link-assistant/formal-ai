@@ -127,35 +127,35 @@
       "compressedSha256": "3b56cb04da5f1d57510fa79f1cb1236407a7567ee568e288cfbd9a6fcf2544b4"
     },
     {
-      "file": "019-original-eight-step-boundary-rust--src--agentic_coding--command_reroute--recipe_execution.rs.gz",
+      "file": "019-original-eight-step-boundary-rust--source--agentic_coding--command_reroute--recipe_execution.rs.gz",
       "source": "/tmp/issue-1580-research/original-eight-step-boundary/rust--src--agentic_coding--command_reroute--recipe_execution.rs",
       "bytes": 11969,
       "sha256": "ed1f2abdaa72ea6a74d8aa0a4839e6bbb7ab0225d92370c2eaa2107be89174d4",
       "compressedSha256": "9b16ff42de70829c74cec9bc965b15e0adb163799d2f2fd09a8a00c8d809da7b"
     },
     {
-      "file": "020-original-eight-step-boundary-rust--src--agentic_coding--command_reroute.rs.gz",
+      "file": "020-original-eight-step-boundary-rust--source--agentic_coding--command_reroute.rs.gz",
       "source": "/tmp/issue-1580-research/original-eight-step-boundary/rust--src--agentic_coding--command_reroute.rs",
       "bytes": 26864,
       "sha256": "c358c7d82eaf2e24eca66894b6086a5f06fd54cb186944a1120dac8613c9af09",
       "compressedSha256": "73bd5f81827a2807b9bd4c749b2708a95a809a38710388c6f754230f622b3293"
     },
     {
-      "file": "021-original-eight-step-boundary-rust--src--agentic_coding--progress.rs.gz",
+      "file": "021-original-eight-step-boundary-rust--source--agentic_coding--progress.rs.gz",
       "source": "/tmp/issue-1580-research/original-eight-step-boundary/rust--src--agentic_coding--progress.rs",
       "bytes": 37691,
       "sha256": "f16569774a88585d80529ab9c7e7a9370ecde2a57e7d2de56e79b2e3e01ee288",
       "compressedSha256": "0287da1f8b351a6a7c2b1fda0aca319edb2c9898a5cfe934b23cb7b6f418bdc3"
     },
     {
-      "file": "022-original-eight-step-boundary-rust--src--agentic_coding--qualified_tool_observation.rs.gz",
+      "file": "022-original-eight-step-boundary-rust--source--agentic_coding--qualified_tool_observation.rs.gz",
       "source": "/tmp/issue-1580-research/original-eight-step-boundary/rust--src--agentic_coding--qualified_tool_observation.rs",
       "bytes": 10340,
       "sha256": "6455753d8a80e5aa52bfcceda389e11fb71ea36f4225253cc48ce2841ea339e3",
       "compressedSha256": "45925c5906c45516b9094ab587ae5048777d64c97170633b2f4eb5e62fc46777"
     },
     {
-      "file": "023-original-eight-step-boundary-rust--src--agentic_coding--work_item_steps.rs.gz",
+      "file": "023-original-eight-step-boundary-rust--source--agentic_coding--work_item_steps.rs.gz",
       "source": "/tmp/issue-1580-research/original-eight-step-boundary/rust--src--agentic_coding--work_item_steps.rs",
       "bytes": 1607,
       "sha256": "f6bac1c3d667f244dbe78bab71a0c544cbce9b7646763cce1d501b85d864020e",
