@@ -158,8 +158,8 @@ and the implementation made only the first call.
 | --- | --- |
 | Explain and remove the reported hardcoding | Reproduced the exact bypass, removed both aliases, and added original-task and held-out replays. |
 | Generalize how-to across runtimes | Both runtimes use localized discovery, matching, and bounded article reads. The browser replay covers direct, archive, capture component, missing evidence, unrelated results, negative titles, and opt-out cases. The indexed publisher replay covers a task outside the catalogues, verifies the original capture, and rejects a page unrelated to the task. |
-| Keep canned input and expected output in tests | The replay topics, expected articles, classifier observations, and reviewed decisions are explicit inputs in the tests. The [repository audit](repository-audit.md) traces the other production shortcuts and their replacements. |
-| Use recoverable snapshots only to speed tests. Exclude pre-cache from lightweight distributions | The crate mirror excludes the 139 issue bodies and the former compiled captures. The [baseline test](evidence/verification/baseline-native-issue-corpus.log) records the previous cold-cache hit. A native replay exercises an empty cache and then injects a public capture. The slim smoke script adds cold held-outs, and the [default-branch policy](../../ci-cd/default-branch-builds.md) governs the release image build. |
+| Keep canned input and expected output in tests | The replay topics, expected articles, classifier observations, and reviewed decisions are explicit inputs in the tests. The [repository audit](repository-audit.md) and [caller-input replay](production-fixtures.md) trace the other production shortcuts and their replacements. |
+| Use recoverable snapshots only to speed tests. Exclude pre-cache from lightweight distributions | The crate mirror excludes the 139 issue bodies and the former compiled captures. The [baseline test](evidence/verification/baseline-native-issue-corpus.log) records the previous cold-cache hit. A native replay exercises an empty cache and then injects a public capture. The [browser package replay](#cold-runtime-and-release-packaging) starts from empty memory. The slim smoke script covers cold held-outs, and the [default-branch policy](../../ci-cd/default-branch-builds.md) governs the release image build. |
 | Align the vision and conflicting guidance | [VISION](../../../VISION.md) and the [natural language design](../../design/no-hardcoded-natural-language.md) distinguish vocabulary, rendering templates, live discovery, and fixed test inputs. |
 | Collect logs, reconstruct sequence, evaluate existing approaches, and diagnose the root causes | Original artifacts, complete available workflow logs, issue timeline, and focused tests are indexed below. The alias and the independent image pull failure are both reproducible from the captured evidence. |
 | Add diagnostic output when root cause cannot be established | The existing pull error, capture manifests, and original-task requests identify the causes. The source-walk trace records failed requests and whether recovered steps came from a live or archived capture. |
@@ -996,3 +996,11 @@ execution contract after stdout reporting moved to executed examples. They
 were removed with their initializers. The simultaneous Layered CI run cancelled
 its change detector. [Native log, lines 9391–9424](evidence/workflows/pipeline-round23-45005566324.log.gz) ·
 [Layered log](evidence/workflows/layered-round23-45005566247.log.gz)
+
+## Caller inputs and replay data
+
+The [production fixture audit](production-fixtures.md) covers the remaining
+examples found during the distribution and behavior review. It links the
+composite program, creative composition, topic summary, and promotion-policy
+tests. It also records the next hosted failures and the separate attempt to
+author a package-verification leaf through Formal AI.

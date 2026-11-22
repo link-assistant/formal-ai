@@ -14,3 +14,5 @@ bump: patch
 - Bind caller-supplied ranges, numbers, and text in the program catalog, and derive expected output from those inputs.
 - Build self-repair reports from submitted traces and owned source. Read approvals and learned lessons from operator-provided records.
 - Honor the browser's network opt-out during every procedural source lookup and recovery.
+- Derive budget, itinerary, portfolio, and source-metric programs from their inputs. Compose advice, travel plans, and rhymed verse from supplied cited observations.
+- Resolve summary subjects through the shared knowledge registries. Keep demonstration dialogues and benchmark cases in explicit replays.
