@@ -12,14 +12,15 @@ const object = (properties, required = Object.keys(properties)) => ({
 });
 const city = { type: 'string' };
 const integer = { type: 'integer' };
-// Zod 4.6.7: z.toJSONSchema(z.object({ email: z.string().email() }), { target: 'draft-7' }).
-const zodEmailSchema = {
+// z.toJSONSchema(z.object({ email: z.string().email() }), { target: 'draft-7' }).
+const zodEmail = pattern => ({
   $schema: 'http://json-schema.org/draft-07/schema#',
-  ...object({ email: {
-    type: 'string', format: 'email',
-    pattern: String.raw`^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$`,
-  } }),
-};
+  ...object({ email: { type: 'string', format: 'email', pattern } }),
+});
+const zodCurrentPattern = String.raw`^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$`; // 4.6.7
+const zodLegacyPattern = String.raw`^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$`; // 4.0.0, 4.1.13
+const zodEmailSchema = zodEmail(zodCurrentPattern);
+const zodLegacyEmailSchema = zodEmail(zodLegacyPattern);
 const cases = [
   {
     name: 'job', prompt: 'Warehouse supervisor wanted in Springfield. At least 3 years of experience required.',
@@ -103,6 +104,14 @@ const cases = [
   {
     name: 'zod_email_invalid_pattern', prompt: 'email: jane@example.c',
     schema: zodEmailSchema, refusalDetail: 'Could not derive a valid JSON object',
+  },
+  {
+    name: 'zod_legacy_email', prompt: 'email: a.b+c@domain.example.com',
+    schema: zodLegacyEmailSchema, expected: { email: 'a.b+c@domain.example.com' },
+  },
+  {
+    name: 'zod_legacy_email_invalid_pattern', prompt: 'email: jane..doe@example.com',
+    schema: zodLegacyEmailSchema, refusalDetail: 'Could not derive a valid JSON object',
   },
   {
     name: 'nested_annotations', prompt: 'email: unverified',
@@ -200,11 +209,12 @@ function events(text) {
 }
 
 test('anchored structured patterns bound repetition without changing matches', () => {
-  for (const source of ['^(?:a?)*b$', '^[ab]{2,}(?:ab+)?x?$', zodEmailSchema.properties.email.pattern]) {
+  for (const source of ['^(?:a?)*b$', '^[ab]{2,}(?:ab+)?x?$', zodCurrentPattern, zodLegacyPattern]) {
     const original = new RegExp(source, 'u');
     const bounded = anchoredPattern(source);
     assert.ok(bounded, source);
-    for (const input of ['', 'b', 'aa', 'aab', 'ababbbx', 'a.b+c@domain.example.com', 'jane@example.c']) {
+    for (const input of ['', 'b', 'aa', 'aab', 'ababbbx', 'a.b+c@domain.example.com',
+      'jane@example.c', '.jane@example.com', 'jane..doe@example.com']) {
       assert.equal(bounded.test(input), original.test(input), `${source} on ${input}`);
     }
   }

@@ -1,11 +1,12 @@
-// Anchored ASCII patterns with one level of noncapturing groups. Compile
+// Anchored ASCII patterns with one level of groups. Compile
 // repetitions into an NFA so matching never backtracks over the input.
 const ATOM = String.raw`(?:\[(?:\\[-.]|[A-Za-z0-9 _'+@-])+\]|\\\.|[A-Za-z0-9 _'@-])`;
 const QUANTIFIER = String.raw`(?:[?*+]|\{[1-8],\})`;
 const TERMS = new RegExp(`(${ATOM})(${QUANTIFIER})?`, 'gu');
 const SEQUENCE = new RegExp(
-  String.raw`\(\?:((?:${ATOM}${QUANTIFIER}?)+)\)([?*+])|${TERMS.source}`, 'gu',
+  String.raw`\((?:\?:)?((?:${ATOM}${QUANTIFIER}?)+)\)([?*+])?|${TERMS.source}`, 'gu',
 );
+const NEGATIVE_PREFIX = /^\(\?!((?:\.\*)?(?:\\\.|[A-Za-z0-9_@-])+)\)/u;
 
 function state() {
   return { empty: [], character: null };
@@ -44,7 +45,14 @@ function close(states) {
 
 export function anchoredPattern(pattern) {
   if (!pattern.startsWith('^') || !pattern.endsWith('$')) return null;
-  const source = pattern.slice(1, -1);
+  let source = pattern.slice(1, -1);
+  const forbidden = [];
+  // A prefix assertion may forbid a literal sequence at the start or anywhere.
+  for (let guard; (guard = NEGATIVE_PREFIX.exec(source));) {
+    forbidden.push(new RegExp(`^${guard[1]}`, 'u'));
+    source = source.slice(guard[0].length);
+  }
+  if (!source) return null;
   const start = state();
   let end = start;
   let position = 0;
@@ -78,7 +86,7 @@ export function anchoredPattern(pattern) {
         if (next.size === 0) return false;
         active = close(next);
       }
-      return active.has(end);
+      return active.has(end) && forbidden.every(guard => !guard.test(text));
     },
   };
 }

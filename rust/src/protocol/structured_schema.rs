@@ -30,7 +30,18 @@ pub(super) fn reference<'a>(root: &'a Value, pointer: &str) -> Option<&'a Value>
     root.pointer(&reference_pointer(pointer)?)
 }
 
-fn pattern(text: &str) -> Option<regex::Regex> {
+struct Pattern {
+    regex: regex::Regex,
+    forbidden: Vec<regex::Regex>,
+}
+
+impl Pattern {
+    fn is_match(&self, text: &str) -> bool {
+        self.regex.is_match(text) && self.forbidden.iter().all(|guard| !guard.is_match(text))
+    }
+}
+
+fn pattern(text: &str) -> Option<Pattern> {
     if text.len() > 128
         || !text.bytes().all(|byte| matches!(byte, b' '..=b'~'))
         || ["[^", "&&", "--", "~~"]
@@ -45,10 +56,25 @@ fn pattern(text: &str) -> Option<regex::Regex> {
             .filter(|byte| matches!(byte, b'+' | b'*' | b'?'))
             .count()
             > 1;
-    if needs_anchored_subset && !ANCHORED_PATTERN.is_match(text) {
+    if !needs_anchored_subset {
+        return Some(Pattern {
+            regex: regex::Regex::new(text).ok()?,
+            forbidden: Vec::new(),
+        });
+    }
+    let mut tail = text.strip_prefix('^')?;
+    let mut forbidden = Vec::new();
+    while let Some(guard) = NEGATIVE_PREFIX.captures(tail) {
+        forbidden.push(regex::Regex::new(&format!("^{}", &guard[1])).ok()?);
+        tail = &tail[guard.get(0)?.end()..];
+    }
+    if !ANCHORED_PATTERN.is_match(tail) {
         return None;
     }
-    regex::Regex::new(text).ok()
+    Some(Pattern {
+        regex: regex::Regex::new(&format!("^{tail}")).ok()?,
+        forbidden,
+    })
 }
 
 // Same anchored grammar as server/structured-pattern.mjs. The regex crate
@@ -57,8 +83,12 @@ static ANCHORED_PATTERN: LazyLock<regex::Regex> = LazyLock::new(|| {
     let atom = r"(?:\[(?:\\[-.]|[A-Za-z0-9 _'+@-])+\]|\\\.|[A-Za-z0-9 _'@-])";
     let quantifier = r"(?:[?*+]|\{[1-8],\})";
     let term = format!("{atom}{quantifier}?");
-    regex::Regex::new(&format!(r"\A\^(?:{term}|\(\?:(?:{term})+\)[?*+])+\$\z"))
+    regex::Regex::new(&format!(r"\A(?:{term}|\((?:\?:)?(?:{term})+\)[?*+]?)+\$\z"))
         .expect("anchored structured pattern grammar")
+});
+static NEGATIVE_PREFIX: LazyLock<regex::Regex> = LazyLock::new(|| {
+    regex::Regex::new(r"\A\(\?!((?:\.\*)?(?:\\\.|[A-Za-z0-9_@-])+)\)")
+        .expect("anchored structured pattern prefix grammar")
 });
 
 fn supported_dialect(value: &Value) -> bool {
