@@ -1,0 +1,16 @@
+✔ the committed module map lists exactly the modules lib.rs declares (173.602579ms)
+✔ replay of main run 43730270231: a declared module without a row fails --check (374.415455ms)
+✔ a row naming no declared module is reported stale (297.620716ms)
+✔ every committed row carries a responsibility and a real owning section, one per module (27.165423ms)
+✔ the twin renders the committed section byte for byte (72.432881ms)
+✔ tables are read from the Rust generator, not duplicated (2.001924ms)
+✔ tidy truncates without dangling words (ported from the Rust unit test) (0.280363ms)
+✔ mappedNames reads the first column back (ported from the Rust unit test) (2.833997ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1118.219937

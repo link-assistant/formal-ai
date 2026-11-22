@@ -365,6 +365,48 @@ claim. The source captures stay in the test transport and the case archive.
 [Before](evidence/verification/round10-fact-offline-baseline.log) ·
 [Publisher replay](evidence/verification/round10-final-live-fact-parity.log)
 
+The Rust creator row also answered without a source and forced the same
+person and affiliation into every language. The publisher's programming
+language item links its inventor and the inventor item supplies the
+language-independent label. Both names must come from their matched items.
+A follow-up first resolves its pronoun from conversation history, then
+requests the property for the resolved subject. Browser replays exercise
+four languages, the follow-up, and an empty offline cache. The browser
+explicitly requests the publisher's multilingual default label alongside
+the preferred and fallback languages. The live API returns the expected
+name under `mul` alone.
+[Language-filtered replay](evidence/verification/round10-publisher-label-parity.log) ·
+[Default label documentation](https://www.wikidata.org/wiki/Help:Default_values_for_labels_and_aliases/en) ·
+[Publisher captures](evidence/facts/) ·
+[Live fact replay](evidence/verification/round10-creator-issue-1172-live-fact-parity.log) ·
+[Cold cache replay](evidence/verification/round10-creator-issue-1172-seeded-fact-retirement.log)
+
+At head `f6b753d77`, the hosted JavaScript shards found three stale
+witnesses exposed by the preceding changes. The profile expected the old
+hash of the unchanged rung order, the module map omitted the new native
+Trends module, and the return census treated publisher discovery as a new
+exit. The local reproductions now check all three. Native server builds
+and earlier cases passed. A multiple-choice prompt with a conjunction
+inside an option exceeded the ten-second request budget and the server's
+90-second lifetime expired during the following cases. The local handler
+had already supplied a classification from the caller's spans. The meta
+procedure now treats such answers and their input as one task, so it
+cannot separately solve an option or a fragment of the supplied text.
+[Layered CI](evidence/workflows/layered-round9-44971850354.log.gz) ·
+[Native job](evidence/workflows/native-round9-137053287872.log.gz) ·
+[Profile](evidence/verification/round10-hosted-replay-fast-pull-request-production-profile.log) ·
+[Module map](evidence/verification/round10-hosted-replay-module-map-twin.log) ·
+[Return census](evidence/verification/round10-hosted-replay-issue-1550-procedure-census.log) ·
+[Prompt-data replay](evidence/verification/round10-final-issue-1593-prompt-data.log) ·
+[Native event parity replay](evidence/verification/round10-final-worker-native-handler-parity.log)
+
+The subsequent full local run passed or skipped 136 of 138 gates. The two
+remaining gates passed after updating the generated trace locations and
+the status document's core-boundary ledger count.
+[Full gate run](evidence/verification/round10-full-gates-final.log) ·
+[Trace locations](evidence/verification/round10-debug-stage-source-recheck.log) ·
+[Status rendering](evidence/verification/round10-status-render-recheck.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,
