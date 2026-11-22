@@ -341,11 +341,62 @@ visible and that no function is returned from the empty cache.
 
 The job reached its 20-minute budget during the same replay. Cargo had built
 the CLI twice with different optimization levels before running the serial
-requests. Both Rust suites now share the optimized build. A separate,
-10-minute job retrieves that executable and runs the full existing list of
-CLI replays, including the cold smoke. The compile job keeps its existing
-budget.
+requests. Both Rust suites now share the optimized build. The experiment at
+`8ca66ab3e` ran lint and both Cargo steps in under eight minutes. The second
+Cargo step took six seconds. It passed the optimized executable to a separate
+runner, but the existing policy confines the focused PR checks to one job with
+no uploads. The workflow keeps the complete replay list on the compiler's
+runner with the original time limit and the shared profile.
 [Hosted job](https://github.com/link-assistant/formal-ai/actions/runs/45025294658/job/137220672532) ·
 [Job log, lines 2877 and 3061](evidence/verification/round27-hosted-45025294658-job-137220672532.log.gz) ·
 [Timeout annotation](evidence/verification/round27-hosted-45025294658-job-137220672532-annotations.json) ·
-[Full workflow log](evidence/verification/round27-hosted-45025294658.log.gz)
+[Full workflow log](evidence/verification/round27-hosted-45025294658.log.gz) ·
+[Shared-profile timing](evidence/verification/round28-native-timing.json) ·
+[Build policy baseline](evidence/verification/round28-build-policy-red.log.gz) ·
+[Build policy verification](evidence/verification/round28-build-policy-green.log.gz)
+
+The fast source check at `8ca66ab3e` rejected the first fallback because the
+synthesis handler grew from 198 to 212 lines. The existing skill-gap module
+now owns the localized response. The synthesis handler records the miss and
+reuses its existing response path for normal synthesis failures. Factoring
+the research-trail formatting reduced the audited handler to 196 lines.
+The local boundary check passed with both aggregate ceilings reduced by two.
+[Hosted source check](https://github.com/link-assistant/formal-ai/actions/runs/45029139736/job/137228618261) ·
+[Job log, lines 761–765](evidence/verification/round28-hosted-45029139736-job-137228618261.log.gz) ·
+[Boundary baseline](evidence/verification/round28-minimal-core-baseline.log.gz) ·
+[Boundary verification](evidence/verification/round28-minimal-core-green.log.gz)
+
+Layered CI also detected that `solver.rs` changed after the governed test
+fixture was generated. Regenerating the complete witness with the reviewed
+reader changed 19 references to the solver source digest. The regenerated
+inventory has zero remaining differences against a fresh reading, and the
+two fixture-integrity tests and 34 complete-witness tests passed locally.
+[Layered workflow log, lines 4263 and 6449](evidence/verification/round28-hosted-45029139075.log.gz) ·
+[Witness comparison and checks](evidence/verification/round28-witness.log.gz)
+
+## Native program input clarification
+
+The same native replay passed the cold recurrence and the sourced recurrence
+cases before reaching the program operand regression. A taskless Bash request
+returned only the follow-on instructions. A probe against the exact CI
+executable also reproduced empty replies for a missing factorial operand and
+an unspecified FizzBuzz range, and a truncated reply for text reversal. The
+solver had identified the missing caller inputs, but the question-necessity
+filter classified the localized questions as factual because they lacked a
+classification cue. The solver now marks these replies as requests for a
+required input. They use the existing search trace and question budget.
+The expanded HTTP regression checks that the operand and range questions
+survive and leave execution pending.
+[Replay job](https://github.com/link-assistant/formal-ai/actions/runs/45029139736/job/137230861025) ·
+[Job log, lines 1309–1326](evidence/verification/round28-native-replay-137230861025.log.gz) ·
+[Local reproduction](evidence/verification/round28-native-operand-red.log.gz) ·
+[Probe and all replies](evidence/verification/round28-native-operand-probe.log.gz) ·
+[Pipeline log](evidence/verification/round28-hosted-45029139736.log.gz)
+
+The failure skipped the later hosted reporting and gateway steps. Running
+those against the downloaded `8ca66ab3e` executable passed the Codex menu and
+context replay, the gateway authorization and receipt test, and all 28 tests
+in the released client report suite.
+[Codex replay](evidence/verification/round28-native-codex.log.gz) ·
+[Gateway replay](evidence/verification/round28-native-gateway.log.gz) ·
+[Client replay](evidence/verification/round28-native-client-reports.log.gz)
