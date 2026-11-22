@@ -82,3 +82,5 @@ import '../../../experiments/issue-1580/provenance-scenario-partition.test.mjs';
 import '../../../experiments/issue-1580/zizmor-transport.test.mjs';
 
 import '../../../experiments/issue-1580/template-shared-runner-pagination.test.mjs';
+
+import '../../../experiments/issue-1580/environment-command-routing.test.mjs';
