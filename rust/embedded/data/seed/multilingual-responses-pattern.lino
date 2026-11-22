@@ -427,6 +427,22 @@ multilingual_responses
     intent learning-frontier-report-required
     language en
     text "Frontier '{frontier}' requires a learning report via --from <PATH>."
+  response response-learning-frontier-report-required-ru
+    intent learning-frontier-report-required
+    language ru
+    text "Для направления '{frontier}' укажите отчёт об обучении через --from <PATH>."
+  response response-learning-frontier-report-required-hi
+    intent learning-frontier-report-required
+    language hi
+    text "सीखने के क्षेत्र '{frontier}' के लिए --from <PATH> से रिपोर्ट दें।"
+  response response-learning-frontier-report-required-zh
+    intent learning-frontier-report-required
+    language zh
+    text "请通过 --from <PATH> 为学习方向 '{frontier}' 提供学习报告。"
+  response response-learning-frontier-report-required-es
+    intent learning-frontier-report-required
+    language es
+    text "Indica el informe de aprendizaje de '{frontier}' con --from <PATH>."
   response response_algorithm_observation_missing_ru
     intent algorithm_observation_missing
     language ru

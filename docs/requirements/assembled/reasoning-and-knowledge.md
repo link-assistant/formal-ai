@@ -212,9 +212,8 @@ inference.
 
 Issue [#498](https://github.com/link-assistant/formal-ai/issues/498) asks
 Formal AI to learn from popular Google searches visible in Google Trends. The
-delivered slice converts the U.S. top 10 Trends RSS snapshot into multilingual
-Formal AI prompts, answers every prompt, and records the catalog through the
-Agent CLI.
+catalog converts a verified regional Trends RSS feed into multilingual Formal AI
+prompts, answers every prompt, and records the catalog through the Agent CLI.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
@@ -223,11 +222,11 @@ Agent CLI.
 | R498-3 | The first catalog must cover the top 10 Google Trends topics. | Implemented by `GOOGLE_TRENDS_TOP_LIMIT = 10`; `docs/case-studies/issue-498/replay/google-trends-catalog.lino` records `topic_count "10"`. |
 | R498-4 | Every supported language must receive Google Trends prompt variations. | Implemented by `google_trends_catalog()` expanding each topic across `supported_languages()` with `tell_me_about` and `trends_context` variants for English, Russian, Hindi, and Chinese. |
 | R498-5 | Every generated prompt must be answered through the existing Formal AI engine. | Implemented by `google_trends_catalog`, which calls `FormalAiEngine::answer` for each prompt and records the answer metadata in the `google_trends_catalog` artifact. |
-| R498-6 | The live Google Trends dependency must not make CI flaky. | Tests inject the checked-in RSS response into the production source client through an explicit test transport. The runtime can fetch each selected region or reuse its verified local capture. |
-| R498-7 | The generated Google Trends catalog must be reviewable Links Notation. | The agentic recipe emits Links Notation into the workspace. The historical output is archived at `docs/case-studies/issue-498/replay/google-trends-catalog.lino`. Tests check the published-source identity and parse the runtime output. |
-| R498-8 | The work must be driven and reproducible through Formal AI's Agent CLI. | The catalog task drives the write, readback, and final response. The historical session records the original tool sequence, and the current regression test supplies the captured RSS and checks the written digest. |
-| R498-9 | The trending prompts the engine cannot yet resolve must feed the human-gated auto-learning loop instead of being dropped. | The report forwards unknown-intent traces to the issue-#558 proposal-only learner and records the observed split for each captured feed. |
-| R498-10 | The learning-frontier report must be driven and pinned through a differently worded Agent CLI session. | The differently worded task drives the learning recipe. The historical session and explicit replay tests cover route recognition, report delivery and the source digest. |
+| R498-6 | The live Google Trends dependency must not make CI flaky. | Implemented by tests that inject the checked-in RSS response into the production source client through an explicit test transport. The runtime can fetch each selected region or reuse its verified local capture. |
+| R498-7 | The generated Google Trends catalog must be reviewable Links Notation. | Implemented by the agentic recipe, which emits Links Notation into the workspace. The historical output is archived at `docs/case-studies/issue-498/replay/google-trends-catalog.lino`. Tests check the published-source identity and parse the runtime output. |
+| R498-8 | The work must be driven and reproducible through Formal AI's Agent CLI. | Implemented by the catalog task, which drives the write, readback, and final response. The historical session records the original tool sequence, and the current regression test supplies the captured RSS and checks the written digest. |
+| R498-9 | The trending prompts the engine cannot yet resolve must feed the human-gated auto-learning loop instead of being dropped. | Implemented by the report, which forwards unknown-intent traces to the issue-#558 proposal-only learner and records the observed split for each captured feed. |
+| R498-10 | The learning-frontier report must be driven and pinned through a differently worded Agent CLI session. | Implemented by the differently worded task, which drives the learning recipe. The historical session and explicit replay tests cover route recognition, report delivery and the source digest. |
 
 ## Issue #499 Learn From This Data Source Requirements
 

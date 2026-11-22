@@ -350,6 +350,12 @@ proposals. Historical reports and feeds remain available to explicit replays.
 [Dreaming replay](evidence/verification/google-trends-dreaming-runtime.log) ·
 [Learning cycle replay](evidence/verification/google-trends-learning-cycle.log)
 
+The full JavaScript gate run passed or skipped 134 of 138 checks. The four
+failures identified missing seed metadata, translations and assembled
+requirements. All four passed when rerun after the corrections.
+[Full gate run](evidence/verification/round9-full-gates.log) ·
+[Focused rechecks](evidence/verification/round9-gate-rechecks.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,

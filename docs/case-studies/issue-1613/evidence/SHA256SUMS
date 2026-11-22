@@ -154,6 +154,8 @@ b8742961fb9b414c742298d3e02e291b61aef115098db49de4aa5b85df054f09  ./verification
 ed8222ffdd467c6d5ce0e5d0ee89969fc929e9a9f887933682c5be5fc8bd2336  ./verification/round6-worker-mirror.log
 1293d7a0c53405912275605b4cad6c005a77d890728caee6eb44530178b44446  ./verification/round6-worker-seed-transport.log
 3eb827e107cc058cac7f0da8864ebe88847956760812c99282eba8a2689c1e31  ./verification/round7-issue-1396-local.log
+4d1f7232e6705331ff0fe24527b3b3ed8aaaf181a4db980d1a903411e5b0a1a8  ./verification/round9-full-gates.log
+9e8a0dbe87ad193c67ea4ce80915ad5829e403a283f574b3c174aabf21c5b493  ./verification/round9-gate-rechecks.log
 432f6792ff29b2dfdf8760e9bdebde0208b5bcbbc1b0b5ed83b9ebb2848e776b  ./verification/runtime-feature-inventory-round2.log
 ba4ac755fbbfc14ee4bb9cb711d71a2dc0d90dae5967d28af22ef18ef78a7275  ./verification/rust-specification-fixture-integrity-round3.log
 581a0dd09faa10075a965062009d0ce472326d894273a046322ccda7ddaa5d24  ./verification/rust-specification-unicode-identifiers-round3.log
