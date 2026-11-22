@@ -42,3 +42,11 @@ Whole-PR GitHub diff still exceeds the endpoint's 300-file limit; complete
 aggregate local review and the remaining issue criteria stay unfinished.
 
 Pull request: https://github.com/link-assistant/formal-ai/pull/1581.
+
+The subsequent release merge retains main `82e506f54` and version 0.356.3,
+including its consumed fragment and release ledger. All 141 local gate entries
+complete again: 88 pass and 53 require hosted compilation or context. The
+governed baseline preserves all case identities, unsupported entries and its
+source manifest; only four Cargo fixture hashes change for the version update.
+Worker currency and authored-source whitespace checks pass. Exact observations
+are in `experiments/issue-1580/evidence/checks/released-main-integration/`.

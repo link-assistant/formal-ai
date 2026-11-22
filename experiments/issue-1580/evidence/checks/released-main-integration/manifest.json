@@ -1,0 +1,73 @@
+{
+  "mainCommit": "82e506f54",
+  "mergeCommit": "028ecb8edbbfba987e5bd0131681c70d8bc4ddd3",
+  "version": "0.356.3",
+  "checks": {
+    "PASS": 88,
+    "SKIP": 53,
+    "FAIL": 0
+  },
+  "preservedCases": 221,
+  "preservedUnsupported": 968,
+  "changedFixtureHashes": 4,
+  "nativeBuildExecutedLocally": false,
+  "independentAuthorshipCredit": 0,
+  "issueComplete": false,
+  "files": [
+    {
+      "path": "outcome.json.gz",
+      "bytes": 683,
+      "sha256": "c67fcfb870eb226986acb6c935519acf1a8903da7fe6d26ba72dc66ebd0a5d48"
+    },
+    {
+      "path": "all-local-gates.log.gz",
+      "bytes": 6901,
+      "sha256": "40b0eefe069e7ee233b5c08afbb632da4516423cf5309dfa361c300b512946b2"
+    },
+    {
+      "path": "render-status.log.gz",
+      "bytes": 27,
+      "sha256": "9dc74f2c8bd924631a3dae9e191b3abb41137e06868cd6c8438f5a872d1d4436"
+    },
+    {
+      "path": "native-programs.log.gz",
+      "bytes": 19,
+      "sha256": "245b2bbd93d0c882ea096ede07385802d5984795dee09d43f5dbd0d04e420746"
+    },
+    {
+      "path": "reviewed-baseline.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "baseline-scalar-review.log.gz",
+      "bytes": 1185,
+      "sha256": "2b5eb15e32763fca0c8d0d33ec7db4207c949da8658b249835f68d99db7eeaad"
+    },
+    {
+      "path": "baseline-difference-review.json.gz",
+      "bytes": 1426,
+      "sha256": "27121fd7f7f7058f20b96932a2358009fbe283ceea3b4736784a9678d1b91892"
+    },
+    {
+      "path": "worker-currency.log.gz",
+      "bytes": 117,
+      "sha256": "0b79857a90289b1a9e9116c9bfa1cbfdd9698da7cc844c95cd25d2f0352d3dc3"
+    },
+    {
+      "path": "source-whitespace.log.gz",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "merge-result.log.gz",
+      "bytes": 661,
+      "sha256": "93a47d6654b3df69f0b8a090a59393db42d6eb3e5cc1f5e680aed7b227c9e297"
+    },
+    {
+      "path": "merge-commit.log.gz",
+      "bytes": 108,
+      "sha256": "ec1e5db9f208b89b5bdd96e542f01632baedda35007cdc326e4164c098174999"
+    }
+  ]
+}
