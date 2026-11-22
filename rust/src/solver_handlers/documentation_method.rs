@@ -91,7 +91,7 @@ struct Provider {
 impl Provider {
     fn for_project(project: &str) -> Option<Self> {
         let declaration = handler_table_value("documentation-method-providers", project)?;
-        let values = crate::seed::split_pipe_list(&declaration);
+        let values = crate::seed::parser::split_pipe_list(&declaration);
         let [root, path] = values.as_slice() else {
             return None;
         };

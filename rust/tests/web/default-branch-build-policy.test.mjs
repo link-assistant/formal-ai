@@ -143,6 +143,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'bash scripts/ci-native-regressions.sh core',
     'regression_status=0\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?\n' +
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_helpers::code::javascript_program_tests:: -- --test-threads=1 || regression_status=$?\n' +
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib rule_interpreter::parser::reference_list_tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?\n' +
     'exit "$regression_status"\n',
     'cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1',
@@ -279,12 +281,14 @@ test('native CNL parity selects execution when a discovered language fixture cha
 });
 test('native unsupported-language regressions execute the captured-source units and unchanged sibling contract', () => {
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
-    .find(step => step.name === 'Verify native unresolved-language source binding');
+    .find(step => step.name === 'Verify native source binding and canonical operand readers');
   assert.equal(step.if, "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
   assert.deepEqual(step.env, {CARGO_BUILD_JOBS: '2'});
   assert.deepEqual(step.run.trim().split('\n'), [
     'regression_status=0',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?',
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_helpers::code::javascript_program_tests:: -- --test-threads=1 || regression_status=$?',
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib rule_interpreter::parser::reference_list_tests:: -- --test-threads=1 || regression_status=$?',
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?',
     'exit "$regression_status"',
   ]);
@@ -741,7 +745,7 @@ test('localized native replay selects both its test source and consumed fixture'
 
 test('independent native replays continue after a regression fails and preserve failure status', () => {
   const job = workflow('native-type-check.yml').jobs.clippy;
-  const later = job.steps.filter(step => step.name === 'Verify native unresolved-language source binding'
+  const later = job.steps.filter(step => step.name === 'Verify native source binding and canonical operand readers'
     || ['actions/setup-node@v7', './.github/actions/setup-bun-verified'].includes(step.uses) || step.name?.startsWith('Replay '));
   assert.equal(later.length, 12);
   const selected = (step, {earlierFailure = true, compile = true, lint = 'success', bun = 'success', cancelled = false} = {}) => {
@@ -771,23 +775,40 @@ test('independent native replays continue after a regression fails and preserve 
   assert.match(nativeRegressionSource(isolated), /--no-fail-fast/u);
   assert.equal(isolated['continue-on-error'], undefined);
   for (const step of later) assert.equal(step['continue-on-error'], undefined);
-  const binding = later.find(step => step.name === 'Verify native unresolved-language source binding');
-  // Run the actual shell body against a finite stub: either failure must still
-  // run its sibling and leave the step failed; two successes must succeed.
+  const binding = later.find(step => step.name === 'Verify native source binding and canonical operand readers');
+  // Execute every regression after any sibling fails, retaining the final
+  // nonzero status. Every case runs the actual workflow shell body.
   const directory = mkdtempSync(join(tmpdir(), 'native-replay-failures-'));
   try {
     const stub = join(directory, 'cargo');
-    writeFileSync(stub, '#!/bin/sh\nprintf "%s\\n" "$*" >> "$REPLAY_CALLS"\ncase "$*" in *" --lib "*) exit "$REPLAY_LIBRARY_STATUS";; *) exit "$REPLAY_SPANISH_STATUS";; esac\n', {mode: 0o755});
-    for (const [library, spanish, expected] of [[1,0,1],[0,1,1],[0,0,0]]) {
-      const calls = join(directory, `calls-${library}-${spanish}.txt`);
+    writeFileSync(stub, [
+      '#!/bin/sh',
+      'printf "%s\\n" "$*" >> "$REPLAY_CALLS"',
+      'case "$*" in',
+      '  *"solver_unknown_reasoning::tests::"*) exit "$REPLAY_UNKNOWN_STATUS";;',
+      '  *"solver_helpers::code::javascript_program_tests::"*) exit "$REPLAY_JAVASCRIPT_STATUS";;',
+      '  *"rule_interpreter::parser::reference_list_tests::"*) exit "$REPLAY_PARSER_STATUS";;',
+      '  *"--test any_language "*) exit "$REPLAY_SPANISH_STATUS";;',
+      '  *) exit 99;;',
+      'esac',
+      '',
+    ].join('\n'), {mode: 0o755});
+    for (const [unknown, javascript, parser, spanish, expected] of [
+      [0,0,0,0,0], [1,0,0,0,1], [0,2,0,0,2],
+      [0,0,3,0,3], [0,0,0,4,4], [1,2,3,4,4],
+    ]) {
+      const calls = join(directory, `calls-${unknown}-${javascript}-${parser}-${spanish}.txt`);
       const result = spawnSync('bash', ['-e', '-c', binding.run], {encoding:'utf8', timeout:5000,
         env:{...process.env, PATH:directory+':'+process.env.PATH, REPLAY_CALLS:calls,
-          REPLAY_LIBRARY_STATUS:String(library), REPLAY_SPANISH_STATUS:String(spanish)}});
+          REPLAY_UNKNOWN_STATUS:String(unknown), REPLAY_JAVASCRIPT_STATUS:String(javascript),
+          REPLAY_PARSER_STATUS:String(parser), REPLAY_SPANISH_STATUS:String(spanish)}});
       assert.equal(result.status, expected, result.stderr);
       const commands = read(calls).trim().split('\n');
-      assert.equal(commands.length, 2);
+      assert.equal(commands.length, 4);
       assert.match(commands[0], /--lib solver_unknown_reasoning::tests::/u);
-      assert.match(commands[1], /--test any_language/u);
+      assert.match(commands[1], /--lib solver_helpers::code::javascript_program_tests::/u);
+      assert.match(commands[2], /--lib rule_interpreter::parser::reference_list_tests::/u);
+      assert.match(commands[3], /--test any_language/u);
     }
   } finally { rmSync(directory, {recursive:true, force:true}); }
 });

@@ -1,6 +1,6 @@
 // Resolve a documentation reference through the publisher's own Sphinx pages.
 function documentationMethodProvider(project) {
-  const [root, path] = (handlerRulesTableValue("documentation-method-providers", project) || "").split("|");
+  const [root, path] = crateModule("crate/seed.mjs").splitPipeList(handlerRulesTableValue("documentation-method-providers", project) || "");
   return root && path ? { root, path } : null;
 }
 

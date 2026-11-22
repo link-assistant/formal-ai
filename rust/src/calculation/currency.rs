@@ -19,7 +19,7 @@ pub(crate) fn currency_code(word: &str) -> Option<String> {
     }
     if word.len() == 3
         && word.bytes().all(|byte| byte.is_ascii_uppercase())
-        && seed::split_pipe_list(&handler_table_value(
+        && seed::parser::split_pipe_list(&handler_table_value(
             "currency-quote-provider",
             "iso-codes",
         )?)

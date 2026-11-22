@@ -15,6 +15,34 @@ Objective: fully implement and verify issue #1580 in PR #1581 on issue-1580-8d61
 - [ ] Review diff and PR text; commit; push only after all actionable failures are collected and active runs finish.
 - [ ] Verify final-head CI, update PR with Fixes #1580, mark ready, confirm clean tree. External blockers remain explicit and unmerged.
 
+## Active continuation, native parser CI follow-up (2026-11-22)
+
+- [x] Refresh the complete issue, its one comment, all eleven PR conversation
+  comments and both empty inline/review endpoints. No new acceptance criterion.
+- [x] Collect all 33 terminal workflows for published `a0523f676efdeae358dc473e8b8b3ecf721201ba`:
+  30 success, two failure, one explicit skip. Retain both full failure logs and
+  all executed native job streams with their exact source identities.
+- [x] Correct the private native parser imports, preserve the original external
+  parser regression, regenerate four maintained TypeScript projections and
+  repair all three stale workflow-policy checks without weakening execution.
+- [x] Pass 242 focused JavaScript cases, both source/projection checks and
+  formatting for six native files. No local Rust compilation or execution.
+- [x] Execute the two remaining Java boundary observations: exact-workflow
+  dispatch guard model and actual complete collector CLI. Five positive cases
+  and eleven adjacent cases pass; restoring both candidates yields the expected
+  two failures. Retain source identities and draft distinct upstream reports.
+- [ ] Finish touched gates, source/diff review and atomic commits; refresh main;
+  push the complete failure batch only after active-run checks are empty.
+- [ ] Qualify the new head in hosted CI, then execute both actual native artifact
+  rerun paths. File the Java reports only after immutable evidence is published.
+- [ ] Complete all original workflow/template/practice, runtime, aggregate-review
+  and delivery criteria. Keep PR #1581 draft and unmerged while any remain open.
+
+Native goal remains usage-limited; this plan retains its uncompleted objective.
+Independent accepted reasoning remains 0/20 and supplied authorship credit zero.
+See [the native CI follow-up](../../docs/case-studies/issue-1580/native-parser-ci-followup-20261122.md)
+and [Java boundary controls](../../docs/case-studies/issue-1580/templates/java-boundary-controls-20261122.md).
+
 ## Development provenance
 
 Initial exploration/recovery used external tools. The first Formal AI request, `Run the shell command "git status --short".`, returned unknown. `Run git status --short` executed successfully. A supplied multi-file Python creation command was refused by the declared-create guard with no effects. The orchestration script is an external bootstrap; subsequent shell operations use JavaScript Formal AI. Supplied commands/edits earn zero autonomous-authorship credit. Recovered commits retain their authorship, without new attribution trailers.
@@ -45,7 +73,7 @@ branch run-list endpoint, using their independently confirmed run IDs. Queued
 workflows are pending observations and earn no executed-path qualification.
 See [the committed-lock checkpoint](../../docs/case-studies/issue-1580/committed-primary-lock-checkpoint.md).
 
-## Current verification checkpoint, 2026-11-22
+## Earlier verification checkpoint, 2026-11-22
 
 Published `79a024bffdcee2dd94149d929e81b4b65496ed2d` has 33 terminal workflows:
 29 success, two failure, one skip and one deliberately cancelled Pipeline.
