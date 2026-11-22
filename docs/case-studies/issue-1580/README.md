@@ -331,3 +331,14 @@ The [current-head CI and compressed evidence checkpoint](current-head-repair-che
 The [current-source and CodeQL command checkpoint](current-source-ci-repair-checkpoint.md) records all 27 terminal workflows at `bd6fe77b`, all three collected root causes, the before/fixed controls and complete final local gate replay. Hosted native and CodeQL qualification of the new repairs and the wider issue remain unfinished. Rust literal review reaches 353/373 files and independent Formal AI reasoning stays 0/20.
 
 Latest bounded continuation: [terminal failures, native request custody and exact JavaScript candidate verification](terminal-candidate-and-native-custody.md). Hosted replay and broader acceptance remain unfinished.
+
+
+The [native parser and complete CI policy follow-up](native-parser-ci-followup-20261122.md)
+records all 33 terminal workflows on `a0523f67`, their four private-import compiler
+errors and five distinct Layered check failures. The full repair passes 242 focused
+JavaScript cases, native formatting and the complete 143-entry local inventory
+(89 pass, zero fail, 54 explicit hosted-only exclusions). The separate
+[Java dispatch and fragment controls](templates/java-boundary-controls-20261122.md)
+preserve five candidate controls and eleven adjacent checks. Both shared defects
+have immutable reproduction drafts; hosted native execution and actual artifact
+reruns remain pending, and the wider issue stays unfinished.

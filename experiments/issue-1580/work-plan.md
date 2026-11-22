@@ -764,3 +764,10 @@ independent authorship or reasoning credit.
   and after; complete streams and hashes retained in the final gate archive.
 - [ ] Qualify this exact implementation in hosted CI and exercise both real
   artifact rerun paths; preserve every original broader acceptance criterion.
+
+
+- [x] Complete the final clean parser/Java source `44771e97373f89d4d582bc384c2fd1f8d69cd83d` through all
+  143 local gate entries: 89 pass, zero fail, 54 explicit hosted-only exclusions;
+  unchanged clean source before/after. Preserve every gate stream and hashes.
+- [ ] Qualify the next exact published head, exercise both actual native artifact
+  rerun paths, and complete all remaining original issue acceptance criteria.

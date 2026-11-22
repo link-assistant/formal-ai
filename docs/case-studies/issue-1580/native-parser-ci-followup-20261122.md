@@ -39,3 +39,11 @@ Evidence: `experiments/issue-1580/evidence/checks/native-parser-ci-followup/`.
 Supplied work earns zero independent Formal AI authorship or accepted reasoning
 credit. Broader issue acceptance remains unfinished and PR #1581 stays draft
 and unmerged.
+
+
+The final clean combined source `44771e97373f89d4d582bc384c2fd1f8d69cd83d` completes all 143 maintained
+local gate entries: 89 pass, zero fail and 54 explicitly require hosted execution.
+The run takes 568.11 seconds, with the same clean commit before
+and after. Every per-gate stream and the outcome are round-trip verified under
+`experiments/issue-1580/evidence/checks/clean-parser-contract-gates/`.
+Hosted native execution and the actual artifact reruns remain pending.
