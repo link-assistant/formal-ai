@@ -1,0 +1,1 @@
+Edit scripts/generate-web-distribution.py. Add "source-cache/" to the EXCLUDED_ASSET_PREFIXES list so the distribution generator excludes retired publisher capture files.

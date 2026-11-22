@@ -11,7 +11,7 @@ WEB = ROOT / 'js'
 SEED = ROOT / 'data/seed'
 PACKAGE = ROOT / 'packages/formal-ai-engine'
 EXCLUDED = {'precache-manifest.js', 'service-worker.js', 'deployment.json'}
-EXCLUDED_ASSET_PREFIXES = ("app/", "distribution/", "seed/", "vendor/")
+EXCLUDED_ASSET_PREFIXES = ("app/", "distribution/", "seed/", "vendor/", "source-cache/")
 assets = {}
 for path in sorted(WEB.rglob('*')):
     if path.is_file() and path.suffix in {'.js', '.css', '.html', '.wasm', '.lino', '.png', '.svg', '.webmanifest'}:
