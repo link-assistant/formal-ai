@@ -177,3 +177,7 @@ authorship credit.
 ## PHP complete file applicability map
 
 `php-complete-file-comparison.json` binds all 608 current pinned blobs. All 114 active root files reuse retained complete literal reviews only at exact content hashes. The 229 captured-template files include four current executable CI inputs plus their comparison manifests; they are distinguished from 265 historical records. Complete structured practice/declaration/JSON observations support each captured or historical comparison, without claiming literal rereading or current runtime proof. All applicable-practice execution and full issue acceptance remain separate.
+
+## JavaScript and C++ complete applicability maps
+
+`javascript-complete-file-comparison.json` (566 blobs) and `cpp-complete-file-comparison.json` (552 blobs) complete the pinned per-file maps for all eight requested templates. Each record preserves exact Git/SHA-256 identity, Formal AI counterpart paths, a source applicability decision and its review method. Complete structured source observations remain distinct from retained literal reviews and current literal delta reviews. The maps do not certify runtime behavior or full applicable-practice acceptance. Actual-source annotation pagination reproductions are reported as [C++ #41](https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/41) and [C# #114](https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/114).

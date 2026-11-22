@@ -1,0 +1,27 @@
+{
+  "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+  "pinnedHead": "45c42aff119b366ba103a9342ec3c33731bb7e2e",
+  "files": 552,
+  "roles": {
+    "active-template-source": 164,
+    "retained-historical-evidence": 388
+  },
+  "methods": {
+    "complete-structured-active-source-comparison": 153,
+    "current-delta-literal-source-comparison": 6,
+    "exact-content-retained-literal-review": 34,
+    "complete-structured-historical-content-comparison": 359
+  },
+  "activeFilesWithRetainedCompleteLiteralReview": 11,
+  "allGitBlobIdentitiesReverified": true,
+  "allFilesHaveApplicabilityComparison": true,
+  "allComparisonPathsExist": true,
+  "literalAndStructuredMethodsDistinct": true,
+  "allApplicablePracticesImplementedAndVerified": false,
+  "completeRuntimeQualification": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "scope": "Complete pinned per-file applicability map, using separately named literal reuse, current literal deltas, complete structured source observations and binary identity. Structured comparison is not literal reading or proof of current runtime behavior.",
+  "filesReceipt": "cpp-complete-files.jsonl",
+  "structuredReceipt": "cpp-structured-file-practices.jsonl.gz"
+}
