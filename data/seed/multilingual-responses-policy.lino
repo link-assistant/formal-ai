@@ -142,23 +142,23 @@ multilingual_responses
   response response_external_benchmark_frontier_summary_en
     intent external_benchmark_frontier_summary
     language en
-    text "Every upstream benchmark case the last scheduled run failed, one frontier prompt per case, so the learning cycle proposes seed surfaces from the same evidence the ledger scores (issue #1085 D5.1). Rewritten by formal-ai benchmark run --frontier-record; a suite that passes fully drops out. Replayed by formal-ai learn cycle --frontier upstream-benchmarks."
+    text "Every upstream benchmark case the last scheduled run failed, one frontier prompt per case, so the learning cycle proposes seed surfaces from the same evidence the ledger scores (issue #1085 D5.1). Rewritten by formal-ai benchmark run --frontier-record; a suite that passes fully drops out. Replayed by formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...]."
   response response_external_benchmark_frontier_summary_ru
     intent external_benchmark_frontier_summary
     language ru
-    text "Каждый случай внешнего бенчмарка, проваленный последним плановым запуском, — по одному пограничному промпту на случай, чтобы цикл обучения предлагал поверхности seed на основе тех же данных, по которым оценивает реестр (issue #1085 D5.1). Перезаписывается командой formal-ai benchmark run --frontier-record; полностью пройденный набор выпадает. Воспроизводится командой formal-ai learn cycle --frontier upstream-benchmarks."
+    text "Каждый случай внешнего бенчмарка, проваленный последним плановым запуском, — по одному пограничному промпту на случай, чтобы цикл обучения предлагал поверхности seed на основе тех же данных, по которым оценивает реестр (issue #1085 D5.1). Перезаписывается командой formal-ai benchmark run --frontier-record; полностью пройденный набор выпадает. Воспроизводится командой formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...]."
   response response_external_benchmark_frontier_summary_hi
     intent external_benchmark_frontier_summary
     language hi
-    text "पिछले scheduled run में विफल हुआ हर upstream benchmark case, हर case के लिए एक frontier prompt, ताकि learning cycle उन्हीं सबूतों से seed surfaces प्रस्तावित करे जिनसे ledger score करता है (issue #1085 D5.1)। formal-ai benchmark run --frontier-record से फिर से लिखा जाता है; पूरी तरह पास होने वाला suite हट जाता है। formal-ai learn cycle --frontier upstream-benchmarks से दोहराया जाता है।"
+    text "पिछले scheduled run में विफल हुआ हर upstream benchmark case, हर case के लिए एक frontier prompt, ताकि learning cycle उन्हीं सबूतों से seed surfaces प्रस्तावित करे जिनसे ledger score करता है (issue #1085 D5.1)। formal-ai benchmark run --frontier-record से फिर से लिखा जाता है; पूरी तरह पास होने वाला suite हट जाता है। formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...] से दोहराया जाता है।"
   response response_external_benchmark_frontier_summary_zh
     intent external_benchmark_frontier_summary
     language zh
-    text "上一次定时运行中失败的每个上游基准用例，每个用例一个前沿提示，使学习循环依据账本评分所用的同一证据来提出种子表面（issue #1085 D5.1）。由 formal-ai benchmark run --frontier-record 重写；完全通过的测试集会被移除。由 formal-ai learn cycle --frontier upstream-benchmarks 重放。"
+    text "上一次定时运行中失败的每个上游基准用例，每个用例一个前沿提示，使学习循环依据账本评分所用的同一证据来提出种子表面（issue #1085 D5.1）。由 formal-ai benchmark run --frontier-record 重写；完全通过的测试集会被移除。由 formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...] 重放。"
   response response_external_benchmark_frontier_summary_es
     intent external_benchmark_frontier_summary
     language es
-    text "Cada caso de benchmark externo que falló en la última ejecución programada, con un prompt de frontera por caso, para que el ciclo de aprendizaje proponga superficies de la semilla a partir de la misma evidencia que puntúa el registro (issue #1085 D5.1). Lo reescribe formal-ai benchmark run --frontier-record; una suite que pasa por completo desaparece. Lo reproduce formal-ai learn cycle --frontier upstream-benchmarks."
+    text "Cada caso de benchmark externo que falló en la última ejecución programada, con un prompt de frontera por caso, para que el ciclo de aprendizaje proponga superficies de la semilla a partir de la misma evidencia que puntúa el registro (issue #1085 D5.1). Lo reescribe formal-ai benchmark run --frontier-record; una suite que pasa por completo desaparece. Lo reproduce formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...]."
   response response_external_benchmark_frontier_recorded_from_en
     intent external_benchmark_frontier_recorded_from
     language en

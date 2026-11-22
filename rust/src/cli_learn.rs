@@ -23,13 +23,12 @@ pub enum LearnAction {
         /// `learning_cycle::recorded_frontiers()`, so registering a new
         /// frontier record makes it selectable here without a code change to
         /// the argument parser.
-        #[arg(long, default_value_t = String::from(GOOGLE_TRENDS_FRONTIER))]
-        frontier: String,
+        #[arg(long)]
+        frontier: Option<String>,
 
-        /// Read frontier items from this `learning_frontier` document or source report.
-        /// Required for Google Trends.
-        #[arg(long, value_name = "PATH")]
-        from: Option<PathBuf>,
+        /// Read a frontier report or all pages of a split report in order.
+        #[arg(long, value_name = "PATH", num_args = 1..)]
+        from: Vec<PathBuf>,
 
         /// Explicit acknowledgement that the cycle only proposes. The cycle is
         /// proposal-only either way; the flag documents the intent at the call
@@ -60,9 +59,9 @@ pub enum LearnAction {
 #[derive(Debug)]
 pub struct LearnCycleArgs {
     /// The slug of the recorded frontier to run the cycle over.
-    pub frontier: String,
-    /// Read frontier items from this file instead of the registered record.
-    pub from: Option<PathBuf>,
+    pub frontier: Option<String>,
+    /// Read frontier items from these files in the supplied order.
+    pub from: Vec<PathBuf>,
     /// Explicit acknowledgement that the run only proposes. Always true today.
     pub dry_run: bool,
     /// Print the promotion proposals as a `promotion_proposals` document that
@@ -74,7 +73,7 @@ pub struct LearnCycleArgs {
 ///
 /// # Errors
 ///
-/// Returns an error when a cycle's custom frontier cannot be read.
+/// Returns an error when a cycle has missing, unreadable, or conflicting reports.
 pub fn run_learn_action(action: LearnAction) -> Result<(), Box<dyn Error>> {
     match action {
         LearnAction::Cycle {
@@ -136,7 +135,7 @@ fn run_algorithm_learning(from: &Path, output: Option<&Path>) -> Result<(), Box<
 ///
 /// # Errors
 ///
-/// Returns an error when `--from` cannot be read.
+/// Returns an error when `--from` is missing, unreadable, or combines different frontiers.
 pub fn run_learn_cycle(args: &LearnCycleArgs) -> Result<(), Box<dyn Error>> {
     let (frontier, items) = load_frontier(args)?;
     let run = run_learning_cycle(&frontier, &items);
@@ -151,24 +150,42 @@ pub fn run_learn_cycle(args: &LearnCycleArgs) -> Result<(), Box<dyn Error>> {
 }
 
 fn load_frontier(args: &LearnCycleArgs) -> Result<(String, Vec<FrontierItem>), Box<dyn Error>> {
-    if let Some(path) = &args.from {
-        let document = fs::read_to_string(path)?;
-        let items = parse_frontier_record(&document);
-        let tree = formal_ai::seed::parse_lino(&document);
-        let frontier = if tree.children.iter().any(|root| {
-            root.name == "google_trends_learning"
-                || root.find_child_value("frontier") == GOOGLE_TRENDS_FRONTIER
-        }) {
-            GOOGLE_TRENDS_FRONTIER
-        } else {
-            "custom"
-        };
-        return Ok((frontier.to_owned(), items));
+    if !args.from.is_empty() {
+        let mut frontier = args.frontier.clone();
+        let mut items = Vec::new();
+        for path in &args.from {
+            let document = fs::read_to_string(path)?;
+            let tree = formal_ai::seed::parse_lino(&document);
+            for root in &tree.children {
+                let declared = if root.name == "google_trends_learning" {
+                    GOOGLE_TRENDS_FRONTIER
+                } else {
+                    root.find_child_value("frontier")
+                };
+                if declared.is_empty() {
+                    continue;
+                }
+                if frontier
+                    .as_ref()
+                    .is_some_and(|known| known.as_str() != declared)
+                {
+                    return Err(format!("{} declares a different frontier", path.display()).into());
+                }
+                frontier.get_or_insert_with(|| declared.to_owned());
+            }
+            items.extend(parse_frontier_record(&document));
+        }
+        let slug = frontier
+            .as_deref()
+            .and_then(recorded_frontier)
+            .map_or("custom", |frontier| frontier.slug);
+        return Ok((slug.to_owned(), items));
     }
-    let Some(frontier) = recorded_frontier(&args.frontier) else {
+    let requested = args.frontier.as_deref().unwrap_or(GOOGLE_TRENDS_FRONTIER);
+    let Some(frontier) = recorded_frontier(requested) else {
         return Err(format!(
             "unknown frontier '{}'. Recorded frontiers: {}",
-            args.frontier,
+            requested,
             recorded_frontiers()
                 .iter()
                 .map(|frontier| format!("{} ({})", frontier.slug, frontier.summary))
@@ -177,19 +194,13 @@ fn load_frontier(args: &LearnCycleArgs) -> Result<(String, Vec<FrontierItem>), B
         )
         .into());
     };
-    if frontier.document.is_empty() {
-        let message = render_response(
-            "learning-frontier-report-required",
-            "en",
-            &[("frontier", frontier.slug)],
-        )
-        .unwrap_or_default();
-        return Err(message.into());
-    }
-    Ok((
-        String::from(frontier.slug),
-        parse_frontier_record(frontier.document),
-    ))
+    let message = render_response(
+        "learning-frontier-report-required",
+        "en",
+        &[("frontier", frontier.slug)],
+    )
+    .unwrap_or_default();
+    Err(message.into())
 }
 
 /// Summarise the run on stderr so the stdout document stays machine-readable.

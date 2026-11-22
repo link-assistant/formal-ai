@@ -389,6 +389,42 @@ test("native Agent CLI requires a retrieved capture for a known benchmark issue"
   assert.equal(await fetchIssue(), body);
 });
 
+test("native learning cycle replays only the frontier reports supplied by the caller", NATIVE_CASE, async (t) => {
+  const home = temporaryHome(t);
+  const env = { ...process.env, HOME: home, FORMAL_AI_SOURCE_CACHE_DIR: home, FORMAL_AI_OFFLINE: "1" };
+  const frontier = "language-gap";
+  const args = ["learn", "cycle", "--frontier", frontier, "--dry-run"];
+  const execute = (...options) => promisify(execFile)(NATIVE_CLI, [...args, ...options], { env, signal: t.signal });
+  await assert.rejects(execute(), /requires a learning report via --from/u);
+
+  function writeReport(name, slug, entries) {
+    const file = path.join(home, name);
+    const lines = ["learning_frontier", `  frontier "${slug}"`];
+    for (const [rank, topic] of entries) {
+      lines.push(
+        "  frontier_prompt",
+        `    rank "${rank}"`,
+        `    query "${topic}"`,
+        '    language "es"',
+        '    variation "concept_lookup"',
+        `    prompt "¿Qué es ${topic}?"`,
+        '    engine_intent "unknown"',
+      );
+    }
+    writeFileSync(file, lines.join("\n") + "\n");
+    return file;
+  }
+
+  const primary = writeReport("primary.lino", frontier, [[1, "naranja"], [2, "limón"]]);
+  const continuation = writeReport("continuation.lino", frontier, [[3, "pomelo"]]);
+  const unrelated = writeReport("other.lino", "upstream-benchmarks", []);
+  const { stdout } = await execute("--from", primary, continuation);
+  assert.match(stdout, /frontier "language-gap"/u);
+  assert.match(stdout, /frontier_items "3"/u);
+  assert.match(stdout, /held_out_tests "1"/u);
+  await assert.rejects(execute("--from", primary, unrelated), /declares a different frontier/u);
+});
+
 async function assertProceduralAgentRouting(url, signal) {
   async function ask(input) {
     const response = await fetch(`${url}/v1/responses`, {

@@ -482,6 +482,11 @@ cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark run --sui
 cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark run --suite mbpp --slice 500 --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
 cargo run --manifest-path rust/Cargo.toml --bin formal-ai -- benchmark run --suite mbpp --slice 500 --online --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
 
+# Replay the recorded failures as learning proposals, with the first page first.
+formal-ai learn cycle --frontier upstream-benchmarks --from \
+  data/meta/learning-frontier-upstream-benchmarks.lino \
+  data/meta/learning-frontier-upstream-benchmarks-part*.lino --dry-run
+
 # The forget/rediscover round trip: delete the discovered-procedure ledger,
 # rediscover from the same trusted sources, and require the same content id.
 cargo test --manifest-path rust/Cargo.toml --test unit coding_discovery::ledger -- --nocapture

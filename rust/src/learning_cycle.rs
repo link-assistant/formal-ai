@@ -55,42 +55,14 @@ pub const GOOGLE_TRENDS_FRONTIER: &str = "google-trends";
 /// The frontier slug of the language learning frontier (issue #706).
 pub const LANGUAGE_GAP_FRONTIER: &str = "language-gap";
 
-/// The committed record of the language frontier, produced by
-/// `cargo run --example issue_706_language_frontier`.
-pub const LANGUAGE_GAP_FRONTIER_RECORD: &str =
-    include_str!("../embedded/data/meta/learning-frontier-language-gap.lino");
-
 /// The frontier slug of the upstream benchmark failures (issue #1085 D5.1).
 pub const UPSTREAM_BENCHMARKS_FRONTIER: &str = "upstream-benchmarks";
 
-/// The committed record of the upstream benchmark frontier, rewritten by the
-/// scheduled external-benchmarks run through
-/// `formal-ai benchmark run --frontier-record`.
+/// How many `-partN.lino` continuation files the benchmark writer provisions.
 ///
-/// When one honest prompt per
-/// failed case outgrows the 1500-line data cap (issue #960), the writer spills
-/// continuation pages into `-partN.lino` siblings; the replay reads the
-/// concatenation, and `parse_frontier_record` collects items across the
-/// repeated document roots. Parts the pages no longer fill are committed as
-/// header-only placeholders, so exactly this many part files exist and the
-/// embed compiles whatever the frontier's size.
-pub const UPSTREAM_BENCHMARKS_FRONTIER_RECORD: &str = concat!(
-    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks.lino"),
-    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part1.lino"),
-    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part2.lino"),
-    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part3.lino"),
-    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part4.lino"),
-    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part5.lino"),
-    include_str!("../embedded/data/meta/learning-frontier-upstream-benchmarks-part6.lino"),
-);
-
-/// How many `-partN.lino` continuation files the record above embeds.
-///
-/// The writer provisions exactly this many (resetting unfilled ones to
-/// placeholders), so a frontier that grows or shrinks never leaves the embed
-/// and the committed file set out of sync. Six parts at the 1400-line write
-/// budget hold about 1190 frontier prompts — several times the largest slice
-/// the scheduled suites can fail at once.
+/// The writer resets unused parts to placeholders so the recorded file set
+/// stays stable as the frontier grows or shrinks. Six parts at the 1400-line
+/// write budget hold about 1190 prompts.
 pub const UPSTREAM_BENCHMARKS_FRONTIER_PARTS: usize = 6;
 
 /// One recorded frontier the CLI can replay.
@@ -102,8 +74,6 @@ pub const UPSTREAM_BENCHMARKS_FRONTIER_PARTS: usize = 6;
 pub struct RecordedFrontier {
     /// The slug the CLI accepts.
     pub slug: &'static str,
-    /// The default frontier document, empty when replay requires caller input.
-    pub document: &'static str,
     /// What the frontier records, for `--help`-style listings.
     pub summary: &'static str,
 }
@@ -114,24 +84,21 @@ pub fn recorded_frontiers() -> Vec<RecordedFrontier> {
     vec![
         RecordedFrontier {
             slug: GOOGLE_TRENDS_FRONTIER,
-            document: "",
             summary: "trending prompts the engine could not route (provide a report with --from)",
         },
         RecordedFrontier {
             slug: LANGUAGE_GAP_FRONTIER,
-            document: LANGUAGE_GAP_FRONTIER_RECORD,
             summary: "prompts a registered language supplied that the engine cannot answer in \
                       that language (issue #706)",
         },
         RecordedFrontier {
             slug: UPSTREAM_BENCHMARKS_FRONTIER,
-            document: UPSTREAM_BENCHMARKS_FRONTIER_RECORD,
             summary: "upstream benchmark cases the last scheduled run failed (issue #1085 D5.1)",
         },
     ]
 }
 
-/// Resolve a frontier slug to its recorded document.
+/// Resolve a frontier slug to its registry entry.
 #[must_use]
 pub fn recorded_frontier(slug: &str) -> Option<RecordedFrontier> {
     recorded_frontiers()
@@ -401,13 +368,10 @@ pub fn run_learning_cycle(frontier: &str, items: &[FrontierItem]) -> LearningCyc
     }
 }
 
-/// Run the cycle over the recorded language frontier (issue #706).
+/// Replay a supplied language-frontier report (issue #706).
 #[must_use]
-pub fn language_gap_learning_cycle() -> LearningCycleRun {
-    run_learning_cycle(
-        LANGUAGE_GAP_FRONTIER,
-        &parse_frontier_record(LANGUAGE_GAP_FRONTIER_RECORD),
-    )
+pub fn language_gap_learning_cycle(document: &str) -> LearningCycleRun {
+    run_learning_cycle(LANGUAGE_GAP_FRONTIER, &parse_frontier_record(document))
 }
 
 /// Run the cycle over the recorded Google Trends frontier.
