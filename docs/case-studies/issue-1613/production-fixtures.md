@@ -79,6 +79,28 @@ distinct ordinary topics as well as the previous promotion routes.
 [Handler replay](evidence/verification/round26-final-issue-0918-handler-rules-batch.log) ·
 [Claim routing replay](evidence/verification/round26-final-issue-1175-claim-routing.log)
 
+### Roleplay and conversation references
+
+`Roleplay as a field botanist: Mosses absorb water across their surfaces.`
+previously returned a stored explanation of relativity for a default persona.
+Both runtimes now read a role and facts from the message. An exact identity
+alias can still supply a canonical name and Wikidata identifier. The answer
+labels the facts as caller supplied. If either field is absent, the handler
+asks for the missing input. The replay covers an unregistered role, a
+recognized alias, placeholder characters in the input, and a full-width
+colon.
+[Before](evidence/verification/round27-roleplay-baseline.log.gz) ·
+[After](evidence/verification/round27-roleplay-final.log)
+
+The previously stored Rust comparison also appeared for `Is it installed
+here?` after a turn about Rust. Fact lookup still receives the rewritten
+question when supported. Otherwise the engine reports which conversation
+reference it resolved and that it needs evidence to answer the follow-up.
+The regression checks the unrelated question and preserves the test for
+resolution across an intervening topic.
+[Before](evidence/verification/round27-coreference-baseline.log.gz) ·
+[After](evidence/verification/round27-coreference-final.log)
+
 ## Repository URLs and descriptions
 
 The first HTTP regression requested the issue path of one registered repository

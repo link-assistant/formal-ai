@@ -354,6 +354,8 @@ b011ead619829b27c1e76defbab27a4751e0b591c1b0ea61858b4b9dd791fc5b  ./verification
 aac970fdd99deb2831f60e97fc1108022bcada7e96e0cf03df6207411bd1fdab  ./verification/round26-summary-after.log
 27d40123cfee9440f52f36787bcc7cc2577cf6f418d65e1bcf5b42351ce9d1f5  ./verification/round27-browser-exclusion.log
 79f45ff061dabffe8f06d4049fb0970db0013dca3ecab72dbf6e250aa038ce65  ./verification/round27-cargo-audit.log
+753e21db48d4869a02db3ee38fe03e0408f75e74816496795301f5db9cb806d4  ./verification/round27-coreference-baseline.log.gz
+b0da09c6916578d1c373e89690337b28d797838df57c04f0ee30a4d34542d808  ./verification/round27-coreference-final.log
 9121d5d850235ac8c5f13a37dfd56e0a34304389b461af4258700ae835c43998  ./verification/round27-issue-0918-handler-final.log
 e0c2b6140763d4487be6723772562c5f1b5ef1739a8de51279831a95c0a200df  ./verification/round27-issue-1175-claim-final.log
 508d454b46f4e6294ab3fd21c8fa9981a26a3c17ed878957c491ce0b1ab12469  ./verification/round27-page-formalization-final.log
@@ -362,6 +364,9 @@ d807ae67b93881fa712efbc3482d2ec4b69c3c6ae3b08210aaa07717ee99d5f2  ./verification
 943797e79b46e64968d989b8a5e5c304f7e1fab34de06035f6acbdaecac720db  ./verification/round27-project-fetch-baseline.log.gz
 4f15fbc2fbad7bb6b58be1bb9794edbd2d7f219f58db9756f74a8edb7974e0f0  ./verification/round27-project-metadata-baseline.log.gz
 067ddb614dbb83b9145a29e2cdc7c2e233b021524872af64fb9af7bb604dc241  ./verification/round27-project-summary-parity-final.log
+30992d99dfb039632a1b028673d51f772b21c38dc247ae48f76ffe3e45b4b095  ./verification/round27-roleplay-baseline.log.gz
+8dd48d137693765daf3f834dae7f455b3cc7f907e1d582a07a2a436c5925a0ca  ./verification/round27-roleplay-claim-final.log
+bbcbcc46439fb3315abb0d9a38a6cc50c37db004d5eba6e57494ef368ecb16e5  ./verification/round27-roleplay-final.log
 92537e053d2e2c51f1ca13923484d0301d6a08553724fd728bbc7ed10f0b9ef5  ./verification/round27-specification-parity-worker-final.log
 db01a94b4b0e3da61be057bb1a7e1f5649cd809e88ee531778803633f1380bc1  ./verification/round27-specification-worker.log
 f3818de30bc88b079834f1931ec1aaed0a29b377461fd9446989778e5e28ca55  ./verification/round27-translate-es-check.log
