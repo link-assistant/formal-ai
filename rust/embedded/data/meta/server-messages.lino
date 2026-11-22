@@ -235,7 +235,7 @@ server_messages
   message learning_invalid_slug
     text "invalid {name} `{value}`"
   message learning_proposal_summary
-    text "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{suite}` is {status} ({passed}/{minimum})."
+    text "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; {verification_label} `{fixture}` passed; benchmark `{suite}` is {status} ({passed}/{minimum})."
   message dreaming_reason_deleted_conversation
     text "event belongs to a conversation already marked deleted"
   message dreaming_reason_duplicate
@@ -256,76 +256,6 @@ server_messages
     text "[dreaming] background run failed: {error}"
   message learning_cycle_proposal_summary
     text "Adopt {count} learned request-opener surface(s) for the '{variation}' frontier class ({languages}), derived from {support} recorded frontier prompts each and validated on {passed} held-out prompt(s) with {failed} failure(s)."
-  message program_execution_status_line_en
-    text "Execution status: {status} in {environment}."
-  message program_execution_status_line_ru
-    text "Статус выполнения: {status} в среде «{environment}»."
-  message program_execution_status_line_hi
-    text "निष्पादन स्थिति: {status} ({environment} में)।"
-  message program_execution_status_line_zh
-    text "执行状态：{status}（{environment}）。"
-  message program_execution_status_verified_en
-    text "compiled and ran"
-  message program_execution_status_unavailable_en
-    text "not compiled or run"
-  message program_execution_status_not_probed_en
-    text "not probed in this environment"
-  message program_execution_status_verified_ru
-    text "скомпилировано и запущено"
-  message program_execution_status_unavailable_ru
-    text "не скомпилировано и не запущено"
-  message program_execution_status_not_probed_ru
-    text "не проверялось в этой среде"
-  message program_execution_status_verified_hi
-    text "संकलित और चलाया गया"
-  message program_execution_status_unavailable_hi
-    text "संकलित या चलाया नहीं गया"
-  message program_execution_status_not_probed_hi
-    text "इस वातावरण में जाँचा नहीं गया"
-  message program_execution_status_verified_zh
-    text "已编译并运行"
-  message program_execution_status_unavailable_zh
-    text "未编译或运行"
-  message program_execution_status_not_probed_zh
-    text "未在本环境中探测"
-  message program_execution_output_verified_en
-    text "Output"
-  message program_execution_output_unavailable_en
-    text "Expected output after verification"
-  message program_execution_output_not_probed_en
-    text "Output, not observed in this environment"
-  message program_execution_output_verified_ru
-    text "Вывод"
-  message program_execution_output_unavailable_ru
-    text "Ожидаемый вывод после проверки"
-  message program_execution_output_not_probed_ru
-    text "Вывод, не наблюдавшийся в этой среде"
-  message program_execution_output_verified_hi
-    text "आउटपुट"
-  message program_execution_output_unavailable_hi
-    text "सत्यापन के बाद अपेक्षित आउटपुट"
-  message program_execution_output_not_probed_hi
-    text "आउटपुट, इस वातावरण में नहीं देखा गया"
-  message program_execution_output_verified_zh
-    text "输出"
-  message program_execution_output_unavailable_zh
-    text "验证后的预期输出"
-  message program_execution_output_not_probed_zh
-    text "输出，未在本环境中观察到"
-  message program_execution_rediscovered_en
-    text "Execution status: not run; this program was rediscovered from {page} and its output contract was checked by decomposition, not by executing it."
-  message program_execution_rediscovered_ru
-    text "Статус выполнения: не запускалась; программа заново найдена на странице {page}, её контракт вывода проверен разбором, а не запуском."
-  message program_execution_rediscovered_hi
-    text "निष्पादन स्थिति: चलाया नहीं गया; यह प्रोग्राम {page} से फिर से खोजा गया और इसके आउटपुट अनुबंध की जाँच विघटन से की गई, चलाकर नहीं।"
-  message program_execution_rediscovered_zh
-    text "执行状态：未运行；此程序从 {page} 重新发现，其输出约定通过分解检查，而非运行。"
-  message program_execution_rediscovered_es
-    text "Estado de ejecución: no ejecutado; este programa se redescubrió en {page} y su contrato de salida se comprobó por descomposición, no ejecutándolo."
-  message program_execution_check_command
-    text "Check command: `{command}`"
-  message program_execution_run_command
-    text "Run command: `{command}`"
   message program_execution_notes_rust
     text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
   message program_execution_notes_python

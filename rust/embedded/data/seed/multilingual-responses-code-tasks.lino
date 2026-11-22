@@ -1206,83 +1206,63 @@ multilingual_responses
     intent code_refactoring_execution_skipped
     language es
     text "Se omitió la comprobación por ejecución en el worker del navegador ({detail}); solo se aplica la comprobación estructural anterior."
+  response response-algorithm-operation-required-en
+    intent algorithm-operation-required
+    language en
+    text "What should the algorithm do? Include its expected inputs and outputs."
+  response response-algorithm-operation-required-ru
+    intent algorithm-operation-required
+    language ru
+    text "Что должен делать алгоритм? Укажите входные данные и ожидаемый результат."
+  response response-algorithm-operation-required-hi
+    intent algorithm-operation-required
+    language hi
+    text "एल्गोरिदम को क्या करना चाहिए? अपेक्षित इनपुट और आउटपुट बताएं।"
+  response response-algorithm-operation-required-zh
+    intent algorithm-operation-required
+    language zh
+    text "算法应该完成什么任务？请说明预期的输入和输出。"
+  response response-algorithm-operation-required-es
+    intent algorithm-operation-required
+    language es
+    text "¿Qué debe hacer el algoritmo? Indica las entradas y salidas esperadas."
   response response_algorithm_sort_en
     intent algorithm_sort
     language en
-    text "Here is a reviewable sorting algorithm in {language}:\n\n```{snippet}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+    text "Here is a reviewable sorting algorithm in {language}:\n\n```{language}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
   response response_algorithm_sort_ru
     intent algorithm_sort
     language ru
-    text "Вот проверяемый алгоритм сортировки на {language}:\n\n```{snippet}\n{code}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования."
+    text "Вот проверяемый алгоритм сортировки на {language}:\n\n```{language}\n{code}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования."
   response response_algorithm_sort_hi
     intent algorithm_sort
     language hi
-    text "यह {language} में एक समीक्षा-योग्य sorting algorithm है:\n\n```{snippet}\n{code}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।"
+    text "यह {language} में एक समीक्षा-योग्य sorting algorithm है:\n\n```{language}\n{code}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।"
   response response_algorithm_sort_zh
     intent algorithm_sort
     language zh
-    text "这是一个可审阅的 {language} 排序算法：\n\n```{snippet}\n{code}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。"
+    text "这是一个可审阅的 {language} 排序算法：\n\n```{language}\n{code}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。"
   response response_algorithm_sort_es
     intent algorithm_sort
     language es
-    text "Aquí tienes un algoritmo de ordenación revisable en {language}:\n\n```{snippet}\n{code}\n```\n\nEstado de ejecución: no disponible en este entorno. El fragmento está pensado para revisarlo copiándolo y pegándolo."
+    text "Aquí tienes un algoritmo de ordenación revisable en {language}:\n\n```{language}\n{code}\n```\n\nEstado de ejecución: no disponible en este entorno. El fragmento está pensado para revisarlo copiándolo y pegándolo."
   response response_algorithm_sort_with_tests_en
     intent algorithm_sort_with_tests
     language en
-    text "Here is a reviewable sorting algorithm in {language} with a test:\n\n```{snippet}\n{code}\n```\n\nTests:\n```{snippet}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+    text "Here is a reviewable sorting algorithm in {language} with a test:\n\n```{language}\n{code}\n```\n\nTests:\n```{language}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
   response response_algorithm_sort_with_tests_ru
     intent algorithm_sort_with_tests
     language ru
-    text "Вот проверяемый алгоритм сортировки на {language} с тестом:\n\n```{snippet}\n{code}\n```\n\nТесты:\n```{snippet}\n{tests}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования."
+    text "Вот проверяемый алгоритм сортировки на {language} с тестом:\n\n```{language}\n{code}\n```\n\nТесты:\n```{language}\n{tests}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования."
   response response_algorithm_sort_with_tests_hi
     intent algorithm_sort_with_tests
     language hi
-    text "यह {language} में एक समीक्षा-योग्य sorting algorithm है, test के साथ:\n\n```{snippet}\n{code}\n```\n\nTests:\n```{snippet}\n{tests}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।"
+    text "यह {language} में एक समीक्षा-योग्य sorting algorithm है, test के साथ:\n\n```{language}\n{code}\n```\n\nTests:\n```{language}\n{tests}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।"
   response response_algorithm_sort_with_tests_zh
     intent algorithm_sort_with_tests
     language zh
-    text "这是一个可审阅的 {language} 排序算法，附带测试：\n\n```{snippet}\n{code}\n```\n\n测试：\n```{snippet}\n{tests}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。"
+    text "这是一个可审阅的 {language} 排序算法，附带测试：\n\n```{language}\n{code}\n```\n\n测试：\n```{language}\n{tests}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。"
   response response_algorithm_sort_with_tests_es
     intent algorithm_sort_with_tests
     language es
-    text "Aquí tienes un algoritmo de ordenación revisable en {language} con una prueba:\n\n```{snippet}\n{code}\n```\n\nPruebas:\n```{snippet}\n{tests}\n```\n\nEstado de ejecución: no disponible en este entorno. El fragmento está pensado para revisarlo copiándolo y pegándolo."
-  response response_algorithm_sort_code_python_en
-    intent algorithm_sort_code_python
-    language en
-    audience machine
-    text "def sort(values):\n    return sorted(values)\n"
-  response response_algorithm_sort_tests_python_en
-    intent algorithm_sort_tests_python
-    language en
-    audience machine
-    text "def test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n"
-  response response_algorithm_sort_code_rust_en
-    intent algorithm_sort_code_rust
-    language en
-    audience machine
-    text "fn sort(values: &mut Vec<i32>) {\n    values.sort();\n}"
-  response response_algorithm_sort_tests_rust_en
-    intent algorithm_sort_tests_rust
-    language en
-    audience machine
-    text "#[test]\nfn test_sort_ascending() {\n    let mut v = vec![3, 1, 2];\n    sort(&mut v);\n    assert_eq!(v, vec![1, 2, 3]);\n}"
-  response response_algorithm_sort_code_javascript_en
-    intent algorithm_sort_code_javascript
-    language en
-    audience machine
-    text "function sort(values) {\n  return [...values].sort((a, b) => a - b);\n}"
-  response response_algorithm_sort_tests_javascript_en
-    intent algorithm_sort_tests_javascript
-    language en
-    audience machine
-    text "function test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}"
-  response response_algorithm_sort_code_typescript_en
-    intent algorithm_sort_code_typescript
-    language en
-    audience machine
-    text "function sort(values) {\n  return [...values].sort((a, b) => a - b);\n}"
-  response response_algorithm_sort_tests_typescript_en
-    intent algorithm_sort_tests_typescript
-    language en
-    audience machine
-    text "function test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}"
+    text "Aquí tienes un algoritmo de ordenación revisable en {language} con una prueba:\n\n```{language}\n{code}\n```\n\nPruebas:\n```{language}\n{tests}\n```\n\nEstado de ejecución: no disponible en este entorno. El fragmento está pensado para revisarlo copiándolo y pegándolo."

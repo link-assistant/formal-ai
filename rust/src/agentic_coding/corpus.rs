@@ -1,139 +1,134 @@
-//! Offline, deterministic web corpus for the in-repo agentic driver (issue #468).
-//!
-//! The maintainer asks our Formal AI to *"do web fetch and web search … to
-//! actually complete the task"*. CI has no network, and the repository's
-//! determinism stance forbids live calls anyway, so the driver resolves
-//! `web_search` / `web_fetch` tool calls against this small fixed corpus instead
-//! of the open web. It is a faithful stand-in: a search that surfaces the
-//! canonical Викитека page for «Сказка о рыбаке и рыбке», and a fetch of that page
-//! that returns the canonical synopsis — the very text the formalizer falls back
-//! to (see [`CANONICAL_FISHERMAN_SYNOPSIS`]), so the loop produces a stable
-//! knowledge base whether the fetch "succeeds" or not.
+//! Discover registered publication links and acquire CLI source evidence.
 
 use std::fmt::Write as _;
 
-use super::formalize::CANONICAL_FISHERMAN_SYNOPSIS;
-use super::meaning_detail::{self, CONCEPTS};
-use super::planner::CANONICAL_SOURCE_URL;
+use super::formalization_recipe::publication_url;
+use super::lexicon::Lexicon;
+use super::meaning_detail;
+use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 
-mod cached_issues;
-
-/// One page in the offline corpus. Fields are owned so pages can be built from the
-/// [`CONCEPTS`] registry at call time (one Wikidata-lexeme page per concept).
-struct CorpusPage {
+struct SourcePage {
     url: String,
     title: String,
-    /// Lowercased keywords a search query is matched against.
-    keywords: Vec<String>,
-    body: String,
+    search_terms: String,
 }
 
-/// The corpus pages, in search-ranking order: the fisherman tale (issue #468)
-/// first, then one Wikidata-lexeme page per registered concept (issue #538). Each
-/// concept contributes its own page automatically, so registering a new concept in
-/// [`CONCEPTS`] makes it web-searchable and web-fetchable with no change here.
-fn pages() -> Vec<CorpusPage> {
-    let mut pages = vec![CorpusPage {
-        url: CANONICAL_SOURCE_URL.to_owned(),
-        title: "Сказка о рыбаке и рыбке — Александр Пушкин (Викитека)".to_owned(),
-        keywords: [
-            "рыбак",
-            "рыбке",
-            "рыбка",
-            "пушкин",
-            "сказка",
-            "fisherman",
-            "fish",
-            "pushkin",
-        ]
+fn pages() -> Vec<SourcePage> {
+    let lexicon = Lexicon::standard();
+    let mut pages: Vec<_> = lexicon
+        .works()
         .iter()
-        .map(|keyword| (*keyword).to_owned())
-        .collect(),
-        body: CANONICAL_FISHERMAN_SYNOPSIS.to_owned(),
-    }];
-    for &(url, body) in cached_issues::PAGES {
-        pages.push(CorpusPage {
-            url: url.to_owned(),
-            title: url.to_owned(),
-            keywords: vec![url.to_owned()],
-            body: body.to_owned(),
-        });
-    }
-    for concept in CONCEPTS {
-        // The concept's own routing keywords plus the shared lexeme vocabulary, so
-        // both a concept-specific query and a generic "wikidata lexeme …" query hit.
-        let mut keywords: Vec<String> = concept.keywords.iter().map(|k| k.to_lowercase()).collect();
-        keywords.extend(
-            ["wikidata", "lexeme", "grammatical", "singular", "plural"]
-                .iter()
-                .map(|k| (*k).to_owned()),
-        );
-        pages.push(CorpusPage {
-            url: concept.source_url.to_owned(),
-            title: format!(
-                "Wikidata lexemes for the {} concept ({}) — Wikidata",
-                concept.name, concept.grounded_in
-            ),
-            keywords,
-            body: meaning_detail::source_bundle(concept),
-        });
-    }
+        .filter_map(|work| {
+            Some(SourcePage {
+                url: publication_url(work)?,
+                title: work.publisher_title.clone()?,
+                search_terms: work.publisher_title.as_ref()?.to_lowercase(),
+            })
+        })
+        .collect();
+    pages.extend(meaning_detail::concepts().iter().map(|concept| SourcePage {
+        url: concept.source_url.clone(),
+        title: crate::seed::agentic_message(
+            "meaning-detail-source-title",
+            &[("name", &concept.name), ("entity", &concept.grounded_in)],
+        ),
+        search_terms: concept.search_query.to_lowercase(),
+    }));
     pages
 }
 
-/// Resolve a `web_search` query into deterministic results text.
-///
-/// A query that matches a known page lists it (rank, title, url, snippet); an
-/// unmatched query returns a "no results" line. Search results are never treated
-/// as the source text — only [`web_fetch`] bodies are — so the wording here is
-/// purely informational for the agent.
+/// List declared publisher endpoints that match the search terms.
 #[must_use]
 pub fn web_search(query: &str) -> String {
     let lower = query.to_lowercase();
-    let all = pages();
-    let hits: Vec<&CorpusPage> = all
+    let pages = pages();
+    let lexicon = Lexicon::standard();
+    let title_match = lexicon.best_work_for(query).and_then(publication_url);
+    let mut hits: Vec<_> = pages
         .iter()
-        .filter(|page| {
-            page.keywords
-                .iter()
-                .any(|keyword| lower.contains(keyword.as_str()))
+        .filter_map(|page| {
+            let count = lower
+                .split_whitespace()
+                .filter(|word| crate::seed::surface_present(&page.search_terms, word))
+                .count();
+            (count > 0 || title_match.as_deref() == Some(page.url.as_str()))
+                .then_some((count, page))
         })
         .collect();
+    hits.sort_by_key(|(count, _)| std::cmp::Reverse(*count));
     if hits.is_empty() {
         return format!("web_search: no results for {query:?}");
     }
     let mut out = String::new();
-    for (rank, page) in hits.iter().enumerate() {
-        let snippet: String = page.body.chars().take(80).collect();
-        let _ = writeln!(
-            out,
-            "{}. {}\n   {}\n   {}…",
-            rank + 1,
-            page.title,
-            page.url,
-            snippet.trim()
-        );
+    for (rank, (_, page)) in hits.iter().enumerate() {
+        let _ = writeln!(out, "{}. {}\n   {}", rank + 1, page.title, page.url);
     }
     out.trim_end().to_owned()
 }
 
-/// Resolve a `web_fetch` url into deterministic page text.
-///
-/// This compatibility wrapper preserves response bytes for existing callers.
-/// Providers use [`web_fetch_result`] to distinguish registry absence from
-/// document text without treating words in the body as process status.
+/// Fetch a registered publication, or return the tool's error text.
 #[must_use]
 pub fn web_fetch(url: &str) -> String {
     web_fetch_result(url).unwrap_or_else(|detail| detail)
 }
 
-/// Fetch an actual registered page without interpreting its body as status.
-///
+/// Fetch a registered publication using the caller's network policy.
 /// # Errors
-/// Returns the unchanged offline 404 detail when the requested URL is absent.
+/// Reports unknown sources, denied or missing captures, and invalid UTF-8.
 pub fn web_fetch_result(url: &str) -> Result<String, String> {
-    pages().iter().find(|page| page.url == url).map_or_else(
-        || Err(format!("web_fetch error: 404 not found for {url}")),
-        |page| Ok(page.body.clone()),
+    if pages().iter().any(|page| page.url == url) {
+        return fetch_source_bytes(url)
+            .and_then(|bytes| String::from_utf8(bytes).map_err(|error| error.to_string()));
+    }
+    Err(missing_source(url))
+}
+
+fn missing_source(url: &str) -> String {
+    format!("web_fetch error: 404 not found for {url}")
+}
+
+fn fetch_source_bytes(url: &str) -> Result<Vec<u8>, String> {
+    let client = CachedSourceClient::new(
+        crate::coding::synthesis_runtime::source_cache_root(),
+        CurlSourceTransport,
     )
+    .with_online(crate::solver_config::read_network_allowed());
+    client
+        .fetch(url)
+        .map(|capture| capture.bytes().to_vec())
+        .map_err(|error| error.to_string())
+}
+
+/// Read a registered publication or a public work item explicitly named by URL.
+/// # Errors
+/// Reports denied or missing captures, retrieval failures, and invalid bodies.
+pub fn fetch_cli_source(url: &str) -> Result<String, String> {
+    let Some(path) = url.strip_prefix("https://github.com/") else {
+        return web_fetch_result(url);
+    };
+    let missing = || missing_source(url);
+    let fields: Vec<_> = path.split('/').collect();
+    let [owner, repo, "issues" | "pull", number] = fields.as_slice() else {
+        return Err(missing());
+    };
+    if [owner, repo].iter().any(|name| {
+        matches!(**name, "" | "." | "..")
+            || !name
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || b"-._".contains(&byte))
+    }) || !number.bytes().all(|byte| byte.is_ascii_digit())
+        || number.parse::<u64>().ok().is_none_or(|number| number == 0)
+    {
+        return Err(missing());
+    }
+
+    let bytes = fetch_source_bytes(&format!(
+        "https://api.github.com/repos/{owner}/{repo}/issues/{number}"
+    ))?;
+    let item: serde_json::Value =
+        serde_json::from_slice(&bytes).map_err(|error| error.to_string())?;
+    item.get("body")
+        .and_then(serde_json::Value::as_str)
+        .map(str::to_owned)
+        .ok_or_else(missing)
 }

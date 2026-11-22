@@ -1,0 +1,94 @@
+{
+  "entities": {
+    "Q12418": {
+      "id": "Q12418",
+      "labels": {
+        "es": {
+          "language": "es",
+          "value": "La Gioconda"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蒙娜丽莎"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Мона Лиза"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मॉना लिसा"
+        },
+        "en": {
+          "language": "en",
+          "value": "Mona Lisa"
+        }
+      },
+      "claims": {
+        "P170": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P170",
+              "hash": "3b1eba6f35af28f951e073718e03ed540b9c806d",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 762,
+                  "id": "Q762"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "type": "statement",
+            "id": "q12418$2E0B47A1-1915-44F8-AB71-28FF037C2E43",
+            "rank": "normal",
+            "references": [
+              {
+                "hash": "55e5ea8a932fdbbb61ee2db2d77438bba24ada70",
+                "snaks": {
+                  "P854": [
+                    {
+                      "snaktype": "value",
+                      "property": "P854",
+                      "hash": "754ca080ead51dc374f679bacb222ea1ea010c58",
+                      "datavalue": {
+                        "value": "https://rkd.nl/explore/images/302327",
+                        "type": "string"
+                      },
+                      "datatype": "url"
+                    }
+                  ],
+                  "P813": [
+                    {
+                      "snaktype": "value",
+                      "property": "P813",
+                      "hash": "8fed83fb795ec56be90b0003d802d97e9045fbff",
+                      "datavalue": {
+                        "value": {
+                          "time": "+2022-08-13T00:00:00Z",
+                          "timezone": 0,
+                          "before": 0,
+                          "after": 0,
+                          "precision": 11,
+                          "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                        },
+                        "type": "time"
+                      },
+                      "datatype": "time"
+                    }
+                  ]
+                },
+                "snaks-order": [
+                  "P854",
+                  "P813"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -8,8 +8,11 @@
 // postcondition}`; a `ComputerUsePlan` is `{id, locale, prompt, steps}`.
 
 import { COMPUTER_USE_PRIMITIVES, computerPrimitiveFromToolName } from '../protocol_policy.mjs';
-import { capabilityGapForPrompt, planForPrompt } from './computer_use_seed.mjs';
-import { capabilityGapForRequest as synthesisCapabilityGap, synthesize } from './computer_use_synthesis.mjs';
+import { capabilityGapResponse, stepConditions } from './computer_use_seed.mjs';
+import { capabilityGapForRequest as synthesisCapabilityGap } from './computer_use_synthesis.mjs';
+
+import { detect } from './language.mjs';
+import { sha256Hex } from './source_fetch.mjs';
 
 export { COMPUTER_USE_PRIMITIVES };
 
@@ -94,20 +97,65 @@ export function inputSchema(primitive) {
   };
 }
 
-/**
- * Mirrors `fn plan_request` in rust/src/computer_use/mod.rs: the recorded plan
- * when the prompt is a seeded benchmark task verbatim, else a synthesized one.
- * @param {string} prompt
- */
-export function planRequest(prompt) {
-  return planForPrompt(prompt) ?? synthesize(prompt)?.plan ?? null;
+const PLAN_FENCE = '```computer-use';
+const encoder = new TextEncoder();
+
+function validPlanArguments(primitive, args) {
+  if (!args || typeof args !== 'object' || Array.isArray(args)) return false;
+  if (!REQUIRED[primitive].every((key) => Object.hasOwn(args, key))) return false;
+  if (primitive === 'shell.run') {
+    if (['filter_csv', 'unique_csv'].includes(args.operation) && !Object.hasOwn(args, 'column')) return false;
+    if (args.operation === 'filter_csv' && !Object.hasOwn(args, 'equals')) return false;
+  }
+  const properties = primitiveProperties(primitive);
+  return Object.entries(args).every(([key, value]) => {
+    if (!Object.hasOwn(properties, key)) return false;
+    const property = properties[key];
+    if (property.type === 'array') {
+      return Array.isArray(value) && value.length > 0 && value.every((entry) => typeof entry === 'string');
+    }
+    return typeof value === property.type && (property.enum === undefined || property.enum.includes(value));
+  });
 }
 
-/**
- * Mirrors `fn capability_gap_for_request` in rust/src/computer_use/mod.rs.
- * @param {string} prompt
- * @returns {{capability: string, locale: string, response: string}|null}
- */
+/** Collect and validate every step before handing any tool call to the client. */
+export function planRequest(prompt) {
+  const lines = prompt.split(/\r?\n/u);
+  const start = lines.findIndex((line) => line.trimStart().startsWith('```'));
+  const end = lines.findIndex((line, index) => index > start && line.trim() === '```');
+  if (start < 0 || lines[start].trim() !== PLAN_FENCE || end < 0 || lines.slice(end + 1).some((line) => line.trim())) return null;
+  const body = lines.slice(start + 1, end).join('\n');
+  const bytes = encoder.encode(body);
+  if (bytes.length > 256 * 1024) return null;
+  let entries;
+  try {
+    entries = JSON.parse(body);
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(entries) || entries.length < 1 || entries.length > 64) return null;
+  const id = `computer-use-${sha256Hex(bytes).slice(0, 24)}`;
+  const steps = [];
+  for (const entry of entries) {
+    if (entry === null || typeof entry !== 'object' || Object.keys(entry).length !== 2
+        || typeof entry.primitive !== 'string' || !Object.hasOwn(entry, 'arguments')) return null;
+    const primitive = fromToolName(entry.primitive);
+    if (primitive !== entry.primitive || !validPlanArguments(primitive, entry.arguments)) return null;
+    const number = String(steps.length + 1).padStart(2, '0');
+    const [precondition, postcondition] = stepConditions(primitive);
+    steps.push({ id: `${id}-${number}`, primitive, arguments: entry.arguments, precondition, postcondition });
+  }
+  return { id, locale: detect(lines.slice(0, start).join('\n')), prompt, steps };
+}
+
+/** A malformed explicit plan or a request requiring an unavailable capability. */
 export function capabilityGapForRequest(prompt) {
-  return capabilityGapForPrompt(prompt) ?? synthesisCapabilityGap(prompt);
+  const lines = prompt.split(/\r?\n/u);
+  const start = lines.findIndex((line) => line.trimStart().startsWith('```'));
+  if (start >= 0 && lines[start].trim() === PLAN_FENCE) {
+    return planRequest(prompt) === null
+      ? capabilityGapResponse('plan-input', detect(lines.slice(0, start).join('\n')))
+      : null;
+  }
+  return synthesisCapabilityGap(prompt);
 }

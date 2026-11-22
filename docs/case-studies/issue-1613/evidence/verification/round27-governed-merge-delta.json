@@ -1,0 +1,75 @@
+{
+  "oldCases": 222,
+  "newCases": 223,
+  "cargoSha256": "e105ce30db495d37f0154ac644612937e977bbfa3f4d5f8ceb95447abc10b5c1",
+  "caseChanges": [
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::russian_hive_mind_prompt_prefers_link_assistant_project",
+      "change": "updated"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::curated_project_concept_prompt_routes_to_project_lookup",
+      "change": "updated"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::curated_project_lookup_records_summarization_evidence",
+      "change": "removed"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::linksplatform_repository_is_promoted_by_default",
+      "change": "updated"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::explicit_formal_ai_repository_url_still_routes_to_project_lookup",
+      "change": "updated"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::response_language_marker_with_current_object_does_not_replay_prior_repository_lookup",
+      "change": "updated"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::http_fetch_of_curated_github_url_describes_project_via_summarization",
+      "change": "removed"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::http_fetch_of_unknown_url_skips_curated_project_summary",
+      "change": "removed"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::english_hive_mind_prompt_prefers_link_assistant_project",
+      "change": "added"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::offline_project_lookup_records_gap_without_repository_provenance",
+      "change": "added"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::http_fetch_of_registered_path_uses_generic_http_request",
+      "change": "added"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::http_fetch_of_unregistered_url_uses_generic_http_request",
+      "change": "added"
+    }
+  ],
+  "unsupportedChanges": [
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::english_hive_mind_prompt_prefers_link_assistant_project",
+      "change": "removed"
+    },
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs::offline_fetch_reports_the_missing_capture_for_registered_and_unregistered_urls",
+      "change": "added"
+    }
+  ],
+  "sourceChanges": [
+    {
+      "id": "rust/tests/unit/specification/project_lookups.rs",
+      "change": "updated"
+    },
+    {
+      "id": "rust/tests/unit/specification/prompt_variations_facts.rs",
+      "change": "updated"
+    }
+  ]
+}

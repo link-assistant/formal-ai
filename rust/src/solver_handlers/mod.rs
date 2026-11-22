@@ -1,18 +1,14 @@
-//! Specialized free-function handlers extracted from `solver.rs`.
 include!("modules.rs");
 use crate::calculation::{
-    PromptInterpretation, calculation_expression_candidates, evaluate_calculation,
+    PromptInterpretation, calculation_expression_candidates, evaluate_calculation_with_rates,
     interpretation_statements, numeric_calculation_response,
 };
-use crate::engine::{
-    SymbolicAnswer, answer_links_notation, hello_world_program_by_alias, stable_id,
-};
+use crate::engine::{SymbolicAnswer, answer_links_notation, stable_id};
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::solver_helpers::{
     detect_program_languages, extract_backticked, extract_javascript_program,
-    extract_quoted_phrase, format_write_script_execution, infer_program_languages_from_code,
-    infer_source_from_prompt, is_write_script_request, normalize_code_meaning, normalize_meaning,
-    translate_program,
+    extract_quoted_phrase, infer_program_languages_from_code, infer_source_from_prompt,
+    normalize_code_meaning, normalize_meaning, translate_program,
 };
 use crate::translation::{
     detect_source_language, detect_target_language, extract_unquoted_translation_surface,
@@ -21,9 +17,10 @@ pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
     fact_store_resolves, names_coreference_antecedent, resolves_coreference_request,
-    try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
-    try_summarization_request,
+    try_brainstorming_request, try_coreference_request, try_coreference_with_client,
+    try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
+pub(crate) use benchmark_prompts::{roleplay_has_facts, try_summarization_request_with_offline};
 pub use calendar::try_calendar_reasoning;
 pub use calendar_create::{
     calendar_claims, try_calendar_create_event, try_routed_calendar_create_event,
@@ -39,10 +36,10 @@ pub use conversation_memory::{
     execute_memory_query_with_options, names_recall_query, try_conversation_memory,
 };
 pub use creative_composition::{
-    handle_advice_request, handle_brainstorm_request, names_advice_topic, topic_words,
+    handle_advice_request, handle_brainstorm_request, has_advice_evidence, topic_words,
 };
 pub use creative_writing::{
-    handle_creative_writing_request, handle_planning_request, names_cached_destination,
+    handle_creative_writing_request, handle_planning_request, has_planning_evidence,
 };
 pub use document_originality::{names_document_operand, try_document_originality_check};
 pub use document_request::{names_document_format, try_document_request};
@@ -50,9 +47,10 @@ pub use fact_checking::try_fact_checking;
 #[cfg(feature = "meta-language")]
 pub use fact_live_answer::try_explanation_research;
 pub use fact_live_answer::{
-    LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
-    try_fact_lookup_with_client, try_fact_lookup_with_offline,
+    explanation_concept, try_fact_live_answer, try_fact_lookup_with_client,
+    try_fact_lookup_with_offline,
 };
+pub(crate) use factual_qa::fact_comparison_subjects;
 pub use factual_qa::{
     ResolvedSubject, SubjectGate, fact_subject_gate, gated_fact_record, resolve_fact_subject,
     try_fact_comparison,
@@ -73,6 +71,7 @@ pub use pattern_inference::{try_pattern_inference, try_pattern_inference_with_re
 pub use playwright_script::try_playwright_script;
 pub use product_search::{handle_product_search, names_marketplace};
 pub use program_blueprint::try_program_blueprint;
+pub(crate) use program_synthesis::try_bound_publisher_recurrence;
 pub use program_synthesis::{
     looks_like_python_function_request, try_program_synthesis, try_program_synthesis_with_online,
 };
@@ -110,8 +109,7 @@ pub use verifiable_task::{AnswerAgreement, VerifiedAnswer, classify_agreement};
 pub use web_requests::{
     detect_web_search_query, http_fetch_claims, repository_slug_candidates,
     try_explicit_repository_lookup, try_http_fetch, try_http_fetch_with_offline,
-    try_page_formalization_with_client, try_project_lookup,
-    try_project_lookup_with_response_language, try_routed_http_fetch_with_offline,
+    try_page_formalization_with_client, try_project_lookup, try_routed_http_fetch_with_offline,
     try_url_navigate, try_web_search, try_web_search_with_client, try_web_search_with_offline,
     url_navigation_claims,
 };
@@ -124,21 +122,37 @@ pub use {
     web_search_intent::web_search_query_for,
 };
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    if let Some(answer) = calculator_rate::try_calculator_rate_basis(prompt, log) {
+    try_arithmetic_with_online(prompt, log, crate::solver_config::read_network_allowed())
+}
+
+pub(crate) fn try_arithmetic_with_online(
+    prompt: &str,
+    log: &mut EventLog,
+    online: bool,
+) -> Option<SymbolicAnswer> {
+    if let Some(answer) = calculator_rate::try_calculator_rate_basis(prompt, log, online) {
         return Some(answer);
     }
     let candidates = calculation_expression_candidates(prompt);
     let mut first_explicit_error: Option<(String, String, Vec<PromptInterpretation>)> = None;
     for candidate in candidates {
         let expression = candidate.expression;
-        if let Some(answer) = calculator_rate::conversion(prompt, &expression, log) {
+        if let Some(answer) = calculator_rate::conversion(prompt, &expression, log, online) {
             return Some(answer);
         }
         let interpretations = candidate.interpretations;
         let reasoning_steps = candidate.reasoning_steps;
         let result_label = candidate.result_label;
         log.append("calculation:request", expression.clone());
-        match evaluate_calculation(&expression) {
+        match evaluate_calculation_with_rates(&expression, |calculator, currencies| {
+            calculator_rate::supply_expression_quotes(
+                calculator,
+                currencies,
+                &expression,
+                online,
+                log,
+            );
+        }) {
             Ok(evaluation) => {
                 let formatted = evaluation.formatted;
                 log.append("calculation:engine", evaluation.engine.slug());
@@ -688,49 +702,16 @@ pub fn try_write_script(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !is_write_script_request(prompt, normalized) {
-        return None;
-    }
-    let program = hello_world_program_by_alias(normalized)?;
-    if crate::coding::operand_program::program_task_operand(prompt).is_some() {
-        let task = crate::coding::operand_program::operand_task(prompt)?;
-        let mut answer = crate::coding::operand_program::try_write_operand_program(
-            prompt,
-            Some(task.slug),
-            Some(program.language.slug),
-            crate::language::detect(prompt),
-            log,
-        )?;
-        answer.intent = format!("write_script_{}", program.language.slug);
-        return Some(answer);
-    }
-    if crate::coding::operand_program::program_task_print_claim(prompt) {
-        return None;
-    }
-    let body = format!(
-        "Here is a minimal {} script:\n\n```{}\n{}\n```\n\n{}",
-        program.language.name,
-        program.language.code_fence,
-        program.template.code,
-        format_write_script_execution(program)
-    );
-    let intent = format!("write_script_{}", program.language.slug);
-    log.append(
-        "execution_status",
-        program.language.execution_status().label().to_owned(),
-    );
-    log.append("execution_environment", program.language.environment());
-    Some(finalize_simple(
-        prompt,
-        log,
-        &intent,
-        &format!(
-            "response:write_program:hello_world:{}",
-            program.language.slug
-        ),
-        &body,
-        1.0,
-    ))
+    try_write_script_with_offline(prompt, normalized, log, true)
+}
+
+pub(crate) fn try_write_script_with_offline(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<SymbolicAnswer> {
+    crate::coding::operand_program::write_script_program(prompt, normalized, log, offline)
 }
 
 pub fn finalize_simple(

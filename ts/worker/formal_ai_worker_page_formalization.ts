@@ -69,9 +69,12 @@ function pageFormalizationResponse(intent, language, values) {
  * @param {Array<string>} evidence
  * @returns {Promise<{text: string}|{offline: true}|{error: string}>}
  */
-async function pageFormalizationFetch(url, evidence) {
-  const offline = typeof fetch !== "function" || (self.navigator && self.navigator.onLine === false);
-  if (offline) return { offline: true };
+async function pageFormalizationFetch(url, evidence, online) {
+  const offline = !online || typeof fetch !== "function" || (self.navigator && self.navigator.onLine === false);
+  if (offline) {
+    const capture = await sourceWalkFetchCapture(url, { online: false });
+    return capture.ok ? { text: capture.text } : { offline: true };
+  }
   try {
     const response = await self.FormalAIWebSearchComponent.fetchUrl(url, evidence);
     if (!response || !response.ok) return { error: `HTTP ${response ? response.status : 0}` };
@@ -87,13 +90,13 @@ async function pageFormalizationFetch(url, evidence) {
  * @param {string} prompt
  * @returns {Promise<object|null>}
  */
-async function tryPageFormalization(prompt) {
+async function tryPageFormalization(prompt, online) {
   const normalized = normalizePrompt(prompt);
   const url = extractHttpFetchUrl(prompt, normalized);
   if (url === null || !isPageFormalizationPrompt(prompt, normalized)) return null;
   const language = detectLanguage(prompt);
   const evidence = [`page_formalization:request:${url}`];
-  const fetched = await pageFormalizationFetch(url, evidence);
+  const fetched = await pageFormalizationFetch(url, evidence, online);
   const answer = (content, link, confidence) => ({
     intent: "page_formalization",
     content,

@@ -1,0 +1,9 @@
+✔ the missing crate meaning seeds are fetched at boot, once, beside the worker's own seeds (2414.441425ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3177.805449

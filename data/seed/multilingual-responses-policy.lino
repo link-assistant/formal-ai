@@ -59,26 +59,66 @@ multilingual_responses
     intent punctuation_only
     language es
     text "Solo recibí signos de puntuación (`{prompt}`). ¿Qué quieres que haga a continuación?"
-  response response_docs_method_explanation_en
+  response response-documentation-method-explanation-en
     intent docs_method_explanation
     language en
-    text "pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.\n\nScoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.\n\nSource: [pandas.DataFrame.join]({docs_url}) (official pandas docs)."
-  response response_docs_method_explanation_ru
+    text "I couldn't verify `{method}` in the {project} documentation. What is the full method name?"
+  response response-documentation-method-explanation-ru
     intent docs_method_explanation
     language ru
-    text "pandas `DataFrame.join` добавляет столбцы из `other` DataFrame или именованной Series к вызывающему DataFrame и возвращает новый DataFrame.\n\nВ рамках этого метода: по умолчанию это left join по индексу вызывающего DataFrame. Если задан `on`, pandas сопоставляет этот столбец или уровень индекса с индексом объекта `other`. Параметр `how` управляет объединением ключей (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` или `right_anti`). `lsuffix` и `rsuffix` нужны при совпадающих именах столбцов, `sort` сортирует ключи join, а `validate` проверяет связи one-to-one, one-to-many, many-to-one или many-to-many. Для join столбец-к-столбцу документация pandas указывает на `DataFrame.merge`.\n\nИсточник: [pandas.DataFrame.join]({docs_url}) (официальная документация pandas)."
-  response response_docs_method_explanation_hi
+    text "Не удалось проверить `{method}` в документации {project}. Каково полное имя метода?"
+  response response-documentation-method-explanation-hi
     intent docs_method_explanation
     language hi
-    text "pandas `DataFrame.join` कॉल करने वाले DataFrame में `other` DataFrame या named Series के columns जोड़ता है और नया DataFrame लौटाता है.\n\nइस method के दायरे में: default रूप से यह caller के index पर left join करता है. `on` देने पर pandas caller के उस column या index level को `other` object के index से मिलाता है. `how` parameter keys को मिलाने का तरीका चुनता है (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, या `right_anti`). Column नाम टकराने पर `lsuffix` और `rsuffix`, join keys को sort करने के लिए `sort`, और one-to-one, one-to-many, many-to-one, या many-to-many संबंध जांचने के लिए `validate` इस्तेमाल करें. Column-on-column joins के लिए pandas docs `DataFrame.merge` की ओर भेजते हैं.\n\nSource: [pandas.DataFrame.join]({docs_url}) (official pandas docs)."
-  response response_docs_method_explanation_zh
+    text "{project} के दस्तावेज़ में `{method}` की पुष्टि नहीं हो सकी। विधि का पूरा नाम क्या है?"
+  response response-documentation-method-explanation-zh
     intent docs_method_explanation
     language zh
-    text "pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。\n\n只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。\n\nSource: [pandas.DataFrame.join]({docs_url}) (official pandas docs)."
-  response response_docs_method_explanation_es
+    text "未能在 {project} 文档中确认 `{method}`。该方法的完整名称是什么？"
+  response response-documentation-method-explanation-es
     intent docs_method_explanation
     language es
-    text "pandas `DataFrame.join` une las columnas del DataFrame `other` o de una Series con nombre al DataFrame que lo llama y devuelve un DataFrame nuevo.\n\nEn el ámbito de este método: de forma predeterminada hace un left join usando el índice del DataFrame que llama. Si se indica `on`, pandas compara esa columna o ese nivel de índice con el índice del objeto `other`. El parámetro `how` controla la combinación de claves (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` o `right_anti`). Usa `lsuffix` y `rsuffix` cuando los nombres de columna coinciden, `sort` para ordenar las claves del join y `validate` para comprobar relaciones one-to-one, one-to-many, many-to-one o many-to-many. Para joins de columna a columna, la documentación de pandas remite a `DataFrame.merge`.\n\nFuente: [pandas.DataFrame.join]({docs_url}) (documentación oficial de pandas)."
+    text "No pude verificar `{method}` en la documentación de {project}. ¿Cuál es el nombre completo del método?"
+  response response-documentation-method-source-guidance-en
+    intent documentation-method-source-guidance
+    language en
+    text "`{signature}`\n\n{excerpt}\n\n[Official documentation for {method}]({source})"
+  response response-documentation-method-source-guidance-ru
+    intent documentation-method-source-guidance
+    language ru
+    text "`{signature}`\n\n{excerpt}\n\n[Официальная документация для {method}]({source})"
+  response response-documentation-method-source-guidance-hi
+    intent documentation-method-source-guidance
+    language hi
+    text "`{signature}`\n\n{excerpt}\n\n[{method} के आधिकारिक दस्तावेज़]({source})"
+  response response-documentation-method-source-guidance-zh
+    intent documentation-method-source-guidance
+    language zh
+    text "`{signature}`\n\n{excerpt}\n\n[{method} 的官方文档]({source})"
+  response response-documentation-method-source-guidance-es
+    intent documentation-method-source-guidance
+    language es
+    text "`{signature}`\n\n{excerpt}\n\n[Documentación oficial de {method}]({source})"
+  response response-documentation-method-ambiguous-en
+    intent documentation-method-ambiguous
+    language en
+    text "Which `{method}` method do you mean? The documentation lists {candidates}."
+  response response-documentation-method-ambiguous-ru
+    intent documentation-method-ambiguous
+    language ru
+    text "Какой метод `{method}` вы имеете в виду? В документации указаны {candidates}."
+  response response-documentation-method-ambiguous-hi
+    intent documentation-method-ambiguous
+    language hi
+    text "आप किस `{method}` विधि की बात कर रहे हैं? दस्तावेज़ में {candidates} दिए गए हैं।"
+  response response-documentation-method-ambiguous-zh
+    intent documentation-method-ambiguous
+    language zh
+    text "你指的是哪个 `{method}` 方法？文档中列出了 {candidates}。"
+  response response-documentation-method-ambiguous-es
+    intent documentation-method-ambiguous
+    language es
+    text "¿A qué método `{method}` te refieres? La documentación enumera {candidates}."
   response response_external_benchmark_stagnant_suite_en
     intent external_benchmark_stagnant_suite
     language en
@@ -102,23 +142,23 @@ multilingual_responses
   response response_external_benchmark_frontier_summary_en
     intent external_benchmark_frontier_summary
     language en
-    text "Every upstream benchmark case the last scheduled run failed, one frontier prompt per case, so the learning cycle proposes seed surfaces from the same evidence the ledger scores (issue #1085 D5.1). Rewritten by formal-ai benchmark run --frontier-record; a suite that passes fully drops out. Replayed by formal-ai learn cycle --frontier upstream-benchmarks."
+    text "Every upstream benchmark case the last scheduled run failed, one frontier prompt per case, so the learning cycle proposes seed surfaces from the same evidence the ledger scores (issue #1085 D5.1). Rewritten by formal-ai benchmark run --frontier-record; a suite that passes fully drops out. Replayed by formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...]."
   response response_external_benchmark_frontier_summary_ru
     intent external_benchmark_frontier_summary
     language ru
-    text "Каждый случай внешнего бенчмарка, проваленный последним плановым запуском, — по одному пограничному промпту на случай, чтобы цикл обучения предлагал поверхности seed на основе тех же данных, по которым оценивает реестр (issue #1085 D5.1). Перезаписывается командой formal-ai benchmark run --frontier-record; полностью пройденный набор выпадает. Воспроизводится командой formal-ai learn cycle --frontier upstream-benchmarks."
+    text "Каждый случай внешнего бенчмарка, проваленный последним плановым запуском, — по одному пограничному промпту на случай, чтобы цикл обучения предлагал поверхности seed на основе тех же данных, по которым оценивает реестр (issue #1085 D5.1). Перезаписывается командой formal-ai benchmark run --frontier-record; полностью пройденный набор выпадает. Воспроизводится командой formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...]."
   response response_external_benchmark_frontier_summary_hi
     intent external_benchmark_frontier_summary
     language hi
-    text "पिछले scheduled run में विफल हुआ हर upstream benchmark case, हर case के लिए एक frontier prompt, ताकि learning cycle उन्हीं सबूतों से seed surfaces प्रस्तावित करे जिनसे ledger score करता है (issue #1085 D5.1)। formal-ai benchmark run --frontier-record से फिर से लिखा जाता है; पूरी तरह पास होने वाला suite हट जाता है। formal-ai learn cycle --frontier upstream-benchmarks से दोहराया जाता है।"
+    text "पिछले scheduled run में विफल हुआ हर upstream benchmark case, हर case के लिए एक frontier prompt, ताकि learning cycle उन्हीं सबूतों से seed surfaces प्रस्तावित करे जिनसे ledger score करता है (issue #1085 D5.1)। formal-ai benchmark run --frontier-record से फिर से लिखा जाता है; पूरी तरह पास होने वाला suite हट जाता है। formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...] से दोहराया जाता है।"
   response response_external_benchmark_frontier_summary_zh
     intent external_benchmark_frontier_summary
     language zh
-    text "上一次定时运行中失败的每个上游基准用例，每个用例一个前沿提示，使学习循环依据账本评分所用的同一证据来提出种子表面（issue #1085 D5.1）。由 formal-ai benchmark run --frontier-record 重写；完全通过的测试集会被移除。由 formal-ai learn cycle --frontier upstream-benchmarks 重放。"
+    text "上一次定时运行中失败的每个上游基准用例，每个用例一个前沿提示，使学习循环依据账本评分所用的同一证据来提出种子表面（issue #1085 D5.1）。由 formal-ai benchmark run --frontier-record 重写；完全通过的测试集会被移除。由 formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...] 重放。"
   response response_external_benchmark_frontier_summary_es
     intent external_benchmark_frontier_summary
     language es
-    text "Cada caso de benchmark externo que falló en la última ejecución programada, con un prompt de frontera por caso, para que el ciclo de aprendizaje proponga superficies de la semilla a partir de la misma evidencia que puntúa el registro (issue #1085 D5.1). Lo reescribe formal-ai benchmark run --frontier-record; una suite que pasa por completo desaparece. Lo reproduce formal-ai learn cycle --frontier upstream-benchmarks."
+    text "Cada caso de benchmark externo que falló en la última ejecución programada, con un prompt de frontera por caso, para que el ciclo de aprendizaje proponga superficies de la semilla a partir de la misma evidencia que puntúa el registro (issue #1085 D5.1). Lo reescribe formal-ai benchmark run --frontier-record; una suite que pasa por completo desaparece. Lo reproduce formal-ai learn cycle --frontier upstream-benchmarks --from <PATH> [MORE_PATHS...]."
   response response_external_benchmark_frontier_recorded_from_en
     intent external_benchmark_frontier_recorded_from
     language en

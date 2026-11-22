@@ -6,8 +6,7 @@
 //! so every request walks the same 11-step loop documented in `VISION.md`.
 
 pub(crate) use crate::coding::{
-    ExecutionStatus, PROGRAM_LANGUAGES, ProgramExecution, ProgramLanguage, ProgramSpec,
-    WRITE_PROGRAM_INTENT, program_language_by_alias, program_spec, program_template_count,
+    PROGRAM_LANGUAGES, ProgramSpec, WRITE_PROGRAM_INTENT, program_spec, program_template_count,
     supported_program_languages, supported_program_tasks,
 };
 
@@ -15,7 +14,6 @@ use std::sync::OnceLock;
 
 use serde::{Deserialize, Serialize};
 
-use crate::coding::guidance::{program_explanation_section, program_test_instructions};
 use crate::engine_assistant_name::{
     assistant_name_answer, chinese_assistant_name_answer, hindi_assistant_name_answer,
     russian_assistant_name_answer,
@@ -36,6 +34,10 @@ use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::links_format::{flatten_lino_value, format_lino_record};
 use crate::seed;
+
+mod program_answer;
+use program_answer::write_program_answer;
+pub(crate) use program_answer::{execution_report, write_program_answer_with_output};
 
 pub const DEFAULT_MODEL: &str = "formal-ai";
 
@@ -516,7 +518,7 @@ pub(crate) enum SelectedRule {
     AssistantFreeTime,
     Identity,
     AssistantName,
-    WriteProgram(ProgramSpec),
+    WriteProgram(ProgramSpec<'static>),
     UnsupportedWriteProgram {
         task: Option<String>,
         language: Option<String>,
@@ -574,7 +576,13 @@ impl SelectedRule {
             Self::AssistantFreeTime => String::from(assistant_free_time_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::AssistantName => String::from(assistant_name_answer()),
-            Self::WriteProgram(spec) => write_program_answer(*spec, Language::English, false),
+            Self::WriteProgram(spec) => {
+                crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
+                    .map_or_else(
+                        || write_program_answer(*spec, Language::English, false),
+                        |key| crate::coding::guidance::guidance(key, Language::English, &[]),
+                    )
+            }
             Self::UnsupportedWriteProgram { task, language } => crate::program_skill_gap::render(
                 task.as_deref(),
                 language.as_deref(),
@@ -594,6 +602,7 @@ pub(crate) fn language_aware_answer_for(
     language: Language,
     prompt: &str,
     prior_code_response: bool,
+    catalog_program: Option<&crate::coding::catalog_parameters::BoundCatalogProgram>,
 ) -> String {
     match (rule, language) {
         (SelectedRule::AssistantFreeTime, _) => {
@@ -633,9 +642,48 @@ pub(crate) fn language_aware_answer_for(
             String::from(chinese_assistant_name_answer())
         }
         (SelectedRule::WriteProgram(spec), language) => {
-            let answer = write_program_answer(*spec, language, prior_code_response);
-            crate::code_editing::apply_inline_hello_world_output_replacement(prompt, &answer, *spec)
-                .unwrap_or(answer)
+            if let Some(key) =
+                crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
+            {
+                return catalog_program.map_or_else(
+                    || crate::coding::guidance::guidance(key, language, &[]),
+                    |bound| {
+                        write_program_answer_with_output(
+                            ProgramSpec {
+                                template: &bound.template,
+                                ..*spec
+                            },
+                            language,
+                            prior_code_response,
+                            &bound.expected_output,
+                            None,
+                        )
+                    },
+                );
+            }
+            if spec.task.slug == "hello_world"
+                && let Some(output) = crate::code_editing::inline_hello_world_replacement(prompt)
+            {
+                let mut template = spec.template.clone();
+                template.code = crate::code_editing::apply_inline_hello_world_source_replacement(
+                    prompt,
+                    &spec.template.code,
+                    *spec,
+                )
+                .into();
+                write_program_answer_with_output(
+                    ProgramSpec {
+                        template: &template,
+                        ..*spec
+                    },
+                    language,
+                    prior_code_response,
+                    &output,
+                    None,
+                )
+            } else {
+                write_program_answer(*spec, language, prior_code_response)
+            }
         }
         (
             SelectedRule::UnsupportedWriteProgram {
@@ -655,12 +703,6 @@ pub(crate) fn language_aware_answer_for(
 
 pub(crate) fn response_link_for_intent(rule: &SelectedRule, _intent: &str) -> String {
     rule.response_link()
-}
-
-/// Match a default hello-world program from the catalog by language alias.
-pub(crate) fn hello_world_program_by_alias(normalized: &str) -> Option<ProgramSpec> {
-    let language = program_language_by_alias(normalized)?;
-    program_spec("hello_world", language.slug)
 }
 
 pub(crate) fn normalize_prompt(prompt: &str) -> String {
@@ -838,160 +880,4 @@ fn program_template_sources() -> String {
         }
     }
     sources.join(", ")
-}
-
-fn write_program_answer(
-    spec: ProgramSpec,
-    language: Language,
-    prior_code_response: bool,
-) -> String {
-    // Issue #324: the natural-language framing around the generated program is
-    // localized to the detected (or preferred) response language so a Russian,
-    // Hindi, or Chinese request no longer receives an all-English reply. The
-    // code itself and the literal shell commands stay in their canonical form
-    // because they are the requested artefact, not prose.
-    //
-    // Issue #330: a code answer must teach a novice — so the program is always
-    // accompanied by a plain-language explanation of *how it works* and
-    // step-by-step instructions for testing it. When the dialog already walked
-    // the user through running code (`prior_code_response`), the verbose setup
-    // steps are omitted and replaced by a short "test it the same way" note so
-    // follow-up edits stay concise.
-    let expected_output = spec.expected_output();
-    format!(
-        "{}\n\n```{}\n{}\n```\n\n{}\n\n{}\n\n{}",
-        write_program_intro(spec.language.name, spec.task.label, language),
-        spec.language.code_fence,
-        spec.template.code,
-        execution_report(
-            spec.language,
-            &spec.run_command_line(),
-            &expected_output,
-            language,
-            rediscovered_page(spec).as_deref(),
-        ),
-        program_explanation_section(spec, language),
-        program_test_instructions(spec, language, prior_code_response),
-    )
-}
-
-pub(crate) fn write_program_intro(
-    language_name: &str,
-    task_label: &str,
-    language: Language,
-) -> String {
-    match language {
-        Language::Russian => {
-            format!("Вот минимальная программа на языке {language_name} ({task_label}):")
-        }
-        Language::Hindi => {
-            format!("यहाँ {language_name} में एक न्यूनतम प्रोग्राम है ({task_label}):")
-        }
-        Language::Chinese => format!("这是一个最小的 {language_name} 程序（{task_label}）："),
-        _ => format!("Here is a minimal {language_name} {task_label} program:"),
-    }
-}
-
-/// The page a documentation-sourced program was rediscovered from, when no
-/// recorded run verified that exact program (issue #1165).
-///
-/// Such a program is not the one the language's recorded harness run
-/// executed, so its execution status may not borrow that run.
-pub(crate) fn rediscovered_page(spec: ProgramSpec) -> Option<String> {
-    let pair = crate::coding::documented_pair(spec.task.slug, spec.language.slug)?;
-    crate::discovery_production::program_verification(&pair.program)
-        .rediscovered_page()
-        .map(str::to_owned)
-}
-
-pub(crate) fn execution_report(
-    program_language: &ProgramLanguage,
-    run_command: &str,
-    output: &str,
-    language: Language,
-    rediscovered_from: Option<&str>,
-) -> String {
-    let execution = &program_language.execution;
-    if let Some(page) = rediscovered_from {
-        // The status names the page and the check that actually ran; the
-        // language's notes describe the recorded run of another program, so
-        // they are not repeated here.
-        let status_line = crate::seed::render_response(
-            "program_execution_rediscovered",
-            language.slug(),
-            &[("page", page)],
-        )
-        .or_else(|| {
-            crate::seed::render_response("program_execution_rediscovered", "en", &[("page", page)])
-        })
-        .unwrap_or_default();
-        let command_lines = execution_command_lines(execution, run_command);
-        let output_label = execution_output_label(ExecutionStatus::Unavailable, language);
-        return format!("{status_line}\n{command_lines}\n{output_label}:\n```text\n{output}\n```");
-    }
-    let status = program_language.execution_status();
-    let environment = program_language.environment();
-    let command_lines = execution_command_lines(execution, run_command);
-    let status_phrase = execution_status_phrase(status, language);
-    let output_label = execution_output_label(status, language);
-    let notes = program_language.execution_notes();
-    let status_line = match language {
-        Language::Russian => format!("Статус выполнения: {status_phrase} в среде «{environment}»."),
-        Language::Hindi => format!("निष्पादन स्थिति: {status_phrase} ({environment} में)।"),
-        Language::Chinese => format!("执行状态：{status_phrase}（{environment}）。"),
-        _ => format!("Execution status: {status_phrase} in {environment}."),
-    };
-
-    format!("{status_line}\n{command_lines}\n{output_label}:\n```text\n{output}\n```\n{notes}")
-}
-
-fn execution_status_phrase(status: ExecutionStatus, language: Language) -> &'static str {
-    match (status, language) {
-        (ExecutionStatus::Verified, Language::Russian) => "скомпилировано и запущено",
-        (ExecutionStatus::Verified, Language::Hindi) => "संकलित और चलाया गया",
-        (ExecutionStatus::Verified, Language::Chinese) => "已编译并运行",
-        (ExecutionStatus::Unavailable, Language::Russian) => "не скомпилировано и не запущено",
-        (ExecutionStatus::Unavailable, Language::Hindi) => "संकलित या चलाया नहीं गया",
-        (ExecutionStatus::Unavailable, Language::Chinese) => "未编译或运行",
-        (ExecutionStatus::NotProbed, Language::Russian) => "не проверялось в этой среде",
-        (ExecutionStatus::NotProbed, Language::Hindi) => "इस वातावरण में जाँचा नहीं गया",
-        (ExecutionStatus::NotProbed, Language::Chinese) => "未在本环境中探测",
-        (status, _) => status.label(),
-    }
-}
-
-/// The label above the output block.
-///
-/// Issue #1138 plan 06 leaf L2: `NotProbed` gets its own label rather than
-/// borrowing `Unavailable`'s. "Expected output after verification" promises a
-/// verification that is coming; "not observed in this environment" states what
-/// actually happened, which is that nothing looked.
-fn execution_output_label(status: ExecutionStatus, language: Language) -> &'static str {
-    match (status, language) {
-        (ExecutionStatus::Verified, Language::Russian) => "Вывод",
-        (ExecutionStatus::Unavailable, Language::Russian) => "Ожидаемый вывод после проверки",
-        (ExecutionStatus::NotProbed, Language::Russian) => "Вывод, не наблюдавшийся в этой среде",
-        (ExecutionStatus::Verified, Language::Hindi) => "आउटपुट",
-        (ExecutionStatus::Unavailable, Language::Hindi) => "सत्यापन के बाद अपेक्षित आउटपुट",
-        (ExecutionStatus::NotProbed, Language::Hindi) => "आउटपुट, इस वातावरण में नहीं देखा गया",
-        (ExecutionStatus::Verified, Language::Chinese) => "输出",
-        (ExecutionStatus::Unavailable, Language::Chinese) => "验证后的预期输出",
-        (ExecutionStatus::NotProbed, Language::Chinese) => "输出，未在本环境中观察到",
-        (ExecutionStatus::Verified, _) => "Output",
-        (ExecutionStatus::Unavailable, _) => "Expected output after verification",
-        (ExecutionStatus::NotProbed, _) => "Output, not observed in this environment",
-    }
-}
-
-/// The commands a reader types, verbatim.
-///
-/// `run_command` is passed in rather than read off `execution` because a task
-/// that reads standard input is run with its fixture piped in
-/// ([`crate::coding::ProgramSpec::run_command_line`], issue #863); for every
-/// other task it is `execution.run_command` unchanged.
-fn execution_command_lines(execution: &ProgramExecution, run_command: &str) -> String {
-    execution.check_command.as_deref().map_or_else(
-        || format!("Run command: `{run_command}`"),
-        |check_command| format!("Check command: `{check_command}`\nRun command: `{run_command}`"),
-    )
 }

@@ -1,0 +1,62 @@
+{
+    "author": {
+        "id": "MDQ6VXNlcjE0MzE5MDQ=",
+        "is_bot": false,
+        "login": "konard",
+        "name": "Konstantin Diachenko"
+    },
+    "body": "See screenshots:\n\n<img width=\"1405\" height=\"948\" alt=\"Screenshot 2026-11-21 at 6 23 30\u202fPM\" src=\"https://github.com/user-attachments/assets/9a6dc181-3b0e-421f-b0a8-187d824f1b8e\" />\n\nIt is clearly a regression, which we must not allow to happen again.\n\n<img width=\"1405\" height=\"948\" alt=\"Screenshot 2026-11-21 at 6 28 56\u202fPM\" src=\"https://github.com/user-attachments/assets/a0eaf0db-d750-4e14-b7a7-f5d4974f1232\" />\n\nReporting also didn't work.\n\nGreetings and reporting of issues to Formal AI repository in all places must be critical set of tests, that should be always executed before deployment of next version.\n\nWe also need to by default not output `(formal-ai-log-v1 (object (field component (string formal_ai%3A%3Aclient_integrations)) (field dialog_id (null)) (field kind (string native_diagnostic)) (field level (string debug)) (field message (string formal-ai%3A%20started%20a%20temporary%20server%20in%20agent%20mode%20%28tool%20and%20shell%20execution%20enabled%29)) (field metadata (object)) (field pid (number 82023)) (field schema (string formal-ai-diagnostic-v1)) (field sequence (number 1)) (field timestamp (string 2026-11-21T15%3A22%3A58.648240000Z)) (field timestamp_precision (string nanoseconds))))` for any `formal-ai with claude` or `formal-ai with <tool>` command, yet all these can go in logs in background.\n\nAs it looks scary:\n\n<img width=\"1405\" height=\"948\" alt=\"Screenshot 2026-11-21 at 6 30 40\u202fPM\" src=\"https://github.com/user-attachments/assets/fbcbd992-f3f0-4462-bf54-2d0e3e2931a6\" />\n\nIn opencode it was working a bit better: https://github.com/link-assistant/formal-ai/issues/1610\n\nYet we should fully check all small issues and fix them:\n\n<img width=\"1405\" height=\"948\" alt=\"Screenshot 2026-11-21 at 6 39 46\u202fPM\" src=\"https://github.com/user-attachments/assets/2aee4eab-2e6a-46e1-8845-e2ffdf249330\" />\n\n<img width=\"1405\" height=\"948\" alt=\"Screenshot 2026-11-21 at 6 40 03\u202fPM\" src=\"https://github.com/user-attachments/assets/83741d7f-b7f2-4740-a3db-68c6c2f19649\" />\n\n<img width=\"1405\" height=\"948\" alt=\"Screenshot 2026-11-21 at 6 40 08\u202fPM\" src=\"https://github.com/user-attachments/assets/b43ea92a-5329-4f07-b5a4-d2438248dffc\" />\n\nRepeating of `Let me run the requested command to get that for you.` is not a good idea, instead we should briefly explain by default in all commands we are executing what we actually doing shortly, so it is more useful for the user.\n\nhttps://github.com/link-assistant/formal-ai/issues/1610 must be also delivered in this pull request.\n\nWe need to download all logs and data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), in which we will reconstruct timeline/sequence of events, list of each and all requirements from the issue, find root causes of the each problem, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).\n\nIf there is not enough data to find actual root cause, add debug output and verbose mode if not present, that will allow us to find root cause on next iteration.\n\nIf issue related to any other repository/project, where we can report issues on GitHub, please do so. Each issue must contain reproducible examples, workarounds and suggestions for fix the issue in code. Also double check to fully apply requirements to entire codebase, so if we have issue in multiple places, it should be fixed in all them.\n\nPlease plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.",
+    "comments": [
+        {
+            "id": "IC_kwDOSbOoU88AAAABpR0sRw",
+            "author": {
+                "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "Formal AI through Hive Mind did not produce a verified new draft PR in this attempt. Attempt outcome: `serving-identity-unverified` (zero capability credit). [Complete session evidence](https://github.com/link-assistant/formal-ai/actions/runs/44919229153/artifacts/14713940488). [Workflow run and build/attempt logs](https://github.com/link-assistant/formal-ai/actions/runs/44919229153). No draft was hand-fixed or merged.",
+            "createdAt": "2026-11-21T15:45:27Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/link-assistant/formal-ai/issues/1609#issuecomment-7065119815",
+            "viewerDidAuthor": false
+        },
+        {
+            "id": "IC_kwDOSbOoU88AAAABpcCMjQ",
+            "author": {
+                "login": "konard"
+            },
+            "authorAssociation": "MEMBER",
+            "body": "Looks like we failed to deliver new release here, we need to do all minimal fixes to unlock the release, so our system can be testable by users.",
+            "createdAt": "2026-11-22T07:17:30Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/link-assistant/formal-ai/issues/1609#issuecomment-7075826829",
+            "viewerDidAuthor": true
+        },
+        {
+            "id": "IC_kwDOSbOoU88AAAABpc9IHw",
+            "author": {
+                "login": "konard"
+            },
+            "authorAssociation": "MEMBER",
+            "body": "Still no GitHub and packages and docker releases produced.",
+            "createdAt": "2026-11-22T08:52:47Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/link-assistant/formal-ai/issues/1609#issuecomment-7076792351",
+            "viewerDidAuthor": true
+        }
+    ],
+    "createdAt": "2026-11-21T15:26:54Z",
+    "number": 1609,
+    "state": "OPEN",
+    "title": "`Hello` and reporting does not work in `formal-ai with claude`, `formal-ai with opencode`",
+    "updatedAt": "2026-11-22T08:52:47Z",
+    "url": "https://github.com/link-assistant/formal-ai/issues/1609"
+}

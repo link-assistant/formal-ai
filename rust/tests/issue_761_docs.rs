@@ -158,7 +158,7 @@ fn memory_server_output_and_language_contracts_are_documented() {
             "~/.formal-ai/",
             "%APPDATA%\\formal-ai\\",
             "memory.lino",
-            "-v \"$HOME/.formal-ai:/root/.formal-ai\"",
+            "-v \"$HOME/.formal-ai:/home/box/.formal-ai\"",
             "Telegram",
             "VS Code",
             "FORMAL_AI_MEMORY_PATH",
@@ -220,7 +220,12 @@ fn each_requested_surface_has_setup_and_shared_memory_guidance() {
         ),
         (
             "docker.md",
-            &["docker compose", "-v", "/root/.formal-ai", "shared memory"],
+            &[
+                "docker compose",
+                "-v",
+                "/home/box/.formal-ai",
+                "shared memory",
+            ],
         ),
         (
             "browser-demo.md",

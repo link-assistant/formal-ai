@@ -199,11 +199,11 @@ merge_conflict_policy
   artifact trusted_source_recurrence_cache
     cause derived_artifact
     merge union
-    path "js/source-cache/wikifunctions-recurrences.lino"
+    path "rust/tests/fixtures/coding-discovery/wikifunctions/recurrence-replay.lino"
     extracted_from "src/web/source-cache/wikifunctions-recurrences.lino"
     regenerate "cargo run --example generate_recurrence_source_cache -- --write"
     verify "cargo run --example generate_recurrence_source_cache"
-    note "This is procedure memory derived from committed Wikifunctions and Wikidata captures, not seed knowledge. Removing it and running the generator reconstructs the same formal recurrence, aliases, provenance, and source tests."
+    note "This test fixture is derived from committed Wikifunctions and Wikidata captures. Runtime synthesis discovers current publishers through the source client. Removing it and running the generator reconstructs the same formal recurrence, aliases, provenance, and source tests."
   artifact worker_modules
     cause sequential_file_name
     path "js/worker/formal_ai_worker_*.js"

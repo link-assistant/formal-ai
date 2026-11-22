@@ -4,16 +4,12 @@
 
 import { cached } from './host.mjs';
 import { agenticMessage } from './messages.mjs';
-import { canonicalChangeRequest, changeRequestLinksNotation } from './crate/change_request.mjs';
+import { changeRequestForModule, changeRequestLinksNotation } from './crate/change_request.mjs';
+import { repairData, repairIntent } from './repair_input.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
 
 /** Mirrors `const CHANGE_PATH`. */
 export const CHANGE_PATH = 'requested-change.lino';
-
-/** Mirrors `fn cached_change_request`. */
-function cachedChangeRequest() {
-  return cached('canonical-change-request', canonicalChangeRequest);
-}
 
 /** Mirrors `const CHANGE_KEYWORDS` (a `|`-separated list in agentic-messages.lino). */
 const changeKeywords = () => cached('change-request-keywords', () => agenticMessage('change_request_keywords').split('|'));
@@ -23,7 +19,7 @@ const changeKeywords = () => cached('change-request-keywords', () => agenticMess
  * @param {string} prompt
  */
 export function isChangeRequestTask(prompt) {
-  const lower = prompt.toLowerCase();
+  const lower = repairIntent(prompt).toLowerCase();
   if (changeKeywords().some((keyword) => lower.includes(keyword))) return true;
   const targetsTheSystem = agenticMessage('change_request_system_targets').split('|').some((target) => lower.includes(target));
   const asksToChange = (lower.includes('change') || lower.includes('modify') || lower.includes('add a'))
@@ -31,19 +27,22 @@ export function isChangeRequestTask(prompt) {
   return targetsTheSystem && asksToChange;
 }
 
-/** Mirrors `fn render_document` in rust/src/agentic_coding/change_request.rs. */
-export function renderDocument() {
-  return `${trimEnd(changeRequestLinksNotation(cachedChangeRequest()))}\n`;
+/** Ground the requested change in the runtime's owned source. */
+export function requestFromTask(task) {
+  const input = repairData(task);
+  if (typeof input?.request !== 'string' || typeof input.target_module !== 'string') return null;
+  try {
+    return changeRequestForModule(input.request, input.target_module);
+  } catch {
+    return null;
+  }
 }
 
-/** Mirrors `fn change_request`. */
-export function changeRequest() {
-  return { ...cachedChangeRequest() };
+export function renderDocument(request) {
+  return `${trimEnd(changeRequestLinksNotation(request))}\n`;
 }
 
-/** Mirrors `fn final_answer` in rust/src/agentic_coding/change_request.rs. */
-export function finalAnswer(document) {
-  const request = cachedChangeRequest();
+export function finalAnswer(request, document) {
   return agenticMessage('change_request_final_answer', {
     requirement: request.derived_requirement,
     test: request.proposed_test,

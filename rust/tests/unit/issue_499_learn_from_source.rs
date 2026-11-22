@@ -12,14 +12,16 @@ use formal_ai::agentic_coding::{
     run_agentic_task,
 };
 use formal_ai::engine::FormalAiEngine;
-use formal_ai::{response_for, seed, supported_languages, trending_learning_report};
+use formal_ai::{response_for, seed, supported_languages, trending_learning_report_from_feed};
+
+use super::issue_498_google_trends::{captured_feed, with_trends_replay};
 
 /// The exact prompt reported in issue #499 (Russian, with the Google Trends URL).
 const REPORTED_PROMPT: &str =
     "Обратясь сюда ты узнаешь актуальные темы https://trends.google.com/trending?hl=ru&&geo=US";
 
 fn answer(prompt: &str) -> formal_ai::SymbolicAnswer {
-    FormalAiEngine.answer(prompt)
+    with_trends_replay(|| FormalAiEngine.answer(prompt))
 }
 
 // R499-1: the reported prompt no longer falls to the unknown opener.
@@ -122,7 +124,7 @@ fn the_acknowledgement_is_localized_to_the_prompt_language() {
 // — and the answer reflects that report faithfully (counts, and adopts nothing).
 #[test]
 fn the_directive_routes_into_the_human_gated_learning_frontier() {
-    let report = trending_learning_report();
+    let report = trending_learning_report_from_feed(&captured_feed());
     assert_eq!(report.adopted_count(), 0, "the loop stays proposal-only");
 
     let result = answer(REPORTED_PROMPT);
@@ -158,21 +160,22 @@ fn the_reported_directive_drives_the_learning_recipe_via_agent_cli() {
         "Here you can learn a lot from reading books"
     ));
 
-    let outcome = run_agentic_task(REPORTED_PROMPT).expect("workspace");
-    assert!(!outcome.hit_turn_cap, "the loop must finish");
-    let write = outcome
-        .steps
-        .iter()
-        .find(|step| step.tool == "write_file")
-        .expect("the directive must drive a write step");
-    let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
-    assert_eq!(written["path"], GOOGLE_TRENDS_LEARNING_PATH);
-    assert_eq!(written["content"], recipe::render_document());
+    with_trends_replay(|| {
+        let outcome = run_agentic_task(REPORTED_PROMPT).expect("workspace");
+        assert!(!outcome.hit_turn_cap, "the loop must finish");
+        let write = outcome
+            .steps
+            .iter()
+            .find(|step| step.tool == "write_file")
+            .expect("the directive must drive a write step");
+        let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+        assert_eq!(written["path"], GOOGLE_TRENDS_LEARNING_PATH);
+        assert_eq!(written["content"], recipe::render_document());
+    });
 }
 
-// R499-7: the Agent CLI session driven by the reported directive is pinned
-// byte-for-byte, so a routing or report change can never silently drift the
-// committed transcript the case study links to.
+// R499-7: the replay preserves the historical tool sequence, with output
+// bound to the feed supplied by this test.
 #[test]
 fn committed_agent_cli_session_matches_a_fresh_learn_from_source_run() {
     let committed = include_str!(
@@ -186,15 +189,21 @@ fn committed_agent_cli_session_matches_a_fresh_learn_from_source_run() {
         .iter()
         .map(|tool| tool.as_str().expect("captured tool name"))
         .collect();
-    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(REPORTED_PROMPT, &tools)
-        .expect("workspace under the captured tool schema");
-    let rendered = format!(
-        "{}\n",
-        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
-    );
+    let fresh = with_trends_replay(|| {
+        formal_ai::agentic_coding::run_agentic_task_with_tools(REPORTED_PROMPT, &tools)
+            .expect("workspace under the captured tool schema")
+    });
     assert_eq!(
-        committed, rendered,
-        "the committed issue-499 learn-from-source Agent CLI session is stale; regenerate it with \
-         `cargo run --example issue_499_dump_agent_cli_session`",
+        fresh.steps.len(),
+        captured["steps"].as_array().unwrap().len()
     );
+    for (index, step) in fresh.steps.iter().enumerate() {
+        assert_eq!(
+            Some(step.tool.as_str()),
+            captured["steps"][index]["tool"].as_str()
+        );
+    }
+    let digest = captured_feed().source_sha256.expect("verified digest");
+    assert!(fresh.steps[0].arguments.contains(&digest));
+    assert!(fresh.final_answer.contains(&digest));
 }

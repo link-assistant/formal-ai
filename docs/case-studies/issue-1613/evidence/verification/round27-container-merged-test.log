@@ -1,0 +1,15 @@
+✔ target-native Node26 donor and shared libraries precede agent capability checks (2.33209ms)
+✔ slim reuses the same donor payload and launchers without installing distro npm (0.723249ms)
+✔ both image variants ship and run the greeting and issue form smoke (0.815491ms)
+✔ DinD memory path from main run 45001543202 is writable by the box runtime user (2.547932ms)
+✔ Node18 regression is rejected in both images (7.367972ms)
+✔ architecture pin and missing capability fail closed (26.764701ms)
+✔ captured Hive npm failure is repaired by the shipped package payload and launchers (3794.941426ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3995.054662

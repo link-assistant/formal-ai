@@ -5,9 +5,9 @@
 // port reads the same repository files through the host. Every step, role
 // and the verification sentence are templates in agentic-messages.lino.
 
-import { cached, readText } from '../host.mjs';
+import { readText } from '../host.mjs';
 import { agenticMessage } from '../messages.mjs';
-import { acceptedChange, canonicalChangeRequest, ownedContentId, quote } from './change_request.mjs';
+import { ownedContentId, quote } from './change_request.mjs';
 import { stableId } from './engine_stable_identifier.mjs';
 import { trimEnd } from './rust_str.mjs';
 
@@ -22,17 +22,22 @@ function embeddedText(path) {
   try {
     return readText(path);
   } catch {
-    return '';
+    return null;
   }
+}
+
+function artifactContentIdentifier(path) {
+  const text = embeddedText(path);
+  return text === null ? null : stableId('reattach_artifact', text);
 }
 
 /** Mirrors `fn grounded_artifacts`. */
 function groundedArtifacts() {
   return [
-    { path: 'Cargo.toml', role: agenticMessage('rebuild_plan_role_cargo'), content_id: stableId('reattach_artifact', embeddedText(EMBEDDED.cargo_toml)) },
-    { path: 'src/main.rs', role: agenticMessage('rebuild_plan_role_server'), content_id: ownedContentId('src/main.rs') ?? '' },
-    { path: 'js/worker/formal_ai_worker.js', role: agenticMessage('rebuild_plan_role_worker'), content_id: stableId('reattach_artifact', embeddedText(EMBEDDED.worker_glue)) },
-    { path: 'js/index.html', role: agenticMessage('rebuild_plan_role_ui'), content_id: stableId('reattach_artifact', embeddedText(EMBEDDED.ui_entry)) },
+    { path: 'Cargo.toml', role: agenticMessage('rebuild_plan_role_cargo'), content_id: artifactContentIdentifier(EMBEDDED.cargo_toml) },
+    { path: 'src/main.rs', role: agenticMessage('rebuild_plan_role_server'), content_id: ownedContentId('src/main.rs') },
+    { path: 'js/worker/formal_ai_worker.js', role: agenticMessage('rebuild_plan_role_worker'), content_id: artifactContentIdentifier(EMBEDDED.worker_glue) },
+    { path: 'js/index.html', role: agenticMessage('rebuild_plan_role_ui'), content_id: artifactContentIdentifier(EMBEDDED.ui_entry) },
   ];
 }
 
@@ -50,6 +55,7 @@ function pipelineSteps() {
 /** Mirrors `RebuildPlan::for_accepted_change`. */
 export function rebuildPlanFor(accepted) {
   const artifacts = groundedArtifacts();
+  if (artifacts.some(artifact => !artifact.content_id)) return null;
   const artifactIds = artifacts.map((artifact) => artifact.content_id).join(',');
   return {
     id: stableId('rebuild_plan', `${accepted.change_id}:${artifactIds}`),
@@ -88,14 +94,4 @@ export function rebuildPlanLinksNotation(plan) {
   }
   out += field('verification', plan.verification);
   return trimEnd(out);
-}
-
-/**
- * Mirrors `fn canonical_rebuild_plan`: the canonical change, accepted by a
- * green issue-362 gate (4 passed) and the `maintainer`'s approval.
- */
-export function canonicalRebuildPlan() {
-  return cached('canonical-rebuild-plan', () => rebuildPlanFor(
-    acceptedChange(canonicalChangeRequest(), 'maintainer', 'issue_362_multilingual_coding_modification', 4),
-  ));
 }

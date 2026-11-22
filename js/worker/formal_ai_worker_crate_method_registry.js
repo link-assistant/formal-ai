@@ -30,7 +30,8 @@ const PRELUDE_METHOD_NAMES = Object.freeze(['diagnostic', 'nl_tool', 'behavior_r
 const CONTEXTUAL_HANDLER_NAMES = Object.freeze([
   'http_fetch', 'proof_request', 'meta_explanation', 'numeric_list', 'program_synthesis',
   'shell_command_transform', 'text_manipulation', 'task_decomposition', 'response_language_followup',
-  'fact_checking', 'world_state', 'web_search', 'procedural_how_to', 'fact_lookup',
+  'fact_checking', 'world_state', 'web_search', 'docs_method_explanation',
+  'procedural_how_to', 'fact_lookup',
 ]);
 const HANDLER_PRECEDENCE_PATH = 'data/seed/handler-precedence.lino';
 const METHOD_EXECUTION_PATH = 'data/seed/method-execution.lino';

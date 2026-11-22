@@ -81,7 +81,7 @@ describe("the stage panes", () => {
     assert.equal(panes.diagram, event.mermaid);
     assert.match(panes.diagram, /\n {4}class s0 current$/);
     assert.deepEqual(panes.rust, pane("rust/src/solver.rs", event.rust_line,
-      "solve_with_history_probability_store_and_intent_cache", event.rust_excerpt));
+      "solve_inner", event.rust_excerpt));
     assert.deepEqual(panes.js, pane("js/worker/formal_ai_worker_solver_events.js", event.js_line,
       "solverEventLog", event.js_excerpt));
     assert.ok(event.rust_line > 0 && event.js_line > 0);

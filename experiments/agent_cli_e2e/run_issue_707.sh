@@ -27,10 +27,18 @@ LOOP_DEADLINE_SECONDS=$((TEST_BUDGET_SECONDS - VERIFY_RESERVE_SECONDS))
 EVIDENCE_DIR="${EVIDENCE_DIR:-$ROOT/docs/case-studies/issue-707/agent-cli-evidence/computer-use}"
 WORKDIR="$(mktemp -d)"
 SERVER_PID=""
+PUBLISHER_PID=""
+
+# shellcheck source=experiments/agent_cli_e2e/issue_707_fixture.sh
+source "$ROOT/experiments/agent_cli_e2e/issue_707_fixture.sh"
 
 cleanup() {
   if [[ -n "$SERVER_PID" ]]; then
     kill "$SERVER_PID" 2>/dev/null || true
+  fi
+  if [[ -n "$PUBLISHER_PID" ]]; then
+    kill "$PUBLISHER_PID" 2>/dev/null || true
+    wait "$PUBLISHER_PID" 2>/dev/null || true
   fi
   rm -rf -- "$WORKDIR"
 }
@@ -51,12 +59,19 @@ command -v "$AGENT" >/dev/null
   exit 2
 }
 
-mapfile -t TASK_IDS < <(sed -n 's/^  task //p' "$ROOT/data/seed/computer-use-tasks.lino")
-mapfile -t TASK_PROMPTS < <(sed -n 's/^    prompt en "\(.*\)"$/\1/p' "$ROOT/data/seed/computer-use-tasks.lino")
+setup_issue_707_fixture || fail "fixture publisher did not start"
+
+mapfile -t TASK_IDS < <(sed -n 's/^  task //p' "$COMPUTER_USE_CORPUS")
+mapfile -t TASK_PROMPTS < <(sed -n 's/^    prompt en "\(.*\)"$/\1/p' "$COMPUTER_USE_CORPUS")
 [[ "${#TASK_IDS[@]}" -eq 10 ]] || fail "expected exactly ten seeded task ids"
 [[ "${#TASK_PROMPTS[@]}" -eq 10 ]] || fail "expected exactly ten English prompts"
 
-mkdir -p "$EVIDENCE_DIR"
+mkdir -p "$EVIDENCE_DIR" "$WORKDIR/prompts"
+for index in "${!TASK_IDS[@]}"; do
+  "$BIN" --silent computer-use --from "$COMPUTER_USE_CORPUS" --plan --prompt "${TASK_PROMPTS[$index]}" \
+    >"$WORKDIR/prompts/${TASK_IDS[$index]}.txt" || fail "recorded plan could not be derived"
+done
+
 for phase in record replay; do
   mkdir -p "$EVIDENCE_DIR/$phase" "$WORKDIR/$phase"
   CURRENT_PHASE="$phase"
@@ -104,7 +119,7 @@ EOF
 
   for index in "${!TASK_IDS[@]}"; do
     task_id="${TASK_IDS[$index]}"
-    prompt="${TASK_PROMPTS[$index]}"
+    prompt="$(<"$WORKDIR/prompts/$task_id.txt")"
     log="$EVIDENCE_DIR/$phase/$task_id.jsonl"
     remaining=$((LOOP_DEADLINE_SECONDS - SECONDS))
     if [[ "$remaining" -le 0 ]]; then
@@ -148,7 +163,7 @@ started with ${session_seconds}s of its ${AGENT_TIMEOUT_SECONDS}s left"
 done
 
 node "$ROOT/experiments/agent_cli_e2e/verify_issue_707.mjs" \
-  "$ROOT/data/seed/computer-use-tasks.lino" "$EVIDENCE_DIR"
+  "$COMPUTER_USE_CORPUS" "$EVIDENCE_DIR" "$WORKDIR/prompts"
 
 echo "== issue #707 real Agent CLI record/replay passed =="
 echo "evidence: $EVIDENCE_DIR"

@@ -2,7 +2,6 @@
 // (rust/src/agentic_coding/formalize.rs). Every record is
 // `id\n  key "value"` produced by `format_lino_record`.
 
-import { cached, readText } from './host.mjs';
 import { Lexicon, TermKind, predicateUse } from './lexicon.mjs';
 import { ConceptGraph } from './crate/formalization_concept_links.mjs';
 import { emitNeeds } from './crate/formalization_needs.mjs';
@@ -10,14 +9,6 @@ import { sentences } from './crate/formalization_segment.mjs';
 import { detect } from './crate/language.mjs';
 import { formatLinoRecord } from './crate/links_format.mjs';
 import { byteOrder, isAlphanumeric, trim, trimEnd, trimMatches } from './crate/rust_str.mjs';
-
-/** Mirrors `CANONICAL_FISHERMAN_SYNOPSIS`'s embedded path. */
-export const FISHERMAN_SYNOPSIS_PATH = 'data/agentic-coding/fisherman-synopsis.txt';
-
-/** Mirrors `const CANONICAL_FISHERMAN_SYNOPSIS` (read through the host). */
-export function canonicalFishermanSynopsis() {
-  return cached('agentic-fisherman-synopsis', () => readText(FISHERMAN_SYNOPSIS_PATH));
-}
 
 /** Mirrors `const FISHERMAN_DOC_ID`. */
 export const FISHERMAN_DOC_ID = 'tale:fisherman-and-fish';

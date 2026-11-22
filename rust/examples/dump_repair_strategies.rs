@@ -1,6 +1,1 @@
-fn main() {
-    print!(
-        "{}",
-        formal_ai::agentic_coding::repair_strategy::render_document()
-    );
-}
+include!("classify_repair.rs");

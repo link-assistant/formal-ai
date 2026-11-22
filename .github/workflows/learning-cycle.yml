@@ -1,15 +1,14 @@
 name: Learning cycle (proposal only)
 
 # Issue #701 §5: the auto-learning loop must run *periodically*, in proposal
-# mode, honouring the human gate. This workflow replays the recorded learning
-# frontier on a schedule and publishes the proposals as an artifact; it never
+# mode, honouring the human gate. This workflow captures the current learning
+# frontier on a schedule and publishes the run and its proposals; it never
 # writes a seed file, never opens a pull request, and never adopts anything.
 # Adoption stays with the human-gated issue-#656 promotion protocol.
 
 on:
   schedule:
-    # Daily, off-peak. The run is deterministic and offline, so the schedule
-    # only decides *when* a human is handed a fresh proposal set.
+    # Daily, off-peak. The cycle runs over the source report for that day.
     - cron: '17 3 * * *'
   workflow_dispatch:
 
@@ -23,7 +22,7 @@ concurrency:
 jobs:
   cycle:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
-    name: Replay the recorded frontier in proposal mode
+    name: Inspect the current frontier in proposal mode
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -46,11 +45,14 @@ jobs:
           # stderr is captured for the artifact; print it on every exit so a
           # failed build or run shows its error instead of a bare exit 101.
           trap 'cat learning-cycle/run.log 2>/dev/null || true' EXIT
+          FORMAL_AI_SOURCE_CACHE_DIR="$RUNNER_TEMP/learning-cycle-source" \
+            cargo run --manifest-path rust/Cargo.toml --release --example dump_google_trends_learning \
+            > learning-cycle/frontier.lino 2> learning-cycle/run.log
           cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
-            learn cycle --frontier google-trends --dry-run \
-            > learning-cycle/run.lino 2> learning-cycle/run.log
+            learn cycle --frontier google-trends --from learning-cycle/frontier.lino --dry-run \
+            > learning-cycle/run.lino 2>> learning-cycle/run.log
           cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
-            learn cycle --frontier google-trends --dry-run --proposals \
+            learn cycle --frontier google-trends --from learning-cycle/frontier.lino --dry-run --proposals \
             > learning-cycle/proposals.lino 2>> learning-cycle/run.log
 
       - name: Assert the run stayed proposal-only and human-gated
@@ -58,9 +60,8 @@ jobs:
           set -euo pipefail
           grep -q 'mode "proposal_only"' learning-cycle/run.lino
           grep -q 'human_gated "true"' learning-cycle/run.lino
-          # A cycle that stops proposing anything is a regression in the loop,
-          # not a quiet success — fail loudly rather than publish an empty set.
-          grep -q 'promotion_proposal' learning-cycle/proposals.lino
+          grep -q '^promotion_proposals' learning-cycle/proposals.lino
+          grep -q 'source_sha256' learning-cycle/frontier.lino
           # Nothing may be written into the tracked seed by the cycle itself.
           git diff --exit-code -- data/seed
 

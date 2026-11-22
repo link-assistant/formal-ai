@@ -566,23 +566,20 @@ export class WorkerHost {
       __serverOptions: options,
     });
     // Issue #1165 R1165-10: the native `WriteProgram` branch reads the procedure cache file.
-    return applyProcedureCache(result, prompt, this, await this.catalogTemplate(), options);
+    return applyProcedureCache(result, prompt, this, await this.catalogTemplate());
   }
 
   /**
-   * The worker's catalog template for a `(task, language)` pair (rediscovered
-   * from documentation first, issue #1165 R1165-1), what `prompt` rendered it
-   * to (the inline replacement a customised request makes), and the
-   * rediscovered row when there is one, for the procedure-cache read.
+   * The pair's local template and the result
+   * of applying the caller's inline replacement for the procedure-cache read.
    */
   async catalogTemplate() {
     const context = await this.boot();
     if (!this.templateFor) {
       this.templateFor = evaluate(context, `((prompt, task, language) => {
         const template = writeProgramTemplate(task, language);
-        if (typeof template !== "string") return { template: null, rendered: null, documented: null };
-        const documented = documentedProgram(task, language).recipe;
-        return { template, rendered: applyInlineHelloWorldOutputReplacement(prompt, task, template), documented };
+        if (typeof template !== "string") return { template: null, rendered: null };
+        return { template, rendered: writeProgramTemplateForPrompt(prompt, task, language, template) };
       })`);
     }
     return this.templateFor;

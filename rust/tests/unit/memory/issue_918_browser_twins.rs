@@ -109,8 +109,8 @@ fn a_memory_request_no_seeded_family_covers_names_its_gap() {
 
 const COMPOUND_PROMPT: &str = "Invest $1000 at 8% annual interest compounded monthly for 5 years";
 const COMPOUND_REPORT: &str = "Compound interest calculation\n\nFormula: A = P(1 + r/n)^(n*t)\nP = 1000 USD\nr = 0.08 (8% annual)\nn = 12 (monthly)\nt = 5 years\n\nStep 1: periodic rate = r/n = 0.08/12 = 0.006666666666667\nStep 2: number of periods = n*t = 12*5 = 60\nStep 3: A = 1000 * (1 + 0.006666666666667)^60\nFinal amount: 1489.85 USD";
-const COMPOUND_EUR: &str = "\n\nConversion: USD -> EUR\n1 USD in EUR = 0.92 EUR\n1489.85 USD * 0.92 = 1370.66 EUR\nRate detail: Exchange rate: 1 USD = 0.92 EUR (source: default (hardcoded))\nLive web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.";
-const COMPOUND_RUB: &str = "\n\nConversion: USD -> RUB\n1 USD in RUB = 89.5 RUB\n1489.85 USD * 89.5 = 133341.57 RUB\nRate detail: Exchange rate: 1 USD = 89.5 RUB (source: default (hardcoded))";
+const EUR_GAP: &str = "\n\nI calculated the USD amount, but no verified USD/EUR exchange rate is available for the requested date.";
+const RUB_GAP: &str = "\n\nI calculated the USD amount, but no verified USD/RUB exchange rate is available for the requested date.";
 
 fn offline_solver() -> UniversalSolver {
     UniversalSolver::new(SolverConfig {
@@ -120,18 +120,16 @@ fn offline_solver() -> UniversalSolver {
 }
 
 #[test]
-fn a_compound_interest_report_converts_at_the_seeded_euro_and_ruble_rates() {
+fn a_compound_interest_report_preserves_the_amount_when_a_rate_is_unavailable() {
     let solver = offline_solver();
     for (prompt, conversion) in [
         (
-            format!(
-                "{COMPOUND_PROMPT} and convert the final amount to EUR using current exchange rates from the web."
-            ),
-            COMPOUND_EUR,
+            format!("{COMPOUND_PROMPT} and convert the final amount to EUR on 1900-01-01."),
+            EUR_GAP,
         ),
         (
-            format!("{COMPOUND_PROMPT} and convert the final amount to rubles."),
-            COMPOUND_RUB,
+            format!("{COMPOUND_PROMPT} and convert the final amount to rubles on 1900-01-01."),
+            RUB_GAP,
         ),
     ] {
         let answer = solver.solve(&prompt);
@@ -156,17 +154,17 @@ fn a_principal_spelled_in_dollars_is_never_converted_to_dollars() {
 }
 
 #[test]
-fn a_follow_up_converts_the_earlier_final_amount() {
+fn a_follow_up_reads_the_earlier_final_amount_without_a_quote() {
     let history = [
         ConversationTurn::user(COMPOUND_PROMPT),
         ConversationTurn::assistant(COMPOUND_REPORT),
     ];
-    let answer =
-        offline_solver().solve_with_history("Convert the final amount to rubles", &history);
+    let answer = offline_solver()
+        .solve_with_history("Convert the final amount to rubles on 1900-01-01", &history);
     assert_eq!(answer.intent, "calculation");
     assert_eq!(
         answer.answer,
-        format!("Final amount conversion\nSource amount: 1489.85 USD{COMPOUND_RUB}")
+        format!("Final amount conversion\nSource amount: 1489.85 USD{RUB_GAP}")
     );
 }
 

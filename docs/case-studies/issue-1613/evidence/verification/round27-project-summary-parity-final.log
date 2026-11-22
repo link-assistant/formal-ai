@@ -1,0 +1,22 @@
+✔ all native assertions: russian_hive_mind_prompt_prefers_link_assistant_project (4849.955319ms)
+✔ all native assertions: curated_project_concept_prompt_routes_to_project_lookup (85.635625ms)
+✔ all native assertions: linksplatform_repository_is_promoted_by_default (82.27222ms)
+✔ all native assertions: explicit_formal_ai_repository_url_still_routes_to_project_lookup (58.114717ms)
+✔ arbitrary records use the shared modes, stable weights and empty-summary behavior (2.715966ms)
+✔ project statement weights follow the native complete unsigned-byte parse (4.135564ms)
+✔ localized summaries retain native explicit-English and outer-statement fallback (1.080175ms)
+✔ an unavailable HTTP transport cannot substitute a registered project description (2064.798066ms)
+✔ explicit fetch observes the requested repository paths regardless of promotion (2102.882398ms)
+✔ explicit fetch and page formalization respect offline and network-denied preferences (4114.082906ms)
+✔ promoted lookup retains actually fetched and fused browser search results and diagnostics (3264.761675ms)
+✔ project lookup and named summaries read repository metadata under the capture policy (4224.033966ms)
+✔ the production project registry carries identities without answer statements (2.101029ms)
+✔ seeded project surfaces retain placeholder-looking metadata as literal bytes (0.950001ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31681.111939

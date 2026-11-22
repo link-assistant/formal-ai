@@ -88,17 +88,17 @@ TASK='Translate the entire source code of our system to the links / meta languag
 # the committed census under data/meta/self-ast (src/self_ast_census.rs, which
 # calls the very same `ast_census` this recipe runs on one module).
 AST_TASK='Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation.'
-# The canonical self-healing request the planner routes to the repair-case recipe
-# (src/agentic_coding/self_heal.rs::SELF_HEAL_TASK). Its committed rendering is
-# data/meta/self-healing-case.lino (`self_heal::render_document()`).
-HEAL_TASK='When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.'
+FIXTURES="$ROOT/rust/tests/fixtures/issue-558"
+HEAL_TASK="$(cat "$FIXTURES/repair-request.md")"
 # The canonical self-explanation request the planner routes to the grounded
 # explanation recipe (src/agentic_coding/explain.rs::EXPLAIN_TASK). Its output is a
 # function of the owned source manifest, so it moves with the branch.
 EXPLAIN_TASK='Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.'
-# The canonical rebuild-and-reattach request the planner routes to the WebAssembly
-# reattachment recipe (src/agentic_coding/rebuild_plan.rs::REBUILD_TASK).
-REBUILD_TASK='An improvement to Formal AI was accepted — now rebuild it and reattach the improved WebAssembly worker to the UI: give me the ordered, reversible steps to regenerate the worker, reattach it to the browser UI, hot-swap the local server, and verify the UI uses the accepted version.'
+REBUILD_TASK='Reattach the improved worker to the UI.
+```json
+{"change_id":"change_request_f8529a6854bf7c5f"}
+```'
+export FORMAL_AI_ACCEPTED_CHANGES="$FIXTURES/accepted-changes.json"
 
 # Which axes to run: `all` (the default, a full regeneration) or a single axis
 # name — `source-links`, `self-ast`, `self-heal`, `explain`, `rebuild`. Running one lets a branch
@@ -210,11 +210,8 @@ fi
 
 if axis self-heal; then
 # (5) The third self-inspection axis, again as its own real Agent CLI session: the
-# self-healing recipe (src/agentic_coding/self_heal.rs) runs issue #558's closed
-# loop and writes the reviewable repair case as Links Notation. The same
-# `self_heal::render_document()` output is what `data/meta/self-healing-case.lino`
-# is committed as (tests/unit/agentic-coding/issue_558_self_healing.rs pins it byte-for-byte), so
-# this session is the authoring event that document is attributed to.
+# self-healing recipe reads the supplied trace and writes the current repair case
+# as Links Notation. The session records the inputs and the write.
 run_session "$heal_work" "$HEAL_TASK" agent-stream-self-heal
 cp "$heal_work/self-healing-case.lino" "$OUT/self-healing-case.lino"
 "$BIN" agent --task "$HEAL_TASK" --session-json "$OUT/self-heal-session.json" >/dev/null
@@ -257,7 +254,7 @@ if axis self-ast; then
   git -C "$ROOT" status --porcelain data/meta/self-ast | sed 's/^/census: /'
 fi
 if axis self-heal; then
-  git -C "$ROOT" status --porcelain data/meta/self-healing-case.lino | sed 's/^/self-heal: /'
+  grep -m1 'benchmark_status' "$OUT/self-healing-case.lino" | sed 's/^ */self-heal: /'
 fi
 if axis explain; then
   grep -m1 'source_manifest_content_id' "$OUT/how-formal-ai-works.lino" | sed 's/^ */explain: /'

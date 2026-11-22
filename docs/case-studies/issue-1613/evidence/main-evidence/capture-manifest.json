@@ -1,0 +1,45 @@
+{
+  "schema": "hive-draft-session-capture/v1",
+  "runId": "44923287323",
+  "runAttempt": "1",
+  "workflowSource": "f574289f4559f1d8b801eca9d60bc087a4cd888f",
+  "buildOutcome": "skipped",
+  "attemptOutcome": null,
+  "files": [
+    {
+      "path": "source-identity.txt",
+      "bytes": 500,
+      "sha256": "64054c9bda735d19a06a4ff28bf41f6f4efc9b5ce80c171fddde6fa4b1041764",
+      "complete": true
+    },
+    {
+      "path": "shared-build.txt",
+      "bytes": 359,
+      "sha256": "d7ca4e59d1029fc6c1b83953cc911729aa7ee4a66b6295cf523920546685984a",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-attempt-identity.json",
+      "bytes": 771,
+      "sha256": "3be7ad9d092d52eae169becfe5b59d9638d62d81dda9a4c6495ae7d51e987876",
+      "complete": true
+    },
+    {
+      "path": "build-identity.json",
+      "bytes": 641,
+      "sha256": "8a8eaadfd1a525c6e45f01bc4112276e784cb044e06781bff094784dbccdfa06",
+      "complete": true
+    }
+  ],
+  "unavailable": [],
+  "redaction": "known environment credentials, credential patterns and personal-data patterns",
+  "rawPrivateFilesIncluded": false,
+  "taskAcceptance": false,
+  "missingRequired": [],
+  "completeAvailableFileCapture": true,
+  "nativeResponsesObserved": false,
+  "dialogExchangesObserved": false,
+  "fullModelEvidence": false,
+  "incompleteProcesses": [],
+  "complete": true
+}

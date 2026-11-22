@@ -1,0 +1,28 @@
+✖ dates come from ranked publisher claims for any matched subject (3504.61479ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6740.053829
+
+✖ failing tests:
+
+test at rust/tests/web/issue-1172-live-fact-parity.test.mjs:182:1
+✖ dates come from ranked publisher claims for any matched subject (3504.61479ms)
+  AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /1887|1889/u. Input:
+
+  'Construction of the Eiffel Tower started in 1887 and it opened to the public on 31 March 1889.'
+
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/issue-1172-live-fact-parity.test.mjs:207:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Construction of the Eiffel Tower started in 1887 and it opened to the public on 31 March 1889.',
+    expected: /1887|1889/u,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }

@@ -15,7 +15,7 @@ use formal_ai::coding_recurrence::{Expression, Operation, Recurrence, formalize}
 use formal_ai::{CachedSourceClient, FetchError, SourceTransport, sha256_hex};
 use serde_json::Value;
 
-const TARGET: &str = "js/source-cache/wikifunctions-recurrences.lino";
+const TARGET: &str = "rust/tests/fixtures/coding-discovery/wikifunctions/recurrence-replay.lino";
 const WIKIDATA_FIBONACCI: &str = "https://www.wikidata.org/wiki/Special:EntityData/Q23835349.json";
 const WIKIDATA_FACTORIAL: &str = "https://www.wikidata.org/wiki/Special:EntityData/Q120976.json";
 

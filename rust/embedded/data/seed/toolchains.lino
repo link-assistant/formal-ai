@@ -138,6 +138,30 @@ toolchain_laravel
   setup_hint "a Laravel application from https://laravel.com/docs/installation (`composer create-project laravel/laravel my-app`, which brings PHP and Composer with it)"
   environment "issue-1021 local Laravel verification harness (experiments/issue-1021-laravel/run.sh)"
   execution_status "verified"
+toolchain_bash
+  record_type "toolchain_probe"
+  program "bash"
+  language "bash"
+  argv ("--version")
+  requires ()
+  setup_hint "Bash from https://www.gnu.org/software/bash/"
+  execution_status "not_probed"
+toolchain_haskell
+  record_type "toolchain_probe"
+  program "runghc"
+  language "haskell"
+  argv ("--version")
+  requires ()
+  setup_hint "GHC from https://www.haskell.org/ghcup/"
+  execution_status "not_probed"
+toolchain_lua
+  record_type "toolchain_probe"
+  program "lua"
+  language "lua"
+  argv ("-v")
+  requires ("luac")
+  setup_hint "Lua from https://www.lua.org/download.html"
+  execution_status "not_probed"
 toolchain_docker
   record_type "toolchain_probe"
   program "docker"

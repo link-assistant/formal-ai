@@ -1,0 +1,29 @@
+▶ meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+  ✖ does not substitute a registered concept for an unrelated word (3581.526771ms)
+✖ meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs) (3848.003454ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7859.429413
+
+✖ failing tests:
+
+test at rust/tests/web/agentic-recipes-a.test.mjs:325:3
+✖ does not substitute a registered concept for an unrelated word (3581.526771ms)
+  AssertionError [ERR_ASSERTION]: {"kind":"tool_calls","calls":[{"tool":"web_search","arguments":"{\"query\":\"Wikidata lexemes tomato помидор томат grammatical number forms\"}"}]}
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795289097006/rust/tests/web/agentic-recipes-a.test.mjs:329:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Promise.all (index 1)
+      at async Suite.run (node:internal/test_runner/test:1905:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

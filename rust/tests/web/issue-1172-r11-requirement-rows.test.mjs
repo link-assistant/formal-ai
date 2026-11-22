@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 import { createWorkerContext, evaluate } from "./support/browser-runtime.mjs";
+import { loadHistoricalFactFixtures } from "./support/fact-fixtures.mjs";
 
 const shard = readFileSync(
   fileURLToPath(
@@ -41,7 +42,7 @@ test("R1172-11: the correction the rows cite holds — Australia is not answered
   const facts = readFileSync(fileURLToPath(new URL("../../src/seed/facts.rs", import.meta.url)), "utf8");
   assert.match(facts, /pub fn contains_word_sequence\b/u, "the Rust matcher tokenizes aliases");
   const worker = createWorkerContext();
-  await evaluate(worker, "loadSeed()");
+  await loadHistoricalFactFixtures(worker);
   const answer = await worker.solve("What is the capital of Australia?", [], {}, {}, [], {});
   assert.notEqual(answer.intent, "fact_lookup", JSON.stringify(answer));
   assert.doesNotMatch(String(answer.content), /Washington/u);

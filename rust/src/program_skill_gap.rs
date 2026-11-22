@@ -23,8 +23,12 @@
 //! (`data/seed/multilingual-responses-synthesis.lino`). Nothing in this module
 //! enumerates what the catalogue happens to hold.
 
+use crate::engine::SymbolicAnswer;
+use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::seed::response_for;
+
+pub(crate) const UNVERIFIED_RECURRENCE: &str = "synthesis:publisher_recurrence_unverified";
 
 /// Placeholders the seed records carry.
 const TASK_PLACEHOLDER: &str = "{task}";
@@ -68,7 +72,8 @@ impl Shape {
     #[must_use]
     const fn answer_intent(self) -> &'static str {
         match self {
-            Self::SkillGap | Self::TaskUnspecified => "write_program_skill_gap",
+            Self::SkillGap => "write_program_skill_gap",
+            Self::TaskUnspecified => "describe-program-task",
             Self::LanguageUnspecified => "write_program_language_unspecified",
             Self::RequestUnspecified => "write_program_request_unspecified",
         }
@@ -179,4 +184,18 @@ pub fn render(task: Option<&str>, language: Option<&str>, response_language: Lan
         .replace(ROUTES_PLACEHOLDER, &SYNTHESIS_ROUTES.join(", "))
         .replace(TASK_PLACEHOLDER, task.unwrap_or(MISSING_PARAMETER))
         .replace(LANGUAGE_PLACEHOLDER, language.unwrap_or(MISSING_PARAMETER))
+}
+
+pub(crate) fn publisher_recurrence_gap(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+    let miss = log.last_of(UNVERIFIED_RECURRENCE)?;
+    let body = crate::seed::localized_response("compose_no_verified_capture", &miss.payload)?;
+    let gap = Shape::SkillGap;
+    Some(crate::solver_handlers::finalize_simple(
+        prompt,
+        log,
+        gap.intent(),
+        gap.response_link(),
+        &body,
+        1.0,
+    ))
 }

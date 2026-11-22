@@ -25,14 +25,12 @@
 //! from the ledger the next time. Every field is a deterministic function of the
 //! repair case and the approval, so the ledger and its content id are reproducible.
 
-use std::{fmt::Write as _, sync::OnceLock};
+use std::{fmt::Write as _, fs::File, io::Read, sync::OnceLock};
 
 use crate::engine::stable_id;
 use crate::link_store::LinkStore;
 use crate::memory::{MemoryEvent, MemoryStore};
 use crate::self_healing::{RepairCase, RepairOutcome};
-
-const APPROVED_LESSONS_LINO: &str = include_str!("../embedded/data/seed/approved-lessons.lino");
 
 /// An explicit, auditable human decision on a reviewed [`RepairCase`].
 ///
@@ -374,64 +372,45 @@ impl LearningLedger {
     }
 }
 
-/// Load the canonical, fully-worked ledger from the approved-lessons seed.
-///
-/// The seed contains the exact entry the former hard-coded constructor derived,
-/// so the committed `data/meta/learning-ledger.lino` remains byte-identical.
-/// New reviewed lessons are data edits and pass through the same [`LinkStore`]
-/// projection instead of requiring a new Rust branch.
-#[must_use]
-pub fn canonical_ledger() -> LearningLedger {
-    LearningLedger::from_approved_lessons_seed(APPROVED_LESSONS_LINO)
-        .expect("the embedded approved-lessons seed must be valid")
+/// The operator-reviewed lessons for this runtime. An unconfigured runtime starts empty.
+pub fn configured_ledger() -> Result<&'static LearningLedger, &'static str> {
+    static LEDGER: OnceLock<Result<LearningLedger, &'static str>> = OnceLock::new();
+    LEDGER
+        .get_or_init(|| {
+            let Some(path) = std::env::var_os("FORMAL_AI_APPROVED_LESSONS") else {
+                return Ok(LearningLedger::new());
+            };
+            let text = read_review_document(&path)?;
+            LearningLedger::from_approved_lessons_seed(&text).map_err(|_| "InvalidApprovedLessons")
+        })
+        .as_ref()
+        .map_err(|&error| error)
 }
 
-/// The failure prompts [`canonical_ledger`] can possibly answer, read straight
-/// off the canonical failure trace the ledger is promoted from.
-///
-/// Issue #1017: building the ledger runs the whole self-healing pass, and that
-/// pass round-trips the pinned module's entire CST/AST — a one-time cost of over
-/// ten seconds on a `dev` build, which is what CI runs. That work is only ever
-/// *useful* for a prompt the ledger actually holds a lesson for, and which
-/// prompts those are is decided by the trace, not by the round-trip. Deriving
-/// the answerable set from the same trace lets [`approved_lesson_for`] prove a
-/// miss before paying for the parse, without weakening a single promotion gate:
-/// the ledger is still built, still gated, and still consulted for a hit.
-///
-/// `issue_1017_ledger_recall.rs` asserts this set equals the failure prompts of
-/// the ledger that is actually built, so the two cannot drift apart.
-#[must_use]
-pub fn canonical_ledger_failure_prompts() -> Vec<String> {
-    canonical_ledger()
-        .entries()
-        .iter()
-        .map(|entry| entry.failure_prompt.clone())
-        .collect()
-}
-
-/// Recall an approved, committed lesson for the live solver path.
-///
-/// Returning an owned entry keeps the runtime caller independent of the
-/// ledger's storage lifetime. Only the canonical human-approved ledger is
-/// consulted; proposed or merely uploaded lessons never reach this path.
+/// Recall a lesson from the operator-reviewed ledger when one was configured.
 #[must_use]
 pub fn approved_lesson_for(prompt: &str) -> Option<LedgerEntry> {
-    static APPROVED_LEDGER: OnceLock<LearningLedger> = OnceLock::new();
+    configured_ledger().ok()?.lesson_for(prompt).cloned()
+}
 
-    // Cheap miss check first — see `canonical_ledger_failure_prompts`. Matching
-    // is on the same normalised form `lesson_for` uses, so the guard admits
-    // exactly the prompts the ledger would answer.
-    let needle = normalise(prompt);
-    if !canonical_ledger_failure_prompts()
-        .iter()
-        .any(|failure_prompt| normalise(failure_prompt) == needle)
-    {
-        return None;
+/// Read a bounded, operator-configured review record. Conversation input cannot set its path.
+pub(crate) fn read_review_document(path: &std::ffi::OsStr) -> Result<String, &'static str> {
+    const LIMIT: u64 = 1024 * 1024;
+    let path = std::path::Path::new(path);
+    let metadata = path.metadata().map_err(|_| "ReviewDocumentUnavailable")?;
+    if !metadata.is_file() || metadata.len() > LIMIT {
+        return Err("InvalidReviewDocument");
     }
-    APPROVED_LEDGER
-        .get_or_init(canonical_ledger)
-        .lesson_for(prompt)
-        .cloned()
+    let mut text = String::new();
+    let size = File::open(path)
+        .map_err(|_| "ReviewDocumentUnavailable")?
+        .take(LIMIT + 1)
+        .read_to_string(&mut text)
+        .map_err(|_| "InvalidReviewDocument")?;
+    if size as u64 > LIMIT {
+        return Err("InvalidReviewDocument");
+    }
+    Ok(text)
 }
 
 fn normalise(prompt: &str) -> String {

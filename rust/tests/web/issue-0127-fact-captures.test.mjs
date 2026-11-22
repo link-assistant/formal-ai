@@ -1,9 +1,9 @@
-// Issue #127 (R174): the nine pre-warmed countries (Russia, Japan, France,
+// Issue #127 (R174): the nine historical country fixtures (Russia, Japan, France,
 // Germany, China, India, United States, United Kingdom, Brazil) carry
 // structured `(relation, subject_qid, value_qid, subject_label, value_label)`
 // triples with labels in every supported language. Since issue #1172 R9 the
 // triples are not written into data/seed/facts.lino: each is derived from the
-// committed Wikidata captures in data/seed/fact-captures.lino, where the
+// committed Wikidata captures in rust/tests/fixtures/fact-claims/fact-captures.lino, where the
 // country's claim for the property that grounds the `capital` relation
 // (data/seed/meanings-facts.lino) names a value item captured beside it.
 
@@ -15,7 +15,7 @@ import test from 'node:test';
 import { REPO_ROOT } from './support/browser-runtime.mjs';
 
 const read = (relative) => readFileSync(join(REPO_ROOT, relative), 'utf8');
-const CAPTURES = read('data/seed/fact-captures.lino');
+const CAPTURES = read('rust/tests/fixtures/fact-claims/fact-captures.lino');
 const COUNTRY_QIDS = ['Q17', 'Q159', 'Q142', 'Q183', 'Q148', 'Q668', 'Q30', 'Q145', 'Q155'];
 const LANGUAGES = ['en', 'ru', 'hi', 'zh'];
 
@@ -34,7 +34,7 @@ function capitalProperty() {
   return relation[1];
 }
 
-test('R174: each pre-warmed country has a capital triple whose value item is captured', () => {
+test('R174: each country fixture has a capital triple whose value item is captured', () => {
   const property = capitalProperty();
   for (const qid of COUNTRY_QIDS) {
     const subject = entity(qid);

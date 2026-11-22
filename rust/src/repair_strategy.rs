@@ -25,7 +25,6 @@
 use std::fmt::Write as _;
 
 use crate::engine::stable_id;
-use crate::event_log::EventLog;
 use crate::self_improvement::UnknownTrace;
 
 /// Which part of the system a repair changes.
@@ -184,161 +183,38 @@ fn trace_haystack(trace: &UnknownTrace) -> String {
 /// The deterministic classifier: map a flattened trace haystack onto a repair target
 /// and the rationale (the signal it keyed on), in priority order.
 fn classify_target(haystack: &str) -> (RepairTarget, String) {
-    const SOLVER_SIGNALS: [&str; 5] = [
-        "rule_synthesis",
-        "no_seed_route",
-        "no route",
-        "no rule",
-        "try_rule_synthesis",
-    ];
-    const DATA_SIGNALS: [&str; 6] = [
-        "missing surface",
-        "missing meaning",
-        "lexicon gap",
-        "seed data",
-        "unknown word",
-        "data record",
-    ];
-    const TEST_SIGNALS: [&str; 5] = [
-        "regression",
-        "previously passing",
-        "no test pins",
-        "missing test",
-        "unguarded",
-    ];
-
-    if let Some(signal) = first_match(haystack, &SOLVER_SIGNALS) {
-        return (
-            RepairTarget::SolverMethod,
-            format!("the trace shows `{signal}` — the meta algorithm could not route the task"),
-        );
-    }
-    if let Some(signal) = first_match(haystack, &DATA_SIGNALS) {
-        return (
-            RepairTarget::DataRecord,
-            format!("the trace shows `{signal}` — the seed data the task needs is absent or wrong"),
-        );
-    }
-    if let Some(signal) = first_match(haystack, &TEST_SIGNALS) {
-        return (
-            RepairTarget::Test,
-            format!("the trace shows `{signal}` — a correct behaviour is unguarded by a test"),
-        );
+    for target in [
+        RepairTarget::SolverMethod,
+        RepairTarget::DataRecord,
+        RepairTarget::Test,
+    ] {
+        let cues = repair_class_message(target, "cues", &[]);
+        if let Some(signal) = cues
+            .split('|')
+            .find(|signal| !signal.is_empty() && haystack.contains(signal))
+        {
+            return (
+                target,
+                repair_class_message(target, "rationale", &[("signal", signal)]),
+            );
+        }
     }
     (
         RepairTarget::SolverMethod,
-        "no specific data or test signal was present, so the meta algorithm still lacks a way to resolve the failure".to_owned(),
+        crate::seed::agentic_message("repair_strategy_default_rationale", &[]),
     )
 }
 
-/// Return the first signal in `signals` that appears in `haystack`.
-fn first_match<'a>(haystack: &str, signals: &[&'a str]) -> Option<&'a str> {
-    signals
-        .iter()
-        .copied()
-        .find(|signal| haystack.contains(signal))
+fn repair_class_message(target: RepairTarget, field: &str, values: &[(&str, &str)]) -> String {
+    crate::seed::agentic_message(&format!("repair_class_{}_{field}", target.slug()), values)
 }
 
-/// The proposed change (a plan step) for a target class and the failing prompt.
 fn proposed_change(target: RepairTarget, prompt: &str) -> String {
-    match target {
-        RepairTarget::SolverMethod => format!(
-            "Synthesise a new solver method (a substitution rule) that routes \"{prompt}\" to a resolved task, grounded in the operation vocabulary, and run it through the self-healing repair case."
-        ),
-        RepairTarget::DataRecord => format!(
-            "Add or correct the seed data record the failure needs for \"{prompt}\" (the missing meaning, surface, or lexicon entry), expressed in Links Notation."
-        ),
-        RepairTarget::Test => format!(
-            "Add a guard test that pins the behaviour \"{prompt}\" exposed, so the regression cannot recur."
-        ),
-    }
+    repair_class_message(target, "proposal", &[("prompt", prompt)])
 }
 
-/// The automated check that proves a change of the given class before any promotion.
 fn verification(target: RepairTarget) -> String {
-    match target {
-        RepairTarget::SolverMethod => {
-            "Add a fixture that lowers and renders the new task; the rule-synthesis benchmark gate must be green before human review.".to_owned()
-        }
-        RepairTarget::DataRecord => {
-            "Add a data-driven test asserting the corrected record is present and well-formed; the meaning/lexicon suite must stay green.".to_owned()
-        }
-        RepairTarget::Test => {
-            "The new test must fail before the fix and pass after it, and the whole suite must stay green.".to_owned()
-        }
-    }
-}
-
-/// A canonical *solver-method* failure trace.
-///
-/// The meta algorithm had no route to resolve a reverse-sort program modifier and fell
-/// back to rule synthesis. Mirrors [`crate::self_healing`]'s failure-trace signals.
-#[must_use]
-pub fn canonical_solver_method_failure() -> UnknownTrace {
-    let mut log = EventLog::new();
-    log.append(
-        "selected_rule",
-        "initial unknown reason no_seed_route next try_rule_synthesis",
-    );
-    log.append(
-        "rule_synthesis_candidate",
-        "rule_synthesis_candidate id reverse_sort_list_files base_task list_files modifier reverse_sort",
-    );
-    UnknownTrace::new(
-        "List the files but sort the results in reverse order",
-        log.events().to_vec(),
-    )
-}
-
-/// A canonical *data-record* failure trace: the task was understood but a surface the
-/// answer needed was missing from the seed data (an issue-#538-style meaning gap).
-#[must_use]
-pub fn canonical_data_record_failure() -> UnknownTrace {
-    let mut log = EventLog::new();
-    log.append(
-        "reasoning:unknown",
-        "resolved_meaning tomato but missing surface for the plural form in the lexicon",
-    );
-    log.append(
-        "lexicon_lookup",
-        "lexicon gap: no seed data record carries the requested surface",
-    );
-    UnknownTrace::new(
-        "What is the plural of the tomato meaning's second synonym?",
-        log.events().to_vec(),
-    )
-}
-
-/// A canonical *test* failure trace: a previously-passing behaviour regressed and no
-/// guard test pinned it.
-#[must_use]
-pub fn canonical_test_failure() -> UnknownTrace {
-    let mut log = EventLog::new();
-    log.append(
-        "reasoning:unknown",
-        "answer diverged from a previously passing result and the behaviour is unguarded",
-    );
-    log.append(
-        "regression_check",
-        "regression: no test pins this behaviour so the change slipped through",
-    );
-    UnknownTrace::new(
-        "Why did the reverse-sort answer change between releases?",
-        log.events().to_vec(),
-    )
-}
-
-/// The three canonical strategies, one per repair target, in a stable order.
-///
-/// Deterministic and self-contained — used by the agentic recipe, the example, and the
-/// tests to prove the classifier covers every failure class.
-#[must_use]
-pub fn canonical_strategies() -> Vec<RepairStrategy> {
-    vec![
-        RepairStrategy::classify(&canonical_solver_method_failure()),
-        RepairStrategy::classify(&canonical_data_record_failure()),
-        RepairStrategy::classify(&canonical_test_failure()),
-    ]
+    repair_class_message(target, "verification", &[])
 }
 
 fn field(out: &mut String, key: &str, value: &str) {

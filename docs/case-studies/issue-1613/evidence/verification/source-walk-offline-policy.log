@@ -1,0 +1,14 @@
+✔ actual offline cache absence never invokes fetch or poisons service health (4055.896793ms)
+✔ actual offline cached body is read byte-exact with no network request (3579.655946ms)
+✔ offline missing follow capture retains the prior successful service observation (3529.692404ms)
+✔ live transport prose cannot declare offline policy (2955.889177ms)
+✔ actual live HTTP503 remains a service failure (2902.32044ms)
+✔ offline capture diagnostic is seeded and preserves every URL byte (8131.547036ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26177.530972

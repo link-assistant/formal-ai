@@ -16,7 +16,6 @@ const reportApi = createLearningReportApi({
   promotion_gate: 'metric_fixture_exact_share_and_honest_ledger_ratchet_pass',
   path: SELF_HOSTING_LEARNING_PATH,
   taskMessage: 'learning_report_task_self_hosting_learning',
-  memoryPath: 'data/meta/issue-657-self-hosting-learning.lino',
   subjectMessage: 'learning_report_subject_self_hosting_learning',
 }, 'isSelfHostingLearningTask');
 export const REPORT = reportApi.REPORT;
@@ -26,9 +25,6 @@ export const task = reportApi.task;
 
 /** Mirrors `fn is_self_hosting_learning_task` in rust/src/agentic_coding/learning_report/self_hosting_learning.rs. @param {string} prompt */
 export const isSelfHostingLearningTask = reportApi.isTask;
-
-/** Mirrors `fn render_document` in rust/src/agentic_coding/learning_report/self_hosting_learning.rs. */
-export const renderDocument = reportApi.renderDocument;
 
 /** Mirrors `fn render_document_from` in rust/src/agentic_coding/learning_report/self_hosting_learning.rs. @param {string} memoryDocument */
 export const renderDocumentFrom = reportApi.renderDocumentFrom;

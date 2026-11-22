@@ -1,0 +1,239 @@
+
+--- follow-up-local-gates.final.log ---
+PASS check-debt-ratchet-js-twin 0.9s
+PASS check_debt_ratchet 0.7s
+PASS check-render-status-js-twin 2.7s
+PASS check-status-render 1.4s
+
+4/4 passed or skipped; failed: none
+
+--- governed-case-identity.final.log ---
+cases 222 222
+removed []
+added []
+unsupported 963 963
+removed [
+  'rust/tests/unit/specification/code_generation/single_turn.rs::rust_hello_world_seed_compiles_and_runs',
+  'rust/tests/unit/specification/code_generation/single_turn.rs::c_hello_world_seed_compiles_and_runs',
+  'rust/tests/unit/specification/code_generation/single_turn.rs::typescript_hello_world_seed_reports_unavailable_execution',
+  'rust/tests/unit/specification/code_generation/single_turn.rs::code_answers_declare_isolation_level'
+]
+added [
+  'rust/tests/unit/specification/code_generation/single_turn.rs::rust_hello_world_composes_a_stdout_program',
+  'rust/tests/unit/specification/code_generation/single_turn.rs::c_hello_world_composes_a_stdout_program',
+  'rust/tests/unit/specification/code_generation/single_turn.rs::typescript_hello_world_reports_unobserved_execution',
+  'rust/tests/unit/specification/code_generation/single_turn.rs::generated_code_answers_record_unobserved_execution'
+]
+
+--- issue-0921-worker-coding-catalog.final.log ---
+✔ R921-8: the worker installs the Rust catalog tasks from the seed, in Rust table order (4253.923733ms)
+✔ R921-8: the worker language rows equal the Rust catalog rows the seed stores programs for (16.074717ms)
+✔ R921-8: every task x language pair has a worker program exactly when the Rust catalog has one (52.652884ms)
+✔ R921-8: the worker stores no program for a pair the seed retires to the documentation route (5.351443ms)
+✔ R921-8: english Scala and Kotlin requests answer every catalog task with the Rust template (9761.965189ms)
+✔ R921-8: the Scala FizzBuzz answer is the catalog answer with an honest not-run status (47.972722ms)
+✔ R921-8: russian, hindi and chinese requests answer catalog tasks in Scala and Kotlin (729.714004ms)
+✔ R921-8: a concrete catalog request is not claimed by a promoted handler (1705.550368ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17520.696889
+
+--- issue-1165-documentation-captures.final.log ---
+✔ the captures seed declares sources, with bodies and digests in test fixtures only (392.40101ms)
+✔ the worker reads the captures the seed records (2.967676ms)
+✔ R1165-6: the documented check and run commands of every captured language (132.430848ms)
+✔ R1165-6: the documented run contract of every captured language (313.878988ms)
+✔ R1165-1: a documented program printing no trailing newline records the deviation (155.709545ms)
+✔ R1165-6: a documented command binds the documented file name consistently (1.118256ms)
+✔ R1165-4: the documentation route knows every language its captures rediscover (19.971356ms)
+✔ cold offline has no example, live reads the selected publisher and offline reuses verified bytes (1655.925371ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5540.524448
+
+--- issue-1165-documented-commands.final.log ---
+✔ R1165-6: each command procedure binds a command from acquired bytes (4273.394688ms)
+✔ R1165-6: the offline worker and agentic catalog agree on local commands (50.392395ms)
+✔ R1165-6: a local command reaches an answer for a task without a publisher page (1268.308294ms)
+✔ R1165-6: the page file name binds to the catalog stem, and a page with no such line leaves the row alone (1.607298ms)
+✔ R1165-6: a publisher match requires an acquired command and a registered role (153.39723ms)
+✔ Scala documented run binds held-out source filenames without legacy positional main (14.258218ms)
+✔ command role defaults are inherited while explicit roles retain authority (1.092789ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6691.960313
+
+--- issue-1165-procedure-cache-parity.final.log ---
+✔ fnv1a64 is the 64-bit FNV-1a, bit for bit (published reference vectors) (2343.027679ms)
+✔ the required fields come from the policy seed, plus the cache key (11.969749ms)
+✔ store rejects a procedure without rediscovery fields (R1165-3) (0.942258ms)
+✔ store, reload from disk, look up case-insensitively (4.046699ms)
+✔ content_id is fnv1a of the entry, recomputed on store and checked on load (3.241216ms)
+✔ delete_all empties the cache file (R1165-7, offline half) (2.509441ms)
+✔ the miss path runs research and stores the verified procedure; the second ask is a hit (2.091552ms)
+✔ a failed research round is the error, and nothing is stored (0.466661ms)
+✔ grammar_exists reads the CST seed (2.916641ms)
+✔ knows_language requires a grammar and a procedure (15.045176ms)
+✔ the package carries no bootstrap procedure examples (2.139902ms)
+✔ write_program_reuses_the_cached_procedure_only_for_an_unmodified_request (1.377972ms)
+✔ miss_route_names_what_research_lacks_on_a_solve (0.364089ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3454.417789
+
+--- issue-1165-server-procedure-cache.final.log ---
+✔ the cache path mirrors default_cache_path: the override, else the repository file (2396.310717ms)
+✔ the committed cache has no rows, so an unmodified request stays the native miss (1244.008727ms)
+✔ a verified row answers the unmodified request with the cached entry and logs the hit (71.915556ms)
+✔ a row for another pair leaves this request a miss (51.085118ms)
+✔ a row whose content_id drifted is dropped on load, as in Rust (55.189495ms)
+✔ a customised request is never answered from the cache (580.771189ms)
+✔ R1165-1: a sourced answer reuses the capture without populating the execution cache (2877.0899ms)
+✔ the committed cache is never written by a solve (68.39034ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8247.617056
+
+--- issue-1165-worker-procedure-cache.final.log ---
+✔ the worker and the agentic root read the same miss_route gap (4404.569657ms)
+✔ an unmodified catalog request logs the exact native procedure_cache miss (1407.69165ms)
+✔ a request that customised the template logs no procedure_cache event (3450.437753ms)
+✔ a non-program answer logs no procedure_cache event (137.897576ms)
+✔ R1165-1: a pair with documentation captures answers from the program rediscovered from them (990.453638ms)
+✔ R1165-6: the documented run contract binds the program name and records each command source (190.241943ms)
+✔ R1165-1: program_verification identifies the publisher and the structural check (101.398838ms)
+✔ R1165-4: Swift and Lua use their acquired publisher documentation (111.465036ms)
+✔ cold offline output composition binds held-out text without publisher bytes (7524.550393ms)
+✔ R1165-1: a customised request reuses the rediscovered procedure with its own literal (457.140969ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19866.930414
+
+--- issue-1173-route2-probes.final.log ---
+✔ R1173-3: a script calling a function nothing defines fails whatever the function is named (1319.427967ms)
+✔ R1173-3: a builtin call, a method call, a defined name and a call without a program are no undefined call (522.062377ms)
+✔ R1173-3: Convert to JSON over a JSON payload reads the source format from the payload (189.94045ms)
+✔ R1173-3: the request line of a YAML conversion is not read as the document's first key (254.205746ms)
+✔ R1173-3: a product request with no marketplace names the catalogued ones instead of guessing (396.606992ms)
+✔ R1173-3: the browser learns from the requested regional publisher feed (5290.311513ms)
+✔ R1173-3: a quantity between two units is a conversion, not a translation (218.948535ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11381.599847
+
+--- issue-1173-route3-probes.final.log ---
+✔ R1173-3: a program that prints a greeting binds the task's output operand (1574.95152ms)
+✔ R1173-3: the operand is a quoted literal, an unquoted utterance or a greeting, in every script (14.125801ms)
+✔ R1173-3: a described value, two literals or no print verb name no operand (348.673222ms)
+✔ R1173-3: a script request stays the minimal-script lane, and no program is stored for print_text (76.583446ms)
+✔ issue #1175 p133: every before-promotion row is asked in solve()'s early phase, before the promoted walk (117.716177ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5559.042119
+
+--- server-evidence-links.final.log ---
+✔ the prompt link is the one the Rust server answers with (2397.676024ms)
+✔ event ids hash kind, position and payload exactly as EventLog::append (1.00748ms)
+✔ every arm shape of build_evidence_links (0.551149ms)
+✔ the Responses evidence projects the worker's native log (1289.270627ms)
+✔ execution_report renders the recorded toolchain run (39.195047ms)
+✔ a rediscovered program reports its page, not the language's recorded run (4062.98569ms)
+✔ a cold composed program reports the expected output without a historical run (6036.210483ms)
+✔ a follow-up program edit carries the native execution report (1201.323471ms)
+✔ quantity evidence retains raw frames and exact computation payloads (0.971543ms)
+✔ actual quantity solves retain frames and verdicts through the server projection (3328.794657ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19361.635643
+
+--- specification-witness.final.log ---
+✔ preserve complete renamed native identifier renamed_Москва_value (6.77049ms)
+✔ preserve complete renamed native identifier 東京_case (0.688414ms)
+✔ preserve complete renamed native identifier हिन्दी_case (0.458144ms)
+✔ preserve complete renamed native identifier αβ_case (0.581795ms)
+✔ preserve complete renamed native identifier 𐐀_name (0.311941ms)
+✔ preserve complete renamed native identifier é_case (0.356515ms)
+✔ preserve complete renamed native identifier _case (0.299819ms)
+✔ preserve complete renamed native identifier ascii123 (0.351526ms)
+✔ preserve complete renamed native identifier r#match (0.427728ms)
+✔ preserve complete renamed native identifier r#Москва (0.932198ms)
+✔ preserve complete renamed native identifier r#é_case (0.661183ms)
+✔ refuse unsupported header without silently losing declaration 3name (0.896843ms)
+✔ refuse unsupported header without silently losing declaration emoji_🦄 (0.21933ms)
+✔ refuse unsupported header without silently losing declaration join_‍_name (0.154208ms)
+✔ refuse unsupported header without silently losing declaration join_‌_name (0.19344ms)
+✔ refuse unsupported header without silently losing declaration mark_© (0.349591ms)
+✔ refuse unsupported header without silently losing declaration ́bad (0.285172ms)
+✔ refuse unsupported header without silently losing declaration name-dash (0.223807ms)
+✔ refuse unsupported header without silently losing declaration name space (0.168023ms)
+✔ refuse unsupported header without silently losing declaration r#_ (0.693493ms)
+✔ refuse unsupported header without silently losing declaration r#self (0.634113ms)
+✔ refuse unsupported header without silently losing declaration r#Self (0.153286ms)
+✔ refuse unsupported header without silently losing declaration r#super (0.138388ms)
+✔ refuse unsupported header without silently losing declaration r#crate (0.153315ms)
+✔ NFC semantic names retain distinct source hashes and exact string spelling (2.46071ms)
+✔ governed inventory preserves complete objects and authoritative native source (11085.056379ms)
+✔ unbound raw keyword identifier true cannot become a keyword/literal (0.841049ms)
+✔ unbound raw keyword identifier false cannot become a keyword/literal (0.156542ms)
+✔ unbound raw keyword identifier match cannot become a keyword/literal (0.189303ms)
+✔ unbound raw keyword identifier if cannot become a keyword/literal (0.129893ms)
+✔ unbound raw keyword identifier as cannot become a keyword/literal (0.157173ms)
+✔ declared raw true resolves its variable instead of boolean literal (0.299479ms)
+✔ declared raw false resolves its variable instead of boolean literal (0.10705ms)
+✔ legacy offline config accepts only actual literal and refuses raw variable spelling (0.57344ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12003.835095
+
+--- native-projections-check.log ---
+js -> rust: 344 items translated by meta-language, 38 by workarounds, 2658 carried, 115/164 modules translate (1 fully), 49 refused; meta-language eb0574d5528babd3b4aadece81590d8e2230b99b

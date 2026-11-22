@@ -403,3 +403,20 @@ meanings
     lexeme hi शेल कमांड
     lexeme zh 外壳 命令 docker
     lexeme es shell bash comando comandos docker webvm
+
+  project-origin-author
+    defined-by inventor
+    role localized_response_template
+    precondition "a verified publisher declaration identifies a project creator"
+    effect "state the creator"
+    unit "not applicable"
+    example "a project creator named by their publisher account"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  project-origin-author-and-tool
+    defined-by inventor
+    role localized_response_template
+    precondition "a verified publisher declaration identifies a project creator and the tool used"
+    effect "state the creator and any documented tool repository"
+    unit "not applicable"
+    example "a project creator and an identified tool repository"
+    grounding "data/seed/multilingual-responses-entities.lino"

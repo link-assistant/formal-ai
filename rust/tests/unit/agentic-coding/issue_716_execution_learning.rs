@@ -2,6 +2,8 @@ use formal_ai::agentic_coding::{
     EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK, execution_learning, run_agentic_task,
 };
 
+const REPORT_MEMORY: &str = include_str!("../../../../data/meta/issue-716-execution-learning.lino");
+
 #[test]
 fn client_execution_learning_is_derived_and_review_gated() {
     let baseline = include_str!("../../../../data/meta/issue-716-execution-learning.lino");
@@ -23,7 +25,10 @@ fn client_execution_learning_is_derived_and_review_gated() {
 
 #[test]
 fn formal_ai_executes_execution_learning_through_agent_cli() {
-    let outcome = run_agentic_task(EXECUTION_LEARNING_TASK).expect("agent workspace");
+    let outcome = run_agentic_task(&format!(
+        "{EXECUTION_LEARNING_TASK}\n```lino\n{REPORT_MEMORY}\n```"
+    ))
+    .expect("agent workspace");
 
     assert!(!outcome.hit_turn_cap);
     assert_eq!(outcome.turns, 3);
@@ -32,7 +37,10 @@ fn formal_ai_executes_execution_learning_through_agent_cli() {
     let arguments: serde_json::Value =
         serde_json::from_str(&outcome.steps[0].arguments).expect("write arguments");
     assert_eq!(arguments["path"], EXECUTION_LEARNING_PATH);
-    assert_eq!(arguments["content"], execution_learning::render_document());
+    assert_eq!(
+        arguments["content"],
+        execution_learning::render_document_from(REPORT_MEMORY)
+    );
     assert_eq!(outcome.steps[1].tool, "run_command");
     assert!(outcome.final_answer.contains("human-review-gated report"));
 }

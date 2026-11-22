@@ -456,6 +456,7 @@ function learningSourceRegistry() {
       registry.sources.push({
         id: child.value,
         capability: childValue(child, "capability"),
+        feed: childValue(child, "feed"),
         host: childValue(child, "host"),
         keywords: child.children.filter((entry) => entry.name === "keyword").map((entry) => entry.value),
       });
@@ -481,30 +482,58 @@ function matchLearningDirective(lowercased) {
 }
 
 /**
- * `learn_from_source` precedence row (issue 1173 R3, browser twin of
- * `try_learn_from_source` in rust/src/retrieval_procedures.rs): a directive
- * that points the engine at a declared learnable source is acknowledged
- * with the seeded intro. The learning loop that ingests the source runs in
- * the native engine, so the browser states that from a seeded template
- * instead of a report it cannot compute.
- * @param {string} prompt
- * @returns {object|null}
+ * Replay a bounded regional feed through local reasoning. The empty
+ * lookup table leaves publisher topics as input to a read-only probe.
  */
-function tryLearnFromSource(prompt) {
+async function tryLearnFromSource(prompt, preferences = {}) {
   const source = matchLearningDirective(nativeLaneLowercase(prompt));
   if (source === null) return null;
   const language = detectLanguage(prompt);
-  const intro = textTransformLocalizedResponse("learn_from_source", language) || "";
-  const summary = nativeLaneRender(textTransformLocalizedResponse("learn_from_source_browser_summary", language) || "", {
-    source: source.id.split("_").join(" "),
-    capability: source.capability,
-  });
+  const report = await browserLearningFeed(source, prompt, preferences);
+  const label = source.id.split("_").join(" ");
+  const { capture, topics, ...counts } = report || {};
+  const values = { source: label, ...counts, topics };
+  const response = report ? "learn_from_source_browser_summary" : "learn-from-source-gap";
   return {
     intent: "learn_from_source",
-    content: intro ? `${intro}\n\n${summary}` : summary,
-    confidence: 1,
-    evidence: ["handler:learn_from_source", `learning_source:${source.id}`, `learning_capability:${source.capability}`, "response:learn_from_source"],
+    content: nativeLaneRender(textTransformLocalizedResponse(response, language) || "", values),
+    confidence: report ? 1 : 0,
+    evidence: ["handler:learn_from_source", `learning_source:${source.id}`, `learning_capability:${source.capability}`,
+      capture ? `learning_source_capture:${capture.url}#sha256=${capture.sha256}` : `learning_source_unavailable:${source.id}`,
+      `response:${response}`],
   };
+}
+
+async function browserLearningFeed(source, task, preferences) {
+  const feed = crateModule("crate/google_trends_feed.mjs");
+  if (source.feed !== feed.GOOGLE_TRENDS_SOURCE) return null;
+  const record = sourceWalkRegistry().find((entry) => entry.id === source.feed);
+  const geo = feed.requestedGeo(task);
+  if (!geo || !record?.api?.includes("{geo}") || !sourceWalkServiceAllowed(preferences, record)) return null;
+  const url = record.api.replace("{geo}", geo);
+  const online = preferences.offline !== true && preferences.allowNetwork !== false;
+  let capture = await sourceWalkFetchCapture(url, { online, indexed: true, bounded: true, maxAgeSeconds: 900 });
+  if (!capture.ok && online) {
+    const recovered = await howToCaptureThroughComponent(url, []);
+    if (recovered) {
+      capture = Object.freeze({ ...recovered, ok: true });
+      sourceWalkCaptureCache.set(`indexed:${url}`, capture);
+    }
+  }
+  if (!capture.ok) return null;
+  const topics = feed.parseGoogleTrendsRss(capture.text);
+  const templates = feed.loadPromptTemplates(seedRawText(SEED_RAW, "google-trends-prompts.lino"));
+  if (!topics.length || !templates.length) return null;
+  let handled = 0;
+  const knowledge = new Map();
+  for (const { query } of topics) {
+    for (const { language, template } of templates) {
+      const result = metaReasonCore(template.replaceAll("{query}", () => query), language, knowledge);
+      if (result.status === "solved" && metaAnswer(result, false)) handled++;
+    }
+  }
+  const total = topics.length * templates.length;
+  return { capture, geo, topics: topics.map(({ query }) => query).join(", "), total, handled, frontier: total - handled };
 }
 /**
  * The `diagnostic` prelude row (rust/src/meta_method_dispatch.rs `try_diagnostic`): a prompt carrying a

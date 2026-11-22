@@ -83,8 +83,8 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "text_operation",
     "shell_command_operand",
     "composition_topic",
-    "advice_topic",
-    "cached_destination",
+    "advice_observations",
+    "destination_observations",
     "pattern_constraints",
     "table_reference",
     "filesystem_object",
@@ -114,11 +114,11 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "recall_query_term",
     "supplied_payload",
     "summary_topic",
-    "brainstorm_category",
-    "persona_or_topic",
+    "brainstorm_topic",
+    "roleplay_facts",
     "document_operand",
     "translation_text",
-    "triz_precedent",
+    "triz_demands",
     "algorithm_operation",
     "source_reference",
     "stated_claim",
@@ -246,7 +246,7 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
                 || !crate::calculation::calculation_expression_candidates(prompt).is_empty()
         }
         "currency_rate_basis" => {
-            crate::solver_handlers::calculator_rate::asks_for_usd_rate_basis(canonical)
+            crate::solver_handlers::calculator_rate::asks_for_rate_basis(canonical)
         }
         "investment_terms" => {
             crate::solver_handlers::compound_interest::parse_compound_interest_request(
@@ -255,7 +255,7 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
             .is_some()
         }
         "conversion_target_currency" => {
-            crate::solver_handlers::compound_interest::target_currency(normalized, None).is_some()
+            crate::solver_handlers::compound_interest::target_currency(prompt, None).is_some()
         }
         "interval_bounds" => crate::number_constraints::extract_interval_bounds(
             &crate::engine::normalize_prompt(normalized),

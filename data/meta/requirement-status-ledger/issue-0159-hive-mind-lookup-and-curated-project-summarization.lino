@@ -4,41 +4,43 @@ requirement_status_ledger_shard
   issue "0159"
   verdict "implemented"
   delivered "pre-2026-07 (undated); issue #159"
-  automated_test "rust/tests/unit/specification/project_lookups.rs"
+  automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   manual "not yet confirmed"
   requirement
     id "R195"
+    automated_test "rust/tests/unit/specification/project_lookups.rs"
   requirement
     id "R196"
+    automated_test "rust/tests/web/project-summary-parity.test.mjs"
   requirement
     id "R197"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R198"
   requirement
     id "R199"
   requirement
     id "R200"
+    automated_test "rust/tests/unit/specification/project_lookups.rs"
   requirement
     id "R201"
+    automated_test "rust/tests/web/project-summary-parity.test.mjs"
   requirement
     id "R202"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R203"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R204"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R205"
+    verdict "superseded"
+    automated_test "rust/tests/web/project-summary-parity.test.mjs"
   requirement
     id "R206"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R207"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R208"
+    automated_test "rust/tests/unit/specification/project_lookups.rs"
   requirement
     id "R209"
+    automated_test "rust/tests/unit/specification/project_lookups.rs"

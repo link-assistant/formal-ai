@@ -316,3 +316,27 @@ meanings
     lexeme zh 你空闲时间做什么 你有空的时候做什么 你业余时间做什么 你休息的时候做什么 你不工作的时候做什么
     lexeme es "qué haces en tu tiempo libre" "cómo pasas tu tiempo libre" "qué haces cuando no trabajas"
 
+  roleplay_supplied_facts
+    defined-by answer
+    role localized_response_template
+    precondition "the caller supplies a role and facts to frame"
+    effect "formats the role and attributes the facts to the caller"
+    unit "not applicable"
+    example "Roleplay frame for {role}. Supplied facts: {facts}"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  roleplay_facts_needed
+    defined-by answer
+    role localized_response_template
+    precondition "a roleplay request lacks a role or facts"
+    effect "states which inputs determine the frame and where to put them"
+    unit "not applicable"
+    example "Name the role, then put the facts to explain after a colon."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  coreference_resolved_reference
+    defined-by answer
+    role localized_response_template
+    precondition "an earlier turn identifies a referent and evidence for the follow-up is unavailable"
+    effect "names the referent and reports the evidence gap"
+    unit "not applicable"
+    example "The reference resolves to {referent} from your earlier turn. I need evidence to answer the follow-up."
+    grounding "data/seed/multilingual-responses-conversation-recall.lino"

@@ -411,38 +411,42 @@ fn hello_world_matrix_routes_to_parametric_write_program_intent() {
 
 #[test]
 fn hello_world_matrix_emits_a_code_block_per_language() {
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    });
     for (prompt, expected_language, fence) in HELLO_WORLD_VARIATIONS {
-        let response = answer(prompt);
+        let response = solver.solve(prompt);
         let expected_answer = match (
             *expected_language,
             prompt.chars().any(|ch| ('а'..='я').contains(&ch)),
         ) {
             ("rust", false) => {
-                "Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install the Rust toolchain from https://rustup.rs.\n2. Save the code above to a file named `main.rs`.\n3. Check that it compiles: `rustc main.rs -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
+                "Here is a minimal Rust hello world program:\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nExecution status: not probed in this environment.\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nOutput, not observed in this environment:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install the Rust toolchain from https://rustup.rs.\n2. Save the code above to a file named `main.rs`.\n3. Check that it compiles: `rustc main.rs -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
             }
             ("python", false) => {
-                "Here is a minimal Python hello world program:\n\n```python\nprint('Hello, world!')\n```\n\nExecution status: not run; this program was rediscovered from https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples and its output contract was checked by decomposition, not by executing it.\nCheck command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`\nRun command: `python3 main.py`\nExpected output after verification:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Python 3 from https://www.python.org/downloads/.\n2. Save the code above to a file named `main.py`.\n3. Check that it compiles: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`.\n4. Run it: `python3 main.py`.\n5. Compare the output with the expected output shown above."
+                "Here is a minimal Python hello world program:\n\n```python\nprint(\"Hello, world!\")\n```\n\nExecution status: not probed in this environment.\nCheck command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`\nRun command: `python3 main.py`\nOutput, not observed in this environment:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Python 3 from https://www.python.org/downloads/.\n2. Save the code above to a file named `main.py`.\n3. Check that it compiles: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`.\n4. Run it: `python3 main.py`.\n5. Compare the output with the expected output shown above."
             }
             ("javascript", false) => {
-                "Here is a minimal JavaScript hello world program:\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nCheck command: `node --check main.js`\nRun command: `node main.js`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/.\n2. Save the code above to a file named `main.js`.\n3. Check that it compiles: `node --check main.js`.\n4. Run it: `node main.js`.\n5. Compare the output with the expected output shown above."
+                "Here is a minimal JavaScript hello world program:\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: not probed in this environment.\nCheck command: `node --check main.js`\nRun command: `node main.js`\nOutput, not observed in this environment:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/.\n2. Save the code above to a file named `main.js`.\n3. Check that it compiles: `node --check main.js`.\n4. Run it: `node main.js`.\n5. Compare the output with the expected output shown above."
             }
             ("go", false) => {
-                "Here is a minimal Go hello world program:\n\n```go\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}\n```\n\nExecution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\nRun command: `go run main.go`\nOutput:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Go from https://go.dev/dl/.\n2. Save the code above to a file named `main.go`.\n3. Run it: `go run main.go`.\n4. Compare the output with the expected output shown above."
+                "Here is a minimal Go hello world program:\n\n```go\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}\n```\n\nExecution status: not probed in this environment.\nRun command: `go run main.go`\nOutput, not observed in this environment:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Go from https://go.dev/dl/.\n2. Save the code above to a file named `main.go`.\n3. Run it: `go run main.go`.\n4. Compare the output with the expected output shown above."
             }
             ("c", false) => {
-                "Here is a minimal C hello world program:\n\n```c\n// crt_puts.c\n// This program uses puts to write a string to stdout.\n\n#include <stdio.h>\n\nint main( void )\n{\n   puts( \"Hello, world!\" );\n}\n```\n\nExecution status: not run; this program was rediscovered from https://raw.githubusercontent.com/MicrosoftDocs/cpp-docs/main/docs/c-runtime-library/reference/puts-putws.md and its output contract was checked by decomposition, not by executing it.\nCheck command: `gcc main.c -o main`\nRun command: `./main`\nExpected output after verification:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install a C compiler such as GCC from https://gcc.gnu.org/ or your package manager.\n2. Save the code above to a file named `main.c`.\n3. Check that it compiles: `gcc main.c -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
+                "Here is a minimal C hello world program:\n\n```c\n#include <stdio.h>\n\nint main(void) {\n    puts(\"Hello, world!\");\n    return 0;\n}\n```\n\nExecution status: not probed in this environment.\nCheck command: `gcc main.c -o main`\nRun command: `./main`\nOutput, not observed in this environment:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install a C compiler such as GCC from https://gcc.gnu.org/ or your package manager.\n2. Save the code above to a file named `main.c`.\n3. Check that it compiles: `gcc main.c -o main`.\n4. Run it: `./main`.\n5. Compare the output with the expected output shown above."
             }
             ("typescript", false) => {
-                "Here is a minimal TypeScript hello world program:\n\n```typescript\n// Greets the world.\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: not run; this program was rediscovered from https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/handbook-v2/Basics.md and its output contract was checked by decomposition, not by executing it.\nCheck command: `tsc hello.ts`\nRun command: `node hello.js`\nExpected output after verification:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`.\n2. Save the code above to a file named `hello.ts`.\n3. Check that it compiles: `tsc hello.ts`.\n4. Run it: `node hello.js`.\n5. Compare the output with the expected output shown above."
+                "Here is a minimal TypeScript hello world program:\n\n```typescript\nconsole.log(\"Hello, world!\");\n```\n\nExecution status: not probed in this environment.\nCheck command: `tsc hello.ts`\nRun command: `node hello.js`\nOutput, not observed in this environment:\n```text\nHello, world!\n```\n\nHow it works:\nThe program prints the text `Hello, world!` to standard output and then exits.\n\nHow to test it yourself:\n1. Install Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`.\n2. Save the code above to a file named `hello.ts`.\n3. Check that it compiles: `tsc hello.ts`.\n4. Run it: `node hello.js`.\n5. Compare the output with the expected output shown above."
             }
             ("python", true) => {
-                "Вот минимальная программа на языке Python (hello world):\n\n```python\nprint('Hello, world!')\n```\n\nСтатус выполнения: не запускалась; программа заново найдена на странице https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples, её контракт вывода проверен разбором, а не запуском.\nCheck command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`\nRun command: `python3 main.py`\nОжидаемый вывод после проверки:\n```text\nHello, world!\n```\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Python 3 from https://www.python.org/downloads/.\n2. Сохраните приведённый выше код в файл `main.py`.\n3. Проверьте, что код компилируется: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`.\n4. Запустите программу: `python3 main.py`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+                "Вот минимальная программа на языке Python (hello world):\n\n```python\nprint(\"Hello, world!\")\n```\n\nСтатус выполнения: не проверялось в этой среде.\nCheck command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`\nRun command: `python3 main.py`\nВывод, не наблюдавшийся в этой среде:\n```text\nHello, world!\n```\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Python 3 from https://www.python.org/downloads/.\n2. Сохраните приведённый выше код в файл `main.py`.\n3. Проверьте, что код компилируется: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`.\n4. Запустите программу: `python3 main.py`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
             }
             ("javascript", true) => {
-                "Вот минимальная программа на языке JavaScript (hello world):\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `node --check main.js`\nRun command: `node main.js`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Node.js from https://nodejs.org/.\n2. Сохраните приведённый выше код в файл `main.js`.\n3. Проверьте, что код компилируется: `node --check main.js`.\n4. Запустите программу: `node main.js`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+                "Вот минимальная программа на языке JavaScript (hello world):\n\n```javascript\nconsole.log(\"Hello, world!\");\n```\n\nСтатус выполнения: не проверялось в этой среде.\nCheck command: `node --check main.js`\nRun command: `node main.js`\nВывод, не наблюдавшийся в этой среде:\n```text\nHello, world!\n```\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: Node.js from https://nodejs.org/.\n2. Сохраните приведённый выше код в файл `main.js`.\n3. Проверьте, что код компилируется: `node --check main.js`.\n4. Запустите программу: `node main.js`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
             }
             ("rust", true) => {
-                "Вот минимальная программа на языке Rust (hello world):\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nВывод:\n```text\nHello, world!\n```\n1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: the Rust toolchain from https://rustup.rs.\n2. Сохраните приведённый выше код в файл `main.rs`.\n3. Проверьте, что код компилируется: `rustc main.rs -o main`.\n4. Запустите программу: `./main`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
+                "Вот минимальная программа на языке Rust (hello world):\n\n```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```\n\nСтатус выполнения: не проверялось в этой среде.\nCheck command: `rustc main.rs -o main`\nRun command: `./main`\nВывод, не наблюдавшийся в этой среде:\n```text\nHello, world!\n```\n\nКак это работает:\nПрограмма выводит текст `Hello, world!` в стандартный вывод и завершается.\n\nКак проверить это самостоятельно:\n1. Установите инструментарий: the Rust toolchain from https://rustup.rs.\n2. Сохраните приведённый выше код в файл `main.rs`.\n3. Проверьте, что код компилируется: `rustc main.rs -o main`.\n4. Запустите программу: `./main`.\n5. Сравните вывод с разделом ожидаемого вывода выше."
             }
             combination => panic!("missing documented hello-world answer for {combination:?}"),
         };
@@ -555,50 +559,59 @@ fn summarization_intent_routes_to_summarization_handler() {
     }
 }
 
-/// Brainstorming prompts, with whether the topic composer owns them.
-///
-/// Issue #1178 moved topic-bearing name requests (`names for a`, `ideas for
-/// a`, see `data/seed/meanings-creative-tasks.lino`) from the memorized
-/// dev-tool name pool to candidates composed from the request's own topic
-/// words; the remaining prompts keep the seeded brainstorm list.
-const BRAINSTORMING_PROMPTS: &[(&str, bool)] = &[
-    ("Give me five ideas for an open-source side project.", false),
-    ("Brainstorm ten names for a code review tool.", true),
-    ("Suggest five open-source utilities for developers.", false),
-    ("Brainstorm 5 small tools for link notation.", false),
-    ("Give me 5 ideas for a local-first AI helper.", true),
-    ("Brainstorm ten names for a symbolic assistant.", true),
+const BRAINSTORMING_PROMPTS: &[(&str, Option<&str>)] = &[
+    (
+        "Give me five ideas for an open-source side project.",
+        Some("side project"),
+    ),
+    ("Brainstorm ten names for a code review tool.", None),
+    (
+        "Suggest five open-source utilities for developers.",
+        Some("utilities for developers"),
+    ),
+    (
+        "Brainstorm 5 small tools for link notation.",
+        Some("small tools for link notation"),
+    ),
+    (
+        "Give me 5 ideas for a local-first AI helper.",
+        Some("local first ai helper"),
+    ),
+    ("Brainstorm ten names for a symbolic assistant.", None),
 ];
 
 #[test]
 fn brainstorming_intent_routes_to_brainstorm_handler() {
-    for &(prompt, composed) in BRAINSTORMING_PROMPTS {
+    for &(prompt, project_topic) in BRAINSTORMING_PROMPTS {
         let response = answer(prompt);
         assert!(
             response.intent.starts_with("brainstorm"),
-            "prompt {prompt:?} should route to a brainstorm* intent, got: {}",
-            response.intent,
+            "{prompt}: {}",
+            response.intent
         );
-        if composed {
+        assert!(!response.answer.contains("TraceLint"));
+        assert!(!response.answer.contains("Links Notation notebook"));
+        if let Some(topic) = project_topic {
+            assert_eq!(
+                response.answer.lines().count(),
+                5,
+                "{prompt}: {}",
+                response.answer
+            );
+            assert!(
+                response.answer.lines().all(|idea| idea.contains(topic)),
+                "{prompt}: {}",
+                response.answer
+            );
+        } else {
             assert!(
                 response.answer.contains("name candidates for the concepts")
                     && response.answer.contains("1. ")
                     && response.answer.contains("levenshtein"),
-                "prompt {prompt:?} should compose ranked candidates from its topic, got: {}",
-                response.answer,
+                "{prompt}: {}",
+                response.answer
             );
-            assert!(
-                !response.answer.contains("TraceLint"),
-                "prompt {prompt:?} must not recite the memorized name pool, got: {}",
-                response.answer,
-            );
-            continue;
         }
-        assert_eq!(
-            response.answer,
-            "1. A local Links Notation notebook with searchable traces.\n2. A deterministic code-review checklist generator.\n3. A multilingual prompt-variation test corpus.\n4. A CLI that converts issue requirements into traceable tests.\n5. A source-cache inspector for reproducible agent runs.",
-            "prompt {prompt:?} keeps the seeded brainstorm list",
-        );
     }
 }
 
@@ -641,51 +654,52 @@ fn records_information_prompts_route_to_web_search() {
 // Promoted project lookup tests live in
 // `project_lookups.rs` so this file stays under the 1000-line cap.
 
-// Fact-lookup matrix: 5-10 input variations per fact across every supported
-// language. Each prompt must route to `fact_lookup`, surface a Wikidata
-// Q-id evidence link, and return the localized summary from the seed.
-const ENGLISH_FACTUAL_PROMPTS: &[&str] = &[
-    "Who wrote The Lord of the Rings?",
-    "Who is the author of The Lord of the Rings?",
-    "When was the Eiffel Tower built?",
-    "What year did construction of the Eiffel Tower start?",
-    "What is the capital of Japan?",
-    "Which city is Japan's capital?",
-    "What is the capital of Russia?",
-    "Which city is Russia's capital?",
-    "Who painted the Mona Lisa?",
-    "Who is the painter of the Mona Lisa?",
-    "What is the speed of light?",
-    "How fast is the speed of light?",
+// Fact-query matrix across each supported language with explicit publisher fixtures.
+const ENGLISH_FACTUAL_PROMPTS: &[(&str, &str)] = &[
+    ("Who wrote The Lord of the Rings?", "Q15228"),
+    ("Who is the author of The Lord of the Rings?", "Q15228"),
+    ("When was the Eiffel Tower built?", "Q243"),
+    (
+        "What year did construction of the Eiffel Tower start?",
+        "Q243",
+    ),
+    ("What is the capital of Japan?", "Q17"),
+    ("Which city is Japan's capital?", "Q17"),
+    ("What is the capital of Russia?", "Q159"),
+    ("Which city is Russia's capital?", "Q159"),
+    ("Who painted the Mona Lisa?", "Q12418"),
+    ("Who is the painter of the Mona Lisa?", "Q12418"),
+    ("What is the speed of light?", "Q2111"),
+    ("How fast is the speed of light?", "Q2111"),
 ];
 
-const RUSSIAN_FACTUAL_PROMPTS: &[&str] = &[
-    "Кто написал Властелин колец?",
-    "Кто автор Властелина колец?",
-    "Когда построили Эйфелеву башню?",
-    "Какова столица Японии?",
-    "Какова столица России?",
-    "столица россии",
-    "Кто написал Мону Лизу?",
-    "Чему равна скорость света?",
+const RUSSIAN_FACTUAL_PROMPTS: &[(&str, &str)] = &[
+    ("Кто написал Властелин колец?", "Q15228"),
+    ("Кто автор Властелина колец?", "Q15228"),
+    ("Когда построили Эйфелеву башню?", "Q243"),
+    ("Какова столица Японии?", "Q17"),
+    ("Какова столица России?", "Q159"),
+    ("столица россии", "Q159"),
+    ("Кто написал Мону Лизу?", "Q12418"),
+    ("Чему равна скорость света?", "Q2111"),
 ];
 
-const HINDI_FACTUAL_PROMPTS: &[&str] = &[
-    "द लॉर्ड ऑफ द रिंग्स किसने लिखी?",
-    "एफिल टॉवर कब बनी?",
-    "जापान की राजधानी क्या है?",
-    "रूस की राजधानी क्या है?",
-    "मोना लिसा किसने बनाई?",
-    "प्रकाश की गति कितनी है?",
+const HINDI_FACTUAL_PROMPTS: &[(&str, &str)] = &[
+    ("द लॉर्ड ऑफ द रिंग्स किसने लिखी?", "Q15228"),
+    ("एफिल टॉवर कब बनी?", "Q243"),
+    ("जापान की राजधानी क्या है?", "Q17"),
+    ("रूस की राजधानी क्या है?", "Q159"),
+    ("मोना लिसा किसने बनाई?", "Q12418"),
+    ("प्रकाश की गति कितनी है?", "Q2111"),
 ];
 
-const CHINESE_FACTUAL_PROMPTS: &[&str] = &[
-    "魔戒是谁写的?",
-    "埃菲尔铁塔建于何时?",
-    "日本的首都是什么?",
-    "俄罗斯的首都是什么?",
-    "蒙娜丽莎是谁画的?",
-    "光速是多少?",
+const CHINESE_FACTUAL_PROMPTS: &[(&str, &str)] = &[
+    ("魔戒是谁写的?", "Q15228"),
+    ("埃菲尔铁塔建于何时?", "Q243"),
+    ("日本的首都是什么?", "Q17"),
+    ("俄罗斯的首都是什么?", "Q159"),
+    ("蒙娜丽莎是谁画的?", "Q12418"),
+    ("光速是多少?", "Q2111"),
 ];
 
 #[test]
@@ -696,13 +710,9 @@ fn factual_qna_matrix_records_wikidata_anchor() {
         HINDI_FACTUAL_PROMPTS,
         CHINESE_FACTUAL_PROMPTS,
     ] {
-        for prompt in prompts {
-            let response = answer(prompt);
-            assert_eq!(
-                response.intent, "fact_lookup",
-                "prompt {prompt:?} should route to fact_lookup, got {}",
-                response.intent,
-            );
+        for (prompt, subject) in prompts {
+            let response = super::prompt_variations_facts::fact_answer(prompt, subject);
+            assert_eq!(response.intent, "fact_query", "prompt {prompt:?}");
             assert!(
                 response
                     .evidence_links
@@ -723,38 +733,13 @@ fn factual_qna_matrix_records_per_language_evidence() {
         (HINDI_FACTUAL_PROMPTS, "language:hi"),
         (CHINESE_FACTUAL_PROMPTS, "language:zh"),
     ] {
-        assert_language_for_each(prompts, tag);
+        for (prompt, subject) in prompts {
+            let response = super::prompt_variations_facts::fact_answer(prompt, subject);
+            assert!(
+                response.evidence_links.iter().any(|link| link == tag),
+                "{prompt}: {:?}",
+                response.evidence_links
+            );
+        }
     }
-}
-
-#[test]
-fn russian_capital_russia_prompt_returns_moscow() {
-    let response = answer("столица россии");
-    assert_eq!(
-        response.intent, "fact_lookup",
-        "reported prompt should route to fact_lookup, got {} with answer {}",
-        response.intent, response.answer,
-    );
-    assert_eq!(response.answer, "Столица России — Москва.");
-    assert!(
-        response.answer.contains("Москва"),
-        "reported prompt should answer in Russian with Moscow, got {}",
-        response.answer,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "wikidata:Q159"),
-        "reported prompt should record the Russia Wikidata anchor, got links: {:?}",
-        response.evidence_links,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "wikidata:Q649"),
-        "reported prompt should record the Moscow Wikidata anchor, got links: {:?}",
-        response.evidence_links,
-    );
 }

@@ -1,0 +1,15 @@
+PASS check-minimal-core-boundary 0.4s
+
+1/1 passed or skipped; failed: none
+PASS check-closure-audit 5.7s
+
+1/1 passed or skipped; failed: none
+PASS check-notation 17.6s
+
+1/1 passed or skipped; failed: none
+PASS check-package-self-containment 0.3s
+
+1/1 passed or skipped; failed: none
+PASS check-seed-registry 0.1s
+
+1/1 passed or skipped; failed: none

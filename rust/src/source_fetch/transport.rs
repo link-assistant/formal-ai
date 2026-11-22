@@ -1,6 +1,6 @@
 //! Hard output budgets around curl, independent of curl version and compression behavior.
 use super::FetchError;
-use std::io::{self, Read};
+use std::io::{self, Read, Write};
 use std::process::{Child, Command, Output, Stdio};
 use std::sync::mpsc;
 use std::time::{Duration, Instant};
@@ -45,8 +45,21 @@ pub(super) fn bounded_output(
     body_limit: usize,
     diagnostic_limit: usize,
 ) -> Result<Output, FetchError> {
+    bounded_output_with_input(command, body_limit, diagnostic_limit, None)
+}
+
+pub(crate) fn bounded_output_with_input(
+    command: &mut Command,
+    body_limit: usize,
+    diagnostic_limit: usize,
+    input: Option<Vec<u8>>,
+) -> Result<Output, FetchError> {
     let mut child = command
-        .stdin(Stdio::null())
+        .stdin(if input.is_some() {
+            Stdio::piped()
+        } else {
+            Stdio::null()
+        })
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()
@@ -57,6 +70,20 @@ pub(super) fn bounded_output(
                 error.to_string()
             })
         })?;
+    if let Some(input) = input {
+        let Some(mut stdin) = child.stdin.take() else {
+            stop(&mut child);
+            return Err(FetchError::Transport(
+                "source_transport_stdin_missing".to_owned(),
+            ));
+        };
+        if let Err(error) = std::thread::Builder::new().spawn(move || {
+            let _ = stdin.write_all(&input);
+        }) {
+            stop(&mut child);
+            return Err(FetchError::Transport(error.to_string()));
+        }
+    }
     let Some(stdout) = child.stdout.take() else {
         stop(&mut child);
         return Err(FetchError::Transport(

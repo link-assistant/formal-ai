@@ -22,7 +22,7 @@
 //! schema for each category is documented in the corresponding `.lino` file.
 
 mod agentic_messages;
-pub(crate) use agentic_messages::agentic_message;
+pub(crate) use agentic_messages::{agentic_message, server_message};
 mod agentic_tool_capabilities;
 mod brainstorm;
 mod caller_context;
@@ -88,15 +88,15 @@ pub use embedded::{
     AGENT_INFO_LINO, AGENTIC_TOOL_CAPABILITIES_LINO, BRAINSTORM_SEEDS_LINO, CALLER_CONTEXT_LINO,
     CLIENT_COMPLETION_CONTRACTS_LINO, CLIENT_INTEGRATIONS_LINO, CODING_IDIOMS_LINO,
     COMPUTER_USE_TASKS_LINO, CONCEPT_CONTEXTS_LINO, CONCEPTS_LINO, CONTRIBUTION_ARTIFACTS_LINO,
-    COREFERENCE_LINO, DEMO_DIALOGS_LINO, DRAFT_STRATEGIES_LINO, ENTITY_NAMES_LINO,
-    ENVIRONMENTS_LINO, FACTS_LINO, FORMAL_LANGUAGE_PROJECTIONS_LINO, FORMALIZATION_RELATIONS_LINO,
-    GRAMMAR_PROJECTION_RULES_LINO, GREETINGS_LINO, HANDLER_PRECEDENCE_LINO, HANDLER_RULES_LINO,
-    HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO,
-    LANGUAGE_PROJECTION_LINO, LANGUAGES_LINO, LEARNED_METHODS_LINO, LEARNING_SOURCES_LINO,
-    MARKET_PRICE_REFERENCES_LINO, MEANING_FILES, MEANINGS_CALENDAR_LINO,
-    MEANINGS_CODING_TASKS_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO,
-    MEANINGS_NUMBER_CONSTRAINTS_LINO, MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO,
-    MEANINGS_UNITS_LINO, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+    COREFERENCE_LINO, DRAFT_STRATEGIES_LINO, ENTITY_NAMES_LINO, ENVIRONMENTS_LINO, FACTS_LINO,
+    FORMAL_LANGUAGE_PROJECTIONS_LINO, FORMALIZATION_RELATIONS_LINO, GRAMMAR_PROJECTION_RULES_LINO,
+    GREETINGS_LINO, HANDLER_PRECEDENCE_LINO, HANDLER_RULES_LINO, HELLO_WORLD_PROGRAMS_LINO,
+    IDENTITY_LINO, INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, LANGUAGE_PROJECTION_LINO,
+    LANGUAGES_LINO, LEARNED_METHODS_LINO, LEARNING_SOURCES_LINO, MARKET_PRICE_REFERENCES_LINO,
+    MEANING_FILES, MEANINGS_CALENDAR_LINO, MEANINGS_CODING_TASKS_LINO, MEANINGS_FACTS_LINO,
+    MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_NUMBER_CONSTRAINTS_LINO,
+    MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO,
+    MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO, MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_LINO, MULTILINGUAL_RESPONSES_MEMORY_PROGRAM_LINO,
     MULTILINGUAL_RESPONSES_PATTERN_LINO, MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
@@ -131,7 +131,7 @@ pub use model_aliases::{
 pub use operation_vocabulary::{
     OperationLanguageForms, OperationTrigger, OperationVocabulary, operation_vocabulary,
 };
-pub use personas::{Persona, PersonaSeeds, PersonaTopic, persona_seeds};
+pub use personas::{Persona, PersonaSeeds, persona_seeds};
 pub use planner_precedence::{
     PLANNER_PRECEDENCE_PATH, planner_precedence, planner_precedence_from,
 };
@@ -144,8 +144,8 @@ pub use proof_library::{
 };
 pub use proof_programs::{ProofLanguageTemplates, ProofProgramTemplates, proof_program_templates};
 pub use release_timelines::{
-    ReleaseTimeline, ReleaseTimelineEntry, ReleaseTimelinePhrasing, ReleaseTimelines,
-    parse_release_timelines, release_timelines,
+    OpenReleaseSeries, ReleaseSeriesRequest, ReleaseTimeline, ReleaseTimelineEntry,
+    ReleaseTimelinePhrasing, ReleaseTimelines, parse_release_timelines, release_timelines,
 };
 // `roles` re-exports its own submodules with globs; mirror that here so the
 // per-role constant list does not have to be restated (and keeps this file
@@ -160,7 +160,7 @@ pub use sources::{
     external_trusted_sources, percent_encode, source_record, source_registry,
     sources_for_need_kind,
 };
-pub use summary_topics::{SummaryTopic, SummaryTopicSeeds, summary_topic_seeds};
+pub use summary_topics::{SummaryTopicSeeds, summary_topic_seeds};
 pub use terminal_commands::{TerminalCommandVocabulary, terminal_command_vocabulary};
 pub use tool_resource_scopes::{
     ToolResourceScopeVocabulary, parse_tool_resource_scopes, tool_resource_scope_vocabulary,

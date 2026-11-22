@@ -13,7 +13,7 @@ const git=(cwd,args)=>execFileSync('git',args,{cwd,encoding:'utf8',timeout:30000
 const commit=value=>assert.match(value,/^[a-f0-9]{40}$/u);
 
 export const nativeCompilationInputRoots = Object.freeze(['rust/src','rust/embedded','rust/Cargo.toml','rust/Cargo.lock','rust/build.rs',
- 'data/seed/api-cache','.cargo','rust/.cargo']);
+ '.cargo','rust/.cargo']);
 
 /** Hash only tracked native compilation inputs, and refuse an uncommitted input. */
 export function nativeInputIdentity(cwd) {
@@ -22,19 +22,18 @@ export function nativeInputIdentity(cwd) {
  const names=records.map(r=>r.name);assert.ok(names.includes('rust/Cargo.toml')&&names.includes('rust/Cargo.lock'));
  for(const name of names)assert.doesNotMatch(name,/[\r\n]/u);
  const tracked=new Set(names);
- function inspect(directory,legacyOnly=false) {
+ function inspect(directory) {
   if(!existsSync(join(cwd,directory)))return;
   for(const entry of readdirSync(join(cwd,directory),{withFileTypes:true})) {
    const name=directory+'/'+entry.name;
    assert.equal(entry.isSymbolicLink(),false,'symlink native compilation input: '+name);
-   if(entry.isDirectory())inspect(name,legacyOnly);
-   else if(!legacyOnly||name.endsWith('.lino')) {
+   if(entry.isDirectory())inspect(name);
+   else {
     assert.ok(tracked.has(name),'untracked native compilation input: '+name);
    }
   }
  }
  for(const directory of ['rust/src','rust/embedded','.cargo','rust/.cargo'])inspect(directory);
- inspect('data/seed/api-cache',true);
  const objects=execFileSync('git',['hash-object','--no-filters','--stdin-paths'],{cwd,encoding:'utf8',input:names.join('\n')+'\n'}).trim().split('\n');
  assert.equal(objects.length,records.length);
  const digest=createHash('sha256');

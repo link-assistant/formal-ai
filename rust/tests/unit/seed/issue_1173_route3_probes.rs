@@ -2,8 +2,8 @@
 //!
 //! "a program that prints <text>" names the catalog task whose output is the
 //! request's operand (`print_text` in `data/seed/hello-world-programs.lino`):
-//! the program is the documented `hello_world` print procedure with the text
-//! bound into its output literal, never a stored program. And a handler the
+//! the offline renderer binds the request's text to the stdout operation.
+//! A handler the
 //! precedence seed marks `before-promotion` is asked before the promoted
 //! methods, as the browser asks it in its fixed early phase (issue #1175
 //! p133). The browser twin is `rust/tests/web/issue-1173-route3-probes.test.mjs`.
@@ -21,8 +21,7 @@ fn solved(prompt: &str) -> (String, String) {
 }
 
 #[test]
-fn a_program_that_prints_a_greeting_is_the_print_text_task_composed_from_the_documented_procedure()
-{
+fn a_program_that_prints_a_greeting_binds_the_output_operand() {
     let (intent, answer) = solved("Write a program in Rust that prints hello");
     assert_eq!(intent, "write_program", "{answer}");
     assert_eq!(
@@ -36,12 +35,10 @@ fn a_program_that_prints_a_greeting_is_the_print_text_task_composed_from_the_doc
             "}",
             "```",
             "",
-            "Execution status: not run; this program was rediscovered from \
-             https://doc.rust-lang.org/book/ch01-02-hello-world.html and its output contract \
-             was checked by decomposition, not by executing it.",
+            "Execution status: not probed in this environment.",
             "Check command: `rustc main.rs -o main`",
             "Run command: `./main`",
-            "Expected output after verification:",
+            "Output, not observed in this environment:",
             "```text",
             "hello",
             "```",
@@ -61,7 +58,7 @@ fn a_program_that_prints_a_greeting_is_the_print_text_task_composed_from_the_doc
     let (intent, answer) = solved("Напиши программу на Python, которая печатает привет");
     assert_eq!(intent, "write_program", "{answer}");
     assert!(
-        answer.contains("```python\nprint('привет')\n```"),
+        answer.contains("```python\nprint(\"привет\")\n```"),
         "{answer}"
     );
     assert!(answer.contains("```text\nпривет\n```"), "{answer}");

@@ -21,11 +21,9 @@
 //! approved by a human before anything is adopted.
 
 use std::fmt::Write as _;
-use std::sync::OnceLock;
 
 use crate::agentic_coding::self_ast;
 use crate::engine::stable_id;
-use crate::event_log::EventLog;
 use crate::self_improvement::{
     BenchmarkGateReport, LearningRun, UnknownTrace, learn_rules_from_unknown_traces,
 };
@@ -71,26 +69,6 @@ impl SourceRoundTrip {
             faithful,
             source_document,
         }
-    }
-
-    /// Map a failure onto the pinned self-inspection target (the deterministic
-    /// planner — the module that routes inputs, so the natural site for a routing
-    /// repair). Uses the source embedded at build time.
-    ///
-    /// Both inputs are compile-time constants, so this round-trip is a constant of
-    /// the build — but deriving it parses the whole pinned module, which issue
-    /// #1017 measured at over ten seconds on the `dev` profile CI tests run under.
-    /// Computing it once per process keeps the value identical while making every
-    /// repeat call free; anything that needs a fresh parse of arbitrary source
-    /// still calls [`Self::for_module`] directly.
-    #[must_use]
-    pub fn for_pinned_target() -> Self {
-        static PINNED_ROUND_TRIP: OnceLock<SourceRoundTrip> = OnceLock::new();
-        PINNED_ROUND_TRIP
-            .get_or_init(|| {
-                Self::for_module(self_ast::TARGET_MODULE_PATH, self_ast::target_source())
-            })
-            .clone()
     }
 }
 
@@ -245,51 +223,6 @@ impl RepairCase {
         push_indented(&mut out, "learning_run", &self.learning.links_notation());
         out.trim_end().to_owned()
     }
-}
-
-/// A deterministic, canonical failure trace for the self-healing recipe.
-///
-/// It captures an input the system could not answer directly (a reverse-sort
-/// program modifier), together with the rule-synthesis candidate and *passed*
-/// verification the loop reasons about. Kept in sync with the real events
-/// `crate::rule_synthesis` emits.
-#[must_use]
-pub fn canonical_failure_trace() -> UnknownTrace {
-    let mut log = EventLog::new();
-    log.append(
-        "selected_rule",
-        "initial unknown reason no_seed_route next try_rule_synthesis",
-    );
-    log.append(
-        "rule_synthesis_candidate",
-        "rule_synthesis_candidate\n  id reverse_sort_list_files\n  source constructed_from_operation_vocabulary\n  base_task list_files\n  modifier reverse_sort\n  operation sort\n  operation_modifier descending\n  target program:last.output_order\n  resolved_task list_files_reverse_sort",
-    );
-    log.append(
-        "rule_verification",
-        "rule_verification\n  candidate reverse_sort_list_files\n  fixture list_files_output_order\n  input a.txt,b.txt,c.txt\n  expected_order c.txt,b.txt,a.txt\n  lowering_check passed\n  render_check passed\n  status passed",
-    );
-    UnknownTrace::from_event_log(
-        "List the files but sort the results in reverse order",
-        "write_program",
-        &log,
-    )
-    .expect("canonical unknown-path trace should accumulate")
-}
-
-/// Build the canonical, fully-worked self-healing case.
-///
-/// The canonical failure is mapped onto the pinned planner target and gated by a
-/// passing issue-#362 benchmark, so the outcome is `AwaitingReview` (a lesson
-/// ready for human approval). Deterministic and self-contained — used by the
-/// agentic recipe, the committed `data/meta/self-healing-case.lino` artifact, and
-/// the tests.
-#[must_use]
-pub fn canonical_case() -> RepairCase {
-    RepairCase::from_trace(
-        canonical_failure_trace(),
-        SourceRoundTrip::for_pinned_target(),
-        BenchmarkGateReport::issue_362_from_counts(4, 0),
-    )
 }
 
 fn field(out: &mut String, key: &str, value: &str) {

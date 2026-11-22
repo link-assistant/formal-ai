@@ -14,11 +14,18 @@ const AUSTRALIA = {
     Q408: {
       id: "Q408",
       labels: { en: { language: "en", value: "Australia" } },
-      claims: { P36: [{ mainsnak: { datavalue: { value: { "entity-type": "item", id: "Q3114" }, type: "wikibase-entityid" } } }] },
+      claims: { P36: [{ rank: "deprecated", mainsnak: { datavalue: { value: { id: "Q123" } } } }, { rank: "preferred", mainsnak: { datavalue: { value: { "entity-type": "item", id: "Q3114" }, type: "wikibase-entityid" } } }] },
     },
   },
 };
 const CANBERRA = { entities: { Q3114: { id: "Q3114", labels: { en: { language: "en", value: "Canberra" } } } } };
+
+const CANADA = { entities: { Q16: {
+  id: "Q16",
+  labels: { en: { value: "Canada" } },
+  claims: { P36: [{ rank: "preferred", mainsnak: { snaktype: "value", datavalue: { value: { id: "Q1930" } } } }] },
+} } };
+const OTTAWA = { entities: { Q1930: { id: "Q1930", labels: { en: { value: "Ottawa" } } } } };
 
 const worker = createWorkerContext();
 const seeded = evaluate(worker, "loadSeed()");
@@ -29,8 +36,24 @@ worker.fetch = (url, init) => {
   if (!text.includes("wikidata.org")) return seedFetch(url, init);
   wikidataRequests.push(text);
   let body = null;
-  if (text.includes("wbsearchentities")) body = text.includes("search=Australia") ? { search: [{ id: "Q408", label: "Australia" }] } : { search: [] };
+  if (text.includes("wbsearchentities")) {
+    if (/search=australia(?:&|$)/iu.test(text)) {
+      body = { search: [{ id: "Q123", label: "Australia Day" }, { id: "Q408", label: "Australia" }] };
+    } else if (/search=canada(?:&|$)/iu.test(text)) {
+      body = { search: [{ id: "Q16", label: "Canada" }] };
+    } else if (text.includes("search=Springfield")) {
+      body = { search: [{ id: "Q123", label: "Springfield" }, { id: "Q408", label: "Springfield" }] };
+    } else if (text.includes("search=Canterbury")) {
+      body = { search: [{ id: "Q123", label: "Canterbury" }, { id: "Q345", label: "Canterbury" }] };
+    } else {
+      body = { search: [] };
+    }
+  }
   else if (text.includes("ids=Q408")) body = AUSTRALIA;
+  else if (text.includes("ids=Q16")) body = CANADA;
+  else if (text.includes("ids=Q1930")) body = OTTAWA;
+  else if (text.includes("ids=Q345")) body = { entities: { Q345: { id: "Q345", claims: {} } } };
+  else if (text.includes("ids=Q123")) body = { entities: { Q123: { ...AUSTRALIA.entities.Q408, id: "Q123", labels: {} } } };
   else if (text.includes("ids=Q3114")) body = CANBERRA;
   return Promise.resolve({
     ok: body !== null,
@@ -45,7 +68,7 @@ async function call(expression) {
   return plain(await evaluate(worker, expression));
 }
 
-const ask = (prompt) => call(`tryFactQuery(${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}), {})`);
+const ask = (prompt, preferences = {}) => call(`tryFactQuery(${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}), ${JSON.stringify(preferences)})`);
 
 test("R175: the cache keeps an answer for one week under a per-language key", async () => {
   assert.equal(await call("FACT_QUERY_TTL_MS"), 7 * 24 * 60 * 60 * 1000);
@@ -72,6 +95,7 @@ test("R175/R178: a miss resolves live and is stored; the repeat is served from t
     assert.ok(first.trace.includes(event), `${event}\n${first.trace.join("\n")}`);
   }
   assert.ok(wikidataRequests.length > before, "the miss reached Wikidata");
+  assert.equal(first.evidence.filter((entry) => /^source:http:.* sha256=[a-f0-9]{64}$/.test(entry)).length, 3);
 
   const requested = wikidataRequests.length;
   const second = await ask("What is the capital of Australia?");
@@ -94,4 +118,44 @@ test("R176: the fresh marker is recognised in every supported language", async (
     assert.equal(await call(`shouldForceFresh(normalizePrompt(${JSON.stringify(prompt)}), ${JSON.stringify(prompt)})`), true, prompt);
   }
   assert.equal(await call('shouldForceFresh(normalizePrompt("What is the capital of France?"), "What is the capital of France?")'), false);
+});
+
+test("fact search honors offline and source settings and refuses ambiguous labels", async () => {
+  const requested = wikidataRequests.length;
+  assert.equal(await ask("What is the capital of Springfield?", { offline: true }), null);
+  assert.equal(await ask("What is the capital of Australia?", { externalServiceMediawikiFamily: false }), null);
+  assert.equal(wikidataRequests.length, requested);
+
+  assert.equal(await ask("What is the capital of Springfield?"), null);
+  assert.equal(wikidataRequests.length, requested + 2);
+  assert.match(wikidataRequests[requested], /search=Springfield/);
+  assert.match(wikidataRequests[requested + 1], /ids=Q123/);
+
+  const unique = await ask("What is the capital of Canterbury?");
+  assert.ok(unique.trace.includes("fact_query:wbsearchentities:resolved:Q123"));
+  assert.equal(unique.evidence.filter((entry) => /^source:http:.* sha256=[a-f0-9]{64}$/.test(entry)).length, 4);
+});
+
+test("fact formalization preserves the words within names across languages", async () => {
+  for (const [prompt, subject] of [
+    ["澳大利亚的首都是什么？", "澳大利亚"],
+    ["¿Cuál es la capital de Trinidad y Tobago?", "trinidad y tobago"],
+    ["What is the capital city of Trinidad and Tobago?", "trinidad and tobago"],
+    ["Australia's capital?", "australia"],
+  ]) {
+    assert.deepEqual(await call(`factLiveQuestion(${JSON.stringify(prompt)})`), { relation: "capital", subjectTerm: subject });
+  }
+});
+
+test("a full worker turn compares verified claims and discloses a missing subject", async () => {
+  for (const [prompt, intent, expected] of [
+    ["Compare Australia and Canada.", "fact_comparison", /Canberra for Australia, Ottawa for Canada/u],
+    ["Compare Australia and Atlantis.", "fact_comparison_gap", /no verified facts for atlantis to compare with Australia/iu],
+  ]) {
+    const result = await call(`solve(${JSON.stringify(prompt)}, [], {}, {}, [], {})`);
+    assert.equal(result.intent, intent, JSON.stringify(result));
+    assert.match(result.content, expected);
+    assert(result.evidence.some((entry) => /^source:http:.* sha256=[a-f0-9]{64}$/.test(entry)));
+    assert(!result.evidence.some((entry) => entry.includes("fact_capital_q")));
+  }
 });

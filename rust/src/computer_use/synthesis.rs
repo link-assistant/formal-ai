@@ -24,7 +24,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde_json::{Map, Value, json};
 
-use super::induction::{FETCH_OPERATION, LearnedSchemas, learned};
+use super::induction::{FETCH_OPERATION, LearnedSchemas};
 use super::lexicon::{
     capability_gap_cue, instruction_surface, normalize, operation_cues, resource_cue,
 };
@@ -78,15 +78,7 @@ pub fn capability_gap_for_request(prompt: &str) -> Option<CapabilityGap> {
     capability_gap_response(&capability, &locale)
 }
 
-/// Synthesize a verified plan for an arbitrary request from the learned
-/// schemas, or `None` when the request falls outside what the corpus taught.
-#[must_use]
-pub fn synthesize(prompt: &str) -> Option<Synthesis> {
-    synthesize_with(prompt, learned())
-}
-
-/// Synthesize against explicit schemas — used by tests that induce from a
-/// synthetic corpus.
+/// Synthesize against explicit schemas induced from a supplied corpus.
 #[must_use]
 pub fn synthesize_with(prompt: &str, schemas: &LearnedSchemas) -> Option<Synthesis> {
     let normalized = normalize(&instruction_surface(prompt));

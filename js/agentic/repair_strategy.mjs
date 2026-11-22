@@ -1,20 +1,11 @@
-// The issue-#558 repair-strategy recipe (rust/src/agentic_coding/repair_strategy.rs).
-//
-// The Rust document is rendered from `crate::repair_strategy::canonical_strategies()`;
-// the committed data/meta/repair-strategies.lino is asserted byte-for-byte equal
-// to it (rust/tests/unit/agentic-coding/issue_558_repair_strategy.rs), so the port reads it.
-
-import { cached, childValue, childrenNamed, parseLino, readText } from './host.mjs';
+import { cached } from './host.mjs';
 import { agenticMessage } from './messages.mjs';
+import { readRepairTrace, repairData, repairIntent } from './repair_input.mjs';
+import { quote } from './crate/change_request.mjs';
+import { stableId } from './crate/engine_stable_identifier.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
 
-/** The top-level `name` node (the shared parser returns a lone top node itself). */
-const topNode = (parsed, name) => (parsed?.name === name ? parsed : childrenNamed(parsed, name)[0]);
-
-/** Mirrors `const REPAIR_STRATEGY_PATH`. */
 export const REPAIR_STRATEGY_PATH = 'repair-strategies.lino';
-
-const COMMITTED_STRATEGIES = 'data/meta/repair-strategies.lino';
 
 /** Mirrors `const REPAIR_STRATEGY_KEYWORDS` (a `|`-separated list in agentic-messages.lino). */
 const repairStrategyKeywords = () => cached('repair-strategy-keywords', () => agenticMessage('repair_strategy_keywords').split('|'));
@@ -24,27 +15,60 @@ const repairStrategyKeywords = () => cached('repair-strategy-keywords', () => ag
  * @param {string} prompt
  */
 export function isRepairStrategyTask(prompt) {
-  const lower = prompt.toLowerCase();
+  const lower = repairIntent(prompt).toLowerCase();
   return repairStrategyKeywords().some((keyword) => lower.includes(keyword));
 }
 
-/** Mirrors `fn render_document` in rust/src/agentic_coding/repair_strategy.rs. */
-export function renderDocument() {
-  return cached('repair-strategy-document', () => `${trimEnd(readText(COMMITTED_STRATEGIES))}\n`);
+const classes = ['solver_method', 'data_record', 'test'];
+
+function classMessage(target, field, values) {
+  return agenticMessage(`repair_class_${target}_${field}`, values);
 }
 
-/** The strategies' `target` slugs, in order (`RepairTarget::slug`). */
-function targets() {
-  const root = topNode(parseLino(renderDocument()), 'repair_strategies');
-  return childrenNamed(root, 'repair_strategy').map((strategy) => childValue(strategy, 'target'));
+function classify(trace) {
+  const haystack = [trace.prompt, ...trace.events.map(event => `${event.kind} ${event.payload}`)].join('\n').toLowerCase();
+  for (const target of classes) {
+    const signal = classMessage(target, 'cues').split('|').find(cue => cue && haystack.includes(cue));
+    if (signal) return { target, rationale: classMessage(target, 'rationale', { signal }) };
+  }
+  return { target: classes[0], rationale: agenticMessage('repair_strategy_default_rationale') };
 }
 
-/** Mirrors `fn final_answer` in rust/src/agentic_coding/repair_strategy.rs. */
-export function finalAnswer(document) {
-  const slugs = targets();
+export function strategiesFromTask(task) {
+  const traces = repairData(task)?.traces;
+  if (!Array.isArray(traces) || !traces.length || traces.length > 32) return null;
+  const observations = traces.map(readRepairTrace);
+  if (observations.some(trace => !trace)) return null;
+  return observations.map(trace => {
+    const { target, rationale } = classify(trace);
+    return {
+      id: stableId('repair_strategy', `${trace.id}:${target}:${trace.prompt}`),
+      failure_prompt: trace.prompt,
+      trace_id: trace.id,
+      target,
+      human_gated: 'true',
+      rationale,
+      proposed_change: classMessage(target, 'proposal', { prompt: trace.prompt }),
+      verification: classMessage(target, 'verification'),
+    };
+  });
+}
+
+const targets = strategies => [...new Set(strategies.map(strategy => strategy.target))];
+
+export function renderDocument(strategies) {
+  let document = `repair_strategies\n  covers "${targets(strategies).join(',')}"\n  strategy_count "${strategies.length}"\n`;
+  for (const strategy of strategies) {
+    document += '  repair_strategy\n';
+    for (const [key, value] of Object.entries(strategy)) document += `    ${key} "${quote(value)}"\n`;
+  }
+  return document;
+}
+
+export function finalAnswer(strategies, document) {
   return agenticMessage('repair_strategy_final_answer', {
-    count: slugs.length,
-    targets: slugs.join(', '),
+    count: strategies.length,
+    targets: targets(strategies).join(', '),
     path: REPAIR_STRATEGY_PATH,
     document: trimEnd(document),
   });

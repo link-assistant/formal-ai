@@ -1,0 +1,21 @@
+✔ fnv1a64 is the 64-bit FNV-1a, bit for bit (published reference vectors) (2786.637036ms)
+✔ the required fields come from the policy seed, plus the cache key (23.089442ms)
+✔ store rejects a procedure without rediscovery fields (R1165-3) (1.093491ms)
+✔ store, reload from disk, look up case-insensitively (4.242364ms)
+✔ content_id is fnv1a of the entry, recomputed on store and checked on load (4.445993ms)
+✔ delete_all empties the cache file (R1165-7, offline half) (2.976582ms)
+✔ the miss path runs research and stores the verified procedure; the second ask is a hit (2.206766ms)
+✔ a failed research round is the error, and nothing is stored (0.550227ms)
+✔ grammar_exists reads the CST seed (8.711611ms)
+✔ knows_language requires a grammar and a procedure (25.432743ms)
+✔ the package carries no bootstrap procedure examples (3.544963ms)
+✔ write_program_reuses_the_cached_procedure_only_for_an_unmodified_request (7.023101ms)
+✔ miss_route_names_what_research_lacks_on_a_solve (2.457124ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3982.723167

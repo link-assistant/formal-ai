@@ -36,7 +36,7 @@ run_step "ordered lists (src/lib.rs, tests/*/mod.rs, worker module list)" \
   rust-script scripts/normalize-ordered-lists.rs --write
 run_step "seed inventory (src/seed/embedded_registry.rs, js/seed-files.js)" \
   rust-script scripts/generate-seed-registry.rs --write
-run_step "trusted-source recurrence cache (js/source-cache/wikifunctions-recurrences.lino)" \
+run_step "recurrence test fixture (rust/tests/fixtures/coding-discovery/wikifunctions/recurrence-replay.lino)" \
   cargo run --manifest-path rust/Cargo.toml --quiet --example generate_recurrence_source_cache -- --write
 run_step "requirements document (REQUIREMENTS.md, docs/requirements/assembled/)" \
   rust-script scripts/assemble-requirements.rs --write
@@ -71,12 +71,6 @@ run_step "formatting" cargo fmt --manifest-path rust/Cargo.toml
 # issue #922 exists to hold.
 run_step "reviewed method proposals (rust/examples/issue-922-method-learning/open-proposals.lino)" \
   cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_issue_922_open_proposals
-# These three are derived from src/agentic_coding/planner.rs, so any edit to the
-# planner -- including one a formatter makes -- leaves them stale. They were
-# missing from this list, and the only thing that noticed was a test failure
-# several minutes into the suite.
-run_step "self-healing scenario (data/meta/self-healing-case.lino)" \
-  cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_planner_fixtures
 # Last, because earlier steps rewrite data/ and docs/ files the mirror copies:
 # every producer runs before the mirror is refreshed. The committed
 # rust/embedded/ tree is what the published crate ships (issue #1138).

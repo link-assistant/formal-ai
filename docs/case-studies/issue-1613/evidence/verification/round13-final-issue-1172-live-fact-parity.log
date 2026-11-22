@@ -1,0 +1,19 @@
+✔ the question is formalized from seed cues, as the native twin (927.285846ms)
+✔ R3: a live capital answer cites the claim's reference URL (34.369295ms)
+✔ R3: a claim citing no reference points at the subject snapshot (27.32201ms)
+✔ facts require the subject, property and labeled value from the publisher (5652.8517ms)
+✔ dates come from ranked publisher claims for any matched subject (4788.527068ms)
+✔ R3: an authorship answer reads through the relation's own seeded phrasing (36.566193ms)
+✔ explicit seed namespaces exclude sibling captures and preserve registry order (1.251925ms)
+✔ the real multi-namespace registry supplies endpoints and page primacy (6.752706ms)
+✔ unnamed seed records retain wrapper and bare-record behavior (0.7938ms)
+✔ project origin comes from an authorized declaration and an empty offline worker has no copy (4078.185883ms)
+✔ registered carrier policies use the checked section from a verified publisher capture (11956.559023ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 30768.303826

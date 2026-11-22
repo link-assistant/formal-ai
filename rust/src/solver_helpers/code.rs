@@ -8,8 +8,70 @@
 //! path resolving unchanged.
 
 use super::{extract_backticked, extract_fenced_block, extract_quoted_phrase};
+use crate::engine::SelectedRule;
 use crate::language::{Language, detect as detect_language};
 use crate::proof_program::FormalProof;
+
+pub(crate) fn catalog_operand_is_unbound(rule: &SelectedRule, has_bound_program: bool) -> bool {
+    !has_bound_program
+        && matches!(rule, SelectedRule::WriteProgram(spec)
+            if crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug).is_some())
+}
+
+pub(crate) fn enforce_answer_questions(
+    body: &str,
+    log: &mut crate::event_log::EventLog,
+    rule: &SelectedRule,
+    has_bound_program: bool,
+) -> String {
+    let requires_input = catalog_operand_is_unbound(rule, has_bound_program)
+        || matches!(
+            rule,
+            SelectedRule::UnsupportedWriteProgram {
+                task: None,
+                language: Some(_),
+            }
+        );
+    if requires_input {
+        crate::question_necessity::enforce_requirement_questions(body, log)
+    } else {
+        crate::question_necessity::enforce_questions(body, log)
+    }
+}
+
+pub(crate) fn catalog_execution_recipe(
+    rule: &crate::engine::SelectedRule,
+    prompt: &str,
+    bound: Option<crate::coding::catalog_parameters::BoundCatalogProgram>,
+    cached: Option<String>,
+) -> Option<Box<crate::engine::ExecutionRecipe>> {
+    let crate::engine::SelectedRule::WriteProgram(spec) = rule else {
+        return None;
+    };
+    let source = if crate::coding::catalog_parameters::catalog_parameter_guidance(spec.task.slug)
+        .is_some()
+    {
+        bound?.template.code.into_owned()
+    } else {
+        cached.unwrap_or_else(|| {
+            crate::code_editing::apply_inline_hello_world_source_replacement(
+                prompt,
+                &spec.template.code,
+                *spec,
+            )
+        })
+    };
+    Some(Box::new(crate::engine::ExecutionRecipe {
+        language: spec.language.code_fence.to_owned(),
+        source,
+        path: spec.language.save_as.to_string(),
+        supporting_files: Vec::new(),
+        commands: crate::discovery_production::catalog_run_commands(spec.language)
+            .into_iter()
+            .map(str::to_owned)
+            .collect(),
+    }))
+}
 
 pub fn detect_program_languages(normalized: &str) -> Option<(&'static str, &'static str)> {
     let langs = [

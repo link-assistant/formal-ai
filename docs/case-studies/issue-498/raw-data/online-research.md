@@ -11,7 +11,7 @@ Research collected on 2026-07-08 for
 - The collected RSS feed is
   <https://trends.google.com/trending/rss?geo=US&hl=ru>. The checked-in raw
   snapshot is `google-trends-us-rss.xml`, and the deterministic seed rendered
-  from it is `data/seed/google-trends-snapshot.lino`.
+  from it is preserved as [google-trends-snapshot.lino](../replay/google-trends-snapshot.lino).
 
 Design implication: use the live feed only to refresh seed data. Tests should
 consume a checked-in snapshot so failures represent code or artifact drift, not

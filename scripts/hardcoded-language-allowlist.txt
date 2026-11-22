@@ -14,14 +14,12 @@
 
 rust/src/agent.rs	exit={:?} stdout_bytes={} stderr_bytes={}
 rust/src/agentic_coding/associative_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 686 memory as an associative links network, perform bounded multi-hop recall, rank expressions by reads, writes, incoming links, and outgoing links, retain validation warnings, and write associative-learning-report.lino.
-rust/src/agentic_coding/change_request.rs	I want to change Formal AI itself: please add a new capability to the system, and route my request through the same human-gated review loop that produces a requirement, a test, and a patch plan I can review as a pull request.
 rust/src/agentic_coding/change_request.rs	Turned your change request into a reviewable pull request: it derives the requirement \"{requirement}\", proposes the test `{test}`, and a {steps}-step patch plan against the grounded module {target}. Nothing is applied — the change merges only through the same human-gated loop: a green benchmark gate and your explicit approval. Neural inference is not used; the requirement, test, and patch plan are a deterministic function of your request and its grounded target.\n\nGenerated document ({CHANGE_PATH}):\n\n{document}
 rust/src/agentic_coding/code_artifact.rs	Created `{}` through the workspace file tools.
 rust/src/agentic_coding/code_artifact.rs	No matching source fragment was found in `{}`.
 rust/src/agentic_coding/code_artifact.rs	Rewrite of `{}` reached its {MAX_REWRITE_STEPS}-step safety bound; no partial bytes were written.\n\n{}
 rust/src/agentic_coding/code_artifact.rs	Updated `{}` through the workspace file tools.\n\n{}\n{}
 rust/src/agentic_coding/code_rewrite_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 715 workspace-rewrite failures as an associative links network, rank the observations and normal-algorithm amendments, keep promotion human-review gated, and write code-rewrite-learning-report.lino.
-rust/src/agentic_coding/corpus.rs	Wikidata lexemes for the {} concept ({}) — Wikidata
 rust/src/agentic_coding/corpus.rs	web_fetch error: 404 not found for {url}
 rust/src/agentic_coding/corpus.rs	web_search: no results for {query:?}
 rust/src/agentic_coding/diagram.rs	A high-level, split-into-parts visual overview of how Formal AI drives its own agentic\nCLI to complete a task. Part 1 shows how a request is routed to a recipe; each later part\ndetails what happens for input handled by that recipe — the deterministic\n`search -> fetch -> write -> verify -> final` state machine in `rust/src/agentic_coding/`.\n\nScope: these diagrams cover the issue #468/#538 recipe slice. The planner also routes\nself-heal, dreaming-audit, source-graph, ledger, explain, change-request, repair-strategy,\nrebuild, Google-Trends learning/catalog, question-catalog, and the general capability\nrouter — the `otherwise` edge in Part 1 stands for all of them.\n
@@ -42,7 +40,7 @@ rust/src/agentic_coding/evidence_record.rs	Recorded the findings in `{}`.
 rust/src/agentic_coding/evidence_record.rs	The findings could not be recorded in `{}`: the write step failed.
 rust/src/agentic_coding/execution_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino.
 rust/src/agentic_coding/explain.rs	Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.
-rust/src/agentic_coding/explain.rs	Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations, every claim points at a real artifact — source files content-addressed through the owned manifest, the data artifacts they generate, and the tests that lock the behaviour — rather than prose docs. The answer is a deterministic function of the embedded source, so it cannot cite anything the repository does not ship.\n\nGenerated document ({EXPLAIN_PATH}):\n\n{document}
+rust/src/agentic_coding/explain.rs	Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations. Each section draws from its cited module's documentation. Source citations identify the exact module content, and supporting citations give repository paths.\n\nGenerated document ({EXPLAIN_PATH}):\n\n{document}
 rust/src/agentic_coding/file_read.rs	I can read `{path}` when the client advertises a file read tool or a shell tool.
 rust/src/agentic_coding/file_read.rs	I can read the selected file after listing when the client advertises a read or shell tool.
 rust/src/agentic_coding/file_read.rs	I can resolve that file selection when the client advertises a shell tool for listing files.
@@ -57,9 +55,7 @@ rust/src/agentic_coding/general_planner.rs	written plan event {}
 rust/src/agentic_coding/google_trends_catalog.rs	    source_news\n
 rust/src/agentic_coding/google_trends_catalog.rs	  record_type \"google_trends_catalog\"\n
 rust/src/agentic_coding/google_trends_catalog.rs	Convert the Google Trends top 10 searches into multilingual Formal AI test prompts, include two request variations in every supported language, answer each request, and record the Google Trends catalog in Links Notation.
-rust/src/agentic_coding/google_trends_catalog.rs	Generated the Google Trends catalog from {topic_count} top searches in {geo}: produced {prompt_count} multilingual request variants and answered {answer_count} of them through the standard Formal AI engine. The catalog is generated from the checked-in Trends RSS snapshot, so tests stay offline while the converter can refresh the seed from the live RSS feed.\n\nGenerated document ({GOOGLE_TRENDS_CATALOG_PATH}):\n\n{document}
 rust/src/agentic_coding/google_trends_learning.rs	Collect the Google Trends learning frontier — the trending searches Formal AI cannot yet resolve — route them through the human-gated self-improvement loop, and record the learning report in Links Notation.
-rust/src/agentic_coding/google_trends_learning.rs	Routed the Google Trends learning frontier through the human-gated self-improvement loop: of {total} trending prompts, the engine already resolves {handled} and leaves {frontier} on the learning frontier. Every frontier trace was handed to the issue-#558 learner, which — because trending searches are open-domain questions, not program-plan modifiers — proposed {proposals} rules and adopted {adopted}: nothing changes without human review. The report is a pure function of the committed catalog.\n\nGenerated document ({GOOGLE_TRENDS_LEARNING_PATH}):\n\n{document}
 rust/src/agentic_coding/learning_report.rs	  record_type \"agent_cli_auto_learning\"\n
 rust/src/agentic_coding/learning_report.rs	  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n
 rust/src/agentic_coding/learning_report.rs	  substrate \"links_network\"\n
@@ -67,11 +63,7 @@ rust/src/agentic_coding/learning_report.rs	Formal AI persisted and ranked {expre
 rust/src/agentic_coding/learning_report.rs	Formal AI ranked {expressions} {subject}; the human-review-gated report is in {path}.
 rust/src/agentic_coding/learning_report/handler_precedence_learning.rs	Use Formal AI auto-learning to read the persisted issue 663 specialized-handler precedence rationale as an associative links network, rank the ordering observations and the precedence-is-data amendment, keep the result human-review gated, and write handler-precedence-learning-report.lino.
 rust/src/agentic_coding/learning_report/self_hosting_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 657 self-hosting attribution observations as an associative links network, rank the observations and attribution amendments, keep promotion human-review gated, and write self-hosting-learning-report.lino.
-rust/src/agentic_coding/ledger.rs	Promote the approved lesson into your learning ledger and record the approved learning record in Links Notation so a repeated failure is answered from the ledger next time.
 rust/src/agentic_coding/ledger.rs	Recorded the approved learning ledger: {count} lesson(s) that passed their benchmark gate and were approved by a human are now durable learning records, so a repeated failure is answered from the ledger instead of re-derived. Promotion stayed human-gated — only green, approved, faithfully round-tripping cases were recorded.\n\nGenerated document ({LEDGER_PATH}):\n\n{document}
-rust/src/agentic_coding/meaning_detail.rs	Made the {name} meaning more detailed: every surface now pins its part of speech and grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface recovered from the source is added.\n\nEnriched meaning block ({path}):\n\n{block}
-rust/src/agentic_coding/meaning_detail.rs	Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат.
-rust/src/agentic_coding/meaning_detail.rs	Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata.
 rust/src/agentic_coding/note_composition.rs	- nothing: no tool result was recorded before this note.\n
 rust/src/agentic_coding/note_composition.rs	\nNo requested part above is backed by an observation from this session.\n
 rust/src/agentic_coding/note_composition.rs	\nObserved in this session:\n
@@ -80,14 +72,8 @@ rust/src/agentic_coding/question_catalog.rs	  intent \"generate_all_possible_que
 rust/src/agentic_coding/question_catalog.rs	  record_type \"question_catalog\"\n
 rust/src/agentic_coding/question_catalog.rs	Generate all possible questions from smallest to largest, drawing words from the frequency-tiered vocabulary, classify each candidate as grammatical or not and, among the grammatical ones, logically meaningful or not, then answer the meaningful ones and record the whole question catalog in Links Notation.
 rust/src/agentic_coding/question_catalog.rs	Generated the question catalog from a frequency-tiered vocabulary of {vocabulary} words: classified {candidates} candidates smallest-first into the four-way distinction (grammatical-and-meaningful, grammatical open-slot, fragment, ungrammatical) and answered the first {answers} grammatical-and-meaningful questions with the deterministic engine. The answered questions are a reviewable recall table — a repeated question is answered from the catalog instead of re-derived — and nothing changes solver behaviour without the human-gated learning ledger. Neural inference is not used; every candidate, class, and answer is a deterministic function of the lexicon.\n\nGenerated document ({QUESTION_CATALOG_PATH}):\n\n{document}
-rust/src/agentic_coding/rebuild_plan.rs	An improvement to Formal AI was accepted — now rebuild it and reattach the improved WebAssembly worker to the UI: give me the ordered, reversible steps to regenerate the worker, reattach it to the browser UI, hot-swap the local server, and verify the UI uses the accepted version.
 rust/src/agentic_coding/rebuild_plan.rs	Composed the rebuild-and-reattach plan for accepted change `{change}` (approved by {reviewer}): a {steps}-step, reversible pipeline that recompiles Formal AI, regenerates the WebAssembly worker, reattaches it to {artifacts} grounded UI artifacts, hot-swaps the local server, and verifies the UI uses the accepted version. Nothing is rebuilt or restarted — the plan is the reviewable product, and every step is observable and reversible, so keeping the swap stays a human decision. Neural inference is not used; the plan is a deterministic function of the accepted change and the grounded artifacts.\n\nGenerated document ({REBUILD_PATH}):\n\n{document}
-rust/src/agentic_coding/repair_strategy.rs	  covers \"solver_method,data_record,test\"\n
-rust/src/agentic_coding/repair_strategy.rs	Classified {count} failure traces, one per repair class ({targets}), and composed a grounded, human-gated repair strategy for each: the general repair loop now decides *which part* to change — a solver method, a data record, or a test — for every failure, not just one canonical case. Nothing is applied — each strategy is a reviewable plan that merges only through the same human-gated loop. Neural inference is not used; every classification and plan is a deterministic function of the trace.\n\nGenerated document ({REPAIR_STRATEGY_PATH}):\n\n{document}
-rust/src/agentic_coding/repair_strategy.rs	Classify a failure and decide which part to repair: given a failure trace the system could not answer, determine whether the repair is a solver method, a data record, or a test change, then compose the grounded, human-gated repair strategy for it — for every class of failure, not just one.
 rust/src/agentic_coding/routing_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 712 tool-routing failures as an associative links network, rank the observations and semantic-frame amendments, keep the result human-review gated, and write tool-routing-learning-report.lino.
-rust/src/agentic_coding/self_heal.rs	Ran the self-healing loop on an input the system could not answer directly: reasoned about the failure trace, mapped it onto {module} with a verified source-to-links round-trip, learned a benchmark-gated lesson, and recorded an auditable repair case ({outcome}). Nothing was applied — adoption stays a human-approved review step.\n\nGenerated document ({SELF_HEAL_PATH}):\n\n{document}
-rust/src/agentic_coding/self_heal.rs	When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.
 rust/src/agentic_coding/shell_command.rs	{} --fixed-strings -- '{arg}' .
 rust/src/agentic_coding/source_links.rs	Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
 rust/src/agentic_coding/structured_document.rs	Derived `{}` from `{}` and verified the written Links Notation byte-for-byte.
@@ -122,7 +108,6 @@ rust/src/change_request.rs	Accepted change `{}` for request \"{}\": requirement 
 rust/src/change_request.rs	Add the failing test `{test}` that pins the requested behaviour
 rust/src/change_request.rs	Change request `{}` maps onto {} (content id {}); it derives the requirement \"{}\", proposes test `{}`, and a {}-step patch plan — human-gated, reviewable as a pull request.
 rust/src/change_request.rs	Edit the grounded target module `{target_module}` until the test passes
-rust/src/change_request.rs	Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output.
 rust/src/change_request.rs	Record the derived requirement for review: {requirement}
 rust/src/change_request.rs	The system must {}.
 rust/src/cli_benchmark.rs	failed to read {}: {error}
@@ -165,30 +150,19 @@ rust/src/client_integrations.rs	temporary config path must be relative: {relativ
 rust/src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {supported}
 rust/src/client_integrations.rs	{} does not support protocol `{protocol}`
 rust/src/client_integrations.rs	{} has no endpoint for {protocol}
-rust/src/code_editing.rs	Hello, world!
 rust/src/coding/blueprint.rs	Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: `{run_command}`.
-rust/src/coding/blueprint.rs	Execution status: not run — this report blueprint was not executed in the offline sandbox, and the embedded data assumptions should be reviewed before use. The code is provided for review. Run it yourself: `{run_command}`.
+rust/src/coding/blueprint.rs	Execution status: not run — this report blueprint was not executed in the offline sandbox, and it requires the scenario inputs described in the program. The code is provided for review. Run it yourself: `{run_command}`.
 rust/src/coding/blueprint.rs	Execution status: not run — this source-metrics blueprint uses only the Rust standard library, but the answer renderer did not compile it in place. The code is provided for review. Run it yourself from a Cargo project: `{run_command}`.
 rust/src/coding/blueprint.rs	Here is a {language_name} program for the requested composite task ({recipe_label}). I decomposed your request into these sub-tasks:
-rust/src/coding/blueprint.rs	Response self-analysis:\n- Reasoning text metrics: functions=0, loops=0, conditionals=0, comments=0, complexity_score=1.\n- Comparison: the generated Rust code is more complex than the reasoning text because it contains executable parsing, loops, conditionals, helper functions, and JSON rendering logic.
 rust/src/coding/blueprint.rs	Вот программа на языке {language_name}, которая решает составную задачу ({recipe_label}). Я разбил ваш запрос на следующие подзадачи:
 rust/src/coding/blueprint.rs	Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: `{run_command}`.
-rust/src/coding/blueprint.rs	Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а встроенные допущения о данных нужно проверить перед использованием. Код приведён для проверки. Запустить самостоятельно: `{run_command}`.
+rust/src/coding/blueprint.rs	Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а для расчёта нужны входные данные, описанные в программе. Код приведён для проверки. Запустить самостоятельно: `{run_command}`.
 rust/src/coding/blueprint.rs	निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: `{run_command}`।
-rust/src/coding/blueprint.rs	निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और embedded data assumptions को उपयोग से पहले जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: `{run_command}`।
+rust/src/coding/blueprint.rs	निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और गणना के लिए प्रोग्राम में बताए गए इनपुट चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: `{run_command}`।
 rust/src/coding/blueprint.rs	यहाँ {language_name} में एक प्रोग्राम है जो इस संयुक्त कार्य को हल करता है ({recipe_label})। मैंने आपके अनुरोध को इन उप-कार्यों में विभाजित किया है:
-rust/src/coding/blueprint.rs	执行状态：未运行 —— 该报告未在离线沙箱中执行，内置数据假设应先核对再使用。代码仅供审阅。自行运行：`{run_command}`。
+rust/src/coding/blueprint.rs	执行状态：未运行 —— 该报告未在离线沙箱中执行，运行所需的输入数据见程序说明。代码仅供审阅。自行运行：`{run_command}`。
 rust/src/coding/blueprint.rs	执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：`{run_command}`。
 rust/src/coding/blueprint.rs	这是一个解决该复合任务的 {language_name} 程序（{recipe_label}）。 我已将您的请求分解为以下子任务：
-rust/src/coding/catalog/languages.rs	1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
-rust/src/coding/catalog/languages.rs	Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly.
-rust/src/coding/catalog/languages.rs	The C# seed is returned with this warning until a dotnet-backed execution profile is available.
-rust/src/coding/catalog/languages.rs	The C++ seed is returned with this warning until a g++-backed execution profile is available.
-rust/src/coding/catalog/languages.rs	The Java seed is returned with this warning until a javac-backed execution profile is available.
-rust/src/coding/catalog/languages.rs	The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.
-rust/src/coding/catalog/languages.rs	The Ruby seed is returned with this warning until a ruby-backed execution profile is available.
-rust/src/coding/catalog/languages.rs	The Scala seed is returned with this warning until a scalac-backed execution profile is available.
-rust/src/coding/catalog/languages.rs	The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.
 rust/src/coding/catalog/tasks.rs	Hello, world!
 rust/src/coding/catalog/types.rs	write_program(language={}, task={})
 rust/src/coding/recurrence.rs	invalid {operation:?} boundary operands
@@ -221,10 +195,6 @@ rust/src/dreaming.rs	duplicate recomputable event; retained {} with usage {}
 rust/src/dreaming/learning.rs	learned standing requirement ({topic}):
 rust/src/dreaming_application.rs	Learned standing requirement ({}): {}
 rust/src/dreaming_application.rs	Standing requirement ({}): {}
-rust/src/engine.rs	Check command: `{check_command}`\nRun command: `{run_command}`
-rust/src/engine.rs	Execution status: {status_phrase} in {environment}.
-rust/src/engine.rs	Here is a minimal {language_name} {task_label} program:
-rust/src/engine.rs	Run command: `{run_command}`
 rust/src/engine.rs	Write-program template catalog is unavailable.
 rust/src/engine.rs	rule_assistant_free_time answer={}
 rust/src/engine.rs	rule_assistant_name answer={}
@@ -234,11 +204,6 @@ rust/src/engine.rs	rule_identity answer={}
 rust/src/engine.rs	rule_test_status answer={}
 rust/src/engine.rs	rule_unknown answer={}
 rust/src/engine.rs	rule_write_program parameters=language,task languages={} tasks={}
-rust/src/engine.rs	Вот минимальная программа на языке {language_name} ({task_label}):
-rust/src/engine.rs	Статус выполнения: {status_phrase} в среде «{environment}».
-rust/src/engine.rs	निष्पादन स्थिति: {status_phrase} ({environment} में)।
-rust/src/engine.rs	यहाँ {language_name} में एक न्यूनतम प्रोग्राम है ({task_label}):
-rust/src/engine.rs	这是一个最小的 {language_name} 程序（{task_label}）：
 rust/src/engine_responses.rs	add a rule in Links Notation, then run the request again.
 rust/src/es_meta.rs	token_class {class}
 rust/src/external_benchmarks/cases.rs	no case parser for suite `{other}`
@@ -296,8 +261,6 @@ rust/src/google_trends_catalog.rs	  record_type \"google_trend_topic\"\n
 rust/src/google_trends_catalog.rs	  record_type \"google_trends_snapshot\"\n
 rust/src/google_trends_catalog.rs	google_trend_topic\n
 rust/src/google_trends_learning.rs	  frontier_prompt\n
-rust/src/google_trends_learning.rs	The trending-prompt frontier is empty: every catalog prompt now routes through the engine. Issue #701's learning cycle closed the gap by deriving the request-opener surfaces in `data/seed/learned-request-openers.lino` from the frozen frontier record (`data/meta/learning-frontier-google-trends.lino`) and promoting them through the human-gated issue-#656 protocol; the per-prompt capability deltas are recorded in `data/meta/learning-adoption-ledger.lino`. Nothing is auto-adopted here.
-rust/src/google_trends_learning.rs	Trending searches are open-domain questions, not program-plan modifiers, so the rule-synthesis learner declines to fabricate seed rules for them. The learning frontier — every trending prompt the engine cannot yet route — is recorded here and handed to the human-gated self-improvement loop for triage; nothing is auto-adopted.
 rust/src/intent_formalization.rs	intent_formalization {}
 rust/src/intent_formalization.rs	referent=active_program_artifact task={} language={}
 rust/src/intent_formalization.rs	write_program task={task_slug} language={language_slug}
@@ -306,7 +269,6 @@ rust/src/json_lino.rs	invalid quoted string `{raw}`
 rust/src/json_lino.rs	invalid quoted string `{raw}`: {error}
 rust/src/json_lino.rs	invalid scalar array `{raw}`
 rust/src/json_lino.rs	language `{}` value is not a string
-rust/src/knowledge.rs	Hello, World!
 rust/src/language_frontier.rs	cannot read {}: {error}
 rust/src/learning_adoption_ledger.rs	  adoption_pair\n
 rust/src/learning_adoption_ledger.rs	Every item the issue-#701 learning cycle adopted, recorded as a capability delta: the intent the engine returned before adoption (read from the frozen frontier record) against the intent and recovered topic it returns now through the production solver path. A pair counts as adopted only when the prompt leaves the unknown path and the answer recovers the topic the prompt was generated from; anything else is kept here as an unadopted record rather than dropped.
@@ -409,19 +371,7 @@ rust/src/recipe_interpreter.rs	recipe binds unknown recorder `{other}`
 rust/src/recipe_interpreter.rs	recipe step `{recorder}` runs before its {dependency} dependency
 rust/src/relative_meta_logic.rs	prior={} support={} contradiction={} posterior={} ignored={}
 rust/src/relative_meta_logic.rs	source={} tier={} stance={} strength={} mass={:.6} ignored={}
-rust/src/repair_strategy.rs	Add a data-driven test asserting the corrected record is present and well-formed; the meaning/lexicon suite must stay green.
-rust/src/repair_strategy.rs	Add a fixture that lowers and renders the new task; the rule-synthesis benchmark gate must be green before human review.
-rust/src/repair_strategy.rs	Add a guard test that pins the behaviour \"{prompt}\" exposed, so the regression cannot recur.
-rust/src/repair_strategy.rs	Add or correct the seed data record the failure needs for \"{prompt}\" (the missing meaning, surface, or lexicon entry), expressed in Links Notation.
 rust/src/repair_strategy.rs	Failure `{}` classified as a {} repair ({}); proposed change: {} — verified by: {}. Human-gated, proposal-only.
-rust/src/repair_strategy.rs	Synthesise a new solver method (a substitution rule) that routes \"{prompt}\" to a resolved task, grounded in the operation vocabulary, and run it through the self-healing repair case.
-rust/src/repair_strategy.rs	The new test must fail before the fix and pass after it, and the whole suite must stay green.
-rust/src/repair_strategy.rs	What is the plural of the tomato meaning's second synonym?
-rust/src/repair_strategy.rs	Why did the reverse-sort answer change between releases?
-rust/src/repair_strategy.rs	the trace shows `{signal}` — a correct behaviour is unguarded by a test
-rust/src/repair_strategy.rs	the trace shows `{signal}` — the meta algorithm could not route the task
-rust/src/repair_strategy.rs	the trace shows `{signal}` — the seed data the task needs is absent or wrong
-rust/src/retrieval_procedures.rs	I recognized Google Trends as a data source I can learn from. I collected {total} trending prompts across every supported language, already answer {handled} of them from local links rules, and routed the remaining {frontier} to the human-gated self-improvement loop. That loop proposed {proposals} rules and adopted {adopted}: nothing changes without human review.
 rust/src/rule_synthesis.rs	node {primary} {stem}.wasm < input.tsv
 rust/src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
 rust/src/rule_synthesis.rs	rustc --edition=2024 --target wasm32-unknown-unknown --crate-type cdylib -C panic=abort {primary} -o substitution_program.wasm
@@ -430,19 +380,13 @@ rust/src/rule_synthesis.rs	rustc --edition=2024 {primary} -o substitution_progra
 rust/src/rule_synthesis.rs	write_program task={} language={}
 rust/src/seed.rs	formal_ai_seed_bundle\n
 rust/src/seed/meanings/parse.rs	{} defined by {}
-rust/src/self_explanation.rs	An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning.
-rust/src/self_explanation.rs	Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests.
 rust/src/self_explanation.rs	Explained how Formal AI works across {sections} grounded topics with {citations} citations into its own source ({files} owned files), generated data, and tests.
-rust/src/self_explanation.rs	Formal AI answers agentic requests with a deterministic planner state machine: a keyword-routed recipe walk (write, verify, final answer), never neural inference, so every step is a reproducible function of its inputs.
-rust/src/self_explanation.rs	The entire owned source tree is embedded as content-addressed data and projected through the single CST/AST engine (tree-sitter); every owned module round-trips source to links and back byte-for-byte, so the system's own code is present in its data as links.
-rust/src/self_explanation.rs	When Formal AI cannot answer, it does not simply fail: it captures the failure as a structured RepairCase (unknown trace, a verified source-to-links mapping, and a benchmark gate) that never advances past awaiting human review.
 rust/src/self_healing.rs	  source_round_trip\n
 rust/src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); a lesson was learned but the benchmark gate blocks adoption.
 rust/src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); no lesson could be synthesised — recorded for triage.
 rust/src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); {} lesson(s) await human approval.
 rust/src/self_improvement.rs	  learned_rule\n
 rust/src/self_improvement.rs	  rejected_trace\n
-rust/src/self_improvement.rs	Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{}` is {} ({}/{}).
 rust/src/self_improvement.rs	learned rule does not parse: {error}
 rust/src/self_improvement.rs	missing `{name}` in candidate
 rust/src/self_improvement.rs	rule verification did not pass: {status}
@@ -473,17 +417,10 @@ rust/src/skill_ledger.rs	The need resolved to a method but was not satisfied; re
 rust/src/solver_formalization.rs	formalization:{index} score={} probability={probability:.6} {}
 rust/src/solver_formalization.rs	selected=formalization:{index} probability={probability:.6} margin={margin:.6} epsilon={epsilon:.6} reason={}
 rust/src/solver_formalization.rs	top=formalization:{top_index} runner_up=formalization:{runner_up_index} margin={margin:.6} epsilon={epsilon:.6}
-rust/src/solver_handler_oracle.rs	Here is a minimal {} program ({}):\n\n```{}\n{}\n```\n\nOutput:\n```text\n{}\n```\nSource: {} ({}), cached locally as a popular example.
 rust/src/solver_handlers/agent_workspace.rs	Execution status: failed in isolated sandbox.\nWorkspace isolation: could not create the temp workspace.\nError: {error}
 rust/src/solver_handlers/agent_workspace.rs	Execution status: {status} in isolated sandbox.\nWorkspace isolation: {} (paths are confined to this workspace; command environment is cleared).\n\nAction log:
 rust/src/solver_handlers/agent_workspace.rs	\nTimed out: true
 rust/src/solver_handlers/agent_workspace.rs	failed to {failed} {}: {}
-rust/src/solver_handlers/calculator_rate.rs	For currency calculations I use link-calculator. For USD/RUB it returns: {calculation_body}.
-rust/src/solver_handlers/calculator_rate.rs	I recognized this as a question about the USD/RUB rate used for calculations, but link-calculator could not evaluate it: {error}.
-rust/src/solver_handlers/calculator_rate.rs	При расчетах валюты я использую link-calculator. Для USD/RUB он возвращает: {calculation_body}.
-rust/src/solver_handlers/calculator_rate.rs	Я распознал вопрос о курсе USD/RUB для расчетов, но link-calculator не смог его вычислить: {error}.
-rust/src/solver_handlers/calculator_rate.rs	मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: {calculation_body}.
-rust/src/solver_handlers/calculator_rate.rs	货币计算时我使用 link-calculator。USD/RUB 返回: {calculation_body}.
 rust/src/solver_handlers/conversation_memory/link_query.rs	This query would {attempted} links, which memory cannot apply: the doublet view is a one-way projection of memory events, so an edited link has no way back to the event it came from. Reads are supported here -- ((($i: $s $t)) (($i: $s $t))) matches every link. To change memory, write to it in natural language, which appends an event the projection is then derived from.
 rust/src/solver_handlers/conversation_memory/link_query.rs	matched {} of {total} links
 rust/src/solver_handlers/conversation_memory/memory_write.rs	Recorded memory: {statement}
@@ -628,8 +565,6 @@ rust/src/solver_handlers/web_requests.rs	यह project या repository के
 rust/src/solver_handlers/web_requests.rs	यह {label} पर रिपॉजिटरी [{slug}]({url}) के लिए lookup है.\n\nGeneric project_lookup path GitHub, GitLab, और Bitbucket पर README या project descriptions summarize कर सकता है, किसी single name के लिए special case के बिना. अगर repository promoted organizations में है और promotion enabled है, तो वह पहले दिखाई जाएगी.
 rust/src/solver_handlers/web_requests.rs	这是 {label} 上的仓库查询：[{slug}]({url})。\n\n通用 project_lookup 路径可以汇总 GitHub、GitLab 和 Bitbucket 上的 README 或项目描述，不需要为单个名称写特殊规则。如果该仓库属于 promoted organizations 且 promotion 已开启，它会优先显示。
 rust/src/solver_handlers/web_requests.rs	这是一个关于项目或仓库的通用 project_lookup 请求。\n\n我不会优先选择某个特定仓库，因为 associative repository promotion 已关闭。下一步是在 {provider_summary} 和类似托管平台中搜索并汇总匹配项目。
-rust/src/solver_helpers/mod.rs	Check command: `{check}`\nRun command: `{}`
-rust/src/solver_helpers/mod.rs	Run command: `{}`
 rust/src/solver_synthesis.rs	composition:{} from={}
 rust/src/solver_synthesis.rs	parts={} from={}
 rust/src/solver_synthesis.rs	sub_impulse={} independent={} intent={} answer={}

@@ -31,16 +31,6 @@ use std::fmt::Write as _;
 use super::lexicon::{Lexicon, PredicateUse, Procedure, Term, TermKind, Work, WorkContext};
 use crate::links_format::format_lino_record;
 
-/// A public-domain plot synopsis of «Сказка о рыбаке и рыбке».
-///
-/// These are plain facts in our own wording, **not** Pushkin's verse. This is the
-/// canonical source text a fetch step returns, and the deterministic fallback the
-/// planner formalizes when a live `web_fetch` fails. Keeping fetched-text ==
-/// fallback-text makes the agentic loop produce a stable knowledge base either
-/// way.
-pub const CANONICAL_FISHERMAN_SYNOPSIS: &str =
-    include_str!("../../embedded/data/agentic-coding/fisherman-synopsis.txt");
-
 /// The default document id used when a caller does not supply one and the text is
 /// recognised as the canonical tale.
 pub const FISHERMAN_DOC_ID: &str = "tale:fisherman-and-fish";

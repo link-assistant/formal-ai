@@ -639,13 +639,13 @@ meanings
     unit "not applicable"
     example "Lean 4 writes student bare and студент as «студент»"
     grounding "data/seed/formal-targets.lino"
-  advice_topic
+  advice_observations
     defined-by concept
     role action
-    precondition "the request names a topic the cited advice table covers"
+    precondition "the request supplies cited advice observations"
     effect "admits the claim of the advice handler"
     unit "boolean"
-    example "how should i sleep better"
+    example "rank supplied recommendations by their cited evidence grade"
     grounding "data/seed/capability-routing.lino"
   assistant_addressee
     defined-by concept
@@ -655,13 +655,13 @@ meanings
     unit "boolean"
     example "do you think it will rain"
     grounding "data/seed/capability-routing.lino"
-  cached_destination
+  destination_observations
     defined-by concept
     role action
-    precondition "the request names a destination whose places are cached"
+    precondition "the request supplies cited place observations"
     effect "admits the claim of the planning handler"
     unit "boolean"
-    example "plan a 2-day trip to berlin"
+    example "plan a trip using supplied opening hours and visit lengths"
     grounding "data/seed/capability-routing.lino"
   call_expression
     defined-by concept
@@ -1255,13 +1255,13 @@ meanings
     unit "boolean"
     example "brainstorm project ideas"
     grounding "data/seed/capability-routing.lino"
-  persona_or_topic
+  roleplay_facts
     defined-by concept
     role action
-    precondition "the request names a seeded persona or roleplay topic"
+    precondition "the request supplies a role and the facts to explain"
     effect "admits the claim of the roleplay handler"
     unit "boolean"
-    example "explain relativity as einstein"
+    example "act as {role}: {facts}"
     grounding "data/seed/capability-routing.lino"
   document_operand
     defined-by concept
@@ -1279,13 +1279,13 @@ meanings
     unit "boolean"
     example "translate apple to russian"
     grounding "data/seed/capability-routing.lino"
-  triz_precedent
+  triz_demands
     defined-by concept
     role action
-    precondition "the contradiction question shares words with a seeded precedent"
-    effect "admits the claim of the triz handler"
+    precondition "the contradiction question supplies two distinct demands"
+    effect "admits the worksheet for those demands"
     unit "boolean"
-    example "make the wing stronger without weight"
+    example "first demand versus second demand"
     grounding "data/seed/capability-routing.lino"
   algorithm_operation
     defined-by concept

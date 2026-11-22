@@ -1,0 +1,14 @@
+PASS check-abbreviations 2.4s
+PASS check-debt-ratchet-js-twin 0.8s
+PASS check_debt_ratchet 0.7s
+PASS check-generated-files 5.2s
+PASS check-hardcoded-language-js-twin 1.2s
+PASS check-hardcoded-language 1.2s
+PASS check-notation 16.8s
+PASS check-package-self-containment 0.2s
+PASS check-planner-twins 0.4s
+PASS check-specification-in-javascript 64.4s
+PASS check-status-render 1.1s
+PASS lint-shell-scripts 4.6s
+
+12/12 passed or skipped; failed: none
