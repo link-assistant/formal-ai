@@ -35,7 +35,7 @@ static YEARS: LazyLock<Regex> = LazyLock::new(|| {
     .expect("experience statement")
 });
 static LABEL: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"(?i)[ \t]*([\p{L}\p{N}_-]+(?:[ \t]+[\p{L}\p{N}_-]+){0,5}?)[ \t]*(?::|=|[ \t]+is[ \t]+)[ \t]*(.+)").expect("labeled value")
+    Regex::new(r"(?i)^[ \t]*([\p{L}\p{N}_-]+(?:[ \t]+[\p{L}\p{N}_-]+)*?)[ \t]*(?::|=|[ \t]+is[ \t]+)[ \t]*(.+)").expect("labeled value")
 });
 
 fn arithmetic_pattern(key: &str) -> Regex {
@@ -164,41 +164,59 @@ impl Projection {
 }
 
 fn key_name(name: &str) -> String {
-    name.split(|ch: char| !ch.is_alphanumeric())
+    static CAMEL: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r"([\p{Ll}\p{N}])([\p{Lu}\p{Lt}])").expect("camel case boundary")
+    });
+    static ACRONYM: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r"([\p{Lu}\p{Lt}])([\p{Lu}\p{Lt}]\p{Ll})").expect("acronym boundary")
+    });
+    let words = CAMEL.replace_all(name, "$1 $2");
+    ACRONYM
+        .replace_all(&words, "$1 $2")
+        .split(|ch: char| !ch.is_alphanumeric())
         .filter(|part| !part.is_empty())
         .collect::<Vec<_>>()
         .join(" ")
         .to_lowercase()
 }
 
-fn unique<T: PartialEq>(mut values: impl Iterator<Item = T>) -> Option<T> {
+// Keep a matched but ambiguous label distinct from an absent one.
+fn unique<T: PartialEq>(mut values: impl Iterator<Item = T>) -> Option<Option<T>> {
     let first = values.next()?;
-    values.all(|value| value == first).then_some(first)
+    Some(values.all(|value| value == first).then_some(first))
+}
+
+fn labeled_evidence(source: &str, label: &str) -> Option<Option<Value>> {
+    unique(source.split(['\n', ';', ',']).filter_map(|clause| {
+        let captures = LABEL.captures(clause.trim_start())?;
+        if key_name(&captures[1]) != label {
+            return None;
+        }
+        let text = captures[2].trim().trim_end_matches(['.', '!', '?']);
+        Some(serde_json::from_str(text).unwrap_or_else(|_| Value::String(text.to_owned())))
+    }))
 }
 
 fn evidence(
     name: &str,
     field: &Value,
+    description: Option<&str>,
     source: &str,
     answer: &str,
     number: Option<&Value>,
     key: Option<&str>,
 ) -> Option<Value> {
     let normalized = key_name(name);
-    let mut labeled = source
-        .split(['\n', ';', ','])
-        .filter_map(|clause| {
-            let captures = LABEL.captures(clause.trim_start())?;
-            if captures.get(0)?.start() != 0 || key_name(&captures[1]) != normalized {
-                return None;
-            }
-            let text = captures[2].trim().trim_end_matches(['.', '!', '?']);
-            Some(serde_json::from_str(text).unwrap_or_else(|_| Value::String(text.to_owned())))
-        })
-        .peekable();
-    if labeled.peek().is_some() {
-        return unique(labeled);
+    if let Some(value) = labeled_evidence(source, &normalized) {
+        return value;
     }
+    let described = || {
+        let label = key_name(description?);
+        if label.is_empty() {
+            return None;
+        }
+        labeled_evidence(source, &label)
+    };
     if let Some(number) = number
         && (key == Some(name)
             || (key.is_none()
@@ -215,7 +233,9 @@ fn evidence(
                     CITY.captures_iter(clause)
                         .map(|capture| Value::String(capture[1].to_owned()))
                 }),
-        );
+        )
+        .or_else(described)
+        .flatten();
     }
     if let Some(kind) = normalized
         .strip_prefix("min ")
@@ -226,7 +246,12 @@ fn evidence(
             YEARS
                 .captures_iter(source)
                 .filter_map(|capture| serde_json::from_str(&capture[1]).ok()),
-        );
+        )
+        .or_else(described)
+        .flatten();
+    }
+    if let Some(value) = described() {
+        return value;
     }
     let labels = field.get("enum")?.as_array()?;
     for text in [answer.trim(), source.trim()] {
@@ -294,7 +319,19 @@ fn derive(schema: &Value, source: &str, answer: &str) -> Option<Value> {
             let mut value = if let Some(supplied) = &supplied {
                 supplied.get(name).cloned()
             } else {
-                evidence(name, resolved, text, answer, number.as_ref(), key)
+                let description = field
+                    .get("description")
+                    .and_then(Value::as_str)
+                    .or_else(|| resolved.get("description").and_then(Value::as_str));
+                evidence(
+                    name,
+                    resolved,
+                    description,
+                    text,
+                    answer,
+                    number.as_ref(),
+                    key,
+                )
             };
             if value.is_none() && is_required {
                 let unknown = Value::String(UNKNOWN.to_owned());

@@ -41,6 +41,13 @@ The schema can declare draft-07, 2019-09, or 2020-12 in `$schema`. Each uses
 the same supported subset. The validator treats `$id`, `$comment`,
 `deprecated`, `readOnly`, `writeOnly`, `contentMediaType`, `contentEncoding`,
 and `format` as annotations. References resolve within the supplied schema.
+
+When extracting values from text, Formal AI recognizes equivalent camelCase,
+PascalCase, snake_case, and kebab-case property names, including acronyms such
+as `HTTPStatus`. If the property name yields no evidence, an explicit source
+label can match the property's `description`. The output uses the original
+property names from the schema.
+
 Formal AI validates both strict and non-strict requests. It can return a
 schema-allowed `null` or `"unknown"` for a missing required value.
 If the schema uses unsupported constraints or the result cannot be
