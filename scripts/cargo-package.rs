@@ -127,8 +127,12 @@ pub fn get_package_manifest_path(root_manifest: &Path) -> Result<PathBuf, String
             )
         })?;
         let manifest = base.join(member).join("Cargo.toml");
-        let Ok(content) = fs::read_to_string(&manifest) else {
-            continue;
+        let content = match fs::read_to_string(&manifest) {
+            Ok(content) => content,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
+            Err(error) => {
+                return Err(format!("Failed to read {}: {error}", manifest.display()));
+            }
         };
         let document =
             parse(&content).map_err(|error| format!("{}: {error}", manifest.display()))?;

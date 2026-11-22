@@ -150,3 +150,43 @@ fn a_release_badge_can_read_a_name_without_a_literal_version() {
         assert!(read_package_info(&path).is_err());
     }
 }
+
+#[test]
+fn unreadable_workspace_members_do_not_redirect_release_identity() {
+    for invalid_utf8 in [true, false] {
+        let (_directory, path) = manifest("[workspace]\nmembers = ['broken', 'public']\n");
+        let root = path.parent().unwrap();
+        fs::create_dir(root.join("broken")).unwrap();
+        let broken = root.join("broken/Cargo.toml");
+        if invalid_utf8 {
+            fs::write(&broken, [0xff]).unwrap();
+        } else {
+            fs::create_dir(&broken).unwrap();
+        }
+        fs::create_dir(root.join("public")).unwrap();
+        let public = root.join("public/Cargo.toml");
+        let content = "[package]\nname = 'public'\nversion = '1.2.3'\n";
+        fs::write(&public, content).unwrap();
+
+        let error = get_package_manifest_path(&path).unwrap_err();
+        assert!(error.contains("Failed to read"), "{error}");
+        assert!(error.contains(&broken.display().to_string()), "{error}");
+        assert_eq!(fs::read_to_string(&public).unwrap(), content);
+        if invalid_utf8 {
+            assert_eq!(fs::read(&broken).unwrap(), [0xff]);
+        } else {
+            assert!(broken.is_dir());
+        }
+    }
+}
+
+#[test]
+fn an_absent_workspace_member_preserves_existing_selection_of_the_next_member() {
+    let (_directory, path) = manifest("[workspace]\nmembers = ['absent', 'public']\n");
+    let root = path.parent().unwrap();
+    fs::create_dir(root.join("public")).unwrap();
+    let public = root.join("public/Cargo.toml");
+    fs::write(&public, "[package]\nname = 'public'\nversion = '1.2.3'\n").unwrap();
+    assert_eq!(get_package_manifest_path(&path).unwrap(), public);
+    assert!(!root.join("absent").exists());
+}
