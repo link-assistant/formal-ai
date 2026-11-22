@@ -588,3 +588,13 @@ Evidence: [structured-schema main integration](../../docs/case-studies/issue-158
 
 
 The complete local gate run at `bfc2e11749e48e65f65c37d9850fa847cfc1950a` passes all 89 JavaScript gates, with 54 explicit CI-only skips and no failures. The tree is clean before and after, and no local Rust build is performed. The exact-source archive is round-trip verified at `evidence/checks/main-510417-full-local-gates/manifest.json`. Combined-head hosted execution and all wider acceptance remain unfinished.
+
+
+## Main ae36 release integration
+
+- [x] Merge release 0.356.9 from main ae36c8ac65962a384627f09d4d196288d6017752, retaining its schema-annotation changelog and release ledger.
+- [x] Resolve the binary specification witness through the maintained reviewed-refresh interface: full-object equality preserves 223 supported and 967 unsupported records; only four Cargo hashes change. Verify 172 physical source identities.
+- [x] Regenerate status projections after automatic merge duplicated a ledger citation. Pass identifier controls and the status check without local Rust compilation; archive source identities and logs.
+- [ ] Repair all failures collected from both exact-head Pipeline and Layered runs before another push. Complete wider issue acceptance and keep the PR draft until verified.
+
+Evidence: `evidence/checks/main-ae36-integration/manifest.json`. Supplied commands and edits earn zero independent authorship credit.
