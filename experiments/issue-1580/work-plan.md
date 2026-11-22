@@ -1324,3 +1324,11 @@ The initial full protocol replay passes Claude and Codex but cancels Agent at th
 
 - [x] Fully read and compare 14 current parent/child diffs (1970 lines), with matching source hashes against main `09711c000cca319d7269b4b0fa15d15339baf881`. Review CLI verbosity, quote masking, selected evidence, typed/untyped composition, protocol extraction and constraints, the repository allowlist and web-query boundaries. Read the adjacent maintained controls and JavaScript request-context twin. No new defect found in these diffs. The per-file assessments distinguish semantic changes from moves.
 - [ ] Complete the whole-PR and template-practice review and runtime acceptance. This source review does not qualify whole-file behavior or native execution, and supplied assessments receive zero independent-authorship credit.
+
+
+## Published source and workflow diff review, 2026-11-22
+
+- [x] Review all 429 selected published source/workflow diffs against main `09711c000`: 259 exact prior-review carries and 170 complete newly read diffs. Preserve exact patches, hashes and per-file assessments. The review found the staged-only primary lock defect; its finite regression and repair are committed separately.
+- [ ] Finish review outside this explicit selection, full template-practice acceptance and original runtime criteria. This inventory does not claim whole-PR review, current native execution or independent authored work.
+
+See [the scoped review manifest](evidence/checks/published-scoped-production-review/manifest.json).
