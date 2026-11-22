@@ -1,7 +1,9 @@
 import { recipeSourceResult, recipeSourceUpdateCommand } from '../../../js/agentic/recipe_resume.mjs';
 import { programContractAnswer } from '../../../js/agentic/crate/coding_program_contract.mjs';
 import { chatCompletionFromPlan, responseFromPlan } from '../../../js/server/agentic.mjs';
-import test from 'node:test';
+import test, {after} from 'node:test';
+import {offlineSourceCache} from '../../../experiments/issue-1162/offline-source-cache.mjs';
+import {forGeneration} from '../../../js/agentic/crate/version_resolution.mjs';
 import crypto from 'node:crypto';
 import { Progress, qualifiedCommandAttempt } from '../../../js/agentic/progress.mjs';
 import { recipeProgressAfterLatestUser, planSymbolicCommandReroute } from '../../../js/agentic/command_reroute.mjs';
@@ -27,6 +29,9 @@ const issues = JSON.parse(fs.readFileSync(new URL('../fixtures/issue-1364-hello-
 const historicalSources = JSON.parse(fs.readFileSync(new URL('../fixtures/issue-1364-original-sources.json', import.meta.url), 'utf8'));
 const ownSessionFeedback = JSON.parse(fs.readFileSync(new URL('../fixtures/agentic/hive-own-session-feedback.json', import.meta.url), 'utf8')).feedback;
 const logicalRoot = '/tmp/gh-issue-solver-1792505721477';
+// The server host reads process.env independently of the client command sandbox.
+const restoreSourceCache = offlineSourceCache();
+after(() => restoreSourceCache());
 function relativeClientPath(value) {
   if (path.isAbsolute(value)) {
     assert(value.startsWith(logicalRoot + '/'));
@@ -656,6 +661,9 @@ json.dump(s,open(p,'w'))
           tools
         }, null, 2));
         const next = await nextClient(context, messages, tools, configuration.protocol);
+        if (process.env.FORMAL_AI_RECIPE_FIXTURE_TRACE) fs.appendFileSync(
+          process.env.FORMAL_AI_RECIPE_FIXTURE_TRACE,
+          JSON.stringify({protocol: configuration.protocol, run, step, next}) + '\n');
         if (!next.calls.length) {
           final = next.final;
           break;
@@ -669,6 +677,7 @@ json.dump(s,open(p,'w'))
         if (!call.custom) assert.equal(invalidArguments(args, schema), null);
         calls.push({
           tool: kind,
+          callId: call.id,
           declaredTool: call.name,
           arguments: args,
           protocol: configuration.protocol
@@ -699,6 +708,10 @@ json.dump(s,open(p,'w'))
           stderr: result.stderr,
           cleanup_complete: result.cleanup_complete
         };
+
+        if (process.env.FORMAL_AI_RECIPE_FIXTURE_TRACE) fs.appendFileSync(
+          process.env.FORMAL_AI_RECIPE_FIXTURE_TRACE,
+          JSON.stringify({protocol: configuration.protocol, run, step, observed: calls.at(-1)}) + '\n');
         appendClient(messages, next, call, result, configuration.protocol);
       }
       const tracked = (await git('ls-files')).split('\n');
@@ -724,6 +737,10 @@ json.dump(s,open(p,'w'))
         final,
         lastCalls: calls.slice(-4).map(call => ({
           tool: call.declaredTool,
+          callId: call.callId,
+          path: call.arguments.path ?? call.arguments.file_path ?? call.arguments.filePath ?? null,
+          sourceSha256: typeof call.arguments.content === 'string'
+            ? crypto.createHash('sha256').update(call.arguments.content).digest('hex') : null,
           command: (call.arguments.command ?? call.arguments.cmd ?? '').slice(0, 80),
           observation: call.observation
         }))
@@ -767,6 +784,16 @@ json.dump(s,open(p,'w'))
     });
   }
 }
+test('recipe fixture owns an empty offline source cache before server version resolution', {timeout: 30_000}, async () => {
+  assert.equal(process.env.FORMAL_AI_OFFLINE, '1');
+  assert.equal(process.env.FORMAL_AI_SOURCE_CACHE_DIR, process.env.FORMAL_AI_CACHE_DIR);
+  await ensureNodeHost({worker: new WorkerHost()}, {sourceUsageRustGrammar: false});
+  const versions = forGeneration();
+  assert.deepEqual(versions.captures, []);
+  for (const [name, pin] of Object.entries(versions)) {
+    if (name !== 'captures') assert.equal(pin.origin, 'baseline', name);
+  }
+});
 for (const configuration of [{
   index: 0,
   protocol: 'claude',

@@ -1,0 +1,97 @@
+{
+  "schema": "formal-ai-issue-1580-recipe-fixture-isolation-v1",
+  "sourceHead": "c52824d8f931fd57755004366237d596fb3572db",
+  "node": "v26.13.0",
+  "controlledBeforeExit": 1,
+  "controlledAfterExit": 0,
+  "offlineFullFileExit": 0,
+  "fullFileTestsPassed": 6,
+  "fullFileDurationMs": 225208.076659,
+  "initialNegativeControl": "Aborted after 48.7 seconds without a diagnostic assertion; not regression proof. Replaced by deterministic offline=0 control.",
+  "previousUnisolatedFullReplay": "V8 native Check failed: !is_null(); exit 1. Distinct from hosted assertion; root cause not established.",
+  "hostedRootCause": "Source-cache isolation defect proved locally. Metadata-epoch mechanism reproduced separately, but retained hosted write arguments cannot establish it as the hosted assertion root.",
+  "productionMetadataEpochFixed": false,
+  "autonomousAuthorshipCredit": 0,
+  "artifacts": [
+    {
+      "path": "recipe-agent-result.json",
+      "bytes": 17,
+      "sha256": "c365161d39236fe0f1d32937fbc549796b8487d8faf65ed3879b96897c78ea5d"
+    },
+    {
+      "path": "recipe-agent-traced.log",
+      "bytes": 246,
+      "sha256": "797a6e2a18c50a1a80be030aec2ff42e499eed32270df4409d92f94d6df75786"
+    },
+    {
+      "path": "recipe-agent.trace.jsonl.gz",
+      "bytes": 50029,
+      "sha256": "8c54576292133d5e30f4e5213f3da1aa181825e871860568d6b4c484c74a05b7"
+    },
+    {
+      "path": "recipe-all-result.json",
+      "bytes": 17,
+      "sha256": "64a1526b099d75eed9d9da41a5562dcc164b6ffddeb729dd371c4496bbcded05"
+    },
+    {
+      "path": "recipe-all.log",
+      "bytes": 1096,
+      "sha256": "f7149bbe0b4a1c609c75d23fae828610637a37c6f52d719026374e65bc536e8f"
+    },
+    {
+      "path": "recipe-all.trace.jsonl.gz",
+      "bytes": 90041,
+      "sha256": "f22b3f9633280c9acc1a6f57f0c4ae969e47dbddff3426110f22e36e11354e79"
+    },
+    {
+      "path": "recipe-cache-after.log",
+      "bytes": 219,
+      "sha256": "e384d0f3f6a465677e00eaded195e5d01dfce7895f47beb71ad5004450bc917a"
+    },
+    {
+      "path": "recipe-cache-before.log",
+      "bytes": 422,
+      "sha256": "c9cc5048b787206c6ac7f942e7a986f94ac9a6338c70e6562460e33c1ae67bf2"
+    },
+    {
+      "path": "recipe-cache-controlled-after.log",
+      "bytes": 219,
+      "sha256": "757b0f4be198cb25a6e994995e9cf69766b2eeec283badb3d838dc39dd8c1417"
+    },
+    {
+      "path": "recipe-cache-controlled-before.log",
+      "bytes": 1023,
+      "sha256": "951bb903ade6a2cde5c41c395b533e3832cc4147d5d52c6ade994655eb30f141"
+    },
+    {
+      "path": "recipe-offline-all-result.json",
+      "bytes": 18,
+      "sha256": "df4d721d233a2334088d2d2e0110346ae9e509ff46bf0b379fbcfa85c715af4d"
+    },
+    {
+      "path": "recipe-offline-all.log",
+      "bytes": 837,
+      "sha256": "6f5b9ecebf1f5aec3deb26129da154fc8cec6e9e17c218242c1973b6f6bb89b2"
+    },
+    {
+      "path": "recipe-offline-all.trace.jsonl.gz",
+      "bytes": 134791,
+      "sha256": "d2d50a16c21ab01a5aded1e12f7f4e2174ddbb17fe428602ed9b627eba625431"
+    },
+    {
+      "path": "recipe-resume-protocols.test.mjs.traced-before",
+      "bytes": 33885,
+      "sha256": "9a8e1a0edb86fb70c7ea9671b3eba6b2f1333392a2ed6fde94e1069bf389de0d"
+    },
+    {
+      "path": "verified-source.mjs.txt",
+      "bytes": 35107,
+      "sha256": "44e3d05b3ccd150937949bc17e907cc5e43a20d3ce1386ca9bcd57454d5802f0"
+    },
+    {
+      "path": "version-epoch-scala.log",
+      "bytes": 1763,
+      "sha256": "d1b756c5d15df88949d3affd7f94e9c20cd4542e46f40659862e078173ae7a8d"
+    }
+  ]
+}
