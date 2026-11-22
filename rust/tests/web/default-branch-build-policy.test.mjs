@@ -211,8 +211,9 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(check.outputs ?? called.on.workflow_call?.outputs, undefined, 'a focused check grants no semantic authorization');
   const selected = (event, ref, result, value) => Boolean(new Script(String(job.if).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']'))
-    .runInNewContext({github: {event_name: event, ref}, cancelled: () => false,
-      needs: {'detect-changes': {result, outputs: value === undefined ? {} : {'native-type-check': value}}}}, {timeout: 100}));
+    .runInNewContext({github: {event_name: event, ref, sha: 'a'.repeat(40)}, cancelled: () => false,
+      needs: {'fast-pr-lint': {result: 'success', outputs: {'tested-sha': 'a'.repeat(40)}},
+        'detect-changes': {result, outputs: value === undefined ? {} : {'native-type-check': value}}}}, {timeout: 100}));
   assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', 'true'), true);
   assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', 'false'), true, 'docs-only and JS-only PRs still report the required context');
   const compile = (result, value) => new Script(job.with['compile-inputs-changed'].slice(3, -2).replaceAll('needs.detect-changes', "needs['detect-changes']").replaceAll('outputs.native-type-check', "outputs['native-type-check']")).runInNewContext({needs: {'detect-changes': {result, outputs: {'native-type-check': value}}}});

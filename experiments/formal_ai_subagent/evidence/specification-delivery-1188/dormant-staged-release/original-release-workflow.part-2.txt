@@ -1,3 +1,6 @@
+            --branch main
+      - name: Get current version
+        id: current_version
         if: steps.check.outputs.should_release == 'true'
         run: rust-script scripts/get-version.rs
       - name: Recheck prepared release state

@@ -291,6 +291,8 @@ jobs:
       cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    outputs:
+      tested-sha: ${{ steps.candidate.outputs.tested-sha }}
     steps:
       - {uses: actions/checkout@v7, timeout-minutes: 4,
          env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
@@ -311,11 +313,14 @@ jobs:
           node scripts/render-progressive-plan.mjs --check
           node scripts/mirror-package-data.mjs --check
           node scripts/check-fast-governance.mjs
+      - name: Confirm checked JavaScript candidate
+        id: candidate
+        run: node scripts/confirm-javascript-candidate.mjs
   # Issue #1191: the one focused PR native check (main's clippy profile); never native or release evidence.
   native-type-check:
     name: Native type and lint check
-    needs: [detect-changes]
-    if: ${{ !cancelled() && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
+    needs: [detect-changes, fast-pr-lint]
+    if: ${{ !cancelled() && needs.fast-pr-lint.result == 'success' && needs.fast-pr-lint.outputs.tested-sha == github.sha && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
     uses: ./.github/workflows/native-type-check.yml
     with:
       compile-inputs-changed: ${{ needs.detect-changes.result != 'success' || needs.detect-changes.outputs.native-type-check != 'false' }}
@@ -739,6 +744,3 @@ jobs:
           rust-script scripts/version-and-commit.rs \
             --bump-type "${{ steps.bump_type.outputs.bump_type }}" \
             --resume-prepared \
-            --branch main
-      - name: Get current version
-        id: current_version
