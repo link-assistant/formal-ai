@@ -20,6 +20,13 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.8] - 2026-11-22
+
+### Fixed
+
+- Allow OpenAI-compatible embeddings to use 1 to 4096 dimensions and return a `no_concepts` error with the input index when the lexicon finds no match.
+- Recognize more multilingual occupation titles and preserve the B2B qualifier in job-title embeddings.
+
 ## [0.356.7] - 2026-11-22
 
 ### Fixed

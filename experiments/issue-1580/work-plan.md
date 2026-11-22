@@ -559,3 +559,15 @@ Evidence: [structured-output integration](../../docs/case-studies/issue-1580/mai
 - [ ] Pass all local JavaScript gates on the committed repair, then verify the exact published head in CI.
 
 Evidence: [generated inventory repair](../../docs/case-studies/issue-1580/generated-inventory-merge-repair.md).
+
+
+## Main 664e03 integration
+
+- [x] Read the complete PR #1625 source delta and all three feedback kinds; retain embeddings behavior and native replay isolation.
+- [x] Preserve all nine occupation concepts, regenerate canonical inventories and verify all physical source witnesses without semantic baseline changes.
+- [x] Pass six embeddings tests, policy, identifier, fixture and headroom controls, changed Rust formatting and translation verification without a local build.
+- [x] Preserve the bootstrap exception, unsuccessful formatter scope and corrected invocation with complete evidence identities.
+- [ ] Pass all local gates on the committed combined head and every current-head hosted check before the next completion assessment.
+- [ ] Complete the remaining original runtime, template practice, publication, cache and independent-authorship acceptance; keep the PR draft and unmerged.
+
+Evidence: [reduced embeddings main integration](../../docs/case-studies/issue-1580/main-664e03-integration.md).
