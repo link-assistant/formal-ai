@@ -15,16 +15,16 @@ js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
   modules 164
-  translated_items 344
-  workaround_items 38
+  translated_items 346
+  workaround_items 37
   inferred_signatures 3
-  carried_items 2658
+  carried_items 2659
   translated_modules 115
   fully_translated_modules 1
   refused_modules 49
 workaround array-push items 2
 workaround callback-loops items 1
-workaround import-pruning items 13
+workaround import-pruning items 12
 workaround string-methods items 25
 module js/agentic/crate/algorithm_discovery.mjs translated 6 workaround 1 inferred 0 carried 39
 module js/agentic/crate/associative_persistence.mjs translated 1 workaround 0 inferred 0 carried 7
@@ -38,12 +38,12 @@ module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 
 module js/agentic/crate/coding_cjk.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 32
 module js/agentic/crate/command_output_contract.mjs translated 0 workaround 0 inferred 0 carried 2
-module js/agentic/crate/computer_use.mjs translated 2 workaround 0 inferred 0 carried 14
-module js/agentic/crate/computer_use_induction.mjs translated 4 workaround 0 inferred 0 carried 22
+module js/agentic/crate/computer_use.mjs translated 3 workaround 0 inferred 0 carried 18
+module js/agentic/crate/computer_use_induction.mjs translated 4 workaround 0 inferred 0 carried 20
 module js/agentic/crate/computer_use_lexicon.mjs translated 5 workaround 0 inferred 0 carried 14
 module js/agentic/crate/computer_use_planner.mjs translated 2 workaround 0 inferred 0 carried 10
 module js/agentic/crate/computer_use_seed.mjs translated 2 workaround 0 inferred 0 carried 27
-module js/agentic/crate/computer_use_synthesis.mjs translated 2 workaround 3 inferred 0 carried 13
+module js/agentic/crate/computer_use_synthesis.mjs translated 3 workaround 2 inferred 0 carried 12
 module js/agentic/crate/concept_lookup.mjs translated 1 workaround 0 inferred 0 carried 12
 module js/agentic/crate/concepts_lookup.mjs translated 0 workaround 0 inferred 0 carried 3
 module js/agentic/crate/concise_dependency_restatement.mjs translated 0 workaround 0 inferred 0 carried 6
@@ -190,28 +190,28 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 7
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
-refusal "import of names its module does not translate" 357
-refusal "JSDoc type {…}" 219
-refusal "import from '…'" 217
+refusal "import of names its module does not translate" 359
+refusal "JSDoc type {…}" 218
+refusal "import from '…'" 216
 refusal "null" 193
-refusal "arrow function" 145
-refusal "type: unknown name (a sibling item or an import)" 125
+refusal "arrow function" 144
+refusal "type: unknown name (a sibling item or an import)" 124
 refusal "function value …" 113
 refusal "object without a $ tag" 104
-refusal "new expression" 98
+refusal "new expression" 100
 refusal "regular expression" 69
-refusal "method call .find()" 65
+refusal "method call .find()" 64
+refusal "method call .split()" 63
 refusal "method call .filter()" 61
 refusal "method call .map()" 61
-refusal "method call .split()" 61
 refusal "method call .some()" 51
 refusal "method call .slice()" 48
 refusal "Array.from" 47
 refusal "method call .push()" 38
 refusal "method call .indexOf()" 34
 refusal "optional chaining" 34
-refusal "nullish coalescing" 33
 refusal "field access" 32
+refusal "nullish coalescing" 32
 refusal "method call .replace()" 28
 refusal "export …" 23
 refusal "syntax: malformed number" 21
@@ -220,8 +220,8 @@ refusal "try statement" 19
 refusal "case test" 18
 refusal "undefined" 18
 refusal "syntax: @param needs a type and a name" 16
+refusal "typeof operator" 16
 refusal "method call .flatMap()" 15
-refusal "typeof operator" 15
 refusal "method call .join()" 13
 refusal "for with const" 12
 refusal "namespace property …" 12

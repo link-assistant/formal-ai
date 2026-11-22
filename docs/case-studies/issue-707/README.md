@@ -122,7 +122,7 @@ is also what exposed the missing Russian locative and instrumental surfaces
 (`заметках`, `клиентами`, `"страницы статуса"`): a real generalization gap in
 the seed lexicon that ten fixed prompts could never have surfaced.
 
-`cargo run --bin formal-ai -- computer-use --learn` prints the schemas, and
+`cargo run --bin formal-ai -- computer-use --learn --from rust/tests/fixtures/computer-use/tasks.lino` prints the schemas, and
 [`data/meta/computer-use-recipe.lino`](../../../data/meta/computer-use-recipe.lino)
 records the ordered loop and the invariant each step preserves, grounded by
 `tests/unit/specification/computer_use_meta_algorithm.rs`.

@@ -400,7 +400,8 @@ async function planChatStepRoutes(messages, toolNames, received) {
   // The computer_use arm. Ahead of it, quotes that do not pair leave no
   // telling the quoted text from the instruction, so the request is declined
   // before any arm reads its payload as words to act on (PR #1188 G71).
-  const computerUse = requestFaultAnswer(task, toolFor(toolNames, Capability.MultiEdit) !== null) ?? computerUsePlanAgenticStep(messages, toolNames);
+  const computerUse = requestFaultAnswer(task, toolFor(toolNames, Capability.MultiEdit) !== null)
+    ?? (hasAuthoritativeLiteralWrite(task) ? null : computerUsePlanAgenticStep(messages, toolNames));
   if (computerUse !== null) return computerUse;
   if (hasAuthoritativeLiteralWrite(task) && !ownsCompleteEditRequest(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
     const obligations = taskObligations.obligations(task);

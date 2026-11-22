@@ -708,6 +708,46 @@ fingerprints. The archived job logs locate the failures at lines 1257–1291,
 [Pipeline](evidence/workflows/pipeline-round17-44990051689.log.gz) ·
 [Layered CI](evidence/workflows/layered-round17-44990051323.log.gz)
 
+## Computer-use plans and observed HTTP responses
+
+The prior planner selected a recorded operation sequence from the prompt.
+The active-customers request immediately scheduled a write containing three
+invented customer records, although the caller supplied no data. The HTTP
+adapter likewise mapped four fixture URLs to installed files and simulated a
+submission response from a fixed token. The original recordings are valid
+replay inputs and now live with the tests.
+[Cold baseline](evidence/verification/round20-computer-use-baseline.log)
+
+Both tool planners accept a bounded list of caller-specified operations and
+validate every entry before scheduling the first effect. The CLI can also
+learn operations from a caller-supplied Links Notation document and emit a
+plan for another client. HTTP operations require an operator-configured
+origin and the existing network permission. A POST also requires effect
+confirmation. A successful response records the status, media type, digest,
+and cache path using the bytes returned by the named server. The replay
+exercises the original ten requests, 48 held-out localized requests, and
+live loopback GET and POST responses, including origin and status failures.
+[JavaScript replay](evidence/verification/round20-agentic-computer-use.log)
+
+The Cargo source manifest retains the policy seed and excludes the archived
+task corpus and response files. The pull request's native job also runs the
+four existing #707 test executables with the loopback publisher.
+[Package inventory](evidence/verification/round20-cargo-package-inventory.log.gz)
+
+Layered CI on `3362640bc` found outdated TypeScript translations for the
+associative report and planner edits. The job log lists all fourteen files at
+line 302. The regenerated TypeScript projection passes the parity check.
+[TypeScript job](evidence/workflows/job-round19-137131958325.log.gz) ·
+[Local parity check](evidence/verification/round20-typescript-parity.log)
+
+The full local gate run had five failures. The rechecks cover all five after
+spelling out new bindings, adding the Spanish GET description, updating the
+mirrored seed and runtime inventory, and recording the smaller closure gap.
+[Full gate run](evidence/verification/round20-full-gates.log) ·
+[First rechecks](evidence/verification/round20-gate-rechecks.log) ·
+[Final rechecks](evidence/verification/round20-final-gate-rechecks.log) ·
+[JavaScript-to-Rust generation](evidence/verification/round20-js-rust-generation.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,

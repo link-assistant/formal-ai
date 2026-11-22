@@ -49,7 +49,7 @@ const cases = readEvents(expectedPath).map((entry) => ({
 assert.ok(cases.length >= 12, "expected at least twelve held-out cases");
 for (const entry of cases) {
   assert.ok(
-    entry.plan_id.startsWith("synthesized-"),
+    (entry.learned_plan_id ?? entry.plan_id).startsWith("synthesized-"),
     `${entry.case_id} must be synthesized, not recalled`,
   );
 }

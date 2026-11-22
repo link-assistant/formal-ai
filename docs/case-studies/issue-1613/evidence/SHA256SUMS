@@ -258,6 +258,14 @@ dc9e30452dbacaa61ee814cc2c504d367480397be26a2f57fb09189f9674c61e  ./verification
 3eade61ea0c51eae595e9e9de5f52fa23a3e73f6b63ef0e62551be83d9c423c2  ./verification/round18-focused-replay.log
 40e90c487e32113c6920ca28cd6cf5f06cc07d4fe9e5945b2807c65bf9cfe359  ./verification/round18-local-gates.log
 b66208e8059b8d400dc392705d0f508cdebfc96a83844d35b4516ad21644034f  ./verification/round18-worker-catalog.log
+b3e89a2f827ec30b6599a83ea2a391e67c550fde011fd1b13cb0aba9c9babcb1  ./verification/round20-agentic-computer-use.log
+ab362fbc4af5069d15d9a4cfa66307a45a355806dd8cf70bd33b646efa706dd6  ./verification/round20-cargo-package-inventory.log.gz
+e78dbd45d5d4e27fab1d82be6323a5894dd84bfce5c34c728c2d6e8dc6d6bb1a  ./verification/round20-computer-use-baseline.log
+510f80af855144a59a0f49433a6611d6ca45bef9def6efed562b15622239222c  ./verification/round20-final-gate-rechecks.log
+8746445dcb0a62a45498f49dd56bc620d8ad452bc86cec1088d3c4dd01de0c0d  ./verification/round20-full-gates.log
+f1a4548d94683efb88810a56eb421de454c8e8c8ba5042282ffedd48f2a7dbf4  ./verification/round20-gate-rechecks.log
+04f94f05de8ed0d00868627c49ba49416114a90b7f2921f58b21528c1fa2e218  ./verification/round20-js-rust-generation.log
+1f369a9e1a213533a433b424db4cd4d99dff0df69ca2e4b38ed44a8b21e4e862  ./verification/round20-typescript-parity.log
 540c15e55372b6541b95062d91e1d1583240b9a3352c56f6e2c28ec0a76b6b83  ./verification/round4-documentation-method-post-format.log
 4d6ddfc0e83618b9deaeb0e779e2e927f3b0ee45c61495296bac99078738f13b  ./verification/round4-fast-governance.log
 cfcc1e5653b226d4d9b0089fc4b8b2126d63ee34fcd1a76f33af0b22b921605c  ./verification/round4-readable-code-recheck.log
@@ -300,6 +308,7 @@ abe995ada318bf038d84edaf908003c76ce4609ab6d8a71a5fa1aef0b5e656ad  ./workflows/jo
 1dacde809c0d4fffefc752289d0f55df3ddc6cc69fc0e2bdfcee6f4692f15af6  ./workflows/job-round17-137108948526.log.gz
 376c2e7a1e327e7f5e4fb516f92c91664350f6c184466fb4a0ae98fad2a1f822  ./workflows/job-round17-137109013250.log.gz
 98d69583de413d134f1e9d994d5f2e0be8c60c9ec17f8ca880fd7fc9d61903c7  ./workflows/job-round17-137109444159.log.gz
+f13eedc77ab3bfcc783dd6ebdca79a929baf5ab7362c3383cf2e8a24f2c258b0  ./workflows/job-round19-137131958325.log.gz
 c4c7479f1a31feb6a1242fcdec5ffdf7f1b55863ffc8bc570d1dd11e21ee0a20  ./workflows/layered-44943549869.log.gz
 ad72b0ab1ae2be88cf9cb5766c00ec4d70042f581470ca8d3ffd8960b4fa70fc  ./workflows/layered-44946231224.log.gz
 2c98b1afd6c15cc353d4852c98d79cfa3568668c370c8cf22f9b8441352f5099  ./workflows/layered-44949387617.log.gz

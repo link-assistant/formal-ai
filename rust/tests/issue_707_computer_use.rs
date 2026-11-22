@@ -12,11 +12,34 @@ use std::process::Command;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::computer_use::{
     COMPUTER_USE_PRIMITIVES, ComputerPlanStep, ComputerUsePolicy, ComputerUsePrimitive,
-    ComputerUseSession, VerificationPhase, benchmark_tasks, capability_gap_for_prompt,
-    replay_verified_plan, run_verified_plan,
+    ComputerUseSession, VerificationPhase, capability_gap_for_request, execute_verified_plan,
+    parse_benchmark_tasks, plan_for_prompt, plan_request, replay_verified_plan_with_policy,
+    run_verified_plan,
 };
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use serde_json::json;
+
+#[path = "fixtures/computer-use/support.rs"]
+mod fixtures;
+
+fn request(prompt: &str, steps: &[ComputerPlanStep]) -> String {
+    let entries = steps
+        .iter()
+        .map(|step| {
+            json!({
+                "primitive": step.primitive.name(), "arguments": step.arguments
+            })
+        })
+        .collect::<Vec<_>>();
+    format!("{prompt}\n```computer-use\n{}\n```", json!(entries))
+}
+
+fn customer_request() -> String {
+    let tasks = parse_benchmark_tasks(fixtures::CORPUS);
+    let prompt = "Filter active customers into a report";
+    let plan = plan_for_prompt(&tasks, prompt).expect("recorded task");
+    request(prompt, &plan.steps)
+}
 
 const TOOLS: [&str; 12] = [
     "fs.read",
@@ -58,12 +81,15 @@ fn every_seeded_primitive_advertises_verification_isolation_and_permission() {
 
 #[test]
 fn ten_seeded_tasks_execute_and_replay_with_every_step_verified() {
-    let tasks = benchmark_tasks();
+    let publisher = fixtures::Publisher::start();
+    let tasks = parse_benchmark_tasks(&publisher.corpus());
+    let policy = ComputerUsePolicy::agent_mode_all()
+        .with_http_origin(publisher.origin.parse().expect("fixture publisher origin"));
     assert_eq!(tasks.len(), 10);
     let mut covered = BTreeSet::new();
     let mut workspaces = BTreeSet::new();
 
-    for task in tasks {
+    for task in &tasks {
         assert_eq!(task.prompts.len(), 4, "{}", task.id);
         assert!(task.steps.len() >= 2, "{}", task.id);
         for step in &task.steps {
@@ -81,9 +107,15 @@ fn ten_seeded_tasks_execute_and_replay_with_every_step_verified() {
             );
         }
         let prompt = task.prompts.get("en").expect("English benchmark prompt");
-        let outcome =
-            run_verified_plan(prompt).unwrap_or_else(|error| panic!("{}: {error}", task.id));
-        assert!(outcome.verified, "{}", task.id);
+        assert!(
+            plan_request(prompt).is_none(),
+            "cold request selected {}",
+            task.id
+        );
+        let plan = plan_for_prompt(&tasks, prompt).expect("explicit corpus plan");
+        let outcome = execute_verified_plan(plan, policy.clone())
+            .unwrap_or_else(|error| panic!("{}: {error}", task.id));
+        assert!(outcome.verified, "{}: {:?}", task.id, outcome.steps);
         assert!(
             workspaces.insert(outcome.workspace.clone()),
             "workspace reused"
@@ -99,7 +131,8 @@ fn ten_seeded_tasks_execute_and_replay_with_every_step_verified() {
             assert!(record.events.iter().all(|event| event.passed));
         }
         assert!(
-            replay_verified_plan(&outcome).expect("deterministic replay"),
+            replay_verified_plan_with_policy(&outcome, policy.clone())
+                .expect("deterministic replay"),
             "{}",
             task.id
         );
@@ -116,10 +149,12 @@ fn ten_seeded_tasks_execute_and_replay_with_every_step_verified() {
 
 #[test]
 fn planner_emits_the_same_seeded_plan_to_an_external_tool_client() {
-    for task in benchmark_tasks() {
+    for task in parse_benchmark_tasks(fixtures::CORPUS) {
         let prompt = task.prompts.get("en").expect("English prompt");
+        let prompt = request(prompt, &task.steps);
+        let expected_plan = plan_request(&prompt).expect("explicit plan");
         let mut messages = vec![ChatMessage::user(prompt)];
-        for expected in &task.steps {
+        for expected in &expected_plan.steps {
             let plan = plan_chat_step(&messages, &TOOLS).expect("computer-use plan");
             let AgenticPlan::ToolCalls(calls) = plan else {
                 panic!("{} finished before {}", task.id, expected.id);
@@ -128,7 +163,7 @@ fn planner_emits_the_same_seeded_plan_to_an_external_tool_client() {
             assert_eq!(calls[0].tool, expected.primitive.name());
             let arguments: serde_json::Value =
                 serde_json::from_str(&calls[0].arguments).expect("step arguments");
-            assert_eq!(arguments["plan_id"], task.id);
+            assert_eq!(arguments["plan_id"], expected_plan.id);
             assert_eq!(arguments["step_id"], expected.id);
             assert_eq!(arguments["precondition"], expected.precondition);
             assert_eq!(arguments["postcondition"], expected.postcondition);
@@ -149,7 +184,8 @@ fn planner_emits_the_same_seeded_plan_to_an_external_tool_client() {
 
 #[test]
 fn planner_scopes_progress_to_the_latest_user_turn_and_stops_after_failed_verification() {
-    let prompt = "Filter active customers into a report";
+    let prompt = customer_request();
+    let expected = plan_request(&prompt).expect("explicit plan");
     let mut messages = vec![
         ChatMessage::user("An earlier unrelated request"),
         ChatMessage::tool_result("old-call", "fs.read", r#"{"verified":true}"#),
@@ -172,13 +208,12 @@ fn planner_scopes_progress_to_the_latest_user_turn_and_stops_after_failed_verifi
         panic!("planner scheduled an effect after failed verification");
     };
     assert!(answer.contains("computer_use_incomplete"));
-    assert!(answer.contains("active_customers-01"));
+    assert!(answer.contains(&expected.steps[0].id));
 }
 
 #[test]
 fn planner_resolves_openai_tool_results_through_their_call_id() {
-    let prompt = "Filter active customers into a report";
-    let mut messages = vec![ChatMessage::user(prompt)];
+    let mut messages = vec![ChatMessage::user(customer_request())];
     let first = plan_chat_step(&messages, &TOOLS).expect("first computer-use step");
     let AgenticPlan::ToolCalls(calls) = first else {
         panic!("expected a tool call");
@@ -282,7 +317,7 @@ fn rendering_capability_gap_is_explicit_in_all_supported_languages() {
     ];
     let mut locales = BTreeSet::new();
     for cue in cues {
-        let gap = capability_gap_for_prompt(cue).expect("seeded capability gap");
+        let gap = capability_gap_for_request(cue).expect("capability gap");
         assert_eq!(gap.capability, "gui_rendering");
         assert!(gap.response.contains("capability_gap"));
         assert!(gap.response.contains("gui_rendering"));
@@ -313,13 +348,11 @@ fn external_agent_mcp_prefix_resolves_every_primitive() {
 
 #[test]
 fn native_cli_requires_permissions_and_can_replay_a_verified_plan() {
+    let task = "Save and verify the isolated process status";
+    let plan = plan_for_prompt(&parse_benchmark_tasks(fixtures::CORPUS), task).expect("test plan");
+    let prompt = request(task, &plan.steps);
     let denied = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
-        .args([
-            "--silent",
-            "computer-use",
-            "--prompt",
-            "Save and verify the isolated process status",
-        ])
+        .args(["--silent", "computer-use", "--prompt", &prompt])
         .output()
         .expect("run denied CLI plan");
     assert!(!denied.status.success());
@@ -330,7 +363,7 @@ fn native_cli_requires_permissions_and_can_replay_a_verified_plan() {
             "--silent",
             "computer-use",
             "--prompt",
-            "Save and verify the isolated process status",
+            &prompt,
             "--agent-mode",
             "--confirm-effects",
             "--replay",
@@ -381,6 +414,79 @@ fn real_agent_cli_record_replay_is_a_required_ci_gate() {
     assert!(harness.contains("expected exactly ten seeded task ids"));
     assert!(harness.contains("--output-format stream-json"));
     assert!(harness.contains("verify_issue_707.mjs"));
+}
+
+#[test]
+fn explicit_plans_validate_the_whole_request_and_stop_on_failed_steps() {
+    let invalid = [
+        r#"{"primitive":"shell.run","arguments":{"operation":"filter_csv","input":"a","output":"b","confirmed":true}}"#,
+        r#"{"primitive":"fs.write","arguments":{"path":"b","content":"extra","confirmed":"true"}}"#,
+        r#"{"primitive":"fs.read","arguments":{"path":"a","postcondition":"override"}}"#,
+    ];
+    let first = r#"{"primitive":"fs.write","arguments":{"path":"first","content":"first","confirmed":true}}"#;
+    for step in invalid {
+        let prompt = format!("```computer-use\n[{first},{step}]\n```");
+        assert!(plan_request(&prompt).is_none());
+        assert_eq!(
+            capability_gap_for_request(&prompt).unwrap().capability,
+            "plan-input"
+        );
+    }
+    let valid = format!("```computer-use\n[{first}]\n```");
+    assert!(plan_request(&format!("{valid}\ntrailing payload\n```")).is_none());
+    assert!(plan_request(&format!("```text\nexample\n```\n{valid}")).is_none());
+    let bad_read = r#"{"primitive":"fs.read","arguments":{"path":"missing"}}"#;
+    let prompt = format!("```computer-use\n[{bad_read},{first}]\n```");
+    let outcome = run_verified_plan(&prompt).expect("execute valid typed plan");
+    assert!(!outcome.verified);
+    assert_eq!(outcome.steps.len(), 1);
+    assert!(
+        !std::path::Path::new(&outcome.workspace)
+            .join("first")
+            .exists()
+    );
+}
+
+#[test]
+fn http_receipt_requires_a_successful_response_from_the_configured_origin() {
+    let publisher = fixtures::Publisher::start();
+    let policy = ComputerUsePolicy::agent_mode_all()
+        .with_http_origin(publisher.origin.parse().expect("fixture origin"));
+    let mut session = ComputerUseSession::new("http-receipt", policy).expect("session");
+    let mut receive = |url: &str| {
+        session.execute_primitive(
+            "receive",
+            ComputerUsePrimitive::HttpFetch,
+            json!({"url": url, "save_as": "received"}),
+            "granted",
+            "verified bytes",
+        )
+    };
+    let foreign = receive("https://example.invalid/caller-data");
+    assert!(!foreign.verified);
+    assert_eq!(foreign.output["error"], "computer_use_http_origin_mismatch");
+    let redirect = receive(&format!("{}/redirect", publisher.origin));
+    assert!(!redirect.verified);
+    assert_eq!(redirect.output["error"], "computer_use_http_status:302");
+    assert!(!session.root().join("received").exists());
+    let observed = session.execute_primitive(
+        "receive",
+        ComputerUsePrimitive::HttpFetch,
+        json!({"url": format!("{}/caller-data", publisher.origin), "save_as": "received"}),
+        "granted",
+        "verified bytes",
+    );
+    assert!(observed.verified, "{:?}", observed.events);
+    assert_eq!(observed.output["status"], 200);
+    assert_eq!(observed.output["body"], "caller α\n");
+    assert_eq!(
+        observed.output["headers"]["content-type"],
+        "text/plain; charset=utf-8"
+    );
+    assert_eq!(
+        fs::read(session.root().join("received")).expect("observed bytes"),
+        "caller α\n".as_bytes()
+    );
 }
 
 fn minimal_arguments(primitive: ComputerUsePrimitive) -> serde_json::Value {

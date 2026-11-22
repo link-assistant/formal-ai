@@ -400,13 +400,18 @@ async function planChatStepRoutes(messages, toolNames, received) {
   // The computer_use arm. Ahead of it, quotes that do not pair leave no
   // telling the quoted text from the instruction, so the request is declined
   // before any arm reads its payload as words to act on (PR #1188 G71).
-  const computerUse = requestFaultAnswer(task, toolFor(toolNames, Capability.MultiEdit) !== null) ?? computerUsePlanAgenticStep(messages, toolNames);
+  const computerUse = requestFaultAnswer(task, toolFor(toolNames, Capability.MultiEdit) !== null)
+    ?? (hasAuthoritativeLiteralWrite(task) ? null : computerUsePlanAgenticStep(messages, toolNames));
   if (computerUse !== null) return computerUse;
   if (hasAuthoritativeLiteralWrite(task) && !ownsCompleteEditRequest(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
     const obligations = taskObligations.obligations(task);
     if (obligations !== null) return await planObligationsStep(task, messages, toolNames, obligations);
     const general = composeGeneralChangePlan(task);
     if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+  }
+  if (task.split('\n').some((line) => line.trimEnd() === '```lino')) {
+    const report = learningReport.route(task);
+    if (report !== null) return learningReport.planReportStep(report, task, messages, toolNames);
   }
   const answer = programContractAnswer(task);
   if (answer !== null) {
@@ -457,7 +462,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
   const compiled = procedure.compileTask(task);
   if (compiled !== null) return procedure.planStep(messages, toolNames, compiled);
   const report = learningReport.route(task);
-  if (report !== null) return learningReport.planReportStep(report, messages, toolNames);
+  if (report !== null) return learningReport.planReportStep(report, task, messages, toolNames);
   const artifact = (await codeArtifact.planCodeArtifactStep(task, messages, toolNames)) ?? (await missingSemanticImplementation(task, messages, toolNames));
   if (artifact !== null) return artifact;
   for (const [predicate, step] of [[selfHeal.isSelfHealTask, documentRecipe.planSelfHealStep], [dreamingAudit.isDreamingAuditTask,

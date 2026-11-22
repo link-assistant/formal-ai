@@ -11,17 +11,14 @@
 // alternatives}`; `LearnedSchemas` is `{operations: Map, resources: Map,
 // rejected, unexplained}`.
 
-import { cached } from '../host.mjs';
 import { byteOrder, compactJson } from './rust_str.mjs';
 import { normalize, operationCues, resourceCue } from './computer_use_lexicon.mjs';
-import { benchmarkTasks, cloneStep } from './computer_use_seed.mjs';
+import { cloneStep } from './computer_use_seed.mjs';
 import { COMPUTER_USE_PRIMITIVES } from '../protocol_policy.mjs';
 
 /** Head of the record `links_notation` emits. */
 const RECORD_TYPE = 'computer_use_learned_schemas';
-/** The corpus the schemas are induced from. */
-const CORPUS_PATH = 'data/seed/computer-use-tasks.lino';
-
+const FIELD_INDENT = '  ';
 /** `FETCH_OPERATION`: the operation realised by a materialisation prefix. */
 export const FETCH_OPERATION = 'computer_use_fetch';
 
@@ -50,11 +47,6 @@ function compareSignatures(left, right) {
 }
 
 const isObjectValue = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-
-/** Mirrors `fn learned`: the schemas induced from the committed corpus (cached). */
-export function learned() {
-  return cached('computer-use-learned', () => induce(benchmarkTasks()));
-}
 
 /** Mirrors `fn partition`: `[materialisation, body_end]`. */
 export function partition(steps) {
@@ -241,11 +233,11 @@ function resourceParameters(resource, tasks) {
 }
 
 /** Mirrors `LearnedSchemas::links_notation`: the reviewable record of what was learned. */
-export function linksNotation(schemas) {
-  const out = [RECORD_TYPE, `  source ${CORPUS_PATH}`];
+export function linksNotation(schemas, source) {
+  const out = [RECORD_TYPE, `${FIELD_INDENT}source ${JSON.stringify(source)}`];
   for (const key of sortedKeys(schemas.operations)) {
     const schema = schemas.operations.get(key);
-    out.push(`  operation ${schema.operation}`, `    step ${signatureLabel(schema.step.signature)}`);
+    out.push(`${FIELD_INDENT}operation ${schema.operation}`, `    step ${signatureLabel(schema.step.signature)}`);
     for (const name of sortedKeys(schema.step.constants)) {
       out.push(`    constant ${name} ${compactJson(schema.step.constants.get(name))}`);
     }
@@ -255,7 +247,7 @@ export function linksNotation(schemas) {
   }
   for (const key of sortedKeys(schemas.resources)) {
     const binding = schemas.resources.get(key);
-    out.push(`  resource ${binding.resource}`);
+    out.push(`${FIELD_INDENT}resource ${binding.resource}`);
     for (const step of binding.steps) out.push(`    materialize ${step.primitive} ${compactJson(step.arguments)}`);
     for (const name of sortedKeys(binding.parameters)) {
       out.push(`    parameter ${name} ${compactJson(binding.parameters.get(name))}`);
@@ -263,7 +255,7 @@ export function linksNotation(schemas) {
     for (const task of binding.support) out.push(`    support ${task}`);
     for (const task of binding.alternatives) out.push(`    alternative ${task}`);
   }
-  for (const rejected of schemas.rejected) out.push(`  rejected ${rejected}`);
-  for (const unexplained of schemas.unexplained) out.push(`  unexplained ${unexplained}`);
+  for (const rejected of schemas.rejected) out.push(`${FIELD_INDENT}rejected ${rejected}`);
+  for (const unexplained of schemas.unexplained) out.push(`${FIELD_INDENT}unexplained ${unexplained}`);
   return `${out.join('\n')}\n`;
 }

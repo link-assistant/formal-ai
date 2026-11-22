@@ -289,8 +289,7 @@ fn plan_chat_step_routes(
     {
         return None;
     }
-    // Issue #707: seed-defined computer-use plans own their exact multilingual
-    // prompts before broad write/search routing. Each emitted primitive carries
+    // Explicit computer-use plans precede broad write/search routing. Each primitive carries
     // explicit pre/postconditions and is executed by the advertising client.
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its

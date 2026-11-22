@@ -20,6 +20,7 @@ mod cache_budget;
 mod public_page;
 mod seed_captures;
 mod transport;
+pub(crate) use transport::bounded_output_with_input;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub(crate) use public_page::{PublicPageTransport, search_page_url};

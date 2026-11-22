@@ -3,7 +3,7 @@
 //!
 //! The first milestone of issue #707 could only execute a prompt it had already
 //! been given: [`super::seed::plan_for_prompt`] is an exact-phrase lookup over
-//! ten recorded tasks. That is memorisation, not capability. This module closes
+//! ten historical tasks. This module closes
 //! the loop the issue actually asks for — *"the universal solver decomposes a
 //! computer-use request into a verified plan of primitive calls"* — by learning
 //! the request → plan mapping from the corpus instead of hardcoding it:
@@ -24,26 +24,21 @@
 //!    to Links Notation, so the learned knowledge is reviewable data rather
 //!    than opaque state.
 //!
-//! Learning is deterministic and offline: the same committed corpus always
+//! Learning is deterministic and offline: the same supplied corpus always
 //! induces the same schemas, which is what makes the synthesized plans
 //! replayable in CI.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
-use std::sync::OnceLock;
 
 use serde_json::Value;
 
 use super::lexicon::{normalize, operation_cues, resource_cue};
-use super::seed::{BenchmarkTask, benchmark_tasks};
+use super::seed::BenchmarkTask;
 use super::{ComputerPlanStep, ComputerUsePrimitive};
 
 /// Head of the Links Notation record [`LearnedSchemas::links_notation`] emits.
 const RECORD_TYPE: &str = "computer_use_learned_schemas";
-
-/// The corpus the schemas are induced from, cited in that record so a reader can
-/// re-derive them from the same evidence.
-const CORPUS_PATH: &str = "data/seed/computer-use-tasks.lino";
 
 /// The primitive-level identity of a step, ignoring its concrete paths: the
 /// primitive plus, for `shell.run`, its structured operation. Two steps with
@@ -119,14 +114,6 @@ pub struct LearnedSchemas {
     pub rejected: Vec<String>,
     /// Recorded steps no prompt cue accounts for, named per task.
     pub unexplained: Vec<String>,
-}
-
-/// The schemas induced from the committed benchmark corpus. Cached: the corpus
-/// is immutable at runtime, so induction runs at most once per process.
-#[must_use]
-pub fn learned() -> &'static LearnedSchemas {
-    static CACHE: OnceLock<LearnedSchemas> = OnceLock::new();
-    CACHE.get_or_init(|| induce(benchmark_tasks()))
 }
 
 /// Split a recorded plan into materialisation, body, and verification.
@@ -432,10 +419,10 @@ impl LearnedSchemas {
     /// A reviewable Links Notation record of everything that was learned,
     /// rejected, and left unexplained.
     #[must_use]
-    pub fn links_notation(&self) -> String {
+    pub fn links_notation(&self, source: &str) -> String {
         let mut out = String::new();
         let _ = writeln!(out, "{RECORD_TYPE}");
-        let _ = writeln!(out, "  source {CORPUS_PATH}");
+        let _ = writeln!(out, "  source {}", Value::String(source.to_owned()));
         for schema in self.operations.values() {
             let _ = writeln!(out, "  operation {}", schema.operation);
             let _ = writeln!(out, "    step {}", schema.step.signature.label());
