@@ -619,7 +619,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, legacyFact, formalizationContext);
   }
   // Issue #1172 R8: the fact_lookup row's last step explains from retrieved pages.
-  const explanation = await tryExplanationResearch(prompt);
+  const explanation = await tryExplanationResearch(prompt, preferences);
   if (explanation) {
     events.push(`handler:${explanation.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryExplanationResearch" });

@@ -80,42 +80,6 @@ impl ProgramLanguage {
         crate::prerequisite::probe::seed_setup_hint(self.slug)
     }
 
-    /// The execution note shown under this language's programs.
-    ///
-    /// A row whose `notes` is empty states it in the response seed instead,
-    /// as `program_execution_notes_<slug>`, so the sentence lives with the
-    /// other answer prose rather than in this table.
-    #[must_use]
-    pub fn execution_notes(&self) -> String {
-        if self.execution.notes.is_empty() {
-            crate::seed::report_text(&format!("program_execution_notes_{}", self.slug), &[])
-        } else {
-            self.execution.notes.to_owned()
-        }
-    }
-
-    /// The environment the recorded verification ran in.
-    #[must_use]
-    pub fn environment(&self) -> String {
-        crate::prerequisite::probe::seed_environment(self.slug)
-    }
-
-    /// Whether the output shown beside this language's programs was observed.
-    ///
-    /// Read from `data/seed/toolchains.lino`, which records what a harness run
-    /// actually observed, rather than from a constant in this file. A caller
-    /// holding a live [`crate::prerequisite::probe::ProbeVerdict`] derives the
-    /// status from it through [`ExecutionStatus::from_verdict`] instead; the
-    /// seed row is what a caller with no observation of its own may say.
-    #[must_use]
-    pub fn execution_status(&self) -> ExecutionStatus {
-        match crate::prerequisite::probe::seed_execution_status(self.slug).as_str() {
-            "verified" => ExecutionStatus::Verified,
-            "unavailable" => ExecutionStatus::Unavailable,
-            _ => ExecutionStatus::NotProbed,
-        }
-    }
-
     /// Probe this language's toolchain on this machine, right now.
     #[must_use]
     // Read by plan 06 leaf L13 (the Telegram execution surface) and leaf L15
@@ -203,19 +167,11 @@ impl ProgramSpec<'_> {
     }
 }
 
-/// How a catalogued program is checked and run.
-///
-/// Issue #1138 plan 06 leaf L3 removed `status` and `environment` from this
-/// record. They were the two fields a human wrote by hand to say whether the
-/// program had been observed working, in a record the runtime could not update;
-/// they are rows of `data/seed/toolchains.lino` now, read through
-/// [`ProgramLanguage::execution_status`] and [`ProgramLanguage::environment`],
-/// beside the probe that observes the toolchain on this machine.
+/// Commands for checking and running a catalogued program.
 #[derive(Clone)]
 pub struct ProgramExecution {
     pub check_command: Option<Cow<'static, str>>,
     pub run_command: Cow<'static, str>,
-    pub notes: &'static str,
 }
 
 /// Whether the output shown beside a program was observed.

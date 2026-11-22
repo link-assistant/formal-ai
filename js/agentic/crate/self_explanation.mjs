@@ -56,12 +56,12 @@ export class SystemExplanation {
       ]),
       section('self_healing_loop', [
         sourceCitation('src/self_healing.rs'),
-        dataCitation('data/meta/self-healing-case.lino'),
+        dataCitation('data/meta/agentic-messages.lino'),
         testCitation('rust/tests/unit/agentic-coding/issue_558_self_healing.rs'),
       ]),
       section('human_gated_promotion_ledger', [
         sourceCitation('src/learning_ledger.rs'),
-        dataCitation('data/meta/learning-ledger.lino'),
+        testCitation('rust/tests/fixtures/issue-558/learning-ledger.lino'),
         testCitation('rust/tests/unit/agentic-coding/issue_558_learning_ledger.rs'),
       ]),
       section('agentic_interface', [

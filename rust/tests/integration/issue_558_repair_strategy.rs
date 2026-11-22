@@ -1,3 +1,7 @@
+#[path = "../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::REPAIR_STRATEGY_TASK;
+
 use std::time::Duration;
 
 use crate::http_server::{
@@ -18,10 +22,20 @@ fn agent_mode_routes_repair_strategy_to_a_write() {
     let _server = spawn_formal_ai_server_agent_mode(port);
 
     for prompt in [
-        formal_ai::agentic_coding::repair_strategy::REPAIR_STRATEGY_TASK,
+        REPAIR_STRATEGY_TASK,
         "Classify a failure the system could not answer and give me the repair strategy for it.",
         "For every class of failure, decide which part to repair: a solver method, a data record, or a test.",
     ] {
+        let prompt = repair_fixture::task_with_json(
+            prompt,
+            serde_json::json!({
+                "traces": [
+                    repair_fixture::trace_value(repair_fixture::canonical_solver_method_failure()),
+                    repair_fixture::trace_value(repair_fixture::canonical_data_record_failure()),
+                    repair_fixture::trace_value(repair_fixture::canonical_test_failure()),
+                ]
+            }),
+        );
         let response = http_post_json_with_read_timeout(
             port,
             "/api/openai/v1/chat/completions",
@@ -84,7 +98,9 @@ fn agent_mode_routes_repair_strategy_to_a_write() {
         let content = arguments["content"].as_str().unwrap();
         assert_eq!(
             content,
-            formal_ai::agentic_coding::repair_strategy::render_document(),
+            formal_ai::agentic_coding::repair_strategy::render_document(
+                &repair_fixture::canonical_strategies()
+            ),
             "{prompt}"
         );
         assert!(content.contains("repair_strategies"), "{prompt}");

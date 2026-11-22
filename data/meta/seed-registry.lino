@@ -32,8 +32,6 @@ seed_registry
   seed agreement-rules
     bundle true
     web true
-  seed approved-lessons
-    bundle true
   seed brainstorm-seeds
     bundle true
     web true

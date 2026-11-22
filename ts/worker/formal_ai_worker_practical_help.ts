@@ -77,7 +77,7 @@ function sourceSectionExcerpt(text, title, terms) {
 
 async function practicalHelpAnswer(goal, language, preferences = {}) {
   const source = practicalHelpPolicy(goal + "-source");
-  const online = preferences.offline !== true;
+  const online = preferences.offline !== true && preferences.allowNetwork !== false;
   let capture = { error: "untrusted_source" };
   if (practicalHelpTrustedSource(source)) {
     capture = await sourceWalkFetchCapture(source, { online, bounded: true });

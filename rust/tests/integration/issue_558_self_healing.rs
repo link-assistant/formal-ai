@@ -1,3 +1,7 @@
+#[path = "../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::SELF_HEAL_TASK;
+
 use std::time::Duration;
 
 use crate::http_server::{
@@ -16,15 +20,23 @@ fn agent_mode_routes_self_healing_request_to_a_repair_case_write() {
     // assertion. Under the full parallel integration suite, competing server
     // tests can otherwise stretch this one-time CST/AST initialization past
     // the socket deadline even though the route itself is healthy.
-    let expected_document = formal_ai::agentic_coding::self_heal::render_document();
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
 
     for prompt in [
-        formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK,
+        SELF_HEAL_TASK,
         "Run your self-healing loop and record a repair case for the input you couldn't answer.",
         "auto-learning: reason about the failure and write the repair case document",
     ] {
+        let prompt = repair_fixture::task_with_json(
+            prompt,
+            serde_json::json!({
+                "source_module": "src/event_log.rs",
+                "trace": repair_fixture::trace_value(repair_fixture::canonical_failure_trace()),
+            }),
+        );
+        let case = formal_ai::agentic_coding::self_heal::case_from_task(&prompt).unwrap();
+        let expected_document = formal_ai::agentic_coding::self_heal::render_document(&case);
         let response = http_post_json_with_read_timeout(
             port,
             "/api/openai/v1/chat/completions",
@@ -88,7 +100,10 @@ fn agent_mode_routes_self_healing_request_to_a_repair_case_write() {
         // The written document is the generated repair case — closed loop, human-gated.
         let content = arguments["content"].as_str().unwrap();
         assert_eq!(content, expected_document, "{prompt}");
-        assert!(content.contains("outcome \"awaiting_review\""), "{prompt}");
+        assert!(
+            content.contains("outcome \"blocked_by_benchmark\""),
+            "{prompt}"
+        );
         assert!(content.contains("human_gated \"true\""), "{prompt}");
     }
 }

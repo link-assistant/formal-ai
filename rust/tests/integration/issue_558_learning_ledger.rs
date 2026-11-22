@@ -1,7 +1,11 @@
+#[path = "../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::LEDGER_TASK;
+
 use std::time::Duration;
 
 use crate::http_server::{
-    http_post_json_with_read_timeout, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
+    http_post_json_with_read_timeout, reserve_loopback_port, spawn_formal_ai_server_with_args,
 };
 
 /// End-to-end proof that issue #558's *promotion ledger* — the terminal, human-gated
@@ -15,10 +19,18 @@ use crate::http_server::{
 #[test]
 fn agent_mode_routes_ledger_request_to_a_promotion_write() {
     let port = reserve_loopback_port();
-    let _server = spawn_formal_ai_server_agent_mode(port);
+    let path = concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/fixtures/issue-558/approved-lessons.lino"
+    );
+    let _server = spawn_formal_ai_server_with_args(
+        port,
+        &["--agent-mode"],
+        &[("FORMAL_AI_APPROVED_LESSONS", path)],
+    );
 
     for prompt in [
-        formal_ai::agentic_coding::ledger::LEDGER_TASK,
+        LEDGER_TASK,
         "Promote the approved lesson into your learning ledger and write the approved learning record.",
         "Record the promotion ledger so a repeated failure is answered from the ledger next time.",
     ] {
@@ -85,7 +97,7 @@ fn agent_mode_routes_ledger_request_to_a_promotion_write() {
         let content = arguments["content"].as_str().unwrap();
         assert_eq!(
             content,
-            formal_ai::agentic_coding::ledger::render_document(),
+            formal_ai::agentic_coding::ledger::render_document(&repair_fixture::canonical_ledger()),
             "{prompt}"
         );
         assert!(content.contains("learning_ledger"), "{prompt}");

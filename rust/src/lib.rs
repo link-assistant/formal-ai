@@ -287,7 +287,7 @@ pub use associative_package::{
 pub use associative_persistence::{
     AssociativeMemory, PersistedExpression, RetentionWeights, ScoredExpression,
 };
-pub use change_request::{AcceptedChange, ChangeRejected, ChangeRequest, canonical_change_request};
+pub use change_request::{AcceptedChange, ChangeRejected, ChangeRequest};
 pub use client_contract_learning::{
     ClientContractFinding, ClientContractLearningReport, ClientContractObservation,
     ClientContractProposal, DeliveryMode, learn_client_contracts, load_observations,
@@ -361,7 +361,6 @@ pub use learning_cycle::{
 };
 pub use learning_ledger::{
     HumanApproval, LearningLedger, LedgerEntry, PromotionRejected, approved_lesson_for,
-    canonical_ledger, canonical_ledger_failure_prompts,
 };
 #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]
 pub use link_store::{
@@ -421,12 +420,12 @@ pub use question_generation::{
     QuestionGenerator, QuestionGrammarClass, QuestionLexiconSummary, QuestionWord,
     generated_question_answers, question_lexicon_summary, question_lexicon_summary_for_language,
 };
-pub use rebuild_plan::{ReattachArtifact, RebuildPlan, RebuildStep, canonical_rebuild_plan};
+pub use rebuild_plan::{ReattachArtifact, RebuildPlan, RebuildStep};
 pub use relative_meta_logic::{
     ASSUMED_TRUE_PRIOR, Aggregator, RelativeEvidence, SourceTier, Stance, StatementAssessment,
     TruthValue,
 };
-pub use repair_strategy::{RepairStrategy, RepairTarget, canonical_strategies};
+pub use repair_strategy::{RepairStrategy, RepairTarget};
 pub use search_fusion::{
     FormalizedSearchObservation, FusedSearchStatement, NormalizedSearchSource, SearchFusionAnswer,
     SearchFusionExecution, SearchObservationOrigin, SearchSourceClassification,
@@ -453,9 +452,7 @@ pub use self_ast_census::{
 pub use self_explanation::{
     Citation, CitationKind, ExplanationSection, SystemExplanation, canonical_explanation,
 };
-pub use self_healing::{
-    RepairCase, RepairOutcome, SourceRoundTrip, canonical_case, canonical_failure_trace,
-};
+pub use self_healing::{RepairCase, RepairOutcome, SourceRoundTrip};
 pub use self_improvement::{
     BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal, LearningRejection, LearningRun,
     ReportedLearning, UnknownTrace, learn_from_reported_conversation,

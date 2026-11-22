@@ -9,6 +9,10 @@
 //! serialises to valid Links Notation with a stable content id, and it is reachable
 //! through the agentic interface as the eighth recipe.
 
+#[path = "../../fixtures/issue-558/repair_fixture.rs"]
+mod repair_fixture;
+use repair_fixture::LEDGER_TASK;
+use repair_fixture::SELF_HEAL_TASK;
 use std::path::Path;
 
 use formal_ai::agentic_coding::{
@@ -167,13 +171,11 @@ fn recognises_the_explain_task_without_colliding_with_the_sibling_recipes() {
     // Unrelated and sibling self-inspection requests do not route here.
     assert!(!is_explain_task("what files are in this folder?"));
     assert!(!is_explain_task("how do I sort a list in reverse?"));
-    assert!(!is_explain_task(
-        formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
-    ));
+    assert!(!is_explain_task(SELF_HEAL_TASK));
     assert!(!is_explain_task(
         formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK
     ));
-    assert!(!is_explain_task(formal_ai::agentic_coding::LEDGER_TASK));
+    assert!(!is_explain_task(LEDGER_TASK));
     assert!(
         !is_explain_task(
             "You are an AI issue solver.\n\

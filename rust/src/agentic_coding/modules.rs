@@ -86,6 +86,7 @@ pub mod rebuild_plan;
 mod recipe_artifact_inventory;
 mod recipe_resume;
 pub mod repair_apply;
+mod repair_input;
 pub mod repair_loop;
 pub mod repair_strategy;
 pub mod repetition_guard;
@@ -155,7 +156,7 @@ mod write_request;
 pub use associative_learning::{
     ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, is_associative_learning_task,
 };
-pub use change_request::{CHANGE_PATH, CHANGE_TASK, is_change_request_task};
+pub use change_request::{CHANGE_PATH, is_change_request_task};
 pub use ci_workflow::render_with as render_ci_workflow;
 pub use code_rewrite_learning::{
     CODE_REWRITE_LEARNING_PATH, CODE_REWRITE_LEARNING_TASK, is_code_rewrite_learning_task,
@@ -206,7 +207,7 @@ pub use learning_report::self_hosting_learning::{
     SELF_HOSTING_LEARNING_PATH, SELF_HOSTING_LEARNING_TASK, is_self_hosting_learning_task,
 };
 pub use learning_report::{LearningReport, REPORTS};
-pub use ledger::{LEDGER_PATH, LEDGER_TASK, is_ledger_task};
+pub use ledger::{LEDGER_PATH, is_ledger_task};
 pub use link_edit_rules::{
     LinkEditError, LinkEditReport, LinkEditRule, RuleDocument, RuleShape, apply_link_edit,
     insert_members_via_links, parse_rule_document, rule_shapes,
@@ -218,15 +219,15 @@ pub use progress::owned_creation_readback_command;
 pub use question_catalog::{
     QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK, is_question_catalog_task,
 };
-pub use rebuild_plan::{REBUILD_PATH, REBUILD_TASK, is_rebuild_task};
-pub use repair_strategy::{REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK, is_repair_strategy_task};
+pub use rebuild_plan::{REBUILD_PATH, is_rebuild_task};
+pub use repair_strategy::{REPAIR_STRATEGY_PATH, is_repair_strategy_task};
 pub(crate) use report_issue::{issue_form_for_prompt, plan_text_report_flow};
 pub use requirement_resolution::{RequirementTarget, resolve_in, resolve_requirement_target};
 pub use routing_learning::{
     ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK, is_routing_learning_task,
 };
 pub use self_ast::{AST_PATH, ast_census, ast_task, is_self_ast_task, render_ast_document};
-pub use self_heal::{SELF_HEAL_PATH, SELF_HEAL_TASK, is_self_heal_task};
+pub use self_heal::{SELF_HEAL_PATH, is_self_heal_task};
 pub(crate) use shell_command::semantic_shell_command_for_task;
 pub(crate) use shell_command::shell_command_for_task as repository_shell_command;
 pub(crate) use shell_command_policy::{

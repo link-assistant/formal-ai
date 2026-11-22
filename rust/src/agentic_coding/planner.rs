@@ -272,6 +272,10 @@ fn plan_chat_step_routes(
     // boundary serves the whole router rather than one recipe.
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
+    if let Some(plan) = super::document_recipe::plan_structured_repair(&task, messages, tool_names)
+    {
+        return Some(plan);
+    }
     // A bare continuation cue with nothing to resume is still the cue here,
     // and the `agentic_continuation` conversation handler answers it; the
     // words of the cue are never a request (issue #1095).
@@ -579,7 +583,7 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     if self_heal::is_self_heal_task(task) {
-        return Some(plan_self_heal_step(messages, tool_names));
+        return Some(plan_self_heal_step(task, messages, tool_names));
     }
     if dreaming_audit::is_dreaming_audit_task(task) {
         return Some(plan_dreaming_audit_step(messages, tool_names));
@@ -612,7 +616,7 @@ pub(super) fn plan_settled_routes(
     // Checked alongside the other self-referential recipes and before formalization,
     // since its request legitimately names "Links Notation" as the output format.
     if change_request::is_change_request_task(task) {
-        return Some(plan_change_request_step(messages, tool_names));
+        return Some(plan_change_request_step(task, messages, tool_names));
     }
     // The general repair-classification recipe: given an arbitrary failure trace, decide
     // whether the repair is a solver method, a data record, or a test, and compose the
@@ -622,7 +626,7 @@ pub(super) fn plan_settled_routes(
     // keywords are disjoint from the self-healing recipe's ("repair case"/"repair loop"),
     // so ordering only guards a request that somehow names both.
     if repair_strategy::is_repair_strategy_task(task) {
-        return Some(plan_repair_strategy_step(messages, tool_names));
+        return Some(plan_repair_strategy_step(task, messages, tool_names));
     }
     // Rebuild-and-reattach recipe: once a change is accepted, recompile Formal AI and
     // reattach the improved WebAssembly worker to the UI (issue #558's `R558-06`).
@@ -632,7 +636,7 @@ pub(super) fn plan_settled_routes(
     // source-links recipe's "recompile", so ordering only guards a request that somehow
     // names both.
     if rebuild_plan::is_rebuild_task(task) {
-        return Some(plan_rebuild_step(messages, tool_names));
+        return Some(plan_rebuild_step(task, messages, tool_names));
     }
     // The learning-frontier recipe (issues #498 + #558): route the trending prompts the
     // engine cannot yet resolve through the human-gated self-improvement loop. Checked
@@ -969,9 +973,7 @@ pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
 /// Arguments for a write step that satisfy whichever key the advertised write
 /// tool expects. Agentic CLIs disagree on the parameter name — the in-repo driver
 /// reads `path`, the `@link-assistant/agent` CLI's `write` tool wants `filePath`,
-/// others use `file_path`. All are emitted; a schema-validating CLI keeps the one
-/// it declared and strips the rest, so the same plan drives any of them without a
-/// per-CLI special case.
+/// others use `file_path`. Schema validation keeps only the declared key.
 pub(super) fn write_arguments(path: &str, content: &str) -> String {
     json!({
         "path": path,

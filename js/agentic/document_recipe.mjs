@@ -110,8 +110,16 @@ export async function planSelfAstStep(messages, toolNames) {
 }
 
 /** Mirrors `fn plan_self_heal_step`. */
-export async function planSelfHealStep(messages, toolNames) {
-  return planSourceDocumentRecipe(messages, toolNames, selfHeal, selfHeal.SELF_HEAL_PATH);
+export async function planSelfHealStep(messages, toolNames, task) {
+  let repair;
+  try {
+    repair = await selfHeal.caseFromTask(task);
+  } catch {
+    return finalAnswer(agenticMessage('self_heal_source_unavailable'));
+  }
+  if (!repair) return finalAnswer(agenticMessage('self_heal_input_needed'));
+  const document = selfHeal.renderDocument(repair);
+  return planRequestDocument(messages, toolNames, selfHeal.SELF_HEAL_PATH, document, selfHeal.finalAnswer(repair, document));
 }
 
 /** Mirrors `fn plan_source_links_step`. */
@@ -121,7 +129,11 @@ export async function planSourceLinksStep(messages, toolNames) {
 
 /** Mirrors `fn plan_ledger_step`. */
 export async function planLedgerStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(ledger, ledger.LEDGER_PATH));
+  try {
+    return planDocumentRecipe(messages, toolNames, await catRecipe(ledger, ledger.LEDGER_PATH));
+  } catch (error) {
+    return finalAnswer(`Unknown:ReviewDocumentUnavailable:${error.message}`);
+  }
 }
 
 /** Mirrors `fn plan_explain_step`. */
@@ -130,18 +142,27 @@ export async function planExplainStep(messages, toolNames) {
 }
 
 /** Mirrors `fn plan_change_request_step`. */
-export async function planChangeRequestStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(changeRequest, changeRequest.CHANGE_PATH));
+export function planChangeRequestStep(messages, toolNames, task) {
+  const request = changeRequest.requestFromTask(task);
+  if (!request) return finalAnswer(agenticMessage('change_request_input_needed'));
+  const document = changeRequest.renderDocument(request);
+  return planRequestDocument(messages, toolNames, changeRequest.CHANGE_PATH, document, changeRequest.finalAnswer(request, document));
 }
 
 /** Mirrors `fn plan_repair_strategy_step`. */
-export async function planRepairStrategyStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(repairStrategy, repairStrategy.REPAIR_STRATEGY_PATH));
+export function planRepairStrategyStep(messages, toolNames, task) {
+  const strategies = repairStrategy.strategiesFromTask(task);
+  if (!strategies) return finalAnswer(agenticMessage('repair_strategy_input_needed'));
+  const document = repairStrategy.renderDocument(strategies);
+  return planRequestDocument(messages, toolNames, repairStrategy.REPAIR_STRATEGY_PATH, document, repairStrategy.finalAnswer(strategies, document));
 }
 
 /** Mirrors `fn plan_rebuild_step`. */
-export async function planRebuildStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(rebuildPlan, rebuildPlan.REBUILD_PATH));
+export function planRebuildStep(messages, toolNames, task) {
+  const plan = rebuildPlan.planFromTask(task);
+  if (!plan) return finalAnswer(agenticMessage('rebuild_input_needed'));
+  const document = rebuildPlan.renderDocument(plan);
+  return planRequestDocument(messages, toolNames, rebuildPlan.REBUILD_PATH, document, rebuildPlan.finalAnswer(plan, document));
 }
 
 /** Mirrors `fn plan_question_catalog_step`. */
@@ -186,4 +207,9 @@ export async function planGoogleTrendsLearningStep(messages, toolNames, task) {
 /** Mirrors `fn plan_google_trends_catalog_step`. */
 export async function planGoogleTrendsCatalogStep(messages, toolNames, task) {
   return planTrendsDocument(task, messages, toolNames, googleTrendsCatalog, googleTrendsCatalog.GOOGLE_TRENDS_CATALOG_PATH);
+}
+
+
+function planRequestDocument(messages, toolNames, path, document, final_answer) {
+  return planDocumentRecipe(messages, toolNames, { path, verify_command: `cat ${path}`, final_answer, document });
 }

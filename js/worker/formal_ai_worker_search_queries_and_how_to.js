@@ -752,7 +752,7 @@ async function howToCaptureThroughComponent(url, notes) {
 async function howToRecoverWikiHow(walked, task, language, preferences, discovered) {
   const outcome = walked.outcomes.find((item) => item.sourceId === "wikihow");
   if (!outcome || ["disabled", "unbound_template"].includes(outcome.status)
-      || outcome.items >= HOW_TO_MIN_ACCEPTED_STEPS || preferences?.offline === true
+      || outcome.items >= HOW_TO_MIN_ACCEPTED_STEPS || preferences?.offline === true || preferences?.allowNetwork === false
       || outcome.pages >= walked.bounds.maxPagesPerService) return;
 
   const record = howToSourceRegistry().find((item) => item.id === "wikihow");
@@ -858,10 +858,9 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   ];
 
   const fallbackQuery = isInstall ? query : searchQuery;
-  const official = isInstall && preferences.offline !== true
+  const official = isInstall
     ? await runWebSearchQuery(searchQuery, sourceLanguage, "official_documentation", preferences) : null;
-  const indexed = preferences.offline !== true
-    ? await runWebSearchQuery(fallbackQuery, sourceLanguage, isInstall ? "general_how_to_fallback" : "", preferences) : null;
+  const indexed = await runWebSearchQuery(fallbackQuery, sourceLanguage, isInstall ? "general_how_to_fallback" : "", preferences);
   for (const result of [official, indexed]) {
     if (result) evidence.push(...result.evidence.filter((item) => !evidence.includes(item)));
   }
@@ -902,7 +901,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
     else lines.push(howResponse("procedural_how_to_fallback_search_plan", "en", { query: fallbackQuery, providers: providerSummary, k: webSearchRrfK() }));
     content = lines.join("\n\n");
   }
-  if (indexed?.diagnostics?.fused?.length || official?.diagnostics?.fused?.length || preferences.offline) {
+  if (indexed?.diagnostics?.fused?.length || official?.diagnostics?.fused?.length || !online) {
     content += "\n\n" + howToGuideChrome("how_to_guide_insufficient_evidence", language, {
       steps: research.guide.steps.length, required: HOW_TO_MIN_ACCEPTED_STEPS,
     });

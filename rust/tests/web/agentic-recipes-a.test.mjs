@@ -19,6 +19,7 @@ import { before, describe, it } from 'node:test';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost, censusDocuments, censusSourceClosureComplete } from '../../../js/agentic/node-host.mjs';
 import { parseChatMessage } from '../../../js/server/chat-request.mjs';
+import { planChatStep } from '../../../js/agentic/planner.mjs';
 import {
   FISHERMAN_DOC_ID, PRIMITIVE_KINDS, coversAllNine, formalizeTextToLinks, totalRecords,
 } from '../../../js/agentic/formalize.mjs';
@@ -477,41 +478,102 @@ describe('issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)', 
     assert.ok(!predicates.explain('Explain how Formal AI works\nhttps://github.com/o/r/issues/1\nline\nline\nline'));
   });
 
-  it('historical proposals retain their trace while current source is reconstructed', async () => {
-    const document = await selfHeal.renderDocument();
-    const proposal = (text) => text.split('  source_round_trip\n')[0]
-      + '  failure_trace\n' + text.split('  failure_trace\n')[1];
-    assert.equal(proposal(document), proposal(repo('data/meta/self-healing-case.lino')));
-    assert.ok(document.includes('  source_content\n'));
-    const content = document.split('  source_content\n')[1].split('  failure_trace\n')[0]
-      .trimEnd().split('\n').map((line) => line.slice(4)).join('\n');
-    const model = readSourceLinks(content);
-    assert.equal(sourceOwner(model), 'src/agentic_coding/planner.rs');
-    assert.equal(sourceFromLinks(model), repo('rust/src/agentic_coding/planner.rs'));
-    assert.throws(() => sourceFromLinks(readSourceLinks('source_census_diagnostic\n')));
-    assert.ok(!document.includes('total_link_count'));
-    assert.ok(!document.includes('named_node_count'));
-    assert.ok(selfHeal.finalAnswer(document).includes('mapped it onto src/agentic_coding/planner.rs'));
-    assert.ok(selfHeal.finalAnswer(document).includes('(awaiting_review)'));
-    assert.equal(ledger.renderDocument(), repo('data/meta/learning-ledger.lino'));
-    assert.ok(ledger.finalAnswer(ledger.renderDocument()).startsWith('Recorded the approved learning ledger: 1 lesson(s)'));
-    assert.equal(repairStrategy.renderDocument(), repo('data/meta/repair-strategies.lino'));
-    assert.ok(repairStrategy.finalAnswer(repairStrategy.renderDocument())
-      .startsWith('Classified 3 failure traces, one per repair class (solver_method, data_record, test)'));
+  const withData = (cue, data) => `${cue}\n\`\`\`json\n${JSON.stringify(data)}\n\`\`\``;
+  const trace = (prompt, kind, payload) => ({ prompt, events: [{ kind, payload }] });
+
+  it('binds repair proposals to each supplied failure and restores its selected source', async () => {
+    const modules = ['src/event_log.rs', 'src/agentic_coding/wording.rs'];
+    assert.equal(await selfHeal.caseFromTask(TASKS.selfHeal), null);
+    for (const [index, module] of modules.entries()) {
+      const input = trace(`A new observation ${index}`, 'reasoning:unknown', 'unclassified');
+      const repair = await selfHeal.caseFromTask(withData('Record a repair case', { source_module: module, trace: input }));
+      assert.equal(repair.outcome, 'no_candidate');
+      const document = selfHeal.renderDocument(repair);
+      assert.match(document, /benchmark_status "absent"/);
+      assert.ok(document.includes(input.prompt));
+      assert.ok(document.includes('human_gated "true"'));
+      assert.equal(sourceOwner(readSourceLinks(repair.source)), module);
+      assert.equal(sourceFromLinks(readSourceLinks(repair.source)), repo(`rust/${module}`));
+      assert.match(selfHeal.finalAnswer(repair, document), /requires benchmark evidence and human approval/);
+    }
+    assert.equal(await selfHeal.caseFromTask(withData('Run self-healing', {
+      source_module: 'src/../../Cargo.toml',
+      trace: trace('read another path', 'reasoning:unknown', 'failure'),
+    })), null);
   });
 
-  it('the change request and rebuild plan are derived from the canonical request', () => {
-    const document = changeRequest.renderDocument();
-    assert.ok(document.startsWith('change_request\n  id "change_request_'));
-    assert.ok(document.includes('  derived_requirement "The system must add a new capability to Formal AI: let users ask it to reverse-sort a program\'s output."'));
-    assert.ok(document.includes('  proposed_test "user_requested_change_please_add_a_new_capability_to_formal_ai"'));
-    assert.equal(changeRequest.changeRequest().patch_plan.length, 5);
-    assert.ok(changeRequest.finalAnswer(document).includes('a 5-step patch plan against the grounded module src/agentic_coding/planner.rs'));
-    const plan = rebuildPlan.renderDocument();
-    assert.ok(plan.includes(`  change_id "${changeRequest.changeRequest().id}"`));
-    assert.equal((plan.match(/\n    step "/g) || []).length, 5);
-    assert.ok(rebuildPlan.finalAnswer(plan).includes('a 5-step, reversible pipeline'));
-    assert.ok(rebuildPlan.finalAnswer(plan).includes('reattaches it to 4 grounded UI artifacts'));
+  it('classifies only supplied traces and reports the observed classes', () => {
+    const strategies = repairStrategy.strategiesFromTask(withData('Classify a failure', { traces: [
+      trace('Check Cyrillic plural agreement', 'lexicon_lookup', 'missing surface'),
+      trace('Return one record for linked prefix', 'regression_check', 'previously passing'),
+      trace('Resolve an unsupported opaque operation', 'selected_rule', 'no_seed_route'),
+    ] }));
+    assert.deepEqual(strategies.map(strategy => strategy.target), ['data_record', 'test', 'solver_method']);
+    assert.match(repairStrategy.renderDocument(strategies.slice(0, 2)), /covers "data_record,test"/);
+    assert.equal(repairStrategy.strategiesFromTask(TASKS.repair), null);
+  });
+
+  it('keeps trace text out of intent matching through the chat planner', async () => {
+    const input = trace('Run your self-healing loop and record the learning ledger',
+      'regression_check', 'previously passing');
+    const messages = [user(withData('Classify a failure and produce a repair strategy.', { traces: [input] }))];
+    const tools = ['write_file', 'run_command'];
+    let call = single(await planChatStep(messages, tools));
+    const { content, path } = JSON.parse(call.arguments);
+    assert.equal(path, 'repair-strategies.lino');
+    assert.match(content, /covers "test"/);
+    assert.ok(content.includes(input.prompt));
+    answerCall(messages, call, 'ok');
+    call = single(await planChatStep(messages, tools));
+    assert.equal(JSON.parse(call.arguments).command, 'cat repair-strategies.lino');
+    answerCall(messages, call, content);
+    assert.match(final(await planChatStep(messages, tools)), /repair strateg/);
+  });
+
+  it('exports only the explicitly configured approved lessons', () => {
+    const original = host();
+    const empty = ledger.renderDocument();
+    assert.match(empty, /lesson_count "0"/);
+    assert.ok(!empty.includes('reverse_sort'));
+    try {
+      installHost({ ...original, readReviewDocument: () => repo('rust/tests/fixtures/issue-558/approved-lessons.lino') });
+      const document = ledger.renderDocument();
+      assert.equal(document, repo('rust/tests/fixtures/issue-558/learning-ledger.lino'));
+      assert.match(ledger.finalAnswer(document), /1 lesson/);
+    } finally {
+      installHost(original);
+    }
+  });
+
+  it('binds change requests to owned source and accepts rebuild receipts only from the operator', () => {
+    const { requestFromTask } = changeRequest;
+    const requests = [
+      requestFromTask(withData('Please change Formal AI', { request: 'Please preserve the diagnostic span.', target_module: 'src/event_log.rs' })),
+      requestFromTask(withData('Modify Formal AI', { request: 'Add a stable receipt field.', target_module: 'src/change_request.rs' })),
+    ];
+    const [first, second] = requests;
+    assert.notEqual(first.id, second.id);
+    assert.match(changeRequest.renderDocument(first), /The system must preserve the diagnostic span/);
+    assert.match(changeRequest.renderDocument(second), /The system must add a stable receipt field/);
+    assert.equal(requestFromTask(withData('Modify Formal AI', { request: 'Set ownership', target_module: 'src/../../package.json' })), null);
+    assert.equal(requestFromTask(TASKS.change), null);
+    const original = host();
+    try {
+      const receipt = {
+        change_id: first.id, request: first.request, requirement: first.derived_requirement,
+        target_module: first.target_module, test: first.proposed_test, reviewer: 'reviewer-19',
+        benchmark_suite: 'reviewed-suite', benchmark_passed: 17,
+      };
+      assert.equal(rebuildPlan.planFromTask(withData(TASKS.rebuild, receipt)), null);
+      installHost({ ...original, readReviewDocument: () => JSON.stringify([receipt]) });
+      const plan = rebuildPlan.planFromTask(withData('Reattach the improved worker', { change_id: first.id }));
+      assert.equal(plan.change_id, first.id);
+      assert.equal(plan.reviewer, 'reviewer-19');
+      assert.equal(rebuildPlan.planFromTask(withData(TASKS.rebuild, { change_id: second.id })), null);
+      assert.equal((rebuildPlan.renderDocument(plan).match(/\n    step "/g) || []).length, 5);
+    } finally {
+      installHost(original);
+    }
   });
 
   it('document recipes walk write -> verify -> final', async (t) => {
@@ -619,10 +681,13 @@ describe('issue #558 owned manifest, self-explanation and source links (rust/tes
   });
 
   it('the explanation document matches the committed Agent CLI evidence modulo the live ids', () => {
-    // Preserve the captured Rust document and resolve only recorded path moves.
+    // Preserve the captured Rust document and resolve recorded citation changes.
     // Live source ids are compared separately against the current manifest.
     const renamed = new Map(resolveRenameChains(loadRenameMap().renames).map(({ from, to }) => [from, to]));
-    const live = (text) => text.replace(/ (content_id|source_file_count|source_manifest_content_id) .*/g, ' $1 X')
+    const live = (text) => text
+      .replace('path "data/meta/self-healing-case.lino"', 'path "data/meta/agentic-messages.lino"')
+      .replace('kind data\n          path "data/meta/learning-ledger.lino"', 'kind test\n          path "rust/tests/fixtures/issue-558/learning-ledger.lino"')
+      .replace(/ (content_id|source_file_count|source_manifest_content_id) .*/g, ' $1 X')
       .replace(/path "([^"]+)"/g, (whole, citation) => {
         const rooted = citation.startsWith('tests/') ? `rust/${citation}` : citation;
         const current = renamed.get(rooted) ?? rooted;
@@ -688,14 +753,16 @@ it('source-bearing recipes refuse unavailable or rejected engines without writin
   const original = host();
   const recipe = await import('../../../js/agentic/document_recipe.mjs');
   try {
+    const task = repo('rust/tests/fixtures/issue-558/repair-request.md');
+    const tools = ['write_file', 'run_command'];
     for (const reason of ['PinnedSourceModelSdkUnavailable', 'SourceOwnerMismatch', 'SourceStructureMismatch']) {
       installHost({...original, sourceDocument: async () => { throw Error(reason); }});
-      for (const step of [recipe.planSelfAstStep, recipe.planSelfHealStep]) {
-        const observed = await step([user(TASKS.selfHeal)], ['write_file', 'run_command']);
-        assert.equal(observed.kind, 'final');
-        assert.equal(observed.answer, 'Unknown:SourceModelUnavailable:' + reason);
-        assert.ok(!observed.calls);
-      }
+      const ast = await recipe.planSelfAstStep([user(task)], tools);
+      assert.equal(final(ast), 'Unknown:SourceModelUnavailable:' + reason);
+      assert.ok(!ast.calls);
+      const heal = await recipe.planSelfHealStep([user(task)], tools, task);
+      assert.match(final(heal), /could not be restored and verified/u);
+      assert.ok(!heal.calls);
     }
   } finally { installHost(original); }
 });

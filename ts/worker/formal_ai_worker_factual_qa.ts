@@ -797,14 +797,14 @@ async function researchPageSenses(subject, bounds) {
 }
 
 /**
- * Answer an explanation request from retrieved pages (intent
- * `explanation_research`), or null so the dispatch keeps looking.
+ * Answer an explanation request from retrieved pages, or return null.
  * @param {string} prompt
+ * @param {object} [preferences]
  * @returns {Promise<object|null>}
  */
-async function tryExplanationResearch(prompt) {
+async function tryExplanationResearch(prompt, preferences) {
   const concept = explanationConcept(prompt);
-  if (!concept) return null;
+  if (!concept || preferences?.offline === true || preferences?.allowNetwork === false) return null;
   const language = detectLanguage(prompt);
   const researched = await researchPageSenses(concept, CONCEPT_LOOKUP_BOUNDS);
   if (!researched || researched.senses.length === 0) return null;

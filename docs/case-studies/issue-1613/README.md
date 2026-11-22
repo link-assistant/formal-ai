@@ -158,12 +158,12 @@ and the implementation made only the first call.
 | --- | --- |
 | Explain and remove the reported hardcoding | Reproduced the exact bypass, removed both aliases, and added original-task and held-out replays. |
 | Generalize how-to across runtimes | Both runtimes use localized discovery, matching, and bounded article reads. The browser replay covers direct, archive, capture component, missing evidence, unrelated results, negative titles, and opt-out cases. The indexed publisher replay covers a task outside the catalogues, verifies the original capture, and rejects a page unrelated to the task. |
-| Keep canned input and expected output in tests | The two replay topics and their expected articles are explicit in test code. The benchmark issue test injects its recorded input. Additional production solution tables remain in the [repository audit](repository-audit.md). |
-| Use recoverable snapshots only to speed tests. Exclude pre-cache from lightweight distributions | The crate mirror no longer includes the 139 issue bodies. The previous native release returned the stored body with an empty cache, which the [baseline test](evidence/verification/baseline-native-issue-corpus.log) rejects. CI can replay the same command first with an empty cache and then with a supplied capture. Remaining embedded and web-distributed captures are listed in the [repository audit](repository-audit.md). |
+| Keep canned input and expected output in tests | The replay topics, expected articles, classifier observations, and reviewed decisions are explicit inputs in the tests. The [repository audit](repository-audit.md) traces the other production shortcuts and their replacements. |
+| Use recoverable snapshots only to speed tests. Exclude pre-cache from lightweight distributions | The crate mirror excludes the 139 issue bodies and the former compiled captures. The [baseline test](evidence/verification/baseline-native-issue-corpus.log) records the previous cold-cache hit. A native replay exercises an empty cache and then injects a public capture. The slim smoke script adds cold held-outs, and the [default-branch policy](../../ci-cd/default-branch-builds.md) governs the release image build. |
 | Align the vision and conflicting guidance | [VISION](../../../VISION.md) and the [natural language design](../../design/no-hardcoded-natural-language.md) distinguish vocabulary, rendering templates, live discovery, and fixed test inputs. |
 | Collect logs, reconstruct sequence, evaluate existing approaches, and diagnose the root causes | Original artifacts, complete available workflow logs, issue timeline, and focused tests are indexed below. The alias and the independent image pull failure are both reproducible from the captured evidence. |
 | Add diagnostic output when root cause cannot be established | The existing pull error, capture manifests, and original-task requests identify the causes. The source-walk trace records failed requests and whether recovered steps came from a live or archived capture. |
-| Report reproducible upstream issues with workarounds and fixes | The reproducible Hive Mind failure is in [#4122](https://github.com/link-assistant/hive-mind/issues/4122). The [publisher probes](evidence/wikihow/status.txt) from this environment returned an HTTP 500 with no body. That observation alone did not isolate a publisher bug. Previous issue #1396 records a successful parse and an archive rate limit from separate probes. |
+| Report reproducible upstream issues with workarounds and fixes | [Hive Mind #4122](https://github.com/link-assistant/hive-mind/issues/4122) covers the image pull classification, and [Calculator #266](https://github.com/link-assistant/calculator/issues/266) covers silently supplied compiled exchange rates. The [publisher probes](evidence/wikihow/status.txt) from this environment returned an HTTP 500 with no body. Previous issue #1396 records a successful parse and an archive rate limit from separate probes. The transport evidence did not identify a reproducible publisher bug. |
 | Complete all changes in one PR | #1614 is the single implementation branch. The issue's [sub-issue listing](evidence/github/issues-1613-sub_issues.json) is empty. The [vision audit](repository-audit.md) covers related broader work. |
 
 Two additional cases showed topic substitution. An unnamed algorithm request
@@ -948,3 +948,51 @@ generator refreshed the worker and server manifests before the next replay.
 [Native log, lines 8740–8778](evidence/workflows/pipeline-round14-44983621991.log.gz) ·
 [Browser log, lines 8589 and 9779](evidence/workflows/layered-round14-44983621838.log.gz) ·
 [Worker prerequisite verification](evidence/verification/round15-worker-script-prerequisites.log)
+
+## Caller traces and operator-approved changes
+
+A cold planner could answer a repair question about a new failure with the
+historical issue #558 case. It could also classify a fixed set of unrelated
+traces, use a canned capability for a change request, and plan a rebuild from a
+manufactured approval. The ledger loaded one approved record from the package
+before the operator configured any lessons.
+
+The repair recipe now verifies caller-supplied trace events and maps the
+requested module through the same source-model boundary used by the source
+inspection recipe. The classification and change recipes bind their own
+inputs, and a rebuild joins the requested change ID to the operator's approval
+file. The ledger starts empty. Historical requests and approved records are
+explicit fixtures. The planner regression follows a real write and read-back
+and checks that words inside the trace cannot route the request to another
+recipe. [Replay](../../../rust/tests/web/agentic-recipes-a.test.mjs) ·
+[Input and configuration contracts](../../configuration/agentic-clis.md)
+
+## Cold runtime and release packaging
+
+The packaged browser replay exposed outgoing discovery attempts after the
+caller disabled network access. The initial publisher walk, recovery component,
+index fallback, practical help, and general search fallback had only checked
+the offline flag. They now also honor the explicit option. Verified evidence
+that the solver previously acquired remains available. A fresh Chromium
+context started with empty memory and made zero outgoing requests in five
+prompts. The npm tarball had 524 files and its inventory had no answer captures
+or test fixtures. The browser used the packaged JavaScript and seed changes
+with a previously built WASM test asset.
+[Initial packaged replay](evidence/verification/round23-built-browser-cold.log) ·
+[Cold browser result](evidence/verification/round24-packaged-browser-cold.log) ·
+[Package inventory](evidence/verification/round24-npm-inventory.log) ·
+[Network opt-out regression](../../../rust/tests/web/procedural-runtime-parity.test.mjs)
+
+Run `bash scripts/verify-docker-slim-runtime.sh` with the target binary on
+`PATH` to check new state, native offline policy, held-out tasks, greetings,
+arithmetic, and the agent write route. PR CI runs that script against the
+focused native executable. The default-branch publisher also runs it from
+inside the built slim image.
+[Smoke script](../../../scripts/verify-docker-slim-runtime.sh) ·
+[PR and image build policy](../../ci-cd/default-branch-builds.md)
+
+The preceding native check denied four newly unused members of the program
+execution contract after stdout reporting moved to executed examples. They
+were removed with their initializers. The simultaneous Layered CI run cancelled
+its change detector. [Native log, lines 9391–9424](evidence/workflows/pipeline-round23-45005566324.log.gz) ·
+[Layered log](evidence/workflows/layered-round23-45005566247.log.gz)

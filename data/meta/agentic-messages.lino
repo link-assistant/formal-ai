@@ -277,7 +277,7 @@ agentic_messages
   message self_heal_repair_phrases
     text "fix it yourself|fix yourself|fix your self|fix your own|fix them yourself|fix this yourself|solve it yourself|solve this yourself|debug yourself|debug it yourself|heal yourself|repair yourself|correct yourself|fix on your own|fix it on your own|learn from your mistake"
   message self_heal_final_answer
-    text "Ran the self-healing loop on an input the system could not answer directly: reasoned about the failure trace, mapped it onto {module} with a verified source-to-links round-trip, learned a benchmark-gated lesson, and recorded an auditable repair case ({outcome}). Nothing was applied — adoption stays a human-approved review step.\n\nGenerated document ({path}):\n\n{document}"
+    text "Recorded a self-healing case for the supplied failure trace, with a verified source round-trip for {module}. Outcome: {outcome}. Any proposed lesson requires benchmark evidence and human approval.\n\nGenerated document ({path}):\n\n{document}"
   message ledger_keywords
     text "learning ledger|promotion ledger|promote the lesson|promote the approved|approved learning record"
   message ledger_final_answer
@@ -285,7 +285,7 @@ agentic_messages
   message repair_strategy_keywords
     text "classify the failure|classify a failure|repair strategy|repair strategies|which part to repair|solver method, a data record, or a test"
   message repair_strategy_final_answer
-    text "Classified {count} failure traces, one per repair class ({targets}), and composed a grounded, human-gated repair strategy for each: the general repair loop now decides *which part* to change — a solver method, a data record, or a test — for every failure, not just one canonical case. Nothing is applied — each strategy is a reviewable plan that merges only through the same human-gated loop. Neural inference is not used; every classification and plan is a deterministic function of the trace.\n\nGenerated document ({path}):\n\n{document}"
+    text "Classified {count} supplied failure trace(s) ({targets}) and prepared a reviewable repair strategy for each. Each proposed change requires human approval.\n\nGenerated document ({path}):\n\n{document}"
   message explain_keywords
     text "how formal ai works|how does formal ai work|how formal ai itself works|how the system itself works|explain how formal ai"
   message explain_final_answer
@@ -298,8 +298,6 @@ agentic_messages
     text "change formal ai|modify formal ai|add a capability to formal ai|add a new capability to the system|change the ai system|change formal ai itself"
   message change_request_final_answer
     text 'Turned your change request into a reviewable pull request: it derives the requirement "{requirement}", proposes the test `{test}`, and a {steps}-step patch plan against the grounded module {target}. Nothing is applied — the change merges only through the same human-gated loop: a green benchmark gate and your explicit approval. Neural inference is not used; the requirement, test, and patch plan are a deterministic function of your request and its grounded target.\n\nGenerated document ({path}):\n\n{document}'
-  message change_request_canonical_request
-    text "Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output."
   message change_request_requirement_prefixes
     text "please |can you please |can you |could you please |could you |i want you to |i would like you to |i want |i would like |we need to |we need "
   message change_request_requirement
@@ -734,3 +732,39 @@ agentic_messages
     text "Every generated prompt from this feed routed through the engine."
   message google_trends_frontier_triage
     text "The learning frontier records generated prompts the engine could not route and hands their traces to human triage."
+  message change_request_input_needed
+    text "Provide a fenced JSON object with request and target_module for an owned Rust source file. I can then prepare the requirement, test, and reviewable patch plan."
+  message rebuild_input_needed
+    text "Provide a fenced JSON object with change_id from the operator's accepted-change records to prepare the rebuild and reattachment plan."
+  message self_heal_input_needed
+    text "Provide a fenced JSON object with source_module and trace. The trace carries the original prompt and its events, each with kind and payload."
+  message repair_strategy_input_needed
+    text "Provide a fenced JSON object with a nonempty traces array. Each trace carries the original prompt and events with kind and payload."
+  message self_heal_source_unavailable
+    text "The selected source module could not be restored and verified. Supply owned source with an available source model to prepare a repair case."
+  message repair_strategy_default_rationale
+    text "no specific data or test signal was present, so the meta algorithm still lacks a way to resolve the failure"
+  message repair_class_solver_method_cues
+    text "rule_synthesis|no_seed_route|no route|no rule|try_rule_synthesis"
+  message repair_class_solver_method_rationale
+    text "the trace shows `{signal}` — the meta algorithm could not route the task"
+  message repair_class_solver_method_proposal
+    text "Synthesise a new solver method (a substitution rule) that routes \"{prompt}\" to a resolved task, grounded in the operation vocabulary, and run it through the self-healing repair case."
+  message repair_class_solver_method_verification
+    text "Add a fixture that lowers and renders the new task; the rule-synthesis benchmark gate must be green before human review."
+  message repair_class_data_record_cues
+    text "missing surface|missing meaning|lexicon gap|seed data|unknown word|data record"
+  message repair_class_data_record_rationale
+    text "the trace shows `{signal}` — the seed data the task needs is absent or wrong"
+  message repair_class_data_record_proposal
+    text "Add or correct the seed data record the failure needs for \"{prompt}\" (the missing meaning, surface, or lexicon entry), expressed in Links Notation."
+  message repair_class_data_record_verification
+    text "Add a data-driven test asserting the corrected record is present and well-formed; the meaning/lexicon suite must stay green."
+  message repair_class_test_cues
+    text "regression|previously passing|no test pins|missing test|unguarded"
+  message repair_class_test_rationale
+    text "the trace shows `{signal}` — a correct behaviour is unguarded by a test"
+  message repair_class_test_proposal
+    text "Add a guard test that pins the behaviour \"{prompt}\" exposed, so the regression cannot recur."
+  message repair_class_test_verification
+    text "The new test must fail before the fix and pass after it, and the whole suite must stay green."

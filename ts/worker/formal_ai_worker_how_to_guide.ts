@@ -607,7 +607,7 @@ async function synthesizeHowToGuide(task, preferences, bounds, now, language = "
   const wikiCandidates = new Set();
   const walked = await sourceWalkSources("procedure", subject, language, preferences, limits, {
     now: at,
-    online: preferences?.offline !== true,
+    online: preferences?.offline !== true && preferences?.allowNetwork !== false,
     bounded: true,
     accessibilityKey: (record, url) => record.id === "wikihow" && new URL(url).hostname !== "www.wikihow.com"
       ? `${record.id}@${new URL(url).hostname}` : record.id,

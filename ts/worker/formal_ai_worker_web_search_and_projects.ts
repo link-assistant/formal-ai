@@ -219,7 +219,7 @@ function unknownResearchResultIsRelevant(query, entry) {
 
 async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
   query = String(query || "").trim();
-  if (!query || preferences.offline === true) return null;
+  if (!query || preferences.offline === true || preferences.allowNetwork === false) return null;
   const rrfK = webSearchRrfK();
   const concurrency = webSearchConcurrency();
   const providerLimit = webSearchProviderLimit();
@@ -940,7 +940,7 @@ function genericProjectLookupAnswer(prompt, language, repo, promotionEnabled) {
   return { intent: "project_lookup", content, confidence: 0.72, evidence };
 }
 
-async function renderPromotedProjectLookup(prompt, language, project) {
+async function renderPromotedProjectLookup(prompt, language, project, preferences) {
   const displayName = projectDisplayName(project, language);
   const repository = projectRepoSlug(project);
   const url = project.url || `https://github.com/${repository}`;
@@ -956,7 +956,7 @@ async function renderPromotedProjectLookup(prompt, language, project) {
     "provider-summary": providers.join(", "),
     "reciprocal-rank-constant": fusionConstant,
   });
-  const search = await runWebSearchQuery(displayName, language);
+  const search = await runWebSearchQuery(displayName, language, undefined, preferences);
   const evidence = [
     `project:promoted:${repository}`, `source:${url}`,
     "summarization:mode:short", `summarization:language:${language}`,
@@ -1025,7 +1025,7 @@ async function tryProjectLookupForPrompt(prompt, lookupPrompt, language, prefere
       ? promotedProjectByRepo(repo.owner, repo.name)
       : null;
     if (promoted) {
-      return renderPromotedProjectLookup(prompt, language, promoted);
+      return renderPromotedProjectLookup(prompt, language, promoted, preferences);
     }
     return genericProjectLookupAnswer(prompt, language, repo, promotionEnabled);
   }
@@ -1035,7 +1035,7 @@ async function tryProjectLookupForPrompt(prompt, lookupPrompt, language, prefere
   const project = projectByAlias(query.termOriginal || query.term);
   if (!project) return null;
   if (promotionEnabled && isPromotedProject(project)) {
-    return renderPromotedProjectLookup(prompt, language, project);
+    return renderPromotedProjectLookup(prompt, language, project, preferences);
   }
   return genericProjectLookupAnswer(prompt, language, null, promotionEnabled);
 }

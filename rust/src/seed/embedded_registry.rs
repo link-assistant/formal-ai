@@ -16,8 +16,6 @@ pub const AGENTIC_TOOL_CAPABILITIES_LINO: &str =
     include_str!("../../embedded/data/seed/agentic-tool-capabilities.lino");
 pub const AGREEMENT_RULES_LINO: &str =
     include_str!("../../embedded/data/seed/agreement-rules.lino");
-pub const APPROVED_LESSONS_LINO: &str =
-    include_str!("../../embedded/data/seed/approved-lessons.lino");
 pub const BRAINSTORM_SEEDS_LINO: &str =
     include_str!("../../embedded/data/seed/brainstorm-seeds.lino");
 pub const CALLER_CONTEXT_LINO: &str = include_str!("../../embedded/data/seed/caller-context.lino");
@@ -474,7 +472,6 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/agent-info.lino", AGENT_INFO_LINO),
         ("data/seed/agentic-tool-capabilities.lino", AGENTIC_TOOL_CAPABILITIES_LINO),
         ("data/seed/agreement-rules.lino", AGREEMENT_RULES_LINO),
-        ("data/seed/approved-lessons.lino", APPROVED_LESSONS_LINO),
         ("data/seed/brainstorm-seeds.lino", BRAINSTORM_SEEDS_LINO),
         ("data/seed/caller-context.lino", CALLER_CONTEXT_LINO),
         ("data/seed/client-completion-contracts.lino", CLIENT_COMPLETION_CONTRACTS_LINO),

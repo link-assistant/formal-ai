@@ -110,7 +110,7 @@ async function indexedProcedureGuide(guide, results, language, preferences) {
   for (const url of Array.from(candidates.values()).slice(0, guide.bounds.maxPagesPerService)) {
     const outcome = { sourceId: record.id, status: "no_steps", detail: url.href, pages: 1, steps: 0 };
     guide.outcomes.push(outcome);
-    const capture = await sourceWalkFetchCapture(url.href, { indexed: true, bounded: true, online: preferences.offline !== true });
+    const capture = await sourceWalkFetchCapture(url.href, { indexed: true, bounded: true, online: preferences.offline !== true && preferences.allowNetwork !== false });
     if (!capture.ok) {
       outcome.status = "capture_failed";
       outcome.detail = `${url.href} ${capture.error}`;

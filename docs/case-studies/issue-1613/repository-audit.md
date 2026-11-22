@@ -47,3 +47,16 @@ absence of hardcoded solutions. Useful verification is to give the same
 capability several unrelated subjects, supply different evidence for each,
 and prove the installed package can produce the results without an attached
 fixture tree. Source unavailability must yield a visible evidence gap.
+
+The [caller-trace and review-record investigation](README.md#caller-traces-and-operator-approved-changes)
+traces the repair, classification, change, rebuild, and ledger shortcuts to
+shipped success examples. The replacement uses typed inputs, an owned source
+model, verified read-back, and an explicit operator approval store. The
+[cold-runtime investigation](README.md#cold-runtime-and-release-packaging)
+records the package check that exposed an additional network policy bypass.
+
+The [composite program bodies](../../../rust/src/coding/blueprint_programs.rs)
+also supplied fabricated travel and market observations and a fixed
+source-complexity result. The affected fixtures are budget, travel planner,
+portfolio tracker, and source metrics. A reusable scaffold must load its
+scenario and observations explicitly and calculate the result from those inputs.

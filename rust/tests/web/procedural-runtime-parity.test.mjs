@@ -325,3 +325,27 @@ test("offline and wikiHow opt-out prevent both live and archived wikiHow request
   await answerRussian(context, { externalServiceWikihow: false });
   assert.ok(!requested.some((url) => url.includes("wikihow.com") || url.includes("/wayback/available")));
 });
+
+test("the network opt-out covers provider recovery, indexed search and practical help", async () => {
+  const requested = [];
+  const context = await bootWorker(new Map(), requested);
+  context.FormalAIWebSearchComponent = {
+    fetchUrl(url) {
+      requested.push(String(url));
+      throw new Error("network disabled");
+    },
+  };
+  for (const prompt of ["How to install Raku on Alpine Linux?", "How to buy extra baggage on IndiGo?"]) {
+    context.__howToPrompt = prompt;
+    const answer = plain(await evaluate(context, 'tryProceduralHowTo(__howToPrompt, "en", { allowNetwork: false })'));
+    assert.equal(answer.intent, "procedural_how_to");
+    assert.ok(answer.evidence.includes("how_to:insufficient_evidence steps=0 required=2"));
+  }
+  const help = plain(await evaluate(context, 'tryPracticalHelp("I need to poop", "en", { allowNetwork: false })'));
+  assert.ok(help?.evidence.includes("practical_help:source_mode:unavailable"));
+  const fact = plain(await evaluate(context, 'solve("What is the capital of Portugal?", [], { allowNetwork: false })'));
+  assert.doesNotMatch(fact.content, /Lisbon/i);
+  const unknown = plain(await evaluate(context, 'solve("What is the zigotted fliver?", [], { allowNetwork: false })'));
+  assert.notEqual(unknown.intent, "explanation_research");
+  assert.deepEqual(requested, []);
+});

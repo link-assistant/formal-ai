@@ -191,7 +191,7 @@ impl SystemExplanation {
                  benchmark gate) that never advances past awaiting human review.",
                 vec![
                     Citation::source("src/self_healing.rs"),
-                    Citation::data("data/meta/self-healing-case.lino"),
+                    Citation::data("data/meta/agentic-messages.lino"),
                     Citation::test("rust/tests/unit/agentic-coding/issue_558_self_healing.rs"),
                 ],
             ),
@@ -203,7 +203,7 @@ impl SystemExplanation {
                  learning.",
                 vec![
                     Citation::source("src/learning_ledger.rs"),
-                    Citation::data("data/meta/learning-ledger.lino"),
+                    Citation::test("rust/tests/fixtures/issue-558/learning-ledger.lino"),
                     Citation::test("rust/tests/unit/agentic-coding/issue_558_learning_ledger.rs"),
                 ],
             ),
@@ -309,8 +309,7 @@ impl SystemExplanation {
 
 /// The canonical grounded explanation of how Formal AI works.
 ///
-/// Convenience wrapper over [`SystemExplanation::canonical`] mirroring
-/// [`crate::self_healing::canonical_case`] and [`crate::learning_ledger::canonical_ledger`].
+/// Convenience wrapper over [`SystemExplanation::canonical`].
 #[must_use]
 pub fn canonical_explanation() -> SystemExplanation {
     SystemExplanation::canonical()

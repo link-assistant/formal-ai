@@ -71,12 +71,6 @@ run_step "formatting" cargo fmt --manifest-path rust/Cargo.toml
 # issue #922 exists to hold.
 run_step "reviewed method proposals (rust/examples/issue-922-method-learning/open-proposals.lino)" \
   cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_issue_922_open_proposals
-# These three are derived from src/agentic_coding/planner.rs, so any edit to the
-# planner -- including one a formatter makes -- leaves them stale. They were
-# missing from this list, and the only thing that noticed was a test failure
-# several minutes into the suite.
-run_step "self-healing scenario (data/meta/self-healing-case.lino)" \
-  cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_planner_fixtures
 # Last, because earlier steps rewrite data/ and docs/ files the mirror copies:
 # every producer runs before the mirror is refreshed. The committed
 # rust/embedded/ tree is what the published crate ships (issue #1138).

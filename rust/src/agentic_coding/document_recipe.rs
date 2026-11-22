@@ -30,6 +30,7 @@ use super::planner::{
 };
 use super::question_catalog;
 use super::rebuild_plan;
+use super::repair_input;
 use super::repair_strategy;
 use super::self_ast;
 use super::self_heal;
@@ -205,17 +206,20 @@ pub(super) fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) 
 
 /// The issue-#558 self-healing recipe: write the generated repair-case document →
 /// verify → final. Like the diagram and self-AST recipes it needs no web step — the
-/// document is a pure function of the canonical self-healing case
+/// document is derived from the supplied failure trace and verified source
 /// ([`self_heal::render_document`]), so the loop *repairs itself*. Steps whose tool
 /// the CLI did not advertise are skipped.
-pub(super) fn plan_self_heal_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    if !crate::self_healing::SourceRoundTrip::for_pinned_target().faithful {
-        return AgenticPlan::Final(
-            "Unknown:SourceModelUnavailable:SourceRoundTripUnverified".to_owned(),
-        );
-    }
-    let document = self_heal::render_document();
-    let final_answer = self_heal::final_answer(&document);
+pub(super) fn plan_self_heal_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
+    let case = match self_heal::case_from_task(task) {
+        Ok(case) => case,
+        Err(reason) => return repair_input_needed(reason),
+    };
+    let document = self_heal::render_document(&case);
+    let final_answer = self_heal::final_answer(&case, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -251,12 +255,18 @@ pub(super) fn plan_source_links_step(messages: &[ChatMessage], tool_names: &[&st
 
 /// The issue-#558 learning-ledger recipe: write the generated approved-lesson ledger
 /// document → verify → final. Like the other self-inspection recipes it needs no web
-/// step — the document is a pure function of the canonical, human-approved ledger
+/// step — the document is a projection of the configured, human-approved ledger
 /// ([`ledger::render_document`]). Steps whose tool the CLI did not advertise are
 /// skipped.
 pub(super) fn plan_ledger_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let document = ledger::render_document();
-    let final_answer = ledger::final_answer(&document);
+    let ledger = match crate::learning_ledger::configured_ledger() {
+        Ok(ledger) => ledger,
+        Err(reason) => {
+            return AgenticPlan::Final(format!("Unknown:ReviewDocumentUnavailable:{reason}"));
+        }
+    };
+    let document = ledger::render_document(ledger);
+    let final_answer = ledger::final_answer(ledger, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -296,11 +306,15 @@ pub(super) fn plan_explain_step(messages: &[ChatMessage], tool_names: &[&str]) -
 /// *change Formal AI itself* into a reviewable PR. Steps whose tool the CLI did not
 /// advertise are skipped.
 pub(super) fn plan_change_request_step(
+    task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> AgenticPlan {
-    let document = change_request::render_document();
-    let final_answer = change_request::final_answer(&document);
+    let Some(request) = change_request::request_from_task(task) else {
+        return repair_input_needed("change_request_input_needed");
+    };
+    let document = change_request::render_document(&request);
+    let final_answer = change_request::final_answer(&request, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -315,16 +329,20 @@ pub(super) fn plan_change_request_step(
 
 /// The issue-#558 general repair-classification recipe: write the generated
 /// repair-strategies document → verify → final. Like the other self-referential recipes
-/// it needs no web step — the document is a deterministic function of the three
-/// self-contained canonical failure traces ([`repair_strategy::render_document`]), so
+/// it needs no web step — the document is a deterministic function of the supplied
+/// failure traces ([`repair_strategy::render_document`]), so
 /// the loop decides *which part* of itself to repair for every failure class. Steps
 /// whose tool the CLI did not advertise are skipped.
 pub(super) fn plan_repair_strategy_step(
+    task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> AgenticPlan {
-    let document = repair_strategy::render_document();
-    let final_answer = repair_strategy::final_answer(&document);
+    let Some(strategies) = repair_strategy::strategies_from_task(task) else {
+        return repair_input_needed("repair_strategy_input_needed");
+    };
+    let document = repair_strategy::render_document(&strategies);
+    let final_answer = repair_strategy::final_answer(&strategies, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -344,9 +362,16 @@ pub(super) fn plan_repair_strategy_step(
 /// turns an accepted change into the ordered, reversible plan to recompile Formal AI and
 /// reattach the improved worker to the UI. Steps whose tool the CLI did not advertise are
 /// skipped.
-pub(super) fn plan_rebuild_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let document = rebuild_plan::render_document();
-    let final_answer = rebuild_plan::final_answer(&document);
+pub(super) fn plan_rebuild_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
+    let Some(plan) = rebuild_plan::plan_from_task(task) else {
+        return repair_input_needed("rebuild_input_needed");
+    };
+    let document = rebuild_plan::render_document(&plan);
+    let final_answer = rebuild_plan::final_answer(&plan, &document);
     plan_document_recipe(
         messages,
         tool_names,
@@ -482,4 +507,32 @@ fn plan_trends_document(
             document,
         },
     )
+}
+
+fn repair_input_needed(key: &str) -> AgenticPlan {
+    AgenticPlan::Final(super::wording::agentic_message(key, &[]))
+}
+
+/// Route a structured repair request from its intent before scanning its data.
+pub(super) fn plan_structured_repair(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let intent = repair_input::intent(task);
+    if intent.len() == task.len() {
+        return None;
+    }
+    let plan = if self_heal::is_self_heal_task(intent) {
+        plan_self_heal_step(task, messages, tool_names)
+    } else if change_request::is_change_request_task(intent) {
+        plan_change_request_step(task, messages, tool_names)
+    } else if repair_strategy::is_repair_strategy_task(intent) {
+        plan_repair_strategy_step(task, messages, tool_names)
+    } else if rebuild_plan::is_rebuild_task(intent) {
+        plan_rebuild_step(task, messages, tool_names)
+    } else {
+        return None;
+    };
+    Some(plan)
 }

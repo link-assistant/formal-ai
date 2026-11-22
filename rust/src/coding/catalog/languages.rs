@@ -27,7 +27,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("rustc main.rs -o main")),
             run_command: Cow::Borrowed("./main"),
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.rs"),
@@ -42,7 +41,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
                 "python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py",
             )),
             run_command: Cow::Borrowed("python3 main.py"),
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.py"),
@@ -55,7 +53,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("node --check main.js")),
             run_command: Cow::Borrowed("node main.js"),
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.js"),
@@ -68,7 +65,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("tsc hello.ts")),
             run_command: Cow::Borrowed("node hello.js"),
-            notes: "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("hello.ts"),
@@ -81,7 +77,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: None,
             run_command: Cow::Borrowed("go run main.go"),
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.go"),
@@ -94,7 +89,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("gcc main.c -o main")),
             run_command: Cow::Borrowed("./main"),
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.c"),
@@ -107,7 +101,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("g++ main.cpp -o main")),
             run_command: Cow::Borrowed("./main"),
-            notes: "The C++ seed is returned with this warning until a g++-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.cpp"),
@@ -120,7 +113,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("javac Main.java")),
             run_command: Cow::Borrowed("java Main"),
-            notes: "The Java seed is returned with this warning until a javac-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("Main.java"),
@@ -133,7 +125,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("dotnet build")),
             run_command: Cow::Borrowed("dotnet run"),
-            notes: "The C# seed is returned with this warning until a dotnet-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("Program.cs"),
@@ -146,7 +137,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("ruby -c main.rb")),
             run_command: Cow::Borrowed("ruby main.rb"),
-            notes: "The Ruby seed is returned with this warning until a ruby-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.rb"),
@@ -159,7 +149,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("scalac Main.scala")),
             run_command: Cow::Borrowed("scala run Main.scala"),
-            notes: "The Scala seed is returned with this warning until a scalac-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("Main.scala"),
@@ -174,7 +163,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
                 "kotlinc Main.kt -include-runtime -d Main.jar",
             )),
             run_command: Cow::Borrowed("java -jar Main.jar"),
-            notes: "The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("Main.kt"),
@@ -187,7 +175,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("php -l main.php")),
             run_command: Cow::Borrowed("php main.php"),
-            notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.php"),
@@ -200,7 +187,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("bash -n main.sh")),
             run_command: Cow::Borrowed("bash main.sh"),
-            notes: "",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.sh"),
@@ -213,7 +199,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: None,
             run_command: Cow::Borrowed("runghc Main.hs"),
-            notes: "",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("Main.hs"),
@@ -226,7 +211,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("luac -p main.lua")),
             run_command: Cow::Borrowed("lua main.lua"),
-            notes: "",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.lua"),
@@ -244,7 +228,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             check_command: Some(Cow::Borrowed("swiftc -parse hello.swift")),
             run_command: Cow::Borrowed("swift hello.swift"),
             // Stated in the response seed: `program_execution_notes_swift`.
-            notes: "",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("hello.swift"),
@@ -262,7 +245,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
             check_command: Some(Cow::Borrowed("Rscript -e 'invisible(parse(\"hello.R\"))'")),
             run_command: Cow::Borrowed("Rscript hello.R"),
             // Stated in the response seed: `program_execution_notes_r`.
-            notes: "",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("hello.R"),
@@ -284,7 +266,6 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("php -l app/Console/Commands/HelloWorld.php")),
             run_command: Cow::Borrowed("php artisan hello:world"),
-            notes: "Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly.",
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("app/Console/Commands/HelloWorld.php"),

@@ -7,14 +7,13 @@
 // repository (`rust/<path>`) through the host, the twin of build.rs's
 // `include_str!` of every owned file.
 
-import { cached, readText } from '../host.mjs';
+import { host, readText } from '../host.mjs';
 import { agenticMessage } from '../messages.mjs';
 import { stableId } from './engine_stable_identifier.mjs';
 import { splitWhitespace, trim, trimEnd, trimEndMatches, trimMatches, utf8Len } from './rust_str.mjs';
 import { byteSlice } from './formalization_segment.mjs';
 
-/** The canonical change's grounded target (Rust `canonical_change_request`). */
-export const CANONICAL_TARGET_MODULE = 'src/agentic_coding/planner.rs';
+const SOURCE_MODULE_TAG = 'source_module';
 
 /**
  * The owned manifest's `content_id` of `path` (`SourceModuleDigest::content_id`),
@@ -23,20 +22,20 @@ export const CANONICAL_TARGET_MODULE = 'src/agentic_coding/planner.rs';
  * @param {string} path
  */
 export function ownedContentId(path) {
-  return cached(`owned-content-id:${path}`, () => {
-    try {
-      return stableId('source_module', readText(`rust/${path}`));
-    } catch {
-      return null;
-    }
-  });
+  if (!/^src\/(?:[A-Za-z0-9_]+\/)*[A-Za-z0-9_]+\.rs$/u.test(path) || !host().isOwnedRustSource?.(path)) return null;
+  try {
+    return stableId(SOURCE_MODULE_TAG, readText(`rust/${path}`));
+  } catch {
+    return null;
+  }
 }
 
 /** Mirrors `ChangeRequest::for_module`. */
 export function changeRequestForModule(request, targetModule) {
   const trimmed = trim(request);
   if (!trimmed) throw new Error('change_request_empty');
-  const contentId = ownedContentId(targetModule) ?? '';
+  const contentId = ownedContentId(targetModule);
+  if (contentId === null) throw new Error('change_request_target_not_owned');
   const derivedRequirement = deriveRequirement(trimmed);
   const proposedTest = deriveTestName(trimmed);
   return {
@@ -80,11 +79,6 @@ export function acceptedChange(change, reviewer, suite, passed) {
     benchmark_passed: passed,
     reviewer,
   };
-}
-
-/** Mirrors `fn canonical_change_request`. */
-export function canonicalChangeRequest() {
-  return changeRequestForModule(agenticMessage('change_request_canonical_request'), CANONICAL_TARGET_MODULE);
 }
 
 /** Mirrors `fn derive_requirement`. */

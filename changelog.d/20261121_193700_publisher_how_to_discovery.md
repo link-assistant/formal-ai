@@ -12,3 +12,5 @@ bump: patch
 - Build contradiction worksheets from the demands in the request and keep reference contradictions in explicit tests.
 - Bind print operands and standard input at request or execution time. Report a program run only when a local execution or publication check was observed.
 - Bind caller-supplied ranges, numbers, and text in the program catalog, and derive expected output from those inputs.
+- Build self-repair reports from submitted traces and owned source. Read approvals and learned lessons from operator-provided records.
+- Honor the browser's network opt-out during every procedural source lookup and recovery.

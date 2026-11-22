@@ -22,7 +22,9 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   verify dynamic meta authorization and transaction receipts through the native
   gateway. Its JavaScript host uses the frozen Bun lockfile with lifecycle
   scripts disabled. These
-  regressions prove native behavior; they do not produce release evidence. Full
+  regressions prove native behavior. Issue #1613 also runs the container smoke
+  script against the same native executable and isolated application state.
+  The focused job does not produce release evidence. Full
   suites and product builds remain on main. The job uploads and attests nothing,
   saves no cache and publishes no outputs.
   Docs-only, JS-only, test-only and script-only PRs skip it. Its selector is

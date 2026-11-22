@@ -77,6 +77,7 @@ import { Progress } from './progress.mjs';
 import * as questionCatalog from './question_catalog.mjs';
 import * as rebuildPlan from './rebuild_plan.mjs';
 import * as repairStrategy from './repair_strategy.mjs';
+import { repairIntent } from './repair_input.mjs';
 import * as reportIssue from './report_issue.mjs';
 import * as restartFeedback from './restart_feedback.mjs';
 import * as selfAst from './self_ast.mjs';
@@ -384,6 +385,15 @@ async function planChatStepRoutes(messages, toolNames, received) {
   const effective = continuedAgentTask(messages, received) ?? received;
   const task = objectiveText(effective);
   traceRoute('agentic_task', task);
+  const intent = repairIntent(task);
+  if (intent.length < task.length) {
+    for (const [predicate, step] of [[selfHeal.isSelfHealTask, documentRecipe.planSelfHealStep],
+      [changeRequest.isChangeRequestTask, documentRecipe.planChangeRequestStep],
+      [repairStrategy.isRepairStrategyTask, documentRecipe.planRepairStrategyStep],
+      [rebuildPlan.isRebuildTask, documentRecipe.planRebuildStep]]) {
+      if (predicate(intent)) return await step(messages, toolNames, task);
+    }
+  }
   const preflight = planRequestPreflight(task, messages, toolNames);
   if (preflight.claimed) return preflight.plan;
   if (
