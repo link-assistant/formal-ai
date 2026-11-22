@@ -4944,3 +4944,65 @@ remote:
 [2026-11-22T08:39:31.671Z] [INFO]    Solve resume mode:   "/home/box/.nvm/versions/node/v26.13.1/bin/node" "/home/box/.bun/bin/solve" "https://github.com/link-assistant/formal-ai/issues/1617" --resume "ses_dfd97b6d5ffe88FdN3vK9zvsGw" --tool "agent" --model "formal-ai" --working-directory "/tmp/gh-issue-solver-1795336648746"
 [2026-11-22T08:39:31.671Z] [INFO] 
 [2026-11-22T08:39:31.673Z] [INFO] 🔍 Development log finalize: issue #1617, PR #1623, branch issue-1617-32ffdd855e1d, session ses_dfd97b6d5ffe88FdN3vK9zvsGw, log slice from byte 0
+[2026-11-22T08:39:33.437Z] [INFO] 🧾 Development log artifacts written to dev/log/issues/1617/pulls/1623/sessions/ses_dfd97b6d5ffe88FdN3vK9zvsGw (log bytes 0-711331)
+[2026-11-22T08:39:33.438Z] [INFO] 🧾 Development log artifacts written to ./dev/log/issues/1617/pulls/1623
+[2026-11-22T08:39:35.478Z] [STDOUT] [issue-1617-32ffdd855e1d 1f9074221] Add development log for issue #1617 PR #1623
+ 2 files changed, 4966 insertions(+)
+ create mode 100644 dev/log/issues/1617/pulls/1623/sessions/ses_dfd97b6d5ffe88FdN3vK9zvsGw/metadata.json
+ create mode 100644 dev/log/issues/1617/pulls/1623/sessions/ses_dfd97b6d5ffe88FdN3vK9zvsGw/solve.log
+[2026-11-22T08:39:35.480Z] [INFO] ✅ Development log committed
+[2026-11-22T08:39:37.918Z] [STDERR] To https://github.com/link-assistant/formal-ai.git
+   df652e407..1f9074221  issue-1617-32ffdd855e1d -> issue-1617-32ffdd855e1d
+[2026-11-22T08:39:37.922Z] [INFO] ✅ Development log pushed
+[2026-11-22T08:39:37.923Z] [INFO] 🔍 Checking if AI created any comments during session (--auto-attach-solution-summary)...
+[2026-11-22T08:39:38.448Z] [INFO] 🔎 /user is not readable with this token; using its GraphQL identity 'github-actions[bot]'
+[2026-11-22T08:39:38.449Z] [INFO] 🔎 Checking comments by 'github-actions[bot]' after session start 2026-11-22T08:38:31.247Z (PR #1623, issue #1617)
+[2026-11-22T08:39:38.832Z] [INFO]    📨 PR conversation comments after session start by 'github-actions[bot]' (excluding tool-generated): 0
+[2026-11-22T08:39:39.114Z] [INFO]    📝 PR review (inline) comments after session start by 'github-actions[bot]': 0
+[2026-11-22T08:39:39.450Z] [INFO]    📝 PR reviews after session start by 'github-actions[bot]': 0
+[2026-11-22T08:39:39.756Z] [INFO]    📨 Issue comments after session start by 'github-actions[bot]' (excluding tool-generated): 0
+[2026-11-22T08:39:39.757Z] [INFO] 📝 No AI comments detected, attaching working session summary...
+[2026-11-22T08:39:41.352Z] [INFO] ✅ Working session summary attached to pr #1623 (id=7076655732)
+[2026-11-22T08:39:41.362Z] [INFO] 
+[2026-11-22T08:39:41.362Z] [INFO] 🔍 Searching for created pull requests or comments...
+[2026-11-22T08:39:41.620Z] [INFO]   ℹ️  Integration token cannot read the authenticated user; matching comments written by the app
+[2026-11-22T08:39:41.621Z] [INFO] 
+[2026-11-22T08:39:41.621Z] [INFO] 🔍 Checking for pull requests from branch issue-1617-32ffdd855e1d...
+[2026-11-22T08:39:42.071Z] [INFO]   ✅ Found pull request #1623: "[WIP] [Bug][P1] Structured output never fills camelCase properties: evidence is matched by the name split on non-alphanumerics only"
+[2026-11-22T08:39:43.290Z] [INFO]   📝 Removing [WIP] prefix from PR title...
+[2026-11-22T08:39:45.301Z] [STDOUT] https://github.com/link-assistant/formal-ai/pull/1623
+[2026-11-22T08:39:45.303Z] [INFO]   ✅ Updated PR title to: "[Bug][P1] Structured output never fills camelCase properties: evidence is matched by the name split on non-alphanumerics only"
+[2026-11-22T08:39:45.304Z] [INFO]   📝 Updating PR description to remove placeholder text...
+[2026-11-22T08:39:46.085Z] [WARNING]   ⚠️  PR #1623 has an empty diff - the description will say so instead of claiming changes
+[2026-11-22T08:39:46.469Z] [STDOUT] [Bug][P1] Structured output never fills camelCase properties: evidence is matched by the name split on non-alphanumerics only
+[2026-11-22T08:39:46.471Z] [STDERR] [use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[2026-11-22T08:39:48.435Z] [STDOUT] https://github.com/link-assistant/formal-ai/pull/1623
+[2026-11-22T08:39:48.437Z] [INFO]   ✅ Updated PR description with solution summary
+[2026-11-22T08:39:50.258Z] [INFO] 🔎 /user is not readable with this token; using its GraphQL identity 'github-actions[bot]'
+[2026-11-22T08:39:50.273Z] [INFO] 🔎 Checking comments by 'github-actions[bot]' after session start 2026-11-22T08:38:36.443Z (PR #1623, issue #1617)
+[2026-11-22T08:39:50.628Z] [INFO]    ⏭️  Skipped pr tool-tracked comment IDs: 1
+[2026-11-22T08:39:50.628Z] [INFO]    📨 PR conversation comments after session start by 'github-actions[bot]' (excluding tool-generated): 0
+[2026-11-22T08:39:50.936Z] [INFO]    📝 PR review (inline) comments after session start by 'github-actions[bot]': 0
+[2026-11-22T08:39:51.299Z] [INFO]    📝 PR reviews after session start by 'github-actions[bot]': 0
+[2026-11-22T08:39:51.545Z] [INFO]    📨 Issue comments after session start by 'github-actions[bot]' (excluding tool-generated): 0
+[2026-11-22T08:39:51.546Z] [WARNING] 
+[2026-11-22T08:39:51.546Z] [WARNING] ⚠️  Finished without changes: the session produced no change: no new commit, no file change and no comment
+[2026-11-22T08:39:52.494Z] [INFO] 
+[2026-11-22T08:39:52.494Z] [INFO] 📎 Uploading solution draft log to Pull Request...
+[2026-11-22T08:39:52.499Z] [STDOUT] [HIVE-MIND SOLVE] {"phase":"uploading-log","since":"2026-11-22T08:39:52.499Z","at":"2026-11-22T08:39:52.499Z"}
+[2026-11-22T08:39:52.500Z] [STDERR] [use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[2026-11-22T08:39:52.517Z] [INFO] 📈 Resource usage (log upload start, 700KB log):
+[2026-11-22T08:39:52.517Z] [INFO]    CPU load: 2.29 2.10 1.10 (4 CPUs)
+[2026-11-22T08:39:52.517Z] [INFO]    Memory: 14.0 GB available / 15.3 GB total (1.3 GB used)
+[2026-11-22T08:39:52.517Z] [INFO]    Process RSS: 169 MB, V8 heap: 51 MB used of 4.1 GB limit (1.2%)
+[2026-11-22T08:39:52.517Z] [INFO]    Disk (/): 74.4 GB available / 144.3 GB total (48.4% used)
+[2026-11-22T08:39:52.517Z] [INFO]    Agent snapshot stores (/home/box/.local/share/link-assistant-agent): 1 store(s), 13 MB
+[2026-11-22T08:39:52.517Z] [INFO]    Container memory (cgroup v2): 4.0 GB used of no limit of its own, peak 4.3 GB; processes killed by the OOM killer so far: 0
+[2026-11-22T08:39:52.517Z] [INFO] 📈 [RESOURCES] phase=log_upload_start ts=2026-11-22T08%3A39%3A52.506Z load1=2.29 load5=2.1 load15=1.1 cpuCount=4 memTotalBytes=16464302080 memAvailableBytes=15022063616 memUsedBytes=1442238464 processRssBytes=177291264 processHeapUsedBytes=53676784 processHeapTotalBytes=61353984 processExternalBytes=5831423 processHeapLimitBytes=4395630592 processHeapUsedPercent=1.2211395583989966 diskPath=%2F diskTotalBytes=154894188544 diskAvailableBytes=79834980352 diskUsedBytes=75042430976 diskUsedPercent=48.44754453436649 mem=14.0%20GB%20available%20%2F%2015.3%20GB%20total heap=51%20MB%20used%20of%204.1%20GB%20limit%20(1.2%25) disk=74.4%20GB%20available%20%2F%20144.3%20GB%20total agentStatePath=%2Fhome%2Fbox%2F.local%2Fshare%2Flink-assistant-agent agentStoreCount=1 agentStoreBytes=13650635 cgroupVersion=2 cgroupMemLimitBytes=null cgroupMemCurrentBytes=4258500608 cgroupMemPeakBytes=4661055488 cgroupOomEvents=0 cgroupOomKills=0
+[2026-11-22T08:39:52.519Z] [STDERR] [use-m] use('https') loading (alias https-v-latest)
+[2026-11-22T08:39:52.520Z] [STDERR] [use-m] use('https') loaded in 1ms
+[2026-11-22T08:39:52.677Z] [INFO]   🤖 Model info fetched for comment
+[2026-11-22T08:39:52.685Z] [INFO]   ⏭️  Log is 700KB — skipping inline comment construction, the log goes straight to gh-upload-log
+[2026-11-22T08:39:52.687Z] [INFO]   📁 Log file too large for inline comment (700KB), using gh-upload-log
+[2026-11-22T08:39:52.688Z] [INFO]   📎 Uploading log using gh-upload-log...
+[2026-11-22T08:39:53.126Z] [INFO]   🔍 Repository visibility: public, log upload will be public
