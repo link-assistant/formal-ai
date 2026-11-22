@@ -164,6 +164,64 @@ lockfile. The repository audit then passed on the updated lockfiles.
 [Hosted audit](https://github.com/link-assistant/formal-ai/actions/runs/45010582620/job/137171807186),
 [RustSec advisory](https://github.com/rustsec/advisory-db/blob/main/crates/url/RUSTSEC-2026-0592.md).
 
+## v0.356.5 publication and Pages build on November 22, 2026
+
+The guarded release selected `43b31443025d6b632d3352f86512e01abb8f658a`.
+The package passed 28 protocol checks and completed 16 stock greetings and
+eight stock reports before the crate and container publishers ran. The
+OpenCode terminal replay verified the issue body and separate harness, server
+and combined export links. The recording GitHub CLI returned fixture URLs
+for the report submissions. [Selected release](https://github.com/link-assistant/formal-ai/releases/tag/v0.356.5),
+[stock verifier job](https://github.com/link-assistant/formal-ai/actions/runs/45020746043/job/137214149077),
+[verifier log](raw-data/release-verify-45020746043.log.gz),
+[stock client capture artifact](https://github.com/link-assistant/formal-ai/actions/runs/45020746043/artifacts/14754788232),
+[archived capture](raw-data/release-client-reports-auto-45020746043-1.zip),
+[archive checksum and metadata](raw-data/release-client-artifact-14754788232.json).
+
+| Time (UTC) | Surface and observation |
+| --- | --- |
+| 13:14–13:32 | The crate published, became visible in the crates.io index, and passed install and runtime smoke. [Registry and job observations](raw-data/release-0.356.5-public-observations.json). |
+| 13:36 | The maintainer reported another apparent delivery failure while image and GitHub publication were still in progress. [Maintainer comment](https://github.com/link-assistant/formal-ai/issues/1609#issuecomment-7079928805). |
+| 13:55 | Full GHCR, slim GHCR and Docker Hub mirror publication completed after the runtime checks. Full and mirror receipts record the successful inner Docker command and server smoke. The slim smoke checked health, chat, agent routing, greetings and issue forms. [Image job](https://github.com/link-assistant/formal-ai/actions/runs/45020746043/job/137225130068), [image log](raw-data/release-publish-images-45020746043.log.gz). |
+| 13:59 onward | GitHub published the release. The downstream jobs attached native and desktop packages, the installable browser engine tarball, VSIX and source archives. The public downloads workflow verified the bytes, the packaged browser worker, and macOS packages on arm64 and x64. The browser receipt records npm registry publication as optional and unconfigured. [Release](https://github.com/link-assistant/formal-ai/releases/tag/v0.356.5), [public download checks](https://github.com/link-assistant/formal-ai/actions/runs/45037053420), [browser receipt](https://github.com/link-assistant/formal-ai/releases/download/v0.356.5/browser-publication.json). |
+| 14:04 | The Pages artifact job failed during public Rust API documentation generation. The browser greeting and report smoke in that job could not run. The public site continued to return v0.355.34 from the November 5 deployment. [Pages job](https://github.com/link-assistant/formal-ai/actions/runs/45020746043/job/137232338452), [deployment job](https://github.com/link-assistant/formal-ai/actions/runs/42062109916/job/127429052754). |
+
+The public observation records the crate checksum, immutable image receipts,
+and anonymous manifest digests for all three image tags. The full and slim
+GHCR version tags are multi-platform indexes. Their digests identify the
+public indexes, while the smoke receipts identify the candidates used by
+the staged image job. [Public observations](raw-data/release-0.356.5-public-observations.json),
+[platform index assembly](https://github.com/link-assistant/formal-ai/actions/runs/45020746043/job/137239081940).
+
+### Root cause and regression replay
+
+The Pages build runs rustdoc with `-D warnings`. Two links in the public
+documentation for `bound_output_literals` pointed to private functions.
+The `parse_language_grammar` documentation rendered the `<id>` filename
+placeholder as an unclosed HTML tag. The job stopped with exit code 101.
+The archived extract preserves the original log line numbers 58676–58709.
+[Failed job log](raw-data/pages-rustdoc-45020746043.log),
+[rustdoc private link lint](https://doc.rust-lang.org/rustdoc/lints.html#private_intra_doc_links),
+[rustdoc invalid HTML tag lint](https://doc.rust-lang.org/rustdoc/lints.html#invalid_html_tags).
+
+Inline code preserves the helper names and the filename example in the
+public documentation. The fast pull-request checks reject both original
+patterns. Each failed on the original comments and passed on the corrected
+comments. An isolated `rustdoc -D warnings` replay using those comments
+reported all three errors before the change and generated HTML with the
+literal filename after it. [Fast replay](../../../rust/tests/web/default-branch-build-policy.test.mjs),
+[main regression ledger](../../../data/meta/main-only-regressions.lino).
+
+The Pages artifact job still requires the strict API docs build and the
+artifact greeting and issue-report smoke before deployment. A Playwright
+replay on the currently deployed v0.355.34 answered `Hello` and `Привет`
+through the WASM worker and included both turns in the GitHub issue form
+link. Live acceptance for this release requires a trusted main release that
+includes the markup fix, a successful Pages deployment, and the same checks
+on that deployed source. [Public observations](raw-data/release-0.356.5-public-observations.json),
+[Pages artifact workflow](../../../.github/workflows/pages-artifact.yml),
+[deployment and live smoke workflow](../../../.github/workflows/release.yml).
+
 ## Self-use attribution
 
 A read-only attempt asked the Agent CLI against the local JavaScript Formal AI
@@ -177,3 +235,10 @@ For the v0.356.4 follow-up, the Agent CLI made one read-only attempt to
 identify the Docker startup failure and did not return a confirmed cause.
 Zero of one reasoning tasks were accepted. Codex authored the follow-up.
 [Captured events](raw-data/release-dind-dogfood.jsonl).
+
+For the Pages follow-up, the read-only Agent CLI research attempt ended
+with a provider connection error. The JavaScript dogfood driver read the
+grammar source and returned without changing either file. Zero of one
+reasoning tasks and zero of one editing tasks were accepted. Codex authored
+the documentation corrections, regression checks and release analysis.
+[Requests and captured events](raw-data/pages-rustdoc-dogfood.log.gz).
