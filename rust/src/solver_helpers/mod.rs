@@ -16,8 +16,14 @@ pub use code::*;
 use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::intent_formalization::{IntentKind, formalize_intent};
-use crate::language::detect as detect_language;
+use crate::language::{Language, detect as detect_language, set_forced_language};
 use crate::solver::{BlueprintComposition, ExecutionSurface, SolverConfig};
+
+/// Detect a caller-supplied operand independently of the response language.
+pub(crate) fn detect_input_language(text: &str) -> Language {
+    let _guard = set_forced_language(None);
+    detect_language(text)
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecomposedSubImpulse {

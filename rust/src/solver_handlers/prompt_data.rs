@@ -9,11 +9,10 @@ use regex::Regex;
 
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::language::{
-    detect_input, forced_response_language_slug, language_name, surface_matches_language,
-};
+use crate::language::{detect, language_name, surface_matches_language};
 use crate::seed::parser::{LinoNode, parse_lino};
 use crate::seed::{lexicon, surface_present};
+use crate::solver_helpers::detect_input_language;
 
 const SEED: &str = include_str!("../../embedded/data/seed/prompt-data.lino");
 
@@ -483,7 +482,7 @@ fn extraction(head: &str, payload: &str, locale: &str) -> Option<Reply> {
 }
 
 fn identify_language(payload: &str, locale: &str) -> Reply {
-    let slug = detect_input(payload).slug();
+    let slug = detect_input_language(payload).slug();
     let normalized = normalize_prompt(payload);
     let words: HashSet<_> = normalized.split_whitespace().collect();
     let mut dictionary = if surface_matches_language(payload, slug) {
@@ -527,7 +526,7 @@ pub(crate) fn try_prompt_data(prompt: &str, log: &mut EventLog) -> Option<Symbol
         return None;
     }
     let key = normalize_prompt(head);
-    let locale = forced_response_language_slug().unwrap_or_else(|| detect_input(head).slug());
+    let locale = detect(head).slug();
     let result = if starts(&key, "classification") {
         classification(head, payload, locale)
     } else if starts(&key, "language") {

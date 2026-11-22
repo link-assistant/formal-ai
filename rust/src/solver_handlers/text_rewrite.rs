@@ -402,7 +402,7 @@ pub fn handle_grammar_correction(
         return None;
     }
     let payload = free_text_payload(prompt)?;
-    let source_language = crate::language::detect_input(&payload).slug();
+    let source_language = crate::solver_helpers::detect_input_language(&payload).slug();
     let language = crate::language::forced_response_language_slug().unwrap_or(source_language);
     let records: Vec<_> = root_records(AGREEMENT_PATH)
         .into_iter()

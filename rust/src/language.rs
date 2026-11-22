@@ -616,11 +616,6 @@ pub fn detect(prompt: &str) -> Language {
     if let Some(forced) = forced_language::get() {
         return forced;
     }
-    detect_input(prompt)
-}
-
-/// Detect input text independently of the requested response language.
-pub(crate) fn detect_input(prompt: &str) -> Language {
     with_rules(|rules| detect_with(prompt, rules))
 }
 
