@@ -1234,3 +1234,10 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 
 - [x] Fully read thirty-two additional native diffs (4655 lines) and verify fresh Git hashes after the current-main merge. Sixteen move-only diffs preserve shard emission, record fields, method execution, reasoning steps, numeric helpers, condition surfaces, replacement and genre composition. Imports, restricted visibility and parent exports remain consistent.
 - [ ] Separately qualify the live census, CLI verbosity, quoted cue masking, selected evidence, typed answer host, protocol extraction and constraints, repository allowlist, and web-search query visibility/removal changes. These diffs were fully read but receive no move-only qualification. Finish the wider aggregate review and native runtime evidence.
+
+
+## Production workflow epoch and current external identity evidence
+
+- [x] Exercise the actual production planner with 119 finite offline captures across 17 declared URLs. Preserve identical resolved pins and exact source ownership: live-origin replay requests the expected verifier, cached-origin replay returns the structured epoch-invalidated finding. Observe two version resolutions per call. Preserve and correct the initial path and mutable-input fixture errors; no native build or external network probe ran.
+- [x] Refresh Hive Mind issue 3909: it remains open with all six acceptance items unchecked. This does not prove integration acceptance or permit treating the external dependency as complete.
+- [ ] Implement a trusted attempt-scoped version selection in both runtimes and supported protocol continuations, with source/tool/workspace binding, independent-attempt isolation and explicit expiration behavior. Demonstrate the actual hosted cause separately. Preserve strict ownership checks and provenance; no production fix or autonomous authorship is claimed by this probe.
