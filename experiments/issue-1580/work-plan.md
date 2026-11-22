@@ -1159,3 +1159,14 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [ ] Run the complete local JavaScript inventory, inspect its failures, refresh main and all review channels, and publish only the complete failure-repair batch after branch queue checks.
 - [ ] Verify the changed fixture, all local fixes and actual shard wall times on the new hosted head. Resolve the two genuine Cargo dependency warnings without suppressing diagnostics or claiming GPU support.
 - [ ] Finish every original acceptance criterion, template practice, complete aggregate review, strict production/budget evidence and genuine authorship requirement before readiness.
+
+
+## Final local repair validation, 2026-11-22
+
+- [x] Complete both local inventories. The first passes 89 applicable gates with 53 hosted-only exclusions. The second passes 88, excludes 53 and catches two abbreviated evidence filenames. Rename those files using full words, then pass the abbreviation, size and required-documentation gates without changing any threshold. Preserve the original failure and exact repaired source tree `50bd7db6d7a18257da4083fe9f8f53c3866464be`.
+- [x] Reproduce 14 of 16 physical fragment/path failures and pass all 28 repaired changelog cases plus 162 policy cases. Both promisor queries work without remote bodies. Native formatting passes; hosted execution remains pending.
+- [x] Remove only unused GPU declarations, preserve the unavailable compatibility flag and pass four manifest/resolver tests. Cargo-generated lock removes 61 packages with no retained version changes; offline metadata exit 101 and its uncached crate remain recorded. Hosted locked validation is pending.
+- [x] Read the complete 491-line new repair diff and two additional unchanged aggregate function-move diffs. Retain GitHub's HTTP 406 and keep the wider aggregate review unfinished.
+- [x] Refresh the complete issue and all three PR feedback channels; no new acceptance feedback. Current main `82e506f5447cd6c0b96095993107d6d028a890f5` is included. Correct one nonexistent supplemental test invocation and pass all 63 maintained native admission controls, preserving both outputs.
+- [ ] Publish the complete batch only after empty branch queues and a clean source preflight. Collect all next-head hosted logs, failures and annotations; verify actual shard times, dependency locking, native cases, client cleanup and recipe isolation.
+- [ ] Complete every wider original acceptance criterion and applicable template practice, original full-suite budget and production evidence, serving/publication authority, GPU/version-epoch behavior and genuine authorship. Keep PR #1581 draft and unmerged while these remain unfinished.

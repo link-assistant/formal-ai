@@ -1,0 +1,231 @@
+{
+  "at": "2026-11-22T07:34:40.284915+00:00",
+  "source": {
+    "head": "2d281696bcb9dce8ae7c0ebba9cb3440f8342586",
+    "tree": "50bd7db6d7a18257da4083fe9f8f53c3866464be"
+  },
+  "correctedSourceHead": "63bd08473992f0df79cd49aaf466fa6f8653e1ab",
+  "gatePasses": 89,
+  "hostedOnlyExclusions": 53,
+  "failures": [],
+  "initialInventory": {
+    "pass": 88,
+    "skip": 53,
+    "fail": [
+      "check-abbreviations"
+    ]
+  },
+  "correction": "Rename two upstream-pr evidence files to upstream-pull-request; keep all thresholds and policies unchanged. Only evidence paths changed after the full inventory.",
+  "correctiveGates": [
+    {
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "log": "check-abbreviations-corrected.log"
+    },
+    {
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "log": "check-file-size-corrected.log"
+    },
+    {
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-required-documentation"
+      ],
+      "exitCode": 0,
+      "log": "check-required-documentation-corrected.log"
+    }
+  ],
+  "proceduralFailures": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/ci-focused-native-admission.test.mjs"
+      ],
+      "reason": "A guessed additional test filename does not exist; not a source-test failure. Retained original output and corrected to the maintained native group test."
+    }
+  ],
+  "correctedAdmission": {
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "experiments/issue-1580/native-regression-groups.test.mjs"
+    ],
+    "exitCode": 0,
+    "cases": 63
+  },
+  "newRepairDiffReview": {
+    "lines": 491,
+    "sha256": "ded50c3228a1482f2d974e8315b2cfbc468fa467616116dc2abc8bad19a0062d",
+    "complete": true,
+    "finding": "No new defect found in this repair diff. Broader whole-PR review remains incomplete."
+  },
+  "additionalAggregateReview": [
+    {
+      "path": "rust/src/agentic_coding/evidence_record.rs",
+      "file": "0239.diff.gz",
+      "sha256": "f4c0997c38bac4e464f8354a15ea597c39cbe34aea3bd933372d42f0844299ac",
+      "lines": 135,
+      "review": "Complete paired function move, comments and bodies preserved; parent imports and child visibility remain consistent. No defect found."
+    },
+    {
+      "path": "rust/src/agentic_coding/evidence_record/evidence_relevance.rs",
+      "file": "0240.diff.gz",
+      "sha256": "bf505225e60f2a2cb6704438011c2580739175640aa5038916079e8fe24fa1ca",
+      "lines": 122,
+      "review": "Complete paired function move, comments and bodies preserved; parent imports and child visibility remain consistent. No defect found."
+    }
+  ],
+  "hostedValidation": "pending",
+  "localRustCompilation": false,
+  "autonomousAuthorshipCredit": 0,
+  "files": [
+    {
+      "file": "start-source.json.gz",
+      "bytes": 105,
+      "sha256": "578fcfc6e53ab2e178a0e37dd5de27877bb1e087204d78741442479304742385",
+      "gzipSHA256": "969599de137c5c131d8fb5bbbaf0cddcffa74ef5863f624ac4f120e10ea2ed47"
+    },
+    {
+      "file": "validation-0.log.gz",
+      "bytes": 7031,
+      "sha256": "6bcb298240041d3e2ae92fb689cc4f11638191b572739200241238ecd130253d",
+      "gzipSHA256": "252e86875be09625f2da2bd9dec73eafba6af63422b3e1398dda05e6f711558d"
+    },
+    {
+      "file": "validation-1.log.gz",
+      "bytes": 69,
+      "sha256": "207731396a868b40cf873fc7d59a0fcb3271cd4ab0a2642e72018a81d92e13f5",
+      "gzipSHA256": "175c87010ec9a26e209c63eaf37c94a59261aff4f95007612a5012b6d5cffbcf"
+    },
+    {
+      "file": "result.json.gz",
+      "bytes": 541,
+      "sha256": "aa671bd9e829596b0c3afa3ca67527077425a71f61f1b4a3b8addac7b95f4707",
+      "gzipSHA256": "4d97cf0fc652af69f77ab6ce4ac6c345003c7df6ac9d4be371194ea80c7562cc"
+    },
+    {
+      "file": "native-admission-corrected.log.gz",
+      "bytes": 7003,
+      "sha256": "e14e3b0cc1b738b5132fc8bc326201e79527f1de8bf4e44db9136fb0a571d22a",
+      "gzipSHA256": "580945aa59b5e9b929d0eb254468309a7282a769933909e23e9b40e5934521d2"
+    },
+    {
+      "file": "abbreviations-before.log.gz",
+      "bytes": 423,
+      "sha256": "cb711d3b8d20c71d28697fd96f97cfbfa1b49494a75d292640a30e31c53c5313",
+      "gzipSHA256": "4db678e12f496906044fedd3d93f9d820d6e04e9f60ebe35f83b59bf893dc581"
+    },
+    {
+      "file": "check-abbreviations-corrected.log.gz",
+      "bytes": 67,
+      "sha256": "ae7984b716ee3f2e1d62b3e701ecf2b5099b01b26211150941139cba3def9e27",
+      "gzipSHA256": "38ca4ce65b9c680202799d2472e018f9c2c57069707fedb2484201876094a250"
+    },
+    {
+      "file": "check-file-size-corrected.log.gz",
+      "bytes": 63,
+      "sha256": "cbf1798b18a4e5c8280e260badbe98e100864615bd72ba5ca2af9f919c3bcc25",
+      "gzipSHA256": "f15afa50bad4bc7882a52c18513ccf2106b38dc6152021fa33b2a97708fc6a90"
+    },
+    {
+      "file": "check-required-documentation-corrected.log.gz",
+      "bytes": 76,
+      "sha256": "1d27069ed4034048883f8697e5e5e6de7b486d827f46b2657a9a845edebdf9e6",
+      "gzipSHA256": "b0ba5d4f45360ecb78ab80ad82171ab929638fe11fa5fda4bd714accf0580796"
+    },
+    {
+      "file": "all-gates.log.gz",
+      "bytes": 6940,
+      "sha256": "f0b2d2423f666514beb57051c80e129803023daa0e33cb0fad72e949caf2fd52",
+      "gzipSHA256": "4084b8bb84b7640e526be27967d624217826875df783ec33fb994850b3b9a049"
+    },
+    {
+      "file": "all-gates-result.json.gz",
+      "bytes": 76,
+      "sha256": "f8e69497b7329f55cb7cd038a4ec8a8d61165389d4cae66481fe90dd9d632775",
+      "gzipSHA256": "22d002e6924e2baaf4974372bab4e11d4f0b6974bb25ce03e2b28f9bec99ce2b"
+    },
+    {
+      "file": "summary.json.gz",
+      "bytes": 929,
+      "sha256": "fcc3b7c34771c3e8afe2adf602c0e3b8c7d148fda8c646b71ef2f99c699b912c",
+      "gzipSHA256": "c767e9a532bfd6d6621ebf5587ec06b2309e5e4b2a12e950f30c643196efc7cd"
+    },
+    {
+      "file": "new-repair-source.diff.gz",
+      "bytes": 23707,
+      "sha256": "ded50c3228a1482f2d974e8315b2cfbc468fa467616116dc2abc8bad19a0062d",
+      "gzipSHA256": "0e36a1efe4d184be083f5804bd636a4142a47d1738f87b28b2db1ccec5212763"
+    },
+    {
+      "file": "repair-lock.diff.gz",
+      "bytes": 23784,
+      "sha256": "77b2761715a1c4746c5ea5b9b42d3542c6d1d25509791e4384222e5d2ad54320",
+      "gzipSHA256": "c7f80d85892305fc3f2243d3360cccc8dc942419b5956bff9ed9bca6f5f888a9"
+    },
+    {
+      "file": "pr.diff.stderr.gz",
+      "bytes": 287,
+      "sha256": "06dda70ebfef8b578f4e212792b89631413563da7dfaa7598b90c00adb13cfe5",
+      "gzipSHA256": "3064591bc8bc81382ccf3efad6a3d49e9ad0bc111959202d619054be8452903b"
+    },
+    {
+      "file": "issue.json.gz",
+      "bytes": 10544,
+      "sha256": "2f4425c8c7c3705b26811719bf310025d064ff1a82dc6dfd84bfba0a6caa754c",
+      "gzipSHA256": "a7dbb5b0b3292af36b3a7b069867ee8558f90810d7db0e367b502d1c8785383f"
+    },
+    {
+      "file": "issue-comments.json.gz",
+      "bytes": 4475,
+      "sha256": "99c4fd43e7bb7e82d7c3800cf90b5edf6aa2d891358574ae71115d5c67f1b834",
+      "gzipSHA256": "d996d3a37147a526df1fca7610ca1d0edf5638875e5648b8a511c0606aab8d25"
+    },
+    {
+      "file": "pr-conversation.json.gz",
+      "bytes": 36069,
+      "sha256": "8306eac412b957a446b1116260517728a616022eae31c93a1caa56a9b5ec7d92",
+      "gzipSHA256": "d321e84c21317c40d2f409ad712e5328032330ab9c04e47375b319a497e08b30"
+    },
+    {
+      "file": "pr-inline.json.gz",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "gzipSHA256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "file": "pr-reviews.json.gz",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "gzipSHA256": "ad2d9bce436c0552820a7cbe7adcdad183162c2c5108739882624d9813b82bf7"
+    },
+    {
+      "file": "runs.json.gz",
+      "bytes": 1223,
+      "sha256": "fe27f0b62e6ac7234d33b5d4441d4221322d7f4f80383c08a1c6955dcbf3e7af",
+      "gzipSHA256": "1675e5b818184ad0a966ce51d53452dd4f37f718c6b0f7bf506810faef484498"
+    },
+    {
+      "file": "recent-merged-prs.json.gz",
+      "bytes": 22161,
+      "sha256": "e3a0aeea6443f029e5bf8a39751c88b7fd3589be5f015e46eb33f602216ea2ae",
+      "gzipSHA256": "068b98f99948d43dbe768086b2f4ec31c029bdaba313400454f35814637765fc"
+    }
+  ]
+}
