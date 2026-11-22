@@ -1376,3 +1376,22 @@ Local verification for this batch passes the lightweight HTTP fixture, the JavaS
 Evidence: [the scoped release I/O manifest](evidence/checks/release-io-and-heading-practices/manifest.json).
 
 Local verification passes rustfmt, 63 runner-group tests, 20 artifact tests, two script-selection tests and all six packaging gates. The twelve native physical fixtures and shared iterator still await hosted execution.
+
+
+## Current terminal warnings and complete file observations, 2026-11-22
+
+- [x] Collect terminal results and full logs for all 33 c90f workflows: 32 success, one intentional skip, zero failures. Audit every annotation and diagnostic candidate; retain the unknown publish authority as unknown.
+- [x] Reproduce the reusable native workflow's missing opt-in cache switch with a focused regression; forward the repository variable with default false. Actual backend diagnostics still require the next hosted run.
+- [x] Retain all 916 queued JavaScript file observations. Identify the one assertion-only file from its separate real spec result rather than inventing a Node summary. Reproduce missing assertion-only completion telemetry, and defer file-result candidates until stream completion so file-named cases cannot replace file summaries.
+- [x] Reproduce the current shard 3 warning with its actual timings. Refresh scheduling floors with a bounded 13-candidate reserve probe; the first reserve retaining all ten cohort controls is 65%. Preserve every earlier floor, exact old receipt, all tests, eight shards, the 30-second runner allowance, 270-second warning and 360-second execution budget. This model is not future runtime proof.
+- [x] Encode changelog creator descriptions, paths and invalid bump values through the existing command-safe helper, keeping physical fragment bytes exact. Add two actual compiled CLI controls; their execution is pending hosted CI.
+- [ ] Complete focused local JavaScript checks and the whole local gate set before the single push. Do not compile Rust locally.
+- [ ] Verify every changed native behavior and new scheduler on the exact new hosted head. Enable cache diagnostics only for that run, restore the repository variable to its original absent state afterward, and classify the actual backend response before claiming repair.
+- [ ] Finish the broad original issue, template practice inventory, production workflow/runtime delivery and independent authored-leaf acceptance. No source review, supplied helper or passing partial CI completes those criteria.
+
+The first full local inventory completed: 87 passes, 53 hosted-only exclusions and
+two file-size gate failures on the same 1,871-line scheduling table. All other
+focused checks passed. The corrected table retains the prior default rather than
+adding 226 redundant small-cost overrides; all 916 observations stay exact, all
+ten replays pass and the table is now 1,419 lines. Complete gate re-verification
+is pending. The original failed gate logs and complete outcome remain archived.

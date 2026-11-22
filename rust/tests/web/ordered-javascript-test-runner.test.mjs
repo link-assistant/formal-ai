@@ -94,3 +94,35 @@ test('ordered runner records its queue when enqueue events precede listener atta
     assert.match(result.stdout, /finite fixture/u);
   } finally { rmSync(directory, {recursive: true, force: true}); }
 });
+
+
+test('ordered runner completes assertion-only files without confusing file-named cases with file results', {timeout:12000}, () => {
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-file-result-'));
+  try {
+    const first=join(directory,'assertions-only.test.mjs');
+    const failure=join(directory,'throw-only.test.mjs');
+    const named=join(directory,'file-named-cases.test.mjs');
+    writeFileSync(first,"import assert from 'node:assert/strict'; assert.equal(2+2,4);\n");
+    writeFileSync(failure,"throw Error('controlled top-level assertion failure');\n");
+    writeFileSync(named,"import test from 'node:test'; test("+JSON.stringify(named)+",()=>{});"+
+      "test('later case',async()=>{await new Promise(resolve=>setTimeout(resolve,60));});\n");
+    const env={...process.env}; delete env.NODE_TEST_CONTEXT;
+    const result=spawnSync(process.execPath,['--max-old-space-size=128',resolve('scripts/run-ordered-javascript-tests.mjs'),
+      '--concurrency','1',first,named,failure],{env,encoding:'utf8',timeout:8000,maxBuffer:512*1024});
+    assert.equal(result.error,undefined);
+    assert.equal(result.status,1,result.stdout+result.stderr);
+    const records=result.stderr.split('\n').flatMap(line=>{
+      const match=/^\[test-file\] (completed|failed) (.+) (\{.+\})$/u.exec(line);
+      return match?[{state:match[1],file:resolve(match[2]),duration:JSON.parse(match[3]).duration_ms}]:[];
+    });
+    assert.equal(records.length,3,result.stderr);
+    assert.equal(new Set(records.map(row=>row.file)).size,3);
+    assert.equal(records.find(row=>row.file===first)?.state,'completed');
+    assert.equal(records.find(row=>row.file===failure)?.state,'failed');
+    const actualFile=records.find(row=>row.file===named);
+    assert.equal(actualFile?.state,'completed');
+    assert(actualFile.duration>=60,'file completion includes the later case, not its file-named predecessor');
+    assert(records.every(row=>Number.isFinite(row.duration)&&row.duration>=0));
+    assert.match(result.stdout,/controlled top-level assertion failure/u);
+  } finally {rmSync(directory,{recursive:true,force:true});}
+});

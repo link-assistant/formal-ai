@@ -224,3 +224,52 @@ test('complete 79a hosted costs preserve both warnings and the fixed runner allo
     assert(Math.max(...workers) + identity.runnerOverheadAllowanceSeconds <= identity.warningSeconds, '79a measured shard plus runner overhead ' + (index + 1) + ': ' + Math.max(...workers));
   }
 });
+
+
+test('complete c90 costs retain the assertion-only file and fit the unchanged warning and runner allowance', () => {
+  const fixture=new URL('./fixtures/hosted-javascript-c90f94ca/',import.meta.url);
+  const identity=JSON.parse(readFileSync(new URL('identity.json',fixture),'utf8'));
+  const run=JSON.parse(readFileSync(new URL('run-observation.json',fixture),'utf8'));
+  const raw=readFileSync(new URL('durations.jsonl',fixture),'utf8');
+  const observations=raw.trim().split('\n').map(line=>JSON.parse(line));
+  assert.equal(run.id,identity.run);
+  assert.equal(run.head_sha,identity.sourceCommit);
+  assert.equal(run.conclusion,'success');
+  assert.equal(identity.runConclusion,run.conclusion);
+  assert.equal(identity.executionProof,false);
+  assert.equal(identity.observedSchedulingFactor,1.4);
+  assert.equal(identity.schedulingFactor,1.65);
+  assert.equal(identity.warningSeconds,270);
+  assert.equal(identity.budgetSeconds,360);
+  assert.equal(identity.runnerOverheadAllowanceSeconds,30);
+  assert.deepEqual(identity.warnings.map(row=>({shard:row.shard,seconds:row.seconds})),[{shard:3,seconds:296}]);
+  assert.equal(createHash('sha256').update(raw).digest('hex'),identity.durationsSha256);
+  assert.equal(observations.length,916);
+  assert.equal(observations.length,identity.completeObservations);
+  assert.equal(new Set(observations.map(row=>row.file)).size,observations.length);
+  assert(observations.every(row=>row.complete&&row.result==='completed'&&identity.jobs.some(job=>job.job===row.job&&job.conclusion==='success')));
+  assert.deepEqual(observations.filter(row=>row.completionSource!=='node-file-summary').map(row=>({file:row.file,source:row.completionSource})),
+    [{file:'rust/tests/web/server-dialog-lino.test.mjs',source:'node-spec-file-pass-without-summary'}]);
+  const recorded=readFileSync(new URL('../../data/meta/javascript-test-durations.lino',import.meta.url),'utf8');
+  const priorText=readFileSync(new URL('prior-scheduling-floor.lino',fixture),'utf8');
+  const prior=parseTestDurations(priorText);
+  const weights=parseTestDurations(recorded);
+  const defaultSeconds=Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1]);
+  assert.equal(defaultSeconds,Number(priorText.match(/^ {2}default-seconds (\S+)$/mu)[1]));
+  for(const [file,seconds]of prior)assert(weights.get(file)>=seconds,'prior explicit floor '+file);
+  for(const row of observations){
+    const reserved=Math.ceil(row.seconds*identity.schedulingFactor*10)/10;
+    assert((weights.get(row.file)??defaultSeconds)>=reserved,'observed reserve '+row.file);
+    if(!prior.has(row.file)&&weights.has(row.file))assert(weights.get(row.file)>defaultSeconds,'redundant default override '+row.file);
+  }
+  const files=readdirSync(new URL('../../rust/tests/web/',import.meta.url)).filter(file=>file.endsWith('.test.mjs')).map(file=>'rust/tests/web/'+file);
+  const {shards}=planShards(files,8,durationLookup(parseTestDurations(recorded),Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  assert.deepEqual(partitionProblems(files,shards),{missing:[],repeated:[],extra:[]});
+  const costs=durationLookup(new Map(observations.map(row=>[row.file,row.seconds])),identity.unobservedFallbackSeconds);
+  for(const [index,shard]of shards.entries()){
+    const workers=Array(identity.modeledWorkers).fill(0);
+    for(const file of shard)workers[workers.indexOf(Math.min(...workers))]+=costs(file);
+    assert(Math.max(...workers)+identity.runnerOverheadAllowanceSeconds<=identity.warningSeconds,
+      'c90 measured shard plus runner overhead '+(index+1)+': '+Math.max(...workers));
+  }
+});

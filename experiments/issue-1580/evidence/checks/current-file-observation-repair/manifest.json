@@ -1,0 +1,167 @@
+{
+  "publishedSource": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+  "measuredFiles": 916,
+  "summaries": 915,
+  "separateActualSpecFileResults": 1,
+  "focusedJavaScriptChecksPassed": true,
+  "regressionFailsBefore": true,
+  "timingReplayCasesPassedAfter": 10,
+  "fileTelemetryCasesPassedAfter": 3,
+  "reserveProbeCandidates": 13,
+  "selectedReserve": 1.65,
+  "earlierExplicitAndDefaultFloorsPreserved": true,
+  "unchangedWarningSeconds": 270,
+  "unchangedBudgetSeconds": 360,
+  "runnerAllowanceSeconds": 30,
+  "modeledWorkers": 4,
+  "rawObservationsDropped": 0,
+  "defaultCoveredSmallObservations": 226,
+  "scheduleTableLines": 1419,
+  "initialFullGates": {
+    "passed": 87,
+    "skipped": 53,
+    "failed": [
+      "check-file-size-js-twin",
+      "check-file-size"
+    ]
+  },
+  "correctedFullGateRerunPending": true,
+  "newPlanHostedExecutionVerified": false,
+  "rustCompiledLocally": false,
+  "independentAuthorshipCredit": 0,
+  "allIssueAcceptanceComplete": false,
+  "files": [
+    {
+      "file": "001.log.gz",
+      "source": "c90-javascript-costs/empty-file-events.jsonl",
+      "bytes": 1081,
+      "sha256": "07733e6a3c6e6437396706f8025ccff9e21851949ad049f8bfd7bda9f05f6b31"
+    },
+    {
+      "file": "002.log.gz",
+      "source": "c90-javascript-costs/empty-file-before.log",
+      "bytes": 1956,
+      "sha256": "a515a0abcdd5c31bc0dea8df34e9463f95f7f44568415d97a408774f9312bb69"
+    },
+    {
+      "file": "003.log.gz",
+      "source": "c90-javascript-costs/runner.before.mjs",
+      "bytes": 2591,
+      "sha256": "542841d12fc33614b6337182d801aa762c6c711c5feb9d93ee280c1c3e8b76f3"
+    },
+    {
+      "file": "004.log.gz",
+      "source": "c90-javascript-costs/runner-fix.patch",
+      "bytes": 5252,
+      "sha256": "fdd55e6049d450f290ef9f7d6b2e3147fd141afdacd06a4618786fb56462c0bb"
+    },
+    {
+      "file": "005.log.gz",
+      "source": "c90-javascript-costs/durations.before.lino",
+      "bytes": 45165,
+      "sha256": "e655193e895736a5314015b37d449e9989345e54c2a18e9c8d864ab0ff9912d2"
+    },
+    {
+      "file": "006.log.gz",
+      "source": "c90-javascript-costs/reserve-probe-before-default-floor.jsonl",
+      "bytes": 9895,
+      "sha256": "0124f0e18510d2382365a9992a9de0c065898697729477c572b5e23160669335"
+    },
+    {
+      "file": "007.log.gz",
+      "source": "c90-javascript-costs/reserve-probe.jsonl",
+      "bytes": 9846,
+      "sha256": "69f3a238d0e069b64b2116d4da42739ac692112897d03452560753930433e20f"
+    },
+    {
+      "file": "008.log.gz",
+      "source": "c90-javascript-costs/updated-weights.json",
+      "bytes": 48261,
+      "sha256": "3d2016a6f4e95e64700cfe17c2f1a9c6504c1360bc71656c6133aa242c5071fa"
+    },
+    {
+      "file": "009.log.gz",
+      "source": "c90-javascript-costs/default-covered-observations.json",
+      "bytes": 35060,
+      "sha256": "84c5c94d4421a8e73857c08790614a8aa396bb4512e2977202e2f2bbb106d7f7"
+    },
+    {
+      "file": "010.log.gz",
+      "source": "c90-javascript-costs/scheduling-before.log",
+      "bytes": 2207,
+      "sha256": "087d7ce4b24c46b1663aa364719412b0c2d1a1edaf19f9efab0fcce4ff179bd8"
+    },
+    {
+      "file": "011.log.gz",
+      "source": "c90-javascript-costs/scheduling-after-default-floor.log",
+      "bytes": 1212,
+      "sha256": "9580f49329887a8e9c8356d3efef5e7d4e900d4f957d1934d0b886ba967ce563"
+    },
+    {
+      "file": "012.log.gz",
+      "source": "current-warning-checks/outcome.json",
+      "bytes": 2077,
+      "sha256": "537bf3391cf1224daded2d2c6f808b37898372b0551ee8dbbcbda79600ceb145"
+    },
+    {
+      "file": "013.log.gz",
+      "source": "current-warning-checks/runner.log",
+      "bytes": 449,
+      "sha256": "a34a2e0127ab762e297ea7b8ebea3727a6fc675f57c29cbbf4b4d1e60f1260f7"
+    },
+    {
+      "file": "014.log.gz",
+      "source": "current-warning-checks/profile.log",
+      "bytes": 326,
+      "sha256": "7d9eaa8a88cd3c0d59dcbc948ee4406ec439544df1903e0e9e1fcdd34f39abf3"
+    },
+    {
+      "file": "015.log.gz",
+      "source": "current-warning-checks/schedule.log",
+      "bytes": 1216,
+      "sha256": "13f78da6e38062157c22de980b87da659b1a6a6f816396741e2c670a8e927cf8"
+    },
+    {
+      "file": "016.log.gz",
+      "source": "current-warning-checks/native-groups.log",
+      "bytes": 6980,
+      "sha256": "6236706fa6eba194ec1b91b8369c0c0fe6a5054382780069a045252934fc1baf"
+    },
+    {
+      "file": "017.log.gz",
+      "source": "current-warning-checks/full-gates.log",
+      "bytes": 7125,
+      "sha256": "693e3f88b13e3994e9c5a2b05a19aa5515afeea2edbdadb8bf5cab104b30c6e3"
+    },
+    {
+      "file": "018.log.gz",
+      "source": "current-warning-checks/check-file-size-js-twin-before.log",
+      "bytes": 139,
+      "sha256": "ac3d0339d375f12d23f40f0e228153d387a04c034c0caa798b6c6ed90657fc5a"
+    },
+    {
+      "file": "019.log.gz",
+      "source": "current-warning-checks/check-file-size-before.log",
+      "bytes": 317,
+      "sha256": "c3f4e8104e679f1ffc076fd37c3f77ac68a8ba1220a22eb5e0220b24aaefa182"
+    },
+    {
+      "file": "020.log.gz",
+      "source": "fix-c90-default-duration-floor.py",
+      "bytes": 5371,
+      "sha256": "1c1d5a17af62b2609cc72e0dd932d9b3991dc411e600dffd22853ad319086d87"
+    },
+    {
+      "file": "021.log.gz",
+      "source": "fix-c90-default-duration-floor-driver.log",
+      "bytes": 1642,
+      "sha256": "89a3cdd451135dab74d8141a9bffeb7bbe1bd8915c94b2bd55513c6c9c00aaea"
+    },
+    {
+      "file": "022.log.gz",
+      "source": "read-current-warning-diff-driver.log",
+      "bytes": 29938,
+      "sha256": "c2bc8a371c664be9b456af2ade0203945db51d3ed0fced582360cb64c89b9d64"
+    }
+  ]
+}
