@@ -1,6 +1,7 @@
 // Re-import the complete hosted measurements and explicitly inherited scheduling bounds.
 // This does not manufacture measurements for the three newly separated scenarios.
 import {readFileSync, writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {mergeJavaScriptDurations} from '../../scripts/lib/ci-speed-durations.mjs';
 
@@ -30,6 +31,17 @@ for (const {path: child} of partition.scenarios) {
   after = previous ? after.replace(pattern, () => record) : after + record;
 }
 after = mergeJavaScriptDurations(after, observed, options);
+// Preserve the older complete cohort and conservative split-scenario bounds.
+// New completed timings can raise weights; a faster PR never lowers main bounds.
+const currentFixture = new URL('./fixtures/hosted-javascript-2809ce65/', import.meta.url);
+const currentIdentity = JSON.parse(readFileSync(new URL('identity.json', currentFixture), 'utf8'));
+const currentRaw = readFileSync(new URL('durations.jsonl', currentFixture), 'utf8');
+if (createHash('sha256').update(currentRaw).digest('hex') !== currentIdentity.durationsSha256) throw Error('HostedCostCaptureDigestMismatch');
+const currentRows = currentRaw.trim().split('\n').map(line => JSON.parse(line));
+if (currentRows.length !== currentIdentity.completeObservations || currentRows.some(row => !row.complete || !currentIdentity.jobs.some(job => job.job === row.job))
+  || new Set(currentRows.map(row => row.file)).size !== currentRows.length) throw Error('IncompleteCurrentHostedCostObservations');
+after = mergeJavaScriptDurations(after, new Map(currentRows.map(({file, seconds, complete}) => [file, {seconds, complete}])),
+  {...options, source: String(currentIdentity.run)});
 if (process.argv.includes('--write')) writeFileSync(path, after);
 else if (before !== after) { console.error('Hosted JavaScript cost import is stale; run this script with --write.'); process.exitCode = 1; }
 else console.log('Hosted costs and explicitly inherited parent bounds are current.');
