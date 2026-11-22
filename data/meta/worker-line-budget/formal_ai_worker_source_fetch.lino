@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_source_fetch.js"
-  ceiling 31
-  rationale "Lossless shared capture provider extraction, typed offline policy and isolated credential-free indexed publisher requests."
+  ceiling 41
+  rationale "Shared capture provider with indexed publisher requests. Issue #1613 renders explicit offline HTTP requests from verified cached bytes or a localized cache gap through the same provider."

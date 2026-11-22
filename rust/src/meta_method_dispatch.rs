@@ -30,8 +30,8 @@ use crate::solver_handlers::{
     CapabilityRuntime, SelfAwarenessRuntime, handle_statistics, try_behavior_rules_with_runtime,
     try_document_originality_check, try_explicit_repository_lookup, try_feature_capability,
     try_learn_from_source, try_natural_language_tool_request, try_playwright_script,
-    try_project_lookup, try_project_lookup_with_response_language, try_response_language_followup,
-    try_routed_calendar_create_event, try_routed_http_fetch_with_offline,
+    try_project_lookup, try_response_language_followup, try_routed_calendar_create_event,
+    try_routed_http_fetch_with_offline,
 };
 
 /// Execute the single registry-backed method-selection path.
@@ -226,27 +226,16 @@ pub fn try_dispatch(
                 log.append("claim_routing:refusal_lane_dropped", name.clone());
             }
         }
-        if execution.project_lookup == Some(ProjectLookupPhase::Fallback) {
-            let answer = if let Some(language) = forced_response_language {
-                try_project_lookup_with_response_language(
-                    prompt,
-                    prompt,
-                    log,
-                    solver.config,
-                    intent_formalization.route.as_deref() == Some("identity"),
-                    language,
-                )
-            } else {
-                try_project_lookup(
-                    prompt,
-                    log,
-                    solver.config,
-                    intent_formalization.route.as_deref() == Some("identity"),
-                )
-            };
-            if let Some(answer) = answer {
-                return Some(record_method_answer(prompt, log, answer, "project_lookup"));
-            }
+        if execution.project_lookup == Some(ProjectLookupPhase::Fallback)
+            && let Some(answer) = try_project_lookup(
+                prompt,
+                log,
+                solver.config,
+                intent_formalization.route.as_deref() == Some("identity"),
+                forced_response_language,
+            )
+        {
+            return Some(record_method_answer(prompt, log, answer, "project_lookup"));
         }
     }
     None

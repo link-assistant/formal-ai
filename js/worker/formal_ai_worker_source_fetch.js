@@ -29,3 +29,13 @@ async function sourceWalkFetchCapture(url, { online = true, bounded = false, ind
     return { ok: false, url, error: error instanceof Error ? error.message : String(error) };
   }
 }
+async function offlineHttpFetch(url, language, evidence) {
+  const capture = await sourceWalkFetchCapture(url, { online: false });
+  if (!capture.ok) {
+    const content = answerFor("source-capture-offline-cache-miss", language).replace("{url}", () => url);
+    return { intent: "http_fetch", content, confidence: 0, evidence: [...evidence, "policy:offline"], iframeUrl: null };
+  }
+  evidence.push(`source:http:${url} fetched_at=${capture.fetchedAt} sha256=${capture.sha256} cached=true`, `cache_hit:${url}`);
+  const content = capture.text.length > 2000 ? webResponse("web_http_fetch_truncated", { bytes: capture.text.length, body: capture.text.slice(0, 2000) }) : capture.text;
+  return { intent: "http_fetch", content, confidence: 0.95, evidence, iframeUrl: null };
+}

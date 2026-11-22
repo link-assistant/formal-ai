@@ -99,7 +99,7 @@ fn an_explicit_request_url_precedes_attachment_metadata() {
     assert_eq!(response.intent, "http_fetch");
     assert_eq!(
         response.answer,
-        "cache miss for https://docs.example.org/guide and offline mode is active (set FORMAL_AI_LIVE_API to populate)"
+        "no cached capture for https://docs.example.org/guide"
     );
 }
 

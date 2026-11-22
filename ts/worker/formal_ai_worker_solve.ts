@@ -626,7 +626,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, explanation, formalizationContext);
   }
   steps.push({ step: "invoke_tool", detail: "http_fetch" });
-  const fetched = await tryFetch(prompt);
+  const fetched = await tryFetch(prompt, preferences);
   if (fetched) {
     events.push(`handler:${fetched.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFetch" });

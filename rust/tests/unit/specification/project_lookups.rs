@@ -149,15 +149,15 @@ fn curated_project_concept_prompt_routes_to_project_lookup() {
 fn offline_project_lookup_records_gap_without_repository_provenance() {
     let response = answer("What is command-stream?");
     assert_eq!(response.intent, "project_lookup");
-    assert!(
-        response
-            .answer
-            .contains("No verified repository description is available.")
+    assert_eq!(
+        response.answer,
+        "In the link-assistant, link-foundation, linksplatform repository context, `command-stream` should first mean [link-foundation/command-stream](https://github.com/link-foundation/command-stream) — No verified repository description is available.\n\nOther repositories and entities found online are shown by the browser demo through a web search for `command-stream`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
     );
     assert!(
         response
-            .links_notation
-            .contains("project:description unavailable")
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("project:description:"))
     );
     assert!(
         !response
@@ -444,6 +444,43 @@ fn bitbucket_repository_url_routes_to_generic_project_lookup() {
 }
 
 #[test]
+fn http_fetch_of_registered_path_uses_generic_http_request() {
+    let response =
+        answer("fetch https://github.com/link-assistant/hive-mind/issues/7?fixture=offline-fetch");
+    assert_eq!(response.intent, "http_fetch");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("http_fetch:request:"))
+    );
+    assert!(
+        !response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("http_fetch:curated_project"))
+    );
+}
+
+#[test]
+fn http_fetch_of_unregistered_url_uses_generic_http_request() {
+    let response = answer("fetch https://example.test/unregistered?fixture=offline-fetch");
+    assert_eq!(response.intent, "http_fetch");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("http_fetch:request:"))
+    );
+    assert!(
+        !response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("http_fetch:curated_project"))
+    );
+}
+
+#[test]
 fn offline_fetch_reports_the_missing_capture_for_registered_and_unregistered_urls() {
     for url in [
         "https://github.com/link-assistant/hive-mind/issues/7?fixture=offline-fetch",
@@ -451,8 +488,7 @@ fn offline_fetch_reports_the_missing_capture_for_registered_and_unregistered_url
     ] {
         let response = answer(&format!("fetch {url}"));
         assert_eq!(response.intent, "http_fetch");
-        assert!(response.answer.contains("cache miss"), "{response:?}");
-        assert!(response.answer.contains(url), "{response:?}");
+        assert_eq!(response.answer, format!("no cached capture for {url}"));
         assert!(
             response
                 .evidence_links

@@ -126,6 +126,38 @@ test('explicit fetch observes the requested repository paths regardless of promo
   }
 });
 
+test('explicit fetch and page formalization respect offline and network-denied preferences', async () => {
+  const isolated = new WorkerHost();
+  await isolated.boot();
+  const url = 'https://github.com/link-assistant/hive-mind/issues/7';
+  const observed = await isolated.run(`(async () => {
+    const requests = [];
+    fetch = async (target) => {
+      requests.push(String(target));
+      return { ok: true, text: async () => "A captured issue body." };
+    };
+    const offline = await solve("fetch " + __url, [], { offline: true });
+    const denied = await solve("fetch " + __url, [], { allowNetwork: false });
+    const formalization = await solve("Formalize " + __url, [], { offline: true });
+    const before = requests.length;
+    await sourceWalkFetchCapture(__url);
+    const cached = await solve("fetch " + __url, [], { offline: true });
+    return { offline, denied, formalization, before, cached, requests };
+  })()`, { __url: url });
+  for (const result of [observed.offline, observed.denied]) {
+    assert.equal(result.intent, 'http_fetch');
+    assert.equal(result.content, `no cached capture for ${url}`);
+    assert.ok(result.evidence.includes('policy:offline'));
+    assert.equal(result.iframeUrl, undefined);
+  }
+  assert.equal(observed.formalization.intent, 'page_formalization');
+  assert.ok(observed.formalization.evidence.includes('response:page_formalization_unavailable'));
+  assert.equal(observed.before, 0);
+  assert.deepEqual(Array.from(observed.requests), [url]);
+  assert.equal(observed.cached.content, 'A captured issue body.');
+  assert.ok(observed.cached.evidence.includes(`cache_hit:${url}`));
+});
+
 test('promoted lookup retains actually fetched and fused browser search results and diagnostics', async () => {
   const requested = [];
   const providerUrl = 'https://example.test/independent-hive-mind';

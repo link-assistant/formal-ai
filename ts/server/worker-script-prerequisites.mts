@@ -36,11 +36,11 @@ export const workerScriptPrerequisites = Object.freeze([
   },
   {
     "script": "js/worker/formal_ai_worker_solve.js",
-    "sourceSha256": "7cb170b5f461c904119e370809f8b1dcfe1a887e9b10ec1c79c765c03846ee29",
+    "sourceSha256": "76dfe8e38da32a310c405201de13f6ee1650fc6f63cf5abf6a387e4499ff9634",
     "requires": [
       {
         "script": "js/worker/formal_ai_worker_web_providers_and_wasm_calls.js",
-        "sourceSha256": "38e69cfc6c2a7a065c4920a6416277f6956d1875e3f86eefffc08185dd5412b6"
+        "sourceSha256": "d80ebca30ba7569792edb33df3c191c832c1c54807ddfa1dd84efe3af24686c6"
       }
     ]
   }

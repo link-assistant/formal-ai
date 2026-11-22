@@ -947,17 +947,7 @@ async function renderPromotedProjectLookup(prompt, language, project, preference
   const providers = WEB_SEARCH_PROVIDERS.map((provider) => provider.id);
   const fusionConstant = webSearchRrfK();
   const evidence = [`project:promoted:${repository}`];
-  const verified = await verifiedProjectDescription(project, preferences, evidence);
-  let description;
-  if (verified) {
-    const summary = crateModule("crate/summarization.mjs");
-    const configuration = summary.withMode(summary.withLanguage(summary.defaultConfig(), language), "short");
-    const rendered = summary.deformalize(summary.summarize(summary.formalize(verified.body), configuration));
-    if (rendered) evidence.push("summarization:mode:short", `summarization:language:${language}`);
-    description = rendered || verified.body;
-  } else {
-    description = unavailableProjectDescription(language, evidence);
-  }
+  const description = await summarizeCapturedProject(project, language, preferences, evidence);
   const body = projectSummaryResponse("project-lookup-promoted", language, {
     "promoted-orgs": PROMOTED_PROJECT_ORGS.join(", "),
     "display-name": displayName,

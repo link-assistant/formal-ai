@@ -89,9 +89,11 @@ fn answer_http_fetch_url(
         Ok(capture) => capture,
         Err(FetchError::OfflineCacheMiss(_)) => {
             log.append("policy:offline", url);
-            let body = seed::response_for("lexeme_import_cache_miss_offline", "en")
-                .unwrap_or_else(|| String::from("lexeme_import_cache_miss_offline"))
-                .replace("{qid}", url);
+            let body = seed::render_localized_once(
+                "source-capture-offline-cache-miss",
+                detect_language(prompt).slug(),
+                &[("url", url)],
+            );
             return finalize_simple(
                 prompt,
                 log,
@@ -388,15 +390,6 @@ impl RepositoryReference {
 /// With promotion enabled (the default), known projects from Link Assistant,
 /// Link Foundation, and `LinksPlatform` are listed first. With promotion
 /// disabled, the same prompts stay on the generic repository lookup path.
-pub fn try_project_lookup(
-    prompt: &str,
-    log: &mut EventLog,
-    config: crate::solver::SolverConfig,
-    suppress_identity_route: bool,
-) -> Option<SymbolicAnswer> {
-    try_project_lookup_internal(prompt, prompt, log, config, suppress_identity_route, None)
-}
-
 pub fn try_explicit_repository_lookup(
     prompt: &str,
     normalized: &str,
@@ -414,8 +407,7 @@ pub fn try_explicit_repository_lookup(
         return None;
     }
     repository_from_prompt(prompt)?;
-    try_project_lookup_internal(
-        prompt,
+    try_project_lookup(
         prompt,
         log,
         config,
@@ -424,27 +416,8 @@ pub fn try_explicit_repository_lookup(
     )
 }
 
-pub fn try_project_lookup_with_response_language(
+pub fn try_project_lookup(
     prompt: &str,
-    lookup_prompt: &str,
-    log: &mut EventLog,
-    config: crate::solver::SolverConfig,
-    suppress_identity_route: bool,
-    response_language: &str,
-) -> Option<SymbolicAnswer> {
-    try_project_lookup_internal(
-        prompt,
-        lookup_prompt,
-        log,
-        config,
-        suppress_identity_route,
-        Some(response_language),
-    )
-}
-
-fn try_project_lookup_internal(
-    prompt: &str,
-    lookup_prompt: &str,
     log: &mut EventLog,
     config: crate::solver::SolverConfig,
     suppress_identity_route: bool,
@@ -454,13 +427,13 @@ fn try_project_lookup_internal(
     // A repository URL can be source material rather than the requested action.
     // Keep installation-guide/script transformations on their more specific
     // conversion path instead of treating the embedded clone URL as a lookup.
-    if is_install_conversion_request(&lookup_prompt.to_lowercase()) {
+    if is_install_conversion_request(&prompt.to_lowercase()) {
         return None;
     }
-    if is_text_url_extraction_prompt(lookup_prompt) {
+    if is_text_url_extraction_prompt(prompt) {
         return None;
     }
-    if let Some(repo) = repository_from_prompt(lookup_prompt) {
+    if let Some(repo) = repository_from_prompt(prompt) {
         if promote_associative_repositories
             && let Some(project) = promoted_project_by_repo(&repo.owner, &repo.name)
         {
@@ -484,7 +457,7 @@ fn try_project_lookup_internal(
         return None;
     }
 
-    let project = matched_project(lookup_prompt)?;
+    let project = matched_project(prompt)?;
     if promote_associative_repositories && is_promoted_project(project) {
         return Some(render_project_lookup(
             prompt,

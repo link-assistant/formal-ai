@@ -22,6 +22,16 @@ function unavailableProjectDescription(language, evidence) {
   return answerFor("project-description-unavailable", language);
 }
 
+async function summarizeCapturedProject(project, language, preferences, evidence) {
+  const verified = await verifiedProjectDescription(project, preferences, evidence);
+  if (!verified) return unavailableProjectDescription(language, evidence);
+  const summary = crateModule("crate/summarization.mjs");
+  const configuration = summary.withMode(summary.withLanguage(summary.defaultConfig(), language), "short");
+  const rendered = summary.deformalize(summary.summarize(summary.formalize(verified.body), configuration));
+  if (rendered) evidence.push("summarization:mode:short", `summarization:language:${language}`);
+  return rendered || verified.body;
+}
+
 function describeProjectRecord(project, language, mode = "short") {
   const summary = crateModule("crate/summarization.mjs");
   const config = summary.withMode(summary.withLanguage(summary.defaultConfig(), language), mode);
