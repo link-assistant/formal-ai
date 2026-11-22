@@ -1178,3 +1178,9 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Reproduce eight of nine finite Git-index cases before repair; pass all ten afterward plus 41 related cases. No local Rust build, package install or live advisory fetch.
 - [x] Fix four evidence filenames created after the prior final gate. Keep their bytes and hashes and the abbreviation ratchet unchanged; retain the failure.
 - [x] Pass final shell lint, size, abbreviation, required-documentation and changelog JavaScript gates after all source and evidence paths exist. Commit the atomic wrapper repair locally; current-head hosted collection still precedes any push.
+
+
+## Additional aggregate native diff review, 2026-11-22
+
+- [x] Fully read another 25 parent/child diffs (3058 lines): capability classification, work-item delivery, collection ownership, arithmetic declarations, request routes, positional insertion, progress receipts, repair notes, prose classification, quoting, web answer selection and command ownership. Fresh per-file diffs exactly match the retained review hashes. Bodies, comments, restricted visibility, reexports and relative paths remain consistent; no new defect found in these files.
+- [ ] Finish the wider aggregate review and every issue acceptance criterion. This paired source review neither completes the whole PR nor replaces native runtime evidence.
