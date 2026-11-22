@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-22T12:56:22.493996+00:00",
+  "publishedHead": "c90f94cabecb5e995ff45c37e5baf7ef76d93fe8",
+  "templateCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+  "records": [
+    {
+      "archive": "hosted-source-01.txt.gz",
+      "bytes": 5435,
+      "sha256": "c6685e479363902f7a9adb82443d8c46b2c40b1a50969c199b0f7e31e220bfe2",
+      "path": "scripts/check-version-modification.rs",
+      "completeSourceRead": true,
+      "matchesCurrentSource": true
+    },
+    {
+      "archive": "hosted-source-02.txt.gz",
+      "bytes": 15543,
+      "sha256": "850e835d75d0b572dd541ee99262e8d49a4112b2f07ea94e762ca40ae19050aa",
+      "path": "scripts/check-release-needed.rs",
+      "completeSourceRead": true,
+      "matchesCurrentSource": true
+    },
+    {
+      "archive": "hosted-source-03.txt.gz",
+      "bytes": 5975,
+      "sha256": "87b669383f79b73d18b4580e83d9d10988529f19f1f00a7b1c66738fc38fa6cb",
+      "path": "scripts/cargo-package.rs",
+      "completeSourceRead": true,
+      "matchesCurrentSource": true
+    },
+    {
+      "archive": "hosted-source-04.txt.gz",
+      "bytes": 10146,
+      "sha256": "6d69fe4f11cbe6608bdac87f095c4b1f40080b12b5eec5c23576905bcbda6265",
+      "path": "scripts/registry.rs",
+      "completeSourceRead": true,
+      "matchesCurrentSource": true
+    },
+    {
+      "archive": "hosted-source-05.txt.gz",
+      "bytes": 5490,
+      "sha256": "a3bfbc11725621e92c78f58f0b66595690ef1846a91f0240df9e89da30c6c837",
+      "path": "scripts/github-output.rs",
+      "completeSourceRead": true,
+      "matchesCurrentSource": true
+    },
+    {
+      "archive": "hosted-source-06.txt.gz",
+      "bytes": 28678,
+      "sha256": "c7228551f8716570260a64fae65f4e58247def47ede0b925708894d0550ff834",
+      "path": "scripts/version-and-commit.rs",
+      "completeSourceRead": true,
+      "matchesCurrentSource": true
+    },
+    {
+      "archive": "hosted-source-07.txt.gz",
+      "bytes": 1198,
+      "sha256": "f372e7714f419f6ed9fd7fcc1fecb1375f90abc4f4679500e0397f309cb434ab",
+      "path": "experiments/issue-1580/release-registry/Cargo.toml",
+      "completeSourceRead": true,
+      "matchesCurrentSource": true
+    },
+    {
+      "archive": "hosted-source-08.txt.gz",
+      "bytes": 16384,
+      "sha256": "390ca1339497d9400ef365baa15030b101ecf68c10a124d65979871718b167cb",
+      "path": "experiments/issue-1580/release-registry/cli_regressions.py",
+      "completeSourceRead": true,
+      "matchesCurrentSource": false
+    },
+    {
+      "archive": "pending-expanded-cli-fixture.py.gz",
+      "bytes": 18522,
+      "sha256": "bc2083abcc238bd17260453e99106f9d28584493eea52ac7007e6350adb08438",
+      "path": "experiments/issue-1580/release-registry/cli_regressions.py",
+      "nativeExecutionVerified": false,
+      "completeDiffRead": true
+    },
+    {
+      "archive": "pinned-template-01.txt.gz",
+      "bytes": 4890,
+      "sha256": "808ea0ebb82065cc0a61d2ecd660c36555af91575c00b003ed3a7897dc791b9e",
+      "path": "scripts/check-version-modification.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "pinned-template-02.txt.gz",
+      "bytes": 9648,
+      "sha256": "07ce1e8fc09ad85a287009e049fee53809d56dda775abff6dd78468f425e1b9b",
+      "path": "scripts/check-release-needed.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "pinned-template-03.txt.gz",
+      "bytes": 10146,
+      "sha256": "6d69fe4f11cbe6608bdac87f095c4b1f40080b12b5eec5c23576905bcbda6265",
+      "path": "scripts/registry.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "pinned-template-04.txt.gz",
+      "bytes": 4046,
+      "sha256": "4583ea61b9d64fb9ea6a96c8a08f071d4d6d1592c4431f225695ef48f16d2079",
+      "path": "scripts/github-output.rs",
+      "completeSourceRead": true
+    },
+    {
+      "archive": "hosted-release-registry-job.json.gz",
+      "bytes": 2350,
+      "sha256": "1ab04d3916ca53bb7ffcc07042803b0fbf9e35245689d06f77f3266839ecff53"
+    },
+    {
+      "archive": "hosted-release-registry.log.gz",
+      "bytes": 59737,
+      "sha256": "eddf46867149e6e79308f24a5474e4d1b18cbd2a2a88c1dcb446817a3e0453d9",
+      "completeLogRead": true
+    },
+    {
+      "archive": "prior-output-native-excerpt.txt.gz",
+      "bytes": 8162,
+      "sha256": "7910f6e253c93984485e0463d663b4ee00074fc63cd3ca7c725f7e169542e237",
+      "firstLine": 1866,
+      "lastLine": 1934,
+      "completeRangeRead": true
+    },
+    {
+      "archive": "local-outcome.json.gz",
+      "bytes": 965,
+      "sha256": "f04d8cb317811d65e23d9a11717862e1456444e6d00719ebd09ec779a4312d73",
+      "kind": "local-verification",
+      "rustCompiled": false
+    },
+    {
+      "archive": "local-fixture.log.gz",
+      "bytes": 521,
+      "sha256": "ac8ac65c91224fe0c866534e9af45e2d974629fba5b84ca44799a3373a721d30",
+      "kind": "local-verification",
+      "rustCompiled": false
+    },
+    {
+      "archive": "local-observations.log.gz",
+      "bytes": 34033,
+      "sha256": "7218d39081083dcd10be723e9257b5a352117689ded4eebb8856cd5d3e3f9b84",
+      "kind": "local-verification",
+      "rustCompiled": false
+    },
+    {
+      "archive": "local-packaging.log.gz",
+      "bytes": 227,
+      "sha256": "234bfaa4cb25ba1d6b228837a56ad559ab6a132c52a21eff359bb27e021d7788",
+      "kind": "local-verification",
+      "rustCompiled": false
+    }
+  ],
+  "registryModuleIdenticalToPinnedTemplate": true,
+  "hostedRegistryTestsPassed": 3,
+  "hostedCliCasesPassed": 13,
+  "hostedCliSource": "hosted-source-08.txt.gz",
+  "expandedCliCases": 15,
+  "expandedCliNativeExecutionVerified": false,
+  "pendingControls": [
+    "All four former release-prefix exemptions, both version increase and decrease",
+    "An actual two-parent merge carrying the base version update"
+  ],
+  "hostedJob": "https://github.com/link-assistant/formal-ai/actions/runs/45018199760/job/137201251397",
+  "fallibleOutput": {
+    "nativeTestsPassed": 7,
+    "testedHead": "11c0bd05cc63049a0bc865944385efe3982b4344",
+    "currentSourceIdentical": true,
+    "fullLog": "../../ci/native-families-11c0bd05/early-core-job-api-136080808912.log.gz"
+  },
+  "limits": [
+    "Loopback HTTP and local bare Git origins exercise compiled production scripts with only origins and retry delay adapted.",
+    "The production registry path and failed output writes are qualified; live publication and immutable all-target recovery delivery are not.",
+    "The version guard supports the current root/rust literal package layout and refuses inherited versions. This does not claim the template workspace/member scan is ported.",
+    "The additional branch and merge cases await the next hosted CI round."
+  ],
+  "allApplicablePracticesImplementedAndVerified": false,
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0,
+  "localVerification": {
+    "outcome": "local-outcome.json.gz",
+    "allCommandsPassed": true,
+    "nativeExecutionOfExpandedCasesVerified": false
+  }
+}

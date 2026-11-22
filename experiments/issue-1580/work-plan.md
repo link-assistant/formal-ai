@@ -1351,3 +1351,15 @@ See [the practice evidence manifest](evidence/checks/runner-and-artifact-practic
 - [ ] Finish the wider aggregate review, all other template practices and original runtime criteria. No complete issue, upstream repair or independent authored-work credit is inferred.
 
 See [the lifetime manifest](evidence/checks/child-lifetime-hosted-verification/manifest.json) and [the additional source review](evidence/checks/additional-examples-and-guidance-review/manifest.json).
+
+
+## Version guard and ordinary registry practice verification, 2026-11-22
+
+- [x] Read and compare the complete pinned version/release guards, registry and output helpers with the current production sources and actual CLI fixtures. Verify the maintained registry helper is byte-identical to the pinned template.
+- [x] Preserve the exact-head hosted three-test HTTP/module result and 13-case compiled CLI result, plus the seven prior output tests at unchanged helper bytes. Remove stale claims that the ordinary registry path still treats unavailable observations as absence.
+- [x] Add behavioral controls for all four former branch-prefix exemptions, both manual version directions and an actual base merge; preserve the existing package parsing, failed-fetch and layout controls.
+- [ ] Verify the two new cases in the next hosted round. General workspace/member guard parity, remaining workflow replay and all original runtime acceptance remain open. No live publication or independent authored-work credit is inferred.
+
+See [the scoped verification manifest](evidence/checks/version-release-practice-verification/manifest.json).
+
+Local verification for this batch passes the lightweight HTTP fixture, the JavaScript template observation suite and all six packaging gates. The fixture check mocks compilation; the two new compiled version cases remain pending hosted CI.

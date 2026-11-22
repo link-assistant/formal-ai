@@ -160,6 +160,42 @@ class RegistryRegressions(unittest.TestCase):
         self.assertIn('Manual version change detected', result.stderr)
         self.assertEqual((self.work / 'Cargo.toml').read_text(), changed)
 
+    def test_version_check_never_authorizes_release_like_branch_names(self):
+        base = '[package]\nname = "fixture"\nversion = "1.2.3"\n'
+        self.version_base(base)
+        for branch in ['feature/check', 'changelog-manual-release-1.2.4',
+                       'changeset-release/main', 'release/1.2.4', 'automated-release/1.2.4']:
+            for version in ['1.2.2', '1.2.4']:
+                with self.subTest(branch=branch, version=version):
+                    self.env['GITHUB_HEAD_REF'] = branch
+                    changed = base.replace('1.2.3', version)
+                    (self.work / 'Cargo.toml').write_text(changed)
+                    result = self.script('check-version-modification.rs')
+                    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                    self.assertIn('Manual version change detected', result.stderr)
+                    self.assertEqual((self.work / 'Cargo.toml').read_text(), changed)
+
+    def test_version_check_accepts_a_version_received_from_a_base_merge(self):
+        self.version_base('[package]\nname = "fixture"\nversion = "1.2.3"\n')
+        self.git('checkout', '-qb', 'feature/check')
+        (self.work / 'README.md').write_text('# Feature branch change\n')
+        self.git('add', 'README.md')
+        self.git('commit', '-qm', 'feature change')
+        self.git('checkout', '-q', 'main')
+        current = '[package]\nname = "fixture"\nversion = "1.2.4"\n'
+        (self.work / 'Cargo.toml').write_text(current)
+        self.git('add', 'Cargo.toml')
+        self.git('commit', '-qm', 'base version update')
+        self.git('push', '-q')
+        self.git('checkout', '-q', 'feature/check')
+        self.git('merge', '--no-edit', 'main')
+        self.env['GITHUB_HEAD_REF'] = 'feature/check'
+        result = self.script('check-version-modification.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Version check passed', result.stdout)
+        self.assertEqual((self.work / 'Cargo.toml').read_text(), current)
+        self.assertEqual(self.git('status', '--porcelain'), '')
+
     def test_version_check_accepts_dependency_only_changes(self):
         base = ('[dependencies.decoy]\nversion = "9.9.9"\n'
                 '[package]\nname = "fixture"\nversion = "1.2.3"\n')

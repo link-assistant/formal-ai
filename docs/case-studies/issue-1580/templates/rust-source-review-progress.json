@@ -6440,13 +6440,13 @@
         "scripts/check-release-needed.rs",
         "scripts/check-cargo-lock.rs"
       ],
-      "assessment": "Template check-version-modification parses package/workspace version identity and never grants a release exemption from an untrusted branch name. The fully read Formal AI counterpart still uses a whole-document version regex and grants four release-prefix exemptions. Its head-versus-current-base comparison deliberately handles merged base versions and moved manifests and must be preserved when repairing identity and authorization. Applicable repairs and native behavioral verification remain unfinished.",
-      "status": "source-compared-applicability-and-repairs-pending",
+      "assessment": "The earlier whole-document regex and four release-prefix exemptions are removed. The guard parses the package table, refuses malformed/missing/inherited identity and a failed current-base fetch, and retains root/rust manifest movement and current-base equality. Five existing version CLI cases pass within the exact-head 13-case hosted suite. Two additional cases now exercise all four former prefix exemptions with increases/decreases and an actual merge carrying the base version; these await hosted execution. The pinned template scans workspace/member manifest versions, while the current Formal AI release layout has a literal package version; generalized workspace guard parity is not claimed.",
+      "status": "parsed-production-guard-hosted-existing-controls-expanded-controls-pending",
       "formalAiPaths": [
         "scripts/check-version-modification.rs",
         "scripts/ci-pull-request-admission.mjs"
       ],
-      "verification": null
+      "verification": "experiments/issue-1580/evidence/checks/version-release-practice-verification/manifest.json"
     },
     {
       "practice": "Release registry uncertainty and fallible outputs",
@@ -6474,12 +6474,15 @@
         "scripts/check-release-needed.rs",
         "scripts/check-cargo-lock.rs"
       ],
-      "assessment": "Configured output writes in six callers now use the shared fatal writer (284e24430); all seven native output cases pass in exact-head core job 136080808912 at 11c0bd05. The ordinary registry path still conflates some unavailable observations with missing artifacts, and its repair remains unfinished. Preserve immutable all-target recovery checks.",
-      "status": "source-compared-applicability-and-repairs-pending",
+      "assessment": "The ordinary production release path now uses the byte-identical pinned registry helper: 404 is absence; transport errors, HTTP 429/5xx, denied access, malformed success and wrong identities cannot authorize a release. The exact-head hosted job passes three actual HTTP/module tests and 13 compiled CLI cases, including writer candidate checks, retries, manifest preservation and the published version floor. The shared fatal output writer is byte-identical to its seven passing native controls at 11c0bd05. Immutable all-target recovery remains deliberately deferred unless its separate source-qualified policy permits observation; no live publication or all-target delivery is inferred.",
+      "status": "ordinary-registry-and-fallible-outputs-hosted-native-controls-verified",
       "formalAiPaths": [
-        "scripts/check-release-needed.rs"
+        "scripts/check-release-needed.rs",
+        "scripts/version-and-commit.rs",
+        "scripts/registry.rs",
+        "scripts/github-output.rs"
       ],
-      "verification": "experiments/issue-1580/evidence/ci/native-families-11c0bd05/early-completed-jobs.json"
+      "verification": "experiments/issue-1580/evidence/checks/version-release-practice-verification/manifest.json"
     },
     {
       "practice": "Committed binary lockfile enforcement",
@@ -6789,9 +6792,9 @@
         "experiments/issue-218-registry-regressions.py",
         "experiments/issue-215-regressions.py"
       ],
-      "assessment": "Read the entire pinned registry and release-regression experiments. The actual two-CLI registry fixture and shared helper are now adapted locally with a locked hosted harness; real HTTP and release execution remain pending CI. The remaining release-workflow and dependency-retry comparisons are unfinished. No full template/practice completion or independent authorship credit.",
-      "status": "literal-source-read-local-registry-draft-hosted-verification-pending",
-      "verification": "experiments/issue-1580/evidence/checks/rust-source-review/logs.json"
+      "assessment": "The full pinned registry and release-regression experiments were read previously. The adapted actual-HTTP helper and compiled production CLI harness now pass three module tests and 13 CLI cases in the current hosted job. This supersedes the earlier local-only registry draft. Complete release-workflow replay, dependency-retry comparison and actual delivery remain unfinished; this partial runtime proof does not complete the practice or the issue.",
+      "status": "registry-port-hosted-native-verified-remaining-workflow-comparisons-open",
+      "verification": "experiments/issue-1580/evidence/checks/version-release-practice-verification/manifest.json"
     },
     {
       "practice": "Complete Git evidence, cancellation qualification and release-source synchronization",
