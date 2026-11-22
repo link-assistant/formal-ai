@@ -538,3 +538,13 @@ Native artifact rerun draft is locally verified: unique run/attempt/SHA uploads,
 - [ ] Refresh final-head remote CI and every remaining original acceptance criterion; keep draft/unmerged until verified.
 
 Evidence and limits: [main integration checkpoint](../../docs/case-studies/issue-1580/main-ffd50eb4-integration.md).
+
+
+## Main aa93fe9c integration
+
+- [x] Retain PR #1623's structured-output source, complete conversation and release metadata.
+- [x] Resolve only the binary baseline conflict using complete object comparison and guarded canonical refresh.
+- [x] Pass structured-output HTTP behavior, identifier, fixture-integrity, formatting and translation-currency checks without a local build.
+- [ ] Run all local JavaScript gates after the merge commit, fix all actionable failures, then collect hosted checks for the published commit.
+
+Evidence: [structured-output integration](../../docs/case-studies/issue-1580/main-aa93fe9c-integration.md).
