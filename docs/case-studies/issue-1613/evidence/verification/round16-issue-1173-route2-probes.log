@@ -1,0 +1,15 @@
+✔ R1173-3: a script calling a function nothing defines fails whatever the function is named (2408.518738ms)
+✔ R1173-3: a builtin call, a method call, a defined name and a call without a program are no undefined call (722.08734ms)
+✔ R1173-3: Convert to JSON over a JSON payload reads the source format from the payload (311.556717ms)
+✔ R1173-3: the request line of a YAML conversion is not read as the document's first key (293.223936ms)
+✔ R1173-3: a product request with no marketplace names the catalogued ones instead of guessing (282.246583ms)
+✔ R1173-3: the browser learns from the requested regional publisher feed (7677.952845ms)
+✔ R1173-3: a quantity between two units is a conversion, not a translation (169.181126ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15296.942331

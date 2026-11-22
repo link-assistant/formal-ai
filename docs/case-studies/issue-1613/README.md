@@ -583,6 +583,50 @@ initial composition, and sequence-source expansion if the delay recurs.
 [Trace with log line numbers](evidence/verification/round13-native-synthesis-phases.log) ·
 [Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/44981801921)
 
+The next native run passed all recurrence cases, including the empty-cache
+request. The registered timeline passed, and the unregistered series returned
+unknown even after both captures were present. `fact_subject` admitted the
+registered record and omitted the publisher series operand, so the
+contextual handler never received the open-series request. Claim admission
+and retrieval now use the same frame parser. The HTTP replay includes normal
+sentence punctuation and tests the unregistered series before and after
+inserting the verified captures. [Native failure and passing recurrence cases](evidence/workflows/pipeline-round15-44985653709.log.gz) ·
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/44985653306)
+
+## Regional feeds in the browser worker
+
+The browser's learning directive returned a fixed acknowledgment and issued
+zero source requests. Native and Node recipes already read a regional RSS
+feed. The worker now uses the same parser as Node, applies source settings,
+and replays generated prompts through local reasoning. The response reports
+the captured topics, source digest, and count of prompts the local rules
+solved. It leaves rule adoption to the existing review workflow.
+[Browser baseline](evidence/verification/round16-baseline-browser-trends.log) ·
+[Browser replay](evidence/verification/round16-issue-1173-route2-probes.log)
+
+The German feed returned RSS to a request with the hosted browser's Origin
+header. The response lacked `Access-Control-Allow-Origin`. The worker can
+fall back to its configured capture component when direct browser access
+fails. The replay supplies this path for Germany and direct retrieval for
+the United States. It checks verified offline reuse, a fresh offline miss,
+a disabled source, and rejection of a non-RSS response. No feed is installed
+with the worker. [Selected publisher headers](evidence/trends/publisher-origin.headers.gz) ·
+[Publisher response](evidence/trends/publisher-origin.xml) ·
+[Node recipe replay](evidence/verification/round16-agentic-recipes-b.log)
+
+An adjacent routing replay captured a Python declaration with no prose
+language cue. The worker's function-specification claim now accepts a
+syntactic function declaration as evidence, as the native reader already
+does. [Before](evidence/verification/round16-function-signature-baseline.log.gz) ·
+[After](evidence/verification/round16-issue-1175-claim-routing.log)
+
+The four focused JavaScript suites passed 58 tests. The full gate run passed
+or skipped 137 of 138 checks. The seed audit found two missing metadata
+fields on the new RSS concept. The concept now supplies its unit and an
+example, and the audit and adjacent checks all passed on recheck.
+[Full run](evidence/verification/round16-local-gates.log) ·
+[Rechecks](evidence/verification/round16-gate-rechecks.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,

@@ -124,6 +124,8 @@ d29c9a5ca3b1d443c5159694abd990e7f2f0aa4a8feded7e9c582f62b1327441  ./trends/DE.he
 46639b0cce013ed5bfd71149b1665cc2aef5c296ea9c3fe37cd5cb328647b2a9  ./trends/US.headers
 1881acf511fdb2a45ec4a861c25206a9b3cdc8c50376fb9ab4d8cf67033273f1  ./trends/US.url
 fb2a42aac514337d989a1a1fd0680d39eb9bab75f5d66418789e3647efc00c75  ./trends/US.xml
+27418cad5702f7be6421c500b002a47e4b64535da7cc7f95983952082cce4cef  ./trends/publisher-origin.headers.gz
+863a5a03377fe0a6b9ff80de4eec88b1d12aa0eb5938c6aaaa8318aef4c1a448  ./trends/publisher-origin.xml
 fe24fa189ec99ff6a5aafb2746f384613fc5c7b9ccf979701929c9a86c9ad434  ./verification/algorithm-locales.log
 f08cfc2deb02d946ceee9c9cf7b6b8eaa9d41c3418d8b44f1854563f5d3ea731  ./verification/all-gates-round2-final.log
 d10bddbe46b78e1358d2dea08355c391f80fe679fc85f1485b15bfb1102894e0  ./verification/all-gates-round3-final.log
@@ -231,6 +233,15 @@ de0d319816f8b90ffc0ac1a8fb00fc73a78d6285da940ef501bc31494a5ff494  ./verification
 649db959681b2c20e3c248898bf633c5f0e0f55b271d85d494e6630eca1291db  ./verification/round15-local-gates.log
 70fd0455c790b9bdb568a0ff811c2cfcd4618e47ca9b4b021cdd809142871e96  ./verification/round15-native-session-projections.log
 109557be92677d13810f3ca32c8f6ce5af637f7bb337907d85767785d561216d  ./verification/round15-worker-script-prerequisites.log
+e3ef292759470bcca0b6fc94d81a0baf16b83bd28ea5933262506d9728ec19c3  ./verification/round16-agentic-recipes-b.log
+f7ea52d557b0ef0d921758d5fcfdd41ec5d1aec515c2e14ff702e1b285795539  ./verification/round16-baseline-browser-trends.log
+bff650b2af56bb5b6696d6cb01b74fd0f51205f4af507ec537bae54823ddb792  ./verification/round16-function-signature-baseline.log.gz
+1355bb4a00c9a02247235c67db25f2d70ddcc185ce12fea59f4579226e7d7be2  ./verification/round16-gate-rechecks.log
+3b3202d846d894c5806ad7a829be80e2005dc3e89df6bee1f9e4c3f6f3c6a388  ./verification/round16-issue-1173-route2-probes.log
+4dc8b0fb961f48eff8b6b17b628943536271f5b4ca89ded1563586b45e19f036  ./verification/round16-issue-1175-claim-routing.log
+a2e3f6016bbddd38a0e96cf990eef22caa8953caa26b0853d94843708190a944  ./verification/round16-issue-1396-native-local.log
+38588d6bced00f7388c67a9e8dcc1ec8a627aa8c715b9cfcb66197cc224f9853  ./verification/round16-local-gates.log
+80d91f584a187a0952c80b34ca258920430ea19f16b2c5dff33452c2d329a42f  ./verification/round16-worker-script-prerequisites.log
 540c15e55372b6541b95062d91e1d1583240b9a3352c56f6e2c28ec0a76b6b83  ./verification/round4-documentation-method-post-format.log
 4d6ddfc0e83618b9deaeb0e779e2e927f3b0ee45c61495296bac99078738f13b  ./verification/round4-fast-governance.log
 cfcc1e5653b226d4d9b0089fc4b8b2126d63ee34fcd1a76f33af0b22b921605c  ./verification/round4-readable-code-recheck.log
@@ -296,6 +307,7 @@ a90a83b5c68f13b86d02f3871c88795095ba054a3d05784f0462a0192b46ac00  ./workflows/pi
 4721d1171ad28f4eb019701dbb4b716ac28b74a063272d7bb94fbf51b05a234d  ./workflows/pipeline-round12-44979226068.log.gz
 e164e58535e2e9963d2078907eae2a297a298d588af067da16ccb590b54d68bc  ./workflows/pipeline-round13-44981802284.log.gz
 c8e23716987e0cbe96e3fffcd64b34404efeaee25422a238864654abd057fcac  ./workflows/pipeline-round14-44983621991.log.gz
+b02be5826158a2e6abcf145b7e309fa57f94c6429dfe8e7c2a211daddc438bd9  ./workflows/pipeline-round15-44985653709.log.gz
 4a9ad20649c422b822a1fa9a7e5c78cd255aaa66fc055254bd806ffd165f9f4b  ./workflows/pipeline-round9-44971850667.log.gz
 dccdebd36b2507d96faa5864671c605654addc906c0e08e4e11198af4cb0effd  ./workflows/security-44946231401-attempt2.log.gz
 ee2f11738248d29e3766a5c380ecf2e4afa288a455f89d8fb052a3c8da232560  ./workflows/security-44946231401.log.gz
