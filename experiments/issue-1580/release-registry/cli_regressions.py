@@ -112,7 +112,9 @@ class RegistryRegressions(unittest.TestCase):
         self.output = root / 'outputs'
         self.env = {**self.__class__.env, 'GITHUB_REF_NAME': 'main', 'GITHUB_OUTPUT': str(self.output),
                     'GITHUB_REPOSITORY': 'fixture/repo', 'HAS_FRAGMENTS': 'false'}
-        for key in ['RUST_ROOT', 'GITHUB_TOKEN', 'DOCKERHUB_IMAGE', 'RELEASE_RECOVERY_PROTOCOL_ROOT']:
+        for key in ['RUST_ROOT', 'GITHUB_TOKEN', 'DOCKERHUB_IMAGE', 'RELEASE_RECOVERY_PROTOCOL_ROOT',
+                    'GITHUB_EVENT_NAME', 'GITHUB_EVENT_BEFORE', 'GITHUB_REF', 'GITHUB_BASE_REF',
+                    'RELEASE_PIPELINE', 'BUMP_TYPE', 'DESCRIPTION', 'DEFAULT']:
             self.env.pop(key, None)
         (self.work / 'data/meta').mkdir(parents=True)
         (self.work / 'data/meta/self-hosting-ledger.lino').write_text('')
@@ -137,9 +139,9 @@ class RegistryRegressions(unittest.TestCase):
     def git(self, *args):
         return subprocess.run(['git', *args], cwd=self.work, capture_output=True, text=True, check=True).stdout
 
-    def script(self, name):
+    def script(self, name, *extra):
         args = ['--bump-type', 'patch', '--branch', 'main'] if name == 'version-and-commit.rs' else []
-        return subprocess.run([str(self.target / 'debug' / name.removesuffix('.rs')), *args], cwd=self.work,
+        return subprocess.run([str(self.target / 'debug' / name.removesuffix('.rs')), *args, *extra], cwd=self.work,
                               env=self.env, capture_output=True, text=True, timeout=40)
 
     def version_base(self, content):
@@ -148,6 +150,171 @@ class RegistryRegressions(unittest.TestCase):
         self.git('commit', '-qm', 'version comparison base')
         self.git('push', '-q')
         self.env.update(GITHUB_EVENT_NAME='pull_request', GITHUB_BASE_REF='main')
+
+    OUTPUT_CLIS = {
+        'get-version.rs': 'version=1.2.3',
+        'get-bump-type.rs': 'bump_type=patch',
+        'detect-code-changes.rs': 'release-pending=false',
+        'publish-crate.rs': 'publish_result=skipped',
+        'wait-for-crate.rs': 'crate_available=skipped',
+    }
+
+    def output_cli_fixture(self):
+        # The template identity takes the real publish/wait skip paths. No cargo
+        # publication or external registry request can be part of this matrix.
+        manifest = self.work / 'Cargo.toml'
+        manifest.write_text(manifest.read_text().replace('name="fixture"',
+                                                       'name="example-sum-package-name"'))
+        self.git('add', 'Cargo.toml')
+        self.git('commit', '-qm', 'template identity for output-only controls')
+        self.env.update(GITHUB_EVENT_NAME='push', GITHUB_REF='refs/heads/main')
+
+    def test_each_output_cli_refuses_directory_and_empty_output_paths(self):
+        self.output_cli_fixture()
+        for path in [str(self.work), '']:
+            self.env['GITHUB_OUTPUT'] = path
+            for script in self.OUTPUT_CLIS:
+                with self.subTest(script=script, path=path):
+                    result = self.script(script)
+                    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                    self.assertIn('GITHUB_OUTPUT', result.stderr)
+        self.assertEqual(self.requests, [])
+
+    @unittest.skipUnless(Path('/dev/full').exists(), 'requires the finite Linux full device')
+    def test_each_output_cli_refuses_write_failure_after_open(self):
+        self.output_cli_fixture()
+        self.env['GITHUB_OUTPUT'] = '/dev/full'
+        for script in self.OUTPUT_CLIS:
+            with self.subTest(script=script):
+                result = self.script(script)
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('GITHUB_OUTPUT', result.stderr)
+        self.assertEqual(self.requests, [])
+
+    def test_each_output_cli_appends_and_supports_unset_local_output(self):
+        self.output_cli_fixture()
+        for script, expected in self.OUTPUT_CLIS.items():
+            with self.subTest(script=script):
+                self.env['GITHUB_OUTPUT'] = str(self.output)
+                self.output.write_text('existing=value\n')
+                result = self.script(script)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                output = self.output.read_text()
+                self.assertTrue(output.startswith('existing=value\n'))
+                self.assertIn(expected, output.splitlines())
+                del self.env['GITHUB_OUTPUT']
+                result = self.script(script)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn(expected, result.stdout)
+                self.assertEqual(self.output.read_text(), output)
+        self.assertEqual(self.requests, [])
+
+    @unittest.skipUnless(os.name == 'posix', 'Unix path-byte contract')
+    def test_each_output_cli_preserves_non_utf8_output_paths(self):
+        self.output_cli_fixture()
+        path = os.fsdecode(os.fsencode(self.output) + b'-\xff')
+        self.env['GITHUB_OUTPUT'] = path
+        for script, expected in self.OUTPUT_CLIS.items():
+            with self.subTest(script=script):
+                result = self.script(script)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn(expected, Path(path).read_text().splitlines())
+        self.assertEqual(self.requests, [])
+
+    def test_waiter_requires_the_requested_identity_and_a_complete_registry_answer(self):
+        for mode in ['malformed', 'wrong-identity', '503', '429', '403', 'drop']:
+            with self.subTest(mode=mode):
+                self.__class__.mode = mode
+                self.__class__.requests = []
+                self.output.unlink(missing_ok=True)
+                result = self.script('wait-for-crate.rs', '--max-attempts', '2', '--sleep-seconds', '0')
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('availability', result.stderr.lower())
+                self.assertNotIn('crate_available=true', self.output.read_text() if self.output.exists() else '')
+                self.assertLessEqual(len(self.requests), 4, 'one bounded shared lookup fails closed')
+                self.assertEqual(self.git('status', '--porcelain'), '')
+
+    def test_waiter_distinguishes_expected_absence_from_confirmed_visibility(self):
+        self.__class__.mode = '404'
+        result = self.script('wait-for-crate.rs', '--max-attempts', '2', '--sleep-seconds', '0')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(len(self.requests), 2)
+        self.assertFalse(self.output.exists())
+        self.__class__.mode = 'success'
+        result = self.script('wait-for-crate.rs', '--max-attempts', '2', '--sleep-seconds', '0')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(self.output.read_text(), 'crate_available=true\n')
+
+    def test_release_change_detection_refuses_an_unreadable_fragment_inventory(self):
+        (self.work / 'src/lib.rs').write_text('pub fn changed_fixture() {}\n')
+        self.git('add', 'src/lib.rs')
+        self.git('commit', '-qm', 'code change requiring release classification')
+        self.env.update(GITHUB_EVENT_NAME='push', GITHUB_REF='refs/heads/main', RELEASE_PIPELINE='true')
+        fragments = self.work / 'changelog.d'
+        fragments.write_text('not a directory')
+        result = self.script('detect-code-changes.rs')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('changelog.d', result.stderr)
+        self.assertFalse(self.output.exists(), 'do not emit job decisions from an incomplete inventory')
+        self.assertEqual(fragments.read_text(), 'not a directory')
+        self.env['RELEASE_PIPELINE'] = 'false'
+        result = self.script('detect-code-changes.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('release-pending=false', self.output.read_text().splitlines())
+        self.output.unlink()
+        self.env['RELEASE_PIPELINE'] = 'true'
+        fragments.unlink()
+        result = self.script('detect-code-changes.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('release-pending=false', self.output.read_text().splitlines())
+        self.output.unlink()
+        fragments.mkdir()
+        (fragments / 'fixture.MD').write_text('A release note.\n')
+        result = self.script('detect-code-changes.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('release-pending=true', self.output.read_text().splitlines())
+        if os.name == 'posix':
+            invalid = Path(os.fsdecode(os.fsencode(fragments) + b'/invalid-\xff.md'))
+            invalid.write_text('Preserve this unclassifiable name.\n')
+            self.output.unlink()
+            result = self.script('detect-code-changes.rs')
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn('Non-UTF-8', result.stderr)
+            self.assertFalse(self.output.exists())
+            self.assertTrue(invalid.exists())
+
+    def test_collect_and_bump_refuse_inventory_and_fragment_read_failures(self):
+        fragments = self.work / 'changelog.d'
+        fragments.write_text('not a directory')
+        original = (self.work / 'CHANGELOG.md').read_bytes()
+        for script in ['collect-changelog.rs', 'get-bump-type.rs']:
+            with self.subTest(script=script, mode='inventory'):
+                result = self.script(script)
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('changelog.d', result.stderr)
+                self.assertEqual((self.work / 'CHANGELOG.md').read_bytes(), original)
+        fragments.unlink()
+        fragments.mkdir()
+        good = fragments / 'good.md'
+        good.write_text('---\nbump: patch\n---\n\n### Fixed\n- Keep this note.\n')
+        broken = fragments / 'unreadable.md'
+        broken.mkdir()
+        for script in ['collect-changelog.rs', 'get-bump-type.rs']:
+            with self.subTest(script=script, mode='fragment'):
+                result = self.script(script)
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('unreadable.md', result.stderr)
+                self.assertEqual((self.work / 'CHANGELOG.md').read_bytes(), original)
+                self.assertTrue(good.is_file() and broken.is_dir())
+        broken.rmdir()
+        (fragments / 'README.md').write_text('Retain instructions.\n')
+        (fragments / 'notes.txt').write_text('Retain other files.\n')
+        result = self.script('collect-changelog.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertFalse(good.exists())
+        self.assertEqual((fragments / 'README.md').read_text(), 'Retain instructions.\n')
+        self.assertEqual((fragments / 'notes.txt').read_text(), 'Retain other files.\n')
+        self.assertIn('### Fixed\n- Keep this note.', (self.work / 'CHANGELOG.md').read_text())
 
     def test_fragment_content_cannot_inject_actions_commands_into_the_log(self):
         description = 'Keep λ bytes.\n::warning::forged notice\n##[error]forged legacy error'

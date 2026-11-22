@@ -24,7 +24,8 @@
 //! [dependencies]
 //! toml_edit = "0.25.15"
 //! regex = "1"
-//! ureq = "2"
+//! ureq = "3.5.2"
+//! serde_json = "1"
 //! ```
 
 use std::env;
@@ -38,6 +39,9 @@ use github_output::set_output;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
+
+#[path = "registry.rs"]
+mod registry;
 
 fn get_arg(name: &str) -> Option<String> {
     let args: Vec<String> = env::args().collect();
@@ -66,22 +70,6 @@ fn parse_count_arg(name: &str, default: u64) -> u64 {
             )
         })
         .unwrap_or(default)
-}
-
-fn crate_version_exists(crate_name: &str, version: &str) -> bool {
-    let url = format!("https://crates.io/api/v1/crates/{}/{}", crate_name, version);
-
-    match ureq::get(&url)
-        .set("User-Agent", "rust-script-wait-for-crate")
-        .call()
-    {
-        Ok(response) => response.status() == 200,
-        Err(ureq::Error::Status(404, _)) => false,
-        Err(e) => {
-            eprintln!("Warning: Could not check crates.io: {}", e);
-            false
-        }
-    }
 }
 
 fn should_skip_crate_wait(crate_name: &str) -> bool {
@@ -127,7 +115,10 @@ fn main() {
     }
 
     for attempt in 1..=max_attempts {
-        if crate_version_exists(&crate_name, &version) {
+        if registry::or_exit(
+            "Crates.io availability",
+            registry::version_exists(&crate_name, &version),
+        ) {
             println!(
                 "{}@{} is visible on crates.io after attempt {}",
                 crate_name, version, attempt

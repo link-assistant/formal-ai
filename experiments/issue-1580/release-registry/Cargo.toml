@@ -27,6 +27,36 @@ name = "create-changelog-fragment"
 path = "../../../scripts/create-changelog-fragment.rs"
 test = false
 
+[[bin]]
+name = "get-version"
+path = "../../../scripts/get-version.rs"
+test = false
+
+[[bin]]
+name = "get-bump-type"
+path = "../../../scripts/get-bump-type.rs"
+test = false
+
+[[bin]]
+name = "detect-code-changes"
+path = "../../../scripts/detect-code-changes.rs"
+test = false
+
+[[bin]]
+name = "publish-crate"
+path = "../../../scripts/publish-crate.rs"
+test = false
+
+[[bin]]
+name = "wait-for-crate"
+path = "../../../scripts/wait-for-crate.rs"
+test = false
+
+[[bin]]
+name = "collect-changelog"
+path = "../../../scripts/collect-changelog.rs"
+test = false
+
 # Compile the exact standalone sources and their split test modules. This
 # isolated manifest avoids another build of the application and its grammars.
 [[test]]

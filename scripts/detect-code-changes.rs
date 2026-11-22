@@ -58,9 +58,12 @@
 use regex::Regex;
 use std::env;
 use std::fs;
-use std::io::Write;
 use std::path::Path;
 use std::process::Command;
+
+#[allow(dead_code)] // This CLI uses the fallible writer and retains its own stdout format.
+#[path = "github-output.rs"]
+mod github_output;
 
 // These paths are CI evidence or non-shipping scratch work. No output used to
 // gate a job may be set by a file below one of these prefixes.
@@ -100,13 +103,7 @@ fn exec_in(repo: &Path, args: &[&str]) -> std::io::Result<String> {
 }
 
 fn set_output(name: &str, value: &str) -> std::io::Result<()> {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
-        let mut file = fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(output_file)?;
-        writeln!(file, "{name}={value}")?;
-    }
+    github_output::write_output(name, value)?;
     println!("{name}={value}");
     Ok(())
 }
@@ -276,16 +273,43 @@ fn release_pending(event_name: &str, git_ref: &str, fragments: &[String]) -> boo
         })
 }
 
-/// The file names in `changelog.d/` (empty when the folder is absent).
-fn changelog_fragments() -> Vec<String> {
-    fs::read_dir("changelog.d")
-        .map(|entries| {
-            entries
-                .filter_map(Result::ok)
-                .map(|entry| entry.file_name().to_string_lossy().into_owned())
-                .collect()
-        })
-        .unwrap_or_default()
+/// Only an absent directory is an empty inventory. Unreadable entries and
+/// non-UTF-8 names cannot establish a complete release observation.
+fn changelog_fragments(directory: &Path) -> std::io::Result<Vec<String>> {
+    let entries = match fs::read_dir(directory) {
+        Ok(entries) => entries,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(error) => {
+            return Err(std::io::Error::new(
+                error.kind(),
+                format!(
+                    "Could not read fragment inventory '{}': {error}",
+                    directory.display()
+                ),
+            ));
+        }
+    };
+    let mut names = Vec::new();
+    for entry in entries {
+        let entry = entry.map_err(|error| {
+            std::io::Error::new(
+                error.kind(),
+                format!(
+                    "Could not read fragment entry in '{}': {error}",
+                    directory.display()
+                ),
+            )
+        })?;
+        let name = entry.file_name().into_string().map_err(|_| {
+            std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                format!("Non-UTF-8 fragment name in '{}'", directory.display()),
+            )
+        })?;
+        names.push(name);
+    }
+    names.sort();
+    Ok(names)
 }
 
 fn classify_changes(changed_files: &[String]) -> ChangeFlags {
@@ -393,6 +417,24 @@ fn main() -> std::io::Result<()> {
     }
     println!();
 
+    // Establish the release inventory before emitting any job decision. Other
+    // workflows do not consume it and must not acquire a new filesystem input.
+    let event = env::var("GITHUB_EVENT_NAME").unwrap_or_default();
+    let git_ref = env::var("GITHUB_REF").unwrap_or_default();
+    let pending = if env::var("RELEASE_PIPELINE").is_ok_and(|value| value == "true")
+        && event == "push"
+        && git_ref == "refs/heads/main"
+    {
+        automatic_release_pending(
+            &event,
+            &git_ref,
+            &changelog_fragments(Path::new("changelog.d"))?,
+            &changed_files,
+        )
+    } else {
+        false
+    };
+
     let flags = classify_changes(&changed_files);
     set_output(
         "rs-changed",
@@ -460,13 +502,6 @@ fn main() -> std::io::Result<()> {
     }
     println!();
 
-    let pending = env::var("RELEASE_PIPELINE").is_ok_and(|value| value == "true")
-        && automatic_release_pending(
-            &env::var("GITHUB_EVENT_NAME").unwrap_or_default(),
-            &env::var("GITHUB_REF").unwrap_or_default(),
-            &changelog_fragments(),
-            &changed_files,
-        );
     if pending && !flags.any_code_changed {
         println!(
             "A changelog fragment is waiting on main: the release needs lint, test and the build."
