@@ -7,11 +7,11 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 
 | Level | Meaning | Requirements |
 | ---: | --- | ---: |
-| 0 closed | superseded or withdrawn; no pass raises it | 8 |
+| 0 closed | superseded or withdrawn; no pass raises it | 9 |
 | 1 recorded | the row exists, nothing measures it yet | 34 |
 | 2 measured | a test pins it, but the row says it is not delivered | 3 |
 | 3 partial | delivered in part | 128 |
-| 4 implemented | delivered, with a test | 1356 |
+| 4 implemented | delivered, with a test | 1355 |
 | | **all** | **1529** |
 
 ## JavaScript first
@@ -20,8 +20,8 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 510 |
-| a Rust test only | 919 |
+| a JavaScript test | 513 |
+| a Rust test only | 916 |
 | no test | 100 |
 
 ## Next pass
