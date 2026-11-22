@@ -166,17 +166,13 @@ pub struct CompiledTemplate {
     pub code: &'static str,
 }
 
-/// A program the catalog answers a `(task, language)` pair with.
-///
-/// The program is runtime data (issue #1165 R1165-4): a compiled row lends
-/// its text, while a pair the documentation route covers owns the program
-/// rediscovered from `data/seed/coding-documentation-captures.lino` when the
-/// catalog table is first read, so a retired program is no longer compiled.
+/// Code for a task and language, compiled locally or composed for one request.
 #[derive(Clone)]
 pub struct ProgramTemplate {
     pub task_slug: &'static str,
     pub language_slug: &'static str,
     pub code: Cow<'static, str>,
+    pub(crate) composed: bool,
 }
 
 impl From<&CompiledTemplate> for ProgramTemplate {
@@ -185,18 +181,19 @@ impl From<&CompiledTemplate> for ProgramTemplate {
             task_slug: compiled.task_slug,
             language_slug: compiled.language_slug,
             code: Cow::Borrowed(compiled.code),
+            composed: false,
         }
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ProgramSpec {
-    pub language: &'static ProgramLanguage,
-    pub task: &'static ProgramTask,
-    pub template: &'static ProgramTemplate,
+pub struct ProgramSpec<'a> {
+    pub language: &'a ProgramLanguage,
+    pub task: &'a ProgramTask,
+    pub template: &'a ProgramTemplate,
 }
 
-impl ProgramSpec {
+impl ProgramSpec<'_> {
     #[must_use]
     pub fn response_link(self) -> String {
         format!(

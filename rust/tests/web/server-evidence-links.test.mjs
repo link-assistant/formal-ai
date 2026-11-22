@@ -18,6 +18,7 @@ import { EventLog, buildEvidenceLinks, evidenceLink } from "../../../js/server/e
 import { executionReport, nativeProgramAnswer } from "../../../js/server/program-report.mjs";
 import { REPO_ROOT, WorkerHost } from "../../../js/server/worker-host.mjs";
 import { solveSymbolic, solverEvidenceLinks } from "../../../js/server/solve.mjs";
+import { codingDocumentationReplay } from "./support/coding-documentation-replay.mjs";
 
 let host;
 before(async () => {
@@ -129,9 +130,19 @@ test("a rediscovered program reports its page, not the language's recorded run",
   ].join("\n"));
   assert.equal(executionReport(program, "es").split("\n")[0],
     `Estado de ejecución: no ejecutado; este programa se redescubrió en ${page} y su contrato de salida se comprobó por descomposición, no ejecutándolo.`);
-  const answer = await solveSymbolic({ worker: host }, "write me hello world program in Python", []);
+  const replay = codingDocumentationReplay();
+  const sourced = new WorkerHost({}, { networkFetch: replay.networkFetch });
+  const answer = await solveSymbolic({ worker: sourced }, "write me hello world program in Python", []);
   assert.ok(answer.answer.includes(`Execution status: not run; this program was rediscovered from ${page}`), answer.answer);
   assert.ok(!answer.answer.includes("compiled and ran"), answer.answer);
+});
+
+test("a cold composed program reports the expected output without a historical run", async () => {
+  const offline = new WorkerHost({}, { networkFetch: async () => { throw new Error("offline"); } });
+  const answer = await solveSymbolic({ worker: offline }, 'Write a Python program that prints "Another greeting"', []);
+  assert.ok(answer.answer.includes('print("Another greeting")'));
+  assert.ok(answer.answer.includes("Execution status: not probed in this environment."));
+  assert.ok(!answer.answer.includes("issue-8 local verification harness"));
 });
 
 test("a follow-up program edit carries the native execution report", async () => {

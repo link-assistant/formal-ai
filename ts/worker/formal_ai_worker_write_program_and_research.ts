@@ -201,7 +201,7 @@ function writeProgramDiagnosticBundle({
   return { steps, trace };
 }
 
-function tryWriteProgram(prompt, history, responseLanguage, composition) {
+async function tryWriteProgram(prompt, history, responseLanguage, composition, preferences) {
   let detected = requestedWriteProgramParameters(prompt); // R1173-3: text to print names the operand task
   const initiallyDetected = detected;
   const coreference = detected ? null : rewriteBareProgramCoreference(prompt, history);
@@ -217,8 +217,14 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   // Issue #324: answer in the language of the request (falls back to en).
   const i18n = writeProgramStrings(responseLanguage);
   const operand = WRITE_PROGRAM_TASKS[task]?.procedure ? programTaskOperand(prompt) : null; // R1173-3
-  const operandResult = operandProgram(task, language, operand);
-  const template = operand === null ? writeProgramTemplate(task, language) : operandResult && operandResult.recipe.entry; // #1165: documentation first, else stored
+  const replacement = task === "hello_world" ? inlineHelloWorldReplacement(prompt) || null : null;
+  const documented = operand === null
+    ? await discoverDocumentedProgram(task, language, replacement ?? undefined, preferences)
+    : await operandProgram(task, language, operand, preferences);
+  const suppliedOutput = operand ?? replacement;
+  const composed = suppliedOutput === null ? null : literalOutputProgram(language, suppliedOutput);
+  const original = suppliedOutput === null ? writeProgramTemplate(task, language) : composed;
+  const template = (WRITE_PROGRAM_LANGUAGES[language] && documented?.recipe?.entry) || original;
   const diagnostics = writeProgramDiagnosticBundle({
     prompt,
     initiallyDetected,
@@ -249,13 +255,9 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
         composition,
       );
     }
-    // Issue #412 (R6): before the unsupported dead end, try the coding oracle —
-    // the cached external knowledge bases (Hello World Collection, Rosetta Code,
-    // …) answer for languages the verified catalog does not template (Kotlin,
-    // Swift, PHP, …). Mirrors `try_write_program_from_oracle` in
-    // `src/solver_handler_oracle.rs`.
+    // A checked publisher example can fill a missing language contract.
     const oracleTask = task || programTaskFromPrompt(normalizeProgramPrompt(prompt));
-    const oracleAnswer = language ? codingOracleAnswer(oracleTask, language) : null;
+    const oracleAnswer = language ? codingOracleAnswer(oracleTask, language, documented) : null;
     if (oracleAnswer) return oracleAnswer;
     // An entity and a supported relation can use a verb shared with program
     // creation. A bare language mention does not supply a program task.
@@ -278,39 +280,37 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
       trace: diagnostics.trace,
     };
   }
-  const languageInfo = writeProgramLanguageInfo(task, language, operandResult); // #1165 R1165-6: the documented run contract
+  const languageInfo = writeProgramLanguageInfo(task, language, documented);
   const taskInfo = WRITE_PROGRAM_TASKS[task];
-  const expectedOutput = operand === null ? writeProgramExpectedOutput(task, languageInfo, taskInfo) : operand;
+  const expectedOutput = documented?.recipe?.verified_output ?? suppliedOutput ?? writeProgramExpectedOutput(task, languageInfo, taskInfo);
   // The sandbox can only execute self-contained JavaScript; a snippet that pulls
   // in Node APIs (e.g. the list-files `require("fs")`) cannot run here (#312).
   const ranInSandbox =
-    language === "javascript" && !/\brequire\s*\(|\bimport\b/.test(template);
+    !documented?.recipe && language === "javascript" && !/\brequire\s*\(|\bimport\b/.test(template);
   const lines = [];
   lines.push(i18n.intro(languageInfo.name, taskInfo.label));
   lines.push("");
   lines.push("```" + languageInfo.fence);
   lines.push(template);
-  lines.push("```");
-  lines.push("");
-  const executionLines = writeProgramExecutionLines(language, task, template, expectedOutput, i18n, responseLanguage);
+  lines.push("```", "");
+  const executionLines = writeProgramExecutionLines(language, task, template, expectedOutput, i18n, responseLanguage, documented);
   lines.push(...executionLines);
   // Issue #330 (R9): teach a novice — append a plain-language explanation of how
   // the code works, then step-by-step instructions for testing it. Follow-up
   // edits (when the dialog already showed code) drop the verbose setup steps.
   const priorCode = historyHasPriorCode(history);
-  lines.push("");
-  lines.push(programExplanationSection(task, responseLanguage));
-  lines.push("");
-  lines.push(programTestInstructions(languageInfo, responseLanguage, priorCode, task));
-  const content = applyInlineHelloWorldOutputReplacement(prompt, task, lines.join("\n"));
+  lines.push("", programExplanationSection(task, responseLanguage, expectedOutput),
+    "", programTestInstructions(languageInfo, responseLanguage, priorCode, task));
+  const content = lines.join("\n");
   return {
     intent: "write_program",
     content,
     // R1013: the sandbox block and the facts a native host reports instead (js/server/program-report.mjs).
     programExecution: { language, task, responseLanguage, checkCommand: languageInfo.checkCommand || null,
-      rediscoveredFrom: operandResult ? operandResult.recipe.rediscovery_source : documentationRediscoveredPage(task, language), // #1165
-      runCommand: programRunCommandLine(task, languageInfo.runCommand), output: applyInlineHelloWorldOutputReplacement(prompt, task, expectedOutput),
-      block: applyInlineHelloWorldOutputReplacement(prompt, task, executionLines.join("\n")) },
+      rediscoveredFrom: documented?.recipe?.rediscovery_source,
+      composed: !documented?.recipe && (suppliedOutput !== null || taskInfo.operation === "print_literal"),
+      runCommand: programRunCommandLine(task, languageInfo.runCommand), output: expectedOutput,
+      block: executionLines.join("\n") },
     confidence: 0.9,
     evidence: [
       `response:write_program:${task}:${language}`, ...metaAlgorithmConstructionEvidence(activeMetaAlgorithmSurface(diagnostics.trace)),
@@ -329,6 +329,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
         : []),
     ],
     solverEvents: plan ? [{ kind: "write_program_plan", payload: plan }] : [],
+    documented,
     steps: diagnostics.steps,
     trace: diagnostics.trace.length ? diagnostics.trace : undefined,
   };

@@ -527,11 +527,8 @@ fn plan_work_item_execution(
     work_item: &str,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
-    // The default configuration is the right one: the recipe wanted here is the
-    // same `write_program` answer a user typing this request directly would get,
-    // and the client — not this solver — owns execution. Opting into agent mode
-    // would only add the policy branches that answer *about* agent actions.
-    let mut answer = crate::solver::UniversalSolver::default().solve(objective);
+    // Work-item recipes are compiled from local operations or reviewed cache entries.
+    let mut answer = crate::solver::UniversalSolver::default().solve_for_execution(objective);
     // A program is written only for an obligation of the work item, never for
     // a span it merely cites (issue #1562): the address of a `test-hello-world`
     // repository or a quoted log is no request for a Hello World program.

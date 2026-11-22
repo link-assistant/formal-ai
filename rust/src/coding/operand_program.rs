@@ -3,20 +3,19 @@
 //!
 //! The `print_text` row of `data/seed/hello-world-programs.lino` stores no
 //! program. It names the `procedure` it is composed from (the `hello_world`
-//! print procedure the documentation route rediscovers from the captured
-//! pages), and its `output` is the `{operand}` slot. The program is that
-//! procedure with the request's text bound into its output literal
-//! ([`crate::discovery_production::rediscover_documented_program`]), so no
-//! program is memorized per text or per language. The JavaScript twins live in
-//! `js/worker/formal_ai_worker_program_requests.js`.
+//! print procedure), and its `output` is the `{operand}` slot. Publisher
+//! examples are acquired and checked against that operand. The local stdout
+//! operation can also render the same operand from language syntax alone.
+//! The browser twin lives in `js/worker/formal_ai_worker_program_requests.js`.
 
+use std::borrow::Cow;
 use std::sync::OnceLock;
 
-use crate::coding::{ProgramSpec, ProgramTask, program_language_by_slug, program_task_by_slug};
-use crate::discovery_production::{
-    RunContract, catalog_run_commands, rediscover_documented_program,
+use crate::coding::{
+    ProgramSpec, ProgramTask, ProgramTemplate, program_language_by_slug, program_task_by_slug,
 };
-use crate::engine::{ExecutionRecipe, SymbolicAnswer};
+use crate::discovery_production::{RunContract, catalog_run_commands, resolve_documented_program};
+use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::normal_markov::quoted_segment_spans;
@@ -328,96 +327,279 @@ pub fn operand_task(prompt: &str) -> Option<&'static ProgramTask> {
     operand_tasks().first().map(|(task, _)| *task)
 }
 
-/// Answer a `write_program` request for an operand task (R1173-3).
-///
-/// The task's `procedure` is rediscovered from the documentation captures
-/// with the operand bound into its output literal and verified by
-/// decomposing it again; the answer runs it with the run contract the
-/// procedure's catalog pair binds (the same names, since only the literal
-/// changed), and states that it was rediscovered from the page rather than
-/// borrowing a recorded run. `None` when the task takes no operand, the
-/// request names none, or no captured page verifies a program, which leaves
-/// the caller on its existing path. The JavaScript twin is the operand arm of
-/// `tryWriteProgram` with `operandProgram`.
-pub fn try_write_operand_program(
+/// The response format chosen by the calling handler.
+pub(crate) enum ProgramReply {
+    Program {
+        language: Language,
+        prior_code: bool,
+    },
+    Script,
+}
+
+impl ProgramReply {
+    fn intent(&self, target: &str) -> Cow<'static, str> {
+        match self {
+            Self::Program { .. } => Cow::Borrowed(crate::coding::WRITE_PROGRAM_INTENT),
+            Self::Script => Cow::Owned(format!("write_script_{target}")),
+        }
+    }
+
+    fn render(&self, spec: ProgramSpec<'_>, output: &str, source: Option<&str>) -> String {
+        match *self {
+            Self::Program {
+                language,
+                prior_code,
+            } => crate::engine::write_program_answer_with_output(
+                spec,
+                language,
+                prior_code,
+                output,
+                source,
+                spec.template.composed,
+            ),
+            Self::Script => format!(
+                "{}\n\n```{}\n{}\n```\n\n{}",
+                crate::coding::guidance::guidance(
+                    "script-intro",
+                    Language::English,
+                    &[("language", spec.language.name)],
+                ),
+                spec.language.code_fence,
+                spec.template.code,
+                crate::engine::execution_report(
+                    spec.language,
+                    &spec.run_command_line(),
+                    output,
+                    Language::English,
+                    source,
+                    spec.template.composed,
+                ),
+            ),
+        }
+    }
+}
+
+/// Compose a program from a publisher page acquired under the request's policy.
+pub(crate) fn try_write_documented_program(
     prompt: &str,
-    task: Option<&str>,
-    language: Option<&str>,
-    reply: Language,
+    task: &str,
+    language: &str,
+    reply: ProgramReply,
+    documentation_access: Option<bool>,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let (task, procedure) = operand_tasks()
+    let task = program_task_by_slug(task)?;
+    let row = program_language_by_slug(language)?;
+    let operand_procedure = operand_tasks()
         .iter()
-        .find(|(candidate, _)| Some(candidate.slug) == task)
-        .map(|(task, procedure)| (*task, procedure.as_str()))?;
-    let operand = program_task_operand(prompt)?;
-    let row = program_language_by_slug(language?)?;
+        .find(|(candidate, _)| candidate.slug == task.slug)
+        .map(|(_, procedure)| procedure.as_str());
+    let procedure = operand_procedure.unwrap_or(task.slug);
+    let output = match operand_procedure {
+        Some(_) => program_task_operand(prompt)?,
+        None if task.slug == "hello_world" => {
+            crate::code_editing::inline_hello_world_replacement(prompt)
+                .unwrap_or_else(|| task.output_for_language(row))
+        }
+        None => task.output_for_language(row),
+    };
     let commands = catalog_run_commands(row);
-    let documented = rediscover_documented_program(
-        row.slug,
-        procedure,
-        &operand,
-        RunContract {
-            save_as: &row.save_as,
-            commands: &commands,
-        },
-    )
-    .ok()?;
-    let pair = crate::coding::documented_pair(procedure, row.slug)?;
-    if documented.contract.save_as != *pair.language.save_as {
-        return None;
-    }
+    let documented = documentation_access.and_then(|offline| {
+        if crate::discovery_production::documentation_captures(language, procedure).is_empty() {
+            return None;
+        }
+        match resolve_documented_program(
+            row.slug,
+            procedure,
+            &output,
+            RunContract {
+                save_as: &row.save_as,
+                commands: &commands,
+            },
+            offline,
+        ) {
+            Ok(program) => Some(program),
+            Err(reason) => {
+                crate::discovery_production::record_program_cache_miss(
+                    log, row.slug, task.slug, &reason,
+                );
+                None
+            }
+        }
+    });
+    let Some(documented) = documented else {
+        if operand_procedure.is_none() {
+            return None;
+        }
+        let code = crate::coding::catalog::literal_output_program(language, &output)?;
+        let template = ProgramTemplate {
+            task_slug: task.slug,
+            language_slug: row.slug,
+            code: Cow::Owned(code),
+            composed: true,
+        };
+        let spec = ProgramSpec {
+            language: row,
+            task,
+            template: &template,
+        };
+        let body = reply.render(spec, &output, None);
+        log.append("program_parameter:language", row.slug.to_owned());
+        log.append("program_parameter:task", task.slug.to_owned());
+        log.append("program_parameters", spec.parameter_summary());
+        log.append("legacy_intent", spec.legacy_intent());
+        log.append(
+            "program_operand",
+            [
+                format!("task={}", task.slug),
+                format!("procedure={procedure}"),
+            ]
+            .join(" "),
+        );
+        log.append(
+            "execution_status",
+            crate::coding::ExecutionStatus::NotProbed.label().to_owned(),
+        );
+        record_unfulfilled_obligations(prompt, log);
+        let mut answer = crate::solver_handlers::finalize_simple(
+            prompt,
+            log,
+            &reply.intent(row.slug),
+            &spec.response_link(),
+            &body,
+            0.9,
+        );
+        answer.execution_recipe = Some(Box::new(crate::engine::ExecutionRecipe {
+            language: row.code_fence.to_owned(),
+            source: spec.template.code.to_string(),
+            path: row.save_as.to_string(),
+            supporting_files: Vec::new(),
+            commands: commands.into_iter().map(str::to_owned).collect(),
+        }));
+        return Some(answer);
+    };
+    let template = ProgramTemplate {
+        task_slug: task.slug,
+        language_slug: row.slug,
+        code: Cow::Owned(documented.recipe.entry.clone()),
+        composed: false,
+    };
+    let language = crate::coding::bound_language(row, &documented.contract);
     let spec = ProgramSpec {
-        language: &pair.language,
+        language: &language,
         task,
-        template: crate::coding::program_template(procedure, row.slug)?,
+        template: &template,
     };
     let source = documented.recipe.rediscovery_source.as_str();
-    let body = format!(
-        "{}\n\n```{}\n{}\n```\n\n{}\n\n{}\n\n{}",
-        crate::engine::write_program_intro(spec.language.name, task.label, reply),
-        spec.language.code_fence,
-        documented.recipe.entry,
-        crate::engine::execution_report(
-            spec.language,
-            &spec.run_command_line(),
-            &operand,
-            reply,
-            Some(source),
-        ),
-        crate::coding::guidance::program_explanation_section(spec, reply),
-        crate::coding::guidance::program_test_instructions(spec, reply, false),
-    );
+    let body = reply.render(spec, &output, Some(source));
     let content_id = format!("0x{:016x}", documented.recipe.content_id);
+    log.append(
+        "execution_status",
+        crate::coding::ExecutionStatus::Unavailable
+            .label()
+            .to_owned(),
+    );
+    log.append("execution_environment", source.to_owned());
     log.append("program_parameter:language", row.slug.to_owned());
     log.append("program_parameter:task", task.slug.to_owned());
     log.append("program_parameters", spec.parameter_summary());
-    log.append_fields(
-        "program_operand",
-        &[
-            ("task", task.slug),
-            ("procedure", procedure),
-            ("source", source),
-            ("content_id", content_id.as_str()),
-        ],
-    );
-    let mut answer = crate::solver_handlers::finalize_simple(
+    log.append("legacy_intent", spec.legacy_intent());
+    for (kind, payload) in
+        crate::discovery_production::documentation_events(row.slug, task.slug, &documented)
+    {
+        log.append(kind, payload);
+    }
+    if operand_procedure.is_some() {
+        log.append_fields(
+            "program_operand",
+            &[
+                ("task", task.slug),
+                ("procedure", procedure),
+                ("source", source),
+                ("content_id", &content_id),
+            ],
+        );
+    } else {
+        let outcome = if documented.cached {
+            "hit"
+        } else {
+            "discovered"
+        };
+        log.append_fields(
+            "procedure_cache",
+            &[
+                ("outcome", outcome),
+                ("language", row.slug),
+                ("task", task.slug),
+                ("rediscovery_source", source),
+                ("content_id", &content_id),
+            ],
+        );
+    }
+    record_unfulfilled_obligations(prompt, log);
+    Some(crate::solver_handlers::finalize_simple(
         prompt,
         log,
-        crate::coding::WRITE_PROGRAM_INTENT,
+        &reply.intent(row.slug),
         &spec.response_link(),
         &body,
         0.9,
+    ))
+}
+
+fn record_unfulfilled_obligations(prompt: &str, log: &mut EventLog) {
+    if crate::intent_formalization::request_carries_work_obligations(prompt)
+        || crate::intent_formalization::request_demands(
+            prompt,
+            crate::intent_formalization::ObligationKind::CiWorkflow,
+        )
+    {
+        crate::intent_formalization::record_obligation_gaps(prompt, log);
+    }
+}
+
+pub(crate) fn write_script_program(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<SymbolicAnswer> {
+    if !crate::solver_helpers::is_write_script_request(prompt, normalized) {
+        return None;
+    }
+    let language = crate::coding::program_language_by_alias(normalized)?;
+    let operand = operand_task(prompt);
+    if (operand.is_some() || !program_task_print_claim(prompt))
+        && let Some(answer) = try_write_documented_program(
+            prompt,
+            operand.map_or("hello_world", |task| task.slug),
+            language.slug,
+            ProgramReply::Script,
+            Some(offline),
+            log,
+        )
+    {
+        return Some(answer);
+    }
+    if program_task_print_claim(prompt) {
+        return None;
+    }
+    let program = crate::engine::hello_world_program_by_alias(normalized)?;
+    let body = ProgramReply::Script.render(program, &program.expected_output(), None);
+    let intent = ProgramReply::Script.intent(program.language.slug);
+    log.append(
+        "execution_status",
+        crate::coding::ExecutionStatus::NotProbed.label().to_owned(),
     );
-    answer.execution_recipe = Some(Box::new(ExecutionRecipe {
-        language: spec.language.code_fence.to_owned(),
-        source: documented.recipe.entry.clone(),
-        path: spec.language.save_as.to_string(),
-        supporting_files: Vec::new(),
-        commands: catalog_run_commands(spec.language)
-            .into_iter()
-            .map(str::to_owned)
-            .collect(),
-    }));
-    Some(answer)
+    Some(crate::solver_handlers::finalize_simple(
+        prompt,
+        log,
+        &intent,
+        &format!(
+            "response:write_program:hello_world:{}",
+            program.language.slug
+        ),
+        &body,
+        1.0,
+    ))
 }

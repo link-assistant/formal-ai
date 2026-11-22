@@ -294,24 +294,44 @@ function documentationCaptureNodes() {
   return (root ? root.children : []).filter((node) => node.name === "capture");
 }
 
-/**
- * The documentation captures for one language and task, in seed order, each
- * with its URL, rediscovery query, the language name the page states (when
- * the capture records one) and the code blocks its page holds.
- * @param {string} language
- * @param {string} task
- * @returns {Array<{url: string, query: string, languageName: string, blocks: Array<{language: string, text: string}>}>}
- */
-function documentationCaptures(language, task) {
+/** References for a single task and language, with no captured page content. */
+function documentationSources(language, task) {
   return documentationCaptureNodes()
     .filter((node) => childValue(node, "language") === language && childValue(node, "task") === task)
     .map((node) => ({
       url: childValue(node, "url"),
       query: childValue(node, "rediscovery_query"),
       languageName: childValue(node, "language_name") || "",
-      blocks: node.children.filter((child) => child.name === "block")
-        .map((block) => ({ language: childValue(block, "language"), text: childValue(block, "code") })),
+      mime: childValue(node, "mime"),
     }));
+}
+
+/** Acquire and formalize only the registered pages the requested program needs. */
+async function acquireDocumentationCaptures(language, task, preferences = {}) {
+  if (!documentationRouteActive()) return [];
+  const online = preferences.offline !== true && preferences.allowNetwork !== false && self.navigator?.onLine !== false;
+  const references = documentationSources(language, task);
+  const pages = await Promise.all(references.map(async (reference) => {
+    const { url, mime } = reference;
+    let capture = await sourceWalkFetchCapture(url, { online, indexed: true, bounded: true, maxAgeSeconds: 86400 });
+    if (!capture.ok && online) {
+      const recovered = await howToCaptureThroughComponent(url, []);
+      if (recovered) {
+        capture = Object.freeze({ ...recovered, ok: true });
+        sourceWalkCaptureCache.set(`indexed:${url}`, capture);
+      }
+    }
+    if (!capture.ok) return null;
+    const blocks = formalizePage(capture.text, mime, url).blocks
+      .filter((block) => block.kind === "code_block")
+      .map((block) => ({ language: block.language || "unknown", text: block.text }));
+    return { ...reference, sha256: capture.sha256, cached: capture.cached, blocks };
+  }));
+  return pages.filter(Boolean);
+}
+
+async function discoverDocumentedProgram(task, language, output, preferences) {
+  return rediscoverDocumentedProgram(task, language, output, await acquireDocumentationCaptures(language, task, preferences));
 }
 
 /**
@@ -543,8 +563,7 @@ function documentationDeviation(language, call, program) {
  * @param {string} [output]
  * @returns {{recipe: object|null, rejected: string|null, captured: boolean, contract: object|null, deviation: string|null, languageName: string}}
  */
-function rediscoverDocumentedProgram(task, language, output) {
-  const captures = documentationRouteActive() ? documentationCaptures(language, task) : [];
+function rediscoverDocumentedProgram(task, language, output, captures = []) {
   const empty = { recipe: null, rejected: null, captured: false, contract: null, deviation: null, languageName: "" };
   if (captures.length === 0) return empty;
   const reject = (reason) => ({ ...empty, rejected: reason, captured: true });
@@ -589,6 +608,8 @@ function rediscoverDocumentedProgram(task, language, output) {
     contract: contract.ok,
     deviation: documentationDeviation(language, call, recomposed.source),
     languageName: best.capture.languageName,
+    sha256: best.capture.sha256,
+    cached: best.capture.cached,
   };
 }
 
@@ -599,68 +620,40 @@ function rediscoverDocumentedProgram(task, language, output) {
  * with the documented file name bound to the catalog's. `documented` is null
  * when the captured pages state no such command. Mirrors
  * `documented_run_commands` in rust/src/discovery_production_documentation.rs.
- * @param {string} task
  * @param {string} language
+ * @param {Array<object>} captures
  * @returns {Array<{catalog: string, documented: string|null}>}
  */
-function documentedRunCommands(task, language) {
+function documentedRunCommands(language, captures) {
   const languageInfo = typeof WRITE_PROGRAM_LANGUAGES === "object" ? WRITE_PROGRAM_LANGUAGES[language] : null;
   if (!languageInfo) return [];
-  const lines = documentationCommandLines(documentationCaptures(language, task));
+  const lines = documentationCommandLines(captures);
   return [languageInfo.checkCommand, languageInfo.runCommand].filter(Boolean).map((command) => ({
     catalog: command,
     documented: (lines.find((entry) => documentedCommandMatches(entry.line, command, languageInfo.saveAs)) || { line: null }).line,
   }));
 }
 
-/** Rediscovery is deterministic over the seed, so a worker computes it once per pair. */
-const CODE_EXAMPLE_DOCUMENTED = new Map();
-
-/**
- * The memoized rediscovery for a pair (never memoized before the captures
- * seed is loaded).
- * @param {string} task
- * @param {string} language
- */
-function documentedProgram(task, language) {
-  const key = task + ":" + language;
-  if (CODE_EXAMPLE_DOCUMENTED.has(key)) return CODE_EXAMPLE_DOCUMENTED.get(key);
-  const result = rediscoverDocumentedProgram(task, language);
-  if (seedRawText(SEED_RAW, CODE_EXAMPLE_CAPTURES_FILE) !== "") CODE_EXAMPLE_DOCUMENTED.set(key, result);
-  return result;
-}
-
-/**
- * Whether the documentation route knows a language (issue #1165 R1165-4):
- * some task its captures cover rediscovers a verified program. Mirrors
- * `language_has_documented_procedure` in rust/src/discovery_production_documentation.rs.
- * @param {string} language
- * @returns {boolean}
- */
+/** Whether the enabled registry identifies a publisher for the language. */
 function documentationKnowsLanguage(language) {
   const needle = pageAsciiLower(String(language || "").trim());
-  if (!needle || !documentationRouteActive()) return false;
-  const tasks = documentationCaptureNodes()
-    .filter((node) => childValue(node, "language") === needle)
-    .map((node) => childValue(node, "task"));
-  return Array.from(new Set(tasks)).some((task) => documentedProgram(task, needle).recipe !== null);
+  return Boolean(needle) && documentationRouteActive()
+    && documentationCaptureNodes().some((node) => childValue(node, "language") === needle);
 }
 
 /**
  * The program a write_program answer starts from, for a catalogued language:
- * the one rediscovered from documentation when the captures yield a verified
- * one, else the stored catalog template, else null. A captured language the
- * catalog has no row for (Swift) is the coding oracle's to answer.
+ * the local catalog template, or null when a source or more information is needed.
  * @param {string} task
  * @param {string} language
  * @returns {string|null}
  */
 function writeProgramTemplate(task, language) {
   if (!task || !language || typeof WRITE_PROGRAM_LANGUAGES !== "object" || !WRITE_PROGRAM_LANGUAGES[language]) return null;
-  const documented = documentedProgram(task, language);
-  if (documented.recipe) return documented.recipe.entry;
   const stored = typeof WRITE_PROGRAM_TEMPLATES === "object" ? WRITE_PROGRAM_TEMPLATES[task]?.[language] : null;
-  return typeof stored === "string" ? stored : null;
+  if (typeof stored === "string") return stored;
+  const taskInfo = WRITE_PROGRAM_TASKS[task];
+  return taskInfo?.operation === "print_literal" ? literalOutputProgram(language, taskInfo.output) : null;
 }
 
 /**
@@ -676,46 +669,10 @@ function writeProgramTemplate(task, language) {
  */
 function writeProgramLanguageInfo(task, language, documented) {
   const base = typeof WRITE_PROGRAM_LANGUAGES === "object" ? WRITE_PROGRAM_LANGUAGES[language] : null;
-  const contract = base && task ? (documented || documentedProgram(task, language)).contract : null;
+  const contract = base && task ? documented?.contract : null;
   if (!contract) return base || null;
   const command = (role) => (contract.commands.find((entry) => entry.role === role) || { command: null }).command;
   return { ...base, saveAs: contract.saveAs, checkCommand: command("check"), runCommand: command("run") };
-}
-
-/**
- * How a documented program was verified (issue #1165): a run the policy
- * seed's `recorded_verification` records for its language, task and
- * content_id, else rediscovery from its page with its output contract checked
- * by decomposition. Mirrors `program_verification` in
- * rust/src/discovery_production_contract.rs.
- * @param {object} recipe the rediscovered row
- * @returns {{verification: string, source: string}}
- */
-function documentationVerification(recipe) {
-  const root = parseLinoTree(seedRawText(SEED_RAW, CODE_EXAMPLE_POLICY_FILE)).children[0];
-  const record = (root ? root.children : []).find((node) => node.name === "recorded_verification");
-  const recorded = record && record.children.some((row) => row.name === "program"
-    && childValue(row, "language") === recipe.language && childValue(row, "task") === recipe.task
-    && childValue(row, "content_id") === recipe.content_id);
-  return recorded
-    ? { verification: "recorded", source: childValue(record, "environment") }
-    : { verification: "decomposition", source: recipe.rediscovery_source };
-}
-
-/**
- * The page a catalog pair's documented program was rediscovered from, when
- * no recorded run verified that exact program; null otherwise. Mirrors
- * `rediscovered_page` in rust/src/engine.rs.
- * @param {string} task
- * @param {string} language
- * @returns {string|null}
- */
-function documentationRediscoveredPage(task, language) {
-  const documented = typeof WRITE_PROGRAM_LANGUAGES === "object" && WRITE_PROGRAM_LANGUAGES[language] && task
-    ? documentedProgram(task, language) : null;
-  if (!documented || !documented.recipe) return null;
-  const verified = documentationVerification(documented.recipe);
-  return verified.verification === "decomposition" ? verified.source : null;
 }
 
 /**
@@ -726,17 +683,19 @@ function documentationRediscoveredPage(task, language) {
  * rust/src/discovery_production_contract.rs.
  * @param {string} task
  * @param {string} language
+ * @param {object} documented
  * @returns {Array<Array<string>>}
  */
-function documentationEvents(task, language) {
-  const documented = typeof WRITE_PROGRAM_LANGUAGES === "object" && WRITE_PROGRAM_LANGUAGES[language]
-    ? documentedProgram(task, language) : null;
+function documentationEvents(task, language, documented) {
   if (!documented || !documented.contract) return [];
   const events = documented.contract.commands.map((entry) => ["command_source",
     `language=${language} task=${task} role=${entry.role} source=${entry.source} command=${entry.command}`]);
-  const verified = documentationVerification(documented.recipe);
+  if (documented.sha256) {
+    events.push(["source:http", `${documented.recipe.rediscovery_source} sha256=${documented.sha256}`]);
+    if (documented.cached) events.push(["cache_hit", documented.recipe.rediscovery_source]);
+  }
   events.push(["program_verification", `language=${language} task=${task} content_id=${documented.recipe.content_id}`
-    + ` verification=${verified.verification} source=${verified.source}`]);
+    + ` verification=decomposition source=${documented.recipe.rediscovery_source}`]);
   if (documented.deviation) events.push(["documentation_deviation", `language=${language} task=${task} ${documented.deviation}`]);
   return events;
 }
@@ -840,4 +799,44 @@ function tryCodeExamplePageQuery(split) {
     evidence: ["handler:page_query_text", ...trace, "response:code_example_decomposition"],
     trace: trace,
   };
+}
+
+function installProgramTargets(root) {
+  for (const row of root?.children || []) {
+    if (row.name === "target") {
+      WRITE_PROGRAM_LANGUAGES[row.value] = {
+        name: childValue(row, "name"),
+        fence: childValue(row, "fence"),
+        saveAs: childValue(row, "save_as"),
+        setupHint: childValue(row, "setup_hint"),
+        checkCommand: childValue(row, "check_command") || null,
+        runCommand: childValue(row, "run_command"),
+        frameworkOf: childValue(row, "framework_of") || undefined,
+      };
+    } else if (row.name === "print_renderer") {
+      PROGRAM_PRINT_RENDERERS.set(row.value, { style: childValue(row, "literal"), syntax: childValue(row, "syntax") });
+    }
+  }
+}
+
+/** Compose the stdout operation from the shared syntax and literal policy. */
+function literalOutputProgram(language, output) {
+  if (typeof output !== "string" || /[\x00-\x08\x0a-\x1f\x7f-\x9f]/u.test(output)) return null;
+  const renderer = PROGRAM_PRINT_RENDERERS.get(language);
+  if (!renderer) return null;
+  const { style, syntax } = renderer;
+  let quoted;
+  if (style === "shell") {
+    quoted = "'" + output.replaceAll("'", "'\\''") + "'";
+  } else if (style === "php_single") {
+    quoted = "'" + output.replace(/[\\']/gu, (value) => "\\" + value) + "'";
+  } else {
+    quoted = '"' + output.replace(/[\\"\t$#]/gu, (value) => {
+      if (value === "\t") return "\\t";
+      if (value === "$" && style !== "dollar" || value === "#" && style !== "ruby") return value;
+      return "\\" + value;
+    }) + '"';
+    if (style === "rust_format" && /[{}]/u.test(output)) quoted = '"{}", ' + quoted;
+  }
+  return syntax.replace("{literal}", () => quoted);
 }

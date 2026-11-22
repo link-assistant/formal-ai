@@ -172,15 +172,13 @@ export function grammarExists(language) {
  * @param {string} language
  */
 export function oracleKnowsLanguage(language) {
-  return bootstrapCacheActive() && Boolean(realm().codingOracleKnowsLanguage(language));
+  return Boolean(realm()?.codingOracleKnowsLanguage?.(language));
 }
 
 /** Mirrors `fn knows_language`. @param {string} language */
 export function knowsLanguage(language) {
   return grammarExists(language)
-    && ((bootstrapCacheActive() && oracleKnowsLanguage(language))
-      || languageHasCacheRow(language)
-      || languageHasDocumentedProcedure(language));
+    && (languageHasCacheRow(language) || languageHasDocumentedProcedure(language));
 }
 
 /**

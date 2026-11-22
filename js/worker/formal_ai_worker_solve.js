@@ -497,7 +497,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
         prompt,
         history,
         responseLanguage,
-        preferences.blueprintComposition,
+        preferences.blueprintComposition, preferences,
       );
     }
     return writeProgramResult;

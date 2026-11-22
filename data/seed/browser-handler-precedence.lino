@@ -202,6 +202,7 @@ browser-handler-precedence
   handler tryWriteScript
     argument_prompt
     argument_responseLanguage
+    argument_preferences
   handler tryDocumentGenerationPlan
     argument_prompt
   handler trySoftwareProjectRequest

@@ -12,11 +12,8 @@
 //! environment because it never looked, and could not become right, because
 //! becoming right would have been a source edit.
 //!
-//! Issue #1165 R1165-6: **no row states a command its documentation states.**
-//! A check or run command that a captured documentation page states is left
-//! empty here and taken from that page by [`super::program_languages`], as the
-//! policy seed's `command_procedure` rows name it; every other command stays
-//! the row's own until a captured page states it.
+//! These toolchain commands are known local contracts. A verified publisher
+//! capture can corroborate them when a request uses a documented procedure.
 
 use std::borrow::Cow;
 
@@ -29,7 +26,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         code_fence: "rust",
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("rustc main.rs -o main")),
-            run_command: Cow::Borrowed(""), // from its page: command_procedure, R1165-6
+            run_command: Cow::Borrowed("./main"),
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
@@ -69,7 +66,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "TypeScript",
         code_fence: "typescript",
         execution: ProgramExecution {
-            check_command: None, // from its page: command_procedure, R1165-6
+            check_command: Some(Cow::Borrowed("tsc hello.ts")),
             run_command: Cow::Borrowed("node hello.js"),
             notes: "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.",
         },
@@ -121,9 +118,8 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Java",
         code_fence: "java",
         execution: ProgramExecution {
-            // Both commands come from its page: command_procedure, R1165-6.
-            check_command: None,
-            run_command: Cow::Borrowed(""),
+            check_command: Some(Cow::Borrowed("javac Main.java")),
+            run_command: Cow::Borrowed("java Main"),
             notes: "The Java seed is returned with this warning until a javac-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
@@ -162,7 +158,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         code_fence: "scala",
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("scalac Main.scala")),
-            run_command: Cow::Borrowed("scala Main"),
+            run_command: Cow::Borrowed("scala run Main.scala"),
             notes: "The Scala seed is returned with this warning until a scalac-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
@@ -174,9 +170,10 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Kotlin",
         code_fence: "kotlin",
         execution: ProgramExecution {
-            // Both commands come from its page: command_procedure, R1165-6.
-            check_command: None,
-            run_command: Cow::Borrowed(""),
+            check_command: Some(Cow::Borrowed(
+                "kotlinc Main.kt -include-runtime -d Main.jar",
+            )),
+            run_command: Cow::Borrowed("java -jar Main.jar"),
             notes: "The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
@@ -194,6 +191,45 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         },
         source: "local Links Notation write-program seed",
         save_as: Cow::Borrowed("main.php"),
+        framework_of: None,
+    },
+    ProgramLanguage {
+        slug: "bash",
+        name: "Bash",
+        code_fence: "bash",
+        execution: ProgramExecution {
+            check_command: Some(Cow::Borrowed("bash -n main.sh")),
+            run_command: Cow::Borrowed("bash main.sh"),
+            notes: "",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: Cow::Borrowed("main.sh"),
+        framework_of: None,
+    },
+    ProgramLanguage {
+        slug: "haskell",
+        name: "Haskell",
+        code_fence: "haskell",
+        execution: ProgramExecution {
+            check_command: None,
+            run_command: Cow::Borrowed("runghc Main.hs"),
+            notes: "",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: Cow::Borrowed("Main.hs"),
+        framework_of: None,
+    },
+    ProgramLanguage {
+        slug: "lua",
+        name: "Lua",
+        code_fence: "lua",
+        execution: ProgramExecution {
+            check_command: Some(Cow::Borrowed("luac -p main.lua")),
+            run_command: Cow::Borrowed("lua main.lua"),
+            notes: "",
+        },
+        source: "local Links Notation write-program seed",
+        save_as: Cow::Borrowed("main.lua"),
         framework_of: None,
     },
     // Issue #1167: meta-language 0.58.2 ships a Swift tree-sitter grammar and

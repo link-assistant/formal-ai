@@ -13,10 +13,9 @@
 //! (mirrored byte-identical under `rust/embedded/data/seed/`) declares which
 //! fields a cache row must carry ([`ProcedureCache::store`] enforces them),
 //! the hash that addresses a row's program ([`fnv1a64`], recomputed on load
-//! so a stored `content_id` can never drift), and whether the embedded
-//! `ORACLE_SNAPSHOTS` bootstrap in `crate::knowledge` still fronts the cache
-//! offline. The cache itself is `data/cache/coding-procedure-cache.lino` —
-//! runtime state, deletable by design.
+//! so a stored `content_id` can never drift), and the publisher discovery
+//! policy. The cache itself is `data/cache/coding-procedure-cache.lino`,
+//! runtime state that can be removed and populated again.
 //!
 //! The wiring points the issue names — the `SelectedRule::WriteProgram`
 //! branch of `crate::solver` and `plan_work_item_execution` in
@@ -248,9 +247,7 @@ pub fn grammar_exists(language: &str) -> bool {
 #[must_use]
 pub fn knows_language(language: &str) -> bool {
     grammar_exists(language)
-        && (bootstrap_cache_active() && crate::knowledge::CodingOracle::knows_language(language)
-            || language_has_cache_row(language)
-            || language_has_documented_procedure(language))
+        && (language_has_cache_row(language) || language_has_documented_procedure(language))
 }
 
 fn language_has_cache_row(language: &str) -> bool {

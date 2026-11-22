@@ -508,12 +508,12 @@ function writeProgramExpectedOutput(task, languageInfo, taskInfo) {
   return files.join("\n");
 }
 
-function writeProgramExecutionLines(language, task, code, output, strings, responseLanguage) {
+function writeProgramExecutionLines(language, task, code, output, strings, responseLanguage, documented) {
   const i18n = strings || WRITE_PROGRAM_I18N.en;
   // Node filesystem/import snippets cannot run in the browser: report the documented sample output.
   // Only an actual sandbox run may claim execution; documentation decomposition names its source page.
   const needsNodeApis = /\brequire\s*\(|\bimport\b/.test(code);
-  if (language === "javascript" && !needsNodeApis) {
+  if (language === "javascript" && !needsNodeApis && !documented?.recipe) {
     const logs = [];
     try {
       const runner = new Function("console", `"use strict"; ${code}`);
@@ -537,7 +537,7 @@ function writeProgramExecutionLines(language, task, code, output, strings, respo
     : runtimeProbe.status === "available_to_download" || runtimeProbe.status === "ready"
       ? browserRuntimeMessage(responseLanguage || "en")
       : i18n.noToolchain(language);
-  const page = documentationRediscoveredPage(task, language);
+  const page = documented?.recipe?.rediscovery_source;
   const status = page ? nlToolText("program_execution_rediscovered", responseLanguage || "en", { page }) : i18n.notRun(language, reason);
   const lines = [status, "", i18n.copyInstruction(language), ""];
   if (listFilesTaskDirection(task)) {
@@ -561,10 +561,9 @@ function inlineHelloWorldReplacement(prompt) {
   return replacement.trim() ? replacement : "";
 }
 
-function applyInlineHelloWorldOutputReplacement(prompt, task, content) {
-  if (task !== "hello_world") return content;
-  const replacement = inlineHelloWorldReplacement(prompt);
-  return replacement ? String(content).split("Hello, world!").join(replacement) : content;
+function writeProgramTemplateForPrompt(prompt, task, language, template) {
+  const replacement = task === "hello_world" ? inlineHelloWorldReplacement(prompt) : "";
+  return replacement ? literalOutputProgram(language, replacement) : template;
 }
 
 // Issue #330 (R9): the guidance sentences — "How it works" explanations and
@@ -615,12 +614,12 @@ function codingGuidance(id, language, values = {}) {
     Object.prototype.hasOwnProperty.call(values, name) ? values[name] : slot);
 }
 
-function programExplanation(task, language) {
-  return codingGuidance(task, language) || codingGuidance("default_explanation", language);
+function programExplanation(task, language, output) {
+  return codingGuidance(task, language, { output }) || codingGuidance("default_explanation", language);
 }
 
-function programExplanationSection(task, language) {
-  return `${codingGuidance("how_it_works_heading", language)}\n${programExplanation(task, language)}`;
+function programExplanationSection(task, language, output) {
+  return `${codingGuidance("how_it_works_heading", language)}\n${programExplanation(task, language, output)}`;
 }
 
 // Issue #330 (R9): did an earlier assistant turn already present a fenced code

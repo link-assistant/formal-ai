@@ -182,7 +182,7 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
     ])),
   script_language: (prompt) => {
     const language = programLanguageFromPrompt(normalizeProgramPrompt(prompt));
-    return Boolean(language && writeProgramTemplate("hello_world", language));
+    return Boolean(language && (writeProgramTemplate("hello_world", language) || documentationSources(language, "hello_world").length));
   },
   program_task: (prompt) => writeProgramParameters(prompt) != null,
   document_format: (prompt) => documentPlanFormat(String(prompt || "").toLowerCase()) !== null,

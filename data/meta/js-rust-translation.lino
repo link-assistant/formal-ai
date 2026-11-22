@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 344
   workaround_items 38
   inferred_signatures 3
-  carried_items 2659
+  carried_items 2658
   translated_modules 115
   fully_translated_modules 1
   refused_modules 49
@@ -34,7 +34,7 @@ module js/agentic/crate/change_request.mjs translated 1 workaround 1 inferred 0 
 module js/agentic/crate/client_contract_learning.mjs translated 0 workaround 1 inferred 0 carried 15
 module js/agentic/crate/cnl_grammar.mjs translated 3 workaround 0 inferred 0 carried 33
 module js/agentic/crate/cnl_output.mjs translated 2 workaround 1 inferred 0 carried 31
-module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 27
+module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 26
 module js/agentic/crate/coding_cjk.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 32
 module js/agentic/crate/command_output_contract.mjs translated 0 workaround 0 inferred 0 carried 2
@@ -194,7 +194,7 @@ refusal "import of names its module does not translate" 357
 refusal "JSDoc type {…}" 219
 refusal "import from '…'" 217
 refusal "null" 193
-refusal "arrow function" 144
+refusal "arrow function" 145
 refusal "type: unknown name (a sibling item or an import)" 125
 refusal "function value …" 113
 refusal "object without a $ tag" 104
@@ -210,8 +210,8 @@ refusal "Array.from" 47
 refusal "method call .push()" 38
 refusal "method call .indexOf()" 34
 refusal "optional chaining" 34
-refusal "field access" 33
 refusal "nullish coalescing" 33
+refusal "field access" 32
 refusal "method call .replace()" 28
 refusal "export …" 23
 refusal "syntax: malformed number" 21
@@ -276,7 +276,6 @@ refusal "function statement" 1
 refusal "in operator" 1
 refusal "label …" 1
 refusal "method call .attempt()" 1
-refusal "method call .codingOracleKnowsLanguage()" 1
 refusal "method call .createDirAll()" 1
 refusal "method call .dirname()" 1
 refusal "method call .handlerRulesDocument()" 1

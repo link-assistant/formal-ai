@@ -5,23 +5,13 @@
 // Rust loads `ProcedureCache::load()` (the `FORMAL_AI_PROCEDURE_CACHE`
 // override, else `data/cache/coding-procedure-cache.lino`) on every catalog
 // `write_program` solve and asks `cached_write_program` for a verified row.
-// The browser worker cannot read a file, so it logs what the committed,
-// row-less cache produces: the program it rediscovered from the documentation
-// captures (`outcome=discovered`, issue #1165 R1165-1) or the miss
-// (js/worker/formal_ai_worker_solver_events.js). This
-// module is the server half: after the worker solved, it reads the same cache
-// file through `js/agentic/crate/discovery_production.mjs`, calls
-// `cachedWriteProgram` with the catalog template and the rendered program the
-// worker answered with, and on a hit does what Rust does: the template in the
-// answer becomes the cached entry, and the `procedure_cache` event becomes
-// `outcome=hit language=<slug> task=<slug> content_id=0x<16 hex>`. A
-// rediscovered row is stored in an explicitly configured runtime cache, as
-// Rust's `record_discovered` does, so the next request reuses it as a hit.
+// A sourced example reuses the separately verified publisher response. The
+// reviewed execution cache is consulted only for locally generated programs.
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-import { cachedWriteProgram, defaultCachePath, loadAt, rediscoverableRecipe, store } from '../agentic/crate/discovery_production.mjs';
+import { cachedWriteProgram, defaultCachePath, loadAt } from '../agentic/crate/discovery_production.mjs';
 import { hasHost } from '../agentic/host.mjs';
 import { installNodeHost } from '../agentic/node-host.mjs';
 import { REPO_ROOT } from './lino.mjs';
@@ -40,17 +30,6 @@ export function procedureCachePath() {
 /** Mirrors `ProcedureCache::load`: a missing file loads as an empty cache. */
 export function loadProcedureCache() {
   return loadAt(procedureCachePath(), { readText: (file) => readFileSync(file, 'utf8'), writeText: (file, text) => writeFileSync(file, text) });
-}
-
-/**
- * Mirrors `discovery_production::record_discovered`: a row rediscovered on
- * the solve path is stored only in an explicitly configured runtime cache
- * (`FORMAL_AI_PROCEDURE_CACHE`); the committed cache file is never written
- * by a solve.
- */
-export function recordDiscovered(recipe) {
-  if (!String(process.env[CACHE_ENV] ?? '').trim()) return { ok: false, error: 'no_runtime_cache' };
-  return store(loadProcedureCache(), rediscoverableRecipe({ ...recipe, content_id: 0n }));
 }
 
 /** The `program_parameter:<name>:<value>` evidence the catalog answer carries. */
@@ -74,23 +53,18 @@ function renderFields(fields) {
  * @param {(prompt: string, task: string, language: string) => {template: ?string, rendered: ?string}} templateFor
  *   the worker's catalog template for the pair and what the prompt rendered it to
  */
-export async function applyProcedureCache(result, prompt, worker, templateFor, { readOnly = false } = {}) {
-  if (result?.intent !== WRITE_PROGRAM_INTENT || !Array.isArray(result.solverEvents)) return result;
+export async function applyProcedureCache(result, prompt, worker, templateFor) {
+  if (result?.intent !== WRITE_PROGRAM_INTENT || result.programExecution?.rediscoveredFrom || !Array.isArray(result.solverEvents)) return result;
   const index = result.solverEvents.findIndex((event) => event.kind === CACHE_EVENT);
   if (index < 0) return result;
   const language = programParameter(result, 'language');
   const task = programParameter(result, 'task');
-  const { template, rendered, documented } = templateFor(prompt, task, language);
+  const { template, rendered } = templateFor(prompt, task, language);
   if (typeof template !== 'string') return result;
   // The cache rows are validated against the policy seed, read through the agentic host.
   if (!hasHost()) await installNodeHost(worker);
   const recipe = cachedWriteProgram(loadProcedureCache(), language, task, template, rendered);
-  if (!recipe) {
-    // R1165-1: the worker rediscovered the program from documentation; a
-    // writable runtime cache keeps the row, so the next request is a hit.
-    if (!readOnly && documented && String(result.solverEvents[index].payload).startsWith('outcome=discovered ')) recordDiscovered(documented);
-    return result;
-  }
+  if (!recipe) return result;
   const contentId = `0x${recipe.content_id.toString(16).padStart(16, '0')}`;
   const solverEvents = result.solverEvents.slice();
   solverEvents[index] = {

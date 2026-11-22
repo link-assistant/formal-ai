@@ -198,6 +198,45 @@ meanings
     lexeme hi पीएचपी
     lexeme zh php
     lexeme es php
+  program_language_bash
+    grounded-in Q189248
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Bash"
+    unit "not applicable"
+    example "bash"
+    lexeme en "bash"
+    lexeme ru "bash"
+    lexeme hi "bash"
+    lexeme zh "bash"
+    lexeme es "bash"
+  program_language_haskell
+    grounded-in Q34010
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Haskell"
+    unit "not applicable"
+    example "haskell"
+    lexeme en "haskell"
+    lexeme ru "haskell"
+    lexeme hi "haskell"
+    lexeme zh "haskell"
+    lexeme es "haskell"
+  program_language_lua
+    grounded-in Q207316
+    defined-by program_language
+    role program_language_alias
+    precondition "a coding request contains this language surface"
+    effect "the program-language slot is bound to Lua"
+    unit "not applicable"
+    example "lua"
+    lexeme en "lua"
+    lexeme ru "lua"
+    lexeme hi "lua"
+    lexeme zh "lua"
+    lexeme es "lua"
   program_language_swift
     grounded-in Q17118377
     defined-by program_language

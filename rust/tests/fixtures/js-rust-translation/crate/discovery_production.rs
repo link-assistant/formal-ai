@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=342e1796f30e3c44c49a3a7a27db84f655c16d0e08bb36a4804b0687c2df400b bytes=16870
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3372a1a85550c98c5c678f632165e8ebb931a56f1479a662d4da830140fce33b bytes=16774
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2; string-methods items=1
 
@@ -396,8 +396,8 @@ pub static U64_MASK: std::sync::LazyLock<crate::ml::Big> = std::sync::LazyLock::
 // formal-ai:blockers arrow callback of .filter() | arrow callback of .some() | arrow function | call of a sibling function | call of an imported function | field access | method call .filter() | method call .some() | null | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal method call .codingOracleKnowsLanguage()
-// formal-ai:blockers call of a sibling function | call of an imported function | global call Boolean() | method call .codingOracleKnowsLanguage()
+// formal-ai:refusal optional chaining
+// formal-ai:blockers call of an imported function | field access | global call Boolean() | optional chaining
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)

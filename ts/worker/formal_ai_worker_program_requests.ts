@@ -18,6 +18,7 @@
 //     (R1021-31, `names_code_and_nothing_else`).
 
 const PROGRAM_SEED_FILE = "hello-world-programs.lino";
+const PROGRAM_PRINT_RENDERERS = new Map();
 
 /**
  * Install the catalog's tasks and programs from the seed: each task's label,
@@ -38,13 +39,15 @@ function installSeedProgramTasks(raw) {
   const text = seedRawText(raw, PROGRAM_SEED_FILE);
   if (!text || typeof WRITE_PROGRAM_TASKS !== "object") return [];
   const records = parseLinoTree(text).children;
+  const root = records.find((row) => row.name === "write_program");
+  installProgramTargets(root);
   const installed = [];
   for (const record of records) {
     const slug = childValue(record, "task");
     if (!record.name.startsWith("task_") || !slug) continue;
     const label = childValue(record, "label") || wordsForMeaning(`program_task_${slug}`)[0] || slug.split("_").join(" ");
     WRITE_PROGRAM_TASKS[slug] = { label: label, output: childValue(record, "output") || "", input: childValue(record, "input") || "",
-      procedure: childValue(record, "procedure") || "" };
+      procedure: childValue(record, "procedure") || "", operation: childValue(record, "operation") || "" };
     installed.push(slug);
   }
   for (const record of records) {
@@ -307,9 +310,9 @@ function requestedWriteProgramParameters(prompt) {
  * @param {string} language
  * @param {string|null} operand
  */
-function operandProgram(task, language, operand) {
+async function operandProgram(task, language, operand, preferences) {
   const taskInfo = task && typeof WRITE_PROGRAM_TASKS === "object" ? WRITE_PROGRAM_TASKS[task] : null;
   if (!taskInfo || !taskInfo.procedure || operand === null || !WRITE_PROGRAM_LANGUAGES[language]) return null;
-  const documented = rediscoverDocumentedProgram(taskInfo.procedure, language, operand);
+  const documented = await discoverDocumentedProgram(taskInfo.procedure, language, operand, preferences);
   return documented.recipe ? documented : null;
 }

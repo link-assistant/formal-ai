@@ -93,7 +93,7 @@ debug_stage_sources
     step impulse
     rust "rust/src/cnl_output/controlled.rs" "controlled_solve"
     rust "rust/src/protocol_memory.rs" "answer_memory_inspection"
-    rust "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
+    rust "rust/src/solver.rs" "solve_inner"
     rust "rust/src/solver_handlers/conversation_memory/mod.rs" "answer_memory_recall"
     rust "rust/src/solver_handlers/conversation_memory/program_query.rs" "execute_memory_query_with_options"
     js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"
@@ -103,7 +103,7 @@ debug_stage_sources
     rust "rust/src/meta_method_dispatch.rs" "try_diagnostic"
     rust "rust/src/meta_method_dispatch.rs" "try_learned_method"
     rust "rust/src/meta_reasoner/integration.rs" "project"
-    rust "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
+    rust "rust/src/solver.rs" "solve_inner"
     rust "rust/src/solver_handlers/mod.rs" "finalize_simple"
     rust "rust/src/solver_synthesis.rs" "finalize_composed_candidate"
     js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"
@@ -115,7 +115,7 @@ debug_stage_sources
     js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"
   event "language"
     step detect_language
-    rust "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
+    rust "rust/src/solver.rs" "solve_inner"
     rust "rust/src/solver_handlers/calendar.rs" "try_calendar_reasoning"
     rust "rust/src/solver_handlers/calendar.rs" "try_current_day_reasoning"
     rust "rust/src/solver_handlers/calendar/date_weekday.rs" "try_date_weekday"
@@ -144,15 +144,16 @@ debug_stage_sources
     rust "rust/src/solver_handlers/web_requests.rs" "render_project_lookup"
   event "legacy_intent"
     step dispatch_handler
-    rust "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
+    rust "rust/src/coding/operand_program.rs" "try_write_documented_program"
+    rust "rust/src/solver.rs" "solve_inner"
     js "js/worker/formal_ai_worker_solver_events.js" "solverWriteProgramEvents"
   event "procedural_how_to:request"
     step scan_memory
     rust "rust/src/solver_handler_how.rs" "try_how_to_procedure"
   event "program_parameters"
     step program_plan
-    rust "rust/src/coding/operand_program.rs" "try_write_operand_program"
-    rust "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
+    rust "rust/src/coding/operand_program.rs" "try_write_documented_program"
+    rust "rust/src/solver.rs" "solve_inner"
     js "js/worker/formal_ai_worker_solver_events.js" "solverWriteProgramEvents"
   event "release_timeline:hit"
     step lookup_fact
@@ -163,7 +164,7 @@ debug_stage_sources
     rust "rust/src/meta_method_dispatch.rs" "try_diagnostic"
     rust "rust/src/meta_method_dispatch.rs" "try_learned_method"
     rust "rust/src/meta_reasoner/integration.rs" "project"
-    rust "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
+    rust "rust/src/solver.rs" "solve_inner"
     rust "rust/src/solver_handlers/mod.rs" "finalize_simple"
     rust "rust/src/solver_synthesis.rs" "finalize_composed_candidate"
     js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"

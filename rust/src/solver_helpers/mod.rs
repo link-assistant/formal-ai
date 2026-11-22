@@ -13,7 +13,7 @@
 mod code;
 pub use code::*;
 
-use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule, normalize_prompt};
+use crate::engine::{SelectedRule, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::intent_formalization::{IntentKind, formalize_intent};
 use crate::language::{Language, detect as detect_language, set_forced_language};
@@ -728,48 +728,6 @@ fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bo
         return false;
     }
     crate::solver_handlers::numeric_list::solve_numeric_list(prompt).is_none()
-}
-
-pub fn format_write_script_execution(program: ProgramSpec) -> String {
-    let execution = &program.language.execution;
-    let expected_output = program.expected_output();
-    let cmd = execution.check_command.as_deref().map_or_else(
-        || format!("Run command: `{}`", execution.run_command),
-        |check| {
-            format!(
-                "Check command: `{check}`\nRun command: `{}`",
-                execution.run_command
-            )
-        },
-    );
-    // Issue #1165: a documentation-sourced program no recorded run verified
-    // names its page and its decomposition check, never the language's run.
-    if let Some(page) = crate::engine::rediscovered_page(program) {
-        let status_line = crate::seed::render_response(
-            "program_execution_rediscovered",
-            "en",
-            &[("page", page.as_str())],
-        )
-        .unwrap_or_default();
-        return format!(
-            "{status_line}\n{cmd}\nExpected output after verification:\n```text\n{expected_output}\n```"
-        );
-    }
-    let status = program.language.execution_status();
-    let output_label = if matches!(status, ExecutionStatus::Verified) {
-        "Output"
-    } else {
-        "Expected output after verification"
-    };
-    format!(
-        "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
-        status.label(),
-        program.language.environment(),
-        cmd,
-        output_label,
-        expected_output,
-        program.language.execution_notes()
-    )
 }
 
 /// Parse the `FORMAL_AI_DEFINITION_FUSION` env switch into an explicit override.

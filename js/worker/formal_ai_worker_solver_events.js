@@ -257,26 +257,26 @@ function solverWriteProgramEvents(answer, prompt) {
     solverEvent("program_parameters", `write_program(language=${language}, task=${task})`),
     solverEvent("legacy_intent", legacy),
     ...solverObligationGapEvents(prompt),
-    ...solverProcedureCacheEvents(prompt, language, task),
+    ...solverProcedureCacheEvents(prompt, language, task, answer.documented),
     // R1165-6: where each command shown comes from, and what the documented
     // program departs from (`documentation_events` in Rust).
-    ...documentationEvents(task, language).map((pair) => solverEvent(pair[0], pair[1])),
+    ...documentationEvents(task, language, answer.documented).map((pair) => solverEvent(pair[0], pair[1])),
   ];
 }
 
 // The `procedure_cache` event of the native `WriteProgram` branch (R1165-10).
 // The worker reads no cache file, so an unmodified catalog request either
 // rediscovers its program from the documentation captures (R1165-1,
-// `outcome=discovered`) or is the miss Rust logs, naming the `miss_route`
-// inputs a solve does not carry and why captured pages yielded nothing.
-function solverProcedureCacheEvents(prompt, language, task) {
-  const template = writeProgramTemplate(task, language);
-  if (!template || applyInlineHelloWorldOutputReplacement(prompt, task, template) !== template) return [];
-  const { recipe, rejected } = documentedProgram(task, language);
-  if (recipe) {
+// `outcome=discovered`) or is the miss Rust logs, including its input and capture gaps.
+function solverProcedureCacheEvents(prompt, language, task, documented) {
+  const { recipe, rejected } = documented || {};
+  if (recipe?.task === task) {
+    const outcome = documented.cached ? "hit" : "discovered";
     const fields = `rediscovery_source=${recipe.rediscovery_source} content_id=${recipe.content_id}`;
-    return [solverEvent("procedure_cache", `outcome=discovered language=${language} task=${task} ${fields}`)];
+    return [solverEvent("procedure_cache", `outcome=${outcome} language=${language} task=${task} ${fields}`)];
   }
+  const template = writeProgramTemplate(task, language);
+  if (!template || writeProgramTemplateForPrompt(prompt, task, language, template) !== template) return [];
   const missing = solverMissResearchMissing().join(",") + (rejected ? ` documentation_rejected=${rejected}` : "");
   return [solverEvent("procedure_cache", `outcome=miss language=${language} task=${task} research_missing=${missing}`)];
 }

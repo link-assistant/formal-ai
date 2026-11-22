@@ -1,25 +1,25 @@
 use formal_ai::{
     ChatCompletionRequest, ChatMessage, ConversationTurn, FormalAiEngine, ResponsesRequest,
-    UniversalSolver, create_chat_completion, create_response, handle_api_request,
+    SolverConfig, UniversalSolver, create_chat_completion, create_response, handle_api_request,
     knowledge_links_notation,
 };
 use lino_objects_codec::format::parse_indented;
 
 mod seed_and_memory;
 
-const PYTHON_SCRIPT_ANSWER: &str = r"Here is a minimal Python script:
+const PYTHON_SCRIPT_ANSWER: &str = r#"Here is a minimal Python script:
 
 ```python
-print('Hello, world!')
+print("Hello, world!")
 ```
 
-Execution status: not run; this program was rediscovered from https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples and its output contract was checked by decomposition, not by executing it.
+Execution status: not probed in this environment.
 Check command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`
 Run command: `python3 main.py`
-Expected output after verification:
+Output, not observed in this environment:
 ```text
 Hello, world!
-```";
+```"#;
 
 const RUST_SCRIPT_ANSWER: &str = r#"Here is a minimal Rust script:
 
@@ -29,14 +29,13 @@ fn main() {
 }
 ```
 
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Execution status: not probed in this environment.
 Check command: `rustc main.rs -o main`
 Run command: `./main`
-Output:
+Output, not observed in this environment:
 ```text
 Hello, world!
-```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."#;
+```"#;
 
 const JAVASCRIPT_SCRIPT_ANSWER: &str = r#"Here is a minimal JavaScript script:
 
@@ -44,14 +43,13 @@ const JAVASCRIPT_SCRIPT_ANSWER: &str = r#"Here is a minimal JavaScript script:
 console.log("Hello, world!");
 ```
 
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Execution status: not probed in this environment.
 Check command: `node --check main.js`
 Run command: `node main.js`
-Output:
+Output, not observed in this environment:
 ```text
 Hello, world!
-```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."#;
+```"#;
 
 const OWLBEAR_PROJECT_PLAN: &str = r#"Implementation plan pending approval for a extension targeting Owlbear.
 
@@ -348,7 +346,11 @@ fn how_you_work_prompts_return_meta_explanation() {
 
 #[test]
 fn rust_hello_world_prompt_returns_code_block() {
-    let response = FormalAiEngine.answer("Write me hello world program in Rust");
+    let response = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve("Write me hello world program in Rust");
 
     assert_eq!(response.intent, "write_program");
     assert!(
@@ -367,9 +369,13 @@ fn rust_hello_world_prompt_returns_code_block() {
     assert!(
         response
             .answer
-            .contains("Execution status: compiled and ran")
+            .contains("Execution status: not probed in this environment.")
     );
-    assert!(response.answer.contains("Output:"));
+    assert!(
+        response
+            .answer
+            .contains("Output, not observed in this environment:")
+    );
     assert!(response.answer.contains("```text\nHello, world!\n```"));
 }
 
@@ -476,8 +482,12 @@ fn write_script_prompt_returns_code_block() {
         ),
     ];
 
+    let solver = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    });
     for (prompt, intent, code_fence, expected_answer) in cases {
-        let response = FormalAiEngine.answer(prompt);
+        let response = solver.solve(prompt);
 
         assert_eq!(response.answer, expected_answer, "prompt: {prompt:?}");
         assert_eq!(
@@ -725,6 +735,7 @@ fn telegram_webhook_supports_public_chat_code_replies() {
         .as_str()
         .expect("telegram reply text should be a string");
     assert!(text.contains("<pre><code class=\"language-rust\">"));
-    assert!(text.contains("Execution status: compiled and ran"));
+    assert!(text.contains("Execution status:"));
+    assert!(!text.contains("compiled and ran"));
     assert!(text.contains("Hello, world!"));
 }

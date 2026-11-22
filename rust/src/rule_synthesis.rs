@@ -432,7 +432,7 @@ struct VerificationTrace {
 fn verification_trace(
     candidate_id: &str,
     plan: &ProgramPlan,
-    spec: ProgramSpec,
+    spec: ProgramSpec<'_>,
     modifiers: &[String],
 ) -> VerificationTrace {
     let plan_check = plan.was_modified() && plan.report.applied_count() > 0;

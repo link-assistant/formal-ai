@@ -169,6 +169,24 @@
   },
   {
     "language": "en",
+    "prompt": "Write a Bash program that displays \"enable internet access\".",
+    "guidance": false,
+    "programmingTarget": "bash"
+  },
+  {
+    "language": "en",
+    "prompt": "Write a Haskell program that displays \"enable internet access\".",
+    "guidance": false,
+    "programmingTarget": "haskell"
+  },
+  {
+    "language": "en",
+    "prompt": "Write a Lua program that displays \"enable internet access\".",
+    "guidance": false,
+    "programmingTarget": "lua"
+  },
+  {
+    "language": "en",
     "programmingTarget": "swift",
     "prompt": "Write a Swift program that displays \"enable internet access\".",
     "guidance": false

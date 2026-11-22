@@ -3,15 +3,12 @@ use crate::calculation::{
     PromptInterpretation, calculation_expression_candidates, evaluate_calculation_with_rates,
     interpretation_statements, numeric_calculation_response,
 };
-use crate::engine::{
-    SymbolicAnswer, answer_links_notation, hello_world_program_by_alias, stable_id,
-};
+use crate::engine::{SymbolicAnswer, answer_links_notation, stable_id};
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::solver_helpers::{
     detect_program_languages, extract_backticked, extract_javascript_program,
-    extract_quoted_phrase, format_write_script_execution, infer_program_languages_from_code,
-    infer_source_from_prompt, is_write_script_request, normalize_code_meaning, normalize_meaning,
-    translate_program,
+    extract_quoted_phrase, infer_program_languages_from_code, infer_source_from_prompt,
+    normalize_code_meaning, normalize_meaning, translate_program,
 };
 use crate::translation::{
     detect_source_language, detect_target_language, extract_unquoted_translation_surface,
@@ -705,49 +702,16 @@ pub fn try_write_script(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !is_write_script_request(prompt, normalized) {
-        return None;
-    }
-    let program = hello_world_program_by_alias(normalized)?;
-    if crate::coding::operand_program::program_task_operand(prompt).is_some() {
-        let task = crate::coding::operand_program::operand_task(prompt)?;
-        let mut answer = crate::coding::operand_program::try_write_operand_program(
-            prompt,
-            Some(task.slug),
-            Some(program.language.slug),
-            crate::language::detect(prompt),
-            log,
-        )?;
-        answer.intent = format!("write_script_{}", program.language.slug);
-        return Some(answer);
-    }
-    if crate::coding::operand_program::program_task_print_claim(prompt) {
-        return None;
-    }
-    let body = format!(
-        "Here is a minimal {} script:\n\n```{}\n{}\n```\n\n{}",
-        program.language.name,
-        program.language.code_fence,
-        program.template.code,
-        format_write_script_execution(program)
-    );
-    let intent = format!("write_script_{}", program.language.slug);
-    log.append(
-        "execution_status",
-        program.language.execution_status().label().to_owned(),
-    );
-    log.append("execution_environment", program.language.environment());
-    Some(finalize_simple(
-        prompt,
-        log,
-        &intent,
-        &format!(
-            "response:write_program:hello_world:{}",
-            program.language.slug
-        ),
-        &body,
-        1.0,
-    ))
+    try_write_script_with_offline(prompt, normalized, log, true)
+}
+
+pub(crate) fn try_write_script_with_offline(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<SymbolicAnswer> {
+    crate::coding::operand_program::write_script_program(prompt, normalized, log, offline)
 }
 
 pub fn finalize_simple(

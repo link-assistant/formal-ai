@@ -22,7 +22,7 @@ const CODING_GUIDANCE_LINO: &str = include_str!("../../embedded/data/seed/coding
 /// each `{name}` slot filled from `values` in one pass. A record seed does not
 /// carry renders as the empty string, a visible gap rather than invented
 /// prose.
-fn guidance(id: &str, language: Language, values: &[(&str, &str)]) -> String {
+pub(crate) fn guidance(id: &str, language: Language, values: &[(&str, &str)]) -> String {
     let tree = parse_lino(CODING_GUIDANCE_LINO);
     let Some(record) = tree.children.iter().find(|node| {
         node.find_child_value("record_type") == "coding_guidance"
@@ -56,11 +56,15 @@ pub fn history_has_prior_code(history: &[ConversationTurn]) -> bool {
 /// Issue #330: a "How it works" paragraph so a novice understands the program
 /// instead of receiving an unexplained snippet. The explanation is localized
 /// for every supported response language.
-pub fn program_explanation_section(spec: ProgramSpec, language: Language) -> String {
+pub fn program_explanation_section(
+    spec: ProgramSpec<'_>,
+    language: Language,
+    expected_output: &str,
+) -> String {
     format!(
         "{}\n{}",
         guidance("how_it_works_heading", language, &[]),
-        program_explanation(spec.task.slug, language)
+        program_explanation(spec.task.slug, language, expected_output)
     )
 }
 
@@ -69,8 +73,8 @@ pub fn program_explanation_section(spec: ProgramSpec, language: Language) -> Str
 /// same algorithm) and localized in the *response* sense (issue #330). A task
 /// without a bespoke explanation gets the neutral `default_explanation`, which
 /// avoids claiming behaviour the program may not have.
-fn program_explanation(task_slug: &str, language: Language) -> String {
-    let explanation = guidance(task_slug, language, &[]);
+fn program_explanation(task_slug: &str, language: Language, expected_output: &str) -> String {
+    let explanation = guidance(task_slug, language, &[("output", expected_output)]);
     if explanation.is_empty() {
         guidance("default_explanation", language, &[])
     } else {
@@ -83,7 +87,7 @@ fn program_explanation(task_slug: &str, language: Language) -> String {
 /// (`prior_code_response`), the verbose setup steps are replaced by a short
 /// "test it the same way" note so follow-up edits stay concise.
 pub fn program_test_instructions(
-    spec: ProgramSpec,
+    spec: ProgramSpec<'_>,
     language: Language,
     prior_code_response: bool,
 ) -> String {

@@ -357,14 +357,13 @@ fn a_task_that_reads_no_input_keeps_its_plain_run_command() {
          }\n\
          ```\n\
          \n\
-         Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).\n\
+         Execution status: not probed in this environment.\n\
          Check command: `rustc main.rs -o main`\n\
          Run command: `./main`\n\
-         Output:\n\
+         Output, not observed in this environment:\n\
          ```text\n\
          Hello, world!\n\
          ```\n\
-         1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\n\
          \n\
          How it works:\n\
          The program prints the text `Hello, world!` to standard output and then exits.\n\
@@ -376,7 +375,11 @@ fn a_task_that_reads_no_input_keeps_its_plain_run_command() {
          4. Run it: `./main`.\n\
          5. Compare the output with the expected output shown above.";
 
-    let response = UniversalSolver::default().solve("write me hello world program in Rust");
+    let response = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    })
+    .solve("write me hello world program in Rust");
     assert_eq!(response.answer, EXPECTED);
     assert!(!response.answer.contains("printf"), "{}", response.answer);
 }
@@ -600,15 +603,15 @@ fn the_languageless_coding_request_is_answered_in_its_own_language() {
     assert!(russian.answer.contains("язык"), "{}", russian.answer);
 }
 
-/// PHP graduating from the coding oracle to the catalog is what makes the #723
-/// answer a real one: the templates are `php -l`-checked and executed by the
-/// issue-8 harness. The Hello World is now php.net's page example (issue
-/// #1165), which that run never executed, so the answer names the page and
-/// its decomposition check rather than borrowing the run; the `FizzBuzz`
-/// template below keeps the verified status.
+/// PHP remains routable across stdout, other catalog operations, and
+/// numeric list composition.
 #[test]
 fn php_is_answered_from_the_catalog_like_every_catalogued_language() {
-    let response = UniversalSolver::default().solve("write a hello world program in php");
+    let response = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    })
+    .solve("write a hello world program in php");
     assert_eq!(
         response.answer,
         r#"Here is a minimal PHP hello world program:
@@ -616,15 +619,13 @@ fn php_is_answered_from_the_catalog_like_every_catalogued_language() {
 ```php
 <?php
 
-echo "Hello, world!";
-
-?>
+echo "Hello, world!", PHP_EOL;
 ```
 
-Execution status: not run; this program was rediscovered from https://www.php.net/manual/en/tutorial.firstpage.php and its output contract was checked by decomposition, not by executing it.
+Execution status: not probed in this environment.
 Check command: `php -l main.php`
 Run command: `php main.php`
-Expected output after verification:
+Output, not observed in this environment:
 ```text
 Hello, world!
 ```
@@ -642,8 +643,6 @@ How to test it yourself:
     assert_eq!(response.intent, "write_program", "{}", response.answer);
     assert!(response.answer.contains("```php"), "{}", response.answer);
     assert!(response.answer.contains("<?php"), "{}", response.answer);
-    // php.net's page example is not the template the harness ran (issue
-    // #1165), so the answer cites its page, not that run.
     assert!(
         !response.answer.contains("compiled and ran"),
         "{}",

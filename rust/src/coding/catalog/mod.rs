@@ -13,14 +13,13 @@
 //! repository's per-file line limit: [`types`] (the records), [`languages`]
 //! ([`PROGRAM_LANGUAGES`]), [`tasks`] ([`PROGRAM_TASKS`]), and the template
 //! tables in [`templates_core`] / [`templates_listing`] / [`templates_extended`] /
-//! [`templates_stdin`] / [`templates_framework`], concatenated here as
+//! [`templates_stdin`], concatenated here as
 //! [`TEMPLATE_GROUPS`].
 
 mod languages;
 mod tasks;
 mod templates_core;
 mod templates_extended;
-mod templates_framework;
 mod templates_listing;
 mod templates_stdin;
 mod types;
@@ -52,31 +51,11 @@ const TEMPLATE_GROUPS: &[&[CompiledTemplate]] = &[
     templates_listing::TEMPLATES_LISTING,
     templates_extended::TEMPLATES_EXTENDED,
     templates_stdin::TEMPLATES_STDIN,
-    templates_framework::TEMPLATES_FRAMEWORK,
 ];
-
-/// A catalog pair the documentation route answers (issue #1165 R1165-4/6):
-/// the program it rediscovers and the row its run contract binds.
-pub struct DocumentedPair {
-    /// The task slug.
-    pub task_slug: &'static str,
-    /// The catalog row with the file and commands the documented program
-    /// binds (`HelloWorldApp.java` and `javac HelloWorldApp.java`).
-    pub language: ProgramLanguage,
-    /// The rediscovered program, its contract and its deviation.
-    pub program: crate::discovery_production::DocumentedProgram,
-}
-
-/// The catalog's runtime tables: every program it answers with, and the
-/// pairs the documentation route answers.
-struct CatalogTable {
-    templates: Vec<ProgramTemplate>,
-    documented: Vec<DocumentedPair>,
-}
 
 /// The catalog row a documented program binds: the base row with the file it
 /// is saved as and its commands taken from the program's run contract.
-fn bound_language(
+pub(crate) fn bound_language(
     base: &ProgramLanguage,
     contract: &crate::discovery_production::DocumentedContract,
 ) -> ProgramLanguage {
@@ -96,105 +75,103 @@ fn bound_language(
     language
 }
 
-/// The catalog's tables, built once at runtime (issue #1165 R1165-4).
-///
-/// The compiled groups come first; then every pair the seed bundle retires to
-/// the documentation route (`program_source "documentation_route"` in
-/// `data/seed/hello-world-programs.lino`) takes the program the documentation
-/// captures rediscover for it, and the row its run contract binds. A retired
-/// pair whose captures yield no verified program has no template.
-fn catalog_table() -> &'static CatalogTable {
-    static TABLE: std::sync::OnceLock<CatalogTable> = std::sync::OnceLock::new();
-    TABLE.get_or_init(|| {
-        let mut templates: Vec<ProgramTemplate> = TEMPLATE_GROUPS
+/// Compose the stdout operation with a safely quoted literal.
+pub fn literal_output_program(language: &str, output: &str) -> Option<String> {
+    if output
+        .chars()
+        .any(|character| character.is_control() && character != '\t')
+    {
+        return None;
+    }
+    static RENDERERS: std::sync::OnceLock<crate::seed::parser::LinoNode> =
+        std::sync::OnceLock::new();
+    let rules = RENDERERS
+        .get_or_init(|| crate::seed::parser::parse_lino(crate::seed::HELLO_WORLD_PROGRAMS_LINO));
+    let row = rules
+        .children
+        .iter()
+        .find(|row| row.name == "write_program")?
+        .children
+        .iter()
+        .find(|row| row.name == "print_renderer" && row.id == language)?;
+    let style = row.find_child_value("literal");
+    let literal = if style == "shell" {
+        format!("'{}'", output.replace('\'', "'\\''"))
+    } else if style == "php_single" {
+        format!("'{}'", output.replace('\\', "\\\\").replace('\'', "\\'"))
+    } else {
+        let mut quoted = String::from("\"");
+        for character in output.chars() {
+            match character {
+                '\t' => quoted.push_str("\\t"),
+                '\\' | '"' => {
+                    quoted.push('\\');
+                    quoted.push(character);
+                }
+                '$' if style == "dollar" => quoted.push_str("\\$"),
+                '#' if style == "ruby" => quoted.push_str("\\#"),
+                _ => quoted.push(character),
+            }
+        }
+        quoted.push('"');
+        if style == "rust_format" && (output.contains('{') || output.contains('}')) {
+            format!("\"{{}}\", {quoted}")
+        } else {
+            quoted
+        }
+    };
+    Some(
+        row.find_child_value("syntax")
+            .replace("{literal}", &literal),
+    )
+}
+
+/// Local program templates, independent of the runtime publisher cache.
+fn catalog_templates() -> &'static [ProgramTemplate] {
+    static TEMPLATES: std::sync::OnceLock<Vec<ProgramTemplate>> = std::sync::OnceLock::new();
+    TEMPLATES.get_or_init(|| {
+        let mut templates: Vec<_> = TEMPLATE_GROUPS
             .iter()
             .copied()
             .flatten()
             .map(ProgramTemplate::from)
             .collect();
-        let mut documented = Vec::new();
-        for program in crate::discovery_production::documented_catalog_programs() {
-            let (Some(task), Some(language), Ok(rediscovered)) = (
-                program_task_by_slug(&program.task),
-                program_language_by_slug(&program.language),
-                program.rediscovered,
-            ) else {
-                continue;
-            };
-            let compiled = templates.iter().any(|template| {
-                template.task_slug == task.slug && template.language_slug == language.slug
-            });
-            if compiled {
-                continue;
-            }
-            templates.push(ProgramTemplate {
-                task_slug: task.slug,
-                language_slug: language.slug,
-                code: Cow::Owned(rediscovered.recipe.entry.clone()),
-            });
-            documented.push(DocumentedPair {
-                task_slug: task.slug,
-                language: bound_language(language, &rediscovered.contract),
-                program: rediscovered,
-            });
+        let rules = crate::seed::parser::parse_lino(crate::seed::HELLO_WORLD_PROGRAMS_LINO);
+        for task in rules
+            .children
+            .iter()
+            .filter(|row| row.find_child_value("operation") == "print_literal")
+            .filter_map(|row| program_task_by_slug(row.find_child_value("task")))
+        {
+            templates.extend(PROGRAM_LANGUAGES.iter().filter_map(|language| {
+                let code = literal_output_program(language.slug, task.output)?;
+                Some(ProgramTemplate {
+                    task_slug: task.slug,
+                    language_slug: language.slug,
+                    code: Cow::Owned(code),
+                    composed: true,
+                })
+            }));
         }
-        CatalogTable {
-            templates,
-            documented,
-        }
+        templates
     })
 }
 
-/// Iterate over every program template the catalog answers with.
+/// Iterate over the local catalog templates.
 pub fn program_templates() -> impl Iterator<Item = &'static ProgramTemplate> {
-    catalog_table().templates.iter()
+    catalog_templates().iter()
 }
 
-/// Total number of templates in the catalog (used for diagnostics).
+/// Total number of local templates (used for diagnostics).
 #[must_use]
 pub fn program_template_count() -> usize {
-    catalog_table().templates.len()
+    catalog_templates().len()
 }
 
-/// The pair the documentation route answers, when it answers this one.
+/// The available local toolchain contracts.
 #[must_use]
-pub fn documented_pair(task_slug: &str, language_slug: &str) -> Option<&'static DocumentedPair> {
-    catalog_table()
-        .documented
-        .iter()
-        .find(|pair| pair.task_slug == task_slug && pair.language.slug == language_slug)
-}
-
-/// Every catalog language row, with each command a captured documentation
-/// page states taken from that page (issue #1165 R1165-6).
-///
-/// [`PROGRAM_LANGUAGES`] leaves such a command empty; the policy seed's
-/// `command_procedure` rows name the page and the `command_verb` its line starts with,
-/// and [`crate::discovery_production::documented_language_commands`] derives
-/// the command with the page's file name bound to the row's. Built once.
-#[must_use]
-pub fn program_languages() -> &'static [ProgramLanguage] {
-    static LANGUAGES: std::sync::OnceLock<Vec<ProgramLanguage>> = std::sync::OnceLock::new();
-    LANGUAGES.get_or_init(|| {
-        PROGRAM_LANGUAGES
-            .iter()
-            .map(|base| {
-                let mut language = base.clone();
-                for command in crate::discovery_production::documented_language_commands(
-                    base.slug,
-                    &base.save_as,
-                ) {
-                    let stated = Cow::Owned(command.command);
-                    if command.role == "check" {
-                        language.execution.check_command = Some(stated);
-                    } else {
-                        language.execution.run_command = stated;
-                    }
-                }
-                language
-            })
-            .collect()
-    })
+pub const fn program_languages() -> &'static [ProgramLanguage] {
+    PROGRAM_LANGUAGES
 }
 
 #[must_use]
@@ -215,13 +192,10 @@ pub fn program_template(task_slug: &str, language_slug: &str) -> Option<&'static
         .find(|template| template.task_slug == task_slug && template.language_slug == language_slug)
 }
 
-/// The `(task, language, template)` triple a request resolves to; a pair the
-/// documentation route answers runs with the row its program binds.
+/// The local `(task, language, template)` triple a request resolves to.
 #[must_use]
-pub fn program_spec(task_slug: &str, language_slug: &str) -> Option<ProgramSpec> {
-    let language = documented_pair(task_slug, language_slug)
-        .map(|pair| &pair.language)
-        .or_else(|| program_language_by_slug(language_slug))?;
+pub fn program_spec(task_slug: &str, language_slug: &str) -> Option<ProgramSpec<'static>> {
+    let language = program_language_by_slug(language_slug)?;
     Some(ProgramSpec {
         task: program_task_by_slug(task_slug)?,
         language,

@@ -43,7 +43,7 @@ use crate::solver_handlers::{
     try_software_project_request, try_summarization_request, try_task_decomposition_with_depth,
     try_text_manipulation, try_text_manipulation_with_history, try_translation, try_url_navigate,
     try_verifiable_task, try_web_search, try_web_search_with_offline, try_world_state,
-    try_write_script,
+    try_write_script, try_write_script_with_offline,
 };
 use crate::triz_solver::handle_triz;
 
@@ -313,6 +313,12 @@ pub fn try_contextual_override(
             normalized,
             log,
             !runtime.solver_config.offline && crate::solver_config::read_network_allowed(),
+        ),
+        "write_script" => try_write_script_with_offline(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         "shell_command_transform" => {
             try_shell_command_transform_with_history(prompt, normalized, log, history)

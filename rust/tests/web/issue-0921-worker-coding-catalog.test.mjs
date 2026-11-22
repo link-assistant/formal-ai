@@ -79,7 +79,7 @@ test('R921-8: the worker language rows equal the Rust catalog rows the seed stor
     programLanguages().filter((row) => seeded.includes(row.slug)).map((row) => [row.slug, row.name, row.code_fence,
       row.save_as, row.execution.check_command, row.execution.run_command, row.framework_of]),
   );
-  assert.deepEqual(programLanguages().map((row) => row.slug).filter((slug) => !seeded.includes(slug)), ['swift', 'r']);
+  assert.deepEqual(programLanguages().map((row) => row.slug), seeded);
 });
 
 test('R921-8: every task x language pair has a worker program exactly when the Rust catalog has one', () => {
@@ -101,7 +101,9 @@ test('R921-8: every task x language pair has a worker program exactly when the R
     }
   }
   assert.equal(compared, programTemplates().length);
-  assert.equal(compared, 151);
+  const syntax = (parseLino(readFileSync(new URL('../../../data/seed/hello-world-programs.lino', import.meta.url), 'utf8')).children || [])
+    .find((row) => row.name === 'write_program').children.filter((row) => row.name === 'print_renderer');
+  assert.equal(compared, stored.size + syntax.length);
 });
 
 test('R921-8: the worker stores no program for a pair the seed retires to the documentation route', () => {
@@ -110,8 +112,8 @@ test('R921-8: the worker stores no program for a pair the seed retires to the do
   const pairs = Object.entries(tables).flatMap(([task, languages]) =>
     Object.keys(languages).map((language) => `${task}:${language}`));
   assert.deepEqual(pairs.sort(), [...stored.keys()].sort());
-  assert.equal(tables.hello_world.scala, undefined);
-  assert.equal(tables.hello_world.kotlin, undefined);
+  assert.equal(tables.hello_world?.scala, undefined);
+  assert.equal(tables.hello_world?.kotlin, undefined);
 });
 
 const SCALA_KOTLIN = [['Scala', 'scala'], ['Kotlin', 'kotlin']];

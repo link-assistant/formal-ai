@@ -2,13 +2,190 @@ write_program
   intent write_program
   parameters "language, task"
   tasks ("hello_world" "count_to_three" "list_files" "list_files_arg" "list_files_reverse_sort" "list_files_arg_reverse_sort" "fizzbuzz" "factorial" "reverse_string" "sum_to_ten" "fibonacci" "copy_stdin_to_stdout" "print_text")
-  languages ("rust" "python" "javascript" "typescript" "go" "c" "cpp" "java" "csharp" "ruby" "scala" "kotlin" "php" "laravel")
+  languages ("rust" "python" "javascript" "typescript" "go" "c" "cpp" "java" "csharp" "ruby" "scala" "kotlin" "php" "bash" "haskell" "lua" "swift" "r" "laravel")
   source "local public-domain seed templates"
+  target "rust"
+    name "Rust"
+    fence "rust"
+    save_as "main.rs"
+    setup_hint "the Rust toolchain from https://rustup.rs"
+    check_command "rustc main.rs -o main"
+    run_command "./main"
+  target "python"
+    name "Python"
+    fence "python"
+    save_as "main.py"
+    setup_hint "Python 3 from https://www.python.org/downloads/"
+    check_command "python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py"
+    run_command "python3 main.py"
+  target "javascript"
+    name "JavaScript"
+    fence "javascript"
+    save_as "main.js"
+    setup_hint "Node.js from https://nodejs.org/"
+    check_command "node --check main.js"
+    run_command "node main.js"
+  target "typescript"
+    name "TypeScript"
+    fence "typescript"
+    save_as "hello.ts"
+    setup_hint "Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`"
+    check_command "tsc hello.ts"
+    run_command "node hello.js"
+  target "go"
+    name "Go"
+    fence "go"
+    save_as "main.go"
+    setup_hint "Go from https://go.dev/dl/"
+    run_command "go run main.go"
+  target "c"
+    name "C"
+    fence "c"
+    save_as "main.c"
+    setup_hint "a C compiler such as GCC from https://gcc.gnu.org/ or your package manager"
+    check_command "gcc main.c -o main"
+    run_command "./main"
+  target "cpp"
+    name "C++"
+    fence "cpp"
+    save_as "main.cpp"
+    setup_hint "a C++ compiler such as g++ from https://gcc.gnu.org/ or your package manager"
+    check_command "g++ main.cpp -o main"
+    run_command "./main"
+  target "java"
+    name "Java"
+    fence "java"
+    save_as "Main.java"
+    setup_hint "a JDK from https://adoptium.net/"
+    check_command "javac Main.java"
+    run_command "java Main"
+  target "csharp"
+    name "C#"
+    fence "csharp"
+    save_as "Program.cs"
+    setup_hint "the .NET SDK from https://dotnet.microsoft.com/download"
+    check_command "dotnet build"
+    run_command "dotnet run"
+  target "ruby"
+    name "Ruby"
+    fence "ruby"
+    save_as "main.rb"
+    setup_hint "Ruby from https://www.ruby-lang.org/en/downloads/"
+    check_command "ruby -c main.rb"
+    run_command "ruby main.rb"
+  target "scala"
+    name "Scala"
+    fence "scala"
+    save_as "Main.scala"
+    setup_hint "Scala from https://www.scala-lang.org/download/ (a JDK is required as well)"
+    check_command "scalac Main.scala"
+    run_command "scala run Main.scala"
+  target "kotlin"
+    name "Kotlin"
+    fence "kotlin"
+    save_as "Main.kt"
+    setup_hint "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)"
+    check_command "kotlinc Main.kt -include-runtime -d Main.jar"
+    run_command "java -jar Main.jar"
+  target "php"
+    name "PHP"
+    fence "php"
+    save_as "main.php"
+    setup_hint "PHP from https://www.php.net/downloads"
+    check_command "php -l main.php"
+    run_command "php main.php"
+  target "bash"
+    name "Bash"
+    fence "bash"
+    save_as "main.sh"
+    setup_hint "Bash from https://www.gnu.org/software/bash/"
+    check_command "bash -n main.sh"
+    run_command "bash main.sh"
+  target "haskell"
+    name "Haskell"
+    fence "haskell"
+    save_as "Main.hs"
+    setup_hint "GHC from https://www.haskell.org/ghcup/"
+    run_command "runghc Main.hs"
+  target "lua"
+    name "Lua"
+    fence "lua"
+    save_as "main.lua"
+    setup_hint "Lua from https://www.lua.org/download.html"
+    check_command "luac -p main.lua"
+    run_command "lua main.lua"
+  target "swift"
+    name "Swift"
+    fence "swift"
+    save_as "hello.swift"
+    setup_hint "Swift from https://www.swift.org/install/"
+    check_command "swiftc -parse hello.swift"
+    run_command "swift hello.swift"
+  target "r"
+    name "R"
+    fence "r"
+    save_as "hello.R"
+    setup_hint "R from https://www.r-project.org/"
+    check_command "Rscript -e 'invisible(parse(\"hello.R\"))'"
+    run_command "Rscript hello.R"
+  target "laravel"
+    name "Laravel"
+    fence "php"
+    framework_of "php"
+    save_as "app/Console/Commands/HelloWorld.php"
+    setup_hint "a Laravel application from https://laravel.com/docs/installation (`composer create-project laravel/laravel my-app`, which brings PHP and Composer with it)"
+    check_command "php -l app/Console/Commands/HelloWorld.php"
+    run_command "php artisan hello:world"
+  print_renderer rust
+    literal "rust_format"
+    syntax "fn main() {\n    println!({literal});\n}"
+  print_renderer python
+    syntax "print({literal})"
+  print_renderer javascript
+    syntax "console.log({literal});"
+  print_renderer typescript
+    syntax "console.log({literal});"
+  print_renderer go
+    syntax "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println({literal})\n}"
+  print_renderer c
+    syntax "#include <stdio.h>\n\nint main(void) {\n    puts({literal});\n    return 0;\n}"
+  print_renderer cpp
+    syntax "#include <iostream>\n\nint main() {\n    std::cout << {literal} << std::endl;\n    return 0;\n}"
+  print_renderer java
+    syntax "class Main {\n    public static void main(String[] args) {\n        System.out.println({literal});\n    }\n}"
+  print_renderer csharp
+    syntax "Console.WriteLine({literal});"
+  print_renderer ruby
+    literal ruby
+    syntax "puts {literal}"
+  print_renderer scala
+    syntax "object Main {\n  def main(args: Array[String]): Unit = {\n    println({literal})\n  }\n}"
+  print_renderer kotlin
+    literal dollar
+    syntax "fun main() {\n    println({literal})\n}"
+  print_renderer php
+    literal dollar
+    syntax "<?php\n\necho {literal}, PHP_EOL;"
+  print_renderer swift
+    syntax "print({literal})"
+  print_renderer "lua"
+    syntax "print({literal})"
+  print_renderer bash
+    literal shell
+    syntax "printf '%s\\n' {literal}"
+  print_renderer "haskell"
+    syntax "main :: IO ()\nmain = putStrLn {literal}"
+  print_renderer r
+    syntax "cat({literal}, \"\\n\", sep = \"\")"
+  print_renderer laravel
+    literal "php_single"
+    syntax '<?php\n\nnamespace App\\Console\\Commands;\n\nuse Illuminate\\Console\\Command;\n\nclass HelloWorld extends Command\n{\n    protected $signature = \x27hello:world\x27;\n\n    protected $description = \x27Print a greeting\x27;\n\n    public function handle(): int\n    {\n        $this->line({literal});\n\n        return self::SUCCESS;\n    }\n}'
 task_hello_world
   task hello_world
   label "hello world"
   aliases "hello world, хелло ворлд"
   output "Hello, world!"
+  operation "print_literal"
 task_count_to_three
   task count_to_three
   label "count to three"
@@ -970,9 +1147,3 @@ template_copy_stdin_to_stdout_php
   task copy_stdin_to_stdout
   code_fence php
   code '<?php\n\nfpassthru(STDIN);'
-template_hello_world_laravel
-  intent write_program
-  language laravel
-  task hello_world
-  code_fence php
-  code '<?php\n\nnamespace App\\Console\\Commands;\n\nuse Illuminate\\Console\\Command;\n\nclass HelloWorld extends Command\n{\n    protected $signature = \x27hello:world\x27;\n\n    protected $description = \x27Print a greeting\x27;\n\n    public function handle(): int\n    {\n        $this->line(\x27Hello, world!\x27);\n\n        return self::SUCCESS;\n    }\n}'

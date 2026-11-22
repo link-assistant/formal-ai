@@ -271,6 +271,29 @@ impl UniversalSolver {
         probability_store: &ProbabilityStore,
         intent_cache: &mut IntentFormalizationCache,
     ) -> SymbolicAnswer {
+        self.solve_inner(prompt, history, probability_store, intent_cache, true)
+    }
+
+    pub(crate) fn solve_for_execution(&self, prompt: &str) -> SymbolicAnswer {
+        self.solve_inner(
+            prompt,
+            &[],
+            &ProbabilityStore::new(),
+            &mut IntentFormalizationCache::new(),
+            false,
+        )
+    }
+
+    fn solve_inner(
+        &self,
+        prompt: &str,
+        history: &[ConversationTurn],
+        probability_store: &ProbabilityStore,
+        intent_cache: &mut IntentFormalizationCache,
+        publisher_examples: bool,
+    ) -> SymbolicAnswer {
+        let documentation_access = publisher_examples
+            .then(|| self.config.offline || !crate::solver_config::read_network_allowed());
         // Issue #667 (R383): under a debug session the outermost solve of a
         // connection waits at its first stage before it runs.
         let output_turn = crate::cnl_output::output_turn(
@@ -501,51 +524,36 @@ impl UniversalSolver {
                 }
             }
 
-            // Issue #340: a `write_program` request can name a supported language but
-            // a composite task the verified catalog has no single template for
-            // (HTTP GET -> parse JSON -> compute mean/median -> output). Rather than
-            // dead-ending on `write_program_unsupported`, decompose the request into
-            // capabilities and, when they match a curated blueprint recipe, return a
-            // real, idiomatic program with an honest "not run" execution report. The
-            // verified catalog stays untouched, so its "compiled and ran" guarantee
-            // is preserved.
-            // Issue #340 + #412: rescue an `UnsupportedWriteProgram` request via the
-            // composite blueprint, then the cached coding oracle (uncatalogued
-            // languages), so "write a hello world program in Kotlin" returns code.
+            // A coding gap can still resolve from a bound procedure or composition.
             if let SelectedRule::UnsupportedWriteProgram {
                 task,
                 language: program_language,
             } = &rule
             {
-                // Issue #1173 R1173-3: a task whose output is the request's
-                // operand composes its program from the procedure its seed row
-                // names, before any other rescue.
-                if let Some(answer) = crate::coding::operand_program::try_write_operand_program(
-                    prompt,
-                    task.as_deref(),
-                    program_language.as_deref(),
-                    language,
-                    log,
-                ) {
+                if let (Some(task), Some(target)) = (task.as_deref(), program_language.as_deref())
+                    && let Some(answer) =
+                        crate::coding::operand_program::try_write_documented_program(
+                            prompt,
+                            task,
+                            target,
+                            crate::coding::operand_program::ProgramReply::Program {
+                                language,
+                                prior_code: coding_guidance::history_has_prior_code(history),
+                            },
+                            documentation_access,
+                            log,
+                        )
+                {
                     return answer;
                 }
                 if let Some(answer) = try_unsupported_write_program(
                     prompt,
-                    task.as_deref(),
                     program_language.as_deref(),
                     self.config.blueprint_composition,
                     log,
                 ) {
                     return answer;
                 }
-                // Issue #699 batch 3: every synthesis route missed. Name the gap in
-                // the evidence trail — the same `skill_gap` event the procedure
-                // compiler emits — so the miss is actionable instead of being
-                // rendered as a recitation of the templates we happen to hold.
-                //
-                // Issue #906: a request that named no implementation language never
-                // reached a route, so it is logged under its own event rather than
-                // as a gap in what we can synthesize.
                 let shape =
                     crate::program_skill_gap::shape(task.as_deref(), program_language.as_deref());
                 log.append(
@@ -696,6 +704,22 @@ impl UniversalSolver {
                 );
             }
 
+            if let SelectedRule::WriteProgram(spec) = &rule
+                && let Some(answer) = crate::coding::operand_program::try_write_documented_program(
+                    prompt,
+                    spec.task.slug,
+                    spec.language.slug,
+                    crate::coding::operand_program::ProgramReply::Program {
+                        language,
+                        prior_code: coding_guidance::history_has_prior_code(history),
+                    },
+                    documentation_access,
+                    log,
+                )
+            {
+                return answer;
+            }
+
             let intent = language_aware_intent_for(&rule, language);
             log.append("intent", intent.clone());
 
@@ -703,19 +727,13 @@ impl UniversalSolver {
                 if log.first_of("rule_synthesis_candidate").is_none() {
                     crate::coding::record_algorithm_construction(log);
                 }
-                // Issue #1165: a documentation-sourced program no recorded run
-                // verified is not run; its environment is the page it came from.
-                let (status, environment) = crate::engine::rediscovered_page(*spec).map_or_else(
-                    || {
-                        (
-                            spec.language.execution_status().label(),
-                            spec.language.environment(),
-                        )
-                    },
-                    |page| (crate::coding::ExecutionStatus::Unavailable.label(), page),
-                );
-                log.append("execution_status", status.to_owned());
-                log.append("execution_environment", environment);
+                let status = if spec.template.composed {
+                    crate::coding::ExecutionStatus::NotProbed
+                } else {
+                    log.append("execution_environment", spec.language.environment());
+                    spec.language.execution_status()
+                };
+                log.append("execution_status", status.label().to_owned());
                 log.append("program_parameter:language", spec.language.slug.to_owned());
                 log.append("program_parameter:task", spec.task.slug.to_owned());
                 log.append("program_parameters", spec.parameter_summary());
@@ -765,44 +783,23 @@ impl UniversalSolver {
                             );
                             Some(recipe.entry.clone())
                         }
-                        // An unmodified request the cache has no row for
-                        // rediscovers its program from the documentation
-                        // captures; with none that verify, the research miss
-                        // names the inputs the policy seed's `miss_route`
-                        // lacks instead of hiding behind the template.
-                        None if rendered == *spec.template.code => {
-                            let commands =
-                                crate::discovery_production::catalog_run_commands(spec.language);
-                            crate::discovery_production::answer_cache_miss(
-                                log,
-                                spec.language.slug,
-                                spec.task.slug,
-                                &spec.task.output_for_language(spec.language),
-                                crate::discovery_production::RunContract {
-                                    save_as: &spec.language.save_as,
-                                    commands: &commands,
-                                },
-                            )
+                        None => {
+                            if rendered == *spec.template.code
+                                && log.first_of("procedure_cache").is_none()
+                            {
+                                crate::discovery_production::record_program_cache_miss(
+                                    log,
+                                    spec.language.slug,
+                                    spec.task.slug,
+                                    crate::discovery_production::NO_DOCUMENTATION_CAPTURE,
+                                );
+                            }
+                            None
                         }
-                        None => None,
                     }
                 }
                 _ => None,
             };
-            // Issue #1165 R1165-6: each shown command's source (page or catalog)
-            // and the documented program's departures.
-            if let SelectedRule::WriteProgram(spec) = &rule
-                && let Some(pair) =
-                    crate::coding::documented_pair(spec.task.slug, spec.language.slug)
-            {
-                for (kind, payload) in crate::discovery_production::documentation_events(
-                    spec.language.slug,
-                    spec.task.slug,
-                    &pair.program,
-                ) {
-                    log.append(kind, payload);
-                }
-            }
 
             let validation_choice = record_validation(log, prompt);
             record_candidates(log, &intent);

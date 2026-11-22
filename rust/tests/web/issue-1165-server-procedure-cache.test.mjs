@@ -5,9 +5,8 @@
 // row answers an unmodified catalog request with the cached entry and logs
 // `procedure_cache outcome=hit ... content_id=0x...`; the committed, row-less
 // cache keeps the miss; a customised request is never answered from the cache.
-// A program the worker rediscovered from the documentation captures (R1165-1)
-// is recorded in an explicitly configured runtime cache and reused as a hit;
-// the committed cache file is never written by a solve.
+// The worker's publisher capture is reused by the source cache. Its code never
+// populates the reviewed execution cache.
 // Cache files live under the OS temp directory, so the committed cache is never
 // touched.
 
@@ -22,6 +21,7 @@ import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { REPO_ROOT } from '../../../js/server/lino.mjs';
 import { loadProcedureCache, procedureCachePath } from '../../../js/server/procedure-cache.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
+import { codingDocumentationReplay } from './support/coding-documentation-replay.mjs';
 
 const ENV = 'FORMAL_AI_PROCEDURE_CACHE';
 // A pair the documentation captures do not cover (Python counting to three:
@@ -133,23 +133,25 @@ test('a customised request is never answered from the cache', async () => {
   assert.ok(!result.content.includes(HELLO_ENTRY));
 });
 
-test('R1165-1: a rediscovered row is recorded in the runtime cache and reused as a hit', async () => {
+test('R1165-1: a sourced answer reuses the capture without populating the execution cache', async () => {
   const file = path.join(directory, 'runtime.lino');
   process.env[ENV] = file;
   const program = 'fn main() {\n    println!("Hello, world!");\n}';
   const contentId = `0x${contentAddress(program).toString(16).padStart(16, '0')}`;
-  const first = await host.solve('Write a hello world program in Rust', []);
+  const replay = codingDocumentationReplay();
+  const sourcedHost = new WorkerHost({}, { networkFetch: replay.networkFetch });
+  const first = await sourcedHost.solve('Write a hello world program in Rust', []);
   assert.equal(cacheEvents(first)[0]?.payload.split(' ')[0], 'outcome=discovered');
-  const row = loadProcedureCache().recipes.find((recipe) => recipe.language === 'rust');
-  assert.ok(row, 'the rediscovered row is stored');
-  assert.equal(row.entry, program);
-  assert.equal(row.rediscovery_source, 'https://doc.rust-lang.org/book/ch01-02-hello-world.html');
-  assert.equal(row.verified_output, 'Hello, world!');
-  const second = await host.solve('Write a hello world program in Rust', []);
+  assert.deepEqual(loadProcedureCache().recipes, []);
+  const source = 'https://doc.rust-lang.org/book/ch01-02-hello-world.html';
+  assert.equal(first.programExecution.rediscoveredFrom, source);
+  assert.equal(first.programExecution.output, 'Hello, world!');
+  const second = await sourcedHost.solve('Write a hello world program in Rust', []);
   assert.deepEqual(cacheEvents(second), [
-    { kind: 'procedure_cache', payload: `outcome=hit language=rust task=hello_world content_id=${contentId}` },
+    { kind: 'procedure_cache', payload: `outcome=hit language=rust task=hello_world rediscovery_source=${source} content_id=${contentId}` },
   ]);
   assert.ok(second.content.includes(program));
+  assert.deepEqual(replay.requests, [source]);
 });
 
 test('the committed cache is never written by a solve', async () => {

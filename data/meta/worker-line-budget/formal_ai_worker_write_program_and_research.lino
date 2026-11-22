@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_write_program_and_research.js"
-  ceiling 1278
-  rationale "A fact question without a program task can reach factual lookup when the entity and creation cue also resemble a coding request."
+  ceiling 1279
+  rationale "A fact question without a program task can reach factual lookup when the entity and creation cue also resemble a coding request. Issue #1613. Preserves the acquired evidence and distinguishes directly composed outputs from a prior run."
