@@ -1404,3 +1404,15 @@ cohort costs and all 916 raw observations stay exact. All 242 small new records
 use the conservative default and the table is 1,387 lines. All ten cohort checks
 pass again; the finite 13-candidate probe still first fits at 65%. Full gate
 verification on the final committed snapshot is still required before pushing.
+
+
+## Merged warning batch verification, 2026-11-22
+
+- [x] Merge main `43b31443025d6b632d3352f86512e01abb8f658a` (v0.356.5). Resolve the native workflow and policy conflicts without losing the branch's regression runner, pinned Node version, offline scope or diagnostic switch. The maintained witness refresher changes exactly four reviewed Cargo fixture hashes; complete-object comparisons preserve every other object.
+- [x] Run the complete 142-entry JavaScript inventory on clean, unchanged `1fdadb2452d7bc7c916f6043108b92fb43fa47e5`: 88 pass, 53 hosted-only entries skip, one generated-status check fails. The final 1,387-line scheduling table emits no size warning. The stale page contains both pre-merge ledger counts; regenerate it with `scripts/render-status.mjs --write`. Both the status gate and renderer twin pass after that document-only repair. Combined remaining failures are zero; a clean full replay after the status repair is not claimed.
+- [x] Pass all nine focused JavaScript files across the original and corrected runs, plus changed-file Rust formatting. Preserve all five original wrapper mistakes: NODE_OPTIONS violated the checked compiler environment in two files, two test paths were wrong and one rustfmt path was wrong. Correct those commands and pass the five reruns; do not weaken the environment guard or relabel the earlier results.
+- [x] Fully read all 33 selected maintained-source patches between published c90f94ca and the merged head, preserving 810 changed-path inventory and per-patch hashes. No additional defect found in this batch review. Raw fixtures, upstream data and the remaining aggregate comparison keep their separate review limits.
+- [ ] Publish this verified batch once, collect every exact-head hosted result and restore the temporary diagnostic repository variable after all jobs finish. Qualify the new native cases, actual file observations and scheduling wall times; identify the compiler cache backend response before claiming a repair.
+- [ ] Finish the newly identified crate-wait identity and changelog-inventory error regressions, complete applicable template practices, whole-PR review and every original runtime/authorship acceptance criterion. These remain active work; source findings, supplied controllers and partial CI earn zero independent-authorship credit.
+
+Evidence: [the merged batch verification manifest](evidence/checks/merged-warning-batch-verification/manifest.json). Earlier failed and intermediate gate rounds remain retained separately.

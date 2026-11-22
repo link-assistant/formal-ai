@@ -45,3 +45,15 @@ the changed plan's hosted execution remain open. The broader template, runtime
 delivery and independent authorship acceptance also remain unfinished.
 [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581) stays draft and
 unmerged. Supplied scripts, patches and conclusions receive zero authorship credit.
+
+
+The merged source `1fdadb2452d7bc7c916f6043108b92fb43fa47e5` ran the complete
+142-entry local inventory: 88 pass, 53 hosted-only entries skip, and the generated
+status page fails. The maintained renderer repairs the merge's duplicated ledger
+counts; both focused status checks then pass. There are zero combined remaining
+gate failures and no file-size warning. This is not a claim of a clean full replay
+after the document repair. All nine focused JavaScript files and changed-file
+Rust formatting pass across the original and corrected commands. The five
+verification-wrapper mistakes and their successful reruns remain retained in
+`experiments/issue-1580/evidence/checks/merged-warning-batch-verification/`.
+New-source hosted execution and all broader acceptance remain unfinished.
