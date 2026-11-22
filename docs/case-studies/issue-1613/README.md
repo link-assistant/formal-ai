@@ -988,7 +988,7 @@ The browser generator scans disk, so a file left under `js/source-cache/` from
 an earlier checkout could still change the npm tarball. The generator now
 excludes that directory from both the offline manifest and the package. The
 replay adds a stale capture to the input tree and checks that the archive stays
-byte-for-byte identical. [Baseline](evidence/formal-development/browser-cache-exclusion/baseline.log) ·
+byte-for-byte identical. [Baseline](evidence/formal-development/browser-cache-exclusion/baseline.log.gz) ·
 [Generator regression](../../../rust/tests/web/selected-source-wasm.test.mjs)
 
 Run `bash scripts/verify-docker-slim-runtime.sh` with the target binary on

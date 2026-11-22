@@ -69,7 +69,8 @@ The summary path used to admit just three registered subjects. It now extracts
 the requested subject, looks it up through the shared project and concept
 registries, and can first try publisher discovery for article requests.
 WebAssembly and Wiktionary verify lookup outside the old list. The project
-and concept fallback returns registered reference text. Brainstorm categories
+path reads repository metadata. The concept fallback resolves the registered
+definition for the extracted term. Brainstorm categories
 now choose composition operations, which combine the supplied topic with
 generic prompts for designs. Naming requests use the existing morphological
 composer. Missing topics elicit a clarification. The browser tests cover
@@ -77,6 +78,38 @@ distinct ordinary topics as well as the previous promotion routes.
 [Summary replay](evidence/verification/round26-summary-after.log) ·
 [Handler replay](evidence/verification/round26-final-issue-0918-handler-rules-batch.log) ·
 [Claim routing replay](evidence/verification/round26-final-issue-1175-claim-routing.log)
+
+## Repository URLs and descriptions
+
+The first HTTP regression requested the issue path of one registered repository
+and the README path of another. Both answers used the repository's installed
+description, and the transport received only the third, unregistered URL.
+Explicit fetch now acquires the requested URL under the same capture policy
+for all three and records the observed HTTP result. Running without a
+transport cannot substitute the repository description.
+[Before](evidence/verification/round27-project-fetch-baseline.log.gz) ·
+[After](evidence/verification/round27-project-summary-parity-final.log)
+
+A second regression found that an offline request to summarize Hive Mind
+returned a bundled statement with the repository credited as its source.
+The same statements supplied answers for promoted project lookups. The
+registry now holds repository identity and lookup metadata. Both runtimes
+verify `full_name` and `html_url` in the GitHub repository response before
+using a nonempty publisher description. They record the capture's URL,
+timestamp, digest, and cache status. An offline capture miss or a conflicting
+repository identity produces a localized gap. The browser replay covers a
+cold miss, an observed response, offline reuse, changed descriptions, and
+an identity mismatch. The old weighted statements are explicit inputs for
+the historical Rust source-test target.
+[Before](evidence/verification/round27-project-metadata-baseline.log.gz) ·
+[After](evidence/verification/round27-project-summary-parity-final.log) ·
+[GitHub repository endpoint](https://docs.github.com/en/rest/repos/repos#get-a-repository)
+
+Fetching a README could provide longer evidence when a publisher supplies no
+description. It would also need an additional capture, Markdown extraction,
+and language attribution. The repository metadata already exposes the short
+description and the two identity fields needed for the lookup. The separate
+README summarization API still accepts caller-supplied documents.
 
 ## Installation and verification boundaries
 
@@ -159,3 +192,50 @@ full change remains unverified.
 [Agent transcript](evidence/formal-development/browser-cache-exclusion/agent.log.gz) ·
 [Tool and digest trace](evidence/formal-development/browser-cache-exclusion/server-memory.lino.gz) ·
 [Regression results](evidence/verification/round27-browser-exclusion.log)
+
+Hosted head `5237db3db` reported three actionable failures. Native type
+checking found a caller of the removed `pick_topic` method. Both runtimes now
+use the summary subject extractor when checking the claim operand. Layered
+CI found seventeen stale TypeScript projections. The maintained translator
+regenerated them along with the current worker changes, and its byte check
+passed. The Security job found the same URL advisory in the separate
+experiment lockfile. The experiment now resolves `url` 2.5.9, and the local
+audit completed across both lockfiles.
+[Native log, lines 1261–1275](evidence/workflows/native-round27-137191835228.log.gz) ·
+[Pipeline log, lines 9659–9673 and 9995–9998](evidence/workflows/pipeline-round27-45015541253.log.gz) ·
+[Layered log, lines 9153–9155](evidence/workflows/layered-round27-45015541051.log.gz) ·
+[Security log, lines 535–549](evidence/workflows/security-round27-45015541174.log.gz) ·
+[TypeScript check](evidence/verification/round27-translate-es-check.log) ·
+[Local advisory check](evidence/verification/round27-cargo-audit.log)
+
+The local gates caught a second verification gap. Combining the two native
+HTTP cases into a loop made those checks unextractable by the JavaScript
+specification runner. The native specification now keeps a simple request case
+for each path and an exact-response check for a cold cache. A browser replay
+also confirms that both offline and network-denied settings prevent requests
+and that an explicit fetch can reuse verified cached bytes. The native and
+browser routes use the same localized cache message.
+[Specification replay](evidence/verification/round27-specification-worker.log) ·
+[Browser request replay](evidence/verification/round27-project-summary-parity-final.log)
+
+The English Moon page had 195 unknown terms on both the base and branch.
+The previous fixture expected 196. The branch also preserves the last of the
+62 factual statements on the round trip. The statement renders an inclusive
+range as `count to three`. The base reparses that phrase as a particular
+program task. The branch recognizes the shared range and keeps the number
+as a separate term. An isolated replay computes the counts from the archived
+page and compares the changed statements. The localized test cases retain
+exact reports for all five languages.
+[Base test](evidence/verification/round27-page-formalization-main.log.gz) ·
+[Statement comparison](evidence/verification/round27-page-vocabulary-delta.json) ·
+[Updated test](evidence/verification/round27-page-formalization-final.log) ·
+[Replay script](../../../experiments/issue-1613-page-vocabulary/replay.mjs)
+
+Two Agent CLI attempts to remove the HTTP shortcut produced no write. In the
+browser module attempt, the read crossed the configured context window and
+the replacement prompt after compaction lost its edit request. In a smaller
+Rust input, the session reached the same read three times before the retry
+ceiling ended the operation. The working tree edits were manual, and the
+attempts contribute zero autonomous-authorship credit.
+[Browser attempt](evidence/formal-development/browser-fetch-authorship/agent.log.gz) ·
+[Rust attempt](evidence/formal-development/native-fetch-module-authorship/agent.log.gz)

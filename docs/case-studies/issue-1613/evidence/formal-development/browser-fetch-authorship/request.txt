@@ -1,0 +1,1 @@
+Remove lines 168-169 from js/worker/formal_ai_worker_web_providers_and_wasm_calls.js. Explicit HTTP fetches should use the requested URL for registered repositories too.
