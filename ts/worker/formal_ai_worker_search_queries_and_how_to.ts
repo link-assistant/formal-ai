@@ -901,7 +901,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
     else lines.push(howResponse("procedural_how_to_fallback_search_plan", "en", { query: fallbackQuery, providers: providerSummary, k: webSearchRrfK() }));
     content = lines.join("\n\n");
   }
-  if (indexed?.diagnostics?.fused?.length || official?.diagnostics?.fused?.length || !online) {
+  if (indexed?.diagnostics?.fused?.length || official?.diagnostics?.fused?.length || preferences.offline === true || preferences.allowNetwork === false) {
     content += "\n\n" + howToGuideChrome("how_to_guide_insufficient_evidence", language, {
       steps: research.guide.steps.length, required: HOW_TO_MIN_ACCEPTED_STEPS,
     });

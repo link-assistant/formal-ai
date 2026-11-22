@@ -297,6 +297,8 @@ ea5d85f9968936562f79a1723775d03809ecabacf5487e120da88c48af224ce0  ./verification
 c2c6e6b0ffb6b6ef2cfca9fc349fe0a1f20dce849aca69ce7600c9e0cdaab93f  ./verification/round23-worker-procedure-cache.log
 fe7dc6c5bce8ab96b2916b31ea8e1f09d4618f9933004daf2c5c3815d016dcb4  ./verification/round24-agentic-recipes.log
 a88cba63426de14262d32e79d2f7cad5b350be5ed0f472d89fba5afaf0dfc0bf  ./verification/round24-browser-artifacts.log
+10ee73713b1ebb9643857099b669c6c23fcfc2e074ba395ac71a3bfd0fadcd87  ./verification/round24-local-gate-rechecks.log
+77cece6ea496be4ae6e31ac9f2534d927006ddba4633d2d15e7ec5c623b4509c  ./verification/round24-local-gates.log
 b390b17c41da9633d4872c38bff911685957c3923d1082409be961b24cec3c8d  ./verification/round24-npm-inventory.log
 c440169945a4095e989c04e140216deb88b8955c0cfbd0ebf0b9d23320b2be00  ./verification/round24-packaged-browser-cold.log
 03016c39c1b83f63eac146bf93deadead62e7e0920787815a3a0622f90adbf20  ./verification/round24-procedural-runtime-parity.log
