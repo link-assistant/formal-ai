@@ -245,7 +245,7 @@ fn publisher_fact_answer<T: SourceTransport>(
     let rendered =
         if let Some((record, gate)) = super::factual_qa::gated_fact_record(prompt, normalized) {
             if record.release_timeline.is_empty() {
-                return publisher_policy_answer(prompt, record, gate, log, client);
+                return publisher_policy_answer(prompt, record, &gate, log, client);
             }
             let rendered = crate::release_timeline::try_release_timeline(
                 &record.release_timeline,
@@ -254,7 +254,7 @@ fn publisher_fact_answer<T: SourceTransport>(
                 log,
                 client,
             )?;
-            record_publisher_fact(record, gate, log);
+            record_publisher_fact(record, &gate, log);
             rendered
         } else {
             crate::release_timeline::try_open_release_timeline(
