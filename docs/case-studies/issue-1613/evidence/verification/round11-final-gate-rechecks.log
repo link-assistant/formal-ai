@@ -1,0 +1,6 @@
+PASS check-closure-audit 5.5s
+PASS check-notation 17.8s
+PASS check-tests-as-docs 6.5s
+PASS check-tests-as-documentation-javascript-twin 6.8s
+
+4/4 passed or skipped; failed: none

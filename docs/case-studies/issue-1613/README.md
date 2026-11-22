@@ -407,6 +407,40 @@ the status document's core-boundary ledger count.
 [Trace locations](evidence/verification/round10-debug-stage-source-recheck.log) ·
 [Status rendering](evidence/verification/round10-status-render-recheck.log)
 
+### Opening and inception dates
+
+A fresh offline worker described March 31, 1889 as the Eiffel Tower's
+public opening. The operator records March 31 as the inauguration and
+May 15 as the opening to the public. Wikidata supplies both dates with the
+same rank and without qualifiers identifying the events. The opening-date
+resolver therefore returns both dates from the publisher record. Its
+inception relation uses year precision, which also answers a held-out
+question about UNESCO's founding year from that organization's record.
+Hindi search first uses the user's spelling and retries with a normalized
+borrowed vowel and nukta when required. The item must still match the
+normalized subject and carry the requested property.
+[Offline baseline](evidence/verification/round11-temporal-baseline.log) ·
+[Tower operator chronology](https://www.toureiffel.paris/en/news/history-and-culture/133-years-and-1083-feet) ·
+[UNESCO Constitution](https://www.unesco.org/en/legal-affairs/constitution) ·
+[Publisher captures](evidence/facts/) ·
+[Browser regression](evidence/verification/round11-recheck-issue-1172-live-fact-parity.log)
+
+At head `ca2551662`, native compilation found two references to the fact
+parser's old location, and Layered CI found eight TypeScript files out of
+sync with their JavaScript sources. Native routing and explanation now
+call the relocated helpers. Regenerating the TypeScript projection brought
+all 742 files into sync.
+[Pipeline log](evidence/workflows/pipeline-round10-44975152457.log.gz) ·
+[Layered CI log](evidence/workflows/layered-round10-44975152230.log.gz) ·
+[Projection check](evidence/verification/round11-typescript-regen.log)
+
+The full local gate run passed or skipped 134 of 138 checks. The other
+four passed after grounding the opening-date template, using literal
+recognition strings for the new surfaces, and asserting the complete
+answers in the native regression.
+[Full gate run](evidence/verification/round11-full-gates.log) ·
+[Focused rechecks](evidence/verification/round11-final-gate-rechecks.log)
+
 ## Evidence archive
 
 - [GitHub snapshots](evidence/github/) include the issue, all discussion,
