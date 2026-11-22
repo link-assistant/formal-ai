@@ -17,6 +17,10 @@ fn issue_457_rust_self_source_metrics_request_returns_blueprint_program() {
     let response = solver.solve(ISSUE_PROMPT);
 
     assert_eq!(
+        response.answer,
+        include_str!("../fixtures/blueprint-answers/source-metrics.md").trim_end()
+    );
+    assert_eq!(
         response.intent, "write_program",
         "the issue prompt must route to write_program, got: {} / {}",
         response.intent, response.answer

@@ -151,17 +151,16 @@ rust/src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {sup
 rust/src/client_integrations.rs	{} does not support protocol `{protocol}`
 rust/src/client_integrations.rs	{} has no endpoint for {protocol}
 rust/src/coding/blueprint.rs	Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: `{run_command}`.
-rust/src/coding/blueprint.rs	Execution status: not run — this report blueprint was not executed in the offline sandbox, and the embedded data assumptions should be reviewed before use. The code is provided for review. Run it yourself: `{run_command}`.
+rust/src/coding/blueprint.rs	Execution status: not run — this report blueprint was not executed in the offline sandbox, and it requires the scenario inputs described in the program. The code is provided for review. Run it yourself: `{run_command}`.
 rust/src/coding/blueprint.rs	Execution status: not run — this source-metrics blueprint uses only the Rust standard library, but the answer renderer did not compile it in place. The code is provided for review. Run it yourself from a Cargo project: `{run_command}`.
 rust/src/coding/blueprint.rs	Here is a {language_name} program for the requested composite task ({recipe_label}). I decomposed your request into these sub-tasks:
-rust/src/coding/blueprint.rs	Response self-analysis:\n- Reasoning text metrics: functions=0, loops=0, conditionals=0, comments=0, complexity_score=1.\n- Comparison: the generated Rust code is more complex than the reasoning text because it contains executable parsing, loops, conditionals, helper functions, and JSON rendering logic.
 rust/src/coding/blueprint.rs	Вот программа на языке {language_name}, которая решает составную задачу ({recipe_label}). Я разбил ваш запрос на следующие подзадачи:
 rust/src/coding/blueprint.rs	Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: `{run_command}`.
-rust/src/coding/blueprint.rs	Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а встроенные допущения о данных нужно проверить перед использованием. Код приведён для проверки. Запустить самостоятельно: `{run_command}`.
+rust/src/coding/blueprint.rs	Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а для расчёта нужны входные данные, описанные в программе. Код приведён для проверки. Запустить самостоятельно: `{run_command}`.
 rust/src/coding/blueprint.rs	निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: `{run_command}`।
-rust/src/coding/blueprint.rs	निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और embedded data assumptions को उपयोग से पहले जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: `{run_command}`।
+rust/src/coding/blueprint.rs	निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और गणना के लिए प्रोग्राम में बताए गए इनपुट चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: `{run_command}`।
 rust/src/coding/blueprint.rs	यहाँ {language_name} में एक प्रोग्राम है जो इस संयुक्त कार्य को हल करता है ({recipe_label})। मैंने आपके अनुरोध को इन उप-कार्यों में विभाजित किया है:
-rust/src/coding/blueprint.rs	执行状态：未运行 —— 该报告未在离线沙箱中执行，内置数据假设应先核对再使用。代码仅供审阅。自行运行：`{run_command}`。
+rust/src/coding/blueprint.rs	执行状态：未运行 —— 该报告未在离线沙箱中执行，运行所需的输入数据见程序说明。代码仅供审阅。自行运行：`{run_command}`。
 rust/src/coding/blueprint.rs	执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：`{run_command}`。
 rust/src/coding/blueprint.rs	这是一个解决该复合任务的 {language_name} 程序（{recipe_label}）。 我已将您的请求分解为以下子任务：
 rust/src/coding/catalog/tasks.rs	Hello, world!

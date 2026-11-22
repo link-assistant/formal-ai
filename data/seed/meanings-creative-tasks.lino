@@ -61,3 +61,11 @@ meanings
     lexeme hi "सलाह दो" "सलाह के लिए" "सुझाव दो" "सुझाव के लिए" "कैसे सुधारूँ"
     lexeme zh "建议" "给点建议" "小贴士" "有什么建议" "怎样才能改善"
     lexeme es "consejos para" "un consejo para" "recomendaciones para" "recomienda" "como puedo mejorar"
+  planning_no_fit
+    defined-by answer
+    role localized_response_template
+    precondition "no supplied place fits the scheduling windows"
+    effect "ask for a usable visit window or duration"
+    unit "not applicable"
+    example "No visit fits the opening and travel windows."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"

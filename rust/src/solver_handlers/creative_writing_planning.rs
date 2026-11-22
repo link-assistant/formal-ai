@@ -318,7 +318,7 @@ pub fn handle_planning_request(
     }
     let language = crate::language::detect(request).slug();
     let Some((destination, available)) = supplied_places(prompt) else {
-        log.append("planning:refusal", "no cited places supplied".to_owned());
+        log.append("planning:refusal", "missing_places".to_owned());
         return Some(finalize_simple(
             prompt,
             log,
@@ -349,7 +349,7 @@ pub fn handle_planning_request(
     }
     let failures = check_schedule(&schedule, &limits);
     if schedule.iter().all(Vec::is_empty) {
-        log.append("planning:refusal", "no visit fits the schedule".to_owned());
+        log.append("planning:refusal", "no_feasible_visit".to_owned());
         return Some(finalize_simple(
             prompt,
             log,

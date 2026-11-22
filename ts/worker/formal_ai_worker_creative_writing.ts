@@ -542,7 +542,7 @@ function tryPlanningRequest(prompt, normalized) {
   const answer = (body, confidence) => creativeAnswer("planning", "planning_request", body, confidence, trace, language);
   const supplied = suppliedCreativePlaces(prompt);
   if (supplied === null) {
-    trace.push("planning:refusal:no cited places supplied");
+    trace.push("planning:refusal:missing_places");
     return answer(creativeTemplate("planning_refusal", []), 0.4);
   }
   const { destination, places: available } = supplied;
@@ -557,7 +557,7 @@ function tryPlanningRequest(prompt, normalized) {
   const planned = creativeScheduleDays(available, days, limits);
   for (const skip of planned.skips) trace.push(`planning:skipped:${skip}`);
   if (planned.schedule.every((day) => day.length === 0)) {
-    trace.push("planning:refusal:no visit fits the schedule");
+    trace.push("planning:refusal:no_feasible_visit");
     return answer(creativeTemplate("planning_no_fit", []), 0.4);
   }
   const failures = creativeCheckSchedule(planned.schedule, limits);

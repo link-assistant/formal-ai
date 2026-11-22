@@ -935,17 +935,17 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1491,"end":155
 "formal_ai::promotion::LEARNED_PROGRAM_RULES_SEED_FILE","canonicalPath":
 "formal_ai::promotion::LEARNED_PROGRAM_RULES_SEED_FILE","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"data/seed/learned-program-rules.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":
-true,"sourceSpan":{"start":2323,"end":2412},"sourceWitnesses":[{"path":"rust/src/promotion.rs","sha256":
-"3f0ac59e5d6baafdf0d7862e4a76623db415b640bd4a1c60a7c2923d7252e320"},{"path":"rust/src/lib.rs","sha256":
+true,"sourceSpan":{"start":2213,"end":2302},"sourceWitnesses":[{"path":"rust/src/promotion.rs","sha256":
+"1beb7eb68cd51f646ca8cd48a93c06a10698bfef8965a6ad17a4f4c18a235b6a"},{"path":"rust/src/lib.rs","sha256":
 "160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant LEARNED-PROGRAM-RULES-SEED-FILE (exported) (type string) (value (string data/seed/learned-program-rules.lino)))"
 ,"maintainedJavaScript":"export const LEARNED_PROGRAM_RULES_SEED_FILE = 'data/seed/learned-program-rules.lino';",
 "maintainedTranslationSha256":"48aaf1bae8888eaa76f9ec154fb3e5992d2f9b22ce6eb4c08fab0a847249b931"},{"path":
 "formal_ai::LEARNED_PROGRAM_RULES_SEED_FILE","canonicalPath":"formal_ai::promotion::LEARNED_PROGRAM_RULES_SEED_FILE",
 "kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"data/seed/learned-program-rules.lino",
-"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":2323,"end":2412},
+"nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":2213,"end":2302},
 "sourceWitnesses":[{"path":"rust/src/promotion.rs","sha256":
-"3f0ac59e5d6baafdf0d7862e4a76623db415b640bd4a1c60a7c2923d7252e320"},{"path":"rust/src/lib.rs","sha256":
+"1beb7eb68cd51f646ca8cd48a93c06a10698bfef8965a6ad17a4f4c18a235b6a"},{"path":"rust/src/lib.rs","sha256":
 "160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant LEARNED-PROGRAM-RULES-SEED-FILE (exported) (type string) (value (string data/seed/learned-program-rules.lino)))"
 ,"maintainedJavaScript":"export const LEARNED_PROGRAM_RULES_SEED_FILE = 'data/seed/learned-program-rules.lino';",
@@ -1011,8 +1011,8 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":948,"end":1009
 "f46bdc8e27a78efe21eddfc2e9e417085ba96a7e5c3aa457d318dbc7253c875e"},{"path":
 "formal_ai::self_improvement::NO_GATE_EVIDENCE","canonicalPath":"formal_ai::self_improvement::NO_GATE_EVIDENCE","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"no_gate_evidence","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":5098,"end":5152},"sourceWitnesses":[{"path":
-"rust/src/self_improvement.rs","sha256":"3f7be91520b48146d8b81c38d4dfb28bc23d6eb9ecd3c700165bcceb9b425cb8"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":4972,"end":5026},"sourceWitnesses":[{"path":
+"rust/src/self_improvement.rs","sha256":"8bd9f5ed374bdb547aa9cae0a5995da798d548cdbe9be62da965ba9344918bf2"},{"path":
 "rust/src/lib.rs","sha256":"160cc8952e9f01127234d966df03715e5e99325872a7ddf648063e6719f71df1"}],"maintainedMeta":
 "(constant NO-GATE-EVIDENCE (exported) (type string) (value (string no_gate_evidence)))","maintainedJavaScript":
 "export const NO_GATE_EVIDENCE = 'no_gate_evidence';","maintainedTranslationSha256":

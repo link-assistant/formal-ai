@@ -928,7 +928,7 @@ function trySummarizationTopic(prompt) {
   let body = derived ? derived.body : "";
   let source = derived ? derived.source : "";
   if (!derived) {
-    evidence.push("summarization:refusal:unresolved subject");
+    evidence.push("summarization:refusal:unresolved_subject");
     label = String(prompt || "").replace(/^[\s!-/:-@[-`{-~]+|[\s!-/:-@[-`{-~]+$/gu, "");
     body = answerFor(seeds.fallbackResponse || "unknown", language);
     source = "none";

@@ -542,7 +542,7 @@ function composeBrainstormNames(prompt, normal, topic) {
       creativeTemplate("brainstorming_refusal", []), 0.4, trace, language);
   };
   const topics = creativeTopicWords(topic, language).slice(0, 12);
-  if (topics.length === 0) return refusal("no topic words");
+  if (topics.length === 0) return refusal("missing_topic");
   for (const topic of topics) trace.push(`brainstorming:topic:${topic}`);
   const requested = creativeRequestedCount(normal, language);
   const count = requested === null ? 5 : requested;
@@ -649,7 +649,7 @@ function tryAdviceRequest(prompt, normalized) {
   const grades = creativeEvidenceGrades();
   const supplied = suppliedCreativeAdvice(prompt, grades);
   if (supplied === null) {
-    trace.push("advice:refusal:no cited recommendations supplied");
+    trace.push("advice:refusal:missing_recommendations");
     return creativeAnswer("advice", "advice_request", creativeTemplate("advice_refusal", []), 0.4, trace, language);
   }
   const { topic, items } = supplied;

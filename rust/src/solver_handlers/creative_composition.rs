@@ -539,7 +539,7 @@ pub(super) fn compose_brainstorm_names(
     let mut topics = topic_words(topic, language);
     topics.truncate(12);
     if topics.is_empty() {
-        log.append("brainstorming:refusal", "no topic words".to_owned());
+        log.append("brainstorming:refusal", "missing_topic".to_owned());
         return finalize_simple(
             prompt,
             log,
@@ -678,9 +678,10 @@ pub(super) fn evidence_text<'a>(record: &'a Value, field: &str) -> Option<&'a st
 
 pub(super) fn evidence_source(record: &Value) -> Option<&str> {
     let source = evidence_text(record, "source_url")?;
+    let (scheme, _) = source.split_once("://")?;
     let url = url::Url::parse(source).ok()?;
-    (url.scheme() == "https"
-        && source.starts_with("https://")
+    (scheme == "https"
+        && url.scheme() == scheme
         && url.host_str().is_some()
         && url.username().is_empty()
         && url.password().is_none())
@@ -748,10 +749,7 @@ pub fn handle_advice_request(
     }
     let grades = evidence_grades();
     let Some((topic, records)) = supplied_advice(prompt, &grades) else {
-        log.append(
-            "advice:refusal",
-            "no cited recommendations supplied".to_owned(),
-        );
+        log.append("advice:refusal", "missing_recommendations".to_owned());
         return Some(finalize_simple(
             prompt,
             log,

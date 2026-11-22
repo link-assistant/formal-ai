@@ -76,7 +76,7 @@ export class BenchmarkGateReport {
   /** Mirrors `BenchmarkGateReport::issue_362_from_counts`. */
   static issue362FromCounts(passed, failed) {
     const suite = benchmarkGatePolicies().find((gate) => gate.id === CODING_MODIFICATION_GATE);
-    if (!suite) throw new Error("Missing coding modification benchmark promotion gate");
+    if (!suite) throw new Error(`missing_promotion_gate:${CODING_MODIFICATION_GATE}`);
     return new BenchmarkGateReport(suite.id, suite.runner, passed, failed, suite.minimumPassCount);
   }
 

@@ -22,6 +22,10 @@ fn issue_458_crypto_portfolio_tracker_returns_python_blueprint() {
     let response = solver.solve(ISSUE_PROMPT);
 
     assert_eq!(
+        response.answer,
+        include_str!("../fixtures/blueprint-answers/portfolio-original.md").trim_end()
+    );
+    assert_eq!(
         response.intent, "write_program",
         "the issue prompt must route to write_program, got: {} / {}",
         response.intent, response.answer
@@ -73,6 +77,7 @@ fn issue_458_crypto_portfolio_tracker_covers_supported_languages() {
     struct Case {
         language: &'static str,
         prompt: &'static str,
+        expected: &'static str,
         localized_intro: &'static str,
         localized_status: &'static str,
     }
@@ -82,29 +87,39 @@ fn issue_458_crypto_portfolio_tracker_covers_supported_languages() {
         Case {
             language: "en",
             prompt: "English: Simulate a crypto portfolio tracker: current prices for BTC ETH TON USDT, portfolio holdings, total value, 24h change, weight distribution. Write a Python script with a public API mock endpoint, alert notify if any asset drops more than 5%, and a Markdown report.",
+            expected: include_str!("../fixtures/blueprint-answers/portfolio-en.md"),
             localized_intro: "Here is a Python program",
             localized_status: "Execution status:",
         },
         Case {
             language: "ru",
             prompt: "Смоделируй crypto portfolio tracker: current prices for BTC ETH TON USDT, portfolio holdings, total value, 24h change, weight distribution. Write a Python script with a public API mock endpoint, alert notify if any asset drops more than 5%, and a Markdown report.",
+            expected: include_str!("../fixtures/blueprint-answers/portfolio-ru.md"),
             localized_intro: "Вот программа на языке Python",
             localized_status: "Статус выполнения:",
         },
         Case {
             language: "hi",
             prompt: "कृपया crypto portfolio tracker simulate करें: current prices for BTC ETH TON USDT, portfolio holdings, total value, 24h change, weight distribution. Write a Python script with a public API mock endpoint, alert notify if any asset drops more than 5%, and a Markdown report.",
+            expected: include_str!("../fixtures/blueprint-answers/portfolio-hi.md"),
             localized_intro: "यहाँ Python में एक प्रोग्राम है",
             localized_status: "निष्पादन स्थिति:",
         },
         Case {
             language: "zh",
             prompt: "请 simulate crypto portfolio tracker: current prices for BTC ETH TON USDT, portfolio holdings, total value, 24h change, weight distribution. Write a Python script with a public API mock endpoint, alert notify if any asset drops more than 5%, and a Markdown report.",
+            expected: include_str!("../fixtures/blueprint-answers/portfolio-zh.md"),
             localized_intro: "这是一个解决该复合任务的 Python 程序",
             localized_status: "执行状态：",
         },
     ] {
         let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.answer,
+            case.expected.trim_end(),
+            "{}",
+            case.language
+        );
         assert_eq!(
             response.intent, "write_program",
             "{} prompt should route to write_program, got: {} / {}",

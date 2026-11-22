@@ -23,6 +23,7 @@ use super::finalize_simple;
 use super::text_rewrite::{command_head, free_text_payload};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::seed;
 use crate::summarization::dependency::summarize_free_text;
 
 /// The role naming the act of summarizing a text the request itself
@@ -76,5 +77,44 @@ pub fn handle_summarization_request(
         "response:summarization_free_text",
         &summary.text,
         0.8,
+    ))
+}
+
+/// Read the requested record using the ordinary project or concept lookup.
+pub(super) fn derived_topic_summary(
+    subject: &str,
+    language: &str,
+) -> Option<(String, String, String)> {
+    let registry = seed::projects_registry();
+    if let Some(project) = registry.by_alias(subject)
+        && let Some(statement) = project
+            .statements_for(language)
+            .iter()
+            .max_by_key(|statement| statement.weight)
+    {
+        return Some((
+            project.display_name_for(language).to_owned(),
+            statement.text.clone(),
+            project.url.clone(),
+        ));
+    }
+    let query = crate::concepts::ConceptQuery {
+        term: subject.to_owned(),
+        context: None,
+        response_language: None,
+    };
+    let record = crate::concepts::lookup_concept_query(&query)?.record;
+    let variant = record
+        .localized_for(language)
+        .filter(|variant| !variant.summary.is_empty());
+    Some((
+        variant.map_or(&record.term, |value| &value.term).clone(),
+        variant
+            .map_or(&record.summary, |value| &value.summary)
+            .clone(),
+        variant
+            .filter(|value| !value.source.is_empty())
+            .map_or(&record.source, |value| &value.source)
+            .clone(),
     ))
 }

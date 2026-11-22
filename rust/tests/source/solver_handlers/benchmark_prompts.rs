@@ -32,7 +32,7 @@ pub fn try_summarization_request(
         .subject(&lower)
         .and_then(|subject| derived_topic_summary(subject, language));
     if derived.is_none() {
-        log.append("summarization:refusal", "unresolved subject".to_owned());
+        log.append("summarization:refusal", "unresolved_subject".to_owned());
     }
     let (topic, body, source) = derived.unwrap_or_else(|| {
         let label = prompt
@@ -117,7 +117,7 @@ pub fn try_brainstorming_request(
     let category = seeds.pick_category(normalized)?;
     let requested_count = requested_brainstorm_count(normalized);
     let Some(topic) = seeds.topic(normalized) else {
-        log.append("brainstorming:refusal", "no topic words".to_owned());
+        log.append("brainstorming:refusal", "missing_topic".to_owned());
         return None;
     };
     let operations: Vec<_> = category

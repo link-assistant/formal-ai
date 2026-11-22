@@ -1,6 +1,7 @@
 use std::sync::OnceLock;
 
 use super::finalize_simple;
+use super::summarization_request::derived_topic_summary;
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
@@ -33,7 +34,7 @@ pub fn try_summarization_request(
         .subject(&lower)
         .and_then(|subject| derived_topic_summary(subject, language));
     if derived.is_none() {
-        log.append("summarization:refusal", "unresolved subject".to_owned());
+        log.append("summarization:refusal", "unresolved_subject".to_owned());
     }
     let (topic, body, source) = derived.unwrap_or_else(|| {
         let label = prompt
@@ -62,42 +63,6 @@ pub fn try_summarization_request(
         "response:summarize_topic",
         &body,
         0.85,
-    ))
-}
-
-/// Read the requested record using the ordinary project or concept lookup.
-fn derived_topic_summary(subject: &str, language: &str) -> Option<(String, String, String)> {
-    let registry = seed::projects_registry();
-    if let Some(project) = registry.by_alias(subject)
-        && let Some(statement) = project
-            .statements_for(language)
-            .iter()
-            .max_by_key(|statement| statement.weight)
-    {
-        return Some((
-            project.display_name_for(language).to_owned(),
-            statement.text.clone(),
-            project.url.clone(),
-        ));
-    }
-    let query = crate::concepts::ConceptQuery {
-        term: subject.to_owned(),
-        context: None,
-        response_language: None,
-    };
-    let record = crate::concepts::lookup_concept_query(&query)?.record;
-    let variant = record
-        .localized_for(language)
-        .filter(|variant| !variant.summary.is_empty());
-    Some((
-        variant.map_or(&record.term, |value| &value.term).clone(),
-        variant
-            .map_or(&record.summary, |value| &value.summary)
-            .clone(),
-        variant
-            .filter(|value| !value.source.is_empty())
-            .map_or(&record.source, |value| &value.source)
-            .clone(),
     ))
 }
 
@@ -141,7 +106,7 @@ pub fn try_brainstorming_request(
             (numbered(&category.operations, topic, count), 0.8)
         }
         None => {
-            log.append("brainstorming:refusal", "no topic words".to_owned());
+            log.append("brainstorming:refusal", "missing_topic".to_owned());
             (
                 seed::localized_response("brainstorming_refusal", language).unwrap_or_default(),
                 0.4,

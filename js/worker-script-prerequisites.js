@@ -2,7 +2,7 @@
 const formalAiWorkerScriptPrerequisites = Object.freeze([
   {
     "script": "js/seed_loader.js",
-    "sourceSha256": "0d0e25cb9106536d22eea23c9f0a9ba532c1ed8a66b87326566eaa7df8e31d0c",
+    "sourceSha256": "2093ac840851018ed7ffd0c5606caf05acfeaac00f71211c0b65fa8b862e5756",
     "requires": [
       {
         "script": "js/parser-cache-primordials.js",
@@ -16,7 +16,7 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
     "requires": [
       {
         "script": "js/seed_loader.js",
-        "sourceSha256": "0d0e25cb9106536d22eea23c9f0a9ba532c1ed8a66b87326566eaa7df8e31d0c"
+        "sourceSha256": "2093ac840851018ed7ffd0c5606caf05acfeaac00f71211c0b65fa8b862e5756"
       }
     ]
   },
@@ -26,7 +26,7 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
     "requires": [
       {
         "script": "js/seed_loader.js",
-        "sourceSha256": "0d0e25cb9106536d22eea23c9f0a9ba532c1ed8a66b87326566eaa7df8e31d0c"
+        "sourceSha256": "2093ac840851018ed7ffd0c5606caf05acfeaac00f71211c0b65fa8b862e5756"
       },
       {
         "script": "js/worker/formal_ai_worker_meta_reasoner.js",

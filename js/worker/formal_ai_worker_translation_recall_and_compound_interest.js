@@ -446,7 +446,7 @@ function tryBrainstormingRequest(prompt, normalized) {
   const topic = brainstormRequestTopic(seeds, normalized);
   const evidence = [`brainstorm:category:${category.slug}`];
   if (creativeTopicWords(topic, language).length === 0) {
-    evidence.push("brainstorming:refusal:no topic words");
+    evidence.push("brainstorming:refusal:missing_topic");
     return { intent: category.intent, content: textTransformLocalizedResponse("brainstorming_refusal", language) || creativeTemplate("brainstorming_refusal", []),
       confidence: 0.4, evidence };
   }
