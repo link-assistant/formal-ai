@@ -346,7 +346,7 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 "tryBrainstormingRequest",
                 vec!["brainstorm_topic"]
             ),
-            ("roleplay", "tryRoleplayRequest", vec!["persona_or_topic"]),
+            ("roleplay", "tryRoleplayRequest", vec!["roleplay_facts"]),
             (
                 "document_originality_check",
                 "tryDocumentOriginalityCheck",

@@ -330,21 +330,21 @@ fn multi_turn_coreference_resolves_pronoun_against_history() {
 }
 
 const ROLEPLAY_PROMPTS: &[&str] = &[
-    "Pretend you are Albert Einstein and explain relativity to a teenager.",
-    "Act as Albert Einstein and explain relativity simply.",
-    "Roleplay as a teacher explaining relativity.",
-    "Explain like you are Ada Lovelace teaching algorithms.",
+    "Pretend you are Albert Einstein: A moving clock can measure a different elapsed time.",
+    "Act as Einstein: A moving clock can measure a different elapsed time.",
+    "Roleplay as a teacher: A moving clock can measure a different elapsed time.",
+    "Explain like you are Ada Lovelace: An algorithm is a sequence of steps.",
     "Pretend you are a patient teacher and explain time dilation.",
 ];
 
 #[test]
 fn roleplay_intent_routes_to_roleplay_handler() {
     const EXPECTED_ANSWERS: &[&str] = &[
-        "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
-        "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
-        "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
-        "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result.",
-        "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields.",
+        "Roleplay frame for Albert Einstein. Supplied facts: A moving clock can measure a different elapsed time.",
+        "Roleplay frame for Albert Einstein. Supplied facts: A moving clock can measure a different elapsed time.",
+        "Roleplay frame for a teacher. Supplied facts: A moving clock can measure a different elapsed time.",
+        "Roleplay frame for Ada Lovelace. Supplied facts: An algorithm is a sequence of steps.",
+        "Name the role, then put the facts to explain after a colon.",
     ];
     for (prompt, expected_answer) in ROLEPLAY_PROMPTS.iter().zip(EXPECTED_ANSWERS) {
         let response = FormalAiEngine.answer(prompt);

@@ -1,22 +1,12 @@
 //! Fact-lookup records loaded from `data/seed/facts.lino`.
 //!
-//! Each `fact_*` entry encodes a single canned fact (e.g. "Tokyo is the
-//! capital of Japan") keyed by multilingual `subject_aliases` and
-//! `question_keywords`. The matcher fires when at least one alias **and**
-//! at least one keyword appear in the normalized prompt — each matched at
-//! word boundaries, never as a raw substring inside a longer word (issue
-//! #1172) — so the data file alone — not Rust code — decides which surface
-//! forms route to which fact, in any of the four supported languages.
+//! Production records select publisher evidence for a question. The matcher
+//! requires a subject alias and a question keyword at word boundaries.
+//! A release timeline or a named section and required terms tells the
+//! fetch path which statements to select from the verified capture.
 //!
-//! `wikidata` carries one or more Q-IDs as a parenthesized link list that
-//! anchors the fact to the structured knowledge graph; each Q-ID is appended
-//! to the event log as a separate `wikidata` event so evidence links surface
-//! as `wikidata:Qxxx`.
-//!
-//! `localized` (optional) carries per-language overrides of `summary`,
-//! `source`, and `source_kind`. The solver picks the override matching the
-//! user's prevailing language and falls back to the outer (English) values
-//! when no override exists.
+//! The parser also reads optional Wikidata coordinates and localized
+//! summary fields for record interchange and test fixtures.
 
 use super::FACTS_LINO;
 use super::parser::{LinoNode, parse_lino, split_pipe_list};
@@ -36,17 +26,8 @@ pub struct LocalizedFact {
     pub source_kind: String,
 }
 
-/// A canned fact-lookup record from `data/seed/facts.lino`. See the module
-/// docs for the matching contract.
-///
-/// The optional structured fields (`relation`, `subject_qid`, `value_qid`,
-/// `subject_label`, `value_label`) anchor a fact to a Wikidata property triple
-/// (e.g. `relation = "capital"`, `subject_qid = "Q159"`, `value_qid = "Q649"`
-/// for "Moscow is the capital of Russia"). Records that carry these fields
-/// pre-warm the fact-query reasoning cache so the browser worker can answer
-/// structured questions like "столица России" instantly. Records without them
-/// remain in the legacy substring-matching path for free-form facts (e.g.
-/// "who painted the Mona Lisa").
+/// A fact-lookup policy record from `data/seed/facts.lino`.
+/// Optional relation and Wikidata coordinates identify a structured fact.
 #[derive(Debug, Clone)]
 pub struct FactRecord {
     pub slug: String,

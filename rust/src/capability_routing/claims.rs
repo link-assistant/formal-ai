@@ -115,7 +115,7 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "supplied_payload",
     "summary_topic",
     "brainstorm_topic",
-    "persona_or_topic",
+    "roleplay_facts",
     "document_operand",
     "translation_text",
     "triz_demands",

@@ -887,19 +887,12 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
   function extractPersonas(root) {
     var seeds = {
       triggers: [],
-      defaultPersona: "",
-      bodyTemplate: "",
-      fallbackBody: "",
       personas: [],
-      topics: [],
     };
     if (!root || !Array.isArray(root.children)) return seeds;
     var section = root.name === "personas" ? root : findChildren(root, "personas")[0];
     if (!section) return seeds;
     seeds.triggers = splitList(findChildValue(section, "trigger")).map(toLower);
-    seeds.defaultPersona = findChildValue(section, "default_persona");
-    seeds.bodyTemplate = findChildValue(section, "body_template");
-    seeds.fallbackBody = findChildValue(section, "fallback_body");
     var personaEntries = findChildren(section, "persona");
     for (var i = 0; i < personaEntries.length; i += 1) {
       var persona = personaEntries[i];
@@ -907,15 +900,6 @@ const formalAiWorkerPrimordials = Object.freeze({   ownDescriptor: Object.getOwn
         displayName: persona.id,
         aliases: splitList(findChildValue(persona, "aliases")).map(toLower),
         wikidata: findChildValue(persona, "wikidata"),
-      });
-    }
-    var topicEntries = findChildren(section, "topic");
-    for (var j = 0; j < topicEntries.length; j += 1) {
-      var topic = topicEntries[j];
-      seeds.topics.push({
-        slug: topic.id,
-        detectionKeywords: splitList(findChildValue(topic, "detection_keywords")).map(toLower),
-        body: findChildValue(topic, "body"),
       });
     }
     return seeds;

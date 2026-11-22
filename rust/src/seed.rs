@@ -131,7 +131,7 @@ pub use model_aliases::{
 pub use operation_vocabulary::{
     OperationLanguageForms, OperationTrigger, OperationVocabulary, operation_vocabulary,
 };
-pub use personas::{Persona, PersonaSeeds, PersonaTopic, persona_seeds};
+pub use personas::{Persona, PersonaSeeds, persona_seeds};
 pub use planner_precedence::{
     PLANNER_PRECEDENCE_PATH, planner_precedence, planner_precedence_from,
 };

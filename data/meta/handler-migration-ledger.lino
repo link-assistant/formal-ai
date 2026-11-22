@@ -199,13 +199,13 @@ handler-migration-ledger
     status migrated
     data "data/seed/coreference.lino"
     primitive "rust/src/solver_handlers/benchmark_prompts.rs"
-    justification "issue #918 (R914-6): the pronouns with their contexts and the antecedents with their aliases, Wikidata ids, intents and bodies were already data/seed/coreference.lino; the native part is the nested-context resolution of the nearest earlier user turn naming an antecedent and the token-bounded rewrite into a seeded fact question. The browser twin (tryCoreferenceFactLookup in js/worker/formal_ai_worker_translation_recall_and_compound_interest.js and the coreference_antecedent claim evidence) read only the last user turn and answered only through a seeded fact, so a pronoun after an unrelated turn, or one no fact answered, fell through to unknown; it now resolves the nearest antecedent and answers its seeded body as the native row does, a deliberate parity fix. The browser still runs the row after its synchronous table, later than native rank 320. Native answers are unchanged. Pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs)."
+    justification "Issue #918 moved the pronoun syntax and antecedent aliases into seed data. The native and browser resolvers use the nearest earlier turn naming a referent and try to answer the rewritten question through fact lookup. Issue #1613 removes the installed comparison with C. When there is no verified answer, the resolver reports the referent and the evidence gap. The browser replay covers this with an unrelated installation question after a turn about Rust."
     held_out "rust/tests/unit/issue_918_handler_rules_batch_2.rs"
   handler roleplay
     status migrated
     data "data/seed/personas.lino"
     primitive "rust/src/solver_handlers/benchmark_prompts.rs"
-    justification "issue #918 (R914-6): the triggers, personas, topics, frame template and fallback body are data/seed/personas.lino in both runtimes; the worker dropped its bootstrap copy of the seed and its inline fallback persona, body and template. The native part matches the seed tables and fills the frame. The topic bodies are seeded example explanations, not compositions. Pinned in both runtimes, and natively by rust/tests/unit/specification/prompt_variations_facts.rs."
+    justification "Issue #1613 keeps the reusable request syntax and optional named identity metadata in personas.lino. Both runtime interpreters frame facts supplied by the caller for any requested role and ask for facts when input is missing. The browser and native regressions cover an unregistered role and a missing payload."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler creative_writing
     status "justified-native"

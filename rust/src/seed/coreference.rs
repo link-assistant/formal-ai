@@ -8,8 +8,8 @@
 //!   adding a Russian or Hindi pronoun requires only a new seed entry.
 //! - `antecedent "<DisplayName>"` lists multilingual `aliases` (substrings
 //!   we look for in the prior conversation turn), an optional Wikidata
-//!   Q-ID, the `intent` label finalize logs, and the canonical response
-//!   `body` the handler returns.
+//!   Q-ID, an `intent` label, and optional wording for a program artifact
+//!   or its output. Other references use the shared resolution template.
 //!
 //! The matching contract is intentionally narrow so the handler stays
 //! deterministic:
@@ -19,7 +19,7 @@
 //! 2. The prior user turn must contain at least one antecedent alias.
 //!
 //! The first antecedent whose aliases match is returned, and the caller
-//! emits the response body verbatim.
+//! uses the referent to rewrite the question before reporting the resolution.
 
 use super::COREFERENCE_LINO;
 use super::parser::parse_lino;
@@ -122,10 +122,6 @@ pub fn coreference_seeds() -> CoreferenceSeeds {
                 if child.id.is_empty() {
                     continue;
                 }
-                let body = child.find_child_value("body").to_owned();
-                if body.is_empty() {
-                    continue;
-                }
                 let aliases = child
                     .children
                     .iter()
@@ -138,7 +134,7 @@ pub fn coreference_seeds() -> CoreferenceSeeds {
                     aliases,
                     wikidata: child.find_child_value("wikidata").to_owned(),
                     intent: child.find_child_value("intent").to_owned(),
-                    body,
+                    body: child.find_child_value("body").to_owned(),
                 });
             }
             _ => {}

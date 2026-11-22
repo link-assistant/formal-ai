@@ -207,8 +207,7 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   brainstorm_topic: (prompt, normalized) => creativeTopicWords(
     brainstormRequestTopic(BRAINSTORM_SEEDS || {}, normalized), detectLanguage(prompt),
   ).length > 0,
-  persona_or_topic: (prompt, normalized) => ((PERSONA_SEEDS || {}).personas || []).some((persona) => containsAny(normalized, persona.aliases))
-    || ((PERSONA_SEEDS || {}).topics || []).some((topic) => containsAny(normalized, topic.detectionKeywords)),
+  roleplay_facts: (prompt) => roleplayFacts(roleplayRequest(prompt)) !== null,
   document_operand: (prompt) => claimEvidenceDocumentOperand(prompt),
   translation_text: (prompt) => Boolean(extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt)
     || /`[^`]+`/u.test(String(prompt || "")) || textTransformFreeTextPayload(prompt)),

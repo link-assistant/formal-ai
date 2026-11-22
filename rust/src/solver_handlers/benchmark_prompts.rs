@@ -355,12 +355,23 @@ fn try_coreference_with(
         }
     }
 
+    let resolved_reference;
+    let body = if antecedent.body.is_empty() {
+        resolved_reference = seed::localized_response(
+            "coreference_resolved_reference",
+            detect_language(prompt).slug(),
+        )?
+        .replace("{referent}", &antecedent.display_name);
+        resolved_reference.as_str()
+    } else {
+        &antecedent.body
+    };
     Some(finalize_simple(
         prompt,
         log,
         &antecedent.intent,
         "response:coreference",
-        &antecedent.body,
+        body,
         0.85,
     ))
 }
@@ -435,34 +446,49 @@ fn persona_seed_data() -> &'static PersonaSeeds {
     CELL.get_or_init(seed::persona_seeds)
 }
 
+fn roleplay_facts(request: &str) -> Option<(&str, &str)> {
+    let (role, facts) = request.split_once([':', '：'])?;
+    let (role, facts) = (role.trim(), facts.trim());
+    (!role.is_empty() && !facts.is_empty()).then_some((role, facts))
+}
+
+pub(crate) fn roleplay_has_facts(prompt: &str) -> bool {
+    persona_seed_data()
+        .request(prompt)
+        .and_then(roleplay_facts)
+        .is_some()
+}
+
 pub fn try_roleplay_request(
     prompt: &str,
-    normalized: &str,
+    _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let seeds = persona_seed_data();
-    if !seeds.matches_trigger(normalized) {
-        return None;
-    }
-
-    let persona_display = seeds.pick_persona(normalized).map_or_else(
-        || seeds.default_persona.as_str(),
-        |persona| {
+    let request = seeds.request(prompt)?;
+    let language = detect_language(prompt).slug();
+    let (body, confidence) = if let Some((role, facts)) = roleplay_facts(request) {
+        let display_name = seeds.pick_persona(role).map_or(role, |persona| {
             if !persona.wikidata.is_empty() {
                 log.append("wikidata", persona.wikidata.clone());
             }
-            persona.display_name.as_str()
-        },
-    );
-    log.append("roleplay:persona", persona_display.to_owned());
-
-    let topic_body = seeds
-        .pick_topic(normalized)
-        .map_or(seeds.fallback_body.as_str(), |topic| topic.body.as_str());
-    if seeds.pick_persona(normalized).is_none() && seeds.pick_topic(normalized).is_none() {
-        log.append("roleplay:refusal", "no persona or topic".to_owned());
-    }
-    let body = seeds.render_body(persona_display, topic_body);
+            &persona.display_name
+        });
+        log.append("roleplay:persona", display_name.to_owned());
+        log.append("roleplay:supplied_facts", String::new());
+        let template = seed::localized_response("roleplay_supplied_facts", language)?;
+        let (prefix, suffix) = template.split_once("{role}")?;
+        (
+            format!("{prefix}{display_name}{}", suffix.replace("{facts}", facts)),
+            0.8,
+        )
+    } else {
+        log.append("roleplay:refusal", "missing role or facts".to_owned());
+        (
+            seed::localized_response("roleplay_facts_needed", language)?,
+            0.5,
+        )
+    };
 
     Some(finalize_simple(
         prompt,
@@ -470,6 +496,6 @@ pub fn try_roleplay_request(
         "roleplay_explanation",
         "response:roleplay",
         &body,
-        0.8,
+        confidence,
     ))
 }

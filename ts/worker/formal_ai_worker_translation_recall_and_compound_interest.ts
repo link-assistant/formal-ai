@@ -496,30 +496,51 @@ function tryFactLookup(prompt, normalized) {
   };
 }
 
-function renderRoleplayBody(persona, body) {
-  const template = String((PERSONA_SEEDS && PERSONA_SEEDS.bodyTemplate) || "");
-  return template.replace(/<persona>/g, persona).replace(/<body>/g, body);
+function roleplayRequest(prompt) {
+  const input = prompt.trimStart();
+  const lower = input.toLowerCase();
+  let longest = 0;
+  for (const trigger of PERSONA_SEEDS.triggers) {
+    if (trigger.length <= longest || !lower.startsWith(trigger)) continue;
+    const next = lower[trigger.length];
+    if (/[a-z]$/u.test(trigger) && next && !/[\s:：]/u.test(next)) continue;
+    longest = trigger.length;
+  }
+  return longest ? input.slice(longest).trimStart() : null;
 }
 
-function tryRoleplayRequest(prompt, normalized) {
-  const seeds = PERSONA_SEEDS || {};
-  if (!containsAny(normalized, seeds.triggers)) return null;
-  const personas = Array.isArray(seeds.personas) ? seeds.personas : [];
-  const persona = personas.find((entry) => containsAny(normalized, entry.aliases));
-  const topics = Array.isArray(seeds.topics) ? seeds.topics : [];
-  const topic = topics.find((entry) => containsAny(normalized, entry.detectionKeywords));
-  const displayName = (persona && persona.displayName) || seeds.defaultPersona || "";
-  const body = (topic && topic.body) || seeds.fallbackBody || "";
-  const evidence = [`roleplay:persona:${displayName}`];
-  if (persona && persona.wikidata) evidence.push(`wikidata:${persona.wikidata}`);
-  if (topic && topic.slug) evidence.push(`roleplay:topic:${topic.slug}`);
-  if (!persona && !topic) evidence.push("roleplay:refusal:no persona or topic"); // #1175 R3 refusal lane
-  return {
-    intent: "roleplay_explanation",
-    content: renderRoleplayBody(displayName, body),
-    confidence: 0.8,
-    evidence,
-  };
+function roleplayFacts(request) {
+  if (!request) return null;
+  const separator = request.search(/[:：]/u);
+  if (separator < 0) return null;
+  const role = request.slice(0, separator).trim();
+  const facts = request.slice(separator + 1).trim();
+  return role && facts ? { role, facts } : null;
+}
+
+function tryRoleplayRequest(prompt) {
+  const request = roleplayRequest(prompt);
+  if (request === null) return null;
+  const language = detectLanguage(prompt);
+  const supplied = roleplayFacts(request);
+  if (!supplied) {
+    return {
+      intent: "roleplay_explanation",
+      content: answerFor("roleplay_facts_needed", language),
+      confidence: 0.5,
+      evidence: ["roleplay:refusal:missing role or facts"],
+    };
+  }
+  const role = supplied.role.toLowerCase();
+  const persona = PERSONA_SEEDS.personas.find((entry) =>
+    entry.displayName.toLowerCase() === role || entry.aliases.includes(role));
+  const displayName = persona?.displayName || supplied.role;
+  const content = answerFor("roleplay_supplied_facts", language)
+    .replace(/\{role\}|\{facts\}/gu, (placeholder) =>
+      placeholder === "{role}" ? displayName : supplied.facts);
+  const evidence = [`roleplay:persona:${displayName}`, "roleplay:supplied_facts"];
+  if (persona?.wikidata) evidence.push(`wikidata:${persona.wikidata}`);
+  return { intent: "roleplay_explanation", content, confidence: 0.8, evidence };
 }
 
 function tryKupiSlona(prompt, normalized) {

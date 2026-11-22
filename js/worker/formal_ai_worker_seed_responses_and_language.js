@@ -16,14 +16,7 @@ let PROJECTS = [];
 // the seed loads (issue #918: the bootstrap copies of their lists, items and
 // templates are gone, so the seed is the only place those words live).
 let BRAINSTORM_SEEDS = { triggers: [], categories: [], defaultCount: 0, countCardinal: "" };
-let PERSONA_SEEDS = {
-  triggers: [],
-  defaultPersona: "",
-  bodyTemplate: "",
-  fallbackBody: "",
-  personas: [],
-  topics: [],
-};
+let PERSONA_SEEDS = { triggers: [], personas: [] };
 let COREFERENCE_SEEDS = { pronouns: [], antecedents: [] };
 let TOOLS = [];
 let SEED_RAW = {};

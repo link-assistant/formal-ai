@@ -435,19 +435,29 @@ fn brainstormed_project_ideas_use_the_requested_topic_and_count() {
     assert!(!cold.answer.contains("1. "));
 }
 
-/// The roleplay frame, personas, topics and fallback body are
-/// `data/seed/personas.lino`; the browser twin no longer carries a bootstrap
-/// copy of them.
+/// Roleplay frames caller facts and preserves roles outside the identity registry.
 #[test]
-fn a_roleplay_frame_renders_the_seeded_persona_and_topic() {
+fn a_roleplay_frame_renders_the_supplied_role_and_facts() {
     for (prompt, expected) in [
         (
-            "Explain like you are Ada Lovelace teaching algorithms.",
-            "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result.",
+            "Explain like you are Ada Lovelace: An algorithm is a sequence of steps.",
+            "Roleplay frame for Ada Lovelace. Supplied facts: An algorithm is a sequence of steps.",
+        ),
+        (
+            "Roleplay as a field botanist: Mosses absorb water across their surfaces.",
+            "Roleplay frame for a field botanist. Supplied facts: Mosses absorb water across their surfaces.",
+        ),
+        (
+            "Act as the {facts} narrator: Keep dollar amounts literal: $& and $20.",
+            "Roleplay frame for the {facts} narrator. Supplied facts: Keep dollar amounts literal: $& and $20.",
+        ),
+        (
+            "扮演園丁：苔蘚可以吸水。",
+            "扮演角色：園丁。已提供的事实：苔蘚可以吸水。",
         ),
         (
             "Roleplay as a teacher explaining relativity.",
-            "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent.",
+            "Name the role, then put the facts to explain after a colon.",
         ),
     ] {
         let response = FormalAiEngine.answer(prompt);

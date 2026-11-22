@@ -107,10 +107,7 @@ pub fn class_evidence_holds(
             .is_some_and(|topic| {
                 !handlers::topic_words(topic, crate::language::detect(prompt).slug()).is_empty()
             }),
-        "persona_or_topic" => {
-            let seeds = crate::seed::persona_seeds();
-            seeds.pick_persona(normalized).is_some() || seeds.pick_topic(normalized).is_some()
-        }
+        "roleplay_facts" => handlers::roleplay_has_facts(prompt),
         "document_operand" => handlers::names_document_operand(prompt),
         "translation_text" => names_translation_text(prompt),
         "triz_demands" => crate::triz_solver::triz_demands(prompt).is_some(),

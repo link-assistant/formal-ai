@@ -15,12 +15,12 @@ use crate::translation::{
 };
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
-pub(crate) use benchmark_prompts::try_summarization_request_with_offline;
 pub use benchmark_prompts::{
     fact_store_resolves, names_coreference_antecedent, resolves_coreference_request,
     try_brainstorming_request, try_coreference_request, try_coreference_with_client,
     try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
+pub(crate) use benchmark_prompts::{roleplay_has_facts, try_summarization_request_with_offline};
 pub use calendar::try_calendar_reasoning;
 pub use calendar_create::{
     calendar_claims, try_calendar_create_event, try_routed_calendar_create_event,

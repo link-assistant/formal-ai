@@ -106,8 +106,7 @@ async function tryCoreferenceLiveFact(prompt, normalized, history, preferences, 
 
 function tryCoreferenceFactLookup(prompt, normalized, history) {
   const pronoun = matchingCoreferencePronoun(normalizePrompt(textTransformCommandHead(prompt)));
-  if (!pronoun || !pronoun.token) return null;
-
+  if (!pronoun?.token) return null;
   const resolved = nearestCoreferenceAntecedent(history);
   if (!resolved) return null;
   const { antecedent, previous } = resolved;
@@ -144,10 +143,11 @@ function tryCoreferenceFactLookup(prompt, normalized, history) {
   const rewritten = coreferenceFactRewrite(normalized, antecedent, pronoun);
   const question = rewritten && factLiveQuestion(rewritten);
   if (question && question.relation !== "physical_constant") return null;
-  if (!antecedent.body) return null;
+  const content = antecedent.body || answerFor("coreference_resolved_reference", detectLanguage(prompt))
+    .replace(/\{referent\}/gu, () => antecedent.displayName);
   const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];
   if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);
   const solverEvents = [{ kind: "coreference:resolved", payload: `${pronoun.token}=${antecedent.displayName}` }];
   if (antecedent.wikidata) solverEvents.push({ kind: "wikidata", payload: antecedent.wikidata });
-  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, "response:coreference"] };
+  return { intent: antecedent.intent, content, confidence: 0.85, solverEvents, evidence: [...evidence, "response:coreference"] };
 }

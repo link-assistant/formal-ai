@@ -1255,13 +1255,13 @@ meanings
     unit "boolean"
     example "brainstorm project ideas"
     grounding "data/seed/capability-routing.lino"
-  persona_or_topic
+  roleplay_facts
     defined-by concept
     role action
-    precondition "the request names a seeded persona or roleplay topic"
+    precondition "the request supplies a role and the facts to explain"
     effect "admits the claim of the roleplay handler"
     unit "boolean"
-    example "explain relativity as einstein"
+    example "act as a mapmaker: contour lines connect points at equal elevation"
     grounding "data/seed/capability-routing.lino"
   document_operand
     defined-by concept

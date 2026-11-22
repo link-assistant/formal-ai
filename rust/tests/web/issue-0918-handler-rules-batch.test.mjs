@@ -255,18 +255,33 @@ test("brainstormed project ideas use the requested topic and count", async () =>
   assert.doesNotMatch(cold.content, /^1\./m);
 });
 
-test("a roleplay frame renders the seeded persona and topic", async () => {
-  // The prompts and answers rust/tests/unit/specification/prompt_variations_facts.rs pins natively.
-  for (const [prompt, expected] of [
-    ["Pretend you are Albert Einstein and explain relativity to a teenager.", "Roleplay frame recorded for Albert Einstein. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent."],
-    ["Roleplay as a teacher explaining relativity.", "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent."],
-    ["Explain like you are Ada Lovelace teaching algorithms.", "Roleplay frame recorded for Ada Lovelace. I will keep the persona explicit and factual: an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result."],
-    ["Pretend you are a patient teacher and explain time dilation.", "Roleplay frame recorded for teacher. I will keep the persona explicit and factual: time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields."],
-  ]) {
+test("roleplay frames an arbitrary persona and caller evidence", async () => {
+  const cases = [
+    ["Roleplay as a field botanist", "a field botanist", "Mosses absorb water across their surfaces."],
+    ["Pretend you are Einstein", "Albert Einstein", "A moving clock can measure a different elapsed time."],
+    ["Explain like you are Ada Lovelace", "Ada Lovelace", "An algorithm is a sequence of steps."],
+    ["Act as an assistant to Ada Lovelace", "an assistant to Ada Lovelace", "The figures match column 4: 28 runs."],
+    ["Roleplay as the {facts} narrator", "the {facts} narrator", "Keep dollar amounts literal: $& and $20."],
+  ];
+  for (const [request, role, facts] of cases) {
+    const response = await solve(`${request}: ${facts}`);
+    assert.equal(response.intent, "roleplay_explanation", request);
+    assert.equal(response.content, `Roleplay frame for ${role}. Supplied facts: ${facts}`, request);
+    assert.ok(response.evidence.includes("roleplay:supplied_facts"));
+  }
+  const chinese = await solve("扮演園丁：苔蘚可以吸水。");
+  assert.equal(chinese.content, "扮演角色：園丁。已提供的事实：苔蘚可以吸水。");
+});
+
+test("roleplay without caller facts asks for grounding", async () => {
+  for (const prompt of ["Roleplay as a teacher explaining relativity.", "Act as a botanist:", "Act as: facts"]) {
     const response = await solve(prompt);
     assert.equal(response.intent, "roleplay_explanation", prompt);
-    assert.equal(response.content, expected, prompt);
+    assert.equal(response.content, "Name the role, then put the facts to explain after a colon.");
+    assert.ok(response.evidence.some((event) => event.startsWith("roleplay:refusal")));
   }
+  const unrelated = await solve("What does roleplayer mean?");
+  assert.notEqual(unrelated.intent, "roleplay_explanation");
 });
 
 const SPIDER_EN = "Released title-role Spider-Man films in release order: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023); 11. Spider-Man: Brand New Day (2026). Announced but not yet released: Spider-Man: Beyond the Spider-Verse (2027-06-18). Source: Wikidata Query Service, snapshot taken 2026-08-04.";

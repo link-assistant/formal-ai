@@ -388,7 +388,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       ],
     }, formalizationContext);
   }
-  if (isGreetingPrompt(normalized, prompt) && !tryRoleplayRequest(prompt, normalized)) {
+  if (isGreetingPrompt(normalized, prompt) && roleplayRequest(prompt) === null) {
     events.push("rule:greeting");
     steps.push({ step: "match_rule", detail: "greeting" });
     const temperature = numericPreference(preferences.temperature, 0.7, 0, 1);
