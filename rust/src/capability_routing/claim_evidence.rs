@@ -174,7 +174,7 @@ fn continues_procedure(dialogue: &EventLog) -> bool {
 /// the concept an explanation researches.
 fn names_fact_subject(prompt: &str, normalized: &str) -> bool {
     handlers::gated_fact_record(prompt, normalized).is_some()
-        || handlers::live_fact_question(prompt).is_some()
+        || crate::fact_live::live_fact_question(prompt).is_some()
         || handlers::explanation_concept(prompt).is_some()
         || handlers::try_prompt_text_question(prompt, &mut EventLog::new()).is_some()
         || handlers::fact_comparison_subjects(normalized).is_some()

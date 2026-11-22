@@ -29,8 +29,8 @@ use crate::coding::contains_cjk;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::fact_live::{
-    LiveFactQuestion, bounded_subject, capture_client, live_fact_questions, record_fact_question,
-    resolve_fact_live, role_surfaces,
+    LiveFactQuestion, bounded_subject, capture_client, live_fact_questions, locate,
+    record_fact_question, resolve_fact_live, role_surfaces,
 };
 use crate::language::detect as detect_language;
 use crate::seed;
