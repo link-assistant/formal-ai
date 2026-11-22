@@ -417,6 +417,7 @@ b22a85d78315009001623d9b9689930a9ab518c29cef7240e5e8adcdb7236ff5  ./verification
 04f7b0800f6e3b6fdc107f4502eb96958a0479d1bd930ebbb3862260757b6664  ./verification/round30-browser-callable-green.log.gz
 692ce6c60be789985281b6e7c5fb911c9dab6d6eff213180bcc846b32e001387  ./verification/round30-layered-45033350971.log.gz
 5148b129f716e0759f9d1ffc2d4f1fc7ee259409b16bf4532623614e0f38ac99  ./verification/round30-layered-group-2-137241869012.log.gz
+2fed4a3878d467b7a49002fbfca803a4694e974cf5d82190ed3b5f84ce959895  ./verification/round30-native-job-137242679187.log.gz
 8954c0b4f65900e3daf8844fd73aebbcf380f84308b99abfc988e23268b1e7f4  ./verification/round31-procedure-census-green.log.gz
 cd97f36f33e692f47ac1ef0c9a2efdd90adf7cd3f987dda98bc576e5e3111d1f  ./verification/round31-worker-procedure-trace-green.log.gz
 540c15e55372b6541b95062d91e1d1583240b9a3352c56f6e2c28ec0a76b6b83  ./verification/round4-documentation-method-post-format.log

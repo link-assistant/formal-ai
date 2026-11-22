@@ -430,3 +430,9 @@ tests passed after the count was updated.
 [Shard 2 log, lines 2719–2734](evidence/verification/round30-layered-group-2-137241869012.log.gz) ·
 [Local census replay](evidence/verification/round31-procedure-census-green.log.gz) ·
 [Worker procedure trace replay](evidence/verification/round31-worker-procedure-trace-green.log.gz)
+
+The native job on `44bbe6d25` also passed both sides of the cold replay. The
+callable reported the missing source in 2.15 seconds and the standalone
+program asked for its operand in 48 milliseconds. All sourced recurrences,
+the operand program suite, and all 28 released client transcript tests passed.
+[Native job log, lines 2546–2591, 2857–2867, and 3165–3168](evidence/verification/round30-native-job-137242679187.log.gz)
