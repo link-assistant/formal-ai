@@ -1184,3 +1184,10 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 
 - [x] Fully read another 25 parent/child diffs (3058 lines): capability classification, work-item delivery, collection ownership, arithmetic declarations, request routes, positional insertion, progress receipts, repair notes, prose classification, quoting, web answer selection and command ownership. Fresh per-file diffs exactly match the retained review hashes. Bodies, comments, restricted visibility, reexports and relative paths remain consistent; no new defect found in these files.
 - [ ] Finish the wider aggregate review and every issue acceptance criterion. This paired source review neither completes the whole PR nor replaces native runtime evidence.
+
+
+## Governed fixture refresh after dependency cleanup, 2026-11-22
+
+- [x] Reproduce the exact current-head Layered CI manifest-binding failure locally. Run the maintained explicit witness generator with the reviewed reader hash and exact previous witness hash. Deep comparison proves only four `repo:rust/Cargo.toml` fixture hashes changed; all 221 complete cases, 968 unsupported records and native source hashes are otherwise unchanged.
+- [x] Pass the two fixture-integrity controls and all Unicode/native-reader controls after refresh; keep the original failure and previous binary witness. The dependency cleanup changed the manifest without its witness, so this is a repair to this PR.
+- [ ] Verify the next hosted head and remove the remaining shard warning using complete measured file costs; keep all wider acceptance unfinished.
