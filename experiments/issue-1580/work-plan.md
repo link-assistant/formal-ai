@@ -1191,3 +1191,18 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Reproduce the exact current-head Layered CI manifest-binding failure locally. Run the maintained explicit witness generator with the reviewed reader hash and exact previous witness hash. Deep comparison proves only four `repo:rust/Cargo.toml` fixture hashes changed; all 221 complete cases, 968 unsupported records and native source hashes are otherwise unchanged.
 - [x] Pass the two fixture-integrity controls and all Unicode/native-reader controls after refresh; keep the original failure and previous binary witness. The dependency cleanup changed the manifest without its witness, so this is a repair to this PR.
 - [ ] Verify the next hosted head and remove the remaining shard warning using complete measured file costs; keep all wider acceptance unfinished.
+
+
+## Workspace and algorithm paired review, 2026-11-22
+
+- [x] Fully read eight additional parent/child native diffs (1024 lines), then verify fresh per-file hashes: workspace change/end-edit, line application, write bindings and algorithm evidence. Bodies, comments, imports, restricted visibility and parent exports remain consistent; no new defect found in these files.
+- [ ] Complete the wider aggregate review and every issue criterion. These eight source comparisons do not establish whole-PR review or runtime qualification.
+
+
+## Current hosted failures and scheduling repair, 2026-11-22
+
+- [x] Reproduce the current eight-shard warning from all 913 complete file timings, including three failed files; retain the complete raw source and a second control showing that unreserved reweighting leaves insufficient runner overhead. Preserve every earlier floor and receipt, reserve 20% over current observations, and verify all seven historical scheduling cases with a further 30-second runner allowance. Warning/hard limits remain 270/360 seconds.
+- [x] Reproduce and fix the duration importer's receipt erasure for larger observations. All 27 CI speed tests pass, including the eight-way protected-record control; the existing full receipt block is byte-identical after reimport.
+- [x] Reuse the bounded, exact-pin Bun installer after the current native job's HTTP 403. Seven installer controls and all 162 native admission tests pass locally; final installation failure remains fatal. Keep the earlier local 100ms expression timeout and sequential successful retry as separate observations.
+- [ ] Finish the final full JavaScript gate inventory and collect every terminal hosted result before the next push. The earlier gate inventory was cancelled after the receipt defect was found; it is not a final qualification.
+- [ ] Verify the next hosted head, finish the wider template/aggregate review and every issue criterion. Local replay and fixture repairs do not establish complete issue acceptance.
