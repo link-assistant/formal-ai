@@ -36,7 +36,7 @@ function rustRoot() {
 function changedFiles() {
   const base = process.env.GITHUB_BASE_REF ?? 'main';
   console.error(`Comparing against origin/${base}...HEAD`);
-  const output = exec('git', ['diff', '--name-only', `origin/${base}...HEAD`]);
+  const output = exec('git', ['diff', '--no-renames', '--name-only', `origin/${base}...HEAD`]);
   return output === '' ? [] : output.split('\n').filter(Boolean);
 }
 
@@ -45,7 +45,7 @@ const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 export function isSourceFile(path, root) {
   const prefix = escape(root === '.' ? '' : `${root}/`);
-  return [`^${prefix}src/`, `^${prefix}tests/`, `^${prefix}?scripts/`, `^${prefix}Cargo\\.toml$`]
+  return [`^${prefix}src/`, `^${prefix}tests/`, `^${prefix}scripts/`, '^scripts/', `^${prefix}Cargo\\.toml$`]
     .some((pattern) => new RegExp(pattern).test(path));
 }
 

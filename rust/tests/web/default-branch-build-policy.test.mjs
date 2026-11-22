@@ -634,7 +634,7 @@ test('changelog acquisition keeps complete Git history and only hydrates its che
   assert.deepEqual([...checker.matchAll(/existsSync\('([^']+)'\)/gu)].map(match=>match[1]),
     ['./Cargo.toml','./rust/Cargo.toml']);
   // A sparse worktree does not filter names from a full-history Git tree diff.
-  assert(checker.includes("const output = exec('git', ['diff', '--name-only', `origin/${base}...HEAD`]);"));
+  assert(checker.includes("const output = exec('git', ['diff', '--no-renames', '--name-only', `origin/${base}...HEAD`]);"));
   assert.equal([...checker.matchAll(/exec\('git'/gu)].length,1);
   assert.doesNotMatch(checker,/readFileSync|readdirSync|['"]fetch['"]/u);
 });

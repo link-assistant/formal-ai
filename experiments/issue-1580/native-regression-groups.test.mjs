@@ -519,3 +519,10 @@ test('each workflow language is independently schedulable below the unchanged wa
   const actual = [1, 2, 3, 4].flatMap(index => executedShard(observe(['hive-' + index], 0, {names})));
   assert.deepEqual(actual.toSorted(), names.toSorted());
 });
+
+
+test('native changelog classification is compiled and admitted for either repository layout', () => {
+  assert.equal(admission(['scripts/check-changelog-fragment.rs'])['native-type-check'], true);
+  assert.match(readFileSync('rust/tests/unit/workflow_contracts.rs', 'utf8'),
+    /#\[path = "\.\.\/\.\.\/\.\.\/scripts\/check-changelog-fragment\.rs"\]\nmod check_changelog_fragment;/u);
+});

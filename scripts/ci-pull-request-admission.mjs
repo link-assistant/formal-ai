@@ -64,6 +64,7 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'scripts/wait-for-crate.rs',
   'scripts/version-and-commit.rs',
   'scripts/github-output.rs',
+  'scripts/check-changelog-fragment.rs',
   'scripts/changelog-fragment-file.rs',
   'scripts/changelog-files.rs',
   'scripts/version-changelog.rs',

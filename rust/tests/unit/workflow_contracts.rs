@@ -70,3 +70,8 @@ pub mod check_file_size;
 // Exercise the same changelog parser used before publishing a GitHub release.
 #[path = "ci-cd/changelog_parsing.rs"]
 mod changelog_parsing;
+
+// Keep the native changelog decision aligned with its fast JavaScript twin.
+#[allow(dead_code)]
+#[path = "../../../scripts/check-changelog-fragment.rs"]
+mod check_changelog_fragment;

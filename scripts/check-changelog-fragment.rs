@@ -82,6 +82,7 @@ fn get_changed_files() -> Vec<String> {
         "git",
         &[
             "diff",
+            "--no-renames",
             "--name-only",
             &format!("origin/{}...HEAD", base_ref),
         ],
@@ -108,7 +109,8 @@ fn is_source_file(file_path: &str, rust_root: &str) -> bool {
     let source_patterns = [
         Regex::new(&format!(r"^{}src/", regex::escape(&prefix))).unwrap(),
         Regex::new(&format!(r"^{}tests/", regex::escape(&prefix))).unwrap(),
-        Regex::new(&format!(r"^{}?scripts/", regex::escape(&prefix))).unwrap(),
+        Regex::new(&format!(r"^{}scripts/", regex::escape(&prefix))).unwrap(),
+        Regex::new(r"^scripts/").unwrap(),
         Regex::new(&format!(r"^{}Cargo\.toml$", regex::escape(&prefix))).unwrap(),
     ];
 
@@ -200,4 +202,46 @@ fn main() {
         "Changelog check passed (source files changed: {}, fragments added: {})",
         source_changed_count, fragment_added_count
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::is_source_file;
+
+    #[test]
+    fn source_paths_support_root_and_nested_repository_layouts() {
+        for (root, paths) in [
+            (
+                ".",
+                &[
+                    "src/lib.rs",
+                    "tests/fixture.rs",
+                    "scripts/check.mjs",
+                    "Cargo.toml",
+                ][..],
+            ),
+            (
+                "rust",
+                &[
+                    "rust/src/lib.rs",
+                    "rust/tests/fixture.rs",
+                    "rust/scripts/check.rs",
+                    "scripts/check.mjs",
+                    "rust/Cargo.toml",
+                ][..],
+            ),
+        ] {
+            for path in paths {
+                assert!(is_source_file(path, root), "{root}: {path}");
+            }
+            for path in [
+                "changelog.d/fixture.md",
+                "docs/guide.md",
+                "rustscripts/check.rs",
+                "other/src/lib.rs",
+            ] {
+                assert!(!is_source_file(path, root), "{root}: {path}");
+            }
+        }
+    }
 }

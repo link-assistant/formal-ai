@@ -1125,3 +1125,11 @@ Evidence: [current hosted-source repairs](../../docs/case-studies/issue-1580/hos
 - [x] Restrict closure to ASCII spaces/tabs; all 37 maintained tests and five focused gates pass.
 - [x] Preserve complete before/after evidence and eight valid closing controls; zero independent-authorship credit.
 - [ ] Verify the corrected file in the next complete hosted round; retain all wider unfinished criteria.
+
+## Hosted 754 changelog failure checkpoint
+
+- [x] Preserve complete 1,561-line job log and identify 403 lazy-blob fetch during rename similarity detection.
+- [x] Reproduce with two finite local promisor clones; keep missing-fragment failure and both rename paths.
+- [x] Correct JavaScript/Rust query and root-layout source classification; eight output tests, 161 policy tests, 63 native admission tests and five gates pass.
+- [x] Register native classifier regression and admission; Rust 2024 formatting passes without a local build.
+- [ ] Execute the new native regression and both repaired gates in the next complete hosted round; collect all other 754 failures first.

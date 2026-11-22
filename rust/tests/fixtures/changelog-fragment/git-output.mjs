@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 
-assert.deepEqual(process.argv.slice(2), ['diff', '--name-only', 'origin/main...HEAD']);
+assert.deepEqual(process.argv.slice(2), ['diff', '--no-renames', '--name-only', 'origin/main...HEAD']);
 const mode = process.env.CHANGELOG_GIT_FIXTURE_MODE;
 if (mode === 'failed') {
   process.stderr.write('fixture git failure\n');
