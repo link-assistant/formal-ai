@@ -100,7 +100,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const codex = check.steps.find(step => step.run === codexReplay);
   assert.deepEqual(codex.env, {
     BIN: '${{ github.workspace }}/rust/target/debug/formal-ai',
-    CODEX_VERSION: '0.147.0', SCENARIO: 'report',
+    CODEX_VERSION: '0.147.0', CODEX_EXTRA_ARGS: '--disable plugins', SCENARIO: 'report',
   });
   assert.equal(codex['timeout-minutes'], 2);
   assert.deepEqual(check.steps.find(step => step.run === gatewayReplay).env,
