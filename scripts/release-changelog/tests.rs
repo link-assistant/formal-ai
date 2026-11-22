@@ -100,3 +100,35 @@ fn physical_release_sources_distinguish_missing_from_unreadable_observations() {
     fs::create_dir(&new).unwrap();
     assert!(for_version(&root, "1.2.3").is_err());
 }
+
+#[test]
+fn first_actual_heading_uses_byte_offsets_and_ignores_fenced_examples() {
+    for newline in ["\n", "\r\n"] {
+        let prefix = [
+            "# 更新履歴 🦀",
+            "",
+            "~~~markdown",
+            "## [9.9.9]",
+            "Example only.",
+            "~~~",
+            "## [1.2.3]suffix",
+            "    ## [8.8.8]",
+            "",
+        ]
+        .join(newline)
+            + newline;
+        let text = format!("{prefix}   ## [1.2.3] - 2026-11-22{newline}Notes.");
+        let offset = first_heading_offset(&text).unwrap();
+        assert_eq!(offset, prefix.len(), "offsets count UTF-8 bytes");
+        assert!(text[offset..].starts_with("   ## [1.2.3]"));
+        assert_eq!(&text.as_bytes()[..offset], prefix.as_bytes());
+    }
+    for text in [
+        "",
+        "# Changelog\nNo releases.\n",
+        "```\n## [1.2.3]\n",
+        "    ## [1.2.3]\n",
+    ] {
+        assert_eq!(first_heading_offset(text), None);
+    }
+}
