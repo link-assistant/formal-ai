@@ -29,6 +29,19 @@ test('Codex report fixture from main run 44953310700 disables background marketp
   assert.match(report, /SCENARIO=report-publication/u);
 });
 
+test('Pages rustdoc from main run 45020746043 has no links to private output helpers', () => {
+  const source = read('rust/src/intent_formalization/obligations.rs');
+  const privateLink = source.match(/^\/\/\/.*\[`?(?:explicit_count|output_again)`?\]/mu);
+  assert.equal(privateLink?.[0], undefined);
+});
+
+test('Pages rustdoc from main run 45020746043 treats the grammar filename as literal text', () => {
+  const source = read('rust/src/cnl_output/grammar.rs');
+  const comments = source.match(/^\/\/\/.*$/gmu).join('\n');
+  const bareFilename = comments.replace(/`[^`\n]*`/gu, '').match(/cnl-language-<id>\.lino/u);
+  assert.equal(bareFilename?.[0], undefined);
+});
+
 function evaluate(expression, event, ref, variables = {}, {results = {}, outputs: changed = {}, releaseMode = 'checks', isCancelled = false} = {}) {
   if(typeof expression!=='string')return expression;
   const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')

@@ -2,7 +2,7 @@
 
 Tracked in [issue #1609](https://github.com/link-assistant/formal-ai/issues/1609) and [PR #1611](https://github.com/link-assistant/formal-ai/pull/1611). The OpenCode report and its three original exports are in the [issue #1610 case study](../issue-1610/README.md).
 
-The [release follow-up](release-follow-up.md) traces the client gate failures corrected in [PR #1615](https://github.com/link-assistant/formal-ai/pull/1615) and the v0.356.4 image publication failure addressed in [PR #1626](https://github.com/link-assistant/formal-ai/pull/1626).
+The release follow-up traces the client gate failures corrected in PR #1615, the v0.356.4 image publication failure addressed in PR #1626, and the v0.356.5 public downloads and Pages build failure investigated in PR #1627. [Release follow-up](release-follow-up.md), [PR #1615](https://github.com/link-assistant/formal-ai/pull/1615), [PR #1626](https://github.com/link-assistant/formal-ai/pull/1626), [PR #1627](https://github.com/link-assistant/formal-ai/pull/1627).
 
 ## Timeline on 2026-11-21
 

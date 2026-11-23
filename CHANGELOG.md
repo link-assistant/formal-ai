@@ -20,6 +20,11 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.10] - 2026-11-23
+
+### Fixed
+- Restore the GitHub Pages release build by correcting Rust API documentation markup. Add pre-merge checks for both documentation errors that stopped the site build after the client reporting fixes shipped.
+
 ## [0.356.9] - 2026-11-22
 
 ### Fixed

@@ -1,0 +1,23 @@
+{
+  "main": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "regressionFailsBefore": true,
+  "regressionPassesAfter": true,
+  "testsPassed": 34,
+  "supportedCasesPreserved": 223,
+  "unsupportedCasesPreserved": 970,
+  "mainVersionOnlyOccurrences": 4,
+  "chatFixtureHashOccurrences": 6,
+  "unsupportedIdentitiesMoved": 4,
+  "sourceManifestAdded": 2,
+  "otherCompleteObjectsUnchanged": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 1299482,
+    "sha256": "2e069111a616c1479d099f2eef44b4d46158b8851e218f3319377803c98d7fb1"
+  },
+  "members": 22,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "nativeBehaviorVerified": false,
+  "fullIssueComplete": false
+}

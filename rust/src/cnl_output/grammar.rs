@@ -237,7 +237,7 @@ fn pairs(value: &str) -> Vec<Vec<String>> {
         .collect()
 }
 
-/// Parse one cnl-language-<id>.lino file into plain data.
+/// Parse one `cnl-language-<id>.lino` file into plain data.
 pub fn parse_language_grammar(text: &str) -> Result<LanguageGrammar, &'static str> {
     let parsed = parse_lino(text);
     let root = if parsed.name == "cnl-language" {
