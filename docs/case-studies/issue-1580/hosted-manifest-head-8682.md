@@ -6,11 +6,11 @@ The [complete evidence](../../../experiments/issue-1580/evidence/checks/hosted-m
 
 ## The two actionable admission failures
 
-The native admission job failed its isolated-regression step. Whole-Pipeline lines 67,276 67,280 show that the checked npm inventory omitted a dependency in a compact JSON manifest. Lines 67,284 67,286 show that the tracked active harness manifest was unreadable in the sparse checkout. Lines 67,463 67,474 report 283 passing assertions, these two failures and the expected Cargo exit 101. The final Pipeline Status failure at lines 78,585 78,588 propagates this same admission failure; it is not another implementation cause.
+The native admission job failed its isolated-regression step. Whole-Pipeline lines 67,276 to 67,280 show that the checked npm inventory omitted a dependency in a compact JSON manifest. Lines 67,284 to 67,286 show that the tracked active harness manifest was unreadable in the sparse checkout. Lines 67,463 to 67,474 report 283 passing assertions, these two failures and the expected Cargo exit 101. The final Pipeline Status failure at lines 78,585 to 78,588 propagates this same admission failure; it is not another implementation cause.
 
 The local repairs parse actual JSON object members and rewrite only selected dependency value spans. Both admission checkouts now retain the harness manifest and recursively restore release-registry children after the experiments exclusion. A real Git sparse-checkout control fails against the original pattern and the intermediate harness-only pattern, then passes against the complete repair. Six additional native parser controls require execution on the next hosted head.
 
-Ten real source-size warnings at lines 2,438 2,456 and one unknown report-mode release credential remain recorded and unqualified. Printed evidence paths, echoed error branches, zero cache failure counters, successful tests with failure-related names and intentional negative-control diagnostics are not additional failed jobs. Their classifications preserve the original lines; they do not establish that every warning or original acceptance criterion is resolved.
+Ten real source-size warnings at lines 2,438 to 2,456 and one unknown report-mode release credential remain recorded and unqualified. Printed evidence paths, echoed error branches, zero cache failure counters, successful tests with failure-related names and intentional negative-control diagnostics are not additional failed jobs. Their classifications preserve the original lines; they do not establish that every warning or original acceptance criterion is resolved.
 
 ## Rerun boundary
 
