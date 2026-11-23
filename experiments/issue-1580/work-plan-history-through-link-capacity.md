@@ -42,4 +42,3 @@ The objective remains every requirement of issue #1580 in
 - [ ] Publish only the complete idle-branch batch, then qualify its exact hosted source.
 - [ ] Complete every remaining original criterion below; no template, dependency, production, semantic, retention or aggregate requirement is waived.
 - Supplied commands and edits retain zero independent authorship/reasoning credit. The native goal remains usage-limited.
-

@@ -1,17 +1,21 @@
-## Active checkpoint: desktop practice and counterpart references (2026-11-23)
+## Active checkpoint: native provenance and captured currency (2026-11-23)
 
 The objective remains every requirement of issue #1580 in
 [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), draft and unmerged.
 
-- [x] Publish 7a37f11bf after exact-head documentation and masked-secret checks: 87 changed files and four complete archives.
-- [x] Reproduce six stale counterpart paths and repair them without altering historical template references or marking unmapped practices complete.
-- [x] Compare pinned desktop contracts with actual owners; retain 62 local passes, one PowerShell skip and both harness-assumption failures.
-- [x] Seal complete controls, source identities and fresh dependency responses. Published Chrono migrations, CodeQL and production/runtime criteria remain unfinished.
-- [ ] Qualify all 33 hosted workflows and inspect complete observations for 7a37f11bf; collect every actionable failure before another push.
-- [ ] Pass maintained observations and affected gates for this follow-up, then publish only a complete idle-branch batch.
-- [ ] Complete every wider original criterion below. Supplied work earns zero independent authorship/reasoning credit.
+- [x] Qualify all 33 terminal workflows for 7a37f11bf: 30 success, two failures, one skip; retain 119,508 complete log lines and inspect every diagnostic candidate.
+- [x] Retain 922 JavaScript owner outcomes (921 success, one failure), 440 native passes and one unchanged native assertion failure. All eleven JavaScript queues fit the original warning budget.
+- [x] Repair incorrect captured-worker injection; preserve the before failure and all 39 corrected currency-owner passes.
+- [x] Preserve selected consumed child evidence and complete traces in native composition. Keep source-operand and unselected-child provenance excluded; add small native regressions without changing the original failing case.
+- [x] Pass procedural JavaScript, governed source integrity, source projection, Rust formatting and twelve affected gates. Preserve both initial check-invocation mistakes.
+- [x] Finish desktop follow-up: 441 maintained observations and ten affected gates pass. Six counterpart references and original historical template references remain intact.
+- [x] Seal a complete 315-member receipt with both CI failures, all local failures and the fresh dependency observations.
+- [ ] Publish the complete idle-branch batch after final documentation and secret checks, then qualify every hosted check on its exact head.
+- [ ] Verify the native repair in CI; a source-only review and JavaScript parity do not prove native execution.
+- [ ] Complete every wider original criterion below. OpenSSF, historical dependency, registry authority, CodeQL and production/runtime criteria remain unfinished. Supplied work earns zero independent authorship/reasoning credit.
 
-Evidence: [desktop practice](../../docs/case-studies/issue-1580/desktop-practice-counterparts.md).
+Evidence: [composition and currency](../../docs/case-studies/issue-1580/composed-child-provenance.md),
+[desktop practice](../../docs/case-studies/issue-1580/desktop-practice-counterparts.md).
 [The preceding active checkpoints](work-plan-history-through-link-capacity.md) remain intact.
 
 ## Active checkpoint: terminal 5ce441 and capacity/package repair (2026-11-23)
