@@ -1,10 +1,21 @@
 // Replay retained hosted costs without executing the functional suite.
 import test from 'node:test';
+import YAML from 'yaml';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
 import {durationLookup, partitionProblems, planShards} from '../../scripts/lib/ci-speed-shards.mjs';
 import {parseTestDurations} from '../../scripts/lib/ci-speed-durations.mjs';
+
+// Historical costs are replayed against the current deployed plan. The original
+// eight-shard capture remains immutable; the workflow has used nine since the
+// full-default-suite repair.
+const deployedJob = YAML.parse(readFileSync(new URL('../../.github/workflows/layered-ci.yml', import.meta.url), 'utf8')).jobs.js;
+const deployedShardCount = deployedJob.strategy.matrix.shard.length;
+assert.deepEqual(deployedJob.strategy.matrix.shard, Array.from({length: deployedShardCount}, (_, index) => index + 1));
+for (const step of deployedJob.steps.filter(step => step.env?.SHARDS !== undefined))
+  assert.equal(step.env.SHARDS, deployedShardCount);
+
 
 for (const capture of ['8d8', '9e945']) test('deployed JavaScript plan retains every suite and fits hosted costs: ' + capture, () => {
   const identity = JSON.parse(readFileSync(new URL('./fixtures/hosted-javascript-' + capture + '/identity.json', import.meta.url), 'utf8'));
@@ -18,7 +29,7 @@ for (const capture of ['8d8', '9e945']) test('deployed JavaScript plan retains e
   const secondsOf = durationLookup(parseTestDurations(recorded), Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1]));
   const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs'))
     .map(file => 'rust/tests/web/' + file);
-  const {shards} = planShards(files, 8, secondsOf);
+  const {shards} = planShards(files, deployedShardCount, secondsOf);
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   for (const [index, shard] of shards.entries()) {
     const load = Array(identity.modeledWorkers).fill(0);
@@ -43,7 +54,7 @@ test('latest unchanged suite costs fit the plan and all split provenance scenari
   const weights = parseTestDurations(recorded);
   const secondsOf = durationLookup(weights, Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1]));
   const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
-  const {shards} = planShards(files, 8, secondsOf);
+  const {shards} = planShards(files, deployedShardCount, secondsOf);
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   const selected = partition.scenarios.map(({path}) => shards.findIndex(shard => shard.includes(path)));
   assert.equal(new Set(selected).size, 3);
@@ -62,7 +73,7 @@ test('latest unchanged suite costs fit the plan and all split provenance scenari
   }
 });
 
-test('complete current hosted costs fit the deployed eight-shard plan without discarding failed-shard observations', () => {
+test('complete current hosted costs fit the deployed shard plan without discarding failed-shard observations', () => {
   const fixture = new URL('./fixtures/hosted-javascript-2809ce65/', import.meta.url);
   const identity = JSON.parse(readFileSync(new URL('identity.json', fixture), 'utf8'));
   const observations = readFileSync(new URL('durations.jsonl', fixture), 'utf8').trim().split('\n').map(line => JSON.parse(line));
@@ -73,7 +84,7 @@ test('complete current hosted costs fit the deployed eight-shard plan without di
   const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
   const weights = parseTestDurations(recorded);
   const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
-  const {shards} = planShards(files, 8, durationLookup(weights, Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  const {shards} = planShards(files, deployedShardCount, durationLookup(weights, Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
   for (const [index, shard] of shards.entries()) {
@@ -96,7 +107,7 @@ test('complete c55 hosted costs retain failed-shard observations and fit the unc
   const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
   const weights = parseTestDurations(recorded);
   const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
-  const {shards} = planShards(files, 8, durationLookup(weights, Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  const {shards} = planShards(files, deployedShardCount, durationLookup(weights, Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
   for (const [index, shard] of shards.entries()) {
@@ -122,7 +133,7 @@ test('complete 754 hosted costs retain the failed file and both budget warnings 
   const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
   const weights = parseTestDurations(recorded);
   const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
-  const {shards} = planShards(files, 8, durationLookup(weights, Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  const {shards} = planShards(files, deployedShardCount, durationLookup(weights, Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
   for (const [index, shard] of shards.entries()) {
@@ -148,7 +159,7 @@ test('complete a558 hosted costs preserve all failed observations and fit the un
   assert.equal(identity.failedObservations.length, 3);
   const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
   const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
-  const {shards} = planShards(files, 8, durationLookup(parseTestDurations(recorded), Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  const {shards} = planShards(files, deployedShardCount, durationLookup(parseTestDurations(recorded), Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
   for (const [index, shard] of shards.entries()) {
@@ -174,7 +185,7 @@ test('complete bbc hosted costs retain the warning and fit the fixed runner-over
   assert(observations.every(row => row.complete && identity.jobs.some(job => job.job === row.job)));
   const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
   const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
-  const {shards} = planShards(files, 8, durationLookup(parseTestDurations(recorded), Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  const {shards} = planShards(files, deployedShardCount, durationLookup(parseTestDurations(recorded), Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
   for (const [index, shard] of shards.entries()) {
@@ -215,7 +226,7 @@ test('complete 79a hosted costs preserve both warnings and the fixed runner allo
   assert(observations.every(row => row.complete && identity.jobs.some(job => job.job === row.job)));
   const recorded = readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8');
   const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
-  const {shards} = planShards(files, 8, durationLookup(parseTestDurations(recorded), Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  const {shards} = planShards(files, deployedShardCount, durationLookup(parseTestDurations(recorded), Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
   assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
   const costs = durationLookup(new Map(observations.map(row => [row.file, row.seconds])), identity.unobservedFallbackSeconds);
   for (const [index, shard] of shards.entries()) {
@@ -265,7 +276,7 @@ test('complete c90 costs retain the assertion-only file and fit the unchanged wa
     if(!prior.has(row.file)&&weights.has(row.file))assert(weights.get(row.file)>defaultSeconds,'redundant default override '+row.file);
   }
   const files=readdirSync(new URL('../../rust/tests/web/',import.meta.url)).filter(file=>file.endsWith('.test.mjs')).map(file=>'rust/tests/web/'+file);
-  const {shards}=planShards(files,8,durationLookup(parseTestDurations(recorded),Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
+  const {shards}=planShards(files,deployedShardCount,durationLookup(parseTestDurations(recorded),Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1])));
   assert.deepEqual(partitionProblems(files,shards),{missing:[],repeated:[],extra:[]});
   const costs=durationLookup(new Map(observations.map(row=>[row.file,row.seconds])),identity.unobservedFallbackSeconds);
   for(const [index,shard]of shards.entries()){

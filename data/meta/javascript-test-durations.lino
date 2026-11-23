@@ -33,6 +33,13 @@ javascript-test-durations
     bound-from "rust/tests/web/full-provenance-cli.test.mjs"
   test "rust/tests/web/recipe-resume-protocols.test.mjs"
     seconds 285.8
+  # Both split dialogue owners retain the parent aggregate upper bound, not measured child durations.
+  test "rust/tests/web/cnl-solver-dialogue-b.test.mjs"
+    seconds 284
+    bound-from "rust/tests/web/cnl-solver-dialogue.test.mjs"
+  test "rust/tests/web/cnl-solver-dialogue-c.test.mjs"
+    seconds 284
+    bound-from "rust/tests/web/cnl-solver-dialogue.test.mjs"
   test "rust/tests/web/cnl-solver-dialogue.test.mjs"
     seconds 284
   test "rust/tests/web/issue-1165-production-research.test.mjs"
