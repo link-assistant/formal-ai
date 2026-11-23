@@ -28,7 +28,8 @@ test('fresh-home API exposes the answer and an actual derivation for every requi
   let running;
   try {
     const workerHost = new WorkerHost({}, { networkFetch: currencyFetch });
-    running = await startServer({host:'127.0.0.1', port:0, env, workerHost});
+    running = await startServer({host:'127.0.0.1', port:0, env, worker:workerHost});
+    assert.ok(running.ctx.worker === workerHost, 'the API uses the captured-publisher worker');
     const currencyRows = currencyExamples.map(([prompt, text]) => ({prompt, text}));
     for (const row of [...rows.slice(0,5), rows[9], rows[10], ...currencyRows]) {
       const response = await fetch(running.url+'/v1/chat/completions', {
