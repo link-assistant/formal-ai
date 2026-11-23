@@ -702,7 +702,12 @@ pub use action_release::*;
 // Snapshot I/O owns the shared release representation.
 #[path = "check-dependencies-snapshot.rs"]
 mod snapshot_io;
-pub use snapshot_io::{read_snapshot, render_lino, write_snapshot};
+pub use snapshot_io::{read_snapshot, write_snapshot};
+
+/// Render dependency findings through the shared snapshot implementation.
+pub fn render_lino(findings: &[Finding], unverifiable: &[String]) -> String {
+    snapshot_io::render_lino(findings, unverifiable)
+}
 
 fn ecosystem_of(id: &str) -> Option<Ecosystem> {
     match id.split('/').next()? {

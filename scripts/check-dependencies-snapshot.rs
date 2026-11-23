@@ -137,7 +137,6 @@ pub fn write_snapshot(path: &Path, snapshot: &Snapshot) {
 }
 
 /// Findings as flat lino records, one per drift.
-#[cfg_attr(test, allow(dead_code))]
 pub fn render_lino(findings: &[Finding], unverifiable: &[String]) -> String {
     let mut out = String::new();
     for finding in findings {

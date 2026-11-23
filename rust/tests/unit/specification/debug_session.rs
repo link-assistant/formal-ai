@@ -878,4 +878,5 @@ fn a_served_chat_turn_answers_only_after_its_last_stage() {
     let _ = std::fs::remove_dir_all(&dir);
 }
 
+#[path = "debug_session/calculator_origins.rs"]
 mod calculator_origins;

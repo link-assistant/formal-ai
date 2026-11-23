@@ -6,6 +6,7 @@
 
 use formal_ai::{ConversationTurn, SolverConfig, SymbolicAnswer, UniversalSolver};
 
+#[path = "chat_surface/behavior_rule_grammar.rs"]
 mod behavior_rule_grammar;
 
 fn answer(prompt: &str) -> SymbolicAnswer {
@@ -876,4 +877,5 @@ fn behavior_rules_listing_includes_runtime_rule_when_history_has_one() {
     );
 }
 
+#[path = "chat_surface/rule_details.rs"]
 mod rule_details;

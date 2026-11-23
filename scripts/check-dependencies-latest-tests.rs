@@ -692,3 +692,25 @@ fn npm_rewrite_tracks_escaped_names_and_multiline_values() {
         source.replacen("\"^1.0.0\"", "\"^2.0.0\"", 1)
     );
 }
+
+#[test]
+fn rendered_dependency_findings_preserve_all_observations() {
+    let finding = Finding {
+        dependency: Dependency {
+            ecosystem: Ecosystem::CratesIo,
+            name: "drifting-crate".to_owned(),
+            declared: Some("1.0".to_owned()),
+            resolved: "1.0.0".to_owned(),
+            path: PathBuf::from("rust/Cargo.toml"),
+            line: 7,
+            blocked: None,
+        },
+        latest: "1.1.0".to_owned(),
+    };
+    let output = render_lino(&[finding], &["unknown-crate".to_owned()]);
+    assert_eq!(
+        output,
+        "currency_finding\n  ecosystem \"crates_io\"\n  name \"drifting-crate\"\n  resolved \"1.0.0\"\n  latest \"1.1.0\"\n  path \"rust/Cargo.toml\"\n  line 7\n  blocked false\n\nunverifiable_dependency\n  name \"unknown-crate\"\n\n"
+    );
+    assert!(render_lino(&[], &[]).is_empty());
+}
