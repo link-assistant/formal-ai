@@ -6228,6 +6228,16 @@
         "allApplicablePracticeVerified": false,
         "newNativeExecutionVerified": false,
         "independentAuthorshipCredit": 0
+      },
+      "latestHostedObservation": {
+        "sourceHead": "aaac490e3087736f303434502f9710c3228aed4e",
+        "checkoutMerge": "5325c4d0071f6528fabfe474d7390771da874780",
+        "pipelineRun": 45129261558,
+        "nativeGroupsExecuted": 10,
+        "evidence": "experiments/issue-1580/evidence/checks/rust-practice-hosted-reconciliation/manifest.json",
+        "allApplicablePracticeVerified": false,
+        "newerConcurrencyRepairVerified": false,
+        "independentAuthorshipCredit": 0
       }
     },
     {
@@ -6459,13 +6469,21 @@
         "scripts/check-release-needed.rs",
         "scripts/check-cargo-lock.rs"
       ],
-      "assessment": "The earlier whole-document regex and four release-prefix exemptions are removed. The guard parses the package table, refuses malformed/missing/inherited identity and a failed current-base fetch, and retains root/rust manifest movement and current-base equality. Five existing version CLI cases pass within the exact-head 13-case hosted suite. Two additional cases now exercise all four former prefix exemptions with increases/decreases and an actual merge carrying the base version; these await hosted execution. The pinned template scans workspace/member manifest versions, while the current Formal AI release layout has a literal package version; generalized workspace guard parity is not claimed.",
-      "status": "parsed-production-guard-hosted-existing-controls-expanded-controls-pending",
+      "assessment": "The production guard parses package identity, refuses malformed/missing/inherited versions and failed current-base fetches, and checks current-base equality. The hosted aaac pipeline passes all 33 release CLI methods, including ten version methods covering every former release-prefix exemption, increases/decreases, a real base-version merge, custom refmaps and concurrent tracking-ref changes. Eleven package-identity native cases also pass. These source files are byte-identical at the reconciliation head. The fixed repository release layout has a literal package version; generalized workspace-guard parity remains unverified.",
+      "status": "hosted-expanded-version-controls-verified-full-template-parity-pending",
       "formalAiPaths": [
         "scripts/check-version-modification.rs",
         "scripts/ci-pull-request-admission.mjs"
       ],
-      "verification": "experiments/issue-1580/evidence/checks/version-release-practice-verification/manifest.json"
+      "verification": "experiments/issue-1580/evidence/checks/version-release-practice-verification/manifest.json",
+      "latestHostedObservation": {
+        "sourceHead": "aaac490e3087736f303434502f9710c3228aed4e",
+        "pipelineRun": 45129261558,
+        "evidence": "experiments/issue-1580/evidence/checks/rust-practice-hosted-reconciliation/manifest.json",
+        "allApplicablePracticeVerified": false,
+        "actualPublicationVerified": false,
+        "independentAuthorshipCredit": 0
+      }
     },
     {
       "practice": "Release registry uncertainty and fallible outputs",
@@ -6556,8 +6574,8 @@
         "scripts/publish-crate.rs",
         "scripts/wait-for-crate.rs"
       ],
-      "assessment": "Fully read the four complete pinned helpers. Registry metadata parsing, bounded HTTP requests and distinctions between absence and transient/permanent failures are applicable comparison inputs. Sparse visibility currently trusts successful API status without identity proof; package identity uses a table-local regex rather than full TOML. Rate-limit publication deferral, Cargo credential-store fallback and dependent-job ownership need actual Formal AI workflow/counterpart comparison and executable evidence. No implementation or upstream-repair credit is established by this read.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "The pinned template helpers remain fully source-reviewed. Formal AI uses bounded shared registry requests, validates the requested version identity and preserves transient/permanent/absence distinctions. The hosted 33-method CLI suite now verifies the waiter, failed lookups, candidate identities, output-write failures and writer version floors against a loopback registry. Actual registry helper tests pass in the same hosted job. Sparse-first parity, credential-store fallback, rate-limit deferral and dependent-job ownership still need complete applicability and implementation verification; actual publication authority remains unknown.",
+      "status": "hosted-registry-and-cli-controls-verified-remaining-practices-pending",
       "formalAiPaths": [
         "scripts/rust-paths.rs",
         "scripts/publish-crate.rs",
@@ -6571,6 +6589,14 @@
         "newNativeExecutionVerified": false,
         "evidence": "experiments/issue-1580/evidence/checks/release-capacity-and-cache-draft/manifest.json",
         "assessment": "The local waiter now uses the shared bounded registry helper and validates version identity. Eight new compiled CLI methods and the expanded ten-binary harness await hosted execution. Current shared-template source identity defect reported in upstream issue 264; template sparse-first behavior is not claimed for the downstream API-only waiter."
+      },
+      "latestHostedObservation": {
+        "sourceHead": "aaac490e3087736f303434502f9710c3228aed4e",
+        "pipelineRun": 45129261558,
+        "evidence": "experiments/issue-1580/evidence/checks/rust-practice-hosted-reconciliation/manifest.json",
+        "allApplicablePracticeVerified": false,
+        "actualPublicationVerified": false,
+        "independentAuthorshipCredit": 0
       }
     },
     {
@@ -6581,13 +6607,21 @@
         "scripts/version-and-commit.rs",
         "scripts/version-and-commit/tests.rs"
       ],
-      "assessment": "The template validates committed tree identities, restricts release-only mutations using parsed TOML/JSON equivalence, rejects unrelated staged/untracked/modified paths, distinguishes ruleset refusals from lost races, and verifies changelog/lock writes before publication. Formal AI already has staged release authority; preserve its tested-artifact identity rather than transplanting the standalone release writer. The whole-text package-version regex and optional missing-lock cases still require counterpart experiments.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "Formal AI retains staged tested-artifact authority. The hosted aaac pipeline verifies parsed package identity and physical version CLI cases, including highest-published floors and preserved version bytes after failed observations. Its former whole-document version regex is removed. These results do not complete comparison of release-only mutation ownership, optional lock handling, push races or ruleset refusals with the pinned template.",
+      "status": "hosted-parsed-identity-verified-release-ownership-parity-pending",
       "formalAiPaths": [
         "scripts/version-and-commit.rs",
         ".github/workflows/release-staged.yml"
       ],
-      "verification": null
+      "verification": null,
+      "latestHostedObservation": {
+        "sourceHead": "aaac490e3087736f303434502f9710c3228aed4e",
+        "pipelineRun": 45129261558,
+        "evidence": "experiments/issue-1580/evidence/checks/rust-practice-hosted-reconciliation/manifest.json",
+        "allApplicablePracticeVerified": false,
+        "actualPublicationVerified": false,
+        "independentAuthorshipCredit": 0
+      }
     },
     {
       "practice": "Changelog fragment ownership and collection",
@@ -6596,8 +6630,8 @@
         "scripts/collect-changelog.rs",
         "scripts/create-changelog-fragment.rs"
       ],
-      "assessment": "Exclusive creation and physical collection failure controls pass on the published c90f native target. Both collection paths now share strict heading offsets and preserve old LF/CRLF bytes with twelve native fixtures, awaiting hosted execution. The fragment creator also now encodes operator-controlled paths, descriptions and invalid bump diagnostics with the existing dual-protocol log helper. Two actual CLI regressions retain exact file bytes and round-trip the encoded text; their new compiled execution remains pending. Fragment guard policy and full CLI parity remain unfinished.",
-      "status": "published-exclusive-creation-verified-byte-preservation-and-safe-creator-await-hosted",
+      "assessment": "Exclusive creation, symlink preservation, concurrent creators and physical collection failures pass in the hosted aaac native results. Both shared release-heading consumers and snapshot cleanup controls pass. The hosted 33-method CLI suite includes inventory/read failures, byte preservation and both encoded fragment-diagnostic controls. The selected sources are unchanged at the reconciliation head. Complete fragment-guard applicability and full template CLI equivalence remain unfinished.",
+      "status": "hosted-ownership-heading-and-diagnostic-controls-verified-full-parity-pending",
       "formalAiPaths": [
         "scripts/check-changelog-fragment.rs",
         "scripts/create-changelog-fragment.rs",
@@ -6610,6 +6644,14 @@
         "newNativeExecutionVerified": false,
         "evidence": "experiments/issue-1580/evidence/checks/release-capacity-and-cache-draft/manifest.json",
         "assessment": "Safe creator execution passes in the published 17-method CLI suite. New actual detector/collector/bump output, inventory and byte-preservation controls extend the harness to 25 methods; new cases and repaired heading target await hosted execution."
+      },
+      "latestHostedObservation": {
+        "sourceHead": "aaac490e3087736f303434502f9710c3228aed4e",
+        "pipelineRun": 45129261558,
+        "evidence": "experiments/issue-1580/evidence/checks/rust-practice-hosted-reconciliation/manifest.json",
+        "allApplicablePracticeVerified": false,
+        "actualPublicationVerified": false,
+        "independentAuthorshipCredit": 0
       }
     },
     {
@@ -6620,15 +6662,23 @@
         "scripts/create-github-release.rs",
         "scripts/smoke-test-published-crate.rs"
       ],
-      "assessment": "The template bounds registry-version collision attempts, fails Actions output writes, distinguishes duplicate-tag release API failures, caps release text, installs an exact published version and compiles a fresh dependent crate. The size checker hard-codes target/package, the entrypoint parser only recognizes literal table syntax and existing CLI capture is unbounded; none supersedes Formal AI bounded qualified-artifact observation. Formal counterparts and workflow callers must establish applicability and verification.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "The pinned template bounds registry-version collisions, checks Actions outputs, caps release text and verifies published installation/dependent compilation. Formal AI hosted controls now verify exact registry identity, output-write failures and both bounded pipe-pressure reproductions: the original exceeds its deadline while the repair exits zero with 131072 diagnostic bytes. The CLI fixtures use a loopback registry and controlled commands. Actual publication, package-size applicability and published downstream smoke qualification remain unfinished.",
+      "status": "hosted-release-identity-and-pipe-controls-verified-publication-and-smoke-pending",
       "formalAiPaths": [
         "scripts/check-crate-size.rs",
         "scripts/publish-crate.rs",
         "scripts/wait-for-crate.rs",
         ".github/workflows/release-staged.yml"
       ],
-      "verification": null
+      "verification": null,
+      "latestHostedObservation": {
+        "sourceHead": "aaac490e3087736f303434502f9710c3228aed4e",
+        "pipelineRun": 45129261558,
+        "evidence": "experiments/issue-1580/evidence/checks/rust-practice-hosted-reconciliation/manifest.json",
+        "allApplicablePracticeVerified": false,
+        "actualPublicationVerified": false,
+        "independentAuthorshipCredit": 0
+      }
     },
     {
       "practice": "Whole-request change classification and job-local tool installation",
