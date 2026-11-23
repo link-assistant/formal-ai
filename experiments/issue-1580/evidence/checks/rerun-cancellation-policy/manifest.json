@@ -1,0 +1,40 @@
+{
+  "before": "8190c9efaa82777e576b7bae18297d2de33dcf9d",
+  "repairCommit": "bd586bfd24275b7b2fc757dff9d1a2fe74b6cba2",
+  "workflowFiles": 31,
+  "concurrencyPolicies": 75,
+  "otherWorkflowBytesPreserved": "all, except native explanatory comment",
+  "regressionBefore": {
+    "cases": 7,
+    "failed": 3,
+    "syntaxAttemptCredit": 0
+  },
+  "regressionAfter": {
+    "cases": 7,
+    "failed": 0
+  },
+  "javaScriptFilesPassed": 11,
+  "gatesPassed": 9,
+  "rustfmtFilesPassed": 2,
+  "canonicalRelease": {
+    "operations": 52,
+    "bindings": 104,
+    "calleeBytesUnchanged": true
+  },
+  "initialHarnessFailuresRetained": [
+    "repeated identical VM evaluations reached existing 100ms bound; memoized without changing bound",
+    "externally supplied NODE_OPTIONS refused by source observer; rerun with ordinary CI environment"
+  ],
+  "hostedQualification": "not yet pushed; current native descendants cancelled by historical rerun",
+  "completeAggregateReview": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 55497,
+    "sha256": "69dbf40300d4578c2255f0b15b3b6624a31a32f379c3352898836244e4753355"
+  },
+  "members": 79,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T09:17:53.184524+00:00"
+}

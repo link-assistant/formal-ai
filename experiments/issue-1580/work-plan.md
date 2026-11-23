@@ -1,4 +1,27 @@
 # Issue 1580 work plan
+
+## Active checkpoint: historical rerun cancellation repair, 2026-11-23
+
+- The historical failed-consumer rerun retained its synchronize event and shared
+  the newer run's cancellation group. On 8190c9ef, the producer and registry
+  succeeded; Clippy had no assigned runner and ten native consumers were
+  cancelled. Latest-source native qualification is unfinished.
+- Local source repair bd586bfd24275b7b2fc757dff9d1a2fe74b6cba2 isolates
+  reruns by run ID and attempt across 31 workflows and 75 policies. Initial
+  synchronize cancellation and writer leases retain their intended behavior.
+- Eleven affected JavaScript test files, nine gates and two Rust formatting
+  checks pass. The seven-case regression has three behavioral failures before
+  the repair and zero afterward. Canonical release operations/bindings remain
+  52/104, with byte-identical generated callee content.
+- Both initial harness failures remain recorded. Memoization preserves the VM
+  bound; the source observer still refuses external Node loader options.
+- Hosted runs are still queued. Collect every actionable latest-run failure
+  before the single batch push; this local repair has not been pushed.
+- The historical artifact rerun, aggregate source review, template-practice
+  adoption, dependency/publication authority, CodeQL semantics, serving identity
+  and all other unresolved original criteria remain unfinished. Keep the PR
+  draft and unmerged. Supplied work receives zero independent authorship credit.
+
 ## Active checkpoint: reviewed witness and passing native pipeline, 2026-11-23
 
 - aaac490e3 finishes with 31 successful workflows, one Layered failure and one
