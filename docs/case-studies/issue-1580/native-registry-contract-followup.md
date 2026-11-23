@@ -12,7 +12,7 @@ registry assertions remain. Production publication behavior is unchanged.
 Rust formatting passes; execution of this corrected native test remains
 pending on the next hosted source. No local Rust compilation is performed.
 
-[Complete original job log and exact source](../../../../experiments/issue-1580/evidence/checks/native-registry-contract-followup-20261123/manifest.json)
+[Complete original job log and exact source](../../../experiments/issue-1580/evidence/checks/native-registry-contract-followup-20261123/manifest.json)
 include the initial CLI download refusal and the successful complete retry.
 The 3,170-line log has targeted failure review, not a claim of full literal
 review. Issue #1580 remains unfinished and

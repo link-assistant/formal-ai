@@ -48,5 +48,5 @@ actual latest dependency resolution, hosted qualification of this new helper,
 and the rest of issue #1580 remain unfinished. Supplied implementation earns
 zero independent Formal AI authorship credit.
 
-[Complete observations and member hashes](../../../../experiments/issue-1580/evidence/checks/dependency-lock-literal-paths-20261123/manifest.json)
+[Complete observations and member hashes](../../../experiments/issue-1580/evidence/checks/dependency-lock-literal-paths-20261123/manifest.json)
 are linked from [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581).
