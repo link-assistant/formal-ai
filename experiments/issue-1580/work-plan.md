@@ -993,3 +993,16 @@ Rust formatting pass. Native execution remains pending on the next hosted head.
 - [ ] Push the complete repair batch once, then qualify its exact hosted source.
 - [ ] Preserve actual expanded collector tests, full artifact rerun and consumer-only rerun observations.
 - [ ] Complete all original remaining criteria before readiness or acceptance.
+
+## Native admission manifest failures on 8682, 2026-11-23
+
+- [x] Push the preceding complete repair batch once as 8682a89a8, with main ae36c8ac6 merged and a clean local gate receipt.
+- [x] Preserve the actual failing admission job: 283 controls pass, compact npm inventory and absent active Cargo harness fail.
+- [x] Reproduce both sparse-pattern omissions with real Git, then draft both checkout corrections and the regression.
+- [x] Draft structural JSON collection, exact member-value updates and six additional native regressions. Keep the existing failing compact fixture unchanged.
+- [ ] Complete focused local verification and preserve complete original evidence.
+- [ ] Wait for the entire 8682 cohort, collect all actionable failures, and push one complete repair batch.
+- [ ] Verify the corrected native admission and both actual artifact rerun paths on its exact hosted source.
+- [ ] Complete the remaining original issue and practice criteria before readiness or acceptance; the current native goal remains usage-limited, not complete.
+
+Focused native-admission repair verification completes all 36 neighboring JavaScript controls, six gate twins and Rust formatting. Original failures, sparse before/intermediate/after observations, complete repaired source, controller inputs and exact streams are archived with member hashes. Native execution remains pending; the 8682 cohort is still running and nothing has been pushed during it.
