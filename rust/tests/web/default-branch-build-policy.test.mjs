@@ -198,7 +198,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
       '/experiments/issue_859_codex_e2e/**',
       '/experiments/issue_1609_client_reports/**',
       '/experiments/issue-1580/stage-source-capture.mjs',
-      '/experiments/issue-1580/release-registry/', '/experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
+      '/experiments/issue-1558/rust-module-harness/Cargo.toml',
+      '/experiments/issue-1580/release-registry/**', '/experiments/agent_cli_e2e/mock-meaning-mcp.mjs',
       ...['candidate-output-bindings.json', 'candidate-release-caller.yml', 'original-release-workflow.yml','original-release-workflow.part-1.txt','original-release-workflow.part-2.txt',
         'stage-source-coverage.json'].map(file =>
         '/experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/' + file)]);
