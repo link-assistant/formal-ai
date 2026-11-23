@@ -43,6 +43,7 @@ try {
     OPENCODE_DISABLE_AUTOUPDATE: "true",
     OPENCODE_DISABLE_MODELS_FETCH: "true",
     OPENCODE_CONFIG_CONTENT: JSON.stringify({
+      enabled_providers: ["local"],
       provider: { local: {
         name: "Formal AI", npm: "@ai-sdk/openai-compatible",
         options: { baseURL: `${running.url}/v1`, apiKey: "local" },
