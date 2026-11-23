@@ -136,15 +136,10 @@ pub fn try_how_to_procedure(
         "explicit_steps_only".to_owned(),
     );
 
-    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
-    let body = render_procedural_how_to_body(
-        &task,
-        &wikihow_candidate,
-        &wikihow_api_url,
-        &search_query,
-        &fallback_query,
-        &provider_summary,
+    let body = how_response(
+        "procedural_how_to_unverified",
         language,
+        &[("task", &task.task)],
     );
 
     Some(finalize_simple(
@@ -162,8 +157,7 @@ pub fn try_how_to_procedure(
 ///
 /// Exposed so the executed synthesis path
 /// ([`crate::solver_handler_how_synthesis`]) recognises exactly the same
-/// prompts, in exactly the same normalised form, as the discovery plan it falls
-/// back to — the two can never disagree about what the task is.
+/// prompts, in exactly the same normalised form, as the unverified reply.
 #[must_use]
 pub fn procedural_how_to_task(normalized: &str) -> Option<String> {
     extract_procedural_how_to_task(normalized).map(|task| task.task)
@@ -769,44 +763,6 @@ fn correct_common_procedural_typos(task: &str) -> (String, Vec<SpellingCorrectio
         .join(" ");
 
     (corrected, corrections)
-}
-
-fn render_procedural_how_to_body(
-    task: &ProceduralHowToTask,
-    wikihow_candidate: &str,
-    wikihow_api_url: &str,
-    search_query: &str,
-    fallback_query: &str,
-    provider_summary: &str,
-    language: &str,
-) -> String {
-    let install_gate = if task.action == "install" {
-        how_response(
-            "procedural_how_to_install_gate",
-            language,
-            &[
-                ("search_query", search_query),
-                ("fallback_query", fallback_query),
-            ],
-        )
-    } else {
-        String::new()
-    };
-    how_response(
-        "procedural_how_to_plan",
-        language,
-        &[
-            ("task", &task.task),
-            ("action", &task.action),
-            ("object", &task.object),
-            ("install_gate", &install_gate),
-            ("candidate", wikihow_candidate),
-            ("api_url", wikihow_api_url),
-            ("search_query", search_query),
-            ("providers", provider_summary),
-            ("k", &WEB_SEARCH_RRF_K.to_string()),
-        ],
-    )
 }
 
 /// A seeded response with its `{name}` slots filled in one pass, so a value

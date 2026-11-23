@@ -256,25 +256,30 @@ test("web search texts come from the seed in every language", async () => {
 // every line from seeded procedural_how_to_* and how_it_works* responses and
 // the search-query frames of the `policy procedural_how_to` and
 // `policy how_it_works` blocks, filled in one pass in both runtimes. The
-// no-source enabled plan uses the native discovery template; disabled sources
-// retain actual live outcomes. The harness serves seed data and refuses external URLs.
+// harness serves seed data and refuses external URLs. Disabled sources retain
+// their outcome in the evidence.
 async function procedure(prompt, language, preferences) {
   await ready;
   worker.fetch = defaultFetch;
   return plain(await evaluate(worker, `tryProceduralHowTo(${JSON.stringify(prompt)}, ${JSON.stringify(language)}, ${JSON.stringify(preferences)})`));
 }
 
-test("a procedural plan renders its seeded lines in English and Russian", async () => {
-  assert.equal((await procedure("how to make tea", "en", { externalServiceWikihow: false })).content, "Procedural discovery plan for `make tea` (action `make`, object `tea`).\n\nSource path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).\n\nwikiHow is disabled in settings.\n\nFallback web search for `how to make tea`:\n\nNo CORS-enabled web search results were returned for `how to make tea`.\n\nProviders tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.");
-  assert.equal((await procedure("how to install docker", "en", {})).content, "Procedural discovery plan for `install docker` (action `install`, object `docker`).\n\nFor install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `docker install official documentation` and keeps the general how-to query `how to install docker` as fallback.\n\nI do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `Install-Docker` via `https://www.wikihow.com/api.php?action=parse&page=Install-Docker&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. If those sources do not expose usable steps, the fallback path runs web search for `docker install official documentation` across duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews and merges the top results with reciprocal rank fusion (k = 60). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `install docker`.");
+test("an unverified procedural answer uses localized wording and retains source stages", async () => {
+  const tea = await procedure("how to make tea", "en", { externalServiceWikihow: false });
+  assert.equal(tea.content, "I couldn’t verify steps for “make tea”. If you have a guide, share its link and I can help you work through it.");
+  assert.ok(tea.evidence.includes("procedural_how_to:service_disabled:wikihow"));
+  const docker = await procedure("how to install docker", "en", {});
+  assert.equal(docker.content, "I couldn’t verify steps for “install docker”. If you have a guide, share its link and I can help you work through it.");
+  assert.ok(docker.evidence.includes("procedural_how_to:source_gate:official_documentation_first"));
+  assert.ok(docker.evidence.includes("web_search:request:docker install official documentation"));
   const russian = await procedure("как установить docker", "ru", { externalServiceWikihow: false });
-  assert.equal(russian.content, "План поиска процедуры для `установить docker` (действие `install`, объект `docker`).\n\nДля задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с `docker install official documentation` и держит `how to установить docker` как fallback.\n\nПуть источников: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow отключен в настройках).\n\nOfficial-documentation web search for `docker install official documentation` did not return ranked guidance; preserving `how to установить docker` as the general how-to fallback.\n\nwikiHow is disabled in settings.\n\nFallback web search for `how to установить docker`:\n\nНе получены результаты веб-поиска с поддержкой CORS для `how to установить docker`.\n\nПопробованы провайдеры: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.");
+  assert.equal(russian.content, "Не удалось найти проверенные инструкции по запросу «установить docker». Если у вас есть ссылка на руководство, пришлите её.");
   assert.equal(russian.query, "how to установить docker");
 });
 
 test("a task text with braces is never re-filled", async () => {
   const response = await procedure("how to {task} it {k}", "en", { externalServiceWikihow: false });
-  assert.ok(response.content.startsWith("Procedural discovery plan for `task it k` (action `task`, object `it k`)."));
+  assert.ok(response.content.startsWith("I couldn’t verify steps for “task it k”."));
 });
 
 test("the mechanism discovery plan answers as the native row does", async () => {

@@ -304,7 +304,7 @@ test("the browser worker and the Rust solver synthesise the same guide", async (
   }
 });
 
-test("the procedural how-to answer is the synthesised guide when it is sufficient", async () => {
+test("the English procedural answer presents a complete primary procedure with its citation", async () => {
   const context = await bootWorker(loadCaptures());
   const answer = plain(
     await evaluate(context, 'tryProceduralHowTo("how to make pancakes?", "en", {})'),
@@ -314,9 +314,10 @@ test("the procedural how-to answer is the synthesised guide when it is sufficien
   assert.ok(answer.evidence.some((line) => line.startsWith("how_to:bounds ")));
   assert.ok(answer.evidence.some((line) => line.startsWith("how_to:step rank=1 ")));
   assert.match(answer.content, /## How to make pancakes/u);
+  assert.match(answer.content, /^1\. Crack the eggs/mu);
+  assert.doesNotMatch(answer.content, /Checking if input|Valid==False|2 cups \(18oz\/510g\)/u);
 
-  // A task no service documents must fall through to the pre-existing plan
-  // rather than lose the answer the worker used to give.
+  // A task with no verified steps still returns a useful reply and trace.
   const fallback = plain(
     await evaluate(
       context,

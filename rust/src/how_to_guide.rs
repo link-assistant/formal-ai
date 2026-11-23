@@ -20,6 +20,7 @@ pub mod extract;
 #[cfg(not(target_arch = "wasm32"))]
 pub(crate) mod indexed;
 mod render;
+mod wiki_how;
 
 use std::collections::BTreeMap;
 
@@ -280,6 +281,10 @@ impl HowToGuide {
     pub fn markdown_in(&self, language: &str) -> String {
         render::markdown_in(self, language)
     }
+
+    pub(crate) fn answer_markdown(&self, language: &str) -> String {
+        render::answer_markdown(self, language)
+    }
 }
 
 /// The registry sources that may contribute to `task`, in consultation order.
@@ -359,18 +364,25 @@ pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
             continue;
         }
         let mut outcome = WalkSourceOutcome::new(&record.id, "no_steps", url.clone());
-        let steps = walk_source(
-            &record,
-            &url,
-            &extractor,
-            &Walk {
-                client,
-                bounds,
+        let walk = Walk {
+            client,
+            bounds,
+            now,
+        };
+        let mut steps = walk_source(&record, &url, &extractor, &walk, availability, &mut outcome);
+        if record.id == "wikihow"
+            && steps.len() < MIN_ACCEPTED_STEPS
+            && let Some(recovered) =
+                wiki_how::recover(&record, &url, &extractor, &walk, &mut outcome)
+        {
+            steps = recovered;
+            availability.observe(
+                &endpoint,
+                crate::service_accessibility::ServiceStatus::Reachable,
+                outcome.detail.clone(),
                 now,
-            },
-            availability,
-            &mut outcome,
-        );
+            );
+        }
         if !steps.is_empty() {
             outcome.status = String::from("contributed");
         }
@@ -618,15 +630,11 @@ impl CaptureExtractor for StepExtractor<'_> {
             Payload::Parse { .. } if produced > 0 => {}
             Payload::Parse { title, html } => {
                 let relevant = is_wiki && title_matches(&title);
-                let localized =
-                    is_wikihow && endpoint.split('?').next() != record.api.split('?').next();
                 let found = if !relevant {
                     read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
                     Vec::new()
-                } else if localized {
-                    extract::wiki_how_steps(&html, bounds.max_items)
                 } else if is_wikihow {
-                    extract_steps(&html, bounds.max_items)
+                    wiki_how::steps(&html, task, self.language, bounds.max_items)
                 } else {
                     let labels = crate::rule_interpreter::handler_policy(
                         "procedural_how_to",

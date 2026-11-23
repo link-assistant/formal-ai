@@ -297,34 +297,6 @@ fn first_sentence(text: &str) -> Option<String> {
     None
 }
 
-/// Prefer wikiHow's ordered step lists to navigation and related links.
-pub(super) fn wiki_how_steps(html: &str, limit: usize) -> Vec<String> {
-    let mut saw_list = false;
-    for list in html.split("<ol").skip(1) {
-        if !list.starts_with(|character: char| character == '>' || character.is_whitespace()) {
-            continue;
-        }
-        let Some((attributes, content)) = list.split_once('>') else {
-            continue;
-        };
-        saw_list = true;
-        if let Some((items, _)) = content.split_once("</ol>")
-            && (attributes.trim().is_empty() || attributes.contains("steps_list_2"))
-        {
-            let steps = extract_steps(items, limit);
-            if steps.len() >= super::MIN_ACCEPTED_STEPS {
-                return steps;
-            }
-        }
-    }
-    if saw_list {
-        Vec::new()
-    } else {
-        // Older structured captures contain bare list items.
-        extract_steps(html, limit)
-    }
-}
-
 /// Select one ordered procedure. Nominal catalogue entries must explicitly
 /// label the section that supplies the steps.
 pub(super) fn ordered_procedure_steps(
@@ -471,11 +443,10 @@ fn indexed_section_lists(html: &str, limit: usize) -> Vec<Vec<String>> {
 pub fn extract_steps(html: &str, limit: usize) -> Vec<String> {
     let mut steps: Vec<String> = Vec::new();
     for item in list_items(html) {
-        if item.trim_start().starts_with("<b>") {
+        let Some(text) = step_text(&item) else {
             continue;
-        }
-        let text = compact_step_text(&item);
-        if text.chars().count() < MIN_STEP_CHARS || steps.contains(&text) {
+        };
+        if steps.contains(&text) {
             continue;
         }
         steps.push(text);
@@ -484,6 +455,14 @@ pub fn extract_steps(html: &str, limit: usize) -> Vec<String> {
         }
     }
     steps
+}
+
+pub(super) fn step_text(item: &str) -> Option<String> {
+    if item.trim_start().starts_with("<b>") {
+        return None;
+    }
+    let text = compact_step_text(item);
+    (text.chars().count() >= MIN_STEP_CHARS).then_some(text)
 }
 
 /// The inner HTML of every `<li>` element, in document order.
