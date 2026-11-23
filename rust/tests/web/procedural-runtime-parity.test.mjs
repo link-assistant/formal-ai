@@ -222,6 +222,25 @@ test("an unregistered Russian how-to uses the localized CORS API and quotes its 
   assert.ok(!requested.includes(WAYBACK_INDEX));
 });
 
+test("a recovered procedure reports the accepted article after rejecting an unrelated capture", async () => {
+  const unrelated = JSON.parse(RUSSIAN_CAPTURE);
+  unrelated.parse.title = "Домашние растения";
+  const title = "хорошо покакать";
+  const matching = wikiParse(title);
+  const captures = new Map([
+    [RUSSIAN_API, { body: JSON.stringify(unrelated) }],
+    [wikiSearch(title), searchCapture(title)],
+    [matching, { body: RUSSIAN_CAPTURE }],
+  ]);
+  const answer = await answerRussian(await bootWorker(captures));
+  assert.equal(answer.guide.steps.length, 2, answer.content);
+  assert.ok(answer.guide.steps.every(step => step.sourceUrl === matching));
+  assert.ok(!answer.content.includes(RUSSIAN_API), answer.content);
+  const outcome = answer.guide.outcomes.find(row => row.sourceId === "wikihow");
+  assert.equal(outcome.status, "contributed");
+  assert.ok(outcome.detail.includes(matching), outcome.detail);
+});
+
 test("the browser uses a matching archival capture for the short Russian question after a live request fails", async () => {
   const requested = [];
   const body = `<link rel="canonical" href="${RUSSIAN_ARTICLE}"><ul><li>This unrelated navigation entry is long enough to look like a step.</li></ul>${WIKIHOW_STEPS}`;

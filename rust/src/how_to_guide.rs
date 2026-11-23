@@ -719,6 +719,11 @@ impl CaptureExtractor for StepExtractor<'_> {
             }
             Payload::OpenSearch { .. } | Payload::Search { .. } => {}
         }
+        // A later relevant capture replaces the rejected page's outcome detail.
+        // The accepted steps retain their own capture URL and digest.
+        if !read.items.is_empty() {
+            read.detail = Some(capture.source_url().to_owned());
+        }
         read
     }
 }

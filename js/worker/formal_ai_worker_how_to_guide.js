@@ -595,6 +595,7 @@ function howToReadCapture(record, task, capture, depth, produced, bounds, langua
       search();
     }
   }
+  if (items.length > 0) detail = capture.url;
   items.forEach((item, index) => { item.position = produced + index + 1; });
   return { items, follow, detail };
 }
