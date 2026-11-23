@@ -374,23 +374,23 @@ multilingual_responses
   response response_thinking_narrative_generic_en
     intent thinking_narrative_generic
     language en
-    text "I read this as {article} {task} request, worked out the answer, and replied."
+    text "I read this as {article} {task} request and replied."
   response response_thinking_narrative_generic_ru
     intent thinking_narrative_generic
     language ru
-    text "Я распознал запрос «{task}», нашёл ответ и ответил."
+    text "Я распознал запрос «{task}» и ответил."
   response response_thinking_narrative_generic_hi
     intent thinking_narrative_generic
     language hi
-    text "मैंने इसे “{task}” अनुरोध के रूप में पहचाना, जवाब निकाला और उत्तर दिया।"
+    text "मैंने इसे “{task}” अनुरोध के रूप में पहचाना और उत्तर दिया।"
   response response_thinking_narrative_generic_zh
     intent thinking_narrative_generic
     language zh
-    text "我把它识别为“{task}”请求，算出了答案并作了回复。"
+    text "我把它识别为“{task}”请求并作了回复。"
   response response_thinking_narrative_generic_es
     intent thinking_narrative_generic
     language es
-    text "Interpreté esto como una solicitud de tipo «{task}», resolví la respuesta y contesté."
+    text "Interpreté esto como una solicitud de tipo «{task}» y contesté."
   response response_thinking_language_name_en_en
     intent thinking_language_name_en
     language en

@@ -4,7 +4,7 @@
 //! network policy. Offline runs replay committed captures through the same
 //! guide synthesis as live runs.
 //! Walk the enabled services, save their accessibility, and answer from
-//! captured steps. If the evidence is insufficient, return the discovery plan.
+//! captured steps. Report when there are too few verified steps to answer.
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
@@ -121,7 +121,10 @@ fn try_how_to_procedure_with_clients<T: SourceTransport, P: SourceTransport>(
     }
     guide.record(log);
     if !guide.is_sufficient() {
-        log.append("procedural_how_to:fallback", "discovery_plan".to_owned());
+        log.append(
+            "procedural_how_to:fallback",
+            "insufficient_evidence".to_owned(),
+        );
         return try_how_to_procedure(prompt, normalized, log);
     }
     Some(finalize_simple(
@@ -129,7 +132,7 @@ fn try_how_to_procedure_with_clients<T: SourceTransport, P: SourceTransport>(
         log,
         "procedural_how_to",
         "response:procedural_how_to_guide",
-        &guide.markdown_in(language),
+        &guide.answer_markdown(language),
         0.82,
     ))
 }

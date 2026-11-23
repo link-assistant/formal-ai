@@ -7,38 +7,38 @@
 # handler.
 
 multilingual_responses
-  response response_procedural_how_to_plan_en
-    intent procedural_how_to_plan
+  response response_procedural_how_to_unverified_en
+    intent procedural_how_to_unverified
     language en
-    text "Procedural discovery plan for `{task}` (action `{action}`, object `{object}`).\n\n{install_gate}I do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `{candidate}` via `{api_url}`. If those sources do not expose usable steps, the fallback path runs web search for `{search_query}` across {providers} and merges the top results with reciprocal rank fusion (k = {k}). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `{task}`."
+    text "I couldn’t verify steps for “{task}”. If you have a guide, share its link and I can help you work through it."
   response response_procedural_how_to_install_gate_en
     intent procedural_how_to_install_gate
     language en
     text "For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback.\n\n"
-  response response_procedural_how_to_plan_ru
-    intent procedural_how_to_plan
+  response response_procedural_how_to_unverified_ru
+    intent procedural_how_to_unverified
     language ru
-    text "План поиска процедуры для `{task}` (действие `{action}`, объект `{object}`).\n\n{install_gate}Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `{candidate}` через `{api_url}`. Если эти источники не дают пригодные шаги, fallback запускает web search по `{search_query}` через {providers} и объединяет верхние результаты reciprocal rank fusion (k = {k}). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `{task}`."
+    text "Не удалось найти проверенные инструкции по запросу «{task}». Если у вас есть ссылка на руководство, пришлите её."
   response response_procedural_how_to_install_gate_ru
     intent procedural_how_to_install_gate
     language ru
     text "Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с web search запроса `{search_query}` и держит общий how-to запрос `{fallback_query}` как fallback. "
-  response response_procedural_how_to_plan_hi
-    intent procedural_how_to_plan
+  response response_procedural_how_to_unverified_hi
+    intent procedural_how_to_unverified
     language hi
-    text "`{task}` के लिए procedural discovery plan (action `{action}`, object `{object}`).\n\n{install_gate}मैं इसे memorized recipe से answer नहीं करता. Solver पहले topic context के लिए Wikipedia और entity/action/object hints के लिए Wikidata जांचता है. फिर वह candidate `{candidate}` के लिए wikiHow का CORS-readable MediaWiki parse API `{api_url}` से आजमाता है. अगर ये sources usable steps नहीं देते, fallback `{search_query}` के लिए {providers} पर web search चलाता है और top results को reciprocal rank fusion (k = {k}) से merge करता है. अंतिम recursive fetch check केवल उन pages को स्वीकार करता है जिनमें `{task}` के explicit ordered या instructional steps हों."
+    text "मुझे “{task}” के लिए सत्यापित निर्देश नहीं मिले। अगर आपके पास किसी मार्गदर्शिका का लिंक है, तो उसे भेजें।"
   response response_procedural_how_to_install_gate_hi
     intent procedural_how_to_install_gate
     language hi
     text "इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver official-source web search query `{search_query}` पहले चलाता है और general how-to query `{fallback_query}` को fallback रखता है. "
-  response response_procedural_how_to_plan_zh
-    intent procedural_how_to_plan
+  response response_procedural_how_to_unverified_zh
+    intent procedural_how_to_unverified
     language zh
-    text "`{task}` 的过程发现计划（action `{action}`, object `{object}`）。\n\n{install_gate}我不会把它当作记忆中的固定 recipe 来回答。Solver 先检查 Wikipedia 获取主题上下文，再检查 Wikidata 获取 entity/action/object 线索。然后它尝试 wikiHow 的 CORS-readable MediaWiki parse API candidate `{candidate}`，URL 为 `{api_url}`。如果这些来源没有可用步骤，fallback 会对 `{search_query}` 通过 {providers} 运行 web search，并用 reciprocal rank fusion (k = {k}) 合并顶部结果。最后的 recursive fetch check 只接受真正包含 `{task}` 的明确有序步骤或 instructional steps 的页面。"
-  response response_procedural_how_to_plan_es
-    intent procedural_how_to_plan
+    text "我没能核实「{task}」的操作步骤。如果你有相关指南，请发给我链接。"
+  response response_procedural_how_to_unverified_es
+    intent procedural_how_to_unverified
     language es
-    text "Plan de descubrimiento del procedimiento para `{task}` (acción `{action}`, objeto `{object}`).\n\n{install_gate}No respondo a esto con una receta memorizada. El solucionador consulta primero Wikipedia para el contexto del tema y Wikidata para pistas sobre la entidad, la acción y el objeto. Después prueba la API de análisis MediaWiki de wikiHow, legible por CORS, con el candidato `{candidate}` mediante `{api_url}`. Si esas fuentes no ofrecen pasos utilizables, la ruta alternativa ejecuta una búsqueda web de `{search_query}` en {providers} y combina los mejores resultados con reciprocal rank fusion (k = {k}). La comprobación final de obtención recursiva solo acepta páginas que contengan realmente pasos explícitos, ordenados o instructivos, para `{task}`."
+    text "No pude verificar los pasos para «{task}». Si tienes una guía, comparte el enlace y puedo ayudarte a seguirla."
   response response_procedural_how_to_install_gate_zh
     intent procedural_how_to_install_gate
     language zh

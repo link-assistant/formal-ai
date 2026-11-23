@@ -94,8 +94,7 @@ fn ask(port: u16, question: &str) -> String {
         .to_owned()
 }
 
-/// The whole contract on one request: registry-selected sources, steps that
-/// carry their exact provenance, and the declared bounds, all offline.
+/// A caller receives the documented steps and citation from the offline cache.
 #[test]
 fn chat_completions_answers_a_how_to_request_from_the_committed_captures() {
     let cache = CaptureCache::checkout("guide");
@@ -114,22 +113,17 @@ fn chat_completions_answers_a_how_to_request_from_the_committed_captures() {
         "the guide should assert at least the minimum number of steps: {answer}"
     );
     assert!(
-        answer.contains("sha256 "),
-        "every step should cite the digest of the bytes it came from: {answer}"
-    );
-    assert!(
         answer.contains("https://www.wikihow.com/"),
         "the guide should cite the exact source URL it captured: {answer}"
     );
     assert!(
-        answer.contains("Bounds: max_depth=2 max_pages_per_service=4 max_services=4 max_items=12"),
-        "the guide should state the bounds it ran under: {answer}"
+        !answer.contains("sha256 ") && !answer.contains("max_pages_per_service="),
+        "the conversational guide should only show steps and citations: {answer}"
     );
 }
 
 /// A settings opt-out is authoritative over the wire too: the disabled service
-/// is reported as disabled, contributes nothing, and the enabled services still
-/// answer.
+/// contributes nothing and the enabled services still answer.
 #[test]
 fn chat_completions_honours_a_service_opt_out() {
     let cache = CaptureCache::checkout("optout");
@@ -148,23 +142,16 @@ fn chat_completions_honours_a_service_opt_out() {
     let answer = ask(port, "how to make pancakes?");
 
     assert!(
-        answer.contains(
-            "- stackexchange — disabled (0 page(s), 0 step(s)): externalServiceStackExchange"
-        ),
-        "the opted-out service should be reported as disabled, naming the setting: {answer}"
-    );
-    assert!(
         !answer.contains("api.stackexchange.com"),
         "an opted-out service must never be contacted, cached or not: {answer}"
     );
     assert!(
-        answer.contains("## How to make pancakes") && answer.contains("sha256 "),
+        answer.contains("## How to make pancakes") && answer.contains("https://www.wikihow.com/"),
         "the services that stayed enabled must still answer: {answer}"
     );
 }
 
-/// No service documents the task, so the server reports the shortfall and falls
-/// back to the discovery plan instead of inventing a procedure.
+/// With no verified steps, the server states the gap and asks for a guide.
 #[test]
 fn chat_completions_reports_insufficient_evidence_instead_of_inventing_steps() {
     let cache = CaptureCache::checkout("insufficient");
@@ -183,7 +170,8 @@ fn chat_completions_reports_insufficient_evidence_instead_of_inventing_steps() {
         "an unsupported guide must not be rendered as if it had steps: {answer}"
     );
     assert!(
-        answer.contains("Procedural discovery plan"),
-        "the truthful fallback must still describe what was checked: {answer}"
+        answer
+            .contains("I couldn’t verify steps for “build a nonexistent quantum flux capacitor”."),
+        "the reply should identify the unverified task: {answer}"
     );
 }
