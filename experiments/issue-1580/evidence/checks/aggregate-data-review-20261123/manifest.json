@@ -1,0 +1,30 @@
+{
+  "base": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "source": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "paths": 51,
+  "completeDiff": {
+    "lines": 14518,
+    "bytes": 841707,
+    "sha256": "be0b8e92f1e35c2c82264a5bcfb9d62c0ba05d68f7a5a456238ad7055bbb1b82"
+  },
+  "exactMovedRecords": 646,
+  "coveredDiffLines": 7338,
+  "wholeCnlFilesReconstructed": 5,
+  "jsonCanonicalStructuresConserved": 1,
+  "literalCompactChunksRead": 18,
+  "literalCompactDiffLinesRead": 3445,
+  "completeDataSubsetReview": true,
+  "completeAggregateReview": false,
+  "runtimeAcceptanceClaimed": false,
+  "independentReasoningAccepted": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 274313,
+    "sha256": "e80997666fc4b7686acf55af4e8c43e8fe5cdee2d0716bf57cff3bfcaa193de4"
+  },
+  "members": 33,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T11:29:42.432636+00:00"
+}

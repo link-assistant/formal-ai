@@ -1,3 +1,50 @@
+## Active checkpoint: command receipts and aggregate subset review (2026-11-23)
+
+This checkpoint supersedes the older dated summaries below. The objective
+remains full implementation and verification of issue #1580 in
+[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), with no
+acceptance criterion waived.
+
+- Pushed head bc08222b5a5195dc9992c0459bde2b6369377b9f contains the bounded
+  APT recovery repair. Its current cohort has one pending workflow and no
+  collected failure at the last observation. Seven of ten native groups
+  pass; three Hive groups remain running or queued. Full current-head qualification
+  and the guarded whole-producer rerun remain unfinished.
+- The wrapper source review exposed answer-marker truncation and unqualified
+  printed exit-code parsing. The local repair has 11 failing cases before and
+  all 16 passing after, plus an actual Formal AI driver check: old exit 19 and
+  truncated output, repaired exit 0 and complete output. Seven affected gates,
+  two JavaScript syntax checks and whitespace checks pass. The maintained
+  CI aggregator imports the regression. This delta is not yet committed or
+  pushed because the producer-rerun observer binds the unchanged local head.
+- The remaining 51 data paths are completely reviewed using 18 compact chunks,
+  exact record/value conservation and independent reconstruction. All 80
+  non-test experiment tools are reviewed in 33 literal chunks. Both sealed
+  receipts retain complete diffs, inventories and readback hashes.
+- The test-source inventory has 80 paths: 79 issue-1580 tests plus the older
+  fragment release-map test. All 43 literal chunks are read and the complete
+  source-only subset receipt is sealed. Thirteen other documentation/image
+  paths and 25 fixture paths are also completely reviewed, with exact conserved
+  records and sealed receipts. Broader documentation and raw-evidence review
+  remain unfinished. Overlapping historical inventories are not unique totals.
+- Publishing-helper review found credential forwarding in Cargo arguments,
+  premature credential-provider warnings and empty-token fallback failure. The
+  repair sends selected tokens through the environment, retains Cargo credential
+  providers and admits the complete release-registry harness to native CI. The
+  new JavaScript contract fails before and passes after; all 66 focused contracts
+  and Rust formatting with edition 2024 pass. All eleven affected gates pass;
+  the sealed repair receipt preserves failed drafts. Five native process
+  regressions are drafted but have not executed. No publication
+  or native behavioral qualification is claimed. This delta remains uncommitted
+  while the producer-rerun guard binds the unchanged local head.
+- All eight template maps cover 3,028 blobs. Applicable-practice adoption and
+  execution, original family/full-suite budgets, strict style debt, main-only
+  publication/delivery, cache reliability, live useful delivery, serving
+  identity, trusted epochs, CodeQL semantics, published dependency migration
+  and registry authority remain unfinished. Keep the PR draft and unmerged.
+- The native goal remains usage-limited. Supplied edits, scripts, orchestration
+  and conclusions earn zero independent authorship or reasoning credit.
+
 ## Active checkpoint: bounded APT recovery and maintained source review (2026-11-23)
 
 This checkpoint supersedes the dated status summaries below. The unchanged

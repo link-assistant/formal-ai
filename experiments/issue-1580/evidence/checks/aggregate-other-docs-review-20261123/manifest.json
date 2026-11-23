@@ -1,0 +1,25 @@
+{
+  "base": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "source": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "paths": 13,
+  "diffBytes": 702737,
+  "diffLines": 2372,
+  "diffSha256": "f4c7a7153816376d6bb5e84761508fa6202829af915617ed11be5a22760b8d3c",
+  "completeSubsetReview": true,
+  "fullAggregateReview": false,
+  "newExecutionCredit": 0,
+  "strictJSONDuplicateKeyRejection": true,
+  "traceabilityRowsPreserved": 1429,
+  "traceabilityStatusChanges": 3,
+  "catalogChangedAnswerLines": 80,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 436356,
+    "sha256": "7d2a82c309d54149a214222e0df93fa3f9251360dde577842da845ebe2e3a82d"
+  },
+  "members": 22,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T12:25:56.215103+00:00"
+}
