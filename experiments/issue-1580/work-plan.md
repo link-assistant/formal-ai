@@ -6,15 +6,17 @@ criterion in [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581).
 
 - Cancellation repair, hosted Rust-practice reconciliation and the historical
   artifact-reuse evidence were pushed as head f7a71cb86a16e78da0e9ca055c13710d62277739.
-  Its complete Pipeline cohort is still being collected. Layered CI has two
-  real provisioning failures: an interrupted dpkg transaction and an EC2 mirror
-  missed by the Azure-only fallback.
+  Its terminal cohort has 31 successful workflows, one explicit skip and one
+  Layered failure. Pipeline 45151783306 passes all ten native groups. Layered
+  has two provisioning failures: interrupted dpkg and an unhandled EC2 mirror.
 - Local repair 0096a8168cb9f611ac55a611cce602884c888607 keeps all existing budgets. The same current
   regressions have six behavioral failures against the prior scripts and zero
   after repair; 54 focused tests, eight affected gates and three shell syntax
   checks pass. Complete logs and failed drafts remain in the APT receipt.
-  Hosted repair qualification is unfinished. Collect all current-head failures
-  before the next single batch push.
+  Hosted repair qualification is unfinished. All current-head failures have
+  been collected; the APT repair addresses the only failed workflow. The
+  producer-rerun observer finished without a rerun because its baseline failed.
+  Preserve this distinction in the next exact-head observation.
 - The remaining 320-path maintained-code inventory at 8190 is completely
   reviewed using 56 compact literal chunks and exact grammar/module conservation
   proofs. Broader aggregate documentation/generated/evidence review remains
