@@ -6314,8 +6314,8 @@
         ".github/dependency-policy/check.mjs",
         ".github/dependency-policy/check.test.mjs"
       ],
-      "assessment": "Tracked manifest coverage compared with the maintained updater: three active Cargo, three preserved Cargo and fifteen npm manifests. Literal NUL-inventory/direct-argv resolution is now supplemented by original-byte UTF-8 validation before effects. Two real Git byte-valued filename regressions fail before the repair; ten focused, twenty maintained and six neighboring dependency controls pass locally, including valid Unicode replacement-character and BOM paths. Wider ecosystem coverage, current dependency acceptance and exact-source hosted qualification remain unfinished.",
-      "status": "counterpart-compared-inventory-bytes-local-verified-broader-coverage-pending",
+      "assessment": "Tracked manifest coverage compared with the maintained updater: three active Cargo, three preserved Cargo and fifteen npm manifests. Binary Git observation rejects malformed UTF-8 before resolver effects. Ten focused controls now pass in hosted Layered job 137845376042, including both actual Git byte-valued filename regressions and valid Unicode/BOM path preservation. The tested merge commit has the identical tree to source 7ec084a7f, and six production/test source identities match. Wider ecosystem coverage, actual dependency-maintenance outcome and current dependency acceptance remain unfinished.",
+      "status": "counterpart-inventory-bytes-hosted-verified-broader-coverage-pending",
       "counterpartEvidence": [
         "scripts/dependency-manifest-inventory.mjs",
         "scripts/resolve-dependency-lockfiles.mjs",
@@ -6323,7 +6323,8 @@
         "experiments/issue-1580/dependency-lock-literal-paths.test.mjs",
         "rust/tests/web/dependencies-maintenance-workflow.test.mjs",
         "docs/case-studies/issue-1580/dependency-lock-literal-paths.md",
-        "docs/case-studies/issue-1580/dependency-inventory-bytes.md"
+        "docs/case-studies/issue-1580/dependency-inventory-bytes.md",
+        "experiments/issue-1580/evidence/checks/inventory-utf8-hosted-7ec0-20261123/manifest.json"
       ]
     },
     {

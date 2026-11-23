@@ -28,8 +28,23 @@ acceptance.
 
 The [complete receipt](../../../experiments/issue-1580/evidence/checks/dependency-inventory-bytes-20261123/manifest.json)
 retains the original two failures, complete passing logs, commands and original
-and repaired sources. Exact-source hosted qualification remains pending.
+and repaired sources. Hosted qualification is now recorded below.
 This substep does not complete broader updater practice or issue #1580 and
 earns zero independent Formal AI authorship credit.
 
 [Pull request #1581](https://github.com/link-assistant/formal-ai/pull/1581)
+
+## Hosted source qualification
+
+[Layered job 137845376042](https://github.com/link-assistant/formal-ai/actions/runs/45218148759/job/137845376042)
+executes all ten focused cases successfully, including both malformed-UTF-8
+refusal controls. Its tested merge commit has the identical Git tree to branch
+head 7ec084a7f; six production/test source identities also match current bytes.
+The whole shard reports 963 passes, two skips and zero failures, consuming 202
+seconds of its unchanged 360-second budget. These totals overlap the ten cases.
+
+The [hosted receipt](../../../experiments/issue-1580/evidence/checks/inventory-utf8-hosted-7ec0-20261123/manifest.json)
+preserves the complete original job, commit/tree observations, all six source
+identities and exact passing lines. Literal review covers the listed targeted
+ranges, rather than every job-log line. Actual scheduled dependency updates,
+broader ecosystem coverage and original issue acceptance remain unfinished.

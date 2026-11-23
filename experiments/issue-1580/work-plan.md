@@ -1326,3 +1326,10 @@ Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally 
 - [x] Remove only one duplicated final evidence paragraph; retain and reconstruct its exact original bytes.
 - [x] All eight affected JavaScript gates pass. Seal this bounded review receipt and preserve the atomic documentation repair before the combined push.
 - [ ] Continue nested reports, remaining source/evidence review and every unmet original acceptance criterion; this subset does not complete the PR.
+
+## Hosted dependency byte controls, 2026-11-23
+
+- [x] Verify all ten focused cases in Layered job 137845376042, including both real malformed-UTF-8 Git filenames; preserve exact passing lines and the complete job stream.
+- [x] Verify the tested merge commit and branch source have identical Git trees and bind six unchanged production/test source identities.
+- [x] Reconcile practice row 5 while retaining broader updater and production dependency outcomes as unfinished.
+- [ ] Complete the current cohort, every remaining template practice, original production delivery and all other original criteria. Keep PR #1581 draft.

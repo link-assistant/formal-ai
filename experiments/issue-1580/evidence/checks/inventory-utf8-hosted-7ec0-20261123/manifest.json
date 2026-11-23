@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "repository": "link-assistant/formal-ai",
+  "observedHead": "7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f",
+  "testedMergeCommit": "7ac60761cdf0edd3206b73ebfe0f42f7ce2e8c98",
+  "testedTreeEqualsBranchHead": true,
+  "run": 45218148759,
+  "job": 137845376042,
+  "hostedFocusedCases": [
+    {
+      "name": "actual JavaScript resolver preserves every literal tracked owning directory",
+      "line": 2585,
+      "original": "2026-11-23T16:41:53.6896215Z \u2714 actual JavaScript resolver preserves every literal tracked owning directory (673.77089ms)",
+      "passed": true
+    },
+    {
+      "name": "actual JavaScript resolver refuses failed Git inventory before effects",
+      "line": 2586,
+      "original": "2026-11-23T16:41:53.6896739Z \u2714 actual JavaScript resolver refuses failed Git inventory before effects (122.585615ms)",
+      "passed": true
+    },
+    {
+      "name": "actual JavaScript resolver refuses truncated Git inventory before effects",
+      "line": 2587,
+      "original": "2026-11-23T16:41:53.6897283Z \u2714 actual JavaScript resolver refuses truncated Git inventory before effects (120.849226ms)",
+      "passed": true
+    },
+    {
+      "name": "actual JavaScript resolver refuses duplicate Git inventory before effects",
+      "line": 2588,
+      "original": "2026-11-23T16:41:53.6897825Z \u2714 actual JavaScript resolver refuses duplicate Git inventory before effects (85.523815ms)",
+      "passed": true
+    },
+    {
+      "name": "actual JavaScript resolver refuses unsafe Git inventory before effects",
+      "line": 2589,
+      "original": "2026-11-23T16:41:53.6898340Z \u2714 actual JavaScript resolver refuses unsafe Git inventory before effects (81.342511ms)",
+      "passed": true
+    },
+    {
+      "name": "actual JavaScript resolver accepts an empty complete inventory without effects",
+      "line": 2590,
+      "original": "2026-11-23T16:41:53.6899007Z \u2714 actual JavaScript resolver accepts an empty complete inventory without effects (83.434952ms)",
+      "passed": true
+    },
+    {
+      "name": "actual resolver preserves the first tool failure and stops before the next lock",
+      "line": 2591,
+      "original": "2026-11-23T16:41:53.6899588Z \u2714 actual resolver preserves the first tool failure and stops before the next lock (79.474884ms)",
+      "passed": true
+    },
+    {
+      "name": "actual Cargo resolver passes literal manifest paths as one argument each",
+      "line": 2592,
+      "original": "2026-11-23T16:41:53.6900121Z \u2714 actual Cargo resolver passes literal manifest paths as one argument each (190.62831ms)",
+      "passed": true
+    },
+    {
+      "name": "actual javascript resolver refuses non-UTF-8 Git paths before any effects",
+      "line": 2593,
+      "original": "2026-11-23T16:41:53.6900668Z \u2714 actual javascript resolver refuses non-UTF-8 Git paths before any effects (62.234194ms)",
+      "passed": true
+    },
+    {
+      "name": "actual cargo resolver refuses non-UTF-8 Git paths before any effects",
+      "line": 2594,
+      "original": "2026-11-23T16:41:53.6901173Z \u2714 actual cargo resolver refuses non-UTF-8 Git paths before any effects (65.285427ms)",
+      "passed": true
+    }
+  ],
+  "selectedSourceIdentities": 6,
+  "shard": {
+    "tests": 965,
+    "pass": 963,
+    "skips": 2,
+    "fail": 0,
+    "executionSeconds": 202,
+    "budgetSeconds": 360
+  },
+  "reviewedJobLogRanges": [
+    [
+      278,
+      288
+    ],
+    [
+      1135,
+      1145
+    ],
+    [
+      2284,
+      2294
+    ],
+    [
+      2555,
+      2600
+    ],
+    [
+      2780,
+      2815
+    ]
+  ],
+  "wholeJobLogLiterallyRead": false,
+  "productionDependencyUpdateExecuted": false,
+  "wholeUpdaterPracticeAccepted": false,
+  "wholeIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 175978,
+    "sha256": "3605b6533a176a434b7579000f966cb16f71be31829f005e2ddc95e73eb708c0"
+  },
+  "members": 58,
+  "roundTripVerified": true,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T17:22:44.906957+00:00"
+}
