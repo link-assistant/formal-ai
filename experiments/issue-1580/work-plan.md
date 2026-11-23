@@ -12,7 +12,7 @@ No original acceptance criterion is waived.
   publication authority remains unknown. Full literal log review is not claimed.
   See the sealed terminal-baseline receipt and its case study.
 - The whole-producer rerun was requested once at 13:18:37 UTC. Attempt 2 has
-  started its producer; terminal qualification, distinct attempt artifact and
+  passed its producer; terminal qualification, distinct attempt artifact and
   all ten consumers remain pending. Its observer permits local descendant commits
   while refusing remote source changes. Do not push during this current-head run.
 - Command-receipt repair 83cc960ad preserves complete output and qualifies actual
@@ -30,13 +30,19 @@ No original acceptance criterion is waived.
   image paths and 25 fixture paths. Complete diffs, conservation checks and readback
   hashes are sealed. These overlapping inventories are not unique totals.
   Broader documentation and evidence review remains unfinished.
-- A first-attempt mirror preference is drafted for search setup after the hosted
+- First-attempt mirror preference cee8b8b10 is committed for search setup after the hosted
   baseline still spends two first deadlines on regional HTTP mirrors. Three new
   focused regressions fail against unchanged production; all 60 tests in five
-  affected suites and eleven JavaScript gates pass after the repair. A neighboring
+  affected suites and twelve JavaScript gates, including the secret scan, pass. A neighboring
   fixture startup failure is reproduced and isolated with a hostile .bashrc
   control; production clocks and the fixture time limit are unchanged. Receipts
   retain initial failures and targeted traces. Hosted qualification is pending.
+- A dedicated default Secretlint 14 lock is drafted for Rust practice row 22.
+  Three behavioral regressions fail before the repair; all five focused cases,
+  44 maintained boundary cases and 29 fast-profile cases pass after it.
+  Five actual Node 26 scanner cases, a mismatched-lock refusal and zero-finding
+  lock audit pass. Initial fixture, cleanup-scope and compile-cache observations
+  are retained. Eleven affected gates pass; hosted Node 22 remains pending.
 - All eight template maps cover 3,028 blobs. Applicable-practice adoption and
   execution, original family/full-suite budgets, strict style debt, main-only
   publication/delivery, cache reliability, live useful delivery, serving identity,

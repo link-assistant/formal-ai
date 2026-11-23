@@ -107,9 +107,21 @@ debug "secretlint ${SECRETLINT_VERSION}"
 # Feed the exact existing selection through stdin rather than interpolating paths
 # into npm's shell command. The pinned API is loaded once for all archive members.
 export SECRETLINT_VERSION
-printf '%s\0' "${files[@]}" |
-  npx --yes \
-    -p "secretlint@${SECRETLINT_VERSION}" \
-    node scripts/check-secrets-files.mjs
+scan_files() {
+  if [ "$SECRETLINT_VERSION" = 14.0.0 ]; then
+    # npm exec pins the root package, but resolves its semver transitives again.
+    # Install the committed closure separately from application dependencies.
+    scanner_directory="$(mktemp -d "${TMPDIR:-/tmp}/formal-ai-secretlint.XXXXXX")"
+    trap 'rm -rf -- "$scanner_directory"' EXIT
+    cp .github/secretlint/package.json .github/secretlint/package-lock.json "$scanner_directory/"
+    # Installation must not consume the NUL filename stream intended for the scanner.
+    npm ci --ignore-scripts --no-audit --no-fund --engine-strict --prefix "$scanner_directory" </dev/null >&2
+    PATH="$scanner_directory/node_modules/.bin:$PATH" node scripts/check-secrets-files.mjs
+  else
+    # Preserve the explicit custom-version override; only the default is lock-qualified.
+    npx --yes -p "secretlint@${SECRETLINT_VERSION}" node scripts/check-secrets-files.mjs
+  fi
+}
+printf '%s\0' "${files[@]}" | scan_files
 
 echo "No secrets found."

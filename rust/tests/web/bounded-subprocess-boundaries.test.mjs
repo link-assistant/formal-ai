@@ -1,5 +1,6 @@
 import '../../../experiments/issue-1580/buildkit-image-identity.test.mjs';
 import '../../../experiments/issue-1580/compressed-secrets.test.mjs';
+import '../../../experiments/issue-1580/secretlint-locked-install.test.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -175,7 +176,7 @@ if (files.includes('fixture-detected-secret')) process.exit(1);
     [path.join(root, 'scripts/check-secrets.sh'), ...argumentsValue], {
       cwd: root, timeout: 20000, maxBuffer: 1024 * 1024,
       env: {...process.env, PATH: `${temporary}${path.delimiter}${process.env.PATH}`,
-        SECRET_SCAN_RECEIPTS: receipts},
+        SECRET_SCAN_RECEIPTS: receipts, SECRETLINT_VERSION: '13.0.5'},
     });
   const result = await run(files);
   assert.equal(result.error, undefined, result.stderr.toString());

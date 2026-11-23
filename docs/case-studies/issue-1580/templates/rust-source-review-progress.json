@@ -2201,7 +2201,7 @@
       "literalReadLines": 2346,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false,
-      "reviewNote": "One tool display of lines 1201–1600 was truncated; the omitted release-body span was reread completely from the retained log, lines 1506–1563. No complete-file credit was assigned before all seven original source ranges and the omitted span were read."
+      "reviewNote": "One tool display of lines 1201\u20131600 was truncated; the omitted release-body span was reread completely from the retained log, lines 1506\u20131563. No complete-file credit was assigned before all seven original source ranges and the omitted span were read."
     },
     {
       "path": "dev/log/issues/247/pulls/248/research.md",
@@ -6771,13 +6771,31 @@
       "templateEvidence": [
         ".github/secretlint/package-lock.json"
       ],
-      "assessment": "The complete lock contains exact resolved registry versions and integrity digests for the dedicated Secretlint 13.1.0 environment, with root Node/npm engine requirements. Compare the maintained Formal AI scanner installation/lock and CI version constraints without copying template package identity or treating transitive package lists as independent practices.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "The template uses an isolated exact npm closure for Secretlint 13.1.0. Formal AI keeps its maintained Secretlint 14.0.0 API/rules and now adds a private isolated npm lock with 29 installed packages, exact registry URLs and integrity digests, installed through npm ci without lifecycle scripts. Local mocked and actual-engine controls qualify the repair; hosted execution with the existing Node 22 job is still pending.",
+      "status": "implemented-local-actual-engine-verified-hosted-pending",
       "formalAiPaths": [
+        ".github/secretlint/package.json",
         ".github/secretlint/package-lock.json",
-        ".github/workflows/security.yml"
+        "scripts/check-secrets.sh",
+        "scripts/check-secrets-files.mjs",
+        ".github/workflows/release.yml"
       ],
-      "verification": null
+      "verification": {
+        "caseStudy": "docs/case-studies/issue-1580/secretlint-locked-closure.md",
+        "receipt": "experiments/issue-1580/evidence/checks/secretlint-locked-closure-20261123/manifest.json",
+        "behavioralFailuresBefore": 3,
+        "focusedCasesPassed": 5,
+        "maintainedBoundaryCasesPassed": 44,
+        "fastProfileCasesPassed": 29,
+        "actualEngineCasesPassed": 5,
+        "inconsistentLockRejected": true,
+        "auditVulnerabilities": 0,
+        "localNode": "26.13.0",
+        "localNpm": "11.20.0",
+        "hostedNode22ExecutionVerified": false,
+        "fullIssueComplete": false,
+        "independentAuthorshipCredit": 0
+      }
     },
     {
       "practice": "Fallible configured GitHub Actions release outputs",
@@ -7554,7 +7572,7 @@
       "templateEvidence": [
         "docs/case-studies/issue-19/ci-logs/ci-run-20885464993.log.gz"
       ],
-      "assessment": "All 1,310 decoded historical lines are literally read and reassembled exactly. This is the Agent repository run at 1347edef98519b56b62c10f340740eecc50b7558, not a present Rust-template run. Its three Bun platform jobs each pass 17 JSON protocol tests, while the release fails at lines 1294–1295 with ENOENT opening ./js/package.json after changing package version from 0.7.0 to 0.8.0. The release first checks out the trigger revision, observes remote main advanced to 4f7a0d469c67403139a8017960b8e74ee52d8031, then rebases before versioning. A successful earlier test cannot qualify that changed checkout. Preserve process-owned working directories, explicit package roots, refreshed source qualification before side effects, pinned runtime/runner identities and least permissions. The historical npm audit count and mutable latest Bun/runner selections do not establish current security or compatibility. This source comparison supplies no present package publication or complete practice adoption proof.",
+      "assessment": "All 1,310 decoded historical lines are literally read and reassembled exactly. This is the Agent repository run at 1347edef98519b56b62c10f340740eecc50b7558, not a present Rust-template run. Its three Bun platform jobs each pass 17 JSON protocol tests, while the release fails at lines 1294\u20131295 with ENOENT opening ./js/package.json after changing package version from 0.7.0 to 0.8.0. The release first checks out the trigger revision, observes remote main advanced to 4f7a0d469c67403139a8017960b8e74ee52d8031, then rebases before versioning. A successful earlier test cannot qualify that changed checkout. Preserve process-owned working directories, explicit package roots, refreshed source qualification before side effects, pinned runtime/runner identities and least permissions. The historical npm audit count and mutable latest Bun/runner selections do not establish current security or compatibility. This source comparison supplies no present package publication or complete practice adoption proof.",
       "status": "complete-literal-decoded-log-review-current-practice-runtime-open"
     },
     {

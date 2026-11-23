@@ -1,0 +1,11 @@
+{
+  "name": "formal-ai-secretlint",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "secretlint": "14.0.0"
+  }
+}
