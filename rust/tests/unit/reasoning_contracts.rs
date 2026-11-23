@@ -2,6 +2,12 @@
 //! requests without compiling the monolithic unit target. Existing test modules
 //! are included intact.
 
+// Keep every chat-surface case in the focused replay after test extraction.
+#[path = "specification/behavior_rules.rs"]
+mod behavior_rules;
+#[path = "specification/chat_surface.rs"]
+mod chat_surface;
+
 #[path = "specification/benchmarks.rs"]
 mod benchmarks;
 #[path = "specification/debug_session.rs"]

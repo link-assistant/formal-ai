@@ -270,6 +270,7 @@
     "rust/tests/web/client-integrations-canonical-notation.test.mjs",
     "rust/tests/web/rml-export-install-policy.test.mjs",
     "rust/tests/web/full-provenance-archived-cli.test.mjs",
-    "rust/tests/web/full-provenance-refusals-cli.test.mjs"
+    "rust/tests/web/full-provenance-refusals-cli.test.mjs",
+    "experiments/issue-1580/source-warning-headroom.test.mjs"
   ]
 }

@@ -353,3 +353,61 @@ function recordSolverEventLog(result, prompt, answer) {
   const present = new Set(result.evidence);
   result.evidence = [...result.evidence, ...links.filter((link) => !present.has(link))];
 }
+
+function finalize(events, steps, toolCalls, answer, formalizationContext) {
+  // Issue #1173 R5: no answer may be the canned search-machinery description.
+  answer = guardCannedWebSearchAnswer(
+    answer,
+    (formalizationContext && formalizationContext.language) || "en",
+  );
+  const interpretations = collectInterpretations(formalizationContext, answer);
+  answer = applyVisibleInterpretations(answer, interpretations);
+  applyResolvedFormalization(events, steps, formalizationContext, answer);
+  const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
+  const projection = deformalizeProjection(formalizationContext, answer);
+  events.push(`deformalize:${projection.tuple}:${projection.intent}`);
+  // `detail` keeps the symbolic projection summary (with the ⇒ glyph) for the
+  // diagnostics panel; `answer` carries the clean composed answer so the
+  // human-readable thinking preview can show "Compose the answer: …" (issue
+  // #488) without leaking the tuple.
+  const answerFirstLine = String(answer.content || "").split(/\r?\n/, 1)[0] || "";
+  steps.push({
+    step: "deformalize",
+    detail: projection.summary,
+    projection,
+    answer: answerFirstLine,
+  });
+  const trace = events.map((event) => `trace:${event}`);
+  const result = {
+    intent: answer.intent,
+    content: answer.content,
+    confidence: answer.confidence,
+    evidence: [...evidence, ...trace],
+    steps: withThinkingLevels(steps),
+    toolCalls, derivationId: stableBehaviorRuleId("answer", answer.content), // #1184 R1: SymbolicAnswer::derivation_id
+  };
+  if (formalizationContext?.initial) {
+    const preceding = formalizationContext.solverEvents;
+    const traced = preceding ? { ...answer, solverEvents: [...preceding, ...(answer.solverEvents || [])] } : answer;
+    recordSolverEventLog(result, formalizationContext.initial.raw, traced); // R1013
+  }
+  if (formalizationContext && formalizationContext.meta) {
+    result.derivation = formalizationContext.meta.derivationLino;
+  }
+  if (answer.iframeUrl) {
+    result.iframeUrl = answer.iframeUrl;
+  }
+  if (answer.diagnostics) {
+    result.diagnostics = answer.diagnostics;
+  }
+  if (answer.programExecution) {
+    result.programExecution = answer.programExecution; // R1013
+  }
+  if (answer.synthesizedProgram) result.synthesizedProgram = answer.synthesizedProgram;
+  // Issue #529: carry a natural-language memory write (append/substitution) out
+  // to the app so it can apply the read+write transform to persistent storage.
+  if (answer.memoryOperation) {
+    result.memoryOperation = answer.memoryOperation;
+  }
+  return result;
+}
