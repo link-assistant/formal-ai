@@ -895,3 +895,26 @@ is inferred from historical examples. Supplied work retains zero credit.
   criterion; retain precise external blockers and keep the PR unmerged.
 
 See [the observation checkpoint](../../docs/case-studies/issue-1580/ci-observation-boundaries-20261123.md).
+
+
+## Terminal current-head and payload checkpoint (2026-11-23)
+
+- [x] Finish all 34 workflows on cec9207c3: 31 success, two failure, one skip;
+  retain complete logs, exact identities and every actionable failure.
+- [x] Map the guide, WordNet, V8 fixture and retained-job assertions to the
+  repaired implementation/tests. No additional terminal failure is omitted.
+- [x] Finish all 143 gates on clean 648569ae4: 87 pass, two fail, 54 hosted-only;
+  preserve this failed observation. Refine the accepted URL return to retain
+  behavior within the unchanged 735-line worker ceiling.
+- [x] Download and hash all three actual successful CodeQL producer artifacts;
+  compare included-string literal contexts to exact source bytes. Preserve the
+  541 observed empty expansions of nonempty files without claiming coverage.
+- [ ] Finish the corrected complete gate inventory, archive it, refresh main and
+  the current run queue, then push the complete failure batch once.
+- [ ] Qualify corrected native behavior on the next head, exercise both actual
+  native artifact reruns, and resolve or precisely retain genuine external
+  blockers. Complete all original criteria before readiness; keep draft/unmerged.
+
+The CodeQL checkpoint and CI observation-boundary case study distinguish actual
+execution from payload semantics. The native goal remains usage-limited; the
+objective is unfinished and supplied work receives zero independent credit.

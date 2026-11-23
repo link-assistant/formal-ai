@@ -5,7 +5,13 @@ The current source is `cec9207c3e139e2212f6d4ea478ff1b88e17be7c`.
 failed on the specification fixture binding and retained link-checker payload.
 The native jobs in [Pipeline 45093374576](https://github.com/link-assistant/formal-ai/actions/runs/45093374576)
 also expose a rejected-article URL in a successful guide and a stale WordNet
-outcome assertion. The pipeline is still running; this is not a terminal cohort.
+outcome assertion. The complete cohort became terminal at 02:18:26Z: 34
+workflows, 31 successful, two failed and one explicit skip. The two failures are
+the linked Layered and Pipeline runs. The native producer and nine of ten native
+contract groups succeed; the native compile-input admission job fails its actual
+JavaScript guide assertion, rather than Rust compilation. Complete Pipeline log
+lines 66208–66209 and 77318 identify the guide and WordNet failures. The apparent
+cycle panic at line 65496 belongs to a passing negative-control test.
 
 The guide accepted the matching article's steps and digest but retained the
 previous unrelated article's `no_relevant_result` detail. Both extractors now
@@ -55,3 +61,18 @@ outcomes. Supplied commands and conclusions receive zero independent authorship
 credit. These focused checks do not replace full repository gates, terminal
 current-head CI, both actual native-artifact reruns or the unfinished acceptance
 criteria of issue 1580. The pull request remains draft and unmerged.
+
+
+The first complete pre-push replay on clean `648569ae4` has 87 passes, two
+failures and 54 hosted exclusions. Both failures identify the same one-line
+growth above the existing 735-line how-to worker ceiling. Selecting the accepted
+URL directly in the returned detail preserves behavior within that ceiling;
+the ceiling and its assertions remain unchanged. The focused recovered-guide
+regression passes after this refinement. The complete corrected inventory is
+still pending, and its outcome must be retained before pushing.
+
+The terminal cohort's complete CLI logs, job metadata, successive observations,
+failed gate streams and byte/decoded hashes are retained under
+`experiments/issue-1580/evidence/ci/cec9207c3-terminal/`. Every archive member is
+round-trip verified. The terminal failures are all covered by this batch; this
+does not establish the next head's outcome.
