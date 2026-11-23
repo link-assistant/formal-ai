@@ -1,0 +1,134 @@
+{
+  "source": "be7169df12cd5c3a61e50193f24b87f6d1efcf4d",
+  "includedMain": "0e550f6d56528d6d26bf575e08ab35c13e4af234",
+  "release": "0.356.11",
+  "initialFullGateCounts": {
+    "PASS": 87,
+    "SKIP": 54,
+    "FAIL": 2
+  },
+  "qualifiedGateDispositions": {
+    "PASS": 89,
+    "SKIP": 54
+  },
+  "repairChecks": [
+    {
+      "name": "source-model-bounded",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "layered-ci#4"
+      ],
+      "heapMiB": 512,
+      "coreDumpLimit": 0,
+      "exitCode": 0,
+      "elapsedSeconds": 88.565
+    },
+    {
+      "name": "status-and-documentation",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-status-render,check-render-status-js-twin,check-generate-requirement-status-js-twin,check-required-documentation,check-readable-code,check-file-size,check-file-size-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin,check-changelog-fragment-js-twin"
+      ],
+      "heapMiB": 192,
+      "coreDumpLimit": 0,
+      "exitCode": 0,
+      "elapsedSeconds": 83.575
+    }
+  ],
+  "focusedSource": "6e36d3a2ba995a2150151170f00511bc6efdb2a0",
+  "sourceModelHeapMiB": 512,
+  "sourceModelResourceUsage": {
+    "maximumResidentSetKiB": 415740,
+    "userSeconds": 95.192075,
+    "systemSeconds": 5.625107,
+    "exitCode": 0
+  },
+  "repairSetupFailure": "/usr/bin/time unavailable; no checks started; repaired with os.wait4",
+  "focusedSuites": {
+    "issue-0918": {
+      "tests": 23,
+      "pass": 23,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "issue-1396": {
+      "tests": 29,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 21
+    },
+    "issue-991": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "procedural-parity": {
+      "tests": 23,
+      "pass": 23,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "fixture-integrity": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "unicode-inventory": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "link-terminal": {
+      "tests": 35,
+      "pass": 35,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "javascript-capacity": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  },
+  "focusedTestsPassed": 138,
+  "focusedTestsSkipped": 21,
+  "rustfmtPassed": true,
+  "localRustCompilation": false,
+  "hostedCombinedHeadQualified": false,
+  "witness": {
+    "total": 1193,
+    "supported": 223,
+    "unsupported": 970,
+    "sourceManifest": 141,
+    "scalarDifferences": 18,
+    "completeObjectComparison": true
+  },
+  "foregroundInterruptionSeconds": 60,
+  "independentReasoningCredit": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 3546855,
+    "sha256": "429b401b60f3ca4bf4c170fa7e3c5d89e173ced031db5e700176906009ac5464"
+  },
+  "members": 368,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T22:54:19.099487+00:00"
+}

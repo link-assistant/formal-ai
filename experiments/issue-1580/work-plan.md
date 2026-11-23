@@ -1,3 +1,20 @@
+## Active checkpoint: procedural main integration (2026-11-23)
+
+The objective remains every requirement of issue #1580 in
+[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), draft and unmerged.
+
+- [x] Read fresh feedback: one issue comment, eleven PR comments, no inline comments or reviews; all unchanged.
+- [x] Include current main 0e550f6d5, release 0.356.11, retaining publisher recovery, method selection and unverified-answer behavior across all three roots.
+- [x] Preserve extracted fixtures and canonical lists; compare complete governed objects and retain all eighteen reviewed scalar differences and all 1,193 case identities.
+- [x] Pass eight focused suites (138 passes, 21 native skips) and formatting. Preserve the full 143-entry run (87 passes, two failures, 54 skips); regenerate duplicated status rows and pass ten affected gates plus the isolated 512 MiB source-model check.
+- [x] Retain complete initial/interrupted streams, original witness assertion failure and bounded memory measurements; no local Rust build.
+- [x] Seal the complete integration receipt without rewriting earlier archives.
+- [ ] Pass the final changed-source secret scan, confirm an idle branch and fresh main, update the PR and publish one complete batch.
+- [ ] Qualify the exact published source in hosted CI and complete every wider original criterion below.
+- Supplied commands and edits retain zero independent authorship/reasoning credit. The native goal remains usage-limited.
+
+Evidence: [procedural main integration](../../docs/case-studies/issue-1580/procedural-main-integration.md).
+
 ## Active checkpoint: ten-group hosted warning (2026-11-23)
 
 The objective remains every requirement of issue #1580 in
