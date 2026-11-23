@@ -577,7 +577,7 @@ fn local_packages_still_check_their_aliased_registry_dependencies() {
         fs::write(path, serde_json::to_string_pretty(&value).unwrap()).unwrap();
     }
     let mut dependencies = Vec::new();
-    collect_npm(&root, &mut dependencies);
+    collect_npm(&root, &mut dependencies).expect("complete npm collection");
     let _ = fs::remove_dir_all(&root);
     assert_eq!(dependencies.len(), 1);
     assert_eq!(dependencies[0].name, "minimatch");

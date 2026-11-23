@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import {execFileSync,spawnSync} from 'node:child_process';
-import {mkdtempSync,mkdirSync,readFileSync,realpathSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,readFileSync,realpathSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import {dependencyManifests} from '../../../scripts/dependency-manifest-inventory.mjs';
 const workflow=readFileSync(new URL('../../../.github/workflows/dependencies-latest.yml',import.meta.url),'utf8');
 
 function observedLocks(source) {
@@ -57,4 +58,90 @@ test('failed lock inventory stops before any resolver even after partial output'
   const complete=observeInventory(workflow,false);
   assert.equal(complete.status,0,complete.stderr);
   assert.match(complete.stdout,/^resolved:/u);
+});
+
+
+function manifestFixture() {
+  const directory = realpathSync(mkdtempSync(path.join(tmpdir(), 'formal-ai-manifest-coverage-')));
+  const write = (name, text) => {
+    mkdirSync(path.dirname(path.join(directory, name)), {recursive: true});
+    writeFileSync(path.join(directory, name), text);
+  };
+  const policy = {schemaVersion: 1, activeCargo: ['rust/Cargo.toml', 'tools/registry/Cargo.toml'],
+    preservedCargo: {'historical/Cargo.toml': {kind: 'historical-reproducer', reason: 'Preserve a published failure',
+      issue: 'https://github.com/example/reproducer/issues/1'}}};
+  write('scripts/dependency-manifests.json', JSON.stringify(policy));
+  for (const name of [...policy.activeCargo, ...Object.keys(policy.preservedCargo)]) write(name, '[dependencies]\nregex = "1"\n');
+  write('package.json', '{}');
+  write('nested/package.json', '{}');
+  execFileSync('git', ['init', '--quiet'], {cwd: directory});
+  execFileSync('git', ['add', '.'], {cwd: directory});
+  return {directory, policy, write, stage: () => execFileSync('git', ['add', '.'], {cwd: directory}),
+    close: () => rmSync(directory, {recursive: true, force: true})};
+}
+
+test('tracked coverage includes nested active Cargo and every npm manifest while preserving the reproducer', () => {
+  const fixture = manifestFixture();
+  try {
+    const found = dependencyManifests(fixture.directory);
+    assert.deepEqual(found.activeCargo, ['rust/Cargo.toml', 'tools/registry/Cargo.toml']);
+    assert.deepEqual(found.preservedCargo, ['historical/Cargo.toml']);
+    assert.deepEqual(found.npm, ['nested/package.json', 'package.json']);
+    assert.equal(found.cargo.length, 3);
+  } finally {fixture.close();}
+});
+
+test('a new tracked Cargo manifest requires a classification', () => {
+  const fixture = manifestFixture();
+  try {
+    fixture.write('new/Cargo.toml', '[dependencies]\nregex = "1"\n');
+    fixture.stage();
+    assert.throws(() => dependencyManifests(fixture.directory), /Unclassified Cargo manifests: new\/Cargo.toml/u);
+  } finally {fixture.close();}
+});
+
+test('missing active files, duplicate classifications and unexplained preserved files fail', () => {
+  const fixture = manifestFixture();
+  try {
+    rmSync(path.join(fixture.directory, 'tools/registry/Cargo.toml'));
+    assert.throws(() => dependencyManifests(fixture.directory), /ENOENT/u);
+    fixture.write('tools/registry/Cargo.toml', '[dependencies]\n');
+    fixture.policy.activeCargo.push('rust/Cargo.toml');
+    fixture.write('scripts/dependency-manifests.json', JSON.stringify(fixture.policy));
+    assert.throws(() => dependencyManifests(fixture.directory), /duplicate Cargo classification/u);
+    fixture.policy.activeCargo.pop();
+    fixture.policy.preservedCargo['historical/Cargo.toml'].reason = '';
+    fixture.write('scripts/dependency-manifests.json', JSON.stringify(fixture.policy));
+    assert.throws(() => dependencyManifests(fixture.directory), /requires its purpose and issue/u);
+  } finally {fixture.close();}
+});
+
+test('failed and incomplete Git observations cannot authorize a partial manifest inventory', () => {
+  const fixture = manifestFixture();
+  try {
+    assert.throws(() => dependencyManifests(fixture.directory, () =>
+      ({status: 23, stdout: 'rust/Cargo.toml\0', stderr: 'read failed'})), /Cannot enumerate complete/u);
+    assert.throws(() => dependencyManifests(fixture.directory, () =>
+      ({status: 0, stdout: 'rust/Cargo.toml', stderr: ''})), /Incomplete tracked-file inventory/u);
+  } finally {fixture.close();}
+});
+
+function observeCargoResolution(source, failInventory = false) {
+  const step = source.match(/      - name: Re-resolve the Rust lockfiles from the rewritten manifests\n        run: \|\n([\s\S]*?)(?=\n      (?:#|- name:))/u);
+  assert(step, 'complete Rust resolution step required');
+  const shell = 'node() { printf "rust/Cargo.toml\\ntools/registry/Cargo.toml\\n"; return ' +
+    (failInventory ? 23 : 0) + '; }\n' +
+    'cargo() { printf "cargo:%s\\n" "$*"; }\n' + step[1].replace(/^          /gmu, '');
+  return spawnSync('bash', ['-c', shell], {encoding: 'utf8', timeout: 3000});
+}
+
+test('the actual maintenance step resolves every active Cargo manifest and stops on partial inventory failure', () => {
+  const result = observeCargoResolution(workflow);
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(result.stdout.trim().split('\n'), [
+    'cargo:update --workspace --manifest-path rust/Cargo.toml',
+    'cargo:update --workspace --manifest-path tools/registry/Cargo.toml']);
+  const failed = observeCargoResolution(workflow, true);
+  assert.equal(failed.status, 23, failed.stderr);
+  assert.equal(failed.stdout, '');
 });

@@ -75,3 +75,8 @@ mod changelog_parsing;
 #[allow(dead_code)]
 #[path = "../../../scripts/check-changelog-fragment.rs"]
 mod check_changelog_fragment;
+
+// Keep the dependency updater's collection and parser controls in focused CI.
+#[allow(dead_code)]
+#[path = "issue_1169_dependency_currency.rs"]
+mod dependency_currency;

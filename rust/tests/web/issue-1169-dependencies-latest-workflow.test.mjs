@@ -40,7 +40,7 @@ test('refreshes live, then applies offline and tolerates only the findings exit'
 
 test('re-resolves every lockfile with the tool that owns it', () => {
   const apply = position('--apply --offline');
-  const cargo = position('run: cargo update --workspace');
+  const cargo = position('cargo update --workspace --manifest-path "$manifest"');
   const bun = position('bun install --lockfile-only');
   const npm = position('npm install --package-lock-only --ignore-scripts');
   assert.ok(apply < cargo && apply < bun && apply < npm);

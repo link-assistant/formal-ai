@@ -113,7 +113,7 @@ fn offline_gate_flags_drift_and_honors_blocked_annotations() {
     write_snapshot(&snapshot_path, &snapshot);
     let read = read_snapshot(&snapshot_path).expect("snapshot round-trips");
 
-    let dependencies = collect(&root);
+    let dependencies = collect(&root, None).expect("complete manifest collection");
     let (findings, unverifiable) = compare(&dependencies, &read);
 
     assert!(unverifiable.is_empty(), "{unverifiable:?}");
@@ -155,7 +155,7 @@ fn apply_moves_unblocked_manifests_and_leaves_blocked_alone() {
         (Ecosystem::DockerImage, "konard/box-dind"),
         (Ecosystem::RustToolchain, "rustc"),
     ]);
-    let dependencies = collect(&root);
+    let dependencies = collect(&root, None).expect("complete manifest collection");
     let (findings, _) = compare(&dependencies, &snapshot);
     apply_latest(&findings);
 
@@ -189,7 +189,14 @@ fn the_repository_tree_collects_every_ecosystem() {
     let declared_react = manifest["dependencies"]["react"]
         .as_str()
         .expect("root package.json declares a React dependency pin");
-    let dependencies = collect(repository);
+    let workflow = fs::read_to_string(repository.join(".github/workflows/dependencies-latest.yml"))
+        .expect("read the maintained workflow independently of the dependency collector");
+    let checkout = workflow
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("- uses: actions/checkout@"))
+        .expect("the maintained workflow checks out the repository")
+        .trim_start_matches('v');
+    let dependencies = collect(repository, None).expect("complete manifest collection");
     let ecosystems: Vec<Ecosystem> = {
         let mut seen: Vec<Ecosystem> = dependencies.iter().map(|d| d.ecosystem).collect();
         seen.sort();
@@ -209,7 +216,7 @@ fn the_repository_tree_collects_every_ecosystem() {
     // Spot anchors: the pins this branch itself moved.
     for (ecosystem, name, resolved) in [
         (Ecosystem::DockerImage, "konard/box-dind", "2.10.2"),
-        (Ecosystem::GitHubAction, "zizmorcore/zizmor-action", "0.6.4"),
+        (Ecosystem::GitHubAction, "actions/checkout", checkout),
         (Ecosystem::Npm, "react", declared_react),
     ] {
         assert!(
@@ -258,4 +265,78 @@ fn offline_without_a_snapshot_is_unverifiable_not_clean() {
     assert!(error.contains("--refresh-snapshot"), "{error}");
     assert_eq!(EXIT_UNVERIFIABLE, 3);
     let _ = fs::remove_dir_all(&root);
+}
+
+#[test]
+fn active_nested_cargo_manifests_are_collected_without_rewriting_preserved_reproducers() {
+    let root = fixture_tree("nested-cargo-policy");
+    full_fixture(&root);
+    write(
+        &root.join("scripts/dependency-manifests.json"),
+        r#"{
+        "activeCargo": ["rust/Cargo.toml", "tools/registry/Cargo.toml", "tools/unlocked/Cargo.toml"]
+    }"#,
+    );
+    write(
+        &root.join("tools/registry/Cargo.toml"),
+        "[dependencies]\nregex = \"1\"\n",
+    );
+    write(
+        &root.join("tools/registry/Cargo.lock"),
+        "[[package]]\nname = \"regex\"\nversion = \"1.12.9\"\n",
+    );
+    write(
+        &root.join("tools/unlocked/Cargo.toml"),
+        "[dependencies]\nserde_json = \"1\"\n",
+    );
+    write(
+        &root.join("historical/Cargo.toml"),
+        "[dependencies]\nold = \"0.1\"\n",
+    );
+    let dependencies = collect(&root, None).expect("all active manifests");
+    let nested = dependencies
+        .iter()
+        .find(|item| item.path == root.join("tools/registry/Cargo.toml"))
+        .expect("nested registry dependency");
+    assert_eq!(nested.name, "regex");
+    assert_eq!(nested.resolved, "1.12.9");
+    assert!(
+        dependencies
+            .iter()
+            .any(|item| item.name == "serde_json" && item.resolved == "1")
+    );
+    assert!(!dependencies.iter().any(|item| item.name == "old"));
+    fs::remove_file(root.join("tools/registry/Cargo.toml")).expect("remove active manifest");
+    assert!(
+        collect(&root, None)
+            .expect_err("missing active manifest is not clean")
+            .contains("tools/registry/Cargo.toml")
+    );
+    let _ = fs::remove_dir_all(root);
+}
+
+#[test]
+fn checked_npm_inventory_excludes_untracked_packages_and_refuses_missing_tracked_files() {
+    let root = fixture_tree("checked-npm");
+    full_fixture(&root);
+    write(
+        &root.join("untracked/package.json"),
+        r#"{"dependencies":{"surprise":"1"}}"#,
+    );
+    assert!(
+        collect(&root, None)
+            .expect("legacy walk")
+            .iter()
+            .any(|item| item.name == "surprise")
+    );
+    let paths = [root.join("package.json")];
+    let tracked = collect(&root, Some(&paths)).expect("checked npm inventory");
+    assert!(!tracked.iter().any(|item| item.name == "surprise"));
+    fs::remove_file(&paths[0]).expect("remove tracked manifest");
+    assert!(
+        collect(&root, Some(&paths))
+            .expect_err("lost file is not a clean observation")
+            .contains("package.json")
+    );
+    let _ = fs::remove_dir_all(root);
 }

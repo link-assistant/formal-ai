@@ -962,3 +962,15 @@ The same 17a cohort exposes one stale native audit source selector after 250
 passing workflow controls. It is corrected to find the wrapped invocation;
 warning/yank assertions are unchanged. All 27 JavaScript audit controls and
 Rust formatting pass. Native execution remains pending on the next hosted head.
+
+## Tracked dependency manifest follow-up, 2026-11-23
+
+- [x] Inventory exact tracked Cargo.toml and package.json basenames: six Cargo and fourteen npm manifests.
+- [x] Reproduce the old actual resolver step selecting only the primary crate; replay the new step selecting all three active crates with real inventory and a recording Cargo function.
+- [x] Draft complete manifest classification, checked production npm collection, per-project Cargo collection and resolution, and failure on incomplete observations.
+- [x] Preserve two issue-linked historical reproducers and the intentionally empty classification fixture.
+- [x] Refresh the unlocked active issue-1558 harness minimums from retained official registry responses.
+- [x] Run the initial fifteen focused JavaScript controls successfully.
+- [ ] Verify the final source batch, retain original evidence, and run the complete clean local JavaScript gate set.
+- [ ] Verify the newly admitted native dependency controls on the corrected hosted head.
+- [ ] Verify an actual maintained dependency run and every remaining original acceptance criterion; command-selection replay alone does not establish these outcomes.
