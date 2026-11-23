@@ -52,3 +52,25 @@ complete the broader issue.
 
 
 The first complete candidate gate run is a clean-source diagnostic: 86 pass, three fail and 54 hosted-only exclusions. The failures identify a new underscore record name, a stale embedded seed copy and a generated status count. Renaming the record through the existing notation policy and regenerating both surfaces repairs all three focused gates; both original authored-seed controls still pass. A second complete clean-source run remains required before pushing.
+
+
+## Terminal cohort and clean candidate admission
+
+The complete original-source cohort is terminal: 33 workflows, 31 success, one
+failure and one explicit skip. Pipeline's three failed native groups contain
+exactly the four assertions above; its status job propagates their failure.
+The native producer, Rust compile/lint, Layered CI and the other seven native
+groups pass. Full workflow log lines 75296, 75329, 76303 and 78171 identify the
+four failures. The panic at 67851 belongs to the passing deliberate workflow-cycle
+test at 67854; echoed failure-command strings are not executed failures.
+
+Candidate `249f5a5097af57d49083f81921e9a5c437b07e8f` passes all 143 local gate entries on the same clean
+source before and after: 89 pass, zero fail and
+54 explicitly require hosted execution. All individual
+gate streams and the unchanged-source receipt are retained in
+`experiments/issue-1580/evidence/checks/clean-semantic-contract-gates/`.
+Terminal workflow logs, all jobs, request/comment refreshes and exact hashes are
+retained in `experiments/issue-1580/evidence/checks/b459-terminal-cohort/`.
+No local Rust compilation or execution occurred. Native candidate execution and
+both actual artifact rerun paths remain pending; full issue acceptance remains
+unfinished.

@@ -839,3 +839,14 @@ Supplied code and conclusions earn zero independent reasoning/authorship credit.
   rest of the current hosted cohort, and batch every actionable repair before
   the next push. Verify the repaired native groups and both actual artifact
   rerun paths; finish the broader acceptance inventory without deferred work.
+
+
+- [x] Finish the complete b459 cohort: 31 successful workflows, one Pipeline
+  failure and one explicit skip; collect all four native assertions and verify
+  seven other native groups, producer/lint and Layered CI pass. No additional
+  actionable failure is present. Preserve complete logs and refreshed comments.
+- [x] Pass all 143 local gate entries on clean unchanged `249f5a5097af57d49083f81921e9a5c437b07e8f`:
+  89 pass, zero fail, 54 hosted-only skips.
+- [ ] Push the combined link/native semantic batch after queue/main checks;
+  qualify every hosted native group and both actual artifact rerun paths, then
+  complete all remaining original requirements without deferred criteria.
