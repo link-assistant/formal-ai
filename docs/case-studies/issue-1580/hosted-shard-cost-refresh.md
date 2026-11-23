@@ -105,6 +105,9 @@ then restores its original bytes, preserving all 120 implemented verdicts and
 both existing reviewed historical citations. The full gate replay preserves 88 passes,
 54 explicit CI/Rust skips and this one failure. After the citation repair, all ten
 affected documentation and generation gates pass without changing their checks.
+The separate five-command requirement check also detects two stale generated ledger
+shards. The maintained generator refreshes only their test-owner references; all
+five checks then pass, with no verdict or status-surface changes.
 
 Historical scheduling comments and earlier work-plan observations are retained
 in separate readable files. Active data and plan files are below the unchanged
