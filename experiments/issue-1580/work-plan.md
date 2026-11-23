@@ -944,3 +944,16 @@ objective is unfinished and supplied work receives zero independent credit.
 - [ ] Refresh main and both run queues, then push the complete repair batch once.
 - [ ] Observe the new hosted head, exercise both real native artifact rerun paths,
   and complete all remaining original criteria before readiness.
+
+## Current TypeScript projection follow-up (2026-11-23)
+
+- [x] Preserve the original failed 17a Layered job and reproduce its actual
+  TypeScript runtime assertion locally. The separate currency check identifies
+  exactly two stale worker projections.
+- [x] Regenerate through the maintained ES translator; the actual runtime test,
+  all 12 translator cases, canonical currency and two touched gates pass.
+- [ ] Finish collecting every 17a hosted failure before the next push; keep
+  corrected projections local while the current native jobs run.
+- [ ] Qualify the corrected hosted head, then both actual artifact rerun paths.
+- [ ] Complete the original remaining acceptance criteria; keep the PR draft
+  and unmerged while any are unfinished.
