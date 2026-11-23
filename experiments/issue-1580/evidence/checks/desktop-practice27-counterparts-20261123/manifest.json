@@ -1,0 +1,32 @@
+{
+  "source": "7a37f11bfa0182fd30de31f17d7eb9e6e1bec355",
+  "templateCommit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+  "practiceIndex": 27,
+  "originalCases": 63,
+  "passed": 62,
+  "explicitPowerShellSkip": 1,
+  "counterpartRegressionBefore": {
+    "passed": 1,
+    "failed": 1,
+    "missingPaths": 6
+  },
+  "counterpartRegressionAfter": {
+    "passed": 2,
+    "failed": 0
+  },
+  "inventedNonemptyAssumptionRetained": true,
+  "initialNODE_OPTIONSRefusalRetained": true,
+  "productionGuardUnchanged": true,
+  "actualPublicationVerified": false,
+  "allApplicablePracticeVerified": false,
+  "independentAuthorshipCredit": 0,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 205025,
+    "sha256": "b1d251517591adaf64ac204edbd79ab37fa095b3d6f9258c8433614f4a7249dc"
+  },
+  "members": 67,
+  "roundTripVerified": true,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T23:05:06.389474+00:00"
+}

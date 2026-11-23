@@ -6719,7 +6719,7 @@
       "assessment": "The pinned template bounds registry-version collisions, checks Actions outputs, caps release text and verifies published installation/dependent compilation. Formal AI hosted controls now verify exact registry identity, output-write failures and both bounded pipe-pressure reproductions: the original exceeds its deadline while the repair exits zero with 131072 diagnostic bytes. The CLI fixtures use a loopback registry and controlled commands. Actual publication, package-size applicability and published downstream smoke qualification remain unfinished.",
       "status": "hosted-release-identity-and-pipe-controls-verified-publication-and-smoke-pending",
       "formalAiPaths": [
-        "scripts/check-crate-size.rs",
+        "scripts/check-crate-package-size.rs",
         "scripts/publish-crate.rs",
         "scripts/wait-for-crate.rs",
         ".github/workflows/release-staged.yml"
@@ -7029,13 +7029,18 @@
         "tests/unit/ci-cd/desktop_release_resolve.rs",
         "tests/unit/ci-cd/workflow_desktop_release.rs"
       ],
-      "assessment": "Read tests for mocked release-tag selection, opt-in six-target builds, pinned download adapters, strict deprecation errors, checksums, nonempty artifacts and attestations. Formal AI already has source/artifact-qualified checks; preserve stronger ownership guarantees rather than copying name-only substring guards. Live API and actual artifact execution remain separate evidence.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "Compared both complete pinned template contracts with the actual resolver, manifest, download adapter and maintained fixture controls. Preserve authenticated producer identity, source-bound tag selection, complete matrix-derived assets, durable byte/checksum/protocol/signing observations and refusal of unrelated releases. Template opt-in PR builds conflict with Formal AI main-only production policy and are not adopted. Local controls pass 62 cases with one explicit PowerShell skip; they execute actual resolver and packaging/manifest scripts against controlled providers and fixture binaries. The initial NODE_OPTIONS refusal and clean-environment rerun are retained. No live provider authentication, native build, actual release publication or installed product execution is qualified.",
+      "status": "formal-counterpart-local-controls-verified-publication-and-native-runtime-pending",
       "formalAiPaths": [
         ".github/workflows/desktop-release.yml",
-        "scripts/resolve-desktop-release.mjs"
+        "scripts/desktop-release-resolve.sh",
+        "scripts/desktop-release-manifest.sh",
+        ".github/actions/download-artifact/action.yml",
+        "rust/tests/web/desktop-release-source-attribution.test.mjs",
+        "rust/tests/web/release-workflow-operation-controls.test.mjs",
+        "rust/tests/web/issue-1181-cli-release-assets.test.mjs"
       ],
-      "verification": null
+      "verification": "experiments/issue-1580/evidence/checks/desktop-practice27-counterparts-20261123/manifest.json"
     },
     {
       "practice": "Named release identity, remote delivery and cancellation ownership regressions",
@@ -7442,7 +7447,7 @@
       "formalAiPaths": [
         "scripts/check-rust-dependencies.sh",
         "scripts/recheck-broken-links.mjs",
-        ".github/workflows/dependencies.yml"
+        ".github/workflows/dependencies-latest.yml"
       ],
       "verification": null
     },
@@ -7544,7 +7549,7 @@
       "assessment": "Read both complete historical issue-comment snapshots: the previously in-progress main runs later split into successful desktop/workflow examples and failed Security/CI, so initial status is not final proof. Read the complete historical JavaScript screenshot-hook proposal and original desktop request. Capture locale/theme and served visual identity from a real browser, preserve optional DOM probes, and separate release push-back from PR artifact evidence. The historical downstream closed state and upstream proposal do not prove a current template hook or current Formal AI delivery. These embedded historical issue requests are comparison evidence, not new required sub-issues of #1580. Formal AI already retains bounded browser and visual artifacts, while real release screenshot refresh/publication/served identity remain unverified.",
       "status": "complete-historical-snapshots-read-current-runtime-qualification-open",
       "formalAiPaths": [
-        ".github/workflows/ci.yml",
+        ".github/workflows/layered-ci.yml",
         ".github/workflows/desktop-release.yml",
         "docs/screenshots/issue-1580"
       ],
@@ -7601,7 +7606,7 @@
         ".github/workflows/workflows.yml",
         ".github/workflows/security.yml",
         ".github/workflows/desktop-release.yml",
-        ".github/workflows/docker-publish.yml"
+        ".github/workflows/release-staged.yml"
       ],
       "verification": "experiments/issue-1580/evidence/checks/rust-small-release-history/assessment.json"
     },
@@ -7616,7 +7621,7 @@
       "formalAiPaths": [
         "rust/Cargo.toml",
         "rust/Cargo.lock",
-        "scripts/recheck-links.mjs"
+        "scripts/recheck-broken-links.mjs"
       ],
       "verification": "experiments/issue-1580/evidence/checks/rust-client-entropy-history/assessment.json"
     },
