@@ -37,12 +37,20 @@ No original acceptance criterion is waived.
   fixture startup failure is reproduced and isolated with a hostile .bashrc
   control; production clocks and the fixture time limit are unchanged. Receipts
   retain initial failures and targeted traces. Hosted qualification is pending.
-- A dedicated default Secretlint 14 lock is drafted for Rust practice row 22.
+- Dedicated default Secretlint 14 lock 48a0e3e6f is committed for Rust practice row 22.
   Three behavioral regressions fail before the repair; all five focused cases,
   44 maintained boundary cases and 29 fast-profile cases pass after it.
   Five actual Node 26 scanner cases, a mismatched-lock refusal and zero-finding
   lock audit pass. Initial fixture, cleanup-scope and compile-cache observations
-  are retained. Eleven affected gates pass; hosted Node 22 remains pending.
+  are retained. Eleven affected gates and the post-commit secret scan pass; hosted Node 22 remains pending.
+- Rust practice row 20 comparison finds a physical Git-path warning defect:
+  newline, tab and Unicode filenames are quoted by newline numstat, so literal
+  warning ownership is lost. Three parser/actual-Git regressions fail against
+  unchanged production; after the dual-runtime repair all four focused and
+  22 maintained twin cases and eleven affected JavaScript gates pass. Two new
+  Rust parser cases await hosted execution.
+  Existing limits, fatal traversal/read errors and escaped annotations remain.
+  Malformed growth observations conservatively report every size warning.
 - All eight template maps cover 3,028 blobs. Applicable-practice adoption and
   execution, original family/full-suite budgets, strict style debt, main-only
   publication/delivery, cache reliability, live useful delivery, serving identity,

@@ -148,10 +148,10 @@ fn warning_annotations_are_limited_to_growing_files() {
 
 #[test]
 fn numstat_selects_only_files_with_net_line_growth() {
-    let numstat = "12\t0\tsrc/growing.rs\n3\t3\tsrc/unchanged.rs\n1\t8\tsrc/shrinking.rs\n-\t-\tassets/binary.png\n";
+    let numstat = "12\t0\tsrc/growing.rs\03\t3\tsrc/unchanged.rs\01\t8\tsrc/shrinking.rs\0-\t-\tassets/binary.png\0";
 
     assert_eq!(
-        growing_paths_from_numstat(numstat),
+        growing_paths_from_numstat(numstat).unwrap(),
         vec!["src/growing.rs".to_string()]
     );
 }
@@ -439,4 +439,43 @@ fn exclusions_are_relative_to_a_checkout_inside_a_target_directory() {
     );
     assert!(observed.errors.is_empty());
     fs::remove_dir_all(parent).unwrap();
+}
+
+#[test]
+fn nul_numstat_preserves_literal_names_and_rename_destinations() {
+    let input = concat!(
+        "1\t0\tsrc/line\nbreak.rs\0",
+        "1\t0\tsrc/tab\tname.rs\0",
+        "1\t0\tsrc/λ.rs\0",
+        "1\t0\tsrc/back\\slash.rs\0",
+        "2\t1\t\0old\nname.rs\0new\tname.rs\0",
+        "-\t-\tbinary.png\0"
+    );
+    assert_eq!(
+        growing_paths_from_numstat(input).unwrap(),
+        vec![
+            "src/line\nbreak.rs",
+            "src/tab\tname.rs",
+            "src/λ.rs",
+            "src/back\\slash.rs",
+            "new\tname.rs"
+        ]
+    );
+}
+
+#[test]
+fn incomplete_numstat_falls_back_to_reporting_every_warning() {
+    for input in [
+        "1\t0\tfile.rs",
+        "1\t0\0",
+        "1\t0\t\0old.rs\0",
+        "1\t0\t\0\0new.rs\0",
+        "?\t0\tfile.rs\0",
+        "-\t0\tfile.rs\0",
+        "1\t0\tfile.rs\0garbage\0",
+        "9007199254740992\t0\tfile.rs\0",
+    ] {
+        assert_eq!(growing_paths_from_numstat(input), None, "{input:?}");
+    }
+    assert_eq!(growing_paths_from_numstat(""), Some(Vec::new()));
 }

@@ -6718,13 +6718,26 @@
       "templateEvidence": [
         "scripts/check-file-size.rs"
       ],
-      "assessment": "Separate source/documentation thresholds, whole-component directory pruning and escaped annotations are applicable practices; Formal AI has a language/data-aware size policy that must be preserved. Template traversal silently drops directory/read errors, and changed-file whitespace splitting is not Git-path safe. Do not import these weaker failure semantics.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "The retained template has per-format budgets, whole-component pruning and escaped annotation properties. Formal AI retains its stronger maintained-text budgets, NUL committable inventory, and fatal traversal/read errors. A real comparison found quoted newline-numstat paths losing growth warnings. Both maintained runtimes now parse complete NUL records and rename destinations, preserving binary/unchanged/shrinking selection and falling back to every warning on malformed input. Four focused JavaScript controls and all 22 maintained twin checks pass; two new native Rust parser cases remain pending hosted execution.",
+      "status": "counterpart-compared-local-git-behavior-verified-hosted-rust-pending",
       "formalAiPaths": [
         "scripts/check-file-size.rs",
         "scripts/check-file-size.mjs"
       ],
-      "verification": null
+      "verification": {
+        "caseStudy": "docs/case-studies/issue-1580/file-size-literal-growth.md",
+        "receipt": "experiments/issue-1580/evidence/checks/file-size-literal-growth-20261123/manifest.json",
+        "behavioralFailuresBefore": 3,
+        "focusedJavaScriptCasesPassed": 4,
+        "maintainedTwinCasesPassed": 22,
+        "actualGitAnnotationsBefore": 2,
+        "actualGitAnnotationsAfter": 6,
+        "expectedActualGitAnnotations": 6,
+        "newNativeParserCases": 2,
+        "newNativeExecutionVerified": false,
+        "fullIssueComplete": false,
+        "independentAuthorshipCredit": 0
+      }
     },
     {
       "practice": "Link-check recovery and archive evidence",

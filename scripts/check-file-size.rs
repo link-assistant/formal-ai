@@ -405,17 +405,40 @@ fn warnings_for_growing_paths<'a>(
         .collect()
 }
 
-fn growing_paths_from_numstat(numstat: &str) -> Vec<String> {
-    numstat
-        .lines()
-        .filter_map(|line| {
-            let mut fields = line.splitn(3, '\t');
-            let added = fields.next()?.parse::<usize>().ok()?;
-            let removed = fields.next()?.parse::<usize>().ok()?;
-            let path = fields.next()?;
-            (added > removed).then(|| path.to_string())
-        })
-        .collect()
+/// Parse git diff --numstat -z, retaining literal names and rename destinations.
+/// An incomplete inventory falls back to reporting every size warning.
+fn growing_paths_from_numstat(numstat: &str) -> Option<Vec<String>> {
+    if numstat.is_empty() {
+        return Some(Vec::new());
+    }
+    let mut records = numstat.strip_suffix('\0')?.split('\0');
+    let mut growing = Vec::new();
+    while let Some(header) = records.next() {
+        let mut fields = header.splitn(3, '\t');
+        let added = fields.next()?;
+        let removed = fields.next()?;
+        let mut path = fields.next()?;
+        if path.is_empty() {
+            let previous = records.next()?;
+            path = records.next()?;
+            if previous.is_empty() || path.is_empty() {
+                return None;
+            }
+        }
+        if added == "-" && removed == "-" {
+            continue;
+        }
+        let added = added.parse::<u64>().ok()?;
+        let removed = removed.parse::<u64>().ok()?;
+        // Match the JavaScript twin's exact integer domain.
+        if added > 9_007_199_254_740_991 || removed > 9_007_199_254_740_991 {
+            return None;
+        }
+        if added > removed {
+            growing.push(path.to_string());
+        }
+    }
+    Some(growing)
 }
 
 /// The files a commit can carry: tracked, or untracked and not ignored.
@@ -451,6 +474,7 @@ fn growing_paths_since(base: &str) -> Option<Vec<String>> {
         .args([
             "diff",
             "--numstat",
+            "-z",
             "--diff-filter=ACMR",
             base,
             "HEAD",
@@ -462,9 +486,11 @@ fn growing_paths_since(base: &str) -> Option<Vec<String>> {
         return None;
     }
 
-    Some(growing_paths_from_numstat(&String::from_utf8_lossy(
-        &output.stdout,
-    )))
+    let growing = growing_paths_from_numstat(&String::from_utf8_lossy(&output.stdout));
+    if growing.is_none() && std::env::var("FORMAL_AI_FILE_SIZE_DEBUG").as_deref() == Ok("1") {
+        eprintln!("Incomplete NUL warning-growth inventory; reporting every size warning.");
+    }
+    growing
 }
 
 #[cfg(not(test))]

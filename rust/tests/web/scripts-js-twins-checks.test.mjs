@@ -1,3 +1,4 @@
+import '../../../experiments/issue-1580/file-size-literal-growth.test.mjs';
 // PR #1188 (SCRIPTS-B): the JavaScript twins of the five rust-script checks
 // agents hit most -- check-file-size, check-debt-ratchet,
 // check-hardcoded-language, check-minimal-core-boundary and
@@ -154,7 +155,7 @@ describe('check-file-size.mjs', () => {
     assert.equal(fileLimit('data/cache/wikidata/lexeme/L3302.json'), null);
     assert.equal(fileLimit('/r/js/worker/formal_ai_worker_seed_responses_and_language.js').label, 'Worker JavaScript');
     assert.equal(fileLimit('/r/.github/workflows/release.yml').label, 'GitHub Actions workflow');
-    assert.deepEqual(growingPathsFromNumstat('12\t0\tsrc/growing.rs\n3\t3\tsrc/same.rs\n1\t8\tsrc/shrinking.rs\n-\t-\ta.png\n'), ['src/growing.rs']);
+    assert.deepEqual(growingPathsFromNumstat('12\t0\tsrc/growing.rs\x003\t3\tsrc/same.rs\x001\t8\tsrc/shrinking.rs\x00-\t-\ta.png\x00'), ['src/growing.rs']);
   });
 
   test('a warning, a violation and embedded worker data print as the Rust script prints them', () => {

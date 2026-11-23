@@ -184,12 +184,29 @@ export function warningAnnotation(finding) {
   return `::warning file=${escapeAnnotationProperty(finding.file)}::${escapeAnnotationMessage(message)}`;
 }
 
+/** Parse git diff --numstat -z. Null keeps all warnings on an invalid inventory. */
 export function growingPathsFromNumstat(numstat) {
-  return lines(numstat).flatMap((line) => {
-    const [added, removed, ...rest] = line.split('\t');
-    if (rest.length === 0 || !/^\+?[0-9]+$/.test(added) || !/^\+?[0-9]+$/.test(removed)) return [];
-    return Number(added) > Number(removed) ? [rest.join('\t')] : [];
-  });
+  if (numstat === '') return [];
+  if (!numstat.endsWith('\0')) return null;
+  const records = numstat.slice(0, -1).split('\0');
+  const growing = [];
+  for (let index = 0; index < records.length; index += 1) {
+    const header = records[index];
+    const first = header.indexOf('\t'), second = header.indexOf('\t', first + 1);
+    if (first < 0 || second < 0) return null;
+    const added = header.slice(0, first), removed = header.slice(first + 1, second);
+    let path = header.slice(second + 1);
+    if (path === '') {
+      if (!records[index + 1] || !records[index + 2]) return null;
+      path = records[index + 2]; index += 2;
+    }
+    if (added === '-' && removed === '-') continue;
+    if (!/^\+?[0-9]+$/.test(added) || !/^\+?[0-9]+$/.test(removed)) return null;
+    const addCount = Number(added), removeCount = Number(removed);
+    if (!Number.isSafeInteger(addCount) || !Number.isSafeInteger(removeCount)) return null;
+    if (addCount > removeCount) growing.push(path);
+  }
+  return growing;
 }
 
 function committablePaths() {
@@ -200,9 +217,13 @@ function committablePaths() {
 
 function growingPathsSince(base) {
   if (base === '' || [...base].every((ch) => ch === '0')) return null;
-  const output = spawnSync('git', ['diff', '--numstat', '--diff-filter=ACMR', base, 'HEAD', '--'], { maxBuffer: 1 << 30 });
+  const output = spawnSync('git', ['diff', '--numstat', '-z', '--diff-filter=ACMR', base, 'HEAD', '--'], { maxBuffer: 1 << 30 });
   if (output.error || output.status !== 0) return null;
-  return growingPathsFromNumstat(output.stdout.toString('utf8'));
+  const growing = growingPathsFromNumstat(output.stdout.toString('utf8'));
+  if (growing === null && process.env.FORMAL_AI_FILE_SIZE_DEBUG === '1') {
+    process.stderr.write('Incomplete NUL warning-growth inventory; reporting every size warning.\n');
+  }
+  return growing;
 }
 
 function printWarnings(warnings, out) {
