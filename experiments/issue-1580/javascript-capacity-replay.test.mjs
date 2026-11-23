@@ -49,7 +49,12 @@ test('the smallest finite capacity repair fits all retained observations without
     assert.equal(report.executionProof, false);
     const job = YAML.parse(readFileSync('.github/workflows/layered-ci.yml', 'utf8')).jobs.js;
     assert.deepEqual(job.strategy.matrix.shard, Array.from({length: report.selectedCount}, (_, index) => index + 1));
-    assert.equal(report.selectedCount, 10);
+    assert.equal(report.selectedCount, 11);
+    // Preserve the previous thirteen-cohort result as a historical control.
+    const historical = report.candidates.filter(row => row.constraints.exactPartition
+      && row.constraints.longestFirst && row.constraints.deterministic && row.constraints.unchangedDeadline
+      && row.results.filter(item => !item.name.endsWith('aa84dfc2')).every(item => item.maximumSeconds <= 270));
+    assert.equal(historical[0].count, 10);
     assert.equal(report.selectedCount, Math.min(...report.candidates.filter(row => row.fits).map(row => row.count)));
     for (const step of job.steps.filter(step => step.env?.SHARDS !== undefined))
       assert.equal(step.env.SHARDS, report.selectedCount);
@@ -61,11 +66,41 @@ test('the smallest finite capacity repair fits all retained observations without
     const old = before.results.find(row => row.name.endsWith('5ce44145'));
     assert.deepEqual(old.loads.map((seconds, index) => seconds > 270 ? index + 1 : null).filter(Boolean), [2, 9]);
     const after = report.candidates.find(row => row.count === report.selectedCount);
-    assert.equal(after.results.length, 13);
+    assert.equal(after.results.filter(row => !row.name.endsWith('aa84dfc2')).length, 13);
+    assert.equal(after.results.length, 14);
+    const ten = report.candidates.find(row => row.count === 10);
+    assert.equal(ten.fits, false);
+    const latest = ten.results.find(row => row.name.endsWith('aa84dfc2'));
+    assert.deepEqual(latest.loads.map((seconds, index) => seconds > 270 ? index + 1 : null).filter(Boolean), [9, 10]);
     assert(Object.values(after.constraints).every(Boolean));
     assert(after.conservativeQueues.every(seconds => seconds < 360));
     assert(after.results.every(row => row.maximumSeconds <= 270));
   } finally {
     rmSync(directory, {recursive: true, force: true});
   }
+});
+
+test('the terminal aa84 cohort retains all ten jobs, every owner and the actual warning', () => {
+  const fixture = new URL('./fixtures/hosted-javascript-aa84dfc2/', import.meta.url);
+  const read = file => readFileSync(new URL(file, fixture), 'utf8');
+  const identity = JSON.parse(read('identity.json'));
+  const run = JSON.parse(read('run-observation.json'));
+  const raw = read('durations.jsonl'), rows = raw.trim().split('\n').map(JSON.parse);
+  assert.equal(run.id, 45271423335);
+  assert.equal(run.head_sha, identity.sourceCommit);
+  assert.equal(run.conclusion, 'success');
+  assert.equal(identity.testedMergeCommit, '3c887a7ac57dd0dcbd685cace9b650ca29b8b4ad');
+  assert.equal(identity.completeObservations, 922);
+  assert.equal(rows.length, 922);
+  assert.deepEqual(rows.map(row => row.file).sort(), readdirSync('rust/tests/web')
+    .filter(name => name.endsWith('.test.mjs')).map(name => 'rust/tests/web/' + name).sort());
+  assert(rows.every(row => row.complete && row.result === 'completed'
+    && identity.jobs.some(job => job.job === row.job && job.conclusion === 'success')));
+  assert.equal(identity.jobs.length, 10);
+  assert.deepEqual(identity.warnings.map(row => row.shard), [9]);
+  assert.equal(hash(raw), identity.durationsSha256);
+  const prior = read('prior-scheduling-floor.lino');
+  assert.equal(hash(prior), identity.priorSchedulingFloorSha256);
+  assert.equal(prior, readFileSync('data/meta/javascript-test-durations.lino', 'utf8'));
+  assert.equal(identity.executionProof, false);
 });

@@ -29,6 +29,16 @@ test('heavy original job bodies remain intact and default PR dispatches cannot a
   for (const row of manifest.jobs) {
     const job = workflow(row.file).jobs[row.id];
     const payload = {steps:job.steps,uses:job.uses,with:job.with,strategy:job.strategy};
+    if (row.file === 'links.yml' && row.id === 'link-checker') {
+      // Whitelist only the reproduced terminal-observation repair. The original
+      // digest still protects every other step field and all other job bodies.
+      const terminal = job.steps.find(step => step.name === 'Fail if broken links were found');
+      const recovery = "(steps.lychee.outputs.exit_code != '2' || steps.recheck.outputs.all_recovered != 'true') }}";
+      assert.equal(terminal.if, "${{ !cancelled() && (!steps.lychee.outputs.exit_code || steps.lychee.outputs.exit_code != '0') && " + recovery);
+      payload.steps = structuredClone(job.steps);
+      payload.steps.find(step => step.name === terminal.name).if =
+        '${{ !cancelled() && steps.lychee.outputs.exit_code != 0 && ' + recovery;
+    }
     assert.equal(createHash('sha256').update(JSON.stringify(payload)).digest('hex'), row.payloadSha256, row.file+'/'+row.id+' retained payload');
     assert.equal(Boolean(evaluate(job.if, context('pull_request'))),false,row.file+'/'+row.id);
     assert.equal(Boolean(evaluate(job.if, context('workflow_dispatch','refs/heads/fix/example'))),false,row.file+'/'+row.id+' bot dispatch');
@@ -489,15 +499,15 @@ test('complete Coding Ladder is explicit main-only with mandatory default consis
 });
 
 
-test('measured full JavaScript plans retain every suite within ten unchanged execution budgets', async () => {
+test('measured full JavaScript plans retain every suite within eleven unchanged execution budgets', async () => {
   const job = workflow('layered-ci.yml').jobs.js;
   const plan = job.steps.find(step => step.id === 'javascript-plan');
   const execute = job.steps.find(step => step.name === 'Run this shard of the JavaScript suites');
   for (const [event, ref, count] of [
-    ['pull_request', 'refs/pull/1581/merge', 10],
-    ['workflow_dispatch', 'refs/heads/feature', 10],
-    ['push', 'refs/heads/main', 10],
-    ['workflow_dispatch', 'refs/heads/main', 10],
+    ['pull_request', 'refs/pull/1581/merge', 11],
+    ['workflow_dispatch', 'refs/heads/feature', 11],
+    ['push', 'refs/heads/main', 11],
+    ['workflow_dispatch', 'refs/heads/main', 11],
   ]) {
     const values = {...context(event, ref), fromJSON: JSON.parse};
     const shards = Array.from(evaluate(job.strategy.matrix.shard, values));
@@ -516,7 +526,7 @@ test('measured full JavaScript plans retain every suite within ten unchanged exe
   const path = 'data/meta/javascript-test-durations.lino';
   const secondsOf = durationLookup(readTestDurations(path), Number(read(path).match(/^  default-seconds (\S+)$/mu)[1]));
   const selected = readdirSync('rust/tests/web').filter(name=>name.endsWith('.test.mjs')).map(name=>'rust/tests/web/'+name);
-  const {shards} = planShards(selected, 10, secondsOf);
+  const {shards} = planShards(selected, 11, secondsOf);
   assert.deepEqual(partitionProblems(selected, shards), {missing: [], repeated: [], extra: []});
   assert(isLongestFirst(shards, secondsOf));
   // Warning-budget assertions replay each retained hosted cohort above. The
