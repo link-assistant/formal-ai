@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.356.11] - 2026-11-23
+
+### Fixed
+
+- Recover verified wikiHow instructions through the publisher’s public search when the structured search API fails. Present the relevant instructions and their citation in chat, or say when verified steps are unavailable.
+
 ## [0.356.10] - 2026-11-23
 
 ### Fixed
