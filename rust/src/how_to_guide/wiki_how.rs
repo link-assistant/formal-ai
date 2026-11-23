@@ -64,7 +64,7 @@ pub(super) fn recover<T: SourceTransport>(
 
 /// Include one alternate aspect where the language's title policy declares one.
 fn search_query(task: &str, language: &str) -> String {
-    let policy = |key| crate::rule_interpreter::handler_policy("procedural_how_to", key);
+    let policy = |key: &str| crate::rule_interpreter::handler_policy("procedural_how_to", key);
     let Some(prefix) = policy(&format!("aspect-prefix-{language}")) else {
         return task.to_owned();
     };
