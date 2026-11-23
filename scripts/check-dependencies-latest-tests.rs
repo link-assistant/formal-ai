@@ -539,7 +539,7 @@ fn npm_aliases_and_local_sources_share_the_javascript_identity_vectors() {
 
 #[test]
 fn npm_updates_preserve_the_actual_alias_and_range_operator() {
-    let source = "{\n  \"alias\": \"npm:@scope/actual@^1.0.0\"\n}\n";
+    let source = "{\n  \"dependencies\": { \"alias\": \"npm:@scope/actual@^1.0.0\" }\n}\n";
     let dependency = Dependency {
         ecosystem: Ecosystem::Npm,
         name: "@scope/actual".to_string(),
@@ -583,4 +583,112 @@ fn local_packages_still_check_their_aliased_registry_dependencies() {
     assert_eq!(dependencies[0].name, "minimatch");
     assert_eq!(dependencies[0].resolved, "11.0.3");
     assert_eq!(dependencies[0].path, local.join("package.json"));
+}
+
+#[test]
+fn compact_npm_members_keep_json_boundaries_order_and_blocked_notes() {
+    let source = r#"{"description":"1.0.0","dependencies":{"z":"1.0.0","a":"^2.0.0","z//":"blocked: https://github.com/o/r/issues/9"},"scripts":{"pretend":"9.0.0"},"devDependencies":{"escaped\u002dname":"~3.0.0"},"optionalDependencies":{"optional":"4.0.0"}}"#;
+    let parsed = parse_package_json(source);
+    assert_eq!(
+        parsed
+            .iter()
+            .map(|(name, _, _, _)| name.as_str())
+            .collect::<Vec<_>>(),
+        ["z", "a", "escaped-name", "optional"]
+    );
+    assert!(parsed.iter().all(|(_, _, line, _)| *line == 1));
+    assert_eq!(
+        parsed[0].3.as_deref(),
+        Some("https://github.com/o/r/issues/9")
+    );
+    assert!(
+        parsed[1..]
+            .iter()
+            .all(|(_, _, _, blocked)| blocked.is_none())
+    );
+}
+
+#[test]
+fn compact_npm_rewrite_changes_only_the_selected_dependency_value() {
+    let source = r#"{"description":"1.0.0","dependencies":{"held":"1.0.0","alias":"npm:@scope/actual@^1.0.0","chosen":"1.0.0"},"scripts":{"chosen":"1.0.0"},"chosen//":"blocked: waiting without a tracking reference"}"#;
+    let dependency = |name: &str, declared: &str| Dependency {
+        ecosystem: Ecosystem::Npm,
+        name: name.to_string(),
+        declared: Some(declared.to_string()),
+        resolved: "1.0.0".to_string(),
+        path: "package.json".into(),
+        line: 1,
+        blocked: None,
+    };
+    let alias = rewrite_npm_line(
+        source,
+        &dependency("@scope/actual", "npm:@scope/actual@^1.0.0"),
+        "2.0.0",
+    );
+    assert_eq!(alias, source.replace("@^1.0.0", "@^2.0.0"));
+    let chosen = rewrite_npm_line(source, &dependency("chosen", "1.0.0"), "3.0.0");
+    assert_eq!(
+        chosen,
+        source.replacen(r#""chosen":"1.0.0""#, r#""chosen":"3.0.0""#, 1)
+    );
+}
+
+#[test]
+fn dependency_section_closure_excludes_following_root_members() {
+    let source = "{\n \"dependencies\": {\n  \"real\": \"1.0.0\"\n },\n \"description\": \"9.0.0\",\n \"scripts\": {\"fake\": \"9.0.0\"}\n}\n";
+    let parsed = parse_package_json(source);
+    assert_eq!(parsed.len(), 1);
+    assert_eq!(
+        (&*parsed[0].0, &*parsed[0].1, parsed[0].2),
+        ("real", "1.0.0", 3)
+    );
+}
+
+#[test]
+fn malformed_npm_manifest_is_an_error_instead_of_an_empty_collection() {
+    let root = std::env::temp_dir().join(format!("npm-malformed-{}", std::process::id()));
+    fs::create_dir_all(&root).expect("fixture directory");
+    let manifest = root.join("package.json");
+    fs::write(&manifest, r#"{"dependencies":{"lost":"1.0.0"}"#).expect("fixture manifest");
+    let error =
+        collect_npm_manifests(&[manifest], &mut Vec::new()).expect_err("invalid JSON must fail");
+    assert!(error.contains("package.json"), "{error}");
+    fs::remove_dir_all(root).expect("remove fixture");
+}
+
+#[test]
+fn npm_members_follow_last_key_wins_json_semantics() {
+    let source = r#"{"dependencies":{"ignored":"0.0.0"},"dependencies":{"same":"0.0.0","same":"1.0.0","last":"2.0.0"}}"#;
+    let parsed = parse_package_json(source);
+    assert_eq!(
+        parsed
+            .into_iter()
+            .map(|(name, version, _, _)| (name, version))
+            .collect::<Vec<_>>(),
+        [
+            ("same".to_string(), "1.0.0".to_string()),
+            ("last".to_string(), "2.0.0".to_string())
+        ]
+    );
+}
+
+#[test]
+fn npm_rewrite_tracks_escaped_names_and_multiline_values() {
+    let source = "{\n \"dependencies\": {\"escaped\\u002dname\":\n \"^1.0.0\"},\n \"description\": \"^1.0.0\"\n}\n";
+    let parsed = parse_package_json(source);
+    assert_eq!(parsed.len(), 1);
+    assert_eq!((&*parsed[0].0, parsed[0].2), ("escaped-name", 3));
+    let dependency = Dependency {
+        ecosystem: Ecosystem::Npm,
+        name: parsed[0].0.clone(),
+        declared: Some(parsed[0].1.clone()),
+        resolved: "1.0.0".to_string(),
+        path: "package.json".into(),
+        line: parsed[0].2,
+        blocked: None,
+    };
+    assert_eq!(
+        rewrite_npm_line(source, &dependency, "2.0.0"),
+        source.replacen("\"^1.0.0\"", "\"^2.0.0\"", 1)
+    );
 }

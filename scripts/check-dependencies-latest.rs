@@ -310,6 +310,8 @@ fn collect_npm_manifests(
     for manifest_path in manifests {
         let text = fs::read_to_string(manifest_path)
             .map_err(|error| format!("{}: {error}", manifest_path.display()))?;
+        serde_json::from_str::<serde_json::Value>(&text)
+            .map_err(|error| format!("{}: {error}", manifest_path.display()))?;
         let lock_versions = npm_lock_versions(&manifest_path);
         for (name, declared, line, blocked) in parse_package_json(&text) {
             let Some((registry_name, requirement)) = npm_registry_identity(&name, &declared) else {
@@ -600,26 +602,41 @@ fn rewrite_cargo_line(text: &str, dependency: &Dependency, latest: &str) -> Stri
 }
 
 fn rewrite_npm_line(text: &str, dependency: &Dependency, latest: &str) -> String {
-    let latest = without_build_metadata(latest);
-    rewrite_line_at(text, dependency.line, |line| {
-        let declared = dependency.declared.as_deref()?;
-        let (name, requirement) = npm_registry_identity(&dependency.name, declared)?;
-        let alias = if declared.starts_with("npm:") {
-            format!("npm:{name}@")
-        } else {
-            String::new()
-        };
-        let prefix = ['^', '~', '>', '=']
-            .iter()
-            .find(|c| requirement.starts_with(**c))
-            .map(std::string::ToString::to_string)
-            .unwrap_or_default();
-        Some(line.replacen(
-            &format!("\"{declared}\""),
-            &format!("\"{alias}{prefix}{latest}\""),
-            1,
-        ))
-    })
+    let Some(declared) = dependency.declared.as_deref() else {
+        return text.to_string();
+    };
+    let Some(member) = npm_manifest::dependency_members(text)
+        .into_iter()
+        .find(|member| {
+            member.line == dependency.line
+                && member.declared == declared
+                && member.blocked == dependency.blocked
+                && npm_registry_identity(&member.name, declared)
+                    .is_some_and(|(name, _)| name == dependency.name)
+        })
+    else {
+        return text.to_string();
+    };
+    let Some((name, requirement)) = npm_registry_identity(&dependency.name, declared) else {
+        return text.to_string();
+    };
+    let alias = if declared.starts_with("npm:") {
+        format!("npm:{name}@")
+    } else {
+        String::new()
+    };
+    let prefix = ['^', '~', '>', '=']
+        .iter()
+        .find(|character| requirement.starts_with(**character))
+        .map(std::string::ToString::to_string)
+        .unwrap_or_default();
+    let updated = format!("{alias}{prefix}{}", without_build_metadata(latest));
+    let mut rewritten = text.to_string();
+    rewritten.replace_range(
+        member.start..member.end,
+        &serde_json::to_string(&updated).expect("encode the updated npm requirement"),
+    );
+    rewritten
 }
 
 fn rewrite_uses_line(text: &str, dependency: &Dependency, latest: &str) -> String {
@@ -697,6 +714,8 @@ pub fn render_lino(findings: &[Finding], unverifiable: &[String]) -> String {
     out
 }
 
+#[path = "check-dependencies-latest-npm.rs"]
+mod npm_manifest;
 #[path = "check-dependencies-latest-parsers.rs"]
 mod parsers;
 pub use parsers::*;
