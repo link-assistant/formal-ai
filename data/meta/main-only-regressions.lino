@@ -115,3 +115,15 @@ main-run 45001543202
       failed "DinD serve exited with PermissionDenied before /health because box could not access /root/.formal-ai"
       check rust/tests/web/container-node-runtime.test.mjs
       marker "DinD memory path from main run 45001543202"
+main-run 45020746043
+  javascript-twin
+    regression pages-rustdoc-private-links
+      introduced-by "commit 049c4bbf97"
+      failed "Pages rustdoc rejected links from bound_output_literals to private output helpers"
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Pages rustdoc from main run 45020746043 has no links to private output helpers"
+    regression pages-rustdoc-grammar-filename
+      introduced-by "commit 00d426c1c1"
+      failed "Pages rustdoc interpreted the grammar filename placeholder as an unclosed HTML tag"
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "Pages rustdoc from main run 45020746043 treats the grammar filename as literal text"

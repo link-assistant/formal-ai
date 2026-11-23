@@ -1,0 +1,36 @@
+Source log: gh run view 45020746043 --log-failed --repo link-assistant/formal-ai
+Job: 137232338452
+58676 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:03:52.0952187Z ^[[1m^[[92m    Checking^[[0m web-search v0.6.0
+58677 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:03:52.2813107Z ^[[1m^[[92m    Checking^[[0m thread-priority v3.1.1
+58678 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:03:52.2928443Z ^[[1m^[[92m    Checking^[[0m fs2 v0.4.3
+58679 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:06.6550710Z ^[[1m^[[92m Documenting^[[0m formal-ai v0.356.5 (/home/runner/work/formal-ai/formal-ai/rust)
+58680 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0915002Z ^[[1m^[[91merror^[[0m^[[1m: public documentation for `bound_output_literals` links to private item `explicit_count`^[[0m
+58681 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0916219Z    ^[[1m^[[94m--> ^[[0msrc/intent_formalization/obligations.rs:484:18
+58682 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0916824Z     ^[[1m^[[94m|^[[0m
+58683 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0917781Z ^[[1m^[[94m484^[[0m ^[[1m^[[94m|^[[0m /// task); see [`explicit_count`] and [`output_again`]. Repeated mentions
+58684 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0918931Z     ^[[1m^[[94m|^[[0m                  ^[[1m^[[91m^^^^^^^^^^^^^^^[[0m ^[[1m^[[91mthis item is private^[[0m
+58685 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0919579Z     ^[[1m^[[94m|^[[0m
+58686 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0920427Z     ^[[1m^[[94m= ^[[0m^[[1mnote^[[0m: this link will resolve properly if you pass `--document-private-items`
+58687 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0922569Z     ^[[1m^[[94m= ^[[0m^[[1mnote^[[0m: `-D rustdoc::private-intra-doc-links` implied by `-D warnings`
+58688 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0923815Z     ^[[1m^[[94m= ^[[0m^[[1mhelp^[[0m: to override `-D warnings` add `#[allow(rustdoc::private_intra_doc_links)]`
+58689 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0924419Z
+58690 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0925103Z ^[[1m^[[91merror^[[0m^[[1m: public documentation for `bound_output_literals` links to private item `output_again`^[[0m
+58691 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0926006Z    ^[[1m^[[94m--> ^[[0msrc/intent_formalization/obligations.rs:484:41
+58692 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0926482Z     ^[[1m^[[94m|^[[0m
+58693 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0927231Z ^[[1m^[[94m484^[[0m ^[[1m^[[94m|^[[0m /// task); see [`explicit_count`] and [`output_again`]. Repeated mentions
+58694 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0928181Z     ^[[1m^[[94m|^[[0m                                         ^[[1m^[[91m^^^^^^^^^^^^^[[0m ^[[1m^[[91mthis item is private^[[0m
+58695 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0928726Z     ^[[1m^[[94m|^[[0m
+58696 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0929409Z     ^[[1m^[[94m= ^[[0m^[[1mnote^[[0m: this link will resolve properly if you pass `--document-private-items`
+58697 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.0929912Z
+58698 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.1689446Z ^[[1m^[[91merror^[[0m^[[1m: unclosed HTML tag `id`^[[0m
+58699 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.1690344Z    ^[[1m^[[94m--> ^[[0msrc/cnl_output/grammar.rs:231:28
+58700 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.1690887Z     ^[[1m^[[94m|^[[0m
+58701 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.1692100Z ^[[1m^[[94m231^[[0m ^[[1m^[[94m|^[[0m /// Parse one cnl-language-<id>.lino file into plain data.
+58702 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.1693210Z     ^[[1m^[[94m|^[[0m                            ^[[1m^[[91m^^^^^[[0m
+58703 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.1694000Z     ^[[1m^[[94m|^[[0m
+58704 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.1695080Z     ^[[1m^[[94m= ^[[0m^[[1mnote^[[0m: `-D rustdoc::invalid-html-tags` implied by `-D warnings`
+58705 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.1697255Z     ^[[1m^[[94m= ^[[0m^[[1mhelp^[[0m: to override `-D warnings` add `#[allow(rustdoc::invalid_html_tags)]`
+58706 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.1698221Z
+58707 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.7053332Z ^[[1m^[[91merror^[[0m: could not document `formal-ai`
+58708 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.7770883Z ##[error]Process completed with exit code 101.
+58709 Build GitHub Pages artifact / Build GitHub Pages artifact	UNKNOWN STEP	2026-11-22T14:04:16.7940933Z Post job cleanup.
