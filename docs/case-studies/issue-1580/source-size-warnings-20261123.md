@@ -2,10 +2,14 @@
 
 The [8682 pipeline](https://github.com/link-assistant/formal-ai/actions/runs/45109737000)
 reported ten source-size warnings. Its preserved whole log records them at
-lines 2438 through 2456. The maintained policy is unchanged.
+lines 2438 through 2456. The next successful pipeline reported those ten plus
+the dependency checker, at lines 1916 through 1937. All eleven are covered below.
+The maintained policy is unchanged.
 
 | Source | Before | After |
 | --- | ---: | ---: |
+| Dependency checker | 909 | 885 |
+| Dependency snapshot I/O module | 137 | 161 |
 | Change detection script | 925 | 532 |
 | Numeric list parser | 945 | 822 |
 | Chat surface tests | 914 | 879 |
@@ -47,10 +51,24 @@ Run the regression with node --test --test-concurrency=1
 experiments/issue-1580/source-warning-headroom.test.mjs. The maintained scanner
 first failed on the four unchanged Rust sources; an expanded run failed on the
 six remaining worker, TypeScript and index warnings. After repair, that same
-scanner reports no errors, violations or warnings for all eighteen parent and
-extracted files. This test is included in the fast PR JavaScript inventory.
-Rust formatting and extraction conservation pass locally; native compilation
-and the full gate results are qualified separately.
+scanner reports no errors, violations or warnings for all twenty parent and
+extracted files. The final dependency-checker warning also has a failing-before,
+passing-after run. Its report renderer moves unchanged into the existing
+snapshot I/O module and keeps the same public reexport. This test is included in the fast PR JavaScript inventory.
+Rust formatting and extraction conservation pass locally. A clean, unchanged
+707206270 source run completes all 143 local entries: 89 pass, zero fail and
+54 require CI context or native execution. The earlier full run's three
+failures and the deliberately aborted run remain labeled in the evidence.
+Native compilation still requires the next hosted source head.
+
+[Complete local observations](../../../experiments/issue-1580/evidence/checks/source-size-warning-round-20261123/manifest.json)
+retain the preimages, generation receipts, focused results and both completed
+full runs. Every archive member was read back and checked against its SHA-256.
+
+[The dependency-checker follow-up](../../../experiments/issue-1580/evidence/checks/dependency-source-warning-909/manifest.json)
+retains both preimages, the failing regression, passing formatter and regression,
+and the exact moved-body proof. This follow-up runs after the clean 707206270
+full-gate observation; it is not presented as part of that earlier source.
 
 The same qualification's [Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/45114823928)
 found a stale exact checkout expectation at

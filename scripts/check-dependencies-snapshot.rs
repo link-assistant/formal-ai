@@ -135,3 +135,27 @@ pub fn write_snapshot(path: &Path, snapshot: &Snapshot) {
     }
     fs::write(path, text).expect("write the registry snapshot");
 }
+
+/// Findings as flat lino records, one per drift.
+#[cfg_attr(test, allow(dead_code))]
+pub fn render_lino(findings: &[Finding], unverifiable: &[String]) -> String {
+    let mut out = String::new();
+    for finding in findings {
+        let dependency = &finding.dependency;
+        let _ = writeln!(
+            out,
+            "currency_finding\n  ecosystem \"{}\"\n  name \"{}\"\n  resolved \"{}\"\n  latest \"{}\"\n  path \"{}\"\n  line {}\n  blocked {}\n",
+            dependency.ecosystem.key(),
+            dependency.name,
+            dependency.resolved,
+            finding.latest,
+            dependency.path.display(),
+            dependency.line,
+            dependency.blocked.is_some(),
+        );
+    }
+    for name in unverifiable {
+        let _ = writeln!(out, "unverifiable_dependency\n  name \"{name}\"\n");
+    }
+    out
+}

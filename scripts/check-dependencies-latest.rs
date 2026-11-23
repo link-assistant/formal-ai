@@ -690,30 +690,6 @@ fn rewrite_line_at(
     out
 }
 
-/// Findings as flat lino records, one per drift.
-#[cfg_attr(test, allow(dead_code))]
-pub fn render_lino(findings: &[Finding], unverifiable: &[String]) -> String {
-    let mut out = String::new();
-    for finding in findings {
-        let dependency = &finding.dependency;
-        let _ = writeln!(
-            out,
-            "currency_finding\n  ecosystem \"{}\"\n  name \"{}\"\n  resolved \"{}\"\n  latest \"{}\"\n  path \"{}\"\n  line {}\n  blocked {}\n",
-            dependency.ecosystem.key(),
-            dependency.name,
-            dependency.resolved,
-            finding.latest,
-            dependency.path.display(),
-            dependency.line,
-            dependency.blocked.is_some(),
-        );
-    }
-    for name in unverifiable {
-        let _ = writeln!(out, "unverifiable_dependency\n  name \"{name}\"\n");
-    }
-    out
-}
-
 #[path = "check-dependencies-latest-npm.rs"]
 mod npm_manifest;
 #[path = "check-dependencies-latest-parsers.rs"]
@@ -726,7 +702,7 @@ pub use action_release::*;
 // Snapshot I/O owns the shared release representation.
 #[path = "check-dependencies-snapshot.rs"]
 mod snapshot_io;
-pub use snapshot_io::{read_snapshot, write_snapshot};
+pub use snapshot_io::{read_snapshot, render_lino, write_snapshot};
 
 fn ecosystem_of(id: &str) -> Option<Ecosystem> {
     match id.split('/').next()? {

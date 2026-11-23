@@ -5,6 +5,8 @@ import {checkListedFiles} from '../../../scripts/check-file-size.mjs';
 
 const root = fileURLToPath(new URL('../../../', import.meta.url)).replace(/\/$/u, '');
 const files = [
+  'scripts/check-dependencies-latest.rs',
+  'scripts/check-dependencies-snapshot.rs',
   "js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js",
   "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js",
   "js/worker/formal_ai_worker_solve.js",
