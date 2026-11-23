@@ -141,7 +141,10 @@ pub(super) fn release_scripts_check_configured_release_artifacts() {
     );
     assert!(
         wait_for_crate.contains("#[path = \"registry.rs\"]")
-            && wait_for_crate.contains("registry::version_exists(&crate_name, &version)")
+            && wait_for_crate.contains("registry::crate_version_visibility(&crate_name, &version)")
+            && wait_for_crate.contains("registry::VersionVisibility::Published")
+            && wait_for_crate.contains("registry::VersionVisibility::NotPublishedYet")
+            && wait_for_crate.contains("registry::VersionVisibility::Unknown(reason)")
             && registry.contains("https://crates.io/api/v1/crates/{crate_name}/{version}"),
         "the waiter must check the selected crate version through the actual registry module before image publishing"
     );
