@@ -996,6 +996,7 @@ changelog.d/20261122_162000_issue_1616_structured_schema_annotations.md	0.356.9
 changelog.d/20261122_162100_embeddings_dimensions.md	0.356.8
 changelog.d/20261122_162400_issue_1617_structured_output_labels.md	0.356.7
 changelog.d/20261122_162500_pages_api_docs.md	0.356.10
+changelog.d/20261123_211755_procedural_source_recovery.md	0.356.11
 changelog.d/ci-gate-citation-fixed.md	0.355.28
 changelog.d/desktop-package-source-boundary.md	0.355.17
 changelog.d/fast-pr-offline-e2e-admission.md	0.355.15

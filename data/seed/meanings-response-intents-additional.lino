@@ -186,13 +186,13 @@ meanings
     unit "not applicable"
     example "Wikinews has a news article titled Mars rover lands."
     grounding "data/seed/multilingual-responses-web.lino"
-  procedural_how_to_plan
+  procedural_how_to_unverified
     defined-by answer
     role localized_response_template
-    precondition "the native runtime answers a procedural how-to request it cannot execute offline"
-    effect "the answer describes the source-backed discovery plan for the task, its action and object"
+    precondition "the runtime could not verify enough steps to answer a procedural how-to request"
+    effect "the answer states the evidence gap and invites the user to share a guide"
     unit "not applicable"
-    example "Procedural discovery plan for make tea."
+    example "I couldn’t verify steps for “make tea”."
     grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_install_gate
     defined-by answer

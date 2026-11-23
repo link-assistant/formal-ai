@@ -436,6 +436,11 @@ handler-rules
     negation-en "no not without"
     nominal-title-actions-en "make prepare cook bake"
     ordered-section-labels ("procedure" "instructions" "steps" "method")
+    scoped-method-markers-en ("quick" "fast" "urgent" "constipat" "medic" "treat" "caring" "maintain" "prevent")
+    scoped-method-markers-ru ("быстр" "сроч" "запор" "медицин" "лечен" "забот" "профилакт")
+    scoped-method-markers-hi ("जल्द" "तुरंत" "कब्ज" "चिकित्स" "इलाज" "देखभाल" "रोकथाम")
+    scoped-method-markers-zh ("快速" "紧急" "便秘" "医疗" "治疗" "保养" "预防")
+    scoped-method-markers-es ("rápid" "urgent" "estreñ" "médic" "medic" "tratam" "cuid" "manteni" "prevenc")
     fallback-query "how to {task}"
     install-query "{target} install official documentation"
   table "procedure-nominal-title-namespaces"

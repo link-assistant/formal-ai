@@ -18,7 +18,7 @@ use crate::event_log::EventLog;
 use crate::seed::localized_response;
 use crate::trace_record;
 
-use super::{GuideConflict, HowToGuide, MIN_ACCEPTED_STEPS};
+use super::{GuideConflict, GuideStep, HowToGuide, MIN_ACCEPTED_STEPS};
 
 /// Event slugs. These name decisions in the evidence log; they are identifiers,
 /// not interface text, and are never shown to a reader.
@@ -139,6 +139,34 @@ pub fn markdown(guide: &HowToGuide) -> String {
     markdown_in(guide, DEFAULT_LANGUAGE)
 }
 
+/// Present verified instructions and citations in a conversation.
+pub(super) fn answer_markdown(guide: &HowToGuide, language: &str) -> String {
+    let heading = chrome("how_to_guide_heading", language, &[("task", &guide.task)]);
+    let primary = crate::seed::source_registry()
+        .into_iter()
+        .filter(|source| source.how_to_role == crate::seed::HowToRole::Primary)
+        .find_map(|source| {
+            let steps: Vec<_> = guide
+                .steps
+                .iter()
+                .filter(|step| step.source_id == source.id)
+                .collect();
+            (steps.len() >= MIN_ACCEPTED_STEPS).then_some(steps)
+        });
+    // A complete publisher method reads as one procedure. Other captures still
+    // inform conflict resolution and remain visible in the diagnostic guide.
+    let steps = primary.unwrap_or_else(|| guide.steps.iter().collect());
+    let instructions = steps
+        .iter()
+        .enumerate()
+        .map(|(index, step)| format!("{}. {}", index + 1, step.text))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let mut sources = vec![chrome("how_to_guide_sources_heading", language, &[])];
+    append_citations(steps, language, &mut sources);
+    [heading, instructions, sources.join("\n")].join("\n\n")
+}
+
 /// The guide as a reader sees it: numbered steps, each with the source it came
 /// from, followed by the sources consulted and the licenses their bytes carry.
 ///
@@ -226,7 +254,16 @@ fn sources_section(guide: &HowToGuide, language: &str) -> String {
             ],
         ));
     }
-    for step in &guide.steps {
+    append_citations(&guide.steps, language, &mut lines);
+    lines.join("\n")
+}
+
+fn append_citations<'a>(
+    steps: impl IntoIterator<Item = &'a GuideStep>,
+    language: &str,
+    lines: &mut Vec<String>,
+) {
+    for step in steps {
         let citation = chrome(
             "how_to_guide_citation",
             language,
@@ -241,7 +278,6 @@ fn sources_section(guide: &HowToGuide, language: &str) -> String {
             lines.push(citation);
         }
     }
-    lines.join("\n")
 }
 
 /// Look up one seeded guide phrase and substitute its named fields.

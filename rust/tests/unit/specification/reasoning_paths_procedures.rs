@@ -9,7 +9,7 @@
 #[path = "reasoning_paths_procedures/fixtures.rs"]
 mod fixtures;
 
-use fixtures::{documented_connect_procedure, documented_english_procedure};
+use fixtures::unverified_procedure;
 
 use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
@@ -122,38 +122,12 @@ fn pandas_join_method_docs_prompt_covers_supported_languages() {
 #[test]
 fn how_to_make_tea_uses_source_backed_procedure_plan() {
     let response = answer("How to make tea?");
-    assert_eq!(
-        response.answer,
-        documented_english_procedure(
-            "make tea",
-            "make",
-            "tea",
-            "Make-Tea",
-            "how to make tea",
-            None,
-        )
-    );
+    assert_eq!(response.answer, unverified_procedure("en", "make tea"));
     assert_eq!(
         response.intent, "procedural_how_to",
         "\"How to make tea?\" must use the procedural handler; answer={}",
         response.answer,
     );
-
-    let answer = response.answer.to_lowercase();
-    for expected in [
-        "make tea",
-        "wikipedia",
-        "wikidata",
-        "wikihow",
-        "web search",
-        "recursive",
-    ] {
-        assert!(
-            answer.contains(expected),
-            "procedural answer should mention {expected:?}; answer={}",
-            response.answer,
-        );
-    }
 
     for expected in [
         "procedural_how_to:request:make tea",
@@ -181,34 +155,13 @@ fn how_to_prepare_fried_potatoes_falls_back_to_web_search() {
     let response = answer("How to prepare fried potatoes?");
     assert_eq!(
         response.answer,
-        documented_english_procedure(
-            "prepare fried potatoes",
-            "prepare",
-            "fried potatoes",
-            "Prepare-Fried-Potatoes",
-            "how to prepare fried potatoes",
-            None,
-        )
+        unverified_procedure("en", "prepare fried potatoes")
     );
     assert_eq!(
         response.intent, "procedural_how_to",
         "\"How to prepare fried potatoes?\" must use the procedural handler; answer={}",
         response.answer,
     );
-
-    let answer = response.answer.to_lowercase();
-    for expected in [
-        "prepare fried potatoes",
-        "fried potatoes",
-        "fallback",
-        "fetch",
-    ] {
-        assert!(
-            answer.contains(expected),
-            "procedural answer should mention {expected:?}; answer={}",
-            response.answer,
-        );
-    }
 
     for expected in [
         "procedural_how_to:request:prepare fried potatoes",
@@ -231,29 +184,13 @@ fn telegraphic_how_order_prompt_routes_to_procedural_plan() {
     let response = answer("how order 3d print in nan chang vietnam?");
     assert_eq!(
         response.answer,
-        documented_english_procedure(
-            "order 3d print in nan chang vietnam",
-            "order",
-            "3d print in nan chang vietnam",
-            "Order-3d-Print-In-Nan-Chang-Vietnam",
-            "how to order 3d print in nan chang vietnam",
-            None,
-        )
+        unverified_procedure("en", "order 3d print in nan chang vietnam")
     );
     assert_eq!(
         response.intent, "procedural_how_to",
         "telegraphic \"how order ...\" prompt must use the procedural handler; answer={}",
         response.answer,
     );
-
-    let answer = response.answer.to_lowercase();
-    for expected in ["order 3d print", "web search", "wikihow"] {
-        assert!(
-            answer.contains(expected),
-            "procedural answer should mention {expected:?}; answer={}",
-            response.answer,
-        );
-    }
 
     for expected in [
         "procedural_how_to:request:order 3d print in nan chang vietnam",
@@ -273,34 +210,15 @@ fn telegraphic_how_order_prompt_routes_to_procedural_plan() {
 fn telegraphic_install_prompts_use_official_docs_procedure_plan() {
     for case in fixtures::INSTALL_CASES {
         let response = answer(case.prompt);
-        if case.language == "en" {
-            assert_eq!(
-                response.answer,
-                documented_english_procedure(
-                    "install cursor",
-                    "install",
-                    "cursor",
-                    "Install-Cursor",
-                    "cursor install official documentation",
-                    Some("cursor install official documentation"),
-                )
-            );
-        }
+        assert_eq!(
+            response.answer,
+            unverified_procedure(case.language, case.task_fragment)
+        );
         assert_eq!(
             response.intent, "procedural_how_to",
             "{} install prompt must use the procedural handler; answer={}",
             case.language, response.answer,
         );
-
-        let answer = response.answer.to_lowercase();
-        for expected in ["install", case.official_marker, "web search"] {
-            assert!(
-                answer.contains(expected),
-                "{} procedural install answer should mention {expected:?}; answer={}",
-                case.language,
-                response.answer,
-            );
-        }
 
         for expected in [
             &format!("language:{}", case.language),
@@ -341,14 +259,7 @@ fn procedural_request_surfaces_stay_multilingual_after_elided_gate() {
         if case.language == "en" {
             assert_eq!(
                 response.answer,
-                documented_english_procedure(
-                    "do 3d print ordering",
-                    "do",
-                    "3d print ordering",
-                    "Do-3d-Print-Ordering",
-                    "how to do 3d print ordering",
-                    None,
-                )
+                unverified_procedure("en", "do 3d print ordering")
             );
         }
         assert_eq!(
@@ -379,7 +290,6 @@ fn elided_how_connect_requests_cover_supported_languages() {
         prompt: &'static str,
         task_fragment: &'static str,
         object_fragment: &'static str,
-        candidate: &'static str,
     }
 
     for case in [
@@ -388,39 +298,30 @@ fn elided_how_connect_requests_cover_supported_languages() {
             prompt: "how connect mysql to node js",
             task_fragment: "connect mysql to node js",
             object_fragment: "mysql to node js",
-            candidate: "Connect-Mysql-To-Node-Js",
         },
         Case {
             language: "ru",
             prompt: "как подключить mysql к node js",
             task_fragment: "подключить mysql к node js",
             object_fragment: "mysql к node js",
-            candidate: "подключить-mysql-к-node-js",
         },
         Case {
             language: "hi",
             prompt: "कैसे कनेक्ट करें mysql को node js से",
             task_fragment: "कनेक्ट करें mysql को node js से",
             object_fragment: "mysql को node js से",
-            candidate: "कनेक्ट-करें-Mysql-को-Node-Js-से",
         },
         Case {
             language: "zh",
             prompt: "如何连接 mysql 到 node js",
             task_fragment: "连接 mysql 到 node js",
             object_fragment: "mysql 到 node js",
-            candidate: "连接-Mysql-到-Node-Js",
         },
     ] {
         let response = answer(case.prompt);
         assert_eq!(
             response.answer,
-            documented_connect_procedure(
-                case.language,
-                case.task_fragment,
-                case.object_fragment,
-                case.candidate,
-            )
+            unverified_procedure(case.language, case.task_fragment)
         );
         assert_eq!(
             response.intent, "procedural_how_to",
@@ -457,7 +358,7 @@ fn greeting_prefixed_russian_connect_how_to_composes_procedure() {
 
     assert_eq!(
         response.answer,
-        "Здравствуйте! Чем могу помочь?\n\nПлан поиска процедуры для `подключить mysql к node js` (действие `connect`, объект `mysql к node js`).\n\nЯ не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `подключить-mysql-к-node-js` через `https://ru.wikihow.com/api.php?action=parse&page=подключить-mysql-к-node-js&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to подключить mysql к node js` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `подключить mysql к node js`."
+        "Здравствуйте! Чем могу помочь?\n\nНе удалось найти проверенные инструкции по запросу «подключить mysql к node js». Если у вас есть ссылка на руководство, пришлите её."
     );
 
     assert_eq!(
@@ -471,9 +372,11 @@ fn greeting_prefixed_russian_connect_how_to_composes_procedure() {
         response.answer,
     );
     assert!(
-        response.answer.contains("План поиска процедуры")
+        response
+            .answer
+            .contains("Не удалось найти проверенные инструкции")
             && response.answer.contains("подключить mysql к node js"),
-        "compound answer should include the Russian procedural plan: {}",
+        "compound answer should identify the Russian task and the evidence gap: {}",
         response.answer,
     );
     assert!(
@@ -482,11 +385,10 @@ fn greeting_prefixed_russian_connect_how_to_composes_procedure() {
         response.answer,
     );
     assert!(
-        response
-            .answer
-            .contains("действие `connect`, объект `mysql к node js`"),
-        "compound answer should expose the canonical action and object: {}",
-        response.answer,
+        has_evidence(&response, "procedural_how_to:action:connect")
+            && has_evidence(&response, "procedural_how_to:object:mysql к node js"),
+        "compound evidence should include the canonical action and object: {:?}",
+        response.evidence_links,
     );
     for expected in [
         "sub_impulse:",
@@ -509,14 +411,7 @@ fn how_to_procedure_is_general_not_memoized_to_examples() {
     let response = answer("How can I calibrate a torque wrench?");
     assert_eq!(
         response.answer,
-        documented_english_procedure(
-            "calibrate a torque wrench",
-            "calibrate",
-            "a torque wrench",
-            "Calibrate-A-Torque-Wrench",
-            "how to calibrate a torque wrench",
-            None,
-        )
+        unverified_procedure("en", "calibrate a torque wrench")
     );
     assert_eq!(
         response.intent, "procedural_how_to",
@@ -553,14 +448,7 @@ fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
         if case.language == "en" {
             assert_eq!(
                 response.answer,
-                documented_english_procedure(
-                    "do spec driven development",
-                    "do",
-                    "spec driven development",
-                    "Do-Spec-Driven-Development",
-                    "how to do spec driven development",
-                    None,
-                )
+                unverified_procedure("en", "do spec driven development")
             );
         }
         assert_eq!(
@@ -569,15 +457,12 @@ fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
             case.language, response.answer,
         );
 
-        let answer = response.answer.to_lowercase();
-        for expected in ["spec driven development", "wikihow", "web search"] {
-            assert!(
-                answer.contains(expected),
-                "{} procedural answer should mention {expected:?}; answer={}",
-                case.language,
-                response.answer,
-            );
-        }
+        assert!(
+            response
+                .answer
+                .to_lowercase()
+                .contains("spec driven development")
+        );
 
         // The web-search query keeps the verb the prompt's own words carried:
         // the English action-less surface splits "do" out of the task text,

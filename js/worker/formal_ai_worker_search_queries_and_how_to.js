@@ -595,17 +595,7 @@ function proceduralSearchQuery(task) {
   return howPolicy("procedural_how_to", "install-query", { target: target || task.task }).trim();
 }
 
-// Native discovery plan over the actual parsed task and declared source route.
-function proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery, fallbackQuery, providers) {
-  const installGate = task.action === "install" ? howResponse("procedural_how_to_install_gate", language,
-    { search_query: searchQuery, fallback_query: fallbackQuery }) : "";
-  return howResponse("procedural_how_to_plan", language, {
-    task: task.task, action: task.action, object: task.object, install_gate: installGate,
-    candidate: pageTitle, api_url: apiUrl.replace(/([?&]page=)([^&]+)/u, (_, key, value) => key + decodeURIComponent(value)), search_query: searchQuery, providers, k: webSearchRrfK(),
-  });
-}
-
-// The native plan's typed request/stage records; capture diagnostics stay separate.
+// Typed request and source-routing records shared with the native solver.
 function proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, fallbackQuery, wikihowEnabled, wikihowAttempted) {
   const request = task.action === "do" && task.object ? task.object : task.task;
   const pairs = [["procedural_how_to:request", request], ["procedural_how_to:action", task.action]];
@@ -687,52 +677,6 @@ async function howToReadBoundedResponse(response, signal) {
   }
 }
 
-function howToWikiHowArticle(apiUrl) {
-  const api = new URL(apiUrl);
-  return new URL("/" + sourceWalkPercentEncode(api.searchParams.get("page") || ""), api.origin);
-}
-
-function howToSameWikiHowArticle(value, expected) {
-  try {
-    const url = new URL(value);
-    return ["http:", "https:"].includes(url.protocol) && url.host === expected.host
-      && !url.username && !url.password
-      && decodeURIComponent(url.pathname) === decodeURIComponent(expected.pathname);
-  } catch {
-    return false;
-  }
-}
-
-function howToWaybackSnapshot(text, article) {
-  const closest = JSON.parse(text)?.archived_snapshots?.closest;
-  if (!closest?.available || String(closest.status) !== "200" || !/^\d{14}$/u.test(closest.timestamp)) {
-    return null;
-  }
-  const replay = new URL(closest.url);
-  const prefix = `/web/${closest.timestamp}/`;
-  if (replay.host !== "web.archive.org" || !replay.pathname.startsWith(prefix)
-      || !howToSameWikiHowArticle(replay.pathname.slice(prefix.length), article)) return null;
-  return `https://web.archive.org/web/${closest.timestamp}id_/${article.href}`;
-}
-
-function howToWikiHowHtmlSteps(html, article, limit) {
-  const canonical = html.match(/<link\b[^>]*\brel=["']canonical["'][^>]*\bhref=["']([^"']+)["']/iu);
-  if (!canonical || !howToSameWikiHowArticle(canonical[1], article)) return [];
-  return howToWikiHowStepLists(html, limit);
-}
-
-function howToWikiHowStepLists(html, limit, allowLegacy = false) {
-  const lists = html.matchAll(/<ol(?=[\s>])([^>]*)>([\s\S]*?)<\/ol>/gu);
-  let sawList = false;
-  for (const [, attributes, items] of lists) {
-    sawList = true;
-    if (!/\bsteps_list_2\b/u.test(attributes) && !(allowLegacy && !attributes.trim())) continue;
-    const steps = howToExtractSteps(items, limit);
-    if (steps.length >= HOW_TO_MIN_ACCEPTED_STEPS) return steps;
-  }
-  return allowLegacy && !sawList ? howToExtractSteps(html, limit) : [];
-}
-
 async function howToCaptureThroughComponent(url, notes) {
   const component = self.FormalAIWebSearchComponent;
   if (!component?.fetchUrl || component.package === "unavailable") return null;
@@ -747,86 +691,6 @@ async function howToCaptureThroughComponent(url, notes) {
     notes.push(`capture_failed url=${url} reason=${error.message}`);
     return null;
   }
-}
-
-async function howToRecoverWikiHow(walked, task, language, preferences, discovered) {
-  const outcome = walked.outcomes.find((item) => item.sourceId === "wikihow");
-  if (!outcome || ["disabled", "unbound_template"].includes(outcome.status)
-      || outcome.items >= HOW_TO_MIN_ACCEPTED_STEPS || preferences?.offline === true || preferences?.allowNetwork === false
-      || outcome.pages >= walked.bounds.maxPagesPerService) return;
-
-  const record = howToSourceRegistry().find((item) => item.id === "wikihow");
-  const exact = sourceWalkEntryUrl(record, task, language);
-  if (discovered.size === 0 && outcome.pages === 0 && walked.bounds.maxPagesPerService > 1
-      && walked.bounds.maxDepth > 0 && self.FormalAIWebSearchComponent?.fetchUrl) {
-    const notes = [];
-    const api = howToSearchUrl({ api: exact }, task);
-    outcome.pages += 1;
-    const search = await howToCaptureThroughComponent(api, notes);
-    if (search) {
-      const read = howToReadCapture({ ...record, api }, task, search, 0, 0, walked.bounds, language);
-      for (const url of read.follow) {
-        const title = new URL(url).searchParams.get("page");
-        if (title) discovered.add(sourceWalkEntryUrl(record, title, language));
-      }
-      if (read.detail) notes.push(read.detail);
-    }
-    outcome.detail = [outcome.detail, ...notes].filter(Boolean).join(" | ");
-  }
-  discovered.add(exact);
-  for (const candidate of discovered) {
-    if (!candidate) continue;
-    if (outcome.pages >= walked.bounds.maxPagesPerService || outcome.items >= HOW_TO_MIN_ACCEPTED_STEPS) break;
-    await howToRecoverWikiHowArticle(walked, record, outcome, howToWikiHowArticle(candidate));
-  }
-}
-
-async function howToRecoverWikiHowArticle(walked, record, outcome, article) {
-  const notes = [];
-  const index = await sourceWalkFetchCapture(
-    `https://archive.org/wayback/available?url=${sourceWalkPercentEncode(article.href)}`, { bounded: true });
-  const candidates = [];
-  if (index.ok) {
-    try {
-      const snapshot = howToWaybackSnapshot(index.text, article);
-      if (snapshot) candidates.push(snapshot);
-      else notes.push("wayback:no_matching_snapshot");
-    } catch {
-      notes.push("wayback:invalid_availability");
-    }
-  } else {
-    notes.push(`wayback:availability_failed ${index.error}`);
-  }
-  candidates.push(article.href);
-  for (const url of candidates) {
-    if (outcome.pages >= walked.bounds.maxPagesPerService) break;
-    outcome.pages += 1;
-    let capture = url === article.href ? null : await sourceWalkFetchCapture(url, { bounded: true });
-    if (!capture?.ok) {
-      if (capture) notes.push(`wayback:replay_failed ${capture.error}`);
-      capture = await howToCaptureThroughComponent(url, notes);
-    }
-    if (!capture?.ok && url === article.href && !capture?.text) {
-      capture = await sourceWalkFetchCapture(url, { bounded: true });
-    }
-    if (!capture?.text) {
-      notes.push(`no_capture url=${url}`);
-      continue;
-    }
-    const steps = howToWikiHowHtmlSteps(capture.text, article, walked.bounds.maxItems);
-    if (steps.length < HOW_TO_MIN_ACCEPTED_STEPS) {
-      notes.push(`no_matching_steps url=${url}`);
-      continue;
-    }
-    const recovered = [];
-    howToPushSteps(record, capture, 0, steps, recovered);
-    walked.items = walked.items.filter((item) => item.sourceId !== record.id).concat(recovered);
-    outcome.status = "contributed";
-    outcome.items = recovered.length;
-    notes.push(`recovered url=${url}`);
-    break;
-  }
-  outcome.detail = [outcome.detail, ...notes].filter(Boolean).join(" | ");
 }
 
 async function tryProceduralHowTo(prompt, language, preferences = {}) {
@@ -844,7 +708,6 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const wiki = howToSourceRegistry().find((record) => record.id === "wikihow");
   const apiUrl = wiki ? (sourceWalkEntryUrl(wiki, task.task, sourceLanguage) || sourceWalkEntryUrl(wiki, task.task)) : "";
   const pageTitle = apiUrl ? new URL(apiUrl).searchParams.get("page") : "";
-  const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
   const isInstall = task.action === "install";
   const wikihowEnabled = externalServiceEnabled(preferences, "externalServiceWikihow");
   const wikiOutcome = research.guide.outcomes.find((outcome) => outcome.sourceId === "wikihow");
@@ -874,38 +737,12 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   if (accepted) {
     evidence.push(`source:${research.guide.steps[0].sourceUrl}`);
     for (const step of research.guide.steps) evidence.push(`how_to:step ${howToStepProvenance(step)}`);
-    return { intent: "procedural_how_to", content: howToGuideMarkdown(research.guide, language),
+    return { intent: "procedural_how_to", content: howToGuideMarkdown(research.guide, language, false),
       solverEvents, confidence: 0.8, evidence, guide: research.guide,
       diagnostics: indexed?.diagnostics || official?.diagnostics || null,
       query, wikihowCandidate: pageTitle, formalizedObject: `HOWTO:${task.task}` };
   }
-  const rendered = proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery, query, providerSummary);
-  const servicesEnabled = !Object.entries(preferences).some(([key, value]) =>
-    key.startsWith("externalService") && value === false);
-  let content = rendered;
-  if (!servicesEnabled) {
-    const path = `${isInstall ? "install_" : ""}${wikihowEnabled ? "wikihow" : "no_wikihow"}`;
-    const values = { task: task.task, action: task.action, object: task.object,
-      search_query: searchQuery, fallback_query: query };
-    const lines = [
-      howResponse("procedural_how_to_heading", language, values),
-      ...(isInstall ? [howResponse("procedural_how_to_live_install_gate", language, values)] : []),
-      howResponse(`procedural_how_to_source_path_${path}`, language === "ru" ? "ru" : "en"),
-      ...(isInstall ? [howResponse("procedural_how_to_official_search_miss", "en", { query: searchQuery, fallback: query })] : []),
-      wikihowEnabled
-        ? howResponse("procedural_how_to_wikihow_miss", "en", { candidate: pageTitle, error: wikiOutcome?.status || "no_steps" })
-        : howResponse("procedural_how_to_wikihow_disabled", "en"),
-      howResponse("procedural_how_to_fallback_search", "en", { query: fallbackQuery }),
-    ];
-    if (indexed && !indexed.diagnostics?.fused?.length) lines.push(indexed.content);
-    else lines.push(howResponse("procedural_how_to_fallback_search_plan", "en", { query: fallbackQuery, providers: providerSummary, k: webSearchRrfK() }));
-    content = lines.join("\n\n");
-  }
-  if (indexed?.diagnostics?.fused?.length || official?.diagnostics?.fused?.length || preferences.offline === true || preferences.allowNetwork === false) {
-    content += "\n\n" + howToGuideChrome("how_to_guide_insufficient_evidence", language, {
-      steps: research.guide.steps.length, required: HOW_TO_MIN_ACCEPTED_STEPS,
-    });
-  }
+  const content = howResponse("procedural_how_to_unverified", language, { task: task.task });
   evidence.push(...research.evidence.filter(item => item.startsWith("how_to:insufficient_evidence ")));
   return {
     intent: "procedural_how_to", content, solverEvents, confidence: 0.78, evidence,

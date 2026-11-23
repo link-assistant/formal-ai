@@ -8,6 +8,7 @@ import { specificationCases } from "../../../scripts/lib/rust-specification-case
 import { executeTypedProgram } from "../../../scripts/lib/rust-specification-programs.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 import { bookPage, bookSearch, procedureBooks, procedureBookCaptures } from "./support/procedure-publisher-captures.mjs";
+import { everydayMethodReply, wikiHowMethodsCapture } from "./support/wiki-how-method-capture.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const CACHE_DIR = path.join(REPO_ROOT, "rust/tests/fixtures/issue-991/source-cache");
@@ -58,7 +59,7 @@ const originals = [
   ["procedural_elaboration_followup_covers_supported_languages", 4, 16],
 ];
 for (const [name, macroCount, executedCount] of originals) {
-  test("unchanged native procedural assertions: " + name, async () => {
+  test("native procedural assertions replay on JavaScript: " + name, async () => {
     const native = specificationCases(REPO_ROOT).cases.find(item => item.id.endsWith("::" + name));
     assert.ok(native?.program, "the complete native body must parse");
     assert.equal(native.program.nativeAssertions, macroCount);
@@ -113,24 +114,31 @@ async function bootWorker(captures, requested) {
       if (!capture) {
         return Promise.resolve({ ok: false, status: 404, text: () => Promise.resolve("") });
       }
-      return Promise.resolve({ ok: true, status: 200, text: () => Promise.resolve(capture.body) });
+      const status = capture.status ?? 200;
+      return Promise.resolve({ ok: status === 200, status, text: () => Promise.resolve(capture.body) });
     },
   });
   await evaluate(context, "loadSeed()");
   return context;
 }
 
-test("no-source plans retain transport encoding and producer-owned typed stages", async () => {
+test("an unverified reply retains transport encoding and source-routing evidence", async () => {
   const requested = [];
   const context = await bootWorker(new Map(), requested);
   const result = plain(await evaluate(context, 'tryProceduralHowTo("как подключить redis к ruby", "ru", {})'));
   assert.equal(result.intent, "procedural_how_to");
-  assert.match(result.content, /ru\.wikihow\.com.*page=подключить-redis-к-ruby&/u);
+  assert.equal(result.content, "Не удалось найти проверенные инструкции по запросу «подключить redis к ruby». Если у вас есть ссылка на руководство, пришлите её.");
   assert.ok(requested.some(url => url.includes("page=%D0%BF")));
   assert.ok(result.solverEvents.some(event => event.kind === "procedural_how_to:request"
     && event.payload === "подключить redis к ruby"));
   assert.ok(result.solverEvents.some(event => event.kind === "web_search:fusion_planned"));
   assert.ok(!result.solverEvents.some(event => /(?:capture|source):accepted/u.test(event.kind)));
+});
+
+test("an unverified Spanish reply gives the localized evidence gap", async () => {
+  const context = await bootWorker(new Map());
+  const answer = await evaluate(context, 'tryProceduralHowTo("Cómo puedo preparar té?", "es", { offline: true })');
+  assert.equal(answer.content, "No pude verificar los pasos para «preparar té». Si tienes una guía, comparte el enlace y puedo ayudarte a seguirla.");
 });
 
 test("disabled source services keep their actual outcome and skip wikiHow requests", async () => {
@@ -152,7 +160,7 @@ test("a procedural followup requires an actual prior procedural dialogue", async
   assert.equal(await evaluate(context, 'tryProceduralHowToFollowup("tell me more", "en", [], {})'), null);
 });
 
-test("genuine captured source steps survive discovery-plan rendering", async () => {
+test("verified steps and citations reach the reply with full provenance in evidence", async () => {
   const captures = loadCaptures();
   const requested = [];
   const context = await bootWorker(captures, requested);
@@ -160,9 +168,11 @@ test("genuine captured source steps survive discovery-plan rendering", async () 
   assert.equal(result.intent, "procedural_how_to");
   assert.ok(result.guide.steps.length >= 2);
   assert.match(result.content, /Sources/u);
+  assert.doesNotMatch(result.content, /sha256|max_depth=|page\(s\)/u);
   for (const step of result.guide.steps) {
     assert.equal(captures.get(step.sourceUrl)?.sha256, step.sha256);
     assert.ok(requested.includes(step.sourceUrl));
+    assert.ok(result.evidence.some(line => line.startsWith("how_to:step ") && line.includes(step.sha256)));
   }
 });
 
@@ -190,6 +200,10 @@ const RUSSIAN_ARTICLE = `https://ru.wikihow.com/${RUSSIAN_SLUG}`;
 const RUSSIAN_API = `https://ru.wikihow.com/api.php?action=parse&page=${RUSSIAN_SLUG}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
 const wikiSearch = (task) => `https://ru.wikihow.com/api.php?action=query&list=search&srsearch=${encodeURIComponent(task)}&srlimit=5&format=json&origin=*`;
 const wikiParse = (title) => RUSSIAN_API.replace(RUSSIAN_SLUG, encodeURIComponent(title));
+const publisherSearch = (query) => `https://ru.wikihow.com/Special:LSearch?fulltext=Search&search=${encodeURIComponent(query)}`;
+const linkResult = (title, origin = "https://ru.wikihow.com") =>
+  `<a class="result_link" href="${origin}/${encodeURIComponent(title.replaceAll(" ", "-"))}">Result</a>`;
+const missingTitle = { body: JSON.stringify({ error: { code: "missingtitle" } }) };
 const searchCapture = (...titles) => ({ body: JSON.stringify({ query: { search: titles.map(title => ({ title })) } }) });
 const RUSSIAN_SHORT_TASK = "какать";
 const RUSSIAN_DISCOVERED_TITLE = "хорошо покакать";
@@ -283,7 +297,61 @@ test("the browser uses a matching archival capture for the short Russian questio
   }
 });
 
-test("publisher search discovers a held-out Russian title while preserving the requested topic", async () => {
+test("publisher search recovers the reported article when MediaWiki search returns 500", async () => {
+  const requested = [];
+  const search = publisherSearch("какать покакать");
+  const exact = wikiParse(RUSSIAN_SHORT_TASK);
+  const fullText = wikiSearch(RUSSIAN_SHORT_TASK);
+  const article = wikiParse(RUSSIAN_DISCOVERED_TITLE);
+  const body = wikiHowMethodsCapture();
+  const captures = new Map([
+    [exact, missingTitle],
+    [fullText, { status: 500, body: "" }],
+    [search, { body: linkResult("Домашние растения") + linkResult(RUSSIAN_DISCOVERED_TITLE) }],
+    [article, { body }],
+  ]);
+  const context = await bootWorker(captures, requested);
+  const run = (preferences) => answerRussian(context, preferences, "Как какать?");
+  const answer = await run({});
+  assert.deepEqual(requested.filter(url => new URL(url).hostname === "ru.wikihow.com"), [exact, fullText, search, article]);
+  assert.equal(answer.content, everydayMethodReply(article));
+  assert.ok(answer.guide.steps.every(step => step.sourceUrl === article && step.depth === 2
+    && step.sha256 === createHash("sha256").update(body).digest("hex")));
+  const count = requested.length;
+  const offline = await run({ offline: true });
+  assert.equal(offline.content, answer.content);
+  assert.ok(offline.guide.steps.every(step => step.cached));
+  const disabled = await run({ offline: true, externalServiceWikihow: false });
+  assert.equal(disabled.guide, undefined);
+  assert.equal(requested.length, count);
+});
+
+test("publisher recovery works through the capture component when a browser cannot read the site", async () => {
+  const context = await bootWorker(new Map());
+  const search = publisherSearch("какать покакать");
+  const article = wikiParse(RUSSIAN_DISCOVERED_TITLE);
+  const captures = { [search]: linkResult(RUSSIAN_DISCOVERED_TITLE), [article]: wikiHowMethodsCapture() };
+  evaluate(context, `self.FormalAIWebSearchComponent = { fetchUrl: async url => {
+    const body = ${JSON.stringify(captures)}[url];
+    return body ? { ok: true, text: async () => body } : { ok: false, status: 404 };
+  } }`);
+  const answer = await answerRussian(context, {}, "Как какать?");
+  assert.match(answer.content, /1\. Не откладывайте[^\n]+\n2\. Сядьте/u);
+  const offline = await answerRussian(context, { offline: true }, "Как какать?");
+  assert.equal(offline.content, answer.content);
+  assert.ok(offline.guide.steps.every(step => step.cached));
+});
+
+test("an explicit scope selects its method over the everyday one", async () => {
+  const task = "какать быстро";
+  const url = wikiParse(task.replaceAll(" ", "-"));
+  const context = await bootWorker(new Map([[url, { body: wikiHowMethodsCapture(task) }]]));
+  const answer = await answerRussian(context, {}, "Как какать быстро?");
+  assert.match(answer.content, /1\. Сначала выберите[^\n]+\n2\. Уточните/u);
+  assert.doesNotMatch(answer.content, /Не откладывайте/u);
+});
+
+test("publisher search discovers a held-out title and rejects foreign, negated and off-topic suggestions", async () => {
   const task = "читать вслух";
   const title = "Как почитать вслух с друзьями";
   const irrelevant = "Как читать по диагонали";
@@ -291,14 +359,19 @@ test("publisher search discovers a held-out Russian title while preserving the r
   const requested = [];
   const steps = "<ol class=\"steps_list_2\"><li>Выберите короткий текст и сначала прочтите его про себя.</li><li>Теперь прочтите текст группе, делая паузы между предложениями.</li></ol>";
   const captures = new Map([
-    [wikiSearch(task), searchCapture(irrelevant, negated, title)],
+    [wikiParse(task.replaceAll(" ", "-")), missingTitle],
+    [wikiSearch(task), { status: 500, body: "" }],
+    [publisherSearch(task + " почитать"), { body: linkResult(irrelevant) + linkResult(negated)
+      + linkResult("Как почитать вслух на сцене", "https://foreign.invalid") + linkResult(title) }],
     [wikiParse(title), { body: JSON.stringify({ parse: { title, text: { "*": steps } } }) }],
   ]);
   const answer = await answerRussian(await bootWorker(captures, requested), {}, "Как читать вслух?");
   assert.equal(answer.guide.task, task);
   assert.match(answer.content, /1\. Выберите короткий текст/u);
   assert.ok(answer.guide.steps.every(step => step.sourceUrl === wikiParse(title)));
-  for (const value of [irrelevant, negated]) assert.ok(!requested.includes(wikiParse(value)));
+  for (const value of [irrelevant, negated, "Как почитать вслух на сцене"]) {
+    assert.ok(!requested.includes(wikiParse(value)));
+  }
 });
 
 test("a mismatched parse or archive cannot become numbered instructions", async () => {

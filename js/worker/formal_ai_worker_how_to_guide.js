@@ -543,12 +543,9 @@ function howToReadCapture(record, task, capture, depth, produced, bounds, langua
   if (payload.kind === "parse") {
     if (produced > 0) return { items, follow, detail };
     const relevant = isWiki && titleMatches(payload.title);
-    const localized = isWikiHow && new URL(capture.url).hostname !== "www.wikihow.com";
     const labels = crateModule("crate/seed.mjs").splitPipeList(handlerRulesPolicy("procedural_how_to", "ordered-section-labels") || "");
-    const found = !relevant ? [] : localized
-      ? howToWikiHowStepLists(payload.html, bounds.maxItems, true)
-      : isWikiHow ? howToExtractSteps(payload.html, bounds.maxItems)
-        : howToOrderedProcedureSteps(payload.html, labels, nominalMatch(payload.title), bounds.maxItems);
+    const found = !relevant ? [] : isWikiHow ? howToWikiHowStepLists(payload.html, task, language, bounds.maxItems)
+      : howToOrderedProcedureSteps(payload.html, labels, nominalMatch(payload.title), bounds.maxItems);
     if (!relevant) detail = `no_relevant_result url=${capture.url}`;
     if (found.length === 0 && depth < bounds.maxDepth) {
       for (const title of howToWikiLinkTitles(payload.html, bounds.maxPagesPerService)) {
@@ -609,8 +606,7 @@ async function synthesizeHowToGuide(task, preferences, bounds, now, language = "
     now: at,
     online: preferences?.offline !== true && preferences?.allowNetwork !== false,
     bounded: true,
-    accessibilityKey: (record, url) => record.id === "wikihow" && new URL(url).hostname !== "www.wikihow.com"
-      ? `${record.id}@${new URL(url).hostname}` : record.id,
+    accessibilityKey: howToAccessibilityKey,
     emptyStatus: "no_steps",
     fallbackEntryUrl: (record, url) => howToMediaWikiApi(record.api) && limits.maxDepth > 0
       ? howToSearchUrl({ api: url }, subject) : null,
@@ -625,7 +621,7 @@ async function synthesizeHowToGuide(task, preferences, bounds, now, language = "
       return read;
     },
   });
-  await howToRecoverWikiHow(walked, subject, language, preferences, wikiCandidates);
+  await howToRecoverWikiHow(walked, subject, language, preferences, wikiCandidates, at);
   const guide = {
     task: subject,
     steps: [],
@@ -682,30 +678,31 @@ function howToGuideChrome(intent, language, values) {
   return rendered;
 }
 
-/**
- * The guide as a reader sees it: numbered steps with the source of each.
- *
- * Every fragment of prose is looked up from `data/seed/multilingual-responses-procedure.lino`,
- * exactly as `src/how_to_guide/render.rs` looks it up, so the two runtimes cannot drift apart on
- * wording and a seeded language renders that evidence rather than a translation of it.
- */
-function howToGuideMarkdown(guide, language) {
+/** Render the conversational or diagnostic guide using the same seeded wording as Rust. */
+function howToGuideMarkdown(guide, language, diagnostics = true) {
   const say = (intent, values) => howToGuideChrome(intent, language, values || {});
+  const heading = say("how_to_guide_heading", { task: guide.task });
+  const primary = diagnostics ? null : howToSourceRegistry().filter(record => record.howToRole === "primary")
+    .map(record => guide.steps.filter(step => step.sourceId === record.id))
+    .find(steps => steps.length >= HOW_TO_MIN_ACCEPTED_STEPS);
+  const steps = primary || guide.steps;
+  const citations = new Set(steps.map(step => say("how_to_guide_citation", {
+    source: step.sourceId, url: step.sourceUrl, license: step.licenseName, license_url: step.licenseUrl,
+  })));
+  const sources = [say("how_to_guide_sources_heading")];
+  if (!diagnostics) return [heading, steps.map((step, index) => `${index + 1}. ${step.text}`).join("\n"),
+    [...sources, ...citations].join("\n")].join("\n\n");
   const renderStep = (step, index) =>
     say("how_to_guide_step", { rank: index + 1, text: step.text, source: step.sourceName, license: step.licenseName, digest: step.sha256.slice(0, HOW_TO_DIGEST_PREFIX) });
-  const sections = [say("how_to_guide_heading", { task: guide.task })];
+  const sections = [heading];
   sections.push(
     howToGuideIsSufficient(guide)
       ? guide.steps.map(renderStep).join("\n")
       : say("how_to_guide_insufficient_evidence", { steps: guide.steps.length, required: HOW_TO_MIN_ACCEPTED_STEPS }),
   );
-  const sources = [say("how_to_guide_sources_heading")];
   for (const { sourceId: source, status, pages, steps, detail } of guide.outcomes)
     sources.push(say("how_to_guide_source_outcome", { source, status, pages, steps, detail }));
-  for (const step of guide.steps) {
-    const citation = say("how_to_guide_citation", { source: step.sourceId, url: step.sourceUrl, license: step.licenseName, license_url: step.licenseUrl });
-    if (!sources.includes(citation)) sources.push(citation);
-  }
+  sources.push(...citations);
   sections.push(sources.join("\n"));
   if (guide.conflicts.length > 0) {
     const conflicts = guide.conflicts.map((conflict) =>
@@ -718,7 +715,7 @@ function howToGuideMarkdown(guide, language) {
   return sections.join("\n\n");
 }
 
-/** Prepare guide evidence even when the caller needs to render a discovery plan. */
+/** Prepare guide evidence even when there are too few steps to answer. */
 async function researchProceduralHowTo(task, preferences, sourceLanguage, responseLanguage) {
   const guide = await synthesizeHowToGuide(task.task, preferences, undefined, undefined, sourceLanguage);
   const evidence = ["procedural_how_to:stage:multi_source_synthesis", ...howToGuideEvidence(guide)];
@@ -728,7 +725,7 @@ async function researchProceduralHowTo(task, preferences, sourceLanguage, respon
     if (!evidence.includes(source)) evidence.push(source);
   }
   return { evidence, answer: {
-    intent: "procedural_how_to", content: howToGuideMarkdown(guide, responseLanguage),
+    intent: "procedural_how_to", content: howToGuideMarkdown(guide, responseLanguage, false),
     confidence: 0.9, evidence, diagnostics: "",
     query: proceduralFallbackQuery(task.task), guide, formalizedObject: `HOWTO:${task.task}`,
   }, guide };

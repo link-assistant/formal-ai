@@ -10,6 +10,7 @@ import { startServer } from "../../../js/server/main.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 import { indexedProcedure, indexedProcedureBody, unrelatedProcedure } from "./support/indexed-procedure-capture.mjs";
 import { procedureBooks, procedureBookCaptures } from "./support/procedure-publisher-captures.mjs";
+import { everydayMethodReply, wikiHowMethodsCapture } from "./support/wiki-how-method-capture.mjs";
 
 import { recurrenceCases, recurrenceNativeCaptures } from "./support/recurrence-publisher-captures.mjs";
 
@@ -24,6 +25,10 @@ const RUSSIAN_API = parseUrl(RUSSIAN_SLUG);
 const searchUrl = task => `${WIKIHOW_API}?action=query&list=search&srsearch=${encodeURIComponent(task)}&srlimit=5&format=json&origin=*`;
 const sourceResults = (...titles) => JSON.stringify({ query: { search: titles.map(title => ({ title })) } });
 const SHORT_SEARCH = searchUrl("какать");
+const SHORT_PARSE = parseUrl(encodeURIComponent("какать"));
+const PUBLISHER_SEARCH = `https://ru.wikihow.com/Special:LSearch?fulltext=Search&search=${encodeURIComponent("какать покакать")}`;
+const MISSING_TITLE = JSON.stringify({ error: { code: "missingtitle" } });
+const PUBLISHER_RESULTS = `<a class="result_link" href="https://ru.wikihow.com/${RUSSIAN_SLUG}">хорошо покакать</a>`;
 const DISCOVERED_API = parseUrl(encodeURIComponent("хорошо покакать"));
 const RUSSIAN_CAPTURE = readFileSync(new URL("../fixtures/issue-1396/wiki-how-ru.json", import.meta.url), "utf8");
 const NHS_SOURCE = "https://www.nhs.uk/conditions/constipation/";
@@ -165,19 +170,23 @@ test("native offline chat reads ranked publisher pages before giving procedural 
   const content = (await response.json()).choices[0].message.content;
   assert.match(content.match(/^1\. (.+)$/mu)?.[1] ?? "", indexedProcedure.firstStep);
   assert.match(content, indexedProcedure.finalAction);
-  const [instructions, sourceTrace] = content.split("\n### Sources\n", 2);
-  assert.ok(instructions.includes(indexedProcedure.sha256.slice(0, 12)), instructions);
-  assert.ok(sourceTrace?.includes(`web_page — contributed (1 page(s), 11 step(s)): ${indexedProcedure.page}`), content);
-  assert.ok(sourceTrace?.includes(`web_page — no_steps (1 page(s), 0 step(s)): ${unrelatedProcedure.page}`), content);
+  assert.ok(content.includes(indexedProcedure.page), content);
+  assert.ok(!content.includes(unrelatedProcedure.page), content);
+  assert.doesNotMatch(content, /sha256|max_depth=|page\(s\)/u);
 });
 
-async function startNativeProcedureReplay(t, { agentMode = false, lifetime = NATIVE_CASE.timeout } = {}) {
+async function startNativeProcedureReplay(t, { agentMode = false, publisherSearch = false, lifetime = NATIVE_CASE.timeout } = {}) {
   const cache = temporaryHome(t);
   mkdirSync(path.join(cache, "source-cache", "objects"), { recursive: true });
   storeCapture(cache, RUSSIAN_API, RUSSIAN_CAPTURE);
   storeCapture(cache, NHS_SOURCE, NHS_CAPTURE);
-  storeCapture(cache, SHORT_SEARCH, sourceResults("Домашние растения", "хорошо покакать"));
-  storeCapture(cache, DISCOVERED_API, RUSSIAN_CAPTURE);
+  if (publisherSearch) {
+    storeCapture(cache, SHORT_PARSE, MISSING_TITLE);
+    storeCapture(cache, PUBLISHER_SEARCH, PUBLISHER_RESULTS);
+  } else {
+    storeCapture(cache, SHORT_SEARCH, sourceResults("Домашние растения", "хорошо покакать"));
+  }
+  storeCapture(cache, DISCOVERED_API, publisherSearch ? wikiHowMethodsCapture() : RUSSIAN_CAPTURE);
   const run = await startCli(t, {
     binary: NATIVE_CLI,
     args: agentMode ? ["--agent-mode"] : [],
@@ -211,12 +220,48 @@ test("native localized procedure and follow-up use matching captures over HTTP",
   await askChatProcedure(url, [request, { role: "assistant", content: first }, { role: "user", content: "Дай точные шаги" }]);
 });
 
-test("native chat uses the localized source for the short Russian prompt", NATIVE_CASE, async (t) => {
-  const { url } = await startNativeProcedureReplay(t, { agentMode: true });
-  const content = await askChatProcedure(url, [{ role: "user", content: CODEX_REQUEST }], {
-    source: DISCOVERED_API, tools: WEB_SEARCH_TOOLS,
+async function assertGreetingProcedureStream(url, signal) {
+  const ask = (messages, stream) => fetch(`${url}/v1/chat/completions`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    signal,
+    body: JSON.stringify({ model: "formal-ai", messages, stream, tools: WEB_SEARCH_TOOLS }),
   });
-  assert.match(content, /## Как какать/u);
+  const hello = { role: "user", content: "привет" };
+  const first = await ask([hello], false);
+  assert.ok(first.ok, await first.clone().text());
+  const greeting = (await first.json()).choices[0].message;
+  assert.equal(greeting.content, "Здравствуйте! Чем могу помочь?");
+  const response = await ask([hello, { role: "assistant", content: greeting.content },
+    { role: "user", content: CODEX_REQUEST }], true);
+  assert.ok(response.ok, await response.clone().text());
+  const frames = (await response.text()).split(/\r?\n/u)
+    .filter(line => line.startsWith("data: ")).map(line => line.slice(6));
+  assert.equal(frames.pop(), "[DONE]");
+  const deltas = frames.flatMap(frame => JSON.parse(frame).choices.map(choice => choice.delta));
+  assert.ok(!deltas.some(delta => delta.tool_calls?.length), "the reply should not request a client tool");
+  const content = deltas.map(delta => delta.content || "").join("");
+  assert.equal(content, everydayMethodReply(DISCOVERED_API));
+}
+
+test("native streaming chat recovers the Russian guide after a greeting with only publisher search captured", NATIVE_CASE, async (t) => {
+  const { url } = await startNativeProcedureReplay(t, { agentMode: true, publisherSearch: true });
+  await assertGreetingProcedureStream(url, t.signal);
+});
+
+test("native wikiHow extraction uses the method requested by the user", NATIVE_CASE, async (t) => {
+  const { cache, url } = await startNativeProcedureReplay(t);
+  const task = "какать быстро";
+  const source = parseUrl(encodeURIComponent(task.replaceAll(" ", "-")));
+  storeCapture(cache, source, wikiHowMethodsCapture(task));
+  const response = await fetch(`${url}/v1/chat/completions`, {
+    method: "POST", signal: t.signal, headers: { "content-type": "application/json" },
+    body: JSON.stringify({ model: "formal-ai", messages: [{ role: "user", content: `Как ${task}?` }] }),
+  });
+  assert.ok(response.ok, await response.clone().text());
+  const content = (await response.json()).choices[0].message.content;
+  assert.match(content, /1\. Сначала выберите[^\n]+\n2\. Уточните/u);
+  assert.doesNotMatch(content, /Не откладывайте/u);
 });
 
 test("native chat recovers a matching article after discarding an unrelated one", NATIVE_CASE, async (t) => {
@@ -463,12 +508,10 @@ test("JavaScript Responses uses procedural sources with the client web search to
   const dir = temporaryHome(t);
   const networkFetch = async (url) => {
     if (String(url) === NHS_SOURCE) return new Response(NHS_CAPTURE);
-    if (String(url) === SHORT_SEARCH) {
-      return Response.json(JSON.parse(sourceResults("Домашние растения", "хорошо покакать")));
-    }
-    if (String(url) === DISCOVERED_API) {
-      return Response.json(JSON.parse(RUSSIAN_CAPTURE));
-    }
+    if (String(url) === SHORT_PARSE) return new Response(MISSING_TITLE);
+    if (String(url) === SHORT_SEARCH) return new Response(null, { status: 500 });
+    if (String(url) === PUBLISHER_SEARCH) return new Response(PUBLISHER_RESULTS);
+    if (String(url) === DISCOVERED_API) return new Response(wikiHowMethodsCapture());
     return new Response(null, { status: 404 });
   };
   const { server, url } = await startServer({
@@ -482,6 +525,7 @@ test("JavaScript Responses uses procedural sources with the client web search to
   });
   t.after(() => new Promise(resolve => server.close(resolve)));
   await assertProceduralAgentRouting(url);
+  await assertGreetingProcedureStream(url, t.signal);
 });
 
 const REPORT_TOOLS = [
