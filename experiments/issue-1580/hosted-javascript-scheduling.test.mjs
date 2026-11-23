@@ -1,9 +1,12 @@
 // Replay retained hosted costs without executing the functional suite.
 import test from 'node:test';
 import YAML from 'yaml';
+import {spawnSync} from 'node:child_process';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
-import {readFileSync, readdirSync} from 'node:fs';
+import {mkdtempSync, readFileSync, readdirSync, rmSync} from 'node:fs';
 import {durationLookup, partitionProblems, planShards} from '../../scripts/lib/ci-speed-shards.mjs';
 import {parseTestDurations} from '../../scripts/lib/ci-speed-durations.mjs';
 
@@ -316,16 +319,22 @@ test('complete e462 costs preserve both runtime warnings and fit the unchanged f
   const defaultSeconds = Number(recorded.match(/^ {2}default-seconds (\S+)$/mu)[1]);
   assert(defaultSeconds >= Number(priorText.match(/^ {2}default-seconds (\S+)$/mu)[1]));
   assert.equal(identity.schedulingFactor, 1.65);
-  for (const row of observations)
-    assert((weights.get(row.file) ?? defaultSeconds) >= Math.ceil(row.seconds * identity.schedulingFactor * 10) / 10,
-      'observed scheduling reserve ' + row.file);
+  // The immutable identity records the rejected uniform 65% proposal.
+  // Only owner-specific allowances are deployed; all prior floors remain.
+  const policy = JSON.parse(readFileSync(new URL('./fixtures/javascript-owner-reserve-policy.json', import.meta.url), 'utf8'));
+  assert.equal(policy.sourceRun, identity.run);
+  assert.equal(policy.allowanceFactor, 0.32);
+  assert(Object.values(policy.constraints).every(Boolean));
   const dialogueOwners = ['cnl-solver-dialogue', 'cnl-solver-dialogue-b', 'cnl-solver-dialogue-c']
     .map(name => 'rust/tests/web/' + name + '.test.mjs');
-  const aggregate = observations.filter(row => dialogueOwners.includes(row.file))
-    .reduce((sum, row) => sum + row.seconds, 0);
-  for (const file of dialogueOwners)
-    assert(weights.get(file) >= Math.ceil(aggregate * identity.schedulingFactor * 10) / 10,
-      'retained split-owner family reserve ' + file);
+  assert.deepEqual(policy.scope, dialogueOwners);
+  const prior = parseTestDurations(priorText);
+  for (const row of observations.filter(row => dialogueOwners.includes(row.file)))
+    assert.equal(weights.get(row.file), Math.ceil((prior.get(row.file) + row.seconds * policy.allowanceFactor) * 10) / 10,
+      'owner allowance over unchanged family floor ' + row.file);
+  for (const [file, seconds] of prior)
+    if (!dialogueOwners.includes(file)) assert.equal(weights.get(file), seconds, 'unchanged historical cost ' + file);
+  assert.equal(weights.size, prior.size, 'no unrelated cost imports');
   const files = readdirSync(new URL('../../rust/tests/web/', import.meta.url)).filter(file => file.endsWith('.test.mjs'))
     .map(file => 'rust/tests/web/' + file);
   const {shards} = planShards(files, deployedShardCount,
@@ -338,5 +347,29 @@ test('complete e462 costs preserve both runtime warnings and fit the unchanged f
     for (const file of shard) workers[workers.indexOf(Math.min(...workers))] += costs(file);
     assert(Math.max(...workers) + identity.runnerOverheadAllowanceSeconds <= identity.warningSeconds,
       'e462 measured shard plus runner overhead ' + (index + 1) + ': ' + Math.max(...workers));
+  }
+});
+
+test('the finite owner probe reproduces the deployed policy under every existing scheduling contract', {timeout: 15000}, () => {
+  const directory = mkdtempSync(join(tmpdir(), 'issue-1580-owner-policy-'));
+  try {
+    const result = spawnSync(process.execPath,
+      ['--max-old-space-size=128', 'experiments/issue-1580/probe-hosted-javascript-reserve.mjs', directory],
+      {encoding: 'utf8', timeout: 10000, maxBuffer: 128 * 1024});
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(readFileSync(join(directory, 'proposed-scheduling-floor.lino'), 'utf8'),
+      readFileSync(new URL('../../data/meta/javascript-test-durations.lino', import.meta.url), 'utf8'));
+    assert.equal(readFileSync(join(directory, 'selected-reserve-policy.json'), 'utf8'),
+      readFileSync(new URL('./fixtures/javascript-owner-reserve-policy.json', import.meta.url), 'utf8'));
+    const report = JSON.parse(readFileSync(join(directory, 'reserve-probe.json'), 'utf8'));
+    assert.equal(report.candidates.length, 66);
+    const selected = report.candidates.find(row => row.factor === report.selectedFactor);
+    assert(Object.values(selected.constraints).every(Boolean));
+    assert.equal(report.selectedFactor, Math.max(...report.candidates.filter(row => row.fits).map(row => row.factor)));
+    assert(report.candidates.some(row => !row.constraints.originalQueueBudget), 'retain rejected over-budget candidates');
+    assert(report.candidates.some(row => !row.constraints.retainedCohorts), 'retain rejected runtime candidates');
+  } finally {
+    rmSync(directory, {recursive: true, force: true});
   }
 });

@@ -5,15 +5,22 @@ import {execFileSync} from 'node:child_process';
 import {readFileSync, mkdirSync, writeFileSync, copyFileSync} from 'node:fs';
 import {join} from 'node:path';
 
-const [input, output] = process.argv.slice(2);
+const [input, output, mode] = process.argv.slice(2);
+assert(mode === undefined || mode === '--retain-partial');
+const retainPartial = mode === '--retain-partial';
 assert(input && output, 'provide the retained log directory and a new fixture directory');
 const read = name => readFileSync(join(input, name), 'utf8');
 const run = JSON.parse(read('run.json'));
 const jobs = JSON.parse(read('jobs.json')).flatMap(page => page.jobs)
   .filter(job => /^js tier .*suite group [0-9]+[)]$/.test(job.name));
 assert.equal(jobs.length, 9);
-assert(jobs.every(job => job.conclusion === 'success'));
-assert.equal(run.conclusion, 'success');
+if (retainPartial) {
+  assert.equal(run.conclusion, 'failure');
+  assert(jobs.every(job => ['success', 'failure'].includes(job.conclusion)));
+} else {
+  assert(jobs.every(job => job.conclusion === 'success'));
+  assert.equal(run.conclusion, 'success');
+}
 const raw = read('complete-layered.log');
 const rows = [];
 const queued = new Map(jobs.map(job => [job.name, []]));
@@ -53,7 +60,11 @@ for (const job of jobs) {
 }
 const sourceFiles = execFileSync('git', ['ls-tree', '-r', '--name-only', run.head_sha, 'rust/tests/web/'],
   {encoding: 'utf8'}).trim().split('\n').filter(file => /^rust\/tests\/web\/[^/]+[.]test[.]mjs$/.test(file));
-assert.deepEqual(rows.map(row => row.file).sort(), sourceFiles.sort());
+const observedFiles = new Set(rows.map(row => row.file));
+assert(rows.every(row => sourceFiles.includes(row.file)));
+const unobservedFiles = sourceFiles.filter(file => !observedFiles.has(file)).sort();
+if (retainPartial) assert(unobservedFiles.length > 0, 'partial capture must retain its missing coverage');
+else assert.deepEqual(rows.map(row => row.file).sort(), sourceFiles.sort());
 const digest = text => createHash('sha256').update(text).digest('hex');
 const durations = rows.map(row => JSON.stringify(row)).join('\n') + '\n';
 const prior = execFileSync('git', ['show', run.head_sha + ':data/meta/javascript-test-durations.lino'], {encoding: 'utf8'});
@@ -66,6 +77,11 @@ const identity = {
   jobs: jobs.map(job => ({job: job.name, id: job.id, conclusion: job.conclusion})),
   executionProof: false, autonomousAuthorshipCredit: 0
 };
+if (retainPartial) Object.assign(identity, {
+  cohortComplete: false,
+  unobservedFiles,
+  coverageBoundary: 'Full-suite jobs stopped by focused-test failures are unobserved, never treated as completed.',
+});
 mkdirSync(output);
 writeFileSync(join(output, 'durations.jsonl'), durations);
 writeFileSync(join(output, 'identity.json'), JSON.stringify(identity, null, 2) + '\n');
