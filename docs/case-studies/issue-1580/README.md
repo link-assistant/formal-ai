@@ -4,20 +4,24 @@ Work in progress in [PR #1581](https://github.com/link-assistant/formal-ai/pull/
 
 ## Current checkpoint
 
-The [terminal 0b74 collection](terminal-0b74-ci.md) records all 33 outcomes:
-31 successes, one scanner-control failure and one explicit skip. Its complete
-repair batch is published as 7ec084a7f. The [actual Node 22 qualification](secretlint-node22-actual-7ec0.md)
-verifies all seven scanner controls, including semantic lockfile mismatch
-refusal before installation. The remaining current-head workflows are still
-being collected. Broader practice adoption and original acceptance criteria
-remain unfinished. Earlier dated checkpoints retain their original scope.
+The [terminal 7ec0 collection](terminal-7ec0-ci.md) records all 33 outcomes:
+32 successes and one explicit skip, with complete available logs retained.
+The [actual Node 22 qualification](secretlint-node22-actual-7ec0.md) verifies
+all seven scanner controls. Five actual warnings remain, including a
+281-second dialogue file now split into disjoint language owners in the
+[local repair](cnl-dialogue-headroom.md). New hosted timings remain pending.
+Broader practice adoption and original acceptance criteria stay unfinished.
+Earlier dated checkpoints retain their original scope.
 
 The [independent native consumer repair](native-consumer-fanout.md) removes a
 two-job workflow throttle; its focused checks pass locally, with new hosted
 scheduling still pending. Complete reading of the 218 root-level Markdown files
 finds one duplicated evidence paragraph, now removed. The
 [review receipt](../../../experiments/issue-1580/evidence/checks/root-case-study-review-20261123/manifest.json)
-binds this subset; nested reports and the full pull-request review remain open.
+binds this subset. The [nested Markdown review](nested-markdown-review-20261123.md)
+reads all four additional reports; the full pull-request review remains open.
+The [fixture startup repair](fixture-shell-startup.md) isolates host shell
+startup and passes the complete 432-case maintained observation entry.
 
 ## Reproduction and evidence
 

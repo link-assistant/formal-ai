@@ -1,3 +1,19 @@
+## Active checkpoint: terminal 7ec0 and complete local repair batch (2026-11-23)
+
+The unchanged objective is every requirement of issue #1580 in
+[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581). The PR remains
+draft and unmerged; no original acceptance criterion is waived.
+
+- [x] Preserve all 33 terminal workflows on 7ec084a7f: 32 succeed and one explicitly skips.
+- [x] Verify the exact hosted scanner, malformed-path and link boundary controls; retain separate original dependency, identity and production-delivery limits.
+- [x] Preserve the native fan-out repair and scoped root documentation review in local commits.
+- [x] Execute every real dialogue case across three maintained owners: seven passes, with unchanged original assertions and controls.
+- [x] Reproduce and repair the stale eight-shard historical model, duplicate scheduling metadata and actual ShellCheck SC2097/SC2098; all 18 installer behavior controls pass.
+- [x] Verify all 432 maintained observations, the complete JavaScript gate replay (89 pass, 54 explicit CI/Rust skips) and ten affected gates; seal all original failures and complete outputs.
+- [ ] Commit and publish the whole idle-branch batch once, then qualify its exact source and child runtimes in hosted CI.
+- [ ] Finish aggregate review, applicable template practices, original family/full-suite budgets, strict style, dependency migrations, live production delivery, serving identity, trusted epochs, CodeQL semantic context and every remaining original requirement.
+- [ ] Independently satisfy the authorship and reasoning floors; supplied commands and edits continue to earn zero credit. The native goal remains usage-limited.
+
 ## Active checkpoint: green baseline and local repair qualification (2026-11-23)
 
 The objective remains full implementation and verification of every requirement
@@ -1340,3 +1356,38 @@ Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally 
 - [x] Preserve the complete original job stream, exact passing lines, tested merge-tree proof and six unchanged source identities.
 - [x] Reconcile practice row 21 while retaining live external availability, broader practice adoption and the complete issue as unfinished.
 - [ ] Await the current cohort and complete every remaining original criterion; keep PR #1581 draft and unmerged.
+
+## Controlled dialogue runtime warning, 2026-11-23
+
+- [x] Preserve the complete terminal 7ec0 cohort and identify the actual 270-second warning in a passing JavaScript shard.
+- [x] Trace 281.117672089 seconds to one five-language file; reproduce its unbounded ownership before changing the source.
+- [x] Draft three disjoint maintained owners and verify exact conservation of the original language body and both base controls.
+- [x] Run all three real solver owners sequentially, the ownership and scheduling regressions, and the complete JavaScript gate set for shared duration data.
+- [ ] Seal every original failure and verification output; push the complete idle-branch batch once and verify exact hosted child durations.
+- [ ] Complete every remaining original criterion; keep PR #1581 draft and unmerged.
+
+## Terminal 7ec0 cohort and log recovery, 2026-11-23
+
+- [x] Wait for all 33 workflows: 32 successes and one explicit skip, with no failed workflow.
+- [x] Preserve 32 complete CLI streams and recover the pipeline's complete available ZIP after HTTP 503; CRC-check every member and map all 22 executed jobs.
+- [x] Reconcile 441 native group passes, 294 admission passes and 50 registry passes without crediting skipped main-only paths.
+- [x] Classify all 2112 diagnostic candidates; retain all five actual warnings and the exact original line contexts.
+- [x] Seal the complete collection, failed recovery attempts, fresh feedback and pre-push review limitations; no full line-by-line log review is claimed.
+- [ ] Complete local dialogue repair verification, publish the combined idle-branch batch and verify its exact hosted source.
+- [ ] Finish every original unmet criterion; retain the draft and leave the issue unfinished.
+
+## Node-launched fixture shell startup, 2026-11-23
+
+- [x] Preserve the complete 419-pass/10-failure maintained run and exact failing contexts.
+- [x] Isolate Node-to-Python-to-Bash startup with finite inputs and unchanged memory/stack limits; retain four controlled startup comparisons.
+- [x] Reproduce both lifetime failures and the planner failure with a hostile temporary remote-shell startup; preserve the passing diagnostic/continuation controls.
+- [x] Draft shell isolation and missing-PID diagnostics without raising any deadline or assertion threshold.
+- [x] Verify all affected focused files and all 432 maintained cases; preserve the original failures and complete final gate outputs.
+- [ ] Publish the complete idle-branch batch once and qualify exact-source hosted execution; finish every original issue requirement.
+
+## Nested case-study Markdown review, 2026-11-23
+
+- [x] Read all four nested Markdown reports completely: 305 source lines; retain exact original bytes and complete numbered reads.
+- [x] Verify every relative Markdown filesystem target while leaving fragment anchors and external availability uncredited.
+- [x] Preserve the dated partial/source/runtime distinctions and seal this four-file subset without claiming full aggregate evidence review.
+- [ ] Complete all remaining aggregate review, applicable practices and original acceptance criteria.
