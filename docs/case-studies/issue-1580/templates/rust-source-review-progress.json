@@ -6597,6 +6597,15 @@
         "allApplicablePracticeVerified": false,
         "actualPublicationVerified": false,
         "independentAuthorshipCredit": 0
+      },
+      "latestLocalCredentialRepair": {
+        "sourceBase": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+        "evidence": "experiments/issue-1580/evidence/checks/publish-credential-repair-20261123/manifest.json",
+        "assessment": "Selected CLI/native/legacy tokens now reach Cargo through CARGO_REGISTRY_TOKEN; empty CLI overrides fall back and a missing explicit token no longer emits a premature warning before Cargo credential-provider handling. The complete release-registry harness is admitted to native CI. One focused JavaScript contract fails before and passes after; all 66 contracts and eleven affected gates pass locally. Five native process regressions are drafted but have not executed. Real Cargo credential-provider behavior, sparse-first parity, rate-limit deferral, dependent-job ownership and publication authority remain unfinished.",
+        "nativeBehaviorVerified": false,
+        "realCredentialProviderVerified": false,
+        "allApplicablePracticeVerified": false,
+        "independentAuthorshipCredit": 0
       }
     },
     {

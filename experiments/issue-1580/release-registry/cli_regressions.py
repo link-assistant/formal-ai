@@ -16,12 +16,13 @@ import sys
 
 sys.dont_write_bytecode = True
 from release_process_regressions import ReleaseProcessRegressions, add_release_process_controls
+from publish_process_regressions import PublishProcessRegressions, add_publish_process_controls
 
 ROOT = Path(__file__).resolve().parents[3]
 HARNESS = Path(__file__).resolve().parent
 
 
-class RegistryRegressions(ReleaseProcessRegressions, unittest.TestCase):
+class RegistryRegressions(PublishProcessRegressions, ReleaseProcessRegressions, unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.requests = []
@@ -76,6 +77,7 @@ class RegistryRegressions(ReleaseProcessRegressions, unittest.TestCase):
         cls.scripts = Path(cls.temp.name) / 'scripts'
         shutil.copytree(ROOT / 'scripts', cls.scripts)
         release_controls = add_release_process_controls(HARNESS, cls.scripts)
+        release_controls += add_publish_process_controls(HARNESS, cls.scripts)
         address = f'http://127.0.0.1:{cls.server.server_port}'
         for path in cls.scripts.rglob('*.rs'):
             source = path.read_text()

@@ -14,6 +14,9 @@
 //!   - CARGO_REGISTRY_TOKEN: Cargo's native crates.io token (preferred)
 //!   - CARGO_TOKEN: Alternative token name for backwards compatibility
 //!
+//! Nonempty --token takes precedence. Cargo receives it through its environment.
+//! With no explicit token, Cargo uses its configured credential provider.
+//!
 //! Outputs (written to GITHUB_OUTPUT):
 //!   - publish_result: 'success', 'already_exists', 'auth_failed',
 //!     'rate_limited', 'skipped', or 'failed'
@@ -118,6 +121,7 @@ fn main() {
 
     // Get token from CLI arg, then env vars
     let token = get_arg("token")
+        .filter(|value| !value.is_empty())
         .or_else(|| {
             env::var("CARGO_REGISTRY_TOKEN")
                 .ok()
@@ -150,18 +154,7 @@ fn main() {
     println!("=== Attempting to publish to crates.io ===");
 
     if token.is_none() {
-        println!(
-            "::warning::Neither CARGO_REGISTRY_TOKEN nor CARGO_TOKEN is set, attempting publish without explicit token"
-        );
-        println!();
-        println!("To fix this, ensure one of the following secrets is configured:");
-        println!("  - CARGO_REGISTRY_TOKEN (Cargo's native env var, preferred)");
-        println!("  - CARGO_TOKEN (alternative for backwards compatibility)");
-        println!();
-        println!("For organization secrets, you may need to map the secret name in your workflow:");
-        println!("  env:");
-        println!("    CARGO_REGISTRY_TOKEN: ${{{{ secrets.CARGO_TOKEN }}}}");
-        println!();
+        println!("No explicit token supplied; using Cargo's configured credential provider.");
     } else {
         println!("Using provided authentication token");
     }
@@ -177,7 +170,9 @@ fn main() {
     }
 
     if let Some(t) = &token {
-        cmd.arg("--token").arg(t);
+        // Keep credentials out of Cargo's process arguments. With no explicit
+        // token, Cargo retains its configured credential-provider fallback.
+        cmd.env("CARGO_REGISTRY_TOKEN", t);
     }
 
     // For multi-language repos, change to the rust directory

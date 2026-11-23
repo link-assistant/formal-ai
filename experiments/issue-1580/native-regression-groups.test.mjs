@@ -7,6 +7,7 @@ import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
 import YAML from 'yaml';
 import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
 import {parseTestDurations} from '../../scripts/lib/ci-speed-durations.mjs';
 import {planShards, durationLookup, partitionProblems} from '../../scripts/lib/ci-speed-shards.mjs';
 import {admission} from '../../scripts/ci-pull-request-admission.mjs';
@@ -575,4 +576,29 @@ process.exit(args.includes('solver_unknown_reasoning::tests::') ? 17 : 0);
 test('focused reasoning retains the original documentation publisher regressions', () => {
   assert.match(readFileSync('rust/tests/unit/reasoning_contracts.rs', 'utf8'),
     /#\[path = "issue_1101_documentation_question_parity\.rs"\]\nmod issue_1101_documentation_question_parity;/u);
+});
+
+
+test('publishing credentials stay in the child environment and exercise the real hosted CLI', () => {
+  const source = readFileSync('scripts/publish-crate.rs', 'utf8');
+  assert.doesNotMatch(source, /cmd[.]arg\("--token"\)/u);
+  assert.match(source, /cmd[.]env\("CARGO_REGISTRY_TOKEN", t\)/u);
+  assert.doesNotMatch(source, /::warning::Neither CARGO_REGISTRY_TOKEN/u);
+  assert.match(source, /get_arg\("token"\)\s*[.]filter\(\|value\| !value[.]is_empty\(\)\)/u);
+  const root = 'experiments/issue-1580/release-registry/';
+  const cli = readFileSync(root + 'cli_regressions.py', 'utf8');
+  assert.match(cli, /class RegistryRegressions\(PublishProcessRegressions,/u);
+  assert.match(cli, /release_controls \+= add_publish_process_controls\(HARNESS, cls[.]scripts\)/u);
+  const regression = readFileSync(root + 'publish_process_regressions.py', 'utf8');
+  assert.equal([...regression.matchAll(/^    def test_publish_cli_/gmu)].length, 5);
+  const fixture = gunzipSync(readFileSync(root + 'fixtures/publish-crate-before-token-fix.rs.gz'));
+  const metadata = JSON.parse(readFileSync(root + 'fixtures/publish-crate-before-token-fix.json', 'utf8'));
+  assert.equal(fixture.length, metadata.bytes);
+  assert.equal(createHash('sha256').update(fixture).digest('hex'), metadata.sha256);
+  assert.match(fixture.toString('utf8'), /cmd[.]arg\("--token"\)[.]arg\(t\)/u);
+  for (const path of ['publish_process_regressions.py', 'release_process_regressions.py',
+    'check_fixture.py', 'fixtures/new-control.rs.gz', 'fixtures/publish-crate-before-token-fix.json',
+    'fixtures/publish-crate-before-token-fix.rs.gz']) {
+    assert.equal(admission([root + path])['native-type-check'], true, path);
+  }
 });
