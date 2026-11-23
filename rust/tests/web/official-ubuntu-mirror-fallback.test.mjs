@@ -103,3 +103,15 @@ for(const options of [{missing:true},{symlink:true},{text:upstream.trimEnd()}])t
   const result=run({...options,direct:true});assert.equal(result.status,2);assert.equal(result.installs,0);
   if(options.symlink)assert.equal(result.foreign,upstream);
 });
+
+test('official EC2 regional mirror tokens use the exact HTTPS alternate and preserve line suffixes',()=>{
+ for(const uri of ['http://us-east-2.ec2.archive.ubuntu.com/ubuntu','https://eu-west-1.ec2.archive.ubuntu.com/ubuntu/']){
+  const suffix=uri.endsWith('/')?'/':'',text=uri+'\tpriority:1 # runner region\n';
+  const r=run({text,direct:true});assert.equal(r.status,0,r.stdout+r.stderr);
+  assert.equal(r.observed,'https://archive.ubuntu.com/ubuntu'+suffix+'\tpriority:1 # runner region\n');
+ }
+});
+test('EC2 lookalikes, different paths and comments preserve all original bytes',()=>{
+ const text='http://us-east-2.ec2.archive.ubuntu.com.evil.invalid/ubuntu\nhttp://us-east-2.ec2.archive.ubuntu.com/ubuntu-extra\n# http://us-east-2.ec2.archive.ubuntu.com/ubuntu\n';
+ const r=run({text,direct:true});assert.equal(r.status,0,r.stdout+r.stderr);assert.equal(r.observed,text);
+});
