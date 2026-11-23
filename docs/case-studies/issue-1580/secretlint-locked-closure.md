@@ -52,6 +52,8 @@ actual scanner cases. Those initial observations remain evidence, not passes.
 
 The complete observations and source snapshots are sealed in
 [the locked-closure receipt](../../../experiments/issue-1580/evidence/checks/secretlint-locked-closure-20261123/manifest.json).
+The [post-commit checks](../../../experiments/issue-1580/evidence/checks/secretlint-locked-final-checks-20261123/manifest.json)
+include the passing actual secret scan of all local commits since bc08222b5.
 Archive readback checks every indexed member and digest. This verifies the local
 scanner repair; it does not complete issue #1580, hosted qualification, independent
 authorship, or the remaining template-practice comparison.
