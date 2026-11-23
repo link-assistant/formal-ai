@@ -80,3 +80,8 @@ mod check_changelog_fragment;
 #[allow(dead_code)]
 #[path = "issue_1169_dependency_currency.rs"]
 mod dependency_currency;
+
+// Check the actual Cargo archive selected by release package-size guards.
+#[allow(dead_code, clippy::duplicate_mod)]
+#[path = "../../../scripts/check-crate-package-size.rs"]
+mod check_crate_package_size;

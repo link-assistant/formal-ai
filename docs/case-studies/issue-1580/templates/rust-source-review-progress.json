@@ -6740,14 +6740,29 @@
         "scripts/detect-code-changes.rs",
         "scripts/check-workflow-tools.rs"
       ],
-      "assessment": "Change detection covers the full synthetic merge against its base, preserves successful empty diffs, checks original parents to reject unavailable shallow history, and includes deleted paths without rename hiding. Its newline path decoding and broad language exclusions need comparison with Formal AI Git-safe admission closure. Tool installation is checked per job and before first use, but the parser is indentation/substring based and does not prove conditional installation executes.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "Compared both literal template scripts with Formal AI: full PR parent-header validation, NUL-delimited literal paths, deletion/rename visibility, explicit unavailable-history failures and runtime Markdown ownership are retained. The template installer checker is job-local and order-sensitive but substring/indentation based; its candidate matches do not establish conditional shell execution. Formal AI's three actual detector shells have matching native installer guards, qualified with isolated fake tools rather than inferred from matching text.",
+      "status": "literal-source-compared-detector-routing-locally-qualified-other-tool-availability-open",
       "formalAiPaths": [
         "scripts/detect-code-changes.rs",
         "scripts/ci-pull-request-admission.mjs",
         ".github/workflows"
       ],
-      "verification": null
+      "verification": {
+        "inventory": "experiments/issue-1580/workflow-tool-installation-probe.mjs",
+        "routingRegression": "experiments/issue-1580/workflow-tool-routing.test.mjs",
+        "maintainedOwner": "rust/tests/web/ci-change-detection-checkout.test.mjs",
+        "syntacticWorkflowFiles": 61,
+        "syntacticUseObservations": 49,
+        "unmatchedCandidateObservations": 0,
+        "conditionalInstallerObservations": 5,
+        "actualShellJobEventCombinations": 18,
+        "missingDisabledLateControls": 9,
+        "maintainedOwnerTestsPassed": 5,
+        "scope": "Real detector shell routing with fake job-local runtimes. The inventory does not prove shell/composite action execution or condition dominance for all observed tools. No missing-tool production defect is claimed.",
+        "hostedNewRoutingTestsExecuted": false,
+        "allApplicablePracticeVerified": false,
+        "independentAuthorshipCredit": 0
+      }
     },
     {
       "practice": "Size-check traversal and annotation ownership",
@@ -6936,14 +6951,29 @@
         "tests/unit/ci-cd/workflow_release.rs",
         "tests/unit/ci-cd/workflow_release_gates.rs"
       ],
-      "assessment": "Contracts cover exact published-version smoke tests, committed lock ownership, per-job cache scope, independent Pages deployment, bounded job clocks, crate size, registry visibility and terminal observation of failed/skipped/cancelled jobs. These tests parse text/indentation and cannot replace Formal AI parsed YAML/source-qualified policy. Docker PR builds are inapplicable under the repository policy. Compare executable expressions directly; do not inherit contradictory comments about cancellation.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "Contracts cover exact published-version smoke tests, committed lock ownership, per-job cache scope, independent Pages deployment, bounded job clocks, crate size, registry visibility and terminal observation of failed/skipped/cancelled jobs. These tests parse text/indentation and cannot replace Formal AI parsed YAML/source-qualified policy. Docker PR builds are inapplicable under the repository policy. Compare executable expressions directly; do not inherit contradictory comments about cancellation. The Formal AI package guard shared the template hard-coded rust/target/package defect: Cargo environment overrides, configured targets and workspace roots place the newly packaged archive elsewhere. Five bounded offline Cargo package observations reproduce four incorrect assumptions. The repair resolves Cargo metadata using the same working directory and environment, rejects invalid metadata, keeps packaging failures fatal and traces the selected directory only under FORMAL_AI_CI_VERBOSE=1. Parsed executable detector routing and existing terminal gate controls are locally tested; native regression and hosted release behavior remain unqualified.",
+      "status": "literal-source-compared-package-target-defect-reproduced-local-repair-native-hosted-qualification-pending",
       "formalAiPaths": [
         ".github/workflows/release-staged.yml",
         "rust/tests/web/default-branch-build-policy.test.mjs",
-        "scripts/ci-pull-request-admission.mjs"
+        "scripts/ci-pull-request-admission.mjs",
+        "scripts/check-crate-package-size.rs",
+        "rust/tests/unit/workflow_contracts.rs",
+        "scripts/check-pipeline-status.sh"
       ],
-      "verification": null
+      "verification": {
+        "packageProbe": "experiments/issue-1580/package-archive-target-probe.py",
+        "realCargoLayouts": 5,
+        "wrongHardCodedTargets": 4,
+        "rustfmtPassed": true,
+        "localPolicyOwnerPassed": true,
+        "nativeRegression": "check_crate_package_size::tests::package_archive_follows_actual_cargo_targets_without_compiling",
+        "nativeRustTestsExecuted": false,
+        "hostedRepairExecuted": false,
+        "allApplicablePracticesVerified": false,
+        "independentAuthorshipCredit": 0,
+        "upstreamReport": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/268"
+      }
     },
     {
       "practice": "Security and link-recovery workflow contracts",
@@ -7720,6 +7750,16 @@
       "evidenceCommit": "14ef1b5f8dc590733283b0e4cb0cd75e47ba89d2",
       "templateCliExecuted": false,
       "formalAiPhysicalRegressionsPassed": true,
+      "upstreamRepairVerified": false
+    },
+    {
+      "scope": "Package size guard ignores Cargo target-directory configuration and workspace roots",
+      "url": "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/268",
+      "upstreamSourceBlob": "81b027f01b40cc4f256922032aea9f63a25f01d7",
+      "templateHelperExecuted": false,
+      "actualOfflineCargoPackageLayoutsObserved": 5,
+      "wrongHardCodedTargets": 4,
+      "nativeFormalAiRepairExecuted": false,
       "upstreamRepairVerified": false
     }
   ],

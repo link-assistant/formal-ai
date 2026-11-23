@@ -1230,6 +1230,7 @@ test('complete native release and Pages contracts admit their actual source and 
     "rust/tests/unit/ci_gates.rs",
     "rust/tests/unit/workflow_contracts.rs",
     "scripts/detect-code-changes.rs",
+    "scripts/check-crate-package-size.rs",
     "scripts/check-disk-usage-policy.rs",
     "scripts/checked-release-operation-view.mjs",
     "scripts/documentation-policy-dependencies/package-lock.json",
@@ -1252,6 +1253,7 @@ test('complete native release and Pages contracts admit their actual source and 
     assert.equal(admission([path])['native-type-check'], false, path);
   assert.match(read('rust/Cargo.toml'), /name = "workflow_contracts"\npath = "tests\/unit\/workflow_contracts[.]rs"/u);
   const source = read('rust/tests/unit/workflow_contracts.rs');
+  assert.match(source, /#\[path = "[.][.]\/[.][.]\/[.][.]\/scripts\/check-crate-package-size[.]rs"\]\nmod check_crate_package_size;/u);
   for (const name of ['ci_gates', 'workflow_fixtures', 'workflow_release', 'detect_code_changes'])
     assert(source.includes('pub mod ' + name + ';'), name);
   const called = workflow('native-type-check.yml');
