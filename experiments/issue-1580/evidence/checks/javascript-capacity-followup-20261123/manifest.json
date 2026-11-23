@@ -1,0 +1,39 @@
+{
+  "sourceBefore": "aa84dfc247891313dc5dc20847950e91c9528064",
+  "repairCommit": "c2473a7e69b9c6d503f9e4fd300612aaa04a89dc",
+  "selectedGroups": 11,
+  "retainedCohorts": 14,
+  "sourceOwners": 922,
+  "warningSeconds": 270,
+  "budgetSeconds": 360,
+  "changedWeights": false,
+  "historicalThirteenCohortCount": 10,
+  "focusedChecks": {
+    "speedPass": 31,
+    "productionProfilePass": 31,
+    "branchPolicyPass": 184,
+    "completeInventoryPass": 2
+  },
+  "originalFailuresRetained": true,
+  "initialLocalRoundsPass": false,
+  "finalRelevantChecksPass": true,
+  "fullIssueComplete": false,
+  "exactRepairHostedExecution": false,
+  "sources": {
+    ".github/workflows/layered-ci.yml": "4182bf83aa3e02c926e8d62feec02f4d491cd730da9ff3f620a998b7a979a729",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs": "1fc463959466307cef659c4b0d1029369d412b5ebf4ec7801a31812c9f3292d2",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "4dd9bd3934fb2c4462674147a9e26567aac50507f5eb1b39b2066afa1eeaf800",
+    "experiments/issue-1580/javascript-capacity-replay.test.mjs": "4640a3eb810ee669e6911eb8dc1ffa41418d5a8247798ffcf7e17ec0383e76d3",
+    "experiments/issue-1580/probe-hosted-javascript-capacity.mjs": "826161e572b9706d0758820eba4b6e48b5c776ab7542715267aa5846fcf6cff1",
+    "experiments/issue-1580/owner-envelope-capacity-probe.mjs": "30a591f641abe1d8906a8412538c1e20a219689e880c81f070c6170593129ecb"
+  },
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 188298,
+    "sha256": "0c18cbc492bde90300028e47725fed4f8f1af20442c4aa3e08c206b797f9e6bf"
+  },
+  "members": 152,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "capturedAt": "2026-11-23T22:10:30.969563+00:00"
+}

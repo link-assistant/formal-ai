@@ -53,3 +53,5 @@ link audit. Main-only production, CodeQL semantic coverage, original template
 practice execution and dependency-score criteria remain unfinished. The current
 hosted cohort predates this repair. No independent authorship or reasoning
 credit is claimed.
+
+Complete outputs and identities: [verified archive receipt](../../../experiments/issue-1580/evidence/checks/link-terminal-output-repair-20261123/manifest.json).
