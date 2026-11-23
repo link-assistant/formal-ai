@@ -1,0 +1,143 @@
+{
+  "observedAt": "2026-11-23T01:25:56.448390+00:00",
+  "scope": "Reconcile the already compared complete source trees with the complete reviewed 22 November deltas. Preserve exact prior decisions and distinguish delta comparison from new whole-file reading and runtime execution. Selected source identities are frozen for this checkpoint.",
+  "templates": [
+    {
+      "language": "javascript",
+      "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+      "head": "8e72538d579d904aff818c2447fb3c2413d3a989",
+      "blobs": 566,
+      "exactPriorBlobCarry": 566,
+      "verifiedCurrentDelta": 0,
+      "removed": [],
+      "allTreePathsHaveComparisonBasis": true,
+      "treeTruncated": false,
+      "priorReceipts": [
+        "javascript-complete-files.jsonl"
+      ]
+    },
+    {
+      "language": "rust",
+      "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+      "head": "260ae6f826d6bff0cbfe2280098c287a4c09b3f4",
+      "blobs": 374,
+      "exactPriorBlobCarry": 374,
+      "verifiedCurrentDelta": 0,
+      "removed": [],
+      "allTreePathsHaveComparisonBasis": true,
+      "treeTruncated": false,
+      "priorReceipts": [
+        "rust-complete-files.jsonl"
+      ]
+    },
+    {
+      "language": "python",
+      "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+      "head": "7a05d0515fac2966885b272302c1055985bc948b",
+      "blobs": 340,
+      "exactPriorBlobCarry": 327,
+      "verifiedCurrentDelta": 13,
+      "removed": [],
+      "allTreePathsHaveComparisonBasis": true,
+      "treeTruncated": false,
+      "priorReceipts": [
+        "python-complete-files.jsonl"
+      ]
+    },
+    {
+      "language": "php",
+      "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+      "head": "e12a25d7ce9d8bfd37f238b1b238c0006bf52031",
+      "blobs": 611,
+      "exactPriorBlobCarry": 598,
+      "verifiedCurrentDelta": 13,
+      "removed": [],
+      "allTreePathsHaveComparisonBasis": true,
+      "treeTruncated": false,
+      "priorReceipts": [
+        "php-complete-files.jsonl"
+      ]
+    },
+    {
+      "language": "csharp",
+      "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+      "head": "a0f2a171dc1ab02ad5d68147656660562f6e1504",
+      "blobs": 339,
+      "exactPriorBlobCarry": 339,
+      "verifiedCurrentDelta": 0,
+      "removed": [],
+      "allTreePathsHaveComparisonBasis": true,
+      "treeTruncated": false,
+      "priorReceipts": [
+        "csharp-complete-files.jsonl"
+      ]
+    },
+    {
+      "language": "java",
+      "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+      "head": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+      "blobs": 207,
+      "exactPriorBlobCarry": 207,
+      "verifiedCurrentDelta": 0,
+      "removed": [],
+      "allTreePathsHaveComparisonBasis": true,
+      "treeTruncated": false,
+      "priorReceipts": [
+        "java-active-semantic-review.json",
+        "java-historical-semantic-comparison.json"
+      ]
+    },
+    {
+      "language": "cpp",
+      "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+      "head": "e4a3bac7dc38ede3def41943f826b2d052a98a12",
+      "blobs": 552,
+      "exactPriorBlobCarry": 547,
+      "verifiedCurrentDelta": 5,
+      "removed": [],
+      "allTreePathsHaveComparisonBasis": true,
+      "treeTruncated": false,
+      "priorReceipts": [
+        "cpp-complete-files.jsonl"
+      ]
+    },
+    {
+      "language": "go",
+      "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+      "head": "785292ebe92fadbb5a3fcef3c6835ccfb076b203",
+      "blobs": 39,
+      "exactPriorBlobCarry": 35,
+      "verifiedCurrentDelta": 4,
+      "removed": [],
+      "allTreePathsHaveComparisonBasis": true,
+      "treeTruncated": false,
+      "priorReceipts": [
+        "go-current-semantic-review.json"
+      ]
+    }
+  ],
+  "totalBlobs": 3028,
+  "allEightCompleteTreePathUnionsVerified": true,
+  "counterpartCorrections": [
+    {
+      "language": "go",
+      "path": ".github/workflows/rerun-unacquired.yml",
+      "oldCounterpart": ".github/workflows/rerun-unacquired.yml",
+      "currentCounterpart": ".github/workflows/recover-unacquired-runners.yml",
+      "basis": "Actual production recovery workflow; the 27-case hosted decision-policy receipt is runner-and-artifact-practices/manifest.json."
+    },
+    {
+      "language": "go",
+      "path": "scripts/ci/rerun-unacquired.mjs",
+      "oldCounterpart": ".github/workflows/rerun-unacquired.yml",
+      "currentCounterpart": ".github/workflows/recover-unacquired-runners.yml",
+      "basis": "Actual production recovery workflow; the 27-case hosted decision-policy receipt is runner-and-artifact-practices/manifest.json."
+    }
+  ],
+  "receipt": "current-tree-comparison-20261123.jsonl.gz",
+  "compressedSha256": "8bbcb5abea431879a51110382fd24c9a2f2acacc8407a5f63f5ec023845e1e8c",
+  "decodedSha256": "901d30526ba18d477f9f4eff2e81bd37db9d8b410b3f373cd01aba00e3a14582",
+  "completePracticeImplementationAndVerification": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

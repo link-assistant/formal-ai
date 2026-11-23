@@ -850,3 +850,24 @@ Supplied code and conclusions earn zero independent reasoning/authorship credit.
 - [ ] Push the combined link/native semantic batch after queue/main checks;
   qualify every hosted native group and both actual artifact rerun paths, then
   complete all remaining original requirements without deferred criteria.
+
+
+## Current complete comparison checkpoint, 2026-11-23
+
+- [x] Push the combined native/link batch as `cec9207c3` after an empty current
+  queue and fresh-main ancestry check; update the actual PR title and body.
+- [x] Reconcile all eight complete selected template trees: 3,028 distinct blobs,
+  2,993 exact prior comparison carries and 35 reviewed current deltas. Verify
+  every path/blob union and correct the two stale Go counterpart references.
+- [x] Reobserve both current published crate indexes; verify exact Git objects,
+  checksums and latest non-yanked stable versions. Both still require Chrono.
+- [ ] Finish the current hosted cohort and read every actual failing diagnostic.
+- [ ] Qualify the actual included-string CodeQL producer and both native artifact
+  rerun paths; reconcile remaining practice observations with specific evidence.
+- [ ] Complete all original acceptance criteria, including genuinely blocked
+  external dependencies and production-only qualification. Keep the PR draft
+  and unmerged while any criterion is unfinished.
+
+See `current-comparison-checkpoint-20261123.md` for the current source checkpoint.
+No new GPU feature, upstream Maven release or independent-reasoning release gate
+is inferred from historical examples. Supplied work retains zero credit.
