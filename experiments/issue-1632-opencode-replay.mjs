@@ -41,6 +41,7 @@ try {
     XDG_DATA_HOME: path.join(directory, "data"),
     XDG_CACHE_HOME: path.join(directory, "cache"),
     OPENCODE_DISABLE_AUTOUPDATE: "true",
+    OPENCODE_DISABLE_DEFAULT_PLUGINS: "true",
     OPENCODE_DISABLE_MODELS_FETCH: "true",
     OPENCODE_CONFIG_CONTENT: JSON.stringify({
       enabled_providers: ["local"],
@@ -53,8 +54,10 @@ try {
     }),
   };
   async function askOpenCode(prompt, session) {
-    const { stdout } = await exec("opencode", ["run", "--pure", "--format", "json",
+    const command = exec("opencode", ["run", "--pure", "--format", "json", "--dir", directory,
       ...(session ? ["--session", session] : []), prompt], { cwd: directory, env: clientEnv });
+    command.child.stdin.end();
+    const { stdout } = await command;
     const events = stdout.trim().split("\n").map(line => JSON.parse(line));
     const parts = events.filter(event => event.type === "text");
     assert.ok(parts.length, stdout);

@@ -21,7 +21,7 @@ The repair builds on the localized source resolution from [PR #1398](https://git
 | Keep chat readable and honest about missing evidence | Chat emits instructions and their citation when verified, or the localized evidence gap. Technical retrieval details remain in trace records. `procedural-runtime-parity.test.mjs` replays the EN, RU, HI, ZH and ES assertions against JavaScript. |
 | Verify the live client path and deliver together | The [OpenCode experiment](../../../experiments/issue-1632-opencode-replay.mjs) runs both requests in one OpenCode session against the JavaScript server with live source access. Its assertions identify the everyday method from the publisher. The native replay runs in the pull request's native check. [PR #1633](https://github.com/link-assistant/formal-ai/pull/1633) |
 
-The [live streaming HTTP replay](raw-data/live-http.json) preserved the greeting and returned three everyday steps with the article citation. It recorded the exact-title response, the HTTP 500 from MediaWiki search, and successful responses from the public publisher search and the verified article parse.
+The live replays preserved the greeting and returned three everyday steps with the article citation in [OpenCode 1.19.5](raw-data/live-opencode.json) and over [streaming HTTP](raw-data/live-http.json). Both recorded the exact-title response, the HTTP 500 from MediaWiki search, and successful responses from the public publisher search and the verified article parse.
 
 Run the deterministic browser and HTTP replays one file at a time.
 
