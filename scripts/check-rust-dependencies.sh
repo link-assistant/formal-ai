@@ -52,7 +52,37 @@ fi
 # file preserves exact Git paths and the producer status without loading the
 # complete inventory into shell memory or losing errors in process substitution.
 lock_inventory="$(mktemp)"
-trap 'rm -f -- "$lock_inventory"' EXIT
+audit_log_dir="$(mktemp -d)"
+trap 'rm -f -- "$lock_inventory"; rm -rf -- "$audit_log_dir"' EXIT
+
+# cargo-audit 0.22.2 can print registry errors and still exit zero. Keep the
+# complete original stream and require a complete observation. Retry only the
+# positively identified transient yank-check failure, at most three times;
+# ordinary findings retain their status and are never retried as transport errors.
+run_audit() {
+  local attempt observed_status errors
+  for attempt in 1 2 3; do
+    observed_status=0
+    timeout 120 "$@" > "$audit_log_dir/output" 2>&1 || observed_status=$?
+    cat "$audit_log_dir/output"
+    sed -E $'s/\\x1b\\[[0-9;]*[[:alpha:]]//g' "$audit_log_dir/output" > "$audit_log_dir/plain"
+    errors="$(grep -E '^[[:space:]]*error:' "$audit_log_dir/plain" || true)"
+    if [[ -z "$errors" ]]; then return "$observed_status"; fi
+    if [[ "$observed_status" -eq 0 ]]; then observed_status=1; fi
+    if grep -Evq "^[[:space:]]*error: couldn't check if the package is yanked:" <<< "$errors" ||
+       ! grep -Eq 'connection reset|connection refused|timed out|timeout|temporarily unavailable' "$audit_log_dir/plain"; then
+      echo "::error::Cargo audit emitted an error; the dependency observation is incomplete." >&2
+      return "$observed_status"
+    fi
+    if [[ "$attempt" -eq 3 ]]; then
+      echo "::error::Cargo audit registry observation incomplete after 3 attempts." >&2
+      return "$observed_status"
+    fi
+    echo "Cargo audit registry observation incomplete; retrying after attempt $attempt."
+    sleep "$((attempt * 2))"
+  done
+}
+
 git ls-files -z -- 'Cargo.lock' '*/Cargo.lock' > "$lock_inventory" || {
   status=$?
   echo "::error::Unable to enumerate Cargo lockfiles (git ls-files exited $status)." >&2
@@ -186,7 +216,7 @@ if [[ ! -f "$lock" ]]; then
   audit_status=1
 else
   echo "Auditing $lock"
-  cargo audit --file "$lock" --deny warnings || audit_status=$?
+  run_audit cargo audit --file "$lock" --deny warnings || audit_status=$?
 fi
 
 # Issue #1571: the audit read only rust/Cargo.lock, so the committed lockfile
@@ -211,7 +241,7 @@ while IFS= read -r -d '' each; do
     continue
   fi
   echo "Auditing $each"
-  cargo audit --file "$each" --deny unsound --deny yanked || {
+  run_audit cargo audit --file "$each" --deny unsound --deny yanked || {
     observed_status=$?
     if [[ "$audit_status" -eq 0 ]]; then audit_status=$observed_status; fi
   }

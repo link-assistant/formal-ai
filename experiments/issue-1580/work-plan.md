@@ -871,3 +871,27 @@ Supplied code and conclusions earn zero independent reasoning/authorship credit.
 See `current-comparison-checkpoint-20261123.md` for the current source checkpoint.
 No new GPU feature, upstream Maven release or independent-reasoning release gate
 is inferred from historical examples. Supplied work retains zero credit.
+
+## Current CI observation repairs (2026-11-23)
+
+- [x] Preserve both current Layered failure diagnostics and the two completed
+  native failure logs, with original line numbers and immutable head identity.
+- [x] Reproduce the rejected-article outcome bug before repair; preserve the native
+  assertion, repair both extractors and pass the full 18-case worker suite.
+- [x] Preserve every consulted-source assertion while qualifying WordNet's actual
+  English endpoint and four unsupported-language outcomes; six worker cases pass.
+- [x] Regenerate and compare complete governed objects: only four reviewed unit
+  registry fixture occurrences change. All 34 complete-object controls pass.
+- [x] Review all 46 retained job bodies, refresh only the repaired link-checker
+  payload witness, and pass all 29 production-profile controls.
+- [x] Reproduce zero-exit Cargo registry errors and require a complete observation;
+  all 16 inventory and 11 neighboring proof cases pass. Preserve complete streams.
+- [x] Finish all five focused suites in one tracked sequential worker and seal its
+  complete results. No local Rust build; supplied authorship credit remains zero.
+- [ ] Finish every current hosted group and collect all actionable failures.
+- [ ] Run the complete local gate inventory on the clean corrected source; collect
+  all failures before the next push, then qualify the new head in hosted CI.
+- [ ] Finish both actual native-artifact reruns and every original acceptance
+  criterion; retain precise external blockers and keep the PR unmerged.
+
+See [the observation checkpoint](../../docs/case-studies/issue-1580/ci-observation-boundaries-20261123.md).
