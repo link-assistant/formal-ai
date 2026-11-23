@@ -1275,7 +1275,18 @@ neither that state nor successful CI completes an unmet criterion.
 - [x] Reproduce two actual Git filename failures before changing production. JavaScript performs four resolver effects before the corrupted path fails; Cargo accepts the corrupted inventory.
 - [x] Draft binary Git observation and reject invalid UTF-8 before any resolver effect. Keep valid U+FFFD and leading-BOM names as literal positive controls.
 - [x] Verify ten focused, twenty maintained and six neighboring dependency controls and seven gate twins. Complete original evidence is sealed; all eight staged-source gates pass.
-- [ ] Preserve the atomic repair locally and include it with all actionable current-head failures after the entire cohort is idle.
+- [x] Preserve the atomic repair locally as d481588ff; its push remains pending all actionable current-head failures and an idle branch.
 - [ ] Verify the exact new source in hosted CI and complete the broader row-5 and original issue criteria.
 
 Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally with its complete evidence. Both repairs remain pending the next idle-branch batch push and exact-source hosted qualification.
+
+
+## Hosted native subset reconciliation, 2026-11-23
+
+- [x] Preserve completed exact-0b74 native admission, producer and registry job logs; retain the initial escape-sequence download refusal and successful explicit retry.
+- [x] Verify the corrected tri-state waiter assertion and all 294 admission controls; both changelog insertion paths execute their six physical cases.
+- [x] Verify both new native numstat parser controls and both physical size-observation error controls; bind sixteen unchanged production/configuration/lock sources.
+- [x] Verify the actual three-lock hosted Cargo audit while retaining its documented Chrono exception and historical unsafe-libyaml warning.
+- [ ] Complete the full current cohort, collect all actionable failures, and push the complete idle-branch batch once.
+- [ ] Qualify the corrected cold-cache scanner and inventory byte validation on the new exact hosted source.
+- [ ] Finish every remaining original criterion; broader template practice adoption, aggregate review, native retention, dependency migrations and production delivery remain unfinished.

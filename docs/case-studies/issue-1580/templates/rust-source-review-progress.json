@@ -6398,8 +6398,8 @@
         ".github/secretlint/package.json",
         "scripts/fixtures/lychee-report.md"
       ],
-      "assessment": "The published c90f native workflow target passes 231 contracts, including fallible physical fragment/changelog reads, bump selection, package identity and fenced release section controls. Comparing the complete pinned collector found an additional real gap: both Formal AI collection paths could insert into a fenced pseudo-heading and rewrite old line endings. They now share the strict byte-offset heading scanner and each has six physical-file fixtures; these new changes await hosted execution. Remaining tool/dependency closure and every original acceptance criterion are not complete.",
-      "status": "published-release-io-hosted-verified-byte-preserving-insertion-pending-native",
+      "assessment": "The exact 0b74 hosted admission passes 294 native controls. Both physical changelog collectors execute six insertion cases each, preserving UTF-8/CRLF bytes and ignoring fenced pseudo-headings; their complete success lines and the unchanged production source identities are retained. Strict release-heading, physical read-error and snapshot-cleanup controls also pass. This qualifies the previously pending insertion execution, while remaining tool/dependency closure and full applicable practice acceptance stay unfinished.",
+      "status": "byte-preserving-changelog-insertion-hosted-verified-remaining-tool-closure-open",
       "formalAiPaths": [
         "scripts/release-changelog.rs",
         "scripts/changelog-files.rs",
@@ -6415,6 +6415,17 @@
         "newNativeExecutionVerified": false,
         "evidence": "experiments/issue-1580/evidence/checks/release-capacity-and-cache-draft/manifest.json",
         "assessment": "The published native contract compilation exposes an unused helper under strict warnings; a real UTF-8/CRLF/fence byte-offset contract now calls it. Existing successful controls do not establish this new target compilation."
+      },
+      "latestHostedObservation": {
+        "sourceHead": "0b74d3b102290b98d8ad3632e8b00e944b742d03",
+        "pipelineRun": 45206750486,
+        "admissionJob": 137805885687,
+        "admissionCasesPassed": 294,
+        "evidence": "experiments/issue-1580/evidence/checks/hosted-native-subset-0b74-20261123/manifest.json",
+        "fullIssueComplete": false,
+        "independentAuthorshipCredit": 0,
+        "collectorInsertionCasesPassed": 12,
+        "allApplicablePracticeVerified": false
       }
     },
     {
@@ -6556,8 +6567,8 @@
         "scripts/check-release-needed.rs",
         "scripts/check-cargo-lock.rs"
       ],
-      "assessment": "The complete template checker requires the selected binary lockfile to exist at HEAD. Formal AI has a fixed binary crate at rust/Cargo.toml and a fixed primary lock at rust/Cargo.lock. Its dependency audit previously accepted an index-only primary lock, so that claim was not equivalent. The repaired wrapper checks the primary index inventory and then git cat-file -e HEAD:rust/Cargo.lock before any Cargo invocation. A missing checked-out primary remains fatal while independent committed locks still receive their existing audits. The maintained real-Git regression fails before the repair and passes afterward; Cargo remains a recording stub in local controls. Generic template package discovery is unnecessary for this fixed repository path; actual hosted Cargo audit qualification remains pending.",
-      "status": "implemented-local-regression-verified-hosted-audit-pending",
+      "assessment": "The complete template checker requires the selected binary lockfile to exist at HEAD. Formal AI retains its fixed rust/Cargo.lock check at HEAD before any Cargo command. Security job 137804434394 on exact source 0b74 executes the maintained wrapper and completes audits of the primary lock (490 dependencies), the historical issue-1017 lock (339) and the release-registry lock (91). The source and all three lock bytes are unchanged at this reconciliation. The main audit still requires the documented upstream Chrono exception, and the historical lock reports its allowed unmaintained unsafe-libyaml warning; this qualifies committed-lock enforcement and actual audit execution, without claiming those dependency migrations or full security acceptance.",
+      "status": "committed-primary-lock-and-actual-three-lock-hosted-audit-verified",
       "formalAiPaths": [
         "scripts/check-rust-dependencies.sh",
         "rust/Cargo.toml",
@@ -6572,7 +6583,22 @@
         "inventoryCases": 11,
         "blockedProofCases": 8,
         "rustExecuted": false,
-        "hostedAuditVerified": false
+        "hostedAuditVerified": true
+      },
+      "latestHostedObservation": {
+        "sourceHead": "0b74d3b102290b98d8ad3632e8b00e944b742d03",
+        "securityRun": 45206750111,
+        "auditJob": 137804434394,
+        "auditedLocks": 3,
+        "dependencyCounts": [
+          490,
+          339,
+          91
+        ],
+        "evidence": "experiments/issue-1580/evidence/checks/hosted-native-subset-0b74-20261123/manifest.json",
+        "advisoryMigrationsComplete": false,
+        "fullIssueComplete": false,
+        "independentAuthorshipCredit": 0
       }
     },
     {
@@ -6727,8 +6753,8 @@
       "templateEvidence": [
         "scripts/check-file-size.rs"
       ],
-      "assessment": "The retained template has per-format budgets, whole-component pruning and escaped annotation properties. Formal AI retains its stronger maintained-text budgets, NUL committable inventory, and fatal traversal/read errors. A real comparison found quoted newline-numstat paths losing growth warnings. Both maintained runtimes now parse complete NUL records and rename destinations, preserving binary/unchanged/shrinking selection and falling back to every warning on malformed input. Four focused JavaScript controls and all 22 maintained twin checks pass; two new native Rust parser cases remain pending hosted execution.",
-      "status": "counterpart-compared-local-git-behavior-verified-hosted-rust-pending",
+      "assessment": "The retained template has per-format budgets, whole-component pruning and escaped annotation properties. Formal AI retains its maintained-text budgets, NUL inventory and fatal traversal/read errors. Both maintained runtimes now parse complete NUL numstat records and rename destinations, with conservative warning fallback on malformed observations. Four focused JavaScript controls and all 22 maintained twin checks pass locally. Exact-source 0b74 hosted admission passes both new Rust parser controls, plus actual unavailable-root and invalid-UTF-8 read controls; unchanged source identities and exact success lines are retained. This qualifies the previously pending native cases, without completing the broader source-size debt or original issue.",
+      "status": "literal-growth-and-observation-error-controls-local-and-hosted-verified",
       "formalAiPaths": [
         "scripts/check-file-size.rs",
         "scripts/check-file-size.mjs"
@@ -6743,9 +6769,21 @@
         "actualGitAnnotationsAfter": 6,
         "expectedActualGitAnnotations": 6,
         "newNativeParserCases": 2,
-        "newNativeExecutionVerified": false,
+        "newNativeExecutionVerified": true,
         "fullIssueComplete": false,
         "independentAuthorshipCredit": 0
+      },
+      "latestHostedObservation": {
+        "sourceHead": "0b74d3b102290b98d8ad3632e8b00e944b742d03",
+        "pipelineRun": 45206750486,
+        "admissionJob": 137805885687,
+        "admissionCasesPassed": 294,
+        "evidence": "experiments/issue-1580/evidence/checks/hosted-native-subset-0b74-20261123/manifest.json",
+        "fullIssueComplete": false,
+        "independentAuthorshipCredit": 0,
+        "newNativeParserCasesPassed": 2,
+        "physicalObservationErrorCasesPassed": 2,
+        "sourceSizeDebtComplete": false
       }
     },
     {
