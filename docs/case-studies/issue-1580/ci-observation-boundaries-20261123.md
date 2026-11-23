@@ -76,3 +76,21 @@ failed gate streams and byte/decoded hashes are retained under
 `experiments/issue-1580/evidence/ci/cec9207c3-terminal/`. Every archive member is
 round-trip verified. The terminal failures are all covered by this batch; this
 does not establish the next head's outcome.
+
+The corrected clean `423be15fc` replay passes the 18 procedure cases and again
+has 87 gate passes, two failures and 54 hosted exclusions. This time both failures
+identify the terminal evidence manifest's 3,462 lines, rather than the worker
+budget. Compacting individual inventory records preserves the complete parsed
+manifest object, all hashes and the original archive, while satisfying the same
+file-size limit.
+
+A separate actual regression control catches a stale-capture age warning being
+overwritten by the accepted URL. The shared native and worker walkers now keep
+that warning when a stale capture contributes items; failed extraction can still
+report its own failure. The new worker regression fails before the change and
+passes afterward, together with the recovered-article control. Formatting and
+source/projection currency checks pass. The full 19-case suite and complete gate
+inventory still require their next clean replay. The complete preceding gate
+streams, failed reproduction, passing controls and supplied scripts are retained
+with round-trip hashes in
+`experiments/issue-1580/evidence/checks/stale-capture-warning-20261123/`.

@@ -455,7 +455,9 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
             );
         }
         let read = extractor.read(record, &capture, depth, items.len(), bounds);
-        if let Some(detail) = read.detail {
+        if let Some(detail) = read.detail
+            && (read.items.is_empty() || age <= bounds.max_capture_age_seconds)
+        {
             outcome.detail = detail;
         }
         items.extend(read.items);

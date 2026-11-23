@@ -222,6 +222,26 @@ test("an unregistered Russian how-to uses the localized CORS API and quotes its 
   assert.ok(!requested.includes(WAYBACK_INDEX));
 });
 
+test("a contributing stale procedure retains its capture-age warning", async () => {
+  const context = await bootWorker(new Map([[RUSSIAN_API, { body: RUSSIAN_CAPTURE }]]));
+  const initial = plain(await answerRussian(context));
+  assert.equal(initial.guide.steps.length, 2, initial.content);
+  const retained = await evaluate(context, `
+    for (const [url, capture] of sourceWalkCaptureCache) {
+      sourceWalkCaptureCache.set(url, { ...capture, fetchedAt: "1" });
+    }
+    sourceWalkCaptureCache.size
+  `);
+  assert.ok(retained > 0);
+  const stale = plain(await answerRussian(context, { offline: true }));
+  assert.equal(stale.guide.steps.length, 2, stale.content);
+  assert.ok(stale.guide.steps.every(step => step.fetchedAt === "1"));
+  const outcome = stale.guide.outcomes.find(row => row.sourceId === "wikihow");
+  assert.equal(outcome.status, "contributed");
+  assert.match(outcome.detail, /stale_capture age_seconds=/u);
+  assert.ok(outcome.detail.includes(RUSSIAN_API), outcome.detail);
+});
+
 test("a recovered procedure reports the accepted article after rejecting an unrelated capture", async () => {
   const unrelated = JSON.parse(RUSSIAN_CAPTURE);
   unrelated.parse.title = "Домашние растения";

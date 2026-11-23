@@ -1,0 +1,13 @@
+{
+  "sourceBefore": "423be15fcdb4c14b828c9bc287db6d8d559fa03b",
+  "scope": "Actual failing stale-warning reproduction, passing focused repair, and complete preceding clean local gate observation (87 pass, 2 manifest-size failures, 54 hosted exclusions).",
+  "independentAuthorshipCredit": 0,
+  "roundTripVerified": true,
+  "members": 100,
+  "inventory": "members.jsonl",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 397740,
+    "sha256": "4e7a9adda6ba13f38ef298746b294f339ce872ada3a3716f2daa5bc906becdb2"
+  }
+}
