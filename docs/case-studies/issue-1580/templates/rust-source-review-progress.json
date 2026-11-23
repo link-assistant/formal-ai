@@ -6792,14 +6792,17 @@
       "templateEvidence": [
         ".github/secretlint/package-lock.json"
       ],
-      "assessment": "The template uses an isolated exact npm closure for Secretlint 13.1.0. Formal AI keeps its maintained Secretlint 14.0.0 API/rules and now adds a private isolated npm lock with 29 installed packages, exact registry URLs and integrity digests, installed through npm ci without lifecycle scripts. Local mocked and actual-engine controls qualify the repair; hosted execution with the existing Node 22 job is still pending.",
-      "status": "implemented-local-actual-engine-verified-hosted-pending",
+      "assessment": "The template uses an isolated exact npm closure for Secretlint 13.1.0. Formal AI retains its maintained Secretlint 14.0.0 API/rules with 29 exact locked dependencies. Local actual-engine controls passed under Node 26. A new read-only Node 22 Security job now executes all seven actual controls and records runtime, checkout and source hashes; four new local regressions cover policy, failure propagation, real sparse checkout and wrong-runtime rejection. Exact-source hosted execution of all seven controls remains pending.",
+      "status": "implemented-local-engine-verified-hosted-node22-controls-drafted",
       "formalAiPaths": [
         ".github/secretlint/package.json",
         ".github/secretlint/package-lock.json",
         "scripts/check-secrets.sh",
         "scripts/check-secrets-files.mjs",
-        ".github/workflows/release.yml"
+        ".github/workflows/release.yml",
+        ".github/workflows/security.yml",
+        "experiments/issue-1580/secretlint-locked-live.py",
+        "experiments/issue-1580/secretlint-engine-workflow.test.mjs"
       ],
       "verification": {
         "caseStudy": "docs/case-studies/issue-1580/secretlint-locked-closure.md",
@@ -6815,7 +6818,10 @@
         "localNpm": "11.20.0",
         "hostedNode22ExecutionVerified": false,
         "fullIssueComplete": false,
-        "independentAuthorshipCredit": 0
+        "independentAuthorshipCredit": 0,
+        "hostedControlsCaseStudy": "docs/case-studies/issue-1580/secretlint-node22-hosted.md",
+        "hostedControlsLocalRegressionsPassed": 4,
+        "hostedControlsReceipt": "experiments/issue-1580/evidence/checks/secretlint-node22-hosted-20261123/manifest.json"
       }
     },
     {

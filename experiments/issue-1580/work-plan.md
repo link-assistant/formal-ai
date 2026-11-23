@@ -1246,3 +1246,14 @@ neither that state nor successful CI completes an unmet criterion.
 - [ ] Wait for every 2730 workflow, preserve all failing logs, fix every actionable failure in one batch and push only after the branch is idle.
 - [ ] Qualify the new resolver on its exact hosted source and verify the actual dependency-maintenance outcome.
 - [ ] Finish all broader template, publication, native artifact retention, strict style, live useful delivery, source review and other original criteria. Keep the PR draft.
+
+
+## Hosted locked-scanner negative controls, 2026-11-23
+
+- [x] Preserve four failing controls before adding the hosted Node 22 lane.
+- [x] Draft the actual seven-case probe job with source/runtime/lock identities and failure artifacts.
+- [x] Verify failure propagation, sparse source closure, runtime rejection and existing neighboring controls locally.
+- [x] Run seven affected JavaScript gates on staged sources and seal complete before/after evidence.
+- [ ] Preserve the atomic change locally and include it in the complete idle-branch push batch.
+- [ ] Verify all seven actual engine controls on the exact hosted Node 22 source; a clean changed-file scan alone does not establish this criterion.
+- [ ] Complete every remaining original requirement; keep the PR draft.

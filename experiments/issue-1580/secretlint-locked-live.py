@@ -1,8 +1,27 @@
 """Exercise the locked scanner with actual npm/engine; keep installed files temporary."""
 from pathlib import Path
-import datetime,gzip,json,os,shutil,subprocess,sys,tempfile
+import argparse,datetime,gzip,hashlib,json,os,shutil,subprocess,sys,tempfile
 repository=Path(__file__).resolve().parents[2]
-output=Path(sys.argv[1]).resolve();output.mkdir(parents=True,exist_ok=True)
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('output',type=Path)
+parser.add_argument('--node-major',type=int,help='reject a different runtime before installing the scanner')
+arguments=parser.parse_args()
+output=arguments.output.resolve();output.mkdir(parents=True,exist_ok=True)
+runtime={'expectedNodeMajor':arguments.node_major,'scannerSources':{}}
+for label,command in [('node',['node','--version']),('npm',['npm','--version']),('source',['git','rev-parse','HEAD'])]:
+ result=subprocess.run(command,cwd=repository,capture_output=True,text=True)
+ runtime[label]={'command':command,'status':result.returncode,'stdout':result.stdout,'stderr':result.stderr}
+for name in ['.secretlintrc.json','.github/secretlint/package.json','.github/secretlint/package-lock.json',
+             'scripts/check-secrets.sh','scripts/check-secrets-files.mjs','scripts/lib/compressed-secrets.mjs',
+             'experiments/issue-1580/secretlint-locked-live.py']:
+ runtime['scannerSources'][name]=hashlib.sha256((repository/name).read_bytes()).hexdigest()
+try:actual_major=int(runtime['node']['stdout'].strip().removeprefix('v').split('.')[0])
+except ValueError:actual_major=None
+runtime['runtimeAccepted']=(all(runtime[name]['status']==0 for name in ['node','npm','source'])
+ and actual_major is not None and (arguments.node_major is None or arguments.node_major==actual_major))
+(output/'runtime.json').write_text(json.dumps(runtime,indent=2)+'\n')
+if not runtime['runtimeAccepted']:
+ sys.exit('Node major mismatch or runtime identity unavailable; no scanner installation attempted')
 directory=Path(tempfile.mkdtemp(prefix='secretlint-locked-live-',dir=repository/'experiments/issue-1580'))
 records=[]
 try:

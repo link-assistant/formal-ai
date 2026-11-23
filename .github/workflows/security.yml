@@ -332,6 +332,55 @@ jobs:
             js/wasm-worker/rust-project.json
           if-no-files-found: error
 
+  # Exercise the actual pinned scanner and its negative controls on the CI runtime.
+  secretlint-engine:
+    name: Locked secret scanner (Node 22)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-secretlint-engine${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /.secretlintrc.json
+            /.github/secretlint/
+            /scripts/check-secrets.sh
+            /scripts/check-secrets-files.mjs
+            /scripts/lib/compressed-secrets.mjs
+            /experiments/issue-1580/secretlint-locked-live.py
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Exercise the locked scanner
+        timeout-minutes: 5
+        env:
+          PROBE_OUTPUT: ${{ runner.temp }}/secretlint-locked-engine
+        run: python3 experiments/issue-1580/secretlint-locked-live.py "$PROBE_OUTPUT" --node-major 22
+
+      - name: Preserve locked scanner observations
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: secretlint-engine-${{ github.run_id }}-attempt-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/secretlint-locked-engine/
+          if-no-files-found: error
+          retention-days: 7
+
   cargo-audit:
     name: Cargo audit
     runs-on: ubuntu-24.04
@@ -378,7 +427,7 @@ jobs:
       - name: Audit committed Cargo.lock
         run: bash scripts/check-rust-dependencies.sh
 
-  # The JavaScript side deliberately has no job here: the js pipeline template's
+  # JavaScript dependency auditing needs no separate job here: the js template's
   # `npm-audit` matrix is already superseded by `scripts/check-javascript-
   # dependencies.sh`, which discovers *every* committed lockfile with `git
   # ls-files` (so a new workspace cannot be forgotten), audits `bun.lock` as well
