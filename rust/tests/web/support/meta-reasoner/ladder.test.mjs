@@ -17,4 +17,3 @@ test("every rung of the task ladder is derived, never handled", async () => {
     assert.equal(derived && derived[1].split(" ∘ ").join(" "), steps, prompt);
   }
 });
-
