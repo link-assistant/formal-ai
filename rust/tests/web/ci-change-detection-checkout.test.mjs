@@ -1,3 +1,4 @@
+import '../../../experiments/issue-1580/workflow-tool-routing.test.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,existsSync,readdirSync,rmSync} from 'node:fs';
