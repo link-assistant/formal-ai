@@ -5,15 +5,25 @@ import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-export function dependencyManifests(repository, git = spawnSync) {
+export function trackedDependencyFiles(repository, git = spawnSync) {
   const result = git('git', ['ls-files', '-z'], {cwd: repository, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024});
-  if (result.error || result.status !== 0) {
-    throw new Error('Cannot enumerate complete tracked dependency manifests: ' + (result.error?.message ?? result.stderr ?? result.status));
+  if (result.error || result.signal || result.status !== 0) {
+    const error = new Error('Cannot enumerate complete tracked dependency manifests: ' + (result.error?.message ?? result.signal ?? result.stderr ?? result.status));
+    error.exitCode = Number.isInteger(result.status) && result.status > 0 && result.status <= 255 ? result.status : 1;
+    throw error;
   }
   const raw = result.stdout;
   if (typeof raw !== 'string' || (raw && !raw.endsWith('\0'))) throw new Error('Incomplete tracked-file inventory');
   const files = raw ? raw.slice(0, -1).split('\0') : [];
   if (new Set(files).size !== files.length) throw new Error('Duplicate tracked-file inventory');
+  if (files.some(name => path.posix.isAbsolute(name) || name.split('/').some(part => !part || part === '.' || part === '..'))) {
+    throw new Error('Invalid tracked-file inventory path');
+  }
+  return files;
+}
+
+export function dependencyManifests(repository, git = spawnSync) {
+  const files = trackedDependencyFiles(repository, git);
   const tracked = new Set(files);
   const policy = JSON.parse(readFileSync(path.join(repository, 'scripts/dependency-manifests.json'), 'utf8'));
   if (policy.schemaVersion !== 1 || !Array.isArray(policy.activeCargo) ||

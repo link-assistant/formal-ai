@@ -9,6 +9,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import {lockFixture} from '../../../experiments/issue-1580/dependency-lock-fixture.mjs';
 
 const repository = fileURLToPath(new URL('../../../', import.meta.url));
 const workflow = readFileSync(`${repository}.github/workflows/dependencies-latest.yml`, 'utf8');
@@ -38,18 +39,34 @@ test('refreshes live, then applies offline and tolerates only the findings exit'
   assert.doesNotMatch(workflow, /\|\| true/, 'no failure is swallowed silently');
 });
 
-test('re-resolves every lockfile with the tool that owns it', () => {
+test('re-resolves every lockfile with the tool that owns it', {timeout: 15000}, () => {
   const apply = position('--apply --offline');
-  const cargo = position('cargo update --workspace --manifest-path "$manifest"');
-  const bun = position('bun install --lockfile-only');
-  const npm = position('npm install --package-lock-only --ignore-scripts');
-  assert.ok(apply < cargo && apply < bun && apply < npm);
-  position("git ls-files -- '*bun.lock' '*package-lock.json'");
+  const cargo = position('node scripts/resolve-dependency-lockfiles.mjs --cargo');
+  const javascript = position('node scripts/resolve-dependency-lockfiles.mjs --javascript');
+  assert.ok(apply < cargo && cargo < javascript);
+  const fixture = lockFixture();
+  try {
+    const rust = fixture.run('cargo');
+    assert.equal(rust.status, 0, rust.stderr);
+    assert.deepEqual(rust.calls.map(call => [call.tool, ...call.args]), [
+      ['cargo', 'update', '--workspace', '--manifest-path', 'rust/Cargo.toml'],
+      ['cargo', 'update', '--workspace', '--manifest-path', 'tools/registry/Cargo.toml']]);
+    const js = fixture.run('javascript');
+    assert.equal(js.status, 0, js.stderr);
+    for (const tool of ['bun', 'npm']) {
+      const calls = js.calls.filter(call => call.tool === tool);
+      assert.equal(calls.length, 2);
+      assert.deepEqual(calls.map(call => call.cwd.slice(fixture.directory.length)).sort(), ['', '/nested']);
+      const expected = tool === 'bun' ? ['install', '--lockfile-only'] :
+        ['install', '--package-lock-only', '--ignore-scripts', '--no-audit', '--no-fund'];
+      for (const call of calls) assert.deepEqual(call.args, expected);
+    }
+  } finally {fixture.close();}
   assert.doesNotMatch(workflow, /--mode=save/);
 });
 
 test('re-runs all three gate stages after re-resolution before optional PR creation', () => {
-  const resolved = position('npm install --package-lock-only');
+  const resolved = position('node scripts/resolve-dependency-lockfiles.mjs --javascript');
   const stages = ['rust', 'wasm', 'web'].map((stage) =>
     position(`run: rust-script scripts/run-ci-gates.rs --stage ${stage}`),
   );

@@ -1229,3 +1229,20 @@ Focused native-admission repair verification completes all 36 neighboring JavaSc
 - [ ] Push the complete repair batch after a fresh empty queued/in-progress observation; qualify the exact new native source.
 - [ ] Execute actual full and consumer-only artifact reruns after the new original cohort passes.
 - [ ] Resolve the retained source-size warnings, unknown credential observation and every other original criterion. Keep the PR draft and unmerged.
+
+
+## Active checkpoint: literal dependency lockfile paths, 2026-11-23
+
+Objective: implement and verify every original requirement of issue #1580 in
+PR #1581 on issue-1580-8d61a32a61e1. The native goal remains usage-limited;
+neither that state nor successful CI completes an unmet criterion.
+
+- [x] Push the preceding six-repair batch once as 2730b2c35 and preserve its exact-head CI observations.
+- [x] Reproduce five failing updater controls before changing the actual workflow.
+- [x] Draft a shared Cargo/JavaScript resolver using the complete NUL-delimited tracked inventory and direct argv/cwd.
+- [x] Verify eight focused and eighteen maintained controls; preserve both root/nested ownership and the historical nested-only negative control.
+- [x] Repair two obsolete shell-text assertions with actual command observations; preserve the initial failures.
+- [x] Finish staged-source gate checks and seal complete original evidence; preserve this atomic repair in a local commit.
+- [ ] Wait for every 2730 workflow, preserve all failing logs, fix every actionable failure in one batch and push only after the branch is idle.
+- [ ] Qualify the new resolver on its exact hosted source and verify the actual dependency-maintenance outcome.
+- [ ] Finish all broader template, publication, native artifact retention, strict style, live useful delivery, source review and other original criteria. Keep the PR draft.

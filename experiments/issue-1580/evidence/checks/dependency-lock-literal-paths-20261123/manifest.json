@@ -1,0 +1,126 @@
+{
+  "sourceBefore": "2730b2c35e27010c5af16c1306bf31c3b243d659",
+  "beforeFocused": {
+    "passed": 3,
+    "failed": 5
+  },
+  "afterFocused": {
+    "passed": 8,
+    "failed": 0
+  },
+  "maintainedAfter": {
+    "passed": 18,
+    "failed": 0
+  },
+  "stagedChecks": {
+    "complete": true,
+    "allPassed": true,
+    "checks": [
+      {
+        "name": "staged-whitespace",
+        "argv": [
+          "git",
+          "diff",
+          "--cached",
+          "--check"
+        ],
+        "exitCode": 0,
+        "nodeOptionsRemoved": true
+      },
+      {
+        "name": "staged-check-required-documentation",
+        "argv": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-required-documentation"
+        ],
+        "exitCode": 0,
+        "nodeOptionsRemoved": true
+      },
+      {
+        "name": "staged-check-readable-code",
+        "argv": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-readable-code"
+        ],
+        "exitCode": 0,
+        "nodeOptionsRemoved": true
+      },
+      {
+        "name": "staged-check-file-size",
+        "argv": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-file-size"
+        ],
+        "exitCode": 0,
+        "nodeOptionsRemoved": true
+      },
+      {
+        "name": "staged-check-file-size-js-twin",
+        "argv": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-file-size-js-twin"
+        ],
+        "exitCode": 0,
+        "nodeOptionsRemoved": true
+      },
+      {
+        "name": "staged-check-tests-as-docs",
+        "argv": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-tests-as-docs"
+        ],
+        "exitCode": 0,
+        "nodeOptionsRemoved": true
+      },
+      {
+        "name": "staged-check-tests-as-documentation-javascript-twin",
+        "argv": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "check-tests-as-documentation-javascript-twin"
+        ],
+        "exitCode": 0,
+        "nodeOptionsRemoved": true
+      },
+      {
+        "name": "staged-workflows",
+        "argv": [
+          "node",
+          "experiments/formal_ai_subagent/local-gates.mjs",
+          "--only",
+          "workflows"
+        ],
+        "exitCode": 0,
+        "nodeOptionsRemoved": true
+      }
+    ]
+  },
+  "allFiveNeighborSuitesPassAfterRepairAndLoaderIsolation": true,
+  "initialNeighborFailuresRetained": true,
+  "shortWorkerMissingReceiptCauseEstablished": false,
+  "actualDependencyNetworkResolutionExecuted": false,
+  "hostedNewResolverVerified": false,
+  "fullLiteralTemplateReadThisSubstep": false,
+  "targetedCounterpartComparisonComplete": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 99075,
+    "sha256": "e7f033cc7c2ca83f40bc742e178fdb1c001bd808f0bc186c3dee49352bda9233"
+  },
+  "members": 76,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T14:59:36.588687+00:00"
+}

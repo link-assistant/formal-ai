@@ -6314,8 +6314,16 @@
         ".github/dependency-policy/check.mjs",
         ".github/dependency-policy/check.test.mjs"
       ],
-      "assessment": "Manifest coverage, weekly scheduling, cooldown and pinned actions reviewed; Formal AI manifest-coverage and current dependency acceptance are unfinished.",
-      "status": "source-reviewed-comparison-pending"
+      "assessment": "Tracked manifest coverage compared with the maintained updater: three active Cargo, three preserved Cargo and fifteen npm manifests. Actual workflow regressions expose quoted JavaScript paths and newline-split Cargo paths; shared NUL-inventory/direct-argv resolution passes eight focused and eighteen maintained local controls. Wider ecosystem coverage, current dependency acceptance and exact-source hosted qualification remain unfinished.",
+      "status": "counterpart-compared-literal-paths-local-verified-broader-coverage-pending",
+      "counterpartEvidence": [
+        "scripts/dependency-manifest-inventory.mjs",
+        "scripts/resolve-dependency-lockfiles.mjs",
+        ".github/workflows/dependencies-latest.yml",
+        "experiments/issue-1580/dependency-lock-literal-paths.test.mjs",
+        "rust/tests/web/dependencies-maintenance-workflow.test.mjs",
+        "docs/case-studies/issue-1580/dependency-lock-literal-paths.md"
+      ]
     },
     {
       "practice": "Preserve failed/unknown external observations",
