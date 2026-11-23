@@ -23,7 +23,8 @@ Three focused cases fail against the unchanged production scripts: the EC2 and
 Azure fixtures observe regional HTTP at the first package operation, and an
 invalid new flag is accepted. After the repair, 18 search-installer, 16 official
 mirror, 6 container, 9 browser isolation and 11 browser release tests pass,
-60 total. Eleven affected JavaScript gates and both shell syntax checks pass.
+60 total. Twelve affected JavaScript gates, including the secret scan of committed
+source, and both shell syntax checks pass.
 Hosted execution of this new source remains pending.
 
 The first neighboring container run had five exact 15-second timeouts. Targeted
@@ -45,6 +46,8 @@ contains full command logs, before/after source, the original failed container
 suite, targeted trace captures and the controlled startup reproduction.
 Its archive has 56 members and 72238 compressed bytes; SHA-256
 fdac19e84b8891346835848bf2877c78f4c56736271bb417d6074cb8a9bc7f01.
+The [final committed-source gates](../../../experiments/issue-1580/evidence/checks/apt-first-mirror-final-checks-20261123/manifest.json)
+add the successful secret scan and complete twelve-gate result.
 Every member was read back and hash checked. This is targeted trace review,
 not a literal read of every tracing line or qualification of the full issue.
 
