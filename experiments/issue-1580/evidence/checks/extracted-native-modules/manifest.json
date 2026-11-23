@@ -1,0 +1,35 @@
+{
+  "before": "4f6b611d6a4e158647dbe04b34e73fd7d149f9d3",
+  "repairCommit": "795e76727e85a945f3df04f9f91c11583908cb54",
+  "focusedJavaScriptTestsPassed": 171,
+  "affectedGatesPassed": 9,
+  "rustfmt": "edition 2024, five changed Rust files passed",
+  "structuralFixtureResults": {
+    "beforeOrdinary": 0,
+    "beforeFocused": 1,
+    "beforeRenderer": 1,
+    "currentOrdinary": 0,
+    "currentFocused": 0,
+    "currentRenderer": 0,
+    "missingChildControl": 1,
+    "missingRendererControl": 1
+  },
+  "localRustCompilation": "tiny dependency-free rustc metadata fixtures only; no Cargo build or repository test suite",
+  "compilerLimits": {
+    "addressSpaceBytes": 1073741824,
+    "stackBytes": 16777216,
+    "cpuSeconds": 15
+  },
+  "incompleteAttemptRetained": "original gate driver stopped at Formal shell wrapper 60-second limit; detached nine-gate rerun completed successfully",
+  "hostedRepairQualification": "pending",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 33378,
+    "sha256": "55b1b67268f3b06a23a6ad426e56a8aad2bd16f56728e3539e22950a495bee8e"
+  },
+  "members": 57,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T07:08:01.389916+00:00"
+}

@@ -1,5 +1,25 @@
 # Issue 1580 work plan
 
+## Active checkpoint: extracted native modules, 2026-11-23 07:05 UTC
+
+- The terminal 4f6b611d6 cohort has 31 successful workflows, one pipeline failure
+  and one skip. Layered CI passes, and hosted source-size warnings are zero.
+- Native admission failed on three implicit child paths and an unused renderer
+  re-export. All ten native execution groups were skipped; no latest-source
+  native success or actual artifact rerun is claimed.
+- Repair 795e76727e85a945f3df04f9f91c11583908cb54 keeps every extracted test and the public renderer API.
+  A native output regression is added. Bounded structural before/after fixtures,
+  both missing-file controls, 171 focused JavaScript tests, nine affected gates
+  and formatting of five Rust files pass. The interrupted initial gate attempt
+  remains retained separately from the complete detached rerun.
+- Fresh issue/PR conversation, inline comments and reviews have no new feedback.
+  Main 03a636334975cd7ca5cedff119e2dd0efbc8579f remains an ancestor.
+- Hosted repair qualification, artifact reruns, whole-source review, remaining
+  template practices, strict style, latest Rust dependency publication, CodeQL
+  semantics, serving identity and the other original criteria remain open.
+  Keep the PR draft. Supplied work receives zero independent authorship credit.
+
+
 ## Active checkpoint: merged main and all reported source-size warnings, 2026-11-23
 
 The objective remains every original criterion in PR #1581, with no required
