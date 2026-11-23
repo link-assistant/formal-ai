@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import {appendFileSync, existsSync, readFileSync, mkdtempSync, openSync, closeSync, readSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {StringDecoder} from 'node:string_decoder';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
@@ -279,15 +278,17 @@ function gitPathInventory(args) {
     descriptor=openSync(file,'wx',0o600);
     execFileSync('git',args,{stdio:['ignore',descriptor,'pipe'],timeout:15000,maxBuffer:4*1024*1024});
     closeSync(descriptor);descriptor=undefined;descriptor=openSync(file,'r');
-    const buffer=Buffer.alloc(32768),decoder=new StringDecoder('utf8'),paths=[];
+    // Refuse malformed path bytes; replacement characters could change classification.
+    // Streaming preserves code points split between chunks and literal BOM path names.
+    const buffer=Buffer.alloc(32768),decoder=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}),paths=[];
     let pending='',bytes=0,count;
     while((count=readSync(descriptor,buffer,0,buffer.length,null))>0) {
       bytes+=count;
-      const parts=(pending+decoder.write(buffer.subarray(0,count))).split('\0');
+      const parts=(pending+decoder.decode(buffer.subarray(0,count),{stream:true})).split('\0');
       pending=parts.pop();
       for(const path of parts)if(path)paths.push(path);
     }
-    pending+=decoder.end();
+    pending+=decoder.decode();
     assert.equal(pending,'','complete NUL-terminated Git inventory required');
     if(process.env.FORMAL_AI_CI_VERBOSE==='true')
       console.error(JSON.stringify({admissionInventory:{bytes,paths:paths.length}}));
