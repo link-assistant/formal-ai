@@ -1,4 +1,22 @@
 # Issue 1580 work plan
+## Active checkpoint: reviewed witness and passing native pipeline, 2026-11-23
+
+- aaac490e3 finishes with 31 successful workflows, one Layered failure and one
+  skip. CI/CD Pipeline 45129261558 passes all ten native consumer groups.
+- Layered 45129261054 fails only on stale fixture and source identities after
+  explicit child module paths changed. Complete logs and terminal metadata
+  are retained in hosted-merged-head-aaac.
+- Witness repair 6ca491b2905aafafcdfabc2096ac8e0f4d0feb54 preserves all complete objects except eight
+  reviewed hashes. Both existing regression files fail before and pass after:
+  36 tests pass. Full local JavaScript gates: 89 pass, 54 CI-only skips.
+- All 513 selected production paths at 8682 were inspected, including exact
+  conservation proofs for mechanical regions. Later source deltas and aggregate
+  documentation/evidence review remain unfinished.
+- Hosted witness qualification and actual artifact reruns remain pending.
+  Strict style debt, dependency publication, CodeQL semantics, serving identity,
+  live main execution and remaining template practices remain open. Keep draft.
+  No original acceptance criterion is waived; supplied work earns zero credit.
+
 
 ## Active checkpoint: extracted native modules, 2026-11-23 07:05 UTC
 
