@@ -1,0 +1,41 @@
+{
+  "source": "4b909224c85a100fb5ef4e9e124decbc29b9195d",
+  "command": [
+    "node",
+    "--max-old-space-size=384",
+    "experiments/formal_ai_subagent/local-gates.mjs"
+  ],
+  "exitCode": 0,
+  "complete": true,
+  "startedAt": "2026-11-23T02:48:21.066814+00:00",
+  "completedAt": "2026-11-23T02:58:22.402388+00:00",
+  "cleanBefore": true,
+  "cleanAfter": true,
+  "afterStatus": "",
+  "focused": {
+    "source": "4b909224c85a100fb5ef4e9e124decbc29b9195d",
+    "command": [
+      "node",
+      "--max-old-space-size=384",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/procedural-runtime-parity.test.mjs"
+    ],
+    "exitCode": 0
+  },
+  "counts": {
+    "PASS": 89,
+    "FAIL": 0,
+    "SKIP": 54
+  },
+  "scope": "Clean sequential full procedure suite and complete 143-entry local gate inventory; hosted exclusions are not passes.",
+  "independentAuthorshipCredit": 0,
+  "roundTripVerified": true,
+  "members": 105,
+  "inventory": "members.jsonl",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 416298,
+    "sha256": "aba9affdd1717bbf834d11646e2b09bc2d08efc2967503e2317cc1592a99f8dd"
+  }
+}

@@ -934,3 +934,13 @@ objective is unfinished and supplied work receives zero independent credit.
 - [ ] Publish the distinct included-file upstream report with working evidence
   links, qualify next-head CI and both actual native artifact reruns, and finish
   every remaining original criterion. Keep external criteria unfinished and PR draft.
+
+### Clean pre-push observation
+
+- [x] Complete all 19 procedure cases and all 143 gates on clean `4b909224c85a100fb5ef4e9e124decbc29b9195d`:
+  89 gates pass, zero fail, 54 explicitly require hosted execution.
+- [x] Review the complete 309-line current production/test batch diff, preserve
+  all three preceding local gate outcomes, and re-read current issue/PR feedback.
+- [ ] Refresh main and both run queues, then push the complete repair batch once.
+- [ ] Observe the new hosted head, exercise both real native artifact rerun paths,
+  and complete all remaining original criteria before readiness.

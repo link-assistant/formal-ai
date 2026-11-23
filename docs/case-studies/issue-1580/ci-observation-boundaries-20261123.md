@@ -94,3 +94,13 @@ inventory still require their next clean replay. The complete preceding gate
 streams, failed reproduction, passing controls and supplied scripts are retained
 with round-trip hashes in
 `experiments/issue-1580/evidence/checks/stale-capture-warning-20261123/`.
+
+The final clean replay on `4b909224c85a100fb5ef4e9e124decbc29b9195d` completes at
+`2026-11-23T02:58:22.402388+00:00`: all 19 procedure cases pass, and the complete
+143-entry local inventory has 89 passes, zero failures and 54 explicit hosted
+exclusions. The tree is clean before and after the sequential run. Every gate
+stream, full suite output, exact command and source identity is retained with
+round-trip hashes in
+`experiments/issue-1580/evidence/checks/stale-preserving-clean-replay/`.
+The final evidence commit changes documentation and retained observations only;
+native execution and the next hosted cohort remain separate qualifications.
