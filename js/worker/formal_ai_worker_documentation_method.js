@@ -67,6 +67,7 @@ function documentationMethodDetails(text, symbol) {
 async function tryDocumentationMethodExplanation(prompt, language, preferences = {}) {
   const hit = runHandlerRuleSet("docs_method_explanation", prompt, prompt.toLowerCase(), []);
   if (!hit) return null;
+  language = FORCED_RESPONSE_LANGUAGE || crateModule("crate/language.mjs").detectProse(prompt) || language;
   const [selector, project] = claimOperandDocumentedMethod(prompt);
   const provider = documentationMethodProvider(project);
   const online = preferences.offline !== true;

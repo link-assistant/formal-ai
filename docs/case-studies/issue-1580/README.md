@@ -345,3 +345,6 @@ reruns remain pending, and the wider issue stays unfinished.
 
 
 The [link verdict and report-boundary comparison](templates/link-observation-boundaries-20261123.md) records 23 reproducible failures among 33 controls against the original helpers, all 71 repaired/adjacent controls passing, and four passing local gates. Hosted verification remains pending.
+
+
+The [hosted native semantic follow-up](native-semantic-boundaries-20261123.md) records four actual assertion failures, the structured-URL and clarification-policy repairs, and a documentation language regression that fails before and passes after locally. Hosted execution of the native candidate remains pending.

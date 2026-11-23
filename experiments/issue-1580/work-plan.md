@@ -805,3 +805,15 @@ Supplied code and conclusions earn zero independent reasoning/authorship credit.
 - [ ] Verify the combined link changes on the next hosted head; repair every
   current native semantic failure and collect the remaining matrix results
   before a single batched push. Actual native artifact reruns remain pending.
+
+
+- [x] Collect four current-head native assertion failures from reasoning-1,
+  reasoning-2 and interfaces; repair structured source URL punctuation,
+  multilingual referent classification, and documentation prose-language parity.
+  Preserve original failing contracts and all time/attempt budgets. The actual
+  JavaScript citation regression fails before and passes after, with forced
+  language controls; two focused native regressions await hosted execution.
+- [ ] Run all 143 local gates on the complete semantic/link source, collect the
+  rest of the current hosted cohort, and batch every actionable repair before
+  the next push. Verify the repaired native groups and both actual artifact
+  rerun paths; finish the broader acceptance inventory without deferred work.

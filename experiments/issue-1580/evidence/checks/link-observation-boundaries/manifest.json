@@ -13,9 +13,9 @@
     "fail": 0,
     "touchedGates": [
       "workflows",
-      "runner-labels",
-      "ci-speed",
-      "file-size"
+      "check-runner-labels",
+      "check-ci-speed",
+      "check-file-size"
     ]
   },
   "payloadCount": 25,

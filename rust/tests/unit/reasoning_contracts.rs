@@ -72,3 +72,6 @@ mod issue_1180_repository_qa;
 // Preserve all original documentation publisher and routing controls in focused CI.
 #[path = "issue_1101_documentation_question_parity.rs"]
 mod issue_1101_documentation_question_parity;
+
+#[path = "issue_1580_question_boundaries.rs"]
+mod issue_1580_question_boundaries;

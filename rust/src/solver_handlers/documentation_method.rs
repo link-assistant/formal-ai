@@ -231,7 +231,9 @@ pub fn try_with_client<T: SourceTransport>(
     let provider = Provider::for_project(project)?;
     log.append("docs_method:request", prompt);
     log.append("docs_method:project", project.as_str());
-    let language = crate::language::detect(prompt).slug();
+    let language = crate::language::detect_prose(prompt)
+        .unwrap_or_else(|| crate::language::detect(prompt))
+        .slug();
     let acquire_page = |symbol: &str, log: &mut EventLog| {
         let source = provider.page(symbol);
         let capture = match client.fetch(&source) {

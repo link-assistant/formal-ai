@@ -35,3 +35,14 @@ question_necessity_text_predicate_7
   name "replayed_question"
   operation "prefix"
   value "your previous question was:"
+
+# Selecting an unresolved referent is a requirement, not an unknown fact.
+# Keep the original agent-authored policy intact; extend the composed policy.
+question_necessity_class_referent_requirement
+  record_type "question_necessity_class"
+  class "requirement"
+  cue "do you mean"
+  cue "вы имеете в виду"
+  cue "की बात कर रहे हैं"
+  cue "你指的是"
+  cue "te refieres"
