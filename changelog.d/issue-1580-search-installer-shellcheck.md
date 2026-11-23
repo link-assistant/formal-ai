@@ -1,0 +1,1 @@
+Compute the search installer's mirror fallback before passing its environment to the bounded APT helper, preserving existing defaults and explicit overrides while satisfying ShellCheck SC2097 and SC2098.
