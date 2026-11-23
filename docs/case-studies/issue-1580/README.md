@@ -12,6 +12,13 @@ refusal before installation. The remaining current-head workflows are still
 being collected. Broader practice adoption and original acceptance criteria
 remain unfinished. Earlier dated checkpoints retain their original scope.
 
+The [independent native consumer repair](native-consumer-fanout.md) removes a
+two-job workflow throttle; its focused checks pass locally, with new hosted
+scheduling still pending. Complete reading of the 218 root-level Markdown files
+finds one duplicated evidence paragraph, now removed. The
+[review receipt](../../../experiments/issue-1580/evidence/checks/root-case-study-review-20261123/manifest.json)
+binds this subset; nested reports and the full pull-request review remain open.
+
 ## Reproduction and evidence
 
 The issue's workflow table, every issue/PR conversation comment, inline review comments and reviews were read. The interrupted session was recovered from its authenticated Gists; its five commits were preserved, and main was merged forward. The audited main source is `b68d21647e678cce91ec83d5a28ea86b481064bf`; the source checkpoint for this report is `22ffaa73d1b2b0dc800ed2f9093059ac80ddef56`.

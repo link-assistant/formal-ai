@@ -1319,3 +1319,10 @@ Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally 
 - [x] Verify all ten affected JavaScript gates and seal complete before/after evidence. Preserve the atomic repair locally before the next combined push.
 - [ ] Wait for the current cohort, collect every actionable failure and push the complete repair batch once only when the branch is idle.
 - [ ] Qualify uncapped scheduling on exact hosted source; complete every remaining original requirement.
+
+## Root case-study Markdown review, 2026-11-23
+
+- [x] Read every root-level case-study Markdown file: 218 files, 10969 lines, including the current README. Verify each source hash.
+- [x] Remove only one duplicated final evidence paragraph; retain and reconstruct its exact original bytes.
+- [x] All eight affected JavaScript gates pass. Seal this bounded review receipt and preserve the atomic documentation repair before the combined push.
+- [ ] Continue nested reports, remaining source/evidence review and every unmet original acceptance criterion; this subset does not complete the PR.

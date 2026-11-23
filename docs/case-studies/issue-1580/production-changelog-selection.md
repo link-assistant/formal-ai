@@ -44,7 +44,3 @@ issue #1580. PR #1581 remains draft and unmerged.
 Retained preimages, formatting, admission and touched-gate streams are under
 evidence/checks/production-changelog-repair. The fresh template source identity
 is a source comparison, not an executed upstream reproduction.
-
-Retained preimages, formatting, admission and touched-gate streams are under
-evidence/checks/production-changelog-repair. The fresh template source identity
-is a source comparison, not an executed upstream reproduction.
