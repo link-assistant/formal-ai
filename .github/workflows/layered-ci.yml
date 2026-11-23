@@ -7,7 +7,7 @@
 #   js   -- `node --check` over every committed js/**/*.js. Measured green on
 #           the whole 63-file corpus on 2026-09-25, so this tier is a real
 #           parse gate, not ceremony. It also runs the JavaScript suites
-#           (rust/tests/web/), in four budgeted shards, and an edit to a suite
+#           (rust/tests/web/), in measured budgeted groups, and an edit to a suite
 #           wakes it (issue #1017).
 #   ts   -- the js<->ts file-set parity: every .js has its .ts sibling and
 #           the ts tree holds no extras. The fast tier-2 rung; it fails in
@@ -321,10 +321,14 @@ jobs:
     # group 2 with stale weights (13.7s for a measured 189.8s suite). Four
     # groups retained that fast inventory. Issue #1580 removes the hosted
     # subset: PRs, feature dispatches and main use the same full default suite,
-    # nine longest-first groups and unchanged execution budgets. The retained
+    # ten longest-first groups and unchanged execution budgets. The retained
     # timing maxima need over 12,200 worker-seconds: eight four-worker groups
     # cannot fit that conservative projection in 360s. A ninth group retains
-    # all measurements and keeps every projected queue below the deadline.
+    # all measurements and kept every projected queue below the deadline.
+    # Run 45262786254 then exceeded 270s in groups 2 and 9. Replaying all
+    # thirteen retained cohorts selects ten as the smallest group count that
+    # fits the warning threshold plus the unchanged 30s runner allowance.
+    # No weights, test files, worker count or execution limits change.
     # The explicit fast inventory remains available for local development only.
     timeout-minutes: 12
     concurrency:
@@ -333,7 +337,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 5
@@ -473,7 +477,7 @@ jobs:
         id: javascript-plan
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: 9
+          SHARDS: 10
         run: |
           set -euo pipefail
           suites="$RUNNER_TEMP/javascript-suites.txt"
@@ -520,7 +524,7 @@ jobs:
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: 9
+          SHARDS: 10
           PULL_REQUEST_CHECKS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75

@@ -1,5 +1,6 @@
 // Capture every hosted file event with its original job and log identity.
 import assert from 'node:assert/strict';
+import YAML from 'yaml';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {readFileSync, mkdirSync, writeFileSync, copyFileSync} from 'node:fs';
@@ -13,7 +14,12 @@ const read = name => readFileSync(join(input, name), 'utf8');
 const run = JSON.parse(read('run.json'));
 const jobs = JSON.parse(read('jobs.json')).flatMap(page => page.jobs)
   .filter(job => /^js tier .*suite group [0-9]+[)]$/.test(job.name));
-assert.equal(jobs.length, 9);
+const sourceWorkflow = YAML.parse(execFileSync('git',
+  ['show', run.head_sha + ':.github/workflows/layered-ci.yml'], {encoding: 'utf8'}));
+const groups = sourceWorkflow.jobs.js.strategy.matrix.shard;
+assert(Array.isArray(groups) && groups.length > 0);
+assert.deepEqual(groups, Array.from({length: groups.length}, (_, index) => index + 1));
+assert.deepEqual(jobs.map(job => Number(job.name.match(/group ([0-9]+)/)[1])).sort((a, b) => a - b), groups);
 if (retainPartial) {
   assert.equal(run.conclusion, 'failure');
   assert(jobs.every(job => ['success', 'failure'].includes(job.conclusion)));

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import vm from 'node:vm';
+import {gunzipSync} from 'node:zlib';
 import {fileURLToPath} from 'node:url';
 
 const fixture = new URL('./fixtures/meta-reasoner-owner-split/', import.meta.url);
@@ -89,7 +90,7 @@ test('the failed hosted cohort retains 819 durations, one failed file and 103 un
   assert.deepEqual(identity.warnings.map(row => row.shard), [5]);
   assert.equal(identity.unobservedCostsFrom, 'hosted-javascript-e46254ac');
   assert.equal(createHash('sha256').update(raw).digest('hex'), identity.durationsSha256);
-  assert.equal(createHash('sha256').update(readFileSync(new URL('prior-scheduling-floor.lino', base))).digest('hex'),
+  assert.equal(createHash('sha256').update(gunzipSync(readFileSync(new URL('prior-scheduling-floor.lino.gz', base)))).digest('hex'),
     identity.priorSchedulingFloorSha256);
 });
 

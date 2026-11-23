@@ -432,3 +432,5 @@ test('a known-file-only duration import retains the explicit unknown-file fallba
     assert.equal(parseTestDurations(updated).get('known.test.mjs'), observed.size ? 4 : 3);
   }
 });
+
+import '../../../experiments/issue-1580/javascript-capacity-replay.test.mjs';

@@ -2,7 +2,6 @@
 import {readFileSync, readdirSync, writeFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import {join} from 'node:path';
-import YAML from 'yaml';
 import {parseTestDurations, mergeJavaScriptDurations} from '../../scripts/lib/ci-speed-durations.mjs';
 import {durationLookup, partitionProblems, isLongestFirst, planShards} from '../../scripts/lib/ci-speed-shards.mjs';
 
@@ -13,8 +12,11 @@ const current = root + 'hosted-javascript-e46254ac/';
 const prior = readFileSync(current + 'prior-scheduling-floor.lino', 'utf8');
 const rows = readFileSync(current + 'durations.jsonl', 'utf8').trim().split('\n').map(JSON.parse);
 const files = readdirSync('rust/tests/web/').filter(file => file.endsWith('.test.mjs')).map(file => 'rust/tests/web/' + file);
-const count = YAML.parse(readFileSync('.github/workflows/layered-ci.yml', 'utf8')).jobs.js.strategy.matrix.shard.length;
-const cohorts = readdirSync(root).filter(name => name.startsWith('hosted-javascript-')).map(name => {
+// Freeze this historical policy reconstruction at its original nine groups.
+// New capacity evidence is replayed separately by probe-hosted-javascript-capacity.mjs.
+const count = 9;
+const capturedCohorts = ["hosted-javascript-2809ce65", "hosted-javascript-53816c9e-partial", "hosted-javascript-754fd314", "hosted-javascript-79a024bf", "hosted-javascript-8d8", "hosted-javascript-9e945", "hosted-javascript-a558f834", "hosted-javascript-bbc0ac4d", "hosted-javascript-c55a5f9c", "hosted-javascript-c90f94ca", "hosted-javascript-de79e6ec", "hosted-javascript-e46254ac"];
+const cohorts = readdirSync(root).filter(name => capturedCohorts.includes(name)).map(name => {
   const identityPath = join(root, name, 'identity.json');
   let identity;
   try { identity = JSON.parse(readFileSync(identityPath, 'utf8')); }

@@ -489,15 +489,15 @@ test('complete Coding Ladder is explicit main-only with mandatory default consis
 });
 
 
-test('measured full JavaScript plans retain every suite within nine unchanged execution budgets', async () => {
+test('measured full JavaScript plans retain every suite within ten unchanged execution budgets', async () => {
   const job = workflow('layered-ci.yml').jobs.js;
   const plan = job.steps.find(step => step.id === 'javascript-plan');
   const execute = job.steps.find(step => step.name === 'Run this shard of the JavaScript suites');
   for (const [event, ref, count] of [
-    ['pull_request', 'refs/pull/1581/merge', 9],
-    ['workflow_dispatch', 'refs/heads/feature', 9],
-    ['push', 'refs/heads/main', 9],
-    ['workflow_dispatch', 'refs/heads/main', 9],
+    ['pull_request', 'refs/pull/1581/merge', 10],
+    ['workflow_dispatch', 'refs/heads/feature', 10],
+    ['push', 'refs/heads/main', 10],
+    ['workflow_dispatch', 'refs/heads/main', 10],
   ]) {
     const values = {...context(event, ref), fromJSON: JSON.parse};
     const shards = Array.from(evaluate(job.strategy.matrix.shard, values));
@@ -516,7 +516,7 @@ test('measured full JavaScript plans retain every suite within nine unchanged ex
   const path = 'data/meta/javascript-test-durations.lino';
   const secondsOf = durationLookup(readTestDurations(path), Number(read(path).match(/^  default-seconds (\S+)$/mu)[1]));
   const selected = readdirSync('rust/tests/web').filter(name=>name.endsWith('.test.mjs')).map(name=>'rust/tests/web/'+name);
-  const {shards} = planShards(selected, 9, secondsOf);
+  const {shards} = planShards(selected, 10, secondsOf);
   assert.deepEqual(partitionProblems(selected, shards), {missing: [], repeated: [], extra: []});
   assert(isLongestFirst(shards, secondsOf));
   // Warning-budget assertions replay each retained hosted cohort above. The

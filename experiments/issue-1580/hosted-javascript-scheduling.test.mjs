@@ -350,7 +350,7 @@ test('complete e462 costs preserve both runtime warnings and fit the unchanged f
   }
 });
 
-test('the finite owner probe reproduces the deployed policy under every existing scheduling contract', {timeout: 15000}, () => {
+test('the finite owner probe reproduces the historical nine-group policy under its original scheduling contracts', {timeout: 15000}, () => {
   const directory = mkdtempSync(join(tmpdir(), 'issue-1580-owner-policy-'));
   try {
     const result = spawnSync(process.execPath,
