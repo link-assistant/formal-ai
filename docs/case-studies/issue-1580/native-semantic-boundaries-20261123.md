@@ -49,3 +49,6 @@ streams are round-trip hash verified under
 `experiments/issue-1580/evidence/checks/native-semantic-boundaries/`. This is a
 finite semantic repair with zero supplied-code authorship credit; it does not
 complete the broader issue.
+
+
+The first complete candidate gate run is a clean-source diagnostic: 86 pass, three fail and 54 hosted-only exclusions. The failures identify a new underscore record name, a stale embedded seed copy and a generated status count. Renaming the record through the existing notation policy and regenerating both surfaces repairs all three focused gates; both original authored-seed controls still pass. A second complete clean-source run remains required before pushing.

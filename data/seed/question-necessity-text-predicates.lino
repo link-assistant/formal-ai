@@ -38,7 +38,7 @@ question_necessity_text_predicate_7
 
 # Selecting an unresolved referent is a requirement, not an unknown fact.
 # Keep the original agent-authored policy intact; extend the composed policy.
-question_necessity_class_referent_requirement
+referent-requirement-question
   record_type "question_necessity_class"
   class "requirement"
   cue "do you mean"

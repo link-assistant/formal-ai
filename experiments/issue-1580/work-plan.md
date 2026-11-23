@@ -15,6 +15,28 @@ Objective: fully implement and verify issue #1580 in PR #1581 on issue-1580-8d61
 - [ ] Review diff and PR text; commit; push only after all actionable failures are collected and active runs finish.
 - [ ] Verify final-head CI, update PR with Fixes #1580, mark ready, confirm clean tree. External blockers remain explicit and unmerged.
 
+## Active continuation, semantic and link repairs (2026-11-23)
+
+- [x] Refresh all issue and PR comment types; no changed acceptance criterion.
+- [x] Finish all 33 b459 workflows: 31 success, one Pipeline failure and one
+  explicit skip. All four actionable assertions are mapped to candidate fixes;
+  native producer/lint, Layered CI and the other seven native groups pass.
+- [x] Preserve link before/after reproduction: 23 of 33 original controls fail;
+  all 71 repaired and adjacent observations pass, plus four touched gates.
+- [x] Run all 143 entries on clean 3620533fb: 86 pass, three fail and 54 hosted
+  exclusions. Repair every derived-data failure: a new underscore record name,
+  the stale embedded seed mirror and the generated status ledger count. The
+  three failed gates and both authored-seed controls now pass.
+- [ ] Repeat all 143 entries on the clean corrected implementation, archive both
+  complete outcomes and every final gate stream, then push this complete batch.
+- [ ] Qualify the next hosted head and both actual native artifact rerun paths.
+- [ ] Complete the original template/practice, workflow, whole-diff, delivery,
+  trust and dependency criteria; keep the PR draft/unmerged while any are open.
+
+The original issue does not request a new GPU feature. Independent reasoning
+0/20 remains an attribution measure, not an added release/acceptance condition.
+The native goal is usage limited; the unfinished objective is retained here.
+
 ## Active continuation, native parser CI follow-up (2026-11-22)
 
 - [x] Refresh the complete issue, its one comment, all eleven PR conversation
