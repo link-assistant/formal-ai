@@ -12,7 +12,8 @@ The objective remains every requirement of issue #1580 in
 - [x] Extract historical comments and older plan sections, preserving their full text while bringing active data and plan files below the existing warning threshold.
 - [x] Run the real Meta Reasoner owner, all 438 maintained observations and all 143 JavaScript gate entries. Preserve 88 passes, 54 explicit skips and the one stale-citation failure; repair its authoritative citation and pass all ten affected gates.
 - [x] Seal all original failures, complete local outputs and source hashes in bounded-scheduling-repair-20261123. All five requirement commands and six affected ledger gates pass after maintained regeneration; verdicts are unchanged.
-- [ ] Finish the changed-source secret scan and publish one idle-branch batch.
+- [x] Pass the changed-source secret scan (36 files, two complete archives), repair the one trailing blank line and recheck all four partition contracts. Fresh main is already included; both active and queued branch-run lists are empty.
+- [ ] Publish the reviewed idle-branch batch and qualify its exact source in hosted CI.
 - [ ] Qualify the resulting exact source in hosted CI; finish aggregate review and all remaining template, original CI family, dependency, production, identity, semantic context and authorship requirements listed below.
 - Fresh registry responses still show mandatory Chrono in published command-stream 1.13.0 and link-calculator 0.24.0. The former migration is merged upstream but remains unpublished; the latter issue remains open. Both original dependency criteria remain unfinished.
 - Supplied commands and edits earn zero independent authorship or reasoning credit. The native goal remains usage-limited.
