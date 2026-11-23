@@ -1290,3 +1290,14 @@ Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally 
 - [ ] Complete the full current cohort, collect all actionable failures, and push the complete idle-branch batch once.
 - [ ] Qualify the corrected cold-cache scanner and inventory byte validation on the new exact hosted source.
 - [ ] Finish every remaining original criterion; broader template practice adoption, aggregate review, native retention, dependency migrations and production delivery remain unfinished.
+
+
+## Terminal 0b74 and complete repair batch, 2026-11-23
+
+- [x] Wait for all 33 workflows; preserve 33 complete log streams and paginated jobs/checks.
+- [x] Verify 31 successful, one failed and one explicitly skipped workflow; collect the sole failed scanner control before any new push.
+- [x] Reconcile all ten native groups (441 pass), admission (294 pass), registry (4 unit and 44 CLI pass) and the three-lock audit.
+- [x] Read targeted failure/warning contexts; preserve two low OpenSSF dependency scores, the historical unmaintained warning and unknown publication authority as unfinished observations.
+- [x] Verify the two semantic repairs locally and keep their original failures; eight staged-source gates and committed-source secret scanning pass before this terminal receipt.
+- [ ] Push the complete batch once after fresh idle-branch/main checks; qualify repaired Node 22 scanner and inventory bytes on the exact new head.
+- [ ] Finish aggregate review, all applicable template practices and every remaining original requirement. Keep PR #1581 draft and unmerged.
