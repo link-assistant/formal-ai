@@ -1391,3 +1391,31 @@ Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally 
 - [x] Verify every relative Markdown filesystem target while leaving fragment anchors and external availability uncredited.
 - [x] Preserve the dated partial/source/runtime distinctions and seal this four-file subset without claiming full aggregate evidence review.
 - [ ] Complete all remaining aggregate review, applicable practices and original acceptance criteria.
+
+## Complete e462 hosted scheduling observations, 2026-11-23
+
+- [x] Preserve all 922 completed file observations across nine successful jobs, both actual 270-second warnings and the tested merge identity.
+- [x] Verify the three split dialogue owners and all 432 maintained cases on the exact hosted source.
+- [x] Reproduce the scheduling failure before the repair: ten historical cases pass, the complete new cohort fails.
+- [x] Evaluate thirteen finite reserve candidates against every retained cohort; update weights from the complete observation set without lowering any prior floor.
+- [x] All eleven focused scheduling cases pass; retain all earlier failed observations and unchanged shard, worker, warning and deadline settings.
+- [x] Run every required JavaScript gate, collect the complete current terminal cohort, review targeted diagnostics and seal the complete observations. Aggregate PR review remains separate and unfinished.
+- [ ] Push the complete batch only after the branch is idle; qualify the new scheduling on the exact hosted source.
+- [ ] Finish every unmet original criterion; keep PR #1581 draft and unmerged.
+
+### Admission path encoding and corrected dialogue reserve (2026-11-23)
+
+- [x] Reproduce the actual StringDecoder substitution bug with three malformed byte sequences in real Git trees; all three incorrectly passed before repair.
+- [x] Replace lossy decoding with a fatal streaming decoder while retaining BOM characters, bounded spooling, default-off inventory tracing and cleanup.
+- [x] Correct the reserve-only draft that failed existing dialogue-owner separation; retain that failed observation, use the measured three-owner aggregate with unchanged 65% reserve, and preserve every historical floor.
+- [x] Verify six real Git cases, eleven timing cohorts, four ownership cases, 184 maintained admission cases and every JavaScript gate sequentially: 89 pass, 54 explicitly skip, zero fail.
+- [ ] Review, commit and push the complete batch only with no current branch runs in progress, then qualify every hosted check and warning on that exact head.
+- [ ] Finish the remaining original issue and applicable template-practice criteria; passing PR checks are not whole-issue completion. Independent supplied-script authorship credit remains zero.
+
+## Terminal e462 cohort and actual warning review, 2026-11-23
+
+- [x] Wait for all 33 workflows and preserve every complete CLI stream, paginated jobs and checks: 32 successes and one explicit skip.
+- [x] Reconcile 441 native consumer passes, 294 admission passes, 50 registry passes and the complete 922-file Layered cohort.
+- [x] Classify 3,981 diagnostic candidates; source-check the three deliberately rejected proof pins and retain all six actual warnings.
+- [x] Seal original collection, targeted reviews, reviewed source bytes and feedback with per-member hashes and archive round-trip verification.
+- [ ] Qualify the drafted scheduling and fatal admission decoder repairs on their exact hosted head; complete every original unmet criterion.

@@ -1,0 +1,26 @@
+{
+  "baseSource": "e46254ac53c360e4c45652fa7abd63fb0d9ecad7",
+  "localGateCounts": {
+    "pass": 89,
+    "skip": 54,
+    "fail": 0
+  },
+  "focusedPasses": {
+    "realGit": 6,
+    "scheduling": 11,
+    "dialogueOwnership": 4,
+    "maintainedAdmission": 184
+  },
+  "keepsOriginalFailures": true,
+  "hostedQualification": "pending exact new source",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 931870,
+    "sha256": "6e42f31287d0897d7de8029e63611a3e85b97c08e2ed6d271e59166bdbacb6d6"
+  },
+  "members": 244,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T19:31:28.831127+00:00"
+}
