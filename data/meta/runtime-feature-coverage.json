@@ -9,7 +9,7 @@
     {"path":"data/meta/server-routes.lino","sha256":"16ffc0a63bb0b64473533f86dfae41bc0a92c24d5d1050bfc563af72e6c93863"},
     {"path":"js/server/dispatch.mjs","sha256":"668ee96c3788f67459076dee7cbfb9cd60db4069ba78415f7c83fb63ee06b0aa"},
     {"path":"rust/tests/fixtures/server-parity/requests.lino","sha256":"461296fe364baf0f2459a2b7118473173f3da85a5fe7b4236ef3850fb31842e2"},
-    {"path":"js/worker/formal_ai_worker_solve.js","sha256":"4836c2be60ab1f58b608fc00f86ae2f2a0f796bc763a8a1d40ddfee9fb9576a2"},
+    {"path":"js/worker/formal_ai_worker_solve.js","sha256":"dd7a53192d6da98de4571e09817ff689bcbc58e4b6b676002cb6149a343bc7a8"},
     {"path":"data/seed/browser-handler-precedence.lino","sha256":"a4c83dade5f33fb1ddcdb9d10b9e00d561ddaa33fbb9a5d6decfb89731b16d46"},
     {"path":"data/seed/tools.lino","sha256":"41596d892930a35f5ba9c1b1c1651978d131a84f0bcc65f8f44d37f5bcfdb8ce"},
     {"path":"data/seed/agentic-tool-capabilities.lino","sha256":"35ff90220979a63967736a2bd766285b9c6f496a15006ac14ed0165a0ca5b291"}

@@ -31,6 +31,12 @@ from starting; the generator was run directly once to restore that boundary.
 This bootstrap execution receives zero Formal AI authorship or verification
 credit. Subsequent commands run through Formal AI.
 
+The first full local run found stale generated coverage and per-module line
+budgets after these moves. The maintained generator refreshes the coverage
+inventory. Only the four affected budget shards change: their combined ceiling
+falls from 3982 to 3979 lines, with each transfer explained in its rationale.
+The per-module check and the 3000-line migration target remain enforced.
+
 The evidence indexes retain multiline JSON with short arrays and objects on one
 line. Parsing the before and after bytes yields identical JSON values,
 including every source identity, archive member, hash and qualification flag.
