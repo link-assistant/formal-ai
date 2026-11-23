@@ -11,10 +11,13 @@ No original acceptance criterion is waived.
   commands and two passing test names. The two APT deadlines recover; crates.io
   publication authority remains unknown. Full literal log review is not claimed.
   See the sealed terminal-baseline receipt and its case study.
-- The whole-producer rerun was requested once at 13:18:37 UTC. Attempt 2 has
-  passed its producer; terminal qualification, distinct attempt artifact and
-  all ten consumers remain pending. Its observer permits local descendant commits
-  while refusing remote source changes. Do not push during this current-head run.
+- The whole-producer rerun was requested once at 13:18:37 UTC. Attempt 2 finishes
+  successfully: its distinct new artifact and all ten consumers pass 441 selected
+  tests, with each consumer's downloaded digest matching the producer. Original
+  attempt-1 artifact retention fails: the listing omits it and direct metadata
+  returns HTTP 404. The stopped observer and read-only follow-up are both sealed.
+  Original retention remains unfinished; no second rerun was requested. These
+  baseline observations do not qualify later local repairs.
 - Command-receipt repair 83cc960ad preserves complete output and qualifies actual
   command/exit receipts. Eleven cases fail before and all sixteen pass after;
   an actual driver check verifies full output. Seven affected gates pass.
@@ -50,7 +53,8 @@ No original acceptance criterion is waived.
   22 maintained twin cases and eleven affected JavaScript gates pass. Two new
   Rust parser cases await hosted execution.
   Existing limits, fatal traversal/read errors and escaped annotations remain.
-  Malformed growth observations conservatively report every size warning.
+  Malformed growth observations conservatively report every size warning. The
+  committed-source secret gate passes across all changes since bc08222b5.
 - All eight template maps cover 3,028 blobs. Applicable-practice adoption and
   execution, original family/full-suite budgets, strict style debt, main-only
   publication/delivery, cache reliability, live useful delivery, serving identity,

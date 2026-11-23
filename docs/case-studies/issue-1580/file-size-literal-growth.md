@@ -47,7 +47,8 @@ qualification remain pending.
 The [sealed local receipt](../../../experiments/issue-1580/evidence/checks/file-size-literal-growth-20261123/manifest.json)
 retains the unchanged before source, all focused checks, failed draft, source
 snapshots and the pinned template comparison. Every archived member is read back
-and hash checked. This fixes observed warning ownership; the repository's larger
+and hash checked. The [committed-source secret gate](../../../experiments/issue-1580/evidence/checks/file-size-literal-final-checks-20261123/manifest.json)
+passes across all changes since bc08222b5. This fixes observed warning ownership; the repository's larger
 strict-style debt and every other unmet issue #1580 criterion remain open.
 [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581) remains draft.
 Supplied edits and conclusions earn zero independent authorship credit.
