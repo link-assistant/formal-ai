@@ -1333,3 +1333,10 @@ Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally 
 - [x] Verify the tested merge commit and branch source have identical Git trees and bind six unchanged production/test source identities.
 - [x] Reconcile practice row 5 while retaining broader updater and production dependency outcomes as unfinished.
 - [ ] Complete the current cohort, every remaining template practice, original production delivery and all other original criteria. Keep PR #1581 draft.
+
+## Hosted link observation controls, 2026-11-23
+
+- [x] Verify all 33 focused cases in Layered job 137845376155, including five real finite local HTTP cases and 26 actual CLI controls.
+- [x] Preserve the complete original job stream, exact passing lines, tested merge-tree proof and six unchanged source identities.
+- [x] Reconcile practice row 21 while retaining live external availability, broader practice adoption and the complete issue as unfinished.
+- [ ] Await the current cohort and complete every remaining original criterion; keep PR #1581 draft and unmerged.

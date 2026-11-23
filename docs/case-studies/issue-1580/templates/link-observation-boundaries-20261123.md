@@ -38,5 +38,17 @@ files or the complete issue.
 The 71 focused tests and four touched JavaScript gates pass. Complete original,
 candidate and pinned-template evidence is hash-checked and round-trip verified in
 `experiments/issue-1580/evidence/checks/link-observation-boundaries/`. Hosted
-verification remains pending the next combined push. Supplied controls and edits
+verification is recorded below. Supplied controls and edits
 receive zero independent authorship credit.
+
+## Hosted boundary controls
+
+[Layered CI job 137845376155](https://github.com/link-assistant/formal-ai/actions/runs/45218148759/job/137845376155)
+passes all 33 controls, including all five finite local HTTP cases and all 26
+actual CLI controls. The tested merge commit has the same Git tree as branch
+head `7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f`. Six production, regression and
+workflow source identities remain unchanged locally. The complete original job
+stream, exact passing lines, source snapshots and tree proof are preserved in
+`experiments/issue-1580/evidence/checks/link-observation-hosted-7ec0/`.
+This verifies the supplied report and retry boundaries. External archive and link
+availability, broader template adoption and the full issue remain unfinished.

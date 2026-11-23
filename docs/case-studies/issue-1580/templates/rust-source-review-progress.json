@@ -6797,7 +6797,7 @@
         "scripts/issue-237.test.mjs"
       ],
       "assessment": "Both consumers validate complete timeout/error counts and reject checker runtime/configuration failures. Retries are limited to transient/transport failures; permanent verdicts remain failed, bodies are cancelled, and recovery gates cover the whole report. Archive lookup uncertainty remains distinct from confirmed absence. Formal AI counterparts need exact comparison with current maintained tests; historical filename caches or mocked lookup success do not establish live link health.",
-      "status": "formal-counterpart-local-controls-verified-hosted-pending",
+      "status": "formal-counterpart-hosted-boundary-controls-verified-live-health-open",
       "formalAiPaths": [
         "scripts/check-web-archive.mjs",
         "scripts/recheck-broken-links.mjs",
@@ -6824,7 +6824,21 @@
             "check-file-size"
           ]
         },
-        "hosted": "pending next combined push"
+        "hosted": {
+          "head": "7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f",
+          "testedCheckout": "7ac60761cdf0edd3206b73ebfe0f42f7ce2e8c98",
+          "sameTree": true,
+          "run": 45218148759,
+          "job": 137845376155,
+          "url": "https://github.com/link-assistant/formal-ai/actions/runs/45218148759/job/137845376155",
+          "focusedTests": 33,
+          "pass": 33,
+          "fail": 0,
+          "realLocalHttpCases": 5,
+          "externalServicesMockedAtTransportBoundary": true,
+          "liveExternalAvailabilityVerified": false,
+          "evidence": "experiments/issue-1580/evidence/checks/link-observation-hosted-7ec0/manifest.json"
+        }
       }
     },
     {
