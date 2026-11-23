@@ -918,3 +918,19 @@ See [the observation checkpoint](../../docs/case-studies/issue-1580/ci-observati
 The CodeQL checkpoint and CI observation-boundary case study distinguish actual
 execution from payload semantics. The native goal remains usage-limited; the
 objective is unfinished and supplied work receives zero independent credit.
+
+## Stale capture and complete local replay (2026-11-23)
+
+- [x] Preserve the clean 423be15fc observation: 18 procedure cases pass; 87 gates
+  pass, two fail on the evidence manifest size, 54 require hosted context.
+- [x] Preserve the entire parsed manifest while compacting its flat records from
+  3,462 lines to 541. Original archive bytes and all hashes are unchanged.
+- [x] Reproduce a stale contributing capture losing its age warning; repair both
+  walkers and pass the two focused procedure controls and seven source-walk cases.
+- [x] Pin the CodeQL release source and exact published rust-analyzer 0.0.358
+  sources. Distinguish causal inference from the actual included-file mismatch.
+- [ ] Run the full 19-case procedure suite and all 143 gates on the next clean
+  commit. Preserve every result; refresh main and run queues before a single push.
+- [ ] Publish the distinct included-file upstream report with working evidence
+  links, qualify next-head CI and both actual native artifact reruns, and finish
+  every remaining original criterion. Keep external criteria unfinished and PR draft.

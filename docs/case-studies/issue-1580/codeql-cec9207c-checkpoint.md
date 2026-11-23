@@ -41,13 +41,23 @@ source-bound mismatch occurs for handler-promotion and language seed payloads.
 Therefore a successful producer and zero SARIF findings do not prove semantic
 extraction of these actual included files.
 
-Current rust-analyzer [include_str expansion](https://github.com/rust-lang/rust-analyzer/blob/37721d141370e0904033f7fc3a3abe11c446c4c1/crates/hir-expand/src/builtin/fn_macro.rs#L874)
-explicitly returns an empty string when a relative file cannot be loaded and
-documents excluded non-Rust files as a limitation. The pinned source matches the
-retained bytes. This is consistent with the observed mismatch, but the exact
-rust-analyzer revision vendored by this CodeQL bundle is not established here;
-that causal attribution remains an inference. The observed payload mismatch
-itself comes from the actual current producer.
+The official CodeQL 2.27.5 tag resolves to
+`ceeaafac4e629e0e39de04d40c719d7d18b4b612`. Its
+[extractor Cargo manifest](https://github.com/github/codeql/blob/ceeaafac4e629e0e39de04d40c719d7d18b4b612/rust/extractor/Cargo.toml)
+selects rust-analyzer crates 0.0.358. The exact published `ra_ap_load-cargo`
+source loads extensions `rs`, `toml` and `md` (lines 305–307). The corresponding
+`ra_ap_hir_expand` source explicitly returns an empty string when an included
+relative file cannot be loaded (lines 890–898). The version-matched config exposes
+extra include directories; no supported arbitrary-extension setting was established.
+These sources support a causal inference consistent with the actual `.lino`
+mismatch. The extractor was not rebuilt, and no reduced independent crate was
+analyzed. Full binary dependency identity was not independently proven.
+
+The published crate archives, exact extracted source members, version-matched
+CodeQL sources and proposed distinct upstream report are retained with round-trip
+hashes in `experiments/issue-1580/evidence/checks/codeql-versioned-includes-20261123/`.
+The actual query result above remains the direct evidence; source analysis is not
+a replacement for a corrected producer and payload comparison.
 
 The earlier [macro-expansion issue #19982](https://github.com/github/codeql/issues/19982)
 is closed and its maintainer asks for distinct remaining problems to be reported

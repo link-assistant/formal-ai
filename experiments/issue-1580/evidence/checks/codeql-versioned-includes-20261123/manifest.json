@@ -1,0 +1,62 @@
+{
+  "scope": "Version-matched published CodeQL/rust-analyzer source and proposed upstream report; no independently rebuilt extractor or minimal-crate analysis.",
+  "independentAuthorshipCredit": 0,
+  "roundTripVerified": true,
+  "archive": {
+    "path": "complete-sources.tar.gz",
+    "bytes": 131959,
+    "sha256": "079b3701c2b339908d3f965ecd5ec0ac7ebf1d47c308a590f8cd9e370ffefce0"
+  },
+  "files": [
+    {
+      "path": "codeql-2.27.5-source-pin.txt",
+      "bytes": 41,
+      "sha256": "be7a3d934cfffefaaae17178a77d24beba1f8fe140da9c31bce2416ac860f25c"
+    },
+    {
+      "path": "codeql-2.27.5-Cargo.toml",
+      "bytes": 1194,
+      "sha256": "899ecded82eb4a062dcfeb74b6d739f21df8969b15ea0780c73ac7272dfefd59"
+    },
+    {
+      "path": "codeql-2.27.5-rust-config.rs",
+      "bytes": 11079,
+      "sha256": "d32bb56acd6b82eeb36843120bf00cfac82bff57018f1a501f0f1983fc098808"
+    },
+    {
+      "path": "ra_ap_hir_expand-0.0.358.crate",
+      "bytes": 82627,
+      "sha256": "f8ffb0602b9cc8b4647b902db5c4fca4a8a37ba7a20f28424aed64c7dd2866d6"
+    },
+    {
+      "path": "ra_ap_load-cargo-0.0.358.crate",
+      "bytes": 22852,
+      "sha256": "ee8bbf755a6d81544cd576150986601069918ab46fa5677275ce3b9cc875bc73"
+    },
+    {
+      "path": "ra_ap_hir_expand-0.0.358-source.rs",
+      "bytes": 33343,
+      "sha256": "29b073077d2a28d60297bfc55c4ae7704d10daa365fb836f704de259a75d1d22"
+    },
+    {
+      "path": "ra_ap_load-cargo-0.0.358-source.rs",
+      "bytes": 38990,
+      "sha256": "d27b5d779a5da82f461e0f0e91d26e3d7dbe41fee2d689925f55cd037d42fd4a"
+    },
+    {
+      "path": "codeql-included-payload-report.md",
+      "bytes": 4308,
+      "sha256": "ffedc237be24c65c0b664eea5c4ccb8515b2b71d02b1aa6e91ace59e622b0bba"
+    },
+    {
+      "path": "seal-codeql-versioned-source.py",
+      "bytes": 4647,
+      "sha256": "50267cf1082d8504fa94805dacb17e5122fdec0bce771f3fe96c96f86599f5ae"
+    },
+    {
+      "path": "stale-source-walk-neighbor.log",
+      "bytes": 723,
+      "sha256": "5f9f2a9d3c8a75dcdcdff8edb4e41c7b08812428e0d0007204b44519ff879ae8"
+    }
+  ]
+}
