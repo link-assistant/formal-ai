@@ -7442,14 +7442,31 @@
         "dev/log/issues/247/pulls/248/lychee-upstream.json.txt",
         "dev/log/issues/247/pulls/248/npm-check-updates-release.json"
       ],
-      "assessment": "Read the complete historical 473-line Cargo lock, including duplicate syn 3.0.10 entries and missing syn 2.0.111 references; this is invalid historical input, not a package graph to adopt. Strict actual lock validation and propagation of audit failures remain required. The complete lychee report and maintainer response distinguish an early TLS reset from a post-request reset: retries require the underlying I/O kind and the nested io::Error wrapper, while permanent HTTP errors remain failures. Formal AI already carries the targeted recheck helper; current source and runtime equivalence still need verification. npm-check-updates 23.1.1 historical metadata declares Node ^22.22.2 or ^24.15.0 or >=26.0.0 and npm >=10; a matching historical major alone does not prove actual updater compatibility. Preserve historical engine/package identities without calling these latest releases or current runtime evidence.",
-      "status": "literal-history-reviewed-current-counterparts-open",
+      "assessment": "Read the complete historical 473-line Cargo lock, including duplicate syn 3.0.10 entries and missing syn 2.0.111 references; this is invalid historical input, not a package graph to adopt. Strict actual lock validation and propagation of audit failures remain required. The complete lychee report and maintainer response distinguish an early TLS reset from a post-request reset: retries require the underlying I/O kind and the nested io::Error wrapper, while permanent HTTP errors remain failures. Formal AI already carries the targeted recheck helper; current source and runtime equivalence still need verification. npm-check-updates 23.1.1 historical metadata declares Node ^22.22.2 or ^24.15.0 or >=26.0.0 and npm >=10; a matching historical major alone does not prove actual updater compatibility. Preserve historical engine/package identities without calling these latest releases or current runtime evidence. The current Node recheck helper is now exercised against finite real loopback resets before any TLS HTTP request and after an HTTP request line. Each exhausted case makes exactly three physical connection attempts; a separate post-request case recovers only after an actual later HTTP 200. These controls qualify the external helper, not current lychee internals, strict malformed-lock rejection by an actual Cargo audit binary, or updater engine compatibility.",
+      "status": "current-recheck-real-reset-controls-local-verified-other-contracts-open",
       "formalAiPaths": [
         "scripts/check-rust-dependencies.sh",
         "scripts/recheck-broken-links.mjs",
         ".github/workflows/dependencies-latest.yml"
       ],
-      "verification": null
+      "verification": {
+        "caseStudy": "docs/case-studies/issue-1580/link-transport-reset-controls.md",
+        "receipt": "experiments/issue-1580/evidence/checks/link-transport-reset-20261123/manifest.json",
+        "regression": "experiments/issue-1580/link-transport-reset.test.mjs",
+        "maintainedOwner": "rust/tests/web/issue-1580-template-observations.test.mjs",
+        "localTransportCasesPassed": 3,
+        "physicalConnections": {
+          "earlyTlsExhausted": 3,
+          "postRequestExhausted": 3,
+          "postRequestRecovery": 2
+        },
+        "currentLycheeBinaryExecuted": false,
+        "actualMalformedLockAuditVerified": false,
+        "updaterEngineCompatibilityVerified": false,
+        "hostedNewControlsExecuted": false,
+        "allApplicablePracticeVerified": false,
+        "independentAuthorshipCredit": 0
+      }
     },
     {
       "practice": "Audit and refresh every actual committed dependency inventory without losing producer status",

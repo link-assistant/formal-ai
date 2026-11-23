@@ -88,6 +88,7 @@ import '../../../experiments/issue-1580/environment-command-routing.test.mjs';
 import '../../../experiments/issue-1580/template-java-boundary-controls.test.mjs';
 
 import '../../../experiments/issue-1580/link-observation-boundaries.test.mjs';
+import '../../../experiments/issue-1580/link-transport-reset.test.mjs';
 
 import '../../../experiments/issue-1580/formal-command.test.mjs';
 import '../../../experiments/issue-1580/cnl-dialogue-partition.test.mjs';

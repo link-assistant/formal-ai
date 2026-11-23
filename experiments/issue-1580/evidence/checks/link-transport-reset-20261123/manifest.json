@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-23T23:55:55.450803+00:00",
+  "purpose": "Current external recheck helper: real early TLS and post-request reset controls",
+  "sourceHeadBeforeChanges": "ce9bf24bda3e0be7c00b31ea64e69f029a6f4212",
+  "archive": "complete-observations.tar.gz",
+  "archiveSha256": "e7400ed6146d18b87daa1aea01da05b8abca5cfadb2e1867f60e9a340127f30d",
+  "archiveBytes": 168256,
+  "members": 42,
+  "membersIndex": "members.json.gz",
+  "membersSha256": "12005f07ebbf198048fd5ea516b26e81c40d7be6cbb87ab0ee257ce5b7ba2a97",
+  "roundTripVerified": true,
+  "local": {
+    "focusedControlsPassed": 3,
+    "maintainedOwnerPassed": 444,
+    "affectedGatesPassed": 11,
+    "maintainedOwnerSeconds": 216.82639898406342
+  },
+  "hostedNewControlsExecuted": false,
+  "nativeRustExecuted": false,
+  "currentLycheeBinaryExecuted": false,
+  "allApplicablePracticeVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "independentReasoningCredit": 0
+}
