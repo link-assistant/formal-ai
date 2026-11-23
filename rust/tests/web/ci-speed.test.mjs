@@ -423,3 +423,12 @@ test('observed behavior-range parent suites start in the first worker wave withi
   }
   assert.deepEqual(planShards([...files].reverse(), 9, secondsOf).shards, shards);
 });
+
+test('a known-file-only duration import retains the explicit unknown-file fallback', () => {
+  const original = 'test-durations\n  default-seconds 0.4\n  test "known.test.mjs"\n    seconds 3\n';
+  for (const observed of [new Map(), new Map([['known.test.mjs', {seconds: 4, complete: true}]])]) {
+    const updated = mergeJavaScriptDurations(original, observed, {raiseOnly: true});
+    assert.match(updated, /^  default-seconds 0\.4$/mu);
+    assert.equal(parseTestDurations(updated).get('known.test.mjs'), observed.size ? 4 : 3);
+  }
+});

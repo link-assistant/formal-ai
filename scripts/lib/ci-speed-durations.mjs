@@ -301,6 +301,11 @@ export function mergeJavaScriptDurations(text, observed, { source, floor = 2, re
     const mean = unrecorded.reduce((sum, value) => sum + value, 0) / unrecorded.length;
     const previousDefault = raiseOnly ? Number(text.match(/^ {2}default-seconds (\S+)$/mu)?.[1] ?? 0) : 0;
     out.push(`  default-seconds ${Math.max(previousDefault, 0.1, Math.round(mean * 100) / 100)}`);
+  } else {
+    // Known-file-only (or empty) imports have no new fallback sample.
+    // Preserve the existing policy instead of silently reverting to 0.1s.
+    const existingDefault = text.match(/^ {2}default-seconds \S+$/mu)?.[0];
+    if (existingDefault) out.push(existingDefault);
   }
   for (const entry of entries) out.push(...entry.comments, `  test "${entry.file}"`, `    seconds ${entry.text}`, ...entry.extra);
   return `${out.join('\n')}\n`;
