@@ -24,6 +24,7 @@ test('PR, feature dispatch and main plan the identical complete default JavaScri
   assert(expected.includes('rust/tests/web/pull-request-1188-teach-f.test.mjs'));
   const directory=mkdtempSync(join(tmpdir(),'complete-javascript-plan-'));
   t.after(()=>rmSync(directory,{recursive:true,force:true}));
+  writeFileSync(join(directory,'.bashrc'),'printf host-startup-read >&2; exit 97\n');
   for(const [event,ref] of [['pull_request','refs/pull/1581/merge'],['workflow_dispatch','refs/heads/feature'],['push','refs/heads/main']]){
     const shards=Array.from(evaluate(job.strategy.matrix.shard,event,ref));
     assert.deepEqual(shards,mainShards);
@@ -34,8 +35,8 @@ test('PR, feature dispatch and main plan the identical complete default JavaScri
     const actual=[];
     for(const shard of shards){
       const output=join(directory,'outputs');writeFileSync(output,'');
-      const result=spawnSync('bash',['-c',plan.run],{encoding:'utf8',timeout:10000,maxBuffer:65536,
-        env:{...process.env,RUNNER_TEMP:directory,GITHUB_OUTPUT:output,SHARD:String(shard),SHARDS:String(shards.length)}});
+      const result=spawnSync('bash',['--noprofile','--norc','-c',plan.run],{encoding:'utf8',timeout:10000,maxBuffer:65536,
+        env:{...process.env,HOME:directory,BASH_ENV:'/dev/null',ENV:'/dev/null',SSH_CLIENT:'127.0.0.1 49152 22',RUNNER_TEMP:directory,GITHUB_OUTPUT:output,SHARD:String(shard),SHARDS:String(shards.length)}});
       assert.equal(result.error,undefined,String(result.error));
       assert.equal(result.status,0,result.stdout+result.stderr);
       const selected=read(join(directory,'javascript-shard.txt')).trim().split('\n');

@@ -28,13 +28,13 @@ def observe(wrapper, case="expired-parent-success"):
         cases = {
             'expired-parent-success': ('sleep 4', 0),
             'expired-parent-failure': ('sleep 4', 7),
-            'term-resistant': ("bash -c 'trap \"\" TERM; exec sleep 4'", 0),
-            'delayed-kill': ("bash -c 'trap \"\" TERM; exec sleep 4'", 0),
+            'term-resistant': ("bash --noprofile --norc -c 'trap \"\" TERM; exec sleep 4'", 0),
+            'delayed-kill': ("bash --noprofile --norc -c 'trap \"\" TERM; exec sleep 4'", 0),
             'short-success': ('sleep 0.2', 0),
             'short-failure': ('sleep 0.2', 7),
             'warning-only': ('sleep 4', 0),
             'inspection-unavailable': ('sleep 4', 0),
-            'inspection-unavailable-delayed-kill': ("bash -c 'trap \"\" TERM; exec sleep 4'", 0),
+            'inspection-unavailable-delayed-kill': ("bash --noprofile --norc -c 'trap \"\" TERM; exec sleep 4'", 0),
         }
         if case in ('inspection-unavailable', 'inspection-unavailable-delayed-kill'):
             bin_directory = Path(temporary) / 'bin'
@@ -57,8 +57,8 @@ def observe(wrapper, case="expired-parent-success"):
             environment['BASH_ENV'] = str(delayed_kill)
         child, status = cases[case]
         environment['TEST_BUDGET_ENFORCE'] = 'false' if case == 'warning-only' else 'true'
-        command = ['bash', str(Path(wrapper).resolve()), '1', 'finite child fixture',
-                   'bash', '-c', child + ' & printf "%s\\n" "$!" > "$BUDGET_FIXTURE_PID"; '
+        command = ['bash', '--noprofile', '--norc', str(Path(wrapper).resolve()), '1', 'finite child fixture',
+                   'bash', '--noprofile', '--norc', '-c', child + ' & printf "%s\\n" "$!" > "$BUDGET_FIXTURE_PID"; '
                    + 'printf "fixture stdout\\n"; printf "fixture stderr\\n" >&2; exit ' + str(status)]
         started = time.monotonic()
         process = subprocess.Popen(command, env=environment, stdout=subprocess.PIPE,
@@ -73,6 +73,14 @@ def observe(wrapper, case="expired-parent-success"):
             else:
                 raise RuntimeError('Finite fixture exceeded its observation ceiling')
             wrapper_seconds = time.monotonic() - started
+            if not pid_file.exists():
+                stdout, stderr = process.communicate()
+                raise RuntimeError('Fixture never wrote its worker PID: ' + json.dumps({
+                    'argv': command, 'exitCode': process.returncode,
+                    'wrapperExitSeconds': wrapper_seconds,
+                    'stdout': stdout.decode(errors='replace'),
+                    'stderr': stderr.decode(errors='replace'),
+                }))
             worker = int(pid_file.read_text().strip())
             stat_file = Path('/proc') / str(worker) / 'stat'
             worker_state = stat_file.read_text().split(') ', 1)[1].split()[0] if stat_file.exists() else None
