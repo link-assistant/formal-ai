@@ -45,3 +45,13 @@ for every mixed empty-fragment batch. Native execution remains hosted-only.
 The report drafts are under `experiments/issue-1580/upstream/`. Publish immutable
 executable evidence before filing. Supplied code and analysis earn zero independent
 Formal AI authorship or accepted-reasoning credit.
+
+
+The two distinct defects are now reported as [Java template #34](https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/34)
+and [Java template #35](https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/35).
+Immediately before publication, all 33 existing issue/PR entries were unchanged,
+current upstream main matched the reviewed source pin, and four immutable GitHub
+evidence files matched their local bytes. Both posted titles and complete bodies
+were fetched and verified. The publication archive preserves those observations,
+source identities and exact report bodies. Reporting does not establish an
+upstream repair or finish the complete Java semantic/runtime comparison.

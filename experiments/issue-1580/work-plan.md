@@ -771,3 +771,11 @@ independent authorship or reasoning credit.
   unchanged clean source before/after. Preserve every gate stream and hashes.
 - [ ] Qualify the next exact published head, exercise both actual native artifact
   rerun paths, and complete all remaining original issue acceptance criteria.
+
+
+- [x] Publish distinct Java manual-dispatch and fragment-preservation reports as
+  upstream issues 34 and 35. Verify unchanged current source, all 33 existing
+  issue/PR entries, four published evidence files, and both complete posted bodies.
+  Preserve all publication observations and round-trip archive hashes.
+- [ ] Complete the remaining Java/template semantic and runtime comparisons;
+  reporting alone does not establish an upstream fix or issue completion.
