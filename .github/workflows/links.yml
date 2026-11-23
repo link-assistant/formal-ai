@@ -250,8 +250,11 @@ jobs:
       - name: Fail if broken links were found
         # `!cancelled()`, not `always()`: a cancelled job must not append a
         # "broken links" error to a run that never finished checking them.
+        # Require a nonempty output and compare strings: missing/null observations
+        # can coerce to numeric zero and must never count as checker success.
         if: >-
-          ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 &&
+          ${{ !cancelled() &&
+          (!steps.lychee.outputs.exit_code || steps.lychee.outputs.exit_code != '0') &&
           (steps.lychee.outputs.exit_code != '2' || steps.recheck.outputs.all_recovered != 'true') }}
         run: |
           echo "::error::Broken live links were detected."

@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import YAML from 'yaml';
+import {Script} from 'node:vm';
 import http from 'node:http';
 import {once} from 'node:events';
 import {spawnSync} from 'node:child_process';
@@ -178,3 +180,54 @@ globalThis.fetch = async url => {
     }
   });
 }
+
+// This workflow expression uses only string comparisons, numeric comparisons and
+// Boolean status operators. For these lower-case string fixtures JS loose
+// equality agrees with GitHub's documented numeric coercion. This does not
+// emulate arbitrary Actions expressions, context lookup or runner execution.
+// https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#operators
+function terminalGate(exitCode, recovered, cancelled = false) {
+  const workflow = YAML.parse(readFileSync(
+    new URL('../../.github/workflows/links.yml', import.meta.url), 'utf8'));
+  const step = workflow.jobs['link-checker'].steps.find(
+    item => item.name === 'Fail if broken links were found');
+  const expression = step.if.replace(/^\s*\$\{\{\s*|\s*\}\}\s*$/gu, '');
+  const selected = new Script(expression).runInNewContext({
+    cancelled: () => cancelled,
+    steps: {lychee: {outputs: {exit_code: exitCode}},
+      recheck: {outputs: {all_recovered: recovered}}},
+  }, {timeout: 100});
+  const child = spawnSync('/bin/bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail',
+    '-c', selected ? step.run : ':'], {
+    encoding: 'utf8', timeout: 2000, maxBuffer: 65536,
+    env: {PATH: '/usr/bin:/bin', BASH_ENV: '/dev/null'},
+  });
+  assert.ifError(child.error);
+  return child;
+}
+
+test('an absent checker exit output cannot clear the deployed terminal link gate', {timeout: 10000}, () => {
+  // Nonexistent step outputs resolve to the empty string in Actions. Recovery
+  // alone cannot turn an unobserved checker result into a successful check.
+  for (const recovered of ['', 'false', 'true']) {
+    const child = terminalGate('', recovered);
+    assert.equal(child.status, 1, 'missing checker output with recovery=' + JSON.stringify(recovered));
+    assert.match(child.stdout, /Broken live links were detected/u);
+  }
+});
+
+test('the deployed terminal link gate retains success recovery runtime and cancellation boundaries', {timeout: 10000}, () => {
+  const cases = [
+    ['0', '', 0], ['0', 'false', 0], ['0', 'true', 0],
+    ['2', 'true', 0], ['2', '', 1], ['2', 'false', 1],
+    ['1', '', 1], ['1', 'true', 1], ['127', '', 1],
+    ['unexpected', 'true', 1], [' ', 'true', 1], ['00', 'true', 1],
+  ];
+  for (const [exit, recovered, status] of cases) {
+    const child = terminalGate(exit, recovered);
+    assert.equal(child.status, status, JSON.stringify({exit, recovered}) + child.stderr);
+  }
+  for (const exit of ['', '0', '1', '2', '127']) {
+    assert.equal(terminalGate(exit, '', true).status, 0, 'cancellation must remain quiet');
+  }
+});

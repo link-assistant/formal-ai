@@ -2201,7 +2201,7 @@
       "literalReadLines": 2346,
       "literalSourceFullyRead": true,
       "formalAiPracticeImplementationVerified": false,
-      "reviewNote": "One tool display of lines 1201\u20131600 was truncated; the omitted release-body span was reread completely from the retained log, lines 1506\u20131563. No complete-file credit was assigned before all seven original source ranges and the omitted span were read."
+      "reviewNote": "One tool display of lines 1201–1600 was truncated; the omitted release-body span was reread completely from the retained log, lines 1506–1563. No complete-file credit was assigned before all seven original source ranges and the omitted span were read."
     },
     {
       "path": "dev/log/issues/247/pulls/248/research.md",
@@ -6980,14 +6980,28 @@
       "templateEvidence": [
         "tests/unit/ci-cd/workflow_security.rs"
       ],
-      "assessment": "Untrusted event inputs travel through environment variables; writer queue scope, CodeQL modes, dependency review, audit severity, committed locks and fresh diff scans are explicit. Link checks keep runtime/configuration failures distinct from recoverable transport failures, and archive guidance does not certify the live URL. Formal AI equivalents and execution remain to be compared.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "assessment": "Compared the complete pinned 349-line workflow_security contract with Formal AI's security and link workflows, full committed-lock audit and strict SARIF consumer. Formal AI preserves environment-bound event inputs, scoped writers, scheduled lock audits and explicit transient recovery. A concrete counterpart defect is reproduced: the terminal link condition compared an output with numeric zero, allowing missing or malformed-zero observations to clear the gate. Two maintained regressions fail before repair and all 35 focused cases pass after it. GitHub's integrity-verified expression library independently checks 120 cases and 15 negative controls, including actual absent/null properties; an intermediate string-only repair fails, so the final condition explicitly guards absence. Hosted runner execution, live external health, full writer/release parity and CodeQL semantic coverage remain separate unfinished criteria.",
+      "status": "literal-source-compared-terminal-missing-output-defect-reproduced-local-repair-hosted-pending",
       "formalAiPaths": [
         ".github/workflows/security.yml",
         ".github/workflows/links.yml",
         "scripts/recheck-broken-links.mjs"
       ],
-      "verification": null
+      "verification": {
+        "caseStudy": "docs/case-studies/issue-1580/link-terminal-output.md",
+        "regression": "experiments/issue-1580/link-observation-boundaries.test.mjs",
+        "maintainedOwner": "rust/tests/web/issue-1580-template-observations.test.mjs",
+        "focusedCasesPassed": 35,
+        "behavioralFailuresBefore": 2,
+        "officialEngine": "@actions/expressions@0.3.62",
+        "officialEngineComparisons": 120,
+        "originalFalseNegativeControls": 15,
+        "officialRegistryIntegrityVerified": true,
+        "actualActionsRunnerExecuted": false,
+        "liveExternalHealthVerified": false,
+        "allApplicablePracticeVerified": false,
+        "independentAuthorshipCredit": 0
+      }
     },
     {
       "practice": "Cargo package identity and workspace resolution",
@@ -7709,7 +7723,7 @@
       "templateEvidence": [
         "docs/case-studies/issue-19/ci-logs/ci-run-20885464993.log.gz"
       ],
-      "assessment": "All 1,310 decoded historical lines are literally read and reassembled exactly. This is the Agent repository run at 1347edef98519b56b62c10f340740eecc50b7558, not a present Rust-template run. Its three Bun platform jobs each pass 17 JSON protocol tests, while the release fails at lines 1294\u20131295 with ENOENT opening ./js/package.json after changing package version from 0.7.0 to 0.8.0. The release first checks out the trigger revision, observes remote main advanced to 4f7a0d469c67403139a8017960b8e74ee52d8031, then rebases before versioning. A successful earlier test cannot qualify that changed checkout. Preserve process-owned working directories, explicit package roots, refreshed source qualification before side effects, pinned runtime/runner identities and least permissions. The historical npm audit count and mutable latest Bun/runner selections do not establish current security or compatibility. This source comparison supplies no present package publication or complete practice adoption proof.",
+      "assessment": "All 1,310 decoded historical lines are literally read and reassembled exactly. This is the Agent repository run at 1347edef98519b56b62c10f340740eecc50b7558, not a present Rust-template run. Its three Bun platform jobs each pass 17 JSON protocol tests, while the release fails at lines 1294–1295 with ENOENT opening ./js/package.json after changing package version from 0.7.0 to 0.8.0. The release first checks out the trigger revision, observes remote main advanced to 4f7a0d469c67403139a8017960b8e74ee52d8031, then rebases before versioning. A successful earlier test cannot qualify that changed checkout. Preserve process-owned working directories, explicit package roots, refreshed source qualification before side effects, pinned runtime/runner identities and least permissions. The historical npm audit count and mutable latest Bun/runner selections do not establish current security or compatibility. This source comparison supplies no present package publication or complete practice adoption proof.",
       "status": "complete-literal-decoded-log-review-current-practice-runtime-open"
     },
     {
