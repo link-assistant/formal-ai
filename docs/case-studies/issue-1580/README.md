@@ -4,12 +4,13 @@ Work in progress in [PR #1581](https://github.com/link-assistant/formal-ai/pull/
 
 ## Current checkpoint
 
-The [terminal collection and TypeScript repair](current-terminal-and-typescript-repair.md)
-records all 33 published-head workflow outcomes, four repaired failed checks,
-the actual two failed file observations, the nine unacquired native groups and
-before/after canonical projection tests. It corrects the supplied timing fixture's
-false success label. Current-source hosted verification and the wider criteria
-remain unfinished. Earlier dated checkpoints below retain their original scope.
+The [terminal 0b74 collection](terminal-0b74-ci.md) records all 33 outcomes:
+31 successes, one scanner-control failure and one explicit skip. Its complete
+repair batch is published as 7ec084a7f. The [actual Node 22 qualification](secretlint-node22-actual-7ec0.md)
+verifies all seven scanner controls, including semantic lockfile mismatch
+refusal before installation. The remaining current-head workflows are still
+being collected. Broader practice adoption and original acceptance criteria
+remain unfinished. Earlier dated checkpoints retain their original scope.
 
 ## Reproduction and evidence
 

@@ -1301,3 +1301,12 @@ Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally 
 - [x] Verify the two semantic repairs locally and keep their original failures; eight staged-source gates and committed-source secret scanning pass before this terminal receipt.
 - [ ] Push the complete batch once after fresh idle-branch/main checks; qualify repaired Node 22 scanner and inventory bytes on the exact new head.
 - [ ] Finish aggregate review, all applicable template practices and every remaining original requirement. Keep PR #1581 draft and unmerged.
+
+## Exact hosted scanner qualification, 2026-11-23
+
+- [x] Push the complete five-commit repair batch once as 7ec084a7f after fresh idle-branch and main-ancestry checks.
+- [x] Verify all seven actual scanner controls on the exact hosted Node 22/npm 10 source; the empty-cache mismatch now reaches EUSAGE.
+- [x] Verify every artifact member and all seven committed source hashes; preserve the original complete job log and all case diagnostics.
+- [x] Reconcile practice row 22 with actual hosted execution while retaining separate OpenSSF and Cargo warnings.
+- [ ] Wait for all current 7ec0 workflows and preserve every complete terminal stream before the next push.
+- [ ] Complete aggregate review, remaining applicable template practices and every original issue criterion; keep PR #1581 draft and unmerged.

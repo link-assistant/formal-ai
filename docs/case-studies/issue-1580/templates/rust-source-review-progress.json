@@ -6831,8 +6831,8 @@
       "templateEvidence": [
         ".github/secretlint/package-lock.json"
       ],
-      "assessment": "The isolated exact Secretlint 14 closure passes five actual scanner cases and audit on hosted Node 22. Its old offline mismatch control fails with ENOTCACHED on the runner's empty cache, so the seven-case qualification is not complete. A private-cache bounded metadata lookup now reproduces EUSAGE before installation locally, with a real npm/loopback regression and all seven actual controls passing on Node 26. Corrected exact-source hosted Node 22 qualification remains pending.",
-      "status": "hosted-node22-six-controls-verified-cold-cache-correction-local-verified",
+      "assessment": "The exact 7ec084a7 hosted Security job passes all seven actual engine cases on Node 22.23.5/npm 10.9.9: plain/compressed clean and masked finding cases, corrupt gzip, semantic EUSAGE mismatch refusal before installation, and a zero-vulnerability locked audit. All ten artifact members and seven source identities are verified. This supersedes the preserved cold-cache ENOTCACHED failure; separate OpenSSF scores, Cargo migrations and full applicable practice acceptance remain unfinished.",
+      "status": "hosted-node22-all-seven-engine-controls-verified-broader-security-open",
       "formalAiPaths": [
         ".github/secretlint/package.json",
         ".github/secretlint/package-lock.json",
@@ -6875,6 +6875,18 @@
           "correctedHostedQualificationVerified": false,
           "independentAuthorshipCredit": 0
         }
+      },
+      "latestHostedObservation": {
+        "sourceHead": "7ec084a7fc1b6a909b18a0c6ff9acf5b1f44449f",
+        "securityRun": 45218148807,
+        "job": 137844798092,
+        "artifact": 14838503659,
+        "actualEngineCasesPassed": 7,
+        "verifiedSourceIdentities": 7,
+        "evidence": "experiments/issue-1580/evidence/checks/secretlint-node22-actual-7ec0-20261123/manifest.json",
+        "allApplicablePracticeVerified": false,
+        "fullIssueComplete": false,
+        "independentAuthorshipCredit": 0
       }
     },
     {
