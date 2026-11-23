@@ -1,5 +1,38 @@
 # Issue 1580 work plan
 
+## Active checkpoint: merged main and all reported source-size warnings, 2026-11-23
+
+The objective remains every original criterion in PR #1581, with no required
+work deferred. This checkpoint supersedes older dated status summaries.
+
+- The terminal 843fa303d cohort contains 31 successful workflows, one Layered
+  CI failure and one explicit skip. Pipeline native admission passes all 291
+  workflow-contract cases, including the six new manifest regressions, and
+  all ten native behavior groups. The sole Layered failure is the stale exact
+  manifest assertion repaired locally in 07376d152.
+- All eleven reported source-size warnings have focused failing-before and
+  passing-after coverage, exact move or value-conservation receipts, and
+  unchanged size policy. The final report-renderer move follows the earlier
+  clean 707206270 full-inventory receipt.
+- Main 03a636334975cd7ca5cedff119e2dd0efbc8579f (0.356.10) is merged.
+  The governed witness was refreshed only after complete keyed object
+  comparison; all 223 supported cases and 970 unsupported objects survive.
+  Its 34 existing regressions pass after canonical regeneration.
+- Full local gates on clean e3046ab36: 88 pass, one stale generated status page
+  fails, and 54 require CI. Canonical regeneration repairs the single page;
+  its original failing check and both passing status gates are retained in
+  evidence/checks/merged-main-local-gates. All four focused JavaScript files
+  and formatting of eleven Rust files pass. No local Rust build runs.
+- Actual latest-source hosted execution and both native artifact rerun paths
+  remain pending. The 843f observer correctly requested no rerun while that
+  cohort still failed. Publication authority, CodeQL included-file semantics,
+  strict style lint debt, dependency migration, live useful delivery, serving
+  identity, remaining practice acceptance and aggregate source review remain
+  open. Existing reports do not satisfy those criteria. Keep the PR draft.
+- Every checkpoint above carries zero independent authorship credit. The
+  original issue and all feedback remain the acceptance authority.
+
+
 Objective: fully implement and verify issue #1580 in PR #1581 on issue-1580-8d61a32a61e1.
 
 - [x] Read the issue and all issue/PR conversation comments; inline comments and reviews are empty.

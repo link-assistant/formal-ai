@@ -50,8 +50,7 @@ This document is a deterministic projection of committed ledgers.
 | Input | Lines |
 | --- | ---: |
 | `data/benchmarks/external-results.lino` | 969 |
-| `data/meta/self-hosting-ledger.lino` | 276 |
-| `data/meta/self-hosting-ledger.lino` | 281 |
+| `data/meta/self-hosting-ledger.lino` | 282 |
 | `data/meta/debt-ratchet.lino` | 65 |
 | `data/meta/core-boundary-ledger.lino` | 599 |
 | `data/meta/handler-migration-ledger.lino` | 502 |
