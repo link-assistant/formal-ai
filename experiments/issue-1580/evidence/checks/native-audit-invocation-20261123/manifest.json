@@ -1,0 +1,24 @@
+{
+  "source": "17a3431f187c7dd5a12d71ce1aa6bcd966d62994",
+  "hostedRun": 45103300864,
+  "failedJob": 137459248016,
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/45103300864/job/137459248016",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 89157,
+    "sha256": "c81d914f48076966d486b03519514b94ee8e85e73834bf7cbb9d9f2030cf674c"
+  },
+  "members": 16,
+  "roundTripVerified": true,
+  "localVerification": {
+    "inventoryCases": 16,
+    "blockedProofCases": 8,
+    "advisoryProofCases": 3,
+    "rustfmt": true,
+    "sourceSelection": true,
+    "nativeExecution": false
+  },
+  "scope": "Update the native source selector for the existing complete-observation wrapper; retain the warning and yank assertions unchanged. Actual next-head native qualification remains pending.",
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

@@ -957,3 +957,8 @@ objective is unfinished and supplied work receives zero independent credit.
 - [ ] Qualify the corrected hosted head, then both actual artifact rerun paths.
 - [ ] Complete the original remaining acceptance criteria; keep the PR draft
   and unmerged while any are unfinished.
+
+The same 17a cohort exposes one stale native audit source selector after 250
+passing workflow controls. It is corrected to find the wrapped invocation;
+warning/yank assertions are unchanged. All 27 JavaScript audit controls and
+Rust formatting pass. Native execution remains pending on the next hosted head.

@@ -160,8 +160,8 @@ fn the_rust_dependency_audit_treats_a_warning_as_a_finding() {
 
     let invocation = script
         .lines()
-        .find(|line| line.trim_start().starts_with("cargo audit"))
-        .expect("check-rust-dependencies.sh must invoke `cargo audit`");
+        .find(|line| line.trim_start().starts_with("run_audit cargo audit"))
+        .expect("check-rust-dependencies.sh must invoke `cargo audit` through `run_audit`");
     assert!(
         invocation.contains("--deny warnings"),
         "`{}` exits 0 on `unmaintained`, `unsound` and `yanked` findings -- it \
