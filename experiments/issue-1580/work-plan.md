@@ -984,3 +984,12 @@ Rust formatting pass. Native execution remains pending on the next hosted head.
 - [ ] Run the complete clean local gate set, refresh feedback and main ancestry, and push the collected repair batch once.
 - [ ] Verify the corrected hosted head and both real native-artifact rerun paths.
 - [ ] Complete every remaining original criterion before readiness or acceptance.
+
+## Clean manifest and CI repair batch
+
+- [x] Run the complete 143-entry inventory on clean f88528245: 89 pass, zero failures, 54 explicit hosted-only skips; preserve every original stream.
+- [x] Re-read the complete issue, issue comment, all eleven PR conversation comments, inline comments and reviews; no new review requirements appeared.
+- [x] Review the complete 663-line production diff for this batch and confirm main ae36c8ac6 is an ancestor; no current branch runs are queued or in progress.
+- [ ] Push the complete repair batch once, then qualify its exact hosted source.
+- [ ] Preserve actual expanded collector tests, full artifact rerun and consumer-only rerun observations.
+- [ ] Complete all original remaining criteria before readiness or acceptance.

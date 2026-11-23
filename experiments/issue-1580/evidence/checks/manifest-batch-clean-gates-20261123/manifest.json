@@ -1,0 +1,24 @@
+{
+  "source": "f88528245030c26ed70744365528e5da1e8b3f37",
+  "complete": true,
+  "observedAt": "2026-11-23T04:04:53.462259+00:00",
+  "counts": {
+    "PASS": 89,
+    "FAIL": 0,
+    "SKIP": 54
+  },
+  "cleanBefore": true,
+  "cleanAfter": true,
+  "sameSourceAfter": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 503214,
+    "sha256": "66dd3ab46e8709f9bd06ec7eed3938d600c39b3459a3cd2e32dc372c47666eab"
+  },
+  "members": 122,
+  "roundTripVerified": true,
+  "nativeExecuted": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "scope": "Full clean local gate inventory and complete current feedback. The production diff review is the 663-line 17a-to-manifest batch, not the whole PR. Actual next-head native compilation and both hosted rerun paths remain pending."
+}
