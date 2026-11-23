@@ -19,8 +19,8 @@ jobs:
   build:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     concurrency:
-      group: hive-mind-draft-build-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number }}-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: hive-mind-draft-build-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number }}-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:

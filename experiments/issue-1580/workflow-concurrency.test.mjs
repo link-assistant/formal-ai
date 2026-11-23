@@ -111,9 +111,24 @@ test('actual linter job admits the companion check and controls with locked pars
 import {Script} from 'node:vm';
 import {readdirSync} from 'node:fs';
 const scopes=workflow=>[['workflow',workflow.concurrency],...Object.entries(workflow.jobs??{}).map(([name,job])=>['job '+name,job.concurrency])];
-const evaluate=(source,context)=>typeof source!=='string'?source:new Script(source.replace(/^\$\{\{\s*|\s*\}\}$/gu,'').replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu,(_,key)=>'['+JSON.stringify(key)+']')).runInNewContext({...context,format:(pattern,...values)=>pattern.replace(/\{(\d+)\}/gu,(_,i)=>String(values[Number(i)]))},{timeout:100});
+// Workflow policies repeat the same expressions across jobs. Evaluate each
+// immutable expression/context pair once rather than creating thousands of VMs.
+const evaluatedExpressions = new Map();
+const evaluate = (source, context) => {
+  if (typeof source !== 'string') return source;
+  const key = JSON.stringify([source, context]);
+  if (!evaluatedExpressions.has(key)) {
+    const expression = source.replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
+      .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, field) => '[' + JSON.stringify(field) + ']');
+    const result = new Script(expression).runInNewContext({...context,
+      format: (pattern, ...values) => pattern.replace(/\{(\d+)\}/gu, (_, index) => String(values[Number(index)])),
+    }, {timeout: 100});
+    evaluatedExpressions.set(key, result);
+  }
+  return evaluatedExpressions.get(key);
+};
 const template=(source,context)=>source.replace(/\$\{\{\s*(.*?)\s*\}\}/gu,(_,body)=>String(evaluate(body,context)));
-const context=(event,action,run,shard=1)=>({github:{workflow:'Pipeline',ref:event==='pull_request'?'refs/pull/1581/merge':'refs/heads/main',sha:'a'.repeat(40),event_name:event,event:{action,pull_request:{number:1581},issue:{number:1580}},run_id:run,repository:'link-assistant/formal-ai'},matrix:{shard,lane:'source',os:'ubuntu-24.04','test-suite':'unit',target:'x86_64-unknown-linux-gnu',language:'Rust',window:{offset:0}},inputs:{suite:'default',issue_number:'1580'}});
+const context=(event,action,run,shard=1,attempt=1)=>({github:{workflow:'Pipeline',ref:event==='pull_request'?'refs/pull/1581/merge':'refs/heads/main',sha:'a'.repeat(40),event_name:event,event:{action,pull_request:{number:1581},issue:{number:1580}},run_id:run,run_attempt:attempt,repository:'link-assistant/formal-ai'},matrix:{shard,lane:'source',os:'ubuntu-24.04','test-suite':'unit',target:'x86_64-unknown-linux-gnu',language:'Rust',window:{offset:0}},inputs:{suite:'default',issue_number:'1580'}});
 
 test('only synchronize checks share a cancellable group across runs', {timeout:60000}, () => {
   let checked=0;
@@ -125,10 +140,19 @@ test('only synchronize checks share a cancellable group across runs', {timeout:6
       for(const [event,action]of [['pull_request','synchronize'],['pull_request','ready_for_review'],
         ['pull_request','opened'],['pull_request','reopened'],['workflow_dispatch',undefined],
         ['push',undefined],['schedule',undefined],['pull_request_target','synchronize']]) {
-        const first=context(event,action,10),second=context(event,action,11);
-        const allowed=event==='pull_request'&&action==='synchronize',label=file+'/'+scope+'/'+event+'/'+action;
-        assert.equal(evaluate(policy['cancel-in-progress'],first),allowed,label+' cancellation');
-        assert.equal(template(policy.group,first)===template(policy.group,second),allowed,label+' independent group');
+        for (const attempt of [1, 2, 3, '2']) {
+          const first=context(event,action,10,1,attempt),second=context(event,action,11,1,attempt);
+          const allowed=event==='pull_request'&&action==='synchronize'&&Number(attempt)===1;
+          const label=file+'/'+scope+'/'+event+'/'+action+'/attempt-'+attempt;
+          assert.equal(evaluate(policy['cancel-in-progress'],first),allowed,label+' cancellation');
+          assert.equal(template(policy.group,first)===template(policy.group,second),allowed,label+' independent group');
+          if (Number(attempt)>1) {
+            assert.notEqual(template(policy.group,first),template(policy.group,context(event,action,10)),
+              label+' historical rerun must not share the current initial group');
+            assert.notEqual(template(policy.group,first),template(policy.group,context(event,action,10,1,4)),
+              label+' distinct rerun attempts must not share a group');
+          }
+        }
       }
     }
   }

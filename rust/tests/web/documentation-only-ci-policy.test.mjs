@@ -51,7 +51,7 @@ test('lightweight read-only checks cancel superseded PRs and protect main', () =
   const {concurrency} = workflows.find(workflow => workflow.path.endsWith('/documentation-policy.yml')).document;
   const expression = concurrency['cancel-in-progress'].replace(/^\$\{\{\s*|\s*\}\}$/gu,'');
   const evaluate = (event,action,ref='refs/heads/main') => new Script(expression)
-    .runInNewContext({github:{event_name:event,event:{action},ref}}, {timeout:100});
+    .runInNewContext({github:{event_name:event,event:{action},ref,run_attempt:1}}, {timeout:100});
   assert.equal(evaluate('pull_request','synchronize','refs/pull/1/merge'),true);
   for(const action of ['opened','reopened','ready_for_review'])
     assert.equal(evaluate('pull_request',action,'refs/pull/1/merge'),false);

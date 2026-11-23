@@ -20,9 +20,11 @@ on:
 permissions:
   contents: read
 
+# Reruns retain their original PR action. A failed-job rerun of an older head
+# must not cancel a newer synchronize run (45136124038, issue #1580).
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-native-type-check${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+  group: ${{ github.workflow }}-${{ github.ref }}-native-type-check${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
 
 env:
   # workflow_call does not inherit the caller's environment. Diagnostics stay off by default.

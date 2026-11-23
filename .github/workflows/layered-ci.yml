@@ -209,8 +209,8 @@ jobs:
       GIT_HTTP_LOW_SPEED_LIMIT: '1024'
       GIT_HTTP_LOW_SPEED_TIME: '30'
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-tier-changes${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-tier-changes${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     outputs:
       js-changed: ${{ steps.changes.outputs.js-changed }}
       ts-changed: ${{ steps.changes.outputs.ts-changed }}
@@ -260,8 +260,8 @@ jobs:
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-source-networks-${{ matrix.shard }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-source-networks-${{ matrix.shard }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -328,8 +328,8 @@ jobs:
     # The explicit fast inventory remains available for local development only.
     timeout-minutes: 12
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     strategy:
       fail-fast: false
       matrix:
@@ -554,8 +554,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-provers${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-provers${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     env:
       LEAN_VERSION: 4.34.1
     steps:
@@ -619,8 +619,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-js-rust${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-js-rust${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -672,8 +672,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-ts${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-ts${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 2
@@ -729,8 +729,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-rust${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-rust${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -772,8 +772,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -800,8 +800,8 @@ jobs:
 
   server-parity-diagnostic:
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity-diagnostic${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity-diagnostic${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     name: Explicit server parity diagnostic from existing main binary
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (github.event_name == 'workflow_dispatch' && inputs.diagnostic-native-run != '') }}
     runs-on: ubuntu-24.04

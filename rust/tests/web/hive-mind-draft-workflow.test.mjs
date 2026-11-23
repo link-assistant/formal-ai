@@ -85,7 +85,7 @@ test('downloads use the raw adapter and concurrency distinguishes build from iss
  assert.match(header,/cancel-in-progress: false/);
  const jobs=workflowJobs(workflow);
  assert.match(jobs.find(job=>job.id==='build').body,/hive-mind-draft-build-.*github.ref/);
- assert(jobs.find(job=>job.id==='build').body.includes("cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"));
+ assert(jobs.find(job=>job.id==='build').body.includes("cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}"));
  assert.doesNotMatch(workflow,/DEP0005|actions\/download-artifact@/);
  assert.equal((workflow.match(/uses: \.\/\.github\/actions\/download-artifact/g)||[]).length,3);
  assert.doesNotMatch(workflow,/--no-deprecation|--no-warnings|NODE_NO_WARNINGS/);

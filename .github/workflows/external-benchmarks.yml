@@ -66,8 +66,8 @@ jobs:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Verify monotonic ledger
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-ratchet${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-ratchet${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -259,8 +259,8 @@ jobs:
   shard-plan:
     name: Plan upstream shards
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-plan${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-plan${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (github.event_name == 'workflow_dispatch' && inputs.shard_size) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -301,8 +301,8 @@ jobs:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: Upstream shard ${{ matrix.window.offset }}
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-${{ matrix.window.offset }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-${{ matrix.window.offset }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: shard-plan
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -354,8 +354,8 @@ jobs:
   shard-total:
     name: Total of upstream shards
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-total${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-total${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [shard-plan, upstream-shard]
     if: ${{ !cancelled() && needs.shard-plan.result == 'success' }}
     runs-on: ubuntu-24.04

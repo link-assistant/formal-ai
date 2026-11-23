@@ -21,7 +21,7 @@ const evaluate = (expression, context) => typeof expression!=='string' ? express
   .runInNewContext({cancelled: () => false, always: () => true, ...context}, {timeout: 100});
 function context(event, ref = 'refs/pull/1500/merge', enabled = false) {
   const outputs = Object.fromEntries(['any-code-changed','rs-changed','toml-changed','pipeline-changed','rust-changed','js-changed','ts-changed'].map(k => [k,'true']));
-  return {github: {event_name:event,ref,event:{action:event==='pull_request'?'synchronize':undefined}}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',FORMAL_AI_FULL_LINK_CHECKS:'run',FORMAL_AI_FULL_CODING_LADDER:'run'},
+  return {github: {event_name:event,ref,run_attempt:1,event:{action:event==='pull_request'?'synchronize':undefined}}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',FORMAL_AI_FULL_LINK_CHECKS:'run',FORMAL_AI_FULL_CODING_LADDER:'run'},
     inputs:{}, needs:Object.fromEntries(['detect-changes','changes','build-artifacts','lint','test','macos-core-tests','js','ts','native-source','native','resolve']
       .map(k => [k,{result:'success',outputs:{...outputs,should_build:'true',build:'true'}}]))};
 }
@@ -75,7 +75,7 @@ test('fast source lint is mandatory on PRs without invoking native compilation',
   const release = workflow('release.yml'), job = release.jobs['fast-pr-lint'];
   assert.equal(evaluate(job.if, context('pull_request')), true);
   assert.equal(evaluate(job.if, context('push', 'refs/heads/main')), false);
-  assert(job.concurrency.group.endsWith('-fast-pr-lint'+"${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}"));
+  assert(job.concurrency.group.endsWith('-fast-pr-lint'+"${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}"));
   assert.equal(evaluate(job.concurrency['cancel-in-progress'], context('pull_request')), true);
   assert.equal(evaluate(job.concurrency['cancel-in-progress'], context('push', 'refs/heads/main')), false);
   assert(release.jobs['pipeline-status'].needs.includes('fast-pr-lint'));
@@ -432,7 +432,7 @@ test('secrets scanning retains full history and every current file within separa
   };
   verify(job);
   assert.deepEqual(document.permissions,{"contents":"read"});
-  assert.deepEqual(job.concurrency,{"group":"${{ github.workflow }}-${{ github.ref }}-secrets-scan${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}","cancel-in-progress":"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"});
+  assert.deepEqual(job.concurrency,{"group":"${{ github.workflow }}-${{ github.ref }}-secrets-scan${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}","cancel-in-progress":"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}"});
   assert.equal(job.if.trim().replace(/\s+/gu,' '),"!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.docs-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )");
   for(const event of ['pull_request','push','workflow_dispatch']) {
     assert.equal(Boolean(evaluate(job.if,context(event))),true);

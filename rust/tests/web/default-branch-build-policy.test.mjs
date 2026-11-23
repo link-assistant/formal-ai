@@ -1,3 +1,4 @@
+import '../../../experiments/issue-1580/native-rerun-concurrency.test.mjs';
 import '../../../experiments/issue-1580/large-change-admission.test.mjs';
 import '../../../experiments/issue-1580/stage-source-capture.test.mjs';
 // Replays the recorded release/PR topology without compiling or publishing products.
@@ -130,7 +131,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   // superseded_read_only_work_releases_its_runners (step_budgets_within_job_clocks.rs) reads the
   // called file's own top-level concurrency, before `jobs:`, not a job-level block.
   const head = read('.github/workflows/native-type-check.yml').split('\njobs:\n')[0];
-  assert.deepEqual(YAML.parse(head).concurrency,{group:"${{ github.workflow }}-${{ github.ref }}-native-type-check${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}",'cancel-in-progress':"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"});
+  assert.deepEqual(YAML.parse(head).concurrency,{group:"${{ github.workflow }}-${{ github.ref }}-native-type-check${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}",'cancel-in-progress':"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}"});
   assert.deepEqual(Object.keys(called.jobs), ['clippy', 'contract-build', 'contract-family', 'release-registry']);
   const check = called.jobs.clippy;
   const registry = called.jobs['release-registry'];

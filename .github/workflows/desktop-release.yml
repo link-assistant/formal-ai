@@ -49,8 +49,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-resolve${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-resolve${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     permissions:
       contents: read
     if: >-
@@ -85,16 +85,16 @@ jobs:
         run: bash scripts/desktop-release-resolve.sh
   base:
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-base${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-base${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     uses: ./.github/workflows/pin-base-commit.yml
     permissions:
       contents: read
   native-source:
     name: Select exact native release source
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-native-source${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-native-source${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [resolve, base]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
     runs-on: ubuntu-24.04
@@ -255,8 +255,8 @@ jobs:
   native:
     name: Produce native ${{ matrix.target }}
     concurrency:
-      group: ${{ github.workflow }}-native-${{ github.event.pull_request.number || github.ref }}-${{ matrix.target }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-native-${{ github.event.pull_request.number || github.ref }}-${{ matrix.target }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [native-source]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.native-source.result == 'success') }}
     runs-on: ${{ matrix.os }}

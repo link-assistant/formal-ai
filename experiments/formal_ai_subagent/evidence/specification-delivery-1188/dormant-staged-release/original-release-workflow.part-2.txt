@@ -442,8 +442,8 @@
   test-e2e-local:
     name: E2E Tests (local web app)
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes]
     if: ${{ vars.FORMAL_AI_FULL_INTEGRATION == 'run' && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' )) }}
     uses: ./.github/workflows/e2e-local.yml
@@ -452,8 +452,8 @@
   test-agent-cli-e2e:
     name: E2E Tests (agent CLI ↔ formal-ai)
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes, build-artifacts]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     uses: ./.github/workflows/agent-cli-e2e.yml
@@ -465,8 +465,8 @@
     name: Build binaries and tests
     outputs: {source-commit: "${{ steps.source.outputs.commit }}"}
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     needs: [detect-changes]
@@ -524,8 +524,8 @@
         with: {name: formal-ai-self-coding-test-executable, path: "dist/tests/unit\ndist/tests/native-build-receipt.json\n", retention-days: 1}
   native-response-observations:
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [build-artifacts]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success') }}
     uses: ./.github/workflows/native-response-observations.yml
@@ -536,8 +536,8 @@
   box-language-projects:
     name: Box Image Projects (${{ matrix.language }})
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: [detect-changes, build-artifacts]
@@ -583,8 +583,8 @@
   build-pages:
     name: Build GitHub Pages artifact
     concurrency:
-      group: formal-ai-pages-build-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: formal-ai-pages-build-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [build, auto-release, manual-release]
     if: |
       !cancelled() &&
@@ -640,8 +640,8 @@
   test-e2e-pages:
     name: E2E Tests (GitHub Pages)
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-pages${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-pages${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [deploy-pages]
     if: |
       !cancelled() &&

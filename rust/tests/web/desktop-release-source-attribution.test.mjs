@@ -219,9 +219,9 @@ for(const fault of ['corrupt','manifest','attestation']) {
 import YAML from 'yaml';
 import {createHash as workflowSourceHash} from 'node:crypto';
 function concurrencyExpression(source,context){
- const re=/\s*(?:('(?:[^'\\]|\\.)*')|(==|!=|&&|\|\||[(),])|([A-Za-z_][A-Za-z0-9_.]*)|(\d+))/y,tokens=[];let pos=0;
+ const re=/\s*(?:('(?:[^'\\]|\\.)*')|(==|!=|>|&&|\|\||[(),])|([A-Za-z_][A-Za-z0-9_.]*)|(\d+))/y,tokens=[];let pos=0;
  while(pos<source.length){re.lastIndex=pos;const m=re.exec(source);assert.ok(m,'unsupported expression token');tokens.push(m[1]??m[2]??m[3]??m[4]);pos=re.lastIndex;}let i=0;
- const precedence={'||':1,'&&':2,'==':3,'!=':3};
+ const precedence={'||':1,'&&':2,'==':3,'!=':3,'>':4};
  function primary(){const t=tokens[i++];assert.ok(t,'missing operand');
   if(t==='('){const v=parse(1);assert.equal(tokens[i++],')');return v;}
   if(t.startsWith("'"))return t.slice(1,-1).replace(/\\(['\\])/gu,'$1');
@@ -244,28 +244,28 @@ function concurrencyExpression(source,context){
   }
   let value=context;for(const key of t.split('.')){assert.ok(value!==null&&typeof value==='object'&&Object.hasOwn(value,key),'unbound expression field:'+t);value=value[key];}return value;
  }
- function parse(min){let left=primary();while(precedence[tokens[i]]>=min){const op=tokens[i++],right=parse(precedence[op]+1);left=op==='||'?(left||right):op==='&&'?(left&&right):op==='=='?left===right:left!==right;}return left;}
+ function parse(min){let left=primary();while(precedence[tokens[i]]>=min){const op=tokens[i++],right=parse(precedence[op]+1);left=op==='||'?(left||right):op==='&&'?(left&&right):op==='=='?left===right:op==='>'?left>right:left!==right;}return left;}
  const value=parse(1);assert.equal(i,tokens.length,'expression tail');return value;
 }
 function concurrencyTemplate(source,context){return source.replace(/\$\{\{\s*(.*?)\s*\}\}/gu,(_,body)=>String(concurrencyExpression(body.trim(),context)));}
 
 const desktopSourceUrl=new URL('../../../.github/workflows/desktop-release.yml',import.meta.url);
-const desktopGroupSuffix="${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}";
+const desktopGroupSuffix="${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}";
 const originalProducerGroups={resolve:'${{ github.workflow }}-${{ github.ref }}-resolve',base:'${{ github.workflow }}-${{ github.ref }}-base','native-source':'${{ github.workflow }}-${{ github.ref }}-native-source',native:'${{ github.workflow }}-native-${{ github.event.pull_request.number || github.ref }}-${{ matrix.target }}'};
-const producerContext=(event,run,target,action='synchronize')=>({github:{workflow:'Desktop Release',ref:event==='pull_request'?'refs/pull/81/merge':'refs/heads/main',event_name:event,run_id:run,event:{action,pull_request:{number:event==='pull_request'?81:null}}},matrix:{target}});
+const producerContext=(event,run,target,action='synchronize')=>({github:{workflow:'Desktop Release',ref:event==='pull_request'?'refs/pull/81/merge':'refs/heads/main',event_name:event,run_id:run,run_attempt:1,event:{action,pull_request:{number:event==='pull_request'?81:null}}},matrix:{target}});
 function verifyDesktopProducerGroups(workflow){
  let assertions=0;
  for(const [id,originalGroup]of Object.entries(originalProducerGroups)){
   const concurrency=workflow.jobs[id].concurrency;
   assert.equal(concurrency.group,originalGroup+desktopGroupSuffix);
-  assert.equal(concurrency['cancel-in-progress'],"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}");assert.equal(concurrency.queue,undefined);
+  assert.equal(concurrency['cancel-in-progress'],"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}");assert.equal(concurrency.queue,undefined);
   for(const target of ['x86_64-unknown-linux-gnu','aarch64-apple-darwin']){
-   for(const run of [11,12,13]){const context=producerContext('pull_request',run,target);assert.equal(concurrencyTemplate(concurrency.group,context),concurrencyTemplate(originalGroup,context));assert.equal(concurrencyExpression("github.event_name == 'pull_request' && github.event.action == 'synchronize'",context),true);assertions+=2;}
+   for(const run of [11,12,13]){const context=producerContext('pull_request',run,target);assert.equal(concurrencyTemplate(concurrency.group,context),concurrencyTemplate(originalGroup,context));assert.equal(concurrencyExpression("github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1",context),true);assertions+=2;}
    for(const [event,action]of [['workflow_run',undefined],['workflow_dispatch',undefined],['release',undefined],['pull_request','opened'],['pull_request','reopened'],['pull_request','ready_for_review']]){
     const contexts=[11,12,13].map(run=>producerContext(event,run,target,action));
     assert.equal(new Set(contexts.map(context=>concurrencyTemplate(originalGroup,context))).size,1);
     assert.equal(new Set(contexts.map(context=>concurrencyTemplate(concurrency.group,context))).size,3);
-    for(const context of contexts)assert.equal(concurrencyExpression("github.event_name == 'pull_request' && github.event.action == 'synchronize'",context),false);assertions+=5;
+    for(const context of contexts)assert.equal(concurrencyExpression("github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1",context),false);assertions+=5;
    }
   }
  }
@@ -280,7 +280,7 @@ test('immutable desktop producers retain PR identity and isolate stable and inde
 test('producer group loss cancellation changes and unknown expression bindings refuse',()=>{
  const workflow=YAML.parse(readFileSync(desktopSourceUrl,'utf8'));
  // Independent positive fixture comes from the original declared groups plus the reviewed suffix.
- for(const [id,group]of Object.entries(originalProducerGroups))workflow.jobs[id].concurrency={group:group+desktopGroupSuffix,'cancel-in-progress':"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"};
+ for(const [id,group]of Object.entries(originalProducerGroups))workflow.jobs[id].concurrency={group:group+desktopGroupSuffix,'cancel-in-progress':"${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}"};
  assert.equal(verifyDesktopProducerGroups(workflow),289);
  for(const id of Object.keys(originalProducerGroups))for(const change of [c=>c.group=originalProducerGroups[id],c=>c.group+='-foreign',c=>c['cancel-in-progress']=false,c=>c.queue='max']){
   const altered=structuredClone(workflow);change(altered.jobs[id].concurrency);assert.throws(()=>verifyDesktopProducerGroups(altered));

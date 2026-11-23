@@ -45,10 +45,10 @@ export function checkSource(file, source) {
 }
 
 
-// Only repeated synchronize checks may supersede one another. Keep manual,
-// ready-for-review and push observations independent even for the same SHA.
-export const SYNCHRONIZE_CANCELLATION = "${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}";
-export const INDEPENDENT_RUN_SUFFIX = "${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}";
+// Only initial synchronize checks may supersede one another. Reruns retain the
+// original action, so bind their groups to run and attempt before cancellation.
+export const SYNCHRONIZE_CANCELLATION = "${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}";
+export const INDEPENDENT_RUN_SUFFIX = "${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}";
 export function checkEventCancellation(file, workflow) {
   const problems=[],scopes=[['workflow',workflow.concurrency]];
   for(const [name,job]of Object.entries(mapping(workflow.jobs)?workflow.jobs:{}))
@@ -57,7 +57,7 @@ export function checkEventCancellation(file, workflow) {
     if(!mapping(policy)||policy['cancel-in-progress']===undefined||policy['cancel-in-progress']===false)continue;
     const problem=message=>problems.push({file,scope,message});
     if(policy['cancel-in-progress']!==SYNCHRONIZE_CANCELLATION)
-      problem('check cancellation must be restricted to pull_request synchronize');
+      problem('check cancellation must be restricted to the initial pull_request synchronize attempt');
     if(typeof policy.group!=='string'||!policy.group.endsWith(INDEPENDENT_RUN_SUFFIX))
       problem('independent event runs must have a run-specific concurrency group');
   }

@@ -71,8 +71,8 @@ jobs:
       GIT_HTTP_LOW_SPEED_LIMIT: '1024'
       GIT_HTTP_LOW_SPEED_TIME: '30'
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-detect-changes${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-detect-changes${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     outputs:
       rs-changed: ${{ steps.changes.outputs.rs-changed }}
@@ -120,8 +120,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-changelog${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-changelog${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
@@ -142,8 +142,8 @@ jobs:
       packages: read
     timeout-minutes: 30
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-docker-build${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-docker-build${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes, build-artifacts]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.build-artifacts.result == 'success' && github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true') }}
     steps:
@@ -205,8 +205,8 @@ jobs:
   docker-slim:
     name: Slim Docker build and runtime
     concurrency:
-      group: ${{ github.workflow }}-docker-slim-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-docker-slim-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes, build-artifacts]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.build-artifacts.result == 'success' && github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true') }}
     uses: ./.github/workflows/docker-slim.yml
@@ -217,8 +217,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -242,8 +242,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-version-check${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-version-check${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     if: github.event_name == 'pull_request'
     steps:
       - {uses: actions/checkout@v7, timeout-minutes: 2, env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
@@ -266,8 +266,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-release-preflight${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-release-preflight${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     permissions:
       contents: read
       packages: write
@@ -290,8 +290,8 @@ jobs:
         run: bash scripts/preflight-credentials.sh
   base:
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-base${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-base${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     uses: ./.github/workflows/pin-base-commit.yml
     permissions:
       contents: read
@@ -299,8 +299,8 @@ jobs:
     name: Fast Linux source and requirement checks
     if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-fast-pr-lint${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-fast-pr-lint${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
@@ -346,8 +346,8 @@ jobs:
       matrix:
         lane: [1, 2, 3, 4]
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-lint-${{ matrix.lane }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-lint-${{ matrix.lane }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes, base]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.docs-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' || needs.detect-changes.outputs.workflow-changed == 'true' )) }}
     steps:
@@ -428,8 +428,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes, base, build-artifacts]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     strategy:
@@ -591,8 +591,8 @@ jobs:
     needs: [detect-changes, base]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-doc-tests${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-doc-tests${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     steps:
       - name: Check out the actual pull request source
         if: github.event_name == 'pull_request'
@@ -640,8 +640,8 @@ jobs:
     name: macOS Core Tests
     needs: [detect-changes, base]
     concurrency:
-      group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && vars.FORMAL_AI_NON_LINUX_CI == 'run' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     uses: ./.github/workflows/macos-core-tests.yml
     with:
@@ -653,8 +653,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-build${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-build${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     # The staged release builds and verifies its own publishable binary.
     needs: [detect-changes]
     if: |
@@ -682,8 +682,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-server-parity${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-server-parity${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [build-artifacts]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success') }}
     steps:
@@ -803,8 +803,8 @@ jobs:
   test-e2e-local:
     name: E2E Tests (local web app)
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes]
     if: ${{ vars.FORMAL_AI_FULL_INTEGRATION == 'run' && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' )) }}
     uses: ./.github/workflows/e2e-local.yml
@@ -813,8 +813,8 @@ jobs:
   test-agent-cli-e2e:
     name: E2E Tests (agent CLI ↔ formal-ai)
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [detect-changes, build-artifacts]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     uses: ./.github/workflows/agent-cli-e2e.yml
@@ -826,8 +826,8 @@ jobs:
     name: Build binaries and tests
     outputs: {source-commit: "${{ steps.source.outputs.commit }}"}
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     needs: [detect-changes]
@@ -885,8 +885,8 @@ jobs:
         with: {name: formal-ai-self-coding-test-executable, path: "dist/tests/unit\ndist/tests/native-build-receipt.json\n", retention-days: 1}
   native-response-observations:
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [build-artifacts]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success') }}
     uses: ./.github/workflows/native-response-observations.yml
@@ -897,8 +897,8 @@ jobs:
   box-language-projects:
     name: Box Image Projects (${{ matrix.language }})
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: [detect-changes, build-artifacts]
@@ -944,8 +944,8 @@ jobs:
   build-pages:
     name: Build GitHub Pages artifact
     concurrency:
-      group: formal-ai-pages-build-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: formal-ai-pages-build-${{ github.ref }}${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [build, auto-release, manual-release]
     if: |
       !cancelled() &&
@@ -1001,8 +1001,8 @@ jobs:
   test-e2e-pages:
     name: E2E Tests (GitHub Pages)
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-pages${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize') && format('-{0}', github.run_id) || '' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-pages${{ (github.event_name != 'pull_request' || github.event.action != 'synchronize' || github.run_attempt > 1) && format('-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' && github.run_attempt == 1 }}
     needs: [deploy-pages]
     if: |
       !cancelled() &&
