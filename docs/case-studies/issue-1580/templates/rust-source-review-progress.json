@@ -6314,15 +6314,16 @@
         ".github/dependency-policy/check.mjs",
         ".github/dependency-policy/check.test.mjs"
       ],
-      "assessment": "Tracked manifest coverage compared with the maintained updater: three active Cargo, three preserved Cargo and fifteen npm manifests. Actual workflow regressions expose quoted JavaScript paths and newline-split Cargo paths; shared NUL-inventory/direct-argv resolution passes eight focused and eighteen maintained local controls. Wider ecosystem coverage, current dependency acceptance and exact-source hosted qualification remain unfinished.",
-      "status": "counterpart-compared-literal-paths-local-verified-broader-coverage-pending",
+      "assessment": "Tracked manifest coverage compared with the maintained updater: three active Cargo, three preserved Cargo and fifteen npm manifests. Literal NUL-inventory/direct-argv resolution is now supplemented by original-byte UTF-8 validation before effects. Two real Git byte-valued filename regressions fail before the repair; ten focused, twenty maintained and six neighboring dependency controls pass locally, including valid Unicode replacement-character and BOM paths. Wider ecosystem coverage, current dependency acceptance and exact-source hosted qualification remain unfinished.",
+      "status": "counterpart-compared-inventory-bytes-local-verified-broader-coverage-pending",
       "counterpartEvidence": [
         "scripts/dependency-manifest-inventory.mjs",
         "scripts/resolve-dependency-lockfiles.mjs",
         ".github/workflows/dependencies-latest.yml",
         "experiments/issue-1580/dependency-lock-literal-paths.test.mjs",
         "rust/tests/web/dependencies-maintenance-workflow.test.mjs",
-        "docs/case-studies/issue-1580/dependency-lock-literal-paths.md"
+        "docs/case-studies/issue-1580/dependency-lock-literal-paths.md",
+        "docs/case-studies/issue-1580/dependency-inventory-bytes.md"
       ]
     },
     {

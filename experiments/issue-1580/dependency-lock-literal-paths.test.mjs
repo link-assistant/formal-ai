@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import {mkdirSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import {lockFixture} from './dependency-lock-fixture.mjs';
 
-const literalOwners = ['', 'nested', 'with space', 'line\nbreak', 'tab\tλ', 'back\\slash', 'quote"directory'];
+const literalOwners = ['', 'nested', 'with space', 'line\nbreak', 'tab\tλ', 'back\\slash', 'quote"directory', 'valid-\uFFFD', '\uFEFFvalid-bom'];
 const toolArgs = {
   bun: ['install', '--lockfile-only'],
   npm: ['install', '--package-lock-only', '--ignore-scripts', '--no-audit', '--no-fund'],
@@ -60,3 +62,19 @@ test('actual Cargo resolver passes literal manifest paths as one argument each',
       ({tool: 'cargo', cwd: fixture.directory, args: ['update', '--workspace', '--manifest-path', manifest]})));
   } finally {fixture.close();}
 });
+
+for (const kind of ['javascript', 'cargo']) {
+  test('actual ' + kind + ' resolver refuses non-UTF-8 Git paths before any effects', {timeout: 15000}, () => {
+    const fixture = lockFixture();
+    try {
+      const directory = Buffer.concat([Buffer.from(fixture.directory + '/'), Buffer.from([0xff])]);
+      mkdirSync(directory);
+      writeFileSync(Buffer.concat([directory, Buffer.from('/package-lock.json')]), '{}\n');
+      execFileSync('git', ['add', '--all'], {cwd: fixture.directory, timeout: 3000});
+      const result = fixture.run(kind);
+      assert.notEqual(result.status, 0, result.stderr);
+      assert.deepEqual(result.calls, [], JSON.stringify(result.calls));
+      assert.match(result.stderr, /UTF-8/);
+    } finally {fixture.close();}
+  });
+}

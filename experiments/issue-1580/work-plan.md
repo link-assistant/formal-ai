@@ -1270,4 +1270,12 @@ neither that state nor successful CI completes an unmet criterion.
 - [ ] Finish all current 0b74 workflows and collect every actionable failure before another push.
 - [ ] Qualify the corrected mismatch control on the exact hosted Node 22 source and complete all remaining original issue criteria.
 
-The complete cold-cache evidence is sealed with all eight staged-source gates passing. Corrected hosted Node 22 qualification remains pending.
+## Complete dependency inventory byte validation, 2026-11-23
+
+- [x] Reproduce two actual Git filename failures before changing production. JavaScript performs four resolver effects before the corrupted path fails; Cargo accepts the corrupted inventory.
+- [x] Draft binary Git observation and reject invalid UTF-8 before any resolver effect. Keep valid U+FFFD and leading-BOM names as literal positive controls.
+- [x] Verify ten focused, twenty maintained and six neighboring dependency controls and seven gate twins. Complete original evidence is sealed; all eight staged-source gates pass.
+- [ ] Preserve the atomic repair locally and include it with all actionable current-head failures after the entire cohort is idle.
+- [ ] Verify the exact new source in hosted CI and complete the broader row-5 and original issue criteria.
+
+Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally with its complete evidence. Both repairs remain pending the next idle-branch batch push and exact-source hosted qualification.

@@ -1,0 +1,30 @@
+{
+  "baselineCommit": "0b74d3b102290b98d8ad3632e8b00e944b742d03",
+  "realGitByteFilename": 255,
+  "regressionFailuresBefore": 2,
+  "regressionBeforeExit": 1,
+  "focusedTestsPassed": 10,
+  "maintainedTestsPassed": 20,
+  "neighborTestsPassed": 6,
+  "validReplacementCharacterPreserved": true,
+  "validLeadingBomPreserved": true,
+  "stagedGatesPassed": 8,
+  "realInventory": {
+    "activeCargo": 3,
+    "preservedCargo": 3,
+    "npm": 15
+  },
+  "correctedHostedQualificationVerified": false,
+  "allEcosystemsCovered": false,
+  "scope": "Reject paths that cannot be faithfully decoded before resolver effects; no claim of support for non-UTF-8 owning paths.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 30414,
+    "sha256": "17456f6ad63cb921af0a564ad713b3615d8271a280013e8e7627b0b6ea773ec0"
+  },
+  "members": 44,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T15:53:47.449952+00:00"
+}

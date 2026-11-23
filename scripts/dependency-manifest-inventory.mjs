@@ -1,19 +1,22 @@
 #!/usr/bin/env node
 // Every tracked Cargo manifest is active or has a specific preserved purpose.
+import {isUtf8} from 'node:buffer';
 import {spawnSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 export function trackedDependencyFiles(repository, git = spawnSync) {
-  const result = git('git', ['ls-files', '-z'], {cwd: repository, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024});
+  const result = git('git', ['ls-files', '-z'], {cwd: repository, maxBuffer: 32 * 1024 * 1024});
   if (result.error || result.signal || result.status !== 0) {
     const error = new Error('Cannot enumerate complete tracked dependency manifests: ' + (result.error?.message ?? result.signal ?? result.stderr ?? result.status));
     error.exitCode = Number.isInteger(result.status) && result.status > 0 && result.status <= 255 ? result.status : 1;
     throw error;
   }
-  const raw = result.stdout;
-  if (typeof raw !== 'string' || (raw && !raw.endsWith('\0'))) throw new Error('Incomplete tracked-file inventory');
+  const bytes = result.stdout;
+  if (!Buffer.isBuffer(bytes) || (bytes.length && bytes.at(-1) !== 0)) throw new Error('Incomplete tracked-file inventory');
+  if (!isUtf8(bytes)) throw new Error('Tracked-file inventory contains a non-UTF-8 path');
+  const raw = bytes.toString('utf8');
   const files = raw ? raw.slice(0, -1).split('\0') : [];
   if (new Set(files).size !== files.length) throw new Error('Duplicate tracked-file inventory');
   if (files.some(name => path.posix.isAbsolute(name) || name.split('/').some(part => !part || part === '.' || part === '..'))) {
