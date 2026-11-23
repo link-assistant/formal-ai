@@ -1,0 +1,27 @@
+{
+  "sourceBefore": "d0ff5b367c7e70caa2a3f6ccd81b6024d25bd3da",
+  "upstreamSource": "260ae6f826d6bff0cbfe2280098c287a4c09b3f4",
+  "before": {
+    "tests": 33,
+    "pass": 10,
+    "fail": 23,
+    "isolatedOriginalProduction": true
+  },
+  "after": {
+    "focusedTests": 71,
+    "pass": 71,
+    "fail": 0,
+    "touchedGates": [
+      "workflows",
+      "runner-labels",
+      "ci-speed",
+      "file-size"
+    ]
+  },
+  "payloadCount": 25,
+  "archiveSha256": "d8ce40b431354ab4a410adda9b00350068d97065f050d59ade4d6e371eb797aa",
+  "roundTripVerified": true,
+  "liveExternalAvailabilityVerified": false,
+  "hostedVerification": "pending next combined push",
+  "independentAuthorshipCredit": 0
+}

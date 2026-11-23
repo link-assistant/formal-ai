@@ -779,3 +779,29 @@ independent authorship or reasoning credit.
   Preserve all publication observations and round-trip archive hashes.
 - [ ] Complete the remaining Java/template semantic and runtime comparisons;
   reporting alone does not establish an upstream fix or issue completion.
+
+
+## Link observation boundary continuation (2026-11-23)
+
+- [ ] Reproduce the deployed acceptance of HTTP 429/5xx and timeouts as healthy;
+  preserve real HTTP recovery, exhausted-budget and permanent-failure controls.
+- [ ] Keep missing reports, failed local links and unknown Wayback observations
+  distinct from confirmed archival. Preserve warning-only handling of Wayback
+  outages and successful known snapshots.
+- [ ] Repair the shared causes, run the new actual-CLI/HTTP controls and neighboring
+  maintained files sequentially, then verify relevant workflow gates and hosted CI.
+- [ ] Complete the exact published native cohort and both real artifact reruns;
+  keep every wider original acceptance criterion unfinished until verified.
+
+The new finite control set is frozen before observations: deployed policy,
+retry classification, five real HTTP status cases, and seven archive CLI states.
+Supplied code and conclusions earn zero independent reasoning/authorship credit.
+
+
+- [x] Compare the current Rust link helper/workflow practice and repair accepted
+  transient failures, incomplete reports, checker runtime failures and omitted
+  local failures. Preserve the exact 33-case original replay (23 fail), 71 passing
+  repaired/adjacent controls and all four touched local gates.
+- [ ] Verify the combined link changes on the next hosted head; repair every
+  current native semantic failure and collect the remaining matrix results
+  before a single batched push. Actual native artifact reruns remain pending.

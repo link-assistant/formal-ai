@@ -39,7 +39,7 @@ test('a connection reset is a failure with no answer in it', () => {
   assert.match(unanswered[0].detail, /Connection reset by peer/);
 });
 
-test('a status code from the host is an answer and is never re-checked', () => {
+test('a permanent HTTP failure is final and is never re-checked', () => {
   const { answered, unanswered } = classifyFailures(
     extractFailures(MISSING_PAGE_REPORT)
   );
@@ -75,11 +75,11 @@ test('a timeout and an unknown outcome are also unanswered', () => {
 test('the accept list is read exactly as lychee reads it', () => {
   const ranges = parseAcceptList(ACCEPTED_STATUS);
 
-  for (const status of [200, 201, 204, 429, 500, 503, 599]) {
+  for (const status of [200, 201, 204]) {
     assert.ok(isAccepted(status, ranges), `${status} should be accepted`);
   }
   // The whole point of the gate: a page that is not there is not a link.
-  for (const status of [301, 400, 403, 404, 410, 418]) {
+  for (const status of [301, 400, 403, 404, 408, 410, 418, 429, 500, 503, 599]) {
     assert.ok(!isAccepted(status, ranges), `${status} must not be accepted`);
   }
   assert.deepEqual(parseAcceptList('200..204'), [{ from: 200, to: 203 }]);

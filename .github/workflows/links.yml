@@ -145,28 +145,11 @@ jobs:
           # external repos with references to files and issues that don't exist
           # in this repository (similar exclusion pattern as eslint.config.js)
           #
-          # 429 and 5xx are accepted rather than treated as broken. They
-          # describe the *host* -- throttling this runner, or failing to serve
-          # anything at all -- and say nothing about whether the link resolves.
-          # A missing page is a 404, and 404 still fails.
-          #
-          # `--max-retries 3` is not enough when the trouble outlasts the
-          # retries. raw.githubusercontent.com answered the same pinned-SHA
-          # LICENSE files 429, then 502, then 503 across three consecutive runs
-          # while serving them normally outside CI; `main` shows the same
-          # 12x502 / 16x503 spread, so this is not specific to any branch.
-          #
-          # `--accept-timeouts` is the same principle one step further: a
-          # timeout describes the host's latency, not the link. eur-lex.europa.eu
-          # stopped answering entirely on 2026-08-21 -- 45 s with no response
-          # from a workstation, well past the 30 s budget here -- and reddened
-          # both open pull requests over three LEGAL-COMPLIANCE.md citations
-          # neither of them touches.
-          #
-          # `--cache-exclude-status` keeps those verdicts out of the cache so
-          # the next run re-checks for real instead of replaying a bad answer
-          # for `--max-cache-age 1d`. Without it, accepting these codes would
-          # hide a link that later genuinely breaks.
+          # A timeout, rate limit or server error does not establish that a
+          # link resolves. The bounded re-check below retries transport errors
+          # and HTTP 408/429/5xx; only a later successful response recovers them.
+          # Permanent failures such as 404 remain final. Keep transient errors
+          # out of the cache so the next run obtains a fresh observation.
           #
           # Issue #1045: a `Connection reset by peer (os error 104)` reddened
           # `main` on four links that all answer 200 from a workstation. A reset
@@ -215,9 +198,8 @@ jobs:
             --max-retries 6
             --retry-wait-time 2
             --timeout 30
-            --accept '200..=204,429,500..=599'
-            --accept-timeouts
-            --cache-exclude-status '429,500..=599'
+            --accept '200..=204'
+            --cache-exclude-status '408,429,500..=599'
             --host-concurrency 2
             --host-request-interval 100ms
             --user-agent 'formal-ai-link-checker/1.0 (+https://github.com/link-assistant/formal-ai)'
@@ -240,30 +222,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Ask the links lychee never got an answer for again, directly, spread
-      # over time. A reset, a refused connection or a failed handshake is a
-      # statement about one moment on one runner; a status code is a statement
-      # about the link, and those are passed straight through and never
-      # re-checked. `all_recovered` is 'true' only when every link lychee
-      # reported answered here -- an unset output, from a crash or a skip,
-      # reads as "not recovered" and the build still fails.
-      - name: Re-check links that never got an answer
-        if: steps.lychee.outputs.exit_code != 0
+      # Retry transient HTTP and transport failures only after a complete
+      # link-failure report (exit 2). Configuration/runtime errors remain final.
+      # A missing output from a crash or skip never proves recovery.
+      - name: Re-check transient HTTP and transport failures
+        if: steps.lychee.outputs.exit_code == '2'
         id: recheck
         # 3 attempts x 20 s, plus 15 s of waits, inside a 180 s total budget:
         # bounded well under this job's 10-minute cap however many links fail.
         run: node scripts/recheck-broken-links.mjs
         env:
+          LYCHEE_EXIT_CODE: ${{ steps.lychee.outputs.exit_code }}
           LYCHEE_OUTPUT: lychee/out.md
           RECOVERED_OUTPUT: lychee/recovered.txt
 
       - name: Check broken links against Web Archive
         if: >-
-          steps.lychee.outputs.exit_code != 0 &&
+          steps.lychee.outputs.exit_code == '2' &&
           steps.recheck.outputs.all_recovered != 'true'
         id: webarchive
         run: node scripts/check-web-archive.mjs
         env:
+          LYCHEE_EXIT_CODE: ${{ steps.lychee.outputs.exit_code }}
           LYCHEE_OUTPUT: lychee/out.md
           RECOVERED_URLS: lychee/recovered.txt
 
@@ -272,14 +252,14 @@ jobs:
         # "broken links" error to a run that never finished checking them.
         if: >-
           ${{ !cancelled() && steps.lychee.outputs.exit_code != 0 &&
-          steps.recheck.outputs.all_recovered != 'true' }}
+          (steps.lychee.outputs.exit_code != '2' || steps.recheck.outputs.all_recovered != 'true') }}
         run: |
           echo "::error::Broken live links were detected."
           echo ""
           echo "What happened:"
           echo "  lychee found one or more broken links in the *.md and *.html files of this repository."
-          echo "  Every link that failed without a status code was asked again directly by the"
-          echo "  're-check' step above; the ones still listed there did not answer either."
+          echo "  Transient HTTP and transport failures were retried within a fixed budget."
+          echo "  Only a later successful response can recover a failed live link."
           echo "  The Web Archive check above provides replacement URLs when snapshots exist."
           echo ""
           echo "How to fix:"

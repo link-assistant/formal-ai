@@ -86,3 +86,5 @@ import '../../../experiments/issue-1580/template-shared-runner-pagination.test.m
 import '../../../experiments/issue-1580/environment-command-routing.test.mjs';
 
 import '../../../experiments/issue-1580/template-java-boundary-controls.test.mjs';
+
+import '../../../experiments/issue-1580/link-observation-boundaries.test.mjs';

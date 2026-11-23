@@ -6668,13 +6668,35 @@
         "scripts/issue-237.test.mjs"
       ],
       "assessment": "Both consumers validate complete timeout/error counts and reject checker runtime/configuration failures. Retries are limited to transient/transport failures; permanent verdicts remain failed, bodies are cancelled, and recovery gates cover the whole report. Archive lookup uncertainty remains distinct from confirmed absence. Formal AI counterparts need exact comparison with current maintained tests; historical filename caches or mocked lookup success do not establish live link health.",
-      "status": "literal-source-read-formal-counterpart-comparison-and-verification-pending",
+      "status": "formal-counterpart-local-controls-verified-hosted-pending",
       "formalAiPaths": [
         "scripts/check-web-archive.mjs",
         "scripts/recheck-broken-links.mjs",
         ".github/workflows/links.yml"
       ],
-      "verification": null
+      "verification": {
+        "evidence": "experiments/issue-1580/evidence/checks/link-observation-boundaries/manifest.json",
+        "comparison": "docs/case-studies/issue-1580/templates/link-observation-boundaries-20261123.md",
+        "upstreamCommit": "260ae6f826d6bff0cbfe2280098c287a4c09b3f4",
+        "before": {
+          "tests": 33,
+          "pass": 10,
+          "fail": 23,
+          "isolatedOriginalProduction": true
+        },
+        "after": {
+          "focusedTests": 71,
+          "pass": 71,
+          "fail": 0,
+          "touchedGates": [
+            "workflows",
+            "runner-labels",
+            "ci-speed",
+            "file-size"
+          ]
+        },
+        "hosted": "pending next combined push"
+      }
     },
     {
       "practice": "Isolated secret-scanner dependency closure",

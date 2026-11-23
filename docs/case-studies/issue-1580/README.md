@@ -342,3 +342,6 @@ JavaScript cases, native formatting and the complete 143-entry local inventory
 preserve five candidate controls and eleven adjacent checks. Both shared defects
 have immutable reproduction drafts; hosted native execution and actual artifact
 reruns remain pending, and the wider issue stays unfinished.
+
+
+The [link verdict and report-boundary comparison](templates/link-observation-boundaries-20261123.md) records 23 reproducible failures among 33 controls against the original helpers, all 71 repaired/adjacent controls passing, and four passing local gates. Hosted verification remains pending.
