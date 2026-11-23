@@ -587,7 +587,7 @@ test('publishing credentials stay in the child environment and exercise the real
   assert.match(source, /get_arg\("token"\)\s*[.]filter\(\|value\| !value[.]is_empty\(\)\)/u);
   const root = 'experiments/issue-1580/release-registry/';
   const cli = readFileSync(root + 'cli_regressions.py', 'utf8');
-  assert.match(cli, /class RegistryRegressions\(PublishProcessRegressions,/u);
+  assert.match(cli, /class RegistryRegressions\([^)]*PublishProcessRegressions,/u);
   assert.match(cli, /release_controls \+= add_publish_process_controls\(HARNESS, cls[.]scripts\)/u);
   const regression = readFileSync(root + 'publish_process_regressions.py', 'utf8');
   assert.equal([...regression.matchAll(/^    def test_publish_cli_/gmu)].length, 5);
@@ -599,6 +599,32 @@ test('publishing credentials stay in the child environment and exercise the real
   for (const path of ['publish_process_regressions.py', 'release_process_regressions.py',
     'check_fixture.py', 'fixtures/new-control.rs.gz', 'fixtures/publish-crate-before-token-fix.json',
     'fixtures/publish-crate-before-token-fix.rs.gz']) {
+    assert.equal(admission([root + path])['native-type-check'], true, path);
+  }
+});
+
+test('sparse availability preserves parsed identity and reaches the native CLI lane', () => {
+  const source = readFileSync('scripts/wait-for-crate.rs', 'utf8');
+  assert.match(source, /registry::crate_version_visibility\(&crate_name, &version\)/u);
+  assert.match(source, /could not determine crates[.]io availability/u);
+  const registry = readFileSync('scripts/registry.rs', 'utf8');
+  assert.match(registry, /https:\/\/index[.]crates[.]io\/\{path\}/u);
+  assert.match(registry, /serde_json::from_str\(line\)/u);
+  assert.match(registry, /sparse_body_has_version/u);
+  assert.match(registry, /version_exists_with_policy\(crate_name, version, 1, Duration::ZERO\)/u);
+  const root = 'experiments/issue-1580/release-registry/';
+  const cli = readFileSync(root + 'cli_regressions.py', 'utf8');
+  assert.match(cli, /class RegistryRegressions\(SparseRegistryRegressions,/u);
+  assert.match(cli, /release_controls \+= add_sparse_registry_controls\(HARNESS, cls[.]scripts\)/u);
+  assert.match(cli, /source[.]replace\('https:\/\/index[.]crates[.]io', address \+ '\/_sparse'\)/u);
+  const regression = readFileSync(root + 'sparse_registry_regressions.py', 'utf8');
+  assert.equal([...regression.matchAll(/^    def test_sparse_waiter_/gmu)].length, 6);
+  const original = gunzipSync(readFileSync(root + 'fixtures/wait-for-crate-before-sparse.rs.gz'));
+  const metadata = JSON.parse(readFileSync(root + 'fixtures/wait-for-crate-before-sparse.json', 'utf8'));
+  assert.equal(original.length, metadata.bytes);
+  assert.equal(createHash('sha256').update(original).digest('hex'), metadata.sha256);
+  assert.match(original.toString('utf8'), /registry::version_exists/u);
+  for (const path of ['sparse_registry_regressions.py', 'fixtures/wait-for-crate-before-sparse.rs.gz']) {
     assert.equal(admission([root + path])['native-type-check'], true, path);
   }
 });

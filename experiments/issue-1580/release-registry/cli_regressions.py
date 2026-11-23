@@ -17,12 +17,13 @@ import sys
 sys.dont_write_bytecode = True
 from release_process_regressions import ReleaseProcessRegressions, add_release_process_controls
 from publish_process_regressions import PublishProcessRegressions, add_publish_process_controls
+from sparse_registry_regressions import SparseRegistryRegressions, add_sparse_registry_controls
 
 ROOT = Path(__file__).resolve().parents[3]
 HARNESS = Path(__file__).resolve().parent
 
 
-class RegistryRegressions(PublishProcessRegressions, ReleaseProcessRegressions, unittest.TestCase):
+class RegistryRegressions(SparseRegistryRegressions, PublishProcessRegressions, ReleaseProcessRegressions, unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.requests = []
@@ -36,6 +37,14 @@ class RegistryRegressions(PublishProcessRegressions, ReleaseProcessRegressions, 
 
             def do_GET(self):
                 cls.requests.append(self.path)
+                if self.path.startswith('/_sparse/') and cls.sparse_reply is not None:
+                    status, body = cls.sparse_reply
+                    body = body.encode()
+                    self.send_response(status)
+                    self.send_header('Content-Length', str(len(body)))
+                    self.end_headers()
+                    self.wfile.write(body)
+                    return
                 affected = cls.scope in self.path
                 if affected and (cls.mode == 'drop' or (cls.mode == 'drop-once' and len(cls.requests) == 2)):
                     self.connection.shutdown(socket.SHUT_RDWR)
@@ -47,7 +56,9 @@ class RegistryRegressions(PublishProcessRegressions, ReleaseProcessRegressions, 
                     status, data = 200, {}
                 else:
                     status = 200
-                    if self.path.endswith('/fixture'):
+                    if self.path.startswith('/_sparse/'):
+                        data = {'name': self.path.rsplit('/', 1)[1], 'vers': cls.maximum}
+                    elif self.path.endswith('/fixture'):
                         data = {'versions': [{'num': cls.maximum, 'yanked': False}]}
                     elif '/releases/tags/' in self.path:
                         data = {'tag_name': self.path.rsplit('/', 1)[1]}
@@ -64,6 +75,8 @@ class RegistryRegressions(PublishProcessRegressions, ReleaseProcessRegressions, 
                             data[field] = 'unrelated'
                     if 'version' in data:
                         data['version']['num'] = '0.0.0'
+                    if 'vers' in data:
+                        data['vers'] = '0.0.0'
                 body = json.dumps(data).encode()
                 self.send_response(status)
                 self.send_header('Content-Length', str(len(body)))
@@ -78,9 +91,11 @@ class RegistryRegressions(PublishProcessRegressions, ReleaseProcessRegressions, 
         shutil.copytree(ROOT / 'scripts', cls.scripts)
         release_controls = add_release_process_controls(HARNESS, cls.scripts)
         release_controls += add_publish_process_controls(HARNESS, cls.scripts)
+        release_controls += add_sparse_registry_controls(HARNESS, cls.scripts)
         address = f'http://127.0.0.1:{cls.server.server_port}'
         for path in cls.scripts.rglob('*.rs'):
             source = path.read_text()
+            source = source.replace('https://index.crates.io', address + '/_sparse')
             for url in ['https://crates.io', 'https://api.github.com', 'https://hub.docker.com']:
                 source = source.replace(url, address)
             source = source.replace('Duration::from_secs(1)', 'Duration::ZERO')
@@ -109,6 +124,7 @@ class RegistryRegressions(PublishProcessRegressions, ReleaseProcessRegressions, 
     def setUp(self):
         self.__class__.requests = []
         self.__class__.mode = 'success'
+        self.__class__.sparse_reply = None
         self.__class__.scope = ''
         self.__class__.maximum = '1.2.3'
         temp = tempfile.TemporaryDirectory(prefix='registry-cli-')
@@ -245,7 +261,7 @@ class RegistryRegressions(PublishProcessRegressions, ReleaseProcessRegressions, 
         self.__class__.mode = '404'
         result = self.script('wait-for-crate.rs', '--max-attempts', '2', '--sleep-seconds', '0')
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(len(self.requests), 2)
+        self.assertEqual(len(self.requests), 4)
         self.assertFalse(self.output.exists())
         self.__class__.mode = 'success'
         result = self.script('wait-for-crate.rs', '--max-attempts', '2', '--sleep-seconds', '0')

@@ -1,0 +1,25 @@
+{
+  "sourceBase": "dd6ac968712701d1dc04482c24ec87e6094a2b2b",
+  "templateSource": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+  "beforeJavaScriptSourceContractExit": 1,
+  "afterJavaScriptSourceContractExit": 0,
+  "focusedJavaScriptContractsPassed": 67,
+  "loopbackFixtureControlsPassed": 5,
+  "affectedGatesPassed": 11,
+  "nativeCliMethodsPending": 6,
+  "nativeParserTestsPending": 1,
+  "nativeExecutionVerified": false,
+  "actualPublicationVerified": false,
+  "realCredentialProviderVerified": false,
+  "initialFailedControlExpectationRetained": true,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 83088,
+    "sha256": "d122efa4fb0f12dfed207c8454e7ae9fa7dc39c2e23de274d6f7d7b8fdd91169"
+  },
+  "members": 52,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T13:17:35.608078+00:00"
+}

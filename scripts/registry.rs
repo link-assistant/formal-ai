@@ -154,8 +154,17 @@ pub fn max_published(crate_name: &str) -> Result<Option<(u32, u32, u32)>, String
 }
 
 pub fn version_exists(crate_name: &str, version: &str) -> Result<bool, String> {
+    version_exists_with_policy(crate_name, version, 4, Duration::from_secs(1))
+}
+
+fn version_exists_with_policy(
+    crate_name: &str,
+    version: &str,
+    attempts: u32,
+    delay: Duration,
+) -> Result<bool, String> {
     let url = format!("https://crates.io/api/v1/crates/{crate_name}/{version}");
-    let Some(body) = get_body(&url, &[])? else {
+    let Some(body) = get_body_with_policy(&url, &[], attempts, delay)? else {
         return Ok(false);
     };
     let data: serde_json::Value =
@@ -171,6 +180,78 @@ pub fn version_exists(crate_name: &str, version: &str) -> Result<bool, String> {
         ));
     }
     Ok(true)
+}
+
+/// The result of consulting both Cargo's sparse index and the version API.
+#[derive(Debug, PartialEq, Eq)]
+pub enum VersionVisibility {
+    Published,
+    NotPublishedYet,
+    Unknown(String),
+}
+
+fn sparse_index_path(crate_name: &str) -> Result<String, String> {
+    let name = crate_name.to_ascii_lowercase();
+    if name.is_empty()
+        || !name
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_'))
+    {
+        return Err("Invalid sparse registry crate name".into());
+    }
+    Ok(match name.len() {
+        1 => format!("1/{name}"),
+        2 => format!("2/{name}"),
+        3 => format!("3/{}/{name}", &name[..1]),
+        _ => format!("{}/{}/{name}", &name[..2], &name[2..4]),
+    })
+}
+
+fn sparse_body_has_version(body: &str, crate_name: &str, version: &str) -> Result<bool, String> {
+    let mut present = false;
+    let mut records = 0;
+    for line in body.lines().filter(|line| !line.trim().is_empty()) {
+        let record: serde_json::Value = serde_json::from_str(line)
+            .map_err(|error| format!("Invalid sparse index JSON: {error}"))?;
+        let name = record.get("name").and_then(serde_json::Value::as_str);
+        let found = record.get("vers").and_then(serde_json::Value::as_str);
+        if !name.is_some_and(|name| name.eq_ignore_ascii_case(crate_name))
+            || found.is_none_or(str::is_empty)
+        {
+            return Err("Invalid sparse index record identity".into());
+        }
+        present |= found == Some(version);
+        records += 1;
+    }
+    if records == 0 {
+        return Err("Empty sparse index response".into());
+    }
+    Ok(present)
+}
+
+/// Each outer waiter attempt makes at most one bounded request per endpoint.
+/// A failed observation never becomes a claim that publication failed.
+pub fn crate_version_visibility(crate_name: &str, version: &str) -> VersionVisibility {
+    let index = sparse_index_path(crate_name).and_then(|path| {
+        get_body_with_policy(
+            &format!("https://index.crates.io/{path}"),
+            &[],
+            1,
+            Duration::ZERO,
+        )?
+        .map(|body| sparse_body_has_version(&body, crate_name, version))
+        .unwrap_or(Ok(false))
+    });
+    if matches!(index, Ok(true)) {
+        return VersionVisibility::Published;
+    }
+    let api = version_exists_with_policy(crate_name, version, 1, Duration::ZERO);
+    match (index, api) {
+        (_, Ok(true)) => VersionVisibility::Published,
+        (Ok(false), _) | (_, Ok(false)) => VersionVisibility::NotPublishedYet,
+        (Err(index), Err(api)) => VersionVisibility::Unknown(format!("{index}; {api}")),
+        (Ok(true), _) => unreachable!(),
+    }
 }
 
 pub fn artifact_exists(
@@ -271,6 +352,33 @@ mod tests {
                 404 => assert_eq!(result.unwrap(), None),
                 _ => assert!(result.is_err()),
             }
+        }
+    }
+
+    #[test]
+    fn sparse_records_require_complete_identity_and_exact_version() {
+        let valid = "{\"name\":\"fixture\",\"vers\":\"1.2.3\"}";
+        assert!(sparse_body_has_version(valid, "fixture", "1.2.3").unwrap());
+        assert!(!sparse_body_has_version(valid, "fixture", "1.2").unwrap());
+        for body in [
+            "",
+            "{}",
+            "{\"name\":\"other\",\"vers\":\"1.2.3\"}",
+            "{\"name\":\"fixture\",\"note\":\"\\\"vers\\\":\\\"1.2.3\\\"\"}",
+            &format!("{valid}\nnot json"),
+        ] {
+            assert!(sparse_body_has_version(body, "fixture", "1.2.3").is_err());
+        }
+        for (name, expected) in [
+            ("a", "1/a"),
+            ("ab", "2/ab"),
+            ("abc", "3/a/abc"),
+            ("Serde", "se/rd/serde"),
+        ] {
+            assert_eq!(sparse_index_path(name).unwrap(), expected);
+        }
+        for invalid in ["", "../serde", "s\u{e9}rde"] {
+            assert!(sparse_index_path(invalid).is_err());
         }
     }
 

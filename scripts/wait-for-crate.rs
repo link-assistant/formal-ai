@@ -5,6 +5,10 @@
 //! lag briefly. Waiting here makes Docker Hub tags and GitHub releases point at a
 //! crate version that users can already resolve.
 //!
+//! Probes Cargo's sparse index first, then the JSON API. Each waiter attempt
+//! makes at most two bounded requests. Unknown observations remain distinct
+//! from a definitive missing version; all records require parsed identity.
+//!
 //! Usage:
 //!   rust-script scripts/wait-for-crate.rs --release-version <version>
 //!
@@ -114,32 +118,48 @@ fn main() {
         return;
     }
 
+    let mut last_unknown = None;
+    let mut saw_definitive_answer = false;
     for attempt in 1..=max_attempts {
-        if registry::or_exit(
-            "Crates.io availability",
-            registry::version_exists(&crate_name, &version),
-        ) {
-            println!(
-                "{}@{} is visible on crates.io after attempt {}",
-                crate_name, version, attempt
-            );
-            set_output("crate_available", "true");
-            return;
+        match registry::crate_version_visibility(&crate_name, &version) {
+            registry::VersionVisibility::Published => {
+                println!(
+                    "{}@{} is visible on crates.io after attempt {}",
+                    crate_name, version, attempt
+                );
+                set_output("crate_available", "true");
+                return;
+            }
+            registry::VersionVisibility::NotPublishedYet => {
+                saw_definitive_answer = true;
+                if attempt < max_attempts {
+                    println!(
+                        "{}@{} is not visible on crates.io yet (attempt {}/{}); waiting {}s",
+                        crate_name, version, attempt, max_attempts, sleep_seconds
+                    );
+                }
+            }
+            registry::VersionVisibility::Unknown(reason) => {
+                eprintln!(
+                    "Crates.io availability observation {attempt}/{max_attempts} failed: {reason}"
+                );
+                last_unknown = Some(reason);
+            }
         }
-
         if attempt < max_attempts {
-            println!(
-                "{}@{} is not visible on crates.io yet (attempt {}/{}); waiting {}s",
-                crate_name, version, attempt, max_attempts, sleep_seconds
-            );
             thread::sleep(Duration::from_secs(sleep_seconds));
         }
     }
-
-    eprintln!(
-        "Error: {}@{} was not visible on crates.io after {} attempts",
-        crate_name, version, max_attempts
-    );
+    if !saw_definitive_answer && let Some(reason) = last_unknown {
+        eprintln!(
+            "Error: could not determine crates.io availability for {crate_name}@{version} after {max_attempts} attempts: {reason}"
+        );
+    } else {
+        eprintln!(
+            "Error: crates.io availability: {}@{} was not visible on crates.io after {} attempts",
+            crate_name, version, max_attempts
+        );
+    }
     exit(1);
 }
 

@@ -6606,6 +6606,15 @@
         "realCredentialProviderVerified": false,
         "allApplicablePracticeVerified": false,
         "independentAuthorshipCredit": 0
+      },
+      "latestLocalSparseRepair": {
+        "sourceBase": "dd6ac968712701d1dc04482c24ec87e6094a2b2b",
+        "templateSource": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+        "evidence": "experiments/issue-1580/evidence/checks/sparse-registry-visibility-20261123/manifest.json",
+        "assessment": "The waiter now probes the sparse index before falling back to the version API, validates every JSON record name and exact version, and distinguishes unknown observations from definitive absence. Each outer attempt uses one bounded request per endpoint; other shared-registry callers retain their four-attempt policy. The source contract fails before and passes after; all 67 JavaScript contracts, five loopback fixture controls, eleven affected gates and formatting pass. Six native CLI methods and one native parser/layout test remain unexecuted. Live registry/publication authority, credential-provider behavior, rate-limit deferral and dependent-job ownership remain unfinished.",
+        "nativeBehaviorVerified": false,
+        "allApplicablePracticeVerified": false,
+        "independentAuthorshipCredit": 0
       }
     },
     {

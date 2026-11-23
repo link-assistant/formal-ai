@@ -7,8 +7,8 @@ acceptance criterion waived.
 
 - Pushed head bc08222b5a5195dc9992c0459bde2b6369377b9f contains the bounded
   APT recovery repair. Its current cohort has one pending workflow and no
-  collected failure at the last observation. Seven of ten native groups
-  pass; three Hive groups remain running or queued. Full current-head qualification
+  collected failure at the last observation. Nine of ten native groups
+  pass; Hive-4 remains running. Full current-head qualification
   and the guarded whole-producer rerun remain unfinished.
 - The wrapper source review exposed answer-marker truncation and unqualified
   printed exit-code parsing. The local repair has 11 failing cases before and
@@ -37,6 +37,13 @@ acceptance criterion waived.
   regressions are drafted but have not executed. No publication
   or native behavioral qualification is claimed. This delta remains uncommitted
   while the producer-rerun guard binds the unchanged local head.
+- The API-only waiter now probes Cargo sparse-index records before the API,
+  preserving parsed crate/version identity and unknown-versus-absent outcomes.
+  One source contract fails before and passes after; all 67 JavaScript contracts,
+  five physical loopback fixture controls, eleven affected gates and formatting
+  pass. The sealed receipt retains the initial wrong-identity fixture expectation
+  failure. Six new native CLI methods and one parser/layout test remain pending;
+  no native or publication qualification is claimed.
 - All eight template maps cover 3,028 blobs. Applicable-practice adoption and
   execution, original family/full-suite budgets, strict style debt, main-only
   publication/delivery, cache reliability, live useful delivery, serving
