@@ -1,3 +1,13 @@
+## Active checkpoint: terminal cohort and actual failed-consumer reuse (2026-11-23)
+
+- Head 8190 has 31 successful workflows, one explicit skip and one cancelled Pipeline workflow. Its status job fails for cancelled native checks; missing logs earn no execution credit. The Layered witness regression now passes hosted CI.
+- The historical failed-consumer rerun finished. All three consumers fetched original attempt-1 artifact 14778573986 and executed without a producer rerun or new upload. Their old semantic failures remain failures; this is artifact-reuse qualification only.
+- Local cancellation repair bd586bfd2 and Rust practice evidence 114d366e8 await one batch push and latest-head hosted qualification. All affected local JavaScript checks and gates already pass.
+- Remaining maintained review: original literal chunks 0,1,2,6,7 and compact chunks 9 through 43 read; exact grammar and module-move conservation proofs checked. Full aggregate review remains unfinished.
+- Fresh upstream evidence: command-stream PR 240 merged, published command-stream still 1.13.0; link-calculator 0.24.0 and migration issue 265 open. CodeQL context and serving-identity reports remain open. Failed mistaken lookups are retained with zero credit.
+- Complete template execution/adoption, strict style debt disposition, original family and full-suite budgets, main-only publication/delivery, cache reliability, live useful delivery, trusted cross-request epochs and registry authority remain unfinished. No waiver or report counts as acceptance. Keep PR #1581 draft and unmerged.
+- The existing native goal is usage-limited; the unchanged issue-completion objective and all unfinished acceptance criteria remain tracked here.
+
 # Issue 1580 work plan
 
 ## Active checkpoint: historical rerun cancellation repair, 2026-11-23

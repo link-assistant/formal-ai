@@ -67,7 +67,9 @@ before/after logs, complete gate logs, fresh feedback and conservation proofs.
 Every archive member was reopened and checked against its length and SHA-256.
 Supplied edits and orchestration receive zero independent authorship credit.
 
-Hosted qualification of this repair, actual artifact rerun qualification,
-aggregate source review and the remaining original acceptance criteria are
-unfinished. [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581)
+The actual historical failed-consumer rerun now qualifies reuse of the original
+producer artifact without recompilation; its old semantic failures remain failures.
+The [terminal cohort and rerun receipt](ci-qualification-20261123.md) records that
+limited result. Hosted qualification of the cancellation repair, aggregate source
+review and the remaining original acceptance criteria are unfinished. [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581)
 remains a draft and is not ready to merge.
