@@ -1,3 +1,36 @@
+## Active checkpoint: bounded APT recovery and maintained source review (2026-11-23)
+
+This checkpoint supersedes the dated status summaries below. The unchanged
+objective remains complete implementation and verification of every original
+criterion in [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581).
+
+- Cancellation repair, hosted Rust-practice reconciliation and the historical
+  artifact-reuse evidence were pushed as head f7a71cb86a16e78da0e9ca055c13710d62277739.
+  Its complete Pipeline cohort is still being collected. Layered CI has two
+  real provisioning failures: an interrupted dpkg transaction and an EC2 mirror
+  missed by the Azure-only fallback.
+- Local repair 0096a8168cb9f611ac55a611cce602884c888607 keeps all existing budgets. The same current
+  regressions have six behavioral failures against the prior scripts and zero
+  after repair; 54 focused tests, eight affected gates and three shell syntax
+  checks pass. Complete logs and failed drafts remain in the APT receipt.
+  Hosted repair qualification is unfinished. Collect all current-head failures
+  before the next single batch push.
+- The remaining 320-path maintained-code inventory at 8190 is completely
+  reviewed using 56 compact literal chunks and exact grammar/module conservation
+  proofs. Broader aggregate documentation/generated/evidence review remains
+  unfinished; overlapping review inventories are not unique totals.
+- The eight current template maps already account for all 3,028 blobs.
+  Applicable-practice adoption/execution remains unfinished. Rust's 356-file
+  literal count excludes historical structured artifacts already covered by its
+  complete 374-blob current map; those are separate evidence measures.
+- Original family/full-suite budgets, strict style debt, remaining template
+  practices, main-only publication/delivery, cache reliability, live useful
+  delivery, serving identity, trusted epochs, CodeQL semantic context, published
+  dependency migration and registry authority remain unfinished. No report,
+  exception or passing subset waives an acceptance criterion. Keep draft.
+- The native goal remains usage-limited. Supplied code, scripts and orchestration
+  receive zero independent authorship credit; the objective stays tracked here.
+
 ## Active checkpoint: terminal cohort and actual failed-consumer reuse (2026-11-23)
 
 - Head 8190 has 31 successful workflows, one explicit skip and one cancelled Pipeline workflow. Its status job fails for cancelled native checks; missing logs earn no execution credit. The Layered witness regression now passes hosted CI.

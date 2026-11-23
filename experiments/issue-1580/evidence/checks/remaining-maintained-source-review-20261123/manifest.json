@@ -1,0 +1,31 @@
+{
+  "source": "8190c9efaa82777e576b7bae18297d2de33dcf9d",
+  "base": "03a636334975cd7ca5cedff119e2dd0efbc8579f",
+  "pathCount": 320,
+  "completeDiffLines": 28437,
+  "completeDiffSha256": "a1073f9e614cee27538a174baeb3fd0085e7378101da574e424aa92b8ee9f5b2",
+  "literalOriginalChunks": [
+    0,
+    1,
+    2,
+    6,
+    7
+  ],
+  "compactLiteralChunks": 56,
+  "grammarBodyConservedBytes": 37436,
+  "exactModuleMoveBlocks": 79,
+  "moduleMoveCoveredDiffLines": 9246,
+  "remainingMaintainedScopeReviewed": true,
+  "completeAggregateReview": false,
+  "method": "Full literal compact review plus exact complete-region conservation proofs; imports, callers and harness registration reviewed separately.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 607277,
+    "sha256": "ecfe642502aebdbbd0b847d56f6f94ec8e0c7509b897826ef93f758066bec28d"
+  },
+  "members": 9,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T10:42:50.157964+00:00"
+}
