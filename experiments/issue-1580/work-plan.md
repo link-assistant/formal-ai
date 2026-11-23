@@ -1254,6 +1254,20 @@ neither that state nor successful CI completes an unmet criterion.
 - [x] Draft the actual seven-case probe job with source/runtime/lock identities and failure artifacts.
 - [x] Verify failure propagation, sparse source closure, runtime rejection and existing neighboring controls locally.
 - [x] Run seven affected JavaScript gates on staged sources and seal complete before/after evidence.
-- [ ] Preserve the atomic change locally and include it in the complete idle-branch push batch.
+- [x] Preserve the hosted-controls draft locally and push it in the idle-branch 0b74 follow-up batch.
 - [ ] Verify all seven actual engine controls on the exact hosted Node 22 source; a clean changed-file scan alone does not establish this criterion.
 - [ ] Complete every remaining original requirement; keep the PR draft.
+
+## Cold-cache scanner negative control, 2026-11-23
+
+- [x] Preserve all 33 terminal 2730 workflows and map its single actionable native assertion to the committed correction.
+- [x] Push the complete three-commit follow-up once as 0b74d3b10 after both idle-branch observations; keep PR #1581 draft.
+- [x] Preserve the actual Node 22 failure, original scanner artifact and exact source hashes: five scanner cases and audit pass; mismatch refuses with ENOTCACHED before semantic validation.
+- [x] Reproduce that exact cold-cache failure using actual npm and a loopback metadata registry, without package downloads or installation.
+- [x] Draft a private-cache bounded metadata lookup; the actual maintained mismatch phase now yields EUSAGE before installation. Preserve the failed harness attempts separately.
+- [x] Verify the focused cold-cache regression and all ten maintained scanner controls locally.
+- [x] Verify the repaired actual seven-case engine probe locally on Node 26, all 49 maintained boundary controls and seven affected local gates. Hosted Node 22 remains pending.
+- [ ] Finish all current 0b74 workflows and collect every actionable failure before another push.
+- [ ] Qualify the corrected mismatch control on the exact hosted Node 22 source and complete all remaining original issue criteria.
+
+The complete cold-cache evidence is sealed with all eight staged-source gates passing. Corrected hosted Node 22 qualification remains pending.

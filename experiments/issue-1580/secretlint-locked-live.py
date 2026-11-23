@@ -53,7 +53,10 @@ try:
  lock=json.loads((mismatched/'package-lock.json').read_text())
  lock['packages']['node_modules/secretlint']['version']='13.0.5'
  (mismatched/'package-lock.json').write_text(json.dumps(lock)+chr(10))
- command=['npm','ci','--offline','--ignore-scripts','--no-audit','--no-fund','--engine-strict','--prefix',str(mismatched)]
+ # npm needs registry metadata to diagnose the wrong version in an empty cache.
+ # Keep that lookup separate from the scanner installs; require the semantic error.
+ command=['npm','ci','--ignore-scripts','--no-audit','--no-fund','--engine-strict',
+          '--cache',str(mismatched/'cache'),'--fetch-retries=0','--fetch-timeout=30000','--prefix',str(mismatched)]
  result=subprocess.run(command,cwd=repository,capture_output=True,text=True)
  (output/'mismatched-lock.log').write_text(result.stdout+result.stderr)
  records.append({'label':'mismatched-lock','command':command,'status':result.returncode,

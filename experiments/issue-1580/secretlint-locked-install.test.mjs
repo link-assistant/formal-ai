@@ -1,3 +1,4 @@
+import './secretlint-cold-cache-control.test.mjs';
 import './secretlint-engine-workflow.test.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
