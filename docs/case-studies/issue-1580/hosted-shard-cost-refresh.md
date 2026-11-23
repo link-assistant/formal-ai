@@ -113,6 +113,10 @@ Historical scheduling comments and earlier work-plan observations are retained
 in separate readable files. Active data and plan files are below the unchanged
 1,400-line warning threshold.
 
+The [sealed repair receipt](https://github.com/link-assistant/formal-ai/blob/issue-1580-8d61a32a61e1/experiments/issue-1580/evidence/checks/bounded-scheduling-repair-20261123/manifest.json)
+retains the original failures, rejected probes, all complete local outputs and
+round-trip-verified source hashes, including the two subsequent citation repairs.
+
 These are local checks and historical models. Exact-source hosted qualification
 of the repair remains pending. The nine shards, four workers, warning threshold,
 deadline, runner allowance and functional test coverage remain unchanged.
