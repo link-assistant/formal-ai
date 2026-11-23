@@ -1310,3 +1310,12 @@ Cold-cache repair df2e7eddbcc25bbba32c0304bc242061d612c7ce is preserved locally 
 - [x] Reconcile practice row 22 with actual hosted execution while retaining separate OpenSSF and Cargo warnings.
 - [ ] Wait for all current 7ec0 workflows and preserve every complete terminal stream before the next push.
 - [ ] Complete aggregate review, remaining applicable template practices and every original issue criterion; keep PR #1581 draft and unmerged.
+
+## Independent native consumer fan-out, 2026-11-23
+
+- [x] Preserve the actual ten-job queue snapshot and trace the two-job cap to its introducing commit and the current contribution policy.
+- [x] Reproduce the corrected workflow contract before changing production; remove only the matrix concurrency restriction.
+- [x] Verify all focused native group, checkout, rerun and headroom controls and the full 179-case maintained policy entry. Retain the interrupted initial driver separately.
+- [x] Verify all ten affected JavaScript gates and seal complete before/after evidence. Preserve the atomic repair locally before the next combined push.
+- [ ] Wait for the current cohort, collect every actionable failure and push the complete repair batch once only when the branch is idle.
+- [ ] Qualify uncapped scheduling on exact hosted source; complete every remaining original requirement.

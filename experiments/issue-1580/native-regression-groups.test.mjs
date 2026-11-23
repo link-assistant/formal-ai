@@ -89,7 +89,8 @@ test('native workflow gives every expensive family its own bounded independent j
   assert(matrix);
   assert.deepEqual(matrix.strategy.matrix.group, Object.keys(groups).filter(group => !['core', 'hive', 'reasoning', 'coding'].includes(group)));
   assert.equal(matrix.strategy['fail-fast'], false);
-  assert.equal(matrix.strategy['max-parallel'], 2);
+  assert.equal(matrix.strategy['max-parallel'], undefined,
+    'independent CI consumers use every available runner instead of a two-job serial queue');
   assert.equal(matrix.needs, 'contract-build', 'only failure to compile the actual shared targets suppresses consumers');
   assert.equal(matrix.if, '${{ inputs.compile-inputs-changed }}');
   assert.equal(matrix['runs-on'], 'ubuntu-24.04');
