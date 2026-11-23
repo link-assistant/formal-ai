@@ -5,16 +5,16 @@ import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
 
-function run({present=false,failures=0,stall=false,probe=0,interruptInstall=false,recoveryStatus=0,recoveryStall=false,recover='',mirrorText='http://azure.archive.ubuntu.com/ubuntu\n'}={}){
+function run({present=false,failures=0,stall=false,probe=0,interruptInstall=false,recoveryStatus=0,recoveryStall=false,recover='',first='',fallback='',missingMirror=false,mirrorText='http://azure.archive.ubuntu.com/ubuntu\n'}={}){
  const directory=realpathSync(mkdtempSync(join(tmpdir(),'formal-ai-search-install-')));
  try{
   const bin=join(directory,'bin'),calls=join(directory,'calls'),mirror=join(directory,'apt-mirrors.txt');mkdirSync(bin);
-  writeFileSync(mirror,mirrorText);writeFileSync(calls,'');
+  if(!missingMirror)writeFileSync(mirror,mirrorText);writeFileSync(calls,'');
   writeFileSync(join(directory,'environment'),'command(){ if [[ "$1" == -v && "${2:-}" == rg ]]; then [[ "$FAKE_RG_PRESENT" == 1 ]]; else builtin command "$@"; fi; }\n');
   const program=(name,body)=>writeFileSync(join(bin,name),'#!'+process.execPath+'\n'+body,{mode:0o755});
   program('apt-get',[
    "const fs=require('node:fs'),args=process.argv.slice(2),p=process.env.FAKE_CALLS;",
-   "fs.appendFileSync(p,JSON.stringify({kind:'apt',args})+'\\n');",
+   "fs.appendFileSync(p,JSON.stringify({kind:'apt',args,mirror:fs.existsSync(process.env.FORMAL_AI_APT_MIRROR_LIST)?fs.readFileSync(process.env.FORMAL_AI_APT_MIRROR_LIST,'utf8'):null})+'\\n');",
    "const updates=fs.readFileSync(p,'utf8').trim().split('\\n').map(JSON.parse).filter(r=>r.kind==='apt'&&r.args.includes('update')).length;",
    "const pending=process.env.FAKE_PENDING;",
    "if(fs.existsSync(pending)){console.error('E: dpkg was interrupted; configure pending packages first');process.exit(100);}",
@@ -32,11 +32,11 @@ function run({present=false,failures=0,stall=false,probe=0,interruptInstall=fals
    encoding:'utf8',timeout:8000,env:{...process.env,PATH:bin+':'+process.env.PATH,
     BASH_ENV:join(directory,'environment'),FORMAL_AI_APT_GET:join(bin,'apt-get'),FORMAL_AI_APT_PRIVILEGE:'',
     FORMAL_AI_APT_ATTEMPTS:'2',FORMAL_AI_APT_ATTEMPT_SECONDS:'1',FORMAL_AI_APT_RETRY_DELAY_SECONDS:'0',
-    FORMAL_AI_APT_RECOVER_DPKG_ON_TIMEOUT:recover,FORMAL_AI_APT_MIRROR_LIST:mirror,FORMAL_AI_DEADLINE_GRACE_SECONDS:'0',TEST_BUDGET_SECONDS:'5',
+    FORMAL_AI_APT_OFFICIAL_MIRROR_FIRST:first,FORMAL_AI_APT_OFFICIAL_MIRROR_FALLBACK:fallback,FORMAL_AI_APT_RECOVER_DPKG_ON_TIMEOUT:recover,FORMAL_AI_APT_MIRROR_LIST:mirror,FORMAL_AI_DEADLINE_GRACE_SECONDS:'0',TEST_BUDGET_SECONDS:'5',
     FAKE_PENDING:join(directory,'pending'),FAKE_INTERRUPT_INSTALL:interruptInstall?'1':'0',FAKE_RECOVERY_STATUS:String(recoveryStatus),FAKE_RECOVERY_STALL:recoveryStall?'1':'0',
     FAKE_CALLS:calls,FAKE_RG_PRESENT:present?'1':'0',FAKE_FAILURES:String(failures),FAKE_STALL:stall?'1':'0',FAKE_PROBE:String(probe)}});
   assert.equal(result.error,undefined,String(result.error));assert.equal(result.signal,null,result.stderr);
-  return {...result,elapsed:Date.now()-started,records:readFileSync(calls,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse),mirror:readFileSync(mirror,'utf8')};
+  return {...result,elapsed:Date.now()-started,records:readFileSync(calls,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse),mirror:missingMirror?null:readFileSync(mirror,'utf8')};
  }finally{rmSync(directory,{recursive:true,force:true});}
 }
 
@@ -96,4 +96,28 @@ test('the observed EC2 mirror is replaced after the first real deadline',()=>{
 test('stalled interrupted-package recovery is killed by the existing last-attempt deadline',()=>{
  const r=run({interruptInstall:true,recoveryStall:true});assert.equal(r.status,124,r.stdout+r.stderr);assert(r.elapsed<7000);
  assert.deepEqual(r.records.map(x=>x.kind),['apt','apt','configure']);assert.match(r.stderr,/Attempt 2 exited 124/);
+});
+
+for(const host of ['http://us-east-2.ec2.archive.ubuntu.com/ubuntu','http://azure.archive.ubuntu.com/ubuntu'])test('search setup selects the exact official HTTPS alternate before the first package operation '+host,()=>{
+ const r=run({mirrorText:host+'\n'});assert.equal(r.status,0,r.stdout+r.stderr);
+ assert.equal(r.records.filter(x=>x.kind==='apt'&&x.args.includes('update')).length,1);
+ assert(r.records.filter(x=>x.kind==='apt').every(x=>x.mirror==='https://archive.ubuntu.com/ubuntu\n'));
+ assert.doesNotMatch(r.stderr,/::warning/);
+});
+test('first-attempt mirror preference can be disabled explicitly',()=>{
+ const mirrorText='http://us-east-2.ec2.archive.ubuntu.com/ubuntu\n';
+ const r=run({first:'0',mirrorText});assert.equal(r.status,0,r.stdout+r.stderr);
+ assert(r.records.filter(x=>x.kind==='apt').every(x=>x.mirror===mirrorText));assert.equal(r.mirror,mirrorText);
+});
+test('disabling mirror fallback also disables its default first-attempt preference',()=>{
+ const mirrorText='http://azure.archive.ubuntu.com/ubuntu\n';
+ const r=run({fallback:'0',mirrorText});assert.equal(r.status,0,r.stdout+r.stderr);
+ assert(r.records.filter(x=>x.kind==='apt').every(x=>x.mirror===mirrorText));
+});
+test('a runner without the Ubuntu mirror-list file preserves ordinary installation',()=>{
+ const r=run({missingMirror:true});assert.equal(r.status,0,r.stdout+r.stderr);
+ assert(r.records.filter(x=>x.kind==='apt').every(x=>x.mirror===null));assert.equal(r.records.at(-1).kind,'probe');
+});
+test('invalid first-attempt mirror configuration refuses before package-manager effects',()=>{
+ const r=run({first:'2'});assert.equal(r.status,2,r.stdout+r.stderr);assert.deepEqual(r.records,[]);
 });

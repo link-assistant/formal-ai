@@ -1,0 +1,29 @@
+{
+  "sourceBase": "bc08222b5a5195dc9992c0459bde2b6369377b9f",
+  "focusedTestsPassed": 60,
+  "testFiles": 5,
+  "beforeNewMirrorTestsFailed": 3,
+  "containerInitialDynamicFailures": 5,
+  "containerCause": "host .bashrc pyenv cleanup intercepted by fixture rm before package-manager execution",
+  "containerHostileStartupControl": {
+    "childStatus": 1,
+    "actualShellStatus": 97,
+    "expectedFailureObserved": true,
+    "isolatedSuitePassed": 6
+  },
+  "existingGatesPassed": 11,
+  "hostedQualificationComplete": false,
+  "fullLiteralTraceRead": false,
+  "targetedTraceReviewComplete": true,
+  "attemptsOrDeadlineIncreased": false,
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 72238,
+    "sha256": "fdac19e84b8891346835848bf2877c78f4c56736271bb417d6074cb8a9bc7f01"
+  },
+  "members": 56,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T13:43:52.471054+00:00"
+}

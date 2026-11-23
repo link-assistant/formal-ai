@@ -1,54 +1,47 @@
-## Active checkpoint: command receipts and aggregate subset review (2026-11-23)
+## Active checkpoint: green baseline and local repair qualification (2026-11-23)
 
-This checkpoint supersedes the older dated summaries below. The objective
-remains full implementation and verification of issue #1580 in
-[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), with no
-acceptance criterion waived.
+The objective remains full implementation and verification of every requirement
+of issue #1580 in [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581).
+No original acceptance criterion is waived.
 
-- Pushed head bc08222b5a5195dc9992c0459bde2b6369377b9f contains the bounded
-  APT recovery repair. Its current cohort has one pending workflow and no
-  collected failure at the last observation. Nine of ten native groups
-  pass; Hive-4 remains running. Full current-head qualification
-  and the guarded whole-producer rerun remain unfinished.
-- The wrapper source review exposed answer-marker truncation and unqualified
-  printed exit-code parsing. The local repair has 11 failing cases before and
-  all 16 passing after, plus an actual Formal AI driver check: old exit 19 and
-  truncated output, repaired exit 0 and complete output. Seven affected gates,
-  two JavaScript syntax checks and whitespace checks pass. The maintained
-  CI aggregator imports the regression. This delta is not yet committed or
-  pushed because the producer-rerun observer binds the unchanged local head.
-- The remaining 51 data paths are completely reviewed using 18 compact chunks,
-  exact record/value conservation and independent reconstruction. All 80
-  non-test experiment tools are reviewed in 33 literal chunks. Both sealed
-  receipts retain complete diffs, inventories and readback hashes.
-- The test-source inventory has 80 paths: 79 issue-1580 tests plus the older
-  fragment release-map test. All 43 literal chunks are read and the complete
-  source-only subset receipt is sealed. Thirteen other documentation/image
-  paths and 25 fixture paths are also completely reviewed, with exact conserved
-  records and sealed receipts. Broader documentation and raw-evidence review
-  remain unfinished. Overlapping historical inventories are not unique totals.
-- Publishing-helper review found credential forwarding in Cargo arguments,
-  premature credential-provider warnings and empty-token fallback failure. The
-  repair sends selected tokens through the environment, retains Cargo credential
-  providers and admits the complete release-registry harness to native CI. The
-  new JavaScript contract fails before and passes after; all 66 focused contracts
-  and Rust formatting with edition 2024 pass. All eleven affected gates pass;
-  the sealed repair receipt preserves failed drafts. Five native process
-  regressions are drafted but have not executed. No publication
-  or native behavioral qualification is claimed. This delta remains uncommitted
-  while the producer-rerun guard binds the unchanged local head.
-- The API-only waiter now probes Cargo sparse-index records before the API,
-  preserving parsed crate/version identity and unknown-versus-absent outcomes.
-  One source contract fails before and passes after; all 67 JavaScript contracts,
-  five physical loopback fixture controls, eleven affected gates and formatting
-  pass. The sealed receipt retains the initial wrong-identity fixture expectation
-  failure. Six new native CLI methods and one parser/layout test remain pending;
-  no native or publication qualification is claimed.
+- Pushed source bc08222b5a5195dc9992c0459bde2b6369377b9f finishes with 32
+  successful workflows and one explicit skip. All ten native groups pass,
+  totaling 441 selected tests. All 33 complete log streams are preserved.
+  Fourteen warning candidates resolve to three actual warnings, nine quoted
+  commands and two passing test names. The two APT deadlines recover; crates.io
+  publication authority remains unknown. Full literal log review is not claimed.
+  See the sealed terminal-baseline receipt and its case study.
+- The whole-producer rerun was requested once at 13:18:37 UTC. Attempt 2 has
+  started its producer; terminal qualification, distinct attempt artifact and
+  all ten consumers remain pending. Its observer permits local descendant commits
+  while refusing remote source changes. Do not push during this current-head run.
+- Command-receipt repair 83cc960ad preserves complete output and qualifies actual
+  command/exit receipts. Eleven cases fail before and all sixteen pass after;
+  an actual driver check verifies full output. Seven affected gates pass.
+- Credential repair 51cbede8e keeps selected tokens out of Cargo arguments,
+  preserves provider fallback and admits the complete native regression harness.
+  Sparse repair e94e5b37f uses parsed sparse records before the API and retains
+  unknown-versus-absent outcomes. All 67 focused JavaScript contracts, five
+  physical fixture controls, eleven affected gates and Rust formatting pass.
+  Eleven new native CLI methods and one parser/layout test remain unexecuted.
+  The local secret scan of all commits since bc08222b5 passes.
+- Aggregate review commit dd6ac9687 preserves completed source-only subsets:
+  51 data paths, 80 experiment tools, 80 experiment tests, 13 other documentation/
+  image paths and 25 fixture paths. Complete diffs, conservation checks and readback
+  hashes are sealed. These overlapping inventories are not unique totals.
+  Broader documentation and evidence review remains unfinished.
+- A first-attempt mirror preference is drafted for search setup after the hosted
+  baseline still spends two first deadlines on regional HTTP mirrors. Three new
+  focused regressions fail against unchanged production; all 60 tests in five
+  affected suites and eleven JavaScript gates pass after the repair. A neighboring
+  fixture startup failure is reproduced and isolated with a hostile .bashrc
+  control; production clocks and the fixture time limit are unchanged. Receipts
+  retain initial failures and targeted traces. Hosted qualification is pending.
 - All eight template maps cover 3,028 blobs. Applicable-practice adoption and
   execution, original family/full-suite budgets, strict style debt, main-only
-  publication/delivery, cache reliability, live useful delivery, serving
-  identity, trusted epochs, CodeQL semantics, published dependency migration
-  and registry authority remain unfinished. Keep the PR draft and unmerged.
+  publication/delivery, cache reliability, live useful delivery, serving identity,
+  trusted epochs, CodeQL semantics, published dependency migration and registry
+  authority remain unfinished. Keep the PR draft and unmerged.
 - The native goal remains usage-limited. Supplied edits, scripts, orchestration
   and conclusions earn zero independent authorship or reasoning credit.
 
