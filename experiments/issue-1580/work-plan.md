@@ -974,3 +974,13 @@ Rust formatting pass. Native execution remains pending on the next hosted head.
 - [ ] Verify the final source batch, retain original evidence, and run the complete clean local JavaScript gate set.
 - [ ] Verify the newly admitted native dependency controls on the corrected hosted head.
 - [ ] Verify an actual maintained dependency run and every remaining original acceptance criterion; command-selection replay alone does not establish these outcomes.
+
+## Terminal 17a cohort and final focused manifest checks
+
+- [x] Finish and preserve all 34 exact-head runs: 31 successful, two failed, one explicit skip.
+- [x] Preserve complete original failures and fix both actionable causes locally: stale TypeScript projections and the audit invocation selector.
+- [x] Preserve actual complete Cargo audits and all three immutable CodeQL artifacts; retain the 541 empty expansions as an unmet criterion.
+- [x] Complete all eleven final manifest check commands successfully; native tests remain hosted-only.
+- [ ] Run the complete clean local gate set, refresh feedback and main ancestry, and push the collected repair batch once.
+- [ ] Verify the corrected hosted head and both real native-artifact rerun paths.
+- [ ] Complete every remaining original criterion before readiness or acceptance.
