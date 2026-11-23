@@ -1015,3 +1015,13 @@ Focused native-admission repair verification completes all 36 neighboring JavaSc
 - [ ] Finish the original 8682 cohort, collect all actionable failures and archive the terminal observations before pushing.
 - [ ] Verify the repaired source natively, then execute full and consumer-only artifact reruns.
 - [ ] Complete every original criterion before readiness or acceptance.
+
+## Terminal 8682 admission batch, 2026-11-23
+
+- [x] Wait for all 33 original workflows: 31 success, one failure, one explicit skip; all ten native behavior groups pass.
+- [x] Preserve original failure streams and terminal metadata. Map both actionable assertions to the compact JSON and sparse manifest repairs; the Pipeline Status failure propagates them.
+- [x] Stop the artifact controller before reruns because the original cohort failed; retain its original error and claim no rerun qualification.
+- [x] Verify all 143 local entries on clean bdbac2652: 89 pass, zero fail, 54 hosted-only skips.
+- [ ] Push the complete repair batch after a fresh empty queued/in-progress observation; qualify the exact new native source.
+- [ ] Execute actual full and consumer-only artifact reruns after the new original cohort passes.
+- [ ] Resolve the retained source-size warnings, unknown credential observation and every other original criterion. Keep the PR draft and unmerged.
