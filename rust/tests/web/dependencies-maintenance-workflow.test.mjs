@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import {execFileSync,spawnSync} from 'node:child_process';
-import {mkdtempSync,mkdirSync,readFileSync,realpathSync,rmSync,writeFileSync} from 'node:fs';
+import {existsSync,mkdtempSync,mkdirSync,readFileSync,realpathSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import YAML from 'yaml';
 import {dependencyManifests} from '../../../scripts/dependency-manifest-inventory.mjs';
 const workflow=readFileSync(new URL('../../../.github/workflows/dependencies-latest.yml',import.meta.url),'utf8');
 
@@ -144,4 +145,42 @@ test('the actual maintenance step resolves every active Cargo manifest and stops
   const failed = observeCargoResolution(workflow, true);
   assert.equal(failed.status, 23, failed.stderr);
   assert.equal(failed.stdout, '');
+});
+
+// Run the real sparse patterns rather than treating an include-string match as checkout evidence.
+test('both native admission checkouts retain every active Cargo manifest', {timeout: 15000}, () => {
+  const native = YAML.parse(readFileSync(new URL('../../../.github/workflows/native-type-check.yml', import.meta.url), 'utf8'));
+  const policy = JSON.parse(readFileSync(new URL('../../../scripts/dependency-manifests.json', import.meta.url), 'utf8'));
+  const checkouts = native.jobs.clippy.steps.filter(step => ['native-checkout', 'native-checkout-retry'].includes(step.id));
+  assert.equal(checkouts.length, 2);
+  const directory = realpathSync(mkdtempSync(path.join(tmpdir(), 'formal-ai-native-manifests-')));
+  const write = (name, content) => {
+    mkdirSync(path.dirname(path.join(directory, name)), {recursive: true});
+    writeFileSync(path.join(directory, name), content);
+  };
+  const git = (args, input) => execFileSync('git', [
+    '-c', 'core.hooksPath=/dev/null', '-c', 'commit.gpgsign=false', ...args,
+  ], {cwd: directory, input, encoding: 'utf8', timeout: 3000, maxBuffer: 256 * 1024});
+  const locks = policy.activeCargo.map(name => name.replace(/Cargo[.]toml$/u, 'Cargo.lock'))
+    .filter(name => existsSync(new URL('../../../' + name, import.meta.url)));
+  const omitted = 'experiments/issue-1580/unrelated-sparse-fixture.txt';
+  try {
+    for (const name of policy.activeCargo) write(name, '[dependencies]\n');
+    for (const name of locks) write(name, 'version = 4\n');
+    write(omitted, 'unrelated experiment stays outside native admission\n');
+    git(['init', '--quiet']);
+    git(['add', '.']);
+    git(['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+      'commit', '--quiet', '-m', 'native sparse input fixture']);
+    for (const checkout of checkouts) {
+      assert.equal(checkout.with['sparse-checkout-cone-mode'], false);
+      git(['sparse-checkout', 'set', '--no-cone', '--stdin'], checkout.with['sparse-checkout']);
+      for (const name of policy.activeCargo) {
+        assert.equal(existsSync(path.join(directory, name)), true, checkout.id + ' omitted active manifest ' + name);
+        assert.equal(readFileSync(path.join(directory, name), 'utf8'), '[dependencies]\n');
+      }
+      for (const name of locks) assert.equal(readFileSync(path.join(directory, name), 'utf8'), 'version = 4\n', checkout.id + ' omitted owning lock ' + name);
+      assert.equal(existsSync(path.join(directory, omitted)), false, 'retain the bounded experiment exclusion');
+    }
+  } finally {rmSync(directory, {recursive: true, force: true});}
 });
