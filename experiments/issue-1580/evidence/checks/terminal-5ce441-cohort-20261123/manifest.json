@@ -1,0 +1,25 @@
+{
+  "sourceCommit": "5ce441456821446d2fd2b65bd3b51f94a422d9c7",
+  "testedMergeCommit": "accd42df3b138d547c2d39667cc444ef21e65d70",
+  "terminalWorkflows": 33,
+  "successfulWorkflows": 32,
+  "explicitlySkippedWorkflows": 1,
+  "completeCliStreamsPreserved": 33,
+  "completeLogLines": 117115,
+  "platformWarnings": 6,
+  "platformErrors": 0,
+  "completeJavascriptOwnerObservations": 922,
+  "selectedNativeContractPasses": 441,
+  "allLiteralLogsReviewed": false,
+  "qualification": "Complete streams are preserved; diagnostics and selected runtime qualifications were reviewed. This receipt does not qualify later local repairs or complete the issue.",
+  "archive": {
+    "path": "complete-observations.tar.gz",
+    "bytes": 2097690,
+    "sha256": "984da6dd5eeb8a9935d85dffda573e49167c99897a3ede609de2b17d3c9ce3f5"
+  },
+  "members": 221,
+  "roundTripVerified": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false,
+  "capturedAt": "2026-11-23T21:21:52.600969+00:00"
+}

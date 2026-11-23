@@ -1,3 +1,23 @@
+## Active checkpoint: terminal 5ce441 and capacity/package repair (2026-11-23)
+
+The objective remains every requirement of issue #1580 in
+[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), draft and unmerged.
+
+- [x] Preserve all 33 terminal workflows, 117,115 complete log lines and the six actual platform warnings; qualify exact Layered merge accd42df3b138d547c2d39667cc444ef21e65d70.
+- [x] Retain all 922 successful JavaScript owner observations and 441 selected native contract passes. Full literal log and aggregate review are not claimed.
+- [x] Reproduce the two overloaded queues with the unchanged timing floor and budgets. The bounded eight-candidate replay selects ten groups as the smallest capacity fitting all thirteen retained cohorts, with every owner retained.
+- [x] Preserve the independent historical nine-group/66-candidate probe, unchanged deployed weights, original assertions and byte-identical compressed historical floor.
+- [x] Reproduce the Cargo archive-target defect in five bounded offline layouts without compiling. Report the shared current template defect as Rust template issue #268.
+- [x] Commit actual detector installer-routing regressions and the Cargo metadata repair as separate local steps. New native guard tests remain unexecuted locally.
+- [x] Pass 438 maintained observations, 184 policy cases, 30 speed cases, 31 profile cases and five checkout cases; retain the stale nine-group expectation and invalid gate-selector failures alongside their successful corrections. Affected documentation and requirement-status checks pass.
+- [ ] Pass the changed-source secret scan, verify an idle branch and fresh main, update the PR description, then push only the prepared branch.
+- [ ] Qualify the new exact source and native archive guard in hosted CI; collect every resulting warning or error before another push.
+- [ ] Complete every remaining original template, original workflow family, full-suite runtime, semantic, dependency, main-only delivery, cache, identity, retention and aggregate-review criterion below.
+- Supplied commands and edits retain zero independent authorship/reasoning credit. The native goal remains usage-limited.
+
+Evidence: [capacity and package investigation](../../docs/case-studies/issue-1580/capacity-and-package-target.md).
+The complete source comments remain unchanged: one issue comment, eleven PR conversation comments, no inline comments or reviews. Fresh main is already included.
+
 ## Active checkpoint: hosted scheduling failures and bounded repair (2026-11-23)
 
 The objective remains every requirement of issue #1580 in
@@ -13,7 +33,7 @@ The objective remains every requirement of issue #1580 in
 - [x] Run the real Meta Reasoner owner, all 438 maintained observations and all 143 JavaScript gate entries. Preserve 88 passes, 54 explicit skips and the one stale-citation failure; repair its authoritative citation and pass all ten affected gates.
 - [x] Seal all original failures, complete local outputs and source hashes in bounded-scheduling-repair-20261123. All five requirement commands and six affected ledger gates pass after maintained regeneration; verdicts are unchanged.
 - [x] Pass the changed-source secret scan (36 files, two complete archives), repair the one trailing blank line and recheck all four partition contracts. Fresh main is already included; both active and queued branch-run lists are empty.
-- [ ] Publish the reviewed idle-branch batch and qualify its exact source in hosted CI.
+- [x] Publish the bounded scheduling batch as 5ce44145; all 33 workflows finish, with 32 successes and one explicit skip. Six platform warnings remain separately tracked.
 - [ ] Qualify the resulting exact source in hosted CI; finish aggregate review and all remaining template, original CI family, dependency, production, identity, semantic context and authorship requirements listed below.
 - Fresh registry responses still show mandatory Chrono in published command-stream 1.13.0 and link-calculator 0.24.0. The former migration is merged upstream but remains unpublished; the latter issue remains open. Both original dependency criteria remain unfinished.
 - Supplied commands and edits earn zero independent authorship or reasoning credit. The native goal remains usage-limited.
