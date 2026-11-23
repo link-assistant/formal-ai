@@ -1006,3 +1006,12 @@ Rust formatting pass. Native execution remains pending on the next hosted head.
 - [ ] Complete the remaining original issue and practice criteria before readiness or acceptance; the current native goal remains usage-limited, not complete.
 
 Focused native-admission repair verification completes all 36 neighboring JavaScript controls, six gate twins and Rust formatting. Original failures, sparse before/intermediate/after observations, complete repaired source, controller inputs and exact streams are archived with member hashes. Native execution remains pending; the 8682 cohort is still running and nothing has been pushed during it.
+
+## Clean native admission manifest verification, 2026-11-23
+
+- [x] Run all 143 local entries on clean bdbac2652: 89 pass, zero fail, 54 hosted-only skips; preserve every executed stream and unchanged-source receipt.
+- [x] Preserve the incomplete foreground attempt separately; tool-deadline termination receives no completed-inventory credit.
+- [x] Review the complete current manifest repair diff. Confirm exact-byte conservation of rename-map and ledger archive moves; aggregate review remains incomplete.
+- [ ] Finish the original 8682 cohort, collect all actionable failures and archive the terminal observations before pushing.
+- [ ] Verify the repaired source natively, then execute full and consumer-only artifact reruns.
+- [ ] Complete every original criterion before readiness or acceptance.
