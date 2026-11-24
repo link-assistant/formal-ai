@@ -1,0 +1,9 @@
+# Keep these published definitions available when planner and dialogue replay
+# datasets change. Each lemma requires checked-in WordNet senses for the view.
+wordnet-view-coverage
+  lemma colosseum
+  lemma insomnia
+  lemma landmark
+  lemma pantheon
+  lemma rome
+  lemma vatican

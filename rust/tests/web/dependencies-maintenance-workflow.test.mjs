@@ -10,6 +10,23 @@ import {lockFixture} from '../../../experiments/issue-1580/dependency-lock-fixtu
 import '../../../experiments/issue-1580/dependency-lock-literal-paths.test.mjs';
 const workflow=readFileSync(new URL('../../../.github/workflows/dependencies-latest.yml',import.meta.url),'utf8');
 
+function runCacheCheck(script) {
+  return execFileSync('python3', ['-B', 'experiments/issue-1580/' + script], {
+    cwd: new URL('../../../', import.meta.url),
+    encoding: 'utf8',
+    timeout: 30000,
+  });
+}
+
+test('main run 45212862106 cache-budget replay has no unreferenced publisher records', {timeout: 35000}, () => {
+  assert.deepEqual(JSON.parse(runCacheCheck('cache-reference-inventory.py')), []);
+});
+
+test('publisher cache repair preserves historical releases and required WordNet views', {timeout: 65000}, () => {
+  runCacheCheck('release-timeline-captures.test.py');
+  runCacheCheck('wordnet-view-coverage.test.py');
+});
+
 function observedLocks(source) {
   const fixture = lockFixture();
   try {

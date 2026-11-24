@@ -893,3 +893,6 @@ seed_registry
   unregistered search-fusion-language-grammar
     owner "src/search_fusion_grammar.rs"
     reason "The per-language query grammar is embedded by the search-fusion module that parses it."
+  unregistered wordnet-view-coverage
+    owner "scripts/build-views.py"
+    reason "The view builder reads these required publisher inputs from disk during generation and verification."

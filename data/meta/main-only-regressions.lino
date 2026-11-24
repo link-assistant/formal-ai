@@ -229,3 +229,11 @@ main-run 45295717630
       failed "public verifier timed out after checking 26 of 74 assets for v0.356.11"
       check rust/tests/web/verify-public-release-downloads.test.mjs
       marker "Main run 45295717630 exhausted the serial verifier"
+
+main-run 45212862106
+  workflow-policy
+    regression dependency-updater-cache-budget
+      introduced-by "unreferenced source-cache records observed on main 03a636334"
+      failed "check-cache-budget: 42 unreferenced Wikidata and WordNet records"
+      check rust/tests/web/dependencies-maintenance-workflow.test.mjs
+      marker "main run 45212862106 cache-budget replay"

@@ -1,3 +1,13 @@
+## Active checkpoint: dependency updater validation (2026-11-24)
+
+- [x] Preserve the ten historical updater gate failures and both exact PR regressions from `33bac270`. The twelve-way JavaScript cohort stayed within the runtime budget despite its stale manifest-hash assertions.
+- [x] Repair no-default-feature acquisition, Rust test paths, terminology and Cargo witness identities. Keep the measured documentation-core and planner bounds exact. Retain all twelve document-recipe precedences and every fixture payload.
+- [x] Inventory all 42 cache orphans. Keep the twelve historical entity captures with their replay, remove 25 obsolete label snapshots, and preserve all six lexical views backed by WordNet. Verify zero unreferenced records, 953 views and the existing closure budget.
+- [x] Run the cache budget replay and retained publisher-data controls in the fast dependency maintenance test. Record the original updater failure in the production-only regression ledger.
+- [ ] Qualify all checks on the exact published PR head. Full resolved-dependency validation and publication remain open on the default-branch path.
+
+Evidence for both the original failures and their reproductions is in the [dependency updater case study](../../docs/case-studies/issue-1580/dependency-updater-qualification.md).
+
 ## Active checkpoint: historical Cargo audit (2026-11-24)
 
 - [x] Trace the historical audit warning to optional Lindera. Keep the original Rust parser and offline-resolvable lock, with 32 production-profile checks passing.
