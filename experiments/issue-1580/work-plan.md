@@ -1,3 +1,17 @@
+## Active checkpoint: public download deadline and historical Cargo audit (2026-11-24)
+
+- [x] Verify e6ed5b3fa has 32 successful workflows and one explicit skip. Collect its exact hosted Pipeline and Layered results.
+- [x] Diagnose the main-only release download failure from the complete log and the 26-of-74 asset receipt. Reproduce the serial scheduling and missing asset diagnostics with finite tests.
+- [x] Preserve exact byte verification under the original deadline. Limit the all-assets job to three streams and retain only required evidence files. All 77 focused verifier, downloader and worker checks and four ledger checks pass.
+- [x] Trace the historical Rust audit warning to optional Lindera. Keep the original Rust parser and offline-resolvable lock, with 32 production-profile checks passing.
+- [x] Qualify all 89 runnable local gates and 54 explicit CI-only skips. Recheck the eight missing-prerequisite cases after restoring the locked tools and parser.
+- [ ] Publish the idle-branch batch and qualify its exact hosted Security, Pipeline and Layered results.
+- [ ] Observe the corrected public download workflow on a trusted Desktop Release. Complete the original wider criteria below and keep PR #1581 draft in the meantime.
+
+Evidence: [release deadline](../../docs/case-studies/issue-1580/public-release-download-deadline.md),
+[Cargo audit](../../docs/case-studies/issue-1580/codeql-optional-dependency-checkpoint.md#historical-rust-reproducer-dependency-repair-24-november-2026).
+The active native goal tracks the full issue. Supplied work earns zero independent credit.
+
 ## Active checkpoint: real transport controls and native library coverage (2026-11-24)
 
 The objective remains every requirement of issue #1580 in
