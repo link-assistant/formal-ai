@@ -13,12 +13,13 @@ use toml_edit::{DocumentMut, Item, Table, value as toml_value};
 
 use crate::seed::{ClientIntegration, ConfigFormat};
 
+use super::codex_model_catalog::codex_model_catalog;
 use super::command::ensure_trailing_newline;
 use super::global_verify::{probe_headless_start, verify_written_config};
 use super::{
     ERROR_PLACEHOLDER, ModelLimits, RENDERED_PLACEHOLDER, RenderContext, WithFormalAiArgs,
-    backup_path, codex_model_catalog, ensure_backup, global_config_path, render_context,
-    render_template, restore_backup, write_file,
+    backup_path, ensure_backup, global_config_path, render_context, render_template,
+    restore_backup, write_file,
 };
 
 /// Opening marker of the block a shell profile lets formal-ai own, per tool.
