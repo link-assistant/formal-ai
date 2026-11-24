@@ -26,6 +26,7 @@ See [external benchmark evidence](../../docs/case-studies/issue-1580/external-be
 - [x] Retain the original bare Cargo exit and the newer live-frontier cancellation. Confirm the newest cancelled job finished its build and reached the live example.
 - [x] Bound the locked build, live capture and both proposal replays. Preserve actual capture exit 124, retained diagnostics and the original proposal assertions in focused controls.
 - [x] Reproduce the [native workflow contract failure](https://github.com/link-assistant/formal-ai/actions/runs/45351919319/job/138300631223) at line 2123. The first deadline revision reserved 90% of the job clock. Separate the build and capture jobs, transfer the two commands using the producer's artifact ID and verify the existing deadlines under the repository's 70% policy.
+- [x] Reproduce the [Layered artifact census failure](https://github.com/link-assistant/formal-ai/actions/runs/45355212203/job/138311444424) at job log lines 2004–2009. The learning build adds one digest-checked consumer, bringing the total from 99 to 100. Update the exact count and preserve checks for the adapter, checkout and digest policy. On the hosted Node 24.22.3 version all 20 artifact tests, six learning diagnostics and six proposal replays pass.
 - [ ] Qualify the new scheduled workflow on its governed branch. Determine which prompt and remote route consumed the live capture time, and verify a complete current frontier within the budget.
 
 See [scheduled learning evidence](../../docs/case-studies/issue-1580/learning-cycle-deadline.md).
