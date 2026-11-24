@@ -21,8 +21,16 @@ suite selection, and installer failure before evaluation. The exact wheel
 was installed with hash enforcement under CPython 3.12 and its Parquet API
 decoded one written fixture row into the original record.
 
-The latest main results retain separate score failures. HumanEval passed
+On 24 November, the 119,551-byte Parquet file matched the upstream
+SHA-256 `8312f321838051849d2fa7c6ca071244733a3e90bb517ff6ca8186f722199b5c`.
+The exact decoder body from `rust/src/external_benchmarks/fetch.rs` ran with
+CPython 3.12.3 and the locked PyArrow 26.0.1 wheel. It emitted 244,364 bytes
+of UTF-8 JSON, covering all 23 distinct dev instances. Each row supplied
+the required instance, task, repository and base commit fields, and both
+test-name fields parsed as JSON string arrays.
+[Pinned upstream file](https://huggingface.co/datasets/princeton-nlp/SWE-bench_Lite/blob/6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2/data/dev-00000-of-00001.parquet)
+
+The latest main results report separate score failures. HumanEval passed
 12 of 20, MBPP passed 10 of 20, and GSM8K passed one of 20, below their
-recorded floors. Their expected scores and the SWE-bench evaluator acquisition
-are unchanged. Hosted evaluation of the actual dataset and official evaluator
+recorded floors. Hosted execution of the official SWE-bench evaluator
 remains pending.

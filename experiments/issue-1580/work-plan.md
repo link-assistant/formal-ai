@@ -37,6 +37,7 @@
 - [x] Preserve [the complete scheduled benchmark failure](https://github.com/link-assistant/formal-ai/actions/runs/45197910485). It reached all ten suites and distinguished SWE-bench Lite's missing Parquet reader from scores below the HumanEval, MBPP and GSM8K floors.
 - [x] Provision the same hashed reader in the scheduled and sharded SWE-bench Lite paths. Replay both paths and a failed installation in the real workflow shell. Decode a fixture row using the exact wheel on CPython 3.12.
 - [x] Register the pre-merge replays for the captured learning-cycle timeout and the missing Parquet reader in the production-only regression ledger.
+- [x] Fetch the immutable upstream Parquet file and verify its SHA-256 against the response. The exact production Python decoder and locked wheel parse all 23 dev instances with the required fields and valid test-name arrays. The official evaluator still needs a hosted execution.
 - [ ] Qualify scheduled and sharded evaluation using the live pinned dataset and the official evaluator. Correct the three separate score failures without changing their floors.
 
 See [external benchmark evidence](../../docs/case-studies/issue-1580/external-benchmark-parquet-reader.md).
