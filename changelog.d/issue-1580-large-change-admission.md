@@ -1,1 +1,0 @@
-Read large Git change inventories completely with bounded decoding and private temporary spooling, preserving failed-Git errors and complete NUL-delimited path admission with a real 24,004-path regression.

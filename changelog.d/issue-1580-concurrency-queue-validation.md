@@ -1,1 +1,0 @@
-Validate workflow and job concurrency queue values and reject max with cancellation enabled beside the pinned actionlint schema exception. Keep expression outcomes explicitly unresolved and preserve the Docker ShellCheck canary.

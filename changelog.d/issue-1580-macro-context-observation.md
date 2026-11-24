@@ -1,1 +1,0 @@
-Add an optional read-only observation of original and expanded source macro contexts in the existing hosted CodeQL Rust database, retaining query/pack metadata and raw diagnostic outputs without replacing the security suite.

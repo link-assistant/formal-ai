@@ -1,1 +1,0 @@
-Partition the live canonical release workflow into two byte-bound source parts. Preserve all 52 operations and 104 bindings, authenticate each physical input, and keep legacy single-file fixtures compatible. Replay JavaScript budget checks against each complete hosted cohort instead of treating maxima from different runs as one observed workload.

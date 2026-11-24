@@ -1,1 +1,0 @@
-Preserve the shared public plan-observation helper API in focused native regression targets, and regenerate the localized source endpoint TypeScript projection. Warning enforcement and generated-source parity stay enabled.

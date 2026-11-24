@@ -1,1 +1,0 @@
-Fix the governed specification witness after explicit extracted-module paths change source hashes. Preserve all 223 supported cases and 970 unsupported records; review the complete objects before refreshing the eight affected hashes.

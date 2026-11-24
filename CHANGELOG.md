@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Older releases are archived under `docs/changelog/` so that no file
 exceeds the repository's 1500-line cap (newest first):
 
-- [0.353.0](docs/changelog/releases-from-0.353.0.md)
+- [0.355.0 to 0.355.30](docs/changelog/releases-from-0.355.0.md)
+- [0.353.0 to 0.354.1](docs/changelog/releases-from-0.353.0.md)
 - [0.352.0 to 0.352.1](docs/changelog/releases-from-0.352.0.md)
 - [0.346.0 to 0.351.0](docs/changelog/releases-from-0.346.0.md)
 - [0.307.0 to 0.345.0](docs/changelog/releases-from-0.307.0.md)
@@ -19,6 +20,818 @@ exceeds the repository's 1500-line cap (newest first):
 - [0.1.0 to 0.104.0](docs/changelog/releases-from-0.1.0.md)
 
 <!-- changelog-insert-here -->
+
+## [0.356.12] - 2026-11-24
+
+Update every workflow artifact consumer to verified raw transport and streaming extraction, preserve caller Python and empty pattern selections, and retain transfer timing for local adapters.
+
+### Fixed
+- Download native and selected-source renderer artifacts with strict digest verification and streaming extraction, replacing the deprecated Node ZIP parser while preserving cached regular-file refreshes and refusing unsafe archive paths.
+
+bump: patch
+
+Honor Cargo feature activation when constructing standalone Rust CodeQL contexts, including renamed optional dependencies and weak feature forwarding.
+
+bump: patch
+
+Allow explicit read-only CodeQL producer verification on a branch while retaining the automatic main-only analysis and report upload.
+
+### Fixed
+
+- Reject unresolved CodeQL findings, invalid or missing SARIF reports, and extraction diagnostics instead of treating a successful upload as a clean analysis. Preserve the reports for review and refuse incomplete Rust sysroot prerequisites.
+
+### Fixed
+
+- Preserve consumed child evidence and complete route traces in native compound answers.
+- Run the consumed-child provenance library regressions in the existing focused native CI step.
+
+### Fixed
+
+- Connect the calendar and currency HTTP regression to its captured-publisher worker through the server's supported injection argument. Assert the actual worker identity so rate checks cannot silently depend on live publisher availability. Existing answer and derivation checks remain unchanged.
+
+### Fixed
+
+- Run the complete JavaScript suite in twelve groups selected by fifteen hosted timing cohorts. Retain every test owner, timings from failed files, prior timing floors, the 270-second warning and the 360-second deadline.
+
+### Fixed
+
+- Require an explicit successful checker exit output before clearing the terminal link gate, so missing outputs cannot be coerced to numeric zero.
+
+### Added
+
+- Verify bounded link recovery against real early TLS and post-request connection resets, including recovery only after a later HTTP success.
+
+bump: patch
+
+Select maintained main directly during checkout and bind the actual commit before running Hive or Formal AI source, preserving immutable attempt and delivery identities.
+
+bump: patch
+
+Run the native Git-change detector regressions in the focused pull-request workflow target.
+
+### Fixed
+
+- Run the focused native PR check when its isolated regression tests, embedded
+  fixtures, or HTTP replay inputs change. Replay the existing synthesis contracts
+  in the same lane without compiling the complete unit test suite.
+
+### Fixed
+
+- Resolve the package-size archive from Cargo metadata so custom target directories and workspace members inspect the newly generated package, with errors preserved when metadata is unavailable.
+
+Deploy the exact immutable Pages artifact with bounded REST retries and cancellation, without the deprecated bundled punycode dependency. Bind retry adoption to both artifact and stamped source commit.
+
+Verify the pinned PHP template's automatic-release guard against failed,
+cancelled and skipped quality checks, with successful-release and manual-release
+controls in the maintained template observation suite.
+
+### Fixed
+
+- Locate repository definition answers from current Rust sources, so moved helpers and changed line spans cannot quote an unrelated documentation comment.
+- Restore the native Link Store formatting import and avoid duplicate CodeQL boolean options in opt-in macro investigations.
+
+bump: patch
+
+Match CodeQL 2.27.4's Rust compiler ABI and preserve separate declared dependency contexts for standalone scripts and the direct-rustc WASM worker during security analysis. Keep branch producer verification read-only while allowing its status API reads.
+
+Upgrade the search-only web-capture component to remove fxhash, retire its audit exception, and execute the existing native search component regressions in pull requests.
+
+### Fixed
+
+- Preserve concrete output contracts when the recursive procedure considers joining child answers, and retain the intent of validated prime-number candidates.
+- Check only consumed child answers when evaluating source operands, and recognize full-width terminal punctuation in concept queries across runtimes.
+- Correct CI regression fixtures for source observations, validation events, generated workflow retirement and supported pull-request handoffs.
+- Bound CI downloads and duration collection, avoid overlapping Hive drafts, and distinguish image transfer time from solver time.
+- Report every required pull-request context for docs-only changes while skipping unchanged Rust compilation.
+- Report compiler-cache write errors without asserting unobserved future cache misses, including valid statistics JSON with whitespace.
+- Keep required PR context reporters admitted by the documentation filter policy, with behavioral checks that documentation changes select no build or publication.
+- Refresh reviewed governed source fingerprints without changing their cases or assertions, and remove the unused native candidate binding rejected by clippy.
+- Fail change detection when Git cannot establish the selected complete comparison or write its outputs; preserve legitimate initial trees and successful empty differences.
+- Retain complete template workflow documents and add executable controls for failed Git observations and Go manual-release result integrity; guard the exact-version Chrono upstream exception without claiming migration.
+
+- Load workflow inventory YAML consistently across CommonJS environments, preserve large immutable evidence as compressed artifacts, and reject empty or unknown local gate selections.
+- Record the complete Go template source comparison and reproduce its combined stale-version/pin-integrity bypass with independent failure and warning controls.
+- Retain bounded opt-in compiler-cache backend diagnostics in hosted logs, including missing statistics, while preserving command outcomes and redacting signed URLs.
+- Keep calendar meaning identifiers unique and expand calendar/currency aliases into scalar seed rows, preserving every original spelling and the existing duration-sum response intent.
+- Replay supported health access modes and offline source-cache fixtures in the fast PR lane, with explicit source-network policy and current TypeScript calendar mirrors.
+
+- Reduce fast source checkout hydration by excluding unmeasured historical archive payloads while preserving every measured source and existing checks.
+
+- Retain seeded counting membership proofs alongside retrieved matches, and give the native connector regression an actual workspace source observation.
+- Trace agent-mode documentation through the current CLI/configuration owners and freeze live network input in the interpretation determinism fixture.
+
+- Preserve the complete localized unknown response when its language has no variation pool, while retaining the pool-query fallback API.
+- Synchronize improved core source-size limits, generated status and the reviewed governed source witness without changing any complete case object.
+
+- Keep localized opener preservation in the native formatter without invalidating the committed browser worker, and register its native regressions outside production source.
+- Use the declared answer-language policy for unresolved JavaScript requests, retaining the full localized failure report and actual detected-language trace.
+- Regenerate the maintained TypeScript opener and unresolved-language mirrors to restore projection checks.
+
+- Preserve ASCII quoted connectives during recursive task decomposition, including escaped quotes, contractions and possessives, with shared JavaScript/native quotation fixtures.
+- Preserve decoded quote characters in native structural grammar and vocabulary values, preventing the ASCII quotation pair from becoming empty during task solving.
+
+- Keep nonempty unverified drafts unresolved in task leaf tests and parent composition, including cached drafts; retain verified program answers.
+- Replay all shared executor fixtures, including unverified draft statuses, in the isolated native executor parity target on pull requests.
+- Reduce JavaScript test checkout hydration while retaining consumed historical transcript, native-session and language-verification fixtures and the existing test budgets.
+- Retain the selected children's evidence when composing answers, reusing cached drafts and adopting a composition; exclude rejected roots and unused alternatives.
+
+- Keep seeded quoted-passage cues intact during task decomposition in both runtimes, while preserving surrounding independent tasks.
+- Reuse existing calculation-question parsing for algebra substitution and replay original and renumbered source-operand compositions before merge.
+
+### Fixed
+
+- Reject failed or partial Git lockfile inventories before starting JavaScript dependency audits, preserving advisory failures, retry bounds and complete lockfile coverage.
+
+### Fixed
+
+- Preserve clock punctuation and minutes when recognizing scheduling requests and generating calendar event payloads in JavaScript and Rust.
+
+### Fixed
+
+- Keep execution budgets active after a command exits while its children still run. Preserve successful and failed command statuses once the process group finishes; expire lingering children, including TERM-resistant workers, and fail explicitly when group inspection is unavailable.
+
+### Fixed
+
+- Decode appended HTTP capture records individually and verify the transport and conversation schemas while preserving capture, privacy and ephemeral-memory assertions.
+- Partition the live Hive regression inventory into four measured, deterministic groups so every original case can run within the existing job clocks. Keep exact test names and terminal failures, and admit changes to the planner and its inputs.
+
+### Fixed
+
+- Preserve the full execution budget and cooperative cleanup interval when a whole-second shell clock crosses a wall-clock boundary. Zero budgets and grace periods still expire immediately.
+
+### Fixed
+
+- Keep command deadlines active until every live process in the command group finishes, preserving root exit status after successful cleanup and failing explicitly if process-group inspection is unavailable.
+
+### Fixed
+
+- Check package versions on every pull request, including branches with release prefixes; manual changelog release branches continue to pass when their package version is unchanged.
+
+### Fixed
+
+- Replay Agent CLI workflow delivery against a real temporary Git workspace, retaining explicit compiler fixtures and reporting the language and planned calls when delivery fails.
+
+Restore the full Claude Kotlin work-item regression, including prepared pull request delivery backed by observed Git state.
+
+Reject colliding manual changelog fragment names atomically so an existing release entry cannot be overwritten.
+
+Fail release helpers when a configured GitHub Actions output cannot be opened or written, preserving successful local invocation without an output file.
+
+### Fixed
+
+- Execute the full PR title and description update in the offline Hive delivery
+  harness when its compound command also reads the issue title. Keep the original
+  issue-closing assertion and exercise real Git delivery with simulated hosted CI.
+
+### Fixed
+
+- Read Rust release identity from the parsed Cargo package table. Reject missing
+  or inherited versions, select workspace members from their actual tables, and
+  update only the package version token while preserving unrelated manifest text.
+
+### Fixed
+
+- Retry a failed native-input checkout once within its existing total time
+  allowance, and fail explicitly when neither checkout attempt succeeds.
+
+Read the changelog release version from the parsed Cargo package table. Refuse missing or inherited package versions instead of using an earlier dependency version, with a physical manifest regression in the focused native workflow target.
+
+Check native compile admission before evaluating checkout retry outcomes. Preserve the documentation-only notice path and verify that neither checkout attempt, its terminal guard nor compilation can enter that path.
+
+Stop changelog collection on fragment inventory, UTF-8, existing changelog, write or cleanup errors. Bind deletion to the successfully read fragment snapshot, preserving later or changed fragments and refusing false completion.
+
+Refuse version-bump selection when changelog directory discovery or a fragment read fails. Reuse the fallible shared inventory and admit the actual bump-selection filesystem regression into focused native CI.
+
+Propagate changelog discovery, fragment, existing changelog and cleanup errors from version-and-commit. Share its actual collection operation with focused native CI while retaining canonical changelog formatting and exact fragment ownership.
+
+Require successful registry evidence before release detection or version selection. Retry transient registry failures within bounded deadlines, reject malformed success responses, and replay both actual release CLIs against loopback registry failures in hosted native CI.
+
+## CI correctness and compressed evidence
+
+- Inspect bounded gzip/tar contents and metadata with the pinned secret scanner, retaining masked output, exact file selection and sequential resource use. Reject malformed archives and incomplete Git inventories; disable unnecessary API profiling as the upstream CLI does.
+- Acquire the two tracked component-test logs in the fast JavaScript lane, refresh only reviewed transport/manifest witnesses, and retain native Pages artifact/source and timeout assertions against the owned deployment action.
+- Preserve credential-removal assertions with a fixed diagnostic that does not interpolate credential-related identifiers.
+
+Use Secretlint 14's built-in recommended preset without installing the deprecated
+external preset package. Preserve masked plain and compressed secret findings.
+
+Start execution-budget warnings, errors and completion messages on fresh lines
+after partial child output, including NUL-terminated stdout.
+
+### Fixed
+
+- Reject stale worker inputs in local JavaScript gates without compiling Rust;
+  remove an unused worker import that stopped warnings-as-errors compilation.
+- Preserve consumed immutable fixtures in sparse CI checkouts and use the strict
+  artifact extraction adapter for native contracts.
+- Retain first-wave scheduling for measured heavy suites and transport both
+  receipt-bound native companion binaries required by existing integration tests.
+- Schedule all four complete Hive workflow sessions independently under the
+  existing execution budgets, and retain real failures in the BuildKit outage
+  control without false failure annotations after successful recovery.
+- Select the maintained SQLite runtime explicitly and remove the experimental
+  timer mock while preserving warning reporting and deadline assertions.
+
+Partition the live canonical release workflow into two byte-bound source parts. Preserve all 52 operations and 104 bindings, authenticate each physical input, and keep legacy single-file fixtures compatible. Replay JavaScript budget checks against each complete hosted cohort instead of treating maxima from different runs as one observed workload.
+
+Fix release receipt recognition after shell extraction and keep sparse-checkout
+regression fixtures, moved Rust documentation owners and seed VM prerequisites
+aligned with their maintained consumers (issue #1580).
+
+### Changed
+
+- Keep conversation list hydration and deletion in the existing hook module while preserving sidebar behavior and source headroom.
+
+### Changed
+
+- Extract desktop release checksum and evidence shell bodies into workflow-selected protocol helpers, retaining release-source isolation and producer receipts.
+
+### Changed
+
+- Extract complete native runtime, source-test and grammar-generator units into focused modules while preserving ordered rules and every carried specification case.
+
+### Fixed
+
+- Verify the governed native-test source witness during the issue replay, preserving every test identity and carried program after helper extraction.
+
+Refresh JavaScript shard weights from complete hosted observations while retaining higher historical costs and the existing warning threshold.
+
+### Fixed
+
+- Preserve consumed transcripts in Layered sparse checkouts, refresh hosted
+  JavaScript scheduling costs without losing higher historical measurements,
+  and record queued files before synchronous runner events.
+- Follow the compiled capability classification owner in native acceptance,
+  split coding contracts using complete compiled listings and retained timing
+  evidence, and bound native execution within the existing job clock.
+- Preserve native test coverage while extracting five warning-sized owners;
+  allow bounded signal delivery after process-monitor inspection failure.
+
+### Changed
+
+- Split complete whole-line operation implementations into a focused child module while preserving method bodies, comments, visibility and behavior.
+
+Archive eight immutable historical source captures losslessly, preserving their
+original paths and digests in a consumed conservation fixture.
+
+### Fixed
+
+- Keep nine native acceptance modules below the unchanged source-size warning threshold while retaining every original test name and assertion body.
+
+### Fixed
+
+- Keep rename metadata and release-ledger writes below the existing size-warning threshold without losing rules, historical records, defaults or legacy archive compatibility.
+
+Compile the three focused native contract executables once and verify their same-run artifact before each existing contract group, preserving case coverage and budgets.
+
+### Changed
+
+- Extract complete runtime and source-test functions into focused modules, retaining comments, visibility and all carried specification cases while reducing source-size warnings.
+
+### Changed
+
+- Share complete seed record readers across browser, worker and Node hosts, preserving seed fields and failing missing prerequisites.
+
+Keep every requirement traceability row while splitting the large source table
+into indexed pages, with matching readers and complete evidence bindings. Register
+the conserved conversation-list hook in the existing UI boundary inventory.
+
+Allow explicit hosted browser worker receipt regeneration, verifying the actual dispatched source and compiler output before preserving the worker and input manifest. Ordinary pull request checks retain their build restrictions.
+
+### Fixed
+- Keep the changelog reconstruction regression independent of developer partial-clone history, using a four-commit local fixture that verifies imported, historically consumed and pending release fragments without remote access.
+
+### Fixed
+
+- Reuse one resolved version snapshot when a recipe attaches and validates its generated CI workflow. A live-to-cache transition within the same planner call no longer disables the owned compiler-failure CI fallback. Keep original provenance and exact source ownership checks; cross-request attempt retention remains unfinished.
+
+Fix isolated native contract imports, shared publisher transport ownership and
+the practical-help capture limit regression. Keep extractor tests under the test
+tree, retain the consumed browser fixtures in checkout assertions, and isolate
+Hive fixture source caches from concurrent test activity while preserving source
+freshness and delivery checks.
+
+### Fixed
+- Preserve complete inline JavaScript bodies, distinguish program counts from numeric operands, and retain arithmetic event origins in native and browser traces.
+- Preserve publisher routing and historical AST census evidence while repairing current CI source paths and stale generated inventories.
+
+### Fixed
+- Require the requested crate version in successful registry responses, reject incomplete release-fragment inventories before emitting job decisions, and preserve configured output paths across release tools.
+
+Require successful JavaScript source checks on the exact clean event commit before allocating the focused pull request native jobs.
+
+Keep native request phase tracing limited to metadata unless explicit payload custody is enabled, while retaining complete private dialog capture and wrapped-terminal isolation.
+
+Retain targeted opt-in compiler-cache write failures before compiler argument logs can displace them, including failed native-check jobs.
+
+Refuse unreadable workspace member manifests before choosing a release package.
+
+File-size checks now fail when maintained text cannot be read or the scan cannot
+complete. JavaScript and Rust preserve the same errors and existing exclusions,
+and evaluate exclusions relative to the checkout so a parent named `target`
+cannot hide oversized source files.
+
+### Fixed
+
+- Keep recovered artifact lookup attempts observable without a stale terminal error, reject missing requested artifact IDs, and refresh JavaScript shard planning from complete hosted observations without reducing measured weights or execution budgets.
+
+### Fixed
+
+- Select GitHub release notes with the same parser exercised by native tests, ignore version headings inside fenced examples, and fail on unreadable changelog sources instead of publishing fallback notes.
+
+### Fixed
+
+- Normalize Windows action paths before constructing Node preload options so verified artifact downloads can run on Windows while preserving spaces and retry diagnostics.
+
+### Fixed
+
+- Reject non-breaking spaces and vertical whitespace as closing Markdown fences so required documentation headings inside code examples cannot satisfy the documentation gate.
+
+### Fixed
+
+- List changelog decision paths without rename similarity fetches after sparse checkout credentials are removed, and recognize scripts in root and nested Rust repository layouts.
+
+Fix integration cleanup by stopping Codex plugin-clone descendants before deleting their temporary home.
+
+### Fixed
+
+- Isolate historical recipe protocol fixtures from live and caller-owned version caches, and retain optional tool-call tracing for stale-source failures.
+
+### Fixed
+
+- Remove unused graphics dependencies from the unavailable provenance GPU compatibility feature and its dependency resolver. Keep the feature name and current runtime behavior.
+
+### Fixed
+
+- Require a newly added changelog fragment rather than accepting edits, deletions, unchanged moves or nested archive entries. Preserve exact path names through NUL-delimited Git inventories without partial-clone similarity fetches.
+
+Preserve every tracked Cargo lockfile path during dependency audits, collect findings from all lockfiles, and reject incomplete inventories before invoking Cargo.
+
+### Fixed
+
+- Rebalance JavaScript CI shards using complete hosted file timings and an explicit scheduling reserve while preserving prior duration floors and the existing warning and hard limits.
+
+### Fixed
+
+- Use the existing bounded and version-verified Bun installer for native transport replays so a failed first download receives one retry while final installation failures remain fatal.
+
+### Fixed
+
+- Preserve receipt-bound JavaScript timing records and their source metadata when importing a larger ordinary cohort observation.
+
+### Fixed
+
+- Avoid copying complete source bodies while trimming short Unicode boundaries in the JavaScript planner; preserve character matching and predicate order.
+
+### Fixed
+
+- Refresh JavaScript CI scheduling from all 914 complete hosted file timings, retain prior floors and receipt identity, and preserve the existing warning, budget and provenance controls.
+
+### Fixed
+
+- Cover all active Cargo projects and tracked npm manifests in dependency maintenance. Reject incomplete inventories and unclassified manifests, preserve historical reproducers explicitly, and resolve each active Rust lockfile with its owning manifest.
+
+### Fixed
+
+- Retain all active dependency manifests in native admission checkouts. Parse npm dependency objects across compact and multiline JSON, and update only the selected dependency value while preserving surrounding content.
+
+### Fixed
+
+- Remove reported source-size warnings by extracting Rust helpers, report rendering and tests and moving worker helpers to existing modules. Preserve evidence index values, regenerate TypeScript and worker source identities, and run the source-size regression in fast PR CI.
+
+bump: patch
+
+Fix child module paths in focused native reasoning tests and retain the dependency finding renderer without an unused re-export. Preserve all extracted test cases and verify renderer output through the native workflow contracts.
+
+Fix the governed specification witness after explicit extracted-module paths change source hashes. Preserve all 223 supported cases and 970 unsupported records; review the complete objects before refreshing the eight affected hashes.
+
+### Fixed
+
+- Keep historical CI reruns separate from current pull request checks, while allowing a newer commit to cancel superseded initial checks.
+
+### Fixed
+- Recover pending package configuration after a timed-out search-adapter install, and recognize official EC2 Ubuntu mirrors during the existing bounded fallback.
+
+### Fixed
+- Preserve complete Formal AI command output when source bytes contain the driver's answer marker, and qualify the exact command's terminal process receipt instead of printed exit-code claims.
+
+fix: Pass publishing credentials to Cargo through its environment and preserve configured credential-provider fallback without a premature warning.
+
+Probe Cargo sparse-index version identity before the crates.io API and retain unknown availability outcomes without expanding request retries.
+
+### Fixed
+- Prefer the official Ubuntu HTTPS archive before search-tool provisioning spends its first deadline on a regional HTTP mirror. Existing retry budgets, explicit opt-outs and signed source verification are preserved.
+
+### Fixed
+- Install the default secret scanner from a committed isolated dependency lock, with lifecycle scripts disabled, engine checks and temporary cleanup. Failed installation cannot certify a clean scan; literal filenames and explicit custom-version overrides are preserved.
+
+### Fixed
+- Preserve literal Git filenames and rename destinations when selecting size warnings. Incomplete growth observations report every warning, with optional diagnostics; existing limits and escaped annotation ownership remain.
+
+### Fixed
+- Validate the scanner's inconsistent-lock negative control with an empty cache instead of relying on cached registry metadata.
+
+### Fixed
+- Reject non-UTF-8 tracked dependency paths before resolving any lockfile, while preserving valid Unicode filenames.
+
+### Fixed
+
+- Refresh JavaScript shard scheduling from all 922 completed hosted file observations while preserving earlier scheduling floors and unchanged worker and execution budgets.
+
+Reject malformed UTF-8 Git path inventories before CI admission emits outputs. Preserve valid BOM, newline and split multibyte paths with a fatal streaming decoder and real-Git regressions.
+
+### Fixed
+
+- Preserve an explicit unknown-test fallback when importing only known test durations or an empty observation set.
+
+### Fixed
+
+- Bound dialogue-owner scheduling allowances by existing provenance ordering, queue budgets and complete historical replays, preserving every prior cost floor.
+
+### Fixed
+
+- Run the meta-reasoner ladder and learning cases in two bounded isolated processes, preserving every original assertion and capture check.
+- Extract historical plan text and scheduling comments to keep active files below the existing warning threshold.
+
+### Fixed
+
+- Detect Changes jobs in `release.yml`, `coverage.yml` and `layered-ci.yml` sparse-check out the `#[path]` modules of `detect-code-changes.rs`, so downstream CI is no longer silently skipped; the staged release generator emits the same list.
+- A new `scripts/check-sparse-checkout-rust-modules.mjs` guard, run by the Workflows check, fails when a sparse-checked-out Rust script misses one of its `#[path]` modules (`FORMAL_AI_SPARSE_CHECK_VERBOSE=1` prints every checked block).
+- The Hive Mind draft adapter inserts diagnostics at the closing brace of `setEnv`, so it accepts upstream keys appended after the shared spread.
+- The Rust unit and integration test targets compile again: private test-fixture imports, a stale `SORT_PYTHON` assertion, the private `concepts` module (its test now lives in `rust/tests/source/concept_query_tests.rs`, keeping `lib.rs` and the governed specification witness stable) and the undeclared `tempfile` crate are fixed.
+
+Fix Windows and other artifact consumers failing on a lookup immediately after a successful upload. Retry the pinned raw download at most three times under existing caller deadlines, discard partial archives before each retry, and preserve strict digest validation, cancellation and extraction failures.
+
+Retain review-gated benchmark failure reports when a score fails the ledger
+ratchet.
+
+Check the packed browser engine's existing 128 MiB archive budget before
+artifact upload or npm publication, and report the largest files when the
+archive exceeds the limit.
+
+Pin every BuildKit bootstrap to one verified multi-platform image digest, recover registry outages by retrying actual builder setup through the mirror, and verify real daemon and image identity in the hosted workflow checks.
+
+Regenerate the cache-request cue role registry from its meaning source and add the matching JavaScript local gate and committed-projection regression.
+
+Fix canonical seed parsing for Gemini global token overrides and CNL reference lists. Preserve grammar forms, template styles and output policy behavior in both runtimes.
+
+Keep capability routing below the existing source warning threshold by extracting advertised-tool classification into an explicitly located module, preserving all original function bodies and parent entry points with scanner and module-path regression coverage.
+
+Correct five JavaScript twin citations after capability classification extraction and verify their actual Rust targets with a failing-before, passing-after regression.
+
+Keep the native unknown-source positive control independent of transient runtime caches. Replay both bare-term and question requests from the existing committed isogram capture, preserving the complete definition, citation and digest checks.
+
+Split the controlled-dialogue language cases across three maintained JavaScript
+test owners, preserving every original assertion and fixture while preventing
+one sequential five-language file from dominating a CI shard.
+
+Resolve the read-only CodeQL macro observer's memory policy against its actual
+Rust dataset before execution. Keep the 4 GiB total budget while assigning heap
+through the child evaluator's resolver, and fail visibly on runtime diagnostics
+that otherwise survive a successful query exit.
+
+### Fixed
+
+- Refuse a newly staged primary Rust lockfile that is absent from the HEAD
+  commit before invoking Cargo; retain independent lock audits and strict
+  advisory proofs. Exercise the actual wrapper with finite temporary Git
+  repositories in the full hosted JavaScript suite and local feedback inventory.
+
+Fixed native fallback cache lookups treating an arbitrary “about” clause as a definition request. Cached definitions now cover the complete requested subject, and link-memory focus keeps operative requests intact. Explicit cache requests and bare known terms retain their attributed answers.
+
+Keep the computer-use executor below its source-size warning threshold by moving its unchanged CSV/HTML fixture helpers into a private module. Preserve exact source reconstruction evidence and existing permission, workspace and verification behavior.
+
+Move unchanged unknown-reasoning text and memory-fact helpers into a private module, preserving the original native test module path and source reconstruction.
+
+Keep lexeme importing below its source-size warning threshold by separating unchanged shard installation and stale-file removal, with the existing public function reexported at its original path.
+
+Separate the unchanged Telegram Markdown renderer into a private module, preserving the existing public entry point and HTML escaping while removing the source-size warning.
+
+Separate unchanged quotation framing from tool-result normalization to remove its source-size warning while preserving status and citation interpretation.
+
+Separate unchanged file-end insertion and compact anchor selection into a private module to remove the computed workspace change source-size warning.
+
+Separate unchanged search follow-up boundaries and affine arithmetic presentation/comparison helpers into private modules to remove both source-size warnings.
+
+Extract unchanged rule-surface matching, unknown-word span readers and HTML text helpers into private modules; retain public concept-lookup paths.
+
+Regenerate native constant witnesses after the lexeme module extraction; preserve every generated program value and algorithm.
+
+Extract unchanged repair-loop notes and text replacement ranges into private modules; preserve existing repair-note public paths.
+
+Separate unchanged controlled-language realization helpers from grammar parsing while retaining their existing public paths.
+
+Separate unchanged CLI solver invocation helpers; regenerate literal-owner paths after source moves without adding allowlisted text.
+
+Separate unchanged solver configuration and repository command admission into private modules while preserving their public paths.
+
+Move unchanged research adoption and method execution helpers into private modules, preserving approval gates and public paths.
+
+Validate workflow and job concurrency queue values and reject max with cancellation enabled beside the pinned actionlint schema exception. Keep expression outcomes explicitly unresolved and preserve the Docker ShellCheck canary.
+
+Keep conversation references ahead of researched explanations in the native fact lookup. A request such as “Explain the program?” now reaches the existing coreference handler when prior user context supplies the program, rather than receiving a cached general explanation. The unchanged multilingual coreference regression and seven existing fixture-based fact and explanation tests run in the focused native pull request target.
+
+Extract complete merge-layout and changelog contributor guides, preserving
+instructions, relative links and existing entry-point anchors.
+
+Refresh JavaScript shard scheduling floors from the complete current hosted timing cohort, preserving prior costs and receipt identities while retaining the original execution and headroom limits.
+
+### Fixed
+- Retain completion receipts for assertion-only JavaScript test files and refresh shard weights from all current hosted observations without changing execution budgets.
+- Forward the opt-in compiler-cache diagnostic switch into reusable native checks.
+
+Admit the existing native data-file contracts and their consumed Links Notation and cached JSON sources to the focused pull-request check. Replay the original meaning-identity, pipe-list and canonical-notation failures without compiling the full unit target.
+
+### Fixed
+
+- Keep documentation extraction available in the docs.rs build profile and correct Rust test inputs used to validate automatic dependency updates.
+
+fix: Keep Google Trends snapshot answers offline, include Spanish prompt variants, and stage fresh native catalog/session projections for byte-for-byte fixture replay.
+
+### Fixed
+- Read complete pull request file pages with supported GitHub CLI flags before selecting documentation-only checks. Keep source-receipt observations in the documentation workflow regression fixture.
+
+Keep documentation requirement assertions in their native owner while moving
+tracked-text scanning helpers below the existing file-size warning threshold.
+
+Preserve dynamic meta gateway qualification when its host, frozen dependencies or fixtures change. Retain both checkout attempts and recursive fixture inclusion after merging the latest main. Accept distinct existing test suites beyond the obsolete 256-file inventory cap while preserving source validation, measured shards and job deadlines.
+
+Keep separately requested evidence destinations out of literal source edits.
+A request that names its source after an evidence instruction can still apply
+the edit to that source.
+
+Spell thirteen newly published evidence archive filenames in full and update their physical manifest references. Preserve original source names, compressed bytes, digests and the existing abbreviation ceiling.
+
+Allow the focused test selector to read evidence-heavy Git diffs within an explicit 16 MiB bound, preserve exact filenames with NUL delimiters, and keep Git failures terminal.
+
+Preserve the shared public plan-observation helper API in focused native regression targets, and regenerate the localized source endpoint TypeScript projection. Warning enforcement and generated-source parity stay enabled.
+
+### Fixed
+- Encode operator-controlled fragment content and paths in logs so Actions cannot interpret them as commands.
+
+Run the same complete default JavaScript suite before merge and on main,
+preserving shard budgets and reporting every failing test file.
+
+Refresh the native Hive shard weights from all 37 completed hosted cases, keeping the maximum prior duration per case. The previously unmeasured eleven-minute workflow replay now receives its own shard; every test remains covered once under the unchanged twenty-minute job deadline.
+
+Separate Hive commit expectation fixture helpers while preserving all original
+native regression names, assertions and recorded timing identities.
+
+### Fixed
+
+- Run the existing Hive Mind commit, push, pull request preparation and restart
+  regressions in the focused native lane, including their complete fixture
+  inputs. Require the harness toolchains so an unavailable compiler cannot
+  silently skip delivery verification.
+
+Replay the intact Hive workflow and tool-workspace contracts in focused native CI, including multilingual workflow requests, remote connector reads, failed verification and file-bound commit behavior. Track every consumed fixture in pull request admission.
+
+Resolve scheduled ladder tests for CLI-only modules through their declared
+Cargo binary target and record the exact test run in the verifier receipt.
+
+Require observed execution before a verifiable-task response can populate an Agent CLI evidence record. Preserve multiline literal write ownership when a separate delivery destination appears in the request.
+
+Keep the agent change, verification report and Cargo logs available for upload
+when a scheduled ladder job reaches its deadline.
+Run the exact projected tests once per Cargo target and save the outcome of
+each selected case.
+
+Read large Git change inventories completely with bounded decoding and private temporary spooling, preserving failed-Git errors and complete NUL-delimited path admission with a real 24,004-path regression.
+
+Give the scheduled Google Trends learning cycle separate build and capture
+jobs with phase deadlines and retained failure diagnostics.
+
+Fix native regression admission for localized how-to test and fixture changes.
+
+Add an optional read-only observation of original and expanded source macro contexts in the existing hosted CodeQL Rust database, retaining query/pack metadata and raw diagnostic outputs without replacing the security suite.
+
+Set the default-off hosted macro observer's Java loading heap explicitly,
+separately from its unchanged evaluator RAM budget. Preserve the original
+security suites, strict SARIF gate and bounded disk, thread and step settings.
+The preceding 4 GiB run still warned at a 1,800 MiB loading heap; the new
+allocation and warning outcome require hosted verification.
+
+Require a complete successful lockfile inventory before dependency maintenance resolves any package, and keep transient-link request timers and retry waits within their shared budget.
+
+### Fixed
+
+- Hydrate registered meaning seed filenames in the browser worker and reset derived search markers when seed text is replaced, preserving the full Spanish unresolved-answer sibling contract.
+
+### Fixed
+
+- Give focused native contract artifacts unique workflow-attempt names and select their immutable producer upload ID, preserving exact receipt checks when failed consumers rerun.
+
+fix: Overlap the independently serialized native benchmark group with other isolated contracts after one shared compilation, retaining both exit statuses and the existing 20-minute CI limit.
+
+Share external lookup request logging in the event log, retaining its distinction from captured source evidence. Remove the redundant explanation forwarder and lower the reviewed handler baseline by three lines.
+
+Run the existing benchmark derivation and synthesis contracts in the focused native pull request lane, and admit changes to their license and research inputs.
+
+Remove the two-job throttle from the ten independent native contract consumers,
+so available hosted runners can execute the complete matrix concurrently after
+its shared compile artifact is ready.
+
+### Fixed
+
+- Split isolated native coding, reasoning, Hive Mind, benchmark and interface contracts into independent jobs after serial execution exhausted the 20-minute job budget. Preserve the full target union, single Rust test threads, failure propagation, read-only permissions and existing job limits. Keep the default complete native runner available.
+
+Replay all seven existing contextual follow-up tests and nine debug-session tests in the focused native reasoning target. Changes to either included module select the native lane, and every existing test body remains intact.
+
+### Fixed
+
+- Keep Hindi and Chinese wikiHow candidate titles consistent between native and
+  browser execution, including Latin words and Devanagari combining marks,
+  while retaining Russian and Spanish lowercase slugs.
+- Run focused native regressions with the repository's optimized test profile,
+  retaining debug assertions, overflow checks and the existing CI deadline.
+
+Collect independent native regression failures in one CI run while retaining failed job status.
+
+Extract procedural follow-up and global CLI configuration assertions while
+preserving their original native test names, timing records and complete bodies.
+
+Replay complete planner, job-budget and pinned-image regression modules in
+the existing focused native CI targets, retaining their original fixtures.
+
+### Fixed
+
+- Preserve canonical IPv4 web operands and keep attachment metadata outside requested URLs.
+- Isolate native dialog, Hive and wrapper diagnostics fixtures while preserving their success and no-leak assertions.
+- Retain actual rejected synthesis IR attempts and seed bounded closed-program sequence search from ranked fragment types.
+- Admit complete composition and search regressions to native CI, and wait for every isolated regression group before reporting failure.
+
+Replay the complete native CLI, PTY isolation, cross-surface memory and retired-handler regression modules in the focused pull-request lane. Changes to every shared harness and captured input now select that lane.
+
+Extract release policy, data integrity and benchmark evaluation helpers into
+ordinary native test child modules, retaining every assertion and the existing
+size limits. Check standalone Cargo crate-root helper resolution before CI.
+
+Replay the existing candidate-validation and interpretation-selection tests in the focused native CI lane. Select that lane when either consumed module changes, preserving all 28 assertions and the original reasoning-loop source.
+
+Refresh the generated native constant registry after adding optional thinking-step origins. Preserve all 158 program objects and the complete governed inventory, with only the reviewed thinking source hash updated.
+
+Record external fact and web lookup requests in the universal reasoning trace, including honest offline misses, and replay routing contracts with explicit offline configuration and the current default-on retrieval message.
+
+Run the focused native behavior regressions with explicit offline configuration so routing assertions replay committed sources without waiting for live providers. Fixture transports still exercise fetched responses, and the native CLI transport replays retain their default configuration.
+
+Fail the pipeline status when a required job is cancelled on a pull request, preserving timed-out native checks as incomplete instead of reporting success.
+
+Correct the native standalone-script coverage observer to include helpers compiled by native test owners as well as registered gates, preserving the standalone selection and its direct native regression.
+
+Retain nested experiment shell scripts in the focused native sparse checkout so the unchanged network-download contracts can read and sweep their inputs. Keep experiment payloads excluded and exercise the actual checkout patterns in a finite Git fixture.
+
+### Fixed
+
+- Align the newly isolated native synthesis specification with the existing whole-sentence summarization contract, and identify the parity case when an exact answer differs.
+
+### Fixed
+
+- Refresh the governed synthesis source identity after the verified complete-sentence assertion correction, preserving all 1,185 specification records and complete case objects.
+
+Extract native command-capture, script-suite discovery and image-policy regression groups into ordinary child modules. Preserve every assertion and existing test module prefix while removing three source-size warnings under unchanged limits. Keep the scanner regression in the maintained JavaScript checks.
+
+Replay the complete native release, Pages and workflow contracts in the focused pull-request lane, retaining their fixture inputs and installing only the pinned YAML parser they consume.
+
+Retry the existing ShellCheck download with finite connection and transfer deadlines, register its exact invocation count in the native download sweep, and replay the same repository inventory in JavaScript before the next native run.
+
+Fix offline unresolved action requests so the seeded procedure vocabulary can hand them to the cache-only source client, while nominal unknown prompts retain the teaching guide. Refresh the Google Trends catalog and complete driver session from the actual hosted native artifact, and replay the complete existing catalog and unknown-reasoning contracts in the focused native lane.
+
+Run the existing shell documentation and network download retry contracts in the focused native regression lane. Changes to their documentation inputs and every discovered shell script now select that lane.
+
+Build validated main Pages sources after a package publisher fails, preserving successful release child identities and immutable fallback checkout.
+
+### Fixed
+- Add bounded real-Git controls for PHP template release push failures, retaining source identities and successful-publication controls.
+
+Fix the single-branch repeated-extglob denial of service in desktop and VS Code development dependencies with a reviewed local picomatch backport for GHSA-fc5q-39xc-vjpf. Preserve the upstream MIT license and source hashes, block nested wildcard repetitions through the existing literal fallback, and add bounded regression and installed-consumer checks.
+
+### Fixed
+- Keep fenced examples and existing line endings intact when collecting release notes without an insertion marker.
+
+Keep procedure assertion bodies visible to JavaScript specification and
+documentation checks while extracting their source-backed fixtures.
+
+Isolate finite process-lifetime and JavaScript planning fixtures from remote Bash startup files, preserving all production clocks and retaining child diagnostics when a fixture cannot write its PID.
+
+### Fixed
+
+- Stream public release assets with bounded concurrency so verification checks every download within the existing deadline and reports which asset failed when a transfer is incomplete.
+
+Preserve exact JSON tokens while compacting readable primitive leaves, keep feasibility producer formatting reproducible, and retain full fixture and JavaScript gate verification.
+
+### Fixed
+
+- Refresh the four governed Cargo fixture hashes after adding the existing reasoning test target, preserving all 1,185 specification records and every complete case object.
+
+Split the native reasoning contract listing into two measured, exact test shards
+so compilation and cleanup retain room inside the existing 20-minute job limit.
+Keep every case, failure status, single test thread and complete runner entry point.
+
+### Fixed
+
+- Keep crate availability uncertain when a registry endpoint returns a malformed success response and its peer reports the version absent.
+- Require valid SemVer in every sparse index record and reject API responses that identify a different crate.
+
+Keep release-publishing assertions below the existing source warning band while
+preserving native test identities and qualifying the complete owner on PRs.
+
+### Fixed
+
+- Bound release credential requests so a stalled registry still leaves time to report the other credential checks.
+
+Replay the existing procedure and concept-retrieval contracts in focused native pull-request CI, and quote the Git tree selector in native fixture identity capture.
+
+Reuse conservative Go-template recovery for confirmed hosted-runner acquisition failures, with trusted default-branch code, complete paginated observations, source freshness checks, bounded attempts and CLI-level negative controls.
+
+### Fixed
+
+- Fail the Rust dependency audit when Git cannot complete the committed lockfile
+  inventory, including failures after partial output. Preserve strict primary
+  and experiment-lock audit policies and reject missing sparse-checkout inputs.
+
+Retain a pinned six-case upstream runner-recovery pagination replay, including
+negative controls and exclusions for actual code failures.
+
+Replay the existing place, calendar, spoken-hour and capability-routing contracts in the focused native pull-request check, and select that check for their sources and fixtures.
+
+Split three CI Rust scripts below the existing source-size warning threshold while preserving all tests and behavior; update the secret-scan production contract to require complete, error-checked file inventories.
+
+Compute the search installer's mirror fallback before passing its environment to the bounded APT helper, preserving existing defaults and explicit overrides while satisfying ShellCheck SC2097 and SC2098.
+
+Split complete meaning records and multilingual synthesis families while
+preserving lexicon priority, localized lookups and all original consumers.
+
+Generate the complete native seed bundle inventory in a verified include while
+preserving declaration ownership and meaning priority.
+
+Use shared scheduling-act and time-reference meanings for multilingual calendar requests while keeping request spans separate from source text.
+
+Parse calendar clock phrases through shared numeral spans and clock markers in five languages. Preserve requested minutes, AM/PM, explicit 24-hour times and the existing source-admission controls; exclude unrelated years and counts from clock selection. Recognize the additional Hindi spelling of Tbilisi through the existing entity registry.
+
+### Fixed
+
+- Run the original standalone requirements, ordered-list and self-hosting metric
+  sources in the focused native script job, including their split modules. Admit
+  every consumed helper to that lane without rebuilding the application.
+
+List insertions now require a complete read of the exact target before replacing its contents. Reads of other files and partial source responses can no longer supply the replacement bytes.
+
+Install the locked SWE-bench Lite dataset reader before scheduled and sharded
+external benchmark evaluations.
+
+Cancel only synchronized pull-request checks and give independently requested CI observations distinct run groups, with enforcement and actual event-matrix controls while preserving shared writer queues and all 52 release operations.
+
+Correct the Rust template review commit identifier against its Git tree, verify all twelve recorded file identities, and retain maintained regressions for complete source pins and the upstream timeout documentation mismatch.
+
+Repair extracted native test module paths and isolate offline fixture source caches. Update stale release, TypeScript and notation assertions with negative controls; preserve response ordering while splitting the remaining primary response seed and wrapping generated registry entries.
+
+### Fixed
+
+- Regenerate TypeScript companions for the workflow generation and bounded text changes. Preserve both hosted shard failures and their actual file results in the timing evidence.
+
+Correct the unknown-term regression to use uncaptured terms in four languages, preserve the complete attributed cursor definition as a positive control, and execute all nine unknown-source contracts in the focused native pull-request check.
+
+### Fixed
+
+- Keep retrieved word glosses from answering unparsed questions in languages without declared answer support, retain supported definitions and bare-term lookups, and execute the captured-source regressions in the focused native CI check.
+- Bind retrieved definitions to the requested term before source ranking and require cached concept answers to cover the complete request focus; preserve matching attributed definitions and explicit cache requests.
+
+Encode contributor-controlled scanner diagnostics so filenames and prose cannot create GitHub Actions commands; preserve intentional annotations and exact ordinary twin output.
+
+Update both audited Rust lockfiles to url 2.5.9 and its required form_urlencoded 1.2.3 dependency, repairing RUSTSEC-2026-0592. Keep the strict audit and replay bounded nested-blob origin controls in the focused native interface contracts.
+
+Fix debugger attribution for validation events by recording the actual append-site identity in Rust and JavaScript. Preserve validation kinds, payloads, evidence and stable step ids, keep legacy traces readable and leave unknown origins unavailable. Add focused regressions for generic answers, candidate validation and metadata custody, plus hosted native replay controls.
+
+## Fixed
+
+- Preserve every verified edit in a request sequence when the result is written
+  to a structured effect and its supporting proof.
+- Accept complete source reads using the host workspace's absolute paths when
+  verifying list edits.
+- Resolve numbered source requirements to declared Rust lists and canonical
+  seed files, and verify each edit before delivering its evidence.
+
+### Fixed
+
+- Compare pull request versions against the exact fetched base commit despite custom Git refmaps or concurrent fetches.
+- Keep complete-suite and release inventory regression fixtures aligned with the maintained checked planner contracts.
+
+### Fixed
+
+- Remove remaining seed and generated release-workflow size warnings while preserving all seed records, consumers and parsed workflow behavior.
+- Preserve client description enum choices when adding shell narration and compare sparse-checkout coverage without imposing directory order.
+
+- Keep deliberate BuildKit outage annotations accurate, disable unnecessary RML install scripts, and split provenance verification into independently scheduled suites without dropping controls.
+
+Retry only failed GitHub advisory transport in both complete Zizmor audits, retain fatal security findings, expose both CodeQL producers to audit, and declare the macOS verification shell.
+
+Run the intact web-search, research-follow-up and fetched-page regression modules in the focused native pull-request lane. Admit every included source and preserve the existing fixture contracts.
+
+The browser worker now registers calendar creation directly and promotes it with the shared sentence-local scheduling evidence, so an ambiguous memory-write verb reaches the calendar. Explicit memory writes keep their existing behavior.
+
+Calendar handlers share one named argument list. Refresh the generated runtime inventory and solver diagram, and record the lower measured closure gap.
+
+Extract worker notation and code-refactoring sections into named modules to remove four source-size warnings without raising size limits or combined worker ceilings. Regenerate module inventories, TypeScript twins and status counts; preserve notation bindings and refactoring behavior with maintained regressions.
 
 ## [0.356.11] - 2026-11-23
 
@@ -391,769 +1204,3 @@ Fix quantity routing source provenance and grammar scope without weakening forma
 - A single captured terminal request replay retained identical response content while taking 5.55 seconds before the change and 2.49 seconds afterward. Deterministic work-bound and semantic tests protect the optimization without a wall-clock CI gate.
 
 Fix stale requirement verdict projections and check their freshness in the fast JavaScript PR gate. Bound live work-item runner and broker commands by the authenticated job deadline, allow progressing image acquisition within that window, and reserve time for cleanup and evidence upload. Preserve historical cleanup ownership when the current policy gains a new helper. Retain the failed acquisition logs and truthful test-issue/protected-branch outcomes; full client acceptance remains pending. Verified protected-only branch residue is explicitly deferred after issue/PR closure; it remains incomplete and grants no delivery credit, while uncertain cleanup still fails.
-
-## [0.355.30] - 2026-11-04
-
-### Fixed
-- Add a trusted JavaScript-only server grammar setting, verify declared literal creates against fresh target reads, preserve failed-command output streams, and report missing edit capabilities explicitly.
-- Bound source-authority metadata read retries with one shared deadline and preserve exact resolver dependency custody in detached release protocols.
-
-- Authenticate each signed artifact against its actual successful producer attempt after partial reruns, preserving exact digest, source, workflow and ref checks.
-
-### Fixed
-- Verify literal file changes across dedicated Read and shell clients, preserve exact content, and reconcile all artifact obligations.
-- Reuse qualified observations safely across dependent edits and retain specialized editing capability routing.
-- Prevent source payloads and overwrite permission from authorizing unintended whole-file changes; bind journal effects to the current plan before execution.
-- Run inexpensive JavaScript source-policy checks on pull requests while retaining full production qualification.
-
-### Fixed
-- Preserve an owned empty-string fallback in the native statement-aware write guard so the coding runtime can compile.
-- Keep unsupported edit tails explicit, and admit typed source-edit evidence only through its maintained guarded plan.
-- Share request-authority checks between live execution and fresh replay, with strict loaded-source comparison and bounded mismatch diagnostics.
-- Use hyphenated names for new verification messages without increasing notation debt.
-
-# Fix independent evidence receipt verification
-
-- Record the actual child status, stdout and reported receipt for fixture shell actions.
-- Accept fresh exact successful ordinary cat readbacks for the unchanged L21 effect and proof records, with negative controls for stale, failed, truncated and mismatched observations.
-- Record the initial 5% independent reasoning and fact-checking delegation target separately from tool execution and code authorship.
-- Route JavaScript task-decomposition questions through the existing native algorithm and shared seeded wording, with exact TypeScript mirrors.
-- Assess finite JSON scalar claims against fresh complete Read evidence as supported, contradicted or unknown, retaining claim/source identities and spans.
-- Add an explicit hosted source-generation mode that regenerates the affected translation projections without starting native builds or publication.
-- Keep measured full-solver/filesystem scenarios on main and retain fast ownership, operand, and header contracts on pull requests; preserve all integration bodies and the existing execution budget.
-- Report actual per-file completion and duration from Node 22+ test summaries.
-
-Fix exact literal content markers and preserve their final newline through Agent creation. Bind scoped AddFile creation to actual qualified preflight, mutation and fresh readback evidence; report unavailable capabilities without claiming unexecuted effects. Keep JavaScript, TypeScript and Rust contracts paired.
-
-Refresh the generated progressive requirements plan and include its lightweight regression in fast PR checks after the stale projection failed on main.
-
-Restore checks-only bot dispatch when a workflow declares additional explicit modes, and align native CI contracts with the isolated source-generation mode. Keep publication and source-generation opt-ins independent from ordinary checks.
-
-Preserve separate proofs for disjoint literal files explicitly declared by the same standing request, and retain original failed Write receipts so transport/precondition failures remain terminal failures. Unknown, pending and same-target effects still invalidate proof.
-
-Retire the unused legacy post-write command receipt adapter after creation proof moved to scoped mutation/readback evidence. Remove the matching JavaScript wrapper and regenerate TypeScript. Preserve the active receipt type and read-only verification helpers, restoring warning-clean native compilation without suppressing the lint.
-
-Verify declared literal-file Agent scenarios through actual bound writes, fresh reads, terminal completion and exact sandbox bytes. Retain minimum-round checks for other scenarios and compilation/execution requirements for generated programs. Add offline protocol regressions for shorter successful creation and false-completion refusals.
-
-Move native path regressions into the registered test tree and execute scoped creation library fixtures from the existing compiler output, with exact Cargo target and test-inventory checks.
-
-Restore complete source edit clauses, initialize replay authority inside its source session, and recognize bound native literal-file observations while retaining exact program verification. Add bounded child failure diagnostics and regression coverage for truthful write failure reporting.
-
-Preserve provider append contracts during replay and update current proof fixtures while keeping historical captures unchanged. Verify supported source edits with fresh Read evidence, retain matched edit failures and repeated-objective context, and correct literal payload boundaries. Keep translations and status projections current and cover captured failures in fast PR checks.
-
-Reacquire a fresh jobs and concurrency-group observation pair after a bounded
-release transport failure. Keep the shared deadline, exact caller ownership and
-freshness checks, and refuse semantic errors before any retry.
-
-# CI source acquisition
-
-Acquire the complete documentation-policy input closure without materializing unrelated source and evidence. Preserve all existing checks and finite deadlines, and guard imported modules, the full workflow census and locked parser inputs with a focused JavaScript regression.
-
-Layered JavaScript also avoids historical development-log hydration while retaining the real learning-report fixture and every existing suite. Test actual Git sparse selection without increasing execution budgets.
-
-Give the main-only native producer a finite 25-minute allocation after observed source acquisition and successful compilation consumed its old twenty-minute clock before artifact uploads finished. Preserve complete tracked-source witnesses, all producer operations and PR budgets.
-
-Keep version-base and changelog admission metadata-only, preserve every measured source file in fast checks, and bound original-Hive cleanup preparation checkout without changing trusted revisions or cleanup permissions. Capture the observed acquisition failures in focused offline regressions.
-
-Reserve realistic acquisition phases inside unchanged fast-check and cleanup job clocks while retaining reviewed source inputs and all validation time.
-
-Read the base manifest through source-verified GitData objects under one fifteen-second deadline using the existing Actions read token. Narrow Cargo-audit checkout while preserving Rust target discovery, ignore proofs and advisory warnings.
-
-Retain the full live-link audit as a main-only opt-in and keep its unchanged
-parser regressions mandatory with a small checkout. Record the policy in vision,
-contributor guidance and requirements; scope the native budget test to its named
-job rather than the first timeout in the workflow.
-
-Retain full-history and full-tree secret scanning while filtering unrelated
-historical blob downloads. Reserve a bounded scan allowance after checkout
-so source acquisition cannot consume the entire secrets job budget.
-
-Keep full physical native test-input verification while reading files in
-bounded chunks and reporting aggregate phase progress. Reserve a finite
-artifact-binding allowance without dropping any tracked input or smoke check.
-
-Acquire only reviewed VS Code resolver and corpus-aggregate inputs, preserve
-publication/aggregation policy, and include the corrected producer-budget and
-physical-identity regressions in fast pull-request coverage.
-
-Preserve the full real Coding Ladder behind explicit main-only opt-in while
-keeping default consistency and mandatory native coding/reporting gates.
-Narrow only the public-download controller checkout; all actual public
-asset verification jobs remain unchanged.
-
-Bound JavaScript and primary server-parity source acquisition separately from
-their unchanged test workloads. Keep finite checkout and job deadlines, complete
-parity inputs and every release operation. Replace the stale link-parser command
-count with structural trigger and job checks, retaining the native regression.
-
-Remove the obsolete parent-module import after extracting the structural link
-parser policy test, so native test targets compile under warnings-as-errors.
-Keep the child module's used import and every policy assertion unchanged.
-
-Share source-classification initialization between live capture and strict replay without changing pinned rule data. Restore complete-source evidence in coding test providers and their Rust twins, retain exact timeout-answer and HTTP plan-journal coverage, and include the captured coding regressions in fast PR checks. Keep the physical two-capture Create integration on main while retaining its unit cases in PR qualification.
-
-Regenerate runtime feature coverage from its authoritative sources and check the committed projection in fast PR tests. Add bounded phase timing diagnostics to native artifact binding while preserving physical source checks, smoke tests and the existing deadline.
-
-Preserve raw Edit receipts for exact preimage matching and consume instruction-header colon separators without changing authored payload punctuation. Align native coding fixtures with complete-source Read evidence and accept actual fresh post-write Read proofs. Retain the original Read-only Set verification regression as explicit release-first debt, with active honest-gap and separate-Read coverage. Execute JavaScript CI suites in the duration planner's actual order instead of allowing Node CLI discovery to sort them alphabetically, retaining all tests and the existing budget. Avoid redundant identical-block research analysis while preserving history guards; retain the full solver integration on main and use explicit routing emulation in fast PRs. Report DRY language-coverage gaps and existing scanner debt in CI, and require periodic review for shared invariants.
-
-Bind relative creation requirements to exact absolute tool paths under the host process workspace, preserving raw arguments, receipts and fresh verification requirements. Keep foreign roots, ambiguous aliases, traversal and unavailable host bindings refused. Interpret complete GitHub expression wrappers in layered workflow assertions without weakening path predicates or dependency checks.
-
-## [0.355.29] - 2026-11-02
-
-### Fixed
-- Keep issue-specific Hive draft attempts outside release CI admission, while retaining strict source, publisher and commit-check requirements.
-
-## [0.355.28] - 2026-11-01
-
-Fix agent file-command routing for directory typos, literal search, bounded counts and line-limited reads; reject unsupported deletion and compound shell input. Preserve dedicated tool priority and source-repair ownership. Restore native build and captured main-CI regressions, and add a guarded source-derived named-import edit.
-
-### Fixed
-- Connect bounded repository observations to source-derived documentation and concrete-syntax interval edits, with guarded effects, fresh readback and explicit pending independent acceptance.
-- Preserve literal replacement metacharacters in source-derived documentation, matching native string replacement behavior.
-- Add opt-in default-branch work-item qualification with authenticated released runtimes, isolated GitHub transport, complete bounded process logs and truthful cleanup of owned test issues. General work-item coding and original multi-file integration documentation acceptance remain pending.
-
-Restore CI gate citations and fast metadata validation; preserve local path discovery and client Read aliases. Retain bounded server parity failure diagnostics and support CI-only replay from an existing main binary. Move native regressions outside production source without deleting their coverage. Keep parity request sockets open until asynchronous HTTP responses finish.
-
-Retain validated consumer-search diagnostics and report a terminal verification gap when an edit host lacks a Run tool, preventing an unrelated unchanged-file claim.
-
-# Fixed
-
-- Restore the relocated native test fixture path, align CI dependency and disk-policy checks with their actual shared owners, and keep compiler-only explanations out of user-facing prose detection.
-
-# Fixed
-
-- Keep quoted edit payloads from becoming documentation instructions, and align current native and CI policy regressions with the maintained controller and shared lint profile.
-
-## [0.355.27] - 2026-10-31
-
-### Fixed
-- Keep the shared npm alias fixture compatible with strict main Clippy checks without changing its test cases or dependency-policy behavior.
-
-### Fixed
-- Apply the exact main rustfmt output to the shared npm alias fixture while preserving its strict Clippy-compatible behavior.
-
-### Fixed
-- Regenerate complete governed specification objects after package-manifest changes and check complete source parity during fast PR validation.
-
-### Changed
-- Restrict production compilation and deployments to main and authorized release consumers; use JavaScript for lightweight PR admission and one group of selected unit tests.
-- Avoid redundant Cargo package compilation and make independent Docker cold builds, browser E2E and box-language integration explicit main-only qualifications.
-
-### Fixed
-- Derive the PR timeout bound without a stale manual counter and correctly check npm alias publishers and local package dependencies against the registry snapshot.
-- Update the isolated matcher compatibility package and consumer locks to the verified upstream minimatch 11.0.3 release.
-
-### Fixed
-- Resolve patched matcher dependencies for desktop, extension and browser-test tooling while preserving legacy CommonJS and modern ESM APIs.
-- Update main-only coverage, sparse-checkout and staged-release fixtures for the fast PR policy, preserve the vision motto placement, and run the captured regressions in fast PR checks.
-
-## [0.355.26] - 2026-10-30
-
-### Fixed
-
-- Retry transient GitHub JSON reads within finite time, response and attempt
-  bounds, and observe publication jobs in smaller exact-attempt pages.
-- Reconcile ambiguous release writes for the same observed GitHub 502/503/504
-  error class before another creation attempt, preserving exact tag/source checks.
-- Defer the optional post-publication authoring canary after exhausted GitHub
-  server errors, with explicit diagnostics and no authoring or self-development
-  credit. Source, authorization and code failures remain failures.
-- Request the selected author's required App permissions and prevent checkout's
-  default credential from shadowing that token. Keep live authoring out of PR
-  checks; replay captured publication and HTTP failures in fast JavaScript tests.
-
-### Fixed
-
-- Configure the selected author credential explicitly for Git before source
-  fetches and writes. Verify that path in the Rust credential policy instead
-  of requiring checkout's obsolete default-token header.
-
-### Fixed
-
-- Reuse CI's prepared browser assets instead of rebuilding them inside
-  Playwright's server-start wait. Keep standalone preparation, bound startup
-  to two minutes, and retain both server log streams for diagnosing failures.
-- Recover transient installer connection failures with three bounded attempts
-  before download, preserving certificate, grant and archive-integrity checks.
-
-### Fixed
-
-- Verify the seed-mirror policy against evaluated browser configuration and
-  include it in fast PR checks, preserving both standalone preparation and
-  CI's explicitly prepared asset path.
-
-## [0.355.25] - 2026-10-30
-
-### Fixed
-
-- Request workflow-file permission for the dependency updater's scoped App
-  token. With only the default token, retain complete workflow-changing updates
-  as review patches, and dispatch checks for ordinary dependency PRs it can create.
-- Preserve repository branch protections with immutable per-run update branches;
-  retain review data rather than rewriting an existing branch or duplicating a PR.
-- Mint optional write credentials after validation so long jobs do not exhaust
-  their lifetime before publication; use the default token for registry reads.
-- Bound recovery from a truncated GitHub release-create response. Authenticate
-  the exact release tag and source before crediting an uncertain write, and
-  require an authenticated absence before retrying, at most three times.
-
-## [0.355.24] - 2026-10-30
-
-### Fixed
-
-- Skip public-download verification for an authenticated Desktop workflow that
-  intentionally produced no release, without falling back to another release
-  or treating skipped publication as successful verification.
-
-## [0.355.23] - 2026-10-30
-
-### Fixed
-
-- Prevent the exact decorative crates.io version badge's transient HTTP 408
-  from blocking CI, while continuing to check its crate destination and other
-  links. Run real-HTTP timeout and missing-page regressions in the link workflow.
-
-## [0.355.22] - 2026-10-30
-
-### Fixed
-- Avoid a redundant full worktree rewrite during native offline source import while retaining exact commit, tree, lock, bundle and native-input verification.
-- Use four checkout workers and finite import budgets to accommodate Windows ARM source materialization without dropping source files or history.
-
-## [0.355.21] - 2026-10-29
-
-### Fixed
-- Recognize pending, waiting and requested GitHub scheduling states in post-publication self-authoring, while preserving exact publisher, source, attempt and operation authentication.
-- Bound self-authoring checkout duration and filter historical blobs while preserving history, current source and bot-branch credentials.
-
-## [0.355.20] - 2026-10-29
-
-### Fixed
-- Resolve current Hive Mind source for live issue drafting, reuse the selected commit across jobs, and require its exact versioned runtime image without a stale-image fallback.
-- Qualify shared runner diagnostics structurally while preserving solve inputs, record the actual source identity, and retain an issue response on source discovery failures.
-- Use the latest published Hive Mind CLI in maintained integration checks; document runtime freshness and distinguish historical replay evidence.
-
-### Fixed
-- Keep Hive Mind's latest-version install and version logging on separate command lines, so the CI package-version guard does not misread a shell operator as an unversioned package.
-
-## [0.355.19] - 2026-10-29
-
-### Fixed
-- Move remaining Mac ARM release and public-download jobs to supported macOS 15
-  runners so the macOS 14 brownouts and November 2 retirement cannot stall releases.
-
-## [0.355.18] - 2026-10-29
-
-### Fixed
-- Preserve exact documentation exclusions when projecting publication trigger
-  paths, without granting negated patterns source-declaration authority.
-- Keep original fetched-work-item safety assertions aligned with structured gap
-  observations and expose the shared native path parser for parity verification.
-
-### Fixed
-- Treat unknown Markdown runtime inputs as code after documented paths are
-  excluded, and test native change admission before CI uses its tier outputs.
-- Cancel superseded read-only documentation checks on PRs while protecting main.
-- Drop checkout push credentials and preserve native unsupported-work-item
-  no-effect assertions with the structured gap protocol.
-- Bind evidence reports to the caller's work-item URL and keep native regression
-  tests in the integration-test tree, outside production source.
-
-### Fixed
-- Remove the redundant task clone exposed by the structured-gap regression update.
-- Use native Unicode whitespace semantics when collecting source references in
-  JavaScript, keeping the generated TypeScript and native parser aligned.
-- Decode Git filenames as NUL-delimited literal paths so Unicode documentation
-  filenames cannot accidentally admit an automatic release.
-
-### Fixed
-- Document actual command-stream, web-capture and web-search integration boundaries.
-- Skip heavy automatic CI and automatic publication for documentation-only changes,
-  including bot-dispatched checks and pending-changelog release admission.
-- Collect bounded repository evidence and expose unfinished implementation and
-  verification steps before stopping on unsupported repository work items.
-
-## [0.355.17] - 2026-10-29
-
-Fix desktop installers recursively including the private parent source tree and previous build outputs. Exclude the repository package from runtime dependencies and audit ASAR contents before installer creation. Add captured Windows NSIS failure regressions and hosted packager filter verification.
-
-Refresh the reviewed desktop source fixtures after the installer-boundary fix. Add a cheap PR check for every governed fixture and native-source digest so stale embedded source is caught before main, while retaining complete-object and reader parity checks.
-
-## [0.355.16] - 2026-10-28
-
-Reuse the verified same-run source history for native, desktop and extension
-release consumers, and advertise detached source history during tag authorization
-so Git does not download it again. Preserve all byte, tag and ancestry checks.
-Only stage packaging console evidence after packaging actually starts.
-
-Keep native release workflow guards aligned with authenticated offline source
-restoration, and run those complete custody checks in fast pull-request CI.
-Read packaging evidence declarations structurally while preserving full sanitized
-console content and hash checks.
-
-## [0.355.15] - 2026-10-28
-
-Prioritize Linux coding and question-answering checks on pull requests while retaining heavy production and integration suites for main or explicit opt-in. Disable live GitHub test effects by default, add captured-data offline regressions and guarded stale test-issue retirement, and prevent authenticated scheduled observations from invalidating release admission.
-
-Repair full-profile workflow expectations after the fast pull-request transition, spell new filenames in full, and discover unique portable archives from authenticated publisher release catalogs while retaining checksum, permission and actual host-probe requirements. Detect the installed JVM runner's supported command grammar before exercising its original Hello World oracle.
-
-Synchronize the packaged prerequisite installer with its canonical source and check all demanded mirrors in fast pull-request lint. Give fast lint explicit concurrency ownership. Retain visual replay export integrations behind an explicit opt-in with bounded test deadlines, while keeping ordinary readiness/PTY checks and adding cheap captured-startup unit coverage.
-
-## [0.355.14] - 2026-10-28
-
-### Fixed
-
-- Store shared GitHub action release metadata once in refreshed dependency snapshots, preserving every sub-action and its immutable release identity while satisfying the existing notation duplication gate. Reject missing, chained, cyclic, conflicting and cross-repository release references.
-- Temporarily make duplicate instrumented coverage opt-in while retaining all ordinary critical coding, reporting and release checks; stop artifact consumers after a failed producer and skip unnecessary hosted disk cleanup.
-- Add read-only live dependency validation and avoid redundant feature-branch admission runs while retaining manual candidate checks and late main readiness checks.
-
-- Fetch only the exact source-event recorder for the existing three-minute provenance job, avoiding full-repository checkout timeouts while preserving the original source coordinates and minimal payload.
-- Point the Mistral model-card citation to its official model repository.
-- Resolve symlinked recorder entry points so successful invocation always writes the minimal provenance artifact.
-
-## Fixed
-
-- Recognize Node spec-reporter test evidence in coding research using the same
-  strict JavaScript/Rust acceptance rules and shared negative cases.
-- Reuse verified same-run Git history for CLI packaging and bounded APT recovery
-  for slim runtime and source-builder images, retaining integrity failures.
-- Share the pinned official Node/npm payload between full and slim images,
-  avoiding the slow distro npm install that left dpkg interrupted at its deadline.
-- Copy sparse test fixtures across filesystems and require the new offline CLI
-  source import in relocated-stage controls.
-
-- Avoid fetching unrelated release history, keep generated native and TypeScript
-  projections current, and use small committed source fixtures in workspace tests.
-- Enable Rust panic backtraces and retain large failed-job logs; fix Node 24
-  parser loading and test-report compatibility without weakening behavioral checks.
-
-- Retain every desktop packaging attempt and process/log-pipe outcome even on
-  failure; move ARM packaging off deprecated macOS 14 while retaining signing
-  and both DMG/ZIP runtime checks.
-- Keep Hive integration temporary work on the runner workspace so its unchanged
-  disk admission measures the filesystem with capacity available.
-- Retain complete standalone build attempts and runtime stderr before post-job
-  processing; preserve build/log-pipe outcomes and upload diagnostics on failure.
-- Delegate Buildx builder disposal to the declared disposable hosted VMs,
-  avoiding an implicit post-hook that outlasted the ARM job after runtime passed.
-- Retain complete redacted draft console, dialog and native-response evidence,
-  explicit process/deadline outcomes, and read-only post-cancellation job logs.
-- Refuse evidence-only draft diffs before dispatching the check matrix; useful
-  source, configuration and documentation changes still require original
-  behavioral acceptance before the task is considered solved.
-
-## [0.355.13] - 2026-10-27
-
-### Fixed
-
-- Use Hive Mind's supported no-change exit compatibility only for verified
-  repeat coding tasks, while retaining strict first-delivery failures, every
-  original task assertion, and independent no-write/no-commit checks.
-- Dispatch authenticated generated-task cleanup with the default Actions token
-  beyond GitHub's workflow chain limit, with a finite terminal-owner wait and
-  the existing immutable claims and protected-branch safeguards.
-
-### Fixed
-
-- Keep attachment metadata outside requested web targets and isolate OCR export tests from public-network availability.
-
-- Use an explicit bounded issue-report submission, retaining complete reports after uncertain creation (#1438).
-- Preserve contextual source edits without copying provider line numbers into files, and align the JavaScript agent-info reader with Rust (#1438).
-- Answer practical needs and urgent follow-ups with relevant trusted-source guidance in English, Russian, Hindi, Chinese and Spanish, bounded cold discovery and targeted clarification when evidence is unavailable (#1395, #1396).
-
-## [0.355.12] - 2026-10-26
-
-Prioritize instrumented cold-research tests from observed runtime lower bounds,
-keeping slow cases out of shared default-weight batches while retaining every
-selected case, original assertion and coverage deadline.
-
-Reuse the exact pinned translator's existing combined output/signature result
-to avoid repeating fresh translation work, while retaining full projection,
-compilation and snapshot checks under the original deadline.
-Include its static import companion in independently captured source-network
-release tooling, with historical-checkout and tamper regressions.
-
-Run native coverage shards after a successful manually dispatched producer even
-when its change detector is intentionally skipped, keeping missing-profile
-refusals and failure/cancellation handling intact.
-
-Audit original client tool histories from actual wire requests, recognize endpoint
-query parameters, and bind emitted call identities including text custom tools.
-Allow verified no-op continuations past the current viewer's complete Hive session
-notices while retaining genuine review feedback and incomplete-receipt refusals.
-Close owned fixture issues and pull requests without weakening repository-wide
-branch deletion protection; explicitly verify preserved protected branch heads
-and retain bounded operation diagnostics for failures.
-Keep offline transcript replay within its original job deadline by checking out
-only its harness and recorded data, with a separate bounded checkout step.
-
-## [0.355.11] - 2026-10-26
-
-### Fixed
-
-- Cache immutable native tool-capability metadata and reuse it during tool classification. Add opt-in native planning phase timings and captured-request latency regressions.
-- Match JavaScript's prediction-hit short circuit in native memory recording, avoiding a second full solve when no predictions exist. Trace dispatch, memory recording and dialog logging boundaries when explicitly enabled.
-- Remove verified Hive bootstrap placeholders only after checking the exact issue, branch, replacement sources and observed content again before deletion.
-- Read and authenticate complete task pull-request details before cleanup, preserving merged, changed or uncertain fixtures.
-
-## [0.355.10] - 2026-10-25
-
-### Fixed
-
-- Ship pinned Claude, Codex and Playwright MCP in both container variants, initialize the official Claude native linker, and verify local MCP registration and npm availability.
-- Check the actual Hive client prerequisites before transferring a task image or creating test issues.
-- Keep proposal-only learning events outside release CI gating while retaining mandatory checks and publication verification.
-- Report the blocking CI run and bounded, redacted stdout and stderr when a replay command fails.
-- Preserve generated-task cleanup refusal details, recognize failed pre-effect admission without phantom tasks, and support a read-only default-token ownership audit.
-- Capture ANSI-bearing job logs with modern and legacy GitHub CLIs without relaxing bounded reads, and fail incomplete audit pipelines.
-- Let exact, complete source-probe callbacks advance coding recipes when clients omit shell status; preserve explicit failures and require fresh source verification after updates in Rust and JavaScript.
-- Separate ready staged-workflow pull requests from hosted CI completion so default-token task delivery can reach independent workflow execution without claiming nonexistent green checks.
-
-## [0.355.9] - 2026-10-25
-
-### Fixed
-
-- Verify released-server fallback recording using the actual linked assistant task inputs and outputs, with exact answer preservation across restart. Retain bounded failing-pass memory diagnostics and cover the verifier with the production JavaScript memory writer.
-- Factor shared release-ledger fields into explicit defaults, preserving measurements, row overrides, legacy epochs and archive context without raising the notation limits.
-- Check default-token push access with one bounded read-only Git probe when repository role metadata is not positive, and avoid publishing nonexistent solve evidence before a client claim. No additional automation credentials are required.
-
-## [0.355.8] - 2026-10-24
-
-### Fixed
-
-- Run the original Hive three-client acceptance with the default GitHub Actions token using isolated repository branches and staged workflows; additional automation credentials remain optional.
-- Finalize owned test issues, pull requests and branches after verification, including cancelled runs, with bounded writes and source/run ownership checks.
-
-### Fixed
-
-- Authenticate older Hive cleanup and delivery records using the policy paths declared in their original source revision, preserving ownership checks across policy updates.
-- Cache failed immutable policy lookups so multiple historical records cannot repeat the same missing-source request.
-- Transfer only the selected native self-coding executable and its original build receipt, preserving source, checksum and exact-test checks without downloading unrelated test binaries.
-- Preserve actual HTTP status and redacted transport diagnostics for governed release reads, with one bounded recovery attempt inside the existing observation deadline and strict live lease checks.
-
-### Fixed
-
-- Wait for Codex's selected-model banner and rendered draft, then send Enter separately after quiet output, preventing loading-screen and paste-burst handling from leaving a test prompt unsubmitted.
-- Replay the captured loading/ready terminal sequence with a mocked interactive client during ordinary PR validation.
-
-## [0.355.7] - 2026-10-24
-
-### Fixed
-- Check external Hive task credential configuration before allocating builds and images, while retaining the exact repository access preflight before effects.
-- Distinguish confirmed skipped effect gates from unresolved generated fixtures during owned cleanup. Missing or ambiguous custody and uncertain writes remain quarantined; a no-op grants no solve or delivery credit.
-- Print a safe cleanup state summary even when the full outcome is redirected to an artifact.
-
-## [0.355.6] - 2026-10-24
-
-### Fixed
-
-- Bound search-adapter installation in coverage jobs and preserve signed Ubuntu mirror recovery.
-- Recheck queued generated-task cleanup claims after acquiring owner serialization.
-- Resume cleanup from bounded authenticated history windows and avoid scans triggered by cancelled admissions.
-- Refresh the governed Cargo source witness after the dependency update.
-- Rotate release-ledger history into bounded, lossless parts while preserving source-size limits.
-- Keep the new ledger archive root consistent with the existing notation naming policy.
-- Bound desktop producer and consumer checkouts so a stalled network step fails promptly.
-
-- Reuse evidence-based, bounded npm publication recovery in Agent CLI tests and container runtime installation.
-- Preserve installer execution and exit status through symlinked temporary directories.
-- Give public macOS app transfers bounded copy deadlines distinct from short metadata probes, with command timing diagnostics.
-
-- Keep historical ledger assertions complete by reading every immutable archive part.
-
-- Resolve every literal matrix job cap in deadline contracts and align Docker assertions with the shipped recovery layout.
-
-- Refresh reviewed governed source inputs after ledger and manifest changes while preserving every assertion.
-
-- Accept equivalent quoted workflow references in the native checkout contract while retaining parsed protocol-pinning checks.
-
-- Fetch only protocol scripts during initial native/desktop/CLI/VS Code protocol capture and bound stalled Git transfers before the unchanged full source checkout.
-
-- Run the complete JavaScript dependency audit before native compilation while retaining its later registered gate.
-
-- Isolate sparse protocol Git checkouts from full source checkouts so missing promisor blobs cannot trigger an unprotected fetch during sparse-index removal.
-
-### Security
-
-- Update both committed Tokio resolutions to 1.53.3 for RUSTSEC-2026-0386.
-
-- Update the compatible desktop and VS Code browser-tool chain to patched Zod 4.6.7 for GHSA-mrhx-c7xc-m3w5.
-
-- Update body-parser to 2.4.0 with its required qs dependency and Electron to 44.9.3 for GHSA-27r3-jxmh-p828 and GHSA-jr5w-w6x2-84p9.
-
-- Refresh the corresponding root Bun body-parser, qs and content-type resolutions and validate all six committed JavaScript lockfiles with the maintained audit gate.
-
-- Patch the existing fast-uri and undici major lines in desktop, VS Code and browser-test locks for the additional URI and HTTP-client advisories.
-
-- Keep the canonical staged workflow and generated caller synchronized with the early dependency audit.
-
-- Temporarily select the compatible older VS Code publisher authentication chain and scope the UUID security backport to its MSAL dependency, clearing the MSAL and UUID advisories without changing production packages.
-
-- Make the UUID override compatible with npm 10 and install the frozen VSIX dependency graph without suppressing deprecation diagnostics.
-
-## [0.355.5] - 2026-10-23
-
-fix: Recover transient browser worker asset imports with a shared two-attempt limit, report persistent startup failures instead of leaving chat loading indefinitely, and retain worker/network diagnostics when the deployed Pages smoke fails.
-
-## [0.355.4] - 2026-10-23
-
-fix: Include the matching bundled npm and npx in the full Node runtime image so derived Hive images can install their locked dependencies. Verify both commands as the ordinary image user and retain an offline regression for the observed missing-npm failure.
-
-## [0.355.3] - 2026-10-23
-
-### Fixed
-- Keep browser release, download verification and end-to-end dependency installation independent of unrelated runner APT repositories. Use the unchanged signed Ubuntu source definitions for that command, preserve other repositories and signature verification, and keep browser downloads under the original user.
-
-## [0.355.2] - 2026-10-22
-
-Temporarily make real Lean/Rocq CI integration opt-in through
-`FORMAL_AI_REAL_PROVER_INTEGRATION=true` after both official Ubuntu mirrors
-exceeded its bounded cold-install budget on main. Preserve the original
-compiler tests and deadlines, avoid optional APT recommendations when enabled,
-and record restoration conditions as release debt. Production, coding and
-released-client checks remain required.
-
-Bound recovery from a clean, empty GitHub REST read failure to one unchanged
-retry under the existing admission deadline and request budget. Preserve
-fail-closed source authentication, refuse retries for known denials, partial
-responses, process uncertainty and GraphQL, and report private-safe request
-identities, attempts and failure digests.
-
-Recognize parenthetical GitHub CLI HTTP statuses so known access denials remain
-unretried. Reuse the validated official Ubuntu HTTPS mirror transform before
-Playwright installs browser system dependencies, retaining signed catalogs,
-the existing setup deadline and every browser smoke oracle. Missing browser
-publication evidence continues to fail installer checksum publication.
-
-Follow-up: [PR 1394](https://github.com/link-assistant/formal-ai/pull/1394).
-
-## [0.355.1] - 2026-10-22
-
-### Fixed
-
-- Bound repeated agent actions across client retries and server restarts, including unknown errors, missing results, repeated call IDs and equivalent JSON arguments.
-- Preserve Codex tool namespaces and structured MCP failures; bind search queries to advertised input fields and refuse invalid or unbound arguments before execution.
-- Recover local Git refspec errors from the checked-out branch, stop failed search repair phases, and bound persistent polling, dreaming, interrupted reads, TCP acceptance/dispatch failures and builder download retry configuration.
-- Share a bounded exact-input normalization cache across native requests; expose real log-sink IO failures once through diagnostics and health, and preserve original memory storage errors.
-- Prevent quoted issue reproductions from becoming unrelated command-output tasks and false source-delivery claims.
-- Collect and deduplicate bounded, redacted CI failures across Formal AI and Hive Mind, distinguishing recovered upload errors from no-change outcomes.
-- Repair dispatched evidence base refs, authenticate native projection source selection, and bound artifact upload recovery at the observed failing fixture step.
-- Keep large planner diagnostics readable under existing record limits, and preserve strict nested schema projection and request-grounded command descriptions.
-- Update patched TLS trust dependencies for RUSTSEC-2026-0382 and RUSTSEC-2026-0381 without suppressing the security audit.
-- Supervise remaining native and JavaScript subprocesses through shared deadlines, bounded binary capture and finite cleanup; keep original statuses and byte evidence, including Formal AI's own grep, shell and exclusive-create adapters.
-- Recognize both maintained Babel dynamic-import AST representations in subprocess boundary checks, retaining alias detection and the strict finite startup policy.
-- Derive canonical named-property callback factories from source syntax, enabling a maintained JavaScript self-edit with preserved comments, unchanged consumer tests and complete readable before/after CST evidence.
-- Share Docker CLI compatibility pins and finite installation checks across full and slim images, avoiding unpublished transitive SDK versions while retaining the original runtime probes.
-- Cache immutable read-mode grammar compilation and bound exact Unicode lookaround, retaining independent fresh-request quality checks and hosted cold/repeated large-request timing.
-- Reuse matching installed Node headers for macOS host dependencies without overriding configured Electron targets, and repair the exact observed lint and publisher-snapshot findings.
-
-## [0.355.0] - 2026-10-19
-
-### Added
-
-- Connect host-owned JavaScript and TypeScript syntax validation to retrieved-source agentic repairs, requiring an exact successful repair write before retry and reporting rejected rendering without unchanged retries.
-
-- Formalize typed questions, answers and exact grouped quantities; preserve applicant questions without routing them to assistant identity or capabilities.
-- Generate shared shell quoting and invitation composition through Links IR, with reproducible Rust and TypeScript projections.
-- Audit source duplication with verified generation identities, retaining unresolved independent clones and coverage gaps as unmet acceptance.
-- Resolve immutable action release commits from typed official metadata and refresh current unblocked web dependencies.
-
-### Added
-
-- Continue failed module synthesis through bounded source research, formalize captured pages, and rebind supported pure declaration identities into syntax-validated proposals whose independent verification still uses the existing execution and repair gates.
-
-### Added
-
-- Add readable recursive JavaScript, TypeScript and Rust source-content operations through the pinned shared meta-language grammar, with exact source reconstruction, structural edits, inverse checks and independently reparsed CI fixtures.
-- Add source-owned documentary comment propositions with compositional English naturalization and independently checked whole-and-part round trips. Unsupported meanings remain explicit capability needs; complete workspace migration, general semantic translation and multilingual documentation verification remain unfinished.
-
-### Fixed
-
-- Preserve soft-wrapped Markdown paragraphs and list items during requirement extraction, recognize standalone emphasized section headings, and keep emphasized obligations as requirements. Shared JavaScript/native controls retain the original corpus and quality floors.
-
-### Added
-
-- Add bounded native provenance source snapshots and inclusion proofs using the same canonical JavaScript policy compiled through checked meta-language IR into Rust and TypeScript. CPU/automatic backends use native BLAKE3; unavailable GPU requests fail explicitly. This is source-integrity evidence, with native hosted acceptance still required.
-
-### Fixed
-
-- Continue missing-command recovery before the generic tool-result fallback when the current request has an exact bound failure receipt and an explicit caller workspace grant. Preserve existing recipe ownership and refuse stale, unrelated or altered recovery transactions.
-
-### Added
-
-- Add native lossless readable recursive source models for JavaScript, TypeScript and Rust, using shared grammar rules, source-free reconstruction and independent reparse validation. Registered native controls require hosted CI acceptance.
-
-### Fixed
-
-- Preserve observed tool exit status for authorized prerequisite recovery and keep explicitly requested workflow paths in fetched coding tasks.
-- Reduce canonical Links codec allocation and scanning overhead without changing serialized bytes; add optional provenance verification phases without request, environment, path or source payloads.
-- Retain source ownership as readable metadata around complete recursive source content.
-
-### Fixed
-
-- Preserve independent coding obligations when repeated output literals merge, including requested CI workflows in fetched work items. Shared terminal vocabulary keeps prose continuations bound to the observed command.
-
-Use full readable recursive CST content as the primary JavaScript, TypeScript and Rust source-distribution artifact. Preserve comments, punctuation and whitespace, restore from persisted content alone, verify actual grammar acceptance and reject missing or substituted release members. Provision the small frozen grammar dependency closure only in hosted CI.
-
-Resolve GitHub-hosted toolchains through their declared publisher metadata, including the actual Scala 3 compiler required by the discovered source-run command. Preserve verified progress for an identical standing request and open a fresh evidence window for a changed request. Keep unfinished issue acceptance explicitly open instead of making false automatic-closing claims.
-
-Recognize the real Agent client's canonical absolute workspace paths in the independent output-project verifier while retaining confinement, original argument and byte identities, symlink refusals and exact independent program-output checks.
-
-Include operational scripts, package code and the Rust build recipe in complete readable CST bundles. Preserve CommonJS and CTS syntax, normalize the Rust-script Cargo manifest to its documented crate-comment form, and remove unused SDK checkout/installation from source packet production. Keep complete tracked-source and dirty-source verification under the same unchanged shard budgets.
-
-Use the complete readable CST grammar for ordinary JavaScript self-inspection without an optional SDK. Keep explicitly configured SDK verification and source ownership refusals, and qualify real chat-planner write/read effects and exact source reconstruction. Preserve the separate generic driver’s refusal of unowned generated-document creation.
-
-Resolve explicit source fields through their declared owner context before weak lexical surface guesses. Preserve ambiguous, quoted, wrong-context and undeclared-field refusals across JavaScript, TypeScript and Rust. Re-enable the original native unscoped owner regression while preserving the historical scoped conflict.
-Share canonical bundled source inputs and lexicon priority, retain observed declaration conflicts through generated fallback, and separate issue-disposition examples from status claims.
-
-Use optional read credentials only for HTTPS GitHub release metadata during workspace prerequisite discovery. Do not forward credentials through redirects or attach them to documentation and archive downloads. Give hosted live recovery the existing read-only runner token so it avoids the shared unauthenticated API limit.
-
-### Fixed
-Keep read credentials scoped to trusted compiler metadata discovery during independent Hive delivery verification, exclude them from delivered program execution, and preserve both bounded diagnostic streams on failure.
-
-### Fixed
-Preserve anchored publication trigger filters and automatically project every explicitly declared source path without changing unrelated workflow content or granting filters source authority.
-
-### Fixed
-Write canonical self-cst.lino artifacts across Rust, JavaScript and TypeScript, verify complete source content and fresh grammar independently, and recognize self-CST intent without relying on a census phrase. Preserve comments, whitespace, source ownership and original transport limits; keep historical census APIs diagnostic.
-
-The JavaScript dependency audit regressions now derive their expected inventory from every committed lockfile, so new source-runtime packages retain the same mandatory retry, advisory and fail-closed checks without manual totals. Self-CST ownership uses whole words to reject unrelated source requests, and the literal-predicate debt ceiling is lowered to the actual improved measurement.
-
-New explicit source reads after a final answer require fresh bound observations in JavaScript, TypeScript and Rust, while unfinished identical reads retain their existing observation. They cannot replay a previous turn's source contents; standing coding objectives still retain verified write and commit progress. The original native determinism oracle remains unchanged.
-The native self-inspection routing regression now requires canonical CST wording and independently verifies full source ownership, content and grammar instead of the superseded CST/AST prose label.
-
-The browser-engine and source-network release resolvers now check out only their standalone resolver module and bound stalled Git HTTP transfers. This avoids fetching unrelated repository blobs and lets checkout retries finish within the unchanged five-minute job limit. Standalone CLI controls retain nonpublishing behavior for pull-request and dispatch checks.
-
-Bound stalled change-detection checkout transfers and materialize only the classifier, installer and changelog inputs, while preserving complete Git history, native classification and existing CI deadlines.
-
-Declare the three CommonJS provenance launchers in the explicit unmeasured-source inventory. Existing custody tests execute their byte-identical private `.cjs` copies; canonical-path browser coverage is not claimed. Preserve all coverage thresholds and tests. Coverage debt remains to aggregate verified copy identities into canonical source coverage.
-
-Reuse the complete progress window before classifying a source-read intent. Ordinary coding steps avoid repeated read/write classification; fresh reads after final answers and standing coding progress retain their existing evidence rules. Preserve all original safety properties, native/coverage deadlines and test inventories.
-
-Keep compiler-cache storage outages from blocking native releases. Probe sccache with compiler metadata before building and select the real compiler when the cache is unavailable; Desktop reuses this shared setup without reinstalling its pinned cache. Preserve actual compiler exit codes, target/version pins, build verification and job deadlines. Bound diagnostics and redact signed cache URLs.
-
-## [0.354.1] - 2026-10-17
-
-### Fixed
-
-- Verify fresh anonymous public release downloads with exact byte counts, SHA-256 digests and complete advertised checksum coverage; include the independently published browser engine in the signed consolidated manifest.
-- Cold-install the publicly downloaded browser package and verify real worker behavior, and test downloaded macOS DMG and ZIP packages using the existing account-free self-signing and actual renderer startup.
-- Preserve bounded CI-only verification and retain text diagnostics without downloading or executing release binaries locally.
-- Build the generated renderer once from the selected Linux source and authenticate its exact handoff to Desktop and VSIX packaging before resource preparation.
-
-## [0.354.0] - 2026-10-17
-
-### Fixed
-
-- Store default derivation records outside the caller repository and let explain select an immutable trace with answer-id@record-digest. Explicit-root storage APIs remain available. JavaScript qualification passed; hosted native qualification and other cache purposes remain pending. Record hashes provide integrity without authorship or full provenance credit.
-
-### Added
-
-- Emit typed Links Notation diagnostics from the JavaScript server with redaction and a private generated debugger-credential handoff. POSIX host compatibility is measured; native logging and packaged/Windows qualification remain pending.
-- Add tested CPU unkeyed BLAKE3/XOF and caller-key Ed25519 session-integrity primitives. Engine hooks, durable provenance, replay, key identity and autonomous authorship are not claimed.
-- Make prospective self-development presence policy explicitly Report or Enforce. Report preserves actual counts and unmet-floor reporting; strict attribution validation, historical measurements and independent correctness checks remain in force.
-
-### Fixed
-
-- Regenerate the TypeScript final-result worker through the maintained JavaScript-to-TypeScript translator and verify the complete translation tree.
-- Create independent client and case evidence directories, keep browser-worker factories current within reviewed budgets, and exercise localized interactive reporting consent.
-- Decode typed report traces, legacy and typed TUI dialogs, and coding-ladder refusal evidence while preserving their original assertions and registering the focused reader controls in CI.
-- Refresh genuine native census data and preserve source-owned test registration, typed client evidence and portable issue-draft deadlines through the coordinated CI repair batch.
-- Preserve large and deeply nested typed dialog records, read existing conversations while silent, and keep machine control summaries independent of diagnostic filters.
-- Retain structured issue receipts and truthful Gap outcomes, share one capacity probe per setup batch, and bound issue drafting while preserving failure evidence.
-- Preserve original authored question-policy bytes and align typed-log consumers and agentic reporting expectations with their original semantic assertions.
-- Supply a target-native official Node 22 runtime in the prepared Docker image so agent dependencies using Unicode-set regular expressions install successfully.
-- Preserve fetched issue ownership across ordinary client prompts and keep source-cache captures out of caller repositories.
-
-- Correct native diagnostic digest formatting and serialization error propagation, preserve the literal-predicate ceiling through declarative rules and initialize issue-workflow logs in an allowed GitHub context.
-- Retain failed native-producer artifacts and expose complete captured compiler diagnostics in CI logs.
-
-### Added
-
-- Typed Links Notation dialog persistence with legacy readers, shared redaction, semantic terminal records and JavaScript log conversion.
-- Bounded per-language source snapshots and driver-scoped provenance/evidence verification, explicitly separate from full replay or autonomous authorship.
-- Human-opened-issue drafting through pinned Hive Mind scripts with current-main CI builds and complete failure-evidence links.
-- Exact project motto surfaces and a mutation-tested documentation gate.
-
-Full native, real-client and production acceptance remains tracked in PR #1221; source checks do not establish those outcomes.
-
-## [0.353.8] - 2026-10-16
-
-### Fixed
-
-- Consolidate shared Electron updater metadata checksums from the actual published bytes, rejecting conflicting ordinary artifacts and normalizing Windows binary-mode checksum records. Extension transfer now checks its own unique checksum independently while preserving exact signed package, source and producer identity checks.
-
-Move optional Docker build cache export after immutable pull-back, version, executable hash, privileged runtime, and anonymous registry verification. Give cache-only export a hard 90-second deadline so a slow cache service cannot consume the release verification budget. Required publication failures still refuse release receipts.
-
-## [0.353.7] - 2026-10-16
-
-### Fixed
-
-- Use GitHub API media negotiation for Actions artifact ZIP downloads while retaining octet-stream downloads for release assets. Extension publication now reports bounded, redacted GitHub HTTP errors instead of an unexplained status assertion.
-
-Pull request: https://github.com/link-assistant/formal-ai/pull/1228
-
-## [0.353.6] - 2026-10-16
-
-### Fixed
-
-- Complete shallow protocol checkout history before authorizing an older published release, retaining exact fetched tag and Git ancestry validation.
-
-## [0.353.5] - 2026-10-16
-
-### Fixed
-
-- Independently authorize stable container release sources in a preceding workflow step so imported sources receive the verified commits, preserving strict tag, source, and ancestry checks.
-
-### Fixed
-
-- Bound the default live Pages check to a serial native-engine smoke to avoid public CDN rate limits, retaining the full functional suite and recording restoration debt.
-
-### Fixed
-
-- Preserve hidden release advertisement protocol files and distinct macOS signing observations across single or multiple artifact downloads, retaining strict source and signing validation.
-
-## [0.353.4] - 2026-10-15
-
-### Fixed
-
-- Use the canonical repository API endpoint and accept queued aggregate workflow status while retaining exact source and completed publisher checks.
-- Declare the worker WASM call provider before solver startup through generated prerequisites.
-
-### Changed
-
-- Keep unmet prospective self-development aspirations visible in report mode while enforcing strict attribution validation and measured zero credit.
-
-## [0.353.3] - 2026-10-15
-
-Restore only the generated image publication stage to its retained logical source allowance of 90 minutes. The former blanket 30-minute stage cap cancelled Docker Hub mirroring after successful full and slim GHCR checks, leaving the immutable image transfer unsealed. Keep every publication operation, source/digest/runtime/anonymous check and per-operation limit; all other physical stages retain 30-minute caps. Hosted completion still requires a fresh production run. Supplied orchestration receives zero Formal AI authorship credit.
-
-## [0.353.2] - 2026-10-13
-
-Publish prepared Docker images directly to the registry instead of exporting a full local image before pushing. Stream plain BuildKit progress and bounded operation timings while retaining source, executable, digest, runtime and anonymous-access verification. Existing cache settings and execution budgets remain unchanged.
-
-The previously published v0.353.1 tag and crate remain unchanged; its Docker and GitHub release targets were blocked by a publication timeout. This patch selects a new release version, normally 0.353.2. Zero Formal AI authorship is credited for supplied orchestration.
-
-Scoped temporary authoring debt: only exact open PR1200 on fix/release-docker-export receives DeferredForReleaseRecovery_PR1200 with qualifyingAuthorship=0 and floorSatisfied=false. Strict evidence validation and ordinary main/schedule/dispatch/closed-context gates remain unchanged; restore the original positive authoring obligations under PR1200-release-recovery-authoring.
-
-Use lossless long-distance compression for the complete instrumented executable archive, with bounded worker jobs and matching decoder history limits. Keep every test harness, runtime executable, coverage report object, test selection, assertion, job deadline and coverage ratchet.
-
-CI transfer delays of 15–18 minutes exhausted the 30-minute shard job clock; one cancelled attempt had already passed all 395 selected tests in 699 seconds of its 1,200-second execution budget. Archive size and hosted timing improvements still require CI measurement. Supplied orchestration receives zero Formal AI authorship credit.
-
-Refresh instrumented scheduling priorities only from uniquely matched long-running warnings and successful completions. Keep these values as observed lower bounds, with per-row source/run/job/log provenance; preserve native timings and never divide pooled batch time among its cases. Print exact batch names when dispatch starts so deadline-interrupted work is identifiable even when no completion trace is emitted. Every test, assertion, execution deadline, job deadline and coverage floor remains intact. Hosted scheduling completion still requires fresh CI.
-
-Distribute the complete native instrumented inventory across 32 coverage shards after a fresh run again exhausted its unchanged 1,200-second execution budget while an integration batch remained incomplete. Keep the 30-minute job cap, all test assertions, coverage floors, archive members, browser shard count and observed scheduling weights. More runner jobs and archive downloads are the tradeoff; hosted completion and transfer costs require fresh CI. Supplied orchestration receives zero Formal AI authorship credit.
-
-## [0.353.1] - 2026-10-13
-
-The layered JavaScript-to-Rust check now overlaps full retranslation with compilation of the committed projections. Both checks must succeed, freshly translated projections must remain byte-equal, and failures cancel the remaining process groups. The original module set, equivalence assertions, and 540-second execution budget are preserved.
-
-### Changed
-- Temporarily defer only PR1196's positive authorship requirements for release recovery, with explicit zero credit and named restoration debt. Strict evidence validation, measurement, debt checks and the standing main/daily floor remain active.
-
-### Security
-
-- Upgrade meta-language to 1.0.0 and its maintained Lindera dependency, removing the unmaintained unsafe-libyaml dependency while preserving the default language engine and CJK segmentation.
-
-Keep exact Cargo manifest and lockfile bytes when validating the release version child, so trailing LF or CRLF line endings match the governed source witness. Retain strict source and dependency checks and cover the complete physical Git transition.
-
-Temporarily defer only the two positive-authorship gates for exact open release-repair PR1197, with zero credit and explicit restoration debt; retain strict evidence measurement and all standing main gates.

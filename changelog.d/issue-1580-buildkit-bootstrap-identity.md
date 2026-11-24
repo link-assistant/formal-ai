@@ -1,1 +1,0 @@
-Pin every BuildKit bootstrap to one verified multi-platform image digest, recover registry outages by retrying actual builder setup through the mirror, and verify real daemon and image identity in the hosted workflow checks.

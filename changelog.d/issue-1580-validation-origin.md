@@ -1,1 +1,0 @@
-Fix debugger attribution for validation events by recording the actual append-site identity in Rust and JavaScript. Preserve validation kinds, payloads, evidence and stable step ids, keep legacy traces readable and leave unknown origins unavailable. Add focused regressions for generic answers, candidate validation and metadata custody, plus hosted native replay controls.

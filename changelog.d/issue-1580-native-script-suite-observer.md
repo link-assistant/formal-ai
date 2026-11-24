@@ -1,1 +1,0 @@
-Correct the native standalone-script coverage observer to include helpers compiled by native test owners as well as registered gates, preserving the standalone selection and its direct native regression.

@@ -1,1 +1,0 @@
-Replay the existing candidate-validation and interpretation-selection tests in the focused native CI lane. Select that lane when either consumed module changes, preserving all 28 assertions and the original reasoning-loop source.

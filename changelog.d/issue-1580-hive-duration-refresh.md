@@ -1,1 +1,0 @@
-Refresh the native Hive shard weights from all 37 completed hosted cases, keeping the maximum prior duration per case. The previously unmeasured eleven-minute workflow replay now receives its own shard; every test remains covered once under the unchanged twenty-minute job deadline.

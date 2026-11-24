@@ -1,1 +1,0 @@
-Keep the native unknown-source positive control independent of transient runtime caches. Replay both bare-term and question requests from the existing committed isogram capture, preserving the complete definition, citation and digest checks.

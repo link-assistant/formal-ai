@@ -1,1 +1,0 @@
-Retry the existing ShellCheck download with finite connection and transfer deadlines, register its exact invocation count in the native download sweep, and replay the same repository inventory in JavaScript before the next native run.
