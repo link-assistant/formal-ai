@@ -1,4 +1,5 @@
 core_boundary_ledger
+  note "Issue #1580 removes an intermediate documentation block conversion. documentation_method.rs falls from 324 to 323 lines and the measured source ceiling falls by one."
   note "Issue #1580 measures two added documentation interpreter lines selecting the existing prose-language detector before whole-prompt fallback (322 to 324). Existing file counts, dispositions and outside-core ceilings remain unchanged."
   note "Issue #1580 closes the remaining native documentation-provider consumer after reference-list migration. The shared seed reader replaces its pipe split in documentation_method.rs (319 to 322 lines), adding exactly 3 promoted interpreter lines; outside-core ceilings, source counts and every disposition stay unchanged."
   note "Issue #1580 retains a formalized lookup request in fact_live_answer.rs (380 to 384 lines) and the actual current-call source outcomes in refused synthesis (program_synthesis.rs 196 to 211). The exact census adds nineteen source lines and fifteen outside-core lines; every existing file count, disposition and promotion decision stays binding. No source result or executable draft is fabricated."
@@ -29,7 +30,7 @@ core_boundary_ledger
   note "Issue #1613 measures caller-supplied creative evidence and registry-based topic summaries. Creative itinerary and verse parsing replace fixed tables, and the summary interpreter owns reusable subject lookup."
   note "Issue #1613 removes the canned repository fetch module and combines the duplicate project lookup entry points. The shared fetch handler and summary interpreter read publisher captures and preserve caller network policy, leaving 91 sources and 17860 outside-core lines."
   source_file_count_max 95
-  source_lines_max 36682
+  source_lines_max 36681
   outside_core_file_count_max 48
   outside_core_lines_max 17651
   note "Issue #1632 removes the technical search plan from conversational replies. The procedural handler renders the seeded evidence gap and the synthesis handler records that outcome. The measured handlers are 836 and 183 lines."
@@ -595,6 +596,6 @@ core_boundary_ledger
   note "Issue #1580 corrects its initial conservative child dispositions after the promotion test: substitution and caller-configured boundary scanning are generic primitives; their parents retain all domain recognition, seed selection and policy. The handler debt ceiling stays 47; no debt-ratchet value changes. Prior classifications and their failed checks remain in history and receipts."
   source rust/src/solver_handlers/documentation_method.rs
     disposition promote
-    baseline_lines 324
+    baseline_lines 323
     core_component documentation-method-interpreter
     reason "Resolves qualified identifiers and ambiguity from a registered documentation publisher. Syntax and extraction are shared across publishers; the seed owns provider declarations and response wording."
