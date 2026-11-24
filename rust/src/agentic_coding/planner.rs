@@ -15,19 +15,15 @@ pub use precedence::checked_route_precedence;
 use steps::{stop_repeated_call, stop_repeated_failure};
 
 pub(super) use super::capability_router::tool_for;
+use super::code_artifact;
 use super::code_task;
 use super::comparison;
 use super::conversation_recall;
 use super::diagram;
 use super::document_recipe::{
-    plan_change_request_step, plan_diagram_step, plan_dreaming_audit_step, plan_explain_step,
-    plan_google_trends_catalog_step, plan_google_trends_learning_step, plan_ledger_step,
-    plan_meaning_detail_step, plan_question_catalog_step, plan_rebuild_step,
-    plan_repair_strategy_step, plan_self_ast_step, plan_self_heal_step, plan_source_links_step,
+    plan_diagram_step, plan_meaning_detail_step, plan_self_referential_recipe,
 };
-use super::dreaming_audit;
 use super::evidence_record;
-use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalization_recipe;
 use super::general_execution::plan_general_change_step;
@@ -35,26 +31,17 @@ use super::general_planner::{
     compose_general_change_plan, has_authoritative_literal_write, objective_text,
 };
 use super::git_commit;
-use super::google_trends_catalog;
-use super::google_trends_learning;
 use super::harness_envelope;
 use super::intent_router;
 use super::learning_report;
-use super::ledger;
 use super::local_search;
 use super::mutating_action;
 use super::note_composition;
 use super::procedure;
 pub(super) use super::progress::Progress;
-use super::question_catalog;
-use super::rebuild_plan;
-use super::repair_strategy;
 use super::report_issue;
-use super::self_ast;
-use super::self_heal;
 use super::shell_command;
 use super::shell_file_fallback;
-use super::source_links;
 use super::statement_audit;
 use super::structured_document;
 use super::structured_edit;
@@ -65,7 +52,6 @@ use super::web_research;
 use super::workspace_inspection;
 use super::workspace_search;
 use super::{algorithm_learning, capability_router};
-use super::{change_request, code_artifact};
 use crate::protocol::ChatMessage;
 use crate::skill_compiler::looks_like_skill_description;
 
@@ -457,83 +443,10 @@ pub(super) fn plan_settled_routes(
     {
         return Some(plan);
     }
-    if self_heal::is_self_heal_task(task) {
-        return Some(plan_self_heal_step(task, messages, tool_names));
-    }
-    if dreaming_audit::is_dreaming_audit_task(task) {
-        return Some(plan_dreaming_audit_step(messages, tool_names));
-    }
-    if self_ast::is_self_ast_task(task) {
-        return Some(plan_self_ast_step(messages, tool_names));
-    }
-    // The whole-repository source-links recipe: checked alongside the other
-    // self-inspection recipes and before formalization, because its request
-    // legitimately names "links" (its output format), which the broad
-    // formalization keyword match below would otherwise capture.
-    if source_links::is_source_links_task(task) {
-        return Some(plan_source_links_step(messages, tool_names));
-    }
-    // The learning-ledger recipe: the promotion step that follows an approved repair
-    // case. Checked after self-healing (which owns the "auto learning" keywords) and
-    // before formalization, since its request legitimately names "Links Notation".
-    if ledger::is_ledger_task(task) {
-        return Some(plan_ledger_step(messages, tool_names));
-    }
-    // The grounded self-explanation recipe: answers "how does Formal AI work?" from
-    // real source/data/test artifacts. Checked alongside the other self-inspection
-    // recipes and before formalization, since its request legitimately names "Links
-    // Notation" as the output format its document is rendered in.
-    if explain::is_explain_task(task) {
-        return Some(plan_explain_step(messages, tool_names));
-    }
-    // The user-initiated self-change recipe: turns a natural-language "change Formal AI
-    // itself" request into a reviewable pull request through the same human-gated loop.
-    // Checked alongside the other self-referential recipes and before formalization,
-    // since its request legitimately names "Links Notation" as the output format.
-    if change_request::is_change_request_task(task) {
-        return Some(plan_change_request_step(task, messages, tool_names));
-    }
-    // The general repair-classification recipe: given an arbitrary failure trace, decide
-    // whether the repair is a solver method, a data record, or a test, and compose the
-    // grounded, human-gated strategy for each class. Checked alongside the other
-    // self-referential recipes and before formalization, since its request legitimately
-    // names "Links Notation" as the output format its strategies are rendered in. Its
-    // keywords are disjoint from the self-healing recipe's ("repair case"/"repair loop"),
-    // so ordering only guards a request that somehow names both.
-    if repair_strategy::is_repair_strategy_task(task) {
-        return Some(plan_repair_strategy_step(task, messages, tool_names));
-    }
-    // Rebuild-and-reattach recipe: once a change is accepted, recompile Formal AI and
-    // reattach the improved WebAssembly worker to the UI (issue #558's `R558-06`).
-    // Checked alongside the other self-referential recipes and before formalization,
-    // since its request legitimately names "Links Notation" as the output format its plan
-    // is rendered in. Its keywords key on "reattach" and are disjoint from the
-    // source-links recipe's "recompile", so ordering only guards a request that somehow
-    // names both.
-    if rebuild_plan::is_rebuild_task(task) {
-        return Some(plan_rebuild_step(task, messages, tool_names));
-    }
-    // The learning-frontier recipe (issues #498 + #558): route the trending prompts the
-    // engine cannot yet resolve through the human-gated self-improvement loop. Checked
-    // before the sibling catalog recipe because both legitimately name "Google Trends";
-    // its keywords ("learning frontier", "self-improvement loop", "cannot … resolve") are
-    // disjoint from the catalog recipe's (prompt/answer/catalog/test), so ordering only
-    // guards a request that somehow names both.
-    if google_trends_learning::is_google_trends_learning_task(task) {
-        return Some(plan_google_trends_learning_step(task, messages, tool_names));
-    }
-    if google_trends_catalog::is_google_trends_catalog_task(task) {
-        return Some(plan_google_trends_catalog_step(task, messages, tool_names));
-    }
-    // The question-catalog recipe (issue #527): enumerate every possible question
-    // smallest-first, classify each grammatically and logically, and answer the
-    // meaningful ones. Checked alongside the other self-referential recipes and before
-    // formalization, since its request legitimately names "Links Notation" as the output
-    // format its catalog is rendered in. Its keywords ("question catalog", "all possible
-    // questions", …) are disjoint from the sibling recipes', so ordering only guards a
-    // request that somehow names both.
-    if question_catalog::is_question_catalog_task(task) {
-        return Some(plan_question_catalog_step(messages, tool_names));
+    // Self-referential recipes produce verified documents before broad
+    // formalization can claim requests that name their output format.
+    if let Some(plan) = plan_self_referential_recipe(task, messages, tool_names) {
+        return Some(plan);
     }
     // A request to inspect named files and report what it finds is a file
     // analysis, not a request to open a repository issue. In particular, a
