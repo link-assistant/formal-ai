@@ -304,7 +304,7 @@ fn runtime_coreference_searches_nearest_relevant_ancestor_turn() {
 
 #[test]
 fn rust_and_browser_coding_inheritance_are_cycle_safe_not_depth_capped() {
-    let rust = include_str!("../../src/solver_handlers/numeric_list/codegen.rs");
+    let rust = include_str!("../../src/coding/list_program.rs");
     let browser =
         include_str!("../../../js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js");
 

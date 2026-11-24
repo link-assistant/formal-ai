@@ -1,0 +1,16 @@
+# Dependency updater Rust validation
+
+The [23 November dependencies-latest run](https://github.com/link-assistant/formal-ai/actions/runs/45212862106) resolved its dependency edits, then failed ten Rust-stage gates at full-log line 5933. It ran on main at `03a636334975cd7ca5cedff119e2dd0efbc8579f`. The workflow stops before opening an update PR when validation fails.
+
+| Full-log lines | Failure | Repair and verification |
+| --- | --- | --- |
+| 2096–2098 | The terminology gate rejects the new private CNL module declaration and file named `graph`. | Rename both to `meaning_links`. The CNL types and their re-export paths stay stable. The existing controlled-language output and multilingual parity suites check the observed behavior. |
+| 2950–3037 | Four errors prevent the aggregate Rust unit test from compiling. Its inheritance witness names a removed source file, two callers import the private seed parser module, and the TRIZ integration test imports the private engine normalizer. | Inspect the current list compiler, call the existing public seed parser re-export, and normalize TRIZ test inputs with the public text normalizer. The test still checks the original demands, responses, evidence events and decline cases. The aggregate target requires hosted execution. |
+| 3940–4003 | The docs.rs profile turns off `meta-language`, while captured document acquisition, practical help and method documentation still need the page parser. | Parse the existing structure once and let feature-gated link construction consume those blocks. Extraction reads the parsed blocks in document order. The `check-docs-rs-dependency-profile` gate remains the executable regression for the no-default-features profile. |
+| 4721–4730 | The exact declaration list detects four test files in the module directory that are already explicit standalone Cargo targets. | Move the files to `rust/tests/standalone`, update their Cargo paths and preserve test-only admission for each target and its fixtures. Cargo metadata and the native admission test check the new locations. |
+
+The diagnostic commands are `cargo test --manifest-path rust/Cargo.toml --locked --test unit --no-run` and `DOCS_RS=1 RUSTDOCFLAGS="-D warnings" cargo doc --manifest-path rust/Cargo.toml --no-deps --lib --no-default-features`. Both require a hosted Rust build under the repository policy. The scheduled updater runs only on main and full hosted qualification remains open.
+
+The same run reports unreferenced cache entries at lines 3074–3121 and a route count of 60 against a ceiling of 58 at lines 3144–3150. The route checker still reads only `planner.rs`, while the current tree also assigns route decisions in `planner/request_routes.rs`. A complete routing check must observe both sources and preserve the existing ceiling. The latest source already renames `MAX_CAPTURE_BYTES`, the source of the historical Clippy error at line 5618. Fresh updater evidence is required for every gate.
+
+Related pull request [#1581](https://github.com/link-assistant/formal-ai/pull/1581).

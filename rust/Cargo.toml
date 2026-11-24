@@ -132,11 +132,11 @@ path = "tests/unit/mod.rs"
 
 [[test]]
 name = "calendar_currency"
-path = "tests/unit/calendar-currency.rs"
+path = "tests/standalone/calendar-currency.rs"
 
 [[test]]
 name = "openai_forced_functions"
-path = "tests/unit/openai_forced_functions.rs"
+path = "tests/standalone/openai_forced_functions.rs"
 
 [[test]]
 name = "meta_executor_parity"
@@ -159,11 +159,11 @@ path = "tests/unit/issue_706_any_language.rs"
 
 [[test]]
 name = "cnl_output"
-path = "tests/unit/cnl_output.rs"
+path = "tests/standalone/cnl_output.rs"
 
 [[test]]
 name = "cnl_parity"
-path = "tests/unit/cnl_parity.rs"
+path = "tests/standalone/cnl_parity.rs"
 
 # Replay the existing unknown-source contracts without compiling the whole unit suite.
 [[test]]

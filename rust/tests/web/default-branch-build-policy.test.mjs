@@ -287,7 +287,7 @@ test('isolated native regressions select execution for their sources and embedde
   }
 });
 test('native CNL parity selects execution when a discovered language fixture changes', () => {
-  const source = read('rust/tests/unit/cnl_parity.rs');
+  const source = read('rust/tests/standalone/cnl_parity.rs');
   assert.match(source, /join\("\.\.\/data\/parity\/issue-1584-cnl"\)/u);
   const fixtures = readdirSync('data/parity/issue-1584-cnl').filter(name => name.endsWith('.json'));
   assert(fixtures.length > 0);

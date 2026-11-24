@@ -77,7 +77,7 @@ test('ambiguous equivalence declarations remain opaque instead of selecting a me
 });
 
 // Twin of declared_multilingual_meanings_round_trip_without_certifying_unchecked_standards
-// in rust/tests/unit/cnl_output.rs: every projection keeps the meaning, and only the
+// in rust/tests/standalone/cnl_output.rs: every projection keeps the meaning, and only the
 // profiles whose checks are all decidable may certify it.
 test('declared multilingual meanings round trip and certify only decidable profiles', () => {
   const dense = {en: 'I am omniscient.', ru: 'Я всеведущ.', hi: 'मैं सर्वज्ञ हूँ।', zh: '我无所不知。', es: 'Soy omnisciente.'};

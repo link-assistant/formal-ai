@@ -1,9 +1,10 @@
-use formal_ai::engine::{SymbolicAnswer, normalize_prompt};
+use formal_ai::engine::SymbolicAnswer;
 use formal_ai::event_log::EventLog;
+use formal_ai::normalize_prompt_text;
 use formal_ai::triz_solver::{handle_triz, triz_demands, triz_families};
 
 fn handled(prompt: &str) -> Option<SymbolicAnswer> {
-    handle_triz(prompt, &normalize_prompt(prompt), &mut EventLog::new())
+    handle_triz(prompt, &normalize_prompt_text(prompt), &mut EventLog::new())
 }
 
 #[test]
@@ -62,13 +63,13 @@ fn unseen_demands_produce_their_own_worksheet_without_recalled_cases() {
 fn conflicting_demands_are_recorded_and_missing_demands_are_requested() {
     let mut log = EventLog::new();
     let prompt = "How do we resolve this paradox: transparency vs strength?";
-    handle_triz(prompt, &normalize_prompt(prompt), &mut log).expect("explicit contradiction");
+    handle_triz(prompt, &normalize_prompt_text(prompt), &mut log).expect("explicit contradiction");
     assert!(log.first_of("triz_solver:demands").is_some());
 
     for prompt in ["Explain a paradox: zoetrope", "TRIZ: speed vs speed"] {
         let mut log = EventLog::new();
         let answer =
-            handle_triz(prompt, &normalize_prompt(prompt), &mut log).expect("missing demands");
+            handle_triz(prompt, &normalize_prompt_text(prompt), &mut log).expect("missing demands");
         assert!(log.first_of("triz_resolution:refusal").is_some());
         assert_eq!(
             answer.answer,

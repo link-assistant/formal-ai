@@ -2,14 +2,14 @@
 //! language drives realization, parsing (its exact inverse) and validation.
 //! JavaScript root: js/agentic/crate/cnl_grammar.mjs.
 mod checks;
-mod graph;
+mod meaning_links;
 mod realization;
 
 pub use checks::{
     Analysis, CheckContext, Piece, PieceKind, answerable_questions, builtin_check,
     canonical_prompt, graph_holds, graph_logic, output_sentences, prompt_analysis,
 };
-pub use graph::{Graph, Slots, graph_key};
+pub use meaning_links::{Graph, Slots, graph_key};
 pub use realization::{all_pairs, realizations, realize_graph};
 
 use crate::seed::parser::{LinoNode, parse_lino, split_pipe_list};
