@@ -175,6 +175,81 @@ test('the verifier writes the compile log and exact test receipt to the producer
   }
 });
 
+test('a changed canonical seed reaches Cargo through a temporary package mirror', () => {
+  const source = 'data/seed/example.lino';
+  const mirror = 'rust/embedded/' + source;
+  const original = 'meaning original\n';
+  const revised = 'meaning revised\n';
+  const node = '1.1.1.1.1';
+  for (const kind of ['success', 'empty_native_selection', 'stale_mirror']) {
+    const root = fixture();
+    try {
+      const mirrorBefore = kind === 'stale_mirror' ? 'meaning stale\n' : original;
+      function write(relative, content, mode) {
+        const fullPath = path.join(root, relative);
+        fs.mkdirSync(path.dirname(fullPath), {recursive: true});
+        fs.writeFileSync(fullPath, content, {mode});
+      }
+      function git(...args) {
+        const result = spawnSync('git', ['-C', root, ...args], {encoding: 'utf8'});
+        assert.equal(result.status, 0, result.stderr);
+        return result.stdout.trim();
+      }
+      write(source, original);
+      write(mirror, mirrorBefore);
+      git('init', '-q');
+      git('add', 'rust', 'data');
+      git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+        '-c', 'commit.gpgsign=false', 'commit', '-qm', 'Record canonical seed and mirror');
+      write(source, revised);
+      write('proof.md', 'node_path=' + node + '\nThe canonical seed now records the revised meaning.\n');
+      write('agent-ladder-effects/node-' + node + '.lino',
+        'node_path=' + node + '\nnode_depth=5\nnode_kind=leaf\nresult=The seed records revised meaning\n');
+      const selected = kind === 'empty_native_selection' ? 0 : 1;
+      write('mock-bin/cargo', [
+        '#!/usr/bin/env bash',
+        'set -eu',
+        'cmp -s ../data/seed/example.lino embedded/data/seed/example.lino',
+        'case "$*" in',
+        '  "check --lib --quiet") printf "compile saw changed seed\\n" ;;',
+        '  "test --test data_files --quiet -- --exact embedded_seed_matches_canonical_source")',
+        '    [[ "$LADDER_CHANGED_SEED" == "data/seed/example.lino" ]]',
+        '    printf "test result: ok. ' + selected + ' passed; 0 failed; 0 ignored;\\n" ;;',
+        '  *) exit 9 ;;',
+        'esac',
+      ].join('\n'), 0o700);
+      const result = spawnSync('bash', [
+        path.resolve('experiments/issue_1028_agent_cli_ladder/verify-node.sh'),
+        root, path.join(root, 'proof.md'), node, '5', '', '', source, 'revised', 'meaning',
+      ], {
+        encoding: 'utf8',
+        env: {...process.env, PATH: path.join(root, 'mock-bin') + path.delimiter + process.env.PATH,
+          LADDER_CARGO_CHECK: '1', LADDER_CARGO_TEST: '1', LADDER_VERIFY_LOG_DIR: path.join(root, 'receipt')},
+        cwd: root,
+      });
+      const expected = {success: 'ok', empty_native_selection: 'failing_leaf_tests',
+        stale_mirror: 'seed_projection_failed'}[kind];
+      assert.equal(result.stdout.trim(), expected, result.stderr);
+      assert.equal(result.status, kind === 'success' ? 0 : 1);
+      assert.equal(fs.readFileSync(path.join(root, mirror), 'utf8'), mirrorBefore);
+      assert.equal(git('status', '--porcelain=v1', '--untracked-files=no'), 'M ' + source);
+      const receipt = fs.readFileSync(path.join(root, 'receipt', 'verify.tsv'), 'utf8');
+      if (kind === 'stale_mirror') {
+        assert.doesNotMatch(receipt, /^seed_projection:/mu);
+        assert.equal(fs.existsSync(path.join(root, 'receipt', 'cargo-check.log')), false);
+      } else {
+        assert.ok(receipt.includes('seed_projection:' + source + '\t' + mirror + ' '
+          + git('hash-object', source) + '\n'));
+        assert.equal(fs.readFileSync(path.join(root, 'receipt', 'cargo-check.log'), 'utf8'),
+          'compile saw changed seed\n');
+        assert.match(receipt, selected ? /\tpassed=1\n/u : /\tmissing_selected_tests\n/u);
+      }
+    } finally {
+      fs.rmSync(root, {recursive: true, force: true});
+    }
+  }
+});
+
 test('source-declared library cases carry their actual Cargo target', async () => {
   const root = fixture('// no external imports');
   try {

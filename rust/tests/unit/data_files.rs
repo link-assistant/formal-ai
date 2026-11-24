@@ -21,6 +21,37 @@ mod technical_scalar;
 const MAX_LINO_LINES: usize = 1_500;
 
 #[test]
+fn embedded_seed_matches_canonical_source() {
+    let requested = std::env::var_os("LADDER_CHANGED_SEED");
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("..");
+    let mut checked = 0;
+    for (path, embedded) in formal_ai::seed::seed_files() {
+        if requested
+            .as_deref()
+            .is_some_and(|name| name != std::ffi::OsStr::new(path))
+        {
+            continue;
+        }
+        let source =
+            fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"));
+        assert!(source == embedded, "{path} differs from the compiled seed");
+        parse_canonical_lino(embedded.trim()).unwrap_or_else(|error| panic!("{path}: {error}"));
+        formal_ai::seed::parse_lino_checked(embedded)
+            .unwrap_or_else(|error| panic!("{path}: {error}"));
+        checked += 1;
+    }
+    match requested {
+        Some(path) => assert_eq!(
+            checked,
+            1,
+            "unexpected registration for {}",
+            path.to_string_lossy()
+        ),
+        None => assert!(checked > 0, "no compiled seeds"),
+    }
+}
+
+#[test]
 fn lino_data_files_are_parseable_human_readable_and_bounded() {
     let data_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../data");
     assert!(data_dir.is_dir(), "data directory should exist");

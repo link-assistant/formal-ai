@@ -11,7 +11,7 @@
 #
 # Environment (all optional):
 #   LADDER_CARGO_CHECK=0       skip `cargo check --lib`
-#   LADDER_CARGO_TEST=0        skip `cargo test --test unit <module>`
+#   LADDER_CARGO_TEST=0        skip the registered native tests
 #   LADDER_CARGO_TARGET_DIR    shared target directory (run.sh sets one per run)
 #   LADDER_VERIFY_LOG_DIR     write receipt and Cargo logs here as they appear
 #   LADDER_LEAVES              leaves.tsv (requirement-shaped nodes)
@@ -39,6 +39,7 @@ if ! mkdir -p "$verification_dir" || ! verification_dir=$(cd "$verification_dir"
 fi
 report="$verification_dir/verify.tsv"
 : > "$report" || exit 2
+projected_seed_mirrors=()
 
 fail() {
   printf '%s\n' "$1"
@@ -50,6 +51,42 @@ record() {
 target_dir() {
   printf '%s' "${LADDER_CARGO_TARGET_DIR:-$workspace/target}"
 }
+restore_seed_mirrors() {
+  local status="$1"
+  if (("${#projected_seed_mirrors[@]}")) && ! git -C "$workspace" restore --worktree -- "${projected_seed_mirrors[@]}"; then
+    record seed_projection_restore failed
+    printf '%s\n' seed_projection_restore_failed >&2
+    ((status != 0)) || status=1
+  fi
+  projected_seed_mirrors=()
+  return "$status"
+}
+prepare_seed_projections() {
+  local source mirror component existing digest
+  for source in "$@"; do
+    [[ "$source" =~ ^data/seed/[[:alnum:]][[:alnum:]_.-]*\.lino$ ]] || continue
+    mirror="rust/embedded/$source"
+    for existing in "${projected_seed_mirrors[@]}"; do
+      [[ "$existing" != "$mirror" ]] || continue 2
+    done
+    for component in data data/seed "$source" rust rust/embedded rust/embedded/data rust/embedded/data/seed "$mirror"; do
+      [[ ! -L "$workspace/$component" ]] || return 1
+    done
+    [[ -f "$workspace/$source" && -f "$workspace/$mirror" ]] || return 1
+    git -C "$workspace" ls-files --error-unmatch -- "$mirror" >/dev/null 2>&1 || return 1
+    git -C "$workspace" diff --quiet -- "$mirror" || return 1
+    git -C "$workspace" diff --cached --quiet HEAD -- "$mirror" || return 1
+    git -C "$workspace" show "HEAD:$source" | cmp -s - "$workspace/$mirror" || return 1
+    projected_seed_mirrors+=("$mirror")
+    cp -- "$workspace/$source" "$workspace/$mirror" || return 1
+    digest=$(git -C "$workspace" hash-object -- "$mirror") || return 1
+    record "seed_projection:$source" "$mirror $digest"
+  done
+}
+trap 'restore_seed_mirrors "$?"; exit "$?"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
 # Only registered CST-derived tests can witness a changed source module.
 module_filter() {
   node "$ROOT/scripts/lib/ladder-test-projection.mjs" "$workspace" "$1"
@@ -58,6 +95,10 @@ verify_source_tests() {
   local source="$1" filters filter target
   if [[ "${LADDER_CARGO_TEST:-1}" == 0 ]] || ! command -v cargo >/dev/null 2>&1 || [[ ! -f "$workspace/rust/Cargo.toml" ]]; then
     cargo_test source_projection_unavailable
+    return $?
+  fi
+  if [[ "$source" =~ ^data/seed/[[:alnum:]][[:alnum:]_.-]*\.lino$ ]]; then
+    LADDER_CHANGED_SEED="$source" cargo_test embedded_seed_matches_canonical_source data_files
     return $?
   fi
   filters=$(module_filter "$source") || { record "tests:$source" missing_source_projection; return 1; }
@@ -183,6 +224,7 @@ if [[ "$depth" -eq 5 ]]; then
   [[ "$tracked_changes" == " M $criterion_path" ]] || fail unexpected_tracked_changes
   record diff_lines "$(diff_lines "$criterion_path")"
   rustfmt_parses "$criterion_path" || fail unparsable_leaf_change
+  prepare_seed_projections "$criterion_path" || fail seed_projection_failed
   cargo_check || fail uncompilable_leaf_change
   verify_source_tests "$criterion_path" || fail failing_leaf_tests
   [[ "$result" == *"$criterion_marker"* ]] || fail unverified_leaf_result
@@ -226,6 +268,7 @@ elif [[ "$depth" -eq 4 ]]; then
     for changed in "${merged_paths[@]}"; do
       rustfmt_parses "$changed" || fail unparsable_composite_change
     done
+    prepare_seed_projections "${merged_paths[@]}" || fail seed_projection_failed
     cargo_check || fail uncompilable_composite_change
   fi
 else
@@ -265,9 +308,11 @@ else
   for changed in "${touched[@]}"; do
     rustfmt_parses "$changed" || fail unparsable_requirement_change
   done
+  prepare_seed_projections "${touched[@]}" || fail seed_projection_failed
   cargo_check || fail uncompilable_requirement_change
   for changed in "${touched[@]}"; do
     verify_source_tests "$changed" || fail failing_requirement_tests
   done
 fi
+restore_seed_mirrors 0 || fail seed_projection_restore_failed
 printf 'ok\n'
