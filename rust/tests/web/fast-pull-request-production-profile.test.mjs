@@ -359,6 +359,18 @@ test('Cargo security acquisition retains the full crate and audit proofs without
 });
 
 
+test('the historical Rust parser reproducer excludes the unused Lindera dependency', () => {
+  const reproducer = 'experiments/issue-1017-meta-language-quadratic/';
+  const lock = read(reproducer + 'Cargo.lock');
+  assert.doesNotMatch(lock, /^name = "(?:lindera(?:-[^"]+)?|serde_yaml_ng|unsafe-libyaml)"$/mu);
+  const parser = lock.split('[[package]]').find(record => record.includes('name = "meta-language"\n'));
+  assert.ok(parser);
+  assert.match(parser, /^version = "0\.58\.1"$/mu);
+  assert.match(parser, /^ "tree-sitter-rust",$/mu);
+  const manifest = read(reproducer + 'Cargo.toml');
+  assert.match(manifest, /^meta-language = \{ version = "=0\.58\.1", default-features = false \}$/mu);
+});
+
 test('live link integration is explicit main-only while parser regressions stay mandatory and bounded', async () => {
   const document=workflow('links.yml'),live=document.jobs['link-checker'],parser=document.jobs['link-parser-checks'];
   assert.ok(manifest.jobs.some(row=>row.file==='links.yml'&&row.id==='link-checker'),'original live payload remains a retained job');
