@@ -18,7 +18,7 @@ use serde_json::json;
 
 use super::code_task::render_seeded_change;
 use super::final_result::{FinalDisposition, FinalResult, record};
-use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for, trace_route, write_arguments};
 use super::progress::Progress;
 use super::workspace_change::{
     VerifiedChange, plan_bound_write_digest_verification, plan_edit_preimage_gap,
@@ -377,7 +377,11 @@ fn apply_member_insertion(
     }
     let (regions, literals) = scan(source);
     let anchor = if strict {
-        declared_string_array(source, &regions, edit.named.first()?)?
+        let Some(anchor) = declared_string_array(source, &regions, edit.named.first()?) else {
+            trace_route("structured_edit", "declared_string_array_unbound");
+            return None;
+        };
+        anchor
     } else {
         anchor_by_members(&regions, &literals, &edit.values)
             .or_else(|| anchor_by_name(source, &regions, &literals, &edit.named))?
@@ -478,7 +482,7 @@ fn declared_string_array(source: &str, regions: &[Region], name: &str) -> Option
         return None;
     }
     let declaration = regex::Regex::new(&format!(
-        r"(?:const|static)\s+{name}\s*:\s*&?\s*\[\s*&str\s*\]\s*=\s*&?\s*\["
+        r"\b(?:const|static)\s+{name}\s*:\s*&?\s*\[\s*&str\s*\]\s*=\s*&?\s*\["
     ))
     .ok()?;
     let mut anchors = declaration.find_iter(source).filter_map(|matched| {
