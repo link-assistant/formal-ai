@@ -37,6 +37,7 @@ test('every rust-cache step names the rust/ workspace, because the repository ro
 
 const learningJob = YAML.parse(workflows.find(({name}) => name === 'learning-cycle.yml').text).jobs.cycle;
 
+// Replays main run 45175845066, where live capture reached the job deadline.
 test('the live learning capture fails within an execution budget and keeps its diagnostics', (t) => {
   const jobSteps = learningJob.steps;
   const capture = jobSteps.find(step => step.id === 'capture');

@@ -11,7 +11,7 @@
 // The benchmark step is executed here as written, against a stub binary.
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
-import {chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
+import {chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {test} from 'node:test';
@@ -22,21 +22,40 @@ const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 const workflow = name => YAML.parse(readFileSync(join(ROOT, '.github/workflows', name), 'utf8'));
 const ALL = ['humaneval', 'mbpp', 'gsm8k', 'math', 'object_counting', 'coedit', 'egg_math', 'editeval', 'ascent_transitive_closure', 'swebench_lite'];
 
-function benchmarkStep(suite, failing) {
-  const steps = Object.values(workflow('external-benchmarks.yml').jobs).flatMap(job => job.steps ?? []);
-  const step = steps.find(candidate => candidate.name === 'Run the bounded upstream slice');
+function benchmarkStep(suite, failing, {sharded = false, readerFails = false} = {}) {
+  const job = workflow('external-benchmarks.yml').jobs[sharded ? 'upstream-shard' : 'external-benchmarks'];
+  const step = job.steps.find(candidate => candidate.name === (sharded ? 'Run the window' : 'Run the bounded upstream slice'));
   assert.ok(step, 'the benchmark step exists');
   const root = mkdtempSync(join(tmpdir(), 'issue-1569-benchmarks-'));
   try {
     mkdirSync(join(root, 'rust/target/release'), {recursive: true});
     const binary = join(root, 'rust/target/release/formal-ai');
+    const calls = join(root, 'calls');
+    const bin = join(root, 'bin');
+    mkdirSync(bin);
+    mkdirSync(join(root, 'scripts'));
+    const reader = 'scripts/install-swebench-parquet-reader.sh';
+    copyFileSync(join(ROOT, reader), join(root, reader));
+    writeFileSync(join(bin, 'python3'), `#!/bin/bash
+printf 'python3 %s\\n' "$*" >> "$TEST_CALLS"
+[[ "$TEST_READER_FAILS" == 'false' ]]
+`, {mode: 0o755});
     // The stub reports like the real runner and fails the listed suites.
-    writeFileSync(binary, `#!/bin/bash\nsuite="$4"\necho "suite=$suite passed=1 failed=0 total=1"\ncase " ${failing.join(' ')} " in *" $suite "*) exit 1;; esac\n`);
+    writeFileSync(binary, `#!/bin/bash
+suite="$4"
+printf 'run %s\\n' "$suite" >> "$TEST_CALLS"
+echo "suite=$suite passed=1 failed=0 total=1"
+case " ${failing.join(' ')} " in *" $suite "*) exit 1;; esac
+`);
     chmodSync(binary, 0o755);
     const summary = join(root, 'summary.md');
     const run = spawnSync('bash', ['-e', '-c', step.run], {cwd: root, encoding: 'utf8', timeout: 30000,
-      env: {PATH: process.env.PATH, GITHUB_STEP_SUMMARY: summary, BENCHMARK_SLICE: '20', SWE_BENCH_SLICE: '23', BENCHMARK_SUITE: suite}});
-    return {status: run.status, stdout: run.stdout, summary: readFileSync(summary, 'utf8')};
+      env: {PATH: `${bin}:${process.env.PATH}`, TEST_CALLS: calls, TEST_READER_FAILS: String(readerFails),
+        GITHUB_STEP_SUMMARY: summary, BENCHMARK_SLICE: '20', SWE_BENCH_SLICE: '23', BENCHMARK_SUITE: suite,
+        SUITE: suite, OFFSET: '5', WINDOW: '2'}});
+    return {status: run.status, stdout: run.stdout,
+      summary: existsSync(summary) ? readFileSync(summary, 'utf8') : '',
+      calls: existsSync(calls) ? readFileSync(calls, 'utf8').trim().split('\n') : []};
   } finally {
     rmSync(root, {recursive: true, force: true});
   }
@@ -57,6 +76,29 @@ test('passing and single-suite selections keep their exit status', () => {
   assert.equal(single.status, 0);
   assert.equal(single.summary.trim(), 'suite=swebench_lite passed=1 failed=0 total=1');
   assert.equal(benchmarkStep('gsm8k', ['gsm8k']).status, 1);
+});
+
+// Replays main run 45197910485, which could not decode the SWE-bench dataset.
+test('SWE-bench installs the locked dataset reader before evaluation in both workflows', () => {
+  const reader = [
+    'python3 -m pip install --require-hashes --only-binary=:all: --force-reinstall -r .github/benchmarks/swebench-requirements.txt',
+    'python3 -c import pyarrow.parquet',
+  ];
+  const swebench = [...reader, 'run swebench_lite'];
+  assert.deepEqual(benchmarkStep('all', []).calls, [...ALL.slice(0, -1).map(suite => 'run ' + suite), ...swebench]);
+  for (const sharded of [false, true]) {
+    const sweep = benchmarkStep('swebench_lite', [], {sharded});
+    assert.equal(sweep.status, 0);
+    assert.deepEqual(sweep.calls, swebench);
+    assert.deepEqual(benchmarkStep('gsm8k', [], {sharded}).calls, ['run gsm8k']);
+  }
+  const failed = benchmarkStep('all', [], {readerFails: true});
+  assert.equal(failed.status, 1);
+  assert.match(failed.stdout, /^failed suites: swebench_lite$/mu);
+  assert.deepEqual(failed.calls, [...ALL.slice(0, -1).map(suite => 'run ' + suite), reader[0]]);
+  const failedShard = benchmarkStep('swebench_lite', [], {sharded: true, readerFails: true});
+  assert.equal(failedShard.status, 1);
+  assert.deepEqual(failedShard.calls, [reader[0]]);
 });
 
 test('ladder composites run only on validated leaf evidence', () => {

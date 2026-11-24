@@ -237,3 +237,19 @@ main-run 45212862106
       failed "check-cache-budget: 42 unreferenced Wikidata and WordNet records"
       check rust/tests/web/dependencies-maintenance-workflow.test.mjs
       marker "main run 45212862106 cache-budget replay"
+
+main-run 45175845066
+  workflow-policy
+    regression learning-cycle-live-capture-deadline
+      introduced-by "unbounded live capture observed on main 03a636334"
+      failed "Google Trends live capture reached the learning-cycle job deadline before producing proposal diagnostics"
+      check rust/tests/web/issue-1571-workflow-diagnostics.test.mjs
+      marker "Replays main run 45175845066"
+
+main-run 45197910485
+  workflow-policy
+    regression swebench-parquet-reader-unavailable
+      introduced-by "missing dataset reader observed on main 03a636334"
+      failed "SWE-bench Lite could not decode the pinned upstream Parquet data because pyarrow.parquet was unavailable"
+      check rust/tests/web/issue-1569-workflow-failure-isolation.test.mjs
+      marker "Replays main run 45197910485"

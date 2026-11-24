@@ -1,6 +1,15 @@
+## Active checkpoint: external benchmark dataset reader (2026-11-24)
+
+- [x] Preserve [the complete scheduled benchmark failure](https://github.com/link-assistant/formal-ai/actions/runs/45197910485). It reached all ten suites and distinguished SWE-bench Lite's missing Parquet reader from scores below the HumanEval, MBPP and GSM8K floors.
+- [x] Provision the same hashed reader in the scheduled and sharded SWE-bench Lite paths. Replay both paths and a failed installation in the real workflow shell. Decode a fixture row using the exact wheel on CPython 3.12.
+- [x] Register the pre-merge replays for the captured learning-cycle timeout and the missing Parquet reader in the production-only regression ledger.
+- [ ] Qualify scheduled and sharded evaluation using the live pinned dataset and the official evaluator. Correct the three separate score failures without changing their floors.
+
+See [external benchmark evidence](../../docs/case-studies/issue-1580/external-benchmark-parquet-reader.md).
+
 ## Active checkpoint: secret scanner pipe fixture (2026-11-24)
 
-- [x] Separate the passing browser archive check in JavaScript group 10 from the failure in group 4 on the same branch head `53a2c45d1`. The [group 4 job](https://github.com/link-assistant/formal-ai/actions/runs/45348339023/job/138288371045) reports exit 134 from its mock `npx` on Node 24.22.3.
+- [x] Collect all 33 terminal workflows at branch head `53a2c45d1`: 31 pass, one fails and one configured scope skips. The browser archive check passes in group 10. The [group 4 job](https://github.com/link-assistant/formal-ai/actions/runs/45348339023/job/138288371045) reports exit 134 from its mock `npx` on Node 24.22.3.
 - [x] Replace the mock's synchronous UTF-8 read of a pipe with stream decoding. Preserve its fixed npm argument, all 1,800 filenames, the complete receipt and the detected-secret failure control. The failure is consistent with [Node issue #66341](https://github.com/nodejs/node/issues/66341); the production scanner already uses streaming input.
 - [x] Run both focused cases and all 49 tests in the owning suite with the released Node 24.22.3 binary. The full-suite prerequisite is to put that binary on `PATH` for the existing subprocess fixtures as the hosted job does.
 - [ ] Verify the corrected fixture in the next exact-head hosted Layered run.

@@ -152,6 +152,11 @@ jobs:
           # runs now, each failure is named, and the step still fails.
           failed=''
           run_suite() {
+            if [[ "$1" == 'swebench_lite' ]] && ! bash scripts/install-swebench-parquet-reader.sh; then
+              echo '::error title=External benchmark swebench_lite failed::Unable to install the locked dataset reader'
+              failed="${failed} $1"
+              return
+            fi
             ./rust/target/release/formal-ai benchmark run \
               --suite "$1" \
               --slice "$2" \
@@ -335,12 +340,17 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ci-logs
-          ./rust/target/release/formal-ai benchmark run \
-            --suite "${SUITE}" \
-            --offset "${OFFSET}" \
-            --slice "${WINDOW}" \
-            --online \
-            --allow-install 2>&1 | tee "ci-logs/shard-${OFFSET}.log"
+          {
+            if [[ "${SUITE}" == 'swebench_lite' ]]; then
+              bash scripts/install-swebench-parquet-reader.sh || exit 1
+            fi
+            ./rust/target/release/formal-ai benchmark run \
+              --suite "${SUITE}" \
+              --offset "${OFFSET}" \
+              --slice "${WINDOW}" \
+              --online \
+              --allow-install
+          } 2>&1 | tee "ci-logs/shard-${OFFSET}.log"
           grep -E '^(shard )?suite=' "ci-logs/shard-${OFFSET}.log" >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Upload shard log
