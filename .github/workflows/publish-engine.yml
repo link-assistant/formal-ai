@@ -224,11 +224,15 @@ jobs:
         working-directory: packages/formal-ai-engine
         env:
           ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
-        run: node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" pack npm pack --ignore-scripts
+        run: >-
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" pack npm pack --ignore-scripts --json
+          > "$RUNNER_TEMP/browser-engine-npm-pack.json"
       - name: Check the packed engine archive size
         timeout-minutes: 1
         working-directory: packages/formal-ai-engine
-        run: node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs" --check-archive
+        run: >-
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs" --check-archive
+          "$RUNNER_TEMP/browser-engine-npm-pack.json"
       - name: Verify greetings and issue reporting in the packed engine
         timeout-minutes: 5
         env:

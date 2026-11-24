@@ -35,9 +35,11 @@ The browser engine already limited publication receipts to 134,217,728 bytes.
 The first workflow upload and the npm publisher could accept an archive that
 the later receipt could not record. Check the actual compressed tarball after
 `npm pack` and before smoke tests or uploads. The npm publisher also checks its
-input before querying the registry. The pack step continues to report the
-included files. The new check reports the archive name, measured byte count
-and shared receipt limit. The v0.356.11 engine archive was 5,349,120 bytes.
+input before querying the registry. An oversized archive reports its real byte
+count and the shared receipt limit. The check also reports the five largest
+files by uncompressed size when the npm pack inventory matches the archive name
+and measured compressed size. An unavailable or mismatched inventory cannot
+override the size failure. The v0.356.11 engine archive was 5,349,120 bytes.
 [Hive Mind release preflight](https://github.com/link-assistant/hive-mind/blob/18258198fe16ee19e80cb5586a48ae41134fc81e/docs/CI-CD-BEST-PRACTICES.md#16-prove-you-can-publish-before-you-build)
 [Release assets](https://github.com/link-assistant/formal-ai/releases/tag/v0.356.11)
 
@@ -48,3 +50,9 @@ file to test exact-limit and one-byte-over archives. The corrected publisher
 fails without an npm call for empty or oversized files. The historical
 selected-source protocol test also verifies the captured publisher continues
 to accept ordinary fixture archives.
+
+The first hosted archive-gate revision failed the retained production-job
+digest at downloaded job log lines 2503–2514. The repaired control verifies the
+exact diagnostic capture and required size step before comparing the rest of the
+package job to the original digest. The pinned production profile still keeps
+this package job off ordinary PR runs. [Original job failure](https://github.com/link-assistant/formal-ai/actions/runs/45346137806/job/138281104429)

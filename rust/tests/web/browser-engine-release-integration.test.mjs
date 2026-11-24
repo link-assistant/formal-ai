@@ -36,6 +36,57 @@ test('the actual pack guard and publisher refuse archives outside the receipt li
   assert.throws(() => publishBrowserEngine(directory, npm), /engine\.tgz.*134217729 bytes.*134217728 bytes/u);
   assert.equal(npmCalls, 0);
 });
+
+test('an oversized packed archive reports its largest members from the matching npm inventory', t => {
+  const directory = mkdtempSync(join(temporaryDirectory(), 'browser-engine-pack-report-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const archive = join(directory, 'engine.tgz');
+  const inventory = join(directory, 'npm-pack.json');
+  const size = 134217729;
+  writeFileSync(archive, '');
+  truncateSync(archive, size);
+  const result = [{ filename: 'engine.tgz', size, files: [
+    { path: 'src/index.js', size: 1 },
+    { path: 'assets/engine.wasm', size: size * 2 },
+    { path: 'assets/kernel.bin', size: size },
+  ] }];
+  const publisher = fileURLToPath(new URL('../../../scripts/publish-browser-engine.mjs', import.meta.url));
+  const check = () => spawnSync(process.execPath, [publisher, '--check-archive', inventory],
+    { cwd: directory, encoding: 'utf8' });
+
+  writeFileSync(inventory, JSON.stringify(result));
+  const reported = check();
+  assert.notEqual(reported.status, 0);
+  assert.match(reported.stderr, /Largest packed files/u);
+  assert.match(reported.stderr, /268435458 bytes.*"assets\/engine\.wasm"[\s\S]*134217729 bytes.*"assets\/kernel\.bin"/u);
+  assert.match(reported.stderr, /engine\.tgz.*134217729 bytes.*134217728 bytes/u);
+
+  result[0].size = size - 1;
+  writeFileSync(inventory, JSON.stringify(result));
+  const unrelated = check();
+  assert.notEqual(unrelated.status, 0);
+  assert.match(unrelated.stderr, /Matching npm pack inventory unavailable/u);
+  assert.doesNotMatch(unrelated.stderr, /assets\/engine\.wasm/u);
+  assert.match(unrelated.stderr, /engine\.tgz.*134217729 bytes.*134217728 bytes/u);
+});
+
+test('a definitive npm E413 rejection is returned after one publication attempt', t => {
+  const directory = mkdtempSync(join(temporaryDirectory(), 'browser-engine-e413-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  writeFileSync(join(directory, 'package.json'), JSON.stringify({ name: '@example/engine', version: '1.0.0' }));
+  writeFileSync(join(directory, 'engine.tgz'), 'packed fixture');
+  const rejection = Object.assign(new Error('E413 Payload Too Large'), { code: 'E413' });
+  const calls = [];
+  const npm = args => {
+    calls.push(args[0]);
+    if (args[0] === 'view') {
+      throw Object.assign(new Error('Missing release'), { stdout: JSON.stringify({ error: { code: 'E404' } }) });
+    }
+    throw rejection;
+  };
+  assert.throws(() => publishBrowserEngine(directory, npm), error => error === rejection);
+  assert.deepEqual(calls, ['view', 'publish']);
+});
 test('browser dependency isolation is immutable and remains inside the original setup deadline',()=>{
   const step=workflow.jobs.package.steps.find(value=>value.name==='Prepare locked browser smoke dependencies');
   assert.equal(step['timeout-minutes'],5);
@@ -112,7 +163,8 @@ function checkStructure(value) {
   assert.equal(steps[size].if, undefined);
   assert.equal(steps[size]['continue-on-error'], undefined);
   assert.equal(steps[size]['working-directory'], 'packages/formal-ai-engine');
-  assert.equal(steps[size].run, 'node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs" --check-archive');
+  assert.equal(steps[size].run.trimEnd(),
+    'node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs" --check-archive "$RUNNER_TEMP/browser-engine-npm-pack.json"');
   const artifact = steps.findIndex(step => step.with?.name === 'formal-ai-engine');
   assert(size < artifact);
   const local = find('Cold install the packed engine before public publication');
@@ -182,6 +234,11 @@ function checkStructure(value) {
    '');
       // YAML removes scalar indentation; retain the original logical shell line exactly.
       normalized = normalized.replace('  echo "status=skipped-unconfigured" >> "$GITHUB_OUTPUT"\n', '');
+      if (operation.name === 'Package the engine') {
+        const inventoryOutput = ' --json > "$RUNNER_TEMP/browser-engine-npm-pack.json"';
+        assert(normalized.endsWith(inventoryOutput), 'the original pack command must produce the diagnostic inventory');
+        normalized = normalized.slice(0, -inventoryOutput.length);
+      }
       assert.equal(normalized, operation.run);
     }
   }

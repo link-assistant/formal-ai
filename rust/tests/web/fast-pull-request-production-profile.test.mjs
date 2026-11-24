@@ -39,6 +39,23 @@ test('heavy original job bodies remain intact and default PR dispatches cannot a
       payload.steps.find(step => step.name === terminal.name).if =
         '${{ !cancelled() && steps.lychee.outputs.exit_code != 0 && ' + recovery;
     }
+    if (row.file === 'publish-engine.yml' && row.id === 'package') {
+      payload.steps = structuredClone(job.steps);
+      const packIndex = payload.steps.findIndex(step => step.name === 'Package the engine');
+      assert(packIndex >= 0);
+      const pack = payload.steps[packIndex];
+      const originalRun = 'node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" pack npm pack --ignore-scripts';
+      const inventory = '"$RUNNER_TEMP/browser-engine-npm-pack.json"';
+      assert.equal(pack.run, originalRun + ' --json > ' + inventory);
+      const [archiveCheck] = payload.steps.splice(packIndex + 1, 1);
+      assert.deepEqual(archiveCheck, {
+        name: 'Check the packed engine archive size',
+        'timeout-minutes': 1,
+        'working-directory': 'packages/formal-ai-engine',
+        run: 'node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs" --check-archive ' + inventory,
+      });
+      pack.run = originalRun;
+    }
     assert.equal(createHash('sha256').update(JSON.stringify(payload)).digest('hex'), row.payloadSha256, row.file+'/'+row.id+' retained payload');
     assert.equal(Boolean(evaluate(job.if, context('pull_request'))),false,row.file+'/'+row.id);
     assert.equal(Boolean(evaluate(job.if, context('workflow_dispatch','refs/heads/fix/example'))),false,row.file+'/'+row.id+' bot dispatch');

@@ -28,7 +28,28 @@ export function publicationDecision(specification, integrity, lookup) {
   throw new Error('Published package integrity differs from this release tarball');
 }
 
-function checkPackedArchive(directory) {
+function reportLargestPackedFiles(inventory, filename, size) {
+  let files;
+  try {
+    const stat = lstatSync(inventory);
+    if (stat.isFile() && stat.size <= 1024 * 1024) {
+      const result = JSON.parse(readFileSync(inventory, 'utf8'));
+      const pack = Array.isArray(result) && result.length === 1 ? result[0] : null;
+      if (pack?.filename === filename && pack.size === size && Array.isArray(pack.files)) files = pack.files;
+    }
+  } catch { /* The archive size error remains authoritative. */ }
+  if (!files?.length || files.some(file => typeof file?.path !== 'string' || file.path.length > 512 ||
+    !Number.isSafeInteger(file.size) || file.size < 0)) {
+    console.error('Matching npm pack inventory unavailable');
+    return;
+  }
+  console.error('Largest packed files (uncompressed sizes):');
+  for (const file of files.sort((a, b) => b.size - a.size).slice(0, 5)) {
+    console.error(`  ${file.size} bytes  ${JSON.stringify(file.path)}`);
+  }
+}
+
+function checkPackedArchive(directory, inventory) {
   const tarballs = readdirSync(directory).filter((file) => file.endsWith('.tgz'));
   if (tarballs.length !== 1) throw new Error('Exactly one packed engine tarball is required');
   const [filename] = tarballs;
@@ -36,6 +57,7 @@ function checkPackedArchive(directory) {
   const stat = lstatSync(path);
   if (!stat.isFile()) throw new Error(`Packed engine archive ${JSON.stringify(filename)} must be a regular file`);
   if (stat.size === 0 || stat.size > BROWSER_ENGINE_ARCHIVE_MAX_BYTES) {
+    if (inventory && stat.size > BROWSER_ENGINE_ARCHIVE_MAX_BYTES) reportLargestPackedFiles(inventory, filename, stat.size);
     throw new Error(`Packed engine archive ${JSON.stringify(filename)} has ${stat.size} bytes (allowed 1 to ${BROWSER_ENGINE_ARCHIVE_MAX_BYTES} bytes)`);
   }
   return { path, filename, bytes: stat.size };
@@ -64,7 +86,7 @@ export function publicationStatus(decision) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   if (process.argv[2] === '--check-archive') {
-    const { filename, bytes } = checkPackedArchive(process.cwd());
+    const { filename, bytes } = checkPackedArchive(process.cwd(), process.argv[3]);
     console.log(`Packed engine archive ${JSON.stringify(filename)} has ${bytes} bytes (limit ${BROWSER_ENGINE_ARCHIVE_MAX_BYTES} bytes)`);
   } else {
     const decision = publishBrowserEngine();
