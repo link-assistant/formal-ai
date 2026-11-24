@@ -565,7 +565,10 @@ process.exit(args.includes('solver_unknown_reasoning::tests::') ? 17 : 0);
     const invocations = readFileSync(calls, 'utf8').trim().split('\n').map(JSON.parse);
     const libraryFilters = ['solver_unknown_reasoning::tests::',
       'solver_helpers::code::javascript_program_tests::', 'rule_interpreter::parser::reference_list_tests::',
-      'solver_synthesis::parent_tests::', 'client_integrations::tests::', 'links_format::tests::'];
+      'solver_synthesis::parent_tests::', 'client_integrations::tests::', 'links_format::tests::',
+      'entity_resolution::tests::', 'program_skill_gap::tests::', 'protocol_memory::tests::',
+      'seed::meanings::parse::tests::', 'solver_dispatch::tests::',
+      'solver_handler_how_synthesis::tests::', 'solver_handlers::shell_command_compose::tests::'];
     assert.equal(invocations.length, libraryFilters.length + 1);
     for (const [index, filter] of libraryFilters.entries()) {
       assert(invocations[index].includes('--lib'));

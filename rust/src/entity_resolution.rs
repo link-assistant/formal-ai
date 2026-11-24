@@ -216,3 +216,7 @@ pub fn resolve_who_is(
         0.5,
     ))
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/entity_resolution/production_tests.rs"]
+mod tests;

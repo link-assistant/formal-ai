@@ -654,3 +654,7 @@ fn resolve_handler(
 pub fn handler_for_method(name: &str) -> Option<SpecializedHandler> {
     resolve_handler(name, &crate::rule_interpreter::handler_names()).map(|(_, handler)| handler)
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/solver_dispatch/production_tests.rs"]
+mod tests;

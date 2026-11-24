@@ -12,14 +12,9 @@
 //! (line-slice directions, containment, directory, count, "ending in" ...)
 //! comes from the `shell_cue` word map, keyed by role.
 //!
-//! Nothing is executed: the answer (a template from
-//! `data/seed/multilingual-responses.lino`) is a composed suggestion and
-//! says so. Requests outside the flag table are refused by name.
-//!
-//! Like every handler in this family, all response prose comes from seed
-//! templates; the Rust here only recognizes cues, composes code, and
-//! renders request→emission mapping rows (each row's shape is itself a
-//! seed template, `mapping_line`).
+//! The seeded reply suggests commands without executing them and names
+//! requests outside the flag table. The `mapping_line` seed renders each
+//! request-to-command mapping.
 
 use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
@@ -816,3 +811,7 @@ pub fn handle_shell_command_compose(
         confidence,
     ))
 }
+
+#[cfg(test)]
+#[path = "../../tests/source/source_tests/solver_handlers/shell_command_compose/production_tests.rs"]
+mod tests;

@@ -177,3 +177,7 @@ fn memory_events_with_request_history(
     }
     events
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/protocol_memory/production_tests.rs"]
+mod tests;

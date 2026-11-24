@@ -16,6 +16,7 @@ import '../../../experiments/issue-1580/native-regression-groups.test.mjs';
 import '../../../experiments/issue-1580/native-checkout-retry.test.mjs';
 import '../../../experiments/issue-1580/workflow-checkout-retry.test.mjs';
 import '../../../experiments/issue-1580/template-cpp-policy-result.test.mjs';
+import {ladderSourceCommands, assertNativeSourceReplays} from './default-branch-build-policy/source-replays.mjs';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
 const workflow = name => YAML.parse(read('.github/workflows/' + name));
@@ -162,6 +163,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_synthesis::parent_tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib client_integrations::tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib links_format::tests:: -- --test-threads=1 || regression_status=$?\n' +
+    ladderSourceCommands.join('\n') + '\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?\n' +
     'exit "$regression_status"\n',
     'cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1',
@@ -310,6 +312,7 @@ test('native unsupported-language regressions execute the captured-source units 
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_synthesis::parent_tests:: -- --test-threads=1 || regression_status=$?',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib client_integrations::tests:: -- --test-threads=1 || regression_status=$?',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib links_format::tests:: -- --test-threads=1 || regression_status=$?',
+    ...ladderSourceCommands,
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?',
     'exit "$regression_status"',
   ]);
@@ -797,47 +800,7 @@ test('independent native replays continue after a regression fails and preserve 
   assert.equal(isolated['continue-on-error'], undefined);
   for (const step of later) assert.equal(step['continue-on-error'], undefined);
   const binding = later.find(step => step.name === 'Verify native source binding and canonical operand readers');
-  // Execute every regression after any sibling fails, retaining the final
-  // nonzero status. Every case runs the actual workflow shell body.
-  const directory = mkdtempSync(join(tmpdir(), 'native-replay-failures-'));
-  try {
-    const stub = join(directory, 'cargo');
-    writeFileSync(stub, [
-      '#!/bin/sh',
-      'printf "%s\\n" "$*" >> "$REPLAY_CALLS"',
-      'case "$*" in',
-      '  *"solver_unknown_reasoning::tests::"*) exit "$REPLAY_UNKNOWN_STATUS";;',
-      '  *"solver_helpers::code::javascript_program_tests::"*) exit "$REPLAY_JAVASCRIPT_STATUS";;',
-      '  *"rule_interpreter::parser::reference_list_tests::"*) exit "$REPLAY_PARSER_STATUS";;',
-      '  *"solver_synthesis::parent_tests::"*) exit "$REPLAY_SYNTHESIS_STATUS";;',
-      '  *"client_integrations::tests::"*) exit "$REPLAY_BACKUP_STATUS";;',
-      '  *"links_format::tests::"*) exit "$REPLAY_NOTATION_STATUS";;',
-      '  *"--test any_language "*) exit "$REPLAY_SPANISH_STATUS";;',
-      '  *) exit 99;;',
-      'esac',
-      '',
-    ].join('\n'), {mode: 0o755});
-    const statusNames = ['UNKNOWN', 'JAVASCRIPT', 'PARSER', 'SYNTHESIS', 'BACKUP', 'NOTATION', 'SPANISH'];
-    const allPass = statusNames.map(() => 0);
-    const failures = statusNames.map((_, failed) => allPass.map((status, index) => index === failed ? index + 1 : status));
-    const allFail = statusNames.map((_, index) => index + 1);
-    for (const statuses of [allPass, ...failures, allFail]) {
-      const calls = join(directory, `calls-${statuses.join('-')}.txt`);
-      const receipts = Object.fromEntries(statusNames.map((name, index) => [`REPLAY_${name}_STATUS`, String(statuses[index])]));
-      const result = spawnSync('bash', ['-e', '-c', binding.run], {encoding:'utf8', timeout:5000,
-        env:{...process.env, PATH:directory+':'+process.env.PATH, REPLAY_CALLS:calls, ...receipts}});
-      assert.equal(result.status, statuses.findLast(Boolean) ?? 0, result.stderr);
-      const commands = read(calls).trim().split('\n');
-      assert.equal(commands.length, statusNames.length);
-      assert.match(commands[0], /--lib solver_unknown_reasoning::tests::/u);
-      assert.match(commands[1], /--lib solver_helpers::code::javascript_program_tests::/u);
-      assert.match(commands[2], /--lib rule_interpreter::parser::reference_list_tests::/u);
-      assert.match(commands[3], /--lib solver_synthesis::parent_tests::/u);
-      assert.match(commands[4], /--lib client_integrations::tests::/u);
-      assert.match(commands[5], /--lib links_format::tests::/u);
-      assert.match(commands[6], /--test any_language/u);
-    }
-  } finally { rmSync(directory, {recursive:true, force:true}); }
+  assertNativeSourceReplays(binding.run);
 });
 
 test('the unchanged shell and download contracts execute in the focused native lane', () => {

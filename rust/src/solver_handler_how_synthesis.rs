@@ -1,10 +1,6 @@
 //! Execute bounded procedural discovery using live or cached sources (#991).
-//!
-//! The service registry and the source client apply the user's opt-outs and
-//! network policy. Offline runs replay committed captures through the same
-//! guide synthesis as live runs.
-//! Walk the enabled services, save their accessibility, and answer from
-//! captured steps. Report when there are too few verified steps to answer.
+//! The registry and client apply opt-outs and network policy, cache service
+//! accessibility, and report when there are too few verified steps.
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
@@ -28,10 +24,11 @@ pub const DISABLED_SERVICES_ENV: &str = "FORMAL_AI_DISABLED_SERVICES";
 /// record live; the same variable the executed web search reads.
 const CACHE_DIR_ENV: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
 
-/// Service opt-outs declared by the environment.
-///
-/// Only keys the registry actually declares are honoured, so a typo disables
-/// nothing silently: it is reported as `settings:unknown_service_key` instead.
+fn source_cache_directory() -> String {
+    std::env::var(CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"))
+}
+
+/// Apply declared service opt-outs and report unknown keys.
 #[must_use]
 pub fn service_preferences_from_env(log: &mut EventLog) -> ServicePreferences {
     let Ok(raw) = std::env::var(DISABLED_SERVICES_ENV) else {
@@ -50,12 +47,8 @@ pub fn service_preferences_from_env(log: &mut EventLog) -> ServicePreferences {
     preferences
 }
 
-/// Execute the recognised procedural request through a caller-supplied capture
-/// client, the caller's settings, and the caller's accessibility record.
-///
-/// This seam keeps tests deterministic: the same call replays a committed
-/// capture tree offline and refreshes it online, and both runs must produce the
-/// identical guide, trace, and evidence.
+/// Use the supplied capture client, settings and accessibility record for
+/// both offline replays and live refreshes.
 pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     prompt: &str,
     normalized: &str,
@@ -148,7 +141,7 @@ pub fn try_how_to_procedure_with_offline(
     log: &mut EventLog,
     offline: bool,
 ) -> Option<SymbolicAnswer> {
-    let directory = std::env::var(CACHE_DIR_ENV).unwrap_or_else(|_| String::from("data"));
+    let directory = source_cache_directory();
     let client = CachedSourceClient::new(&directory, CurlSourceTransport).with_online(!offline);
     let pages = CachedSourceClient::new(
         std::path::Path::new(&directory).join("public-search-pages"),
@@ -181,3 +174,7 @@ pub(crate) fn try_procedural_followup_with_offline(
         try_how_to_procedure_with_offline(prior, canonical, log, offline)
     })
 }
+
+#[cfg(test)]
+#[path = "../tests/source/source_tests/solver_handler_how_synthesis/production_tests.rs"]
+mod tests;
