@@ -56,7 +56,7 @@ test('the unchanged Cargo operation cannot pass on zero or absent tests', () => 
       fs.mkdirSync(path.join(workspace, 'rust'), {recursive: true});
       fs.mkdirSync(path.join(workspace, '.agent-ladder'));
       fs.writeFileSync(path.join(workspace, 'rust/Cargo.toml'), '');
-      const bash = 'ROOT="$2"; workspace="$1"; node=fixture; record() { :; }; target_dir() { printf "%s" "$workspace/target"; };\n'
+      const bash = 'ROOT="$2"; workspace="$1"; verification_dir="$workspace/.agent-ladder"; node=fixture; record() { :; }; target_dir() { printf "%s" "$workspace/target"; };\n'
         + 'cargo() { [[ "$*" == "test --test unit --quiet -- --exact independent::retained" ]] || return 9; '
         + (passed ? 'printf "test result: ok. ' + passed + ' passed; 0 failed; 0 ignored;\\n"; ' : '')
         + 'return ' + status + '; };\n' + body + '\ncargo_test independent::retained';
@@ -65,6 +65,57 @@ test('the unchanged Cargo operation cannot pass on zero or absent tests', () => 
       assert.equal(observed.status, expected);
     }
   } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
+
+test('the verifier writes the compile log and exact test receipt to the producer directory', () => {
+  const root = fixture();
+  try {
+    function git(...args) {
+      const result = spawnSync('git', ['-C', root, ...args], {encoding: 'utf8'});
+      assert.equal(result.status, 0, result.stderr);
+    }
+    git('init', '-q');
+    git('add', 'rust');
+    git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+      '-c', 'commit.gpgsign=false', 'commit', '-qm', 'Record verifier fixture');
+    fs.writeFileSync(path.join(root, 'rust/src/answer.rs'), 'pub fn updated_value() {}\n');
+    const node = '1.1.1.1.1';
+    const proof = path.join(root, 'proof.md');
+    fs.writeFileSync(proof, 'node_path=' + node + '\nThe answer function now uses updated_value.\n');
+    fs.mkdirSync(path.join(root, 'agent-ladder-effects'));
+    fs.writeFileSync(path.join(root, 'agent-ladder-effects', 'node-' + node + '.lino'),
+      'node_path=' + node + '\nnode_depth=5\nnode_kind=leaf\nresult=The function renamed to updated_value\n');
+    const mockBin = path.join(root, 'mock-bin');
+    fs.mkdirSync(mockBin);
+    fs.writeFileSync(path.join(mockBin, 'cargo'), [
+      '#!/usr/bin/env bash',
+      'case "$*" in',
+      '  "check --lib --quiet") printf "compile receipt\\n" ;;',
+      '  "test --test unit --quiet -- --exact independent::retained")',
+      '    printf "test result: ok. 1 passed; 0 failed; 0 ignored;\\n" ;;',
+      '  *) exit 9 ;;',
+      'esac',
+    ].join('\n'), {mode: 0o700});
+    const verifier = path.resolve('experiments/issue_1028_agent_cli_ladder/verify-node.sh');
+    const logDir = path.join(root, 'producer-evidence');
+    const result = spawnSync('bash', [verifier, root, proof, node, '5', '', '',
+      'rust/src/answer.rs', 'updated_value', 'pub fn'], {
+      encoding: 'utf8',
+      env: {...process.env, PATH: mockBin + path.delimiter + process.env.PATH,
+        LADDER_CARGO_CHECK: '1', LADDER_CARGO_TEST: '1', LADDER_VERIFY_LOG_DIR: 'producer-evidence'},
+      cwd: root,
+    });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(result.stdout.trim(), 'ok');
+    const testLog = ladderTestLogFilename('unit', 'independent::retained');
+    assert.match(fs.readFileSync(path.join(logDir, 'verify.tsv'), 'utf8'),
+      new RegExp('test_log:unit:independent::retained\\t' + testLog + '\\ntests:independent::retained\\tpassed=1'));
+    assert.equal(fs.readFileSync(path.join(logDir, 'cargo-check.log'), 'utf8'), 'compile receipt\n');
+    assert.match(fs.readFileSync(path.join(logDir, testLog), 'utf8'), /test result: ok\. 1 passed/u);
+    assert.equal(fs.existsSync(path.join(root, '.agent-ladder/verify.tsv')), false);
+  } finally {
+    fs.rmSync(root, {recursive: true, force: true});
+  }
 });
 
 test('source-declared library cases carry their actual Cargo target', async () => {

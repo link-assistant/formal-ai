@@ -308,6 +308,8 @@ run_one() {
   rm -f "$session_dir/formal-ai.log"
   rm -f "$session_dir/proof.md"
   rm -f "$session_dir/effect.lino"
+  rm -f "$session_dir/change.diff" "$session_dir/verify.tsv" "$session_dir"/cargo-*.log \
+    "$session_dir/verifier-stdout.log" "$session_dir/verifier-stderr.log"
   node_number=$(python3 - "$id" <<'PY'
 import sys
 node=sys.argv[1]
@@ -467,23 +469,11 @@ PY
   fi
 
   effect="$work/agent-ladder-effects/node-${id}.lino"
-  set +e
-  LADDER_LEAVES="$OUT/leaves.tsv" LADDER_LEAF_SPAN="$leaf_span" LADDER_CHILD_DIFFS="$child_diffs" \
-    "$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard" \
-    >"$session_dir/verifier-stdout.log" 2>"$session_dir/verifier-stderr.log"
-  verifier_status=$?
-  set -e
-  verifier_verdict=$(cat "$session_dir/verifier-stdout.log")
-  cat "$session_dir/verifier-stderr.log" >&2 || true
-
-  capture_status=0
-  # Preserve diagnostic artifacts before interpreting the verifier status.
+  local capture_status=0
+  # Capture the agent's change before native verification can hit the deadline.
+  # The verifier writes its own logs and receipt directly to the same directory.
   [[ ! -f "$proof" ]] || cp "$proof" "$session_dir/proof.md" || capture_status=1
   [[ ! -f "$effect" ]] || cp "$effect" "$session_dir/effect.lino" || capture_status=1
-  [[ ! -f "$work/.agent-ladder/verify.tsv" ]] || cp "$work/.agent-ladder/verify.tsv" "$session_dir/verify.tsv" || capture_status=1
-  for verification_log in "$work/.agent-ladder"/cargo-*.log; do
-    [[ ! -f "$verification_log" ]] || cp "$verification_log" "$session_dir/" || capture_status=1
-  done
   if [[ "$depth" -eq 5 ]]; then
     git -C "$work" diff -- "$criterion_path" > "$session_dir/change.diff" || capture_status=1
   elif [[ "$depth" -eq 4 ]]; then
@@ -491,6 +481,16 @@ PY
   else
     git -C "$work" diff > "$session_dir/change.diff" || capture_status=1
   fi
+
+  set +e
+  LADDER_LEAVES="$OUT/leaves.tsv" LADDER_LEAF_SPAN="$leaf_span" LADDER_CHILD_DIFFS="$child_diffs" \
+    LADDER_VERIFY_LOG_DIR="$session_dir" \
+    "$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard" \
+    >"$session_dir/verifier-stdout.log" 2>"$session_dir/verifier-stderr.log"
+  verifier_status=$?
+  set -e
+  verifier_verdict=$(cat "$session_dir/verifier-stdout.log")
+  cat "$session_dir/verifier-stderr.log" >&2 || true
   if [[ "$verifier_status" -ne 0 ]]; then
     printf '%s\tFAIL\t%s\n' "$id" "$verifier_verdict" | tee -a "$RUN_LOG"
     return 1

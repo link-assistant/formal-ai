@@ -253,3 +253,11 @@ main-run 45197910485
       failed "SWE-bench Lite could not decode the pinned upstream Parquet data because pyarrow.parquet was unavailable"
       check rust/tests/web/issue-1569-workflow-failure-isolation.test.mjs
       marker "Replays main run 45197910485"
+
+main-run 45018538750
+  workflow-policy
+    regression agent-cli-ladder-verifier-deadline-evidence
+      introduced-by "verifier evidence copied after exit on main 09711c000"
+      failed "Agent CLI leaf 2.2.2.2.1 reached its deadline without retaining its native test logs or verifier receipt"
+      check rust/tests/web/agent-cli-ladder-failure-evidence.test.mjs
+      marker "Replays main run 45018538750"

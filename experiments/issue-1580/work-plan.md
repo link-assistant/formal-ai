@@ -1,3 +1,9 @@
+## Active checkpoint: scheduled Agent CLI ladder (2026-11-24)
+
+- [x] Classify the [complete scheduled run](https://github.com/link-assistant/formal-ai/actions/runs/45018538750) and the two retained leaf artifacts. Five leaves pass. Twenty-four report test failure, including 16 with missing source projections. One lacks its tracked edit, one cannot compile, and leaf `2.2.2.2.1` reaches the 1,200-second step deadline. All 15 requirement-shaped nodes lack proof.
+- [x] Reproduce and repair the loss of in-progress verifier evidence. The original replay exits 124 and omits `verify.tsv` from the upload directory. The revised verifier writes its receipt and Cargo logs directly to that directory, and the runner retains the source diff and agent's declarations before invoking the verifier.
+- [ ] Determine the timed-out leaf's active test, finish the missing source projections and verify the unchanged acceptance criteria on the governed ladder. The timeout replay retains evidence without admitting a pass.
+
 ## Active checkpoint: external benchmark dataset reader (2026-11-24)
 
 - [x] Preserve [the complete scheduled benchmark failure](https://github.com/link-assistant/formal-ai/actions/runs/45197910485). It reached all ten suites and distinguished SWE-bench Lite's missing Parquet reader from scores below the HumanEval, MBPP and GSM8K floors.

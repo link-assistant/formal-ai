@@ -13,6 +13,7 @@
 #   LADDER_CARGO_CHECK=0       skip `cargo check --lib`
 #   LADDER_CARGO_TEST=0        skip `cargo test --test unit <module>`
 #   LADDER_CARGO_TARGET_DIR    shared target directory (run.sh sets one per run)
+#   LADDER_VERIFY_LOG_DIR     write receipt and Cargo logs here as they appear
 #   LADDER_LEAVES              leaves.tsv (requirement-shaped nodes)
 #   LADDER_LEAF_SPAN=start-end leaf numbers under a requirement-shaped node
 #   LADDER_CHILD_DIFFS         two diff files a depth-4 composite must merge
@@ -31,9 +32,13 @@ right="$6"
 criterion_path="$7"
 criterion_marker="$8"
 criterion_guard="$9"
-report="$workspace/.agent-ladder/verify.tsv"
-mkdir -p "$workspace/.agent-ladder"
-: > "$report"
+verification_dir="${LADDER_VERIFY_LOG_DIR:-$workspace/.agent-ladder}"
+if ! mkdir -p "$verification_dir" || ! verification_dir=$(cd "$verification_dir" && pwd); then
+  echo "cannot open the verifier evidence directory" >&2
+  exit 2
+fi
+report="$verification_dir/verify.tsv"
+: > "$report" || exit 2
 
 fail() {
   printf '%s\n' "$1"
@@ -70,12 +75,12 @@ cargo_check() {
   [[ -f "$workspace/rust/Cargo.toml" ]] || { record compile unavailable; return 0; }
   local started=$SECONDS
   if (cd "$workspace/rust" && CARGO_TARGET_DIR="$(target_dir)" \
-      cargo check --lib --quiet >"$workspace/.agent-ladder/cargo-check.log" 2>&1); then
+      cargo check --lib --quiet >"$verification_dir/cargo-check.log" 2>&1); then
     echo "verify $node: cargo check --lib took $((SECONDS - started))s" >&2
     record compile ok
     return 0
   fi
-  tail -40 "$workspace/.agent-ladder/cargo-check.log" >&2 || true
+  tail -40 "$verification_dir/cargo-check.log" >&2 || true
   record compile failed
   return 1
 }
@@ -95,7 +100,7 @@ cargo_test() {
   [[ -f "$workspace/rust/Cargo.toml" ]] || { record "tests:$filter" unavailable; return 0; }
   local log_name
   log_name=$(node "$ROOT/scripts/lib/ladder-test-log-name.mjs" "$target" "$filter") || { record "tests:$filter" invalid_test_log_identity; return 1; }
-  log="$workspace/.agent-ladder/$log_name"
+  log="$verification_dir/$log_name"
   record "test_log:$target:$filter" "$log_name"
   local started=$SECONDS
   if (cd "$workspace/rust" && CARGO_TARGET_DIR="$(target_dir)" \
