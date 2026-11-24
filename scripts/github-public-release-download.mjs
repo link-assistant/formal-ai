@@ -26,11 +26,11 @@ export function publicReleaseRedirect(location,previous) {
   assert.equal(next.username,'');assert.equal(next.password,'');assert.equal(next.port,'');assert.equal(next.hash,'');
   return next.href;
 }
-/** Stream and hash public bytes, writing one new file only when a destination is supplied. */
+/** Verify a public stream and save it to a new file when a destination is supplied. */
 export async function downloadPublicReleaseAsset({asset,repository,tag,destination,maxBytes,deadline}) {
   const canonical=publicReleaseAsset({asset,repository,tag,maxBytes});
   assert.ok(Number.isSafeInteger(deadline)&&deadline>Date.now(),'absolute download deadline required');
-  if (destination !== null) {
+  if (destination !== undefined) {
     destination = resolve(destination);
     assert.equal(basename(destination), asset.name);
     const parent = await lstat(dirname(destination));
@@ -52,29 +52,27 @@ export async function downloadPublicReleaseAsset({asset,repository,tag,destinati
   assert.ok(response?.body,'public asset response body missing');
   const encoding=response.headers.get('content-encoding');assert.ok(encoding===null||encoding==='identity','encoded transfer cannot prove original asset bytes');
   const length=response.headers.get('content-length');if(length!==null){assert.match(length,/^[0-9]+$/u);assert.equal(Number(length),asset.size,'public response size differs from selected asset');}
-  const handle = destination === null ? null : await open(destination, 'wx', 0o600);
-  let complete = false;
-  let total = 0;
-  const hash = createHash('sha256');
+  const handle = destination === undefined ? undefined : await open(destination, 'wx', 0o600);
+  let complete = false, total = 0;
+  const hash=createHash('sha256');
   try {
-    for await (const bytes of response.body) {
-      assert.ok(Date.now() < deadline, 'public download deadline exhausted');
-      total += bytes.length;
+    for await(const value of response.body) {
+      assert.ok(Date.now()<deadline,'public download deadline exhausted');
+      total += value.length;
       assert.ok(total <= asset.size && total <= maxBytes, 'public asset stream exceeds declared size');
-      hash.update(bytes);
+      hash.update(value);
       if (handle) {
         let offset = 0;
-        while (offset < bytes.length) {
-          const written = await handle.write(bytes, offset, bytes.length - offset);
+        while (offset < value.length) {
+          const written = await handle.write(value, offset, value.length - offset);
           assert.ok(written.bytesWritten > 0);
           offset += written.bytesWritten;
         }
       }
     }
-    assert.equal(total, asset.size, 'truncated public release asset');
-    const sha256 = hash.digest('hex');
-    assert.equal('sha256:' + sha256, asset.digest, 'public release asset digest mismatch');
-    await handle?.sync();
+    assert.equal(total,asset.size,'truncated public release asset');
+    const sha256=hash.digest('hex');assert.equal('sha256:'+sha256,asset.digest,'public release asset digest mismatch');
+    if (handle) await handle.sync();
     complete = true;
     return {id:asset.id,name:asset.name,size:total,sha256,repository,tag,transport:'anonymous-public-release-download',completed:true,publicationAuthority:false};
   } finally {

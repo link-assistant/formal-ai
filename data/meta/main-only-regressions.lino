@@ -221,10 +221,11 @@ main-run 45020746043
       failed "Pages rustdoc interpreted the grammar filename placeholder as an unclosed HTML tag"
       check rust/tests/web/default-branch-build-policy.test.mjs
       marker "Pages rustdoc from main run 45020746043 treats the grammar filename as literal text"
+
 main-run 45295717630
   javascript-twin
-    regression release-download-serial-deadline
-      introduced-by "serial public release downloader from 543a19c095; timed out on v0.356.11"
-      failed "Verify Public Release Downloads exhausted its 11-minute transfer deadline after 26 of 74 assets"
+    regression public-release-serial-transfer-deadline
+      introduced-by "serial public-byte verification at main 0e550f6d56"
+      failed "public verifier timed out after checking 26 of 74 assets for v0.356.11"
       check rust/tests/web/verify-public-release-downloads.test.mjs
-      marker "replays main run 45295717630"
+      marker "Main run 45295717630 exhausted the serial verifier"

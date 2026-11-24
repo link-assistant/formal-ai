@@ -1,16 +1,23 @@
-## Active checkpoint: public download deadline and historical Cargo audit (2026-11-24)
+## Active checkpoint: historical Cargo audit (2026-11-24)
 
-- [x] Verify e6ed5b3fa has 32 successful workflows and one explicit skip. Collect its exact hosted Pipeline and Layered results.
-- [x] Diagnose the main-only release download failure from the complete log and the 26-of-74 asset receipt. Reproduce the serial scheduling and missing asset diagnostics with finite tests.
-- [x] Preserve exact byte verification under the original deadline. Limit the all-assets job to three streams and retain only required evidence files. All 77 focused verifier, downloader and worker checks and four ledger checks pass.
-- [x] Trace the historical Rust audit warning to optional Lindera. Keep the original Rust parser and offline-resolvable lock, with 32 production-profile checks passing.
-- [x] Qualify all 89 runnable local gates and 54 explicit CI-only skips. Recheck the eight missing-prerequisite cases after restoring the locked tools and parser.
-- [ ] Publish the idle-branch batch and qualify its exact hosted Security, Pipeline and Layered results.
-- [ ] Observe the corrected public download workflow on a trusted Desktop Release. Complete the original wider criteria below and keep PR #1581 draft in the meantime.
+- [x] Trace the historical audit warning to optional Lindera. Keep the original Rust parser and offline-resolvable lock, with 32 production-profile checks passing.
+- [ ] Qualify the audit on the exact hosted head. The complete local gate inventory has 89 runnable passes and 54 explicit skips for the two development batches, after restoring eight initially missing prerequisites.
+- [ ] Finish the wider original criteria below. Supplied commands and code earn zero independent credit.
 
-Evidence: [release deadline](../../docs/case-studies/issue-1580/public-release-download-deadline.md),
-[Cargo audit](../../docs/case-studies/issue-1580/codeql-optional-dependency-checkpoint.md#historical-rust-reproducer-dependency-repair-24-november-2026).
-The active native goal tracks the full issue. Supplied work earns zero independent credit.
+Evidence: [Cargo audit](../../docs/case-studies/issue-1580/codeql-optional-dependency-checkpoint.md#historical-rust-reproducer-dependency-repair-24-november-2026).
+
+## Active checkpoint: public release verification (2026-11-24)
+
+The objective remains every requirement of issue #1580 in
+[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), draft and unmerged.
+
+- [x] Inspect the only failed workflow on main at `0e550f6d56`. The [original run](https://github.com/link-assistant/formal-ai/actions/runs/45295717630) reached the 660-second public verification deadline with 26 of 74 assets verified. Preserve the failed run and its [partial receipt](https://github.com/link-assistant/formal-ai/actions/runs/45295717630/artifacts/14875559860).
+- [x] Stream archived bytes through SHA-256 without local archive files. Use at most three concurrent public asset transfers and preserve the exact source, coverage, deadline and retained receipts. The macOS package path continues to download locally.
+- [x] Reproduce serial execution and ambiguous transfer errors with two failing tests. Verify the correction with 42 verifier, ten public transport, 25 browser package and four regression-ledger tests. Record the main-only failure and its existing fast-PR test file.
+- [x] Replay the actual verifier against the [same public release](https://github.com/link-assistant/formal-ai/releases/tag/v0.356.11) and original producer run 45290459294, attempt one. The verifier checked 74 assets, 47 checksum rows, 35 advertised assets and 6,311,618,402 public bytes in 343 seconds. The complete evidence JSON has SHA-256 `37e746bd81d5ad53c375625165d8f6123a22c0ca9a29327614ebf2145549176d`.
+- [x] Refresh all eight template heads. Five are unchanged. [C# #115](https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/pull/115) and [C++ #43](https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/pull/43) address the upstream runner annotation reports. Formal AI's current recovery helper already paginates returned check-run annotations. [Rust #267](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/pull/267) includes the release CLI pipe fix already present in Formal AI. These source observations leave the full current deltas and wider behavioral comparison open.
+- [ ] Collect and qualify every hosted check on the exact PR head. The revised production verifier still needs a successful Desktop Release from main before its hosted workflow can run.
+- [ ] Finish the wider original criteria below. This work adds zero independent Formal AI authorship or reasoning credit.
 
 ## Active checkpoint: real transport controls and native library coverage (2026-11-24)
 
