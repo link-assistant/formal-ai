@@ -10,7 +10,8 @@ import {createRequire} from 'node:module';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'../../..');
 const YAML=createRequire(import.meta.url)('yaml');
 const detectors=[['release.yml','detect-changes'],['coverage.yml','detect-changes'],['layered-ci.yml','changes']];
-const paths=['/scripts/detect-code-changes.rs','/scripts/ci-pull-request-admission.mjs',
+const paths=['/scripts/detect-code-changes.rs','/scripts/github-output.rs','/scripts/detect-code-changes-tests.rs',
+  '/scripts/ci-pull-request-admission.mjs',
   '/scripts/lib/documentation-paths.mjs','/scripts/install-rust-script.sh','/changelog.d/'];
 const jobs=detectors.map(([file,name])=>({file,job:YAML.parse(readFileSync(join(root,'.github/workflows',file),'utf8')).jobs[name]}));
 function check(job){

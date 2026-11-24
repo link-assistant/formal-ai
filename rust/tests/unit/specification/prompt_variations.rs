@@ -13,6 +13,10 @@
 
 use formal_ai::{FormalAiEngine, SymbolicAnswer};
 
+#[path = "../../fixtures/fact-claims/publisher_transport.rs"]
+mod publisher_transport;
+use publisher_transport::fact_answer;
+
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
 }
@@ -711,7 +715,7 @@ fn factual_qna_matrix_records_wikidata_anchor() {
         CHINESE_FACTUAL_PROMPTS,
     ] {
         for (prompt, subject) in prompts {
-            let response = super::prompt_variations_facts::fact_answer(prompt, subject);
+            let response = fact_answer(prompt, subject);
             assert_eq!(response.intent, "fact_query", "prompt {prompt:?}");
             assert!(
                 response
@@ -734,7 +738,7 @@ fn factual_qna_matrix_records_per_language_evidence() {
         (CHINESE_FACTUAL_PROMPTS, "language:zh"),
     ] {
         for (prompt, subject) in prompts {
-            let response = super::prompt_variations_facts::fact_answer(prompt, subject);
+            let response = fact_answer(prompt, subject);
             assert!(
                 response.evidence_links.iter().any(|link| link == tag),
                 "{prompt}: {:?}",
