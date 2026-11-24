@@ -38,22 +38,54 @@ jobs:
         with:
           workspaces: rust -> target
 
-      - name: Run one learning cycle
+      # The 30-minute job cap remains the backstop. The four execution
+      # budgets leave three minutes for setup, cancellation grace and uploads.
+      - name: Build the learning commands once
+        id: build
+        env:
+          TEST_BUDGET_SECONDS: 720
         run: |
           set -euo pipefail
           mkdir -p learning-cycle
-          # stderr is captured for the artifact; print it on every exit so a
-          # failed build or run shows its error instead of a bare exit 101.
-          trap 'cat learning-cycle/run.log 2>/dev/null || true' EXIT
+          scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Build the learning commands" \
+            cargo build --manifest-path rust/Cargo.toml --release --locked \
+            --example dump_google_trends_learning --bin formal-ai 2>&1 | tee learning-cycle/run.log
+
+      # Redirect the child's stdout inside the wrapper. The wrapper's own
+      # timing summaries belong in the run log, outside the LiNo documents.
+      - name: Capture the live Google Trends frontier
+        id: capture
+        env:
+          FORMAL_AI_CI_VERBOSE: 'true'
+          TEST_BUDGET_SECONDS: 720
+        run: |
+          set -euo pipefail
           FORMAL_AI_SOURCE_CACHE_DIR="$RUNNER_TEMP/learning-cycle-source" \
-            cargo run --manifest-path rust/Cargo.toml --release --example dump_google_trends_learning \
-            > learning-cycle/frontier.lino 2> learning-cycle/run.log
-          cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
+            scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Capture the live Google Trends frontier" \
+            bash -c 'exec "$@" > learning-cycle/frontier.lino' bash \
+            rust/target/release/examples/dump_google_trends_learning 2>&1 | tee -a learning-cycle/run.log >&2
+
+      - name: Replay the frontier
+        env:
+          TEST_BUDGET_SECONDS: 90
+        run: |
+          set -euo pipefail
+          scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Replay the frontier" \
+            bash -c 'exec "$@" > learning-cycle/run.lino' bash \
+            rust/target/release/formal-ai \
             learn cycle --frontier google-trends --from learning-cycle/frontier.lino --dry-run \
-            > learning-cycle/run.lino 2>> learning-cycle/run.log
-          cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
+            2>&1 | tee -a learning-cycle/run.log >&2
+
+      - name: Render the proposals
+        env:
+          TEST_BUDGET_SECONDS: 90
+        run: |
+          set -euo pipefail
+          scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Render the proposals" \
+            bash -c 'exec "$@" > learning-cycle/proposals.lino' bash \
+            rust/target/release/formal-ai \
             learn cycle --frontier google-trends --from learning-cycle/frontier.lino --dry-run --proposals \
-            > learning-cycle/proposals.lino 2>> learning-cycle/run.log
+            2>&1 | tee -a learning-cycle/run.log >&2
 
       - name: Assert the run stayed proposal-only and human-gated
         run: |
@@ -70,4 +102,13 @@ jobs:
         with:
           name: learning-cycle-proposals
           path: learning-cycle/
+          retention-days: 30
+
+      - name: Preserve failure diagnostics for investigation
+        if: failure() && hashFiles('learning-cycle/run.log') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: learning-cycle-failure
+          path: learning-cycle/run.log
+          if-no-files-found: error
           retention-days: 30

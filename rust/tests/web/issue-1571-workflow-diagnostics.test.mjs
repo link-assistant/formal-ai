@@ -1,9 +1,12 @@
 // Issue #1571: CI steps that fail must show why, and caches must cache.
-// Workflow text is read directly so the check needs no installed package.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {execFileSync} from 'node:child_process';
-import {existsSync,readdirSync,readFileSync} from 'node:fs';
+import {execFileSync, spawnSync} from 'node:child_process';
+import {existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import YAML from 'yaml';
 
 const root=new URL('../../../',import.meta.url);
 const workflows=readdirSync(new URL('.github/workflows/',root)).filter(name=>/\.ya?ml$/u.test(name))
@@ -32,13 +35,60 @@ test('every rust-cache step names the rust/ workspace, because the repository ro
  assert.deepEqual(unbound,[]);
 });
 
-test('the learning cycle prints its captured stderr on every exit, so a failed cargo run is not a bare exit 101',()=>{
- const {text}=workflows.find(({name})=>name==='learning-cycle.yml');
- const step=text.slice(text.indexOf('- name: Run one learning cycle'));
- const run=step.slice(0,step.indexOf('\n      - name:'));
- const trap=run.search(/^\s*trap '[^']*cat learning-cycle\/run\.log[^']*' EXIT$/mu);
- assert.ok(trap>=0,run);
- assert.ok(trap<run.indexOf('cargo run'),'the trap is installed before the first cargo run');
+const learningJob = YAML.parse(workflows.find(({name}) => name === 'learning-cycle.yml').text).jobs.cycle;
+
+test('the live learning capture fails within an execution budget and keeps its diagnostics', (t) => {
+  const jobSteps = learningJob.steps;
+  const capture = jobSteps.find(step => step.id === 'capture');
+  assert.ok(capture, 'the ongoing live capture needs its own execution deadline');
+  const build = jobSteps.find(step => step.id === 'build');
+  assert.match(build.run, /cargo build --manifest-path rust\/Cargo.toml --release --locked/u);
+  assert.match(build.run, /--example dump_google_trends_learning --bin formal-ai/u);
+  const phaseBudgets = jobSteps.flatMap(step => step.env?.TEST_BUDGET_SECONDS ?? []);
+  assert.equal(phaseBudgets.length, 4);
+  assert.ok(phaseBudgets.every(seconds => Number.isInteger(seconds) && seconds > 0));
+  assert.ok(phaseBudgets.reduce((sum, seconds) => sum + seconds, 0) <= learningJob['timeout-minutes'] * 60 - 180);
+  const diagnostics = jobSteps.find(step => step.with?.name === 'learning-cycle-failure');
+  assert.equal(diagnostics.if, `failure() && hashFiles('learning-cycle/run.log') != ''`);
+  assert.equal(diagnostics.with.path, 'learning-cycle/run.log');
+  const proposals = jobSteps.find(step => step.with?.name === 'learning-cycle-proposals');
+  assert.equal(proposals.if, undefined);
+  const assertionIndex = jobSteps.findIndex(step => step.name === 'Assert the run stayed proposal-only and human-gated');
+  assert.ok(assertionIndex >= 0 && assertionIndex < jobSteps.indexOf(proposals));
+
+  const cwd = mkdtempSync(join(tmpdir(), 'learning-cycle-budget-'));
+  t.after(() => rmSync(cwd, {recursive: true, force: true}));
+  symlinkSync(fileURLToPath(new URL('scripts/', root)), join(cwd, 'scripts'), 'dir');
+  const examples = join(cwd, 'rust', 'target', 'release', 'examples');
+  mkdirSync(examples, {recursive: true});
+  mkdirSync(join(cwd, 'learning-cycle'));
+  const runnerTemp = join(cwd, 'runner temp');
+  mkdirSync(runnerTemp);
+  const example = join(examples, 'dump_google_trends_learning');
+  const runCapture = () => spawnSync('bash', ['-c', capture.run], {
+    cwd,
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      RUNNER_TEMP: runnerTemp,
+      TEST_BUDGET_SECONDS: '1',
+      TEST_BUDGET_GRACE_SECONDS: '0',
+      TEST_BUDGET_POLL_SECONDS: '0.05',
+    },
+  });
+
+  writeFileSync(example, '#!/bin/bash\nprintf "frontier\\n"\nprintf "%s\\n" "$FORMAL_AI_SOURCE_CACHE_DIR" >&2\nsleep 4\n', {mode: 0o755});
+  const failure = runCapture();
+  assert.equal(failure.status, 124, failure.stderr);
+  assert.match(failure.stderr, /::error title=Capture the live Google Trends frontier exceeded its execution budget/u);
+  assert.ok(failure.stderr.includes(join(runnerTemp, 'learning-cycle-source')));
+  assert.equal(readFileSync(join(cwd, 'learning-cycle', 'run.log'), 'utf8'), failure.stderr);
+  assert.equal(readFileSync(join(cwd, 'learning-cycle', 'frontier.lino'), 'utf8'), 'frontier\n');
+
+  writeFileSync(example, '#!/bin/bash\nprintf "source_sha256 ready\\n"\n');
+  const success = runCapture();
+  assert.equal(success.status, 0, success.stderr);
+  assert.equal(readFileSync(join(cwd, 'learning-cycle', 'frontier.lino'), 'utf8'), 'source_sha256 ready\n');
 });
 
 // GitHub annotated every job of main run 7837d50 (95 notices) with "The

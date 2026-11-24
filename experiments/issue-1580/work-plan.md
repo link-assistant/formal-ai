@@ -1,3 +1,11 @@
+## Active checkpoint: scheduled learning cycle (2026-11-24)
+
+- [x] Retain the original bare Cargo exit and the newer live-frontier cancellation. Confirm the newest cancelled job finished its build and reached the live example.
+- [x] Bound the locked build, live capture and both proposal replays within the existing job deadline. Preserve actual capture exit 124, retained diagnostics and the original proposal assertions in focused controls.
+- [ ] Qualify the new scheduled workflow on its governed branch. Determine which prompt and remote route consumed the live capture time, and verify a complete current frontier within the budget.
+
+See [scheduled learning evidence](../../docs/case-studies/issue-1580/learning-cycle-deadline.md).
+
 ## Active checkpoint: dependency updater validation (2026-11-24)
 
 - [x] Preserve the ten historical updater gate failures and both exact PR regressions from `33bac270`. The twelve-way JavaScript cohort stayed within the runtime budget despite its stale manifest-hash assertions.
@@ -6,7 +14,8 @@
 - [x] Run the cache budget replay and retained publisher-data controls in the fast dependency maintenance test. Record the original updater failure in the production-only regression ledger.
 - [x] Qualify `ec03bde97` on the exact published head. Thirty-two workflows pass with one scope skip. All twelve JavaScript groups, 441 selected native cases, and the original eight-step Scala failure guard pass. The crates.io authority warning and two OpenSSF maintenance scores remain open.
 - [x] Move the complete new Google Trends overlap case to the existing catalog test module, where focused reasoning CI selects it.
-- [ ] Observe the new overlap test in the next hosted run. Full resolved-dependency validation and publication require the default-branch path.
+- [x] Observe the original Google Trends overlap assertion in hosted reasoning-1 on `e8a1b930d`, one of 442 selected native passes.
+- [ ] Qualify full resolved-dependency validation and publication through the default-branch path.
 
 Evidence for both the original failures and their reproductions is in the [dependency updater case study](../../docs/case-studies/issue-1580/dependency-updater-qualification.md).
 
