@@ -85,7 +85,7 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   cleanup. Retain the corresponding real suites for explicit qualification;
   fixtures do not prove real transport or deployment success.
 - PRs, feature-branch check dispatches and main select the same complete default
-  JavaScript inventory through the same ordered runner. All use nine measured
+  JavaScript inventory through the same ordered runner. All use twelve measured
   longest-first shards, the unchanged 360-second execution budget and the 75%
   warning threshold. A failed file does not hide later failures or passing files.
   The explicit fast inventory remains an optional local feedback loop only;

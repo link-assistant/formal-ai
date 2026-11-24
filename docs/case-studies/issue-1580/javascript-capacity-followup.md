@@ -61,3 +61,24 @@ template execution, production delivery, semantic coverage, dependency
 criteria, independent authorship and aggregate review, remain unfinished.
 
 Complete outputs and identities: [verified archive receipt](../../../experiments/issue-1580/evidence/checks/javascript-capacity-followup-20261123/manifest.json).
+
+## 24 November hosted warning
+
+[Layered CI 45334688742](https://github.com/link-assistant/formal-ai/actions/runs/45334688742)
+ran head `5c6cedff515988659748a54f63d4630af352ef26` and tested merge
+`2fe601727eefaa43980796d37b02a168847c62a8`. All eleven jobs and 922 owners
+finished. Group 2 crossed 270 seconds at full-log line 3510 and finished
+in 275.484 seconds at line 4116.
+
+The fifteen-cohort replay selects twelve groups. At eleven, it projects
+292.377 seconds for the observed group 2 and 270.398 seconds for group 9.
+At twelve, the new cohort's longest projected group is 235.704 seconds.
+The maximum across all cohorts is 269.317 seconds. All projections include the
+existing 30-second allowance. The matrix keeps four modeled workers, the
+same owner inventory, the same weights, and the 270-second warning and
+360-second deadline.
+
+Reproduce with `node --test --test-concurrency=1 experiments/issue-1580/javascript-capacity-replay.test.mjs`.
+The prior workflow fails the new matrix assertion. The receipt preserves
+all 922 owner events and their original job and log identities.
+The revised allocation still needs a hosted run.

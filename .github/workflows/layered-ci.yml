@@ -321,7 +321,7 @@ jobs:
     # group 2 with stale weights (13.7s for a measured 189.8s suite). Four
     # groups retained that fast inventory. Issue #1580 removes the hosted
     # subset: PRs, feature dispatches and main use the same full default suite,
-    # eleven longest-first groups and unchanged execution budgets. The retained
+    # twelve longest-first groups and unchanged execution budgets. The retained
     # timing maxima need over 12,200 worker-seconds: eight four-worker groups
     # cannot fit that conservative projection in 360s. A ninth group retains
     # all measurements and kept every projected queue below the deadline.
@@ -330,7 +330,9 @@ jobs:
     # fits the warning threshold plus the unchanged 30s runner allowance.
     # Run 45271423335 then warned in group 9. Fourteen retained cohorts
     # select eleven groups; ten now projects over 270s in groups 9 and 10.
-    # The projection is bounded evidence, not a runtime guarantee.
+    # Run 45334688742 then warned in group 2. Twelve groups fit all fifteen
+    # retained cohorts; eleven projects 292.377s for that group.
+    # Hosted execution validates the replay separately.
     # No weights, test files, worker count or execution limits change.
     # The explicit fast inventory remains available for local development only.
     timeout-minutes: 12
@@ -340,7 +342,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 5
@@ -480,7 +482,7 @@ jobs:
         id: javascript-plan
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: 11
+          SHARDS: 12
         run: |
           set -euo pipefail
           suites="$RUNNER_TEMP/javascript-suites.txt"
@@ -527,7 +529,7 @@ jobs:
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: 11
+          SHARDS: 12
           PULL_REQUEST_CHECKS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75

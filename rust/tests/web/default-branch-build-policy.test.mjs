@@ -404,14 +404,14 @@ test('main release depends on package and admission checks while broad failures 
   assert.equal(evaluate(jobs['manual-release'].if, 'workflow_dispatch', main), false);
 });
 // Runs 43693412224 and 44679541559 exhausted stale JavaScript shard plans.
-// The same eleven full-suite groups retain the deadline on every hosted profile.
+// The same twelve full-suite groups retain the deadline on every hosted profile.
 test('PR and main use the same complete JavaScript inventory and measured shard plan', () => {
   const job=workflow('layered-ci.yml').jobs.js;
-  assert.deepEqual(Array.from(evaluate(job.strategy.matrix.shard,'pull_request','refs/pull/1500/merge')),[1,2,3,4,5,6,7,8,9,10,11]);
+  assert.deepEqual(Array.from(evaluate(job.strategy.matrix.shard,'pull_request','refs/pull/1500/merge')),[1,2,3,4,5,6,7,8,9,10,11,12]);
   const shards=job.steps.find(s=>s.name==='Run this shard of the JavaScript suites').env.SHARDS;
-  assert.equal(evaluate(shards,'pull_request','refs/pull/1500/merge'),11);
-  assert.equal(evaluate(shards,'push','refs/heads/main'),11);
-  assert.equal(evaluate(job.strategy.matrix.shard,'push','refs/heads/main').length,11);
+  assert.equal(evaluate(shards,'pull_request','refs/pull/1500/merge'),12);
+  assert.equal(evaluate(shards,'push','refs/heads/main'),12);
+  assert.equal(evaluate(job.strategy.matrix.shard,'push','refs/heads/main').length,12);
   for (const file of ['release.yml','layered-ci.yml','coverage.yml']) {
     const jobs=workflow(file).jobs, job=jobs.changes??jobs['detect-changes'];
     assert(job.steps.some(s=>s.run?.includes('node scripts/ci-pull-request-admission.mjs detect')));

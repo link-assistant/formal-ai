@@ -58,7 +58,7 @@ for (let count = 9; count <= 16; count++) {
   candidates.push({count, constraints, fits: Object.values(constraints).every(Boolean), conservativeQueues, results});
 }
 const selected = candidates.find(row => row.fits);
-writeFileSync(output, JSON.stringify({sourceRun: 45271423335, candidateLimit: 8,
+writeFileSync(output, JSON.stringify({sourceRun: 45334688742, candidateLimit: 8,
   sourceOwners: files.length, selectedCount: selected?.count ?? null,
   selection: 'smallest group count that fits every retained cohort and unchanged queue deadline',
   executionProof: false, autonomousAuthorshipCredit: 0, candidates}, null, 2) + '\n');
