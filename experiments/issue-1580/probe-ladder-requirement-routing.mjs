@@ -5,8 +5,8 @@ import { WorkerHost } from '../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../js/agentic/node-host.mjs';
 
 const [, , tracePath, mode] = process.argv;
-if (!tracePath || (mode && !['--clauses', '--scoped'].includes(mode))) {
-  throw new Error('Usage: node probe-ladder-requirement-routing.mjs <decoded-formal-ai-trace> [--clauses|--scoped]');
+if (!tracePath || (mode && !['--clauses', '--scoped', '--targets'].includes(mode))) {
+  throw new Error('Usage: node probe-ladder-requirement-routing.mjs <decoded-formal-ai-trace> [--clauses|--scoped|--targets]');
 }
 const trace = readFileSync(tracePath, 'utf8');
 const match = /^\s*\d+ \[trace\] agentic_received=([\s\S]+?)(?=^\s*\d+ \[trace\])/mu.exec(trace);
@@ -64,12 +64,15 @@ if (mode) {
   if (!clauses.length) throw new Error('The captured first paragraph has no numbered requirements');
   process.stdout.write(JSON.stringify({ censusComplete: censusSourceClosureComplete(), count: clauses.length }) + '\n');
   for (const clause of clauses) {
-    // Compare the original clause with explicit literal boundaries. This probe
-    // only asks for the first plan and never executes a tool.
+    const target = resolveRequirementTarget(clause);
+    if (mode === '--targets') {
+      process.stdout.write(JSON.stringify({ clause, target }) + '\n');
+      continue;
+    }
+    // Compare the original clause with explicit literal boundaries.
     const quoted = clause
       .replace(/^Add ([a-z_\d]+)(\s+(?:as|to)\s)/u, 'Add "$1"$2')
       .replace(/ from (.+?) to ([^.]+)\.$/u, ' from "$1" to "$2".');
-    const target = resolveRequirementTarget(clause);
     let inputs = [...new Set([clause, quoted])];
     let scopedPath = null;
     if (mode === '--scoped') {
