@@ -27,6 +27,26 @@ test('registered paths and parsed imports replace basename guesses', async () =>
     assert.equal(observed.runtimeSelection, 'Pending');
   } finally { fs.rmSync(root, {recursive: true, force: true}); }
 });
+test('out-of-line cases nested under inline test modules retain their Cargo identity', async () => {
+  const root = fixture('// no external imports');
+  try {
+    fs.appendFileSync(path.join(root, 'rust/Cargo.toml'),
+      '\n[[test]]\nname = "coding_contracts"\npath = "tests/unit/coding_contracts.rs"\n');
+    fs.writeFileSync(path.join(root, 'rust/tests/unit/coding_contracts.rs'),
+      'mod coding_discovery { mod composition; #[path = "source.rs"] mod renamed; }\n');
+    const directory = path.join(root, 'rust/tests/unit/coding_discovery');
+    fs.mkdirSync(directory);
+    fs.writeFileSync(path.join(directory, 'composition.rs'),
+      'use formal_ai::answer::value; #[test] fn runs() { value(); }');
+    fs.writeFileSync(path.join(directory, 'source.rs'),
+      'use formal_ai::answer::value; #[test] fn runs() { value(); }');
+    const observed = await registeredRustTestFilters(root, 'rust/src/answer.rs');
+    assert.deepEqual(observed.jobs, [
+      {target: 'coding_contracts', filter: 'coding_discovery::composition::runs'},
+      {target: 'coding_contracts', filter: 'coding_discovery::renamed::runs'},
+    ]);
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
 test('comments and literals cannot supply source import ownership', async () => {
   for (const source of ['// use formal_ai::answer::value;', 'const FAKE: &str = "use formal_ai::answer::value;";']) {
     const root = fixture(source);

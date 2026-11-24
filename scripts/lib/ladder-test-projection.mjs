@@ -67,7 +67,7 @@ export async function registeredRustTestFilters(root, changedPath) {
     if (parsed.rootNode.hasError) throw new Error('Rust source CST error: ' + relative);
     const item = {source, node: parsed.rootNode}; sources.set(relative, item); return item;
   }
-  function moduleFile(relative, name, attributes) {
+  function modulePath(attributes) {
     for (const item of attributes) {
       const attribute = item.namedChildren[0];
       if (attribute?.namedChildren[0]?.text !== 'cfg_attr') continue;
@@ -81,14 +81,27 @@ export async function registeredRustTestFilters(root, changedPath) {
     }
     const overrides = attributes.filter(attribute => attribute.namedChildren[0]?.namedChildren[0]?.text === 'path');
     if (overrides.length > 1) throw new Error('Duplicate Rust module path');
-    if (overrides.length) {
-      const value = overrides[0].namedChildren[0].childForFieldName('value');
-      if (value?.type !== 'string_literal') throw new Error('Missing literal Rust module path');
-      const selected = path.posix.normalize(path.posix.join(path.posix.dirname(relative), JSON.parse(value.text)));
+    if (!overrides.length) return null;
+    const value = overrides[0].namedChildren[0].childForFieldName('value');
+    if (value?.type !== 'string_literal') throw new Error('Missing literal Rust module path');
+    return JSON.parse(value.text);
+  }
+  function moduleDirectory(relative) {
+    return (targetRoots.has(relative) || path.posix.basename(relative) === 'mod.rs')
+      ? path.posix.dirname(relative) : relative.slice(0, -3);
+  }
+  function inlineModuleDirectory(relative, name, attributes, parent) {
+    const override = modulePath(attributes);
+    return path.posix.join(parent ?? (override === null ? moduleDirectory(relative) : path.posix.dirname(relative)),
+      override ?? name);
+  }
+  function moduleFile(relative, name, attributes, inlineDirectory) {
+    const override = modulePath(attributes);
+    if (override !== null) {
+      const selected = path.posix.join(inlineDirectory ?? path.posix.dirname(relative), override);
       regular(selected); return selected;
     }
-    const parent = (targetRoots.has(relative) || path.posix.basename(relative) === 'mod.rs')
-      ? path.posix.dirname(relative) : relative.slice(0, -3);
+    const parent = inlineDirectory ?? moduleDirectory(relative);
     const candidates = [parent + '/' + name + '.rs', parent + '/' + name + '/mod.rs'].filter(candidate => fs.existsSync(path.join(root, candidate)));
     if (candidates.length !== 1) throw new Error('Missing or ambiguous registered Rust module: ' + name);
     regular(candidates[0]); return candidates[0];
@@ -189,7 +202,7 @@ export async function registeredRustTestFilters(root, changedPath) {
       if (visited.has(key)) throw new Error('Cyclic registered test module'); visited.add(key); active.add(relative);
       try { scan(tree(relative).node, relative, prefix, inherited); } finally { active.delete(relative); }
     }
-    function scan(body, relative, prefix, inherited) {
+    function scan(body, relative, prefix, inherited, inlineDirectory) {
       // A generated include cannot supply a source-observed witness. Refuse this
       // complete scope as a candidate while retaining other registered scopes.
       const opaqueIncludes = body.namedChildren.map(child => child.type === 'expression_statement'
@@ -211,10 +224,10 @@ export async function registeredRustTestFilters(root, changedPath) {
           if (route[0] === crateName && ownershipRoutes.some(owner => owner.every((part, index) => route[index + 1] === part))) direct = true;
         }
       }
-      entries(body, relative, prefix, (node, attributes) => {
+      entries(body, relative, prefix, (node, attributes, declarationFile) => {
         if (node.type === 'function_item' && direct && testDisposition(attributes)) {
           const name = [...prefix, identifier(node.childForFieldName('name').text)].join('::');
-          if (testDisposition(attributes) === 'ignored') ignoredJobs.push({target: currentTarget, filter: name, source: relative});
+          if (testDisposition(attributes) === 'ignored') ignoredJobs.push({target: currentTarget, filter: name, source: declarationFile});
           else {
             selectedByTarget.get(currentTarget).add(name);
             if (currentTarget === 'unit') selected.add(name);
@@ -223,8 +236,9 @@ export async function registeredRustTestFilters(root, changedPath) {
         if (node.type === 'mod_item') {
           const name = identifier(node.childForFieldName('name').text), childPrefix = [...prefix, name];
           const nested = node.childForFieldName('body');
-          if (nested) scan(nested, relative, childPrefix, direct);
-          else unit(moduleFile(relative, name, attributes), childPrefix, direct);
+          if (nested) scan(nested, declarationFile, childPrefix, direct,
+            inlineModuleDirectory(declarationFile, name, attributes, inlineDirectory));
+          else unit(moduleFile(declarationFile, name, attributes, inlineDirectory), childPrefix, direct);
         }
       });
     }
@@ -234,22 +248,23 @@ export async function registeredRustTestFilters(root, changedPath) {
       unit(path.relative(root, target.path).split(path.sep).join('/'), []);
     }
     const librarySelected = new Set(), libraryVisited = new Set(), libraryActive = new Set([ownedFile]);
-    function libraryTests(body, relative, prefix) {
+    function libraryTests(body, relative, prefix, inlineDirectory) {
       const key = relative + '\0' + prefix.join('::');
       if (libraryVisited.has(key)) throw new Error('Cyclic library test module');
       libraryVisited.add(key);
-      entries(body, relative, prefix, (node, attributes) => {
+      entries(body, relative, prefix, (node, attributes, declarationFile) => {
         if (node.type === 'function_item' && testDisposition(attributes)) {
           const filter = [...prefix, identifier(node.childForFieldName('name').text)].join('::');
-          if (testDisposition(attributes) === 'ignored') ignoredJobs.push({target: 'lib', filter, source: relative});
+          if (testDisposition(attributes) === 'ignored') ignoredJobs.push({target: 'lib', filter, source: declarationFile});
           else librarySelected.add(filter);
         }
         if (node.type === 'mod_item') {
           const name = identifier(node.childForFieldName('name').text), childPrefix = [...prefix, name];
           const nested = node.childForFieldName('body');
-          if (nested) libraryTests(nested, relative, childPrefix);
+          if (nested) libraryTests(nested, declarationFile, childPrefix,
+            inlineModuleDirectory(declarationFile, name, attributes, inlineDirectory));
           else {
-            const child = moduleFile(relative, name, attributes);
+            const child = moduleFile(declarationFile, name, attributes, inlineDirectory);
             if (libraryActive.has(child)) throw new Error('Cyclic registered library source');
             libraryActive.add(child);
             try { libraryTests(tree(child).node, child, childPrefix); } finally { libraryActive.delete(child); }
