@@ -9,6 +9,7 @@ use formal_ai::learning_cycle::{GOOGLE_TRENDS_FRONTIER, LEARNED_REQUEST_OPENERS_
 use formal_ai::promotion::{parse_promotion_proposals, render_promotion_proposals};
 use formal_ai::{google_trends_learning_cycle, parse_frontier_record};
 use lino_objects_codec::format::parse_indented;
+use std::sync::OnceLock;
 
 const GOOGLE_TRENDS_FRONTIER_RECORD: &str = include_str!(
     "../../../docs/case-studies/issue-701/replay/learning-frontier-google-trends.lino"
@@ -18,15 +19,21 @@ const GOOGLE_TRENDS_FRONTIER_RECORD: &str = include_str!(
 /// them, not just English.
 const SUPPORTED_LANGUAGES: [&str; 4] = ["en", "ru", "hi", "zh"];
 
+// The four ledger checks use the same captured frontier and offline feed. Share
+// the routing pass within the native harness while keeping each assertion separate.
+static ADOPTION_LEDGER: OnceLock<formal_ai::AdoptionLedger> = OnceLock::new();
+
 #[test]
 fn committed_adoption_ledger_matches_a_fresh_run() {
     use formal_ai::google_trends_adoption_ledger;
 
     let committed =
         include_str!("../../../docs/case-studies/issue-701/replay/learning-adoption-ledger.lino");
-    let legacy_pairs =
-        google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed())
-            .links_notation();
+    let legacy_pairs = ADOPTION_LEDGER
+        .get_or_init(|| {
+            google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed())
+        })
+        .links_notation();
     assert!(
         committed.starts_with(&format!("{legacy_pairs}\n")),
         "the 60 existing issue-701 pairs must stay byte-identical; generalized effects append after them",
@@ -43,7 +50,9 @@ fn the_adoption_ledger_records_a_real_capability_delta_in_every_language() {
     // Issue #701 requirement 2 and its acceptance criterion: at least 20
     // before/after pairs, spanning at least 3 topics and all 4 languages, each
     // one unknown before and answered after.
-    let ledger = google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed());
+    let ledger = ADOPTION_LEDGER.get_or_init(|| {
+        google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed())
+    });
     let adopted = ledger.adopted();
     assert!(
         adopted.len() >= 20,
@@ -83,7 +92,9 @@ fn the_trends_corpus_unknown_rate_is_ratcheted_to_zero() {
     // Issue #701 requirement 3: drive the #498/#499 frontier through the loop
     // until the trends prompts answer (target 80/80). The ratchet may fall,
     // never rise — a regression that reintroduces an unknown fails here.
-    let ledger = google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed());
+    let ledger = ADOPTION_LEDGER.get_or_init(|| {
+        google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed())
+    });
     assert_eq!(
         ledger.corpus_prompts, 80,
         "10 topics x 4 languages x 2 variations"
@@ -197,7 +208,9 @@ fn every_failure_to_adopt_is_preserved_as_a_durable_record() {
         assert!(record.contains(&blocked.reason));
     }
 
-    let ledger = google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed());
+    let ledger = ADOPTION_LEDGER.get_or_init(|| {
+        google_trends_adoption_ledger(GOOGLE_TRENDS_FRONTIER_RECORD, &captured_feed())
+    });
     assert_eq!(
         ledger.adopted().len() + ledger.unadopted().len(),
         ledger.pairs.len(),

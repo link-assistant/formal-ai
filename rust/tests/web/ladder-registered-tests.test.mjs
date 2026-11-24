@@ -95,7 +95,7 @@ test('source path escapes, unknown seed projection and symlinks refuse', async (
     await assert.rejects(registeredRustTestFilters(root, 'rust/src/answer.rs'), /symlink refused/);
   } finally { fs.rmSync(root, {recursive: true, force: true}); }
 });
-test('the unchanged Cargo operation cannot pass on zero or absent tests', () => {
+test('Cargo cannot pass on zero or absent exact tests', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ladder-summary-'));
   try {
     const source = fs.readFileSync(path.resolve('experiments/issue_1028_agent_cli_ladder/verify-node.sh'), 'utf8');
@@ -107,15 +107,16 @@ test('the unchanged Cargo operation cannot pass on zero or absent tests', () => 
       ['bin:formal-ai', '--bin formal-ai', 'cli_report::tests::trace_runs'],
     ];
     for (const [target, option, filter] of selections) {
-      for (const [passed, status, expected] of [['0', 0, 1], ['2', 0, 0], ['', 0, 1], ['2', 1, 1]]) {
+      for (const [passed, status, expected] of [['0', 0, 1], ['1', 0, 0], ['', 0, 1], ['1', 1, 1]]) {
         const workspace = fs.mkdtempSync(path.join(root, 'case-'));
         fs.mkdirSync(path.join(workspace, 'rust'), {recursive: true});
         fs.mkdirSync(path.join(workspace, '.agent-ladder'));
         fs.writeFileSync(path.join(workspace, 'rust/Cargo.toml'), '');
         const bash = 'ROOT="$2"; workspace="$1"; verification_dir="$workspace/.agent-ladder"; node=fixture; record() { :; }; target_dir() { printf "%s" "$workspace/target"; };\n'
-          + 'cargo() { [[ "$*" == "test ' + option + ' --quiet -- --exact ' + filter + '" ]] || return 9; '
+          + 'cargo() { [[ "$*" == "test ' + option + ' -- --exact --format pretty --color never --test-threads=1 ' + filter + '" ]] || return 9; '
+          + (passed === '1' ? 'printf "test ' + filter + ' ... ok\\n"; ' : '')
           + (passed ? 'printf "test result: ok. ' + passed + ' passed; 0 failed; 0 ignored;\\n"; ' : '')
-          + 'return ' + status + '; };\n' + body + '\ncargo_test ' + filter + ' ' + target;
+          + 'return ' + status + '; };\n' + body + '\ncargo_test ' + target + ' ' + filter;
         const observed = spawnSync('bash', ['-c', bash, 'controlled-summary', workspace, path.resolve('.')], {encoding: 'utf8', timeout: 5000});
         assert.equal(observed.signal, null);
         assert.equal(observed.status, expected);
@@ -148,8 +149,8 @@ test('the verifier writes the compile log and exact test receipt to the producer
       '#!/usr/bin/env bash',
       'case "$*" in',
       '  "check --lib --quiet") printf "compile receipt\\n" ;;',
-      '  "test --test unit --quiet -- --exact independent::retained")',
-      '    printf "test result: ok. 1 passed; 0 failed; 0 ignored;\\n" ;;',
+      '  "test --test unit -- --exact --format pretty --color never --test-threads=1 independent::retained")',
+      '    printf "test independent::retained ... ok\\ntest result: ok. 1 passed; 0 failed; 0 ignored;\\n" ;;',
       '  *) exit 9 ;;',
       'esac',
     ].join('\n'), {mode: 0o700});
@@ -170,6 +171,59 @@ test('the verifier writes the compile log and exact test receipt to the producer
     assert.equal(fs.readFileSync(path.join(logDir, 'cargo-check.log'), 'utf8'), 'compile receipt\n');
     assert.match(fs.readFileSync(path.join(logDir, testLog), 'utf8'), /test result: ok\. 1 passed/u);
     assert.equal(fs.existsSync(path.join(root, '.agent-ladder/verify.tsv')), false);
+  } finally {
+    fs.rmSync(root, {recursive: true, force: true});
+  }
+});
+
+test('the verifier batches exact cases per Cargo target and requires each to pass', () => {
+  const root = fixture();
+  try {
+    fs.appendFileSync(path.join(root, 'rust/tests/unit/renamed.rs'), '\n#[test] fn retained_other() {}');
+    fs.appendFileSync(path.join(root, 'rust/src/answer.rs'), '\n#[test] fn source_case() {}');
+    fs.mkdirSync(path.join(root, 'receipt'));
+    const source = fs.readFileSync(path.resolve('experiments/issue_1028_agent_cli_ladder/verify-node.sh'), 'utf8');
+    const begin = source.indexOf('module_filter() {'), end = source.indexOf('\nrustfmt_parses() {', begin);
+    assert.ok(begin >= 0 && end > begin);
+    const functions = source.slice(begin, end);
+    const shell = [
+      'workspace="$1"; ROOT="$2"; verification_dir="$workspace/receipt"; node=fixture',
+      'target_dir() { printf "%s" "$workspace/target"; }',
+      'record() { printf "%s\\t%s\\n" "$1" "$2"; }',
+      'cargo() {',
+      '  case "$*" in',
+      '    "test --test unit -- --exact --format pretty --color never --test-threads=1 independent::retained independent::retained_other")',
+      '      printf "%s\\n" "test independent::retained ... ok"',
+      '      if [[ "$OMIT_CASE" == 0 ]]; then printf "%s\\n" "test independent::retained_other ... ok"; fi',
+      '      printf "%s\\n" "test result: ok. 2 passed; 0 failed; 0 ignored;"',
+      '      return "$BATCH_STATUS" ;;',
+      '    "test --lib -- --exact --format pretty --color never --test-threads=1 answer::source_case")',
+      '      printf "%s\\n" "test answer::source_case ... ok" "test result: ok. 1 passed; 0 failed; 0 ignored;" ;;',
+      '    *) printf "unexpected cargo arguments: %s\\n" "$*" >&2; return 9 ;;',
+      '  esac',
+      '}',
+      functions,
+      'verify_source_tests rust/src/answer.rs',
+    ].join('\n');
+    for (const [omit, status, expected] of [['0', '0', 'passed=1'], ['1', '0', 'missing_selected_tests'], ['0', '1', 'failed']]) {
+      const result = spawnSync('bash', ['-c', shell, 'controlled-batch', root, path.resolve('.')], {
+        encoding: 'utf8',
+        env: {...process.env, LADDER_CARGO_TEST: '1', OMIT_CASE: omit, BATCH_STATUS: status},
+      });
+      const picked = ['independent::retained', 'independent::retained_other'];
+      assert.equal(result.status, expected === 'passed=1' ? 0 : 1, result.stdout + result.stderr);
+      const logName = ladderTestLogFilename('unit', ...picked);
+      for (const filter of picked) {
+        assert.ok(result.stdout.includes('test_log:unit:' + filter + '\t' + logName + '\n'), result.stdout);
+      }
+      assert.ok(result.stdout.includes('tests:independent::retained_other\t' + expected + '\n'), result.stdout);
+      assert.ok(fs.readFileSync(path.join(root, 'receipt', logName), 'utf8').includes('test independent::retained ... ok'));
+      if (expected === 'passed=1') {
+        assert.ok(result.stdout.includes('tests:answer::source_case\tpassed=1\n'), result.stdout);
+      } else {
+        assert.doesNotMatch(result.stdout, /answer::source_case/u);
+      }
+    }
   } finally {
     fs.rmSync(root, {recursive: true, force: true});
   }
@@ -212,8 +266,9 @@ test('a changed canonical seed reaches Cargo through a temporary package mirror'
         'cmp -s ../data/seed/example.lino embedded/data/seed/example.lino',
         'case "$*" in',
         '  "check --lib --quiet") printf "compile saw changed seed\\n" ;;',
-        '  "test --test data_files --quiet -- --exact embedded_seed_matches_canonical_source")',
+        '  "test --test data_files -- --exact --format pretty --color never --test-threads=1 embedded_seed_matches_canonical_source")',
         '    [[ "$LADDER_CHANGED_SEED" == "data/seed/example.lino" ]]',
+        ...(selected ? ['    printf "test embedded_seed_matches_canonical_source ... ok\\n"'] : []),
         '    printf "test result: ok. ' + selected + ' passed; 0 failed; 0 ignored;\\n" ;;',
         '  *) exit 9 ;;',
         'esac',
@@ -299,6 +354,8 @@ test('namespaced exact Cargo selections have bounded portable log filenames', ()
   }
   assert.throws(() => ladderTestLogFilename('../foreign', filter));
   assert.throws(() => ladderTestLogFilename('unit', 'line\nbreak'));
+  assert.throws(() => ladderTestLogFilename('unit'));
+  assert.notEqual(observed, ladderTestLogFilename('integration', filter, 'another_case'));
 });
 test('existing ignored network cases are retained as evidence and cannot supply zero-test witnesses', async () => {
   const root = fixture();

@@ -92,20 +92,28 @@ module_filter() {
   node "$ROOT/scripts/lib/ladder-test-projection.mjs" "$workspace" "$1"
 }
 verify_source_tests() {
-  local source="$1" filters filter target
+  local source="$1" projection filter target selected_target=""
+  local -a selected_filters=()
   if [[ "${LADDER_CARGO_TEST:-1}" == 0 ]] || ! command -v cargo >/dev/null 2>&1 || [[ ! -f "$workspace/rust/Cargo.toml" ]]; then
-    cargo_test source_projection_unavailable
+    cargo_test unit source_projection_unavailable
     return $?
   fi
   if [[ "$source" =~ ^data/seed/[[:alnum:]][[:alnum:]_.-]*\.lino$ ]]; then
-    LADDER_CHANGED_SEED="$source" cargo_test embedded_seed_matches_canonical_source data_files
+    LADDER_CHANGED_SEED="$source" cargo_test data_files embedded_seed_matches_canonical_source
     return $?
   fi
-  filters=$(module_filter "$source") || { record "tests:$source" missing_source_projection; return 1; }
-  [[ -n "$filters" ]] || { record "tests:$source" missing_source_projection; return 1; }
+  projection=$(module_filter "$source") || { record "tests:$source" missing_source_projection; return 1; }
+  [[ -n "$projection" ]] || { record "tests:$source" missing_source_projection; return 1; }
+  # Projection emits the selected tests together for each declared target.
   while IFS=$'\t' read -r target filter; do
-    cargo_test "$filter" "$target" || return 1
-  done <<< "$filters"
+    if [[ -n "$selected_target" && "$target" != "$selected_target" ]]; then
+      cargo_test "$selected_target" "${selected_filters[@]}" || return 1
+      selected_filters=()
+    fi
+    selected_target="$target"
+    selected_filters+=("$filter")
+  done <<< "$projection"
+  cargo_test "$selected_target" "${selected_filters[@]}"
 }
 
 cargo_check() {
@@ -126,9 +134,10 @@ cargo_check() {
   return 1
 }
 # Run the exact registered cases for their declared Cargo target.
-# A successful harness with no selected tests cannot witness a source change.
+# Each selected case needs an observed passing result from the harness.
 cargo_test() {
-  local filter="$1" target="${2:-unit}" log passed
+  local target="$1" filter="$2" log log_name
+  shift
   local -a target_args
   case "$target" in
     lib) target_args=(--lib) ;;
@@ -142,24 +151,29 @@ cargo_test() {
   [[ "${LADDER_CARGO_TEST:-1}" != 0 ]] || { record "tests:$filter" skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record "tests:$filter" unavailable; return 0; }
   [[ -f "$workspace/rust/Cargo.toml" ]] || { record "tests:$filter" unavailable; return 0; }
-  local log_name
-  log_name=$(node "$ROOT/scripts/lib/ladder-test-log-name.mjs" "$target" "$filter") || { record "tests:$filter" invalid_test_log_identity; return 1; }
+  log_name=$(node "$ROOT/scripts/lib/ladder-test-log-name.mjs" "$target" "$@") || { record "tests:$filter" invalid_test_log_identity; return 1; }
   log="$verification_dir/$log_name"
-  record "test_log:$target:$filter" "$log_name"
-  local started=$SECONDS
+  for filter in "$@"; do
+    record "test_log:$target:$filter" "$log_name"
+  done
+  local started=$SECONDS missing=0
   if (cd "$workspace/rust" && CARGO_TARGET_DIR="$(target_dir)" \
-      cargo test "${target_args[@]}" --quiet -- --exact "$filter" >"$log" 2>&1); then
-    echo "verify $node: cargo test ${target_args[*]} $filter took $((SECONDS - started))s" >&2
-    passed=$(sed -n 's/^test result: ok\. \([0-9]*\) passed.*/\1/p' "$log" | tail -1)
-    if [[ ! "$passed" =~ ^[1-9][0-9]*$ ]]; then
-      record "tests:$filter" missing_selected_tests
-      return 1
-    fi
-    record "tests:$filter" "passed=$passed"
-    return 0
+      cargo test "${target_args[@]}" -- --exact --format pretty --color never --test-threads=1 "$@" >"$log" 2>&1); then
+    echo "verify $node: cargo test ${target_args[*]} $* took $((SECONDS - started))s" >&2
+    for filter in "$@"; do
+      if grep -Fxq -- "test $filter ... ok" "$log"; then
+        record "tests:$filter" passed=1
+      else
+        record "tests:$filter" missing_selected_tests
+        missing=1
+      fi
+    done
+    return "$missing"
   fi
   tail -40 "$log" >&2 || true
-  record "tests:$filter" failed
+  for filter in "$@"; do
+    record "tests:$filter" failed
+  done
   return 1
 }
 rustfmt_parses() {
