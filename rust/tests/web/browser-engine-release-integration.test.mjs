@@ -1,16 +1,41 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { readFileSync, mkdtempSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { readFileSync, mkdtempSync, writeFileSync, rmSync, existsSync, truncateSync } from 'node:fs';
 import { tmpdir as temporaryDirectory } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import { remainingSeconds, deadlineArguments, runBoundedOperation } from '../../../scripts/browser-engine-deadline.mjs';
-import { publicationStatus } from '../../../scripts/publish-browser-engine.mjs';
+import { publicationStatus, publishBrowserEngine } from '../../../scripts/publish-browser-engine.mjs';
 import { RELEASE_PROTOCOL_FILES } from '../../../scripts/release-protocol.mjs';
 const YAML = createRequire(import.meta.url)('yaml');
 const original = JSON.parse(readFileSync(new URL('./browser-engine-original-operations.json', import.meta.url), 'utf8'));
 const workflow = YAML.parse(readFileSync(new URL('../../../.github/workflows/publish-engine.yml', import.meta.url), 'utf8'));
+test('the actual pack guard and publisher refuse archives outside the receipt limit before any upload', t => {
+  const directory = mkdtempSync(join(temporaryDirectory(), 'browser-engine-archive-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const archive = join(directory, 'engine.tgz');
+  writeFileSync(join(directory, 'package.json'), JSON.stringify({ name: '@example/engine', version: '1.0.0' }));
+  writeFileSync(archive, '');
+  let npmCalls = 0;
+  const npm = () => { npmCalls++; return 'null'; };
+  assert.throws(() => publishBrowserEngine(directory, npm), /engine\.tgz.*0 bytes.*134217728 bytes/u);
+  assert.equal(npmCalls, 0);
+
+  const publisher = fileURLToPath(new URL('../../../scripts/publish-browser-engine.mjs', import.meta.url));
+  const check = () => spawnSync(process.execPath, [publisher, '--check-archive'], { cwd: directory, encoding: 'utf8' });
+  truncateSync(archive, 134217728);
+  const exact = check();
+  assert.equal(exact.status, 0, exact.stderr);
+  assert.match(exact.stdout, /engine\.tgz.*134217728 bytes/u);
+  truncateSync(archive, 134217729);
+  const oversized = check();
+  assert.notEqual(oversized.status, 0);
+  assert.match(oversized.stderr, /engine\.tgz.*134217729 bytes.*134217728 bytes/u);
+  assert.throws(() => publishBrowserEngine(directory, npm), /engine\.tgz.*134217729 bytes.*134217728 bytes/u);
+  assert.equal(npmCalls, 0);
+});
 test('browser dependency isolation is immutable and remains inside the original setup deadline',()=>{
   const step=workflow.jobs.package.steps.find(value=>value.name==='Prepare locked browser smoke dependencies');
   assert.equal(step['timeout-minutes'],5);
@@ -80,9 +105,18 @@ function checkStructure(value) {
   assert.doesNotMatch(steps[verify].run, /cp .*receipt/u);
   assert.match(steps[verify].run, /assets" "\$WASM_RECEIPT_SHA256" "\$GITHUB_WORKSPACE\/js\/formal_ai_worker\.receipt\.json"/u);
   assert.equal(steps[verify].run.match(/build-selected-wasm\.mjs" verify/gu).length, 2);
-  assert(verify < find('Package the engine'));
+  const pack = find('Package the engine');
+  assert(verify < pack);
+  const size = find('Check the packed engine archive size');
+  assert.equal(size, pack + 1);
+  assert.equal(steps[size].if, undefined);
+  assert.equal(steps[size]['continue-on-error'], undefined);
+  assert.equal(steps[size]['working-directory'], 'packages/formal-ai-engine');
+  assert.equal(steps[size].run, 'node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs" --check-archive');
+  const artifact = steps.findIndex(step => step.with?.name === 'formal-ai-engine');
+  assert(size < artifact);
   const local = find('Cold install the packed engine before public publication');
-  assert(find('Package the engine') < local);
+  assert(size < local);
   assert(local < find('Attach installable engine package to the release'));
   assert.equal(steps[local]['timeout-minutes'], 8);
   assert.equal(steps[local].env.WASM_RECEIPT_SHA256, '${{ steps.wasm.outputs.receipt-sha256 }}');
@@ -156,6 +190,8 @@ test('original operations and authority remain with selected-source compilation 
 test('missing source build, changed compiler, missing receipt, credential drift and unbounded smoke refuse', () => {
   const mutations = [value => value.jobs.package.steps.splice(0,
    1),
+   value => value.jobs.package.steps.find(step => step.name === 'Check the packed engine archive size').if = 'false',
+   value => value.jobs.package.steps.find(step => step.name === 'Check the packed engine archive size').run = 'true',
    value => value.jobs.package.steps.find(step => step.id === 'wasm').env.RUSTUP_TOOLCHAIN = 'stable',
    value => value.jobs.package.steps.find(step => step.name === 'Verify the fresh WASM and packaged bytes with a private receipt').run = 'true',
    value => value.jobs.package.steps.find(step => step.id === 'publication').env.NPM_TRUSTED_PUBLISHING = 'true',
