@@ -23,7 +23,7 @@ runs `pr-*.log`), `CI-CD-BEST-PRACTICES.md` (hive-mind reference used for the co
 | Guarded staged release authority refusal, js tier release tests | A hand-edited `release.yml` differs from the generated candidate caller | Fix the generator template and regenerate `candidate-release-caller.yml` | 42 + 100 related node tests pass locally |
 | Hive Mind draft | The adapter assumed the shared spread closes `setEnv` | Insert at the matching `}` of `setEnv` | `rust/tests/web/hive-draft-logs.test.mjs` with the upstream 45c85a4 fixture |
 | Benchmark Corpus Gate | Undeclared `tempfile` crate | Use `std::env::temp_dir()` with explicit cleanup | CI |
-| Question necessity ratchet / dependencies-latest compile errors | Private imports, a stale merge, a private module | Direct fixture `#[path]` include; the operation-required assertion from 99a1953c3; re-export `extract_concept_query`/`ConceptQuery` | CI (local rustc is OOM-killed on this 11 GB host even at `-j1`) |
+| Question necessity ratchet / dependencies-latest compile errors | Private imports, a stale merge, a private module | `pub(super)` fixture re-export; the operation-required assertion from 99a1953c3; concept test moved to `tests/source/concept_query_tests.rs` (a `lib.rs` re-export broke 16 governed spec cases); witness `governed-baseline.v8` refreshed | CI (local rustc is OOM-killed on this 11 GB host even at `-j1`) |
 
 ## Items that are not code defects
 
