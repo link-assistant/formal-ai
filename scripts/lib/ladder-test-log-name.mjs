@@ -3,7 +3,7 @@ import {pathToFileURL} from 'node:url';
 
 /** Bind the complete Cargo selection without placing test identifiers in paths. */
 export function ladderTestLogFilename(target, filter) {
-  if (typeof target !== 'string' || !/^[A-Za-z_][A-Za-z_0-9-]*$/u.test(target)
+  if (typeof target !== 'string' || !/^(?:bin:)?[A-Za-z_][A-Za-z_0-9-]*$/u.test(target)
     || typeof filter !== 'string' || !filter || /[\0\r\n]/u.test(filter)) {
     throw new Error('Expected a declared Cargo target and one exact Rust test name');
   }

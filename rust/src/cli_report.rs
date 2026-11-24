@@ -23,6 +23,9 @@ use serde_json::Value;
 
 use crate::cli_context::{ContextSource, exported_context, write_output};
 
+#[cfg(test)]
+mod tests;
+
 /// Largest context attached inline before the full copy moves to a gist.
 ///
 /// GitHub accepts a 65 536-character issue body, and this was 50 000 of them:

@@ -47,6 +47,24 @@ test('out-of-line cases nested under inline test modules retain their Cargo iden
     ]);
   } finally { fs.rmSync(root, {recursive: true, force: true}); }
 });
+test('a binary-only module selects its exact Cargo binary cases', async () => {
+  const root = fixture('// no external imports');
+  try {
+    fs.appendFileSync(path.join(root, 'rust/Cargo.toml'),
+      '\n[[bin]]\nname = "formal-ai"\npath = "src/main.rs"\n');
+    fs.writeFileSync(path.join(root, 'rust/src/main.rs'), 'mod cli_report; fn main() {}');
+    fs.writeFileSync(path.join(root, 'rust/src/cli_report.rs'),
+      '#[cfg(test)] mod tests { #[test] fn trace_runs() {} #[test] #[ignore] fn optional() {} }');
+    const observed = await registeredRustTestFilters(root, 'rust/src/cli_report.rs');
+    assert.deepEqual(observed.sourceModule, ['cli_report']);
+    assert.deepEqual(observed.jobs, [{target: 'bin:formal-ai', filter: 'cli_report::tests::trace_runs'}]);
+    assert.deepEqual(observed.ignoredJobs, [
+      {target: 'bin:formal-ai', filter: 'cli_report::tests::optional', source: 'rust/src/cli_report.rs'},
+    ]);
+    fs.appendFileSync(path.join(root, 'rust/Cargo.toml'), 'test = false\n');
+    await assert.rejects(registeredRustTestFilters(root, 'rust/src/cli_report.rs'), /Missing registered changed Rust module/);
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
 // Replays main run 45018538750, where frontier-only cases used the leaf's native test budget.
 test('the learning adoption leaf projects only tests that import the adoption ledger', async () => {
   const observed = await registeredRustTestFilters(path.resolve('.'), 'rust/src/learning_adoption_ledger.rs');
@@ -84,18 +102,24 @@ test('the unchanged Cargo operation cannot pass on zero or absent tests', () => 
     const begin = source.indexOf('cargo_test() {'), end = source.indexOf('\nrustfmt_parses() {', begin);
     assert.ok(begin >= 0 && end > begin);
     const body = source.slice(begin, end);
-    for (const [passed, status, expected] of [['0', 0, 1], ['2', 0, 0], ['', 0, 1], ['2', 1, 1]]) {
-      const workspace = path.join(root, 'case-' + passed + '-' + status);
-      fs.mkdirSync(path.join(workspace, 'rust'), {recursive: true});
-      fs.mkdirSync(path.join(workspace, '.agent-ladder'));
-      fs.writeFileSync(path.join(workspace, 'rust/Cargo.toml'), '');
-      const bash = 'ROOT="$2"; workspace="$1"; verification_dir="$workspace/.agent-ladder"; node=fixture; record() { :; }; target_dir() { printf "%s" "$workspace/target"; };\n'
-        + 'cargo() { [[ "$*" == "test --test unit --quiet -- --exact independent::retained" ]] || return 9; '
-        + (passed ? 'printf "test result: ok. ' + passed + ' passed; 0 failed; 0 ignored;\\n"; ' : '')
-        + 'return ' + status + '; };\n' + body + '\ncargo_test independent::retained';
-      const observed = spawnSync('bash', ['-c', bash, 'controlled-summary', workspace, path.resolve('.')], {encoding: 'utf8', timeout: 5000});
-      assert.equal(observed.signal, null);
-      assert.equal(observed.status, expected);
+    const selections = [
+      ['unit', '--test unit', 'independent::retained'],
+      ['bin:formal-ai', '--bin formal-ai', 'cli_report::tests::trace_runs'],
+    ];
+    for (const [target, option, filter] of selections) {
+      for (const [passed, status, expected] of [['0', 0, 1], ['2', 0, 0], ['', 0, 1], ['2', 1, 1]]) {
+        const workspace = fs.mkdtempSync(path.join(root, 'case-'));
+        fs.mkdirSync(path.join(workspace, 'rust'), {recursive: true});
+        fs.mkdirSync(path.join(workspace, '.agent-ladder'));
+        fs.writeFileSync(path.join(workspace, 'rust/Cargo.toml'), '');
+        const bash = 'ROOT="$2"; workspace="$1"; verification_dir="$workspace/.agent-ladder"; node=fixture; record() { :; }; target_dir() { printf "%s" "$workspace/target"; };\n'
+          + 'cargo() { [[ "$*" == "test ' + option + ' --quiet -- --exact ' + filter + '" ]] || return 9; '
+          + (passed ? 'printf "test result: ok. ' + passed + ' passed; 0 failed; 0 ignored;\\n"; ' : '')
+          + 'return ' + status + '; };\n' + body + '\ncargo_test ' + filter + ' ' + target;
+        const observed = spawnSync('bash', ['-c', bash, 'controlled-summary', workspace, path.resolve('.')], {encoding: 'utf8', timeout: 5000});
+        assert.equal(observed.signal, null);
+        assert.equal(observed.status, expected);
+      }
     }
   } finally { fs.rmSync(root, {recursive: true, force: true}); }
 });

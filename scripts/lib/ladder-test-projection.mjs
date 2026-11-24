@@ -157,11 +157,26 @@ export async function registeredRustTestFilters(root, changedPath) {
     const libraryRoot = path.posix.normalize(path.posix.join('rust', literal(librarySection, 'path') ?? 'src/lib.rs'));
     const targets = cargoTestTargets(root);
     if (targets.some(target => target.cargoSHA !== digest(cargoBefore))) throw new Error('Cargo source changed during target projection');
-    targetRoots = new Set([libraryRoot, ...targets.map(target => path.relative(root, target.path).split(path.sep).join('/'))]);
+    const binaries = [];
+    for (const block of cargoBefore.split(/^\[\[bin\]\][ \t]*(?:#[^\r\n]*)?$/mu).slice(1)) {
+      const body = block.split(/^\[/mu)[0];
+      const name = literal(body, 'name'), binaryPath = literal(body, 'path');
+      if (!name || !/^[A-Za-z_][A-Za-z_0-9-]*$/u.test(name) || !binaryPath)
+        throw new Error('Missing explicit Cargo binary registration');
+      const testSettings = body.split('\n').filter(line => /^test[ \t]*=/u.test(line));
+      if (testSettings.length > 1 || (testSettings.length === 1 && !/^test[ \t]*=[ \t]*(?:true|false)[ \t]*(?:#.*)?$/u.test(testSettings[0])))
+        throw new Error('Missing literal Cargo binary test setting');
+      if (testSettings.some(line => /^test[ \t]*=[ \t]*false\b/u.test(line))) continue;
+      binaries.push({name, root: path.posix.normalize(path.posix.join('rust', binaryPath))});
+    }
+    if (new Set(binaries.map(binary => binary.name)).size !== binaries.length)
+      throw new Error('Duplicate registered Cargo binary name');
+    targetRoots = new Set([libraryRoot, ...binaries.map(binary => binary.root),
+      ...targets.map(target => path.relative(root, target.path).split(path.sep).join('/'))]);
     regular(changedPath);
     let owned = null, ownedFile = null;
     const reexports = [];
-    function library(relative, prefix) {
+    function findOwner(relative, prefix) {
       if (relative === changedPath) { owned = prefix; ownedFile = relative; return; }
       entries(tree(relative).node, relative, prefix, (node, attributes, declarationFile) => {
         if (node.type === 'use_declaration' && node.namedChildren.some(item => item.type === 'visibility_modifier' && item.text === 'pub')) {
@@ -179,10 +194,28 @@ export async function registeredRustTestFilters(root, changedPath) {
         if (body) return;
         const child = moduleFile(declarationFile, name, attributes);
         const folder = path.posix.basename(child) === 'mod.rs' ? path.posix.dirname(child) : child.slice(0, -3);
-        if (child === changedPath || changedPath.startsWith(folder + '/')) library(child, [...prefix, name]);
+        if (child === changedPath || changedPath.startsWith(folder + '/')) findOwner(child, [...prefix, name]);
       });
     }
-    library(libraryRoot, []);
+    if (librarySection || fs.existsSync(path.join(root, libraryRoot))) findOwner(libraryRoot, []);
+    let ownerTarget = 'lib';
+    if (!owned) {
+      let binaryOwner = null;
+      reexports.length = 0;
+      for (const binary of binaries) {
+        findOwner(binary.root, []);
+        if (!owned) continue;
+        if (binaryOwner) throw new Error('Ambiguous changed Rust module across binaries: ' + changedPath);
+        binaryOwner = {route: owned, file: ownedFile, target: 'bin:' + binary.name};
+        owned = null;
+      }
+      if (binaryOwner) {
+        owned = binaryOwner.route;
+        ownedFile = binaryOwner.file;
+        ownerTarget = binaryOwner.target;
+      }
+      reexports.length = 0;
+    }
     if (!owned) throw new Error('Missing registered changed Rust module: ' + changedPath + ' in ' + libraryRoot);
     const ownershipRoutes = [owned], routeKeys = new Set([JSON.stringify(owned)]);
     for (let changed = true; changed;) {
@@ -243,7 +276,7 @@ export async function registeredRustTestFilters(root, changedPath) {
         }
       });
     }
-    for (const target of targets) {
+    for (const target of ownerTarget === 'lib' ? targets : []) {
       if (target.name === 'lib') throw new Error('Ambiguous library test target');
       currentTarget = target.name; selectedByTarget.set(currentTarget, new Set());
       unit(path.relative(root, target.path).split(path.sep).join('/'), []);
@@ -256,7 +289,7 @@ export async function registeredRustTestFilters(root, changedPath) {
       entries(body, relative, prefix, (node, attributes, declarationFile) => {
         if (node.type === 'function_item' && testDisposition(attributes)) {
           const filter = [...prefix, identifier(node.childForFieldName('name').text)].join('::');
-          if (testDisposition(attributes) === 'ignored') ignoredJobs.push({target: 'lib', filter, source: declarationFile});
+          if (testDisposition(attributes) === 'ignored') ignoredJobs.push({target: ownerTarget, filter, source: declarationFile});
           else librarySelected.add(filter);
         }
         if (node.type === 'mod_item') {
@@ -276,7 +309,7 @@ export async function registeredRustTestFilters(root, changedPath) {
     libraryTests(tree(ownedFile).node, ownedFile, owned);
     const jobs = [
       ...[...selectedByTarget].flatMap(([target, cases]) => [...cases].sort().map(filter => ({target, filter}))),
-      ...[...librarySelected].sort().map(filter => ({target: 'lib', filter})),
+      ...[...librarySelected].sort().map(filter => ({target: ownerTarget, filter})),
     ];
     if (!jobs.length) throw new Error('Missing registered test projection for source module');
     const sourceGuards = [...sources].map(([relative, observed]) => {

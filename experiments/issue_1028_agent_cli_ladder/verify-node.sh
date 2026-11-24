@@ -91,6 +91,9 @@ cargo_test() {
   local -a target_args
   case "$target" in
     lib) target_args=(--lib) ;;
+    bin:*)
+      [[ "${target#bin:}" =~ ^[A-Za-z_][A-Za-z_0-9-]*$ ]] || { record "tests:$filter" missing_test_target; return 1; }
+      target_args=(--bin "${target#bin:}") ;;
     *)
       [[ "$target" =~ ^[A-Za-z_][A-Za-z_0-9-]*$ ]] || { record "tests:$filter" missing_test_target; return 1; }
       target_args=(--test "$target") ;;
