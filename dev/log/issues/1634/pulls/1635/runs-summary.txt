@@ -1,0 +1,41 @@
+Benchmark Corpus Gate | failure
+  Build the corpus gate binary: failure
+  no benchmark prompt reaches the unknown opener (all shards): failure
+CI/CD Pipeline | failure
+  Detect Changes: failure
+  Pipeline Status: failure
+Coverage | failure
+  Detect Changes: failure
+Layered CI | failure
+  Detect tier changes: failure
+Question necessity ratchet | failure
+  Question necessity ratchet (issue #920): failure
+dependencies-latest | failure
+  update: failure
+Hive Mind draft | failure
+  draft: failure
+Job Headroom | failure
+  Audit job timeout headroom: failure
+External Benchmarks | failure
+  Run upstream suites: failure
+Issue 1028 Agent CLI binary-tree ladder | failure
+  Agent CLI ladder depth-5-2.2.2.2.1: failure
+  Validate the current-run leaf evidence: failure
+  Compare the measured ladder with the record: failure
+Work-item useful-edit hosted qualification | failure
+  Actual Hive agent work-item contradicted-documentation: failure
+  Actual Hive agent work-item original-documentation: failure
+  Actual Hive claude work-item unsupported: failure
+  Actual Hive agent work-item unsupported: failure
+  Actual Hive codex work-item contradicted-documentation: failure
+  Actual Hive agent work-item renamed-components: failure
+  Actual Hive claude work-item renamed-components: failure
+  Actual Hive claude work-item original-documentation: failure
+  Actual Hive claude work-item contradicted-documentation: failure
+  Actual Hive codex work-item renamed-components: failure
+  Actual Hive codex work-item unsupported: failure
+  Actual Hive codex work-item original-documentation: failure
+Agentic CLI Matrix | success
+
+Security | success
+
