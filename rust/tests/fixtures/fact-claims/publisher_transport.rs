@@ -40,7 +40,7 @@ impl SourceTransport for FactTransport<'_> {
     }
 }
 
-pub(super) fn fact_answer(prompt: &str, subject: &str) -> SymbolicAnswer {
+pub(crate) fn fact_answer(prompt: &str, subject: &str) -> SymbolicAnswer {
     let question = live_fact_question(prompt).unwrap_or_else(|| panic!("unparsed fact: {prompt}"));
     let client = CachedSourceClient::new(
         std::env::temp_dir().join(format!(

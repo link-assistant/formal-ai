@@ -99,6 +99,8 @@ jobs:
           # Keep complete commit history, without materializing unrelated blobs.
           sparse-checkout: |
             /scripts/detect-code-changes.rs
+            /scripts/github-output.rs
+            /scripts/detect-code-changes-tests.rs
             /scripts/ci-pull-request-admission.mjs
             /scripts/lib/documentation-paths.mjs
             /scripts/install-rust-script.sh

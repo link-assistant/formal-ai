@@ -257,6 +257,15 @@ test('post-run collection retains logs larger than the observed former eight MiB
  assert.equal(fs.readFileSync(path.join(directory,'artifact/job-22.log'),'utf8'),text);
 });
 
+test('diagnostic adaptation accepts upstream keys appended after the shared spread (issue #1634)',()=>{
+ const source="const dockerArgv = buildDockerArgv({\n  setEnv: { ...buildGitIdentityEnv(), ...buildRunContextEnv(env), HIVE_MIND_DEADLINE_AT_MS: String(deadlineAtMs), HIVE_MIND_FORMAL_AI_DRAFT: '1' },\n  image,\n});\n";
+ const adapted=adaptDraftDiagnostics(source);
+ const args=vm.runInNewContext(adapted.replace('const dockerArgv = ','').replace(/;\s*$/u,''),{buildDockerArgv:args=>args,buildGitIdentityEnv:()=>({}),
+  buildRunContextEnv:()=>({}),env:{},deadlineAtMs:5,image:'i',containerLogDir:'/home/box/logs'});
+ assert.equal(args.setEnv.HIVE_MIND_FORMAL_AI_DRAFT,'1');assert.equal(args.setEnv.HIVE_MIND_DEADLINE_AT_MS,'5');
+ assert.equal(args.setEnv.FORMAL_AI_LOG_DIR,'/home/box/logs/formal-ai-diagnostics');
+ assert.equal(adaptDraftDiagnostics(fs.readFileSync(path.join(root,'rust/tests/fixtures/hive-draft-runner-45c85a4.mjs.txt'),'utf8')).includes('FORMAL_AI_TRACE_REQUESTS'),true);
+});
 test('diagnostic adaptation preserves formatting and refuses comment/string impostors',()=>{
  const source='const argv = buildDockerArgv({ setEnv: { /* retain */ ...buildGitIdentityEnv(),\n ...buildRunContextEnv(env), }, image });\n';
  const adapted=adaptDraftDiagnostics(source);
