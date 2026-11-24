@@ -65,18 +65,3 @@ fn telegram_ads_concept_lookup_respects_explicit_response_language() {
         );
     }
 }
-
-#[test]
-fn concept_query_trims_ascii_and_full_width_terminal_punctuation() {
-    for punctuation in ["?", "？", "!", "！", "。", ",", "，", ";", "；", ":", "："] {
-        let prompt = format!("Redis是什么{punctuation}");
-        let query = formal_ai::extract_concept_query(&prompt)
-            .unwrap_or_else(|| panic!("definition query: {prompt}"));
-        assert_eq!(query.term, "redis", "{prompt}");
-    }
-    let query = formal_ai::extract_concept_query("What is foo.bar?").unwrap();
-    assert_eq!(
-        query.term, "foo.bar",
-        "internal punctuation is part of the subject"
-    );
-}

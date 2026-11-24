@@ -775,3 +775,7 @@ fn render_concept_in_context(language: &str, context: &str, record: &ConceptReco
         .replace("{source}", &source_markup)
         .replace("{source_kind}", source_kind)
 }
+
+#[cfg(test)]
+#[path = "../tests/source/concept_query_tests.rs"]
+mod tests;

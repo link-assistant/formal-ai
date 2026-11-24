@@ -541,7 +541,6 @@ pub use solver_handlers::{
 };
 // Issue #1172 R1172-5: the concept_lookup row's dictionary step, public so the
 // unit suite drives it over committed captures.
-pub use concepts::{ConceptQuery, extract_concept_query};
 pub use solver_handlers::{
     definition_term, try_word_definition_with_client, try_word_definition_with_offline,
 };

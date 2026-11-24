@@ -8,7 +8,7 @@ use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolve
 
 #[path = "../../fixtures/fact-claims/publisher_transport.rs"]
 mod publisher_transport;
-use publisher_transport::fact_answer;
+pub(super) use publisher_transport::fact_answer;
 
 #[test]
 fn publisher_quantity_units_and_painting_attribution_are_resolved() {
