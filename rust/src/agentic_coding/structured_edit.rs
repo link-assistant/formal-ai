@@ -16,11 +16,13 @@ use std::collections::HashMap;
 
 use serde_json::json;
 
-use super::code_artifact::{latest_result, source_from_read_result};
 use super::code_task::render_seeded_change;
-use super::final_result::FinalResult;
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
-use super::workspace_change::{VerifiedChange, plan_write_digest_verification};
+use super::progress::Progress;
+use super::workspace_change::{
+    VerifiedChange, plan_edit_preimage_gap, plan_write_digest_verification,
+};
 use crate::normal_markov::{quoted_segment_spans, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
 use crate::seed;
@@ -59,33 +61,44 @@ pub(super) fn plan_structured_edit_step(
     // cue itself -- restarted the read on every ping and the insertion never
     // advanced.
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
-    let source = latest_result(current_turn, Capability::Read)
-        .as_deref()
-        .map(source_from_read_result)
-        .filter(|source| !source.is_empty());
+    let progress = Progress::scan(messages);
+    let attempted_write = progress.attempted_mutation_for(&edit.target, Capability::Write);
+    let preimage = if attempted_write {
+        progress.source_read_before_latest_mutation_for(&edit.target, Capability::Write)
+    } else {
+        progress.fresh_source_read_for(&edit.target)
+    };
 
-    let Some(source) = source else {
+    let Some(source) = preimage.and_then(|observation| observation.source.as_deref()) else {
+        if attempted_write || progress.source_read_for(&edit.target).is_some() {
+            return Some(plan_edit_preimage_gap(&edit.target, result));
+        }
         let read_tool = tool_for(tool_names, Capability::Read)?;
         return Some(plan_one(read_tool, read_arguments(&edit.target)));
     };
-    let (updated, inserted) = insert_members(&source, &edit)?;
+    let (updated, inserted) = insert_members(source, &edit)?;
     // A read that already lists every member is itself the observation: a run
     // resumed after a client compaction answers at once instead of spending
     // another full-file observation that pushes it over the threshold again.
-    if inserted.is_empty() && latest_result(current_turn, Capability::Write).is_none() {
-        return Some(AgenticPlan::Final(render_seeded_change(
+    if inserted.is_empty() && !attempted_write {
+        return Some(record(
+            AgenticPlan::Final(render_seeded_change(
+                "coding-member-already-present",
+                task,
+                &edit.target,
+                &[(MEMBERS_SLOT, &quoted_list(&edit.values))],
+            )?),
+            FinalDisposition::Finding,
             "coding-member-already-present",
-            task,
-            &edit.target,
-            &[(MEMBERS_SLOT, &quoted_list(&edit.values))],
-        )?));
+            result,
+        ));
     }
 
     // Members the file already lists need no write: after a client compaction
     // the run re-reads the file it already changed, and rewriting it in full
     // pushed the session straight back over the compaction threshold (the
     // issue #1028 ladder looped read -> write until its budget ran out).
-    if !inserted.is_empty() && latest_result(current_turn, Capability::Write).is_none() {
+    if !attempted_write {
         let write_tool = tool_for(tool_names, Capability::Write)?;
         return Some(plan_one(
             write_tool,

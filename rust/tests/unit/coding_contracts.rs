@@ -15,3 +15,5 @@ mod tool_workspace;
 
 #[path = "issue_1066_ladder_capability/nested_delivery.rs"]
 mod nested_delivery;
+#[path = "agentic-coding/issue_1069_structural_edit.rs"]
+mod structural_edits;

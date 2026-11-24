@@ -8,11 +8,11 @@
 import { callbackText as canonicalUnaryText } from './callback_values.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
-import { latestResult, sourceFromReadResult } from './code_artifact.mjs';
-import { planWriteDigestVerification } from './workspace_change/digest_verification.mjs';
+import { Progress } from './progress.mjs';
+import { planEditPreimageGap, planWriteDigestVerification } from './workspace_change/digest_verification.mjs';
 import { renderSeededChange } from './code_task.mjs';
 import { insertMembersViaLinks } from './link_edit_rules.mjs';
-import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
+import { FinalDisposition, jsonText, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { resolveRequirementTarget } from './requirement_resolution.mjs';
 import { quotedSegmentSpans, unwrapTransportQuotes } from './crate/normal_markov.mjs';
@@ -41,27 +41,31 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
   const edit = memberInsertion(task);
   if (!edit) return null;
   const currentTurn = messages.slice(evidenceWindowStart(messages));
-  const read = latestResult(currentTurn, Capability.Read);
-  const source = read === null ? '' : sourceFromReadResult(read);
-  if (source === '') {
+  const progress = Progress.scan(messages);
+  const attemptedWrite = progress.attemptedMutationFor(edit.target, Capability.Write);
+  const preimage = attemptedWrite
+    ? progress.sourceReadBeforeLatestMutationFor(edit.target, Capability.Write)
+    : progress.freshSourceReadFor(edit.target);
+  if (typeof preimage?.source !== 'string') {
+    if (attemptedWrite || progress.sourceReadFor(edit.target) !== null) return planEditPreimageGap(edit.target);
     const readTool = toolFor(toolNames, Capability.Read);
     return readTool ? planOne(readTool, readArguments(edit.target)) : null;
   }
-  const result = insertMembers(source, edit);
+  const result = insertMembers(preimage.source, edit);
   if (!result) return null;
   const [updated, inserted] = result;
   // A read that already lists every member is itself the observation: a run
   // resumed after a client compaction answers at once instead of spending
   // another full-file observation that pushes it over the threshold again.
-  if (!inserted.length && latestResult(currentTurn, Capability.Write) === null) {
+  if (!inserted.length && !attemptedWrite) {
     const rendered = renderSeededChange('coding-member-already-present', task, edit.target, [['{members}', quotedList(edit.values)]]);
-    return rendered === null ? null : finalAnswer(rendered);
+    return rendered === null ? null : resolvedFinalAnswer(rendered, FinalDisposition.Finding, 'coding-member-already-present');
   }
   // Members the file already lists need no write: after a client compaction
   // the run re-reads the file it already changed, and rewriting it in full
   // pushed the session straight back over the compaction threshold (the
   // issue #1028 ladder looped read -> write until its budget ran out).
-  if (inserted.length && latestResult(currentTurn, Capability.Write) === null) {
+  if (!attemptedWrite) {
     const writeTool = toolFor(toolNames, Capability.Write);
     return writeTool ? planOne(writeTool, writeArguments(edit.target, updated)) : null;
   }

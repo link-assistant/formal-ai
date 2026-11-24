@@ -8,6 +8,7 @@ import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { PLAN_PATH, composeGeneralChangePlan, planLinksNotation } from '../../../js/agentic/general_planner.mjs';
 import { gapAnswer, nextStep, obligations } from '../../../js/agentic/task_obligations.mjs';
 import { planStructuredEditStep } from '../../../js/agentic/structured_edit.mjs';
+import { finalResult } from '../../../js/agentic/final_result.mjs';
 import { explicitStdout, programContractAnswer } from '../../../js/agentic/crate/coding_program_contract.mjs';
 import { baselineVersionSet, fillWorkflowVersions } from '../../../js/agentic/crate/version_resolution.mjs';
 import { parseSubstitutionQuery, renderSubstitutionQuery, substitutionEffect } from '../../../js/agentic/crate/links_substitution_query.mjs';
@@ -120,13 +121,21 @@ describe('structured_edit (rust/tests/unit/agentic-coding/issue_1069_structural_
   const TOOLS = ['read_file', 'write_file', 'run_shell_command'];
   const argument = (plan, key) => JSON.parse(plan.calls[0].arguments)[key];
 
+  function appendRead(messages, path, source, complete = true) {
+    const id = 'read-' + messages.length;
+    messages.push(
+      { role: 'assistant', tool_calls: [{ id, type: 'function', function: { name: 'read_file', arguments: JSON.stringify({ path }) } }] },
+      { role: 'tool', tool_call_id: id, name: 'read_file', content: source,
+        source_read: { path, success: true, complete, format: 'raw' } },
+    );
+  }
+
   function writtenSource(prompt, path, source) {
     const messages = [{ role: 'user', content: prompt }];
     const read = planStructuredEditStep(prompt, messages, TOOLS);
     assert.equal(read.kind, 'tool_calls');
     assert.equal(argument(read, 'path'), path);
-    messages.push({ role: 'assistant', content: '', tool_calls: [{ id: 'call_1', type: 'function', function: { name: read.calls[0].tool, arguments: read.calls[0].arguments } }] });
-    messages.push({ role: 'tool', tool_call_id: 'call_1', name: read.calls[0].tool, content: source });
+    appendRead(messages, path, source);
     const write = planStructuredEditStep(prompt, messages, TOOLS);
     assert.equal(argument(write, 'path'), path);
     return argument(write, 'content');
@@ -149,6 +158,34 @@ describe('structured_edit (rust/tests/unit/agentic-coding/issue_1069_structural_
     assert.ok(updated.includes('"Cargo.lock", "bun.lock", "uv.lock"'), updated);
   });
 
+  test('replaces only bytes read from the target of a member insertion', () => {
+    const target = 'src/names.rs';
+    const prompt = 'Edit the tracked file `src/names.rs`: add "c" to the NAMES list.';
+    const messages = [{ role: 'user', content: prompt }];
+    const first = planStructuredEditStep(prompt, messages, TOOLS);
+    const other = 'tests/names.rs';
+    appendRead(messages, other, 'const NAMES: &[&str] = &["unrelated"];\n');
+    const retry = planStructuredEditStep(prompt, messages, TOOLS);
+    assert.equal(retry.calls[0].tool, first.calls[0].tool);
+    assert.equal(argument(retry, 'path'), target);
+
+    appendRead(messages, target, 'const NAMES: &[&str] = &["a", "b"];\n');
+    appendRead(messages, other, 'const NAMES: &[&str] = &["second-decoy"];\n');
+    const write = planStructuredEditStep(prompt, messages, TOOLS);
+    assert.equal(argument(write, 'path'), target);
+    assert.equal(argument(write, 'content'), 'const NAMES: &[&str] = &["a", "b", "c"];\n');
+  });
+
+  test('an incomplete read of the target cannot authorize whole-file replacement', () => {
+    const target = 'src/names.rs';
+    const prompt = 'Edit src/names.rs: add "c" to the NAMES list.';
+    const messages = [{ role: 'user', content: prompt }];
+    appendRead(messages, target, 'const NAMES: &[&str] = &["a", "b"];\n', false);
+    const plan = planStructuredEditStep(prompt, messages, TOOLS);
+    assert.equal(finalResult(plan).disposition, 'gap');
+    assert.equal(JSON.parse(plan.answer).target, target);
+  });
+
   test('finds an unnamed list by its members; parenthesised lists (lines 129, 149)', () => {
     const updated = writtenSource('Edit config.rs so the list holding "alpha" and "beta" also holds "gamma".', 'config.rs', 'let modes = vec!["alpha", "beta"];\nlet other = vec!["delta"];\n');
     assert.ok(updated.includes('vec!["alpha", "beta", "gamma"]'), updated);
@@ -160,9 +197,7 @@ describe('structured_edit (rust/tests/unit/agentic-coding/issue_1069_structural_
   test('insertion is idempotent: the read that shows the value is the observation (line 165)', () => {
     const prompt = 'Edit names.rs: add "b" to the NAMES array that already contains "a".';
     const messages = [{ role: 'user', content: prompt }];
-    const read = planStructuredEditStep(prompt, messages, TOOLS);
-    messages.push({ role: 'assistant', content: '', tool_calls: [{ id: 'call_1', type: 'function', function: { name: read.calls[0].tool, arguments: read.calls[0].arguments } }] });
-    messages.push({ role: 'tool', tool_call_id: 'call_1', name: read.calls[0].tool, content: 'const NAMES: &[&str] = &["a", "b"];\n' });
+    appendRead(messages, 'names.rs', 'const NAMES: &[&str] = &["a", "b"];\n');
     const answer = planStructuredEditStep(prompt, messages, TOOLS);
     assert.equal(answer.kind, 'final');
     assert.equal(answer.answer, '`names.rs` already lists "b", "a"; nothing needed to change.');

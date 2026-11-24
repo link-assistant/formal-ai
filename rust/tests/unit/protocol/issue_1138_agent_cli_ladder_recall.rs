@@ -22,6 +22,7 @@
 //!   completion. A continuation cue resumes the standing run (issue #1095) --
 //!   it must not erase what the run has already done.
 
+use formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame;
 use formal_ai::protocol::{ChatMessage, MessageContent, ToolCall};
 use formal_ai::{
     ChatCompletion, ChatCompletionRequest, SolverConfig, UniversalSolver,
@@ -317,7 +318,7 @@ fn continuation_pings_do_not_restart_the_leaf_write_state_machine() {
             steps.push((name.clone(), arguments.clone()));
             let id = format!("c{}", messages.len());
             let result = if name == "read" {
-                source.to_owned()
+                complete_owned_source_read_frame(source)
             } else if name == "bash" && arguments.contains("cat") {
                 updated.to_owned()
             } else {
