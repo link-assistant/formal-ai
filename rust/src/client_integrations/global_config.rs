@@ -7,7 +7,6 @@
 use std::error::Error;
 use std::fmt::Write as _;
 use std::fs;
-use std::path::Path;
 
 use serde_json::Value;
 use toml_edit::{DocumentMut, Item, Table, value as toml_value};
