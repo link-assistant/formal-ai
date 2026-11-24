@@ -16,16 +16,26 @@ the URL.
 All three focused controls pass locally. Each test has a five-second ceiling,
 three probes, a 500 ms request deadline, a three-second total helper budget,
 an 8 KiB request-header limit and explicit socket cleanup. The existing
-permanent-status and HTTP recovery controls remain unchanged. No Rust build,
-lychee binary, external site or unbounded reset server is run.
+permanent-status and HTTP recovery controls remain unchanged. This Node
+recheck test runs entirely on loopback.
 
 The complete maintained owner passes all 444 observations in 216.826 seconds;
 all eleven affected JavaScript gates pass. The [receipt](../../../experiments/issue-1580/evidence/checks/link-transport-reset-20261123/manifest.json)
 retains complete outputs, source identities and the frozen observation scope.
-These tests qualify the current external recheck helper. Current lychee internal
-I/O classification, actual malformed-lock rejection by Cargo audit and updater
-engine compatibility remain unfinished. Historical npm-check-updates 23.1.1
-metadata is not presented as a current publisher response.
+On 2026-11-24 the workflow's `lychee-action@v2` default was v0.24.2.
+Run `python3 experiments/issue-1580/probe-lychee-reset.py /path/to/lychee`
+with the official Linux x86-64 archive. The replay checks its published
+SHA-256 `1f4e0ef7f6554a6ed33dd7ac144fb2e1bbed98598e7af973042fc5cd43951c9a`
+before extraction. A single Markdown link drives each phase with two retries
+configured. HTTPS connects once and reports a reset, with the exact diagnostic
+varying with handshake timing. HTTP sends three complete request lines and
+reports `Connection failed`.
+Both scans report one error and exit two. The initial direct-URL probe
+exited one for its HTTPS failure. The Markdown input matches the workflow's
+scan and produces its per-link report. No Rust compilation is needed.
+
+Actual malformed-lock rejection by Cargo audit and updater engine
+compatibility remain unfinished.
 
 All wider acceptance remains active in
 [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), kept draft and
