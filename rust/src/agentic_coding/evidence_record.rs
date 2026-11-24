@@ -20,6 +20,7 @@ use super::planner::{
     write_arguments,
 };
 use super::progress::Progress;
+use super::request_sequence::VERIFIED_SEQUENCE_ORIGIN;
 use super::shell_command::carries_authoring_task;
 use super::shell_command_policy::sentences;
 use super::write_request::{
@@ -389,7 +390,14 @@ pub(super) fn plan_evidence_record_step(
                         result,
                     ));
                 }
-                answer
+                if resolved
+                    .result
+                    .is_some_and(|value| value.origin == VERIFIED_SEQUENCE_ORIGIN)
+                {
+                    sequence_observation(&answer, &obligation.residual)
+                } else {
+                    answer
+                }
             } else {
                 trace_route("evidence_record", "symbolic_residual");
                 symbolic_answer(&obligation.residual)?.text
@@ -562,6 +570,23 @@ fn exact_field_values(answer: &str, key: &str) -> Vec<String> {
         .filter_map(|line| line.strip_prefix(&prefix))
         .map(str::to_owned)
         .collect()
+}
+
+/// Retain the finding from every verified step through nested delivery.
+fn sequence_observation(answer: &str, request: &str) -> String {
+    let mut findings = Vec::new();
+    for step in answer.split("\n\n") {
+        let exact = exact_field_values(step, "result");
+        if exact.is_empty() {
+            let line = substantive_result_line(step, request);
+            if !line.is_empty() {
+                findings.push(line.to_owned());
+            }
+        } else {
+            findings.extend(exact);
+        }
+    }
+    combined_observation(&findings, request).unwrap_or_else(|| answer.to_owned())
 }
 
 /// State how multiple exact observations compose while retaining each value.

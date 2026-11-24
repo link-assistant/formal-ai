@@ -55,6 +55,43 @@ fn an_angle_delimited_result_instruction_records_the_observation() {
     assert_nested_delivery_observes_source(prompt);
 }
 
+#[test]
+fn the_result_and_proof_retain_each_verified_edit_in_a_sequence() {
+    let source = "settings/options.txt";
+    let prompt = "Insert the line «cobalt dawn» after the line «azure noon» in settings/options.txt, +        then delete the line «stale entry» from settings/options.txt. Create +        `agent-ladder-effects/node.lino` with these exact field lines: `kind=edit` and +        `result=<each verified edit>`. Leave supporting evidence in .agent-ladder/node-proof.md. +        The first line must be exactly `proof_for=edit`.";
+    let mut workspace = ToolWorkspace::new(prompt);
+    workspace
+        .write_initial(source, "azure noon\nstale entry\n")
+        .unwrap();
+    let mut messages = vec![ChatMessage::user(prompt)];
+    for turn in 0..14 {
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &LADDER_TOOLS) else {
+            break;
+        };
+        for (index, call) in calls.iter().enumerate() {
+            let id = format!("sequence-delivery-{turn}-{index}");
+            messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                &id,
+                &call.tool,
+                &call.arguments,
+            )]));
+            messages.push(workspace.execute(&id, call));
+        }
+    }
+    assert_eq!(workspace.read(source).unwrap(), "azure noon\ncobalt dawn\n");
+    let effect = workspace.read("agent-ladder-effects/node.lino").unwrap();
+    let proof = workspace.read(".agent-ladder/node-proof.md").unwrap();
+    assert!(proof.starts_with("proof_for=edit\n"), "{proof}");
+    let result = effect
+        .lines()
+        .find_map(|line| line.strip_prefix("result="))
+        .expect("verified edits have a result");
+    for evidence in [result, &proof] {
+        assert!(evidence.contains("cobalt dawn"), "{evidence}");
+        assert!(evidence.contains("stale entry"), "{evidence}");
+    }
+}
+
 fn assert_nested_delivery_observes_source(prompt: &str) {
     let mut messages = vec![ChatMessage::user(prompt)];
     let mut workspace = ToolWorkspace::new(prompt);

@@ -38,7 +38,8 @@ async function replay(prompt, mutate=null, options={}){
     if(options.continue)messages.push({role:'user',content:'Continue if you have next steps'});
    }
   }
-  const paths=new Set([proof,effect,'intake/monday.md','.formal-ai/general-change-plan.lino',...calls.filter(call=>call.tool==='write').map(call=>{const args=JSON.parse(call.arguments);return args.filePath??args.path;})]);
+  const paths=new Set([proof,effect,'intake/monday.md','.formal-ai/general-change-plan.lino',
+   ...Object.keys(options.initial??{}),...calls.filter(call=>call.tool==='write').map(call=>{const args=JSON.parse(call.arguments);return args.filePath??args.path;})]);
   const files=new Map([...paths].filter(path=>existsSync(join(directory,path))).map(path=>[path,readFileSync(join(directory,path),'utf8')]));
   return{files,calls,final};
  }finally{rmSync(directory,{recursive:true,force:true});}
@@ -67,6 +68,25 @@ test('an angle-delimited result instruction records the observed result', async 
   const observed = result.files.get(effect)?.split('\n').find(line => line.startsWith('result='));
   assert.ok(observed?.includes(marker), result.files.get(effect));
   assert.ok(result.files.get(proof)?.includes(marker), result.files.get(proof));
+});
+
+test('the result and its proof retain every verified edit in a sequence', async () => {
+  const source = 'settings/options.txt';
+  const prompt = `Insert the line «cobalt dawn» after the line «azure noon» in ${source}, then delete the line «stale entry» from ${source}. `
+    + 'Create `agent-ladder-effects/node.lino` with these exact field lines: `kind=edit` and `result=<each verified edit>`. '
+    + 'Leave supporting evidence in .agent-ladder/node-proof.md. The first line must be exactly `proof_for=edit`.';
+  const result = await replay(prompt, null, {
+    initial: { [source]: 'azure noon\nstale entry\n' },
+    turns: 14,
+  });
+  assert.equal(result.files.get(source), 'azure noon\ncobalt dawn\n');
+  const resultLine = result.files.get(effect)?.split('\n').find(line => line.startsWith('result='));
+  const proofBytes = result.files.get(proof);
+  assert.match(proofBytes ?? '', /^proof_for=edit\n/u);
+  for (const evidence of [resultLine, proofBytes]) {
+    assert.match(evidence ?? '', /cobalt dawn/u);
+    assert.match(evidence ?? '', /stale entry/u);
+  }
 });
 for(const[mode,mutate]of[
  ['bare acknowledgement',(call,receipt)=>call.tool==='bash'?{content:'ok'}:receipt],

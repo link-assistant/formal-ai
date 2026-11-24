@@ -22,6 +22,7 @@ import { instructionEnd } from './positional_edit.mjs';
 import { planChatStepResolved, planSettledRoutes } from './planner.mjs';
 import { isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import { Progress } from './progress.mjs';
+import { VERIFIED_SEQUENCE_ORIGIN } from './request_sequence.mjs';
 import { carriesAuthoringTask } from './shell_command.mjs';
 import { sentences } from './shell_command_policy.mjs';
 import { observedFileOutcome } from './task_obligations.mjs';
@@ -223,7 +224,9 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
         traceRoute('evidence_record', 'residual_step_failed');
         return resolvedFinalAnswer(plan.answer, FinalDisposition.Failure, 'residual_step_failed');
       }
-      answer = plan.answer;
+      answer = plan.result.origin === VERIFIED_SEQUENCE_ORIGIN
+        ? sequenceObservation(plan.answer, obligation.residual)
+        : plan.answer;
     } else {
       traceRoute('evidence_record', 'symbolic_residual');
       const symbolic = await symbolicAnswer(obligation.residual);
@@ -329,6 +332,16 @@ function combinedObservation(values, request) {
   if (values.length === 1) return values[0];
   const joined = values.join('; ');
   return renderResponse('evidence-exact-composition', detect(request), [['values', joined]]) ?? joined;
+}
+
+function sequenceObservation(answer, request) {
+  const findings = answer.split('\n\n').flatMap(step => {
+    const exact = exactFieldValues(step, 'result');
+    if (exact.length) return exact;
+    const line = substantiveResultLine(step, request);
+    return line === '' ? [] : [line];
+  });
+  return combinedObservation(findings, request) ?? answer;
 }
 
 function nonHollowResult(raw, task) {

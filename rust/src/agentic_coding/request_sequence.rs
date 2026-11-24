@@ -28,6 +28,7 @@ const CLAUSE_MARKS: &[char] = &[',', ';', '.', '，', '；', '。'];
 const SEQUENCE_CUE_ROLE: &str = "file-edit-sequence-cue";
 /// The seeded joiner words (`and`).
 const JOINER_ROLE: &str = "file_edit_joiner_cue";
+pub(super) const VERIFIED_SEQUENCE_ORIGIN: &str = "request_sequence_verified";
 
 /// The request's sentences when the first is a seeded shell intent and every
 /// later one edits a file the first names (mirrors `requestSequence`).
@@ -370,7 +371,7 @@ pub(super) fn plan_bound_request_steps(
     Some(record(
         AgenticPlan::Final(answers.join("\n\n")),
         FinalDisposition::Finding,
-        "request_sequence_verified",
+        VERIFIED_SEQUENCE_ORIGIN,
         result,
     ))
 }
