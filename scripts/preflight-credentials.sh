@@ -130,8 +130,10 @@ curl_config() { # curl_config -- the document curl reads on stdin via `-K -`
   done
 }
 
-# Echo the HTTP status of one request, or 000 when curl could not speak at all.
-# Retries only what a retry can fix: a transport error, a 5xx or a 429.
+# Echo the HTTP status of one request, or 000 on a transport error or timeout.
+# With default retry settings each exchange takes at most 25 seconds. Seven
+# exchanges fit the three minutes left after the preflight job's checkout.
+# Retry only a transport error, a 5xx or a 429.
 # Consumes ${curl_headers[@]}; the caller sets it before every call.
 http_status() { # http_status <body-file> [curl args...]
   local body="$1"
@@ -139,7 +141,8 @@ http_status() { # http_status <body-file> [curl args...]
   local attempt=1 status config
   config="$(curl_config)"
   while :; do
-    status="$(printf '%s' "$config" | curl -sS -o "$body" -w '%{http_code}' -A "$user_agent" -K - "$@" 2>/dev/null)" || status=000
+    status="$(printf '%s' "$config" | curl -sS --connect-timeout 3 --max-time 5 \
+      -o "$body" -w '%{http_code}' -A "$user_agent" -K - "$@" 2>/dev/null)" || status=000
     case "$status" in
       000 | 429 | 5??)
         if [ "$attempt" -ge "$retries" ]; then break; fi
