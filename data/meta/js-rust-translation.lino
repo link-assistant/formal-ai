@@ -15,13 +15,13 @@ js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
   modules 165
-  translated_items 346
+  translated_items 347
   workaround_items 37
   inferred_signatures 3
   carried_items 2667
-  translated_modules 115
+  translated_modules 116
   fully_translated_modules 1
-  refused_modules 50
+  refused_modules 49
 workaround array-push items 2
 workaround callback-loops items 1
 workaround import-pruning items 12
@@ -54,7 +54,7 @@ module js/agentic/crate/dialog_log.mjs translated 0 workaround 0 inferred 0 carr
 module js/agentic/crate/dialogue_formalization.mjs translated 5 workaround 0 inferred 0 carried 16
 module js/agentic/crate/discovery_production.mjs translated 10 workaround 1 inferred 0 carried 37
 module js/agentic/crate/engine.mjs translated 1 workaround 1 inferred 0 carried 7
-module js/agentic/crate/engine_answer.mjs translated 0 workaround 0 inferred 0 carried 4
+module js/agentic/crate/engine_answer.mjs translated 1 workaround 0 inferred 0 carried 4
 module js/agentic/crate/engine_stable_identifier.mjs translated 2 workaround 0 inferred 0 carried 5
 module js/agentic/crate/es_tokenizer.mjs translated 6 workaround 0 inferred 0 carried 13
 module js/agentic/crate/event_log.mjs translated 3 workaround 0 inferred 0 carried 10
@@ -209,7 +209,7 @@ refusal "method call .some()" 52
 refusal "method call .slice()" 48
 refusal "Array.from" 47
 refusal "method call .push()" 38
-refusal "optional chaining" 35
+refusal "optional chaining" 36
 refusal "method call .indexOf()" 34
 refusal "field access" 32
 refusal "nullish coalescing" 31
@@ -256,7 +256,6 @@ refusal "method call .toFixed()" 3
 refusal "several declarators" 3
 refusal "syntax: unsupported string escape \p" 3
 refusal "type: one value is used as a string and as an array; declare the types of the function with JSDoc" 3
-refusal "type: one value is used as an array and as a string; declare the types of the function with JSDoc" 3
 refusal "bitwise &" 2
 refusal "generator function" 2
 refusal "instanceof operator" 2
@@ -266,6 +265,7 @@ refusal "method call .subarray()" 2
 refusal "rest parameter" 2
 refusal "shift <<" 2
 refusal "syntax: unsupported string escape \x" 2
+refusal "type: one value is used as an array and as a string; declare the types of the function with JSDoc" 2
 refusal "BigInt" 1
 refusal "Math.fround" 1
 refusal "Math.log2" 1

@@ -10,13 +10,13 @@ use crate::agent::{AgentRunStatus, AgentWorkspace, AgentWorkspaceConfig};
 use crate::coding::fragment_catalog::FragmentCatalog;
 use crate::coding::ir_lowering::lowering_for;
 use crate::coding::program_ir::{IrNode, IrType, ProgramIr, ReuseMode};
-use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::execution_evidence::{Evidence, EvidenceSource, ObservationKind};
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 use crate::verifiable_task::{
     TaskExpectation, VerifiableTask, normalized_category, recognise_verifiable,
 };
+use crate::{engine::SymbolicAnswer, engine_answer::VERIFIABLE_TASK_EXECUTION_LINK};
 
 use super::{finalize_simple, try_pattern_inference};
 
@@ -147,7 +147,7 @@ pub fn try_verifiable_task_with_online(
         if corroborated { 1.0 } else { 0.7 },
     );
     symbolic.evidence_links.push(format!(
-        "verifiable_task:executed:{}:{}",
+        "{VERIFIABLE_TASK_EXECUTION_LINK}{}:{}",
         answer.derivation_id,
         answer.value.trim()
     ));
