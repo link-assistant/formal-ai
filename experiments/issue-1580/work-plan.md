@@ -4,7 +4,9 @@
 - [x] Repair no-default-feature acquisition, Rust test paths, terminology and Cargo witness identities. Keep the measured documentation-core and planner bounds exact. Retain all twelve document-recipe precedences and every fixture payload.
 - [x] Inventory all 42 cache orphans. Keep the twelve historical entity captures with their replay, remove 25 obsolete label snapshots, and preserve all six lexical views backed by WordNet. Verify zero unreferenced records, 953 views and the existing closure budget.
 - [x] Run the cache budget replay and retained publisher-data controls in the fast dependency maintenance test. Record the original updater failure in the production-only regression ledger.
-- [ ] Qualify all checks on the exact published PR head. Full resolved-dependency validation and publication remain open on the default-branch path.
+- [x] Qualify `ec03bde97` on the exact published head. Thirty-two workflows pass with one scope skip. All twelve JavaScript groups, 441 selected native cases, and the original eight-step Scala failure guard pass. The crates.io authority warning and two OpenSSF maintenance scores remain open.
+- [x] Move the complete new Google Trends overlap case to the existing catalog test module, where focused reasoning CI selects it.
+- [ ] Observe the new overlap test in the next hosted run. Full resolved-dependency validation and publication require the default-branch path.
 
 Evidence for both the original failures and their reproductions is in the [dependency updater case study](../../docs/case-studies/issue-1580/dependency-updater-qualification.md).
 

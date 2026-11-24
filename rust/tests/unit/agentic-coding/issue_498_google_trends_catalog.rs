@@ -1,8 +1,9 @@
 use crate::issue_498_google_trends::{captured_feed, with_trends_replay};
 use formal_ai::agentic_coding::{
     AgenticPlan, DRIVER_TOOLS, GOOGLE_TRENDS_CATALOG_PATH, GOOGLE_TRENDS_CATALOG_TASK,
-    PlannedToolCall, google_trends_catalog as recipe, is_google_trends_catalog_task,
-    plan_chat_step, run_agentic_task,
+    GOOGLE_TRENDS_LEARNING_PATH, PlannedToolCall, google_trends_catalog as recipe,
+    is_google_trends_catalog_task, is_google_trends_learning_task, plan_chat_step,
+    run_agentic_task,
 };
 use formal_ai::{ChatMessage, ToolCall, answer_google_trends_catalog};
 use lino_objects_codec::format::parse_indented;
@@ -68,6 +69,20 @@ fn recognises_the_google_trends_catalog_task_without_colliding_with_siblings() {
     assert!(!formal_ai::agentic_coding::is_question_catalog_task(
         GOOGLE_TRENDS_CATALOG_TASK
     ));
+}
+
+#[test]
+fn learning_frontier_takes_precedence_when_the_request_also_names_the_catalog() {
+    let request = "Map the Google Trends learning frontier for unresolved catalog prompts.";
+    assert!(is_google_trends_learning_task(request));
+    assert!(is_google_trends_catalog_task(request));
+
+    with_trends_replay(|| {
+        let call = expect_single_call(&[ChatMessage::user(request)], &["write_file"]);
+        assert_eq!(call.tool, "write_file");
+        let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+        assert_eq!(arguments["path"], GOOGLE_TRENDS_LEARNING_PATH);
+    });
 }
 
 #[test]

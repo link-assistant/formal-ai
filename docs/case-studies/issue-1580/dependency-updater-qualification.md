@@ -27,4 +27,25 @@ Run `node --test --test-concurrency=1 rust/tests/web/dependencies-maintenance-wo
 
 The latest source already renames `MAX_CAPTURE_BYTES`, the source of the historical Clippy error at line 5618. The scheduled default-branch publication still requires a hosted run.
 
+## Hosted pull request checkpoint
+
+All twelve JavaScript groups and 441 selected native contract cases pass on
+`ec03bde97ede61bbdf74ba5fad8e4283978539c0`. The branch finishes 32 workflows
+successfully with one scope skip. The original eight-step Scala compiler-failure
+control passes in native Hive group 3 at full Pipeline log line 77151.
+[Pipeline](https://github.com/link-assistant/formal-ai/actions/runs/45342732810) ·
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/45342732009)
+
+The overlapping Trends recipe case had been placed in the aggregate learning
+module. The focused reasoning target already runs the sibling catalog module
+with the same replay helper. Move the entire new case there so it runs in
+focused CI, preserving every predicate and assertion. Its next hosted
+execution remains to be observed.
+
+The Pipeline emits the crates.io token-authority warning at full-log line
+1052. The Security log reports OpenSSF scores of 2.8 for `debug` and 2.3 for
+`require-from-string` at lines 218–219. These are dependency-maintenance scores;
+the logs show no advisory for either dependency.
+[Security](https://github.com/link-assistant/formal-ai/actions/runs/45342732171)
+
 Related pull request [#1581](https://github.com/link-assistant/formal-ai/pull/1581).
