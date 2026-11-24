@@ -124,10 +124,14 @@ function exactFieldLines(sentence, target) {
   const fields = sentence.split('`')
     .filter((_, index) => index % 2 === 1)
     .map(trim)
-    .filter((quoted) => quoted !== target && !Array.from(quoted).some(isWhitespace))
-    .filter((quoted) => {
+    .flatMap((quoted) => {
+      if (quoted === target) return [];
       const equals = quoted.indexOf('=');
-      return equals >= 0 && /^[A-Za-z][A-Za-z0-9_]*$/.test(quoted.slice(0, equals));
+      if (equals < 0 || !/^[A-Za-z][A-Za-z0-9_]*$/.test(quoted.slice(0, equals))) return [];
+      if (!Array.from(quoted).some(isWhitespace)) return [quoted];
+      // A prose description inside angle brackets declares an open field.
+      const value = quoted.slice(equals + 1);
+      return /^<[^<>\r\n]+>$/u.test(value) && trim(value.slice(1, -1)) !== '' ? [quoted.slice(0, equals + 1)] : [];
     });
   return fields.filter((field, index) => !fields.slice(index + 1).includes(field));
 }

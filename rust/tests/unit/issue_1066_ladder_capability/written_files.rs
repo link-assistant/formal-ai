@@ -117,6 +117,20 @@ fn nested_delivery_carries_the_observation_into_the_outer_effect() {
         lines: `subject=decomposition`, `kind=inspection`, and `result=` followed by the \
         observed result. Leave supporting evidence in `.audit/decomposition-proof.md`. The \
         first line must be exactly `proof_for=decomposition`.";
+    assert_nested_delivery_observes_source(prompt);
+}
+
+#[test]
+fn an_angle_delimited_result_instruction_records_the_observation() {
+    let prompt = "Inspect the existing task-decomposition data model and identify where a node \
+        stores its children. Create `audit-effects/decomposition.lino` with these exact field lines: \
+        `subject=decomposition`, `kind=inspection`, and `result=<the result actually observed>`. \
+        Leave supporting evidence in `.audit/decomposition-proof.md`. \
+        The first line must be exactly `proof_for=decomposition`.";
+    assert_nested_delivery_observes_source(prompt);
+}
+
+fn assert_nested_delivery_observes_source(prompt: &str) {
     let mut messages = vec![formal_ai::ChatMessage::user(prompt)];
     let mut effect = None;
     let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);

@@ -58,6 +58,16 @@ test('unchanged colon source request preserves all fields, destinations and exac
  assert.deepEqual(result.files.get(effect).split('\n').slice(0,3),['node_path=2.1.2.1.2','node_depth=5','node_kind=leaf']);
  assert.ok(result.files.get(effect).split('\n').find(line=>line.startsWith('result=')).split(/\s+/u).length>=4);
 });
+test('an angle-delimited result instruction records the observed result', async () => {
+  const prompt = colon.replace(
+    '`result=` followed by at least four words that state the task result actually observed in this checkout',
+    '`result=<the task result actually observed in this checkout, at least four words>`',
+  );
+  const result = await replay(prompt, null, { history: observedSearch() });
+  const observed = result.files.get(effect)?.split('\n').find(line => line.startsWith('result='));
+  assert.ok(observed?.includes(marker), result.files.get(effect));
+  assert.ok(result.files.get(proof)?.includes(marker), result.files.get(proof));
+});
 for(const[mode,mutate]of[
  ['bare acknowledgement',(call,receipt)=>call.tool==='bash'?{content:'ok'}:receipt],
  ['wrong successful bytes',(call,receipt)=>call.tool==='bash'?{content:JSON.stringify({stdout:'wrong observed bytes',exit_code:0,complete:true})}:receipt],
@@ -105,17 +115,24 @@ test('original Create preserves earlier history without appending a plan',async(
  assert.ok(result.final);
 });
 test('an unexecuted verifiable task cannot fill a result field', async () => {
-  // Captured depth-three request with an explicit result field.
+  // Captured depth-three request with the original and explicit result forms.
   const prompt = [
     "Decomposition node 1.1.1: Deliver these requirements in this repository; each names behaviour or a declaration, never a file, so find the declaration in the source tree first: (1) Add wikiquote as a web search provider. (2) Add sensor_fusion to the plain thinking steps. (3) Add provenance to the semantic facet kinds. (4) Change the MEANINGS_VERIFIABLE_TASK_LINO seed's English pattern expectation surface from continue this to alternating.",
     "This is recursive binary-tree node 1.1.1 at depth 3. Solve only this node's task in this fresh temporary repository. Its harness-evaluated completion criterion is: requirement_changes. Apply every listed requirement to the tracked source files themselves -- locate each declaration in the repository first (for example with grep), change only the files those requirements touch, and keep them valid Rust. Then create `agent-ladder-effects/node-1.1.1.lino` with these exact field lines: `node_path=1.1.1`, `node_depth=3`, `node_kind=requirement`, and `result=` followed by at least four words that name each file you changed and describe its change. Leave supporting evidence in .agent-ladder/node-1.1.1-proof.md. The first line must be exactly node_path=1.1.1 and the body must state the concrete result. The harness rejects proof without the separate Git effect. Use web research when it materially improves factual accuracy. Do not claim success without evidence."
   ].join('\n\n');
-  const plan = await planChatStep([{role: 'user', content: prompt}], tools);
-  for (const call of plan?.calls ?? []) {
-    if (call.tool !== 'write') continue;
-    const write = JSON.parse(call.arguments);
-    assert.doesNotMatch(write.content, /^result=/mu);
-    assert.notEqual(write.filePath, '.agent-ladder/node-1.1.1-proof.md');
+  const anglePrompt = prompt.replace(
+    '`result=` followed by at least four words that name each file you changed and describe its change',
+    '`result=<the files you changed and what changed in each, at least four words>`',
+  );
+  for (const content of [anglePrompt, prompt]) {
+    const plan = await planChatStep([{ role: 'user', content }], tools);
+    for (const call of plan?.calls ?? []) {
+      if (call.tool !== 'write') continue;
+      const write = JSON.parse(call.arguments);
+      assert.doesNotMatch(write.content, /^result=/mu);
+      assert.notEqual(write.filePath, 'agent-ladder-effects/node-1.1.1.lino');
+      assert.notEqual(write.filePath, '.agent-ladder/node-1.1.1-proof.md');
+    }
   }
 });
 

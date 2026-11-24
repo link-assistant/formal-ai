@@ -188,18 +188,26 @@ fn exact_field_lines(sentence: &str, target: &str) -> Vec<String> {
         .filter(|(index, _)| index % 2 == 1)
         .map(|(_, quoted)| quoted.trim())
         .filter(|quoted| *quoted != target)
-        .filter(|quoted| !quoted.chars().any(char::is_whitespace))
-        .filter(|quoted| {
-            quoted.split_once('=').is_some_and(|(key, _)| {
-                key.chars()
-                    .next()
-                    .is_some_and(|character| character.is_ascii_alphabetic())
-                    && key
-                        .chars()
-                        .all(|character| character.is_ascii_alphanumeric() || character == '_')
-            })
+        .filter_map(|quoted| {
+            let (key, value) = quoted.split_once('=')?;
+            if !key
+                .chars()
+                .next()
+                .is_some_and(|character| character.is_ascii_alphabetic())
+                || !key
+                    .chars()
+                    .all(|character| character.is_ascii_alphanumeric() || character == '_')
+            {
+                return None;
+            }
+            if !quoted.chars().any(char::is_whitespace) {
+                return Some(quoted.to_owned());
+            }
+            // A prose description inside angle brackets declares an open field.
+            let description = value.strip_prefix('<')?.strip_suffix('>')?;
+            (!description.contains(['<', '>', '\r', '\n']) && !description.trim().is_empty())
+                .then(|| quoted[..key.len() + 1].to_owned())
         })
-        .map(str::to_owned)
         .collect::<Vec<_>>();
 
     // A field may be quoted once as a source reference and again as the output
