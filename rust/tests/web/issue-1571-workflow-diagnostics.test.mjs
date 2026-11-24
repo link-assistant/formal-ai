@@ -35,23 +35,45 @@ test('every rust-cache step names the rust/ workspace, because the repository ro
  assert.deepEqual(unbound,[]);
 });
 
-const learningJob = YAML.parse(workflows.find(({name}) => name === 'learning-cycle.yml').text).jobs.cycle;
+const learningJobs = YAML.parse(workflows.find(({name}) => name === 'learning-cycle.yml').text).jobs;
+const learningJob = learningJobs.cycle;
+
+// Replays PR run 45351919319, where the learning job reserved 90% of its clock.
+test('learning-cycle phase budgets collectively fit each job clock with setup headroom', () => {
+  for (const [name, job] of Object.entries(learningJobs)) {
+    const budgets = job.steps.flatMap(step => step.env?.TEST_BUDGET_SECONDS ?? []);
+    assert.ok(budgets.length && budgets.every(seconds => Number.isInteger(seconds) && seconds > 0), name);
+    const seconds = budgets.reduce((sum, phase) => sum + phase, 0);
+    assert.ok(seconds * 100 <= job['timeout-minutes'] * 60 * 70,
+      `${name} reserves ${seconds} seconds under its ${job['timeout-minutes']}-minute cap`);
+  }
+});
 
 // Replays main run 45175845066, where live capture reached the job deadline.
 test('the live learning capture fails within an execution budget and keeps its diagnostics', (t) => {
   const jobSteps = learningJob.steps;
   const capture = jobSteps.find(step => step.id === 'capture');
   assert.ok(capture, 'the ongoing live capture needs its own execution deadline');
-  const build = jobSteps.find(step => step.id === 'build');
+  const buildJob = learningJobs.build;
+  const build = buildJob.steps.find(step => step.name === 'Build the learning commands once');
   assert.match(build.run, /cargo build --manifest-path rust\/Cargo.toml --release --locked/u);
   assert.match(build.run, /--example dump_google_trends_learning --bin formal-ai/u);
-  const phaseBudgets = jobSteps.flatMap(step => step.env?.TEST_BUDGET_SECONDS ?? []);
-  assert.equal(phaseBudgets.length, 4);
-  assert.ok(phaseBudgets.every(seconds => Number.isInteger(seconds) && seconds > 0));
-  assert.ok(phaseBudgets.reduce((sum, seconds) => sum + seconds, 0) <= learningJob['timeout-minutes'] * 60 - 180);
+  assert.equal(learningJob.needs, 'build');
+  assert.equal(buildJob.outputs['artifact-id'], '${{ steps.commands.outputs.artifact-id }}');
+  const producer = buildJob.steps.find(step => step.id === 'commands');
+  assert.deepEqual(producer.with.path.trim().split('\n'), [
+    'rust/target/release/formal-ai',
+    'rust/target/release/examples/dump_google_trends_learning',
+  ]);
+  const download = jobSteps.find(step => step.uses === './.github/actions/download-artifact');
+  assert.deepEqual(download.with, {
+    'artifact-ids': '${{ needs.build.outputs.artifact-id }}', path: 'rust/target/release',
+  });
+  const guard = jobSteps.find(step => step.name === 'Check both learning commands before running either');
+  assert.ok(jobSteps.indexOf(download) < jobSteps.indexOf(guard) && jobSteps.indexOf(guard) < jobSteps.indexOf(capture));
   const diagnostics = jobSteps.find(step => step.with?.name === 'learning-cycle-failure');
   assert.equal(diagnostics.if, `failure() && hashFiles('learning-cycle/run.log') != ''`);
-  assert.equal(diagnostics.with.path, 'learning-cycle/run.log');
+  assert.equal(diagnostics.with.path, 'learning-cycle/');
   const proposals = jobSteps.find(step => step.with?.name === 'learning-cycle-proposals');
   assert.equal(proposals.if, undefined);
   const assertionIndex = jobSteps.findIndex(step => step.name === 'Assert the run stayed proposal-only and human-gated');
@@ -62,10 +84,10 @@ test('the live learning capture fails within an execution budget and keeps its d
   symlinkSync(fileURLToPath(new URL('scripts/', root)), join(cwd, 'scripts'), 'dir');
   const examples = join(cwd, 'rust', 'target', 'release', 'examples');
   mkdirSync(examples, {recursive: true});
-  mkdirSync(join(cwd, 'learning-cycle'));
   const runnerTemp = join(cwd, 'runner temp');
   mkdirSync(runnerTemp);
   const example = join(examples, 'dump_google_trends_learning');
+  const runGuard = () => spawnSync('bash', ['-c', guard.run], {cwd, encoding: 'utf8'});
   const runCapture = () => spawnSync('bash', ['-c', capture.run], {
     cwd,
     encoding: 'utf8',
@@ -78,7 +100,12 @@ test('the live learning capture fails within an execution budget and keeps its d
     },
   });
 
-  writeFileSync(example, '#!/bin/bash\nprintf "frontier\\n"\nprintf "%s\\n" "$FORMAL_AI_SOURCE_CACHE_DIR" >&2\nsleep 4\n', {mode: 0o755});
+  writeFileSync(example, '#!/bin/bash\nprintf "frontier\\n"\nprintf "%s\\n" "$FORMAL_AI_SOURCE_CACHE_DIR" >&2\nsleep 4\n');
+  const missing = runGuard();
+  assert.equal(missing.status, 1);
+  assert.match(missing.stdout, /Missing learning command.*formal-ai/u);
+  writeFileSync(join(examples, '..', 'formal-ai'), 'fixture binary\n');
+  assert.equal(runGuard().status, 0);
   const failure = runCapture();
   assert.equal(failure.status, 124, failure.stderr);
   assert.match(failure.stderr, /::error title=Capture the live Google Trends frontier exceeded its execution budget/u);

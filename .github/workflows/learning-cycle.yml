@@ -20,11 +20,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  cycle:
+  build:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
-    name: Inspect the current frontier in proposal mode
+    name: Build the learning commands
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    outputs:
+      artifact-id: ${{ steps.commands.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -38,10 +40,7 @@ jobs:
         with:
           workspaces: rust -> target
 
-      # The 30-minute job cap remains the backstop. The four execution
-      # budgets leave three minutes for setup, cancellation grace and uploads.
       - name: Build the learning commands once
-        id: build
         env:
           TEST_BUDGET_SECONDS: 720
         run: |
@@ -49,7 +48,63 @@ jobs:
           mkdir -p learning-cycle
           scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Build the learning commands" \
             cargo build --manifest-path rust/Cargo.toml --release --locked \
-            --example dump_google_trends_learning --bin formal-ai 2>&1 | tee learning-cycle/run.log
+            --example dump_google_trends_learning --bin formal-ai 2>&1 | tee learning-cycle/build.log
+
+      - name: Upload the built learning commands
+        id: commands
+        uses: actions/upload-artifact@v7
+        with:
+          name: learning-cycle-commands-${{ github.run_attempt }}
+          path: |
+            rust/target/release/formal-ai
+            rust/target/release/examples/dump_google_trends_learning
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Preserve build failure diagnostics
+        if: failure() && hashFiles('learning-cycle/build.log') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: learning-cycle-build-failure-${{ github.run_attempt }}
+          path: learning-cycle/build.log
+          if-no-files-found: error
+          retention-days: 30
+
+  cycle:
+    name: Inspect the current frontier in proposal mode
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Require the current build artifact ID
+        env:
+          ARTIFACT_ID: ${{ needs.build.outputs.artifact-id }}
+        run: |
+          if [[ ! "$ARTIFACT_ID" =~ ^[1-9][0-9]*$ ]]; then
+            echo "::error::Learning command build returned no artifact ID."
+            exit 1
+          fi
+
+      - name: Download the learning commands from this run
+        uses: ./.github/actions/download-artifact
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          path: rust/target/release
+
+      - name: Check both learning commands before running either
+        run: |
+          set -euo pipefail
+          for command in rust/target/release/formal-ai rust/target/release/examples/dump_google_trends_learning; do
+            if [[ ! -f "$command" || ! -s "$command" ]]; then
+              echo "::error::Missing learning command in the build artifact: $command"
+              exit 1
+            fi
+          done
+          chmod u+x rust/target/release/formal-ai rust/target/release/examples/dump_google_trends_learning
 
       # Redirect the child's stdout inside the wrapper. The wrapper's own
       # timing summaries belong in the run log, outside the LiNo documents.
@@ -60,6 +115,7 @@ jobs:
           TEST_BUDGET_SECONDS: 720
         run: |
           set -euo pipefail
+          mkdir -p learning-cycle
           FORMAL_AI_SOURCE_CACHE_DIR="$RUNNER_TEMP/learning-cycle-source" \
             scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "Capture the live Google Trends frontier" \
             bash -c 'exec "$@" > learning-cycle/frontier.lino' bash \
@@ -109,6 +165,6 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: learning-cycle-failure
-          path: learning-cycle/run.log
+          path: learning-cycle/
           if-no-files-found: error
           retention-days: 30

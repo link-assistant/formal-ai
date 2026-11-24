@@ -19,12 +19,13 @@ See [external benchmark evidence](../../docs/case-studies/issue-1580/external-be
 - [x] Collect all 33 terminal workflows at branch head `53a2c45d1`: 31 pass, one fails and one configured scope skips. The browser archive check passes in group 10. The [group 4 job](https://github.com/link-assistant/formal-ai/actions/runs/45348339023/job/138288371045) reports exit 134 from its mock `npx` on Node 24.22.3.
 - [x] Replace the mock's synchronous UTF-8 read of a pipe with stream decoding. Preserve its fixed npm argument, all 1,800 filenames, the complete receipt and the detected-secret failure control. The failure is consistent with [Node issue #66341](https://github.com/nodejs/node/issues/66341); the production scanner already uses streaming input.
 - [x] Run both focused cases and all 49 tests in the owning suite with the released Node 24.22.3 binary. The full-suite prerequisite is to put that binary on `PATH` for the existing subprocess fixtures as the hosted job does.
-- [ ] Verify the corrected fixture in the next exact-head hosted Layered run.
+- [x] Verify the corrected fixture in the [exact-head hosted Layered run](https://github.com/link-assistant/formal-ai/actions/runs/45351918896) for `ff02b6986`.
 
 ## Active checkpoint: scheduled learning cycle (2026-11-24)
 
 - [x] Retain the original bare Cargo exit and the newer live-frontier cancellation. Confirm the newest cancelled job finished its build and reached the live example.
-- [x] Bound the locked build, live capture and both proposal replays within the existing job deadline. Preserve actual capture exit 124, retained diagnostics and the original proposal assertions in focused controls.
+- [x] Bound the locked build, live capture and both proposal replays. Preserve actual capture exit 124, retained diagnostics and the original proposal assertions in focused controls.
+- [x] Reproduce the [native workflow contract failure](https://github.com/link-assistant/formal-ai/actions/runs/45351919319/job/138300631223) at line 2123. The first deadline revision reserved 90% of the job clock. Separate the build and capture jobs, transfer the two commands using the producer's artifact ID and verify the existing deadlines under the repository's 70% policy.
 - [ ] Qualify the new scheduled workflow on its governed branch. Determine which prompt and remote route consumed the live capture time, and verify a complete current frontier within the budget.
 
 See [scheduled learning evidence](../../docs/case-studies/issue-1580/learning-cycle-deadline.md).
