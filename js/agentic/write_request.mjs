@@ -7,7 +7,7 @@ export { firstContentLeadEnd, contentLeadClose, firstPrefixLeadEnd, cleanContent
 // offset is produced and consumed inside the same string, so slicing agrees.
 // Sentences come from shell_command_policy.mjs as `{text, span: {start, end}}`.
 
-import { firstRawPrefixLeadEnd } from './write_request/lowercase_spans.mjs';
+import { firstRawContentLeadEnd, firstRawPrefixLeadEnd } from './write_request/lowercase_spans.mjs';
 export { firstRawContentLeadEnd, firstRawPrefixLeadEnd, rawContentLeadClose } from './write_request/lowercase_spans.mjs';
 import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
 import { proseSentences, sentences } from './shell_command_policy.mjs';
@@ -410,9 +410,13 @@ export function composeEditClauses(raw) {
       if ((prevIsCue || nextIsCue) && !cueIntroducesNext) {
         const editAction = actionTokens.find((token) => token.start > toks[index].end) ?? actionTokens[0];
         const fileClause = clauses.find((clause) => spanContains(spanOf(clause), toks[index].start));
-        // A path introduced by a separate delivery clause belongs to that write.
         if (fileClause && !spanContains(spanOf(fileClause), editAction.start)
-            && deliveredWriteTarget(fileClause.text) === cleaned) continue;
+            && deliveredWriteTarget(fileClause.text) === cleaned) {
+          // Body syntax of a multiline literal write is checked by its span owner.
+          const opensLiteralBody = spanOf(fileClause).end <= editAction.start
+            && firstRawContentLeadEnd(fileClause.text) !== null;
+          if (!opensLiteralBody) continue;
+        }
         fileIndex = index;
         target = resolved === null ? cleaned : resolved.module_path;
         action = editAction;

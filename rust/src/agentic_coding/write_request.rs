@@ -737,14 +737,18 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
                 .copied()
                 .find(|action| action.start > token.end)
                 .unwrap_or(first_action);
-            // A path introduced by a separate delivery clause belongs to that write.
             if let Some(file_clause) = clauses
                 .iter()
                 .find(|clause| clause.span.contains(&token.start))
                 && !file_clause.span.contains(&edit_action.start)
                 && delivered_write_target(file_clause.text).as_deref() == Some(cleaned)
             {
-                return None;
+                // Body syntax of a multiline literal write is checked by its span owner.
+                let opens_literal_body = file_clause.span.end <= edit_action.start
+                    && first_raw_content_lead_end(file_clause.text).is_some();
+                if !opens_literal_body {
+                    return None;
+                }
             }
             let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
             Some((index, target, edit_action))
