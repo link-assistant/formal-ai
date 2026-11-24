@@ -196,6 +196,11 @@ export async function registeredRustTestFilters(root, changedPath) {
     const selected = new Set(), selectedByTarget = new Map(), visited = new Set(), active = new Set(), ignoredJobs = [];
     let currentTarget;
     const unresolvedTestScopes = [];
+    function importsChangedSource(scope) {
+      return scope?.namedChildren.some(node => node.type === 'use_declaration'
+        && imports(node.childForFieldName('argument')).some(route => route[0] === crateName
+          && ownershipRoutes.some(owner => owner.every((part, index) => route[index + 1] === part)))) ?? false;
+    }
     function unit(relative, prefix, inherited = false) {
       const key = currentTarget + '\0' + relative + '\0' + prefix.join('::');
       if (active.has(relative)) throw new Error('Cyclic registered test source');
@@ -218,16 +223,12 @@ export async function registeredRustTestFilters(root, changedPath) {
           expressions: opaqueIncludes.map(item => item.text)});
         return;
       }
-      let direct = inherited;
-      for (const node of body.namedChildren.filter(node => node.type === 'use_declaration')) {
-        for (const route of imports(node.childForFieldName('argument'))) {
-          if (route[0] === crateName && ownershipRoutes.some(owner => owner.every((part, index) => route[index + 1] === part))) direct = true;
-        }
-      }
+      const direct = inherited || importsChangedSource(body);
       entries(body, relative, prefix, (node, attributes, declarationFile) => {
-        if (node.type === 'function_item' && direct && testDisposition(attributes)) {
+        const disposition = node.type === 'function_item' ? testDisposition(attributes) : null;
+        if (disposition && (direct || importsChangedSource(node.childForFieldName('body')))) {
           const name = [...prefix, identifier(node.childForFieldName('name').text)].join('::');
-          if (testDisposition(attributes) === 'ignored') ignoredJobs.push({target: currentTarget, filter: name, source: declarationFile});
+          if (disposition === 'ignored') ignoredJobs.push({target: currentTarget, filter: name, source: declarationFile});
           else {
             selectedByTarget.get(currentTarget).add(name);
             if (currentTarget === 'unit') selected.add(name);

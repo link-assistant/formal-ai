@@ -47,6 +47,19 @@ test('out-of-line cases nested under inline test modules retain their Cargo iden
     ]);
   } finally { fs.rmSync(root, {recursive: true, force: true}); }
 });
+// Replays main run 45018538750, where frontier-only cases used the leaf's native test budget.
+test('the learning adoption leaf projects only tests that import the adoption ledger', async () => {
+  const observed = await registeredRustTestFilters(path.resolve('.'), 'rust/src/learning_adoption_ledger.rs');
+  const owner = 'issue_701_learning_adoption::';
+  assert.deepEqual(observed.jobs
+    .filter(job => job.target === 'unit' && job.filter.startsWith(owner))
+    .map(job => job.filter.slice(owner.length)), [
+    'committed_adoption_ledger_matches_a_fresh_run',
+    'every_failure_to_adopt_is_preserved_as_a_durable_record',
+    'the_adoption_ledger_records_a_real_capability_delta_in_every_language',
+    'the_trends_corpus_unknown_rate_is_ratcheted_to_zero',
+  ]);
+});
 test('comments and literals cannot supply source import ownership', async () => {
   for (const source of ['// use formal_ai::answer::value;', 'const FAKE: &str = "use formal_ai::answer::value;";']) {
     const root = fixture(source);

@@ -7,9 +7,7 @@
 use super::issue_498_google_trends::captured_feed;
 use formal_ai::learning_cycle::{GOOGLE_TRENDS_FRONTIER, LEARNED_REQUEST_OPENERS_SEED_FILE};
 use formal_ai::promotion::{parse_promotion_proposals, render_promotion_proposals};
-use formal_ai::{
-    google_trends_adoption_ledger, google_trends_learning_cycle, parse_frontier_record,
-};
+use formal_ai::{google_trends_learning_cycle, parse_frontier_record};
 use lino_objects_codec::format::parse_indented;
 
 const GOOGLE_TRENDS_FRONTIER_RECORD: &str = include_str!(
@@ -22,6 +20,8 @@ const SUPPORTED_LANGUAGES: [&str; 4] = ["en", "ru", "hi", "zh"];
 
 #[test]
 fn committed_adoption_ledger_matches_a_fresh_run() {
+    use formal_ai::google_trends_adoption_ledger;
+
     let committed =
         include_str!("../../../docs/case-studies/issue-701/replay/learning-adoption-ledger.lino");
     let legacy_pairs =
@@ -38,6 +38,8 @@ fn committed_adoption_ledger_matches_a_fresh_run() {
 
 #[test]
 fn the_adoption_ledger_records_a_real_capability_delta_in_every_language() {
+    use formal_ai::google_trends_adoption_ledger;
+
     // Issue #701 requirement 2 and its acceptance criterion: at least 20
     // before/after pairs, spanning at least 3 topics and all 4 languages, each
     // one unknown before and answered after.
@@ -76,6 +78,8 @@ fn the_adoption_ledger_records_a_real_capability_delta_in_every_language() {
 
 #[test]
 fn the_trends_corpus_unknown_rate_is_ratcheted_to_zero() {
+    use formal_ai::google_trends_adoption_ledger;
+
     // Issue #701 requirement 3: drive the #498/#499 frontier through the loop
     // until the trends prompts answer (target 80/80). The ratchet may fall,
     // never rise — a regression that reintroduces an unknown fails here.
@@ -168,6 +172,8 @@ fn the_frozen_frontier_record_spans_every_supported_language() {
 
 #[test]
 fn every_failure_to_adopt_is_preserved_as_a_durable_record() {
+    use formal_ai::google_trends_adoption_ledger;
+
     // Issue #701 requirement 6 / R425: nothing is silently dropped. Whatever the
     // cycle does not adopt appears as a blocked class with a named reason, and
     // whatever the ledger does not adopt stays as an unadopted pair.
