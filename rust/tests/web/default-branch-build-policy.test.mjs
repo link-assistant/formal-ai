@@ -160,6 +160,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_helpers::code::javascript_program_tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib rule_interpreter::parser::reference_list_tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_synthesis::parent_tests:: -- --test-threads=1 || regression_status=$?\n' +
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib client_integrations::tests:: -- --test-threads=1 || regression_status=$?\n' +
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib links_format::tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?\n' +
     'exit "$regression_status"\n',
     'cargo test --manifest-path rust/Cargo.toml --locked --test issue_707_computer_use --test issue_707_generalization --test issue_707_learning --test issue_707_mcp -- --test-threads=1',
@@ -306,6 +308,8 @@ test('native unsupported-language regressions execute the captured-source units 
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_helpers::code::javascript_program_tests:: -- --test-threads=1 || regression_status=$?',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib rule_interpreter::parser::reference_list_tests:: -- --test-threads=1 || regression_status=$?',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_synthesis::parent_tests:: -- --test-threads=1 || regression_status=$?',
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib client_integrations::tests:: -- --test-threads=1 || regression_status=$?',
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib links_format::tests:: -- --test-threads=1 || regression_status=$?',
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?',
     'exit "$regression_status"',
   ]);
@@ -806,28 +810,32 @@ test('independent native replays continue after a regression fails and preserve 
       '  *"solver_helpers::code::javascript_program_tests::"*) exit "$REPLAY_JAVASCRIPT_STATUS";;',
       '  *"rule_interpreter::parser::reference_list_tests::"*) exit "$REPLAY_PARSER_STATUS";;',
       '  *"solver_synthesis::parent_tests::"*) exit "$REPLAY_SYNTHESIS_STATUS";;',
+      '  *"client_integrations::tests::"*) exit "$REPLAY_BACKUP_STATUS";;',
+      '  *"links_format::tests::"*) exit "$REPLAY_NOTATION_STATUS";;',
       '  *"--test any_language "*) exit "$REPLAY_SPANISH_STATUS";;',
       '  *) exit 99;;',
       'esac',
       '',
     ].join('\n'), {mode: 0o755});
-    for (const [unknown, javascript, parser, synthesis, spanish, expected] of [
-      [0,0,0,0,0,0], [1,0,0,0,0,1], [0,2,0,0,0,2],
-      [0,0,3,0,0,3], [0,0,0,5,0,5], [0,0,0,0,4,4], [1,2,3,5,4,4],
-    ]) {
-      const calls = join(directory, `calls-${unknown}-${javascript}-${parser}-${synthesis}-${spanish}.txt`);
+    const statusNames = ['UNKNOWN', 'JAVASCRIPT', 'PARSER', 'SYNTHESIS', 'BACKUP', 'NOTATION', 'SPANISH'];
+    const allPass = statusNames.map(() => 0);
+    const failures = statusNames.map((_, failed) => allPass.map((status, index) => index === failed ? index + 1 : status));
+    const allFail = statusNames.map((_, index) => index + 1);
+    for (const statuses of [allPass, ...failures, allFail]) {
+      const calls = join(directory, `calls-${statuses.join('-')}.txt`);
+      const receipts = Object.fromEntries(statusNames.map((name, index) => [`REPLAY_${name}_STATUS`, String(statuses[index])]));
       const result = spawnSync('bash', ['-e', '-c', binding.run], {encoding:'utf8', timeout:5000,
-        env:{...process.env, PATH:directory+':'+process.env.PATH, REPLAY_CALLS:calls,
-          REPLAY_UNKNOWN_STATUS:String(unknown), REPLAY_JAVASCRIPT_STATUS:String(javascript),
-          REPLAY_PARSER_STATUS:String(parser), REPLAY_SYNTHESIS_STATUS:String(synthesis), REPLAY_SPANISH_STATUS:String(spanish)}});
-      assert.equal(result.status, expected, result.stderr);
+        env:{...process.env, PATH:directory+':'+process.env.PATH, REPLAY_CALLS:calls, ...receipts}});
+      assert.equal(result.status, statuses.findLast(Boolean) ?? 0, result.stderr);
       const commands = read(calls).trim().split('\n');
-      assert.equal(commands.length, 5);
+      assert.equal(commands.length, statusNames.length);
       assert.match(commands[0], /--lib solver_unknown_reasoning::tests::/u);
       assert.match(commands[1], /--lib solver_helpers::code::javascript_program_tests::/u);
       assert.match(commands[2], /--lib rule_interpreter::parser::reference_list_tests::/u);
       assert.match(commands[3], /--lib solver_synthesis::parent_tests::/u);
-      assert.match(commands[4], /--test any_language/u);
+      assert.match(commands[4], /--lib client_integrations::tests::/u);
+      assert.match(commands[5], /--lib links_format::tests::/u);
+      assert.match(commands[6], /--test any_language/u);
     }
   } finally { rmSync(directory, {recursive:true, force:true}); }
 });

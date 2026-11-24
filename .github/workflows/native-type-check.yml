@@ -167,6 +167,8 @@ jobs:
           cargo test --manifest-path rust/Cargo.toml --locked --lib solver_helpers::code::javascript_program_tests:: -- --test-threads=1 || regression_status=$?
           cargo test --manifest-path rust/Cargo.toml --locked --lib rule_interpreter::parser::reference_list_tests:: -- --test-threads=1 || regression_status=$?
           cargo test --manifest-path rust/Cargo.toml --locked --lib solver_synthesis::parent_tests:: -- --test-threads=1 || regression_status=$?
+          cargo test --manifest-path rust/Cargo.toml --locked --lib client_integrations::tests:: -- --test-threads=1 || regression_status=$?
+          cargo test --manifest-path rust/Cargo.toml --locked --lib links_format::tests:: -- --test-threads=1 || regression_status=$?
           cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?
           exit "$regression_status"
       - name: Verify explicit computer-use plans and HTTP receipts

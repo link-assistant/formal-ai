@@ -563,15 +563,16 @@ process.exit(args.includes('solver_unknown_reasoning::tests::') ? 17 : 0);
     assert.equal(result.error, undefined);
     assert.equal(result.status, 17, result.stderr);
     const invocations = readFileSync(calls, 'utf8').trim().split('\n').map(JSON.parse);
-    assert.equal(invocations.length, 5);
-    for (const [index, filter] of ['solver_unknown_reasoning::tests::',
+    const libraryFilters = ['solver_unknown_reasoning::tests::',
       'solver_helpers::code::javascript_program_tests::', 'rule_interpreter::parser::reference_list_tests::',
-      'solver_synthesis::parent_tests::'].entries()) {
+      'solver_synthesis::parent_tests::', 'client_integrations::tests::', 'links_format::tests::'];
+    assert.equal(invocations.length, libraryFilters.length + 1);
+    for (const [index, filter] of libraryFilters.entries()) {
       assert(invocations[index].includes('--lib'));
       assert(invocations[index].includes(filter));
       assert(invocations[index].includes('--test-threads=1'));
     }
-    assert(invocations[4].includes('a_language_without_localized_openers_reports_a_gap_not_english'));
+    assert(invocations.at(-1).includes('a_language_without_localized_openers_reports_a_gap_not_english'));
   } finally { rmSync(directory, {recursive: true, force: true}); }
 });
 
