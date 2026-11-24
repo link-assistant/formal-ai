@@ -4,26 +4,49 @@ import hashlib
 import json
 
 
+def verified_source(fixtures, name):
+    original = gzip.decompress((fixtures / f'{name}.rs.gz').read_bytes())
+    metadata = json.loads((fixtures / f'{name}.json').read_text())
+    if len(original) != metadata['bytes'] or hashlib.sha256(original).hexdigest() != metadata['sha256']:
+        raise RuntimeError(f'The original {name} control changed')
+    return original
+
+
 def add_sparse_registry_controls(harness, scripts):
     fixtures = harness / 'fixtures'
-    original = gzip.decompress((fixtures / 'wait-for-crate-before-sparse.rs.gz').read_bytes())
-    metadata = json.loads((fixtures / 'wait-for-crate-before-sparse.json').read_text())
-    if len(original) != metadata['bytes'] or hashlib.sha256(original).hexdigest() != metadata['sha256']:
-        raise RuntimeError('the original API-only waiter control changed')
-    (scripts / 'wait-for-crate-before-sparse.rs').write_bytes(original)
+    (scripts / 'wait-for-crate-before-sparse.rs').write_bytes(verified_source(fixtures, 'wait-for-crate-before-sparse'))
+    (scripts / 'registry-before-identity.rs').write_bytes(verified_source(fixtures, 'registry-before-identity'))
+    waiter = (scripts / 'wait-for-crate.rs').read_text()
+    old_registry_reference = '#[path = "registry.rs"]'
+    if waiter.count(old_registry_reference) != 1:
+        raise RuntimeError('Expected one registry module in the production waiter')
+    (scripts / 'wait-for-crate-before-identity.rs').write_text(
+        waiter.replace(old_registry_reference, '#[path = "registry-before-identity.rs"]'))
     return ('\n[[bin]]\nname = "wait-for-crate-before-sparse"\n'
-            'path = "../scripts/wait-for-crate-before-sparse.rs"\ntest = false\n')
+            'path = "../scripts/wait-for-crate-before-sparse.rs"\ntest = false\n'
+            '\n[[bin]]\nname = "wait-for-crate-before-identity"\n'
+            'path = "../scripts/wait-for-crate-before-identity.rs"\ntest = false\n')
 
 
 class SparseRegistryRegressions:
     def index_reply(self, body, status=200):
         self.__class__.sparse_reply = (status, body)
 
-    def wait_call(self, *args, before=False):
+    def wait_call(self, *args, before=False, before_identity=False):
         self.__class__.requests = []
         self.output.unlink(missing_ok=True)
-        return self.script('wait-for-crate-before-sparse.rs' if before else 'wait-for-crate.rs',
-                           '--max-attempts', '2', '--sleep-seconds', '0', *args)
+        binary = 'wait-for-crate.rs'
+        if before:
+            binary = 'wait-for-crate-before-sparse.rs'
+        if before_identity:
+            binary = 'wait-for-crate-before-identity.rs'
+        return self.script(binary, '--max-attempts', '2', '--sleep-seconds', '0', *args)
+
+    def assert_unknown(self, result):
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('could not determine', result.stderr.lower())
+        self.assertNotIn('was not visible', result.stderr.lower())
+        self.assertFalse(self.output.exists())
 
     def test_sparse_waiter_resolves_a_version_while_the_api_is_unavailable(self):
         self.__class__.mode = '503'
@@ -86,3 +109,45 @@ class SparseRegistryRegressions:
         result = self.script('wait-for-crate.rs', '--max-attempts', '1')
         self.assertNotEqual(result.returncode, 0)
         self.assertTrue(self.output.is_dir())
+
+    def test_sparse_waiter_requires_the_api_to_identify_the_requested_crate(self):
+        self.index_reply('', 404)
+        self.__class__.api_reply = (200, '{"version":{"num":"1.2.3","crate":"other"}}')
+        previous = self.wait_call(before_identity=True)
+        self.assertEqual(previous.returncode, 0, previous.stderr)
+        self.assertEqual(self.output.read_text(), 'crate_available=true\n')
+        self.assert_unknown(self.wait_call())
+        self.assertIn('/api/v1/crates/fixture/1.2.3', self.requests)
+
+        self.__class__.api_reply = (200, '{"version":{"num":"1.2.3","crate":"Fixture"}}')
+        result = self.wait_call()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.output.read_text(), 'crate_available=true\n')
+
+    def test_sparse_waiter_preserves_malformed_success_as_unknown_after_absence(self):
+        for sparse, api in [
+            ((200, 'not JSON'), (404, '')),
+            ((404, ''), (200, '{"version":{"num":"1.2.30"}}')),
+        ]:
+            with self.subTest(sparse=sparse, api=api):
+                self.__class__.sparse_reply = sparse
+                self.__class__.api_reply = api
+                previous = self.wait_call(before_identity=True)
+                self.assertIn('was not visible', previous.stderr.lower())
+                self.assert_unknown(self.wait_call())
+                self.assertEqual(len(self.requests), 4)
+
+    def test_sparse_waiter_refuses_a_non_utf8_index_body(self):
+        self.index_reply(b'{"name":"fixture","vers":"1.2.3","desc":"\xff"}')
+        self.__class__.api_reply = (404, '')
+        result = self.wait_call()
+        self.assert_unknown(result)
+        self.assertIn('Unreadable response', result.stderr)
+
+    def test_sparse_waiter_validates_every_version_record(self):
+        self.index_reply('{"name":"fixture","vers":"1.2.3"}\n{"name":"fixture","vers":"invalid"}\n')
+        self.__class__.api_reply = (404, '')
+        previous = self.wait_call(before_identity=True)
+        self.assertEqual(previous.returncode, 0, previous.stderr)
+        self.assertEqual(self.output.read_text(), 'crate_available=true\n')
+        self.assert_unknown(self.wait_call())

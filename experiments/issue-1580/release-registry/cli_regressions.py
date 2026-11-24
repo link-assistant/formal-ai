@@ -30,6 +30,8 @@ class RegistryRegressions(SparseRegistryRegressions, PublishProcessRegressions, 
         cls.mode = 'success'
         cls.scope = ''
         cls.maximum = '1.2.3'
+        cls.sparse_reply = None
+        cls.api_reply = None
 
         class Registry(http.server.BaseHTTPRequestHandler):
             def log_message(self, *_args):
@@ -37,9 +39,11 @@ class RegistryRegressions(SparseRegistryRegressions, PublishProcessRegressions, 
 
             def do_GET(self):
                 cls.requests.append(self.path)
-                if self.path.startswith('/_sparse/') and cls.sparse_reply is not None:
-                    status, body = cls.sparse_reply
-                    body = body.encode()
+                override = cls.sparse_reply if self.path.startswith('/_sparse/') else cls.api_reply
+                if override is not None:
+                    status, body = override
+                    if isinstance(body, str):
+                        body = body.encode()
                     self.send_response(status)
                     self.send_header('Content-Length', str(len(body)))
                     self.end_headers()
@@ -125,6 +129,7 @@ class RegistryRegressions(SparseRegistryRegressions, PublishProcessRegressions, 
         self.__class__.requests = []
         self.__class__.mode = 'success'
         self.__class__.sparse_reply = None
+        self.__class__.api_reply = None
         self.__class__.scope = ''
         self.__class__.maximum = '1.2.3'
         temp = tempfile.TemporaryDirectory(prefix='registry-cli-')
@@ -555,6 +560,23 @@ class RegistryRegressions(SparseRegistryRegressions, PublishProcessRegressions, 
                 self.assertEqual(json.loads(response.read()), {'version': {'num': '0.0.0'}})
             finally:
                 connection.close()
+
+    def test_fixture_serves_registry_overrides_as_exact_bytes(self):
+        endpoints = ['/_sparse/fi/xt/fixture', '/api/v1/crates/fixture/1.2.3']
+        sparse = b'{"name":"fixture","vers":"1.2.3","desc":"\xff"}'
+        wrong_crate = b'{"version":{"num":"1.2.3","crate":"other"}}'
+        self.__class__.sparse_reply = (200, sparse)
+        self.__class__.api_reply = (200, wrong_crate)
+        connection = http.client.HTTPConnection('127.0.0.1', self.server.server_port, timeout=5)
+        try:
+            for endpoint, expected in zip(endpoints, [sparse, wrong_crate], strict=True):
+                connection.request('GET', endpoint)
+                response = connection.getresponse()
+                self.assertEqual(response.status, 200)
+                self.assertEqual(response.read(), expected)
+        finally:
+            connection.close()
+        self.assertEqual(self.requests, endpoints)
 
     def test_failed_lookup_never_decides_release_or_mutates_version(self):
         for mode in ['503', '429', '403', 'malformed', 'drop']:

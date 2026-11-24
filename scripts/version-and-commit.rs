@@ -23,6 +23,7 @@
 //! regex = "1"
 //! chrono = "0.4"
 //! ureq = "3.5.2"
+//! semver = "1"
 //! serde = { version = "1", features = ["derive"] }
 //! serde_json = "1"
 //! ```

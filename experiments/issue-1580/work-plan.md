@@ -1,3 +1,14 @@
+## Active checkpoint: registry response validation (2026-11-24)
+
+The objective remains every requirement of issue #1580 in
+[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), draft and unmerged.
+
+- [x] Compare the release and registry changes in [Rust template #267](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/pull/267). Formal AI already drains both release CLI output pipes and applies strict changelog closing-fence handling. Its registry waiter still accepted a different crate with the requested version and classified malformed HTTP 200 replies as absence if the other registry endpoint returned 404.
+- [x] Verify the supplied crate identity and validate the complete UTF-8 sparse index before accepting version visibility. Preserve a malformed success response as uncertainty unless the other endpoint positively identifies the requested version. Keep ordinary network failures distinct from invalid bodies and preserve the retry policy.
+- [x] Admit four focused controls to the existing hosted registry harness. The preserved registry source from `459f298f4` serves as the executable negative control for wrong crate names, malformed successes paired with 404, and malformed version records.
+- [x] Pass three HTTP fixture controls, 67 native selection checks, 184 branch-policy checks, four applicable local gates and Rust formatting. Use the same semver version and checksum already in the repository lock. Execute the native tests in hosted CI.
+- [ ] Verify the new before-and-after controls in hosted CI with the exact revised source. Supplied work earns zero independent Formal AI authorship or reasoning credit.
+
 ## Active checkpoint: public release verification (2026-11-24)
 
 The objective remains every requirement of issue #1580 in

@@ -3,6 +3,7 @@
 //! ```cargo
 //! [dependencies]
 //! ureq = "3.5.2"
+//! semver = "1"
 //! serde_json = "1.0.154"
 //! ```
 #![allow(dead_code)] // Each standalone script uses a different subset of this module.
@@ -17,6 +18,17 @@ fn main() {}
 pub enum Failure {
     Transient(String),
     Permanent(String),
+    InvalidResponse(String),
+}
+
+impl Failure {
+    fn message(&self) -> &str {
+        match self {
+            Self::Transient(message)
+            | Self::Permanent(message)
+            | Self::InvalidResponse(message) => message,
+        }
+    }
 }
 
 pub fn with_retries<T>(
@@ -31,10 +43,12 @@ pub fn with_retries<T>(
         match operation() {
             Ok(value) => return Ok(value),
             Err(Failure::Permanent(error)) => return Err(error),
-            Err(Failure::Transient(error)) if attempt == attempts => {
+            Err(Failure::Transient(error) | Failure::InvalidResponse(error))
+                if attempt == attempts =>
+            {
                 return Err(format!("{error} (after {attempts} attempts)"));
             }
-            Err(Failure::Transient(error)) => {
+            Err(Failure::Transient(error) | Failure::InvalidResponse(error)) => {
                 eprintln!("Registry lookup retry {}/{attempts}: {error}", attempt + 1);
                 std::thread::sleep(delay * 2_u32.pow(attempt - 1));
             }
@@ -43,47 +57,62 @@ pub fn with_retries<T>(
     unreachable!()
 }
 
-fn get_body_with_policy(
-    url: &str,
-    headers: &[(&str, &str)],
-    attempts: u32,
-    delay: Duration,
-) -> Result<Option<String>, String> {
-    let agent: ureq::Agent = ureq::Agent::config_builder()
+fn registry_agent() -> ureq::Agent {
+    ureq::Agent::config_builder()
         .timeout_connect(Some(Duration::from_secs(10)))
         .timeout_per_read(Some(Duration::from_secs(20)))
         .timeout_per_write(Some(Duration::from_secs(20)))
         .timeout_global(Some(Duration::from_secs(30)))
         .http_status_as_error(false)
         .build()
-        .into();
-    with_retries(attempts, delay, || {
-        let mut request = agent
-            .get(url)
-            .header("User-Agent", "rust-template-release-check/1.0");
-        for (key, value) in headers {
-            request = request.header(*key, *value);
+        .into()
+}
+
+fn fetch_body(
+    agent: &ureq::Agent,
+    url: &str,
+    headers: &[(&str, &str)],
+) -> Result<Option<String>, Failure> {
+    let mut request = agent
+        .get(url)
+        .header("User-Agent", "rust-template-release-check/1.0");
+    for (key, value) in headers {
+        request = request.header(*key, *value);
+    }
+    let mut response = request
+        .call()
+        .map_err(|error| Failure::Transient(format!("{url}: {error}")))?;
+    match response.status().as_u16() {
+        200 => {
+            let unreadable = |error| {
+                Failure::InvalidResponse(format!("Unreadable response from {url}: {error}"))
+            };
+            let bytes = response
+                .body_mut()
+                .read_to_vec()
+                .map_err(|error| unreadable(error.to_string()))?;
+            String::from_utf8(bytes)
+                .map(Some)
+                .map_err(|error| unreadable(error.to_string()))
         }
-        match request.call() {
-            Ok(mut response) => match response.status().as_u16() {
-                200 => response
-                    .body_mut()
-                    .read_to_string()
-                    .map(Some)
-                    .map_err(|error| {
-                        Failure::Transient(format!("Unreadable response from {url}: {error}"))
-                    }),
-                404 => Ok(None),
-                status if status == 429 || status >= 500 => {
-                    Err(Failure::Transient(format!("{url}: HTTP {status}")))
-                }
-                status => Err(Failure::Permanent(format!(
-                    "{url}: unexpected HTTP {status}"
-                ))),
-            },
-            Err(error) => Err(Failure::Transient(format!("{url}: {error}"))),
+        404 => Ok(None),
+        status if status == 429 || status >= 500 => {
+            Err(Failure::Transient(format!("{url}: HTTP {status}")))
         }
-    })
+        status => Err(Failure::Permanent(format!(
+            "{url}: unexpected HTTP {status}"
+        ))),
+    }
+}
+
+fn get_body_with_policy(
+    url: &str,
+    headers: &[(&str, &str)],
+    attempts: u32,
+    delay: Duration,
+) -> Result<Option<String>, String> {
+    let agent = registry_agent();
+    with_retries(attempts, delay, || fetch_body(&agent, url, headers))
 }
 
 pub fn get_body(url: &str, headers: &[(&str, &str)]) -> Result<Option<String>, String> {
@@ -154,32 +183,27 @@ pub fn max_published(crate_name: &str) -> Result<Option<(u32, u32, u32)>, String
 }
 
 pub fn version_exists(crate_name: &str, version: &str) -> Result<bool, String> {
-    version_exists_with_policy(crate_name, version, 4, Duration::from_secs(1))
-}
-
-fn version_exists_with_policy(
-    crate_name: &str,
-    version: &str,
-    attempts: u32,
-    delay: Duration,
-) -> Result<bool, String> {
     let url = format!("https://crates.io/api/v1/crates/{crate_name}/{version}");
-    let Some(body) = get_body_with_policy(&url, &[], attempts, delay)? else {
+    let Some(body) = get_body(&url, &[])? else {
         return Ok(false);
     };
+    validate_version_response(&body, crate_name, version).map(|()| true)
+}
+
+fn validate_version_response(body: &str, crate_name: &str, version: &str) -> Result<(), String> {
     let data: serde_json::Value =
-        serde_json::from_str(&body).map_err(|e| format!("Invalid crates.io JSON: {e}"))?;
-    if data
-        .get("version")
-        .and_then(|v| v.get("num"))
-        .and_then(serde_json::Value::as_str)
-        != Some(version)
-    {
+        serde_json::from_str(body).map_err(|e| format!("Invalid crates.io JSON: {e}"))?;
+    let record = &data["version"];
+    let crate_matches = record.get("crate").is_none_or(|name| {
+        name.as_str()
+            .is_some_and(|name| name.eq_ignore_ascii_case(crate_name))
+    });
+    if record["num"].as_str() != Some(version) || !crate_matches {
         return Err(format!(
             "Invalid crates.io version response for {crate_name}@{version}"
         ));
     }
-    Ok(true)
+    Ok(())
 }
 
 /// The result of consulting both Cargo's sparse index and the version API.
@@ -210,17 +234,19 @@ fn sparse_index_path(crate_name: &str) -> Result<String, String> {
 fn sparse_body_has_version(body: &str, crate_name: &str, version: &str) -> Result<bool, String> {
     let mut present = false;
     let mut records = 0;
-    for line in body.lines().filter(|line| !line.trim().is_empty()) {
+    for line in body.lines() {
         let record: serde_json::Value = serde_json::from_str(line)
             .map_err(|error| format!("Invalid sparse index JSON: {error}"))?;
         let name = record.get("name").and_then(serde_json::Value::as_str);
-        let found = record.get("vers").and_then(serde_json::Value::as_str);
-        if !name.is_some_and(|name| name.eq_ignore_ascii_case(crate_name))
-            || found.is_none_or(str::is_empty)
-        {
+        if !name.is_some_and(|name| name.eq_ignore_ascii_case(crate_name)) {
             return Err("Invalid sparse index record identity".into());
         }
-        present |= found == Some(version);
+        let found = record["vers"]
+            .as_str()
+            .ok_or("Missing sparse index record version")?;
+        semver::Version::parse(found)
+            .map_err(|error| format!("Invalid sparse index version: {error}"))?;
+        present |= found == version;
         records += 1;
     }
     if records == 0 {
@@ -232,24 +258,38 @@ fn sparse_body_has_version(body: &str, crate_name: &str, version: &str) -> Resul
 /// Each outer waiter attempt makes at most one bounded request per endpoint.
 /// A failed observation never becomes a claim that publication failed.
 pub fn crate_version_visibility(crate_name: &str, version: &str) -> VersionVisibility {
-    let index = sparse_index_path(crate_name).and_then(|path| {
-        get_body_with_policy(
-            &format!("https://index.crates.io/{path}"),
-            &[],
-            1,
-            Duration::ZERO,
-        )?
-        .map(|body| sparse_body_has_version(&body, crate_name, version))
-        .unwrap_or(Ok(false))
-    });
+    let path = match sparse_index_path(crate_name) {
+        Ok(path) => path,
+        Err(error) => return VersionVisibility::Unknown(error),
+    };
+    let agent = registry_agent();
+    let observe = |url: &str, validate: fn(&str, &str, &str) -> Result<bool, String>| {
+        let Some(body) = fetch_body(&agent, url, &[])? else {
+            return Ok(false);
+        };
+        validate(&body, crate_name, version)
+            .map_err(|error| Failure::InvalidResponse(format!("{url}: {error}")))
+    };
+    let index = observe(
+        &format!("https://index.crates.io/{path}"),
+        sparse_body_has_version,
+    );
     if matches!(index, Ok(true)) {
         return VersionVisibility::Published;
     }
-    let api = version_exists_with_policy(crate_name, version, 1, Duration::ZERO);
+    let api = observe(
+        &format!("https://crates.io/api/v1/crates/{crate_name}/{version}"),
+        |body, name, version| validate_version_response(body, name, version).map(|()| true),
+    );
     match (index, api) {
         (_, Ok(true)) => VersionVisibility::Published,
+        (Err(index), Err(api)) => {
+            VersionVisibility::Unknown(format!("{}; {}", index.message(), api.message()))
+        }
+        (Err(Failure::InvalidResponse(reason)), _) | (_, Err(Failure::InvalidResponse(reason))) => {
+            VersionVisibility::Unknown(reason)
+        }
         (Ok(false), _) | (_, Ok(false)) => VersionVisibility::NotPublishedYet,
-        (Err(index), Err(api)) => VersionVisibility::Unknown(format!("{index}; {api}")),
         (Ok(true), _) => unreachable!(),
     }
 }
@@ -278,6 +318,23 @@ mod tests {
     use super::*;
     use std::io::{Read, Write};
     use std::net::TcpListener;
+
+    #[test]
+    fn version_response_requires_matching_version_and_crate_identity() {
+        for (record, valid) in [
+            (r#"{"num":"1.2.3","crate":"Fixture"}"#, true),
+            (r#"{"num":"1.2.3"}"#, true),
+            (r#"{"num":"1.2.3","crate":"other"}"#, false),
+            (r#"{"num":"1.2.3","crate":null}"#, false),
+            (r#"{"num":"1.2.30","crate":"fixture"}"#, false),
+        ] {
+            let body = format!(r#"{{"version":{record}}}"#);
+            assert_eq!(
+                validate_version_response(&body, "fixture", "1.2.3").is_ok(),
+                valid
+            );
+        }
+    }
 
     #[test]
     fn retries_transient_errors_but_not_permanent_errors() {
@@ -366,6 +423,8 @@ mod tests {
             "{\"name\":\"other\",\"vers\":\"1.2.3\"}",
             "{\"name\":\"fixture\",\"note\":\"\\\"vers\\\":\\\"1.2.3\\\"\"}",
             &format!("{valid}\nnot json"),
+            &format!("{valid}\n{{\"name\":\"fixture\",\"vers\":\"not-a-version\"}}"),
+            &format!("{valid}\n\n{valid}"),
         ] {
             assert!(sparse_body_has_version(body, "fixture", "1.2.3").is_err());
         }
