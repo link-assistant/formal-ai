@@ -3,7 +3,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::rule_interpreter::{handler_matches, handler_table_rows, handler_table_value};
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
-use crate::web_formalize::{PageBlock, formalize_page_with_context};
+use crate::web_formalize::{PageBlock, parse_page_blocks};
 use regex::Regex;
 use std::collections::BTreeSet;
 use std::sync::LazyLock;
@@ -149,9 +149,8 @@ fn details(bytes: &[u8], symbol: &str) -> Option<(String, String)> {
     if bytes.len() > MAXIMUM_CAPTURE_BYTES || std::str::from_utf8(bytes).is_err() {
         return None;
     }
-    let (_, blocks) = formalize_page_with_context(bytes, Some("text/html"), None);
     let short = symbol.split_once('.')?.1;
-    let mut blocks = blocks.into_iter().map(|(_, block)| block);
+    let mut blocks = parse_page_blocks(bytes, Some("text/html"), None).into_iter();
     blocks.find(|block| {
         matches!(block, PageBlock::Heading { level: 1, text }
             if text.trim().trim_end_matches(['#', '¶']).trim() == symbol)

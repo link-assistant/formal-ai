@@ -3,7 +3,8 @@
 //! Web search exists, but its results stay "observations": strings the
 //! solver shows and forgets. This module is the generic page formalizer that
 //! turns any fetched resource -- HTML, Markdown, plain text, JSON, or
-//! PDF-extracted text -- into a [`LinkNetwork`] the solver can reason over:
+//! PDF-extracted text -- into blocks and, with the `meta-language` feature, a
+//! `LinkNetwork` the solver can reason over:
 //! headings become section links, paragraphs become statement links, lists
 //! and tables become list and row links, and every code block becomes a code
 //! node tagged with its language.
@@ -15,33 +16,36 @@
 //! their weights). The Rust here only interprets those rules.
 //!
 //! The six bespoke extractors in `concept_lookup.rs` stay as faster paths;
-//! [`covers_statements`] proves the generic formalizer yields every
+//! `covers_statements` proves the generic formalizer yields every
 //! statement they yield on the same bytes, so each is a cache, not a
 //! dependency.
 //!
 //! Nothing here fetches anything: bytes arrive through the existing
-//! `source_fetch` capture boundary, and [`annotate_capture`] records the
+//! `source_fetch` capture boundary, and `annotate_capture` records the
 //! rediscovery procedure (query, rank, URL, hash, timestamp) so a cached
 //! network can be dropped under storage pressure and re-fetched
 //! deterministically.
-#![cfg(feature = "meta-language")]
 
 mod html_text;
 
 pub(crate) use html_text::strip_tags_keep_lines;
 use html_text::{cell_texts, decode_entities, strip_tags, tag_attr};
 
+#[cfg(feature = "meta-language")]
 use std::collections::BTreeMap;
 
+#[cfg(feature = "meta-language")]
 use meta_language::{Link, LinkId, LinkNetwork};
 use serde_json::Value;
 
 use crate::seed::parser::{LinoNode, parse_lino};
+#[cfg(feature = "meta-language")]
 use crate::source_fetch::SourceCapture;
 
 /// The formalization rules seed, mirrored into the embedded bundle.
 const RULES_TEXT: &str = include_str!("../embedded/data/seed/page-formalization-rules.lino");
 /// The trust-weight seed, mirrored into the embedded bundle.
+#[cfg(feature = "meta-language")]
 const TRUST_TEXT: &str = include_str!("../embedded/data/seed/source-trust-weights.lino");
 
 /// Mime categories the formalizer recognises; `Unknown` falls back to
@@ -304,10 +308,9 @@ pub fn url_domain(url: &str) -> String {
 /// `js/worker/formal_ai_worker_page_formalization.js`.
 #[must_use]
 pub fn page_prose(bytes: &[u8], url: &str) -> String {
-    let (_, blocks) = formalize_page_with_context(bytes, None, Some(url));
-    let texts: Vec<String> = blocks
+    let texts: Vec<String> = parse_page_blocks(bytes, None, Some(url))
         .into_iter()
-        .filter_map(|(_, block)| match block {
+        .filter_map(|block| match block {
             PageBlock::Paragraph { text, .. } | PageBlock::ListItem { text } => Some(text),
             _ => None,
         })
@@ -322,6 +325,7 @@ pub fn page_prose(bytes: &[u8], url: &str) -> String {
 /// and tables become list and row links, and fenced code blocks become code
 /// links carrying a `language` field. The mime kind comes from the hint or,
 /// when the hint is missing, from the seed's sniff rules.
+#[cfg(feature = "meta-language")]
 #[must_use]
 pub fn formalize_page(bytes: &[u8], mime_hint: Option<&str>) -> LinkNetwork {
     formalize_page_with_context(bytes, mime_hint, None).0
@@ -330,16 +334,27 @@ pub fn formalize_page(bytes: &[u8], mime_hint: Option<&str>) -> LinkNetwork {
 /// [`formalize_page`] with a URL the language-tag heuristic may consult
 /// (extension in the path). Returns the network and each block's node id,
 /// so callers can index blocks without walking the link graph.
+#[cfg(feature = "meta-language")]
 #[must_use]
 pub fn formalize_page_with_context(
     bytes: &[u8],
     mime_hint: Option<&str>,
     url_hint: Option<&str>,
 ) -> (LinkNetwork, Vec<(LinkId, PageBlock)>) {
+    let blocks = parse_page_blocks(bytes, mime_hint, url_hint);
+    blocks_to_network(&blocks, url_hint)
+}
+
+/// Parse structural blocks in document order without constructing a links network.
+pub(crate) fn parse_page_blocks(
+    bytes: &[u8],
+    mime_hint: Option<&str>,
+    url_hint: Option<&str>,
+) -> Vec<PageBlock> {
     let rules = FormalizationRules::load();
     let mime = PageMime::from_hint_or_sniff(mime_hint, bytes, &rules);
     let text = String::from_utf8_lossy(bytes).to_string();
-    let blocks = match mime {
+    match mime {
         PageMime::Html => html_blocks(&text, &rules),
         PageMime::Markdown => markdown_blocks(&text, &rules, url_hint),
         PageMime::Json => {
@@ -350,13 +365,13 @@ pub fn formalize_page_with_context(
             blocks
         }
         PageMime::PlainText | PageMime::PdfText | PageMime::Unknown => plain_blocks(&text, &rules),
-    };
-    blocks_to_network(&blocks, url_hint)
+    }
 }
 
 /// Build the page network from parsed blocks: a `page` root with one child
 /// object per block, each carrying its text (and language/level/command
 /// fields where they apply). Block node ids come back in document order.
+#[cfg(feature = "meta-language")]
 fn blocks_to_network(
     blocks: &[PageBlock],
     url_hint: Option<&str>,
@@ -820,5 +835,7 @@ pub struct TrustFeatures {
     pub agreement_pages: u32,
 }
 
+#[cfg(feature = "meta-language")]
 include!("web_formalize_trust.rs");
+#[cfg(feature = "meta-language")]
 include!("web_formalize_features.rs");

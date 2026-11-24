@@ -124,7 +124,7 @@ pub fn acquire_documentation_captures<T: SourceTransport>(
     task: &str,
     client: &CachedSourceClient<T>,
 ) -> Vec<DocumentationCapture> {
-    use crate::web_formalize::{PageBlock, formalize_page_with_context};
+    use crate::web_formalize::{PageBlock, parse_page_blocks};
     if !documentation_route_active() {
         return Vec::new();
     }
@@ -133,14 +133,14 @@ pub fn acquire_documentation_captures<T: SourceTransport>(
         .filter_map(|mut reference| {
             let capture = client.fetch(&reference.url).ok()?;
             std::str::from_utf8(capture.bytes()).ok()?;
-            let (_, blocks) = formalize_page_with_context(
+            let blocks = parse_page_blocks(
                 capture.bytes(),
                 Some(reference.mime.as_str()),
                 Some(capture.source_url()),
             );
             reference.blocks = blocks
                 .into_iter()
-                .filter_map(|(_, block)| match block {
+                .filter_map(|block| match block {
                     PageBlock::CodeBlock { language, text } => Some((language, text)),
                     _ => None,
                 })
