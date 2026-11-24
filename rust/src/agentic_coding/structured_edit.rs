@@ -21,7 +21,7 @@ use super::final_result::{FinalDisposition, FinalResult, record};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use super::progress::Progress;
 use super::workspace_change::{
-    VerifiedChange, plan_edit_preimage_gap, plan_write_digest_verification,
+    VerifiedChange, plan_bound_write_digest_verification, plan_edit_preimage_gap,
 };
 use crate::normal_markov::{quoted_segment_spans, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
@@ -70,7 +70,11 @@ pub(super) fn plan_structured_edit_step(
     };
 
     let Some(source) = preimage.and_then(|observation| observation.source.as_deref()) else {
-        if attempted_write || progress.source_read_for(&edit.target).is_some() {
+        let projected = progress.projected_source_path(&edit.target);
+        if attempted_write
+            || progress.source_read_for(&edit.target).is_some()
+            || projected.is_some_and(|path| progress.source_read_for(&path).is_some())
+        {
             return Some(plan_edit_preimage_gap(&edit.target, result));
         }
         let read_tool = tool_for(tool_names, Capability::Read)?;
@@ -110,7 +114,7 @@ pub(super) fn plan_structured_edit_step(
     } else {
         ("coding-member-inserted", quoted_list(&inserted))
     };
-    plan_write_digest_verification(
+    plan_bound_write_digest_verification(
         task,
         current_turn,
         tool_names,
@@ -122,6 +126,7 @@ pub(super) fn plan_structured_edit_step(
             list_slots: &[],
         },
         result,
+        |arguments| progress.matches_workspace_source_path(arguments, &edit.target),
     )
 }
 

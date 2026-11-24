@@ -160,6 +160,43 @@ fn structural_insertion_uses_only_the_exact_target_source() {
     );
 }
 
+#[cfg(unix)]
+#[test]
+fn structural_insertion_binds_absolute_reads_to_the_host_workspace() {
+    let target = "src/names.rs";
+    let mut messages = vec![ChatMessage::user(
+        "Edit the tracked file src/names.rs: add \"c\" to the NAMES list.",
+    )];
+    let root = std::env::current_dir().expect("the test workspace has a current directory");
+    let read = next_call(&messages);
+    let absolute_read = |path: &std::path::Path| PlannedToolCall {
+        tool: read.tool.clone(),
+        arguments: serde_json::json!({"filePath": path}).to_string(),
+    };
+    // The full target suffix alone cannot establish a workspace binding.
+    let decoy = absolute_read(&root.join("other-checkout").join(target));
+    record(
+        &mut messages,
+        &decoy,
+        "const NAMES: &[&str] = &[\"wrong\"];\n",
+    );
+    let retry = next_call(&messages);
+    assert_eq!(retry.tool, read.tool);
+    assert_eq!(argument(&retry, "path"), target);
+
+    record(
+        &mut messages,
+        &absolute_read(&root.join(target)),
+        "const NAMES: &[&str] = &[\"a\", \"b\"];\n",
+    );
+    let write = next_call(&messages);
+    assert_eq!(argument(&write, "path"), target);
+    assert_eq!(
+        argument(&write, "content"),
+        "const NAMES: &[&str] = &[\"a\", \"b\", \"c\"];\n"
+    );
+}
+
 /// No identifier is named at all: the anchor is found by locating the members
 /// the request quoted, inside whichever delimiter pair encloses them.
 #[test]

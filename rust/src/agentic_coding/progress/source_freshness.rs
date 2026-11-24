@@ -148,14 +148,30 @@ pub(in crate::agentic_coding) struct PostMutationReadState<'a> {
 }
 
 impl Progress {
+    pub(in crate::agentic_coding) fn projected_source_path(&self, path: &str) -> Option<String> {
+        super::creation_path::projected_creation_path(path, self.workspace_root.as_deref())
+    }
+
+    pub(in crate::agentic_coding) fn matches_workspace_source_path(
+        &self,
+        arguments: &str,
+        path: &str,
+    ) -> bool {
+        source_read_path(arguments).is_some_and(|observed| {
+            observed == path
+                || self.projected_source_path(path).as_deref() == Some(observed.as_str())
+        })
+    }
+
     pub(in crate::agentic_coding) fn attempted_mutation_for(
         &self,
         path: &str,
         capability: Capability,
     ) -> bool {
-        self.qualified_attempts
-            .iter()
-            .any(|frame| frame.capability() == capability && frame.targets_path(path))
+        self.qualified_attempts.iter().any(|frame| {
+            frame.capability() == capability
+                && self.matches_workspace_source_path(frame.declaration_arguments(), path)
+        })
     }
     /// Actual preimage before the target Edit, without an intervening potential effect.
     pub(in crate::agentic_coding) fn source_read_before_latest_mutation_for(
@@ -168,9 +184,7 @@ impl Progress {
                 && attempt
                     .arguments
                     .as_deref()
-                    .and_then(source_read_path)
-                    .as_deref()
-                    == Some(path)
+                    .is_some_and(|arguments| self.matches_workspace_source_path(arguments, path))
         })?;
         for attempt in self.attempts[..index].iter().rev() {
             if !read_only_attempt(self, attempt) {
@@ -180,9 +194,7 @@ impl Progress {
                 && attempt
                     .arguments
                     .as_deref()
-                    .and_then(source_read_path)
-                    .as_deref()
-                    == Some(path)
+                    .is_some_and(|arguments| self.matches_workspace_source_path(arguments, path))
             {
                 let observed = attempt.source_observation()?;
                 if !attempt.succeeded || observed.error.is_some() || !observed.complete {
@@ -306,9 +318,7 @@ pub(in crate::agentic_coding) fn fresh_source_read_attempt_for<'a>(
             && attempt
                 .arguments
                 .as_deref()
-                .and_then(source_read_path)
-                .as_deref()
-                == Some(path)
+                .is_some_and(|arguments| progress.matches_workspace_source_path(arguments, path))
         {
             return Some(attempt);
         }

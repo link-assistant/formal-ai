@@ -58,7 +58,11 @@ fn an_angle_delimited_result_instruction_records_the_observation() {
 #[test]
 fn the_result_and_proof_retain_each_verified_edit_in_a_sequence() {
     let source = "settings/options.txt";
-    let prompt = "Insert the line «cobalt dawn» after the line «azure noon» in settings/options.txt, +        then delete the line «stale entry» from settings/options.txt. Create +        `agent-ladder-effects/node.lino` with these exact field lines: `kind=edit` and +        `result=<each verified edit>`. Leave supporting evidence in .agent-ladder/node-proof.md. +        The first line must be exactly `proof_for=edit`.";
+    let prompt = "Insert the line «cobalt dawn» after the line «azure noon» in settings/options.txt, \
+        then delete the line «stale entry» from settings/options.txt. Create \
+        `agent-ladder-effects/node.lino` with these exact field lines: `kind=edit` and \
+        `result=<each verified edit>`. Leave supporting evidence in .agent-ladder/node-proof.md. \
+        The first line must be exactly `proof_for=edit`.";
     let mut workspace = ToolWorkspace::new(prompt);
     workspace
         .write_initial(source, "azure noon\nstale entry\n")

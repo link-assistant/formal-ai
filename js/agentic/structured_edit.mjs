@@ -47,7 +47,9 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
     ? progress.sourceReadBeforeLatestMutationFor(edit.target, Capability.Write)
     : progress.freshSourceReadFor(edit.target);
   if (typeof preimage?.source !== 'string') {
-    if (attemptedWrite || progress.sourceReadFor(edit.target) !== null) return planEditPreimageGap(edit.target);
+    const projected = progress.projectedSourcePath(edit.target);
+    if (attemptedWrite || progress.sourceReadFor(edit.target) !== null
+      || (projected !== null && progress.sourceReadFor(projected) !== null)) return planEditPreimageGap(edit.target);
     const readTool = toolFor(toolNames, Capability.Read);
     return readTool ? planOne(readTool, readArguments(edit.target)) : null;
   }
@@ -74,7 +76,7 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
     : ['coding-member-already-present', quotedList(edit.values)];
   return planWriteDigestVerification(task, currentTurn, toolNames, {
     target: edit.target, expected: updated, intent, slots: [['{members}', members]],
-  });
+  }, (argumentsText, target) => progress.matchesWorkspaceSourcePath(argumentsText, target));
 }
 
 function wordsJoined(text) {
