@@ -20,6 +20,7 @@ import YAML from 'yaml';
 
 const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 const workflow = name => YAML.parse(readFileSync(join(ROOT, '.github/workflows', name), 'utf8'));
+const source = path => readFileSync(join(ROOT, path), 'utf8');
 const ALL = ['humaneval', 'mbpp', 'gsm8k', 'math', 'object_counting', 'coedit', 'egg_math', 'editeval', 'ascent_transitive_closure', 'swebench_lite'];
 
 function benchmarkStep(suite, failing, {sharded = false, readerFails = false} = {}) {
@@ -76,6 +77,22 @@ test('passing and single-suite selections keep their exit status', () => {
   assert.equal(single.status, 0);
   assert.equal(single.summary.trim(), 'suite=swebench_lite passed=1 failed=0 total=1');
   assert.equal(benchmarkStep('gsm8k', ['gsm8k']).status, 1);
+});
+
+test('ratchet rejection still uploads review-gated diagnostics', () => {
+  const job = workflow('external-benchmarks.yml').jobs['external-benchmarks'];
+  const run = job.steps.find(step => step.name === 'Run the bounded upstream slice');
+  const upload = job.steps.find(step => step.name === 'Upload run log');
+  assert.match(run.run, /--learning-report "target\/formal-ai-benchmarks\/learning\/\$1\.lino"/u);
+  assert.equal(upload.if, 'always()');
+  assert.ok(upload.with.path.split('\n').includes('target/formal-ai-benchmarks/learning/*.lino'));
+
+  const native = source('scripts/ci-native-regressions.sh');
+  assert.match(native, /interfaces\) family_arguments=\(--test interface_contracts\)/u);
+  assert.match(source('rust/tests/integration/interface_contracts.rs'), /^pub mod formal_ai_cli;/mu);
+  assert.match(source('rust/tests/integration/formal_ai_cli.rs'), /^mod benchmark_report;/mu);
+  assert.match(source('rust/tests/integration/formal_ai_cli/benchmark_report.rs'),
+    /^fn benchmark_report_survives_a_rejected_score_without_publishing_it\(\)/mu);
 });
 
 // Replays main run 45197910485, which could not decode the SWE-bench dataset.

@@ -247,6 +247,13 @@ main-run 45175845066
       marker "Replays main run 45175845066"
 
 main-run 45197910485
+  focused-native
+    regression external-benchmark-ratchet-discards-failure-report
+      introduced-by "ledger validation precedes diagnostics on main 03a636334"
+      failed "HumanEval, MBPP and GSM8K each exited on the ratchet before writing a retained learning proposal"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/issue-1569-workflow-failure-isolation.test.mjs
+      marker "ratchet rejection still uploads review-gated diagnostics"
   workflow-policy
     regression swebench-parquet-reader-unavailable
       introduced-by "missing dataset reader observed on main 03a636334"

@@ -50,6 +50,9 @@ The isolated crate uses the repository's locked regex engine and the two
 source revisions of the matcher. The published matcher rejects the
 fixture, and the corrected one selects its initializer. The static,
 token-boundary, wrong-name and duplicate-declaration checks pass. The
-full native delivery test still requires a passing hosted replay on the
-corrected head. These supplied changes earn zero independent Formal AI
-authorship credit.
+corrected head `4e814448b` also passes the full native delivery regression
+in the hosted coding lane. The job records 38 passing cases, including the
+check for both edits and their recorded digests. The complete Pipeline
+log records the test at line 79,400. These supplied changes earn zero
+independent Formal AI authorship credit.
+[Hosted native test job](https://github.com/link-assistant/formal-ai/actions/runs/45389147863/job/138431571902)

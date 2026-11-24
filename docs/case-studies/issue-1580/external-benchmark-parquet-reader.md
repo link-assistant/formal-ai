@@ -34,3 +34,30 @@ The latest main results report separate score failures. HumanEval passed
 12 of 20, MBPP passed 10 of 20, and GSM8K passed one of 20, below their
 recorded floors. Hosted execution of the official SWE-bench evaluator
 remains pending.
+
+## Learning reports for rejected scores
+
+Lines 3099, 3158 and 3224 of the scheduled log record ratchet rejections
+for HumanEval, MBPP and GSM8K. The retained artifact has proposals for
+CoEdIT, EditEval, MATH, Object Counting and SWE-bench Lite. All three
+rejected suites are absent. The CLI returned the ledger error before it
+could write the requested report, even though the workflow always uploads
+the report directory. [Run log and artifact](https://github.com/link-assistant/formal-ai/actions/runs/45197910485/artifacts/14832049621)
+
+The CLI now attempts the report after trying the ledger update, then
+propagates the ledger error before writing the committed frontier. The
+workflow still surfaces the failed score. The retained case observations
+remain proposals awaiting review.
+
+The focused native interface test supplies one synthetic arithmetic case
+and a one-point historical floor in a temporary workspace. Its passing
+control appends a score and updates the frontier. Its failing control
+requires a nonzero ratchet exit, byte-identical ledger and frontier, and a
+report identifying the rejected case. To replay the test against an
+existing executable without rebuilding Rust, run
+`bash experiments/issue-1580/replay-benchmark-report-ratchet.sh /path/to/formal-ai`.
+The published Linux CLI for `v0.356.11` passes the first control and fails
+the second because the report file is absent. With only the learning
+report requested, the same executable writes a proposal naming that
+case. Hosted execution of the repaired CLI is pending.
+[Released CLI](https://github.com/link-assistant/formal-ai/releases/tag/v0.356.11)

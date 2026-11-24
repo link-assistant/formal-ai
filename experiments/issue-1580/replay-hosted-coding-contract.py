@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read one producer-bound native test executable without downloading its sibling binaries."""
+"""Read one producer-bound native executable without downloading its siblings."""
 
 import argparse
 import hashlib
@@ -82,6 +82,7 @@ def main():
     parser.add_argument("metadata", type=Path)
     parser.add_argument("compiled_commit")
     parser.add_argument("destination", type=Path)
+    parser.add_argument("--member", choices=("coding_contracts", "formal-ai"), default="coding_contracts")
     parser.add_argument("--inspect", action="store_true")
     args = parser.parse_args()
     metadata = json.loads(args.metadata.read_text())
@@ -96,7 +97,7 @@ def main():
             or str(identity["run"]) != str(metadata["workflow_run"]["id"])
         ):
             raise ValueError("native contract receipt does not identify the requested producer")
-        name = "coding_contracts"
+        name = args.member
         member = archive.getinfo(name)
         expected = receipt["files"][name]
         if not 0 < member.file_size <= 768 * 1024 * 1024 or member.file_size != expected["bytes"]:
