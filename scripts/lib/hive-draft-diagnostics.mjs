@@ -21,10 +21,15 @@ export function adaptDraftDiagnostics(source) {
  let depth=0;const matches=[];
  for(let i=calls[0];i<tokens.length;i++){
   if(depth===1&&environmentPattern.every((token,n)=>token.text===tokens[i+n]?.text&&token.type===tokens[i+n]?.type)){
-   let end=i+environmentPattern.length;
-   const trailing=tokens[end]?.text===',';
-   if(trailing)end++;
-   if(tokens[end]?.text==='}')matches.push({offset:tokens[end].start,trailing});
+   // Upstream may append its own keys after the shared spread (issue #1634:
+   // HIVE_MIND_DEADLINE_AT_MS, HIVE_MIND_FORMAL_AI_DRAFT), so insert at the
+   // closing brace of this setEnv object rather than right after the spread.
+   let nested=0,end=i+2;
+   for(;end<tokens.length;end++){
+    if(tokens[end].text==='{')nested++;
+    if(tokens[end].text==='}'&&--nested===0)break;
+   }
+   if(tokens[end]?.text==='}')matches.push({offset:tokens[end].start,trailing:tokens[end-1]?.text===','});
   }
   if(tokens[i].text==='{')depth++;
   if(tokens[i].text==='}'&&--depth===0)break;
