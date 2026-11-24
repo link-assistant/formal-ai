@@ -25,6 +25,7 @@
 //! ureq = "3.5.2"
 //! serde = { version = "1", features = ["derive"] }
 //! serde_json = "1"
+//! semver = "1.0.28"
 //! ```
 
 use chrono::Utc;

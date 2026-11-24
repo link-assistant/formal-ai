@@ -35,15 +35,21 @@ class RegistryRegressions(SparseRegistryRegressions, PublishProcessRegressions, 
             def log_message(self, *_args):
                 pass
 
+            def reply(self, status, body):
+                if isinstance(body, str):
+                    body = body.encode()
+                self.send_response(status)
+                self.send_header('Content-Length', str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
             def do_GET(self):
                 cls.requests.append(self.path)
                 if self.path.startswith('/_sparse/') and cls.sparse_reply is not None:
-                    status, body = cls.sparse_reply
-                    body = body.encode()
-                    self.send_response(status)
-                    self.send_header('Content-Length', str(len(body)))
-                    self.end_headers()
-                    self.wfile.write(body)
+                    self.reply(*cls.sparse_reply)
+                    return
+                if self.path.startswith('/api/v1/crates/') and cls.version_reply is not None:
+                    self.reply(*cls.version_reply)
                     return
                 affected = cls.scope in self.path
                 if affected and (cls.mode == 'drop' or (cls.mode == 'drop-once' and len(cls.requests) == 2)):
@@ -77,11 +83,7 @@ class RegistryRegressions(SparseRegistryRegressions, PublishProcessRegressions, 
                         data['version']['num'] = '0.0.0'
                     if 'vers' in data:
                         data['vers'] = '0.0.0'
-                body = json.dumps(data).encode()
-                self.send_response(status)
-                self.send_header('Content-Length', str(len(body)))
-                self.end_headers()
-                self.wfile.write(body)
+                self.reply(status, json.dumps(data))
 
         cls.server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), Registry)
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
@@ -125,6 +127,7 @@ class RegistryRegressions(SparseRegistryRegressions, PublishProcessRegressions, 
         self.__class__.requests = []
         self.__class__.mode = 'success'
         self.__class__.sparse_reply = None
+        self.__class__.version_reply = None
         self.__class__.scope = ''
         self.__class__.maximum = '1.2.3'
         temp = tempfile.TemporaryDirectory(prefix='registry-cli-')
@@ -243,6 +246,25 @@ class RegistryRegressions(SparseRegistryRegressions, PublishProcessRegressions, 
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 self.assertIn(expected, Path(path).read_text().splitlines())
         self.assertEqual(self.requests, [])
+
+    def test_workspace_version_refuses_an_unreadable_member_manifest(self):
+        (self.work / 'Cargo.toml').write_text('[workspace]\nmembers = ["first", "second"]\n')
+        second = self.work / 'second'
+        second.mkdir()
+        (second / 'Cargo.toml').write_text('[package]\nname = "fixture"\nversion = "1.2.3"\n')
+
+        result = self.script('get-version.rs')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(self.output.read_text(), 'version=1.2.3\n')
+        self.output.unlink()
+
+        first = self.work / 'first'
+        first.mkdir()
+        (first / 'Cargo.toml').write_bytes(b'\xff')
+        result = self.script('get-version.rs')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('first/Cargo.toml', result.stderr.replace('\\', '/'))
+        self.assertFalse(self.output.exists())
 
     def test_waiter_requires_the_requested_identity_and_a_complete_registry_answer(self):
         for mode in ['malformed', 'wrong-identity', '503', '429', '403', 'drop']:
