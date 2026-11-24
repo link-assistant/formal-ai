@@ -690,6 +690,18 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
             .iter()
             .any(|segment| token.start >= segment.start && token.end <= segment.end)
     };
+    // A cue word quoted whole is payload too: `replace 'with' with ','`.
+    let is_cue = |token: &Token<'_>, cues: &[String]| {
+        unquoted.contains(&token.start)
+            && !is_quoted(token)
+            && cues.contains(&clean_cue_token(token.text))
+    };
+    let action_tokens: Vec<_> = toks
+        .iter()
+        .filter(|token| is_cue(token, &action_cues))
+        .collect();
+    let first_action = *action_tokens.first()?;
+    let clauses = prose_sentences(request);
     let is_path_candidate = |token: &Token<'_>| {
         let cleaned = clean_path_token(token.text);
         unquoted.contains(&token.start)
@@ -717,11 +729,28 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
             // in req.md" the payload's last span is no target (PR #1188 G63).
             let cue_introduces_next =
                 !prev_is_cue && next_is_cue && toks.get(index + 2).is_some_and(is_path_candidate);
+            if !(prev_is_cue || next_is_cue) || cue_introduces_next {
+                return None;
+            }
+            let edit_action = action_tokens
+                .iter()
+                .copied()
+                .find(|action| action.start > token.end)
+                .unwrap_or(first_action);
+            // A path introduced by a separate delivery clause belongs to that write.
+            if let Some(file_clause) = clauses
+                .iter()
+                .find(|clause| clause.span.contains(&token.start))
+                && !file_clause.span.contains(&edit_action.start)
+                && delivered_write_target(file_clause.text).as_deref() == Some(cleaned)
+            {
+                return None;
+            }
             let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
-            ((prev_is_cue || next_is_cue) && !cue_introduces_next).then_some((index, target))
+            Some((index, target, edit_action))
         })
     };
-    let (file_index, target) = candidate(false).or_else(|| candidate(true))?;
+    let (file_index, target, action) = candidate(false).or_else(|| candidate(true))?;
     // The file clause runs back over target cues and the seeded function words
     // between them (`in the file f.txt`) to its first cue (PR #1188 G98); a cue
     // word inside a quoted literal is payload ("… the named file.'").
@@ -740,17 +769,6 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
         }
     }
     let file_clause_start = toks[clause_start_index].start;
-    // A cue word quoted whole is payload too: `replace 'with' with ','`.
-    let is_cue = |token: &Token<'_>, cues: &[String]| {
-        unquoted.contains(&token.start)
-            && !is_quoted(token)
-            && cues.contains(&clean_cue_token(token.text))
-    };
-    let action = toks
-        .iter()
-        .filter(|token| is_cue(token, &action_cues))
-        .find(|token| token.start > toks[file_index].end)
-        .or_else(|| toks.iter().find(|token| is_cue(token, &action_cues)))?;
     let action_end = action.end;
     let new_lead = toks
         .iter()
@@ -772,7 +790,7 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
         new_lead.start
     };
     let old_span = request.get(action_end..old_end)?;
-    let sentence_end = prose_sentences(request)
+    let sentence_end = clauses
         .into_iter()
         .find(|sentence| sentence.span.contains(&new_lead.end))
         .map_or_else(

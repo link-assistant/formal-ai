@@ -378,6 +378,7 @@ export function composeEditClauses(raw) {
   const isActionCue = (index) => actionCues.includes(cleanCueToken(toks[index].text));
   let fileIndex = -1;
   let target = null;
+  let action = null;
   const unquoted = new Set(unquotedPathTokens(request).map((token) => token.start));
   // A path the request leaves unquoted names the file before a literal that
   // is exactly a path does: in "Replace 'a' with 'data/x.lino' in f.mjs" the
@@ -385,6 +386,11 @@ export function composeEditClauses(raw) {
   // the target.
   const segments = quotedSegmentSpans(request);
   const isQuoted = (token) => segments.some((segment) => token.start >= segment.start && token.end <= segment.end);
+  // A cue word quoted whole is payload too: `replace 'with' with ','`.
+  const isCue = (token, cues) => unquoted.has(token.start) && !isQuoted(token) && cues.includes(cleanCueToken(token.text));
+  const actionTokens = toks.filter((token) => isCue(token, actionCues));
+  if (actionTokens.length === 0) return null;
+  const clauses = proseSentences(request);
   const isPathCandidate = (token) => {
     const cleaned = cleanPathToken(token.text);
     return unquoted.has(token.start)
@@ -402,14 +408,20 @@ export function composeEditClauses(raw) {
       // req.md" the payload's last span is no target (PR #1188 G63).
       const cueIntroducesNext = !prevIsCue && nextIsCue && index + 2 < toks.length && isPathCandidate(toks[index + 2]);
       if ((prevIsCue || nextIsCue) && !cueIntroducesNext) {
+        const editAction = actionTokens.find((token) => token.start > toks[index].end) ?? actionTokens[0];
+        const fileClause = clauses.find((clause) => spanContains(spanOf(clause), toks[index].start));
+        // A path introduced by a separate delivery clause belongs to that write.
+        if (fileClause && !spanContains(spanOf(fileClause), editAction.start)
+            && deliveredWriteTarget(fileClause.text) === cleaned) continue;
         fileIndex = index;
         target = resolved === null ? cleaned : resolved.module_path;
+        action = editAction;
         break;
       }
     }
     if (fileIndex >= 0) break;
   }
-  if (fileIndex < 0) return null;
+  if (!action) return null;
   // The file clause runs back over target cues and the seeded function words
   // between them (`in the file f.txt`, `en el archivo f.txt`) to its first
   // cue; an article there is no part of the new text (PR #1188 G98). A cue
@@ -422,12 +434,6 @@ export function composeEditClauses(raw) {
     if (isTargetCue(index)) clauseStartIndex = index;
   }
   const fileClauseStart = toks[clauseStartIndex].start;
-  // Cue words inside a quoted literal are payload (`replace 'covered by x'`).
-  // A cue word quoted whole is payload too: `replace 'with' with ','`.
-  const isCue = (token, cues) => unquoted.has(token.start) && !isQuoted(token) && cues.includes(cleanCueToken(token.text));
-  const actionTokens = toks.filter((token) => isCue(token, actionCues));
-  const action = actionTokens.find((token) => token.start > toks[fileIndex].end) ?? actionTokens[0];
-  if (!action) return null;
   const actionEnd = action.end;
   const newLead = toks.find((token) => token.start >= actionEnd && isCue(token, newLeads));
   if (!newLead) return null;
@@ -436,7 +442,7 @@ export function composeEditClauses(raw) {
   const fileBetween = fileClauseStart >= actionEnd && fileClauseStart < newLead.start;
   if (fileBetween && request.slice(toks[fileIndex].end, newLead.start).trim() !== '') return null;
   const oldSpan = request.slice(actionEnd, fileBetween ? fileClauseStart : newLead.start);
-  const containing = proseSentences(request).find((sentence) => spanContains(spanOf(sentence), newLead.end));
+  const containing = clauses.find((sentence) => spanContains(spanOf(sentence), newLead.end));
   let sentenceEnd = request.length;
   if (containing) {
     const span = spanOf(containing);
